@@ -281,22 +281,22 @@
 
                                         <td>
                                             <div class="custom-control custom-switch">
-                                                <input type="checkbox" class="custom-control-input" id="smscustomSwitch1">
-                                                <label class="custom-control-label" for="smscustomSwitch1"></label>
+                                                <input type="checkbox" class="custom-control-input" id="deliverysmscustomSwitch1">
+                                                <label class="custom-control-label" for="deliverysmscustomSwitch1"></label>
                                             </div>
                                         </td>
 
                                         <td>
                                             <div class="custom-control custom-switch">
-                                                <input type="checkbox" class="custom-control-input" id="emailcustomSwitch1">
-                                                <label class="custom-control-label" for="emailcustomSwitch1"></label>
+                                                <input type="checkbox" class="custom-control-input" id="deliveryemailcustomSwitch1">
+                                                <label class="custom-control-label" for="deliveryemailcustomSwitch1"></label>
                                             </div>
                                         </td>
 
                                         <td>
                                             <div class="custom-control custom-switch">
-                                                <input type="checkbox" class="custom-control-input" id="webhookcustomSwitch1">
-                                                <label class="custom-control-label" for="webhookcustomSwitch1"></label>
+                                                <input type="checkbox" class="custom-control-input" id="deliverywebhookcustomSwitch1">
+                                                <label class="custom-control-label" for="deliverywebhookcustomSwitch1"></label>
                                             </div>
                                         </td>
 
@@ -314,22 +314,22 @@
 
                                         <td>
                                             <div class="custom-control custom-switch">
-                                                <input type="checkbox" class="custom-control-input" id="smscustomSwitch2">
-                                                <label class="custom-control-label" for="smscustomSwitch2"></label>
+                                                <input type="checkbox" class="custom-control-input" id="deliverysmscustomSwitch2">
+                                                <label class="custom-control-label" for="deliverysmscustomSwitch2"></label>
                                             </div>
                                         </td>
 
                                         <td>
                                             <div class="custom-control custom-switch">
-                                                <input type="checkbox" class="custom-control-input" id="emailcustomSwitch2">
-                                                <label class="custom-control-label" for="emailcustomSwitch2"></label>
+                                                <input type="checkbox" class="custom-control-input" id="deliveryemailcustomSwitch2">
+                                                <label class="custom-control-label" for="deliveryemailcustomSwitch2"></label>
                                             </div>
                                         </td>
 
                                         <td>
                                             <div class="custom-control custom-switch">
-                                                <input type="checkbox" class="custom-control-input" id="webhookcustomSwitch2">
-                                                <label class="custom-control-label" for="webhookcustomSwitch2"></label>
+                                                <input type="checkbox" class="custom-control-input" id="deliverywebhookcustomSwitch2">
+                                                <label class="custom-control-label" for="deliverywebhookcustomSwitch2"></label>
                                             </div>
                                         </td>
 
@@ -347,22 +347,22 @@
 
                                         <td>
                                             <div class="custom-control custom-switch">
-                                                <input type="checkbox" class="custom-control-input" id="smscustomSwitch3">
-                                                <label class="custom-control-label" for="smscustomSwitch3"></label>
+                                                <input type="checkbox" class="custom-control-input" id="deliverysmscustomSwitch3">
+                                                <label class="custom-control-label" for="deliverysmscustomSwitch3"></label>
                                             </div>
                                         </td>
 
                                         <td>
                                            <div class="custom-control custom-switch">
-                                                <input type="checkbox" class="custom-control-input" id="emailcustomSwitch3">
-                                                <label class="custom-control-label" for="emailcustomSwitch3"></label>
+                                                <input type="checkbox" class="custom-control-input" id="deliveryemailcustomSwitch3">
+                                                <label class="custom-control-label" for="deliveryemailcustomSwitch3"></label>
                                             </div>
                                         </td>
 
                                         <td>
                                             <div class="custom-control custom-switch">
-                                                <input type="checkbox" class="custom-control-input" id="webhookcustomSwitch3">
-                                                <label class="custom-control-label" for="webhookcustomSwitch3"></label>
+                                                <input type="checkbox" class="custom-control-input" id="deliverywebhookcustomSwitch3">
+                                                <label class="custom-control-label" for="deliverywebhookcustomSwitch3"></label>
                                             </div>
                                         </td>
 
@@ -380,22 +380,22 @@
 
                                         <td>
                                             <div class="custom-control custom-switch">
-                                                <input type="checkbox" class="custom-control-input" id="smscustomSwitch4">
-                                                <label class="custom-control-label" for="smscustomSwitch4"></label>
+                                                <input type="checkbox" class="custom-control-input" id="deliverysmscustomSwitch4">
+                                                <label class="custom-control-label" for="deliverysmscustomSwitch4"></label>
                                             </div>
                                         </td>
 
                                         <td>
                                             <div class="custom-control custom-switch">
-                                                <input type="checkbox" class="custom-control-input" id="emailcustomSwitch4">
-                                                <label class="custom-control-label" for="emailcustomSwitch4"></label>
+                                                <input type="checkbox" class="custom-control-input" id="deliveryemailcustomSwitch4">
+                                                <label class="custom-control-label" for="deliveryemailcustomSwitch4"></label>
                                             </div>
                                         </td>
 
                                         <td>
                                             <div class="custom-control custom-switch">
-                                                <input type="checkbox" class="custom-control-input" id="webhookcustomSwitch4">
-                                                <label class="custom-control-label" for="webhookcustomSwitch4"></label>
+                                                <input type="checkbox" class="custom-control-input" id="deliverywebhookcustomSwitch4">
+                                                <label class="custom-control-label" for="deliverywebhookcustomSwitch4"></label>
                                             </div>
                                         </td>
 
@@ -413,22 +413,22 @@
 
                                         <td>
                                             <div class="custom-control custom-switch">
-                                                <input type="checkbox" class="custom-control-input" id="smscustomSwitch5">
-                                                <label class="custom-control-label" for="smscustomSwitch5"></label>
+                                                <input type="checkbox" class="custom-control-input" id="deliverysmscustomSwitch5">
+                                                <label class="custom-control-label" for="deliverysmscustomSwitch5"></label>
                                             </div>
                                         </td>
 
                                         <td>
                                             <div class="custom-control custom-switch">
-                                                <input type="checkbox" class="custom-control-input" id="emailcustomSwitch5">
-                                                <label class="custom-control-label" for="emailcustomSwitch5"></label>
+                                                <input type="checkbox" class="custom-control-input" id="deliveryemailcustomSwitch5">
+                                                <label class="custom-control-label" for="deliveryemailcustomSwitch5"></label>
                                             </div>
                                         </td>
 
                                         <td>
                                             <div class="custom-control custom-switch">
-                                                <input type="checkbox" class="custom-control-input" id="webhookcustomSwitch5">
-                                                <label class="custom-control-label" for="webhookcustomSwitch5"></label>
+                                                <input type="checkbox" class="custom-control-input" id="deliverywebhookcustomSwitch5">
+                                                <label class="custom-control-label" for="deliverywebhookcustomSwitch5"></label>
                                             </div>
                                         </td>
 
