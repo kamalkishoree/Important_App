@@ -85,8 +85,8 @@
                     <div class="row">
                         <div class="col-6">
                             
-                            <div class="avatar-lg bg-success rounded">
-                                <i class="fe-award avatar-title font-22 text-white"></i>
+                            <div class="avatar-lg bg-success rounded ">
+                                <i class="fe-check-square font-22 avatar-title text-white"></i>
                             </div>
                         </div>
                         <div class="col-6">
