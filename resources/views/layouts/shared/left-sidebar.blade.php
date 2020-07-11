@@ -70,6 +70,12 @@
                         <span> Notifications </span>
                     </a>
                 </li>
+                <li>
+                    <a href="{{url('change-password')}}">
+                        <i data-feather="lock"></i>
+                        <span> Change Password </span>
+                    </a>
+                </li>
 
                 <li class="menu-title mt-5">Other Pages</li>
 

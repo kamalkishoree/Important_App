@@ -172,7 +172,7 @@
                         Preview       
                     </p>
                     <p class="sub-header ">
-                        <code>https://royodispatcher.com/tasktrack/Pickup/00023</code>
+                        <code>https://royodispatcher.com/tasktrack</code>/<code style="text-decoration: underline;">Pickup</code>/<code style="text-decoration: underline;">00023</code>
                     </p>
                     <div class="row mb-2">
                        
