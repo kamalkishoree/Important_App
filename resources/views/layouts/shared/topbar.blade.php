@@ -321,7 +321,7 @@
     
             <li class="dropdown notification-list">
                 <!-- <a href="{{url('settings')}}" class="nav-link right-bar-toggle waves-effect waves-light"> -->
-                <a href="{{url('settings')}}" class="nav-link  waves-effect waves-light">
+                <a href="{{url('profile')}}" class="nav-link  waves-effect waves-light">
                     <i class="fe-settings noti-icon"></i>
                 </a>
             </li>
