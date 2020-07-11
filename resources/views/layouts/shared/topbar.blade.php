@@ -288,12 +288,6 @@
                     </a>
     
                     
-                    <a href="{{url('settings')}}" class="dropdown-item notify-item">
-                        <i class="fe-settings"></i>
-                        <span>Settings</span>
-                    </a>
-    
-                    
                     <!-- <a href="javascript:void(0);" class="dropdown-item notify-item">
                         <i class="fe-lock"></i>
                         <span>Lock Screen</span>
@@ -326,7 +320,8 @@
             </li>
     
             <li class="dropdown notification-list">
-                <a href="javascript:void(0);" class="nav-link right-bar-toggle waves-effect waves-light">
+                <!-- <a href="{{url('settings')}}" class="nav-link right-bar-toggle waves-effect waves-light"> -->
+                <a href="{{url('settings')}}" class="nav-link  waves-effect waves-light">
                     <i class="fe-settings noti-icon"></i>
                 </a>
             </li>

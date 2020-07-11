@@ -9,25 +9,13 @@
                 class="rounded-circle avatar-md">
             <div class="dropdown">
                 <a href="javascript: void(0);" class="text-dark dropdown-toggle h5 mt-2 mb-1 d-block"
-                    data-toggle="dropdown">Geneva Kennedy</a>
+                    data-toggle="dropdown">User</a>
                 <div class="dropdown-menu user-pro-dropdown">
 
                     <!-- item-->
                     <a href="javascript:void(0);" class="dropdown-item notify-item">
                         <i class="fe-user mr-1"></i>
                         <span>My Account</span>
-                    </a>
-
-                    <!-- item-->
-                    <a href="javascript:void(0);" class="dropdown-item notify-item">
-                        <i class="fe-settings mr-1"></i>
-                        <span>Settings</span>
-                    </a>
-
-                    <!-- item-->
-                    <a href="javascript:void(0);" class="dropdown-item notify-item">
-                        <i class="fe-lock mr-1"></i>
-                        <span>Lock Screen</span>
                     </a>
 
                     <!-- item-->
@@ -46,33 +34,44 @@
 
             <ul id="side-menu">
 
-                <li class="menu-title">Navigation</li>
-                
+                <li class="menu-title mt-2">Home</li>
+
                 <li>
-                    <a href="#sidebarDashboards" data-toggle="collapse">
+                    <a href="{{url('dashboard')}}">
                         <i data-feather="airplay"></i>
-                        <span class="badge badge-success badge-pill float-right">4</span>
-                        <span> Dashboards </span>
+                        <span> Dashboard </span>
                     </a>
-                    <div class="collapse" id="sidebarDashboards">
-                        <ul class="nav-second-level">
-                            <li>
-                                <a href="{{route('any', 'dashboard')}}">Dashboard 1</a>
-                            </li>
-                            <li>
-                                <a href="{{route('any', 'dashboard-2')}}">Dashboard 2</a>
-                            </li>
-                            <li>
-                                <a href="{{route('any', 'dashboard-3')}}">Dashboard 3</a>
-                            </li>
-                            <li>
-                                <a href="{{route('any', 'dashboard-4')}}">Dashboard 4</a>
-                            </li>
-                        </ul>
-                    </div>
                 </li>
 
-                <li class="menu-title mt-2">Apps</li>
+                <li class="menu-title mt-2">Settings</li>
+
+
+                <li>
+                    <a href="{{url('profile')}}">
+                        <i data-feather="users"></i>
+                        <span> Profile </span>
+                    </a>
+                </li>
+                 <li>
+                    <a href="{{url('customize')}}">
+                        <i data-feather="rss"></i>
+                        <span> Customize </span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{url('options')}}">
+                        <i data-feather="activity"></i>
+                        <span> Options </span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{url('notifications')}}">
+                        <i data-feather="bell"></i>
+                        <span> Notifications </span>
+                    </a>
+                </li>
+
+                <li class="menu-title mt-5">Other Pages</li>
 
                 <li>
                     <a href="{{route('second', ['apps', 'calendar'])}}">
