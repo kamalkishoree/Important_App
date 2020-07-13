@@ -52,10 +52,34 @@
                         <span> Profile </span>
                     </a>
                 </li>
-                 <li>
+                <li>
                     <a href="{{url('customize')}}">
                         <i data-feather="rss"></i>
                         <span> Customize </span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{url('geo-fence')}}">
+                        <i data-feather="map"></i>
+                        <span> Geo Fence </span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{url('auto-allocation')}}">
+                        <i data-feather="git-branch"></i>
+                        <span> Auto Allocation </span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{url('configure')}}">
+                        <i data-feather="tool"></i>
+                        <span> Configure </span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{url('plan-billing')}}">
+                        <i data-feather="dollar-sign"></i>
+                        <span> Plans & Billings </span>
                     </a>
                 </li>
                 <li>
