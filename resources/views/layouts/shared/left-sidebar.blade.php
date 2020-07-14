@@ -89,6 +89,12 @@
                     </a>
                 </li>
                 <li>
+                    <a href="{{url('modals')}}">
+                        <i data-feather="users"></i>
+                        <span> Modals </span>
+                    </a>
+                </li>
+                <li>
                     <a href="{{url('notifications')}}">
                         <i data-feather="bell"></i>
                         <span> Notifications </span>

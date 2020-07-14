@@ -4,6 +4,8 @@
 @endsection
 
 @section('content')
+@include('modals.add-card')
+
 <!-- Start Content-->
 <div class="container-fluid">
 
@@ -51,7 +53,7 @@
                         </div>
                     </div>
                     <div class="col-md-4 align-self-center">
-                        <a href="javascript:;">Update Plan</a>
+                        <a href="javascript:;" data-toggle="modal" data-target="#add-card-modal">Change Card</a>
                     </div>
                 </div>
             </div>
@@ -63,4 +65,5 @@
 @endsection
 
 @section('script')
+
 @endsection
