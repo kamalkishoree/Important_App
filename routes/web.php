@@ -23,7 +23,10 @@ Auth::routes();
 Route::get('{first}/{second}/{third}', 'RoutingController@thirdLevel')->name('third');
 Route::get('{first}/{second}', 'RoutingController@secondLevel')->name('second');
 Route::get('{any}', 'RoutingController@root')->name('any');
-    
+
+/* Store Client Information */
+Route::post('submit_client', 'UserProfile@SaveRecord')->name('store_client');
+
 // Route::group(['middleware' => 'auth', 'prefix' => '/'], function () {
 //     Route::get('{first}/{second}/{third}', 'RoutingController@thirdLevel')->name('third');
 //     Route::get('{first}/{second}', 'RoutingController@secondLevel')->name('second');
