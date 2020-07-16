@@ -87,9 +87,18 @@
                                     <td>
                                         <a href="{{route('client.edit', $client->id)}}" class="action-icon"> <i
                                                 class="mdi mdi-square-edit-outline"></i></a>
-                                        <a href="{{route('client.destroy', $client->id)}}" class="action-icon">
+                                        <!-- <a href="{{route('client.destroy', $client->id)}}" class="action-icon">
                                             <i class="mdi mdi-delete"></i>
-                                        </a>
+                                        </a> -->
+                                        <form method="POST" action="{{route('client.destroy', $client->id)}}">
+                                            @csrf
+                                            @method('DELETE')
+                                            <div class="form-group">
+                                                <button type="submit" class="btn btn-primary-outline action-icon"> <i
+                                                        class="mdi mdi-delete"></i></button>
+
+                                            </div>
+                                        </form>
                                     </td>
                                 </tr>
                                 @endforeach
