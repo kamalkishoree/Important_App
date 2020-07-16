@@ -53,6 +53,12 @@
                     </a>
                 </li>
                 <li>
+                    <a href="{{url('client')}}">
+                        <i data-feather="users"></i>
+                        <span> Clients </span>
+                    </a>
+                </li>
+                <li>
                     <a href="{{url('customize')}}">
                         <i data-feather="rss"></i>
                         <span> Customize </span>
