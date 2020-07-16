@@ -6,8 +6,7 @@
 @endsection
 
 @section('content')
-@include('modals.add-client')
-@include('modals.update-client',['data' => \Session::get('getClient') ?? ''])
+
 <!-- Start Content-->
 <div class="container-fluid">
 
@@ -29,17 +28,15 @@
                             <div class="text-sm-left">
                                 @if (\Session::has('success'))
                                 <div class="alert alert-success">
-                                    <ul>
-                                        <li>{!! \Session::get('success') !!}</li>
-                                    </ul>
+                                    <span>{!! \Session::get('success') !!}</span>
                                 </div>
                                 @endif
                             </div>
                         </div>
                         <div class="col-sm-4 text-right">
-                            <button type="button" class="btn btn-danger waves-effect waves-light text-sm-right"
-                                data-toggle="modal" data-target="#add-client-modal"><i
-                                    class="mdi mdi-plus-circle mr-1"></i> Add Clients</button>
+                            <a class="btn btn-danger waves-effect waves-light text-sm-right"
+                                href="{{route('client.create')}}"><i class="mdi mdi-plus-circle mr-1"></i> Add
+                                Clients</a>
                         </div>
 
                     </div>
@@ -55,7 +52,6 @@
                                     <th>DB Name</th>
                                     <th>DB Username</th>
                                     <th>DB Password</th>
-                                    <th>Status</th>
                                     <th style="width: 85px;">Action</th>
                                 </tr>
                             </thead>
@@ -84,23 +80,16 @@
                                     <td>
                                         {{$client->database_password}}
                                     </td>
-                                    <td>
+                                    <!-- <td>
                                         <span class="badge bg-soft-success text-success">Active</span>
-                                    </td>
+                                    </td> -->
 
                                     <td>
-                                        <a href="{{url('client', $client->id)}}" class="action-icon"> <i
+                                        <a href="{{route('client.edit', $client->id)}}" class="action-icon"> <i
                                                 class="mdi mdi-square-edit-outline"></i></a>
-                                        <form method="POST" action="{{url('client', $client->id)}}">
-                                            {{ csrf_field() }}
-                                            {{ method_field('DELETE') }}
-                                            <div class="form-group">
-                                                <button type="submit" class="btn btn-primary-outline action-icon"> <i
-                                                        class="mdi mdi-delete"></i></button>
-
-                                            </div>
-                                        </form>
-
+                                        <a href="{{route('client.destroy', $client->id)}}" class="action-icon">
+                                            <i class="mdi mdi-delete"></i>
+                                        </a>
                                     </td>
                                 </tr>
                                 @endforeach
@@ -126,7 +115,7 @@
 <!-- Page js-->
 <script src="{{asset('assets/js/pages/form-fileuploads.init.js')}}"></script>
 
-@parent
+<!-- @parent
 
 @if(count($errors->add) > 0)
 <script>
@@ -153,5 +142,5 @@ $(function() {
     });
 });
 </script>
-@endif
+@endif -->
 @endsection

@@ -27,7 +27,7 @@ class ClientController extends Controller
      */
     public function create()
     {
-        //
+        return view('update-client');
     }
 
     /**
@@ -59,10 +59,10 @@ class ClientController extends Controller
      */
     public function store(Request $request)
     {   
-        $validator = $this->validator($request->all());
-        if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator, 'add');
-        }
+        $validator = $this->validator($request->all())->validate();
+        // if ($validator->fails()) {
+        //     return redirect()->back()->withErrors($validator, 'add');
+        // }
        
         $getFileName = NULL;
         
@@ -92,7 +92,7 @@ class ClientController extends Controller
         ];
 
         $client = Client::create($data);
-        return redirect()->back();
+        return redirect()->route('client.index')->with('success', 'Client Added successfully!');
         //
     }
 
@@ -116,7 +116,8 @@ class ClientController extends Controller
      */
     public function edit($id)
     {
-        //
+        $client = Client::find($id);
+        return view('update-client')->with('client', $client);
     }
 
     /**
@@ -147,10 +148,10 @@ class ClientController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $validator = $this->updateValidator($request->all());
-        if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator, 'update');
-        }
+        $validator = $this->updateValidator($request->all())->validate();
+        // if ($validator->fails()) {
+        //     return redirect()->back()->withErrors($validator, 'update');
+        // }
         $getClient = Client::find($id);
         $getFileName = $getClient->logo;
         
@@ -180,7 +181,7 @@ class ClientController extends Controller
         ];
 
         $client = Client::where('id', $id)->update($data);
-        return redirect()->back();
+        return redirect()->route('client.index')->with('success', 'Client Updated successfully!');
     }
 
     /**
@@ -192,6 +193,6 @@ class ClientController extends Controller
     public function destroy($id)
     {
         $getClient = Client::where('id', $id)->update(['is_deleted' => 1]);
-        return redirect()->back()->with('success', 'Client deleted successfully!');  ;
+        return redirect()->back()->with('success', 'Client deleted successfully!');
     }
 }
