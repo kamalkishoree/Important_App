@@ -21,6 +21,7 @@ Route::get('', function(){
 Auth::routes();
 Route::resource('client', 'ClientController');
 Route::resource('agent', 'AgentController');
+Route::resource('customer', 'CustomerController');
 Route::get('{first}/{second}/{third}', 'RoutingController@thirdLevel')->name('third');
 Route::get('{first}/{second}', 'RoutingController@secondLevel')->name('second');
 Route::get('{any}', 'RoutingController@root')->name('any');

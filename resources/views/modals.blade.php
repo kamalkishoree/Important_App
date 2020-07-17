@@ -45,7 +45,8 @@
                     <button type="button" class="btn btn-outline-success waves-effect waves-light" data-toggle="modal"
                         data-target="#add-card-modal">Add Card</button>
                     <button type="button" class="btn btn-outline-info waves-effect waves-light" data-toggle="modal"
-                        data-target="#add-customer-modal">Add Customer</button>
+                        data-target="#add-customer-modal" data-backdrop="static" data-keyboard="false">Add
+                        Customer</button>
                     <button type="button" class="btn btn-outline-warning waves-effect waves-light" data-toggle="modal"
                         data-target="#create-appoinment-modal">Create
                         Appoinment</button>

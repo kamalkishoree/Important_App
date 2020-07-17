@@ -6,73 +6,82 @@
                 <h4 class="modal-title">Add Customer</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
             </div>
-            <div class="modal-body p-4">
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="field-1" class="control-label">NAME</label>
-                            <input type="text" class="form-control" id="field-1" placeholder="John Doe">
+            <form id="submitCustomer">
+                @csrf
+                <div class="modal-body p-4">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group" id="nameInput">
+                                <label for="name" class="control-label">NAME</label>
+                                <input type="text" class="form-control" name="name" id="name" placeholder="John Doe">
+                                <span class="invalid-feedback" role="alert">
+                                    <strong></strong>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group" id="phone_numberInput">
+                                <label for="phone_number" class="control-label">CONTACT NUMBER</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">+91</span>
+                                    </div>
+                                    <input type="text" class="form-control" name="phone_number" id="phone_number"
+                                        placeholder="Enter mobile number">
+                                </div>
+                                <span class="invalid-feedback" role="alert">
+                                    <strong></strong>
+                                </span>
+                            </div>
+
                         </div>
                     </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="field-2" class="control-label">CONTACT NUMBER</label>
-                            <div class="input-group">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text" id="basic-addon1">+91</span>
-                                </div>
-                                <input type="text" class="form-control" id="field-2" placeholder="Enter mobile number">
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group" id="emailInput">
+                                <label for="email" class="control-label">EMAIL</label>
+                                <input type="email" class="form-control" name="email" id="email"
+                                    placeholder="Enter Email">
+                                <span class="invalid-feedback" role="alert">
+                                    <strong></strong>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group" id="addressInput">
+                                <label for="address" class="control-label">ADDRESSS</label>
+                                <input type="text" class="form-control" name="address" id="address"
+                                    placeholder="Enter Address">
+                                <span class="invalid-feedback" role="alert">
+                                    <strong></strong>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group" id="tagsInput">
+                                <label for="tags" class="control-label">ADD TAGS</label>
+                                <select class="form-control select2-multiple" data-toggle="select2" multiple="multiple"
+                                    data-placeholder="Choose ..." name="tags[]" id="tags">
+                                    @foreach($tags as $tag)
+                                    <option value="{{$tag->id}}">{{$tag->name}}</option>
+                                    @endforeach
+                                </select>
+                                <span class="invalid-feedback" role="alert">
+                                    <strong></strong>
+                                </span>
                             </div>
                         </div>
                     </div>
                 </div>
-
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="field-3" class="control-label">ADDRESSS</label>
-                            <input type="text" class="form-control" id="field-3" placeholder="Enter Address">
-                        </div>
-                    </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-info waves-effect waves-light">Submit</button>
                 </div>
-
-
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="form-group">
-                            <label for="field-3" class="control-label">ADD TAGS</label>
-                            <select class="form-control select2-multiple" data-toggle="select2" multiple="multiple"
-                                data-placeholder="Choose ...">
-                                <optgroup label="Alaskan/Hawaiian Time Zone">
-                                    <option value="AK">Alaska</option>
-                                    <option value="HI">Hawaii</option>
-                                </optgroup>
-                                <optgroup label="Pacific Time Zone">
-                                    <option value="CA">California</option>
-                                    <option value="NV">Nevada</option>
-                                    <option value="OR">Oregon</option>
-                                    <option value="WA">Washington</option>
-                                </optgroup>
-                                <optgroup label="Mountain Time Zone">
-                                    <option value="AZ">Arizona</option>
-                                    <option value="CO">Colorado</option>
-                                    <option value="ID">Idaho</option>
-                                    <option value="MT">Montana</option>
-                                    <option value="NE">Nebraska</option>
-                                    <option value="NM">New Mexico</option>
-                                    <option value="ND">North Dakota</option>
-                                    <option value="UT">Utah</option>
-                                    <option value="WY">Wyoming</option>
-                                </optgroup>
-
-                            </select>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-info waves-effect waves-light">Add</button>
-            </div>
+            </form>
         </div>
     </div>
 </div><!-- /.modal -->

@@ -1,37 +1,67 @@
 /**
- * Submit Client INFO
+ * Reset form Data
  */
 $(document).ready(function() {
     $('#add-agent-modal').on('hidden.bs.modal', function(e) {
         $(this).find('#submitAgent')[0].reset();
     });
+    $('#add-customer-modal').on('hidden.bs.modal', function(e) {
+        $(this).find('#submitCustomer')[0].reset();
+    });
 });
+
+/**
+ * Submit Agents Detail
+ */
 
 $("#submitAgent").submit(function(e) {
     e.preventDefault();
-    //var formData = $(this).serializeArray();
     var formData = new FormData(this);
-    console.log(formData);
+    AjaxSubmit(formData, 'POST', '/agent', '#add-agent-modal');
+});
+
+
+/**
+ * Submit Customers Detail
+ */
+
+$("#submitCustomer").submit(function(e) {
+    e.preventDefault();
+    var formData = new FormData(this);
+    AjaxSubmit(formData, 'POST', '/customer', '#add-customer-modal');
+});
+
+
+/**
+ * Call Ajax Method
+ */
+
+function AjaxSubmit(data, method, url, modal = false) {
     $.ajax({
-        method: "POST",
+        method: method,
         headers: {
             Accept: "application/json"
         },
-        url: "/agent",
-        data: formData,
+        url: url,
+        data: data,
         contentType: false,
         processData: false,
         success: function(response) {
             if (response.status == 'success') {
-                $("#add-agent-modal").modal('hide');
-                console.log('vince', $(".alert-success").attr('class'));
+                if (modal) {
+                    $(modal).modal('hide');
+                }
                 $(".alert-success").removeClass('d-none');
                 $(".alert-success").text(response.message);
+                setTimeout(function() {
+                    $(".alert-success").addClass('d-none');
+                }, 5000);
 
             } else {
                 $(".show_all_error.invalid-feedback").show();
                 $(".show_all_error.invalid-feedback").text(response.message);
             }
+            return response;
         },
         error: function(response) {
             if (response.status === 422) {
@@ -48,6 +78,7 @@ $("#submitAgent").submit(function(e) {
                 $(".show_all_error.invalid-feedback").show();
                 $(".show_all_error.invalid-feedback").text('Something went wrong, Please try Again.');
             }
+            return response;
         }
     });
-});
+}

@@ -6,6 +6,7 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Database\Schema\Builder;
 use Illuminate\Support\Facades\View;
 use App\Model\Team;
+use App\Model\Tag;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -32,6 +33,12 @@ class AppServiceProvider extends ServiceProvider
         {
             $teams = Team::select('id', 'name')->get();
             $view->with(["teams"=>$teams]);
+        });
+
+        View::composer('modals.add-customer', function($view)
+        {
+            $tags = Tag::select('id', 'name')->get();
+            $view->with(["tags"=>$tags]);
         });
     }
 }
