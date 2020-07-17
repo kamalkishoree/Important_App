@@ -6,7 +6,9 @@ use Illuminate\Http\Request;
 use App\Model\Client;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
-
+use Illuminate\Support\Facades\Config;
+use DB;
+use App\User;
 class ClientController extends Controller
 {
     /**
@@ -16,6 +18,18 @@ class ClientController extends Controller
      */
     public function index()
     {
+    //     $client = Client::first();
+    //     Config::set("database.connections.mysql2", [
+    //         "driver" => "mysql",
+    //         "port" => '3306',
+    //         "host" => $client->database_path,
+    //         "database" => $client->database_name,
+    //         "username" => $client->database_username,
+    //         "password" => $client->database_password
+    //     ]);
+    //     DB::purge('mysql2');
+    //    $user =  DB::connection('mysql2')->table('users')->select('email')->first();
+            
         $clients = Client::where('is_deleted', 0)->orderBy('created_at', 'DESC')->paginate(10);
         return view('client')->with(['clients' => $clients]);
     }
