@@ -33,6 +33,22 @@ $("#submitCustomer").submit(function(e) {
 
 
 /**
+ * Submit options
+ */
+
+$("#allow_feedback_tracking_url").change(function(e) {
+    e.preventDefault();
+    var formElement = document.getElementById("AllowFeedback");
+    var token = $('input[name="_token"]').attr('value');
+    var allow_url = $(this).is(':checked') ? 'y' : 'n';
+    var formData = new FormData();
+    formData.append('allow_feedback_tracking_url', allow_url);
+    formData.append('_token', token);
+    var clientId = $('#get_client_id').val();
+    AjaxSubmit(formData, 'POST', '/client_preference/' + clientId);
+});
+
+/**
  * Call Ajax Method
  */
 

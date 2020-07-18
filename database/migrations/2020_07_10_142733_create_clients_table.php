@@ -19,6 +19,9 @@ class CreateClientsTable extends Migration
             $table->string('email');
             $table->string('phone_number')->nullable();
             $table->string('password');
+            $table->string('country')->nullable();
+            $table->string('timezone')->nullable();
+            $table->string('custom_domain')->nullable();
             $table->char('is_deleted', 50)->default(0);
             $table->char('is_blocked', 50)->default(0);
             $table->string('database_path')->nullable();
@@ -29,6 +32,7 @@ class CreateClientsTable extends Migration
             $table->string('company_name')->nullable();
             $table->string('company_address')->nullable();
             $table->string('custom_domain')->nullable();
+
             $table->timestamps();
         });
     }

@@ -65,6 +65,12 @@
                     </a>
                 </li>
                 <li>
+                    <a href="{{route('tag.index')}}">
+                        <i data-feather="rss"></i>
+                        <span> Tags </span>
+                    </a>
+                </li>
+                <li>
                     <a href="{{url('geo-fence')}}">
                         <i data-feather="map"></i>
                         <span> Geo Fence </span>

@@ -4,11 +4,13 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Model\Client;
+use App\Model\ClientPreference;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Config;
 use DB;
 use App\User;
+use Illuminate\Support\Facades\Auth;
 class ClientController extends Controller
 {
     /**
@@ -191,11 +193,14 @@ class ClientController extends Controller
             'company_name' => $request->company_name,
             'company_address' => $request->company_address,
             'custom_domain' => $request->custom_domain,
+            'country' => $request->country ? $request->country : NULL,
+            'timezone' => $request->timezone ? $request->timezone : NULL,
             'logo' => $getFileName,
         ];
 
         $client = Client::where('id', $id)->update($data);
-        return redirect()->route('client.index')->with('success', 'Client Updated successfully!');
+        return redirect()->back()->with('success', 'Client Updated successfully!');
+        //return redirect()->route('client.index')->with('success', 'Client Updated successfully!');
     }
 
     /**
@@ -208,5 +213,50 @@ class ClientController extends Controller
     {
         $getClient = Client::where('id', $id)->update(['is_deleted' => 1]);
         return redirect()->back()->with('success', 'Client deleted successfully!');
+    }
+
+    /**
+     * Store/Update Client Preferences 
+    */
+    public function storePreference(Request $request, $id){
+        $updatePreference = ClientPreference::updateOrCreate([
+            'client_id' => $id
+        ],$request->all());
+
+        if($request->ajax()){
+            return response()->json([
+                'status'=>'success',
+                'message' => 'Preference updated successfully!',
+                'data' => $updatePreference
+            ]);
+        }
+        else{
+            return redirect()->back()->with('success', 'Preference updated successfully!');
+        }
+    }
+
+    /**
+     * Store/Update Client Preferences 
+    */
+    public function ShowPreference(){
+        $preference = Auth::user()->getPreference;
+        return view('customize')->with(['preference' => $preference]);
+    }
+
+
+    /**
+     * Show Configuration page 
+    */
+    public function ShowConfiguration(){
+        $preference = Auth::user()->getPreference;
+        return view('configure')->with(['preference' => $preference]);
+    }
+
+     /**
+     * Show Options page 
+    */
+    public function ShowOptions(){
+        $preference = Auth::user()->getPreference;
+        return view('options')->with(['preference' => $preference]);
     }
 }

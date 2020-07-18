@@ -14,20 +14,32 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+
+
+Auth::routes();
+Route::group(['middleware' => 'auth', 'prefix' => '/'], function () {
 Route::get('', function(){
 	return view('dashboard');
 })->name('index');
-
-Auth::routes();
 Route::resource('client', 'ClientController');
+Route::get('customize', 'ClientController@ShowPreference')->name('preference.show');
+Route::post('client_preference/{id}', 'ClientController@storePreference')->name('preference');
+Route::get('configure', 'ClientController@ShowConfiguration')->name('configure');
+Route::get('options', 'ClientController@ShowOptions')->name('options');
+
 Route::resource('agent', 'AgentController');
 Route::resource('customer', 'CustomerController');
+Route::resource('tag', 'TagController');
+Route::get('tag/{id}/{type}/edit', 'TagController@edit')->name('tag.edit');
+Route::delete('tag/{id}/{type}', 'TagController@destroy')->name('tag.destroy');
+Route::resource('auto-allocation', 'AllocationController');
 Route::get('{first}/{second}/{third}', 'RoutingController@thirdLevel')->name('third');
 Route::get('{first}/{second}', 'RoutingController@secondLevel')->name('second');
 Route::get('{any}', 'RoutingController@root')->name('any');
 
 /* Store Client Information */
 Route::post('submit_client', 'UserProfile@SaveRecord')->name('store_client');
+});
 
 
 
