@@ -275,6 +275,160 @@
                         </div>
                     </div>
 
+                    <h4 class="header-title">Allow Feedback on tracking Url</h4>
+                    <div class="row mb-2">
+                        <div class="col-sm-12">
+                            <div class="radio radio-info form-check-inline">
+                                <input type="radio" id="feedback1" value="y" name="allow_feedback_tracking_url"
+                                    {{ ($preference->allow_feedback_tracking_url =="y")? "checked" : "" }}>
+                                <label for="feedback1"> Yes </label>
+                            </div>
+                            <div class="radio form-check-inline">
+                                <input type="radio" id="feedback2" value="n" name="allow_feedback_tracking_url"
+                                    {{ ($preference->allow_feedback_tracking_url =="n")? "checked" : "" }}>
+                                <label for="feedback2"> No </label>
+                            </div>
+                            @if($errors->has('allow_feedback_tracking_url'))
+                            <span class="text-danger" role="alert">
+                                <strong>{{ $errors->first('allow_feedback_tracking_url') }}</strong>
+                            </span>
+                            @endif
+                        </div>
+
+                    </div>
+
+                    <div class="row mb-2">
+                        <div class="col-md-2">
+                            <div class="form-group mb-0 text-center">
+                                <button class="btn btn-primary btn-block" type="submit"> Update </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <form method="POST" action="{{route('preference', Auth::user()->id)}}">
+        @csrf
+        <div class="row">
+            <div class="col-xl-11 col-md-offset-1">
+                <div class="card-box">
+                    <h4 class="header-title">Map Type</h4>
+                    <p class="sub-header">
+                        Select the map type.
+                    </p>
+                    <div class="row mb-2">
+
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label for="map_type">Map Type</label>
+                                <select class="form-control" id="map_type" name="map_type">
+                                    <option value="">Select Map Type</option>
+                                    <option value="google" {{ ($preference->map_type =="google")? "selected" : "" }}>
+                                        Google</option>
+                                    <option value="mapbox" {{ ($preference->map_type =="mapbox")? "selected" : "" }}>
+                                        Mapbox</option>
+                                </select>
+                                @if($errors->has('map_type'))
+                                <span class="text-danger" role="alert">
+                                    <strong>{{ $errors->first('map_type') }}</strong>
+                                </span>
+                                @endif
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+
+                            <div class="form-group mb-3">
+                                <label for="map_key_1">Key</label>
+                                <input type="text" name="map_key_1" id="map_key_1" placeholder="e.g Key 1"
+                                    class="form-control" value="{{ old('map_key_1', $preference->map_key_1 ?? '')}}">
+                                @if($errors->has('map_key_1'))
+                                <span class="text-danger" role="alert">
+                                    <strong>{{ $errors->first('map_key_1') }}</strong>
+                                </span>
+                                @endif
+                            </div>
+
+                            <div class="form-group mb-3">
+                                <label for="map_key_2">Secret</label>
+                                <input type="text" name="map_key_2" id="map_key_2" placeholder="e.g Key 2"
+                                    class="form-control" value="{{ old('map_key_2', $preference->map_key_2 ?? '')}}">
+                                @if($errors->has('map_key_2'))
+                                <span class="text-danger" role="alert">
+                                    <strong>{{ $errors->first('map_key_2') }}</strong>
+                                </span>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-2">
+                        <div class="col-md-2">
+                            <div class="form-group mb-0 text-center">
+                                <button class="btn btn-primary btn-block" type="submit"> Update </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <form method="POST" action="{{route('preference', Auth::user()->id)}}">
+        @csrf
+        <div class="row">
+            <div class="col-xl-11 col-md-offset-1">
+                <div class="card-box">
+                    <h4 class="header-title">SMS Provider</h4>
+                    <p class="sub-header">
+                        Select the SMS provider.
+                    </p>
+                    <div class="row mb-2">
+
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label for="sms_provider">Sms Provider</label>
+                                <select class="form-control" id="sms_provider" name="sms_provider">
+                                    <option value="">Select Sms Provider</option>
+                                    <option value="twillio" {{ ($preference->sms_provider =="twillio")? "selected" : "" }}>
+                                        Twilio</option>
+                                    <option value="exotel" {{ ($preference->sms_provider =="exotel")? "selected" : "" }}>
+                                        Exotel</option>
+                                </select>
+                                @if($errors->has('sms_provider'))
+                                <span class="text-danger" role="alert">
+                                    <strong>{{ $errors->first('sms_provider') }}</strong>
+                                </span>
+                                @endif
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+
+                            <div class="form-group mb-3">
+                                <label for="sms_provider_key_1">Key</label>
+                                <input type="text" name="sms_provider_key_1" id="sms_provider_key_1" placeholder="e.g Key 1"
+                                    class="form-control" value="{{ old('sms_provider_key_1', $preference->sms_provider_key_1 ?? '')}}">
+                                @if($errors->has('sms_provider_key_1'))
+                                <span class="text-danger" role="alert">
+                                    <strong>{{ $errors->first('sms_provider_key_1') }}</strong>
+                                </span>
+                                @endif
+                            </div>
+
+                            <div class="form-group mb-3">
+                                <label for="sms_provider_key_2">Secret</label>
+                                <input type="text" name="sms_provider_key_2" id="sms_provider_key_2" placeholder="e.g Key 2"
+                                    class="form-control" value="{{ old('sms_provider_key_2', $preference->sms_provider_key_2 ?? '')}}">
+                                @if($errors->has('sms_provider_key_2'))
+                                <span class="text-danger" role="alert">
+                                    <strong>{{ $errors->first('sms_provider_key_2') }}</strong>
+                                </span>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="row mb-2">
                         <div class="col-md-2">
                             <div class="form-group mb-0 text-center">
@@ -291,4 +445,5 @@
 @endsection
 
 @section('script')
+
 @endsection

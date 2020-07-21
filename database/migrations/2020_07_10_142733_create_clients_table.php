@@ -31,7 +31,6 @@ class CreateClientsTable extends Migration
             $table->string('logo')->nullable();
             $table->string('company_name')->nullable();
             $table->string('company_address')->nullable();
-            $table->string('custom_domain')->nullable();
 
             $table->timestamps();
         });
