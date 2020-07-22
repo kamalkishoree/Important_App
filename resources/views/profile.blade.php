@@ -270,18 +270,16 @@
                             <div class="col-md-6">
                                 <div class="form-group mb-3" id="countryInput">
                                     <label for="country">COUNTRY</label>
-                                    <input type="text" class="form-control" id="country" name="country"
-                                        value="{{ old('country', Auth::user()->country ?? '')}}" placeholder="Country">
                                     @if($errors->has('country'))
                                     <span class="text-danger" role="alert">
                                         <strong>{{ $errors->first('country') }}</strong>
                                     </span>
                                     @endif
-                                    <!-- <select class="form-control" id="country">
-                                        <option value="india">India</option>
-                                        <option value="india">Australia</option>
-                                        <option value="india">Dubai</option>
-                                    </select> -->
+                                    <select class="form-control" id="country" name="country"  value="{{ old('country', Auth::user()->country ?? '')}}" placeholder="Country">
+                                        @foreach($countries as $code=>$country)
+                                        <option value="{{ $country['name'] }}" @if(Auth::user()->country == $country['name']) selected @endif>{{ $country['native_name'] }}</option>
+                                        @endforeach
+                                    </select>
                                     <span class="invalid-feedback" role="alert">
                                         <strong></strong>
                                     </span>
@@ -290,18 +288,16 @@
                             <div class="col-md-6">
                                 <div class="form-group mb-3" id="timezoneInput">
                                     <label for="timezone">TIMEZONE</label>
-                                    <input type="text" class="form-control" id="timezone" name="timezone"
-                                        value="{{ old('timezone', Auth::user()->timezone ?? '')}}"
-                                        placeholder="Timezone">
                                     @if($errors->has('timezone'))
                                     <span class="text-danger" role="alert">
                                         <strong>{{ $errors->first('timezone') }}</strong>
                                     </span>
                                     @endif
-                                    <!-- <select class="form-control" id="timezone">
-                                        <option value="Asia/Calcutta">(GMT+5:30) Asia/Calcutta</option>
-
-                                    </select> -->
+                                    <select class="form-control" id="timezone" name="timezone"  value="{{ old('timezone', Auth::user()->timezone ?? '')}}" placeholder="Timezone">
+                                        @foreach($tzlist as $tz)
+                                        <option value="{{ $tz }}" @if(Auth::user()->timezone == $tz) selected @endif>{{ $tz }}</option>
+                                        @endforeach
+                                    </select>
                                     <span class="invalid-feedback" role="alert">
                                         <strong></strong>
                                     </span>

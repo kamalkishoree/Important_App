@@ -45,9 +45,9 @@
                                     <option value="google_maps"
                                         {{ (isset($preference) && $preference->map_type =="google_maps")? "selected" : "" }}>
                                         Google Maps</option>
-                                    <option value="other"
-                                        {{ (isset($preference) && $preference->map_type =="other")? "selected" : "" }}>
-                                        Other</option>
+                                    <option value="mapbox"
+                                        {{ (isset($preference) && $preference->map_type =="mapbox")? "selected" : "" }}>
+                                        Mapbox</option>
                                 </select>
                                 @if($errors->has('map_type'))
                                 <span class="text-danger" role="alert">
@@ -142,6 +142,20 @@
                                 @if($errors->has('sms_provider_key_1'))
                                 <span class="text-danger" role="alert">
                                     <strong>{{ $errors->first('sms_provider_key_1') }}</strong>
+                                </span>
+                                @endif
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label for="sms_provider_key_2">API Secret</label>
+                                <input type="text" name="sms_provider_key_2" id="sms_provider_key_2"
+                                    placeholder="asdada324234fd32" class="form-control"
+                                    value="{{ old('sms_provider_key_2', $preference->sms_provider_key_2 ?? '')}}">
+                                @if($errors->has('sms_provider_key_2'))
+                                <span class="text-danger" role="alert">
+                                    <strong>{{ $errors->first('sms_provider_key_2') }}</strong>
                                 </span>
                                 @endif
                             </div>
