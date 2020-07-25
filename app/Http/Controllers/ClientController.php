@@ -219,6 +219,17 @@ class ClientController extends Controller
      * Store/Update Client Preferences 
     */
     public function storePreference(Request $request, $id){
+
+        //update the client custom_domain if value is set //
+        if($request->domain_name == 'custom_domain'){
+            // check the availability of the domain //
+            $exists = Client::where('id','<>',$id)->where('custom_domain',$request->custom_domain_name)->count();
+            if($exists){
+                return redirect()->back()->withErrors(new \Illuminate\Support\MessageBag(['domain_name'=>'Domain name "'.$request->custom_domain_name.'" is not available. Please select a different domain']));
+            }
+            Client::where('id',$id)->update(['custom_domain'=>$request->custom_domain_name]);
+        }
+
         $updatePreference = ClientPreference::updateOrCreate([
             'client_id' => $id
         ],$request->all());
@@ -249,7 +260,8 @@ class ClientController extends Controller
     */
     public function ShowConfiguration(){
         $preference = Auth::user()->getPreference;
-        return view('configure')->with(['preference' => $preference]);
+        $client = Auth::user();
+        return view('configure')->with(['preference' => $preference,'client'=>$client]);
     }
 
      /**

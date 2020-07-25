@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use DateTimeZone;
 class RoutingController extends Controller
 {
 
@@ -32,11 +31,8 @@ class RoutingController extends Controller
      */
     public function root($first)
     {   
-        $countries = countries();
-        $tzlist = DateTimeZone::listIdentifiers(DateTimeZone::ALL);
-
         if ($first != 'assets')
-            return view($first)->with(['countries'=> $countries,'tzlist'=>$tzlist ]);
+            return view($first);
         return view('index');
     }
 

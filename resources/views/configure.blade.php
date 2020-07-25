@@ -259,7 +259,7 @@
                                         class="custom-control-input"
                                         {{ (isset($preference) && $preference->domain_name =="domain")? "checked" : "" }}>
                                     <label class="custom-control-label font-16 font-weight-bold"
-                                        for="domain_type_1">abcdeliveries.royodispatcher.com</label>
+                                        for="domain_type_1">{{ $client->custom_domain }}</label>
                                 </div>
                                 <p class="mb-0 pl-3 pt-1">Published </p>
                             </div>
@@ -272,8 +272,14 @@
                                     <label class="custom-control-label font-16 font-weight-bold"
                                         for="domain_type_2">Custom
                                         Domain</label>
+                                    @if($preference->domain_name == 'custom_domain')
+                                    <p class="mb-0 pl-3 pt-1">{{ $client->custom_domain }}</p>
+                                    @endif
                                 </div>
-                                <p class="mb-0 pl-3 pt-1"><a href="javascript:;">Click here</a> to add custom domain</p>
+                                <div class="custom-control">
+                                    <input type="text" name="custom_domain_name" id="custom_domain_name" value="" style="display:none;">
+                                </div>
+                                <p class="mb-0 pl-3 pt-1"><a href="javascript: toggleDisplayCustomDomain();">Click here</a> to add custom domain</p>
                             </div>
 
                             @if($errors->has('domain_name'))
@@ -323,7 +329,7 @@
                             <div class="form-group mb-3">
                                 <label for="personal_access_token_v2" class="row">
                                     <span class="col-md-6">V2 API KEYS</span>
-                                    <span class="text-right col-md-6"><a href="javascript:;">Generate Key</a></span>
+                                    <span class="text-right col-md-6"><a href="javascript: genrateKeyAndToken();">Generate Key</a></span>
                                 </label>
                                 <input type="text" name="personal_access_token_v2" id="personal_access_token_v2"
                                     placeholder="No API key found.." class="form-control"
@@ -353,4 +359,32 @@
 @endsection
 
 @section('script')
+
+<script type="text/javascript">
+function toggleDisplayCustomDomain(){
+    $("#custom_domain_name").toggle( 'fast', function(){ 
+
+    });
+}
+
+function generateRandomString(length) {
+  var text = "";
+  var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+   
+  for (var i = 0; i < length; i++)
+    text += possible.charAt(Math.floor(Math.random() * possible.length));
+   
+  return text;
+}
+
+function genrateKeyAndToken(){
+    var key = generateRandomString(30);
+    var token = generateRandomString(60);
+
+    $('#personal_access_token_v1').val(key);
+    $('#personal_access_token_v2').val(token);
+}
+
+</script>
+
 @endsection

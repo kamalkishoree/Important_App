@@ -33,6 +33,8 @@ Route::resource('tag', 'TagController');
 Route::get('tag/{id}/{type}/edit', 'TagController@edit')->name('tag.edit');
 Route::delete('tag/{id}/{type}', 'TagController@destroy')->name('tag.destroy');
 Route::resource('auto-allocation', 'AllocationController');
+Route::resource('profile', 'ProfileController');
+
 Route::get('{first}/{second}/{third}', 'RoutingController@thirdLevel')->name('third');
 Route::get('{first}/{second}', 'RoutingController@secondLevel')->name('second');
 Route::get('{any}', 'RoutingController@root')->name('any');
