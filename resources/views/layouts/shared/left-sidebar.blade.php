@@ -71,6 +71,12 @@
                     </a>
                 </li>
                 <li>
+                    <a href="{{url('team')}}">
+                        <i data-feather="users"></i>
+                        <span> Teams </span>
+                    </a>
+                </li>
+                <li>
                     <a href="{{url('geo-fence')}}">
                         <i data-feather="map"></i>
                         <span> Geo Fence </span>

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Model\Agent;
+use App\Model\Team;
 
 class AgentController extends Controller
 {
@@ -15,7 +16,8 @@ class AgentController extends Controller
      */
     public function index()
     {
-        //
+        $agents = Agent::orderBy('created_at', 'DESC')->paginate(10);
+        return view('agent')->with(['agents' => $agents]);
     }
 
     /**

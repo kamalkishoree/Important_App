@@ -34,6 +34,8 @@ Route::get('tag/{id}/{type}/edit', 'TagController@edit')->name('tag.edit');
 Route::delete('tag/{id}/{type}', 'TagController@destroy')->name('tag.destroy');
 Route::resource('auto-allocation', 'AllocationController');
 Route::resource('profile', 'ProfileController');
+Route::resource('geo-fence', 'GeoFenceController');
+Route::resource('team', 'TeamController');
 
 Route::get('{first}/{second}/{third}', 'RoutingController@thirdLevel')->name('third');
 Route::get('{first}/{second}', 'RoutingController@secondLevel')->name('second');
