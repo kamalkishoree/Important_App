@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Model\Agent;
+use App\Model\Team;
 
 class TeamController extends Controller
 {
@@ -15,7 +16,8 @@ class TeamController extends Controller
     public function index()
     {
         $agents = Agent::with(['team.manager'])->orderBy('created_at', 'DESC')->paginate(10);
-        return view('team')->with(['agents' => $agents]);
+        $teams  = Team::with(['manager','tags','agents'])->orderBy('created_at','DESC')->paginate(10);
+        return view('team')->with(['agents' => $agents,'teams'=>$teams]);
     }
 
     /**
