@@ -38,7 +38,7 @@
                         </thead>
                         <tbody>
                             @foreach($teams as $team)
-                            <tr>
+                            <tr class="team-list-1" data-id="{{ $team->id }}">
                                 <td>
                                     <h5 class="m-0 font-weight-normal">{{ $team->name }}</h5>
                                 </td>
@@ -60,8 +60,8 @@
             </div> <!-- end card-box-->
         </div>
 
-        @foreach($teams as $team)
-        <div class="col-xl-4" id="team_detail_{{ $team->id}}">
+        @foreach($teams as $index=>$team)
+        <div class="col-xl-4 team-details" id="team_detail_{{ $team->id}}" @if($index!=0) style="display:none;"  @endif>
             <div class="card-box">
 
                 <h4 class="header-title mb-3">Team Deatail</h4>
@@ -89,18 +89,14 @@
                         @foreach($team->tags as $tag)
                         <a href="#" class="badge badge-soft-primary mr-1">{{ $tag->name }}</a>
                         @endforeach
-                        <a href="#" class="badge badge-soft-primary mr-1">Tag1</a>
-                        <a href="#" class="badge badge-soft-primary mr-1">Tag2</a>
-                        <a href="#" class="badge badge-soft-primary mr-1">Tag3</a>
-                        <a href="#" class="badge badge-soft-primary mr-1">Tag4</a>
                     </div>
                 </div>
             </div> <!-- end card-box-->
         </div>
         @endforeach
 
-
-        <div class="col-xl-4">
+        @foreach($teams as $index=>$team)
+        <div class="col-xl-4 team-agent-list" id="team_agents_{{ $team->id}}" @if($index!=0) style="display:none;"  @endif>
             <div class="card-box">
                 <div class="dropdown float-right">
                     <a href="#" class="dropdown-toggle arrow-none card-drop" data-toggle="dropdown" aria-expanded="false">
@@ -116,7 +112,7 @@
                     </div>
                 </div>
 
-                <h4 class="header-title mb-3">Team Deatail</h4>
+                <h4 class="header-title mb-3">Agents</h4>
 
                 <div class="table-responsive">
                     <table class="table table-borderless table-nowrap table-hover table-centered m-0">
@@ -129,14 +125,14 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($teams as $team)
+                            @foreach($team->agents as $agent)
                             <tr>
                                 <td>
-                                    <h5 class="m-0 font-weight-normal">{{ $team->name }}</h5>
+                                    <h5 class="m-0 font-weight-normal">{{ $agent->name }}</h5>
                                 </td>
 
                                 <td>
-                                    {{ $team->manager ? $team->manager->name : '' }}
+                                    {{ $agent->manager ? $agent->manager->name : '' }}
                                 </td>
 
 
@@ -150,7 +146,8 @@
                     </table>
                 </div> <!-- end .table-responsive-->
             </div> <!-- end card-box-->
-        </div>    
+        </div>
+        @endforeach    
     </div>
 </div>
 
@@ -226,5 +223,15 @@
 @endsection
 
 @section('script')
+<script>
+$( ".team-list-1" ).click(function() {
+  var data_id = $(this).attr('data-id');
+  $(".team-details").hide();
+  $("#team_detail_"+data_id).show();
 
+  $(".team-agent-list").hide();
+  $("#team_agents_"+data_id).show();
+});
+
+</script>
 @endsection
