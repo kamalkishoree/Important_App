@@ -1,10 +1,19 @@
 @extends('layouts.vertical', ['title' => 'Geo Fence'])
 
 @section('css')
+<link href="{{asset('assets/libs/select2/select2.min.css')}}" rel="stylesheet" type="text/css" />
+<link href="{{asset('assets/libs/bootstrap-select/bootstrap-select.min.css')}}" rel="stylesheet" type="text/css" />
+<link href="{{asset('assets/libs/flatpickr/flatpickr.min.css')}}" rel="stylesheet" type="text/css" />
 
+
+<!-- for File Upload -->
+
+<link href="{{asset('assets/libs/dropzone/dropzone.min.css')}}" rel="stylesheet" type="text/css" />
+<link href="{{asset('assets/libs/dropify/dropify.min.css')}}" rel="stylesheet" type="text/css" />
 @endsection
 
 @section('content')
+@include('modals.add-team')
 <div class="container-fluid">
     <div class="row">
         <div class="col-xl-4">
@@ -24,7 +33,8 @@
                 </div>
 
                 <h4 class="header-title mb-3">Teams </h4>
-                <button type="button" class="btn btn-danger waves-effect waves-light" data-toggle="modal" data-target="#custom-modal"><i class="mdi mdi-plus-circle mr-1"></i> Add Team</button>
+                <button type="button" class="btn btn-danger waves-effect waves-light" data-toggle="modal"
+                        data-target="#add-team-modal" data-backdrop="static" data-keyboard="false"><i class="mdi mdi-plus-circle mr-1"></i> Add Team</button>
 
                 <div class="table-responsive">
                     <table class="table table-borderless table-nowrap table-hover table-centered m-0">
@@ -232,6 +242,21 @@ $( ".team-list-1" ).click(function() {
   $(".team-agent-list").hide();
   $("#team_agents_"+data_id).show();
 });
-
 </script>
+<!-- Plugins js-->
+<script src="{{asset('assets/libs/select2/select2.min.js')}}"></script>
+<script src="{{asset('assets/libs/bootstrap-select/bootstrap-select.min.js')}}"></script>
+<!-- Page js-->
+<script src="{{asset('assets/js/pages/form-advanced.init.js')}}"></script>
+<script src="{{asset('assets/js/pages/form-pickers.init.js')}}"></script>
+
+<script src="{{asset('assets/js/storeTeam.js')}}"></script>
+
+<!-- for File Upload -->
+<script src="{{asset('assets/libs/dropzone/dropzone.min.js')}}"></script>
+<script src="{{asset('assets/libs/dropify/dropify.min.js')}}"></script>
+<!-- Page js-->
+<script src="{{asset('assets/js/pages/form-fileuploads.init.js')}}"></script>
+
+
 @endsection

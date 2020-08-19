@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Model\Agent;
 use App\Model\Team;
+use App\Model\TeamTag;
+use App\Model\Tag;
 
 class TeamController extends Controller
 {
@@ -17,7 +19,8 @@ class TeamController extends Controller
     {
         $agents = Agent::with(['team.manager'])->orderBy('created_at', 'DESC')->paginate(10);
         $teams  = Team::with(['manager','tags','agents'])->orderBy('created_at','DESC')->paginate(10);
-        return view('team')->with(['agents' => $agents,'teams'=>$teams]);
+        $tags   = Tag::all();
+        return view('team')->with(['agents' => $agents,'teams'=>$teams,'tags'=>$tags]);
     }
 
     /**
@@ -38,7 +41,7 @@ class TeamController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        dd($request->all());
     }
 
     /**

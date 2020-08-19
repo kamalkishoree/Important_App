@@ -43,6 +43,8 @@ Route::get('{any}', 'RoutingController@root')->name('any');
 
 /* Store Client Information */
 Route::post('submit_client', 'UserProfile@SaveRecord')->name('store_client');
+
+
 });
 
 
