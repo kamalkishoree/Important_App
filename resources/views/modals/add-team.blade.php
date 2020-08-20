@@ -33,23 +33,23 @@
 
                     <div class="row">
                         <div class="col-md-6">
-                            <div class="form-group" id="location_accuracyInput">
-                                <label for="location_accuracy" class="control-label">Location Accuracy</label>
-                                <input type="number" class="form-control" name="location_accuracy" id="location_accuracy"
-                                    >
-                                <span class="invalid-feedback" role="alert">
-                                    <strong></strong>
-                                </span>
+                            <div class="form-group mb-3" id="location_accuracyInput">
+                                <label for="location_accuracy">Location Accuracy</label>
+                                <select class="form-control" id="location_accuracy" name="location_accuracy">
+                                    @foreach($location_accuracy as $k=>$la)
+                                    <option value="{{ $k }}">{{ $la }}</option>
+                                    @endforeach
+                                </select>
                             </div>
                         </div>
                         <div class="col-md-6">
-                            <div class="form-group" id="location_frequencyInput">
-                                <label for="location_frequency" class="control-label">Location Frequency</label>
-                                <input type="number" class="form-control" name="location_frequency" id="location_frequency"
-                                    >
-                                <span class="invalid-feedback" role="alert">
-                                    <strong></strong>
-                                </span>
+                            <div class="form-group mb-3" id="location_frequencyInput">
+                                <label for="location_frequency">Location Frequency</label>
+                                <select class="form-control" id="location_frequency" name="location_frequency">
+                                    @foreach($location_frequency as $k=>$lf)
+                                    <option value="{{ $k }}">{{ $lf }}</option>
+                                    @endforeach
+                                </select>
                             </div>
                         </div>
                     </div>

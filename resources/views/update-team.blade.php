@@ -59,7 +59,7 @@
                                         <label for="team-manager">Manager</label>
                                         <select class="form-control" id="team-manager" name="manager_id">
                                             @foreach($agents as $agent)
-                                            <option value="{{ $agent->id }}" @if($agent->id == $team->manager_id) "selected" @endif >{{ $agent->name }}</option>
+                                            <option value="{{ $agent->id }}" @if($agent->id == $team->manager_id) selected @endif >{{ $agent->name }}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -70,8 +70,11 @@
                                 <div class="col-md-6">
                                     <div class="form-group" id="location_accuracyInput">
                                         <label for="location_accuracy" class="control-label">Location Accuracy</label>
-                                        <input type="number" class="form-control" name="location_accuracy" id="location_accuracy"
-                                            value="{{ old('location_accuracy', $team->location_accuracy ?? '')}}">
+                                        <select class="form-control" id="location_accuracy" name="location_accuracy">
+                                            @foreach($location_accuracy as $k=>$la)
+                                            <option value="{{ $k }}" @if($team->location_accuracy == $k) selected @endif>{{ $la }}</option>
+                                            @endforeach
+                                        </select>
                                         @if($errors->has('location_accuracy'))
                                         <span class="text-danger" role="alert">
                                             <strong>{{ $errors->first('location_accuracy') }}</strong>
@@ -82,8 +85,11 @@
                                 <div class="col-md-6">
                                     <div class="form-group" id="location_frequencyInput">
                                         <label for="location_frequency" class="control-label">Location Frequency</label>
-                                        <input type="number" class="form-control" name="location_frequency" id="location_frequency"
-                                           value="{{ old('location_frequency', $team->location_frequency ?? '')}}" >
+                                        <select class="form-control" id="location_frequency" name="location_frequency">
+                                            @foreach($location_frequency as $k=>$lf)
+                                            <option value="{{ $k }}" @if($team->location_frequency == $k) selected @endif>{{ $lf }}</option>
+                                            @endforeach
+                                        </select>
                                         @if($errors->has('location_frequency'))
                                         <span class="text-danger" role="alert">
                                             <strong>{{ $errors->first('location_frequency') }}</strong>

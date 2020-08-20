@@ -8,9 +8,22 @@ use App\Model\Agent;
 use App\Model\Team;
 use App\Model\TeamTag;
 use App\Model\Tag;
+use App\Model\TagsForTeam;
 
 class TeamController extends Controller
 {
+    protected $location_accuracy = [
+        '1' => 'Level 1',
+        '2' => 'Level 2',
+        '3' => 'Level 3'
+    ];
+
+    protected $location_frequency = [
+        '1' => '1 Minute',
+        '5' => '5 Minutes',
+        '15'=> '15 Minutes'
+    ];
+
     /**
      * Display a listing of the resource.
      *
@@ -20,8 +33,13 @@ class TeamController extends Controller
     {
         $agents = Agent::with(['team.manager'])->orderBy('created_at', 'DESC')->paginate(10);
         $teams  = Team::with(['manager','tags','agents'])->where('client_id',auth()->user()->id)->orderBy('created_at','DESC')->paginate(10);
-        $tags   = Tag::all();
-        return view('team')->with(['agents' => $agents,'teams'=>$teams,'tags'=>$tags]);
+        $tags   = TagsForTeam::all();
+        return view('team')->with([
+            'agents' => $agents,
+            'teams'=>$teams,
+            'tags'=>$tags,
+            'location_accuracy'=>$this->location_accuracy,
+            'location_frequency'=>$this->location_frequency]);
     }
 
     /**
@@ -92,14 +110,20 @@ class TeamController extends Controller
     {
         $team = Team::with(['manager','tags'])->where('id',$id)->first();
         $agents = Agent::all();
-        $tags  = Tag::all();
+        $tags  = TagsForTeam::all();
 
         $teamTagIds = [];
         foreach($team->tags as $tag)
         {
             $teamTagIds[] = $tag->id;
         } 
-        return view('update-team')->with(['team'=>$team,'tags'=>$tags,'agents'=>$agents,'teamTagIds'=>$teamTagIds]);
+        return view('update-team')->with([
+            'team'=>$team,
+            'tags'=>$tags,
+            'agents'=>$agents,
+            'teamTagIds'=>$teamTagIds,
+            'location_accuracy'=>$this->location_accuracy,
+            'location_frequency'=>$this->location_frequency]);
     }
 
 

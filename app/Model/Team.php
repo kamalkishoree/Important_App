@@ -28,7 +28,7 @@ class Team extends Model
     }
 
     public function tags(){
-        return $this->belongsToMany('App\Model\Tag', 'team_tags');
+        return $this->belongsToMany('App\Model\TagsForTeam', 'team_tags','team_id','tag_id');
     }
 
     public function agents(){
