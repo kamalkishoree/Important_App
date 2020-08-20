@@ -114,7 +114,30 @@ class AgentController extends Controller
      */
     public function edit($id)
     {
-        //
+        $agent = Agent::find($id);
+        $teams = Team::where('client_id',auth()->user()->id)->get();
+        return view('update-agent')->with([
+            'agent' => $agent,
+            'teams' => $teams
+        ]);
+    }
+
+    /**
+     * Validation method for agent Update 
+    */
+    protected function updateValidator(array $data)
+    {
+        return Validator::make($data, [
+            'name' => ['required', 'string', 'max:255'],
+            'team_id' => ['required'],
+            'type' => ['required'],
+            'vehicle_type_id' => ['required'],
+            'make_model' => ['required'],
+            'plate_number' => ['required'],
+            'phone_number' => ['required'],
+            'color' => ['required'],
+            'profile_picture' => ['mimes:jpeg,png,jpg,gif,svg|max:2048'],
+        ]);
     }
 
     /**
@@ -126,7 +149,37 @@ class AgentController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $validator = $this->updateValidator($request->all())->validate();
+
+        $getAgent = Agent::find($id);
+        $getFileName = $getAgent->profile_picture;
+
+        if($request->hasFile('profile_picture')) {
+            $file = $request->file('profile_picture');
+            $filenameWithExt = $request->file('profile_picture')->getClientOriginalName();
+            $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME); 
+            $fileNameToStore = $filename.'_'.time().'.'.$file->getClientOriginalExtension();  
+            $file->move(public_path().'/agents',$fileNameToStore);
+            $getFileName = $fileNameToStore;
+        }
+
+        $data = [
+            'name' => $request->name,
+            'team_id' => $request->team_id,
+            'type' => $request->type,
+            'vehicle_type_id' => $request->vehicle_type_id,
+            'make_model' => $request->make_model,
+            'type' => $request->type,
+            'vehicle_type_id' => $request->vehicle_type_id,
+            'make_model' => $request->make_model,
+            'plate_number' => $request->plate_number,
+            'phone_number' => $request->phone_number,
+            'color' => $request->color,
+            'profile_picture' => $getFileName
+        ];
+        
+        $agent = Agent::where('id', $id)->update($data);
+        return redirect()->back()->with('success', 'Agent Updated successfully!');
     }
 
     /**
