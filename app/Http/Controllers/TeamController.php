@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 use App\Model\Agent;
 use App\Model\Team;
 use App\Model\TeamTag;
@@ -18,7 +19,7 @@ class TeamController extends Controller
     public function index()
     {
         $agents = Agent::with(['team.manager'])->orderBy('created_at', 'DESC')->paginate(10);
-        $teams  = Team::with(['manager','tags','agents'])->orderBy('created_at','DESC')->paginate(10);
+        $teams  = Team::with(['manager','tags','agents'])->where('client_id',auth()->user()->id)->orderBy('created_at','DESC')->paginate(10);
         $tags   = Tag::all();
         return view('team')->with(['agents' => $agents,'teams'=>$teams,'tags'=>$tags]);
     }
@@ -34,6 +35,19 @@ class TeamController extends Controller
     }
 
     /**
+     * Validation method for teams data 
+    */
+    protected function validator(array $data)
+    {
+        return Validator::make($data, [
+            'name' => ['required', 'string', 'max:255'],
+            'manager_id' => ['required'],
+            'location_accuracy' => ['required'],
+            'location_frequency' => ['required']
+        ]);
+    }
+
+    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -41,7 +55,20 @@ class TeamController extends Controller
      */
     public function store(Request $request)
     {
-        dd($request->all());
+        $validator = $this->validator($request->all())->validate();
+
+        $data = [
+            'name'          => $request->name,
+            'manager_id'    => $request->manager_id,
+            'client_id'     => auth()->user()->id,
+            'location_accuracy'=> $request->location_accuracy,
+            'location_frequency'=>$request->location_frequency    
+        ];
+
+        $team = Team::create($data);
+        $team->tags()->sync($request->tags);
+
+        return redirect()->back();
     }
 
     /**
@@ -63,7 +90,31 @@ class TeamController extends Controller
      */
     public function edit($id)
     {
-        //
+        $team = Team::with(['manager','tags'])->where('id',$id)->first();
+        $agents = Agent::all();
+        $tags  = Tag::all();
+
+        $teamTagIds = [];
+        foreach($team->tags as $tag)
+        {
+            $teamTagIds[] = $tag->id;
+        } 
+        return view('update-team')->with(['team'=>$team,'tags'=>$tags,'agents'=>$agents,'teamTagIds'=>$teamTagIds]);
+    }
+
+
+    /**
+     * Validation method for team Update 
+    */
+    protected function updateValidator(array $data)
+    {
+        return Validator::make($data, [
+            'name' => ['required', 'string', 'max:255'],
+            'manager_id' => ['required'],
+            'location_accuracy' => ['required'],
+            'location_frequency' => ['required']
+        ]);
+
     }
 
     /**
@@ -75,7 +126,21 @@ class TeamController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $validator = $this->updateValidator($request->all())->validate();
+
+        $getTeam = Team::find($id);
+        
+        $data = [
+            'name'          => $request->name,
+            'manager_id'    => $request->manager_id,
+            'client_id'     => auth()->user()->id,
+            'location_accuracy'=> $request->location_accuracy,
+            'location_frequency'=>$request->location_frequency    
+        ];
+
+        $getTeam->tags()->sync($request->tags);
+        $team = Team::where('id', $id)->update($data);
+        return redirect()->back()->with('success', 'Team Updated successfully!');
     }
 
     /**

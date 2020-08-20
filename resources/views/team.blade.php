@@ -59,7 +59,7 @@
 
 
                                 <td>
-                                    <a href="javascript: void(0);" class="btn btn-xs btn-light"><i class="mdi mdi-pencil"></i></a>
+                                    <a href="{{route('team.edit', $team->id)}}" class="btn btn-xs btn-light"><i class="mdi mdi-pencil"></i></a>
                                 </td>
                             </tr>
                             @endforeach
@@ -100,6 +100,11 @@
                         <a href="#" class="badge badge-soft-primary mr-1">{{ $tag->name }}</a>
                         @endforeach
                     </div>
+                </div>
+
+                <div>
+                    <a href="{{route('team.edit', $team->id)}}" class="action-icon"> <i
+                                                class="mdi mdi-square-edit-outline"></i></a>
                 </div>
             </div> <!-- end card-box-->
         </div>
@@ -243,7 +248,9 @@ $( ".team-list-1" ).click(function() {
   $("#team_agents_"+data_id).show();
 });
 </script>
+
 <!-- Plugins js-->
+<script src="{{asset('assets/libs/flatpickr/flatpickr.min.js')}}"></script>
 <script src="{{asset('assets/libs/select2/select2.min.js')}}"></script>
 <script src="{{asset('assets/libs/bootstrap-select/bootstrap-select.min.js')}}"></script>
 <!-- Page js-->

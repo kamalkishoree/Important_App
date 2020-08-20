@@ -6,7 +6,7 @@
                 <h4 class="modal-title">Add Team</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
             </div>
-            <form id="submitTeam">
+            <form id="" action="{{ route('team.store') }}" method="POST">
                 @csrf
                 <div class="modal-body p-4">
                     <div class="row">

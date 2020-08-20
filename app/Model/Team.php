@@ -6,8 +6,25 @@ use Illuminate\Database\Eloquent\Model;
 
 class Team extends Model
 {
-    public function manager(){
+    protected $fillable = [
+        'name',
+        'manager_id',
+        'client_id',
+        'location_accuracy',
+        'location_frequency'
+    ];
+
+    protected $attributes = [
+        'client_id'=> null
+    ];
+
+
+    public function client(){
         return $this->belongsTo('App\Model\Client');
+    }
+
+    public function manager(){
+        return $this->belongsTo('App\Model\Agent');
     }
 
     public function tags(){
