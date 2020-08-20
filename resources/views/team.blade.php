@@ -67,6 +67,7 @@
                         </tbody>
                     </table>
                 </div> <!-- end .table-responsive-->
+                <div>{{ $teams->links() }}</div>
             </div> <!-- end card-box-->
         </div>
 

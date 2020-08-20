@@ -9,6 +9,20 @@
 <link href="{{asset('assets/libs/bootstrap-select/bootstrap-select.min.css')}}" rel="stylesheet" type="text/css" />
 <link href="{{asset('assets/libs/bootstrap-touchspin/bootstrap-touchspin.min.css')}}" rel="stylesheet"
     type="text/css" />
+
+
+<!-- for File Upload -->
+
+<link href="{{asset('assets/libs/dropzone/dropzone.min.css')}}" rel="stylesheet" type="text/css" />
+<link href="{{asset('assets/libs/dropify/dropify.min.css')}}" rel="stylesheet" type="text/css" />
+<style>
+    #map-canvas {
+  height: 90%;
+  margin: 0px;
+  padding: 0px;
+  position: unset;
+}
+</style>
 @endsection
 
 @section('content')
@@ -48,8 +62,9 @@
                             <label>Team</label> <br />
                             <select id="selectize-select">
                                 <option data-display="Select">No Team Selected</option>
-                                <option value="1">Some option</option>
-                                <option value="4">Potato</option>
+                                @foreach($teams as $team)
+                                <option value="{{ $team->id }}">{{ $team->name }}</option>
+                                @endforeach
                             </select>
                         </div>
                         <div class="form-group mb-3">
@@ -63,15 +78,13 @@
 
                 <div class="row mb-2">
                     <div class="col-md-12">
-                        <div class="form-group mb-3">
+                        <div class="form-group mb-3 agent-selection">
                             <label>AGENT(S)</label>
-                            <select id="selectize-optgroup" multiple placeholder="Select Agents">
-                                <option value="">Select gear...</option>
-                                <option value="pitons">Kay Tolteben</option>
-                                <option value="cams">Marti Velecia</option>
-                                <option value="nuts">Roger</option>
-                                <option value="bolts">Garry</option>
-                                <option value="stoppers">Stoppers</option>
+                            <select class="form-control select2-multiple" data-toggle="select2" multiple="multiple"
+                                    data-placeholder="Choose ..." name="agents[]" id="agents">
+                                @foreach($agents as $agent)
+                                <option value="{{$agent->id}}" data-team-id={{ $agent->team_id }}>{{$agent->name}}</option>
+                                @endforeach
                             </select>
                         </div>
                     </div>
@@ -91,8 +104,9 @@
         </div>
         <div class="col-lg-7">
             <div class="card-box">
-                <h4 class="header-title mb-3">Basic</h4>
+                <h4 class="header-title mb-3">Polygon</h4>
                 <div id="gmaps-basic" class="gmaps"></div>
+                <!-- <div id="map-canvas"></div> -->
             </div>
         </div>
     </div>
@@ -101,13 +115,8 @@
 
 @section('script')
 <!-- google maps api -->
-<script src="https://maps.google.com/maps/api/js?key=AIzaSyDsucrEdmswqYrw0f6ej3bf4M4suDeRgNA"></script>
+<script src="https://maps.google.com/maps/api/js?key=AIzaSyB85kLYYOmuAhBUPd7odVmL6gnQsSGWU-4&v=3.exp&libraries=drawing"></script>
 
-<!-- Plugins js-->
-<script src="{{asset('assets/libs/gmaps/gmaps.min.js')}}"></script>
-
-<!-- Page js-->
-<script src="{{asset('assets/js/pages/google-maps.init.js')}}"></script>
 <!-- Plugins js-->
 <script src="{{asset('assets/libs/selectize/selectize.min.js')}}"></script>
 <script src="{{asset('assets/libs/mohithg-switchery/mohithg-switchery.min.js')}}"></script>
@@ -119,6 +128,125 @@
 <script src="{{asset('assets/libs/devbridge-autocomplete/devbridge-autocomplete.min.js')}}"></script>
 <script src="{{asset('assets/libs/jquery-mockjax/jquery-mockjax.min.js')}}"></script>
 
+<!-- Plugins js-->
+<script src="{{asset('assets/libs/flatpickr/flatpickr.min.js')}}"></script>
 <!-- Page js-->
 <script src="{{asset('assets/js/pages/form-advanced.init.js')}}"></script>
+<script src="{{asset('assets/js/pages/form-pickers.init.js')}}"></script>
+
+<script>
+    var map; // Global declaration of the map
+    var iw = new google.maps.InfoWindow(); // Global declaration of the infowindow
+    var lat_longs = new Array();
+    var markers = new Array();
+    var drawingManager;
+
+    function initialize() {
+
+      var myLatlng = new google.maps.LatLng(33.5362475, -111.9267386);
+      var myOptions = {
+        zoom: 13,
+        center: myLatlng,
+        mapTypeId: google.maps.MapTypeId.ROADMAP
+      }
+      map = new google.maps.Map($("#map-canvas"), myOptions);
+          
+
+      drawingManager = new google.maps.drawing.DrawingManager({
+        drawingMode: google.maps.drawing.OverlayType.POLYGON,
+        drawingControl: true,
+        drawingControlOptions: {
+          position: google.maps.ControlPosition.TOP_CENTER,
+          drawingModes: [google.maps.drawing.OverlayType.POLYGON]
+        },
+        polygonOptions: {
+          //editable: true,
+          //draggable: true
+          strokeColor: '#bb3733',
+          fillColor: '#bb3733',
+        }
+      });
+      drawingManager.setMap(map);
+
+      google.maps.event.addListener(drawingManager, "overlaycomplete", function(event) {
+        var newShape = event.overlay;
+        newShape.type = event.type;
+      });
+
+      google.maps.event.addListener(drawingManager, "overlaycomplete", function(event) {
+        overlayClickListener(event.overlay);
+        var vertices_val = $('#latlongs').val();
+        //var vertices_val = event.overlay.getPath().getArray();
+        console.log(vertices_val);
+        if(vertices_val == null || vertices_val === ''){
+          $('#latlongs').val(event.overlay.getPath().getArray()); 
+          console.log(map.getZoom());      
+          $('#zoom_level').val(map.getZoom());      
+        }else{
+          alert('You can draw only one zone at a time');
+          event.overlay.setMap(null);
+        }
+      });
+    }
+
+    function overlayClickListener(overlay) {
+      google.maps.event.addListener(overlay, "mouseup", function(event) {
+        $('#latlongs').val(overlay.getPath().getArray());
+      });
+    }
+    google.maps.event.addDomListener(window, 'load', initialize);
+    
+    function addLine() {
+        drawingManager.setMap(map);
+      }
+
+      function removeLine() {
+        //drawingManager.setMap(null);
+      }
+
+    $(function() {
+      $('#save').click(function() {
+        //iterate polygon latlongs?
+      });
+    });
+
+
+    // onteam change change the selected agents in the list //
+
+    $(function(){
+        $('#checkmeout0').change(function(){
+            if(this.checked){
+                $('.agent-selection select option').each(function () {
+                    $(this).attr('selected', true);
+                });
+            }else{
+                $('.agent-selection select option').each(function () {
+                    $(this).attr('selected', false);
+                });
+            }
+            $('#agents').trigger('change');
+        });
+    });
+
+    $(function(){
+        $('#selectize-select').change(function(){
+            var team_id = $(this).children("option:selected").val();
+            var team_array = [];
+            team_array.push(team_id);
+
+            $('.agent-selection select option').each(function () {
+                $(this).attr('selected', false);
+            });
+            $('.agent-selection select option').each(function () {
+                if($(this).attr('data-team-id') == team_array[0]){
+                    $(this).attr('selected', true);
+                }
+            },team_array);
+            $('#agents').trigger('change');
+        });
+    });
+
+    
+
+</script>
 @endsection
