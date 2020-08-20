@@ -106,7 +106,7 @@
                                         <select class="form-control select2-multiple" data-toggle="select2" multiple="multiple"
                                             data-placeholder="Choose ..." name="tags[]" id="tags">
                                             @foreach($tags as $tag)
-                                            <option value="{{$tag->id}}" @if(in_array($tag->id,$teamTagIds)) "selected" @endif>{{$tag->name}}</option>
+                                            <option value="{{$tag->id}}" @if(in_array($tag->id,$teamTagIds)) selected @endif>{{$tag->name}}</option>
                                             @endforeach
                                         </select>
                                         <span class="invalid-feedback" role="alert">
