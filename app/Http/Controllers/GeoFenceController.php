@@ -30,6 +30,12 @@ class GeoFenceController extends Controller
         ]);
     }
 
+    public function allList(){
+        $geos = Geo::orderBy('created_at', 'DESC')->paginate(10);
+        return view('geo-fence-list')->with(['geos' => $geos]);
+    }
+    
+
     /**
      * Show the form for creating a new resource.
      *

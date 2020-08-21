@@ -29,9 +29,14 @@
 <div class="container-fluid">
 
     <div class="row">
-        <div class="col-12">
+        <div class="col-6">
             <div class="page-title-box">
                 <h4 class="page-title">Settings</h4>
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="page-title-box">
+                <a href="{{route('geo.fence.list')}}"><h4 class="page-title">View All</h4></a>
             </div>
         </div>
     </div>
@@ -65,7 +70,7 @@
                         <div class="form-group mb-3">
                             <label>Team</label> <br />
                             <select id="selectize-select" name="team_id">
-                                <option data-display="Select">No Team Selected</option>
+                                <option data-display="Select" value="">No Team Selected</option>
                                 @foreach($teams as $team)
                                 <option value="{{ $team->id }}">{{ $team->name }}</option>
                                 @endforeach

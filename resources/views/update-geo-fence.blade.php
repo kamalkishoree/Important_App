@@ -29,9 +29,14 @@
 <div class="container-fluid">
 
     <div class="row">
-        <div class="col-12">
+        <div class="col-6">
             <div class="page-title-box">
                 <h4 class="page-title">Settings</h4>
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="page-title-box">
+                <a href="{{route('geo.fence.list')}}"><h4 class="page-title">View All</h4></a>
             </div>
         </div>
     </div>
