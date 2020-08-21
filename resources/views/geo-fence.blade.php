@@ -105,8 +105,8 @@
         <div class="col-lg-7">
             <div class="card-box">
                 <h4 class="header-title mb-3">Polygon</h4>
-                <div id="gmaps-basic" class="gmaps"></div>
-                <!-- <div id="map-canvas"></div> -->
+                <!-- <div id="gmaps-basic" class="gmaps"></div> -->
+                <div id="map-canvas"></div>
             </div>
         </div>
     </div>
@@ -132,7 +132,6 @@
 <script src="{{asset('assets/libs/flatpickr/flatpickr.min.js')}}"></script>
 <!-- Page js-->
 <script src="{{asset('assets/js/pages/form-advanced.init.js')}}"></script>
-<script src="{{asset('assets/js/pages/form-pickers.init.js')}}"></script>
 
 <script>
     var map; // Global declaration of the map
@@ -149,7 +148,7 @@
         center: myLatlng,
         mapTypeId: google.maps.MapTypeId.ROADMAP
       }
-      map = new google.maps.Map($("#map-canvas"), myOptions);
+      map = new google.maps.Map(document.getElementById("map-canvas"), myOptions);
           
 
       drawingManager = new google.maps.drawing.DrawingManager({
