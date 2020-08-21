@@ -36,6 +36,9 @@
         </div>
     </div>
 
+    <form id="" action="{{ route('geo-fence.store') }}" method="POST">
+    @csrf
+    <input type="hidden" name="latlongs" value="" id="latlongs" />
     <div class="row">
         <div class="col-lg-5">
             <div class="card-box">
@@ -52,7 +55,7 @@
                     <div class="col-md-12">
                         <div class="form-group mb-3">
                             <label for="Description">Description (Optional)</label>
-                            <textarea class="form-control" id="Description"></textarea>
+                            <textarea class="form-control" id="Description" name="description"></textarea>
                         </div>
                     </div>
                 </div>
@@ -60,7 +63,7 @@
                     <div class="col-md-12">
                         <div class="form-group mb-3">
                             <label>Team</label> <br />
-                            <select id="selectize-select">
+                            <select id="selectize-select" name="team_id">
                                 <option data-display="Select">No Team Selected</option>
                                 @foreach($teams as $team)
                                 <option value="{{ $team->id }}">{{ $team->name }}</option>
@@ -96,20 +99,21 @@
                             class="btn btn-block btn-outline-primary waves-effect waves-light">Cancel</button>
                     </div>
                     <div class="col-md-6">
-                        <button type="button" class="btn btn-block btn-primary waves-effect waves-light">Save</button>
+                        <button type="submit" class="btn btn-block btn-primary waves-effect waves-light">Save</button>
                     </div>
                 </div>
 
             </div>
         </div>
         <div class="col-lg-7">
-            <div class="card-box">
+            <div class="card-box" style="height:500px;">
                 <h4 class="header-title mb-3">Polygon</h4>
                 <!-- <div id="gmaps-basic" class="gmaps"></div> -->
                 <div id="map-canvas"></div>
             </div>
         </div>
     </div>
+    </form>
 </div>
 @endsection
 
