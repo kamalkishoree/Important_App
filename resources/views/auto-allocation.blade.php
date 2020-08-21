@@ -1,6 +1,11 @@
 @extends('layouts.vertical', ['title' => 'Auto Allocation'])
 
 @section('css')
+<style>
+.hidden-desc {
+    display: none;
+}
+</style>
 @endsection
 
 @section('content')
@@ -52,7 +57,7 @@
                             <div class="border p-3 rounded mb-3">
                                 <div class="custom-control custom-radio">
                                     <input type="radio" id="shippingMethodRadio1" name="auto_assign_logic"
-                                        class="custom-control-input" value="one_by_one"
+                                        class="custom-control-input custom-logic" value="one_by_one"
                                         {{ (isset($allocation) && $allocation->auto_assign_logic == "one_by_one" )? "checked" : "" }}>
                                     <label class="custom-control-label font-16 font-weight-bold"
                                         for="shippingMethodRadio1">One By One</label>
@@ -64,7 +69,7 @@
                             <div class="border p-3 rounded">
                                 <div class="custom-control custom-radio">
                                     <input type="radio" id="shippingMethodRadio2" name="auto_assign_logic"
-                                        class="custom-control-input" value="send_to_all"
+                                        class="custom-control-input custom-logic" value="send_to_all"
                                         {{ (isset($allocation) && $allocation->auto_assign_logic == "send_to_all" )? "checked" : "" }}>
                                     <label class="custom-control-label font-16 font-weight-bold"
                                         for="shippingMethodRadio2">Send to all</label>
@@ -75,7 +80,7 @@
                             <div class="border p-3 rounded">
                                 <div class="custom-control custom-radio">
                                     <input type="radio" id="shippingMethodRadio3" name="auto_assign_logic"
-                                        class="custom-control-input" value="batch_wise"
+                                        class="custom-control-input custom-logic" value="batch_wise"
                                         {{ (isset($allocation) && $allocation->auto_assign_logic == "batch_wise" )? "checked" : "" }}>
                                     <label class="custom-control-label font-16 font-weight-bold"
                                         for="shippingMethodRadio3">Batch Wise</label>
@@ -86,7 +91,7 @@
                             <div class="border p-3 rounded">
                                 <div class="custom-control custom-radio">
                                     <input type="radio" id="shippingMethodRadio4" name="auto_assign_logic"
-                                        class="custom-control-input" value="round_robin"
+                                        class="custom-control-input custom-logic" value="round_robin"
                                         {{ (isset($allocation) && $allocation->auto_assign_logic == "round_robin" )? "checked" : "" }}>
                                     <label class="custom-control-label font-16 font-weight-bold"
                                         for="shippingMethodRadio4">Round Robin</label>
@@ -97,7 +102,7 @@
                             <div class="border p-3 rounded">
                                 <div class="custom-control custom-radio">
                                     <input type="radio" id="shippingMethodRadio5" name="auto_assign_logic"
-                                        class="custom-control-input" value="nearest_available"
+                                        class="custom-control-input custom-logic" value="nearest_available"
                                         {{ (isset($allocation) && $allocation->auto_assign_logic == "nearest_available" )? "checked" : "" }}>
                                     <label class="custom-control-label font-16 font-weight-bold"
                                         for="shippingMethodRadio5">Nearest Available</label>
@@ -108,7 +113,7 @@
                             <div class="border p-3 rounded">
                                 <div class="custom-control custom-radio">
                                     <input type="radio" id="shippingMethodRadio6" name="auto_assign_logic"
-                                        class="custom-control-input" value="first_in_first_out"
+                                        class="custom-control-input custom-logic" value="first_in_first_out"
                                         {{ (isset($allocation) && $allocation->auto_assign_logic == "first_in_first_out" )? "checked" : "" }}>
                                     <label class="custom-control-label font-16 font-weight-bold"
                                         for="shippingMethodRadio6">First In, First Out</label>
@@ -122,7 +127,7 @@
                         @endif
                     </div>
 
-                    <div class="row mb-2 mt-2">
+                    <div class="row mb-2 mt-2 detail-desc @if($allocation->auto_assign_logic != 'one_by_one') hidden-desc @endif " id="one_by_one">
                         <div class="col-md-12">
                             <div class="card-box">
                                 <div class="row">
@@ -145,6 +150,120 @@
                         </div>
                     </div>
 
+                    <div class="row mb-2 mt-2 detail-desc @if($allocation->auto_assign_logic != 'send_to_all') hidden-desc @endif" id="send_to_all">
+                        <div class="col-md-12">
+                            <div class="card-box">
+                                <div class="row">
+                                    <div class="col-md-2">
+                                        <img src="{{asset('assets/images/onebyone.png')}}" alt="img" title="img"
+                                            class="rounded" height="90">
+                                    </div>
+                                    <div class="col-md-10">
+                                        <h4 class="header-title">Send to all</h4>
+                                        <p class="sub-header">Send the task notification to the agent nearest to the
+                                            task
+                                            location. If the agent doesn't accept the task within request expiry time,
+                                            the
+                                            task request is send to the next nearest Agent. If no Agent accepts the
+                                            task, it
+                                            remains unassigned.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-2 mt-2  detail-desc @if($allocation->auto_assign_logic != 'batch_wise') hidden-desc @endif" id="batch_wise">
+                        <div class="col-md-12">
+                            <div class="card-box">
+                                <div class="row">
+                                    <div class="col-md-2">
+                                        <img src="{{asset('assets/images/onebyone.png')}}" alt="img" title="img"
+                                            class="rounded" height="90">
+                                    </div>
+                                    <div class="col-md-10">
+                                        <h4 class="header-title">Batch Wise</h4>
+                                        <p class="sub-header">Send the task notification to the agent nearest to the
+                                            task
+                                            location. If the agent doesn't accept the task within request expiry time,
+                                            the
+                                            task request is send to the next nearest Agent. If no Agent accepts the
+                                            task, it
+                                            remains unassigned.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-2 mt-2 detail-desc @if($allocation->auto_assign_logic != 'round_robin') hidden-desc @endif" id="round_robin">
+                        <div class="col-md-12">
+                            <div class="card-box">
+                                <div class="row">
+                                    <div class="col-md-2">
+                                        <img src="{{asset('assets/images/onebyone.png')}}" alt="img" title="img"
+                                            class="rounded" height="90">
+                                    </div>
+                                    <div class="col-md-10">
+                                        <h4 class="header-title">Round Robin</h4>
+                                        <p class="sub-header">Send the task notification to the agent nearest to the
+                                            task
+                                            location. If the agent doesn't accept the task within request expiry time,
+                                            the
+                                            task request is send to the next nearest Agent. If no Agent accepts the
+                                            task, it
+                                            remains unassigned.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-2 mt-2 detail-desc @if($allocation->auto_assign_logic != 'nearest_available') hidden-desc @endif" id="nearest_available">
+                        <div class="col-md-12">
+                            <div class="card-box">
+                                <div class="row">
+                                    <div class="col-md-2">
+                                        <img src="{{asset('assets/images/onebyone.png')}}" alt="img" title="img"
+                                            class="rounded" height="90">
+                                    </div>
+                                    <div class="col-md-10">
+                                        <h4 class="header-title">Nearest Available</h4>
+                                        <p class="sub-header">Send the task notification to the agent nearest to the
+                                            task
+                                            location. If the agent doesn't accept the task within request expiry time,
+                                            the
+                                            task request is send to the next nearest Agent. If no Agent accepts the
+                                            task, it
+                                            remains unassigned.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-2 mt-2 detail-desc @if($allocation->auto_assign_logic != 'first_in_first_out') hidden-desc @endif" id="first_in_first_out">
+                        <div class="col-md-12">
+                            <div class="card-box">
+                                <div class="row">
+                                    <div class="col-md-2">
+                                        <img src="{{asset('assets/images/onebyone.png')}}" alt="img" title="img"
+                                            class="rounded" height="90">
+                                    </div>
+                                    <div class="col-md-10">
+                                        <h4 class="header-title">First In, First Out</h4>
+                                        <p class="sub-header">Send the task notification to the agent nearest to the
+                                            task
+                                            location. If the agent doesn't accept the task within request expiry time,
+                                            the
+                                            task request is send to the next nearest Agent. If no Agent accepts the
+                                            task, it
+                                            remains unassigned.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
                     <div class="row mb-2 mt-2">
                         <div class="col-md-6">
@@ -223,4 +342,13 @@
 @endsection
 
 @section('script')
+<script>
+
+    $(function(){
+        $('.custom-logic').change(function(){
+            $('.detail-desc').hide();
+            $('#'+$(this).val()).show();
+        });
+    });
+</script>
 @endsection
