@@ -126,7 +126,7 @@
 
 @section('script')
     <!-- google maps api -->
-    <script src="https://maps.google.com/maps/api/js?key=AIzaSyDsucrEdmswqYrw0f6ej3bf4M4suDeRgNA"></script>
+    <script src="https://maps.google.com/maps/api/js?key=AIzaSyB85kLYYOmuAhBUPd7odVmL6gnQsSGWU-4"></script>
 
     <!-- Plugins js-->
     <script src="{{asset('assets/libs/gmaps/gmaps.min.js')}}"></script>

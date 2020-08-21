@@ -48,7 +48,7 @@
                     <div class="col-md-12">
                         <div class="form-group mb-3">
                             <label for="name">Name</label>
-                            <input type="text" name="name" id="name" placeholder="ABC Deliveries" class="form-control">
+                            <input type="text" name="name" id="name" value="{{ old('name', $geo->name ?? '')}}" placeholder="ABC Deliveries" class="form-control">
                         </div>
                     </div>
                 </div>
@@ -56,7 +56,7 @@
                     <div class="col-md-12">
                         <div class="form-group mb-3">
                             <label for="Description">Description (Optional)</label>
-                            <textarea class="form-control" id="Description" name="description"></textarea>
+                            <textarea class="form-control" id="Description" name="description" >{{ old('description', $geo->description ?? '')}}</textarea>
                         </div>
                     </div>
                 </div>
@@ -87,7 +87,9 @@
                             <select class="form-control select2-multiple" data-toggle="select2" multiple="multiple"
                                     data-placeholder="Choose ..." name="agents[]" id="agents">
                                 @foreach($agents as $agent)
-                                <option value="{{$agent->id}}" data-team-id={{ $agent->team_id }}>{{$agent->name}}</option>
+                                <option value="{{$agent->id}}" data-team-id={{ $agent->team_id }} 
+                                @if(in_array($agent->id,$agents->pluck('id')->toArray())) selected @endif
+                                >{{$agent->name}}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -140,79 +142,66 @@
 
 <script>
     var map; // Global declaration of the map
-    var iw = new google.maps.InfoWindow(); // Global declaration of the infowindow
-    var lat_longs = new Array();
-    var markers = new Array();
-    var drawingManager;
+    function initialize() {      
+      var zoomLevel = '{{$geo->zoom_level}}';
+      var coordinate='{{$geo->geo_array}}';
+      coordinate = coordinate.split('(');
+      coordinate = coordinate.join('[');
+      coordinate = coordinate.split(')');
+      coordinate = coordinate.join(']');
+      coordinate = "["+coordinate;
+      coordinate = coordinate+"]";      
+      coordinate = JSON.parse(coordinate);      
 
-    function initialize() {
+      var triangleCoords=[];
+      const lat1 = coordinate[0][0];
+      const long1 = coordinate[0][1];
 
-      var myLatlng = new google.maps.LatLng(33.5362475, -111.9267386);
+      var max_x=lat1;
+      var min_x=lat1;
+      var max_y=long1;
+      var min_y=long1;
+
+      $.each( coordinate, function( key, value ) {        
+      
+        if(value[0]>max_x){
+          max_x=value[0];
+        }
+        if(value[0]<min_x){
+          min_x=value[0];
+        }
+        if(value[1]>max_y){
+          max_y=value[1];
+        }
+        if(value[1]<min_y){
+          min_y=value[1];
+        }
+
+        triangleCoords.push(new google.maps.LatLng(value[0], value[1]));
+      });
+
+      var myLatlng = new google.maps.LatLng((min_x + ((max_x - min_x) / 2)), (min_y + ((max_y - min_y) / 2)));
       var myOptions = {
-        zoom: 13,
+        zoom: parseInt(zoomLevel),
         center: myLatlng,
         mapTypeId: google.maps.MapTypeId.ROADMAP
       }
-      map = new google.maps.Map(document.getElementById("map-canvas"), myOptions);
-          
-
-      drawingManager = new google.maps.drawing.DrawingManager({
-        drawingMode: google.maps.drawing.OverlayType.POLYGON,
-        drawingControl: true,
-        drawingControlOptions: {
-          position: google.maps.ControlPosition.TOP_CENTER,
-          drawingModes: [google.maps.drawing.OverlayType.POLYGON]
-        },
-        polygonOptions: {
-          //editable: true,
-          //draggable: true
-          strokeColor: '#bb3733',
-          fillColor: '#bb3733',
-        }
+      map = new google.maps.Map(document.getElementById("map-canvas"), myOptions);      
+      myPolygon = new google.maps.Polygon({
+        paths: triangleCoords,
+        //draggable: true, // turn off if it gets annoying
+        //editable: true,
+        strokeColor: '#bb3733',
+        //strokeOpacity: 0.8,
+        //strokeWeight: 2,
+        fillColor: '#bb3733',
+        //fillOpacity: 0.35
       });
-      drawingManager.setMap(map);
-
-      google.maps.event.addListener(drawingManager, "overlaycomplete", function(event) {
-        var newShape = event.overlay;
-        newShape.type = event.type;
-      });
-
-      google.maps.event.addListener(drawingManager, "overlaycomplete", function(event) {
-        overlayClickListener(event.overlay);
-        var vertices_val = $('#latlongs').val();
-        //var vertices_val = event.overlay.getPath().getArray();
-        console.log(vertices_val);
-        if(vertices_val == null || vertices_val === ''){
-          $('#latlongs').val(event.overlay.getPath().getArray()); 
-          console.log(map.getZoom());      
-          $('#zoom_level').val(map.getZoom());      
-        }else{
-          alert('You can draw only one zone at a time');
-          event.overlay.setMap(null);
-        }
-      });
-    }
-
-    function overlayClickListener(overlay) {
-      google.maps.event.addListener(overlay, "mouseup", function(event) {
-        $('#latlongs').val(overlay.getPath().getArray());
-      });
+      myPolygon.setMap(map);
+      
     }
     google.maps.event.addDomListener(window, 'load', initialize);
-    
-    function addLine() {
-        drawingManager.setMap(map);
-      }
 
-      function removeLine() {
-        //drawingManager.setMap(null);
-      }
-
-    $(function() {
-      $('#save').click(function() {
-        //iterate polygon latlongs?
-      });
-    });
 
 
     // onteam change change the selected agents in the list //

@@ -47,6 +47,7 @@ class GeoFenceController extends Controller
     {
         return Validator::make($data, [
             'name' => ['required', 'string', 'max:255'],
+            'zoom_level' => ['required'],
             'agents' => ['required']
         ]);
     }
@@ -63,13 +64,21 @@ class GeoFenceController extends Controller
         $data = [
             'name'          => $request->name,
             'description'   => $request->description,
+            'zoom_level'    => $request->zoom_level,
             'geo_array'     => $request->latlongs
         ];
 
         $geo = Geo::create($data);
 
         $geo->agents()->sync($request->agents);
-        
+
+        //update team_id if any provided //
+        if($request->team_id){
+            DriverGeo::where('geo_id',$geo->id)->update([
+                'team_id' => $request->team_id 
+            ]);
+        }
+
         return redirect()->back();
     }
 
@@ -92,7 +101,17 @@ class GeoFenceController extends Controller
      */
     public function edit($id)
     {
-        //
+        $geo = Geo::with(['agents'])->where('id',$id)->first();
+        $teams = Team::with(['agents'])->where('client_id',auth()->user()->id)->orderBy('name')->get();
+        $agents= Agent::whereIn('team_id',function($q){
+            $q->select('id')->from('teams')->where('client_id',Auth::user()->id);
+        })->get();
+
+        return view('update-geo-fence')->with([
+            'geo'=>$geo,
+            'agents'=>$agents,
+            'teams'=>$teams
+            ]);
     }
 
     /**
