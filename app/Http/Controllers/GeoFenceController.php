@@ -120,6 +120,14 @@ class GeoFenceController extends Controller
             ]);
     }
 
+
+    protected function updateValidator(array $data)
+    {
+        return Validator::make($data, [
+            'name' => ['required', 'string', 'max:255']
+        ]);
+    }
+
     /**
      * Update the specified resource in storage.
      *
@@ -129,7 +137,21 @@ class GeoFenceController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $validator = $this->updateValidator($request->all())->validate();
+
+        $geo = Geo::find($id);
+
+        $data = [
+            'name'          => $request->name,
+            'description'   => $request->description
+        ];
+
+        $updated = Geo::where('id', $id)->update($data);
+
+        $geo->agents()->sync($request->agents);
+
+        return redirect()->back()->with('success', 'Updated successfully!');
+        
     }
 
     /**

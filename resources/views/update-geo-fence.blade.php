@@ -41,7 +41,8 @@
         </div>
     </div>
 
-    <form id="" action="{{ route('geo-fence.store') }}" method="POST">
+    <form id="" method="post" action="{{route('geo-fence.update', $geo->id)}}">
+    @method('PUT')
     @csrf
     <input type="hidden" name="latlongs" value="" id="latlongs" />
     <input type="hidden" name="zoom_level" value="13" id="zoom_level" />
