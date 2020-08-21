@@ -31,7 +31,7 @@ class GeoFenceController extends Controller
     }
 
     public function allList(){
-        $geos = Geo::orderBy('created_at', 'DESC')->paginate(10);
+        $geos = Geo::where('client_id',auth()->user()->id)->orderBy('created_at', 'DESC')->paginate(10);
         return view('geo-fence-list')->with(['geos' => $geos]);
     }
     
@@ -71,7 +71,8 @@ class GeoFenceController extends Controller
             'name'          => $request->name,
             'description'   => $request->description,
             'zoom_level'    => $request->zoom_level,
-            'geo_array'     => $request->latlongs
+            'geo_array'     => $request->latlongs,
+            'client_id'     => auth()->user()->id
         ];
 
         $geo = Geo::create($data);
