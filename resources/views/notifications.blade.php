@@ -60,22 +60,22 @@
 
                                         <td>
                                             <div class="custom-control custom-switch">
-                                                <input type="checkbox" class="custom-control-input" id="smscustomSwitch1" @if($event->is_checked_sms(auth()->user()->id))  checked @endif>
-                                                <label class="custom-control-label" for="smscustomSwitch1"></label>
+                                                <input type="checkbox" class="custom-control-input event_type" data-id="{{ $event->id }}" data-event-type="sms" id="smscustomSwitch_{{ $event->id}}" @if($event->is_checked_sms(auth()->user()->id))  checked @endif>
+                                                <label class="custom-control-label" for="smscustomSwitch_{{ $event->id}}"></label>
                                             </div>
                                         </td>
 
                                         <td>
                                             <div class="custom-control custom-switch">
-                                                <input type="checkbox" class="custom-control-input" id="emailcustomSwitch1" @if($event->is_checked_email(auth()->user()->id))  checked @endif>
-                                                <label class="custom-control-label" for="emailcustomSwitch1"></label>
+                                                <input type="checkbox" class="custom-control-input event_type" data-id="{{ $event->id }}" data-event-type="email" id="emailcustomSwitch_{{ $event->id}}" @if($event->is_checked_email(auth()->user()->id))  checked @endif>
+                                                <label class="custom-control-label" for="emailcustomSwitch_{{ $event->id}}"></label>
                                             </div>
                                         </td>
 
                                         <td>
                                             <div class="custom-control custom-switch">
-                                                <input type="checkbox" class="custom-control-input" id="webhookcustomSwitch1" @if($event->is_checked_webhook(auth()->user()->id))  checked @endif>
-                                                <label class="custom-control-label" for="webhookcustomSwitch1"></label>
+                                                <input type="checkbox" class="custom-control-input event_type" data-id="{{ $event->id }}" data-event-type="webhook" id="webhookcustomSwitch_{{ $event->id}}" @if($event->is_checked_webhook(auth()->user()->id))  checked @endif>
+                                                <label class="custom-control-label" for="webhookcustomSwitch_{{ $event->id}}"></label>
                                             </div>
                                         </td>
 
@@ -100,4 +100,52 @@
 @endsection
 
 @section('script')
+<script>
+    $(function(){
+        $('.event_type').change(function(){
+            var current_value = this.checked ? 1 : 0;
+            var notification_event_id=  $(this).attr('data-id');
+            var notification_type = $(this).attr('data-event-type');
+            formData = {
+                current_value : current_value,
+                notification_event_id : notification_event_id,
+                notification_type : notification_type,
+                _token : "{{ csrf_token() }}"
+            };
+            startLoader('body');
+            $.ajax({
+                method: "POST",
+                headers: {
+                    Accept: "application/json"
+                },
+                url: "/notification_update",
+                data: formData,
+                success: function(response) {
+                    if (response.status == 'success') {
+
+                    } else {
+                        $(".show_all_error.invalid-feedback").show();
+                        $(".show_all_error.invalid-feedback").text(response.message);
+                    }
+                },
+                error: function(response) {
+                    if (response.status === 422) {
+                        let errors = response.responseJSON.errors;
+                        Object.keys(errors).forEach(function(key) {
+                            $("#" + key + "Input input").addClass("is-invalid");
+                            $("#" + key + "Input span.invalid-feedback").children(
+                                "strong").text(errors[key][
+                                0
+                            ]);
+                            $("#" + key + "Input span.invalid-feedback").show();
+                        });
+                    } else {
+                        $(".show_all_error.invalid-feedback").show();
+                        $(".show_all_error.invalid-feedback").text('Something went wrong, Please try Again.');
+                    }
+                }
+            });
+        });
+    });
+</script>
 @endsection
