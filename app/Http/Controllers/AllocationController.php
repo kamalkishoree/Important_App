@@ -71,6 +71,7 @@ class AllocationController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $request['manual_allocation'] = $request->manual_allocation ?? 'n';
         $updatePreference = AllocationRule::updateOrCreate([
             'client_id' => $id
         ],$request->all());

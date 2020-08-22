@@ -160,13 +160,7 @@
                                     </div>
                                     <div class="col-md-10">
                                         <h4 class="header-title">Send to all</h4>
-                                        <p class="sub-header">Send the task notification to the agent nearest to the
-                                            task
-                                            location. If the agent doesn't accept the task within request expiry time,
-                                            the
-                                            task request is send to the next nearest Agent. If no Agent accepts the
-                                            task, it
-                                            remains unassigned.</p>
+                                        <p class="sub-header">Request sent to all within a maximum radius. If no one accepts retries.</p>
                                     </div>
                                 </div>
                             </div>
@@ -183,13 +177,7 @@
                                     </div>
                                     <div class="col-md-10">
                                         <h4 class="header-title">Batch Wise</h4>
-                                        <p class="sub-header">Send the task notification to the agent nearest to the
-                                            task
-                                            location. If the agent doesn't accept the task within request expiry time,
-                                            the
-                                            task request is send to the next nearest Agent. If no Agent accepts the
-                                            task, it
-                                            remains unassigned.</p>
+                                        <p class="sub-header"> increasing concentric circles based on distance from request - b/w start and increment radius, till max radius. Also limited by batch size and batch count.</p>
                                     </div>
                                 </div>
                             </div>
@@ -206,13 +194,9 @@
                                     </div>
                                     <div class="col-md-10">
                                         <h4 class="header-title">Round Robin</h4>
-                                        <p class="sub-header">Send the task notification to the agent nearest to the
-                                            task
-                                            location. If the agent doesn't accept the task within request expiry time,
-                                            the
-                                            task request is send to the next nearest Agent. If no Agent accepts the
-                                            task, it
-                                            remains unassigned.</p>
+                                        <p class="sub-header">Offers tasks sequentially based on one with least tasks 
+forced to nearest  
+.</p>
                                     </div>
                                 </div>
                             </div>
@@ -229,13 +213,7 @@
                                     </div>
                                     <div class="col-md-10">
                                         <h4 class="header-title">Nearest Available</h4>
-                                        <p class="sub-header">Send the task notification to the agent nearest to the
-                                            task
-                                            location. If the agent doesn't accept the task within request expiry time,
-                                            the
-                                            task request is send to the next nearest Agent. If no Agent accepts the
-                                            task, it
-                                            remains unassigned.</p>
+                                        <p class="sub-header">forced - Assigns tasks sequentially </p>
                                     </div>
                                 </div>
                             </div>
@@ -252,13 +230,7 @@
                                     </div>
                                     <div class="col-md-10">
                                         <h4 class="header-title">First In, First Out</h4>
-                                        <p class="sub-header">Send the task notification to the agent nearest to the
-                                            task
-                                            location. If the agent doesn't accept the task within request expiry time,
-                                            the
-                                            task request is send to the next nearest Agent. If no Agent accepts the
-                                            task, it
-                                            remains unassigned.</p>
+                                        <p class="sub-header">forced to nearest  </p>
                                     </div>
                                 </div>
                             </div>
@@ -343,6 +315,9 @@
 
 @section('script')
 <script>
+
+    $('.detail-desc').hide();
+    $('#'+'{{ $allocation->auto_assign_logic }}').show();
 
     $(function(){
         $('.custom-logic').change(function(){
