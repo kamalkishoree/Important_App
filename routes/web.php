@@ -39,6 +39,7 @@ Route::get('geo-fence-all', 'GeoFenceController@allList')->name('geo.fence.list'
 Route::resource('team', 'TeamController');
 Route::resource('notifications','ClientNotificationController');
 Route::post('notification_update','ClientNotificationController@updateClientNotificationEvent')->name('notification.update.client');
+Route::post('set_webhook_url','ClientNotificationController@setWebhookUrl')->name('set.webhook.url');
 
 Route::get('{first}/{second}/{third}', 'RoutingController@thirdLevel')->name('third');
 Route::get('{first}/{second}', 'RoutingController@secondLevel')->name('second');

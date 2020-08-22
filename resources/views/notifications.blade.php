@@ -5,6 +5,7 @@
 @endsection
 
 @section('content')
+@include('modals.add-webhook')
     <!-- Start Content-->
     <div class="container-fluid">
         
@@ -81,7 +82,7 @@
 
                                         <td>
                                             <a href="javascript: void(0);" class="action-icon">
-                                                <i class="mdi mdi-square-edit-outline"></i>
+                                                <i class="mdi mdi-square-edit-outline web-hook-add" data-id="{{ $event->id }}" data-webhook-url="{{ $event->get_client_webhook_url(auth()->user()->id) }}"></i>
                                             </a>
                                         </td>
                                     </tr>
@@ -145,6 +146,15 @@
                     }
                 }
             });
+        });
+    });
+
+    //webhook url updation //
+    $(function(){
+        $('.web-hook-add').click(function(){
+            $('#notification_event_id').val($(this).attr('data-id'));
+            $('#webhook_url').val($(this).attr('data-webhook-url'));
+            $('#add-webhook-modal').modal('show');
         });
     });
 </script>
