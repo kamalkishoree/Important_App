@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Model\NotificationType;
+use App\Model\NotificationEvent;
+use App\Model\ClientNotification;
 
 class ClientNotificationController extends Controller
 {
@@ -13,7 +16,12 @@ class ClientNotificationController extends Controller
      */
     public function index()
     {
-        return view('notifications');
+        $notification_types = NotificationType::with('notification_events')->get();
+        $client_notifications = ClientNotification::where('client_id',auth()->user()->id)->get(); 
+        return view('notifications')->with([
+            'client_notifications' => $client_notifications,
+            'notification_types'   => $notification_types
+        ]);
     }
 
     /**
