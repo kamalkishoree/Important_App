@@ -21,6 +21,9 @@ class NotificationEvent extends Model
     }
 
     public function get_client_webhook_url($client_id){
-        return ClientNotification::where('notification_event_id',$this->id)->where('client_id',$client_id)->first();
+        $url = ClientNotification::where('notification_event_id',$this->id)->where('client_id',$client_id)->first();
+        if($url)
+            return $url->webhook_url;
+        return "";
     }
 }

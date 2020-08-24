@@ -134,4 +134,28 @@ class ClientNotificationController extends Controller
         ]);
 
     }
+
+    protected function updateWebhookValidator(array $data)
+    {
+        return Validator::make($data, [
+            'notification_event_id' => ['required'],
+            'webhook_url'=>['required']
+        ]);
+    }
+
+    public function setWebhookUrl(Request $request){
+
+        $validator = $this->updateWebhookValidator($request->all())->validate();
+
+        $update = [
+            'webhook_url' => $request->webhook_url
+        ];
+        
+        ClientNotification::updateOrCreate([
+            'client_id' => auth()->user()->id,
+            'notification_event_id' => $request->notification_event_id
+        ],$update);
+
+        return redirect()->back();
+    }
 }
