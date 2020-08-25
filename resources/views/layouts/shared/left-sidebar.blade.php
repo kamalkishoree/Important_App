@@ -77,6 +77,12 @@
                     </a>
                 </li>
                 <li>
+                    <a href="{{url('manager')}}">
+                        <i data-feather="users"></i>
+                        <span> Managers </span>
+                    </a>
+                </li>
+                <li>
                     <a href="{{url('agent')}}">
                         <i data-feather="users"></i>
                         <span> Agents </span>
