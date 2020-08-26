@@ -13,4 +13,8 @@ class Agent extends Model
     public function team(){
        return $this->belongsTo('App\Model\Team'); 
     }
+
+    public function vehicle_type(){
+        return $this->belongsTo('App\Model\VehicleType'); 
+     }
 }

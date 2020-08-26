@@ -54,10 +54,9 @@
                                     <th>Name</th>
                                     <th>Email</th>
                                     <th>Phone</th>
-                                    <th>DB Path</th>
-                                    <th>DB Name</th>
-                                    <th>DB Username</th>
-                                    <th>DB Password</th>
+                                    <th>Type</th>
+                                    <th>Team</th>
+                                    <th>Transport Type</th>
                                     <th style="width: 85px;">Action</th>
                                 </tr>
                             </thead>
@@ -75,16 +74,13 @@
                                         {{$agent->phone_number}}
                                     </td>
                                     <td>
-                                        {{$agent->database_path}}
+                                        {{$agent->type}}
                                     </td>
                                     <td>
-                                        {{$agent->database_name}}
+                                        {{$agent->team->name}}
                                     </td>
                                     <td>
-                                        {{$agent->database_username}}
-                                    </td>
-                                    <td>
-                                        {{$agent->database_password}}
+                                        {{$agent->vehicle_type_id}}
                                     </td>
                                     <!-- <td>
                                         <span class="badge bg-soft-success text-success">Active</span>

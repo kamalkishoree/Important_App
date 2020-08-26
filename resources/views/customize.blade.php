@@ -129,44 +129,6 @@
         <div class="row">
             <div class="col-xl-11 col-md-offset-1">
                 <div class="card-box">
-                    <h4 class="header-title">Acknowledgement Type</h4>
-                    <p class="sub-header">
-                        Agent can either acknowledge the receipt of the task or accept/decline a Task based on your
-                        selection below.
-                    </p>
-                    <div class="row mb-2">
-                        <div class="col-sm-12">
-                            <p class="text-muted mb-2">SELECT PREFERENCE</p>
-                            <div class="radio radio-info form-check-inline">
-                                <input type="radio" id="acknowledge1" value="acknowledge" name="acknowledgement_type"
-                                    {{ ($preference->acknowledgement_type =="acknowledge")? "checked" : "" }}>
-                                <label for="acknowledge1"> Acknowledge </label>
-                            </div>
-                            <div class="radio form-check-inline">
-                                <input type="radio" id="acknowledge2" value="acceptreject" name="acknowledgement_type"
-                                    {{ ($preference->acknowledgement_type =="acceptreject")? "checked" : "" }}>
-                                <label for="acknowledge2"> Accept/Reject </label>
-                            </div>
-                            <div class="radio form-check-inline">
-                                <input type="radio" id="acknowledge3" value="none" name="acknowledgement_type"
-                                    {{ ($preference->acknowledgement_type =="none")? "checked" : "" }}>
-                                <label for="acknowledge3"> None </label>
-                            </div>
-                            @if($errors->has('acknowledgement_type'))
-                            <span class="text-danger" role="alert">
-                                <strong>{{ $errors->first('acknowledgement_type') }}</strong>
-                            </span>
-                            @endif
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-xl-11 col-md-offset-1">
-                <div class="card-box">
                     <h4 class="header-title">Date & Time</h4>
                     <p class="sub-header">
                         View and update the date & time format.

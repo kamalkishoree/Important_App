@@ -16,7 +16,11 @@ class AllocationController extends Controller
     public function index()
     {
         $allocation = Auth::user()->getAllocation;
-        return view('auto-allocation')->with(['allocation' => $allocation]);
+        $preference = Auth::user()->getPreference;
+        return view('auto-allocation')->with([
+            'allocation' => $allocation,
+            'preference'=> $preference
+            ]);
     }
 
     /**

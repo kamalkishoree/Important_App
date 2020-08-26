@@ -173,6 +173,7 @@
         </div>
     </form>
 
+    <div style="display:none;">
     <form method="POST" action="{{route('preference', Auth::user()->id)}}">
         @csrf
         <div class="row">
@@ -241,6 +242,7 @@
             </div>
         </div>
     </form>
+    </div>
 
     <form method="POST" action="{{route('preference', Auth::user()->id)}}">
         @csrf
