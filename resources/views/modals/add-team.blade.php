@@ -23,8 +23,8 @@
                             <div class="form-group mb-3" id="manager_idInput">
                                 <label for="team-manager">Manager</label>
                                 <select class="form-control" id="team-manager" name="manager_id">
-                                    @foreach($agents as $agent)
-                                    <option value="{{ $agent->id }}">{{ $agent->name }}</option>
+                                    @foreach($managers as $manager)
+                                    <option value="{{ $manager->id }}">{{ $manager->name }}</option>
                                     @endforeach
                                 </select>
                             </div>
