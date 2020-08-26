@@ -62,7 +62,7 @@ class ManagerController extends Controller
             $filenameWithExt = $request->file('profile_picture')->getClientOriginalName();
             $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME); 
             $fileNameToStore = $filename.'_'.time().'.'.$file->getClientOriginalExtension();  
-            $file->move(public_path().'/agents',$fileNameToStore);
+            $file->move(public_path().'/managers',$fileNameToStore);
             $getFileName = $fileNameToStore;
         }
            
@@ -108,7 +108,27 @@ class ManagerController extends Controller
      */
     public function edit($id)
     {
-        //
+        $manager = Manager::find($id);
+        return view('update-manager')->with([
+            'manager' => $manager
+        ]);
+    }
+
+        /**
+     * Validation method for agent Update 
+    */
+    protected function updateValidator(array $data)
+    {
+        return Validator::make($data, [
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required','email'],
+            'phone_number' => ['required'],
+            'can_create_task' => ['required'],
+            'can_edit_task_created' => ['required'],
+            'can_edit_all' => ['required'],
+            'can_manage_unassigned_tasks' => ['required'],
+            'can_edit_auto_allocation' => ['required']
+        ]);
     }
 
     /**
@@ -120,7 +140,34 @@ class ManagerController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $validator = $this->updateValidator($request->all())->validate();
+
+        $getManager = Manager::find($id);
+        $getFileName = $getManager->profile_picture;
+
+        if($request->hasFile('profile_picture')) {
+            $file = $request->file('profile_picture');
+            $filenameWithExt = $request->file('profile_picture')->getClientOriginalName();
+            $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME); 
+            $fileNameToStore = $filename.'_'.time().'.'.$file->getClientOriginalExtension();  
+            $file->move(public_path().'/managers',$fileNameToStore);
+            $getFileName = $fileNameToStore;
+        }
+
+        $data = [
+            'name' => $request->name,
+            'email' => $request->email,
+            'phone_number' => $request->phone_number,
+            'can_create_task' => $request->can_create_task,
+            'can_edit_task_created' => $request->can_edit_task_created,
+            'can_edit_all' => $request->can_edit_all,
+            'can_manage_unassigned_tasks' => $request->can_manage_unassigned_tasks,
+            'can_edit_auto_allocation' => $request->can_edit_auto_allocation,
+            'profile_picture' => $getFileName
+        ];
+
+        $manager = Manager::where('id', $id)->update($data);
+        return redirect()->back()->with('success', 'Manager Updated successfully!');
     }
 
     /**

@@ -9,6 +9,7 @@ use App\Model\Team;
 use App\Model\TeamTag;
 use App\Model\Tag;
 use App\Model\TagsForTeam;
+use App\Model\Manager;
 
 class TeamController extends Controller
 {
@@ -32,11 +33,13 @@ class TeamController extends Controller
     public function index()
     {
         $agents = Agent::with(['team.manager'])->orderBy('created_at', 'DESC')->paginate(10);
+        $managers = Manager::where('client_id',auth()->user()->id)->orderBy('name')->get();
         $teams  = Team::with(['manager','tags','agents'])->where('client_id',auth()->user()->id)->orderBy('created_at','DESC')->paginate(10);
         $tags   = TagsForTeam::all();
         return view('team')->with([
             'agents' => $agents,
             'teams'=>$teams,
+            'managers'=>$managers,
             'tags'=>$tags,
             'location_accuracy'=>$this->location_accuracy,
             'location_frequency'=>$this->location_frequency]);

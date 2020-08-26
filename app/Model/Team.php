@@ -24,7 +24,7 @@ class Team extends Model
     }
 
     public function manager(){
-        return $this->belongsTo('App\Model\Agent');
+        return $this->belongsTo('App\Model\Manager');
     }
 
     public function tags(){
