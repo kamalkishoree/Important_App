@@ -6,14 +6,14 @@
             <li class="d-none d-lg-block">
                 <form class="app-search">
                     <div class="app-search-box dropdown">
-                        <div class="input-group">
+                        <!-- <div class="input-group">
                             <input type="search" class="form-control" placeholder="Search..." id="top-search">
                             <div class="input-group-append">
                                 <button class="btn" type="submit">
                                     <i class="fe-search"></i>
                                 </button>
                             </div>
-                        </div>
+                        </div> -->
                         <!-- <div class="dropdown-menu dropdown-lg" id="search-dropdown">
                             
                             <div class="dropdown-header noti-title">
@@ -87,7 +87,7 @@
                     <i class="fe-maximize noti-icon"></i>
                 </a>
             </li>
-            <li class="dropdown d-none d-xl-block">
+            <!-- <li class="dropdown d-none d-xl-block">
                 <a class="nav-link dropdown-toggle waves-effect waves-light" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
                     Create Task
                     <i class="mdi mdi-chevron-down"></i> 
@@ -97,9 +97,9 @@
                         <i class="fe-briefcase mr-1"></i>
                         <span>New Task</span>
                     </a>
-                    <!-- <div class="dropdown-divider"></div> -->
+                    <div class="dropdown-divider"></div>
                 </div>
-            </li>
+            </li> -->
             <!-- <li class="dropdown d-none d-lg-inline-block topbar-dropdown">
                 <a class="nav-link dropdown-toggle arrow-none waves-effect waves-light" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
                     <i class="fe-grid noti-icon"></i>
@@ -177,7 +177,7 @@
                 </div>
             </li> -->
             
-            <li class="dropdown notification-list topbar-dropdown">
+            <!-- <li class="dropdown notification-list topbar-dropdown">
                 <a class="nav-link dropdown-toggle waves-effect waves-light" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
                     <i class="fe-bell noti-icon"></i>
                     <span class="badge badge-danger rounded-circle noti-icon-badge">9</span>
@@ -259,20 +259,19 @@
                         </a>
                     </div>
     
-                    <!-- All-->
                     <a href="javascript:void(0);" class="dropdown-item text-center text-primary notify-item notify-all">
                         View all
                         <i class="fe-arrow-right"></i>
                     </a>
     
                 </div>
-            </li>
+            </li> -->
     
             <li class="dropdown notification-list topbar-dropdown">
                 <a class="nav-link dropdown-toggle nav-user mr-0 waves-effect waves-light" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
                     <img src="{{asset('assets/images/users/user-1.jpg')}}" alt="user-image" class="rounded-circle">
                     <span class="pro-user-name ml-1">
-                        User <i class="mdi mdi-chevron-down"></i> 
+                        {{ auth()->user()->name }} <i class="mdi mdi-chevron-down"></i> 
                     </span>
                 </a>
                 <div class="dropdown-menu dropdown-menu-right profile-dropdown ">
@@ -319,12 +318,12 @@
                 </div>
             </li>
     
-            <li class="dropdown notification-list">
-                <!-- <a href="{{url('settings')}}" class="nav-link right-bar-toggle waves-effect waves-light"> -->
+            <!-- <li class="dropdown notification-list">
+                <a href="{{url('settings')}}" class="nav-link right-bar-toggle waves-effect waves-light">
                 <a href="{{url('profile')}}" class="nav-link  waves-effect waves-light">
                     <i class="fe-settings noti-icon"></i>
                 </a>
-            </li>
+            </li> -->
     
         </ul>
     

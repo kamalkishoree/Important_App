@@ -43,6 +43,14 @@
                     </a>
                 </li>
 
+
+                <li>
+                    <a href="{{url('client')}}">
+                        <i data-feather="users"></i>
+                        <span> Clients </span>
+                    </a>
+                </li>
+
                 <li class="menu-title mt-2">Settings</li>
 
 
@@ -53,21 +61,9 @@
                     </a>
                 </li>
                 <li>
-                    <a href="{{url('client')}}">
-                        <i data-feather="users"></i>
-                        <span> Clients </span>
-                    </a>
-                </li>
-                <li>
                     <a href="{{url('customize')}}">
                         <i data-feather="rss"></i>
                         <span> Customize </span>
-                    </a>
-                </li>
-                <li>
-                    <a href="{{route('tag.index')}}">
-                        <i data-feather="rss"></i>
-                        <span> Tags </span>
                     </a>
                 </li>
                 <li>
@@ -77,23 +73,19 @@
                     </a>
                 </li>
                 <li>
-                    <a href="{{url('manager')}}">
-                        <i data-feather="users"></i>
-                        <span> Managers </span>
-                    </a>
-                </li>
-                <li>
                     <a href="{{url('agent')}}">
                         <i data-feather="users"></i>
                         <span> Agents </span>
                     </a>
                 </li>
+
                 <li>
                     <a href="{{url('geo-fence')}}">
                         <i data-feather="map"></i>
                         <span> Geo Fence </span>
                     </a>
                 </li>
+                
                 <li>
                     <a href="{{url('auto-allocation')}}">
                         <i data-feather="git-branch"></i>
@@ -113,6 +105,31 @@
                     </a>
                 </li>
                 <li>
+                    <a href="{{url('notifications')}}">
+                        <i data-feather="bell"></i>
+                        <span> Notifications </span>
+                    </a>
+                </li>
+                
+                <li>
+                    <a href="{{route('tag.index')}}">
+                        <i data-feather="rss"></i>
+                        <span> Tags </span>
+                    </a>
+                </li>
+                
+                <li>
+                    <a href="{{url('manager')}}">
+                        <i data-feather="users"></i>
+                        <span> Managers </span>
+                    </a>
+                </li>
+                
+                
+                
+                
+                
+                <li>
                     <a href="{{url('options')}}">
                         <i data-feather="activity"></i>
                         <span> Options </span>
@@ -124,12 +141,7 @@
                         <span> Modals </span>
                     </a>
                 </li>
-                <li>
-                    <a href="{{url('notifications')}}">
-                        <i data-feather="bell"></i>
-                        <span> Notifications </span>
-                    </a>
-                </li>
+                
                 <li>
                     <a href="{{url('change-password')}}">
                         <i data-feather="lock"></i>

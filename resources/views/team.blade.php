@@ -75,7 +75,7 @@
         <div class="col-xl-4 team-details" id="team_detail_{{ $team->id}}" @if($index!=0) style="display:none;"  @endif>
             <div class="card-box">
 
-                <h4 class="header-title mb-3">Team Deatail</h4>
+                <h4 class="header-title mb-3">Team Detail</h4>
                 <p>ID : <strong>{{ $team->id }}</strong></p>
                 <h3>{{ $team->name }}</h3>
                 <p>Manager : <strong>{{ $team->manager ? $team->manager->name : '' }}</strong></p>
