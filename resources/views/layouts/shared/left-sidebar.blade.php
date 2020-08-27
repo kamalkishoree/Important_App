@@ -125,16 +125,6 @@
                     </a>
                 </li>
                 
-                
-                
-                
-                
-                <li>
-                    <a href="{{url('options')}}">
-                        <i data-feather="activity"></i>
-                        <span> Options </span>
-                    </a>
-                </li>
                 <li>
                     <a href="{{url('modals')}}">
                         <i data-feather="users"></i>

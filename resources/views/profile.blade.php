@@ -178,64 +178,6 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="database_path" class="control-label">DATABASE PATH</label>
-                                    <input type="text" class="form-control" name="database_path" id="database_path"
-                                        value="{{ old('database_path', Auth::user()->database_path ?? '')}}"
-                                        placeholder="Enter Path">
-                                    @if($errors->has('database_path'))
-                                    <span class="text-danger" role="alert">
-                                        <strong>{{ $errors->first('database_path') }}</strong>
-                                    </span>
-                                    @endif
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="database_name" class="control-label">DATABASE NAME</label>
-                                    <input type="text" class="form-control" name="database_name" id="database_name"
-                                        value="{{ old('database_name', Auth::user()->database_name ?? '')}}"
-                                        placeholder="Enter database name">
-                                    @if($errors->has('database_name'))
-                                    <span class="text-danger" role="alert">
-                                        <strong>{{ $errors->first('database_name') }}</strong>
-                                    </span>
-                                    @endif
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="database_username" class="control-label">DATABASE USERNAME</label>
-                                    <input type="text" class="form-control" name="database_username"
-                                        id="database_username"
-                                        value="{{ old('database_username', Auth::user()->database_username ?? '')}}"
-                                        placeholder="Enter database username">
-                                    @if($errors->has('database_username'))
-                                    <span class="text-danger" role="alert">
-                                        <strong>{{ $errors->first('database_username') }}</strong>
-                                    </span>
-                                    @endif
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="database_password" class="control-label">DATABASE PASSWORD</label>
-                                    <input type="text" class="form-control" name="database_password"
-                                        id="database_password"
-                                        value="{{ old('database_password', Auth::user()->database_password ?? '')}}"
-                                        placeholder="Enter database password">
-                                    @if($errors->has('database_password'))
-                                    <span class="text-danger" role="alert">
-                                        <strong>{{ $errors->first('database_password') }}</strong>
-                                    </span>
-                                    @endif
-                                </div>
-                            </div>
-                        </div>
 
                         <div class="row">
                             <div class="col-md-6">

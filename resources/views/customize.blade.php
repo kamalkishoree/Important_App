@@ -27,7 +27,6 @@
                     </p>
                     <div class="row mb-2">
                         <div class="col-sm-12">
-                            <p class="text-muted mb-2">SELECT THEME PREFERENCE</p>
                             <div class="radio radio-info form-check-inline">
                                 <input type="radio" id="light_theme" value="light" name="theme"
                                     {{ ($preference->theme =="light")? "checked" : "" }}>
@@ -59,7 +58,7 @@
                     <div class="row mb-2">
                         <div class="col-md-6">
                             <div class="form-group mb-3">
-                                <label for="agent_type">AGENT TYPE</label>
+                                <label for="agent_type">AGENT NAME</label>
                                 <input type="text" name="agent_name" id="agent_type" placeholder="e.g Driver"
                                     class="form-control" value="{{ old('agent_type', $preference->agent_name ?? '')}}">
                                 @if($errors->has('agent_name'))
@@ -91,19 +90,18 @@
                     <div class="row mb-2">
 
                         <div class="col-md-6">
-                            <div class="form-group mb-3">
-                                <label for="currency">UNIT</label>
-                                <select class="form-control" id="currency" name="distance_unit">
-                                    <option value="Kilometers"
-                                        {{ ($preference->distance_unit =="Kilometers")? "selected" : "" }}>
-                                        Kilometers</option>
-                                    <option value="Meters"
-                                        {{ ($preference->distance_unit =="Meters")? "selected" : "" }}>
-                                        Meters</option>
-                                    <option value="Centimeters"
-                                        {{ ($preference->distance_unit =="Centimeters")? "selected" : "" }}>
-                                        Centimeters</option>
-                                </select>
+                            <label>UNIT</label>
+                            <div class="col-sm-12">
+                                <div class="radio radio-info form-check-inline">
+                                    <input type="radio" id="metric" value="metric" name="distance_unit"
+                                        {{ ($preference->distance_unit =="metric")? "checked" : "" }}>
+                                    <label for="metric"> metric</label>
+                                </div>
+                                <div class="radio form-check-inline">
+                                    <input type="radio" id="imperial" value="imperial" name="distance_unit"
+                                        {{ ($preference->distance_unit =="imperial")? "checked" : "" }}>
+                                    <label for="imperial"> imperial</label>
+                                </div>
                                 @if($errors->has('distance_unit'))
                                 <span class="text-danger" role="alert">
                                     <strong>{{ $errors->first('distance_unit') }}</strong>
@@ -193,7 +191,7 @@
                 <div class="card-box">
                     <h4 class="header-title">Tracking URL</h4>
                     <p class="sub-header">
-                        Customize the tracking URL.
+                        Customize the Tracking URL.
                     </p>
                     <p class="sub-header m-0">
                         Preview
@@ -203,42 +201,9 @@
                             style="text-decoration: underline;">Pickup</code>/<code
                             style="text-decoration: underline;">00023</code>
                     </p>
-                    <div class="row mb-2">
 
-                        <div class="col-md-6">
-                            <div class="form-group mb-3">
-                                <label for="task_type">PART 1</label>
-                                <select class="form-control" id="task_type" name="task_type">
-                                    <option>Task Type</option>
-                                    <option value="Pickup" {{ ($preference->task_type =="Pickup")? "selected" : "" }}>
-                                        Pickup</option>
-                                </select>
-                                @if($errors->has('task_type'))
-                                <span class="text-danger" role="alert">
-                                    <strong>{{ $errors->first('task_type') }}</strong>
-                                </span>
-                                @endif
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group mb-3">
-                                <label for="order_id">PART 2</label>
-                                <select class="form-control" id="order_id" name="order_id">
-                                    <option>Order Id</option>
-                                    <option value="1001" {{ ($preference->order_id =="1001")? "selected" : "" }}>1001
-                                    </option>
-                                </select>
-                                @if($errors->has('order_id'))
-                                <span class="text-danger" role="alert">
-                                    <strong>{{ $errors->first('order_id') }}</strong>
-                                </span>
-                                @endif
-                            </div>
-                        </div>
-                    </div>
-
-                    <h4 class="header-title">Allow Feedback on tracking Url</h4>
-                    <div class="row mb-2">
+                    <h4 class="header-title">Allow Feedback on Tracking Url</h4>
+                    <div class="row mb-2" style="margin-left: 0px;">
                         <div class="col-sm-12">
                             <div class="radio radio-info form-check-inline">
                                 <input type="radio" id="feedback1" value="y" name="allow_feedback_tracking_url"
