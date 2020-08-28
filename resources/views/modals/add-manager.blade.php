@@ -45,11 +45,7 @@
                             <div class="form-group" id="phone_numberInput">
                                 <label for="phone_number" class="control-label">CONTACT NUMBER</label>
                                 <div class="input-group">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text" id="basic-addon1">+91</span>
-                                    </div>
-                                    <input type="text" name="phone_number" class="form-control" id="phone_number"
-                                        placeholder="Enter mobile number">
+                                    <input type="text" name="phone_number" class="form-control" id="phone_number">
                                 </div>
                                 <span class="invalid-feedback" role="alert">
                                     <strong></strong>

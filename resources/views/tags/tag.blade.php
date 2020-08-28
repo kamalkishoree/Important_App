@@ -42,7 +42,7 @@
                     <div class="row mb-2">
                         <div class="col-md-6">
                             <div class="text-sm-left">
-                                Tag for Agent
+                                Tag for {{ auth()->user()->getPreference->agent_name ?? 'Agents' }}
                             </div>
                         </div>
                         <div class="col-md-6 text-right">

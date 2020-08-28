@@ -40,7 +40,7 @@
     <div class="row">
         <div class="col-12">
             <div class="page-title-box">
-                <h4 class="page-title">Agents</h4>
+                <h4 class="page-title">{{ auth()->user()->getPreference->agent_name ?? 'Agents' }}</h4>
             </div>
         </div>
     </div>
@@ -61,7 +61,7 @@
                         </div>
                         <div class="col-sm-4 text-right">
                         <button type="button" class="btn btn-danger waves-effect waves-light" data-toggle="modal"
-                        data-target="#add-agent-modal" data-backdrop="static" data-keyboard="false"><i class="mdi mdi-plus-circle mr-1"></i> Add Agent</button>
+                        data-target="#add-agent-modal" data-backdrop="static" data-keyboard="false"><i class="mdi mdi-plus-circle mr-1"></i> Add {{ auth()->user()->getPreference->agent_name ?? 'Agent' }}</button>
                         </div>
 
                     </div>

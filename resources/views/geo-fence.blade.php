@@ -79,7 +79,7 @@
                         <div class="form-group mb-3">
                             <div class="custom-control custom-checkbox">
                                 <input type="checkbox" class="custom-control-input" id="checkmeout0">
-                                <label class="custom-control-label" for="checkmeout0">All Agents</label>
+                                <label class="custom-control-label" for="checkmeout0">All {{ auth()->user()->getPreference->agent_name ?? 'Agents' }}</label>
                             </div>
                         </div>
                     </div>
@@ -88,7 +88,7 @@
                 <div class="row mb-2">
                     <div class="col-md-12">
                         <div class="form-group mb-3 agent-selection">
-                            <label>AGENT(S)</label>
+                            <label>{{ auth()->user()->getPreference->agent_name ?? 'Agents' }}</label>
                             <select class="form-control select2-multiple" data-toggle="select2" multiple="multiple"
                                     data-placeholder="Choose ..." name="agents[]" id="agents">
                                 @foreach($agents as $agent)

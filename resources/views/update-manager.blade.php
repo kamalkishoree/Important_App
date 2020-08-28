@@ -3,6 +3,25 @@
 @section('css')
 <link href="{{asset('assets/libs/dropzone/dropzone.min.css')}}" rel="stylesheet" type="text/css" />
 <link href="{{asset('assets/libs/dropify/dropify.min.css')}}" rel="stylesheet" type="text/css" />
+<link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/8.4.6/css/intlTelInput.css'>
+<style>
+// workaround
+.intl-tel-input {
+  display: table-cell;
+}
+.intl-tel-input .selected-flag {
+  z-index: 4;
+}
+.intl-tel-input .country-list {
+  z-index: 5;
+}
+.input-group .intl-tel-input .form-control {
+  border-top-left-radius: 4px;
+  border-top-right-radius: 0;
+  border-bottom-left-radius: 4px;
+  border-bottom-right-radius: 0;
+}
+</style>
 @endsection
 
 @section('content')
@@ -69,9 +88,6 @@
                                     <div class="form-group" id="phone_numberInput">
                                         <label for="phone_number" class="control-label">CONTACT NUMBER</label>
                                         <div class="input-group">
-                                            <div class="input-group-prepend">
-                                                <span class="input-group-text" id="basic-addon1">+91</span>
-                                            </div>
                                             <input type="text" name="phone_number" class="form-control" id="phone_number"
                                                 placeholder="Enter mobile number" value="{{ old('phone_number', $manager->phone_number ?? '')}}">
                                         </div>
@@ -202,6 +218,36 @@
 <script src="{{asset('assets/libs/dropify/dropify.min.js')}}"></script>
 <!-- Page js-->
 <script src="{{asset('assets/js/pages/form-fileuploads.init.js')}}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/8.4.7/js/intlTelInput.js"></script>
 
+<script>
+$("#phone_number").intlTelInput({
+  utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/8.4.6/js/utils.js"
+});
+$('.intl-tel-input').css('width','100%');
 
+var regEx = /\(?([0-9]{3})\)?([ .-]?)([0-9]{3})\2([0-9]{4})/;
+$("#updateManager").bind("submit", function() {
+       var val = $("#phone_number").val();
+       if (!val.match(regEx)) {
+            $('#phone_number').css('color','red');
+            return false;
+        }
+});
+
+$(function(){
+    $('#phone_number').focus(function(){
+        $('#phone_number').css('color','#6c757d');
+    });
+});
+
+$(document).ready( function () {
+    $('#agents-datatable').DataTable();
+});
+
+$(document).ready( function () {
+    $('#basic-datatable').DataTable();
+});
+</script>
 @endsection

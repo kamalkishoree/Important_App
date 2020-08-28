@@ -130,7 +130,7 @@
                     </div>
                 </div>
 
-                <h4 class="header-title mb-3">Agents</h4>
+                <h4 class="header-title mb-3">{{ auth()->user()->getPreference->agent_name ?? 'Agents' }}</h4>
 
                 <div class="table-responsive">
                     <table class="table table-borderless table-nowrap table-hover table-centered m-0">

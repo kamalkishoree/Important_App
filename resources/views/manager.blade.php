@@ -10,6 +10,25 @@
 
 <link href="{{asset('assets/libs/dropzone/dropzone.min.css')}}" rel="stylesheet" type="text/css" />
 <link href="{{asset('assets/libs/dropify/dropify.min.css')}}" rel="stylesheet" type="text/css" />
+<link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/8.4.6/css/intlTelInput.css'>
+<style>
+// workaround
+.intl-tel-input {
+  display: table-cell;
+}
+.intl-tel-input .selected-flag {
+  z-index: 4;
+}
+.intl-tel-input .country-list {
+  z-index: 5;
+}
+.input-group .intl-tel-input .form-control {
+  border-top-left-radius: 4px;
+  border-top-right-radius: 0;
+  border-bottom-left-radius: 4px;
+  border-bottom-right-radius: 0;
+}
+</style>
 @endsection
 
 @section('content')
@@ -125,33 +144,38 @@
 <script src="{{asset('assets/libs/dropify/dropify.min.js')}}"></script>
 <!-- Page js-->
 <script src="{{asset('assets/js/pages/form-fileuploads.init.js')}}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/8.4.7/js/intlTelInput.js"></script>
 
-<!-- @parent
+<script>
+$("#phone_number").intlTelInput({
+  utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/8.4.6/js/utils.js"
+});
+$('.intl-tel-input').css('width','100%');
 
-@if(count($errors->add) > 0)
-<script>
-$(function() {
-    $('#add-client-modal').modal({
-        show: true
+var regEx = /\(?([0-9]{3})\)?([ .-]?)([0-9]{3})\2([0-9]{4})/;
+$("#addManager").bind("submit", function() {
+       var val = $("#phone_number").val();
+       if (!val.match(regEx)) {
+            $('#phone_number').css('color','red');
+            return false;
+        }
+});
+
+$(function(){
+    $('#phone_number').focus(function(){
+        $('#phone_number').css('color','#6c757d');
     });
 });
-</script>
-@elseif(count($errors->update) > 0)
-<script>
-$(function() {
-    $('#update-client-modal').modal({
-        show: true
-    });
+
+$(document).ready( function () {
+    $('#agents-datatable').DataTable();
 });
-</script>
-@endif
-@if(\Session::has('getClient'))
-<script>
-$(function() {
-    $('#update-client-modal').modal({
-        show: true
-    });
+
+$(document).ready( function () {
+    $('#basic-datatable').DataTable();
 });
+
+
 </script>
-@endif -->
 @endsection

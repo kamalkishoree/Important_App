@@ -81,7 +81,7 @@
                 <li>
                     <a href="{{url('agent')}}">
                         <i data-feather="users"></i>
-                        <span> Agents </span>
+                        <span> {{ auth()->user()->getPreference->agent_name ?? 'Agents' }}</span>
                     </a>
                 </li>
 
