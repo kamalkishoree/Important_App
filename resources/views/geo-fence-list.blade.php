@@ -34,23 +34,28 @@
         </div>
     </div>
 
+    <div class="row">
+        <div class="col-12">
+            <div class="text-sm-left">
+                @if (\Session::has('success'))
+                <div class="alert alert-success">
+                    <span>{!! \Session::get('success') !!}</span>
+                </div>
+                @endif
+            </div>
+        </div>
+    </div>
+
 
     <!-- end page title -->
     <div class="row">
         <div class="col-3">
             <div class="card">
                 <div class="card-body">
+
                     <div class="row mb-2">
-                        <div class="col-sm-2">
-                            <div class="text-sm-left">
-                                @if (\Session::has('success'))
-                                <div class="alert alert-success">
-                                    <span>{!! \Session::get('success') !!}</span>
-                                </div>
-                                @endif
-                            </div>
-                        </div>
-                        <div class="col-sm-10 text-right">
+                        
+                        <div class="col-sm-12 text-right">
                             <a href="{{ route('geo-fence.index') }}"><button type="button" class="btn btn-danger waves-effect waves-light"><i class="mdi mdi-plus-circle mr-1"></i>Add GeoFence</button></a>
                         </div>
 
