@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Model\Client;
 use App\Model\ClientPreference;
+use App\Model\Currency;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Config;
@@ -251,7 +252,8 @@ class ClientController extends Controller
     */
     public function ShowPreference(){
         $preference = Auth::user()->getPreference;
-        return view('customize')->with(['preference' => $preference]);
+        $currencies = Currency::orderBy('iso_code')->get();
+        return view('customize')->with(['preference' => $preference,'currencies'=>$currencies]);
     }
 
 

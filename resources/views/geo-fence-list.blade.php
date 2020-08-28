@@ -10,6 +10,14 @@
 
 <link href="{{asset('assets/libs/dropzone/dropzone.min.css')}}" rel="stylesheet" type="text/css" />
 <link href="{{asset('assets/libs/dropify/dropify.min.css')}}" rel="stylesheet" type="text/css" />
+<style>
+    #map-canvas {
+  height: 90%;
+  margin: 0px;
+  padding: 0px;
+  position: unset;
+}
+</style>
 @endsection
 
 @section('content')
@@ -25,13 +33,15 @@
             </div>
         </div>
     </div>
+
+
     <!-- end page title -->
     <div class="row">
-        <div class="col-12">
+        <div class="col-3">
             <div class="card">
                 <div class="card-body">
                     <div class="row mb-2">
-                        <div class="col-sm-8">
+                        <div class="col-sm-2">
                             <div class="text-sm-left">
                                 @if (\Session::has('success'))
                                 <div class="alert alert-success">
@@ -40,7 +50,7 @@
                                 @endif
                             </div>
                         </div>
-                        <div class="col-sm-4 text-right">
+                        <div class="col-sm-10 text-right">
                             <a href="{{ route('geo-fence.index') }}"><button type="button" class="btn btn-danger waves-effect waves-light"><i class="mdi mdi-plus-circle mr-1"></i>Add GeoFence</button></a>
                         </div>
 
@@ -51,7 +61,6 @@
                             <thead>
                                 <tr>
                                     <th>Name</th>
-                                    <th>Desciption</th>
                                     <th style="width: 85px;">Action</th>
                                 </tr>
                             </thead>
@@ -61,9 +70,6 @@
                                     <td class="table-user">
                                         <a href="javascript:void(0);"
                                             class="text-body font-weight-semibold">{{$geo->name}}</a>
-                                    </td>
-                                    <td>
-                                        {{$geo->description}}
                                     </td>
 
                                     <td>
@@ -87,13 +93,18 @@
                             </tbody>
                         </table>
                     </div>
-                    <div class="pagination pagination-rounded justify-content-end mb-0">
-                        {{ $geos->links() }}
-                    </div>
 
                 </div> <!-- end card-body-->
             </div> <!-- end card-->
         </div> <!-- end col -->
+
+
+        <div class="col-9">
+            <div class="card-box" style="height:500px;">
+                <div id="map-canvas"></div>
+            </div>
+        </div>
+
     </div>
 
 
@@ -101,49 +112,51 @@
 @endsection
 
 @section('script')
+<!-- google maps api -->
+<script src="https://maps.google.com/maps/api/js?key=AIzaSyB85kLYYOmuAhBUPd7odVmL6gnQsSGWU-4&v=3.exp&libraries=drawing"></script>
 
-<!-- Plugins js-->
-<script src="{{asset('assets/libs/flatpickr/flatpickr.min.js')}}"></script>
-<script src="{{asset('assets/libs/select2/select2.min.js')}}"></script>
-<script src="{{asset('assets/libs/bootstrap-select/bootstrap-select.min.js')}}"></script>
-<!-- Page js-->
-<script src="{{asset('assets/js/pages/form-advanced.init.js')}}"></script>
-<script src="{{asset('assets/js/pages/form-pickers.init.js')}}"></script>
-
-<script src="{{asset('assets/js/storeAgent.js')}}"></script>
-
-<!-- for File Upload -->
-<script src="{{asset('assets/libs/dropzone/dropzone.min.js')}}"></script>
-<script src="{{asset('assets/libs/dropify/dropify.min.js')}}"></script>
-<!-- Page js-->
-<script src="{{asset('assets/js/pages/form-fileuploads.init.js')}}"></script>
-
-<!-- @parent
-
-@if(count($errors->add) > 0)
 <script>
-$(function() {
-    $('#add-client-modal').modal({
-        show: true
-    });
-});
+    var no_parking_geofences_json = {!! json_encode($all_coordinates) !!};
+
+    var map; // Global declaration of the map
+    function initialize() {     
+
+      var myLatlng = new google.maps.LatLng({{ $center['lat'] }},{{ $center['lng']  }});
+      console.log(myLatlng);
+      var myOptions = {
+        zoom: parseInt(10),
+        center: myLatlng,
+        mapTypeId: google.maps.MapTypeId.ROADMAP
+      }
+      map = new google.maps.Map(document.getElementById("map-canvas"), myOptions);     
+
+
+      for (var i = 0, length = no_parking_geofences_json.length; i < length; i++) {
+      data = no_parking_geofences_json[i];
+
+      var infowindow = new google.maps.InfoWindow();
+      var no_parking_geofences_json_geo_area = new google.maps.Polygon({
+        paths: data.coordinates,
+        strokeColor: '#FF0000',
+        strokeOpacity: 0.8,
+        strokeWeight: 2,
+        fillColor: '#ff0000',
+        fillOpacity: 0.35,
+        geo_name: data.name,
+        geo_pos: data.coordinates[0]
+      });
+
+      no_parking_geofences_json_geo_area.setMap(map);
+
+    }
+
+
+    }
+
+
+    google.maps.event.addDomListener(window, 'load', initialize);
+
+
 </script>
-@elseif(count($errors->update) > 0)
-<script>
-$(function() {
-    $('#update-client-modal').modal({
-        show: true
-    });
-});
-</script>
-@endif
-@if(\Session::has('getClient'))
-<script>
-$(function() {
-    $('#update-client-modal').modal({
-        show: true
-    });
-});
-</script>
-@endif -->
+
 @endsection

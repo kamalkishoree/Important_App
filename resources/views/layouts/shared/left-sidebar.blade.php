@@ -80,7 +80,7 @@
                 </li>
 
                 <li>
-                    <a href="{{url('geo-fence')}}">
+                    <a href="{{route('geo.fence.list')}}">
                         <i data-feather="map"></i>
                         <span> Geo Fence </span>
                     </a>

@@ -31,8 +31,26 @@ class GeoFenceController extends Controller
     }
 
     public function allList(){
-        $geos = Geo::where('client_id',auth()->user()->id)->orderBy('created_at', 'DESC')->paginate(10);
-        return view('geo-fence-list')->with(['geos' => $geos]);
+        $all_coordinates = [];
+        $geos = Geo::where('client_id',auth()->user()->id)->orderBy('created_at', 'DESC')->get();
+        foreach($geos as $k=>$v){
+            $all_coordinates[] =[
+                'name' => 'abc',
+                'coordinates' => $v->geo_coordinates
+            ]; 
+        }
+
+        $center = [
+            'lat' => 30.0612323,
+            'lng' => 76.1239239
+        ];
+
+        if(!empty($all_coordinates)){
+            $center['lat'] = $all_coordinates[0]['coordinates'][0]['lat'];
+            $center['lng'] = $all_coordinates[0]['coordinates'][0]['lng'];
+        }
+
+        return view('geo-fence-list')->with(['geos' => $geos,'all_coordinates'=>$all_coordinates,'center'=>$center]);
     }
     
 

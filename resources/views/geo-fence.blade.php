@@ -113,7 +113,6 @@
         </div>
         <div class="col-lg-7">
             <div class="card-box" style="height:500px;">
-                <h4 class="header-title mb-3">Polygon</h4>
                 <!-- <div id="gmaps-basic" class="gmaps"></div> -->
                 <div id="map-canvas"></div>
             </div>

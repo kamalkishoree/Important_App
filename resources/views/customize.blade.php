@@ -72,12 +72,10 @@
                             <div class="form-group mb-3">
                                 <label for="currency">CURRENCY</label>
                                 <select class="form-control" id="currency" name="currency_id">
-                                    <option value="1" {{ ($preference->currency_id =="1")? "selected" : "" }}>INR
+                                    @foreach($currencies as $currency)
+                                    <option value="{{ $currency->id }}" {{ ($preference->currency_id == $currency->id)? "selected" : "" }}>{{ $currency->iso_code }} - {{ $currency->symbol }}
                                     </option>
-                                    <option value="2" {{ ($preference->currency_id =="2")? "selected" : "" }}>USD
-                                    </option>
-                                    <option value="3" {{ ($preference->currency_id =="3")? "selected" : "" }}>AED
-                                    </option>
+                                    @endforeach
                                 </select>
                                 @if($errors->has('currency_id'))
                                 <span class="text-danger" role="alert">
