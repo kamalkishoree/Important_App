@@ -181,4 +181,11 @@ class TeamController extends Controller
         Team::where('id',$id)->where('client_id',auth()->user()->id)->delete();
         return redirect()->back()->with('success', 'Team deleted successfully!');
     }
+
+    public function removeTeamAgent(Request $request,$team_id,$agent_id){
+        Agent::where('id',$agent_id)->update([
+            'team_id' => null
+        ]);
+        return redirect()->back()->with('success', 'Agent removed successfully!');
+    }
 }

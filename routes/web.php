@@ -37,6 +37,7 @@ Route::resource('profile', 'ProfileController');
 Route::resource('geo-fence', 'GeoFenceController');
 Route::get('geo-fence-all', 'GeoFenceController@allList')->name('geo.fence.list');
 Route::resource('team', 'TeamController');
+Route::delete('team-agent/{team_id}/{agent_id}','TeamController@removeTeamAgent')->name('team.agent.destroy');
 Route::resource('notifications','ClientNotificationController');
 Route::post('notification_update','ClientNotificationController@updateClientNotificationEvent')->name('notification.update.client');
 Route::post('set_webhook_url','ClientNotificationController@setWebhookUrl')->name('set.webhook.url');
