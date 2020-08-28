@@ -61,6 +61,12 @@
                     </a>
                 </li>
                 <li>
+                    <a href="{{url('change-password')}}">
+                        <i data-feather="lock"></i>
+                        <span> Change Password </span>
+                    </a>
+                </li>
+                <li>
                     <a href="{{url('customize')}}">
                         <i data-feather="rss"></i>
                         <span> Customize </span>
@@ -132,13 +138,7 @@
                     </a>
                 </li>
                 
-                <li>
-                    <a href="{{url('change-password')}}">
-                        <i data-feather="lock"></i>
-                        <span> Change Password </span>
-                    </a>
-                </li>
-
+            @if(env('APP_DEBUG'))
                 <li class="menu-title mt-5">Other Pages</li>
 
                 <li>
@@ -833,6 +833,7 @@
                         </ul>
                     </div>
                 </li>
+                @endif
             </ul>
 
         </div>

@@ -74,7 +74,7 @@
                 @csrf
                 @method('PUT')
                 <div class="card-box">
-                    <h4 class="header-title">Options</h4>
+                    <h4 class="header-title">Auto Allocation</h4>
                     <div class="row mb-2">
                         <div class="col-sm-8">
                             <div class="text-sm-left">
@@ -370,6 +370,17 @@ forced to nearest
         $('.custom-logic').change(function(){
             $('.detail-desc').hide();
             $('#'+$(this).val()).show();
+        });
+    });
+
+    $(function(){
+        $('#manual_allocation').change(function(){
+            var checked = $('#manual_allocation').prop('checked');
+            if(checked){
+                $('.custom-logic').attr('disabled',false);
+            }else{
+                $('.custom-logic').attr('disabled',true);
+            }
         });
     });
 </script>

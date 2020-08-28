@@ -104,7 +104,7 @@ class GeoFenceController extends Controller
             ]);
         }
 
-        return redirect()->back();
+        return redirect()->route('geo.fence.list')->with('success', 'Added successfully!');
     }
 
     /**
