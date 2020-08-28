@@ -67,7 +67,7 @@
                     </div>
 
                     <div class="table-responsive">
-                        <table class="table table-centered table-nowrap table-striped" id="products-datatable">
+                        <table class="table table-striped dt-responsive nowrap w-100"  id="agents-datatable">
                             <thead>
                                 <tr>
                                     <th>Name</th>
@@ -126,9 +126,6 @@
                             </tbody>
                         </table>
                     </div>
-                    <div class="pagination pagination-rounded justify-content-end mb-0">
-                        {{ $agents->links() }}
-                    </div>
 
                 </div> <!-- end card-body-->
             </div> <!-- end card-->
@@ -157,8 +154,11 @@
 <!-- Page js-->
 <script src="{{asset('assets/js/pages/form-fileuploads.init.js')}}"></script>
 
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/8.4.7/js/intlTelInput.js"></script>
+
+<script src="{{asset('assets/libs/datatables/datatables.min.js')}}"></script>
 
 <script>
 $("#phone_number").intlTelInput({
@@ -180,6 +180,16 @@ $(function(){
         $('#phone_number').css('color','#6c757d');
     });
 });
+
+$(document).ready( function () {
+    $('#agents-datatable').DataTable();
+});
+
+$(document).ready( function () {
+    $('#basic-datatable').DataTable();
+});
+
+
 </script>
 
 @endsection

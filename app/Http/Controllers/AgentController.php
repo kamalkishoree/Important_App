@@ -16,7 +16,7 @@ class AgentController extends Controller
      */
     public function index()
     {
-        $agents = Agent::orderBy('created_at', 'DESC')->paginate(10);
+        $agents = Agent::orderBy('created_at', 'DESC')->get();
         return view('agent')->with(['agents' => $agents]);
     }
 
