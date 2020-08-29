@@ -242,12 +242,5 @@ $(function(){
     });
 });
 
-$(document).ready( function () {
-    $('#agents-datatable').DataTable();
-});
-
-$(document).ready( function () {
-    $('#basic-datatable').DataTable();
-});
 </script>
 @endsection

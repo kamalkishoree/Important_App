@@ -14,6 +14,7 @@
 
 @section('content')
 @include('modals.add-team')
+@include('modals.update-team')
 <div class="container-fluid">
     <div class="row">
         <div class="col-xl-4">
@@ -106,8 +107,18 @@
                 </div>
 
                 <div>
-                    <a href="{{route('team.edit', $team->id)}}" class="action-icon"> <i
-                                                class="mdi mdi-square-edit-outline"></i></a>
+                    <center>
+                    <button type="button" class="btn btn-danger waves-effect waves-light open_edit_modal" data-toggle="modal"
+                            data-target="#edit-team-modal" data-backdrop="static" data-keyboard="false"
+                            data-id="{{ $team->id }}"
+                            data-name="{{ $team->name}}" 
+                            data-manager-id="{{ $team->manager_id }}"
+                            data-location-accuracy="{{ $team->location_accuracy}}"
+                            data-location-frequency="{{ $team->location_frequency }}"
+                            data-tags="{{ $team->tags()->pluck('tag_id') }}"
+                            data-url="{{ route('team.update',$team->id) }}"
+                            ><i class="mdi mdi-plus-circle mr-1"></i> Edit Team</button>
+                    </center>
                 </div>
             </div> <!-- end card-box-->
         </div>
@@ -196,6 +207,30 @@ $('.delete-team-form').on('submit', function() {
         return true;
     }
     return false;
+});
+
+$(document).on('click','.open_edit_modal',function(){
+    var url = $(this).attr('data-url');
+    var team_id = $(this).attr('data-id');
+    var name    = $(this).attr('data-name');
+    var manager_id = $(this).attr('data-manager-id');
+    var location_accuracy = $(this).attr('data-location-accuracy');
+    var location_frequency= $(this).attr('data-location-frequency');
+    var tags= $(this).attr('data-tags');
+    var tagsArray = JSON.parse(tags);
+
+    // set the values in the edit-modal //
+    $('#updateTeam').attr('action',url);
+    $('#updateTeam').find('input[name=name]').val(name);
+    $('#updateTeam').find('select[name=manager_id]').val(manager_id);
+    $('#updateTeam').find('select[name=location_accuracy]').val(location_accuracy);
+    $('#updateTeam').find('select[name=location_frequency]').val(location_frequency);
+
+    $.each(tagsArray, function(i,e){
+        $("#tagsUpdate option[value='" + e + "']").prop("selected", true);
+    });
+    $('#tagsUpdate').trigger('change');
+
 });
 
 </script>

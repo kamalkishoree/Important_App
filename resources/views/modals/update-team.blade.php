@@ -3,11 +3,12 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title">Add Team</h4>
+                <h4 class="modal-title">Edit Team</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
             </div>
-            <form id="" action="{{ route('team.store') }}" method="POST">
+            <form id="updateTeam" action="{{ route('team.store') }}" method="POST">
                 @csrf
+                @method('PUT')
                 <div class="modal-body p-4">
                     <div class="row">
                         <div class="col-md-6">
@@ -60,7 +61,7 @@
                             <div class="form-group" id="tagsInput">
                                 <label for="tags" class="control-label">ADD TAGS</label>
                                 <select class="form-control select2-multiple" data-toggle="select2" multiple="multiple"
-                                    data-placeholder="Choose ..." name="tags[]" id="tags">
+                                    data-placeholder="Choose ..." name="tagsUpdate[]" id="tagsUpdate">
                                     @foreach($tags as $tag)
                                     <option value="{{$tag->id}}">{{$tag->name}}</option>
                                     @endforeach
