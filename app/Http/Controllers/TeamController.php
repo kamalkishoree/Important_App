@@ -165,7 +165,7 @@ class TeamController extends Controller
             'location_frequency'=>$request->location_frequency    
         ];
 
-        $getTeam->tags()->sync($request->tags);
+        $getTeam->tags()->sync($request->tagsUpdate);
         $team = Team::where('id', $id)->update($data);
         return redirect()->back()->with('success', 'Team Updated successfully!');
     }
