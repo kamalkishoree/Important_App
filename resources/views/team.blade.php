@@ -52,7 +52,7 @@
 
 
                                 <td>
-                                    <a href="{{route('team.edit', $team->id)}}" class="btn btn-xs btn-light"><i class="mdi mdi-pencil"></i></a>
+                                    <!-- <a href="{{route('team.edit', $team->id)}}" class="btn btn-xs btn-light"><i class="mdi mdi-pencil"></i></a> -->
                                 
                                 <form method="POST" action="{{route('team.destroy', $team->id)}}" class="delete-team-form" data-team-agent-count="{{ $team->agents->count() }}">
                                     @csrf
