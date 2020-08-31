@@ -29,12 +29,12 @@
                         <div class="col-sm-12">
                             <div class="radio radio-info form-check-inline">
                                 <input type="radio" id="light_theme" value="light" name="theme"
-                                    {{ ($preference->theme =="light")? "checked" : "" }}>
+                                    {{ ($preference && $preference->theme =="light")? "checked" : "" }}>
                                 <label for="light_theme"> Light theme </label>
                             </div>
                             <div class="radio form-check-inline">
                                 <input type="radio" id="dark_theme" value="dark" name="theme"
-                                    {{ ($preference->theme =="dark")? "checked" : "" }}>
+                                    {{ ($preference &&  $preference->theme =="dark")? "checked" : "" }}>
                                 <label for="dark_theme"> Dark theme </label>
                             </div>
                             @if($errors->has('theme'))
@@ -73,7 +73,7 @@
                                 <label for="currency">CURRENCY</label>
                                 <select class="form-control" id="currency" name="currency_id">
                                     @foreach($currencies as $currency)
-                                    <option value="{{ $currency->id }}" {{ ($preference->currency_id == $currency->id)? "selected" : "" }}>{{ $currency->iso_code }} - {{ $currency->symbol }}
+                                    <option value="{{ $currency->id }}" {{ ($preference && $preference->currency_id == $currency->id)? "selected" : "" }}>{{ $currency->iso_code }} - {{ $currency->symbol }}
                                     </option>
                                     @endforeach
                                 </select>
@@ -92,12 +92,12 @@
                             <div class="col-sm-12">
                                 <div class="radio radio-info form-check-inline">
                                     <input type="radio" id="metric" value="metric" name="distance_unit"
-                                        {{ ($preference->distance_unit =="metric")? "checked" : "" }}>
+                                        {{ ($preference && $preference->distance_unit =="metric")? "checked" : "" }}>
                                     <label for="metric"> metric</label>
                                 </div>
                                 <div class="radio form-check-inline">
                                     <input type="radio" id="imperial" value="imperial" name="distance_unit"
-                                        {{ ($preference->distance_unit =="imperial")? "checked" : "" }}>
+                                        {{ ($preference && $preference->distance_unit =="imperial")? "checked" : "" }}>
                                     <label for="imperial"> imperial</label>
                                 </div>
                                 @if($errors->has('distance_unit'))
@@ -136,13 +136,13 @@
                                 <label for="date_format">DATE FORMAT</label>
                                 <select class="form-control" id="date_format" name="date_format">
                                     <option value="DD-MM-YYYY"
-                                        {{ ($preference->date_format =="DD-MM-YYYY")? "selected" : "" }}>
+                                        {{ ($preference && $preference->date_format =="DD-MM-YYYY")? "selected" : "" }}>
                                         DD-MM-YYYY</option>
                                     <option value="DD/MM/YYYY"
-                                        {{ ($preference->date_format =="DD/MM/YYYY")? "selected" : "" }}>
+                                        {{ ($preference && $preference->date_format =="DD/MM/YYYY")? "selected" : "" }}>
                                         DD/MM/YYYY</option>
                                     <option value="YYYY-MM-DD"
-                                        {{ ($preference->date_format =="YYYY-MM-DD")? "selected" : "" }}>
+                                        {{ ($preference && $preference->date_format =="YYYY-MM-DD")? "selected" : "" }}>
                                         YYYY-MM-DD</option>
                                 </select>
                                 @if($errors->has('date_format'))
@@ -156,9 +156,9 @@
                             <div class="form-group mb-3">
                                 <label for="time_format">TIME FORMAT</label>
                                 <select class="form-control" id="time_format" name="time_format">
-                                    <option value="12" {{ ($preference->time_format =="12")? "selected" : "" }}>12 hours
+                                    <option value="12" {{ ($preference && $preference->time_format =="12")? "selected" : "" }}>12 hours
                                     </option>
-                                    <option value="24" {{ ($preference->time_format =="24")? "selected" : "" }}>24 hours
+                                    <option value="24" {{ ($preference && $preference->time_format =="24")? "selected" : "" }}>24 hours
                                     </option>
                                 </select>
                                 @if($errors->has('time_format'))
@@ -205,12 +205,12 @@
                         <div class="col-sm-12">
                             <div class="radio radio-info form-check-inline">
                                 <input type="radio" id="feedback1" value="y" name="allow_feedback_tracking_url"
-                                    {{ ($preference->allow_feedback_tracking_url =="y")? "checked" : "" }}>
+                                    {{ ($preference && $preference->allow_feedback_tracking_url =="y")? "checked" : "" }}>
                                 <label for="feedback1"> Yes </label>
                             </div>
                             <div class="radio form-check-inline">
                                 <input type="radio" id="feedback2" value="n" name="allow_feedback_tracking_url"
-                                    {{ ($preference->allow_feedback_tracking_url =="n")? "checked" : "" }}>
+                                    {{ ($preference && $preference->allow_feedback_tracking_url =="n")? "checked" : "" }}>
                                 <label for="feedback2"> No </label>
                             </div>
                             @if($errors->has('allow_feedback_tracking_url'))
