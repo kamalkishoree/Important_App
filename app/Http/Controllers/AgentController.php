@@ -17,7 +17,8 @@ class AgentController extends Controller
     public function index()
     {
         $agents = Agent::orderBy('created_at', 'DESC')->get();
-        return view('agent')->with(['agents' => $agents]);
+        $teams  = Team::where('client_id',auth()->user()->id)->orderBy('name')->get();
+        return view('agent')->with(['agents' => $agents,'teams'=>$teams]);
     }
 
     /**
