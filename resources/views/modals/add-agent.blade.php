@@ -28,6 +28,7 @@
                                 <span class="invalid-feedback" role="alert">
                                     <strong></strong>
                                 </span>
+                                
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -35,7 +36,7 @@
                                 <label for="phone_number" class="control-label">CONTACT NUMBER</label>
                                 <div class="input-group">
                                     <input type="text" name="phone_number" class="form-control" id="phone_number"
-                                        placeholder="Enter mobile number">
+                                        placeholder="Enter mobile number" maxlength="12">
                                 </div>
                                 <span class="invalid-feedback" role="alert">
                                     <strong></strong>
@@ -60,8 +61,8 @@
                         <div class="col-md-6">
                             <div class="form-group" id="team_idInput">
                                 <label for="team_id" class="control-label">ASSIGN TEAM</label>
-                                <select class="selectpicker" data-style="btn-light" name="team_id" id="team_id">
-                                    <option>Select Team</option>
+                                <select class="selectpicker" data-style="btn-light" name="team_id" id="team_id" require>
+                                  <option hidden ="true"></option>
                                     @foreach($teams as $team)
                                     <option value="{{$team->id}}">{{$team->name}}</option>
                                     @endforeach
@@ -78,11 +79,11 @@
                         <div class="col-md-12">
                             <div class="form-group" id="vehicle_type_idInput">
                                 <p class="text-muted mt-3 mb-2">TRANSPORT TYPE</p>
-                                <div class="radio radio-primary form-check-inline">
+                                <div class="radio radio-blue form-check-inline">
                                     <input type="radio" id="onfoot" value="onfoot" name="vehicle_type_id" checked>
                                     <label for="onfoot"> On Foot </label>
                                 </div>
-                                <div class="radio radio-success form-check-inline">
+                                <div class="radio radio-primery form-check-inline">
                                     <input type="radio" id="bycycle" value="bycycle" name="vehicle_type_id">
                                     <label for="bycycle"> Bycycle </label>
                                 </div>
@@ -146,7 +147,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-info waves-effect waves-light">Add</button>
+                    <button type="submit" class="btn btn-blue waves-effect waves-light">Add</button>
                 </div>
             </form>
         </div>

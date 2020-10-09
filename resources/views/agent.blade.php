@@ -4,6 +4,7 @@
 <link href="{{asset('assets/libs/select2/select2.min.css')}}" rel="stylesheet" type="text/css" />
 <link href="{{asset('assets/libs/bootstrap-select/bootstrap-select.min.css')}}" rel="stylesheet" type="text/css" />
 <link href="{{asset('assets/libs/flatpickr/flatpickr.min.css')}}" rel="stylesheet" type="text/css" />
+<link href="{{asset('assets/libs/sweetalert2/sweetalert2.min.css')}}" rel="stylesheet" type="text/css" />
 
 
 <!-- for File Upload -->
@@ -60,7 +61,7 @@
                             </div>
                         </div>
                         <div class="col-sm-4 text-right">
-                        <button type="button" class="btn btn-danger waves-effect waves-light" data-toggle="modal"
+                        <button type="button" class="btn btn-blue waves-effect waves-light" data-toggle="modal"
                         data-target="#add-agent-modal" data-backdrop="static" data-keyboard="false"><i class="mdi mdi-plus-circle mr-1"></i> Add {{ auth()->user()->getPreference->agent_name ?? 'Agent' }}</button>
                         </div>
 
@@ -159,6 +160,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/8.4.7/js/intlTelInput.js"></script>
 
 <script src="{{asset('assets/libs/datatables/datatables.min.js')}}"></script>
+<script src="{{asset('assets/libs/sweetalert2/sweetalert2.min.js')}}"></script>
 
 <script>
 $("#phone_number").intlTelInput({
@@ -189,6 +191,8 @@ $(document).ready( function () {
     $('#basic-datatable').DataTable();
 });
 
+$("#phone_number").inputFilter(function(value) {
+  return /^-?\d*$/.test(value); });
 
 </script>
 

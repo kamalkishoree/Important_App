@@ -9,6 +9,7 @@
 <link href="{{asset('assets/libs/bootstrap-select/bootstrap-select.min.css')}}" rel="stylesheet" type="text/css" />
 <link href="{{asset('assets/libs/bootstrap-touchspin/bootstrap-touchspin.min.css')}}" rel="stylesheet"
     type="text/css" />
+<link href="{{asset('assets/libs/sweetalert2/sweetalert2.min.css')}}" rel="stylesheet" type="text/css" />
 
 
 <!-- for File Upload -->
@@ -41,7 +42,7 @@
         </div>
     </div>
 
-    <form id="" action="{{ route('geo-fence.store') }}" method="POST">
+    <form id="geo_form" action="{{ route('geo-fence.store') }}" method="POST">
     @csrf
     <input type="hidden" name="latlongs" value="" id="latlongs" />
     <input type="hidden" name="zoom_level" value="13" id="zoom_level" />
@@ -54,6 +55,11 @@
                         <div class="form-group mb-3">
                             <label for="name">Name</label>
                             <input type="text" name="name" id="name" placeholder="ABC Deliveries" class="form-control">
+                            @if($errors->has('name'))
+                                    <span class="text-danger" role="alert">
+                                        <strong>{{ $errors->first('name') }}</strong>
+                                    </span>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -75,6 +81,7 @@
                                 <option value="{{ $team->id }}">{{ $team->name }}</option>
                                 @endforeach
                             </select>
+                       
                         </div>
                         <div class="form-group mb-3">
                             <div class="custom-control custom-checkbox">
@@ -92,9 +99,14 @@
                             <select class="form-control select2-multiple" data-toggle="select2" multiple="multiple"
                                     data-placeholder="Choose ..." name="agents[]" id="agents">
                                 @foreach($agents as $agent)
-                                <option value="{{$agent->id}}" data-team-id={{ $agent->team_id }}>{{$agent->name}}</option>
+                                <option value="{{$agent->id}}"   data-team-id={{ $agent->team_id }}>{{$agent->name}}</option>
                                 @endforeach
                             </select>
+                            @if($errors->has('agents'))
+                                    <span class="text-danger" role="alert">
+                                        <strong>{{ $errors->first('agents') }}</strong>
+                                    </span>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -102,17 +114,17 @@
                 <div class="row">
                     <div class="col-md-6">
                         <button type="button"
-                            class="btn btn-block btn-outline-primary waves-effect waves-light">Cancel</button>
+                            class="btn btn-block btn-outline-blue waves-effect waves-light">Cancel</button>
                     </div>
                     <div class="col-md-6">
-                        <button type="submit" class="btn btn-block btn-primary waves-effect waves-light">Save</button>
+                        <button type="submit" class="btn btn-block btn-blue waves-effect waves-light">Save</button>
                     </div>
                 </div>
 
             </div>
         </div>
         <div class="col-lg-7">
-            <div class="card-box" style="height:500px;">
+            <div class="card-box" style="height:96%;">
                 <!-- <div id="gmaps-basic" class="gmaps"></div> -->
                 <div id="map-canvas"></div>
             </div>
@@ -136,6 +148,7 @@
 <script src="{{asset('assets/libs/bootstrap-maxlength/bootstrap-maxlength.min.js')}}"></script>
 <script src="{{asset('assets/libs/devbridge-autocomplete/devbridge-autocomplete.min.js')}}"></script>
 <script src="{{asset('assets/libs/jquery-mockjax/jquery-mockjax.min.js')}}"></script>
+<script src="{{asset('assets/libs/sweetalert2/sweetalert2.min.js')}}"></script>
 
 <!-- Plugins js-->
 <script src="{{asset('assets/libs/flatpickr/flatpickr.min.js')}}"></script>
@@ -253,6 +266,23 @@
             $('#agents').trigger('change');
         });
     });
+    
+    $("#geo_form").on("submit", function(e){
+        var lat  = $('#latlongs').val();
+        var trainindIdArray = lat.replace("[","").replace("]","").split(',');
+        var length = trainindIdArray.length;
+
+        if(length < 6){
+            Swal.fire(
+           'Select Location?',
+           'Please Drow a Location On Map first',
+           'question'
+          )
+          e.preventDefault();
+        }
+        
+       
+    })
 
     
 

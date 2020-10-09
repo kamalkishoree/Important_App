@@ -38,7 +38,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-info waves-effect waves-light">Add</button>
+                <button type="button" class="btn btn-blue waves-effect waves-light">Add</button>
             </div>
         </div>
     </div>

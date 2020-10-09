@@ -191,6 +191,7 @@ class AgentController extends Controller
      */
     public function destroy($id)
     {
-        //
+        Agent::where('id',$id)->delete();
+        return redirect()->back()->with('success', 'Agent deleted successfully!');
     }
 }

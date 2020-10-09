@@ -4,6 +4,7 @@
 <link href="{{asset('assets/libs/select2/select2.min.css')}}" rel="stylesheet" type="text/css" />
 <link href="{{asset('assets/libs/bootstrap-select/bootstrap-select.min.css')}}" rel="stylesheet" type="text/css" />
 <link href="{{asset('assets/libs/flatpickr/flatpickr.min.css')}}" rel="stylesheet" type="text/css" />
+<link href="{{asset('assets/libs/sweetalert2/sweetalert2.min.css')}}" rel="stylesheet" type="text/css" />
 
 
 <!-- for File Upload -->
@@ -24,11 +25,21 @@
                         <h4 class="header-title mb-3">Teams </h4>
                     </div>
                     <div class="col-sm-6">
-                        <button type="button" class="btn btn-danger waves-effect waves-light" data-toggle="modal"
+                        <button type="button" class="btn btn-blue waves-effect waves-light" style="margin-bottom: 20%;margin-left: 30%;" data-toggle="modal"
                             data-target="#add-team-modal" data-backdrop="static" data-keyboard="false"><i class="mdi mdi-plus-circle mr-1"></i> Add Team</button>
                     </div>
                 </div>
-
+                <div class="row">
+                  <div class="col-12">
+                       <div class="text-sm-left">
+                         @if (\Session::has('success'))
+                            <div class="alert alert-success">
+                                <span>{!! \Session::get('success') !!}</span>
+                            </div>
+                         @endif
+                       </div>
+                    </div>
+                </div>
                 <div class="table-responsive">
                     <table class="table table-borderless table-nowrap table-hover table-centered m-0">
 
@@ -108,7 +119,7 @@
 
                 <div>
                     <center>
-                    <button type="button" class="btn btn-danger waves-effect waves-light open_edit_modal" data-toggle="modal"
+                    <button type="button" class="btn btn-blue waves-effect waves-light open_edit_modal" data-toggle="modal"
                             data-target="#edit-team-modal" data-backdrop="static" data-keyboard="false"
                             data-id="{{ $team->id }}"
                             data-name="{{ $team->name}}" 
@@ -250,6 +261,7 @@ $(document).on('click','.open_edit_modal',function(){
 <script src="{{asset('assets/libs/dropify/dropify.min.js')}}"></script>
 <!-- Page js-->
 <script src="{{asset('assets/js/pages/form-fileuploads.init.js')}}"></script>
+<script src="{{asset('assets/libs/sweetalert2/sweetalert2.min.js')}}"></script>
 
 
 @endsection

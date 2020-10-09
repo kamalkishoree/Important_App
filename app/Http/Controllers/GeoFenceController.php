@@ -182,6 +182,6 @@ class GeoFenceController extends Controller
     public function destroy($id)
     {
         Geo::where('id',$id)->where('client_id',auth()->user()->id)->delete();
-        return redirect()->back()->with('success', 'Updated successfully!');
+        return redirect()->back()->with('success', 'Deleted successfully!');
     }
 }

@@ -89,7 +89,14 @@ class TeamController extends Controller
         $team = Team::create($data);
         $team->tags()->sync($request->tags);
 
-        return redirect()->back();
+        
+            return response()->json([
+                'status'=>'success',
+                'message' => 'Team Created Successfully!',
+            ]);
+        
+
+        //return redirect()->back();
     }
 
     /**
@@ -167,6 +174,7 @@ class TeamController extends Controller
 
         $getTeam->tags()->sync($request->tagsUpdate);
         $team = Team::where('id', $id)->update($data);
+        
         return redirect()->back()->with('success', 'Team Updated successfully!');
     }
 

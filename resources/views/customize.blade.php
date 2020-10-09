@@ -27,7 +27,7 @@
                     </p>
                     <div class="row mb-2">
                         <div class="col-sm-12">
-                            <div class="radio radio-info form-check-inline">
+                            <div class="radio radio-blue form-check-inline">
                                 <input type="radio" id="light_theme" value="light" name="theme"
                                     {{ ($preference && $preference->theme =="light")? "checked" : "" }}>
                                 <label for="light_theme"> Light theme </label>
@@ -111,7 +111,7 @@
                     <div class="row mb-2">
                         <div class="col-md-2">
                             <div class="form-group mb-0 text-center">
-                                <button class="btn btn-primary btn-block" type="submit"> Update </button>
+                                <button class="btn btn-blue btn-block" type="submit"> Update </button>
                             </div>
                         </div>
                     </div>
@@ -173,7 +173,7 @@
                     <div class="row mb-2">
                         <div class="col-md-2">
                             <div class="form-group mb-0 text-center">
-                                <button class="btn btn-primary btn-block" type="submit"> Update </button>
+                                <button class="btn btn-blue btn-block" type="submit"> Update </button>
                             </div>
                         </div>
                     </div>
@@ -225,7 +225,7 @@
                     <div class="row mb-2">
                         <div class="col-md-2">
                             <div class="form-group mb-0 text-center">
-                                <button class="btn btn-primary btn-block" type="submit"> Update </button>
+                                <button class="btn btn-blue btn-block" type="submit"> Update </button>
                             </div>
                         </div>
                     </div>

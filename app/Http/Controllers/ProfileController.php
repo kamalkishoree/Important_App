@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Model\Countries; 
 use \DateTimeZone;
 class ProfileController extends Controller
 {
@@ -13,7 +14,9 @@ class ProfileController extends Controller
      */
     public function index()
     {
-        $countries = countries();
+        
+        $countries = Countries::all();
+       
         $tzlist = DateTimeZone::listIdentifiers(DateTimeZone::ALL);
         return view('profile')->with(['countries'=> $countries,'tzlist'=>$tzlist ]);
     }

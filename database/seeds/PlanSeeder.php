@@ -11,10 +11,14 @@ class PlanSeeder extends Seeder
      */
     public function run()
     {
-        Plan::createMany([
-            ['name'=>'Basic Trial','amount'=>0,'description'=>'Description of the basic plan'],
-            ['name'=>'Plan2','amount'=>100,'description'=>'Description of the  plan2'],
-            ['name'=>'Paln3','amount'=>1000,'description'=>'Description of the basic plan3'],
-        ]);
+        Plan::create(
+            ['name'=>'Basic Trial','amount'=>0,'description'=>'Description of the basic plan']  
+        );
+        Plan::create(
+            ['name'=>'Plan2','amount'=>100,'description'=>'Description of the  plan2']
+        );
+        Plan::create(
+            ['name'=>'Basic Trial','amount'=>0,'description'=>'Description of the basic plan']
+        );
     }
 }

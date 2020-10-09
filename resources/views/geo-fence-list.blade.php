@@ -56,7 +56,7 @@
                     <div class="row mb-2">
                         
                         <div class="col-sm-12 text-right">
-                            <a href="{{ route('geo-fence.index') }}"><button type="button" class="btn btn-danger waves-effect waves-light"><i class="mdi mdi-plus-circle mr-1"></i>Add GeoFence</button></a>
+                            <a href="{{ route('geo-fence.index') }}"><button type="button" class="btn btn-blue waves-effect waves-light"><i class="mdi mdi-plus-circle mr-1"></i>Add GeoFence</button></a>
                         </div>
 
                     </div>
@@ -105,7 +105,7 @@
 
 
         <div class="col-9">
-            <div class="card-box" style="height:500px;">
+            <div class="card-box" style="height:700px;">
                 <div id="map-canvas"></div>
             </div>
         </div>

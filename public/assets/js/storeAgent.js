@@ -52,7 +52,7 @@ $("#allow_feedback_tracking_url").change(function(e) {
  * Call Ajax Method
  */
 
-function AjaxSubmit(data, method, url, modal = false) {
+function AjaxSubmit(data, method, url, modals) {
     $.ajax({
         method: method,
         headers: {
@@ -64,14 +64,24 @@ function AjaxSubmit(data, method, url, modal = false) {
         processData: false,
         success: function(response) {
             if (response.status == 'success') {
-                if (modal) {
-                    $(modal).modal('hide');
-                }
-                $(".alert-success").removeClass('d-none');
-                $(".alert-success").text(response.message);
-                setTimeout(function() {
-                    $(".alert-success").addClass('d-none');
-                }, 5000);
+                    console.log('abc');
+                    $("#add-agent-modal .close").click();
+                    Swal.fire({
+                        icon: 'success',
+                        title: response.message,
+                        showConfirmButton: false,
+                        timer: 1500
+                    })
+    
+                    setTimeout(function(){
+                         location.reload(); 
+                    }, 2000);
+                
+                // $(".alert-success").removeClass('d-none');
+                // $(".alert-success").text(response.message);
+                // setTimeout(function() {
+                //     $(".alert-success").addClass('d-none');
+                // }, 5000);
 
             } else {
                 $(".show_all_error.invalid-feedback").show();
@@ -98,3 +108,4 @@ function AjaxSubmit(data, method, url, modal = false) {
         }
     });
 }
+

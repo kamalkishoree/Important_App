@@ -6,14 +6,14 @@
                 <h4 class="modal-title">Add Team</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
             </div>
-            <form id="" action="{{ route('team.store') }}" method="POST">
+            <form id="submitTeam" action="{{ route('team.store') }}" method="POST">
                 @csrf
                 <div class="modal-body p-4">
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group" id="nameInput">
                                 <label for="name" class="control-label">NAME</label>
-                                <input type="text" class="form-control" name="name" id="name" placeholder="John Doe">
+                                <input type="text" class="form-control" name="name" id="name" placeholder="John Doe" require>
                                 <span class="invalid-feedback" role="alert">
                                     <strong></strong>
                                 </span>
@@ -73,7 +73,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-info waves-effect waves-light">Submit</button>
+                    <button type="submit" class="btn btn-blue waves-effect waves-light">Submit</button>
                 </div>
             </form>
         </div>

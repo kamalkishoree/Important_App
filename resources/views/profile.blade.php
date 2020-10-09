@@ -235,7 +235,7 @@
                                     @endif
                                     <select class="form-control" id="country" name="country"  value="{{ old('country', Auth::user()->country ?? '')}}" placeholder="Country">
                                         @foreach($countries as $code=>$country)
-                                        <option value="{{ $country['name'] }}" @if(Auth::user()->country == $country['name']) selected @endif>{{ $country['native_name'] }}</option>
+                                        <option value="{{ $country->name }}" @if(Auth::user()->country == $country->name) selected @endif>{{ $country->name }}</option>
                                         @endforeach
                                     </select>
                                     <span class="invalid-feedback" role="alert">
@@ -264,7 +264,7 @@
                         </div>
                         <div class="row">
                             <div class="col-md-12">
-                                <button type="submit" class="btn btn-info waves-effect waves-light">Update</button>
+                                <button type="submit" class="btn btn-blue waves-effect waves-light">Update</button>
                             </div>
 
                         </div>

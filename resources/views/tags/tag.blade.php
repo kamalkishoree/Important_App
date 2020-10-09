@@ -29,7 +29,7 @@
         </div>
         <div class="col-md-6">
             <div class="text-right">
-                <a class="btn btn-danger waves-effect waves-light text-sm-right" href="{{route('tag.create')}}">
+                <a class="btn btn-blue waves-effect waves-light text-sm-right" href="{{route('tag.create')}}">
                     <i class="mdi mdi-plus-circle mr-1"></i> Add
                     Tag</a>
             </div>
