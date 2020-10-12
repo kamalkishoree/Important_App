@@ -64,7 +64,6 @@ function AjaxSubmit(data, method, url, modals) {
         processData: false,
         success: function(response) {
             if (response.status == 'success') {
-                    console.log('abc');
                     $("#add-agent-modal .close").click();
                     Swal.fire({
                         icon: 'success',

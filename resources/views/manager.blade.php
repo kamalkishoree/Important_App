@@ -4,6 +4,7 @@
 <link href="{{asset('assets/libs/select2/select2.min.css')}}" rel="stylesheet" type="text/css" />
 <link href="{{asset('assets/libs/bootstrap-select/bootstrap-select.min.css')}}" rel="stylesheet" type="text/css" />
 <link href="{{asset('assets/libs/flatpickr/flatpickr.min.css')}}" rel="stylesheet" type="text/css" />
+<link href="{{asset('assets/libs/sweetalert2/sweetalert2.min.css')}}" rel="stylesheet" type="text/css" />
 
 
 <!-- for File Upload -->
@@ -99,7 +100,7 @@
                                         <!-- <a href="{{route('manager.destroy', $manager->id)}}" class="action-icon">
                                             <i class="mdi mdi-delete"></i>
                                         </a> -->
-                                        <form method="POST" action="{{route('manager.destroy', $manager->id)}}">
+                                        <form method="POST" action="{{route('manager.destroy', $manager->id)}}" class="action-icon">
                                             @csrf
                                             @method('DELETE')
                                             <div class="form-group">
@@ -146,6 +147,7 @@
 <script src="{{asset('assets/js/pages/form-fileuploads.init.js')}}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/8.4.7/js/intlTelInput.js"></script>
+<script src="{{asset('assets/libs/sweetalert2/sweetalert2.min.js')}}"></script>
 
 <script>
 $("#phone_number").intlTelInput({

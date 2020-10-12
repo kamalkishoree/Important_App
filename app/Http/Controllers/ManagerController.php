@@ -54,6 +54,7 @@ class ManagerController extends Controller
      */
     public function store(Request $request)
     {
+        
         $validator = $this->validator($request->all())->validate();
         $getFileName = NULL;
         // Handle File Upload
@@ -80,6 +81,7 @@ class ManagerController extends Controller
         ];
 
         $manager = Manager::create($data);
+        
         if($manager->wasRecentlyCreated){
             return response()->json([
                 'status'=>'success',
@@ -119,6 +121,7 @@ class ManagerController extends Controller
     */
     protected function updateValidator(array $data)
     {
+        
         return Validator::make($data, [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required','email'],
@@ -129,6 +132,7 @@ class ManagerController extends Controller
             'can_manage_unassigned_tasks' => ['required'],
             'can_edit_auto_allocation' => ['required']
         ]);
+    
     }
 
     /**
@@ -140,7 +144,7 @@ class ManagerController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $validator = $this->updateValidator($request->all())->validate();
+       //$validator = $this->updateValidator($request->all())->validate();
 
         $getManager = Manager::find($id);
         $getFileName = $getManager->profile_picture;
@@ -168,6 +172,7 @@ class ManagerController extends Controller
 
         $manager = Manager::where('id', $id)->update($data);
         return redirect()->back()->with('success', 'Manager Updated successfully!');
+        
     }
 
     /**
@@ -178,6 +183,7 @@ class ManagerController extends Controller
      */
     public function destroy($id)
     {
-        //
+        Manager::where('id',$id)->where('client_id',auth()->user()->id)->delete();
+        return redirect()->back()->with('success', 'Manager deleted successfully!');
     }
 }

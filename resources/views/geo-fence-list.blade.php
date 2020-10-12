@@ -83,7 +83,7 @@
                                         <!-- <a href="{{route('geo-fence.destroy', $geo->id)}}" class="action-icon">
                                             <i class="mdi mdi-delete"></i>
                                         </a> -->
-                                        <form method="POST" action="{{route('geo-fence.destroy', $geo->id)}}">
+                                        <form method="POST" action="{{route('geo-fence.destroy', $geo->id)}}" class="action-icon">
                                             @csrf
                                             @method('DELETE')
                                             <div class="form-group">

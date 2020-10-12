@@ -14,7 +14,15 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::group(['prefix' => '/Godpanel'], function () {
+	Route::get('login', function(){
+		return view('godpanel/login');
+	});
+	Route::post('login','Godpanel\LoginController@Login')->name('god.login');
+	Route::get('dashboard','Godpanel\DashBoardController@Dashboard')->name('god.dashboard');
+	Route::resource('client', 'ClientController');
 
+});
 
 Auth::routes();
 Route::group(['middleware' => 'auth', 'prefix' => '/'], function () {
@@ -52,6 +60,10 @@ Route::post('submit_client', 'UserProfile@SaveRecord')->name('store_client');
 
 
 });
+
+
+
+
 
 
 

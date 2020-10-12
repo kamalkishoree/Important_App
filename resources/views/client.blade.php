@@ -34,7 +34,7 @@
                             </div>
                         </div>
                         <div class="col-sm-4 text-right">
-                            <a class="btn btn-danger waves-effect waves-light text-sm-right"
+                            <a class="btn btn-blue waves-effect waves-light text-sm-right"
                                 href="{{route('client.create')}}"><i class="mdi mdi-plus-circle mr-1"></i> Add
                                 Clients</a>
                         </div>

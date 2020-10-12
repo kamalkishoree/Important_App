@@ -20,6 +20,17 @@
             </div>
         </div>
     </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="text-sm-left">
+                @if (\Session::has('success'))
+                <div class="alert alert-success">
+                    <span>{!! \Session::get('success') !!}</span>
+                </div>
+                @endif
+            </div>
+        </div>
+    </div>
     <!-- end page title -->
     <div class="row">
         <div class="col-xl-11 col-md-offset-1">
@@ -288,7 +299,7 @@ forced to nearest
                         <div class="col-md-6">
                             <div class="form-group mb-3">
                                 <label for="task_priority">TASK ALLOCATION PRIORITY</label>
-                                <select class="form-control" id="task_priority" name="task_priority">
+                                <select class="form-control" id="task_priority" name="task_priority" require>
                                     <option value="default">Default</option>
                                     <option value="other">Other</option>
                                 </select>
@@ -304,7 +315,7 @@ forced to nearest
                                 <label for="request_expiry">REQUEST EXPIRES IN SEC</label>
                                 <input type="text" name="request_expiry" id="request_expiry" placeholder="30"
                                     class="form-control"
-                                    value="{{ old('request_expiry', $allocation->request_expiry ?? '')}}">
+                                    value="{{ old('request_expiry', $allocation->request_expiry ?? '')}}" require>
                                 @if($errors->has('request_expiry'))
                                 <span class="text-danger" role="alert">
                                     <strong>{{ $errors->first('request_expiry') }}</strong>

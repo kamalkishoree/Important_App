@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Model\AllocationRule;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 
 class AllocationController extends Controller
 {
@@ -66,6 +67,15 @@ class AllocationController extends Controller
         //
     }
 
+    protected function updateValidator(array $data)
+    {
+        return Validator::make($data, [
+            'task_priority' => ['required'],
+            'request_expiry' => ['required'],
+            'number_of_retries' => ['required'],
+        ]);
+    }
+
     /**
      * Update the specified resource in storage.
      *
@@ -75,6 +85,7 @@ class AllocationController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $validator = $this->updateValidator($request->all())->validate();
         $request['manual_allocation'] = $request->manual_allocation ?? 'n';
         $updatePreference = AllocationRule::updateOrCreate([
             'client_id' => $id

@@ -37,7 +37,7 @@
                                     <div class="form-group">
                                         <label for="name" class="control-label">NAME</label>
                                         <input type="text" class="form-control" name="name" id="name"
-                                            value="{{ old('name', $tag->name ?? '')}}" placeholder="John Doe">
+                                            value="{{ old('name', $tag->name ?? '')}}" placeholder="John Doe" required>
                                         @if($errors->has('name'))
                                         <span class="text-danger" role="alert">
                                             <strong>{{ $errors->first('name') }}</strong>

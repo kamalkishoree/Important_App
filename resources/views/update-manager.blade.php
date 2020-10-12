@@ -67,7 +67,7 @@
                                 <div class="col-md-4">
                                     <div class="form-group" id="nameInput">
                                         <label for="name" class="control-label">NAME</label>
-                                        <input type="text" class="form-control" id="name" placeholder="John Doe" name="name" value="{{ old('name', $manager->name ?? '')}}">
+                                        <input type="text" class="form-control" id="name" placeholder="John Doe" name="name" value="{{ old('name', $manager->name ?? '')}}" required>
                                         <span class="invalid-feedback" role="alert">
                                             <strong></strong>
                                         </span>
@@ -77,7 +77,7 @@
                                 <div class="col-md-4">
                                     <div class="form-group" id="emailInput">
                                         <label for="email" class="control-label">EMAIL</label>
-                                        <input type="email" class="form-control" id="email" placeholder="abc@example.com" name="email" value="{{ old('email', $agent->email ?? '')}}">
+                                        <input type="email" class="form-control" id="email" placeholder="abc@example.com" name="email" value="{{ old('email', $manager->email ?? '')}}" required>
                                         <span class="invalid-feedback" role="alert">
                                             <strong></strong>
                                         </span>
@@ -89,7 +89,7 @@
                                         <label for="phone_number" class="control-label">CONTACT NUMBER</label>
                                         <div class="input-group">
                                             <input type="text" name="phone_number" class="form-control" id="phone_number"
-                                                placeholder="Enter mobile number" value="{{ old('phone_number', $manager->phone_number ?? '')}}">
+                                                placeholder="Enter mobile number" value="{{ old('phone_number', $manager->phone_number ?? '')}}" required>
                                         </div>
                                         <span class="invalid-feedback" role="alert">
                                             <strong></strong>
