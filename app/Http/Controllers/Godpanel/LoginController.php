@@ -53,4 +53,10 @@ class LoginController extends Controller
             return redirect()->back()->with('Error', 'Please Check Email And Password');
         }
     }
+
+    public function Logout()
+    {
+        Auth::logout();
+        return redirect()->route('god.login');
+    }
 }

@@ -45,9 +45,22 @@
 
 
                 <li>
-                    <a href="#">
+                    <a href="{{route('client.index')}}">
                         <i data-feather="users"></i>
                         <span> Clients </span>
+                    </a>
+                </li>
+               
+                <li>
+                    <a href="{{route('language.index')}}">
+                        <i data-feather="layout" class="icon-dual">></i>
+                        <span> Language </span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{route('currency.index')}}">
+                        <i data-feather="dollar-sign" class="icon-dual"></i>
+                        <span> Currency </span>
                     </a>
                 </li>
             </ul>

@@ -1,4 +1,4 @@
-@extends('layouts.vertical', ['title' => 'Options'])
+@extends('layouts.god-vertical', ['title' => 'Options'])
 
 @section('css')
 <link href="{{asset('assets/libs/dropzone/dropzone.min.css')}}" rel="stylesheet" type="text/css" />
@@ -14,7 +14,7 @@
     <div class="row">
         <div class="col-12">
             <div class="page-title-box">
-                <h4 class="page-title">Settings</h4>
+                <h4 class="page-title">Clients</h4>
             </div>
         </div>
     </div>

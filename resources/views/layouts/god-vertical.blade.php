@@ -9,7 +9,7 @@
     <body @yield('body-extra')>
         <!-- Begin page -->
         <div id="wrapper">
-            @include('layouts.shared/topbar')
+            @include('layouts.shared/god-topbar')
 
             @include('layouts.shared/god-left-sidebar')
 

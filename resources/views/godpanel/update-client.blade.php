@@ -1,4 +1,4 @@
-@extends('layouts.vertical', ['title' => 'Options'])
+@extends('layouts.god-vertical', ['title' => 'Options'])
 
 @section('css')
 <link href="{{asset('assets/libs/dropzone/dropzone.min.css')}}" rel="stylesheet" type="text/css" />
@@ -14,7 +14,7 @@
     <div class="row">
         <div class="col-12">
             <div class="page-title-box">
-                <h4 class="page-title">Settings</h4>
+                <h4 class="page-title">Create Client</h4>
             </div>
         </div>
     </div>
@@ -121,7 +121,7 @@
                                         <label for="database_name" class="control-label">DATABASE NAME</label>
                                         <input type="text" class="form-control" name="database_name" id="database_name"
                                             value="{{ old('database_name', $client->database_name ?? '')}}"
-                                            placeholder="Enter database name">
+                                            placeholder="Please Enter One String Example:-'mydatabase' ">
                                         @if($errors->has('database_name'))
                                         <span class="text-danger" role="alert">
                                             <strong>{{ $errors->first('database_name') }}</strong>

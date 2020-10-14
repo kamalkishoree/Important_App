@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\Config;
 use DB;
 use App\User;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
+use App\Jobs\ProcessClientDatabase;
 class ClientController extends Controller
 {
     /**
@@ -34,7 +36,7 @@ class ClientController extends Controller
     //    $user =  DB::connection('mysql2')->table('users')->select('email')->first();
             
         $clients = Client::where('is_deleted', 0)->orderBy('created_at', 'DESC')->paginate(10);
-        return view('client')->with(['clients' => $clients]);
+        return view('godpanel/client')->with(['clients' => $clients]);
     }
 
     /**
@@ -44,7 +46,7 @@ class ClientController extends Controller
      */
     public function create()
     {
-        return view('update-client');
+        return view('godpanel/update-client');
     }
 
     /**
@@ -76,6 +78,10 @@ class ClientController extends Controller
      */
     public function store(Request $request)
     {   
+    //     $slug = Str::slug($request->name);
+
+    //    // $abc = str_slug();
+    //     dd($slug);
         $validator = $this->validator($request->all())->validate();
         // if ($validator->fails()) {
         //     return redirect()->back()->withErrors($validator, 'add');
@@ -99,7 +105,7 @@ class ClientController extends Controller
             'password' => Hash::make('password'),
             'phone_number' => $request->phone_number,
             'database_path' => $request->database_path,
-            'database_name' => $request->database_name,
+            'database_name' => preg_replace('/\s+/', '', $request->database_name),
             'database_username' => $request->database_username,
             'database_password' => $request->database_password,
             'company_name' => $request->company_name,
@@ -109,6 +115,7 @@ class ClientController extends Controller
         ];
 
         $client = Client::create($data);
+        $this->dispatchNow(new ProcessClientDataBase($client->id));
         return redirect()->route('client.index')->with('success', 'Client Added successfully!');
         //
     }
@@ -134,7 +141,7 @@ class ClientController extends Controller
     public function edit($id)
     {
         $client = Client::find($id);
-        return view('update-client')->with('client', $client);
+        return view('godpanel/update-client')->with('client', $client);
     }
 
     /**
@@ -221,6 +228,7 @@ class ClientController extends Controller
     */
     public function storePreference(Request $request, $id){
 
+        
         //update the client custom_domain if value is set //
         if($request->domain_name == 'custom_domain'){
             // check the availability of the domain //

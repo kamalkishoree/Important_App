@@ -14,13 +14,23 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::group(['prefix' => '/Godpanel'], function () {
+Route::group(['prefix' => '/godpanel'], function () {
 	Route::get('login', function(){
 		return view('godpanel/login');
-	});
+	})->name('god.login');
 	Route::post('login','Godpanel\LoginController@Login')->name('god.login');
-	Route::get('dashboard','Godpanel\DashBoardController@Dashboard')->name('god.dashboard');
-	Route::resource('client', 'ClientController');
+
+	Route::middleware('auth')->group(function () {
+		Route::get('/', 'DashboardController@index');
+	
+		Route::post('/logout', 'Godpanel\LoginController@logout')->name('god.logout');
+		Route::get('dashboard','Godpanel\DashBoardController@Dashboard')->name('god.dashboard');
+		Route::resource('client','ClientController');
+		Route::resource('language','Godpanel\LanguageController');
+		Route::resource('currency','Godpanel\CurrencyController');
+	});
+	
+	
 
 });
 
