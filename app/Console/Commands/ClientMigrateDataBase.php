@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Artisan;
 use Config;
 use App\Model\Client;
 use Exception;
+use Illuminate\Support\Facades\Cache;
 
 use Illuminate\Console\Command;
 
@@ -42,7 +43,7 @@ class ClientMigrateDataBase extends Command
      */
     public function handle()
     {
-
+       
 
         $clients = Client::where('status', 1)->get();
         //$clients = Client::all();

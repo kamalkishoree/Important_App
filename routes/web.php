@@ -14,6 +14,11 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+        // $url = Request::url();
+        // $client = str_replace(array('http://','.test.com/login'), '', $url);
+        // 
+		// die($value);
+		
 Route::group(['prefix' => '/godpanel'], function () {
 	Route::get('login', function(){
 		return view('godpanel/login');
@@ -36,14 +41,16 @@ Route::group(['prefix' => '/godpanel'], function () {
 // 	'as' => '',
 // 	'uses' => 'Auth\LoginController@Clientlogin'
 //   ]);
-Auth::routes();
+//Route::group(['middleware' => 'check'], function () {
+Auth::routes();  
+///});
 
 Route::group(['middleware' => 'auth:client', 'prefix' => '/'], function () {
 
-Route::group(['prefix' => 'dummy'], function()
+Route::group(['middleware' => 'database','prefix' => 'dummy'], function()
 	{
 	  
-	
+	 
 Route::get('', function(){
 	return view('dashboard');
 })->name('index');

@@ -11,7 +11,7 @@ $("#submitTeam").submit(function (e) {
         headers: {
             Accept: "application/json",
         },
-        url: "/team",
+        url: "/dummy/team",
         data: formData,
         success: function (response) {
             if (response.status == "success") {

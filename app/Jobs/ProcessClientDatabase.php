@@ -17,7 +17,7 @@ class ProcessClientDatabase implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    
+
     protected $client_id;
     /**
      * Create a new job instance.
@@ -36,36 +36,35 @@ class ProcessClientDatabase implements ShouldQueue
      */
     public function handle()
     {
-        $client = Client::where('id',$this->client_id)->first();
-        $schemaName = 'db_'.$client->database_name ?: config("database.connections.mysql.database");
+        $client = Client::where('id', $this->client_id)->first(['name', 'email', 'password', 'phone_number', 'password', 'database_path', 'database_name', 'database_username', 'database_password', 'logo', 'company_name', 'company_address', 'custom_domain', 'status'])->toarray();
+
+        $schemaName = 'db_' . $client['database_name'] ?: config("database.connections.mysql.database");
         $default = [
-                    'driver' => env('DB_CONNECTION','mysql'),
-                    'host' => env('DB_HOST'),
-                    'port' => env('DB_PORT'),
-                    'database' => $schemaName,
-                    'username' => env('DB_USERNAME'),
-                    'password' => env('DB_PASSWORD'),
-                    'charset' => 'utf8mb4',
-                    'collation' => 'utf8mb4_unicode_ci',
-                    'prefix' => '',
-                    'prefix_indexes' => true,
-                    'strict' => false,
-                    'engine' => null
-                ];
+            'driver' => env('DB_CONNECTION', 'mysql'),
+            'host' => env('DB_HOST'),
+            'port' => env('DB_PORT'),
+            'database' => $schemaName,
+            'username' => env('DB_USERNAME'),
+            'password' => env('DB_PASSWORD'),
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'strict' => false,
+            'engine' => null
+        ];
 
         config(["database.connections.mysql.database" => null]);
 
         $query = "CREATE DATABASE $schemaName;";
 
         DB::statement($query);
-        Config::set("database.connections.$schemaName", $default);
 
+
+        Config::set("database.connections.$schemaName", $default);
         config(["database.connections.mysql.database" => $schemaName]);
         Artisan::call('migrate', ['--database' => $schemaName]);
+        DB::connection($schemaName)->table('clients')->insert($client);
         DB::disconnect($schemaName);
-       
-
     }
 }
-
-

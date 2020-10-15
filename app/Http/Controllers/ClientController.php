@@ -14,6 +14,9 @@ use App\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use App\Jobs\ProcessClientDatabase;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Redis;
+
 class ClientController extends Controller
 {
     /**
@@ -23,18 +26,33 @@ class ClientController extends Controller
      */
     public function index()
     {
-    //     $client = Client::first();
-    //     Config::set("database.connections.mysql2", [
-    //         "driver" => "mysql",
-    //         "port" => '3306',
-    //         "host" => $client->database_path,
-    //         "database" => $client->database_name,
-    //         "username" => $client->database_username,
-    //         "password" => $client->database_password
-    //     ]);
-    //     DB::purge('mysql2');
-    //    $user =  DB::connection('mysql2')->table('users')->select('email')->first();
-            
+        
+          
+        // $value = Cache::get('anil');
+        //  dd($value);    
+   
+        //    $redis    = Redis::connection();
+        //    $response = $redis->get('coolman');
+           
+        //    $response = json_decode($response);
+           
+        //    dd($response);
+        //Cache::forget('coolman');
+        //$value = Cache::get('bar');
+        //  dd($value);
+       
+        //     $client = Client::first();
+        //     Config::set("database.connections.mysql2", [
+        //         "driver" => "mysql",
+        //         "port" => '3306',
+        //         "host" => $client->database_path,
+        //         "database" => $client->database_name,
+        //         "username" => $client->database_username,
+        //         "password" => $client->database_password
+        //     ]);
+        //     DB::purge('mysql2');
+        //    $user =  DB::connection('mysql2')->table('users')->select('email')->first();
+
         $clients = Client::where('is_deleted', 0)->orderBy('created_at', 'DESC')->paginate(10);
         return view('godpanel/client')->with(['clients' => $clients]);
     }
@@ -51,7 +69,7 @@ class ClientController extends Controller
 
     /**
      * Validation method for clients data 
-    */
+     */
     protected function validator(array $data)
     {
         return Validator::make($data, [
@@ -77,35 +95,35 @@ class ClientController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {   
-    //     $slug = Str::slug($request->name);
+    {
+        //     $slug = Str::slug($request->name);
 
-    //    // $abc = str_slug();
-    //     dd($slug);
+        //    // $abc = str_slug();
+        //     dd($slug);
         $validator = $this->validator($request->all())->validate();
         // if ($validator->fails()) {
         //     return redirect()->back()->withErrors($validator, 'add');
         // }
-       
+
         $getFileName = NULL;
-        
+
         // Handle File Upload
-        if($request->hasFile('logo')) {
+        if ($request->hasFile('logo')) {
             $file = $request->file('logo');
             $filenameWithExt = $request->file('logo')->getClientOriginalName();
-            $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME); 
-            $fileNameToStore = $filename.'_'.time().'.'.$file->getClientOriginalExtension();  
-            $file->move(public_path().'/clients',$fileNameToStore);
+            $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
+            $fileNameToStore = $filename . '_' . time() . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path() . '/clients', $fileNameToStore);
             $getFileName = $fileNameToStore;
         }
-           
+        $database_name = preg_replace('/\s+/', '', $request->database_name);
         $data = [
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make('password'),
             'phone_number' => $request->phone_number,
             'database_path' => $request->database_path,
-            'database_name' => preg_replace('/\s+/', '', $request->database_name),
+            'database_name' => $database_name,
             'database_username' => $request->database_username,
             'database_password' => $request->database_password,
             'company_name' => $request->company_name,
@@ -114,7 +132,15 @@ class ClientController extends Controller
             'logo' => $getFileName,
         ];
 
-        $client = Client::create($data);
+       $client = Client::create($data);
+
+
+        // $redis = Redis::connection();
+
+        // $redis->set($database_name, json_encode($data));
+        //$minutes = 600;
+        Cache::put($database_name, $data);
+
         $this->dispatchNow(new ProcessClientDataBase($client->id));
         return redirect()->route('client.index')->with('success', 'Client Added successfully!');
         //
@@ -146,7 +172,7 @@ class ClientController extends Controller
 
     /**
      * Validation method for clients Update 
-    */
+     */
     protected function updateValidator(array $data)
     {
         return Validator::make($data, [
@@ -178,17 +204,17 @@ class ClientController extends Controller
         // }
         $getClient = Client::find($id);
         $getFileName = $getClient->logo;
-        
+
         // Handle File Upload
-        if($request->hasFile('logo')) {
+        if ($request->hasFile('logo')) {
             $file = $request->file('logo');
             $filenameWithExt = $request->file('logo')->getClientOriginalName();
-            $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME); 
-            $fileNameToStore = $filename.'_'.time().'.'.$file->getClientOriginalExtension();  
-            $file->move(public_path().'/clients',$fileNameToStore);
+            $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
+            $fileNameToStore = $filename . '_' . time() . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path() . '/clients', $fileNameToStore);
             $getFileName = $fileNameToStore;
         }
-           
+
         $data = [
             'name' => $request->name,
             'email' => $request->email,
@@ -225,59 +251,62 @@ class ClientController extends Controller
 
     /**
      * Store/Update Client Preferences 
-    */
-    public function storePreference(Request $request, $id){
+     */
+    public function storePreference(Request $request, $id)
+    {
 
-        
+
         //update the client custom_domain if value is set //
-        if($request->domain_name == 'custom_domain'){
+        if ($request->domain_name == 'custom_domain') {
             // check the availability of the domain //
-            $exists = Client::where('id','<>',$id)->where('custom_domain',$request->custom_domain_name)->count();
-            if($exists){
-                return redirect()->back()->withErrors(new \Illuminate\Support\MessageBag(['domain_name'=>'Domain name "'.$request->custom_domain_name.'" is not available. Please select a different domain']));
+            $exists = Client::where('id', '<>', $id)->where('custom_domain', $request->custom_domain_name)->count();
+            if ($exists) {
+                return redirect()->back()->withErrors(new \Illuminate\Support\MessageBag(['domain_name' => 'Domain name "' . $request->custom_domain_name . '" is not available. Please select a different domain']));
             }
-            Client::where('id',$id)->update(['custom_domain'=>$request->custom_domain_name]);
+            Client::where('id', $id)->update(['custom_domain' => $request->custom_domain_name]);
         }
 
         $updatePreference = ClientPreference::updateOrCreate([
             'client_id' => $id
-        ],$request->all());
+        ], $request->all());
 
-        if($request->ajax()){
+        if ($request->ajax()) {
             return response()->json([
-                'status'=>'success',
+                'status' => 'success',
                 'message' => 'Preference updated successfully!',
                 'data' => $updatePreference
             ]);
-        }
-        else{
+        } else {
             return redirect()->back()->with('success', 'Preference updated successfully!');
         }
     }
 
     /**
      * Store/Update Client Preferences 
-    */
-    public function ShowPreference(){
+     */
+    public function ShowPreference()
+    {
         $preference = Auth::user()->getPreference;
         $currencies = Currency::orderBy('iso_code')->get();
-        return view('customize')->with(['preference' => $preference,'currencies'=>$currencies]);
+        return view('customize')->with(['preference' => $preference, 'currencies' => $currencies]);
     }
 
 
     /**
      * Show Configuration page 
-    */
-    public function ShowConfiguration(){
+     */
+    public function ShowConfiguration()
+    {
         $preference = Auth::user()->getPreference;
         $client = Auth::user();
-        return view('configure')->with(['preference' => $preference,'client'=>$client]);
+        return view('configure')->with(['preference' => $preference, 'client' => $client]);
     }
 
-     /**
+    /**
      * Show Options page 
-    */
-    public function ShowOptions(){
+     */
+    public function ShowOptions()
+    {
         $preference = Auth::user()->getPreference;
         return view('options')->with(['preference' => $preference]);
     }

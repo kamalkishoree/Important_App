@@ -15,6 +15,7 @@ class Kernel extends ConsoleKernel
     protected $commands = [
         Commands\ClientMigrateDataBase::class,
         Commands\ClientRollbcakMigrate::class,
+        Commands\UpdateRedis::class,
     ];
 
     /**

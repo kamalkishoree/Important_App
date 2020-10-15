@@ -6,6 +6,7 @@ use App\Model\Client;
 use Closure;
 use Config;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class DatabaseDynamic
 {
