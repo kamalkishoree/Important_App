@@ -33,7 +33,7 @@
                                     <p class="text-muted mb-4 mt-3">Enter your email address and password to access admin panel.</p>
                                 </div>
 
-                                <form action="{{route('login')}}" method="POST" novalidate>
+                                <form action="{{route('client.login')}}" method="POST" novalidate>
                                     @csrf
 
                                     <div class="form-group mb-3">
@@ -110,7 +110,7 @@
                         <div class="row mt-3">
                             <div class="col-12 text-center">
                                 <!-- <p> <a href="{{route('second', ['auth', 'recoverpw-2'])}}" class="text-white-50 ml-1">Forgot your password?</a></p> -->
-                                <p class="text-white-50">Don't have an account? <a href="{{route('register')}}" class="text-white ml-1"><b>Sign Up</b></a></p>
+                                <!-- <p class="text-white-50">Don't have an account? <a href="{{route('register')}}" class="text-white ml-1"><b>Sign Up</b></a></p> -->
                             </div> <!-- end col -->
                         </div>
                         <!-- end row -->

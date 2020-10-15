@@ -21,10 +21,9 @@ Route::group(['prefix' => '/godpanel'], function () {
 	Route::post('login','Godpanel\LoginController@Login')->name('god.login');
 
 	Route::middleware('auth')->group(function () {
-		Route::get('/', 'DashboardController@index');
 	
 		Route::post('/logout', 'Godpanel\LoginController@logout')->name('god.logout');
-		Route::get('dashboard','Godpanel\DashBoardController@Dashboard')->name('god.dashboard');
+		Route::get('dashboard','Godpanel\DashBoardController@index')->name('god.dashboard');
 		Route::resource('client','ClientController');
 		Route::resource('language','Godpanel\LanguageController');
 		Route::resource('currency','Godpanel\CurrencyController');
@@ -33,13 +32,21 @@ Route::group(['prefix' => '/godpanel'], function () {
 	
 
 });
-
+// Route::post('login', [
+// 	'as' => '',
+// 	'uses' => 'Auth\LoginController@Clientlogin'
+//   ]);
 Auth::routes();
-Route::group(['middleware' => 'auth', 'prefix' => '/'], function () {
+
+Route::group(['middleware' => 'auth:client', 'prefix' => '/'], function () {
+
+Route::group(['prefix' => 'dummy'], function()
+	{
+	  
+	
 Route::get('', function(){
 	return view('dashboard');
 })->name('index');
-Route::resource('client', 'ClientController');
 Route::get('customize', 'ClientController@ShowPreference')->name('preference.show');
 Route::post('client_preference/{id}', 'ClientController@storePreference')->name('preference');
 Route::get('configure', 'ClientController@ShowConfiguration')->name('configure');
@@ -67,9 +74,17 @@ Route::get('{any}', 'RoutingController@root')->name('any');
 
 /* Store Client Information */
 Route::post('submit_client', 'UserProfile@SaveRecord')->name('store_client');
-
+Route::post('/logout', 'LoginController@logout')->name('client.logout');
+});
 
 });
+
+    
+Route::post('/login/client', 'LoginController@clientLogin')->name('client.login');
+
+
+
+
 
 
 

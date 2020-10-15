@@ -311,7 +311,7 @@
                 
                     </a>
 
-                <form id="logout-form" action="{{ route('logout') }}" method="POST" >
+                <form id="logout-form" action="{{ route('client.logout') }}" method="POST" >
                     @csrf
                 </form>
     

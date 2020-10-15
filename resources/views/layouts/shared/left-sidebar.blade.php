@@ -37,49 +37,39 @@
                 <li class="menu-title mt-2">Home</li>
 
                 <li>
-                    <a href="{{url('dashboard')}}">
+                    <a href="{{route('index')}}">
                         <i data-feather="airplay"></i>
                         <span> Dashboard </span>
                     </a>
                 </li>
 
 
-                <li>
-                    <a href="{{url('client')}}">
-                        <i data-feather="users"></i>
-                        <span> Clients </span>
-                    </a>
-                </li>
+                
 
                 <li class="menu-title mt-2">Settings</li>
 
 
                 <li>
-                    <a href="{{url('profile')}}">
+                    <a href="{{route('profile.index')}}">
                         <i data-feather="users"></i>
                         <span> Profile </span>
                     </a>
                 </li>
+                
                 <li>
-                    <a href="{{url('change-password')}}">
-                        <i data-feather="lock"></i>
-                        <span> Change Password </span>
-                    </a>
-                </li>
-                <li>
-                    <a href="{{url('customize')}}">
+                    <a href="{{route('preference.show')}}">
                         <i data-feather="rss"></i>
                         <span> Customize </span>
                     </a>
                 </li>
                 <li>
-                    <a href="{{url('team')}}">
+                    <a href="{{route('team.index')}}">
                         <i data-feather="users"></i>
                         <span> Teams </span>
                     </a>
                 </li>
                 <li>
-                    <a href="{{url('agent')}}">
+                    <a href="{{route('agent.index')}}">
                         <i data-feather="users"></i>
                         <span> {{ auth()->user()->getPreference->agent_name ?? 'Agents' }}</span>
                     </a>
@@ -93,25 +83,25 @@
                 </li>
                 
                 <li>
-                    <a href="{{url('auto-allocation')}}">
+                    <a href="{{route('auto-allocation.index')}}">
                         <i data-feather="git-branch"></i>
                         <span> Auto Allocation </span>
                     </a>
                 </li>
                 <li>
-                    <a href="{{url('configure')}}">
+                    <a href="{{route('configure')}}">
                         <i data-feather="tool"></i>
                         <span> Configure </span>
                     </a>
                 </li>
                 <li>
-                    <a href="{{url('plan-billing')}}">
+                    <a href="{{url('dummy/plan-billing')}}">
                         <i data-feather="dollar-sign"></i>
                         <span> Plans & Billings </span>
                     </a>
                 </li>
                 <li>
-                    <a href="{{url('notifications')}}">
+                    <a href="{{route('notifications.index')}}">
                         <i data-feather="bell"></i>
                         <span> Notifications </span>
                     </a>
@@ -125,14 +115,14 @@
                 </li>
                 
                 <li>
-                    <a href="{{url('manager')}}">
+                    <a href="{{route('manager.index')}}">
                         <i data-feather="users"></i>
                         <span> Managers </span>
                     </a>
                 </li>
                 
                 <li>
-                    <a href="{{url('modals')}}">
+                    <a href="{{url('dummy/modals')}}">
                         <i data-feather="users"></i>
                         <span> Modals </span>
                     </a>
