@@ -182,7 +182,7 @@
         </div>
     </form>
 
-    <form method="POST" action="{{route('preference', Auth::user()->id)}}">
+    <!-- <form method="POST" action="{{route('preference', Auth::user()->id)}}">
         @csrf
         <div class="row">
             <div class="col-xl-11 col-md-offset-1">
@@ -232,7 +232,7 @@
                 </div>
             </div>
         </div>
-    </form>
+    </form> -->
 
 </div> <!-- container -->
 @endsection

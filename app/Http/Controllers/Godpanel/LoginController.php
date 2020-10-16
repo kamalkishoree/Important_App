@@ -21,7 +21,7 @@ class LoginController extends Controller
     | to conveniently provide its functionality to your applications.
     |
     */
-
+    
     use AuthenticatesUsers;
 
     /**
@@ -44,13 +44,18 @@ class LoginController extends Controller
 
     public function Login(Request $request)
     {
+        $this->validate($request, [
+            'email'           => 'required|max:255|email',
+            'password'        => 'required',
+        ]);
+    
         if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
             $details = Auth::guard()->user();
             $user = $details['original'];
             return redirect()->route('god.dashboard');
     
         } else {
-            return redirect()->back()->with('Error', 'Please Check Email And Password');
+            return redirect()->back()->with('Error', 'Invalid Credentials');
         }
     }
 

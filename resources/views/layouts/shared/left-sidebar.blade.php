@@ -89,13 +89,19 @@
                     </a>
                 </li>
                 <li>
+                    <a href="#">
+                        <i data-feather="git-branch"></i>
+                        <span>Pricing Rules</span>
+                    </a>
+                </li>
+                <li>
                     <a href="{{route('configure')}}">
                         <i data-feather="tool"></i>
                         <span> Configure </span>
                     </a>
                 </li>
                 <li>
-                    <a href="{{url('dummy/plan-billing')}}">
+                    <a href="{{url('plan-billing')}}">
                         <i data-feather="dollar-sign"></i>
                         <span> Plans & Billings </span>
                     </a>
@@ -107,7 +113,7 @@
                     </a>
                 </li>
                 
-                <li>
+                <!-- <li>
                     <a href="{{route('tag.index')}}">
                         <i data-feather="rss"></i>
                         <span> Tags </span>
@@ -122,13 +128,13 @@
                 </li>
                 
                 <li>
-                    <a href="{{url('dummy/modals')}}">
+                    <a href="{{url('modals')}}">
                         <i data-feather="users"></i>
                         <span> Modals </span>
                     </a>
-                </li>
+                </li> -->
                 
-            @if(env('APP_DEBUG'))
+            <!-- @if(env('APP_DEBUG'))
                 <li class="menu-title mt-5">Other Pages</li>
 
                 <li>
@@ -151,7 +157,7 @@
                         <span> Ecommerce </span>
                         <span class="menu-arrow"></span>
                     </a>
-                    <div class="collapse" id="sidebarEcommerce">
+                    <!-- <div class="collapse" id="sidebarEcommerce">
                         <ul class="nav-second-level">
                             <li>
                                 <a href="{{route('second', ['ecommerce', 'dashboard'])}}">Dashboard</a>
@@ -184,8 +190,8 @@
                                 <a href="{{route('second', ['ecommerce', 'checkout'])}}">Checkout</a>
                             </li>
                         </ul>
-                    </div>
-                </li>
+                    </div> -->
+                <!-- </li>
 
                 <li>
                     <a href="#sidebarCrm" data-toggle="collapse">
@@ -823,7 +829,7 @@
                         </ul>
                     </div>
                 </li>
-                @endif
+                @endif  -->
             </ul>
 
         </div>

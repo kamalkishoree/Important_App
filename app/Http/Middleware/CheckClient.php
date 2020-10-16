@@ -1,8 +1,12 @@
 <?php
 
 namespace App\Http\Middleware;
+
+use App\Model\Client;
 use Illuminate\Support\Facades\Cache;
 use Request;
+use Config;
+use Illuminate\Support\Facades\DB;
 
 use Closure;
 
@@ -18,15 +22,21 @@ class CheckClient
     public function handle($request, Closure $next)
     {
         $url = Request::url();
-        $client = str_replace(array('http://','.test.com/login'), '', $url);
-       
-        
-        // $client = Auth::user();
-        $new =  (new LoginController)->cacheget($client);
-        dd($new);
+        $new_url = str_replace(array('http://', '.test.com/login'), '', $url);
 
-        if ($client) {
-            $database_name = 'db_' . $client->database_name;
+        $client = Cache::get('all_client');
+        if (isset($client)) {
+            $database_name = 'db_' . $client['database_name'];
+            
+        } else {
+            $database_serch = Client::where('database_name', $client)->first();
+            if (isset($database_serch)) {
+                $database_name = 'db_' . $client->database_name;
+                Cache::set($database_serch->database_name, $database_serch);
+            } 
+        }
+            
+        if (isset($database_name)) {
             $default = [
                 'driver' => env('DB_CONNECTION', 'mysql'),
                 'host' => env('DB_HOST'),
@@ -42,13 +52,14 @@ class CheckClient
                 'engine' => null
             ];
             Config::set("database.connections.$database_name", $default);
-            Config::set("client_id", $client->id);
             Config::set("client_connected", true);
             Config::set("client_data", $client);
             DB::setDefaultConnection($database_name);
             DB::purge($database_name);
-        }
 
-        return $next($request);
+
+            return $next($request);
+        }
+        abort(404);
     }
 }

@@ -15,23 +15,22 @@ use Illuminate\Validation\Validator;
 
 class LoginController extends Controller
 {
+    use AuthenticatesUsers;
 
     public function ClientLogin(Request $request)
     {
 
         $this->validate($request, [
-            'email'   => 'required|email',
-            'password' => 'required|min:6'
+            'email'           => 'required|max:255|email',
+            'password'        => 'required',
         ]);
 
         if (Auth::guard('client')->attempt(['email' => $request->email, 'password' => $request->password], $request->get('remember'))) {
 
-
-
             return redirect()->route('index');
         }
 
-        return back()->withInput($request->only('email', 'remember'));
+        return redirect()->back()->with('Error', 'Invalid Credentials');
     }
 
     public function Logout()
@@ -40,9 +39,8 @@ class LoginController extends Controller
         return redirect()->route('login');
     }
 
-    public function cacheget($url)
+    public function wrongurl()
     {
-    
-         return $value = Cache::get('anil');
+        return redirect()->route('wrong.client');;
     }
 }

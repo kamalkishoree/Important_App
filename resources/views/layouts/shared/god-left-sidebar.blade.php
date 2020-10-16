@@ -37,7 +37,7 @@
                 <li class="menu-title mt-2">Home</li>
 
                 <li>
-                    <a href="#">
+                    <a href="{{route('god.dashboard')}}">
                         <i data-feather="airplay"></i>
                         <span> Dashboard </span>
                     </a>

@@ -17,7 +17,7 @@ $(document).ready(function() {
 $("#submitAgent").submit(function(e) {
     e.preventDefault();
     var formData = new FormData(this);
-    AjaxSubmit(formData, 'POST', '/dummy/agent', '#add-agent-modal');
+    AjaxSubmit(formData, 'POST', '/agent', '#add-agent-modal');
 });
 
 

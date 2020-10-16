@@ -49,17 +49,17 @@
                                     <p class="text-muted mb-2">SELECT PREFERENCE</p>
                                     <div class="radio radio-info form-check-inline">
                                         <input type="radio" id="acknowledge1" value="acknowledge" name="acknowledgement_type"
-                                            {{ ($preference->acknowledgement_type =="acknowledge")? "checked" : "" }}>
+                                            {{ isset($preference)? ($preference->acknowledgement_type =="acknowledge")? "checked" : "" : "checked" }}>
                                         <label for="acknowledge1"> Acknowledge </label>
                                     </div>
                                     <div class="radio form-check-inline">
                                         <input type="radio" id="acknowledge2" value="acceptreject" name="acknowledgement_type"
-                                            {{ ($preference->acknowledgement_type =="acceptreject")? "checked" : "" }}>
+                                            {{ (isset($preference) && $preference->acknowledgement_type =="acceptreject")? "checked" : "" }}>
                                         <label for="acknowledge2"> Accept/Reject </label>
                                     </div>
                                     <div class="radio form-check-inline">
                                         <input type="radio" id="acknowledge3" value="none" name="acknowledgement_type"
-                                            {{ ($preference->acknowledgement_type =="none")? "checked" : "" }}>
+                                            {{ (isset($preference) && $preference->acknowledgement_type =="none")? "checked" : ""}}>
                                         <label for="acknowledge3"> None </label>
                                     </div>
                                     @if($errors->has('acknowledgement_type'))
@@ -185,7 +185,7 @@
                         @endif
                     </div>
 
-                    <div class="row mb-2 mt-2 detail-desc @if($allocation->auto_assign_logic != 'one_by_one') hidden-desc @endif " id="one_by_one">
+                    <div class="row mb-2 mt-2 detail-desc @if(isset($allocation) && $allocation->auto_assign_logic != 'one_by_one') hidden-desc @endif " id="one_by_one">
                         <div class="col-md-12">
                             <div class="card-box">
                                 <div class="row">
@@ -208,7 +208,7 @@
                         </div>
                     </div>
 
-                    <div class="row mb-2 mt-2 detail-desc @if($allocation->auto_assign_logic != 'send_to_all') hidden-desc @endif" id="send_to_all">
+                    <div class="row mb-2 mt-2 detail-desc @if(isset($allocation) && $allocation->auto_assign_logic != 'send_to_all') hidden-desc @endif" id="send_to_all">
                         <div class="col-md-12">
                             <div class="card-box">
                                 <div class="row">
@@ -225,7 +225,7 @@
                         </div>
                     </div>
 
-                    <div class="row mb-2 mt-2  detail-desc @if($allocation->auto_assign_logic != 'batch_wise') hidden-desc @endif" id="batch_wise">
+                    <div class="row mb-2 mt-2  detail-desc @if(isset($allocation) && $allocation->auto_assign_logic != 'batch_wise') hidden-desc @endif" id="batch_wise">
                         <div class="col-md-12">
                             <div class="card-box">
                                 <div class="row">
@@ -242,7 +242,7 @@
                         </div>
                     </div>
 
-                    <div class="row mb-2 mt-2 detail-desc @if($allocation->auto_assign_logic != 'round_robin') hidden-desc @endif" id="round_robin">
+                    <div class="row mb-2 mt-2 detail-desc @if(isset($allocation) && $allocation->auto_assign_logic != 'round_robin') hidden-desc @endif" id="round_robin">
                         <div class="col-md-12">
                             <div class="card-box">
                                 <div class="row">
@@ -261,7 +261,7 @@ forced to nearest
                         </div>
                     </div>
 
-                    <div class="row mb-2 mt-2 detail-desc @if($allocation->auto_assign_logic != 'nearest_available') hidden-desc @endif" id="nearest_available">
+                    <div class="row mb-2 mt-2 detail-desc @if( isset($allocation) && $allocation->auto_assign_logic != 'nearest_available') hidden-desc @endif" id="nearest_available">
                         <div class="col-md-12">
                             <div class="card-box">
                                 <div class="row">
@@ -278,7 +278,7 @@ forced to nearest
                         </div>
                     </div>
 
-                    <div class="row mb-2 mt-2 detail-desc @if($allocation->auto_assign_logic != 'first_in_first_out') hidden-desc @endif" id="first_in_first_out">
+                    <div class="row mb-2 mt-2 detail-desc @if( isset($allocation) && $allocation->auto_assign_logic != 'first_in_first_out') hidden-desc @endif" id="first_in_first_out">
                         <div class="col-md-12">
                             <div class="card-box">
                                 <div class="row">
@@ -375,7 +375,7 @@ forced to nearest
 <script>
 
     $('.detail-desc').hide();
-    $('#'+'{{ $allocation->auto_assign_logic }}').show();
+    $('#'+'{{ isset($allocation) && $allocation->auto_assign_logic }}').show();
 
     $(function(){
         $('.custom-logic').change(function(){

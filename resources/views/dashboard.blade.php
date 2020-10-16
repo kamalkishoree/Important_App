@@ -1,4 +1,4 @@
-@extends('layouts.horizontal', ['title' => 'Dashboard','demo'=>'creative'])
+@extends('layouts.vertical', ['title' => 'Dashboard','demo'=>'creative'])
 
 @section('css')
     <!-- Plugins css -->

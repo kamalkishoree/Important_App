@@ -274,7 +274,7 @@
                                     <label class="custom-control-label font-16 font-weight-bold"
                                         for="domain_type_2">Custom
                                         Domain</label>
-                                    @if($preference->domain_name == 'custom_domain')
+                                    @if(isset($preference) && $preference->domain_name == 'custom_domain')
                                     <p class="mb-0 pl-3 pt-1">{{ $client->custom_domain }}</p>
                                     @endif
                                 </div>

@@ -28,7 +28,7 @@ class ClientController extends Controller
     {
         
           
-        // $value = Cache::get('anil');
+        // $value = Cache::get('all_clients');
         //  dd($value);    
    
         //    $redis    = Redis::connection();
@@ -78,7 +78,7 @@ class ClientController extends Controller
             'phone_number' => ['required'],
             'password' => ['required'],
             'database_path' => ['required'],
-            'database_name' => ['required'],
+            'database_name' => ['required','unique:clients'],
             'database_username' => ['required'],
             'database_password' => ['required'],
             'company_name' => ['required'],
@@ -139,7 +139,7 @@ class ClientController extends Controller
 
         // $redis->set($database_name, json_encode($data));
         //$minutes = 600;
-        Cache::put($database_name, $data);
+        Cache::set($database_name, $data);
 
         $this->dispatchNow(new ProcessClientDataBase($client->id));
         return redirect()->route('client.index')->with('success', 'Client Added successfully!');
@@ -179,10 +179,10 @@ class ClientController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255'],
             'phone_number' => ['required'],
-            // 'database_path' => ['required'],
-            // 'database_name' => ['required'],
-            // 'database_username' => ['required'],
-            // 'database_password' => ['required'],
+            'database_path' => ['required'],
+            'database_name' => ['required'],
+            'database_username' => ['required'],
+            'database_password' => ['required'],
             'company_name' => ['required'],
             'company_address' => ['required'],
             'custom_domain' => ['required'],
@@ -198,12 +198,16 @@ class ClientController extends Controller
      */
     public function update(Request $request, $id)
     {
+        
+        
         $validator = $this->updateValidator($request->all())->validate();
         // if ($validator->fails()) {
         //     return redirect()->back()->withErrors($validator, 'update');
         // }
+        
         $getClient = Client::find($id);
         $getFileName = $getClient->logo;
+        $removeDataFromRedis = Cache::forget($getClient->database_name);
 
         // Handle File Upload
         if ($request->hasFile('logo')) {
@@ -214,7 +218,7 @@ class ClientController extends Controller
             $file->move(public_path() . '/clients', $fileNameToStore);
             $getFileName = $fileNameToStore;
         }
-
+        
         $data = [
             'name' => $request->name,
             'email' => $request->email,
@@ -231,10 +235,11 @@ class ClientController extends Controller
             'timezone' => $request->timezone ? $request->timezone : NULL,
             'logo' => $getFileName,
         ];
-
+        
         $client = Client::where('id', $id)->update($data);
-        return redirect()->back()->with('success', 'Client Updated successfully!');
-        //return redirect()->route('client.index')->with('success', 'Client Updated successfully!');
+        $saveDataOnRedis = Cache::set($data['database_name'],$data);
+        //return redirect()->back()->with('success', 'Client Updated successfully!');
+        return redirect()->route('client.index')->with('success', 'Client Updated successfully!');
     }
 
     /**

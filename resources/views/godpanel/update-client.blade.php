@@ -108,7 +108,7 @@
                                         <label for="database_path" class="control-label">DATABASE PATH</label>
                                         <input type="text" class="form-control" name="database_path" id="database_path"
                                             value="{{ old('database_path', $client->database_path ?? '')}}"
-                                            placeholder="Enter Path" @if(isset($client)) ? readonly="readonly" :  @endif>
+                                            placeholder="Enter Path">
                                         @if($errors->has('database_path'))
                                         <span class="text-danger" role="alert">
                                             <strong>{{ $errors->first('database_path') }}</strong>
@@ -121,7 +121,7 @@
                                         <label for="database_name" class="control-label">DATABASE NAME</label>
                                         <input type="text" class="form-control" name="database_name" id="database_name"
                                             value="{{ old('database_name', $client->database_name ?? '')}}"
-                                            placeholder="Please Enter One String Example:-'mydatabase' " @if(isset($client)) ? readonly="readonly" :  @endif>
+                                            placeholder="Please Enter One String Example:-'mydatabase' ">
                                         @if($errors->has('database_name'))
                                         <span class="text-danger" role="alert">
                                             <strong>{{ $errors->first('database_name') }}</strong>
@@ -137,7 +137,7 @@
                                         <input type="text" class="form-control" name="database_username"
                                             id="database_username"
                                             value="{{ old('database_username', $client->database_username ?? '')}}"
-                                            placeholder="Enter database username" @if(isset($client)) ? readonly="readonly" :  @endif>
+                                            placeholder="Enter database username">
                                         @if($errors->has('database_username'))
                                         <span class="text-danger" role="alert">
                                             <strong>{{ $errors->first('database_username') }}</strong>
@@ -151,7 +151,7 @@
                                         <input type="text" class="form-control" name="database_password"
                                             id="database_password"
                                             value="{{ old('database_password', $client->database_password ?? '')}}"
-                                            placeholder="Enter database password" @if(isset($client)) ? readonly="readonly" :  @endif>
+                                            placeholder="Enter database password">
                                         @if($errors->has('database_password'))
                                         <span class="text-danger" role="alert">
                                             <strong>{{ $errors->first('database_password') }}</strong>

@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Cache;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,8 +17,8 @@ use Illuminate\Support\Facades\Route;
 
         // $url = Request::url();
         // $client = str_replace(array('http://','.test.com/login'), '', $url);
-        // 
-		// die($value);
+        // $value = Cache::get('key1');
+		// dd($value);
 		
 Route::group(['prefix' => '/godpanel'], function () {
 	Route::get('login', function(){
@@ -41,13 +42,13 @@ Route::group(['prefix' => '/godpanel'], function () {
 // 	'as' => '',
 // 	'uses' => 'Auth\LoginController@Clientlogin'
 //   ]);
-//Route::group(['middleware' => 'check'], function () {
+Route::group(['middleware' => 'check'], function () {
 Auth::routes();  
-///});
+});
 
 Route::group(['middleware' => 'auth:client', 'prefix' => '/'], function () {
 
-Route::group(['middleware' => 'database','prefix' => 'dummy'], function()
+Route::group(['middleware' => 'database'], function()
 	{
 	  
 	 
@@ -58,7 +59,7 @@ Route::get('customize', 'ClientController@ShowPreference')->name('preference.sho
 Route::post('client_preference/{id}', 'ClientController@storePreference')->name('preference');
 Route::get('configure', 'ClientController@ShowConfiguration')->name('configure');
 Route::get('options', 'ClientController@ShowOptions')->name('options');
-
+// Route::resource('client','ClientController');
 Route::resource('agent', 'AgentController');
 Route::resource('customer', 'CustomerController');
 Route::resource('tag', 'TagController');
@@ -82,12 +83,16 @@ Route::get('{any}', 'RoutingController@root')->name('any');
 /* Store Client Information */
 Route::post('submit_client', 'UserProfile@SaveRecord')->name('store_client');
 Route::post('/logout', 'LoginController@logout')->name('client.logout');
-});
+/* Client Profile update */
+//Route::get('client/edit/{id}','ClientProfileController@edit')->name('client.profile.edit');
+Route::put('client/profile/{id}','ClientProfileController@update')->name('client.profile.update');
+Route::post('client/password/update','ClientProfileController@changePassword')->name('client.password.update');
 
 });
-
+});
     
 Route::post('/login/client', 'LoginController@clientLogin')->name('client.login');
+Route::get('/wrong/url','LoginController@wrongurl')->name('wrong.client');
 
 
 

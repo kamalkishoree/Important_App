@@ -41,7 +41,7 @@ class UpdateRedis extends Command
     public function handle()
     {
         
-        Cache::put('bar', 'baz', 600);
+        Cache::set('test', 'testing');
 
     }
 }

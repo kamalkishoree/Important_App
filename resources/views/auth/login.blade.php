@@ -63,11 +63,13 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        @if($errors->has('password'))
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $errors->first('password') }}</strong>
+                                        <div class="text-sm-left">
+                                        @if (\Session::has('Error'))
+                                        <span class="text-danger" role="alert">
+                                            <strong>{!! \Session::get('Error') !!}</strong>
                                         </span>
                                         @endif
+                                    </div>
                                     </div>
 
                                     <div class="form-group mb-3">

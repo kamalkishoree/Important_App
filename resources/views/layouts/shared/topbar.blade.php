@@ -302,7 +302,7 @@
                      --}}
                     <a class="dropdown-item notify-item"
 
-                        href="{{ route('logout') }}"
+                        href="{{ route('client.logout') }}"
                         onclick="event.preventDefault();
                                     document.getElementById('logout-form').submit();"
                     >

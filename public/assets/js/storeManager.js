@@ -14,7 +14,7 @@ $(document).ready(function () {
 $("#submitManager").submit(function (e) {
     e.preventDefault();
     var formData = new FormData(this);
-    AjaxSubmit(formData, "POST", "/dummy/manager", "#add-manager-modal");
+    AjaxSubmit(formData, "POST", "/manager", "#add-manager-modal");
 });
 
 /**
