@@ -4,7 +4,7 @@
   
       <!-- Nav tabs -->
       <ul class="nav nav-tabs nav-bordered nav-justified" role="tablist">
-          <li class="nav-item">
+          <!-- <li class="nav-item">
               <a class="nav-link py-2" data-toggle="tab" href="#chat-tab" role="tab">
                   <i class="mdi mdi-message-text d-block font-22 my-1"></i>
               </a>
@@ -13,7 +13,7 @@
               <a class="nav-link py-2" data-toggle="tab" href="#tasks-tab" role="tab">
                   <i class="mdi mdi-format-list-checkbox d-block font-22 my-1"></i>
               </a>
-          </li>
+          </li> -->
           <li class="nav-item">
               <a class="nav-link py-2 active" data-toggle="tab" href="#settings-tab" role="tab">
                   <i class="mdi mdi-cog-outline d-block font-22 my-1"></i>

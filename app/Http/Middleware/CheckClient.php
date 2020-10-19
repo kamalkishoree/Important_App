@@ -24,7 +24,7 @@ class CheckClient
         $url = Request::url();
         $new_url = str_replace(array('http://', '.test.com/login'), '', $url);
 
-        $client = Cache::get('all_client');
+        $client = Cache::get('my_database');
         if (isset($client)) {
             $database_name = 'db_' . $client['database_name'];
             

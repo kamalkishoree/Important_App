@@ -40,7 +40,7 @@ class DatabaseDynamic
                   'engine' => null
               ];
               Config::set("database.connections.$database_name", $default);
-              Config::set("client_id", $client->id);
+              Config::set("client_id",1);
               Config::set("client_connected",true);
               Config::set("client_data",$client);
               DB::setDefaultConnection($database_name);

@@ -5,6 +5,7 @@
 
 @section('content')
 @include('modals.add-card')
+@include('modals.update-plan')
 
 <!-- Start Content-->
 <div class="container-fluid">
@@ -36,7 +37,7 @@
                         <h6 class="card-subtitle">23 June 2020 - 16 days left</h6>
                     </div>
                     <div class="col-md-4 align-self-center">
-                        <a href="javascript:;">Update Plan</a>
+                        <a href="javascript:;"data-toggle="modal" data-target="#update-card_modal">Update Plan</a>
                     </div>
                 </div>
                 <h4 class="header-title">Billing Details</h4>

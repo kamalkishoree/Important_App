@@ -259,8 +259,7 @@ class ClientController extends Controller
      */
     public function storePreference(Request $request, $id)
     {
-
-
+        
         //update the client custom_domain if value is set //
         if ($request->domain_name == 'custom_domain') {
             // check the availability of the domain //
@@ -270,11 +269,9 @@ class ClientController extends Controller
             }
             Client::where('id', $id)->update(['custom_domain' => $request->custom_domain_name]);
         }
-
         $updatePreference = ClientPreference::updateOrCreate([
             'client_id' => $id
         ], $request->all());
-
         if ($request->ajax()) {
             return response()->json([
                 'status' => 'success',

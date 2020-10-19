@@ -15,10 +15,10 @@ class PlanSeeder extends Seeder
             ['name'=>'Basic Trial','amount'=>0,'description'=>'Description of the basic plan']  
         );
         Plan::create(
-            ['name'=>'Plan2','amount'=>100,'description'=>'Description of the  plan2']
+            ['name'=>'Normal','amount'=>100,'description'=>'Description of the  plan2']
         );
         Plan::create(
-            ['name'=>'Basic Trial','amount'=>0,'description'=>'Description of the basic plan']
+            ['name'=>'Primium','amount'=>200,'description'=>'Description of the Primium plan']
         );
     }
 }

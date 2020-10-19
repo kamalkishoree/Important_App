@@ -33,11 +33,6 @@
                                     <h4 class="header-title">{{ $notification_type->name }}</h4>
                                 </div>
                             </div>
-                            <div class="col-sm-4 text-right">
-                                <p class="btn btn-blue waves-effect waves-light text-sm-right">
-                                    <i class="mdi mdi-plus-circle mr-1"></i> Add More
-                                </p>
-                            </div>
                             
                         </div>
                         <div class="table-responsive">
@@ -61,28 +56,28 @@
 
                                         <td>
                                             <div class="custom-control custom-switch">
-                                                <input type="checkbox" class="custom-control-input event_type" data-id="{{ $event->id }}" data-event-type="sms" id="smscustomSwitch_{{ $event->id}}" @if($event->is_checked_sms(auth()->user()->id))  checked @endif>
+                                                <input type="checkbox" class="custom-control-input event_type" data-id="{{ $event->id }}" data-event-type="sms" id="smscustomSwitch_{{ $event->id}}" @if($event->is_checked_sms(1))  checked @endif>
                                                 <label class="custom-control-label" for="smscustomSwitch_{{ $event->id}}"></label>
                                             </div>
                                         </td>
 
                                         <td>
                                             <div class="custom-control custom-switch">
-                                                <input type="checkbox" class="custom-control-input event_type" data-id="{{ $event->id }}" data-event-type="email" id="emailcustomSwitch_{{ $event->id}}" @if($event->is_checked_email(auth()->user()->id))  checked @endif>
+                                                <input type="checkbox" class="custom-control-input event_type" data-id="{{ $event->id }}" data-event-type="email" id="emailcustomSwitch_{{ $event->id}}" @if($event->is_checked_email(1))  checked @endif>
                                                 <label class="custom-control-label" for="emailcustomSwitch_{{ $event->id}}"></label>
                                             </div>
                                         </td>
 
                                         <td>
                                             <div class="custom-control custom-switch">
-                                                <input type="checkbox" class="custom-control-input event_type" data-id="{{ $event->id }}" data-event-type="webhook" id="webhookcustomSwitch_{{ $event->id}}" @if($event->is_checked_webhook(auth()->user()->id))  checked @endif>
+                                                <input type="checkbox" class="custom-control-input event_type" data-id="{{ $event->id }}" data-event-type="webhook" id="webhookcustomSwitch_{{ $event->id}}" @if($event->is_checked_webhook(1))  checked @endif>
                                                 <label class="custom-control-label" for="webhookcustomSwitch_{{ $event->id}}"></label>
                                             </div>
                                         </td>
 
                                         <td>
                                             <a href="javascript: void(0);" class="action-icon">
-                                                <i class="mdi mdi-square-edit-outline web-hook-add" data-id="{{ $event->id }}" data-webhook-url="{{ $event->get_client_webhook_url(auth()->user()->id) }}"></i>
+                                                <i class="mdi mdi-square-edit-outline web-hook-add" data-id="{{ $event->id }}" data-webhook-url="{{ $event->get_client_webhook_url(1) }}"></i>
                                             </a>
                                         </td>
                                     </tr>

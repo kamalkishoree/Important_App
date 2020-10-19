@@ -18,7 +18,7 @@ class ClientNotificationController extends Controller
     public function index()
     {
         $notification_types = NotificationType::with('notification_events')->get();
-        $client_notifications = ClientNotification::where('client_id',auth()->user()->id)->get(); 
+        $client_notifications = ClientNotification::where('client_id',1)->get(); 
         return view('notifications')->with([
             'client_notifications' => $client_notifications,
             'notification_types'   => $notification_types
@@ -123,7 +123,7 @@ class ClientNotificationController extends Controller
         }
 
         ClientNotification::updateOrCreate([
-            'client_id' => auth()->user()->id,
+            'client_id' => 1,
             'notification_event_id' => $request->notification_event_id
         ],$update);
 
@@ -152,7 +152,7 @@ class ClientNotificationController extends Controller
         ];
         
         ClientNotification::updateOrCreate([
-            'client_id' => auth()->user()->id,
+            'client_id' => 1,
             'notification_event_id' => $request->notification_event_id
         ],$update);
 

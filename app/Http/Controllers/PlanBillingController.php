@@ -2,14 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Model\Plan;
 use Illuminate\Http\Request;
-use App\Model\AllocationRule;
-use App\Model\Client;
-use App\Model\ClientPreference;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Validator;
 
-class AllocationController extends Controller
+class PlanBillingController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -18,17 +14,8 @@ class AllocationController extends Controller
      */
     public function index()
     {
-        
-        
-        $preference = ClientPreference::where('client_id',1)->first();
-
-        $allocation = AllocationRule::where('client_id',1)->first();;
-      
-        
-        return view('auto-allocation')->with([
-            'allocation' => $allocation,
-            'preference'=> $preference
-            ]);
+        $plan = Plan::all();
+        return view('plan-billing')->with('plan',$plan);
     }
 
     /**
@@ -74,15 +61,6 @@ class AllocationController extends Controller
         //
     }
 
-    protected function updateValidator(array $data)
-    {
-        return Validator::make($data, [
-            'task_priority' => ['required'],
-            'request_expiry' => ['required'],
-            'number_of_retries' => ['required'],
-        ]);
-    }
-
     /**
      * Update the specified resource in storage.
      *
@@ -92,12 +70,7 @@ class AllocationController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $validator = $this->updateValidator($request->all())->validate();
-        $request['manual_allocation'] = $request->manual_allocation ?? 'n';
-        $updatePreference = AllocationRule::updateOrCreate([
-            'client_id' => $id
-        ],$request->all());
-        return redirect()->back()->with('success', 'Allocation updated successfully!');
+        //
     }
 
     /**

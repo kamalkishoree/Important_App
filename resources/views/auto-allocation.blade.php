@@ -2,9 +2,12 @@
 
 @section('css')
 <style>
-.hidden-desc {
-    display: none;
-}
+    .hidden-desc {
+        display: none;
+    }
+   
+
+    
 </style>
 @endsection
 
@@ -34,7 +37,7 @@
     <!-- end page title -->
     <div class="row">
         <div class="col-xl-11 col-md-offset-1">
-            <form method="POST" action="{{route('preference', Auth::user()->id)}}">
+            <form method="POST" action="{{route('preference', 1)}}">
                 @csrf
                 <div class="row">
                     <div class="col-xl-12">
@@ -48,18 +51,15 @@
                                 <div class="col-sm-12">
                                     <p class="text-muted mb-2">SELECT PREFERENCE</p>
                                     <div class="radio radio-info form-check-inline">
-                                        <input type="radio" id="acknowledge1" value="acknowledge" name="acknowledgement_type"
-                                            {{ isset($preference)? ($preference->acknowledgement_type =="acknowledge")? "checked" : "" : "checked" }}>
+                                        <input type="radio" id="acknowledge1" value="acknowledge" name="acknowledgement_type" {{(isset($preference) &&$preference->acknowledgement_type =="acknowledge")? "checked" : ""}}>
                                         <label for="acknowledge1"> Acknowledge </label>
                                     </div>
                                     <div class="radio form-check-inline">
-                                        <input type="radio" id="acknowledge2" value="acceptreject" name="acknowledgement_type"
-                                            {{ (isset($preference) && $preference->acknowledgement_type =="acceptreject")? "checked" : "" }}>
+                                        <input type="radio" id="acknowledge2" value="acceptreject" name="acknowledgement_type" {{ (isset($preference) && $preference->acknowledgement_type =="acceptreject")? "checked" : "" }}>
                                         <label for="acknowledge2"> Accept/Reject </label>
                                     </div>
                                     <div class="radio form-check-inline">
-                                        <input type="radio" id="acknowledge3" value="none" name="acknowledgement_type"
-                                            {{ (isset($preference) && $preference->acknowledgement_type =="none")? "checked" : ""}}>
+                                        <input type="radio" id="acknowledge3" value="none" name="acknowledgement_type" {{ (isset($preference) && $preference->acknowledgement_type =="none")? "checked" : ""}}>
                                         <label for="acknowledge3"> None </label>
                                     </div>
                                     @if($errors->has('acknowledgement_type'))
@@ -81,26 +81,27 @@
                     </div>
                 </div>
             </form>
-            <form method="post" action="{{route('auto-allocation.update', Auth::user()->id ?? '')}}">
+            <form method="post" action="{{route('auto-allocation.update', 1 ?? '')}}">
                 @csrf
                 @method('PUT')
                 <div class="card-box">
                     <h4 class="header-title">Auto Allocation</h4>
+                    <div class="custom-switch">
+                        <input type="checkbox" value="y" class="custom-control-input large-icon" id="manual_allocation" name="manual_allocation"  {{ (isset($allocation) && $allocation->manual_allocation == "y" )? "checked" : "" }}>
+                        <label class="custom-control-label" for="manual_allocation"></label>
+                    </div>
                     <div class="row mb-2">
                         <div class="col-sm-8">
                             <div class="text-sm-left">
                                 <p class="sub-header">
                                     Enable this option to automatically assign Task to your agent.
+
                                 </p>
+
                             </div>
                         </div>
                         <div class="col-sm-4 text-right">
-                            <div class="custom-control custom-switch">
-                                <input type="checkbox" value="y" class="custom-control-input" id="manual_allocation"
-                                    name="manual_allocation"
-                                    {{ (isset($allocation) && $allocation->manual_allocation == "y" )? "checked" : "" }}>
-                                <label class="custom-control-label" for="manual_allocation"></label>
-                            </div>
+                           
                             @if($errors->has('manual_allocation'))
                             <span class="text-danger" role="alert">
                                 <strong>{{ $errors->first('manual_allocation') }}</strong>
@@ -114,11 +115,8 @@
                         <div class="col-md-4">
                             <div class="border p-3 rounded mb-3">
                                 <div class="custom-control custom-radio">
-                                    <input type="radio" id="shippingMethodRadio1" name="auto_assign_logic"
-                                        class="custom-control-input custom-logic" value="one_by_one"
-                                        {{ (isset($allocation) && $allocation->auto_assign_logic == "one_by_one" )? "checked" : "" }}>
-                                    <label class="custom-control-label font-16 font-weight-bold"
-                                        for="shippingMethodRadio1">One By One</label>
+                                    <input type="radio" id="shippingMethodRadio1" name="auto_assign_logic" class="custom-control-input custom-logic" value="one_by_one" {{ (isset($allocation) && $allocation->auto_assign_logic == "one_by_one" )? "checked" : "" }}>
+                                    <label class="custom-control-label font-16 font-weight-bold" for="shippingMethodRadio1">One By One</label>
                                 </div>
 
                             </div>
@@ -126,55 +124,40 @@
                         <div class="col-md-4">
                             <div class="border p-3 rounded">
                                 <div class="custom-control custom-radio">
-                                    <input type="radio" id="shippingMethodRadio2" name="auto_assign_logic"
-                                        class="custom-control-input custom-logic" value="send_to_all"
-                                        {{ (isset($allocation) && $allocation->auto_assign_logic == "send_to_all" )? "checked" : "" }}>
-                                    <label class="custom-control-label font-16 font-weight-bold"
-                                        for="shippingMethodRadio2">Send to all</label>
+                                    <input type="radio" id="shippingMethodRadio2" name="auto_assign_logic" class="custom-control-input custom-logic" value="send_to_all" {{ (isset($allocation) && $allocation->auto_assign_logic == "send_to_all" )? "checked" : "" }}>
+                                    <label class="custom-control-label font-16 font-weight-bold" for="shippingMethodRadio2">Send to all</label>
                                 </div>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="border p-3 rounded">
                                 <div class="custom-control custom-radio">
-                                    <input type="radio" id="shippingMethodRadio3" name="auto_assign_logic"
-                                        class="custom-control-input custom-logic" value="batch_wise"
-                                        {{ (isset($allocation) && $allocation->auto_assign_logic == "batch_wise" )? "checked" : "" }}>
-                                    <label class="custom-control-label font-16 font-weight-bold"
-                                        for="shippingMethodRadio3">Batch Wise</label>
+                                    <input type="radio" id="shippingMethodRadio3" name="auto_assign_logic" class="custom-control-input custom-logic" value="batch_wise" {{ (isset($allocation) && $allocation->auto_assign_logic == "batch_wise" )? "checked" : "" }}>
+                                    <label class="custom-control-label font-16 font-weight-bold" for="shippingMethodRadio3">Batch Wise</label>
                                 </div>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="border p-3 rounded">
                                 <div class="custom-control custom-radio">
-                                    <input type="radio" id="shippingMethodRadio4" name="auto_assign_logic"
-                                        class="custom-control-input custom-logic" value="round_robin"
-                                        {{ (isset($allocation) && $allocation->auto_assign_logic == "round_robin" )? "checked" : "" }}>
-                                    <label class="custom-control-label font-16 font-weight-bold"
-                                        for="shippingMethodRadio4">Round Robin</label>
+                                    <input type="radio" id="shippingMethodRadio4" name="auto_assign_logic" class="custom-control-input custom-logic" value="round_robin" {{ (isset($allocation) && $allocation->auto_assign_logic == "round_robin" )? "checked" : "" }}>
+                                    <label class="custom-control-label font-16 font-weight-bold" for="shippingMethodRadio4">Round Robin</label>
                                 </div>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="border p-3 rounded">
                                 <div class="custom-control custom-radio">
-                                    <input type="radio" id="shippingMethodRadio5" name="auto_assign_logic"
-                                        class="custom-control-input custom-logic" value="nearest_available"
-                                        {{ (isset($allocation) && $allocation->auto_assign_logic == "nearest_available" )? "checked" : "" }}>
-                                    <label class="custom-control-label font-16 font-weight-bold"
-                                        for="shippingMethodRadio5">Nearest Available</label>
+                                    <input type="radio" id="shippingMethodRadio5" name="auto_assign_logic" class="custom-control-input custom-logic" value="nearest_available" {{ (isset($allocation) && $allocation->auto_assign_logic == "nearest_available" )? "checked" : "" }}>
+                                    <label class="custom-control-label font-16 font-weight-bold" for="shippingMethodRadio5">Nearest Available</label>
                                 </div>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="border p-3 rounded">
                                 <div class="custom-control custom-radio">
-                                    <input type="radio" id="shippingMethodRadio6" name="auto_assign_logic"
-                                        class="custom-control-input custom-logic" value="first_in_first_out"
-                                        {{ (isset($allocation) && $allocation->auto_assign_logic == "first_in_first_out" )? "checked" : "" }}>
-                                    <label class="custom-control-label font-16 font-weight-bold"
-                                        for="shippingMethodRadio6">First In, First Out</label>
+                                    <input type="radio" id="shippingMethodRadio6" name="auto_assign_logic" class="custom-control-input custom-logic" value="first_in_first_out" {{ (isset($allocation) && $allocation->auto_assign_logic == "first_in_first_out" )? "checked" : "" }}>
+                                    <label class="custom-control-label font-16 font-weight-bold" for="shippingMethodRadio6">First In, First Out</label>
                                 </div>
                             </div>
                         </div>
@@ -190,8 +173,7 @@
                             <div class="card-box">
                                 <div class="row">
                                     <div class="col-md-2">
-                                        <img src="{{asset('assets/images/onebyone.png')}}" alt="img" title="img"
-                                            class="rounded" height="90">
+                                        <img src="{{asset('assets/images/onebyone.png')}}" alt="img" title="img" class="rounded" height="90">
                                     </div>
                                     <div class="col-md-10">
                                         <h4 class="header-title">One By One</h4>
@@ -213,8 +195,7 @@
                             <div class="card-box">
                                 <div class="row">
                                     <div class="col-md-2">
-                                        <img src="{{asset('assets/images/onebyone.png')}}" alt="img" title="img"
-                                            class="rounded" height="90">
+                                        <img src="{{asset('assets/images/onebyone.png')}}" alt="img" title="img" class="rounded" height="90">
                                     </div>
                                     <div class="col-md-10">
                                         <h4 class="header-title">Send to all</h4>
@@ -230,8 +211,7 @@
                             <div class="card-box">
                                 <div class="row">
                                     <div class="col-md-2">
-                                        <img src="{{asset('assets/images/onebyone.png')}}" alt="img" title="img"
-                                            class="rounded" height="90">
+                                        <img src="{{asset('assets/images/onebyone.png')}}" alt="img" title="img" class="rounded" height="90">
                                     </div>
                                     <div class="col-md-10">
                                         <h4 class="header-title">Batch Wise</h4>
@@ -247,14 +227,11 @@
                             <div class="card-box">
                                 <div class="row">
                                     <div class="col-md-2">
-                                        <img src="{{asset('assets/images/onebyone.png')}}" alt="img" title="img"
-                                            class="rounded" height="90">
+                                        <img src="{{asset('assets/images/onebyone.png')}}" alt="img" title="img" class="rounded" height="90">
                                     </div>
                                     <div class="col-md-10">
                                         <h4 class="header-title">Round Robin</h4>
-                                        <p class="sub-header">Offers tasks sequentially based on one with least tasks 
-forced to nearest  
-.</p>
+                                        <p class="sub-header">Offers tasks sequentially based on one with least tasks forced to nearest .</p>
                                     </div>
                                 </div>
                             </div>
@@ -266,8 +243,7 @@ forced to nearest
                             <div class="card-box">
                                 <div class="row">
                                     <div class="col-md-2">
-                                        <img src="{{asset('assets/images/onebyone.png')}}" alt="img" title="img"
-                                            class="rounded" height="90">
+                                        <img src="{{asset('assets/images/onebyone.png')}}" alt="img" title="img" class="rounded" height="90">
                                     </div>
                                     <div class="col-md-10">
                                         <h4 class="header-title">Nearest Available</h4>
@@ -283,12 +259,11 @@ forced to nearest
                             <div class="card-box">
                                 <div class="row">
                                     <div class="col-md-2">
-                                        <img src="{{asset('assets/images/onebyone.png')}}" alt="img" title="img"
-                                            class="rounded" height="90">
+                                        <img src="{{asset('assets/images/onebyone.png')}}" alt="img" title="img" class="rounded" height="90">
                                     </div>
                                     <div class="col-md-10">
                                         <h4 class="header-title">First In, First Out</h4>
-                                        <p class="sub-header">forced to nearest  </p>
+                                        <p class="sub-header">forced to nearest </p>
                                     </div>
                                 </div>
                             </div>
@@ -313,9 +288,7 @@ forced to nearest
                         <div class="col-md-6">
                             <div class="form-group mb-3">
                                 <label for="request_expiry">REQUEST EXPIRES IN SEC</label>
-                                <input type="text" name="request_expiry" id="request_expiry" placeholder="30"
-                                    class="form-control"
-                                    value="{{ old('request_expiry', $allocation->request_expiry ?? '')}}" require>
+                                <input type="text" name="request_expiry" id="request_expiry" placeholder="30" class="form-control" value="{{ old('request_expiry', $allocation->request_expiry ?? '')}}" require>
                                 @if($errors->has('request_expiry'))
                                 <span class="text-danger" role="alert">
                                     <strong>{{ $errors->first('request_expiry') }}</strong>
@@ -328,9 +301,7 @@ forced to nearest
                         <div class="col-md-6">
                             <div class="form-group mb-3">
                                 <label for="number_of_retries">NO. OF RETRIES</label>
-                                <input type="text" name="number_of_retries" id="number_of_retries" placeholder="0"
-                                    class="form-control"
-                                    value="{{ old('number_of_retries', $allocation->number_of_retries ?? '')}}">
+                                <input type="text" name="number_of_retries" id="number_of_retries" placeholder="0" class="form-control" value="{{ old('number_of_retries', $allocation->number_of_retries ?? '')}}">
                                 @if($errors->has('number_of_retries'))
                                 <span class="text-danger" role="alert">
                                     <strong>{{ $errors->first('number_of_retries') }}</strong>
@@ -342,9 +313,7 @@ forced to nearest
                             <div class="form-group mb-3">
                                 <label for="start_before_task_time">START ALLOCATION BEFORE TASK TIME (IN
                                     MINUTES)</label>
-                                <input type="text" name="start_before_task_time" id="start_before_task_time"
-                                    placeholder="0" class="form-control"
-                                    value="{{ old('start_before_task_time', $allocation->start_before_task_time ?? '')}}">
+                                <input type="text" name="start_before_task_time" id="start_before_task_time" placeholder="0" class="form-control" value="{{ old('start_before_task_time', $allocation->start_before_task_time ?? '')}}">
                                 @if($errors->has('start_before_task_time'))
                                 <span class="text-danger" role="alert">
                                     <strong>{{ $errors->first('start_before_task_time') }}</strong>
@@ -373,24 +342,23 @@ forced to nearest
 
 @section('script')
 <script>
-
     $('.detail-desc').hide();
-    $('#'+'{{ isset($allocation) && $allocation->auto_assign_logic }}').show();
+    $('#' + '{{ isset($allocation) && $allocation->auto_assign_logic }}').show();
 
-    $(function(){
-        $('.custom-logic').change(function(){
+    $(function() {
+        $('.custom-logic').change(function() {
             $('.detail-desc').hide();
-            $('#'+$(this).val()).show();
+            $('#' + $(this).val()).show();
         });
     });
 
-    $(function(){
-        $('#manual_allocation').change(function(){
+    $(function() {
+        $('#manual_allocation').change(function() {
             var checked = $('#manual_allocation').prop('checked');
-            if(checked){
-                $('.custom-logic').attr('disabled',false);
-            }else{
-                $('.custom-logic').attr('disabled',true);
+            if (checked) {
+                $('.custom-logic').attr('disabled', false);
+            } else {
+                $('.custom-logic').attr('disabled', true);
             }
         });
     });

@@ -100,12 +100,12 @@
                         <span> Configure </span>
                     </a>
                 </li>
-                <li>
-                    <a href="{{url('plan-billing')}}">
+                <!-- <li>
+                    <a href="{{route('plan-billing.index')}}">
                         <i data-feather="dollar-sign"></i>
                         <span> Plans & Billings </span>
                     </a>
-                </li>
+                </li> -->
                 <li>
                     <a href="{{route('notifications.index')}}">
                         <i data-feather="bell"></i>

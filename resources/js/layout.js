@@ -484,7 +484,7 @@ function ($) {
         var bodyConfig = JSON.parse(this.body.attr('data-layout') ? this.body.attr('data-layout') : '{}');
         
         var config = $.extend({}, {
-            mode: "light",
+            mode: "dark",
             width: "fluid",
             menuPosition: 'fixed',
             sidebar: {

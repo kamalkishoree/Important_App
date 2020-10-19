@@ -8,13 +8,13 @@
 <!-- App css -->
 @if(isset($demo) && $demo == 'creative')
 <link href="{{asset('assets/css/bootstrap-creative.min.css')}}" rel="stylesheet" type="text/css"
-    id="bs-default-stylesheet" />
+    id="bs-default-stylesheet" disabled/>
 <link href="{{asset('assets/css/app-creative-rtl.min.css')}} " rel="stylesheet" type="text/css"
-    id="app-default-stylesheet" />
+    id="app-default-stylesheet" disabled/>
 <link href="{{asset('assets/css/bootstrap-creative-dark.min.css')}} " rel="stylesheet" type="text/css"
-    id="bs-dark-stylesheet" disabled />
+    id="bs-default-stylesheet"  />
 <link href="{{asset('assets/css/app-creative-dark-rtl.min.css')}} " rel="stylesheet" type="text/css"
-    id="app-dark-stylesheet" disabled />
+    id="app-default-stylesheet"  />
 @else
 @if(isset($demo) && $demo == 'modern')
 <link href="{{asset('assets/css/bootstrap-modern.min.css')}}" rel="stylesheet" type="text/css"
@@ -72,13 +72,13 @@
 <!-- App css -->
 @if(isset($demo) && $demo == 'creative')
 <link href="{{asset('assets/css/bootstrap-creative.min.css')}}" rel="stylesheet" type="text/css"
-    id="bs-default-stylesheet" />
+    id="bs-default-stylesheet" disabled/>
 <link href="{{asset('assets/css/app-creative.min.css')}} " rel="stylesheet" type="text/css"
-    id="app-default-stylesheet" />
+    id="app-default-stylesheet" disabled/>
 <link href="{{asset('assets/css/bootstrap-creative-dark.min.css')}} " rel="stylesheet" type="text/css"
-    id="bs-dark-stylesheet" disabled />
+    id="bs-default-stylesheet"  />
 <link href="{{asset('assets/css/app-creative-dark.min.css')}} " rel="stylesheet" type="text/css"
-    id="app-dark-stylesheet" disabled />
+    id="app-default-stylesheet"  />
 @else
 @if(isset($demo) && $demo == 'modern')
 <link href="{{asset('assets/css/bootstrap-modern.min.css')}}" rel="stylesheet" type="text/css"
