@@ -90,7 +90,7 @@
                 </li>
                 <li>
                     <a href="#">
-                        <i data-feather="git-branch"></i>
+                        <i data-feather="paperclip"></i>
                         <span>Pricing Rules</span>
                     </a>
                 </li>
@@ -110,6 +110,13 @@
                     <a href="{{route('notifications.index')}}">
                         <i data-feather="bell"></i>
                         <span> Notifications </span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="{{route('tasks.index')}}">
+                        <i data-feather="package"></i>
+                        <span> Tasks </span>
                     </a>
                 </li>
                 

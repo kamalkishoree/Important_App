@@ -151,7 +151,6 @@ class AgentController extends Controller
     public function update(Request $request, $id)
     {
         $validator = $this->updateValidator($request->all())->validate();
-        dd($validator);
 
         $getAgent = Agent::find($id);
         $getFileName = $getAgent->profile_picture;

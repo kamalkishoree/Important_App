@@ -62,7 +62,7 @@ class TeamController extends Controller
     {
         return Validator::make($data, [
             'name' => ['required', 'string', 'max:255'],
-            'manager_id' => ['required'],
+            //'manager_id' => ['required'],
             'location_accuracy' => ['required'],
             'location_frequency' => ['required']
         ]);
@@ -80,7 +80,7 @@ class TeamController extends Controller
 
         $data = [
             'name'          => $request->name,
-            'manager_id'    => $request->manager_id,
+            //'manager_id'    => $request->manager_id,
             'client_id'     => auth()->user()->id,
             'location_accuracy'=> $request->location_accuracy,
             'location_frequency'=>$request->location_frequency    
@@ -144,7 +144,7 @@ class TeamController extends Controller
     {
         return Validator::make($data, [
             'name' => ['required', 'string', 'max:255'],
-            'manager_id' => ['required'],
+            //'manager_id' => ['required'],
             'location_accuracy' => ['required'],
             'location_frequency' => ['required']
         ]);
@@ -166,7 +166,7 @@ class TeamController extends Controller
         
         $data = [
             'name'          => $request->name,
-            'manager_id'    => $request->manager_id,
+            //'manager_id'    => $request->manager_id,
             'client_id'     => auth()->user()->id,
             'location_accuracy'=> $request->location_accuracy,
             'location_frequency'=>$request->location_frequency    

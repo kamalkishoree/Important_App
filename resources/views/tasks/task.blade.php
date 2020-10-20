@@ -1,4 +1,4 @@
-@extends('layouts.vertical', ['title' => 'Options'])
+@extends('layouts.vertical', ['title' => 'Task'])
 
 @section('css')
 <link href="{{asset('assets/libs/select2/select2.min.css')}}" rel="stylesheet" type="text/css" />
@@ -13,35 +13,31 @@
 <link href="{{asset('assets/libs/dropify/dropify.min.css')}}" rel="stylesheet" type="text/css" />
 <link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/8.4.6/css/intlTelInput.css'>
 <style>
-    // workaround
-    .intl-tel-input {
-        display: table-cell;
-    }
+// workaround
+.intl-tel-input {
+  display: table-cell;
+}
 
-    .inner-div {
+.inner-div {
         width: 50%;
         float: left;
     }
-
-    .intl-tel-input .selected-flag {
-        z-index: 4;
-    }
-
-    .intl-tel-input .country-list {
-        z-index: 5;
-    }
-
-    .input-group .intl-tel-input .form-control {
-        border-top-left-radius: 4px;
-        border-top-right-radius: 0;
-        border-bottom-left-radius: 4px;
-        border-bottom-right-radius: 0;
-    }
+.intl-tel-input .selected-flag {
+  z-index: 4;
+}
+.intl-tel-input .country-list {
+  z-index: 5;
+}
+.input-group .intl-tel-input .form-control {
+  border-top-left-radius: 4px;
+  border-top-right-radius: 0;
+  border-bottom-left-radius: 4px;
+  border-bottom-right-radius: 0;
+}
 </style>
 @endsection
 
 @section('content')
-@include('modals.add-agent')
 <!-- Start Content-->
 <div class="container-fluid">
 
@@ -49,7 +45,7 @@
     <div class="row">
         <div class="col-12">
             <div class="page-title-box">
-                <h4 class="page-title">{{ auth()->user()->getPreference->agent_name ?? 'Agents' }}</h4>
+                <h4 class="page-title">{{ auth()->user()->getPreference->agent_name ?? 'Tasks' }}</h4>
             </div>
         </div>
     </div>
@@ -69,40 +65,45 @@
                             </div>
                         </div>
                         <div class="col-sm-4 text-right">
-                            <button type="button" class="btn btn-blue waves-effect waves-light" data-toggle="modal" data-target="#add-agent-modal" data-backdrop="static" data-keyboard="false"><i class="mdi mdi-plus-circle mr-1"></i> Add {{ auth()->user()->getPreference->agent_name ?? 'Agent' }}</button>
+                        <a href="{{ route('tasks.create') }}" class="btn btn-blue waves-effect waves-light"><i class="mdi mdi-plus-circle mr-1"></i> Add Task</a>
                         </div>
 
                     </div>
 
                     <div class="table-responsive">
-                        <table class="table table-striped dt-responsive nowrap w-100" id="agents-datatable">
+                        <table class="table table-striped dt-responsive nowrap w-100"  id="agents-datatable">
                             <thead>
                                 <tr>
                                     <th>Name</th>
-                                    <th>Phone</th>
-                                    <th>Type</th>
-                                    <th>Team</th>
-                                    <th>Transport Type</th>
-                                    <th>Action</th>
+                                    <th>From Address</th>
+                                    <th>To Address</th>
+                                    <th>status</th>
+                                    <th>priority</th>
+                                    <th>Expected Delivery Date</th>
+                                    <th style="width: 85px;">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach($agents as $agent)
+                                @foreach($tasks as $task)
                                 <tr>
                                     <td class="table-user">
-                                        <a href="javascript:void(0);" class="text-body font-weight-semibold">{{$agent->name}}</a>
+                                        <a href="javascript:void(0);"
+                                            class="text-body font-weight-semibold">{{$task->name}}</a>
                                     </td>
                                     <td>
-                                        {{$agent->phone_number}}
+                                        {{$task->from_address}}
                                     </td>
                                     <td>
-                                        {{$agent->type}}
+                                        {{$task->to_address}}
                                     </td>
                                     <td>
-                                        {{$agent->team->name}}
+                                        {{$task->status}}
                                     </td>
                                     <td>
-                                        {{$agent->vehicle_type_id}}
+                                        {{$task->priority}}
+                                    </td>
+                                    <td>
+                                        {{$task->expected_delivery_date}}
                                     </td>
                                     <!-- <td>
                                         <span class="badge bg-soft-success text-success">Active</span>
@@ -110,9 +111,9 @@
 
                                     <td>
                                         <div class="form-ul" style="width: 60px;">
-                                            <div class="inner-div"> <a href="{{route('agent.edit', $agent->id)}}" class="action-icon"> <i class="mdi mdi-square-edit-outline"></i></a></div>
+                                            <div class="inner-div"> <a href="{{route('tasks.edit', $task->id)}}" class="action-icon"> <i class="mdi mdi-square-edit-outline"></i></a></div>
                                             <div class="inner-div">
-                                                <form method="POST" action="{{route('agent.destroy', $agent->id)}}">
+                                                <form method="POST" action="{{route('tasks.destroy', $task->id)}}">
                                                     @csrf
                                                     @method('DELETE')
                                                     <div class="form-group">
@@ -122,12 +123,6 @@
                                                 </form>
                                             </div>
                                         </div>
-
-
-                                        <!-- <a href="{{route('agent.destroy', $agent->id)}}" class="action-icon">
-                                            <i class="mdi mdi-delete"></i>
-                                        </a> -->
-
                                     </td>
                                 </tr>
                                 @endforeach
@@ -170,37 +165,37 @@
 <script src="{{asset('assets/libs/sweetalert2/sweetalert2.min.js')}}"></script>
 
 <script>
-    $("#phone_number").intlTelInput({
-        utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/8.4.6/js/utils.js"
-    });
-    $('.intl-tel-input').css('width', '100%');
+$("#phone_number").intlTelInput({
+  utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/8.4.6/js/utils.js"
+});
+$('.intl-tel-input').css('width','100%');
 
-    var regEx = /\(?([0-9]{3})\)?([ .-]?)([0-9]{3})\2([0-9]{4})/;
-    $("#addAgent").bind("submit", function() {
-        var val = $("#phone_number").val();
-        if (!val.match(regEx)) {
-            $('#phone_number').css('color', 'red');
+var regEx = /\(?([0-9]{3})\)?([ .-]?)([0-9]{3})\2([0-9]{4})/;
+$("#addAgent").bind("submit", function() {
+       var val = $("#phone_number").val();
+       if (!val.match(regEx)) {
+            $('#phone_number').css('color','red');
             return false;
         }
-    });
+});
 
-    $(function() {
-        $('#phone_number').focus(function() {
-            $('#phone_number').css('color', '#6c757d');
-        });
+$(function(){
+    $('#phone_number').focus(function(){
+        $('#phone_number').css('color','#6c757d');
     });
+});
 
-    $(document).ready(function() {
-        $('#agents-datatable').DataTable();
-    });
+$(document).ready( function () {
+    $('#agents-datatable').DataTable();
+});
 
-    $(document).ready(function() {
-        $('#basic-datatable').DataTable();
-    });
+$(document).ready( function () {
+    $('#basic-datatable').DataTable();
+});
 
-    $("#phone_number").inputFilter(function(value) {
-        return /^-?\d*$/.test(value);
-    });
+$("#phone_number").inputFilter(function(value) {
+  return /^-?\d*$/.test(value); });
+
 </script>
 
 @endsection

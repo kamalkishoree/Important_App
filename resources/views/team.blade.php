@@ -1,4 +1,4 @@
-@extends('layouts.vertical', ['title' => 'Geo Fence'])
+@extends('layouts.vertical', ['title' => 'Team'])
 
 @section('css')
 <link href="{{asset('assets/libs/select2/select2.min.css')}}" rel="stylesheet" type="text/css" />
@@ -46,7 +46,7 @@
                         <thead class="thead-light">
                             <tr>
                                 <th>Team Name</th>
-                                <th>Manager</th>
+                                <!-- <th>Manager</th> -->
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -57,9 +57,9 @@
                                     <h5 class="m-0 font-weight-normal">{{ $team->name }}</h5>
                                 </td>
 
-                                <td>
+                                <!-- <td>
                                     {{ $team->manager ? $team->manager->name : '' }}
-                                </td>
+                                </td> -->
 
 
                                 <td>
@@ -92,7 +92,7 @@
                 <h4 class="header-title mb-3">Team Detail</h4>
                 <p>ID : <strong>{{ $team->id }}</strong></p>
                 <h3>{{ $team->name }}</h3>
-                <p>Manager : <strong>{{ $team->manager ? $team->manager->name : '' }}</strong></p>
+                <!-- <p>Manager : <strong>{{ $team->manager ? $team->manager->name : '' }}</strong></p> -->
                 <div class="row">
                     <div class="col-md-6">
                         <div class="mb-6">

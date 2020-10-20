@@ -23,15 +23,16 @@ class CheckClient
     {
         $url = Request::url();
         $new_url = str_replace(array('http://', '.test.com/login'), '', $url);
-
-        $client = Cache::get('my_database');
+        $database = 'my_database';
+        $client = Cache::get($database);
+        $database_name = '';
         if (isset($client)) {
             $database_name = 'db_' . $client['database_name'];
             
         } else {
-            $database_serch = Client::where('database_name', $client)->first();
+            $database_serch = Client::where('database_name', $database)->first();
             if (isset($database_serch)) {
-                $database_name = 'db_' . $client->database_name;
+                $database_name = 'db_' . $database_serch->database_name;
                 Cache::set($database_serch->database_name, $database_serch);
             } 
         }

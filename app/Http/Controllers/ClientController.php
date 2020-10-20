@@ -288,7 +288,7 @@ class ClientController extends Controller
      */
     public function ShowPreference()
     {
-        $preference = Auth::user()->getPreference;
+        $preference = ClientPreference::where('client_id',1)->first();
         $currencies = Currency::orderBy('iso_code')->get();
         return view('customize')->with(['preference' => $preference, 'currencies' => $currencies]);
     }
@@ -299,7 +299,7 @@ class ClientController extends Controller
      */
     public function ShowConfiguration()
     {
-        $preference = Auth::user()->getPreference;
+        $preference = ClientPreference::where('client_id',1)->first();
         $client = Auth::user();
         return view('configure')->with(['preference' => $preference, 'client' => $client]);
     }
@@ -309,7 +309,7 @@ class ClientController extends Controller
      */
     public function ShowOptions()
     {
-        $preference = Auth::user()->getPreference;
+        $preference = ClientPreference::where('client_id',1)->first();
         return view('options')->with(['preference' => $preference]);
     }
 }

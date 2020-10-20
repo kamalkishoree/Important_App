@@ -28,13 +28,11 @@
                     <div class="row mb-2">
                         <div class="col-sm-12">
                             <div class="radio radio-blue form-check-inline">
-                                <input type="radio" id="light_theme" value="light" name="theme"
-                                    {{ ($preference && $preference->theme =="light")? "checked" : "" }}>
+                                <input type="radio" id="light_theme" value="light" name="theme" {{ (isset($preference) && $preference->theme =="light")? "checked" : "" }}>
                                 <label for="light_theme"> Light theme </label>
                             </div>
                             <div class="radio form-check-inline">
-                                <input type="radio" id="dark_theme" value="dark" name="theme"
-                                    {{ ($preference &&  $preference->theme =="dark")? "checked" : "" }}>
+                                <input type="radio" id="dark_theme" value="dark" name="theme" {{ (isset($preference) &&  $preference->theme =="dark")? "checked" : "" }}>
                                 <label for="dark_theme"> Dark theme </label>
                             </div>
                             @if($errors->has('theme'))
@@ -44,10 +42,21 @@
                             @endif
                         </div>
                     </div>
+                    <div class="row mb-2">
+                        <div class="col-md-2">
+                            <div class="form-group mb-0 text-center">
+                                <button class="btn btn-blue btn-block" type="submit"> Update </button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
 
+        </div>
+    </form>
+
+    <form method="POST" action="{{route('preference', 1)}}">
+        @csrf
         <div class="row">
             <div class="col-xl-11 col-md-offset-1">
                 <div class="card-box">
@@ -59,8 +68,7 @@
                         <div class="col-md-6">
                             <div class="form-group mb-3">
                                 <label for="agent_type">AGENT NAME</label>
-                                <input type="text" name="agent_name" id="agent_type" placeholder="e.g Driver"
-                                    class="form-control" value="{{ old('agent_type', $preference->agent_name ?? '')}}">
+                                <input type="text" name="agent_name" id="agent_type" placeholder="e.g Driver" class="form-control" value="{{ old('agent_type', $preference->agent_name ?? '')}}">
                                 @if($errors->has('agent_name'))
                                 <span class="text-danger" role="alert">
                                     <strong>{{ $errors->first('agent_name') }}</strong>
@@ -91,13 +99,11 @@
                             <label>UNIT</label>
                             <div class="col-sm-12">
                                 <div class="radio radio-info form-check-inline">
-                                    <input type="radio" id="metric" value="metric" name="distance_unit"
-                                        {{ ($preference && $preference->distance_unit =="metric")? "checked" : "" }}>
+                                    <input type="radio" id="metric" value="metric" name="distance_unit" {{ ($preference && $preference->distance_unit =="metric")? "checked" : "" }}>
                                     <label for="metric"> metric</label>
                                 </div>
                                 <div class="radio form-check-inline">
-                                    <input type="radio" id="imperial" value="imperial" name="distance_unit"
-                                        {{ ($preference && $preference->distance_unit =="imperial")? "checked" : "" }}>
+                                    <input type="radio" id="imperial" value="imperial" name="distance_unit" {{ ($preference && $preference->distance_unit =="imperial")? "checked" : "" }}>
                                     <label for="imperial"> imperial</label>
                                 </div>
                                 @if($errors->has('distance_unit'))
@@ -135,14 +141,11 @@
                             <div class="form-group mb-3">
                                 <label for="date_format">DATE FORMAT</label>
                                 <select class="form-control" id="date_format" name="date_format">
-                                    <option value="DD-MM-YYYY"
-                                        {{ ($preference && $preference->date_format =="DD-MM-YYYY")? "selected" : "" }}>
+                                    <option value="DD-MM-YYYY" {{ ($preference && $preference->date_format =="DD-MM-YYYY")? "selected" : "" }}>
                                         DD-MM-YYYY</option>
-                                    <option value="DD/MM/YYYY"
-                                        {{ ($preference && $preference->date_format =="DD/MM/YYYY")? "selected" : "" }}>
+                                    <option value="DD/MM/YYYY" {{ ($preference && $preference->date_format =="DD/MM/YYYY")? "selected" : "" }}>
                                         DD/MM/YYYY</option>
-                                    <option value="YYYY-MM-DD"
-                                        {{ ($preference && $preference->date_format =="YYYY-MM-DD")? "selected" : "" }}>
+                                    <option value="YYYY-MM-DD" {{ ($preference && $preference->date_format =="YYYY-MM-DD")? "selected" : "" }}>
                                         YYYY-MM-DD</option>
                                 </select>
                                 @if($errors->has('date_format'))

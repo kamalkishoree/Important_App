@@ -10,7 +10,7 @@
                 @csrf
                 <div class="modal-body p-4">
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-12">
                             <div class="form-group" id="nameInput">
                                 <label for="name" class="control-label">NAME</label>
                                 <input type="text" class="form-control" name="name" id="name" placeholder="John Doe" require>
@@ -19,7 +19,7 @@
                                 </span>
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        <!-- <div class="col-md-6">
                             <div class="form-group mb-3" id="manager_idInput">
                                 <label for="team-manager">Manager</label>
                                 <select class="form-control" id="team-manager" name="manager_id">
@@ -28,7 +28,7 @@
                                     @endforeach
                                 </select>
                             </div>
-                        </div>
+                        </div> -->
                     </div>
 
                     <div class="row">

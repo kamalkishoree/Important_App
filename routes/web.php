@@ -76,6 +76,7 @@ Route::post('notification_update','ClientNotificationController@updateClientNoti
 Route::post('set_webhook_url','ClientNotificationController@setWebhookUrl')->name('set.webhook.url');
 Route::resource('manager', 'ManagerController');
 Route::resource('plan-billing', 'PlanBillingController');
+Route::resource('tasks','TaskController');
 
 Route::get('{first}/{second}/{third}', 'RoutingController@thirdLevel')->name('third');
 Route::get('{first}/{second}', 'RoutingController@secondLevel')->name('second');
