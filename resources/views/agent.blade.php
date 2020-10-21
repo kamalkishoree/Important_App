@@ -69,7 +69,7 @@
                             </div>
                         </div>
                         <div class="col-sm-4 text-right">
-                            <button type="button" class="btn btn-blue waves-effect waves-light" data-toggle="modal" data-target="#add-agent-modal" data-backdrop="static" data-keyboard="false"><i class="mdi mdi-plus-circle mr-1"></i> Add {{ Session::get('agent_name')['agent_name'] }}</button>
+                            <button type="button" class="btn btn-blue waves-effect waves-light" data-toggle="modal" data-target="#add-agent-modal" data-backdrop="static" data-keyboard="false"><i class="mdi mdi-plus-circle mr-1"></i> Add {{ Session::get('agent_name') }}</button>
                         </div>
 
                     </div>
