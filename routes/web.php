@@ -23,7 +23,7 @@ use Illuminate\Support\Facades\Cache;
 Route::group(['prefix' => '/godpanel'], function () {
 	Route::get('login', function(){
 		return view('godpanel/login');
-	})->name('god.login');
+	});
 	Route::post('login','Godpanel\LoginController@Login')->name('god.login');
 
 	Route::middleware('auth')->group(function () {
@@ -42,56 +42,61 @@ Route::group(['prefix' => '/godpanel'], function () {
 // 	'as' => '',
 // 	'uses' => 'Auth\LoginController@Clientlogin'
 //   ]);
-Route::group(['middleware' => 'check'], function () {
-Auth::routes();  
+
+Route::group(['domain' => '{account}'], function () {
+	Route::group(['middleware' => 'check'], function () {
+	Auth::routes();  
+	});
+
+	Route::group(['middleware' => 'auth:client', 'prefix' => '/'], function () {
+
+	Route::group(['middleware' => 'database'], function()
+		{
+		
+		
+	Route::get('', function(){
+		return view('dashboard');
+	})->name('index');
+	Route::get('customize', 'ClientController@ShowPreference')->name('preference.show');
+	Route::post('client_preference/{id}', 'ClientController@storePreference')->name('preference');
+	Route::get('configure', 'ClientController@ShowConfiguration')->name('configure');
+	Route::get('options', 'ClientController@ShowOptions')->name('options');
+	// Route::resource('client','ClientController');
+	Route::resource('agent', 'AgentController');
+	Route::resource('customer', 'CustomerController');
+	Route::resource('tag', 'TagController');
+	Route::get('tag/{id}/{type}/edit', 'TagController@edit')->name('tag.edit');
+	Route::delete('tag/{id}/{type}', 'TagController@destroy')->name('tag.destroy');
+	Route::resource('auto-allocation', 'AllocationController');
+	Route::resource('profile', 'ProfileController');
+	Route::resource('geo-fence', 'GeoFenceController');
+	Route::get('geo-fence-all', 'GeoFenceController@allList')->name('geo.fence.list');
+	Route::resource('team', 'TeamController');
+	Route::delete('team-agent/{team_id}/{agent_id}','TeamController@removeTeamAgent')->name('team.agent.destroy');
+	Route::resource('notifications','ClientNotificationController');
+	Route::post('notification_update','ClientNotificationController@updateClientNotificationEvent')->name('notification.update.client');
+	Route::post('set_webhook_url','ClientNotificationController@setWebhookUrl')->name('set.webhook.url');
+	Route::resource('manager', 'ManagerController');
+	Route::resource('plan-billing', 'PlanBillingController');
+	Route::resource('tasks','TaskController');
+
+	Route::get('{first}/{second}/{third}', 'RoutingController@thirdLevel')->name('third');
+	Route::get('{first}/{second}', 'RoutingController@secondLevel')->name('second');
+	Route::get('{any}', 'RoutingController@root')->name('any');
+
+	/* Store Client Information */
+	Route::post('submit_client', 'UserProfile@SaveRecord')->name('store_client');
+	Route::post('/logout', 'LoginController@logout')->name('client.logout');
+	/* Client Profile update */
+	//Route::get('client/edit/{id}','ClientProfileController@edit')->name('client.profile.edit');
+	Route::put('client/profile/{id}','ClientProfileController@update')->name('client.profile.update');
+	Route::post('client/password/update','ClientProfileController@changePassword')->name('client.password.update');
+
+	});
+	});
 });
 
-Route::group(['middleware' => 'auth:client', 'prefix' => '/'], function () {
 
-Route::group(['middleware' => 'database'], function()
-	{
-	  
-	 
-Route::get('', function(){
-	return view('dashboard');
-})->name('index');
-Route::get('customize', 'ClientController@ShowPreference')->name('preference.show');
-Route::post('client_preference/{id}', 'ClientController@storePreference')->name('preference');
-Route::get('configure', 'ClientController@ShowConfiguration')->name('configure');
-Route::get('options', 'ClientController@ShowOptions')->name('options');
-// Route::resource('client','ClientController');
-Route::resource('agent', 'AgentController');
-Route::resource('customer', 'CustomerController');
-Route::resource('tag', 'TagController');
-Route::get('tag/{id}/{type}/edit', 'TagController@edit')->name('tag.edit');
-Route::delete('tag/{id}/{type}', 'TagController@destroy')->name('tag.destroy');
-Route::resource('auto-allocation', 'AllocationController');
-Route::resource('profile', 'ProfileController');
-Route::resource('geo-fence', 'GeoFenceController');
-Route::get('geo-fence-all', 'GeoFenceController@allList')->name('geo.fence.list');
-Route::resource('team', 'TeamController');
-Route::delete('team-agent/{team_id}/{agent_id}','TeamController@removeTeamAgent')->name('team.agent.destroy');
-Route::resource('notifications','ClientNotificationController');
-Route::post('notification_update','ClientNotificationController@updateClientNotificationEvent')->name('notification.update.client');
-Route::post('set_webhook_url','ClientNotificationController@setWebhookUrl')->name('set.webhook.url');
-Route::resource('manager', 'ManagerController');
-Route::resource('plan-billing', 'PlanBillingController');
-Route::resource('tasks','TaskController');
-
-Route::get('{first}/{second}/{third}', 'RoutingController@thirdLevel')->name('third');
-Route::get('{first}/{second}', 'RoutingController@secondLevel')->name('second');
-Route::get('{any}', 'RoutingController@root')->name('any');
-
-/* Store Client Information */
-Route::post('submit_client', 'UserProfile@SaveRecord')->name('store_client');
-Route::post('/logout', 'LoginController@logout')->name('client.logout');
-/* Client Profile update */
-//Route::get('client/edit/{id}','ClientProfileController@edit')->name('client.profile.edit');
-Route::put('client/profile/{id}','ClientProfileController@update')->name('client.profile.update');
-Route::post('client/password/update','ClientProfileController@changePassword')->name('client.password.update');
-
-});
-});
     
 Route::post('/login/client', 'LoginController@clientLogin')->name('client.login');
 Route::get('/wrong/url','LoginController@wrongurl')->name('wrong.client');

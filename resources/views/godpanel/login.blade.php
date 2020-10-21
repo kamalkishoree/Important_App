@@ -19,13 +19,13 @@
 
                             <div class="text-center w-75 m-auto">
                                 <div class="auth-logo">
-                                    <a href="{{route('index')}}" class="logo logo-dark text-center">
+                                    <a href="#" class="logo logo-dark text-center">
                                         <span class="logo-lg">
                                             <img src="{{asset('assets/images/logo-dark.png')}}" alt="" height="22">
                                         </span>
                                     </a>
 
-                                    <a href="{{route('index')}}" class="logo logo-light text-center">
+                                    <a href="#" class="logo logo-light text-center">
                                         <span class="logo-lg">
                                             <img src="{{asset('assets/images/logo-light.png')}}" alt="" height="22">
                                         </span>
