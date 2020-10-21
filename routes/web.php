@@ -43,15 +43,14 @@ Route::group(['prefix' => '/godpanel'], function () {
 // 	'uses' => 'Auth\LoginController@Clientlogin'
 //   ]);
 
-Route::group(['domain' => '{account}'], function () {
-	Route::group(['middleware' => 'check'], function () {
 	Auth::routes();  
-	});
+	
 
 	Route::group(['middleware' => 'auth:client', 'prefix' => '/'], function () {
 
 	Route::group(['middleware' => 'database'], function()
 		{
+			
 		
 		
 	Route::get('', function(){
@@ -94,7 +93,6 @@ Route::group(['domain' => '{account}'], function () {
 
 	});
 	});
-});
 
 
     
