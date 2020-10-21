@@ -26,7 +26,7 @@ class LoginController extends Controller
         ]);
 
         if (Auth::guard('client')->attempt(['email' => $request->email, 'password' => $request->password], $request->get('remember'))) {
-
+            
             return redirect()->route('index');
         }
 

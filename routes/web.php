@@ -19,7 +19,7 @@ use Illuminate\Support\Facades\Cache;
         // $client = str_replace(array('http://','.test.com/login'), '', $url);
         // $value = Cache::get('key1');
 		// dd($value);
-		
+		Route::get('/testing','ProcessController@task');
 Route::group(['prefix' => '/godpanel'], function () {
 	Route::get('login', function(){
 		return view('godpanel/login');
@@ -95,6 +95,7 @@ Route::post('client/password/update','ClientProfileController@changePassword')->
     
 Route::post('/login/client', 'LoginController@clientLogin')->name('client.login');
 Route::get('/wrong/url','LoginController@wrongurl')->name('wrong.client');
+
 
 
 

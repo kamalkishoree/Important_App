@@ -1,6 +1,6 @@
 <!-- ========== Left Sidebar Start ========== -->
 <div class="left-side-menu">
-
+ 
     <div class="h-100" data-simplebar>
 
         <!-- User box -->
@@ -71,7 +71,7 @@
                 <li>
                     <a href="{{route('agent.index')}}">
                         <i data-feather="users"></i>
-                        <span> {{ auth()->user()->getPreference->agent_name ?? 'Agents' }}</span>
+                        <span> {{ Session::get('agent_name')['agent_name'] }}</span>
                     </a>
                 </li>
 

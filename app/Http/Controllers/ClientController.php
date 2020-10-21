@@ -259,7 +259,6 @@ class ClientController extends Controller
      */
     public function storePreference(Request $request, $id)
     {
-        
         //update the client custom_domain if value is set //
         if ($request->domain_name == 'custom_domain') {
             // check the availability of the domain //

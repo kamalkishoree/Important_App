@@ -50,7 +50,7 @@
     <div class="text-sm-left">
         @if (\Session::has('error'))
         <div class="alert alert-error">
-            <span>{!! \Session::get('success') !!}</span>
+            <span>{!! \Session::get('error') !!}</span>
         </div>
         @endif
     </div>

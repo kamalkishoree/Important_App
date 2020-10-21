@@ -16,6 +16,7 @@ class Kernel extends ConsoleKernel
         Commands\ClientMigrateDataBase::class,
         Commands\ClientRollbcakMigrate::class,
         Commands\UpdateRedis::class,
+        Commands\NewChanges::class,
     ];
 
     /**

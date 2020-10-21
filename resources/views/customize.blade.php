@@ -15,6 +15,17 @@
             </div>
         </div>
     </div>
+    <div class="row">
+        <div class="col-11">
+            <div class="text-sm-left">
+                @if (\Session::has('success'))
+                <div class="alert alert-success">
+                    <span>{!! \Session::get('success') !!}</span>
+                </div>
+                @endif
+            </div>
+        </div>
+    </div>
     <!-- end page title -->
     <form method="POST" action="{{route('preference', 1)}}">
         @csrf

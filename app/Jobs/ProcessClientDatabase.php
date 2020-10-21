@@ -55,7 +55,7 @@ class ProcessClientDatabase implements ShouldQueue
                 'engine' => null
             ];
 
-            config(["database.connections.mysql.database" => null]);
+            // config(["database.connections.mysql.database" => null]);
 
             $query = "CREATE DATABASE $schemaName;";
 

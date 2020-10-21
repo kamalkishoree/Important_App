@@ -3,8 +3,10 @@
 namespace App\Http\Middleware;
 
 use App\Model\Client;
+use App\Model\ClientPreference;
 use Closure;
 use Config;
+use Session;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -45,6 +47,14 @@ class DatabaseDynamic
               Config::set("client_data",$client);
               DB::setDefaultConnection($database_name);
               DB::purge($database_name);
+
+              $client_name = ClientPreference::where('client_id',1)->first('agent_name');
+              if(isset($client_name)){
+                Session::put('agent_name', $client_name);
+              }else{
+                Session::put('agent_name', 'Agents');
+              }
+              
           }
       }
         return $next($request);

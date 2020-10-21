@@ -33,7 +33,7 @@
     <div class="row">
         <div class="col-12">
             <div class="page-title-box">
-                <h4 class="page-title">Agent</h4>
+                <h4 class="page-title">{{ Session::get('agent_name')['agent_name'] }}</h4>
             </div>
         </div>
     </div>
@@ -90,7 +90,7 @@
                                     <div class="col-md-6">
                                         <div class="form-group" id="typeInput">
                                             <label for="type" class="control-label">TYPE</label>
-                                            <select class="selectpicker" data-style="btn-light" name="type" id="type">
+                                            <select class="form-control" data-style="btn-light" name="type" id="type">
                                                 <option value="Freelancer" @if($agent->type=='Freelancer') selected @endif>Freelancer</option>
                                                 <option value="Employee" @if($agent->type=='Employee') selected @endif>Employee</option>
                                                 <option value="Relish" @if($agent->type=='Relish') selected @endif>Relish</option>
@@ -103,7 +103,7 @@
                                     <div class="col-md-6">
                                         <div class="form-group" id="team_idInput">
                                             <label for="team_id" class="control-label">ASSIGN TEAM</label>
-                                            <select class="selectpicker" data-style="btn-light" name="team_id" id="team_id">
+                                            <select class="form-control" data-style="btn-light" name="team_id" id="team_id">
                                                 <option>Select Team</option>
                                                 @foreach($teams as $team)
                                                 <option value="{{$team->id}}" @if($agent->team_id == $team->id) selected @endif>{{$team->name}}</option>
