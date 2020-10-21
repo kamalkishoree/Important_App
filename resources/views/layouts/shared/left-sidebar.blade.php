@@ -71,7 +71,7 @@
                 <li>
                     <a href="{{route('agent.index')}}">
                         <i data-feather="users"></i>
-                        <span> {{ Session::get('agent_name')['agent_name'] }}</span>
+                        <span> {{ Session::get('agent_name') }}</span>
                     </a>
                 </li>
 
