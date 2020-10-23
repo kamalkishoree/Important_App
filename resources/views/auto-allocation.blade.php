@@ -8,13 +8,15 @@
 
         .book {
             height: 100px !important;
+            margin-bottom: 10px;
         }
 
         .font-weight-bold {
             font-weight: 700 !important;
             margin-bottom: 19px !important;
         }
-        .tagline{
+
+        .tagline {
             display: none;
         }
 
@@ -130,7 +132,7 @@
                         <h4 class="header-title">Select a method to allocate task</h4>
 
                         <div class="row mb-2 mt-2">
-                            <div class="col-md-4 click" id="redio1">
+                            <div class="col-md-4 click first_click" id="redio1">
                                 <div class="border p-3 rounded book">
                                     <div class="custom-control custom-radio">
                                         <input type="radio" id="shippingMethodRadio1" name="auto_assign_logic"
@@ -139,7 +141,7 @@
                                         <label class="custom-control-label font-16 font-weight-bold lab"
                                             for="shippingMethodRadio1">One By One</label>
                                     </div>
-                                    <strong class="tagline one_by_one">very good logic i have about auto alocation</strong>
+                                    <strong class="tagline one_by_one">Allocation will done one by one</strong>
                                 </div>
                             </div>
                             <div class="col-md-4 click" id="redio2">
@@ -151,7 +153,7 @@
                                         <label class="custom-control-label font-16 font-weight-bold lab"
                                             for="shippingMethodRadio2">Send to all</label>
                                     </div>
-                                    <strong class="tagline auto_assign_logic">very good logic i have about auto alocation</strong>
+                                    <strong class="tagline">Allocation request will send to all</strong>
                                 </div>
                             </div>
                             <div class="col-md-4 click" id="redio3">
@@ -163,7 +165,7 @@
                                         <label class="custom-control-label font-16 font-weight-bold lab"
                                             for="shippingMethodRadio3">Batch Wise</label>
                                     </div>
-                                    <strong class="tagline ">very good logic i have about auto alocation</strong>
+                                    <strong class="tagline ">Allocation request will done batch wise</strong>
                                 </div>
                             </div>
                             <div class="col-md-4 click" id="redio4">
@@ -175,7 +177,7 @@
                                         <label class="custom-control-label font-16 font-weight-bold lab"
                                             for="shippingMethodRadio4">Round Robin</label>
                                     </div>
-                                    <strong class="tagline ">very good logic i have about auto alocation</strong>
+                                    <strong class="tagline ">Allocation request will done in round robin format</strong>
                                 </div>
                             </div>
                             <div class="col-md-4 click" id="redio5">
@@ -187,7 +189,8 @@
                                         <label class="custom-control-label font-16 font-weight-bold lab"
                                             for="shippingMethodRadio5">Nearest Available</label>
                                     </div>
-                                    <strong class="tagline ">very good logic i have about auto alocation</strong>
+                                    <strong class="tagline " id="redio5">Allocation request will send to nearst
+                                        available</strong>
                                 </div>
                             </div>
                             <div class="col-md-4 click" id="redio6">
@@ -199,7 +202,8 @@
                                         <label class="custom-control-label font-16 font-weight-bold lab"
                                             for="shippingMethodRadio6">First In, First Out</label>
                                     </div>
-                                    <strong class="tagline ">very good logic i have about auto alocation</strong>
+                                    <strong class="tagline ">Allocation request will send on the basic of first in first
+                                        out</strong>
                                 </div>
                             </div>
                             @if ($errors->has('auto_assign_logic'))
@@ -211,40 +215,46 @@
 
                         <div class="row mb-2 mt-2 detail-desc   @if ($errors->has('request_expiry'))
                                 <span class="text-danger" role="alert">
-                                    <strong>{{ $errors->first('request_expiry') }}</strong>
-                                </span>
+                                <strong>{{ $errors->first('number_of_retries') }}</strong>
+                            </span>
                             @endif
                         </div>
                     </div>
-            </div>
-            <div class="row mb-2">
-                <div class="col-md-6">
-                    <div class="form-group mb-3">
-                        <label for="number_of_retries">NO. OF RETRIES</label>
-                        <input type="text" name="number_of_retries" id="number_of_retries" placeholder="0"
-                            class="form-control"
-                            value="{{ old('number_of_retries', $allocation->number_of_retries ?? '') }}">
-                        @if ($errors->has('number_of_retries'))
-                            <span class="text-danger" role="alert">
-                                <strong>{{ $errors->first('number_of_retries') }}</strong>
-                            </span>
-                        @endif
+                    <div class="row mb-2 mt-2">
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label for="task_priority">TASK ALLOCATION PRIORITY</label>
+                                <select class="form-control" id="task_priority" name="task_priority" require>
+                                    <option value="default">Default</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label for="request_expiry">REQUEST EXPIRES IN SEC</label>
+                                <input type="text" name="request_expiry" id="request_expiry" placeholder="30"
+                                    class="form-control" value="" require>
+                            </div>
+                        </div>
                     </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group mb-3">
-                        <label for="start_before_task_time">START ALLOCATION BEFORE TASK TIME (IN
-                            MINUTES)</label>
-                        <input type="text" name="start_before_task_time" id="start_before_task_time" placeholder="0"
-                            class="form-control"
-                            value="{{ old('start_before_task_time', $allocation->start_before_task_time ?? '') }}">
-                        @if ($errors->has('start_before_task_time'))
-                            <span class="text-danger" role="alert">
-                                <strong>{{ $errors->first('start_before_task_time') }}</strong>
-                            </span>
-                        @endif
+                    <div class="row mb-2">
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label for="number_of_retries">NO. OF RETRIES</label>
+                                <input type="text" name="number_of_retries" id="number_of_retries" placeholder="0"
+                                    class="form-control" value="">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label for="start_before_task_time">START ALLOCATION BEFORE TASK TIME (IN
+                                    MINUTES)</label>
+                                <input type="text" name="start_before_task_time" id="start_before_task_time" placeholder="0"
+                                    class="form-control" value="">
+                            </div>
+                        </div>
                     </div>
-                </div>
             </div>
             <div class="row mb-2">
                 <div class="col-md-2">
@@ -266,29 +276,43 @@
 
 @section('script')
     <script>
-        $('.detail-desc').hide();
-        $('#' + '{{ isset($allocation) && $allocation->auto_assign_logic }}').show();
+        $(document).ready(function() {
 
-        $(function() {
-            $('.custom-logic').change(function() {
-                $('.detail-desc').hide();
-                $('#' + $(this).val()).show();
+            // jQuery(function() {
+            //     jQuery('#redio1').click();
+            // });
+
+
+
+
+            $('.detail-desc').hide();
+            $('#' + '{{ isset($allocation) && $allocation->auto_assign_logic }}').show();
+
+            $(function() {
+                $('.custom-logic').change(function() {
+                    $('.detail-desc').hide();
+                    $('#' + $(this).val()).show();
+                });
             });
-        });
 
-        $(function() {
-            $('#manual_allocation').change(function() {
-                var checked = $('#manual_allocation').prop('checked');
-                if (checked) {
-                    $('.custom-logic').attr('disabled', false);
-                } else {
-                    $('.custom-logic').attr('disabled', true);
-                }
+            $(function() {
+                $('#manual_allocation').change(function() {
+                    var checked = $('#manual_allocation').prop('checked');
+                    if (checked) {
+                        $('.custom-logic').attr('disabled', false);
+                    } else {
+                        $('.custom-logic').attr('disabled', true);
+                    }
+                });
             });
-        });
-        $('.click').click(function() {
+            $('.click').click(function() {
+                $('.tagline').hide();
+                $(this).find('input[type="radio"]').prop('checked', true);
 
-            $(this).find('input[type="radio"]').prop('checked', true);
+                $(this).find('.tagline').show();
+
+
+            });
 
         });
 

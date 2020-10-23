@@ -12,21 +12,23 @@ use Illuminate\Support\Facades\DB;
 use Config;
 use Exception;
 use Illuminate\Support\Facades\Artisan;
-
+use Illuminate\Support\Facades\Auth;
 
 class UpdatePassword implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     protected $password;
+    protected $client_data;
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct($password)
+    public function __construct($password,$client_data)
     {
-        $this->password = $password;
+        $this->password    = $password;
+        $this->client_data = $client_data;
     }
 
     /**
@@ -36,7 +38,7 @@ class UpdatePassword implements ShouldQueue
      */
     public function handle()
     {
-        
+        // dd($this->client_data);
         //$client = Client::where('id', $this->client_id)->first(['name', 'email', 'password', 'phone_number', 'password', 'database_path', 'database_name', 'database_username', 'database_password', 'logo', 'company_name', 'company_address', 'custom_domain', 'status'])->toarray();
 
         $schemaName = 'dispatcher' ?: config("database.connections.mysql.database");
@@ -61,7 +63,12 @@ class UpdatePassword implements ShouldQueue
 
         Config::set("database.connections.$schemaName", $default);
         config(["database.connections.mysql.database" => $schemaName]);
-        DB::connection($schemaName)->table('clients')->update(['password'=>$this->password]);
+        if($this->client_data != 'empty'){
+            DB::connection($schemaName)->table('clients')->where('id',Auth::user()->id)->update(['name'=>$this->client_data['name'],'email'=>$this->client_data['email'],'phone_number'=>$this->client_data['phone_number'],'company_name'=>$this->client_data['company_name'],'company_address'=>$this->client_data['company_address'],'custom_domain'=>$this->client_data['custom_domain'],'country'=>$this->client_data['country'],'timezone'=>$this->client_data['timezone']]);
+        }else{
+            DB::connection($schemaName)->table('clients')->where('id',Auth::user()->id)->update(['password'=>$this->password]);
+        }
+        
         DB::disconnect($schemaName);
     }
 }

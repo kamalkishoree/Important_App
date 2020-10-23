@@ -58,7 +58,7 @@
                         <div class="col-md-6">
                             <div class="form-group" id="team_idInput">
                                 <label for="team_id" class="control-label">ASSIGN TEAM</label>
-                                <select class="selectpicker" data-style="btn-light" name="team_id" id="team_id" require>
+                                <select class="selectpicker" data-style="btn-light" name="team_id" id="team_id">
                                     <option hidden="true"></option>
                                     @foreach($teams as $team)
                                     <option value="{{$team->id}}">{{$team->name}}</option>
@@ -72,29 +72,30 @@
                         </div>
                     </div>
 
-                    <div class="row">
+                    <div class="row ">
                         <div class="col-md-12">
                             <div class="form-group" id="vehicle_type_idInput">
                                 <p class="text-muted mt-3 mb-2">TRANSPORT TYPE</p>
-                                <div class="radio radio-blue form-check-inline">
+                                <div class="radio radio-blue form-check-inline click cursors">
                                     <input type="radio" id="onfoot" value="onfoot" name="vehicle_type_id" checked>
-                                    <label for="onfoot"> On Foot </label>
+                                    <img id="foot" src="{{asset('assets/icons/walk.png')}}"> 
                                 </div>
-                                <div class="radio radio-primery form-check-inline">
+
+                                <div class="radio radio-primery form-check-inline click cursors">
                                     <input type="radio" id="bycycle" value="bycycle" name="vehicle_type_id">
-                                    <label for="bycycle"> Bicycle </label>
+                                    <img id="cycle" src="{{asset('assets/icons/cycle.png')}}">
                                 </div>
-                                <div class="radio radio-info form-check-inline">
+                                <div class="radio radio-info form-check-inline click cursors">
                                     <input type="radio" id="motorbike" value="motorbike" name="vehicle_type_id">
-                                    <label for="motorbike"> Motor Bike </label>
+                                    <img id="bike" src="{{asset('assets/icons/bike.png')}}">
                                 </div>
-                                <div class="radio radio-danger form-check-inline">
+                                <div class="radio radio-danger form-check-inline click cursors">
                                     <input type="radio" id="car" value="car" name="vehicle_type_id">
-                                    <label for="car"> Car </label>
+                                    <img id="cars" src="{{asset('assets/icons/car.png')}}">
                                 </div>
-                                <div class="radio radio-warning form-check-inline">
+                                <div class="radio radio-warning form-check-inline click cursors">
                                     <input type="radio" id="truck" value="truck" name="vehicle_type_id">
-                                    <label for="truck"> Truck </label>
+                                    <img id="trucks" src="{{asset('assets/icons/truck.png')}}">
                                 </div>
                                 <span class="invalid-feedback" role="alert">
                                     <strong></strong>

@@ -269,9 +269,9 @@
     
             <li class="dropdown notification-list topbar-dropdown">
                 <a class="nav-link dropdown-toggle nav-user mr-0 waves-effect waves-light" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
-                    <img src="{{ isset(Auth::user()->logo) ? asset('clients/'.Auth::user()->logo.'') : asset('assets/images/users/user-1.jpg') }}" alt="user-image" class="rounded-circle">
+                    
                     <span class="pro-user-name ml-1">
-                        {{ auth()->user()->company_name ?? auth()->user()->name  }} <i class="mdi mdi-chevron-down"></i> 
+                        {{ auth()->user()->name  }} <i class="mdi mdi-chevron-down"></i> 
                     </span>
                 </a>
                 <div class="dropdown-menu dropdown-menu-right profile-dropdown ">
@@ -281,7 +281,7 @@
                     </div>
     
                     
-                    <a href="javascript:void(0);" class="dropdown-item notify-item">
+                    <a href="{{route('profile.index')}}" class="dropdown-item notify-item">
                         <i class="fe-user"></i>
                         <span>My Account</span>
                     </a>
@@ -342,10 +342,10 @@
     
             <a href="{{route('any', ['dashboard'])}}" class="logo logo-light text-center">
                 <span class="logo-sm">
-                    <img src="{{asset('assets/images/logo-sm.png')}}"alt="" height="22">
+                    <img src="{{ isset(Auth::user()->logo) ? asset('clients/'.Auth::user()->logo.'') : asset('assets/images/users/user-1.jpg') }}"  alt="" height="30">
                 </span>
                 <span class="logo-lg">
-                    <img src="{{asset('assets/images/logo-light.png')}}"alt="" height="20">
+                    <img src="{{ isset(Auth::user()->logo) ? asset('clients/'.Auth::user()->logo.'') : asset('assets/images/users/user-1.jpg') }}" alt="" height="50">
                 </span>
             </a>
         </div>

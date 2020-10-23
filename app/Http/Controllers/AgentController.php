@@ -38,7 +38,6 @@ class AgentController extends Controller
     {
         return Validator::make($data, [
             'name' => ['required', 'string', 'max:255'],
-            'team_id' => ['required'],
             'type' => ['required'],
             'vehicle_type_id' => ['required'],
             'make_model' => ['required'],
@@ -58,6 +57,7 @@ class AgentController extends Controller
      */
     public function store(Request $request)
     {
+        
 
         $validator = $this->validator($request->all())->validate();
         $getFileName = NULL;
@@ -73,7 +73,7 @@ class AgentController extends Controller
            
         $data = [
             'name' => $request->name,
-            'team_id' => $request->team_id,
+            'team_id' => $request->team_id == null ? $team_id = 0:$request->team_id,
             'type' => $request->type,
             'vehicle_type_id' => $request->vehicle_type_id,
             'make_model' => $request->make_model,
@@ -128,9 +128,9 @@ class AgentController extends Controller
     */
     protected function updateValidator(array $data)
     {
+        
         return Validator::make($data, [
             'name' => ['required', 'string', 'max:255'],
-            'team_id' => ['required'],
             'type' => ['required'],
             'vehicle_type_id' => ['required'],
             'make_model' => ['required'],
@@ -151,7 +151,7 @@ class AgentController extends Controller
     public function update(Request $request, $id)
     {
         $validator = $this->updateValidator($request->all())->validate();
-
+        
         $getAgent = Agent::find($id);
         $getFileName = $getAgent->profile_picture;
 
@@ -180,6 +180,7 @@ class AgentController extends Controller
         ];
         
         $agent = Agent::where('id', $id)->update($data);
+        
         return redirect()->back()->with('success', 'Agent Updated successfully!');
     }
 

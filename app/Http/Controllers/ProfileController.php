@@ -2,9 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Model\Client;
 use Illuminate\Http\Request;
 use App\Model\Countries; 
 use \DateTimeZone;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Hash;
+use App\Jobs\UpdatePassword;
 class ProfileController extends Controller
 {
     /**
@@ -14,11 +18,12 @@ class ProfileController extends Controller
      */
     public function index()
     {
-        
+
+        $client = Client::where('id',1)->first();
         $countries = Countries::all();
        
         $tzlist = DateTimeZone::listIdentifiers(DateTimeZone::ALL);
-        return view('profile')->with(['countries'=> $countries,'tzlist'=>$tzlist ]);
+        return view('profile')->with(['client' => $client ,'countries'=> $countries,'tzlist'=>$tzlist ]);
     }
 
     /**
@@ -73,7 +78,53 @@ class ProfileController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        
+        
+        $validator = Validator::make($request->all(), [
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255'],
+            'phone_number' => ['required'],
+            'company_name' => ['required'],
+            'company_address' => ['required'],
+            'custom_domain' => ['required'],
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator, 'update');
+        }
+
+
+        $getClient = Client::find($id);
+        $getFileName = $getClient->logo;
+
+        // Handle File Upload
+        if ($request->hasFile('logo')) {
+            $file = $request->file('logo');
+            $filenameWithExt = $request->file('logo')->getClientOriginalName();
+            $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
+            $fileNameToStore = $filename . '_' . time() . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path() . '/clients', $fileNameToStore);
+            $getFileName = $fileNameToStore;
+        }
+
+        $data = [
+            'name' => $request->name,
+            'email' => $request->email,
+            'phone_number' => $request->phone_number,
+            'company_name' => $request->company_name,
+            'company_address' => $request->company_address,
+            'custom_domain' => $request->custom_domain,
+            'country' => $request->country ? $request->country : NULL,
+            'timezone' => $request->timezone ? $request->timezone : NULL,
+            'logo' => $getFileName,
+        ];
+
+        $client = Client::where('id', $id)->update($data);
+        $password = null;
+        $this->dispatchNow(new UpdatePassword($password,$data));
+
+
+        return redirect()->back()->with('success', 'Profile Updated successfully!');
     }
 
     /**
