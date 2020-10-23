@@ -2,8 +2,7 @@
 
 @section('css')
     <!-- Plugins css -->
-    <link href="{{asset('assets/libs/dropzone/dropzone.min.css')}}" rel="stylesheet" type="text/css" />
-
+  
 @endsection
 
 @section('content')
@@ -383,5 +382,5 @@
 
 @section('script')
     <!-- Plugins js-->
-    <script src="{{asset('assets/libs/dropzone/dropzone.min.js')}}"></script>
+    
 @endsection

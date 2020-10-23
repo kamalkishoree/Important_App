@@ -2,7 +2,7 @@
 
 @section('css')
     <!-- Plugins css -->
-    <link href="{{asset('assets/libs/sweetalert2/sweetalert2.min.css')}}" rel="stylesheet" type="text/css" />
+    
 
 @endsection
 
@@ -949,16 +949,5 @@
 @endsection
 
 @section('script')
-    <!-- Plugins js-->
-    <script src="{{asset('assets/libs/peity/peity.min.js')}}"></script>
-    <script src="{{asset('assets/libs/jquery-knob/jquery-knob.min.js')}}"></script>
-    <script src="{{asset('assets/libs/jquery-sparkline/jquery-sparkline.min.js')}}"></script>
-    <script src="{{asset('assets/libs/moment/moment.min.js')}}"></script>
-    <script src="{{asset('assets/libs/jquery.scrollto/jquery.scrollto.min.js')}}"></script>
-    <script src="{{asset('assets/libs/sweetalert2/sweetalert2.min.js')}}"></script>
-
-    <!-- Page js-->
-    <script src="{{asset('assets/js/pages/jquery.chat.js')}}"></script>
-    <script src="{{asset('assets/js/pages/jquery.todo.js')}}"></script>
-    <script src="{{asset('assets/js/pages/widgets.init.js')}}"></script>
+  
 @endsection

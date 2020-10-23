@@ -35,16 +35,7 @@ function AjaxSubmit(data, method, url, modals) {
         success: function (response) {
             if (response.status == "success") {
                 $("#add-manager-modal .close").click();
-                Swal.fire({
-                    icon: 'success',
-                    title: response.message,
-                    showConfirmButton: false,
-                    timer: 1500
-                })
-
-                setTimeout(function(){
                      location.reload(); 
-                }, 2000);
             } else {
                 $(".show_all_error.invalid-feedback").show();
                 $(".show_all_error.invalid-feedback").text(response.message);

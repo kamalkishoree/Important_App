@@ -16,20 +16,8 @@ $("#submitTeam").submit(function (e) {
         success: function (response) {
             if (response.status == "success") {
                 $('#add-team-modal').modal('hide');
-                Swal.fire({
-                    icon: 'success',
-                    title: response.message,
-                    showConfirmButton: false,
-                    timer: 1500
-                })
-
-                setTimeout(function(){
-                     location.reload(); 
-                }, 2000);
-
                 
-
-
+                     location.reload(); 
             } else {
                 $(".show_all_error.invalid-feedback").show();
                 $(".show_all_error.invalid-feedback").text(response.message);

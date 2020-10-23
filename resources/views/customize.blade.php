@@ -107,15 +107,15 @@
                     <div class="row mb-2">
 
                         <div class="col-md-6">
-                            <label>UNIT</label>
+                            <label>Unit</label>
                             <div class="col-sm-12">
                                 <div class="radio radio-info form-check-inline">
                                     <input type="radio" id="metric" value="metric" name="distance_unit" {{ ($preference && $preference->distance_unit =="metric")? "checked" : "" }}>
-                                    <label for="metric"> metric</label>
+                                    <label for="metric"> Metric</label>
                                 </div>
                                 <div class="radio form-check-inline">
                                     <input type="radio" id="imperial" value="imperial" name="distance_unit" {{ ($preference && $preference->distance_unit =="imperial")? "checked" : "" }}>
-                                    <label for="imperial"> imperial</label>
+                                    <label for="imperial"> Imperial</label>
                                 </div>
                                 @if($errors->has('distance_unit'))
                                 <span class="text-danger" role="alert">

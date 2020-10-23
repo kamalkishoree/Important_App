@@ -1,5 +1,4 @@
-<div id="add-agent-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-    aria-hidden="true" style="display: none;">
+<div id="add-agent-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
@@ -28,15 +27,14 @@
                                 <span class="invalid-feedback" role="alert">
                                     <strong></strong>
                                 </span>
-                                
+
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group" id="phone_numberInput">
                                 <label for="phone_number" class="control-label">CONTACT NUMBER</label>
                                 <div class="input-group">
-                                    <input type="text" name="phone_number" class="form-control" id="phone_number"
-                                        placeholder="Enter mobile number" maxlength="12">
+                                    <input type="text" name="phone_number" class="form-control" id="phone_number" placeholder="Enter mobile number" maxlength="12">
                                 </div>
                                 <span class="invalid-feedback" role="alert">
                                     <strong></strong>
@@ -49,9 +47,8 @@
                             <div class="form-group" id="typeInput">
                                 <label for="type" class="control-label">TYPE</label>
                                 <select class="selectpicker" data-style="btn-light" name="type" id="type">
-                                    <option value="Freelancer">Freelancer</option>
                                     <option value="Employee">Employee</option>
-                                    <option value="Relish">Relish</option>
+                                    <option value="Freelancer">Freelancer</option>
                                 </select>
                                 <span class="invalid-feedback" role="alert">
                                     <strong></strong>
@@ -62,7 +59,7 @@
                             <div class="form-group" id="team_idInput">
                                 <label for="team_id" class="control-label">ASSIGN TEAM</label>
                                 <select class="selectpicker" data-style="btn-light" name="team_id" id="team_id" require>
-                                  <option hidden ="true"></option>
+                                    <option hidden="true"></option>
                                     @foreach($teams as $team)
                                     <option value="{{$team->id}}">{{$team->name}}</option>
                                     @endforeach
@@ -85,7 +82,7 @@
                                 </div>
                                 <div class="radio radio-primery form-check-inline">
                                     <input type="radio" id="bycycle" value="bycycle" name="vehicle_type_id">
-                                    <label for="bycycle"> Bycycle </label>
+                                    <label for="bycycle"> Bicycle </label>
                                 </div>
                                 <div class="radio radio-info form-check-inline">
                                     <input type="radio" id="motorbike" value="motorbike" name="vehicle_type_id">
@@ -112,8 +109,7 @@
                         <div class="col-md-12">
                             <div class="form-group" id="make_modelInput">
                                 <label for="make_model" class="control-label">TRANSPORT DETAILS</label>
-                                <input type="text" class="form-control" id="make_model" placeholder="Year, Make, Model"
-                                    name="make_model">
+                                <input type="text" class="form-control" id="make_model" placeholder="Year, Make, Model" name="make_model">
                                 <span class="invalid-feedback" role="alert">
                                     <strong></strong>
                                 </span>
@@ -126,8 +122,7 @@
                         <div class="col-md-6">
                             <div class="form-group" id="plate_numberInput">
                                 <label for="plate_number" class="control-label">LICENCE PLACE</label>
-                                <input type="text" class="form-control" id="plate_number" name="plate_number"
-                                    placeholder="508.KLV">
+                                <input type="text" class="form-control" id="plate_number" name="plate_number" placeholder="508.KLV">
                                 <span class="invalid-feedback" role="alert">
                                     <strong></strong>
                                 </span>

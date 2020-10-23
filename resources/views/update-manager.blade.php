@@ -1,9 +1,7 @@
 @extends('layouts.vertical', ['title' => 'Options'])
 
 @section('css')
-<link href="{{asset('assets/libs/dropzone/dropzone.min.css')}}" rel="stylesheet" type="text/css" />
-<link href="{{asset('assets/libs/dropify/dropify.min.css')}}" rel="stylesheet" type="text/css" />
-<link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/8.4.6/css/intlTelInput.css'>
+
 <style>
 // workaround
 .intl-tel-input {
@@ -214,12 +212,7 @@
 @endsection
 
 @section('script')
-<script src="{{asset('assets/libs/dropzone/dropzone.min.js')}}"></script>
-<script src="{{asset('assets/libs/dropify/dropify.min.js')}}"></script>
-<!-- Page js-->
-<script src="{{asset('assets/js/pages/form-fileuploads.init.js')}}"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/8.4.7/js/intlTelInput.js"></script>
+
 
 <script>
 $("#phone_number").intlTelInput({

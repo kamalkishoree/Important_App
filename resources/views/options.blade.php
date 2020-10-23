@@ -57,5 +57,4 @@
 @endsection
 
 @section('script')
-<script src="{{asset('assets/js/storeAgent.js')}}"></script>
 @endsection

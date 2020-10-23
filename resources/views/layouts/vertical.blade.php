@@ -4,7 +4,7 @@
     <head>
         @include('layouts.shared/title-meta', ['title' => $title])
         @include('layouts.shared/head-css', ["demo" => "creative"])
-    </head>
+</head>
 
     <body @yield('body-extra')>
         <!-- Begin page -->
@@ -13,30 +13,45 @@
 
             @include('layouts.shared/left-sidebar')
 
-            <!-- ============================================================== -->
-            <!-- Start Page Content here -->
-            <!-- ============================================================== -->
+        <!-- ============================================================== -->
+        <!-- Start Page Content here -->
+        <!-- ============================================================== -->
 
-            <div class="content-page">
+        <div class="content-page">
+            <div class="content">
                 <div class="content">                    
-                    @yield('content')
-                </div>
-                <!-- content -->
-
-                @include('layouts.shared/footer')
-
+            <div class="content">
+                <div class="content">                    
+            <div class="content">
+                <div class="content">                    
+            <div class="content">
+                <div class="content">                    
+            <div class="content">
+                <div class="content">                    
+            <div class="content">
+                <div class="content">                    
+            <div class="content">
+                <div class="content">                    
+            <div class="content">
+                @yield('content')
             </div>
+            <!-- content -->
 
-            <!-- ============================================================== -->
-            <!-- End Page content -->
-            <!-- ============================================================== -->
+            @include('layouts.shared/footer')
 
         </div>
-        <!-- END wrapper -->
 
-        @include('layouts.shared/right-sidebar')
+        <!-- ============================================================== -->
+        <!-- End Page content -->
+        <!-- ============================================================== -->
+
+    </div>
+    <!-- END wrapper -->
+
+    @include('layouts.shared/right-sidebar')
 
         @include('layouts.shared/footer-script')
         
     </body>
+
 </html>

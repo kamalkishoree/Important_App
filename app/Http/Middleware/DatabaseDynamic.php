@@ -50,7 +50,7 @@ class DatabaseDynamic
 
               $client_name = ClientPreference::where('client_id',1)->first('agent_name');
               if(isset($client_name)){
-                Session::put('agent_name', $client_name);
+                Session::put('agent_name', $client_name->agent_name);
               }else{
                 Session::put('agent_name', 'Agents');
               }

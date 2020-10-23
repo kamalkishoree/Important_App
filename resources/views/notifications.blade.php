@@ -1,6 +1,4 @@
-
 @extends('layouts.vertical', ['title' => 'Notifications'])
-
 @section('css')
 @endsection
 
@@ -44,11 +42,12 @@
                                         <th>SMS</th>
                                         <th>EMAIL</th>
                                         <th>WEBHOOK</th>
-                                        <th>Action</th>
+                                        <th>WEBHOOK URL</th>
+                                        <th></th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach($notification_type->notification_events as $event)
+                                    @foreach($notification_type->notification_events as $index => $event)
                                     <tr>
                                         <td>
                                             <h5 class="m-0 font-weight-normal">{{ $event->name }}</h5>
@@ -72,6 +71,18 @@
                                             <div class="custom-control custom-switch">
                                                 <input type="checkbox" class="custom-control-input event_type" data-id="{{ $event->id }}" data-event-type="webhook" id="webhookcustomSwitch_{{ $event->id}}" @if($event->is_checked_webhook(1))  checked @endif>
                                                 <label class="custom-control-label" for="webhookcustomSwitch_{{ $event->id}}"></label>
+                                            
+                                        </td>
+                                        <td>
+                                            <div class="custom-control custom-switch">
+
+                                                @foreach ($client_notifications as $item)
+                                                     @if ($item->notification_event_id == $event->id)
+                                                        {{$item->webhook_url}}
+                                                     @else
+                                                 
+                                                    @endif
+                                                @endforeach
                                             </div>
                                         </td>
 

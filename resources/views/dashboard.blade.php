@@ -2,8 +2,7 @@
 
 @section('css')
     <!-- Plugins css -->
-    <link href="{{asset('assets/libs/flatpickr/flatpickr.min.css')}}" rel="stylesheet" type="text/css" />
-    <link href="{{asset('assets/libs/selectize/selectize.min.css')}}" rel="stylesheet" type="text/css" />
+
 @endsection
 
 @section('content')

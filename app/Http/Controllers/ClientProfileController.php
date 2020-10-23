@@ -13,7 +13,7 @@ class ClientProfileController extends Controller
 {
 
     public function edit($id)
-    {
+    { 
 
         $client = Client::find($id);
         return view('godpanel/update-client')->with('client', $client);
@@ -21,6 +21,7 @@ class ClientProfileController extends Controller
 
     public function update(Request $request, $id)
     {
+        
         $validator = Validator::make($request->all(), [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255'],

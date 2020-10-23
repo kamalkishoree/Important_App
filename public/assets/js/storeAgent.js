@@ -65,16 +65,7 @@ function AjaxSubmit(data, method, url, modals) {
         success: function(response) {
             if (response.status == 'success') {
                     $("#add-agent-modal .close").click();
-                    Swal.fire({
-                        icon: 'success',
-                        title: response.message,
-                        showConfirmButton: false,
-                        timer: 1500
-                    })
-    
-                    setTimeout(function(){
                          location.reload(); 
-                    }, 2000);
                 
                 // $(".alert-success").removeClass('d-none');
                 // $(".alert-success").text(response.message);
