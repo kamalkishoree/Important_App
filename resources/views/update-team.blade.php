@@ -1,16 +1,26 @@
-@extends('layouts.vertical', ['title' => 'Advanced Plugins'])
+@extends('layouts.vertical', ['title' => 'Update Team'])
 
 @section('css')
-    <!-- Plugins css -->
-    <link href="{{ asset('assets/libs/mohithg-switchery/mohithg-switchery.min.css') }}" rel="stylesheet" type="text/css" />
-    <link href="{{ asset('assets/libs/multiselect/multiselect.min.css') }}" rel="stylesheet" type="text/css" />
-    <link href="{{ asset('assets/libs/select2/select2.min.css') }}" rel="stylesheet" type="text/css" />
-    <link href="{{ asset('assets/libs/selectize/selectize.min.css') }}" rel="stylesheet" type="text/css" />
-    <link href="{{ asset('assets/libs/bootstrap-select/bootstrap-select.min.css') }}" rel="stylesheet" type="text/css" />
-    <link href="{{ asset('assets/libs/bootstrap-touchspin/bootstrap-touchspin.min.css') }}" rel="stylesheet"
-        type="text/css" />
+    <link rel="stylesheet" href="{{ asset('assets/css/jquery.tagsinput-revisited.css') }}" />
+    <style>
+        .sub {
+            margin-top: 30px;
+        }
+
+    </style>
 @endsection
 
+@php
+$tagname = [];
+
+foreach ($team->tags as $item){
+array_push($tagname,$item->name);
+}
+if (isset($tagname)) {
+    $List = implode(' , ', $tagname);
+}
+
+@endphp
 @section('content')
     <!-- Start Content-->
     <div class="container-fluid">
@@ -103,7 +113,7 @@
                             <div class="col-md-6">
                                 <div class="form-group mb-0">
                                     <label class="control-label">Tags</label>
-                                    <input type="text" class="selectize-close-btn" value="">
+                                <input id="form-tags-4" name="tags" type="text" value="{{isset($List) ? $List: ''}}">
                                 </div>
                             </div>
                             <div class="col-md-6">
@@ -113,7 +123,7 @@
 
 
                         <div class="row">
-                            <div class="col-md-12">
+                            <div class="col-md-12 sub">
                                 <button type="submit" class="btn btn-info waves-effect waves-light">Submit</button>
                             </div>
 
@@ -130,17 +140,27 @@
 @endsection
 
 @section('script')
-    <!-- Plugins js-->
-    <script src="{{ asset('assets/libs/selectize/selectize.min.js') }}"></script>
-    <script src="{{ asset('assets/libs/mohithg-switchery/mohithg-switchery.min.js') }}"></script>
-    <script src="{{ asset('assets/libs/multiselect/multiselect.min.js') }}"></script>
-    <script src="{{ asset('assets/libs/select2/select2.min.js') }}"></script>
-    <script src="{{ asset('assets/libs/bootstrap-select/bootstrap-select.min.js') }}"></script>
-    <script src="{{ asset('assets/libs/bootstrap-touchspin/bootstrap-touchspin.min.js') }}"></script>
-    <script src="{{ asset('assets/libs/bootstrap-maxlength/bootstrap-maxlength.min.js') }}"></script>
-    <script src="{{ asset('assets/libs/devbridge-autocomplete/devbridge-autocomplete.min.js') }}"></script>
-    <script src="{{ asset('assets/libs/jquery-mockjax/jquery-mockjax.min.js') }}"></script>
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"
+        integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+    <script src="http://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
+        integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 
-    <!-- Page js-->
-    <script src="{{ asset('assets/js/pages/form-advanced.init.js') }}"></script>
+    <script src="{{ asset('assets/js/jquery.tagsinput-revisited.js') }}"></script>
+
+    <script>
+        $(function() {
+
+            var tagvar = <?php  echo json_encode($tags); ?>;
+            $('#form-tags-4').tagsInput({
+                'autocomplete': {
+                    source: tagvar
+                }
+            })
+
+
+        });
+
+    </script>
+
 @endsection

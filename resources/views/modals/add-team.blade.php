@@ -55,21 +55,14 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-lg-6">
+                        <div class="col-lg-12">
                             <div class="form-group mb-3">
                                 <label>Tag</label>
 
-                                <input type="text" class="selectize-close-btn" value="" name="tags" id="teamtag">
+                                <input type="text" class="form-control" value="" name="tags-4" id="form-tags-4" >
                             </div>
                         </div>
 
-                        <div class="col-lg-6">
-                            <ul class="selectedtag">
-                                <li class="tag1" value="tag1">tag1</li>
-                                <li class="tag1" value="tag2">tag2</li>
-                                <li class="tag1" value="tag3">tag3</li>
-                            </ul>
-                        </div>
                     </div>
 
 

@@ -53,7 +53,19 @@ class TeamController extends Controller
      */
     public function create()
     {
-        //
+        $agents = Agent::all();
+        $tags  = TagsForTeam::all();
+        $tag   = [];
+        foreach ($tags as $key => $value) {
+            array_push($tag,$value->name);
+        }
+
+        return view('add-team')->with([
+            'tags' => $tag,
+            'agents' => $agents,
+            'location_accuracy' => $this->location_accuracy,
+            'location_frequency' => $this->location_frequency
+        ]);
     }
 
     /**
@@ -79,7 +91,12 @@ class TeamController extends Controller
     {
         $validator = $this->validator($request->all())->validate();
         $newtag = explode(",", $request->tags);
+        $tag_id = [];
+        foreach ($newtag as $key => $value) {
 
+            $check = TagsForTeam::firstOrCreate(['name' => $value]);
+            array_push($tag_id,$check->id);
+        }
         $data = [
             'name'          => $request->name,
             //'manager_id'    => $request->manager_id,
@@ -89,13 +106,14 @@ class TeamController extends Controller
         ];
 
         $team = Team::create($data);
-        $team->tags()->sync($newtag);
+        $team->tags()->sync($tag_id);
 
+        return redirect()->route('team.index')->with('success', 'Team Added successfully!');
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Team Created Successfully!',
-        ]);
+        // return response()->json([
+        //     'status' => 'success',
+        //     'message' => 'Team Created Successfully!',
+        // ]);
 
 
         //return redirect()->back();
@@ -123,14 +141,18 @@ class TeamController extends Controller
         $team = Team::with(['manager', 'tags'])->where('id', $id)->first();
         $agents = Agent::all();
         $tags  = TagsForTeam::all();
-
+        $uptag   = [];
+        foreach ($tags as $key => $value) {
+            array_push($uptag,$value->name);
+        }
+        
         $teamTagIds = [];
         foreach ($team->tags as $tag) {
             $teamTagIds[] = $tag->id;
         }
         return view('update-team')->with([
             'team' => $team,
-            'tags' => $tags,
+            'tags' => $uptag,
             'agents' => $agents,
             'teamTagIds' => $teamTagIds,
             'location_accuracy' => $this->location_accuracy,
@@ -165,6 +187,15 @@ class TeamController extends Controller
 
         $getTeam = Team::find($id);
 
+        $newtag = explode(",", $request->tags);
+
+        $tag_id = [];
+        foreach ($newtag as $key => $value) {
+
+            $check = TagsForTeam::firstOrCreate(['name' => $value]);
+            array_push($tag_id,$check->id);
+        }
+
         $data = [
             'name'          => $request->name,
             //'manager_id'    => $request->manager_id,
@@ -172,11 +203,10 @@ class TeamController extends Controller
             'location_accuracy' => $request->location_accuracy,
             'location_frequency' => $request->location_frequency
         ];
-
-        $getTeam->tags()->sync($request->tagsUpdate);
+        $getTeam->tags()->sync($tag_id);
         $team = Team::where('id', $id)->update($data);
-
-        return redirect()->back()->with('success', 'Team Updated successfully!');
+        return redirect()->route('team.index')->with('success', 'Team Added successfully!');
+        //return redirect()->back()->with('success', 'Team Updated successfully!');
     }
 
     /**

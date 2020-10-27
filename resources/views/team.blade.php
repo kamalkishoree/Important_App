@@ -1,33 +1,7 @@
 @extends('layouts.vertical', ['title' => 'Team'])
 
 @section('css')
-    {{--
-    <link href="{{ asset('assets/libs/select2/select2.min.css') }}" rel="stylesheet" type="text/css" />
-    <link href="{{ asset('assets/libs/bootstrap-select/bootstrap-select.min.css') }}" rel="stylesheet" type="text/css" />
-    <link href="{{ asset('assets/libs/flatpickr/flatpickr.min.css') }}" rel="stylesheet" type="text/css" />
-    <link href="{{ asset('assets/libs/sweetalert2/sweetalert2.min.css') }}" rel="stylesheet" type="text/css" />
-
-
-    <!-- for File Upload -->
-
-    <link href="{{ asset('assets/libs/dropzone/dropzone.min.css') }}" rel="stylesheet" type="text/css" />
-    <link href="{{ asset('assets/libs/dropify/dropify.min.css') }}" rel="stylesheet" type="text/css" />
-    <link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/8.4.6/css/intlTelInput.css'>
-    <!-- Plugins css -->
-    <link href="{{ asset('assets/libs/mohithg-switchery/mohithg-switchery.min.css') }}" rel="stylesheet" type="text/css" />
-    <link href="{{ asset('assets/libs/multiselect/multiselect.min.css') }}" rel="stylesheet" type="text/css" />
-    <link href="{{ asset('assets/libs/selectize/selectize.min.css') }}" rel="stylesheet" type="text/css" />
-    <link href="{{ asset('assets/libs/bootstrap-touchspin/bootstrap-touchspin.min.css') }}" rel="stylesheet"
-        type="text/css" />
-    <link href="{{ asset('assets/libs/bootstrap-select/bootstrap-select.min.css') }}" rel="stylesheet" type="text/css" />
-    --}}
-    <link href="{{ asset('assets/libs/mohithg-switchery/mohithg-switchery.min.css') }}" rel="stylesheet" type="text/css" />
-    <link href="{{ asset('assets/libs/multiselect/multiselect.min.css') }}" rel="stylesheet" type="text/css" />
-    <link href="{{ asset('assets/libs/select2/select2.min.css') }}" rel="stylesheet" type="text/css" />
-    <link href="{{ asset('assets/libs/selectize/selectize.min.css') }}" rel="stylesheet" type="text/css" />
-    <link href="{{ asset('assets/libs/bootstrap-select/bootstrap-select.min.css') }}" rel="stylesheet" type="text/css" />
-    <link href="{{ asset('assets/libs/bootstrap-touchspin/bootstrap-touchspin.min.css') }}" rel="stylesheet"
-        type="text/css" />
+    <link rel="stylesheet" href="{{ asset('assets/css/jquery.tagsinput-revisited.css') }}" />
 
 
     <style>
@@ -58,6 +32,39 @@
 
         .cursors {
             cursor: move;
+        }
+
+        .label-info {
+            background-color: #5bc0de;
+            display: inline-block;
+            padding: 0.2em 0.6em 0.3em;
+            font-size: 75%;
+            font-weight: 700;
+            line-height: 1;
+            color: #fff;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: baseline;
+            border-radius: 0.25em;
+        }
+
+        .containers {
+            margin: 20px;
+        }
+
+        /* autocomplete tagsinput*/
+        .label-info {
+            background-color: #5bc0de;
+            display: inline-block;
+            padding: 0.2em 0.6em 0.3em;
+            font-size: 75%;
+            font-weight: 700;
+            line-height: 1;
+            color: #fff;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: baseline;
+            border-radius: 0.25em;
         }
 
     </style>
@@ -92,9 +99,9 @@
                                 </div>
                             </div>
                             <div class="col-sm-4 text-right">
-                                <button type="button" class="btn btn-blue waves-effect waves-light" data-toggle="modal"
+                                <a href="{{ route('team.create') }}"><button type="button" class="btn btn-blue waves-effect waves-light" data-toggle="modal"
                                     data-target="#add-team-modal" data-backdrop="static" data-keyboard="false"><i
-                                        class="mdi mdi-plus-circle mr-1"></i> Add Team</button>
+                                        class="mdi mdi-plus-circle mr-1"></i> Add Team</button></a>
                             </div>
 
                         </div>
@@ -128,7 +135,17 @@
 
                                             </td>
                                             <td>
-                                                {{ $team->tags }}
+                                                 @php
+                                                     $tagname = [];
+                                                
+                                                 foreach ($team->tags as $item){
+                                                    array_push($tagname,$item->name);
+                                                 }
+                                                 @endphp
+
+                                                 {{ $List = implode(' , ', $tagname) }}
+                                              
+                                               
                                             </td>
 
                                             <td>
@@ -238,87 +255,40 @@
 
 @section('script')
 
-    {{--
-    <!-- Plugins js-->
-    <script src="{{ asset('assets/libs/flatpickr/flatpickr.min.js') }}"></script>
-    <script src="{{ asset('assets/libs/select2/select2.min.js') }}"></script>
-    <script src="{{ asset('assets/libs/bootstrap-select/bootstrap-select.min.js') }}"></script>
-    <!-- Page js-->
-    <script src="{{ asset('assets/js/pages/form-advanced.init.js') }}"></script>
-    <script src="{{ asset('assets/js/pages/form-pickers.init.js') }}"></script>
+    
 
 
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"
+        integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+    <script src="http://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
+        integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 
-    <!-- for File Upload -->
-    <script src="{{ asset('assets/libs/dropzone/dropzone.min.js') }}"></script>
-    <script src="{{ asset('assets/libs/dropify/dropify.min.js') }}"></script>
-    <!-- Page js-->
-    <script src="{{ asset('assets/js/pages/form-fileuploads.init.js') }}"></script> --}}
+    <script src="{{ asset('assets/js/jquery.tagsinput-revisited.js') }}"></script>
+
+    <script>
+        $(function() {
+
+            $('#form-tags-4').tagsInput({
+                'autocomplete': {
+                    source: [
+                        'apple',
+                        'banana',
+                        'orange',
+                        'pizza'
+                    ]
+                }
+            })
 
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/8.4.7/js/intlTelInput.js"></script>
+        });
 
+    </script>
 
-
-    <script src="{{ asset('assets/libs/selectize/selectize.min.js') }}"></script>
-    <script src="{{ asset('assets/libs/mohithg-switchery/mohithg-switchery.min.js') }}"></script>
-    <script src="{{ asset('assets/libs/multiselect/multiselect.min.js') }}"></script>
-    <script src="{{ asset('assets/libs/select2/select2.min.js') }}"></script>
-    <script src="{{ asset('assets/libs/bootstrap-select/bootstrap-select.min.js') }}"></script>
-    <script src="{{ asset('assets/libs/bootstrap-touchspin/bootstrap-touchspin.min.js') }}"></script>
-    <script src="{{ asset('assets/libs/bootstrap-maxlength/bootstrap-maxlength.min.js') }}"></script>
-    <script src="{{ asset('assets/libs/devbridge-autocomplete/devbridge-autocomplete.min.js') }}"></script>
-    <script src="{{ asset('assets/libs/jquery-mockjax/jquery-mockjax.min.js') }}"></script>
-    <script src="{{ asset('assets/js/storeTeam.js') }}"></script>
-    <script src="{{ asset('assets/libs/datatables/datatables.min.js') }}"></script>
-
-    <!-- Page js-->
-    <script src="{{ asset('assets/js/pages/form-advanced.init.js') }}"></script>
 
     <!-- Page js-->
 
     <script>
-        $("#phone_number").intlTelInput({
-            utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/8.4.6/js/utils.js"
-        });
-        $('.intl-tel-input').css('width', '100%');
-
-        var regEx = /\(?([0-9]{3})\)?([ .-]?)([0-9]{3})\2([0-9]{4})/;
-        $("#addAgent").bind("submit", function() {
-            var val = $("#phone_number").val();
-            if (!val.match(regEx)) {
-                $('#phone_number').css('color', 'red');
-                return false;
-            }
-        });
-
-        $(function() {
-            $('#phone_number').focus(function() {
-                $('#phone_number').css('color', '#6c757d');
-            });
-        });
-
-        $(document).ready(function() {
-            $('#teams-datatable').DataTable();
-        });
-
-        $(document).ready(function() {
-            $('#basic-datatable').DataTable();
-        });
-
-
-
-        $('.click').click(function() {
-            $('#mtl').click(function() {
-                $('#picture').attr('src',
-                    'http://profile.ak.fbcdn.net/hprofile-ak-ash3/41811_170099283015889_1174445894_q.jpg'
-                );
-            });
-
-
-        });
-
         $(".team-list-1").click(function() {
             var data_id = $(this).attr('data-id');
             $(".team-details").hide();
@@ -334,7 +304,7 @@
 
             var selectElement = $('#teamtag').eq(0);
             var selectize = selectElement.data('selectize');
-            selectize.additem(1,2);
+            selectize.additem(1, 2);
         });
 
         $('.delete-team-form').on('submit', function() {
@@ -351,5 +321,7 @@
         });
 
     </script>
+
+   
 
 @endsection
