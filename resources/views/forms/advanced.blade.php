@@ -182,7 +182,7 @@
                             <div class="col-lg-6">
                                 <div class="form-group mb-0">
                                     <label>Remove Button</label>
-                                    <input type="text" class="selectize-close-btn" value="awesome,neat">
+                                    <input type="text" class="selectize-close-btn" value="">
                                 </div>
                             </div>
                             <div class="col-lg-6">

@@ -5,7 +5,6 @@
 $("#submitTeam").submit(function (e) {
     e.preventDefault();
     let formData = $(this).serializeArray();
-    startLoader("body");
     $.ajax({
         method: "POST",
         headers: {
@@ -15,8 +14,7 @@ $("#submitTeam").submit(function (e) {
         data: formData,
         success: function (response) {
             if (response.status == "success") {
-                $('#add-team-modal').modal('hide');
-                
+                $("#add-team-modal .close").click();
                      location.reload(); 
             } else {
                 $(".show_all_error.invalid-feedback").show();

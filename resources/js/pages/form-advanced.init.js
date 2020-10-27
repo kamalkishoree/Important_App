@@ -186,6 +186,11 @@ File: Form advanced init js
             plugins: ['remove_button'],
             persist: false,
             create: true,
+            optgroups: [
+                {$order: 3, id: 'dodge', name: 'Dodge'},
+                {$order: 2, id: 'audi', name: 'Audi'},
+                {$order: 1, id: 'chevrolet', name: 'Chevrolet'}
+            ],
             render: {
                 item: function(data, escape) {
                     return '<div>"' + escape(data.text) + '"</div>';

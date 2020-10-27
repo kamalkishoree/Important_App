@@ -22,7 +22,7 @@ class TeamController extends Controller
     protected $location_frequency = [
         '1' => '1 Minute',
         '5' => '5 Minutes',
-        '15'=> '15 Minutes'
+        '15' => '15 Minutes'
     ];
 
     /**
@@ -33,16 +33,17 @@ class TeamController extends Controller
     public function index()
     {
         $agents = Agent::with(['team.manager'])->orderBy('created_at', 'DESC')->paginate(10);
-        $managers = Manager::where('client_id',auth()->user()->id)->orderBy('name')->get();
-        $teams  = Team::with(['manager','tags','agents'])->where('client_id',auth()->user()->id)->orderBy('created_at','DESC')->paginate(10);
+        $managers = Manager::where('client_id', auth()->user()->id)->orderBy('name')->get();
+        $teams  = Team::with(['manager', 'tags', 'agents'])->where('client_id', auth()->user()->id)->orderBy('created_at', 'DESC')->paginate(10);
         $tags   = TagsForTeam::all();
         return view('team')->with([
             'agents' => $agents,
-            'teams'=>$teams,
-            'managers'=>$managers,
-            'tags'=>$tags,
-            'location_accuracy'=>$this->location_accuracy,
-            'location_frequency'=>$this->location_frequency]);
+            'teams' => $teams,
+            'managers' => $managers,
+            'tags' => $tags,
+            'location_accuracy' => $this->location_accuracy,
+            'location_frequency' => $this->location_frequency
+        ]);
     }
 
     /**
@@ -57,7 +58,7 @@ class TeamController extends Controller
 
     /**
      * Validation method for teams data 
-    */
+     */
     protected function validator(array $data)
     {
         return Validator::make($data, [
@@ -77,24 +78,25 @@ class TeamController extends Controller
     public function store(Request $request)
     {
         $validator = $this->validator($request->all())->validate();
+        $newtag = explode(",", $request->tags);
 
         $data = [
             'name'          => $request->name,
             //'manager_id'    => $request->manager_id,
             'client_id'     => auth()->user()->id,
-            'location_accuracy'=> $request->location_accuracy,
-            'location_frequency'=>$request->location_frequency    
+            'location_accuracy' => $request->location_accuracy,
+            'location_frequency' => $request->location_frequency
         ];
 
         $team = Team::create($data);
-        $team->tags()->sync($request->tags);
+        $team->tags()->sync($newtag);
 
-        
-            return response()->json([
-                'status'=>'success',
-                'message' => 'Team Created Successfully!',
-            ]);
-        
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Team Created Successfully!',
+        ]);
+
 
         //return redirect()->back();
     }
@@ -118,28 +120,28 @@ class TeamController extends Controller
      */
     public function edit($id)
     {
-        $team = Team::with(['manager','tags'])->where('id',$id)->first();
+        $team = Team::with(['manager', 'tags'])->where('id', $id)->first();
         $agents = Agent::all();
         $tags  = TagsForTeam::all();
 
         $teamTagIds = [];
-        foreach($team->tags as $tag)
-        {
+        foreach ($team->tags as $tag) {
             $teamTagIds[] = $tag->id;
-        } 
+        }
         return view('update-team')->with([
-            'team'=>$team,
-            'tags'=>$tags,
-            'agents'=>$agents,
-            'teamTagIds'=>$teamTagIds,
-            'location_accuracy'=>$this->location_accuracy,
-            'location_frequency'=>$this->location_frequency]);
+            'team' => $team,
+            'tags' => $tags,
+            'agents' => $agents,
+            'teamTagIds' => $teamTagIds,
+            'location_accuracy' => $this->location_accuracy,
+            'location_frequency' => $this->location_frequency
+        ]);
     }
 
 
     /**
      * Validation method for team Update 
-    */
+     */
     protected function updateValidator(array $data)
     {
         return Validator::make($data, [
@@ -148,7 +150,6 @@ class TeamController extends Controller
             'location_accuracy' => ['required'],
             'location_frequency' => ['required']
         ]);
-
     }
 
     /**
@@ -163,18 +164,18 @@ class TeamController extends Controller
         $validator = $this->updateValidator($request->all())->validate();
 
         $getTeam = Team::find($id);
-        
+
         $data = [
             'name'          => $request->name,
             //'manager_id'    => $request->manager_id,
             'client_id'     => auth()->user()->id,
-            'location_accuracy'=> $request->location_accuracy,
-            'location_frequency'=>$request->location_frequency    
+            'location_accuracy' => $request->location_accuracy,
+            'location_frequency' => $request->location_frequency
         ];
 
         $getTeam->tags()->sync($request->tagsUpdate);
         $team = Team::where('id', $id)->update($data);
-        
+
         return redirect()->back()->with('success', 'Team Updated successfully!');
     }
 
@@ -186,12 +187,13 @@ class TeamController extends Controller
      */
     public function destroy($id)
     {
-        Team::where('id',$id)->where('client_id',auth()->user()->id)->delete();
+        Team::where('id', $id)->where('client_id', auth()->user()->id)->delete();
         return redirect()->back()->with('success', 'Team deleted successfully!');
     }
 
-    public function removeTeamAgent(Request $request,$team_id,$agent_id){
-        Agent::where('id',$agent_id)->update([
+    public function removeTeamAgent(Request $request, $team_id, $agent_id)
+    {
+        Agent::where('id', $agent_id)->update([
             'team_id' => null
         ]);
         return redirect()->back()->with('success', 'Agent removed successfully!');

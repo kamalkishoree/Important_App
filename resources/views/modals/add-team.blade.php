@@ -13,7 +13,8 @@
                         <div class="col-md-12">
                             <div class="form-group" id="nameInput">
                                 <label for="name" class="control-label">NAME</label>
-                                <input type="text" class="form-control" name="name" id="name" placeholder="John Doe" require>
+                                <input type="text" class="form-control" name="name" id="name" placeholder="John Doe"
+                                    require>
                                 <span class="invalid-feedback" role="alert">
                                     <strong></strong>
                                 </span>
@@ -23,7 +24,7 @@
                             <div class="form-group mb-3" id="manager_idInput">
                                 <label for="team-manager">Manager</label>
                                 <select class="form-control" id="team-manager" name="manager_id">
-                                    @foreach($managers as $manager)
+                                    @foreach ($managers as $manager)
                                     <option value="{{ $manager->id }}">{{ $manager->name }}</option>
                                     @endforeach
                                 </select>
@@ -36,8 +37,8 @@
                             <div class="form-group mb-3" id="location_accuracyInput">
                                 <label for="location_accuracy">Location Accuracy</label>
                                 <select class="form-control" id="location_accuracy" name="location_accuracy">
-                                    @foreach($location_accuracy as $k=>$la)
-                                    <option value="{{ $k }}">{{ $la }}</option>
+                                    @foreach ($location_accuracy as $k => $la)
+                                        <option value="{{ $k }}">{{ $la }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -46,31 +47,32 @@
                             <div class="form-group mb-3" id="location_frequencyInput">
                                 <label for="location_frequency">Location Frequency</label>
                                 <select class="form-control" id="location_frequency" name="location_frequency">
-                                    @foreach($location_frequency as $k=>$lf)
-                                    <option value="{{ $k }}">{{ $lf }}</option>
+                                    @foreach ($location_frequency as $k => $lf)
+                                        <option value="{{ $k }}">{{ $lf }}</option>
                                     @endforeach
                                 </select>
                             </div>
                         </div>
                     </div>
-
-
                     <div class="row">
-                        <div class="col-md-12">
-                            <div class="form-group" id="tagsInput">
-                                <label for="tags" class="control-label">ADD TAGS</label>
-                                <select class="form-control select2-multiple" data-toggle="select2" multiple="multiple"
-                                    data-placeholder="Choose ..." name="tags[]" id="tags">
-                                    @foreach($tags as $tag)
-                                    <option value="{{$tag->id}}">{{$tag->name}}</option>
-                                    @endforeach
-                                </select>
-                                <span class="invalid-feedback" role="alert">
-                                    <strong></strong>
-                                </span>
+                        <div class="col-lg-6">
+                            <div class="form-group mb-3">
+                                <label>Tag</label>
+
+                                <input type="text" class="selectize-close-btn" value="" name="tags" id="teamtag">
                             </div>
                         </div>
+
+                        <div class="col-lg-6">
+                            <ul class="selectedtag">
+                                <li class="tag1" value="tag1">tag1</li>
+                                <li class="tag1" value="tag2">tag2</li>
+                                <li class="tag1" value="tag3">tag3</li>
+                            </ul>
+                        </div>
                     </div>
+
+
                 </div>
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-blue waves-effect waves-light">Submit</button>

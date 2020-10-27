@@ -198,7 +198,7 @@
                             </li>
                         </ul>
                     </div> -->
-                <!-- </li>
+                <</li>
 
                 <li>
                     <a href="#sidebarCrm" data-toggle="collapse">
@@ -836,7 +836,7 @@
                         </ul>
                     </div>
                 </li>
-                @endif  -->
+                @endif
             </ul>
 
         </div>
