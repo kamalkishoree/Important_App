@@ -99,8 +99,7 @@
                                 </div>
                             </div>
                             <div class="col-sm-4 text-right">
-                                <a href="{{ route('team.create') }}"><button type="button" class="btn btn-blue waves-effect waves-light" data-toggle="modal"
-                                    data-target="#add-team-modal" data-backdrop="static" data-keyboard="false"><i
+                                <a href="{{ route('team.create') }}"><button type="button" class="btn btn-blue waves-effect waves-ligh"><i
                                         class="mdi mdi-plus-circle mr-1"></i> Add Team</button></a>
                             </div>
 
