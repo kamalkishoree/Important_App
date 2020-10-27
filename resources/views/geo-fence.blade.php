@@ -143,7 +143,8 @@
 
 @section('script')
     <!-- google maps api -->
-    <script src="https://maps.google.com/maps/api/js?key=AIzaSyB85kLYYOmuAhBUPd7odVmL6gnQsSGWU-4&v=3.exp&libraries=drawing,places">
+    <script
+        src="https://maps.google.com/maps/api/js?key=AIzaSyB85kLYYOmuAhBUPd7odVmL6gnQsSGWU-4&v=3.exp&libraries=drawing,places">
     </script>
 
     <!-- Plugins js-->
@@ -183,7 +184,7 @@
             console.log(input);
             //map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
             // Bias the SearchBox results towards current map's viewport.
-          
+
             map = new google.maps.Map(document.getElementById("map-canvas"), myOptions);
 
 
@@ -206,7 +207,7 @@
             google.maps.event.addListener(drawingManager, "overlaycomplete", function(event) {
                 var newShape = event.overlay;
                 newShape.type = event.type;
-                
+
             });
 
             google.maps.event.addListener(drawingManager, "overlaycomplete", function(event) {
@@ -222,6 +223,51 @@
                     alert('You can draw only one zone at a time');
                     event.overlay.setMap(null);
                 }
+            });
+
+            searchBox.addListener("places_changed", () => {
+                const places = searchBox.getPlaces();
+
+                if (places.length == 0) {
+                return;
+                }
+                // Clear out the old markers.
+                markers.forEach((marker) => {
+                marker.setMap(null);
+                });
+                markers = [];
+                // For each place, get the icon, name and location.
+                const bounds = new google.maps.LatLngBounds();
+                places.forEach((place) => {
+                if (!place.geometry) {
+                    console.log("Returned place contains no geometry");
+                    return;
+                }
+                const icon = {
+                    url: place.icon,
+                    size: new google.maps.Size(71, 71),
+                    origin: new google.maps.Point(0, 0),
+                    anchor: new google.maps.Point(17, 34),
+                    scaledSize: new google.maps.Size(25, 25),
+                };
+                // Create a marker for each place.
+                markers.push(
+                    new google.maps.Marker({
+                    map,
+                    icon,
+                    title: place.name,
+                    position: place.geometry.location,
+                    })
+                );
+
+                if (place.geometry.viewport) {
+                    // Only geocodes have viewport.
+                    bounds.union(place.geometry.viewport);
+                } else {
+                    bounds.extend(place.geometry.location);
+                }
+                });
+                map.fitBounds(bounds);
             });
         }
 
