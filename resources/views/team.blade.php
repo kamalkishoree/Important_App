@@ -31,7 +31,7 @@
         }
 
         .cursors {
-            cursor: move;
+            cursor: pointer;
         }
 
         .label-info {

@@ -23,6 +23,10 @@
             padding: 0px;
             position: unset;
         }
+        .serch{
+            width: 100%;
+            margin: 0px;
+        }
 
     </style>
 @endsection
@@ -132,7 +136,7 @@
                 </div>
                 <div class="col-lg-7">
                     <div class="card-box" style="height:96%;">
-                        <input id="pac-input" class="controls" type="text" placeholder="Search Box" />
+                        <input id="pac-input" class="controls serch" type="text" placeholder="Search Box"  />
                         <div id="map-canvas"></div>
                     </div>
                 </div>

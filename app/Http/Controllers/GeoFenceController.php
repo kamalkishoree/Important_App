@@ -19,25 +19,44 @@ class GeoFenceController extends Controller
      */
     public function index()
     {
-        $teams = Team::with(['agents'])->where('client_id',auth()->user()->id)->orderBy('name')->get();
-        $agents= Agent::whereIn('team_id',function($q){
-            $q->select('id')->from('teams')->where('client_id',Auth::user()->id);
+        $teams = Team::with(['agents'])->where('client_id', auth()->user()->id)->orderBy('name')->get();
+        $agents = Agent::whereIn('team_id', function ($q) {
+            $q->select('id')->from('teams')->where('client_id', Auth::user()->id);
         })->get();
+
+        // $center = [];
+        // $geos = Geo::where('client_id', 1)->orderBy('created_at', 'DESC')->first();
+
+        // if (isset($geos)) {
+
+        //     $exploded =  preg_replace('/"("(),[\s]+/mu)', ' ', $geos->geo_array);
+            
+        // }
+
+        // // dd($center);
 
         return view('geo-fence')->with([
             'teams' =>  $teams,
-            'agents'=>  $agents
+            'agents' =>  $agents
         ]);
     }
 
-    public function allList(){
+    function multiexplode ($delimiters,$string) {
+
+        $ready = str_replace($delimiters, $delimiters[0], $string);
+        $launch = explode($delimiters[0], $ready);
+        return  $launch;
+    }
+
+    public function allList()
+    {
         $all_coordinates = [];
-        $geos = Geo::where('client_id',auth()->user()->id)->orderBy('created_at', 'DESC')->get();
-        foreach($geos as $k=>$v){
-            $all_coordinates[] =[
+        $geos = Geo::where('client_id', 1)->orderBy('created_at', 'DESC')->get();
+        foreach ($geos as $k => $v) {
+            $all_coordinates[] = [
                 'name' => 'abc',
                 'coordinates' => $v->geo_coordinates
-            ]; 
+            ];
         }
 
         $center = [
@@ -45,14 +64,14 @@ class GeoFenceController extends Controller
             'lng' => 76.1239239
         ];
 
-        if(!empty($all_coordinates)){
+        if (!empty($all_coordinates)) {
             $center['lat'] = $all_coordinates[0]['coordinates'][0]['lat'];
             $center['lng'] = $all_coordinates[0]['coordinates'][0]['lng'];
         }
 
-        return view('geo-fence-list')->with(['geos' => $geos,'all_coordinates'=>$all_coordinates,'center'=>$center]);
+        return view('geo-fence-list')->with(['geos' => $geos, 'all_coordinates' => $all_coordinates, 'center' => $center]);
     }
-    
+
 
     /**
      * Show the form for creating a new resource.
@@ -66,7 +85,7 @@ class GeoFenceController extends Controller
 
     /**
      * Validation method for geo-fence data 
-    */
+     */
     protected function validator(array $data)
     {
         return Validator::make($data, [
@@ -97,9 +116,9 @@ class GeoFenceController extends Controller
         $geo->agents()->sync($request->agents);
 
         //update team_id if any provided //
-        if($request->team_id){
-            DriverGeo::where('geo_id',$geo->id)->update([
-                'team_id' => $request->team_id 
+        if ($request->team_id) {
+            DriverGeo::where('geo_id', $geo->id)->update([
+                'team_id' => $request->team_id
             ]);
         }
 
@@ -125,17 +144,17 @@ class GeoFenceController extends Controller
      */
     public function edit($id)
     {
-        $geo = Geo::with(['agents'])->where('id',$id)->first();
-        $teams = Team::with(['agents'])->where('client_id',auth()->user()->id)->orderBy('name')->get();
-        $agents= Agent::whereIn('team_id',function($q){
-            $q->select('id')->from('teams')->where('client_id',Auth::user()->id);
+        $geo = Geo::with(['agents'])->where('id', $id)->first();
+        $teams = Team::with(['agents'])->where('client_id', auth()->user()->id)->orderBy('name')->get();
+        $agents = Agent::whereIn('team_id', function ($q) {
+            $q->select('id')->from('teams')->where('client_id', Auth::user()->id);
         })->get();
 
         return view('update-geo-fence')->with([
-            'geo'=>$geo,
-            'agents'=>$agents,
-            'teams'=>$teams
-            ]);
+            'geo' => $geo,
+            'agents' => $agents,
+            'teams' => $teams
+        ]);
     }
 
 
@@ -169,7 +188,6 @@ class GeoFenceController extends Controller
         $geo->agents()->sync($request->agents);
 
         return redirect()->back()->with('success', 'Updated successfully!');
-        
     }
 
     /**
@@ -180,7 +198,7 @@ class GeoFenceController extends Controller
      */
     public function destroy($id)
     {
-        Geo::where('id',$id)->where('client_id',auth()->user()->id)->delete();
+        Geo::where('id', $id)->where('client_id', auth()->user()->id)->delete();
         return redirect()->back()->with('success', 'Deleted successfully!');
     }
 }

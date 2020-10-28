@@ -34,7 +34,7 @@
                             <div class="form-group" id="phone_numberInput">
                                 <label for="phone_number" class="control-label">CONTACT NUMBER</label>
                                 <div class="input-group">
-                                    <input type="text" name="phone_number" class="form-control" id="phone_number" placeholder="Enter mobile number" maxlength="12">
+                                    <input type="text" name="phone_number" class="form-control" id="phone_number" placeholder="Enter mobile number" maxlength="14">
                                 </div>
                                 <span class="invalid-feedback" role="alert">
                                     <strong></strong>
@@ -63,7 +63,6 @@
                                     @foreach($teams as $team)
                                     <option value="{{$team->id}}">{{$team->name}}</option>
                                     @endforeach
-                                    <option value="other">other</option>
                                 </select>
                                 <span class="invalid-feedback" role="alert">
                                     <strong></strong>

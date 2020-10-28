@@ -16,9 +16,6 @@
             margin-bottom: 19px !important;
         }
 
-        .tagline {
-            display: none;
-        }
 
     </style>
 @endsection
@@ -311,10 +308,9 @@
                 });
             });
             $('.click').click(function() {
-                $('.tagline').hide();
+            
                 $(this).find('input[type="radio"]').prop('checked', true);
 
-                $(this).find('.tagline').show();
 
 
             });

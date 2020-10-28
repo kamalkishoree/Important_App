@@ -20,13 +20,13 @@
                                     <div class="auth-logo">
                                         <a href="{{route('index')}}" class="logo logo-dark text-center">
                                             <span class="logo-lg">
-                                                <img src="{{asset('assets/images/logo-dark.png')}}" alt="" height="22">
+                                                <img src="{{asset('assets/images/logo-dark.png')}}" alt="" height="40">
                                             </span>
                                         </a>
                     
                                         <a href="{{route('index')}}" class="logo logo-light text-center">
                                             <span class="logo-lg">
-                                                <img src="{{asset('assets/images/logo-light.png')}}" alt="" height="22">
+                                                <img src="{{asset('assets/images/logo-light.png')}}" alt="" height="40">
                                             </span>
                                         </a>
                                     </div>
@@ -127,7 +127,7 @@
 
 
         <footer class="footer footer-alt">
-            <script>document.write(new Date().getFullYear())</script> &copy; UBold theme by <a href="" class="text-white-50">Coderthemes</a> 
+            <script>document.write(new Date().getFullYear())</script> &copy; All rights reserved by <a href="https://royoapps.com/" class="text-white-50">Royo Apps</a> 
         </footer>
 
         @include('layouts.shared.footer-script')
