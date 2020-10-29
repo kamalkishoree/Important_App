@@ -435,7 +435,7 @@
 
             });
 
-            var simple = '<?php echo $allocation->auto_assign_logic; ?>';
+            var simple = '{{ isset($allocation->auto_assign_logic) ? $allocation->auto_assign_logic :'' }}';
             if(simple === 'batch_wise'){
                 $('.extra').show();
 
