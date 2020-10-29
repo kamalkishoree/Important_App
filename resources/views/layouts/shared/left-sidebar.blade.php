@@ -51,7 +51,7 @@
 
                 <li>
                     <a href="{{route('profile.index')}}">
-                        <i data-feather="users"></i>
+                        <i data-feather="user"></i>
                         <span> Profile </span>
                     </a>
                 </li>

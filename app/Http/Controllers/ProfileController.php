@@ -9,6 +9,8 @@ use \DateTimeZone;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 use App\Jobs\UpdatePassword;
+use Auth;
+
 class ProfileController extends Controller
 {
     /**
@@ -79,23 +81,20 @@ class ProfileController extends Controller
     public function update(Request $request, $id)
     {
         
-        
         $validator = Validator::make($request->all(), [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255'],
             'phone_number' => ['required'],
             'company_name' => ['required'],
             'company_address' => ['required'],
-            'custom_domain' => ['required'],
         ]);
 
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator, 'update');
         }
 
-
-        $getClient = Client::find($id);
-        $getFileName = $getClient->logo;
+        $getClient = Auth::user()->logo;
+        $getFileName = $getClient;
 
         // Handle File Upload
         if ($request->hasFile('logo')) {
@@ -119,7 +118,7 @@ class ProfileController extends Controller
             'logo' => $getFileName,
         ];
 
-        $client = Client::where('id', $id)->update($data);
+       // $client = Client::where('id', $id)->update($data);
         $password = null;
         $this->dispatchNow(new UpdatePassword($password,$data));
 

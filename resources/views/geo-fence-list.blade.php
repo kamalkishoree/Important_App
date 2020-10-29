@@ -138,7 +138,6 @@
 
       for (var i = 0, length = no_parking_geofences_json.length; i < length; i++) {
       data = no_parking_geofences_json[i];
-
       var infowindow = new google.maps.InfoWindow();
       var no_parking_geofences_json_geo_area = new google.maps.Polygon({
         paths: data.coordinates,

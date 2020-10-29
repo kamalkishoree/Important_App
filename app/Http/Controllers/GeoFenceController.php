@@ -19,33 +19,29 @@ class GeoFenceController extends Controller
      */
     public function index()
     {
+        
         $teams = Team::with(['agents'])->where('client_id', auth()->user()->id)->orderBy('name')->get();
         $agents = Agent::whereIn('team_id', function ($q) {
             $q->select('id')->from('teams')->where('client_id', Auth::user()->id);
         })->get();
 
-        // $center = [];
-        // $geos = Geo::where('client_id', 1)->orderBy('created_at', 'DESC')->first();
-
-        // if (isset($geos)) {
-
-        //     $exploded =  preg_replace('/"("(),[\s]+/mu)', ' ', $geos->geo_array);
-            
-        // }
-
-        // // dd($center);
-
+        
+        $geos = Geo::where('client_id', 1)->orderBy('created_at', 'DESC')->first();
+         
+         if(isset($geos)){
+            $codinates = $geos->geo_coordinates[0];
+         }else{
+            $codinates[] = [
+                'lat' => 33.5362475,
+                'lng' => -111.9267386
+            ];
+         }
+         
         return view('geo-fence')->with([
             'teams' =>  $teams,
-            'agents' =>  $agents
+            'agents' =>  $agents,
+            'coninates' => $codinates
         ]);
-    }
-
-    function multiexplode ($delimiters,$string) {
-
-        $ready = str_replace($delimiters, $delimiters[0], $string);
-        $launch = explode($delimiters[0], $ready);
-        return  $launch;
     }
 
     public function allList()

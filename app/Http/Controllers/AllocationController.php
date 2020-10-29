@@ -20,9 +20,9 @@ class AllocationController extends Controller
     {
         
         
-        $preference = ClientPreference::where('client_id',1)->first();
+        $preference = ClientPreference::where('client_id',Auth::user()->id)->first();
 
-        $allocation = AllocationRule::where('client_id',1)->first();;
+        $allocation = AllocationRule::where('client_id',Auth::user()->id)->first();;
       
         
         return view('auto-allocation')->with([
@@ -77,7 +77,6 @@ class AllocationController extends Controller
     protected function updateValidator(array $data)
     {
         return Validator::make($data, [
-            'task_priority' => ['required'],
             'request_expiry' => ['required'],
             'number_of_retries' => ['required'],
         ]);

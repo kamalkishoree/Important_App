@@ -349,11 +349,11 @@
             <a href="{{ route('any', ['dashboard']) }}" class="logo logo-light text-center">
                 <span class="logo-sm">
                     <img src="{{$image}}"
-                        alt="" height="30">
+                        alt="" height="30" style="padding-top: 4px;">
                 </span>
                 <span class="logo-lg">
                     <img src="{{$image}}"
-                        alt="" height="50">
+                        alt="" height="50" style="padding-top: 4px;">
                 </span>
             </a>
         </div>

@@ -37,14 +37,14 @@
         <div class="row">
             <div class="col-6">
                 <div class="page-title-box">
-                    <h4 class="page-title">Settings</h4>
+                    <h4 class="page-title"> <a href="{{ route('geo.fence.list') }}">
+                        <h4 class="page-title">Back</h4>
+                    </a></h4>
                 </div>
             </div>
             <div class="col-6">
                 <div class="page-title-box">
-                    <a href="{{ route('geo.fence.list') }}">
-                        <h4 class="page-title">View All</h4>
-                    </a>
+                    
                 </div>
             </div>
         </div>
@@ -136,7 +136,7 @@
                 </div>
                 <div class="col-lg-7">
                     <div class="card-box" style="height:96%;">
-                        <input id="pac-input" class="controls serch" type="text" placeholder="Search Box"  />
+                        <input id="pac-input" class="controls serch" type="text" placeholder="Search Location"  />
                         <div id="map-canvas"></div>
                     </div>
                 </div>
@@ -174,10 +174,14 @@
         var lat_longs = new Array();
         var markers = new Array();
         var drawingManager;
-
+        var newlocation = '<?php echo json_encode($coninates); ?>';
+        var first_location = JSON.parse(newlocation);
+        var lat = parseFloat(first_location.lat);
+        var lng = parseFloat(first_location.lng);
+        // console.log(first_location);
         function initialize() {
-
-            var myLatlng = new google.maps.LatLng(33.5362475, -111.9267386);
+        
+            var myLatlng = new google.maps.LatLng(lat,lng);
             var myOptions = {
                 zoom: 13,
                 center: myLatlng,
