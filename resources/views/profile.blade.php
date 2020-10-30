@@ -374,18 +374,20 @@
 
 <script>
     $("#phone_number").intlTelInput({
+        nationalMode: false,
+        formatOnDisplay: true,
         utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/8.4.6/js/utils.js"
     });
     $('.intl-tel-input').css('width', '100%');
 
-    var regEx = /\(?([0-9]{3})\)?([ .-]?)([0-9]{3})\2([0-9]{4})/;
-    $("#UpdateClient").bind("submit", function() {
-        var val = $("#phone_number").val();
-        if (!val.match(regEx)) {
-            $('#phone_number').css('color', 'red');
-            return false;
-        }
-    });
+    // var regEx = /\(?([0-9]{3})\)?([ .-]?)([0-9]{3})\2([0-9]{4})/;
+    // $("#UpdateClient").bind("submit", function() {
+    //     var val = $("#phone_number").val();
+    //     if (!val.match(regEx)) {
+    //         $('#phone_number').css('color', 'red');
+    //         return false;
+    //     }
+    // });
 
     $(function() {
         $('#phone_number').focus(function() {

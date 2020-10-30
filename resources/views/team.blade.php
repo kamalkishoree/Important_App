@@ -112,6 +112,7 @@
                                         <th>Team Name</th>
                                         <th>Location Accuracy</th>
                                         <th>Location Frequency</th>
+                                        <th>Team Strength</th>
                                         <th>Tags</th>
                                         <th>Action</th>
                                     </tr>
@@ -130,6 +131,11 @@
 
                                             <td>
                                                 {{ $team->location_frequency }}
+
+
+                                            </td>
+                                            <td>
+                                                {{$team->agents->count()}}
 
 
                                             </td>
@@ -201,7 +207,7 @@
                 </div>
             </div>
 
-            <h4 class="header-title mb-3">{{ auth()->user()->getPreference->agent_name ?? 'Agents' }}</h4>
+            <h4 class="header-title mb-3">{{ Session::get('agent_name') ? Session::get('agent_name') : 'Agent' }}</h4>
 
             <div class="table-responsive">
                 <table class="table table-borderless table-nowrap table-hover table-centered m-0">

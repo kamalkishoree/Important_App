@@ -23,9 +23,40 @@
             padding: 0px;
             position: unset;
         }
-        .serch{
+
+        .serch {
             width: 100%;
             margin: 0px;
+        }
+
+        .imageagent {
+            border-radius: 50%;
+            height: 30px;
+            width: 30px;
+            margin-right: 15px;
+        }
+
+        .cornar {
+            border: solid thin;
+            padding-top: 10px;
+            height: 240px;
+            width: 103%;
+            overflow-y:auto 
+        }
+
+        .teamshow {
+            margin-left: 58px;
+
+        }
+        .display {
+            height: 35px;
+            width: 67px;
+        }
+        .boxes{
+            margin-bottom: 10px;
+        }
+        .agentcheck{
+            
         }
 
     </style>
@@ -38,13 +69,13 @@
             <div class="col-6">
                 <div class="page-title-box">
                     <h4 class="page-title"> <a href="{{ route('geo.fence.list') }}">
-                        <h4 class="page-title">Back</h4>
-                    </a></h4>
+                            <h4 class="page-title">Back</h4>
+                        </a></h4>
                 </div>
             </div>
             <div class="col-6">
                 <div class="page-title-box">
-                    
+
                 </div>
             </div>
         </div>
@@ -92,32 +123,135 @@
 
                                 </div>
                                 <div class="form-group mb-3">
-                                    <div class="custom-control custom-checkbox">
-                                        <input type="checkbox" class="custom-control-input" id="checkmeout0">
-                                        <label class="custom-control-label" for="checkmeout0">All
-                                            {{ auth()->user()->getPreference->agent_name ?? 'Agents' }}</label>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="checkmeout0">
+                                                <label class="custom-control-label" for="checkmeout0">Select All
+                                                    {{ Session::get('agent_name') ? Session::get('agent_name') : 'Agent' }}</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <input type="text" name="name" placeholder="serach" class="form-control">
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="row mb-2">
-                            <div class="col-md-12">
-                                <div class="form-group mb-3 agent-selection">
-                                    <label>{{ auth()->user()->getPreference->agent_name ?? 'Agents' }}</label>
-                                    <select class="form-control select2-multiple" data-toggle="select2" multiple="multiple"
-                                        data-placeholder="Choose ..." name="agents[]" id="agents">
-                                        @foreach ($agents as $agent)
-                                            <option value="{{ $agent->id }}" data-team-id={{ $agent->team_id }}>
-                                                {{ $agent->name }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                    @if ($errors->has('agents'))
-                                        <span class="text-danger" role="alert">
-                                            <strong>{{ $errors->first('agents') }}</strong>
-                                        </span>
-                                    @endif
+                        <div class="row mb-2 cornar">
+                            <div class="col-md-6 boxes card-box">
+                                <div class="custom-control custom-checkbox">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <input type="checkbox" class="custom-control-input" id="agentcheck">
+                                            <label class="custom-control-label" for="agentcheck"></label>
+                                            <img class="imageagent"
+                                                src="http://localhost:8888/unsafe/fit-in/90x50/http://localhost:8000/clients/122556749_3365652976815602_5439655593477068766_n_1603963917.png"
+                                                alt="" style="border-radius:50%; ">
+                                        </div>
+                                        <div class="col-md-8">
+                                            <span>Agent name</span><br>
+                                            <span>Team: Mohali</span>
+                                        </div>
+                                    </div>
+                                    
+
+                                </div>
+                            </div>
+                            <div class="col-md-6 boxes card-box">
+                                <div class="custom-control custom-checkbox">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <input type="checkbox" class="custom-control-input" id="agentcheck">
+                                            <label class="custom-control-label" for="agentcheck"></label>
+                                            <img class="imageagent"
+                                                src="http://localhost:8888/unsafe/fit-in/90x50/http://localhost:8000/clients/122556749_3365652976815602_5439655593477068766_n_1603963917.png"
+                                                alt="" style="border-radius:50%; ">
+                                        </div>
+                                        <div class="col-md-8">
+                                            <span>Agent name</span><br>
+                                            <span>Team: Mohali</span>
+                                        </div>
+                                    </div>
+                                    
+
+                                </div>
+                            </div>
+                            <div class="col-md-6 boxes card-box">
+                                <div class="custom-control custom-checkbox">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <input type="checkbox" class="custom-control-input" id="agentcheck">
+                                            <label class="custom-control-label" for="agentcheck"></label>
+                                            <img class="imageagent"
+                                                src="http://localhost:8888/unsafe/fit-in/90x50/http://localhost:8000/clients/122556749_3365652976815602_5439655593477068766_n_1603963917.png"
+                                                alt="" style="border-radius:50%; ">
+                                        </div>
+                                        <div class="col-md-8">
+                                            <span>Agent name</span><br>
+                                            <span>Team: Mohali</span>
+                                        </div>
+                                    </div>
+                                    
+
+                                </div>
+                            </div>
+                            <div class="col-md-6 boxes card-box">
+                                <div class="custom-control custom-checkbox">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <input type="checkbox" class="custom-control-input" id="agentcheck">
+                                            <label class="custom-control-label" for="agentcheck"></label>
+                                            <img class="imageagent"
+                                                src="http://localhost:8888/unsafe/fit-in/90x50/http://localhost:8000/clients/122556749_3365652976815602_5439655593477068766_n_1603963917.png"
+                                                alt="" style="border-radius:50%; ">
+                                        </div>
+                                        <div class="col-md-8">
+                                            <span>Agent name</span><br>
+                                            <span>Team: Mohali</span>
+                                        </div>
+                                    </div>
+                                    
+
+                                </div>
+                            </div>
+                            <div class="col-md-6 boxes card-box">
+                                <div class="custom-control custom-checkbox">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <input type="checkbox" class="custom-control-input" id="agentcheck">
+                                            <label class="custom-control-label" for="agentcheck"></label>
+                                            <img class="imageagent"
+                                                src="http://localhost:8888/unsafe/fit-in/90x50/http://localhost:8000/clients/122556749_3365652976815602_5439655593477068766_n_1603963917.png"
+                                                alt="" style="border-radius:50%; ">
+                                        </div>
+                                        <div class="col-md-8">
+                                            <span>Agent name</span><br>
+                                            <span>Team: Mohali</span>
+                                        </div>
+                                    </div>
+                                    
+
+                                </div>
+                            </div>
+                            <div class="col-md-6 boxes card-box">
+                                <div class="custom-control custom-checkbox">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <input type="checkbox" class="custom-control-input" id="agentcheck">
+                                            <label class="custom-control-label" for="agentcheck"></label>
+                                            <img class="imageagent"
+                                                src="http://localhost:8888/unsafe/fit-in/90x50/http://localhost:8000/clients/122556749_3365652976815602_5439655593477068766_n_1603963917.png"
+                                                alt="" style="border-radius:50%; ">
+                                        </div>
+                                        <div class="col-md-8">
+                                            <span>Agent name</span><br>
+                                            <span>Team: Mohali</span>
+                                        </div>
+                                    </div>
+                                    
+
                                 </div>
                             </div>
                         </div>
@@ -136,7 +270,7 @@
                 </div>
                 <div class="col-lg-7">
                     <div class="card-box" style="height:96%;">
-                        <input id="pac-input" class="controls serch" type="text" placeholder="Search Location"  />
+                        <input id="pac-input" class="controls serch" type="text" placeholder="Search Location" />
                         <div id="map-canvas"></div>
                     </div>
                 </div>
@@ -180,8 +314,8 @@
         var lng = parseFloat(first_location.lng);
         // console.log(first_location);
         function initialize() {
-        
-            var myLatlng = new google.maps.LatLng(lat,lng);
+
+            var myLatlng = new google.maps.LatLng(lat, lng);
             var myOptions = {
                 zoom: 13,
                 center: myLatlng,
@@ -237,43 +371,43 @@
                 const places = searchBox.getPlaces();
 
                 if (places.length == 0) {
-                return;
+                    return;
                 }
                 // Clear out the old markers.
                 markers.forEach((marker) => {
-                marker.setMap(null);
+                    marker.setMap(null);
                 });
                 markers = [];
                 // For each place, get the icon, name and location.
                 const bounds = new google.maps.LatLngBounds();
                 places.forEach((place) => {
-                if (!place.geometry) {
-                    console.log("Returned place contains no geometry");
-                    return;
-                }
-                const icon = {
-                    url: place.icon,
-                    size: new google.maps.Size(71, 71),
-                    origin: new google.maps.Point(0, 0),
-                    anchor: new google.maps.Point(17, 34),
-                    scaledSize: new google.maps.Size(25, 25),
-                };
-                // Create a marker for each place.
-                markers.push(
-                    new google.maps.Marker({
-                    map,
-                    icon,
-                    title: place.name,
-                    position: place.geometry.location,
-                    })
-                );
+                    if (!place.geometry) {
+                        console.log("Returned place contains no geometry");
+                        return;
+                    }
+                    const icon = {
+                        url: place.icon,
+                        size: new google.maps.Size(71, 71),
+                        origin: new google.maps.Point(0, 0),
+                        anchor: new google.maps.Point(17, 34),
+                        scaledSize: new google.maps.Size(25, 25),
+                    };
+                    // Create a marker for each place.
+                    markers.push(
+                        new google.maps.Marker({
+                            map,
+                            icon,
+                            title: place.name,
+                            position: place.geometry.location,
+                        })
+                    );
 
-                if (place.geometry.viewport) {
-                    // Only geocodes have viewport.
-                    bounds.union(place.geometry.viewport);
-                } else {
-                    bounds.extend(place.geometry.location);
-                }
+                    if (place.geometry.viewport) {
+                        // Only geocodes have viewport.
+                        bounds.union(place.geometry.viewport);
+                    } else {
+                        bounds.extend(place.geometry.location);
+                    }
                 });
                 map.fitBounds(bounds);
             });

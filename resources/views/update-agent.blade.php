@@ -58,6 +58,15 @@
                         @endif
                         @csrf
                         <div class="modal-body p-4">
+                            <div class="col-sm-10">
+                                <div class="text-sm-left">
+                                    @if (\Session::has('success'))
+                                        <div class="alert alert-success">
+                                            <span>{!! \Session::get('success') !!}</span>
+                                        </div>
+                                    @endif
+                                </div>
+                            </div>
                             <div class="row mb-2">
                                 <div class="col-md-4">
                                     <div class="form-group" id="profile_pictureInput">
@@ -244,18 +253,20 @@
 
     <script>
         $("#phone_number").intlTelInput({
+            nationalMode: false,
+            formatOnDisplay: true,
             utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/8.4.6/js/utils.js"
         });
         $('.intl-tel-input').css('width', '100%');
 
-        var regEx = /\(?([0-9]{3})\)?([ .-]?)([0-9]{3})\2([0-9]{4})/;
-        $("#UpdateAgent").bind("submit", function() {
-            var val = $("#phone_number").val();
-            if (!val.match(regEx)) {
-                $('#phone_number').css('color', 'red');
-                return false;
-            }
-        });
+    //    // var regEx = /\(?([0-9]{3})\)?([ .-]?)([0-9]{3})\2([0-9]{4})/;
+    //     $("#UpdateAgent").bind("submit", function() {
+    //         var val = $("#phone_number").val();
+    //         // if (!val.match(regEx)) {
+    //         //     $('#phone_number').css('color', 'red');
+    //         //     return false;
+    //         // }
+    //     });
 
         $(function() {
             $('#phone_number').focus(function() {

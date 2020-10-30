@@ -21,9 +21,8 @@ class GeoFenceController extends Controller
     {
         
         $teams = Team::with(['agents'])->where('client_id', auth()->user()->id)->orderBy('name')->get();
-        $agents = Agent::whereIn('team_id', function ($q) {
-            $q->select('id')->from('teams')->where('client_id', Auth::user()->id);
-        })->get();
+
+        $agents = Agent::all();
 
         
         $geos = Geo::where('client_id', 1)->orderBy('created_at', 'DESC')->first();
