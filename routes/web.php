@@ -91,10 +91,13 @@ Route::group(['prefix' => '/godpanel'], function () {
 	Route::put('client/profile/{id}','ClientProfileController@update')->name('client.profile.update');
 	Route::post('client/password/update','ClientProfileController@changePassword')->name('client.password.update');
 
+	//dummy ajax
+
+	Route::post('geo/ajax', 'GeoFenceController@dummy')->name('dummy');
 	});
 	});
 
-
+   
     
 Route::post('/login/client', 'LoginController@clientLogin')->name('client.login');
 Route::get('/wrong/url','LoginController@wrongurl')->name('wrong.client');

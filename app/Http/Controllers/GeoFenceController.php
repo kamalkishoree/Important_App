@@ -9,6 +9,7 @@ use App\Model\Team;
 use App\Model\Geo;
 use App\Model\DriverGeo;
 use Auth;
+use Illuminate\Support\Facades\Cookie;
 
 class GeoFenceController extends Controller
 {
@@ -35,7 +36,6 @@ class GeoFenceController extends Controller
                 'lng' => -111.9267386
             ];
          }
-         
         return view('geo-fence')->with([
             'teams' =>  $teams,
             'agents' =>  $agents,
@@ -96,8 +96,9 @@ class GeoFenceController extends Controller
      */
     public function store(Request $request)
     {
+       
         $validator = $this->validator($request->all())->validate();
-
+        
         $data = [
             'name'          => $request->name,
             'description'   => $request->description,
@@ -195,5 +196,14 @@ class GeoFenceController extends Controller
     {
         Geo::where('id', $id)->where('client_id', auth()->user()->id)->delete();
         return redirect()->back()->with('success', 'Deleted successfully!');
+    }
+    public function dummy(Request $request)
+    {
+        return response()->json([
+            'status'=>'success',
+            'message' => 'Successfully!',
+            'newchange' => $request->value
+        ]);
+        
     }
 }

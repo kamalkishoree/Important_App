@@ -1,4 +1,12 @@
+@php
+$check = 0;
+if(isset($newchange) ){
+dd($newchange);
+$check = $newchnage;
+}
+@endphp
 @extends('layouts.vertical', ['title' => 'Geo Fence'])
+
 
 @section('css')
     <link href="{{ asset('assets/libs/flatpickr/flatpickr.min.css') }}" rel="stylesheet" type="text/css" />
@@ -31,8 +39,8 @@
 
         .imageagent {
             border-radius: 50%;
-            height: 30px;
-            width: 30px;
+            height: 40px;
+            width: 40px;
             margin-right: 15px;
         }
 
@@ -41,23 +49,29 @@
             padding-top: 10px;
             height: 240px;
             width: 103%;
-            overflow-y:auto 
+            overflow-y: auto
         }
 
         .teamshow {
             margin-left: 58px;
 
         }
+
         .display {
             height: 35px;
             width: 67px;
         }
-        .boxes{
+
+        .boxes {
             margin-bottom: 10px;
         }
-        .agentcheck{
-            
+
+        .new {
+            vertical-align: initial !important;
+            display: revert !important;
         }
+
+        .agentcheck {}
 
     </style>
 @endsection
@@ -110,12 +124,13 @@
                                 </div>
                             </div>
                         </div>
+
                         <div class="row mb-2">
                             <div class="col-md-12">
                                 <div class="form-group mb-3">
                                     <label>Team</label> <br />
                                     <select id="selectize-select" name="team_id">
-                                        <option data-display="Select" value="">No Team Selected</option>
+                                        <option value="0">All</option>
                                         @foreach ($teams as $team)
                                             <option value="{{ $team->id }}">{{ $team->name }}</option>
                                         @endforeach
@@ -126,13 +141,13 @@
                                     <div class="row">
                                         <div class="col-md-6">
                                             <div class="custom-control custom-checkbox">
-                                                <input type="checkbox" class="custom-control-input" id="checkmeout0">
+                                                <input type="checkbox" class="custom-control-input all" id="checkmeout0">
                                                 <label class="custom-control-label" for="checkmeout0">Select All
                                                     {{ Session::get('agent_name') ? Session::get('agent_name') : 'Agent' }}</label>
                                             </div>
                                         </div>
                                         <div class="col-md-6">
-                                            <input type="text" name="name" placeholder="serach" class="form-control">
+                                            <input type="text" name="search" placeholder="Search" class="form-control">
                                         </div>
                                     </div>
                                 </div>
@@ -140,120 +155,28 @@
                         </div>
 
                         <div class="row mb-2 cornar">
-                            <div class="col-md-6 boxes card-box">
-                                <div class="custom-control custom-checkbox">
-                                    <div class="row">
-                                        <div class="col-md-4">
-                                            <input type="checkbox" class="custom-control-input" id="agentcheck">
-                                            <label class="custom-control-label" for="agentcheck"></label>
-                                            <img class="imageagent"
-                                                src="http://localhost:8888/unsafe/fit-in/90x50/http://localhost:8000/clients/122556749_3365652976815602_5439655593477068766_n_1603963917.png"
-                                                alt="" style="border-radius:50%; ">
-                                        </div>
-                                        <div class="col-md-8">
-                                            <span>Agent name</span><br>
-                                            <span>Team: Mohali</span>
-                                        </div>
-                                    </div>
-                                    
 
-                                </div>
-                            </div>
-                            <div class="col-md-6 boxes card-box">
-                                <div class="custom-control custom-checkbox">
-                                    <div class="row">
-                                        <div class="col-md-4">
-                                            <input type="checkbox" class="custom-control-input" id="agentcheck">
-                                            <label class="custom-control-label" for="agentcheck"></label>
-                                            <img class="imageagent"
-                                                src="http://localhost:8888/unsafe/fit-in/90x50/http://localhost:8000/clients/122556749_3365652976815602_5439655593477068766_n_1603963917.png"
-                                                alt="" style="border-radius:50%; ">
+                            @foreach ($agents as $agent)
+                        <div class="col-md-6 boxes card-box agent_boxes team_{{ $agent->team_id ?? 0 }} agent_{{$agent->id}}" >
+                                    <div class="custom-control custom-checkbox">
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <input type="checkbox" class="custom-control-input agent_checkbox team_checkbox_{{ $agent->team_id ?? 0 }}" id="{{ $agent->id ?? 0 }}" name="agents[]">
+                                                <label class="custom-control-label new" for="{{ $agent->id }}"></label>
+                                                <img class="imageagent"
+                                                    src="{{ Phumbor::url('' . URL::to('/agents') . '/' . $agent->profile_picture . '')->trim() }}"
+                                                    alt="" style="border-radius:50%; ">
+                                            </div>
+                                            <div class="col-md-8">
+                                                <span>{{ $agent->name }}</span><br>
+                                                <span>{{ isset($agent->team->name) ? $agent->team->name : 'No Team Alloted' }}</span>
+                                            </div>
                                         </div>
-                                        <div class="col-md-8">
-                                            <span>Agent name</span><br>
-                                            <span>Team: Mohali</span>
-                                        </div>
-                                    </div>
-                                    
 
-                                </div>
-                            </div>
-                            <div class="col-md-6 boxes card-box">
-                                <div class="custom-control custom-checkbox">
-                                    <div class="row">
-                                        <div class="col-md-4">
-                                            <input type="checkbox" class="custom-control-input" id="agentcheck">
-                                            <label class="custom-control-label" for="agentcheck"></label>
-                                            <img class="imageagent"
-                                                src="http://localhost:8888/unsafe/fit-in/90x50/http://localhost:8000/clients/122556749_3365652976815602_5439655593477068766_n_1603963917.png"
-                                                alt="" style="border-radius:50%; ">
-                                        </div>
-                                        <div class="col-md-8">
-                                            <span>Agent name</span><br>
-                                            <span>Team: Mohali</span>
-                                        </div>
-                                    </div>
-                                    
 
-                                </div>
-                            </div>
-                            <div class="col-md-6 boxes card-box">
-                                <div class="custom-control custom-checkbox">
-                                    <div class="row">
-                                        <div class="col-md-4">
-                                            <input type="checkbox" class="custom-control-input" id="agentcheck">
-                                            <label class="custom-control-label" for="agentcheck"></label>
-                                            <img class="imageagent"
-                                                src="http://localhost:8888/unsafe/fit-in/90x50/http://localhost:8000/clients/122556749_3365652976815602_5439655593477068766_n_1603963917.png"
-                                                alt="" style="border-radius:50%; ">
-                                        </div>
-                                        <div class="col-md-8">
-                                            <span>Agent name</span><br>
-                                            <span>Team: Mohali</span>
-                                        </div>
                                     </div>
-                                    
-
                                 </div>
-                            </div>
-                            <div class="col-md-6 boxes card-box">
-                                <div class="custom-control custom-checkbox">
-                                    <div class="row">
-                                        <div class="col-md-4">
-                                            <input type="checkbox" class="custom-control-input" id="agentcheck">
-                                            <label class="custom-control-label" for="agentcheck"></label>
-                                            <img class="imageagent"
-                                                src="http://localhost:8888/unsafe/fit-in/90x50/http://localhost:8000/clients/122556749_3365652976815602_5439655593477068766_n_1603963917.png"
-                                                alt="" style="border-radius:50%; ">
-                                        </div>
-                                        <div class="col-md-8">
-                                            <span>Agent name</span><br>
-                                            <span>Team: Mohali</span>
-                                        </div>
-                                    </div>
-                                    
-
-                                </div>
-                            </div>
-                            <div class="col-md-6 boxes card-box">
-                                <div class="custom-control custom-checkbox">
-                                    <div class="row">
-                                        <div class="col-md-4">
-                                            <input type="checkbox" class="custom-control-input" id="agentcheck">
-                                            <label class="custom-control-label" for="agentcheck"></label>
-                                            <img class="imageagent"
-                                                src="http://localhost:8888/unsafe/fit-in/90x50/http://localhost:8000/clients/122556749_3365652976815602_5439655593477068766_n_1603963917.png"
-                                                alt="" style="border-radius:50%; ">
-                                        </div>
-                                        <div class="col-md-8">
-                                            <span>Agent name</span><br>
-                                            <span>Team: Mohali</span>
-                                        </div>
-                                    </div>
-                                    
-
-                                </div>
-                            </div>
+                            @endforeach
                         </div>
 
                         <div class="row">
@@ -294,13 +217,15 @@
     <script src="{{ asset('assets/libs/bootstrap-touchspin/bootstrap-touchspin.min.js') }}"></script>
     <script src="{{ asset('assets/libs/bootstrap-maxlength/bootstrap-maxlength.min.js') }}"></script>
     <script src="{{ asset('assets/libs/devbridge-autocomplete/devbridge-autocomplete.min.js') }}"></script>
-    <script src="{{ asset('assets/libs/jquery-mockjax/jquery-mockjax.min.js') }}"></script>
+    {{-- <script src="{{ asset('assets/libs/jquery-mockjax/jquery-mockjax.min.js') }}">
+    </script> --}}
     <script src="{{ asset('assets/libs/sweetalert2/sweetalert2.min.js') }}"></script>
 
     <!-- Plugins js-->
     <script src="{{ asset('assets/libs/flatpickr/flatpickr.min.js') }}"></script>
     <!-- Page js-->
     <script src="{{ asset('assets/js/pages/form-advanced.init.js') }}"></script>
+    <script src="{{ asset('assets/js/pages/jquery.cookie.js') }}"></script>
 
     <script>
         var map; // Global declaration of the map
@@ -323,7 +248,6 @@
             }
             const input = document.getElementById("pac-input");
             const searchBox = new google.maps.places.SearchBox(input);
-            console.log(input);
             //map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
             // Bias the SearchBox results towards current map's viewport.
 
@@ -437,20 +361,20 @@
 
         // onteam change change the selected agents in the list //
 
-        $(function() {
-            $('#checkmeout0').change(function() {
-                if (this.checked) {
-                    $('.agent-selection select option').each(function() {
-                        $(this).attr('selected', true);
-                    });
-                } else {
-                    $('.agent-selection select option').each(function() {
-                        $(this).attr('selected', false);
-                    });
-                }
-                $('#agents').trigger('change');
-            });
-        });
+        // $(function() {
+        //     $('#checkmeout0').change(function() {
+        //         if (this.checked) {
+        //             $('.agent-selection select option').each(function() {
+        //                 $(this).attr('selected', true);
+        //             });
+        //         } else {
+        //             $('.agent-selection select option').each(function() {
+        //                 $(this).attr('selected', false);
+        //             });
+        //         }
+        //         $('#agents').trigger('change');
+        //     });
+        // });
 
         $(function() {
             $('#selectize-select').change(function() {
@@ -486,6 +410,50 @@
 
 
         })
+
+        $(".all").click(function() {
+            if ($(this).is(':checked')) {
+                var select = $("#selectize-select option:selected").val();
+                if(select == 0){
+                    $('.agent_checkbox').attr('checked', true);
+                    $(".agent_boxes").addClass("selected");
+                }
+                $('.team_checkbox_'+select).attr('checked', true);
+                $(".team_"+select).addClass("selected");
+            } else {
+                $('.agent_checkbox').attr('checked', false);
+                    $(".agent_boxes").removeClass("selected");            }
+        });
+
+        // $('select').on('change', function(e) {
+        //     var select = $("#selectize-select option:selected").val();
+        // });
+
+        $('select').on('change', function(e) {
+            var select = $("#selectize-select option:selected").val();
+            $('#checkmeout0').prop('checked', false);
+            
+            if(select == 0){
+                $('.agent_boxes').show();
+            }else{
+                $('.agent_boxes').hide();
+                $('.selected').show(); 
+                $('.team_' + select).show(); 
+            }
+             
+
+        });
+
+        $(".agent_checkbox").click(function(){
+        var id = $(this).attr('id');
+        var isChecked = $(this).prop('checked');
+        console.log(id);
+        console.log(isChecked);
+        if(isChecked)
+            $(".agent_"+id).addClass("selected");
+        else
+        $(".agent_"+id).removeClass("selected");
+    });
 
     </script>
 @endsection
