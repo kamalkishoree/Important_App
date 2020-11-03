@@ -26,7 +26,7 @@ class GeoFenceController extends Controller
         $agents = Agent::all();
 
         
-        $geos = Geo::where('client_id', 1)->orderBy('created_at', 'DESC')->first();
+        $geos = Geo::where('client_id', auth()->user()->id)->orderBy('created_at', 'DESC')->first();
          
          if(isset($geos)){
             $codinates = $geos->geo_coordinates[0];
@@ -46,7 +46,7 @@ class GeoFenceController extends Controller
     public function allList()
     {
         $all_coordinates = [];
-        $geos = Geo::where('client_id', 1)->orderBy('created_at', 'DESC')->get();
+        $geos = Geo::where('client_id', auth()->user()->id)->orderBy('created_at', 'DESC')->get();
         foreach ($geos as $k => $v) {
             $all_coordinates[] = [
                 'name' => 'abc',
@@ -96,7 +96,6 @@ class GeoFenceController extends Controller
      */
     public function store(Request $request)
     {
-       
         $validator = $this->validator($request->all())->validate();
         
         $data = [
@@ -108,7 +107,6 @@ class GeoFenceController extends Controller
         ];
 
         $geo = Geo::create($data);
-
         $geo->agents()->sync($request->agents);
 
         //update team_id if any provided //
@@ -142,9 +140,7 @@ class GeoFenceController extends Controller
     {
         $geo = Geo::with(['agents'])->where('id', $id)->first();
         $teams = Team::with(['agents'])->where('client_id', auth()->user()->id)->orderBy('name')->get();
-        $agents = Agent::whereIn('team_id', function ($q) {
-            $q->select('id')->from('teams')->where('client_id', Auth::user()->id);
-        })->get();
+        $agents = Agent::all();
 
         return view('update-geo-fence')->with([
             'geo' => $geo,
@@ -170,8 +166,9 @@ class GeoFenceController extends Controller
      */
     public function update(Request $request, $id)
     {
+        dd($request->all());
         $validator = $this->updateValidator($request->all())->validate();
-
+        
         $geo = Geo::find($id);
 
         $data = [

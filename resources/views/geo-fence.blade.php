@@ -1,10 +1,10 @@
 @php
-$check = 0;
-if(isset($newchange) ){
-dd($newchange);
-$check = $newchnage;
+if( isset($_POST['name']) ){
+echo $_POST['name'];
+exit;
 }
 @endphp
+
 @extends('layouts.vertical', ['title' => 'Geo Fence'])
 
 
@@ -64,6 +64,7 @@ $check = $newchnage;
 
         .boxes {
             margin-bottom: 10px;
+            height: 100px;
         }
 
         .new {
@@ -71,7 +72,15 @@ $check = $newchnage;
             display: revert !important;
         }
 
+        #new_show {
+            display: none;
+        }
+
         .agentcheck {}
+
+        .search {
+            background-color: #02f2cc;
+        }
 
     </style>
 @endsection
@@ -140,14 +149,20 @@ $check = $newchnage;
                                 <div class="form-group mb-3">
                                     <div class="row">
                                         <div class="col-md-6">
-                                            <div class="custom-control custom-checkbox">
+                                            <div class="custom-control custom-checkbox select_all" id="old_show">
                                                 <input type="checkbox" class="custom-control-input all" id="checkmeout0">
-                                                <label class="custom-control-label" for="checkmeout0">Select All
+                                                <label class="custom-control-label select_all" for="checkmeout0">Select All
+                                                    {{ Session::get('agent_name') ? Session::get('agent_name') : 'Agent' }}</label>
+                                            </div>
+                                            <div class="custom-control custom-checkbox show_alls" id="new_show">
+                                                <input type="checkbox" class="custom-control-input" id="show_all">
+                                                <label class="custom-control-label" for="show_all">Show All
                                                     {{ Session::get('agent_name') ? Session::get('agent_name') : 'Agent' }}</label>
                                             </div>
                                         </div>
                                         <div class="col-md-6">
-                                            <input type="text" name="search" placeholder="Search" class="form-control">
+                                            <input type="text" name="search" placeholder="Search"
+                                                class="form-control newsearch" id="search">
                                         </div>
                                     </div>
                                 </div>
@@ -157,23 +172,24 @@ $check = $newchnage;
                         <div class="row mb-2 cornar">
 
                             @foreach ($agents as $agent)
-                        <div class="col-md-6 boxes card-box agent_boxes team_{{ $agent->team_id ?? 0 }} agent_{{$agent->id}}" >
+                                <div
+                                    class="col-md-6 boxes card-box agent_boxes team_{{ $agent->team_id ?? 0 }} agent_{{ $agent->id }}">
                                     <div class="custom-control custom-checkbox">
                                         <div class="row">
                                             <div class="col-md-4">
-                                                <input type="checkbox" class="custom-control-input agent_checkbox team_checkbox_{{ $agent->team_id ?? 0 }}" id="{{ $agent->id ?? 0 }}" name="agents[]">
+                                                <input type="checkbox"
+                                                    class="custom-control-input agent_checkbox team_checkbox_{{ $agent->team_id ?? 0 }}"
+                                                    id="{{ $agent->id }}" name="agents[]" value="{{ $agent->id }}">
                                                 <label class="custom-control-label new" for="{{ $agent->id }}"></label>
                                                 <img class="imageagent"
                                                     src="{{ Phumbor::url('' . URL::to('/agents') . '/' . $agent->profile_picture . '')->trim() }}"
                                                     alt="" style="border-radius:50%; ">
                                             </div>
                                             <div class="col-md-8">
-                                                <span>{{ $agent->name }}</span><br>
+                                                <span class="spans">{{ $agent->name }}</span><br>
                                                 <span>{{ isset($agent->team->name) ? $agent->team->name : 'No Team Alloted' }}</span>
                                             </div>
                                         </div>
-
-
                                     </div>
                                 </div>
                             @endforeach
@@ -414,15 +430,27 @@ $check = $newchnage;
         $(".all").click(function() {
             if ($(this).is(':checked')) {
                 var select = $("#selectize-select option:selected").val();
-                if(select == 0){
-                    $('.agent_checkbox').attr('checked', true);
+                if (select == 0) {
+                    $('.agent_checkbox').prop('checked', this.checked);
+                    //$('.agent_checkbox').attr('checked', true);
                     $(".agent_boxes").addClass("selected");
                 }
-                $('.team_checkbox_'+select).attr('checked', true);
-                $(".team_"+select).addClass("selected");
+                $('.team_checkbox_' + select).prop('checked', this.checked);
+                $(".team_" + select).addClass("selected");
             } else {
-                $('.agent_checkbox').attr('checked', false);
-                    $(".agent_boxes").removeClass("selected");            }
+                $('.agent_checkbox').prop('checked', false);
+                $(".agent_boxes").removeClass("selected");
+            }
+        });
+
+        $("#show_all").click(function() {
+            if ($(this).is(':checked')) {
+                $('#search').val('');
+                $('div.agent_boxes').show();
+                $("#old_show").show();
+                $("#new_show").hide();
+                $('#show_all').prop('checked',false);
+            } 
         });
 
         // $('select').on('change', function(e) {
@@ -432,28 +460,58 @@ $check = $newchnage;
         $('select').on('change', function(e) {
             var select = $("#selectize-select option:selected").val();
             $('#checkmeout0').prop('checked', false);
-            
-            if(select == 0){
+            $('#show_all').prop('checked',false);
+            $("#old_show").show();
+            $("#new_show").hide();
+            if (select == 0) {
                 $('.agent_boxes').show();
-            }else{
+            } else {
                 $('.agent_boxes').hide();
-                $('.selected').show(); 
-                $('.team_' + select).show(); 
+                $('.selected').show();
+                $('.team_' + select).show();
             }
-             
+
 
         });
 
-        $(".agent_checkbox").click(function(){
-        var id = $(this).attr('id');
-        var isChecked = $(this).prop('checked');
-        console.log(id);
-        console.log(isChecked);
-        if(isChecked)
-            $(".agent_"+id).addClass("selected");
-        else
-        $(".agent_"+id).removeClass("selected");
-    });
+        $(".agent_checkbox").click(function() {
+            var id = $(this).attr('id');
+            var isChecked = $(this).prop('checked');
+            console.log(id);
+            console.log(isChecked);
+            if (isChecked)
+                $(".agent_" + id).addClass("selected");
+            else
+                $(".agent_" + id).removeClass("selected");
+        });
+
+        var searchRequest = null;
+
+        $(function() {
+            var minlength = 3;
+
+            $("#search").keyup(function() {
+                $("#old_show").show();
+                $("#new_show").hide();
+                value = $('.newsearch').val();
+                $('div.agent_boxes').show();
+                if (value.length >= minlength) {
+                    $("#old_show").hide();
+                    $("#new_show").show();
+                    if (searchRequest != null)
+                        var query = $.trim($.prevAll('.newsearch').val()).toLowerCase();
+                    $('div.agent_boxes .spans').each(function() {
+                        var $this = $(this);
+                        if ($this.text().toLowerCase().indexOf(value = value.trim()
+                                .toLowerCase()) === -1)
+                            $this.closest('div.agent_boxes').removeClass('selected').hide().find('[type=checkbox]').prop('checked', false);
+                        else $this.closest('div.agent_boxes').show();
+                    });
+
+
+                }
+            });
+        });
 
     </script>
 @endsection
