@@ -1,5 +1,5 @@
 @yield('css')
-@php $theme = \App\Model\ClientPreference::where(['client_id' => 1])->first('theme');@endphp
+@php $theme = \App\Model\ClientPreference::where(['id' => 1])->first('theme');@endphp
 <!-- icons -->
 <link href="{{asset('assets/css/icons.min.css')}}" rel="stylesheet" type="text/css" />
 <link href="{{asset('assets/css/waitMe.min.css')}}" rel="stylesheet" type="text/css" />

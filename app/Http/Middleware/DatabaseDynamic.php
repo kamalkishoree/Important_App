@@ -48,11 +48,11 @@ class DatabaseDynamic
               DB::setDefaultConnection($database_name);
               DB::purge($database_name);
 
-              $client_name = ClientPreference::where('client_id',1)->first('agent_name');
+              $client_name = ClientPreference::where('client_id',Auth::user()->id)->first('agent_name');
               if(isset($client_name)){
                 Session::put('agent_name', $client_name->agent_name);
               }else{
-                Session::put('agent_name', 'Agents');
+                Session::put('agent_name', 'Agentsss');
               }
               
           }

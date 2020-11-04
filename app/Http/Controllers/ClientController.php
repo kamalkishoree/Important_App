@@ -16,6 +16,7 @@ use Illuminate\Support\Str;
 use App\Jobs\ProcessClientDatabase;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Redis;
+use Session;
 
 class ClientController extends Controller
 {
@@ -259,6 +260,7 @@ class ClientController extends Controller
      */
     public function storePreference(Request $request, $id)
     {
+        
         //update the client custom_domain if value is set //
         if ($request->domain_name == 'custom_domain') {
             // check the availability of the domain //
@@ -268,6 +270,7 @@ class ClientController extends Controller
             }
             Client::where('id', $id)->update(['custom_domain' => $request->custom_domain_name]);
         }
+        
         $updatePreference = ClientPreference::updateOrCreate([
             'client_id' => $id
         ], $request->all());
@@ -287,7 +290,7 @@ class ClientController extends Controller
      */
     public function ShowPreference()
     {
-        $preference = ClientPreference::where('client_id',1)->first();
+        $preference = ClientPreference::where('client_id',Auth::user()->id)->first();
         $currencies = Currency::orderBy('iso_code')->get();
         return view('customize')->with(['preference' => $preference, 'currencies' => $currencies]);
     }
@@ -298,7 +301,7 @@ class ClientController extends Controller
      */
     public function ShowConfiguration()
     {
-        $preference = ClientPreference::where('client_id',1)->first();
+        $preference = ClientPreference::where('client_id',Auth::user()->id)->first();
         $client = Auth::user();
         return view('configure')->with(['preference' => $preference, 'client' => $client]);
     }
@@ -308,7 +311,7 @@ class ClientController extends Controller
      */
     public function ShowOptions()
     {
-        $preference = ClientPreference::where('client_id',1)->first();
+        $preference = ClientPreference::where('client_id',Auth::user()->id)->first();
         return view('options')->with(['preference' => $preference]);
     }
 }

@@ -27,6 +27,27 @@ class GeoFenceController extends Controller
 
         
         $geos = Geo::where('client_id', auth()->user()->id)->orderBy('created_at', 'DESC')->first();
+
+        $all_coordinates = [];
+        $geo = Geo::where('client_id', auth()->user()->id)->orderBy('created_at', 'DESC')->get();
+
+        foreach ($geo as $k => $v) {
+            $all_coordinates[] = [
+                'name' => 'abc',
+                'coordinates' => $v->geo_coordinates
+            ];
+        }
+
+        $center = [
+            'lat' => 30.0612323,
+            'lng' => 76.1239239
+        ];
+
+        if (!empty($all_coordinates)) {
+            $center['lat'] = $all_coordinates[0]['coordinates'][0]['lat'];
+            $center['lng'] = $all_coordinates[0]['coordinates'][0]['lng'];
+        }
+
          
          if(isset($geos)){
             $codinates = $geos->geo_coordinates[0];
@@ -36,10 +57,12 @@ class GeoFenceController extends Controller
                 'lng' => -111.9267386
             ];
          }
+
         return view('geo-fence')->with([
             'teams' =>  $teams,
             'agents' =>  $agents,
-            'coninates' => $codinates
+            'coninates' => $codinates,
+            'all_coordinates' => $all_coordinates,
         ]);
     }
 
@@ -96,6 +119,7 @@ class GeoFenceController extends Controller
      */
     public function store(Request $request)
     {
+        
         $validator = $this->validator($request->all())->validate();
         
         $data = [
@@ -166,14 +190,20 @@ class GeoFenceController extends Controller
      */
     public function update(Request $request, $id)
     {
-        dd($request->all());
         $validator = $this->updateValidator($request->all())->validate();
         
         $geo = Geo::find($id);
 
+        if(isset($request->latlongs))
         $data = [
             'name'          => $request->name,
-            'description'   => $request->description
+            'description'   => $request->description,
+            'geo_array'     => $request->latlongs,
+        ];
+        else
+        $data = [
+            'name'          => $request->name,
+            'description'   => $request->description,
         ];
 
         $updated = Geo::where('id', $id)->update($data);

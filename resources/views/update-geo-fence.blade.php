@@ -66,6 +66,9 @@
         .search{
             background-color: #02f2cc;
         }
+        #new_show {
+            display: none;
+        }
 
     </style>
 @endsection
@@ -285,8 +288,8 @@
             map = new google.maps.Map(document.getElementById("map-canvas"), myOptions);
             myPolygon = new google.maps.Polygon({
                 paths: triangleCoords,
-                //draggable: true, // turn off if it gets annoying
-                //editable: true,
+                draggable: true, // turn off if it gets annoying
+                editable: true,
                 strokeColor: '#bb3733',
                 //strokeOpacity: 0.8,
                 //strokeWeight: 2,
@@ -295,10 +298,14 @@
             });
             myPolygon.setMap(map);
 
+            google.maps.event.addListener(myPolygon, "mouseup", function(event) {
+                $('#latlongs').val(myPolygon.getPath().getArray());
+            });
+
         }
         google.maps.event.addDomListener(window, 'load', initialize);
 
-
+        
 
         // onteam change change the selected agents in the list //
 

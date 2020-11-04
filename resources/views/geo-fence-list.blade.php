@@ -147,7 +147,8 @@
         fillColor: '#ff0000',
         fillOpacity: 0.35,
         geo_name: data.name,
-        geo_pos: data.coordinates[0]
+        geo_pos: data.coordinates[0],
+        
       });
 
       no_parking_geofences_json_geo_area.setMap(map);

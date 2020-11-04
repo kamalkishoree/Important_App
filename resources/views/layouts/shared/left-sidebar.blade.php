@@ -89,7 +89,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="#">
+                    <a href="{{route('pricing-rules.index')}}">
                         <i data-feather="paperclip"></i>
                         <span>Pricing Rules</span>
                     </a>
@@ -120,7 +120,7 @@
                     </a>
                 </li>
                 
-                <!-- <li>
+                {{-- <li>
                     <a href="{{route('tag.index')}}">
                         <i data-feather="rss"></i>
                         <span> Tags </span>
@@ -139,10 +139,10 @@
                         <i data-feather="users"></i>
                         <span> Modals </span>
                     </a>
-                </li> -->
+                </li>  --}}
                 
-            <!-- @if(env('APP_DEBUG'))
-                <li class="menu-title mt-5">Other Pages</li>
+            @if(env('APP_DEBUG'))
+                {{-- <li class="menu-title mt-5">Other Pages</li>
 
                 <li>
                     <a href="{{route('second', ['apps', 'calendar'])}}">
@@ -156,15 +156,15 @@
                         <i data-feather="message-square"></i>
                         <span> Chat </span>
                     </a>
-                </li>
+                </li> --}}
 
-                <li>
+                {{-- <li>
                     <a href="#sidebarEcommerce" data-toggle="collapse">
                         <i data-feather="shopping-cart"></i>
                         <span> Ecommerce </span>
                         <span class="menu-arrow"></span>
                     </a>
-                    <!-- <div class="collapse" id="sidebarEcommerce">
+                     <div class="collapse" id="sidebarEcommerce">
                         <ul class="nav-second-level">
                             <li>
                                 <a href="{{route('second', ['ecommerce', 'dashboard'])}}">Dashboard</a>
@@ -198,9 +198,9 @@
                             </li>
                         </ul>
                     </div> -->
-                {{-- </li>
+                 </li> --}}
 
-                <li>
+                {{-- <li>
                     <a href="#sidebarCrm" data-toggle="collapse">
                         <i data-feather="users"></i>
                         <span> CRM </span>
@@ -225,9 +225,9 @@
                             </li>
                         </ul>
                     </div>
-                </li>
+                </li> --}}
 
-                <li>
+                {{-- <li>
                     <a href="#sidebarEmail" data-toggle="collapse">
                         <i data-feather="mail"></i>
                         <span> Email </span>
@@ -249,9 +249,9 @@
                             </li>
                         </ul>
                     </div>
-                </li>
+                </li> --}}
 
-                <li>
+                {{-- <li>
                     <a href="{{route('second', ['apps', 'social-feed'])}}">
                         <span class="badge badge-pink float-right">Hot</span>
                         <i data-feather="rss"></i>
@@ -349,9 +349,9 @@
                         <i data-feather="folder-plus"></i>
                         <span> File Manager </span>
                     </a>
-                </li>
+                </li> --}}
 
-                <li class="menu-title mt-2">Custom</li>
+                {{-- <li class="menu-title mt-2">Custom</li>
 
                 <li>
                     <a href="#sidebarAuth" data-toggle="collapse">

@@ -2,7 +2,9 @@
 
 @section('css')
 @endsection
-
+@php
+   // dd($preference);
+@endphp
 @section('content')
 <!-- Start Content-->
 <div class="container-fluid">
@@ -45,9 +47,6 @@
                                     <option value="google_maps"
                                         {{ (isset($preference) && $preference->map_type =="google_maps")? "selected" : "" }}>
                                         Google Maps</option>
-                                    <option value="mapbox"
-                                        {{ (isset($preference) && $preference->map_type =="mapbox")? "selected" : "" }}>
-                                        Mapbox</option>
                                 </select>
                                 @if($errors->has('map_type'))
                                 <span class="text-danger" role="alert">
@@ -112,9 +111,9 @@
                                 <label for="sms_provider">CURRENT SELECTION</label>
                                 <select class="form-control" id="sms_provider" name="sms_provider">
                                     <option>Select SMS Service</option>
-                                    <option value="Bumbl"
-                                        {{ (isset($preference) && $preference->sms_provider =="Bumbl")? "selected" : "" }}>
-                                        Bumbl SMS</option>
+                                    <option value="Twilio"
+                                        {{ (isset($preference) && $preference->sms_provider =="Twilio")? "selected" : "" }}>
+                                        Twilio</option>
                                 </select>
                                 @if($errors->has('sms_provider'))
                                 <span class="text-danger" role="alert">
@@ -124,13 +123,13 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row mb-0">
+                    {{-- <div class="row mb-0">
                         <div class="col-md-6">
                             <p class="sub-header">
                                 To Configure your Bumbl SMS Service, go to <a href="#">Bumble Dashboard</a>
                             </p>
                         </div>
-                    </div>
+                    </div> --}}
                     <div class="row mb-2">
 
                         <div class="col-md-6">
@@ -255,7 +254,7 @@
                     </p>
                     <div class="row mb-2">
                         <div class="col-md-12">
-                            <div class=" p-1 mb-3">
+                            {{-- <div class=" p-1 mb-3">
                                 <div class="custom-control custom-radio">
                                     <input type="radio" id="domain_type_1" value="domain" name="domain_name"
                                         class="custom-control-input"
@@ -263,7 +262,17 @@
                                     <label class="custom-control-label font-16 font-weight-bold"
                                         for="domain_type_1">{{ $client->custom_domain }}</label>
                                 </div>
-                                <p class="mb-0 pl-3 pt-1">Published </p>
+                                <p class="mb-0 pl-3 pt-6">Published </p>
+                            </div> --}}
+                            <div class=" p-1 mb-1">
+                                <div class="custom-control custom-radio">
+                                    <input type="radio" id="domain_type_1" value="domain" name="domain_name"
+                                        class="custom-control-input"
+                                        {{ (isset($preference) && $preference->domain_name =="domain")? "checked" : "" }}>
+                                    <label class="custom-control-label font-16 font-weight-bold"
+                                        for="domain_type_1">Main Domain</label>
+                                   
+                                </div>
                             </div>
 
                             <div class=" p-1 mb-1">

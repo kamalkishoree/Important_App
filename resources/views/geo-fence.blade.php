@@ -210,6 +210,9 @@ exit;
                 <div class="col-lg-7">
                     <div class="card-box" style="height:96%;">
                         <input id="pac-input" class="controls serch" type="text" placeholder="Search Location" />
+                        <div id="floating-panel">
+                            <input id="refresh" type="button" value="Edit Mode" />
+                        </div>
                         <div id="map-canvas"></div>
                     </div>
                 </div>
@@ -249,10 +252,16 @@ exit;
         var lat_longs = new Array();
         var markers = new Array();
         var drawingManager;
+        var no_parking_geofences_json = '{!!  json_encode($all_coordinates) !!}';
         var newlocation = '<?php echo json_encode($coninates); ?>';
         var first_location = JSON.parse(newlocation);
         var lat = parseFloat(first_location.lat);
         var lng = parseFloat(first_location.lng);
+
+
+        function deleteSelectedShape() {
+            drawingManager.setMap(null);
+        }
         // console.log(first_location);
         function initialize() {
 
@@ -277,14 +286,21 @@ exit;
                     position: google.maps.ControlPosition.TOP_CENTER,
                     drawingModes: [google.maps.drawing.OverlayType.POLYGON]
                 },
+                
                 polygonOptions: {
-                    //editable: true,
-                    //draggable: true
+
+                    editable: true,
+                    draggable: true,
                     strokeColor: '#bb3733',
                     fillColor: '#bb3733',
                 }
             });
+
             drawingManager.setMap(map);
+
+            
+
+
 
             google.maps.event.addListener(drawingManager, "overlaycomplete", function(event) {
                 var newShape = event.overlay;
@@ -360,13 +376,7 @@ exit;
         }
         google.maps.event.addDomListener(window, 'load', initialize);
 
-        function addLine() {
-            drawingManager.setMap(map);
-        }
-
-        function removeLine() {
-            //drawingManager.setMap(null);
-        }
+        google.maps.event.addDomListener(document.getElementById('refresh'), 'click', deleteSelectedShape);
 
         $(function() {
             $('#save').click(function() {
@@ -449,8 +459,8 @@ exit;
                 $('div.agent_boxes').show();
                 $("#old_show").show();
                 $("#new_show").hide();
-                $('#show_all').prop('checked',false);
-            } 
+                $('#show_all').prop('checked', false);
+            }
         });
 
         // $('select').on('change', function(e) {
@@ -460,7 +470,7 @@ exit;
         $('select').on('change', function(e) {
             var select = $("#selectize-select option:selected").val();
             $('#checkmeout0').prop('checked', false);
-            $('#show_all').prop('checked',false);
+            $('#show_all').prop('checked', false);
             $("#old_show").show();
             $("#new_show").hide();
             if (select == 0) {
@@ -504,7 +514,8 @@ exit;
                         var $this = $(this);
                         if ($this.text().toLowerCase().indexOf(value = value.trim()
                                 .toLowerCase()) === -1)
-                            $this.closest('div.agent_boxes').removeClass('selected').hide().find('[type=checkbox]').prop('checked', false);
+                            $this.closest('div.agent_boxes').removeClass('selected').hide()
+                            .find('[type=checkbox]').prop('checked', false);
                         else $this.closest('div.agent_boxes').show();
                     });
 
