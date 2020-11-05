@@ -131,6 +131,7 @@ class ClientController extends Controller
             'company_address' => $request->company_address,
             'custom_domain' => $request->custom_domain,
             'logo' => $getFileName,
+            'status'=> 1,
         ];
 
        $client = Client::create($data);

@@ -23,7 +23,6 @@
 
 @section('content')
 <div class="container-fluid">
-
     <div class="row">
         <div class="col-md-12">
             <div class="page-title-box">
@@ -31,9 +30,9 @@
             </div>
         </div>
     </div>
-    {!! Form::model($task, ['route' => ['pricing-rules.update',]]) !!}
+    {!! Form::model($pricing, ['route' => ['pricing-rules.update',$pricing->id]]) !!}
     {{ method_field('PATCH') }}
-      @include('pricing.pricing-form')
+      @include('pricing-rules.pricing-form')
     {!! Form::close() !!}
        
 </div>
@@ -65,5 +64,12 @@
 <script src="{{asset('assets/js/pages/form-pickers.init.js')}}"></script>
 
 <script>
+    $('input:checkbox[name="is_default"]').change(
+function(){
+    if ($(this).is(':checked')) 
+        $('.temp').hide();
+    else
+    $('.temp').show();
+});
 </script>
 @endsection

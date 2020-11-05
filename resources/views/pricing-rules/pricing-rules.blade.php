@@ -71,38 +71,42 @@
                     </div>
 
                     <div class="table-responsive">
-                        <table class="table table-striped dt-responsive nowrap w-100"  id="agents-datatable">
+                        <table class="table table-striped dt-responsive nowrap w-100"  id="pricing-datatable">
                             <thead>
                                 <tr>
                                     <th>Name</th>
                                     <th>Start Time</th>
                                     <th>End Time</th>
-                                    <th>Team</th>
                                     <th>Base Price</th>
-                                    <th>Base waiting</th>
+                                    <th>Base Duration</th>
+                                    <th>Base Distance</th>
+                                    <th>Base Waiting</th>
                                     <th style="width: 85px;">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {{-- @foreach($tasks as $task) --}}
+                                @foreach($pricing as $price)
                                 <tr>
                                     <td>
-                                        
+                                        {{$price->name}}
                                     </td>
                                     <td>
-                                        {{-- {{$task->from_address}} --}}
+                                        {{$price->start_date_time}}
                                     </td>
                                     <td>
-                                        {{-- {{$task->to_address}} --}}
+                                        {{$price->end_date_time}}
                                     </td>
                                     <td>
-                                        {{-- {{$task->status}} --}}
+                                        {{$price->base_price}}
                                     </td>
                                     <td>
-                                        {{-- {{$task->priority}} --}}
+                                        {{$price->base_duration}}
                                     </td>
                                     <td>
-                                        {{-- {{$task->expected_delivery_date}} --}}
+                                        {{$price->base_distance}}
+                                    </td>
+                                    <td>
+                                        {{$price->base_waiting}}
                                     </td>
                                     <!-- <td>
                                         <span class="badge bg-soft-success text-success">Active</span>
@@ -110,9 +114,9 @@
 
                                     <td>
                                         <div class="form-ul" style="width: 60px;">
-                                            <div class="inner-div"> <a href="#" class="action-icon"> <i class="mdi mdi-square-edit-outline"></i></a></div>
+                                            <div class="inner-div"> <a href="{{route('pricing-rules.edit', $price->id)}}" class="action-icon"> <i class="mdi mdi-square-edit-outline"></i></a></div>
                                             <div class="inner-div">
-                                                <form method="POST" action="#">
+                                                <form method="POST" action="{{route('pricing-rules.destroy', $price->id)}}">
                                                     @csrf
                                                     @method('DELETE')
                                                     <div class="form-group">
@@ -124,7 +128,7 @@
                                         </div>
                                     </td>
                                 </tr>
-                                {{-- @endforeach --}}
+                                @endforeach
                             </tbody>
                         </table>
                     </div>
@@ -164,7 +168,9 @@
 <script src="{{asset('assets/libs/sweetalert2/sweetalert2.min.js')}}"></script>
 
 <script>
-
+$(document).ready( function () {
+    $('#pricing-datatable').DataTable();
+});
 </script>
 
 @endsection
