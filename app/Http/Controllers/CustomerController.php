@@ -16,7 +16,8 @@ class CustomerController extends Controller
      */
     public function index()
     {
-        //
+        $customer = Customer::orderBy('created_at', 'DESC')->paginate(10);
+        return view('Customer.customer')->with(['customers' => $customer]); 
     }
 
     /**
@@ -26,7 +27,7 @@ class CustomerController extends Controller
      */
     public function create()
     {
-        //
+        return view('customer/add-customer');
     }
 
     /**
@@ -38,8 +39,6 @@ class CustomerController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255'],
             'phone_number' => ['required'],
-            'address' => ['required'],
-            'tags' => ['required']
         ]);
     }
 
@@ -57,24 +56,11 @@ class CustomerController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'phone_number' => $request->phone_number,
-            'address' => $request->address
         ];
         $customer = Customer::create($data);
-        $TagsData = [];
-        foreach ($request->tags as $key => $value) {
-            array_push($TagsData, [
-                'customer_id' => $customer->id,
-                'tag_id' => $value,
-            ]);
-        }
-        $tags = TagCustomer::insert($TagsData);
-        if($customer->wasRecentlyCreated){
-            return response()->json([
-                'status'=>'success',
-                'message' => 'Customer created Successfully!',
-                'data' => $customer
-            ]);
-        }
+       
+        return redirect()->route('customer.index')->with('success', 'Customer Added successfully!');
+      
     }
 
     /**
@@ -96,7 +82,8 @@ class CustomerController extends Controller
      */
     public function edit($id)
     {
-        //
+        $customer = Customer::where('id',$id)->first();
+        return view('customer/update-customer')->with(['customer'=>$customer]);
     }
 
     /**
@@ -108,7 +95,18 @@ class CustomerController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $validator = $this->validator($request->all())->validate();
+        $customer = Customer::find($id);
+        $data = [
+            'name' => $request->name,
+            'email' => $request->email,
+            'phone_number' => $request->phone_number,
+        ];
+
+        $cost = Customer::where('id', $id)->update($data);
+        return redirect()->route('customer.index')->with('success', 'Customer Updated successfully!');
+
+        
     }
 
     /**
@@ -119,6 +117,17 @@ class CustomerController extends Controller
      */
     public function destroy($id)
     {
-        //
+        Customer::where('id',$id)->delete();
+        return redirect()->back()->with('success', 'Customer deleted successfully!');
+    }
+
+    public function changeStatus(Request $request)
+    {
+       
+        $customer = Customer::find($request->id);
+        $customer->status = $request->status;
+        $customer->save();
+  
+        return response()->json(['success'=>'Status change successfully.']);
     }
 }

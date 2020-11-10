@@ -1,4 +1,4 @@
-@extends('layouts.vertical', ['title' => 'Tasks'])
+@extends('layouts.vertical', ['title' => 'Customer'])
 
 @section('css')
 <link href="{{asset('assets/libs/flatpickr/flatpickr.min.css')}}" rel="stylesheet" type="text/css" />
@@ -15,39 +15,26 @@
 <link href="{{asset('assets/libs/clockpicker/clockpicker.min.css')}}" rel="stylesheet" type="text/css" />
 <link href="{{asset('assets/libs/bootstrap-datepicker/bootstrap-datepicker.min.css')}}" rel="stylesheet"
     type="text/css" />
-    <link href="{{asset('assets/libs/dropzone/dropzone.min.css')}}" rel="stylesheet" type="text/css" />
-    <link href="{{asset('assets/libs/dropify/dropify.min.css')}}" rel="stylesheet" type="text/css" />
 
-<style>
-.newAdd{
-    margin-top: 16%;
-}
-.show{
-    display: none;
-}
-.rec{
-    margin-bottom: 7px;
-}
-</style>
+
 
 
 @endsection
 
 @section('content')
 <div class="container-fluid">
-
     <div class="row">
         <div class="col-md-12">
             <div class="page-title-box">
-                <h4 class="page-title">Tasks</h4>
+                <h4 class="page-title">Pricing Rules</h4>
             </div>
         </div>
     </div>
-
-    <form id="task_form" action="{{ route('tasks.store') }}" method="POST" class="dropzone border-0" id="myAwesomeDropzone" data-plugin="dropzone" data-previews-container="#file-previews"
-                            data-upload-preview-template="#uploadPreviewTemplate">
-       @include('tasks.task-form')
-    </form>
+    {!! Form::model($customer, ['route' => ['customer.update',$customer->id]]) !!}
+    {{ method_field('PATCH') }}
+      @include('Customer.customer-form')
+    {!! Form::close() !!}
+       
 </div>
 @endsection
 
@@ -75,17 +62,14 @@
 <script src="{{asset('assets/libs/bootstrap-datepicker/bootstrap-datepicker.min.js')}}"></script>
 
 <script src="{{asset('assets/js/pages/form-pickers.init.js')}}"></script>
-<script src="{{asset('assets/libs/dropzone/dropzone.min.js')}}"></script>
-    <script src="{{asset('assets/libs/dropify/dropify.min.js')}}"></script>
-
-    <!-- Page js-->
-    <script src="{{asset('assets/js/pages/form-fileuploads.init.js')}}"></script>
 
 <script>
-$(document).ready(function(){
-//   $("#hide").click(function(){
-//     $(".show").show();
-//   });
+    $('input:checkbox[name="is_default"]').change(
+function(){
+    if ($(this).is(':checked')) 
+        $('.temp').hide();
+    else
+    $('.temp').show();
 });
 </script>
 @endsection

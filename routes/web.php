@@ -63,6 +63,7 @@ Route::group(['prefix' => '/godpanel'], function () {
 	// Route::resource('client','ClientController');
 	Route::resource('agent', 'AgentController');
 	Route::resource('customer', 'CustomerController');
+	Route::get('changeStatus', 'CustomerController@changeStatus');
 	Route::resource('tag', 'TagController');
 	Route::get('tag/{id}/{type}/edit', 'TagController@edit')->name('tag.edit');
 	Route::delete('tag/{id}/{type}', 'TagController@destroy')->name('tag.destroy');
