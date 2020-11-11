@@ -3,9 +3,8 @@
 
     <div class="col-md-6">
         <div class="card-box">
-            <h4 class="header-title mb-3"></h4>
+            <h4 class="header-title mb-3">Customer</h4>
             @csrf
-
             <div class="row">
                 <div class="col-md-8">
                     <div class="form-group" id="nameInput">
@@ -18,17 +17,17 @@
                     </div>
                 </div>
                 <div class="col-md-4">
-                    <div class="form-group" id="nameInput">
-                    <a href="#"  class=" form-control btn btn-blue waves-effect waves-light newAdd"><i class="mdi mdi-plus-circle mr-1"></i>Add Customer</a>
+                    <div class="form-group" id="AddressInput">
+                    <a href="#" class=" form-control btn btn-blue waves-effect waves-light newAdd"><i class="mdi mdi-plus-circle mr-1" ></i>Add Customer</a>
 
                     </div>
                 </div>
 
             </div>
 
-            <div class="row show">
+            <div class="row newcus shows">
                  <div class="col-md-4">
-                    <div class="form-group" id="nameInput">
+                    <div class="form-group" id="">
                         {!! Form::text('name', null, ['class' => 'form-control','placeholder'=> 'Name']) !!}
                         <span class="invalid-feedback" role="alert">
                             <strong></strong>
@@ -37,7 +36,7 @@
                     </div>
                 </div>
                 <div class="col-md-4">
-                    <div class="form-group" id="nameInput">
+                    <div class="form-group" id="">
                         {!! Form::text('email', null, ['class' => 'form-control','placeholder'=> 'Email']) !!}
                         <span class="invalid-feedback" role="alert">
                             <strong></strong>
@@ -46,7 +45,7 @@
                     </div>
                 </div>
                 <div class="col-md-4">
-                    <div class="form-group" id="nameInput">
+                    <div class="form-group" id="">
                         {!! Form::text('phone_number', null, ['class' => 'form-control','placeholder'=> 'Phone Number']) !!}
                         <span class="invalid-feedback" role="alert">
                             <strong></strong>
@@ -55,19 +54,22 @@
                     </div>
                 </div>
             </div>
-
+            <h4 class="header-title mb-3">Task</h4>
             <div class="row">
                  <div class="col-md-6">
-                    <div class="form-group" id="typeInput">
-                        {!! Form::select('status',['pickup' => 'Pickup','drop' => 'Drop','appointment'=> 'Appointment'],null,['class' => 'selectpicker']) !!}
-                        <span class="invalid-feedback" role="alert">
-                            <strong></strong>
-                        </span>
+                    <div class="form-group mb-3">
+                        <select class="form-control" id="task_type" name="location_accuracy">
+                           
+                                <option value="1">Pickup</option>
+                                <option value="2">Drop</option>
+                                <option value="3">Appintment</option>
+                           
+                        </select>
                     </div>
-                </div>
+                 </div>   
                 <div class="col-md-6">
                     <div class="form-group" id="make_modelInput">
-                        {!! Form::text('to_address', null, ['class' => 'form-control','placeholder'=> 'Appointment Date','id'=>'datetime-datepicker']) !!}
+                        {!! Form::text('appointment_date', null, ['class' => 'form-control appointment_date','placeholder'=> 'Appointment Date','id'=>'datetime-datepicker']) !!}
                         <span class="invalid-feedback" role="alert">
                             <strong></strong>
                         </span>
@@ -78,7 +80,9 @@
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-group" id="typeInput">
-                    {!! Form::textarea('address', null, ['class' => 'form-control','placeholder'=> 'Address','rows' => 6, 'cols' => 40]) !!}
+                    {!! Form::text('short_name', null, ['class' => 'form-control address','placeholder'=> 'Address Short Name',]) !!}
+                    {!! Form::textarea('address', null, ['class' => 'form-control address','placeholder'=> 'Full Address','rows'=>2,]) !!}
+                    {!! Form::text('post_code', null, ['class' => 'form-control address','placeholder'=> 'Post Code',]) !!}
                         <span class="invalid-feedback" role="alert">
                             <strong></strong>
                         </span>
@@ -89,18 +93,18 @@
                     <label for="title" class="control-label">Home</label>
                                     <div class="custom-control custom-radio">
                                         <input type="radio" id="customRadio1" name="customRadio" class="custom-control-input">
-                                        <label class="custom-control-label" for="customRadio1">Toggle this custom radio</label>
+                                        <label class="custom-control-label" for="customRadio1">Phase 8 mohali punjab,14006</label>
                                     </div>
                                     <label for="title" class="control-label mt-2">Office</label>
                                     <div class="custom-control custom-radio">
                                         <input type="radio" id="customRadio2" name="customRadio" class="custom-control-input">
-                                        <label class="custom-control-label" for="customRadio2">Or toggle this other custom radio</label>
+                                        <label class="custom-control-label" for="customRadio2">Phase 10 mohali punjab,14006</label>
                                     </div>
                                 </div>
                     
                 </div>
             </div>
-
+            <h4 class="header-title mb-3">Meta Data</h4>
             <div class="row">
                 <div class="col-md-6">
                 <div class="form-group" id="make_modelInput">
@@ -136,8 +140,8 @@
                             </div>
 
                             <div class="dz-message needsclick">
-                                <i class="h1 text-muted dripicons-cloud-upload"></i>
-                                <h3>Drop files here or click to upload.</h3>
+                                <i class="h1 text-muted dripicons-cloud-upload newchnage"></i>
+                                <h3>Drop Task Images here</h3>
                             </div>
                         </form>
 
@@ -169,23 +173,79 @@
                 </div>
             </div>
         </div>
+        <h4 class="header-title mb-3">Allocation</h4>
+        <div class="row my-3" id="rediodiv">
+        <div class="col-md-4 padd">
+            <div class="custom-control custom-radio custom-control-inline">
+            <input type="radio" class="custom-control-input check" id="customRadio" name="example" value="Un-Assigend">
+            <label class="custom-control-label" for="customRadio">Un-Assigend</label>
+            </div>
+        </div>  
+        <div class="col-md-4 padd">  
+            <div class="custom-control custom-radio custom-control-inline">
+                <input type="radio" class="custom-control-input check" id="customRadio22" name="example" value="auto">
+                <label class="custom-control-label" for="customRadio22">Auto Alloc</label>
+            </div>
+        </div>
+        <div class="col-md-4 padd">    
+            <div class="custom-control custom-radio custom-control-inline">
+            <input type="radio" class="custom-control-input check" id="customRadio33" name="example" value="Manual">
+            <label class="custom-control-label" for="customRadio33">Manual</label>
+            </div>
+        </div>
+        </div>
+        <div class="row tags">
+            <div class="col-md-6">
+                <div class="form-group mb-3">
+                    <label>Driver Tag</label>
+                    <select id="selectize-optgroup" multiple placeholder="Select tag...">
+                    <option value="">Select Tag...</option>
+                    <optgroup label="Climbing">
+                    <option value="pitons">Best</option>
+                    <option value="cams">Cams</option>
+                    <option value="nuts">Nuts</option>
+                    <option value="bolts">Bolts</option>
+                    <option value="stoppers">Stoppers</option>
+                    <option value="sling">Sling</option>
+                    </optgroup>
+        
+                    </select>
+                </div>
+            </div>
+        <div class="col-md-6">
+           <div class="form-group mb-3">
+                <label>Team Tag</label>
+                <select  name="team_tag" id="selectize-optgroups" multiple placeholder="Select tag...">
+                    <option value="">Select Tag...</option>
+                    <optgroup label="Climbing">
+                    <option value="pitons">Best</option>
+                    <option value="cams">Cams</option>
+                    <option value="nuts">Nuts</option>
+                    <option value="bolts">Bolts</option>
+                    <option value="stoppers">Stoppers</option>
+                    <option value="sling">Sling</option>
+                    </optgroup>
 
-        <div class="row my-3">
-        <div class="col-md-12">
-        <div class="custom-control custom-radio custom-control-inline">
-         <input type="radio" class="custom-control-input" id="customRadio" name="example" value="customEx">
-         <label class="custom-control-label" for="customRadio">Un-Assigend</label>
+                </select>
+            </div>
         </div>
-       <div class="custom-control custom-radio custom-control-inline">
-        <input type="radio" class="custom-control-input" id="customRadio22" name="example" value="customEx">
-        <label class="custom-control-label" for="customRadio22">Auto Alloc</label>
-      </div>
-     <div class="custom-control custom-radio custom-control-inline">
-      <input type="radio" class="custom-control-input" id="customRadio33" name="example" value="customEx">
-      <label class="custom-control-label" for="customRadio33">Manual</label>
+        
     </div>
-        </div>
-        </div>
+
+    <div class="row drivers">
+        <div class="col-md-12">
+           <div class="form-group mb-3">
+            <label>Drivers</label>
+               <select class="form-control" id="location_accuracy" name="location_accuracy">
+                  
+                       <option value="">New Driver</option>
+                       <option value="">Driver One</option>
+                       <option value="">My Driver</option>
+                  
+               </select>
+           </div>
+        </div>   
+   </div>
             
             <div class="row">
                 <div class="col-md-5">

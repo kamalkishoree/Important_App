@@ -504,7 +504,7 @@
                     </div>
                 </li> --}}
 
-                <!-- <li class="menu-title mt-2">Components</li>
+                <li class="menu-title mt-2">Components</li>
 
                 <li>
                     <a href="#sidebarBaseui" data-toggle="collapse">
@@ -819,7 +819,7 @@
                                 </div>
                             </li>
 
-                            <!-- <li>
+                             <li>
                                 <a href="#sidebarMultilevel3" data-toggle="collapse">
                                     Third Level <span class="menu-arrow"></span>
                                 </a>
@@ -845,10 +845,10 @@
                                         </li>
                                     </ul>
                                 </div>
-                            </li> -->
+                            </li>
                         </ul>
                     </div>
-                </li> -->
+                </li>
                 @endif
             </ul>
 
