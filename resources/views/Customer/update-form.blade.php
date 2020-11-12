@@ -46,11 +46,12 @@
             </div>
             <div>
              <div class="addapp"> 
-                {!! Form::label('title', 'Address',['class' => 'control-label']) !!} 
+                {!! Form::label('title', 'Address',['class' => 'control-label']) !!}
+                @foreach ($customer->location as $item)
                 <div class="row address">
                     <div class="col-md-4">
                         <div class="form-group" id=""> 
-                            <input type="text" name="short_name[]" class="form-control" placeholder="Short Name">
+                        <input type="text" name="short_name[]" class="form-control" placeholder="Short Name" value="{{$item->short_name}}">
                             <span class="invalid-feedback" role="alert">
                                 <strong></strong>
                             </span>
@@ -58,7 +59,7 @@
                     </div>
                     <div class="col-md-4">
                         <div class="form-group" id="">
-                            <input type="text" name="address[]" class="form-control" placeholder="Address">
+                            <input type="text" name="address[]" class="form-control" placeholder="Address" value="{{$item->address}}">
                             <span class="invalid-feedback" role="alert">
                                 <strong></strong>
                             </span>
@@ -66,13 +67,14 @@
                     </div>
                     <div class="col-md-4">
                         <div class="form-group" id="">
-                            <input type="text" name="post_code[]" class="form-control" placeholder="Post Code">
+                            <input type="text" name="post_code[]" class="form-control" placeholder="Post Code" value="{{$item->post_code}}">
                             <span class="invalid-feedback" role="alert">
                                 <strong></strong>
                             </span>
                         </div>
                     </div>
-                </div>
+                </div> 
+                @endforeach  
              </div>
              <div class="row">
                 <div class="col-md-4">

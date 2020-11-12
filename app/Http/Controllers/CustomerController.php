@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Model\Customer;
 use App\Model\TagCustomer;
+use App\Model\Location;
 
 class CustomerController extends Controller
 {
@@ -39,6 +40,9 @@ class CustomerController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255'],
             'phone_number' => ['required'],
+            'short_name'   => ['required'],
+            'address'   => ['required'],
+            'post_code'   => ['required'],
         ]);
     }
 
@@ -58,7 +62,17 @@ class CustomerController extends Controller
             'phone_number' => $request->phone_number,
         ];
         $customer = Customer::create($data);
-       
+        foreach ($request->short_name as $key => $value) {
+            if(isset($value) && $value != null){
+                $datas = [
+                    'short_name' => $value,
+                    'address'    => $request->address[$key],
+                    'post_code'  => $request->post_code[$key],
+                    'created_by' => $customer->id,
+                ];
+                $Loction = Location::create($datas);
+            }
+        }
         return redirect()->route('customer.index')->with('success', 'Customer Added successfully!');
       
     }
@@ -82,7 +96,7 @@ class CustomerController extends Controller
      */
     public function edit($id)
     {
-        $customer = Customer::where('id',$id)->first();
+        $customer = Customer::where('id',$id)->with('location')->first();
         return view('customer/update-customer')->with(['customer'=>$customer]);
     }
 
@@ -104,6 +118,20 @@ class CustomerController extends Controller
         ];
 
         $cost = Customer::where('id', $id)->update($data);
+        $check = Location::where('created_by',$id)->delete();
+        foreach ($request->short_name as $key => $value) {
+            if(isset($value) && $value != null){
+                $datas = [
+                    'short_name' => $value,
+                    'address'    => $request->address[$key],
+                    'post_code'  => $request->post_code[$key],
+                    'created_by' => $id,
+                ];
+                $Loction = Location::create($datas);
+            }
+            
+           
+        }
         return redirect()->route('customer.index')->with('success', 'Customer Updated successfully!');
 
         

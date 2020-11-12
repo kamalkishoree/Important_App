@@ -80,6 +80,7 @@ Route::group(['prefix' => '/godpanel'], function () {
 	Route::resource('manager', 'ManagerController');
 	Route::resource('plan-billing', 'PlanBillingController');
 	Route::resource('tasks','TaskController');
+	Route::post('search/customer', 'TaskController@search')->name('search');
 
 	Route::get('{first}/{second}/{third}', 'RoutingController@thirdLevel')->name('third');
 	Route::get('{first}/{second}', 'RoutingController@secondLevel')->name('second');
@@ -95,7 +96,7 @@ Route::group(['prefix' => '/godpanel'], function () {
 
 	//dummy ajax
 
-	Route::post('geo/ajax', 'GeoFenceController@dummy')->name('dummy');
+	
 	});
 	});
 

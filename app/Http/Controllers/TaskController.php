@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Model\Task;
+use App\Model\Location;
+use App\Model\Customer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -127,5 +129,24 @@ class TaskController extends Controller
     {
         Task::where('id',$id)->delete();
         return redirect()->back()->with('success', 'Task deleted successfully!');
+    }
+
+    public function search(Request $request)
+    {
+       
+        $search = $request->search;
+
+      if($search == ''){
+         $employees = Customer::orderby('name','asc')->select('id','name')->limit(10)->get();
+      }else{
+         $employees = Customer::orderby('name','asc')->select('id','name')->where('name', 'like', '%' .$search . '%')->limit(10)->get();
+      }
+
+      $response = array();
+      foreach($employees as $employee){
+         $response[] = array("value"=>$employee->id,"label"=>$employee->name);
+      }
+
+      return response()->json($response);
     }
 }

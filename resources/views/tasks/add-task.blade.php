@@ -1,5 +1,4 @@
 @extends('layouts.vertical', ['title' => 'Tasks'])
-
 @section('css')
 <link href="{{asset('assets/libs/flatpickr/flatpickr.min.css')}}" rel="stylesheet" type="text/css" />
 <link href="{{asset('assets/libs/mohithg-switchery/mohithg-switchery.min.css')}}" rel="stylesheet" type="text/css" />
@@ -17,6 +16,7 @@
     type="text/css" />
     <link href="{{asset('assets/libs/dropzone/dropzone.min.css')}}" rel="stylesheet" type="text/css" />
     <link href="{{asset('assets/libs/dropify/dropify.min.css')}}" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
 
     
 
@@ -82,7 +82,7 @@
 <script src="{{asset('assets/libs/bootstrap-touchspin/bootstrap-touchspin.min.js')}}"></script>
 <script src="{{asset('assets/libs/bootstrap-maxlength/bootstrap-maxlength.min.js')}}"></script>
 <script src="{{asset('assets/libs/devbridge-autocomplete/devbridge-autocomplete.min.js')}}"></script>
-<script src="{{asset('assets/libs/jquery-mockjax/jquery-mockjax.min.js')}}"></script>
+{{-- <script src="{{asset('assets/libs/jquery-mockjax/jquery-mockjax.min.js')}}"></script> --}}
 <script src="{{asset('assets/libs/sweetalert2/sweetalert2.min.js')}}"></script>
 
 <!-- Plugins js-->
@@ -97,7 +97,7 @@
 <script src="{{asset('assets/js/pages/form-pickers.init.js')}}"></script>
 <script src="{{asset('assets/libs/dropzone/dropzone.min.js')}}"></script>
     <script src="{{asset('assets/libs/dropify/dropify.min.js')}}"></script>
-
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
     <!-- Page js-->
     <script src="{{asset('assets/js/pages/form-fileuploads.init.js')}}"></script>
 
@@ -139,7 +139,40 @@ $(document).ready(function(){
             }
         });
 
+    var CSRF_TOKEN = $("input[name=_token]").val();;
+    
+
+      $( "#search" ).autocomplete({
+        source: function( request, response ) {
+          // Fetch data
+          $.ajax({
+            url:"{{route('search')}}",
+            type: 'post',
+            dataType: "json",
+            data: {
+               _token: CSRF_TOKEN,
+               search: request.term
+            },
+            success: function( data ) {
+               response( data );
+            }
+          });
+        },
+        select: function (event, ui) {
+           // Set selection
+           $('#search').val(ui.item.label); // display the selected text
+           $('#cusid').val(ui.item.value); // save selected id to input
+           return false;
+        }
+      });
+
+    
+
 });
+
+
+
+
 
 
 </script>

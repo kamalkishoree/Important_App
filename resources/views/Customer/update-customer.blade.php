@@ -32,7 +32,7 @@
     </div>
     {!! Form::model($customer, ['route' => ['customer.update',$customer->id]]) !!}
     {{ method_field('PATCH') }}
-      @include('Customer.customer-form')
+      @include('Customer.update-form')
     {!! Form::close() !!}
        
 </div>
@@ -64,12 +64,12 @@
 <script src="{{asset('assets/js/pages/form-pickers.init.js')}}"></script>
 
 <script>
-    $('input:checkbox[name="is_default"]').change(
-function(){
-    if ($(this).is(':checked')) 
-        $('.temp').hide();
-    else
-    $('.temp').show();
-});
+
+
+    
+      $('#adds a').click(function() {
+        $('.addapp:last').after('<div class="row address"><div class="col-md-4"><div class="form-group" id=""><input type="text"  class="form-control" placeholder="Short Name" name="short_name[]"></div></div><div class="col-md-4"><div class="form-group" id=""><input type="text"  class="form-control" placeholder="Address" name="address[]"></div></div><div class="col-md-4"><div class="form-group" id=""><input type="text"  class="form-control" placeholder="Post Code" name="post_code[]"></div></div></div>');
+        });
+
 </script>
 @endsection

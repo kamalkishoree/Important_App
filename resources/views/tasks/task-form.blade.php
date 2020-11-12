@@ -9,10 +9,8 @@
                 <div class="col-md-8">
                     <div class="form-group" id="nameInput">
                         {!! Form::label('title', 'Search',['class' => 'control-label']) !!}
-                        {!! Form::text('name', null, ['class' => 'form-control','placeholder'=> 'search Customer']) !!}
-                        <span class="invalid-feedback" role="alert">
-                            <strong></strong>
-                        </span>
+                        {!! Form::text('search', null, ['class' => 'form-control','placeholder'=> 'search Customer','id'=>'search']) !!}
+                        <input type="hidden" id='cusid' name="" readonly>
 
                     </div>
                 </div>
