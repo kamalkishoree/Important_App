@@ -97,7 +97,7 @@ class CustomerController extends Controller
     public function edit($id)
     {
         $customer = Customer::where('id',$id)->with('location')->first();
-        return view('customer/update-customer')->with(['customer'=>$customer]);
+        return view('Customer/update-customer')->with(['customer'=>$customer]);
     }
 
     /**
