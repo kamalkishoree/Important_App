@@ -74,40 +74,37 @@
                         <table class="table table-striped dt-responsive nowrap w-100"  id="agents-datatable">
                             <thead>
                                 <tr>
-                                    <th>Name</th>
-                                    <th>From Address</th>
-                                    <th>To Address</th>
-                                    <th>status</th>
-                                    <th>priority</th>
-                                    <th>Expected Delivery Date</th>
+                                    <th>Task Id</th>
+                                    <th>Customer</th>
+                                    <th>Order Id</th>
+                                    <th>Driver</th>
+                                    <th>Create Time</th>
+                                    <th>Pricing Rule</th>
                                     <th style="width: 85px;">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach($tasks as $task)
                                 <tr>
-                                    <td class="table-user">
-                                        <a href="javascript:void(0);"
-                                            class="text-body font-weight-semibold">{{$task->name}}</a>
+                                    
+                                    <td>
+                                        {{$task->id}}
                                     </td>
                                     <td>
-                                        {{$task->from_address}}
+                                        {{$task->order->customer->name}}
                                     </td>
                                     <td>
-                                        {{$task->to_address}}
+                                        {{$task->order->id}}
                                     </td>
                                     <td>
-                                        {{$task->status}}
+                                        UnAssind
                                     </td>
                                     <td>
-                                        {{$task->priority}}
+                                        {{$task->created_at}}
                                     </td>
                                     <td>
-                                        {{$task->expected_delivery_date}}
+                                        Not Alloted
                                     </td>
-                                    <!-- <td>
-                                        <span class="badge bg-soft-success text-success">Active</span>
-                                    </td> -->
 
                                     <td>
                                         <div class="form-ul" style="width: 60px;">

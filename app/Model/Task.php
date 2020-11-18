@@ -8,6 +8,12 @@ class Task extends Model
 {
 
     protected $fillable = [
-        'name','from_address','to_address','status','priority','expected_delivery_date'
+        'order_id','task_type_id','location_id','pricing_rule_id','appointment_duration','dependent_task_id'
     ];
+
+
+    public function order(){
+        return $this->hasOne('App\Model\Order', 'id', 'order_id');
+        
+    }
 }

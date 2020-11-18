@@ -46,6 +46,44 @@
 .tags{
     display: none;
 }
+#typeInputss {
+    overflow-y: auto;
+    height: 142px;
+}
+
+
+
+
+input[type="file"] {
+  display: block;
+}
+.imageThumb {
+  max-height: 75px;
+  border: 2px solid;
+  padding: 1px;
+  cursor: pointer;
+  width: 77px;
+}
+.pip {
+  display: inline-block;
+  margin: 10px 10px 0 0;
+}
+.remove {
+  display: block;
+  background: #444;
+  border: 1px solid black;
+  color: white;
+  text-align: center;
+  cursor: pointer;
+}
+.remove:hover {
+  background: white;
+  color: black;
+}
+.upload{
+margin-bottom: 20px;
+}
+
 
 </style>
 
@@ -64,7 +102,7 @@
     </div>
 
     <form id="task_form" action="{{ route('tasks.store') }}" method="POST" class="border-0" id="myAwesomeDropzone" data-plugin="dropzone" data-previews-container="#file-previews"
-                            data-upload-preview-template="#uploadPreviewTemplate">
+                            data-upload-preview-template="#uploadPreviewTemplate" enctype="multipart/form-data">
        @include('tasks.task-form')
     </form>
 </div>
@@ -108,10 +146,13 @@ $(document).ready(function(){
     $(".shows").hide();
     $("#AddressInput a").click(function() {
         $(".shows").show();
+        $(".append").hide();
     });
     
     $("#nameInput").keyup(function() {
         $(".shows").hide();
+        $(".oldhide").show();
+        $(".append").hide();
    });
    $( "#myselect" ).val();
    $(".appointment_date").prop('disabled', true);
@@ -139,7 +180,7 @@ $(document).ready(function(){
             }
         });
 
-    var CSRF_TOKEN = $("input[name=_token]").val();;
+    var CSRF_TOKEN = $("input[name=_token]").val();
     
 
       $( "#search" ).autocomplete({
@@ -162,18 +203,72 @@ $(document).ready(function(){
            // Set selection
            $('#search').val(ui.item.label); // display the selected text
            $('#cusid').val(ui.item.value); // save selected id to input
+           add_event(ui.item.value);
+           $(".oldhide").hide();
            return false;
         }
       });
+      
+      function add_event(ids) {
+         
+      $.ajax({
+            url:"{{route('search')}}",
+            type: 'post',
+            dataType: "json",
+            data: {
+               _token: CSRF_TOKEN,
+               id: ids
+            },
+            success: function( data ) {
+                var array = data;
+                jQuery.each( array, function( i, val ) {
+                    $("#typeInputss").append('<div class="append"><label for="title" class="control-label mt-2">' + val.short_name + '</label><div class="custom-control custom-radio"><input type="radio" id="' + val.id + '" name="old_address_id" value="'+ val.id +'" class="custom-control-input"><label class="custom-control-label" for="' + val.id + '">' + val.address + '</label></div></div>');
+                });
+              
+            }
+          });
+      }
 
-    
+
+      if (window.File && window.FileList && window.FileReader) {
+    $("#files").on("change", function(e) {
+      var files = e.target.files,
+        filesLength = files.length;
+      for (var i = 0; i < filesLength; i++) {
+        var f = files[i]
+        var fileReader = new FileReader();
+        fileReader.onload = (function(e) {
+          var file = e.target;
+          $("<span class=\"pip\">" +
+            "<img class=\"imageThumb\" src=\"" + e.target.result + "\" title=\"" + file.name + "\"/>" +
+            "<br/><span class=\"remove\">X</span>" +
+            "</span>").insertAfter("#files");
+          $(".remove").click(function(){
+            $(this).parent(".pip").remove();
+          });
+          
+          // Old code here
+          /*$("<img></img>", {
+            class: "imageThumb",
+            src: e.target.result,
+            title: file.name + " | Click to remove"
+          }).insertAfter("#files").click(function(){$(this).remove();});*/
+          
+        });
+        fileReader.readAsDataURL(f);
+      }
+      console.log(files);
+    });
+  } else {
+    alert("Your browser doesn't support to File API")
+  }
+
+
+      
+
+
+      
 
 });
-
-
-
-
-
-
 </script>
 @endsection
