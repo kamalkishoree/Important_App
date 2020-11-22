@@ -12,4 +12,13 @@ class Order extends Model
         return $this->hasOne('App\Model\Customer', 'id', 'customer_id');
         
     }
+    public function location(){
+        return $this->hasMany('App\Model\Location', 'created_by', 'customer_id');
+        
+    }
+
+    public function task(){
+        return $this->hasOne('App\Model\Task', 'order_id', 'id');
+        
+    }
 }

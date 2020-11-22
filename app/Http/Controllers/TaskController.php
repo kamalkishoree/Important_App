@@ -7,6 +7,8 @@ use App\Model\Location;
 use App\Model\Customer;
 use App\Model\TagsForAgent;
 use App\Model\TagsForTeam;
+use App\Model\TaskDriverTag;
+use App\Model\TaskTeamTag;
 use Illuminate\Http\Request;
 use App\Model\Agent;
 use App\Model\Order;
@@ -69,7 +71,27 @@ class TaskController extends Controller
         }else{
             $cus_id = $request->ids;
         }
-       
+        $images = [];
+        $last = '';
+        if(isset($request->files)){
+            
+            $files = $request->file('files');
+            foreach ($files as $key => $value) {
+               
+                $file = $value;
+                $filenameWithExt = $value->getClientOriginalName();
+                $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME); 
+                $fileNameToStore = $filename.'_'.time().'.'.$file->getClientOriginalExtension();  
+                $file->move(public_path().'/taskimage',$fileNameToStore);
+                $getFileName = $fileNameToStore;
+                array_push($images, $getFileName);
+                $last = implode(",",$images);
+
+
+            }
+            
+        }
+
         if(!isset($request->old_address_id)){
                 $loc = [
                     'short_name' => $request->short_name,
@@ -89,6 +111,7 @@ class TaskController extends Controller
             'Recipient_email'            => $request->recipient_email,
             'task_description'           => $request->task_description,
             'driver_id'                  => $request->agent,
+            'images_array'               => $last
         ];
         $orders = Order::create($order);
 
@@ -97,10 +120,22 @@ class TaskController extends Controller
             'order_id'                   => $orders->id,
             'task_type_id'               => $request->task_type_id,
             'location_id'                => $loc_id,
+            'allocation_type'            => $request->allocation_type
         ];
 
         $task = Task::create($data);
 
+        if(isset($request->allocation_type) && $request->allocation_type === 'auto' ){
+            if(isset($request->team_tag)){
+                $task->teamtags()->sync($request->team_tag);
+        
+            }
+            if(isset($request->agent_tag)){
+                $task->drivertags()->sync($request->agent_tag);
+        
+            }
+        }
+        
 
         return redirect()->route('tasks.index')->with('success', 'Task Added successfully!');
     }
@@ -124,8 +159,14 @@ class TaskController extends Controller
      */
     public function edit($id)
     {
-        $task = Task::where('id',$id)->first();
-        return view('tasks/update-task')->with(['task'=>$task]);
+        $task = Order::where('id',$id)->with(['customer','location','task'])->first();
+        $tag = Task::with(['teamtags','drivertags'])->where('id',$id)->first();
+        dd($tag);
+        $teamTag    = TagsForTeam::all();
+        $agentTag   = TagsForAgent::all();
+        $agents     = Agent::orderBy('created_at', 'DESC')->get();
+        $array      = explode(",",$task->images_array);
+        return view('tasks/update-task')->with(['task'=>$task,'teamTag'=>$teamTag,'agentTag'=>$agentTag,'agents' => $agents,'images' =>$array ]);
     }
 
     /**

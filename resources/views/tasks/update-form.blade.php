@@ -9,8 +9,8 @@
                 <div class="col-md-8">
                     <div class="form-group" id="nameInput">
                         {!! Form::label('title', 'Search',['class' => 'control-label']) !!}
-                        {!! Form::text('search', null, ['class' => 'form-control','placeholder'=> 'search Customer','id'=>'search']) !!}
-                        <input type="hidden" id='cusid' name="ids" readonly>
+                        <input type="text" id='search' class="form-control" name="search" placeholder="search Customer" value="{{$task->customer->name}}">
+                        <input type="hidden" id='cusid' name="ids" value="{{$task->customer->id}}" readonly>
 
                     </div>
                 </div>
@@ -58,9 +58,9 @@
                     <div class="form-group mb-3">
                         <select class="form-control" id="task_type" name="task_type_id">
                            
-                                <option value="1">Pickup</option>
-                                <option value="2">Drop</option>
-                                <option value="3">Appintment</option>
+                                <option value="1" {{$task->task->task_type_id == 1 ? 'selected' :''}}>Pickup</option>
+                                <option value="2" {{$task->task->task_type_id == 2 ? 'selected' :''}}>Drop</option>
+                                <option value="3" {{$task->task->task_type_id == 3 ? 'selected' :''}}>Appintment</option>
                            
                         </select>
                     </div>
@@ -87,22 +87,24 @@
                     </div>
                 </div>
                 <div class="col-md-6">
+                    
                     <div class="form-group" id="typeInputss">
-                        <h5 class="oldhide">Select Customer For Saved Address</h5>
-                        
-                    </div>
+                        @foreach ($task->location as $item)
+                    <div class="append"><label for="title" class="control-label mt-2">{{$item->short_name}}</label><div class="custom-control custom-radio"><input type="radio" id="{{$item->id}}" name="old_address_id" value="{{$item->id}}" {{$task->task->location_id == $item->id ? 'checked':'' }} class="custom-control-input"><label class="custom-control-label" for="{{$item->id}}">{{$item->address}}</label></div></div>
+                        @endforeach
+                    </div>  
                 </div>
             </div>
             <h4 class="header-title mb-3">Meta Data</h4>
             <div class="row">
                 <div class="col-md-6">
                 <div class="form-group" id="make_modelInput">
-                        {!! Form::text('recipient_phone', null, ['class' => 'form-control rec','placeholder'=> 'Recipient Phone']) !!}
-                        {!! Form::email('recipient_email', null, ['class' => 'form-control rec','placeholder'=> 'Recipient Email']) !!}
+                <input type="text" class="form-control rec" name="recipient_phone" placeholder="recipient_phone" value="{{$task->recipient_phone}}">
+                        <input type="email" class="form-control rec" name="recipient_email" placeholder="recipient_email" value="{{$task->Recipient_email}}">
                         <span class="invalid-feedback" role="alert">
                             <strong></strong>
                         </span>
-                    </div>
+                </div>
 
                 </div>
                 <div class="col-md-6">
@@ -130,7 +132,14 @@
                             <span>Select Task Images</span>
                             <input type="file" name="files[]" id="files" multiple accept="image/jpeg, image/png, image/gif,"><br />
                         </span>
-                        <output id="Filelist"></output>
+                        <output id="Filelist">
+                            <ul class="thumb-Images" id="imgList">
+                                @foreach ($images as $item)
+                            <li><div class="img-wrap"> <span class="close">×</span><img class="thumb" src="{{ asset('taskimage/'. $item .'')}}" ></div><div class="FileNameCaptionStyle"></div></li>
+                                @endforeach
+                                
+                            </ul>
+                        </output>
                     </div>
                 </div><!-- end col -->
             </div>
@@ -138,19 +147,19 @@
         <div class="row my-3" id="rediodiv">
         <div class="col-md-4 padd">
             <div class="custom-control custom-radio custom-control-inline">
-            <input type="radio" class="custom-control-input check" id="customRadio" name="allocation_type" value="Un-Assigend">
+            <input type="radio" class="custom-control-input check" id="customRadio" name="allocation_type" value="Un-Assigend" {{$task->task->allocation_type == 'Un-Assigend' ? 'checked':'' }}>
             <label class="custom-control-label" for="customRadio">Un-Assigend</label>
             </div>
         </div>  
         <div class="col-md-4 padd">  
             <div class="custom-control custom-radio custom-control-inline">
-                <input type="radio" class="custom-control-input check" id="customRadio22" name="allocation_type" value="auto">
+                <input type="radio" class="custom-control-input check" id="customRadio22" name="allocation_type" value="auto" {{$task->task->allocation_type == 'auto' ? 'checked':'' }}>
                 <label class="custom-control-label" for="customRadio22">Auto Alloc</label>
             </div>
         </div>
         <div class="col-md-4 padd">    
             <div class="custom-control custom-radio custom-control-inline">
-            <input type="radio" class="custom-control-input check" id="customRadio33" name="allocation_type" value="Manual">
+            <input type="radio" class="custom-control-input check" id="customRadio33" name="allocation_type" value="Manual" {{$task->task->allocation_type == 'Manual' ? 'checked':'' }}>
             <label class="custom-control-label" for="customRadio33">Manual</label>
             </div>
         </div>
