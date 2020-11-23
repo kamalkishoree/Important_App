@@ -52,7 +52,7 @@ class DatabaseDynamic
               if(isset($client_name)){
                 Session::put('agent_name', $client_name->agent_name);
               }else{
-                Session::put('agent_name', 'Agentsss');
+                Session::put('agent_name', 'Agent');
               }
               
           }

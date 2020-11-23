@@ -41,7 +41,20 @@
                         <i data-feather="airplay"></i>
                         <span> Dashboard </span>
                     </a>
+                </li> 
+                <li>   
+                    <a href="{{route('customer.index')}}">
+                        <i data-feather="users"></i>
+                        <span> Customers </span>
+                    </a>
                 </li>
+                <li>   
+                    <a href="{{route('tasks.index')}}">
+                        <i data-feather="package"></i>
+                        <span> Tasks </span>
+                    </a>
+                </li>    
+                
 
 
                 
@@ -113,14 +126,14 @@
                     </a>
                 </li>
 
-                <li>
-                    <a href="{{route('tasks.index')}}">
+                {{-- <li>
+                    <a href="#">
                         <i data-feather="package"></i>
                         <span> Tasks </span>
                     </a>
                 </li>
                 
-                {{-- <li>
+                <li>
                     <a href="{{route('tag.index')}}">
                         <i data-feather="rss"></i>
                         <span> Tags </span>
@@ -489,7 +502,7 @@
                             </li>
                         </ul>
                     </div>
-                </li>
+                </li> --}}
 
                 <li class="menu-title mt-2">Components</li>
 
@@ -639,7 +652,7 @@
                             </li>
                         </ul>
                     </div>
-                </li>
+                </li> 
 
                 <li>
                     <a href="#sidebarForms" data-toggle="collapse">
@@ -806,7 +819,7 @@
                                 </div>
                             </li>
 
-                            <li>
+                             <li>
                                 <a href="#sidebarMultilevel3" data-toggle="collapse">
                                     Third Level <span class="menu-arrow"></span>
                                 </a>

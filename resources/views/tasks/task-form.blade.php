@@ -3,77 +3,106 @@
 
     <div class="col-md-6">
         <div class="card-box">
-            <h4 class="header-title mb-3">Add Task</h4>
+            <h4 class="header-title mb-3">Customer</h4>
             @csrf
-
             <div class="row">
-                <div class="col-md-6">
+                <div class="col-md-8">
                     <div class="form-group" id="nameInput">
-                        {{-- {!! Form::label('title', 'Search Customer',['class' => 'control-label',]) !!} --}}
-                        {!! Form::text('name', null, ['class' => 'form-control','placeholder'=> 'Type here for search']) !!}
-                        <span class="invalid-feedback" role="alert">
-                            <strong></strong>
-                        </span>
+                        {!! Form::label('title', 'Search',['class' => 'control-label']) !!}
+                        {!! Form::text('search', null, ['class' => 'form-control','placeholder'=> 'search Customer','id'=>'search']) !!}
+                        <input type="hidden" id='cusid' name="ids" readonly>
 
                     </div>
                 </div>
-                <div class="col-md-6">
-                    <div class="form-group" id="nameInput">
-                       <button class="btn btn-blue waves-effect waves-light addnew " >Add Customer</button>
+                <div class="col-md-4">
+                    <div class="form-group" id="AddressInput">
+                    <a href="#" class=" form-control btn btn-blue waves-effect waves-light newAdd"><i class="mdi mdi-plus-circle mr-1" ></i>Add Customer</a>
 
                     </div>
                 </div>
 
             </div>
 
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="form-group" id="make_modelInput">
-                        {{-- {!! Form::label('title', 'Name',['class' => 'control-label']) !!} --}}
-                        {!! Form::text('name', null, ['class' => 'form-control','placeholder'=> 'Name Here']) !!}
+            <div class="row newcus shows">
+                 <div class="col-md-4">
+                    <div class="form-group" id="">
+                        {!! Form::text('name', null, ['class' => 'form-control','placeholder'=> 'Name']) !!}
                         <span class="invalid-feedback" role="alert">
                             <strong></strong>
                         </span>
+
                     </div>
                 </div>
                 <div class="col-md-4">
-                    <div class="form-group" id="make_modelInput">
-                        {{-- {!! Form::label('title', 'Email',['class' => 'control-label']) !!} --}}
-                        {!! Form::email('email', null, ['class' => 'form-control','placeholder'=> 'Email']) !!}
+                    <div class="form-group" id="">
+                        {!! Form::text('email', null, ['class' => 'form-control','placeholder'=> 'Email']) !!}
                         <span class="invalid-feedback" role="alert">
                             <strong></strong>
                         </span>
+
                     </div>
                 </div>
                 <div class="col-md-4">
-                    <div class="form-group" id="make_modelInput">
-                        {{-- {!! Form::label('title', 'Phone_no',['class' => 'control-label']) !!} --}}
-                        {!! Form::text('from_address', null, ['class' => 'form-control','placeholder'=> 'Phone Number']) !!}
+                    <div class="form-group" id="">
+                        {!! Form::text('phone_number', null, ['class' => 'form-control','placeholder'=> 'Phone Number']) !!}
                         <span class="invalid-feedback" role="alert">
                             <strong></strong>
                         </span>
+
                     </div>
                 </div>
             </div>
+            <h4 class="header-title mb-3">Task</h4>
+            <div class="row">
+                 <div class="col-md-6">
+                    <div class="form-group mb-3">
+                        <select class="form-control" id="task_type" name="task_type_id">
+                           
+                                <option value="1">Pickup</option>
+                                <option value="2">Drop</option>
+                                <option value="3">Appintment</option>
+                           
+                        </select>
+                    </div>
+                 </div>   
+                <div class="col-md-6">
+                    <div class="form-group" id="make_modelInput">
+                        {!! Form::text('appointment_date', null, ['class' => 'form-control appointment_date','placeholder'=> 'Appointment Date','id'=>'datetime-datepicker']) !!}
+                        <span class="invalid-feedback" role="alert">
+                            <strong></strong>
+                        </span>
+                    </div>
+                    
 
-            <h4>Address Goes here</h4>
+                </div>
+            </div>
+            <h4 lass="header-title mb-3">Address</h4>
+            <span class="span1 addspan">Please select a address or create new</span>
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-group" id="typeInput">
-                        <label for="type" class="control-label">Task Type</label>
-                        <select class="selectpicker" data-style="btn-light" name="priority" id="type">
-                            <option value="low">Pickup</option>
-                            <option value="normal">Drop</option>
-                            <option value="high">Appointment</option>
-                        </select>
-                        <div class="form-group mb-3">
-                            {!! Form::label('title', 'Appointment duration',['class' => 'control-label']) !!}
-                            {!! Form::text('expected_delivery_date', null, ['class' => 'form-control']) !!}  
-                        </div>
-                        <div class="form-group mb-3">
-                            {!! Form::label('title', 'Address',['class' => 'control-label']) !!}
-                            {!! Form::text('expected_delivery_date', null, ['class' => 'form-control']) !!}  
-                        </div>
+                    {!! Form::text('short_name', null, ['class' => 'form-control address','placeholder'=> 'Address Short Name',]) !!}
+                    {!! Form::textarea('address', null, ['class' => 'form-control address','placeholder'=> 'Full Address','rows'=>2,]) !!}
+                    {!! Form::text('post_code', null, ['class' => 'form-control address','placeholder'=> 'Post Code',]) !!}
+                        <span class="invalid-feedback" role="alert">
+                            <strong></strong>
+                        </span>
+                    </div>
+
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group" id="typeInputss">
+                        <h5 class="oldhide">Select Customer For Saved Address</h5>
+                        
+                    </div>
+                </div>
+            </div>
+            <h4 class="header-title mb-3">Meta Data</h4>
+            <div class="row">
+                <div class="col-md-6">
+                <div class="form-group" id="make_modelInput">
+                        {!! Form::text('recipient_phone', null, ['class' => 'form-control rec','placeholder'=> 'Recipient Phone','required' => 'required']) !!}
+                        {!! Form::email('recipient_email', null, ['class' => 'form-control rec','placeholder'=> 'Recipient Email','required' => 'required']) !!}
                         <span class="invalid-feedback" role="alert">
                             <strong></strong>
                         </span>
@@ -82,271 +111,95 @@
                 </div>
                 <div class="col-md-6">
                     <div class="form-group" id="colorInput">
-                        <div class="form-group mb-3">
-                            {!! Form::label('title', 'Saved Address',['class' => 'control-label']) !!}
-                            {!! Form::textarea('expected_delivery_date', null, ['class' => 'form-control']) !!}  
-                        </div>
+
+                    <div class="form-group" id="make_modelInput">
+                        {!! Form::textarea('task_description', null, ['class' => 'form-control','placeholder'=> 'Task_description','rows' => 3, 'cols' => 40]) !!}
+                        <span class="invalid-feedback" role="alert">
+                            <strong></strong>
+                        </span>
+                    </div>
                     </div>
 
                 </div>
             </div>
-            <button type="button" class="btn btn-info waves-effect waves-light" style="margin-left: 48%;margin-bottom:20px;">Add Task</button>
-            <h4>Recipent Details Goes here</h4>
             <div class="row">
-                <div class="col-md-6">
-                    <div class="row">
-                        <div class="col-md-4 addnew">
-                            <div class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input" id="customCheck1">
-                                <label class="custom-control-label" for="customCheck1">Scheduled Date</label>
-                             </div>
-                        </div>
-                        <div class="col-md-8">
+                <div class="col-12 upload">
+                    <div class="upload">
+                        <label style="font-size: 14px;">
                             
-                                {!! Form::label('title', 'Select Data Time',['class' => 'control-label']) !!}
-                                {!! Form::text('expected_delivery_date', null, ['class' => 'form-control','id'=>'humanfd-datepicker']) !!} 
-                                <span class="invalid-feedback" role="alert">
-                                    <strong></strong>
-                                </span>
-                             
-                        </div>
-                </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group" id="colorInput">
-
-                        <div class="form-group mb-3">
-                            {!! Form::label('title', 'Recipient Phone',['class' => 'control-label']) !!}
-                            {!! Form::text('recipient_phone', null, ['class' => 'form-control','id'=>'humanfd-datepicker']) !!}  
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group" id="colorInput">
-
-                        <div class="form-group mb-3">
-                            {!! Form::label('title', 'Recipient Email',['class' => 'control-label']) !!}
-                            {!! Form::text('expected_delivery_date', null, ['class' => 'form-control','id'=>'humanfd-datepicker']) !!}  
-                        </div>
-                    </div>
-
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group" id="typeInput">
+                        </label>
                        
-                        {!! Form::label('title', 'Task Description ',['class' => 'control-label']) !!}
-                        {!! Form::text('expected_delivery_date', null, ['class' => 'form-control']) !!}
-                        <span class="invalid-feedback" role="alert">
-                            <strong></strong>
+                        <!--To give the control a modern look, I have applied a stylesheet in the parent span.-->
+                        <span class="btn btn-success fileinput-button">
+                            <span>Select Task Images</span>
+                            <input type="file" name="files[]" id="files" multiple accept="image/jpeg, image/png, image/gif,"><br />
                         </span>
+                        <output id="Filelist"></output>
                     </div>
-                    
-
+                </div><!-- end col -->
+            </div>
+        <h4 class="header-title mb-3">Allocation</h4>
+        <div class="row my-3" id="rediodiv">
+        <div class="col-md-4 padd">
+            <div class="custom-control custom-radio custom-control-inline">
+            <input type="radio" class="custom-control-input check" id="customRadio" name="allocation_type" value="Un-Assigend">
+            <label class="custom-control-label" for="customRadio">Un-Assigend</label>
+            </div>
+        </div>  
+        <div class="col-md-4 padd">  
+            <div class="custom-control custom-radio custom-control-inline">
+                <input type="radio" class="custom-control-input check" id="customRadio22" name="allocation_type" value="auto">
+                <label class="custom-control-label" for="customRadio22">Auto Alloc</label>
+            </div>
+        </div>
+        <div class="col-md-4 padd">    
+            <div class="custom-control custom-radio custom-control-inline">
+            <input type="radio" class="custom-control-input check" id="customRadio33" name="allocation_type" value="Manual">
+            <label class="custom-control-label" for="customRadio33">Manual</label>
+            </div>
+        </div>
+        </div>
+        <span class="span1 tagspan">Please select atlest one tag for driver and agent</span>
+        <div class="row tags">
+            <div class="col-md-6">
+                <div class="form-group mb-3">
+                     <label>Team Tag</label>
+                     <select  name="team_tag[]" id="selectize-optgroups" multiple placeholder="Select tag...">
+                         <option value="">Select Tag...</option>
+                         @foreach ($teamTag as $item)
+                         <option value="{{$item->id}}">{{$item->name}}</option>
+                         @endforeach
+     
+                     </select>
+                  </div>
+               </div>
+            
+            <div class="col-md-6">
+                <div class="form-group mb-3">
+                    <label>Driver Tag</label>
+                    <select name="agent_tag[]" id="selectize-optgroup"  multiple placeholder="Select tag...">
+                    <option value="">Select Tag...</option>
+                    @foreach ($agentTag as $item)
+                    <option value="{{$item->id}}">{{$item->name}}</option>
+                    @endforeach
+                    </select>
                 </div>
             </div>
+       </div>
 
-            <div class="row">
-                <div class="col-lg-4">
-                    <div class="mt-3">
-                        <input type="file" data-plugins="dropify" data-default-file="{{asset('assets/images/small/img-2.jpg')}}"  />
-                        <p class="text-muted text-center mt-2 mb-0">Default File</p>
-                    </div>
-                </div>
-
-                <div class="col-lg-4">
-                    <div class="mt-3">
-                        <input type="file" data-plugins="dropify" disabled="disabled"  />
-                        <p class="text-muted text-center mt-2 mb-0">Disabled the input</p>
-                    </div>
-                </div>
-
-                <div class="col-lg-4">
-                    <div class="mt-3">
-                        <input type="file" data-plugins="dropify" data-max-file-size="1M" />
-                        <p class="text-muted text-center mt-2 mb-0">Max File size</p>
-                    </div>
-                </div>
-            </div> <!-- end row -->
-
-            <h4>Allocation Logic Goes here</h4>
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="custom-control custom-radio addnew">
-                        <input type="radio" id="customRadio1" name="customRadio" class="custom-control-input">
-                        <label class="custom-control-label" for="customRadio1">Auto Alloction</label>
-                    </div>
-                    <div class="custom-control custom-radio addnew">
-                        <input type="radio" id="customRadio2" name="customRadio" class="custom-control-input">
-                        <label class="custom-control-label" for="customRadio2">UnAssigned</label>
-                    </div>
-                    <div class="custom-control custom-radio addnew">
-                        <input type="radio" id="customRadio3" name="customRadio" class="custom-control-input">
-                        <label class="custom-control-label" for="customRadio3">Manual</label>
-                    </div>
-
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group" id="typeInput">
-                       
-                        {!! Form::label('title', 'Data Accourding Selected',['class' => 'control-label']) !!}
-                        {!! Form::textarea('expected_delivery_date', null, ['class' => 'form-control']) !!}
-                        <span class="invalid-feedback" role="alert">
-                            <strong></strong>
-                        </span>
-                    </div>
-                    
-
-                </div>
-            </div>
-            <h4>Others</h4>
-
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group" id="typeInput">
-                        <label for="type" class="control-label">Pricing Rules</label>
-                        <select class="selectpicker" data-style="btn-light" name="priority" id="type">
-                            <option value="low">Rule1</option>
-                            <option value="normal">Rule2</option>
-                            <option value="high">Rule3</option>
-                        </select>
-                    </div>
-
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group" id="typeInput">
-                        <label for="type" class="control-label">Dependent_task</label>
-                        <select class="selectpicker" data-style="btn-light" name="priority" id="type">
-                            <option value="low">Rule1</option>
-                            <option value="normal">Rule2</option>
-                            <option value="high">Rule3</option>
-                        </select>
-                    </div>
-
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group" id="typeInput">
-                        
-                        {!! Form::label('title', 'Estimated_time',['class' => 'control-label']) !!}
-                        {!! Form::text('expected_delivery_date', null, ['class' => 'form-control','id'=>'humanfd-datepicker']) !!}
-                        <span class="invalid-feedback" role="alert">
-                            <strong></strong>
-                        </span>
-                    </div>
-
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group" id="colorInput">
-
-                        <div class="form-group mb-3">
-                            {!! Form::label('title', 'Distance',['class' => 'control-label']) !!}
-                            {!! Form::text('expected_delivery_date', null, ['class' => 'form-control','id'=>'humanfd-datepicker']) !!}  
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group" id="typeInput">
-                        <label for="type" class="control-label">Status</label>
-                        <select class="selectpicker" data-style="btn-light" name="priority" id="type">
-                            <option value="low">Assigning</option>
-                            <option value="normal">Un-Assigning</option>
-                            <option value="high">Assigning</option>
-                        </select>
-                    </div>
-
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group" id="colorInput">
-
-                        <div class="form-group mb-3">
-                            {!! Form::label('title', 'Assigned_time',['class' => 'control-label']) !!}
-                            {!! Form::text('expected_delivery_date', null, ['class' => 'form-control','id'=>'humanfd-datepicker']) !!}  
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-           
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group" id="typeInput">
-                        
-                        {!! Form::label('title', 'Accepted_time',['class' => 'control-label']) !!}
-                        {!! Form::text('expected_delivery_date', null, ['class' => 'form-control','id'=>'humanfd-datepicker']) !!}
-                        <span class="invalid-feedback" role="alert">
-                            <strong></strong>
-                        </span>
-                    </div>
-
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group" id="colorInput">
-
-                        <div class="form-group mb-3">
-                            {!! Form::label('title', 'Declined_time',['class' => 'control-label']) !!}
-                            {!! Form::text('expected_delivery_date', null, ['class' => 'form-control','id'=>'humanfd-datepicker']) !!}  
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group" id="typeInput">
-                        
-                        {!! Form::label('title', 'Started_time',['class' => 'control-label']) !!}
-                        {!! Form::text('expected_delivery_date', null, ['class' => 'form-control','id'=>'humanfd-datepicker']) !!}
-                        <span class="invalid-feedback" role="alert">
-                            <strong></strong>
-                        </span>
-                    </div>
-
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group" id="colorInput">
-
-                        <div class="form-group mb-3">
-                            {!! Form::label('title', 'Reached_time',['class' => 'control-label']) !!}
-                            {!! Form::text('expected_delivery_date', null, ['class' => 'form-control','id'=>'humanfd-datepicker']) !!}  
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group" id="typeInput">
-                        
-                        {!! Form::label('title', 'Cancelled_time',['class' => 'control-label']) !!}
-                        {!! Form::text('expected_delivery_date', null, ['class' => 'form-control','id'=>'humanfd-datepicker']) !!}
-                        <span class="invalid-feedback" role="alert">
-                            <strong></strong>
-                        </span>
-                    </div>
-
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group" id="colorInput">
-
-                        <div class="form-group mb-3">
-                            {!! Form::label('title', 'Completed_time',['class' => 'control-label']) !!}
-                            {!! Form::text('expected_delivery_date', null, ['class' => 'form-control','id'=>'humanfd-datepicker']) !!}  
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-
+    <div class="row drivers">
+        <div class="col-md-12">
+           <div class="form-group mb-3">
+            <label>Drivers</label>
+               <select class="form-control" name="agent" id="driverselect">
+                @foreach ($agents as $item)
+                <option value="{{$item->id}}">{{$item->name}}</option>
+                @endforeach
+               </select>
+           </div>
+        </div>   
+   </div>
+            
             <div class="row">
                 <div class="col-md-5">
 
@@ -363,3 +216,4 @@
 
 
 </div>
+
