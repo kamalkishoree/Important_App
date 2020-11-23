@@ -23,7 +23,8 @@ class PricingRulesController extends Controller
     public function index()
     {
         $pricing = PricingRule::orderBy('created_at', 'DESC')->paginate(10);
-        return view('pricing-rules.pricing-rules')->with(['pricing' => $pricing]);
+        $priority = PricePriority::where('id',1)->first();
+        return view('pricing-rules.pricing-rules')->with(['pricing' => $pricing,'priority'=>$priority]);
     }
 
     /**

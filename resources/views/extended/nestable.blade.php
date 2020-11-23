@@ -177,6 +177,7 @@
                             </p>
 
                             <div class="custom-dd-empty dd" id="nestable_list_3">
+                                <form>
                                 <ol class="dd-list">
                                     <li class="dd-item dd3-item" data-id="13">
                                         <div class="dd-handle dd3-handle"></div>
@@ -217,6 +218,8 @@
                                         </ol>
                                     </li>
                                 </ol>
+                                <button type="submit"></button>
+                                </form>
                             </div>
                         </div><!-- end col -->
 

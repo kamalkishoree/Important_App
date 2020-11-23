@@ -15,8 +15,14 @@
 <link href="{{asset('assets/libs/clockpicker/clockpicker.min.css')}}" rel="stylesheet" type="text/css" />
 <link href="{{asset('assets/libs/bootstrap-datepicker/bootstrap-datepicker.min.css')}}" rel="stylesheet"
     type="text/css" />
+    <link href="{{asset('assets/libs/dropzone/dropzone.min.css')}}" rel="stylesheet" type="text/css" />
+    <link href="{{asset('assets/libs/dropify/dropify.min.css')}}" rel="stylesheet" type="text/css" />
 
-
+<style>
+    .addnew {
+        margin-top: 30px;
+    }
+</style>
 
 
 @endsection
@@ -62,6 +68,11 @@
 <script src="{{asset('assets/libs/bootstrap-datepicker/bootstrap-datepicker.min.js')}}"></script>
 
 <script src="{{asset('assets/js/pages/form-pickers.init.js')}}"></script>
+<script src="{{asset('assets/libs/dropzone/dropzone.min.js')}}"></script>
+<script src="{{asset('assets/libs/dropify/dropify.min.js')}}"></script>
+
+<!-- Page js-->
+<script src="{{asset('assets/js/pages/form-fileuploads.init.js')}}"></script>
 
 <script>
 </script>
