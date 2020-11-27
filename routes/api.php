@@ -47,12 +47,4 @@ Route::group([
     });
 
 
-
-    
-  
-    /*Route::group([
-      
-    ], function() {
-        
-    });*/
 });

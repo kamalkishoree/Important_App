@@ -83,14 +83,16 @@ class AuthController extends BaseController
         $token->expires_at = Carbon::now()->addWeeks(1);
         $token->save();*/
 
-        $token = Token::make([
+        $token1 = new Token;
+
+        $token = $token1->make([
             'key' => 'secret',
             'issuer' => 'artisangang',
             'expiry' => strtotime('+1 month'),
             'issuedAt' => time(),
-            'algorithm' => 'HS256'
+            'algorithm' => 'HS256',
         ])->get();
-
+        $token1->setClaim('driver_id', $agent->id);
 
         try {
             Token::validate($token, 'secret');
