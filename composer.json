@@ -18,6 +18,7 @@
         "laravel/tinker": "^2.0",
         "laravel/ui": "^2.0",
         "laravelcollective/html": "^6.2",
+        "league/flysystem-aws-s3-v2": "^1.0",
         "predis/predis": "^1.1",
         "r0bdiablo/laravel5-phumbor": "^1.0",
         "rinvex/countries": "^6.1",

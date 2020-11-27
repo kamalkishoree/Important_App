@@ -74,9 +74,9 @@
                         <table class="table table-striped dt-responsive nowrap w-100"  id="agents-datatable">
                             <thead>
                                 <tr>
-                                    <th>Task Id</th>
-                                    <th>Customer</th>
                                     <th>Order Id</th>
+                                    <th>Customer</th>
+                                    {{-- <th>Order Id</th> --}}
                                     <th>Driver</th>
                                     <th>Create Time</th>
                                     <th>Pricing Rule</th>
@@ -91,11 +91,11 @@
                                         {{$task->id}}
                                     </td>
                                     <td>
-                                        {{$task->order->customer->name}}
+                                        {{$task->customer->name}}
                                     </td>
-                                    <td>
+                                    {{-- <td>
                                         {{$task->order->id}}
-                                    </td>
+                                    </td> --}}
                                     <td>
                                         UnAssind
                                     </td>

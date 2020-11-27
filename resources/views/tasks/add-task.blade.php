@@ -1,575 +1,823 @@
 @extends('layouts.vertical', ['title' => 'Tasks'])
 @section('css')
-<link href="{{asset('assets/libs/flatpickr/flatpickr.min.css')}}" rel="stylesheet" type="text/css" />
-<link href="{{asset('assets/libs/mohithg-switchery/mohithg-switchery.min.css')}}" rel="stylesheet" type="text/css" />
-<link href="{{asset('assets/libs/multiselect/multiselect.min.css')}}" rel="stylesheet" type="text/css" />
-<link href="{{asset('assets/libs/select2/select2.min.css')}}" rel="stylesheet" type="text/css" />
-<link href="{{asset('assets/libs/selectize/selectize.min.css')}}" rel="stylesheet" type="text/css" />
-<link href="{{asset('assets/libs/bootstrap-select/bootstrap-select.min.css')}}" rel="stylesheet" type="text/css" />
-<link href="{{asset('assets/libs/bootstrap-touchspin/bootstrap-touchspin.min.css')}}" rel="stylesheet" type="text/css" />
-<link href="{{asset('assets/libs/sweetalert2/sweetalert2.min.css')}}" rel="stylesheet" type="text/css" />
-<link href="{{asset('assets/libs/flatpickr/flatpickr.min.css')}}" rel="stylesheet" type="text/css" />
-<link href="{{asset('assets/libs/bootstrap-colorpicker/bootstrap-colorpicker.min.css')}}" rel="stylesheet"
-    type="text/css" />
-<link href="{{asset('assets/libs/clockpicker/clockpicker.min.css')}}" rel="stylesheet" type="text/css" />
-<link href="{{asset('assets/libs/bootstrap-datepicker/bootstrap-datepicker.min.css')}}" rel="stylesheet"
-    type="text/css" />
-    <link href="{{asset('assets/libs/dropzone/dropzone.min.css')}}" rel="stylesheet" type="text/css" />
-    <link href="{{asset('assets/libs/dropify/dropify.min.css')}}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('assets/libs/flatpickr/flatpickr.min.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('assets/libs/mohithg-switchery/mohithg-switchery.min.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('assets/libs/multiselect/multiselect.min.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('assets/libs/select2/select2.min.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('assets/libs/selectize/selectize.min.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('assets/libs/bootstrap-select/bootstrap-select.min.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('assets/libs/bootstrap-touchspin/bootstrap-touchspin.min.css') }}" rel="stylesheet"
+        type="text/css" />
+    <link href="{{ asset('assets/libs/sweetalert2/sweetalert2.min.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('assets/libs/flatpickr/flatpickr.min.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('assets/libs/bootstrap-colorpicker/bootstrap-colorpicker.min.css') }}" rel="stylesheet"
+        type="text/css" />
+    <link href="{{ asset('assets/libs/clockpicker/clockpicker.min.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('assets/libs/bootstrap-datepicker/bootstrap-datepicker.min.css') }}" rel="stylesheet"
+        type="text/css" />
+    <link href="{{ asset('assets/libs/dropzone/dropzone.min.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('assets/libs/dropify/dropify.min.css') }}" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
 
-    
-
-<style>
-.newAdd{
-    margin-top: 29px;
-}
-.shows{
-    display: none;
-}
-.rec{
-    margin-bottom: 7px;
-}
-.needsclick{
-
-    margin-left: 27%;
-}
-.padd{
-    padding-left: 9% !important;
-}
-.newchnage{
-    margin-left: 27% !important;
-}
-.address{
-    margin-bottom: 6px
-}
-.tags{
-    display: none;
-}
-#typeInputss {
-    overflow-y: auto;
-    height: 142px;
-}
-.upload{
-  margin-bottom: 20px;
-    margin-top: 10px;
-
-}
-.span1{
-  color: #ff0000;
-}
 
 
+    <style>
+        #adds {
+            margin-bottom: 14px;
+        }
 
+        .shows {
+            display: none;
+        }
 
-/*Copied from bootstrap to handle input file multiple*/
-.btn {
-  display: inline-block;
-  padding: 6px 12px;
-  margin-bottom: 0;
-  font-size: 14px;
-  font-weight: normal;
-  line-height: 1.42857143;
-  text-align: center;
-  white-space: nowrap;
-  vertical-align: middle;
-  cursor: pointer;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-  background-image: none;
-  border: 1px solid transparent;
-  border-radius: 4px;
-}
-/*Also */
-.btn-success {
-  border: 1px solid #c5dbec;
-  background: #d0e5f5;
-  font-weight: bold;
-  color: #2e6e9e;
-}
-/* This is copied from https://github.com/blueimp/jQuery-File-Upload/blob/master/css/jquery.fileupload.css */
-.fileinput-button {
-  position: relative;
-  overflow: hidden;
-  margin-left: 269px;
-}
+        .rec {
+            margin-bottom: 7px;
+        }
 
-.fileinput-button input {
-  position: absolute;
-  top: 0;
-  right: 0;
-  margin: 0;
-  opacity: 0;
-  -ms-filter: "alpha(opacity=0)";
-  font-size: 200px;
-  direction: ltr;
-  cursor: pointer;
-}
+        .needsclick {
 
-.thumb {
-  height: 80px;
-  width: 100px;
-  border: 1px solid #000;
-}
+            margin-left: 27%;
+        }
 
-ul.thumb-Images li {
-  width: 120px;
-  float: left;
-  display: inline-block;
-  vertical-align: top;
-  height: 120px;
-}
+        .padd {
+            padding-left: 9% !important;
+        }
 
-.img-wrap {
-  position: relative;
-  display: inline-block;
-  font-size: 0;
-}
+        .newchnage {
+            margin-left: 27% !important;
+        }
 
-.img-wrap .close {
-  position: absolute;
-  top: 2px;
-  right: 2px;
-  z-index: 100;
-  background-color: #d0e5f5;
-  padding: 5px 2px 2px;
-  color: #000;
-  font-weight: bolder;
-  cursor: pointer;
-  opacity: 0.5;
-  font-size: 23px;
-  line-height: 10px;
-  border-radius: 50%;
-}
+        .address {
+            margin-bottom: 6px
+        }
 
-.img-wrap:hover .close {
-  opacity: 1;
-  background-color: #ff0000;
-}
+        .tags {
+            display: none;
+        }
 
-.FileNameCaptionStyle {
-  font-size: 12px;
-}
+        #typeInputss {
+            overflow-y: auto;
+            height: 142px;
+        }
 
+        .upload {
+            margin-bottom: 20px;
+            margin-top: 10px;
 
+        }
 
-</style>
+        .span1 {
+            color: #ff0000;
+        }
+
+        .check {
+            margin-left: 116px !important;
+        }
+
+        .newcheck {
+            margin-left: -54px;
+        }
+
+        .upside {
+            margin-top: -10px;
+        }
+
+        .newgap {
+            margin-top: 11px !important;
+        }
+
+        
+
+        .append {
+            margin-bottom: 15px;
+        }
+
+        .spanbold {
+            font-weight: bolder;
+        }
+
+        .copyin {
+            background-color: #dae6dd;
+        }
+        .copyin1 {
+            background-color: #dae6dd;
+        }
+        hr.new3 {
+         border-top: 1px dashed white;
+       }
+       #spancheck{
+           display: none;
+       }
+
+    </style>
 
 
 @endsection
 
 @section('content')
-<div class="container-fluid">
-
-    <div class="row">
-        <div class="col-md-6">
-            <div class="page-title-box">
-                <h4 class="page-title">Tasks</h4>
+    <!-- Start Content-->
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="page-title-box">
+                    <h4 class="page-title">Add Task</h4>
+                </div>
             </div>
         </div>
-    </div>
+        <!-- start page title -->
 
-    <form id="task_form" action="{{ route('tasks.store') }}" method="POST"  id="myAwesomeDropzone" 
-                            enctype="multipart/form-data">
-       @include('tasks.task-form')
-    </form>
-</div>
+        <!-- end page title -->
+        <form id="task_form" action="{{ route('tasks.store') }}" method="POST">
+            @csrf
+            <div class="row">
+
+                <div class="col-md-6">
+                    <div class="card-box">
+                        @csrf
+                        <div class="row" id="dateredio">
+                            <div class="col-md-3">
+                                <h4 class="header-title mb-3">Customer</h4>
+                            </div>
+                            <div class="col-md-2">
+                                <span class="header-title mb-4">Task Date:</span>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="custom-control custom-radio custom-control-inline">
+                                    <input type="radio" class="custom-control-input check" id="tasknow"
+                                        name="task_type" value="now" checked>
+                                    <label class="custom-control-label" for="tasknow">Now</label>
+                                </div>
+                            </div>
+                            <div class="col-md-1">
+                                <div class="custom-control custom-radio custom-control-inline">
+                                    <input type="radio" class="custom-control-input check" id="taskschedule"
+                                        name="task_type" value="schedule" >
+                                    <label class="custom-control-label" for="taskschedule"></label>
+                                </div>
+                            </div>
+                            <div class="col-md-4 datenow">
+                                <input type="text" id='datetime-datepicker' name="schedule_time"
+                                    class="form-control upside" placeholder="DateTime">
+                            </div>
+                        </div>
+
+                        <span class="span1 searchspan">Please search a customer or add a customer</span>
+                        <div class="row searchshow">
+                            <div class="col-md-8">
+                                <div class="form-group" id="nameInput">
+
+                                    {!! Form::text('search', null, ['class' => 'form-control', 'placeholder' => 'search Customer', 'id' => 'search']) !!}
+                                    <input type="hidden" id='cusid' name="ids" readonly>
+
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group" id="AddressInput">
+                                    <a href="#" class=" form-control btn btn-blue waves-effect waves-light newAdd"><i
+                                            class="mdi mdi-plus-circle mr-1"></i>New Customer</a>
+
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="row newcus shows">
+                            <div class="col-md-3">
+                                <div class="form-group" id="">
+                                    {!! Form::text('name', null, ['class' => 'form-control', 'placeholder' => 'Name']) !!}
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong></strong>
+                                    </span>
+
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group" id="">
+                                    {!! Form::text('email', null, ['class' => 'form-control', 'placeholder' => 'Email']) !!}
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong></strong>
+                                    </span>
+
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group" id="">
+                                    {!! Form::text('phone_number', null, [
+                                    'class' => 'form-control',
+                                    'placeholder' => 'Phone Number',
+                                    ]) !!}
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong></strong>
+                                    </span>
+
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group" id="Inputsearch">
+                                    <a href="#" class=" form-control btn btn-blue waves-effect waves-light">Previous</a>
+
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="taskrepet" id="newadd">
+                            <div class="copyin1" id="copyin1">
+                              <div class="requried">
+                                <div class="row firstclone1">
+                                    <div class="col-md-4">
+                                        <h4 class="header-title mb-3 newgap">Task</h4>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group mb-3">
+                                            <select class="form-control selecttype" id="task_type"  name="task_type_id[]" required>
+                                                <option value="">Selcet Task </option>
+                                                <option value="1">Pickup</option>
+                                                <option value="2">Drop</option>
+                                                <option value="3">Appintment</option>
+
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group appoint">
+                                            {!! Form::text('appointment_date[]', null, ['class' => 'form-control
+                                            appointment_date', 'placeholder' => 'Duration (In Min)']) !!}
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong></strong>
+                                            </span>
+                                        </div>
+
+
+                                    </div>
+                                    <div class="col-md-1 " >
+
+                                        <span class="span1 onedelete" id="spancheck">Delete</span>
+
+
+                                    </div>
+
+                                </div>
+
+                                <h4 class="header-title mb-2">Address</h4>
+                                <span class="span1 addspan">Please select a address or create new</span>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group alladdress" id="typeInput">
+                                            {!! Form::text('short_name[]', null, ['class' => 'form-control address',
+                                            'placeholder' => 'Address Short Name','required' => 'required']) !!}
+                                            {!! Form::textarea('address[]', null, ['class' => 'form-control address',
+                                            'placeholder' => 'Full Address','required' => 'required', 'rows' => 2]) !!}
+                                            {!! Form::text('post_code[]', null, [
+                                            'class' => 'form-control address',
+                                            'placeholder' => 'PostsCode',
+                                            'required' => 'required']) !!}
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong></strong>
+                                            </span>
+                                        </div>
+
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group withradio" id="typeInputss">
+                                            <h5 class="oldhide">Saved Addresses</h5>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr class="new3">
+                            </div>
+                        </div>
+                    </div>
+                        <div class="row">
+                            <div class="col-md-12" id="adds">
+                                <a href="#" class="btn btn-block btn-sm btn-success waves-effect waves-light">Add Sub
+                                    Task</a>
+                            </div>
+                        </div>
+
+                        <!-- end row -->
+
+                        <!-- container -->
+                        <h4 class="header-title mb-2">Meta Data</h4>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group" id="make_modelInput">
+                                    {!! Form::text('recipient_phone', null, ['class' => 'form-control rec', 'placeholder' =>
+                                    'Recipient Phone', 'required' => 'required']) !!}
+                                    {!! Form::email('recipient_email', null, ['class' => 'form-control rec', 'placeholder'
+                                    => 'Recipient Email', 'required' => 'required']) !!}
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong></strong>
+                                    </span>
+                                </div>
+
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group" id="colorInput">
+
+                                    <div class="form-group" id="make_modelInput">
+                                        {!! Form::textarea('task_description', null, ['class' => 'form-control',
+                                        'placeholder' => 'Task_description', 'rows' => 3, 'cols' => 40]) !!}
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong></strong>
+                                        </span>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+
+
+                        <h4 class="header-title mb-3">Allocation</h4>
+                        <div class="row my-3" id="rediodiv">
+                            <div class="col-md-4 padd">
+                                <div class="custom-control custom-radio custom-control-inline">
+                                    <input type="radio" class="custom-control-input check" id="customRadio"
+                                        name="allocation_type" value="Un-Assigend" checked>
+                                    <label class="custom-control-label" for="customRadio">Un-Assigend</label>
+                                </div>
+                            </div>
+                            <div class="col-md-4 padd">
+                                <div class="custom-control custom-radio custom-control-inline">
+                                    <input type="radio" class="custom-control-input check" id="customRadio22"
+                                        name="allocation_type" value="auto">
+                                    <label class="custom-control-label" for="customRadio22">Auto Alloc</label>
+                                </div>
+                            </div>
+                            <div class="col-md-4 padd">
+                                <div class="custom-control custom-radio custom-control-inline">
+                                    <input type="radio" class="custom-control-input check" id="customRadio33"
+                                        name="allocation_type" value="Manual">
+                                    <label class="custom-control-label" for="customRadio33">Manual</label>
+                                </div>
+                            </div>
+                        </div>
+                        <span class="span1 tagspan">Please select atlest one tag for driver and agent</span>
+                        <div class="row tags">
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label>Team Tag</label>
+                                    <select name="team_tag[]" id="selectize-optgroups" multiple placeholder="Select tag...">
+                                        <option value="">Select Tag...</option>
+                                        @foreach ($teamTag as $item)
+                                            <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                        @endforeach
+
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label>Driver Tag</label>
+                                    <select name="agent_tag[]" id="selectize-optgroup" multiple placeholder="Select tag...">
+                                        <option value="">Select Tag...</option>
+                                        @foreach ($agentTag as $item)
+                                            <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row drivers">
+                            <div class="col-md-12">
+                                <div class="form-group mb-3">
+                                    <label>Drivers</label>
+                                    <select class="form-control" name="agent" id="driverselect">
+                                        @foreach ($agents as $item)
+                                            <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-5">
+
+                            </div>
+                            <div class="col-md-7">
+                                <button type="submit" class="btn btn-blue waves-effect waves-light ">Submit</button>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+
+        </form>
+        <div class="row">
+            <div class="col-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="header-title">Dropzone File Upload</h4>
+
+
+                        <form action="/" method="post" class="dropzone" id="myAwesomeDropzone" data-plugin="dropzone"
+                            data-previews-container="#file-previews" data-upload-preview-template="#uploadPreviewTemplate">
+                            <div class="fallback">
+                                <input name="file" type="file" multiple />
+                            </div>
+
+                            <div class="dz-message needsclick">
+                                <i class="h1 text-muted dripicons-cloud-upload"></i>
+                                <h3>Drop files here or click to upload.</h3>
+                                <span class="text-muted font-13">(This is just a demo dropzone. Selected files are
+                                    <strong>not</strong> actually uploaded.)</span>
+                            </div>
+                        </form>
+
+                        <!-- Preview -->
+                        <div class="dropzone-previews mt-3" id="file-previews"></div>
+
+                    </div> <!-- end card-body-->
+                </div> <!-- end card-->
+            </div><!-- end col -->
+        </div>
+        <!-- end row -->
+
+        <!-- file preview template -->
+        <div class="d-none" id="uploadPreviewTemplate">
+            <div class="card mt-1 mb-0 shadow-none border">
+                <div class="p-2">
+                    <div class="row align-items-center">
+                        <div class="col-auto">
+                            <img data-dz-thumbnail src="#" class="avatar-sm rounded bg-light" alt="">
+                        </div>
+                        <div class="col pl-0">
+                            <a href="javascript:void(0);" class="text-muted font-weight-bold" data-dz-name></a>
+                            <p class="mb-0" data-dz-size></p>
+                        </div>
+                        <div class="col-auto">
+                            <!-- Button -->
+                            <a href="" class="btn btn-link btn-lg text-muted" data-dz-remove>
+                                <i class="dripicons-cross"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
 @endsection
 
+
 @section('script')
-<!-- google maps api -->
+    <!-- google maps api -->
 
-<!-- Plugins js-->
-<script src="{{asset('assets/libs/selectize/selectize.min.js')}}"></script>
-<script src="{{asset('assets/libs/mohithg-switchery/mohithg-switchery.min.js')}}"></script>
-<script src="{{asset('assets/libs/multiselect/multiselect.min.js')}}"></script>
-<script src="{{asset('assets/libs/select2/select2.min.js')}}"></script>
-<script src="{{asset('assets/libs/bootstrap-select/bootstrap-select.min.js')}}"></script>
-<script src="{{asset('assets/libs/bootstrap-touchspin/bootstrap-touchspin.min.js')}}"></script>
-<script src="{{asset('assets/libs/bootstrap-maxlength/bootstrap-maxlength.min.js')}}"></script>
-<script src="{{asset('assets/libs/devbridge-autocomplete/devbridge-autocomplete.min.js')}}"></script>
-{{-- <script src="{{asset('assets/libs/jquery-mockjax/jquery-mockjax.min.js')}}"></script> --}}
-<script src="{{asset('assets/libs/sweetalert2/sweetalert2.min.js')}}"></script>
+    <!-- Plugins js-->
+    <script src="{{ asset('assets/libs/selectize/selectize.min.js') }}"></script>
+    <script src="{{ asset('assets/libs/mohithg-switchery/mohithg-switchery.min.js') }}"></script>
+    <script src="{{ asset('assets/libs/multiselect/multiselect.min.js') }}"></script>
+    <script src="{{ asset('assets/libs/select2/select2.min.js') }}"></script>
+    <script src="{{ asset('assets/libs/bootstrap-select/bootstrap-select.min.js') }}"></script>
+    <script src="{{ asset('assets/libs/bootstrap-touchspin/bootstrap-touchspin.min.js') }}"></script>
+    <script src="{{ asset('assets/libs/bootstrap-maxlength/bootstrap-maxlength.min.js') }}"></script>
+    <script src="{{ asset('assets/libs/devbridge-autocomplete/devbridge-autocomplete.min.js') }}"></script>
+    {{-- <script src="{{ asset('assets/libs/jquery-mockjax/jquery-mockjax.min.js') }}">
+    </script> --}}
+    <script src="{{ asset('assets/libs/sweetalert2/sweetalert2.min.js') }}"></script>
 
-<!-- Plugins js-->
-<script src="{{asset('assets/libs/flatpickr/flatpickr.min.js')}}"></script>
-<!-- Page js-->
-<script src="{{asset('assets/js/pages/form-advanced.init.js')}}"></script>
-<script src="{{asset('assets/js/pages/form-advanced2.init.js')}}"></script>
-<script src="{{asset('assets/libs/bootstrap-colorpicker/bootstrap-colorpicker.min.js')}}"></script>
-<script src="{{asset('assets/libs/clockpicker/clockpicker.min.js')}}"></script>
-<script src="{{asset('assets/libs/bootstrap-datepicker/bootstrap-datepicker.min.js')}}"></script>
+    <!-- Plugins js-->
+    <script src="{{ asset('assets/libs/flatpickr/flatpickr.min.js') }}"></script>
+    <!-- Page js-->
+    <script src="{{ asset('assets/js/pages/form-advanced.init.js') }}"></script>
+    <script src="{{ asset('assets/js/pages/form-advanced2.init.js') }}"></script>
+    <script src="{{ asset('assets/libs/bootstrap-colorpicker/bootstrap-colorpicker.min.js') }}"></script>
+    <script src="{{ asset('assets/libs/clockpicker/clockpicker.min.js') }}"></script>
+    <script src="{{ asset('assets/libs/bootstrap-datepicker/bootstrap-datepicker.min.js') }}"></script>
 
-<script src="{{asset('assets/js/pages/form-pickers.init.js')}}"></script>
-{{-- <script src="{{asset('assets/libs/dropzone/dropzone.min.js')}}"></script>
-    <script src="{{asset('assets/libs/dropify/dropify.min.js')}}"></script> --}}
+    <script src="{{ asset('assets/js/pages/form-pickers.init.js') }}"></script>
+    <script src="{{ asset('assets/libs/dropzone/dropzone.min.js') }}"></script>
+    <script src="{{ asset('assets/libs/dropify/dropify.min.js') }}"></script>
+    <script src="{{ asset('assets/js/pages/form-fileuploads.init.js') }}"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
     <!-- Page js-->
-    {{-- <script src="{{asset('assets/js/pages/form-fileuploads.init.js')}}"></script> --}}
 
-    
 
-<script>
-$(document).ready(function(){
-    $(".shows").hide();
-    $(".addspan").hide();
-    $(".tagspan").hide();
-    $(".tagspan2").hide();
-    $("#AddressInput a").click(function() {
-        $(".shows").show();
-        $(".append").hide();
-    });
-    
-    $("#nameInput").keyup(function() {
-        $(".shows").hide();
-        $(".oldhide").show();
-        $(".append").hide();
-   });
-   $( "#myselect" ).val();
-   $(".appointment_date").prop('disabled', true);
-   $('#task_type').on('change', function() {
-      if(this.value == 3)
-      $(".appointment_date").prop('disabled', false);
-      else
-      $(".appointment_date").prop('disabled', true);
-    });
-    $(".tags").hide();
-    $(".drivers").hide();
 
-        $("input[type='radio'].check").click(function(){
-            var radioValue = $("#rediodiv input[type='radio']:checked").val();
-            if(radioValue == 'auto'){
-               $(".tags").show();
-               $(".drivers").hide();
+
+    <script>
+        $(document).ready(function() {
+            $(".shows").hide();
+            $(".addspan").hide();
+            $(".tagspan").hide();
+            $(".tagspan2").hide();
+            $(".searchspan").hide();
+            $(".appoint").hide();
+            $(".datenow").hide();
+            $("#AddressInput a").click(function() {
+                $(".shows").show();
+                $(".append").hide();
+                $(".searchshow").hide();
+                $('input[name=ids').val('');
+                $('input[name=search').val('');
+                $('.copyin').remove();
+            });
+            $("#Inputsearch a").click(function() {
+                $(".shows").hide();
+                $(".append").hide();
+                $(".searchshow").show();
+                $('.copyin').remove();
+            });
+
+            $("#nameInput").keyup(function() {
+                $(".shows").hide();
+                $(".oldhide").show();
+                $(".append").hide();
+                $('input[name=ids').val('');
+                $('.copyin').remove();
+            });
+            
+            $(document).on('click', ".span1", function() {
+                
+                $(this).closest(".copyin").remove();
+            });
+            // $('#adds a').click(function() {
+            //     var regex = /^(.+?)(\d+)$/i;
+            //     var cloneIndex = $(".copyin").length;
+            //     var $div = $('div[id^="copyin1"]:first');
+            //     console.log($div);
+            //     $('#copyin1').clone().appendTo('.taskrepet')
+            //       .attr("id", "copyin" +  cloneIndex)
+            //       .find("*")
+            //       .each(function() {
+            //          var id = this.id || "";
+            //          var match = id.match(regex) || [];
+            //          if (match.length == 3) {
+            //             this.id = match[1] + (cloneIndex);
+            //         }
+            //       })
+            //       .on('click', '.onedelete', remove);
+            //     cloneIndex++;
+            //     // var button = $('.firstclone').clone();
+            //     // console.log()
+            //     //$('.taskrepet').html($button);
+            //     // var firstDivContent = document.getElementById('typeInputss');
+            //     // var secondDivContent = document.getElementById('mydiv2');
+            //     // secondDivContent.innerHTML = firstDivContent.innerHTML;
+
+            // });
+            var a = 0;
+            $('#adds a').click(function() {
+                a = a +1;
+                // var direction = this.defaultValue < this.value
+                // this.defaultValue = this.value;
+                // if (direction)
+                // {
+
+                        var $div = $('div[class^="copyin"]:last');
+                        var num = parseInt( $div.prop("id").match(/\d+/g), 10 ) +1;
+                        var $clone = $div.clone().prop('class', 'copyin')
+                        $clone.insertAfter('[class^="copyin"]:last');
+                        // get all the inputs inside the clone
+                        var inputs = $clone.find('.redio');
+                        console.log(inputs);
+                        // for each input change its name/id appending the num value
+                        var count0 = 1;
+                        $.each(inputs, function(index, elem){
+                            var jElem = $(elem); // jQuery element
+                            var name = jElem.prop('name');
+                            // remove the number
+                            name = name.replace(/\d+/g, '');
+                            name += a;
+                            jElem.prop('name', name);
+                            count0++;
+                        });
+                       
+                        var inputid = $clone.find('.redio');
+                        var rand =  Math.random().toString(36).substring(7);
+                        var count1 = 1;
+                        $.each(inputid, function(index, elem){
+                               
+                            var jElem = $(elem); // jQuery element
+                            var name = jElem.prop('id');
+                            
+                            // remove the number
+                            name = rand;
+                            
+                            name += count1;
+                            console.log(name);
+                            jElem.prop('id', name);
+                            count1++;
+                        });
+                        var count2 = 1;
+                        var labels = $clone.find('label');
+                        $.each(labels, function(index, elem){
+                               
+                            var jElem = $(elem); // jQuery element
+                            var name = jElem.prop('for');
+                            
+                            // remove the number
+                            name = rand;
+                            
+                            name += count2;
+                            console.log(name);
+                            jElem.prop('for', name);
+                            count2++;
+                        });
+                        var spancheck = $clone.find('.onedelete');
+                        $.each(spancheck, function(index, elem){
+                               
+                            var jElem = $(elem); // jQuery element
+                            var name = jElem.prop('id');
+                            name = name.replace(/\d+/g, '');
+                            // remove the number
+                            name = 'newspan';
+                            jElem.prop('id', name);
+                        });
+
+                        var address1 = $clone.find('.address');
+                        $.each(address1, function(index, elem){
+                               
+                            var jElem = $(elem); // jQuery element
+                            jElem.prop('required', true);
+                        });
+                        // $(".taskrepet").fadeOut();
+                        // $(".taskrepet").fadeIn();
+                // }
+                // else $('[id^="newadd"]:last').remove();
+            });
+
+            //$("#myselect").val();
+            $(document).on('change', ".selecttype", function() {
+            
+                
+                if (this.value == 3){
+                   $span = $(this).closest(".firstclone1").find(".appoint").show();
+                   console.log($span); 
+                }   
+                else{
+                    $(this).closest(".firstclone1").find(".appoint").hide();
+                
+                }
+                
+            });
+
+            $(".callradio input").click(function() { 
+
+                if ($(this).is(":checked")) { 
+                  $span = $(this).closest(".requried").find(".alladdress");
+                  console.log($span);
+                  $(this).parent().css("border", "2px solid black"); 
+                }
+            });
+            $(document).on("click", "input[type='radio']", function () {
+            // var element = $(this);
+            // alert(element.closest("div").find("img").attr("src"));
+            $span = $(this).closest(".requried").find(".address").removeAttr("required");
+            // $('#edit-submitted-first-name').removeAttr('required');
+            });
+
+            $(".tags").hide();
+            $(".drivers").hide();
+            $("input[type='radio'].check").click(function() {
+                var radioValue = $("#rediodiv input[type='radio']:checked").val();
+                if (radioValue == 'auto') {
+                    $(".tags").show();
+                    $(".drivers").hide();
+                }
+                if (radioValue == 'Un-Assigend') {
+                    $(".tags").hide();
+                    $(".drivers").hide();
+                }
+                if (radioValue == 'Manual') {
+                    $(".drivers").show();
+                    $(".tags").hide();
+                }
+            });
+
+            $("input[type='radio'].check").click(function() {
+                var dateredio = $("#dateredio input[type='radio']:checked").val();
+                if (dateredio == 'schedule') {
+                    $(".datenow").show();
+                }else{
+                    $(".datenow").hide();
+                }
+                
+            });
+
+            var CSRF_TOKEN = $("input[name=_token]").val();
+
+
+            $("#search").autocomplete({
+                source: function(request, response) {
+                    // Fetch data
+                    $.ajax({
+                        url: "{{ route('search') }}",
+                        type: 'post',
+                        dataType: "json",
+                        data: {
+                            _token: CSRF_TOKEN,
+                            search: request.term
+                        },
+                        success: function(data) {
+                            response(data);
+                        }
+                    });
+                },
+                select: function(event, ui) {
+                    // Set selection
+                    $('#search').val(ui.item.label); // display the selected text
+                    $('#cusid').val(ui.item.value); // save selected id to input
+                    add_event(ui.item.value);
+                    $(".oldhide").hide();
+                    return false;
+                }
+            });
+
+            function add_event(ids) {
+
+                $.ajax({
+                    url: "{{ route('search') }}",
+                    type: 'post',
+                    dataType: "json",
+                    data: {
+                        _token: CSRF_TOKEN,
+                        id: ids
+                    },
+                    success: function(data) {
+                        var array = data;
+                        jQuery.each(array, function(i, val) {
+                            $(".withradio").append(
+                                '<div class="append"><div class="custom-control custom-radio count"><input type="radio" id="' +
+                                val.id + '" name="old_address_id" value="' + val
+                                .id +
+                                '" class="custom-control-input redio callradio"><label class="custom-control-label" for="' +
+                                val.id + '"><span class="spanbold">' + val.short_name +
+                                '</span>-' + val.address +
+                                '</label></div></div>');
+                        });
+
+                    }
+                });
             }
-            if(radioValue == 'Un-Assigend'){
-               $(".tags").hide();
-               $(".drivers").hide();
-            }
-            if(radioValue == 'Manual'){
-               $(".drivers").show();
-               $(".tags").hide();
-            }
+
+            $("#task_form").bind("submit", function() {
+                $(".addspan").hide();
+                $(".tagspan").hide();
+                $(".tagspan2").hide();
+                $(".searchspan").hide();
+
+                var cus_id = $("input[name=ids]").val();
+                var name = $("input[name=name]").val();
+                var email = $("input[name=email]").val();
+                var phone_no = $("input[name=phone_number]").val();
+
+                if (cus_id == '') {
+                    if (name != '' && email != '' && phone_no != '') {
+
+                    } else {
+                        $(".searchspan").show();
+                        return false;
+                    }
+                }
+
+                var selectedVal = "";
+                var selected = $("#typeInputss input[type='radio']:checked");
+                selectedVal = selected.val();
+                console.log(selectedVal);
+                if (typeof(selectedVal) == "undefined") {
+                    var short_name = $("input[name=short_name]").val();
+                    var address = $("input[name=address]").val();
+                    var post_code = $("input[name=post_code]").val();
+                    if (short_name != '' && address != '' && post_code != '') {
+
+                    } else {
+                        $(".addspan").show();
+                        return false;
+                    }
+                }
+
+                var autoval = "";
+                var auto = $("#rediodiv input[type='radio']:checked");
+                autoval = auto.val();
+                if (autoval == 'auto') {
+                    var value = $("#selectize-optgroups option:selected").text();
+                    var value2 = $("#selectize-optgroup option:selected").text();
+                    if (value == '') {
+                        $(".tagspan").show();
+                        return false;
+                    }
+                    if (value2 == '') {
+                        $(".tagspan").show();
+                        return false;
+                    }
+                }
+
+
+
+            });
+
+
         });
 
-    var CSRF_TOKEN = $("input[name=_token]").val();
-    
-
-      $( "#search" ).autocomplete({
-        source: function( request, response ) {
-          // Fetch data
-          $.ajax({
-            url:"{{route('search')}}",
-            type: 'post',
-            dataType: "json",
-            data: {
-               _token: CSRF_TOKEN,
-               search: request.term
-            },
-            success: function( data ) {
-               response( data );
-            }
-          });
-        },
-        select: function (event, ui) {
-           // Set selection
-           $('#search').val(ui.item.label); // display the selected text
-           $('#cusid').val(ui.item.value); // save selected id to input
-           add_event(ui.item.value);
-           $(".oldhide").hide();
-           return false;
-        }
-      });
-      
-      function add_event(ids) {
-         
-      $.ajax({
-            url:"{{route('search')}}",
-            type: 'post',
-            dataType: "json",
-            data: {
-               _token: CSRF_TOKEN,
-               id: ids
-            },
-            success: function( data ) {
-                var array = data;
-                jQuery.each( array, function( i, val ) {
-                    $("#typeInputss").append('<div class="append"><label for="title" class="control-label mt-2">' + val.short_name + '</label><div class="custom-control custom-radio"><input type="radio" id="' + val.id + '" name="old_address_id" value="'+ val.id +'" class="custom-control-input"><label class="custom-control-label" for="' + val.id + '">' + val.address + '</label></div></div>');
-                });
-              
-            }
-          });
-      } 
-
-      $("#task_form").bind("submit", function() {
-        var selectedVal = "";
-        var selected = $("#typeInputss input[type='radio']:checked");
-        selectedVal = selected.val();
-        if (selectedVal == 1) {
-         
-        }else{
-          var short_name =  $("input[name=short_name]").val();
-          var address    =  $("input[name=address]").val();
-          var post_code  =  $("input[name=post_code]").val();
-          if(short_name == '' && address == '' && post_code == ''){
-            $(".addspan").show();
-          return false;
-          }
-         
-          
-        }
-
-        var autoval = "";
-        var auto = $("#rediodiv input[type='radio']:checked");
-        autoval = auto.val();
-        if(autoval == 'auto'){
-         var value = $( "#selectize-optgroups option:selected" ).text();
-         var value2 = $( "#selectize-optgroup option:selected" ).text();
-         if(value == ''){
-          $(".tagspan").show();
-           return false;
-         }
-         if(value2 == ''){
-          $(".tagspan").show();
-           return false;
-         }
-        }
-        
-        return false;
-      });
-       
-
-});
-
-
-//I added event handler for the file upload control to access the files properties.
-document.addEventListener("DOMContentLoaded", init, false);
-
-//To save an array of attachments
-var AttachmentArray = [];
-
-//counter for attachment array
-var arrCounter = 0;
-
-//to make sure the error message for number of files will be shown only one time.
-var filesCounterAlertStatus = false;
-
-//un ordered list to keep attachments thumbnails
-var ul = document.createElement("ul");
-ul.className = "thumb-Images";
-ul.id = "imgList";
-
-function init() {
-  //add javascript handlers for the file upload event
-  document
-    .querySelector("#files")
-    .addEventListener("change", handleFileSelect, false);
-}
-
-//the handler for file upload event
-function handleFileSelect(e) {
-  //to make sure the user select file/files
-  if (!e.target.files) return;
-
-  //To obtaine a File reference
-  var files = e.target.files;
-
-  // Loop through the FileList and then to render image files as thumbnails.
-  for (var i = 0, f; (f = files[i]); i++) {
-    //instantiate a FileReader object to read its contents into memory
-    var fileReader = new FileReader();
-
-    // Closure to capture the file information and apply validation.
-    fileReader.onload = (function(readerEvt) {
-      return function(e) {
-        //Apply the validation rules for attachments upload
-        ApplyFileValidationRules(readerEvt);
-
-        //Render attachments thumbnails.
-        RenderThumbnail(e, readerEvt);
-
-        //Fill the array of attachment
-        FillAttachmentArray(e, readerEvt);
-      };
-    })(f);
-
-    // Read in the image file as a data URL.
-    // readAsDataURL: The result property will contain the file/blob's data encoded as a data URL.
-    // More info about Data URI scheme https://en.wikipedia.org/wiki/Data_URI_scheme
-    fileReader.readAsDataURL(f);
-  }
-  document
-    .getElementById("files")
-    .addEventListener("change", handleFileSelect, false);
-}
-
-//To remove attachment once user click on x button
-jQuery(function($) {
-  $("div").on("click", ".img-wrap .close", function() {
-    var id = $(this)
-      .closest(".img-wrap")
-      .find("img")
-      .data("id");
-
-    //to remove the deleted item from array
-    var elementPos = AttachmentArray.map(function(x) {
-      return x.FileName;
-    }).indexOf(id);
-    if (elementPos !== -1) {
-      AttachmentArray.splice(elementPos, 1);
-    }
-
-    //to remove image tag
-    $(this)
-      .parent()
-      .find("img")
-      .not()
-      .remove();
-
-    //to remove div tag that contain the image
-    $(this)
-      .parent()
-      .find("div")
-      .not()
-      .remove();
-
-    //to remove div tag that contain caption name
-    $(this)
-      .parent()
-      .parent()
-      .find("div")
-      .not()
-      .remove();
-
-    //to remove li tag
-    var lis = document.querySelectorAll("#imgList li");
-    for (var i = 0; (li = lis[i]); i++) {
-      if (li.innerHTML == "") {
-        li.parentNode.removeChild(li);
-      }
-    }
-  });
-});
-
-//Apply the validation rules for attachments upload
-function ApplyFileValidationRules(readerEvt) {
-  //To check file type according to upload conditions
-  if (CheckFileType(readerEvt.type) == false) {
-    alert(
-      "The file (" +
-        readerEvt.name +
-        ") does not match the upload conditions, You can only upload jpg/png/gif files"
-    );
-    e.preventDefault();
-    return;
-  }
-
-  //To check file Size according to upload conditions
-  if (CheckFileSize(readerEvt.size) == false) {
-    alert(
-      "The file (" +
-        readerEvt.name +
-        ") does not match the upload conditions, The maximum file size for uploads should not exceed 300 KB"
-    );
-    e.preventDefault();
-    return;
-  }
-
-  //To check files count according to upload conditions
-  if (CheckFilesCount(AttachmentArray) == false) {
-    if (!filesCounterAlertStatus) {
-      filesCounterAlertStatus = true;
-      alert(
-        "You have added more than 10 files. According to upload conditions you can upload 10 files maximum"
-      );
-    }
-    e.preventDefault();
-    return;
-  }
-}
-
-//To check file type according to upload conditions
-function CheckFileType(fileType) {
-  if (fileType == "image/jpeg") {
-    return true;
-  } else if (fileType == "image/png") {
-    return true;
-  } else if (fileType == "image/gif") {
-    return true;
-  } else {
-    return false;
-  }
-  return true;
-}
-
-//To check file Size according to upload conditions
-function CheckFileSize(fileSize) {
-  if (fileSize < 30000000) {
-    return true;
-  } else {
-    return false;
-  }
-  return true;
-}
-
-//To check files count according to upload conditions
-function CheckFilesCount(AttachmentArray) {
-  //Since AttachmentArray.length return the next available index in the array,
-  //I have used the loop to get the real length
-  var len = 0;
-  for (var i = 0; i < AttachmentArray.length; i++) {
-    if (AttachmentArray[i] !== undefined) {
-      len++;
-    }
-  }
-  //To check the length does not exceed 10 files maximum
-  if (len > 9) {
-    return false;
-  } else {
-    return true;
-  }
-}
-
-//Render attachments thumbnails.
-function RenderThumbnail(e, readerEvt) {
-  var li = document.createElement("li");
-  ul.appendChild(li);
-  li.innerHTML = [
-    '<div class="img-wrap"> <span class="close">&times;</span>' +
-      '<img class="thumb" src="',
-    e.target.result,
-    '" title="',
-    escape(readerEvt.name),
-    '" data-id="',
-    readerEvt.name,
-    '"/>' + "</div>"
-  ].join("");
-
-  var div = document.createElement("div");
-  div.className = "FileNameCaptionStyle";
-  li.appendChild(div);
-  div.innerHTML = [readerEvt.name].join("");
-  document.getElementById("Filelist").insertBefore(ul, null);
-}
-
-//Fill the array of attachment
-function FillAttachmentArray(e, readerEvt) {
-  AttachmentArray[arrCounter] = {
-    AttachmentType: 1,
-    ObjectType: 1,
-    FileName: readerEvt.name,
-    FileDescription: "Attachment",
-    NoteText: "",
-    MimeType: readerEvt.type,
-    Content: e.target.result.split("base64,")[1],
-    FileSizeInBytes: readerEvt.size
-  };
-  arrCounter = arrCounter + 1;
-}
-
-
-
-</script>
+    </script>
 @endsection

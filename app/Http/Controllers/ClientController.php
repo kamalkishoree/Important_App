@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Model\Client;
+
 use App\Model\ClientPreference;
 use App\Model\Currency;
 use Illuminate\Support\Facades\Validator;
@@ -14,6 +14,7 @@ use App\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use App\Jobs\ProcessClientDatabase;
+use App\Model\Client;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Redis;
 use Session;
@@ -27,7 +28,6 @@ class ClientController extends Controller
      */
     public function index()
     {
-        
           
         // $value = Cache::get('all_clients');
         //  dd($value);    
@@ -110,6 +110,7 @@ class ClientController extends Controller
 
         // Handle File Upload
         if ($request->hasFile('logo')) {
+
             $file = $request->file('logo');
             $filenameWithExt = $request->file('logo')->getClientOriginalName();
             $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);

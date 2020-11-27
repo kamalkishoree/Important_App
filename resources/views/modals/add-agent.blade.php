@@ -70,7 +70,17 @@
                             </div>
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="form-group mb-3">
+                                <label>Tag</label>
 
+                                <input type="text" class="form-control tags xyz" value="" name="tags" id="form-tags-4" data-role="tagsInput">
+                            </div>
+                        </div>
+
+                    </div>
+                    
                     <div class="row ">
                         <div class="col-md-12">
                             <div class="form-group" id="vehicle_type_idInput">
