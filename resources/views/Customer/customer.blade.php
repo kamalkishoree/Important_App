@@ -38,6 +38,7 @@
 @endsection
 
 @section('content')
+@include('modals.add-customer')
 <!-- Start Content-->
 <div class="container-fluid">
 
@@ -67,7 +68,6 @@
                         <div class="col-sm-4 text-right">
                         <a href="{{ route('customer.create') }}" class="btn btn-blue waves-effect waves-light"><i class="mdi mdi-plus-circle mr-1"></i> Add Customer</a>
                         </div>
-
                     </div>
 
                     <div class="table-responsive">

@@ -502,7 +502,7 @@
                             </li>
                         </ul>
                     </div>
-                </li> --}}
+                </li> 
 
                 <li class="menu-title mt-2">Components</li>
 

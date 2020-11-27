@@ -43,7 +43,6 @@
                             <div class="form-group mb-3">
                                 <label for="currency">MAP TYPE</label>
                                 <select class="form-control" id="map_type" name="map_type">
-                                    <option>Select map type</option>
                                     <option value="google_maps"
                                         {{ (isset($preference) && $preference->map_type =="google_maps")? "selected" : "" }}>
                                         Google Maps</option>
@@ -110,7 +109,6 @@
                             <div class="form-group mb-3">
                                 <label for="sms_provider">CURRENT SELECTION</label>
                                 <select class="form-control" id="sms_provider" name="sms_provider">
-                                    <option>Select SMS Service</option>
                                     <option value="Twilio"
                                         {{ (isset($preference) && $preference->sms_provider =="Twilio")? "selected" : "" }}>
                                         Twilio</option>

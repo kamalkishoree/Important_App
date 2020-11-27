@@ -18,7 +18,13 @@ class Order extends Model
     }
 
     public function task(){
-        return $this->hasOne('App\Model\Task', 'order_id', 'id');
+        return $this->hasMany('App\Model\Task', 'order_id', 'id');
         
     }
+
+    public function agent(){
+        return $this->hasOne('App\Model\Agent', 'id', 'driver_id');
+        
+    }
+    
 }

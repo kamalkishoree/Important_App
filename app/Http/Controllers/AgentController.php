@@ -4,7 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use App\Model\{Agent, Team, TagsForTeam};
+use App\Model\Agent;
+use App\Model\Team;
+use App\Model\TagsForAgent;
+use App\Model\TagsForTeam;
 
 class AgentController extends Controller
 {
@@ -16,6 +19,11 @@ class AgentController extends Controller
     public function index()
     {
         $agents = Agent::orderBy('created_at', 'DESC')->get();
+        $tags  = TagsForAgent::all();
+        $tag   = [];
+        foreach ($tags as $key => $value) {
+            array_push($tag,$value->name);
+        }
         $teams  = Team::where('client_id',auth()->user()->id)->orderBy('name')->get();
         $tags   = TagsForTeam::all();
         //dd($tags->toArray());
