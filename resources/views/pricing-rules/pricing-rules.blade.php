@@ -67,6 +67,7 @@
                     <div class="">
                         <h4 class="header-title mt-3 mt-md-0">Set Priorty</h4>
                         <div class="custom-dd dd" id="nestable_list_2">
+                            @if(!empty($priority))
                             <ol class="dd-list" id="priority">
                                 <li class="dd-item" data-id="{{ $priority->first }}">
                                     <div class="dd-handle">
@@ -90,6 +91,7 @@
                                     </div>
                                 </li>
                             </ol>
+                            @endif
                         </div>
                     </div> <!-- end col -->
                     

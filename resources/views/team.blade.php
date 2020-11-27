@@ -66,6 +66,13 @@
             vertical-align: baseline;
             border-radius: 0.25em;
         }
+        #ui-id-1, #ui-id-2{
+            z-index: 9999 ;
+
+        }
+        #ui-id-1 li, #ui-id-2 li{
+            z-index: 9999 ;
+        }
 
     </style>
 @endsection
@@ -99,8 +106,8 @@
                                 </div>
                             </div>
                             <div class="col-sm-4 text-right">
-                                <a href="{{ route('team.create') }}"><button type="button" class="btn btn-blue waves-effect waves-ligh"><i
-                                        class="mdi mdi-plus-circle mr-1"></i> Add Team</button></a>
+                                <button type="button" class="btn btn-blue waves-effect waves-light openModal" data-toggle="modal"
+                                    data-target="" data-backdrop="static" data-keyboard="false"><i class="mdi mdi-plus-circle mr-1"></i> Add Team</button>
                             </div>
 
                         </div>
@@ -253,28 +260,120 @@
 
 
     </div>
+
+    <div id="add-agent-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Add {{ Session::get('agent_name') }}</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            </div>
+            <form id="submitTeam" action="{{ route('team.store') }}" method="POST">
+                @csrf
+                <div class="modal-body p-4">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group" id="nameInput">
+                                <label for="name" class="control-label">NAME</label>
+                                <input type="text" class="form-control" name="name" id="name" placeholder="John Doe"
+                                    require>
+                                <span class="invalid-feedback" role="alert">
+                                    <strong></strong>
+                                </span>
+                            </div>
+                        </div>
+                       
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group mb-3" id="location_accuracyInput">
+                                <label for="location_accuracy">Location Accuracy</label>
+                                <select class="form-control" id="location_accuracy" name="location_accuracy">
+                                    @foreach ($location_accuracy as $k => $la)
+                                        <option value="{{ $k }}">{{ $la }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group mb-3" id="location_frequencyInput">
+                                <label for="location_frequency">Location Frequency</label>
+                                <select class="form-control" id="location_frequency" name="location_frequency">
+                                    @foreach ($location_frequency as $k => $lf)
+                                        <option value="{{ $k }}">{{ $lf }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="form-group mb-3">
+                                <label>Tag</label>
+                                <input id="form-tags-1" name="tags" type="text" value="" class="myTag1">
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <button type="submit" class="btn btn-info waves-effect waves-light">Submit</button>
+                        </div>
+                    </div>
+
+                </div>
+                
+            </form>
+        </div>
+    </div>
+</div>
+
 @endsection
-
-
-
 
 @section('script')
 
-    
 
-
-    <script src="https://code.jquery.com/jquery-3.1.1.min.js"
-        integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
-    <script src="http://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
-        integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+    <script src="http://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="http://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 
+    <script src="{{ asset('assets/libs/flatpickr/flatpickr.min.js') }}"></script>
+    <script src="{{ asset('assets/libs/select2/select2.min.js') }}"></script>
+    <script src="{{ asset('assets/libs/bootstrap-select/bootstrap-select.min.js') }}"></script>
+    <script src="{{ asset('assets/js/pages/form-advanced.init.js') }}"></script>
+    <script src="{{ asset('assets/js/pages/form-pickers.init.js') }}"></script>
+    <script src="{{ asset('assets/js/storeAgent.js') }}"></script>
+    <script src="{{ asset('assets/libs/dropzone/dropzone.min.js') }}"></script>
+    <script src="{{ asset('assets/libs/dropify/dropify.min.js') }}"></script>
+    <script src="{{ asset('assets/js/pages/form-fileuploads.init.js') }}"></script>
+    <script src="{{ asset('assets/libs/datatables/datatables.min.js') }}"></script>
+    <script src="{{ asset('assets/libs/sweetalert2/sweetalert2.min.js') }}"></script> 
+
+
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/8.4.7/js/intlTelInput.js"></script>
+
+
     <script src="{{ asset('assets/js/jquery.tagsinput-revisited.js') }}"></script>
+    <link rel="stylesheet" href="{{ asset('assets/css/jquery.tagsinput-revisited.css') }}" />
 
-    <script>
-        $(function() {
 
-            $('#form-tags-4').tagsInput({
+    <script type="text/javascript">
+
+        $('.openModal').click(function(){
+                    $('#add-agent-modal').modal({
+                        backdrop: 'static',
+                        keyboard: false
+                    });
+                    aaasa();
+                });
+
+        function aaasa(){
+
+            $('.myTag1').tagsInput({
                 'autocomplete': {
                     source: [
                         'apple',
@@ -282,11 +381,9 @@
                         'orange',
                         'pizza'
                     ]
-                }
-            })
-
-
-        });
+                } 
+            });
+        }
 
     </script>
 

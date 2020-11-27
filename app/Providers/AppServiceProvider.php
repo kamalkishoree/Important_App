@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\View;
 use App\Model\Team;
 use App\Model\Tag;
 
+
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -40,5 +41,9 @@ class AppServiceProvider extends ServiceProvider
             $tags = Tag::select('id', 'name')->get();
             $view->with(["tags"=>$tags]);
         });
+
+        //Passport::hashClientSecrets();
+
+        //Passport::withCookieSerialization();
     }
 }
