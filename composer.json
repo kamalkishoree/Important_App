@@ -9,20 +9,24 @@
     "license": "MIT",
     "require": {
         "php": "^7.2.5",
+        "artisangang/jwt": "^0.2.0",
+        "darkaonline/l5-swagger": "^8.0",
         "doctrine/dbal": "^2.10",
         "fideloper/proxy": "^4.2",
         "fruitcake/laravel-cors": "^1.0",
         "guzzlehttp/guzzle": "^6.3",
         "intervention/image": "^2.5",
         "laravel/framework": "^7.0",
+        "laravel/passport": "^9.3",
         "laravel/tinker": "^2.0",
         "laravel/ui": "^2.0",
         "laravelcollective/html": "^6.2",
-        "league/flysystem-aws-s3-v2": "^1.0",
+        "lcobucci/jwt": "3.3.3",
         "predis/predis": "^1.1",
         "r0bdiablo/laravel5-phumbor": "^1.0",
         "rinvex/countries": "^6.1",
-        "sarav/laravel-multiauth": "dev-master"
+        "sarav/laravel-multiauth": "dev-master",
+        "twilio/sdk": "^6.13"
     },
     "require-dev": {
         "facade/ignition": "^2.0",

@@ -14,6 +14,45 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
+
+
+/*Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
+});*/
+
+Route::get('shortCodes', 'Api\ShortcodeController@getCode');
+
+Route::group(['middleware' => ['dbCheck','auth:api']], function() {
+	Route::get('checkShortCode', 'Api\ShortcodeController@getCode1');
+});
+
+Route::group([
+    'prefix' => 'auth'
+], function () {
+
+
+	Route::group([
+      'middleware' => ['dbCheck', 'AppAuth']
+    ], function() {
+        Route::get('logout', 'Api\AuthController@logout');
+        Route::get('user', 'Api\AuthController@user');
+    });
+
+    Route::group([
+      'middleware' => 'dbCheck'
+    ], function() {
+    	Route::post('sendOtp', 'Api\AuthController@sendOtp');
+        Route::post('login', 'Api\AuthController@login');
+    	Route::post('signup', 'Api\AuthController@signup');
+    });
+
+
+
+    
+  
+    /*Route::group([
+      
+    ], function() {
+        
+    });*/
 });

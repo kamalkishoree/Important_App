@@ -113,7 +113,7 @@
                             </div>
                         </div>
                     </div>
-
+                    <input id="form-tags-1" name="tags-1" type="text" value="" class="myTag1">
 
                     <div class="row">
                         <div class="col-md-12">
@@ -157,4 +157,4 @@
             </form>
         </div>
     </div>
-</div><!-- /.modal -->
+</div>
