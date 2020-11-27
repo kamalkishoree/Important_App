@@ -223,7 +223,7 @@
                         </div>
 
                         <div class="taskrepet" id="newadd">
-                          @foreach ($task->task as $item)
+                          @foreach ($task->task as $keys => $item)
                           <div class="copyin1" id="copyin1">
                             <div class="requried">
                               <div class="row firstclone1">
@@ -234,9 +234,9 @@
                                       <div class="form-group mb-3">
                                           <select class="form-control selecttype" id="task_type"  name="task_type_id[]" required>
                                               <option value="">Selcet Task </option>
-                                              <option value="1">Pickup</option>
-                                              <option value="2">Drop</option>
-                                              <option value="3">Appintment</option>
+                                              <option value="1" {{$item->task_type_id == 1 ? 'selected' :''}}>Pickup</option>
+                                              <option value="2" {{$item->task_type_id == 2 ? 'selected' :''}}>Drop</option>
+                                              <option value="3" {{$item->task_type_id == 3 ? 'selected' :''}}>Appintment</option>
 
                                           </select>
                                       </div>
@@ -254,7 +254,7 @@
                                   </div>
                                   <div class="col-md-1 " >
 
-                                      <span class="span1 onedelete" id="spancheck">Delete</span>
+                                  <span class="span1 onedelete" id="{{$keys == 0 ? 'spancheck' :'newspan'}}">Delete</span>
 
 
                                   </div>
@@ -283,7 +283,11 @@
                                   </div>
                                   <div class="col-md-6">
                                       <div class="form-group withradio" id="typeInputss">
-                                          <h5 class="oldhide">Saved Addresses</h5>
+                                      
+                                        @foreach ($task->customer->location as $key => $items)
+                                        
+                                      <div class="append"><div class="custom-control custom-radio"><input type="radio" id="{{$keys}}{{$items->id}}{{12}}" name="old_address_id{{$keys}}" value="{{$items->id}}" {{$item->location_id == $items->id ? 'checked':'' }} class="custom-control-input redio"><label class="custom-control-label" for="{{$keys}}{{$items->id}}{{12}}"><span class="spanbold">{{$items->short_name}}</span>-{{$items->address}}</label></div></div>
+                                        @endforeach
 
                                       </div>
                                   </div>
@@ -578,12 +582,13 @@
                 // {
 
                         var $div = $('div[class^="copyin"]:last');
+                        var newcheck = $div.find('.redio');
+                        console.log(newcheck);
                         var num = parseInt( $div.prop("id").match(/\d+/g), 10 ) +1;
                         var $clone = $div.clone().prop('class', 'copyin')
                         $clone.insertAfter('[class^="copyin"]:last');
                         // get all the inputs inside the clone
                         var inputs = $clone.find('.redio');
-                        console.log(inputs);
                         // for each input change its name/id appending the num value
                         var count0 = 1;
                         $.each(inputs, function(index, elem){
@@ -608,8 +613,9 @@
                             name = rand;
                             
                             name += count1;
-                            console.log(name);
+                            
                             jElem.prop('id', name);
+                            jElem.prop('checked', false);
                             count1++;
                         });
                         var count2 = 1;
@@ -623,7 +629,7 @@
                             name = rand;
                             
                             name += count2;
-                            console.log(name);
+                            
                             jElem.prop('for', name);
                             count2++;
                         });
