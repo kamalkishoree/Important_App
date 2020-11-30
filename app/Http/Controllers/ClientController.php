@@ -18,6 +18,7 @@ use App\Model\Client;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Redis;
 use Session;
+use Illuminate\Support\Facades\Storage;
 
 class ClientController extends Controller
 {
@@ -110,14 +111,13 @@ class ClientController extends Controller
 
         // Handle File Upload
         if ($request->hasFile('logo')) {
-
             $file = $request->file('logo');
-            $filenameWithExt = $request->file('logo')->getClientOriginalName();
-            $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
-            $fileNameToStore = $filename . '_' . time() . '.' . $file->getClientOriginalExtension();
-            $file->move(public_path() . '/clients', $fileNameToStore);
-            $getFileName = $fileNameToStore;
+            $file_name = uniqid() .'.'.  $file->getClientOriginalExtension();
+            $s3filePath = '/assets/Clientlogo/' . $file_name;
+            $path = Storage::disk('s3')->put($s3filePath, $file,'public');
+            $getFileName = $path;
         }
+
         $database_name = preg_replace('/\s+/', '', $request->database_name);
         $data = [
             'name' => $request->name,
@@ -215,11 +215,10 @@ class ClientController extends Controller
         // Handle File Upload
         if ($request->hasFile('logo')) {
             $file = $request->file('logo');
-            $filenameWithExt = $request->file('logo')->getClientOriginalName();
-            $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
-            $fileNameToStore = $filename . '_' . time() . '.' . $file->getClientOriginalExtension();
-            $file->move(public_path() . '/clients', $fileNameToStore);
-            $getFileName = $fileNameToStore;
+            $file_name = uniqid() .'.'.  $file->getClientOriginalExtension();
+            $s3filePath = '/assets/Clientlogo/' . $file_name;
+            $path = Storage::disk('s3')->put($s3filePath, $file,'public');
+            $getFileName = $path;
         }
         
         $data = [

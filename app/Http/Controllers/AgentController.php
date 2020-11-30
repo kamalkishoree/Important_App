@@ -8,6 +8,8 @@ use App\Model\Agent;
 use App\Model\Team;
 use App\Model\TagsForAgent;
 use App\Model\TagsForTeam;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
 
 class AgentController extends Controller
 {
@@ -71,13 +73,14 @@ class AgentController extends Controller
         $validator = $this->validator($request->all())->validate();
         $getFileName = NULL;
         // Handle File Upload
-        if($request->hasFile('profile_picture')) {
+        if ($request->hasFile('profile_picture')) {
+            $folder = str_pad(Auth::user()->id, 8, '0', STR_PAD_LEFT);
+            $folder = 'client_'.$folder;
             $file = $request->file('profile_picture');
-            $filenameWithExt = $request->file('profile_picture')->getClientOriginalName();
-            $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME); 
-            $fileNameToStore = $filename.'_'.time().'.'.$file->getClientOriginalExtension();  
-            $file->move(public_path().'/agents',$fileNameToStore);
-            $getFileName = $fileNameToStore;
+            $file_name = uniqid() .'.'.  $file->getClientOriginalExtension();
+            $s3filePath = '/assets/'.$folder.'/agents' . $file_name;
+            $path = Storage::disk('s3')->put($s3filePath, $file,'public');
+            $getFileName = $path;
         }
            
         $data = [
@@ -164,13 +167,15 @@ class AgentController extends Controller
         $getAgent = Agent::find($id);
         $getFileName = $getAgent->profile_picture;
 
-        if($request->hasFile('profile_picture')) {
+        //handal image upload
+        if ($request->hasFile('profile_picture')) {
+            $folder = str_pad(Auth::user()->id, 8, '0', STR_PAD_LEFT);
+            $folder = 'client_'.$folder;
             $file = $request->file('profile_picture');
-            $filenameWithExt = $request->file('profile_picture')->getClientOriginalName();
-            $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME); 
-            $fileNameToStore = $filename.'_'.time().'.'.$file->getClientOriginalExtension();  
-            $file->move(public_path().'/agents',$fileNameToStore);
-            $getFileName = $fileNameToStore;
+            $file_name = uniqid() .'.'.  $file->getClientOriginalExtension();
+            $s3filePath = '/assets/'.$folder.'/agents' . $file_name;
+            $path = Storage::disk('s3')->put($s3filePath, $file,'public');
+            $getFileName = $path;
         }
 
         $data = [

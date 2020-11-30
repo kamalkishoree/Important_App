@@ -57,10 +57,10 @@ return [
 
         's3' => [
             'driver' => 's3',
-            'key' => env('AWS_ACCESS_KEY_ID'),
-            'secret' => env('AWS_SECRET_ACCESS_KEY'),
-            'region' => env('AWS_DEFAULT_REGION'),
-            'bucket' => env('AWS_BUCKET'),
+            'key' => env('AWS_ACCESS_KEY_ID','AKIAUDRAUVRKGAJ6T2UN'),
+            'secret' => env('AWS_SECRET_ACCESS_KEY','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'),
+            'region' => env('AWS_DEFAULT_REGION','us-west-2'),
+            'bucket' => env('AWS_BUCKET','royodelivery-assets'),
             'url' => env('AWS_URL'),
             'endpoint' => env('AWS_ENDPOINT'),
         ],

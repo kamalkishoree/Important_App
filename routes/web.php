@@ -53,9 +53,7 @@ Route::group(['prefix' => '/godpanel'], function () {
 			
 		
 		
-	Route::get('', function(){
-		return view('dashboard');
-	})->name('index');
+	Route::get('','DashBoardController@index')->name('index');
 	Route::get('customize', 'ClientController@ShowPreference')->name('preference.show');
 	Route::post('client_preference/{id}', 'ClientController@storePreference')->name('preference');
 	Route::get('configure', 'ClientController@ShowConfiguration')->name('configure');

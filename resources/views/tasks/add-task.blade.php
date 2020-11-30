@@ -108,6 +108,14 @@
        #spancheck{
            display: none;
        }
+       .imagepri{
+        min-width: 50px;
+           height: 50px;
+           width: 50px;
+           border-style: groove;
+           margin-left: 5px;
+           margin-top: 5px;
+       }
 
     </style>
 
@@ -127,7 +135,7 @@
         <!-- start page title -->
 
         <!-- end page title -->
-        <form id="task_form" action="{{ route('tasks.store') }}" method="POST">
+        <form id="task_form" action="{{ route('tasks.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
             <div class="row">
 
@@ -308,6 +316,12 @@
                                     'Recipient Phone', 'required' => 'required']) !!}
                                     {!! Form::email('recipient_email', null, ['class' => 'form-control rec', 'placeholder'
                                     => 'Recipient Email', 'required' => 'required']) !!}
+                                        {!! Form::textarea('task_description', null, ['class' => 'form-control',
+                                        'placeholder' => 'Task_description', 'rows' => 2, 'cols' => 40]) !!}
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong></strong>
+                                        </span>
+                                   
                                     <span class="invalid-feedback" role="alert">
                                         <strong></strong>
                                     </span>
@@ -317,12 +331,9 @@
                             <div class="col-md-6">
                                 <div class="form-group" id="colorInput">
 
-                                    <div class="form-group" id="make_modelInput">
-                                        {!! Form::textarea('task_description', null, ['class' => 'form-control',
-                                        'placeholder' => 'Task_description', 'rows' => 3, 'cols' => 40]) !!}
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong></strong>
-                                        </span>
+                                    <input id="file" type="file" name="file[]" multiple/>
+                                    <div class="allimages">
+                                      <div id="imagePreview" class="privewcheck"></div>
                                     </div>
                                 </div>
 
@@ -411,58 +422,7 @@
             </div>
 
         </form>
-        <div class="row">
-            <div class="col-3">
-                <div class="card">
-                    <div class="card-body">
-                        <h4 class="header-title">Dropzone File Upload</h4>
-
-
-                        <form action="/" method="post" class="dropzone" id="myAwesomeDropzone" data-plugin="dropzone"
-                            data-previews-container="#file-previews" data-upload-preview-template="#uploadPreviewTemplate">
-                            <div class="fallback">
-                                <input name="file" type="file" multiple />
-                            </div>
-
-                            <div class="dz-message needsclick">
-                                <i class="h1 text-muted dripicons-cloud-upload"></i>
-                                <h3>Drop files here or click to upload.</h3>
-                                <span class="text-muted font-13">(This is just a demo dropzone. Selected files are
-                                    <strong>not</strong> actually uploaded.)</span>
-                            </div>
-                        </form>
-
-                        <!-- Preview -->
-                        <div class="dropzone-previews mt-3" id="file-previews"></div>
-
-                    </div> <!-- end card-body-->
-                </div> <!-- end card-->
-            </div><!-- end col -->
-        </div>
-        <!-- end row -->
-
-        <!-- file preview template -->
-        <div class="d-none" id="uploadPreviewTemplate">
-            <div class="card mt-1 mb-0 shadow-none border">
-                <div class="p-2">
-                    <div class="row align-items-center">
-                        <div class="col-auto">
-                            <img data-dz-thumbnail src="#" class="avatar-sm rounded bg-light" alt="">
-                        </div>
-                        <div class="col pl-0">
-                            <a href="javascript:void(0);" class="text-muted font-weight-bold" data-dz-name></a>
-                            <p class="mb-0" data-dz-size></p>
-                        </div>
-                        <div class="col-auto">
-                            <!-- Button -->
-                            <a href="" class="btn btn-link btn-lg text-muted" data-dz-remove>
-                                <i class="dripicons-cross"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+     
 
 
     </div>
@@ -535,6 +495,12 @@
                 $('input[name=ids').val('');
                 $('.copyin').remove();
             });
+
+            $("#file").click(function() {
+                $('.imagepri').remove();
+                
+            });
+            
             
             $(document).on('click', ".span1", function() {
                 
@@ -572,8 +538,25 @@
                 // this.defaultValue = this.value;
                 // if (direction)
                 // {
-
+                        var newids = null;
                         var $div = $('div[class^="copyin"]:last');
+                        var newcheck = $div.find('.redio');
+                        $.each(newcheck, function(index, elem){
+                            var jElem = $(elem); // jQuery element
+                            var name = jElem.prop('checked');
+                            var id = jElem.prop('id');
+                            if(name == true){
+                              newids = id;
+                            }
+                            
+                            
+                            // remove the number
+                            //name = name.replace(/\d+/g, '');
+                            //name += a;
+                            //jElem.prop('name', name);
+                            //count0++;
+                        });
+
                         var num = parseInt( $div.prop("id").match(/\d+/g), 10 ) +1;
                         var $clone = $div.clone().prop('class', 'copyin')
                         $clone.insertAfter('[class^="copyin"]:last');
@@ -606,6 +589,7 @@
                             name += count1;
                             console.log(name);
                             jElem.prop('id', name);
+                            jElem.prop('checked', false);
                             count1++;
                         });
                         var count2 = 1;
@@ -644,6 +628,7 @@
                         // $(".taskrepet").fadeIn();
                 // }
                 // else $('[id^="newadd"]:last').remove();
+                $('input[id='+newids+']').prop("checked",true);
             });
 
             //$("#myselect").val();
@@ -815,6 +800,23 @@
 
 
             });
+
+            var inputLocalFont = document.getElementById("file");
+             inputLocalFont.addEventListener("change",previewImages,false);
+
+             function previewImages(){
+              var fileList = this.files;
+    
+              var anyWindow = window.URL || window.webkitURL;
+
+              for(var i = 0; i < fileList.length; i++){
+               var objectUrl = anyWindow.createObjectURL(fileList[i]);
+               $('#imagePreview').append('<img src="' + objectUrl + '" class="imagepri" />');
+               window.URL.revokeObjectURL(fileList[i]);
+               }
+    
+    
+            }
 
 
         });

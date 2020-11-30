@@ -13,6 +13,8 @@ use Illuminate\Http\Request;
 use App\Model\Agent;
 use App\Model\Order;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
 
 
 class TaskController extends Controller
@@ -63,20 +65,23 @@ class TaskController extends Controller
 
         $images = [];
         $last = '';
-        if (count($request->files) > 0) {
-
-            $files = $request->file('files');
+        
+        if (count($request->file) > 0) {
+            $folder = str_pad(Auth::user()->id, 8, '0', STR_PAD_LEFT);
+            $folder = 'client_'.$folder;
+            $files = $request->file('file');
             foreach ($files as $key => $value) {
-
                 $file = $value;
-                $filenameWithExt = $value->getClientOriginalName();
-                $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
-                $fileNameToStore = $filename . '_' . time() . '.' . $file->getClientOriginalExtension();
-                $file->move(public_path() . '/taskimage', $fileNameToStore);
-                $getFileName = $fileNameToStore;
-                array_push($images, $getFileName);
-                $last = implode(",", $images);
+                $file_name = uniqid() .'.'.  $file->getClientOriginalExtension();
+                
+                $s3filePath = '/assets/'.$folder.'/' . $file_name;
+                $path = Storage::disk('s3')->put($s3filePath, $file,'public');
+                array_push($images, $path);
+                // $can = Storage::disk('s3')->url('image.png');
+                // $last = str_replace('image.png', '', $can);
+               
             }
+               $last = implode(",", $images);
         }
         if (!isset($request->ids)) {
             $cus = [
@@ -96,8 +101,11 @@ class TaskController extends Controller
             'recipient_phone'            => $request->recipient_phone,
             'Recipient_email'            => $request->recipient_email,
             'task_description'           => $request->task_description,
-            'driver_id'                  => $request->agent,
-            'images_array'               => $last
+            'driver_id'                  => $request->allocation_type === 'Manual' ? $request->agent:null,
+            'auto_alloction'             => $request->allocation_type,
+            'images_array'               => $last,
+            'order_type'                 => $request->task_type,
+            'order_time'                 => $request->schedule_time,
         ];
         $orders = Order::create($order);
 
@@ -128,7 +136,7 @@ class TaskController extends Controller
                 'order_id'                   => $orders->id,
                 'task_type_id'               => $value,
                 'location_id'                => $loc_id,
-                'allocation_type'            => $request->allocation_type[$key],            
+                'allocation_type'            => $request->appointment_date[$key],            
                 'dependent_task_id'          => $dep_id,
             ];
             $task = Task::create($data);
@@ -138,10 +146,10 @@ class TaskController extends Controller
 
         if (isset($request->allocation_type) && $request->allocation_type === 'auto') {
             if (isset($request->team_tag)) {
-                $task->teamtags()->sync($request->team_tag);
+                $orders->teamtags()->sync($request->team_tag);
             }
             if (isset($request->agent_tag)) {
-                $task->drivertags()->sync($request->agent_tag);
+                $orders->drivertags()->sync($request->agent_tag);
             }
         }
 
@@ -168,6 +176,7 @@ class TaskController extends Controller
      */
     public function edit($id)
     {
+        
         $savedrivertag = [];
         $saveteamtag   = [];
         $task           = Order::where('id', $id)->with(['customer.location', 'location', 'task','agent'])->first();
@@ -181,14 +190,21 @@ class TaskController extends Controller
                 array_push($saveteamtag, $value->tag_id);
             }
         }
-        
+        //for s3 base url
+        $can = Storage::disk('s3')->url('image.png');
+        $lastbaseurl = str_replace('image.png', '', $can);
 
         $teamTag        = TagsForTeam::all();
         $agentTag       = TagsForAgent::all();
         $agents         = Agent::orderBy('created_at', 'DESC')->get();
-        $array          = explode(",", isset($task->images_array));
-        
-        return view('tasks/update-task')->with(['task' => $task, 'teamTag' => $teamTag, 'agentTag' => $agentTag, 'agents' => $agents, 'images' => $array, 'savedrivertag' => $savedrivertag, 'saveteamtag' => $saveteamtag]);
+       
+        if(isset($task->images_array)){
+            $array = explode(",", $task->images_array);
+        }else{
+            $array = '';
+        }
+
+        return view('tasks/update-task')->with(['task' => $task, 'teamTag' => $teamTag, 'agentTag' => $agentTag, 'agents' => $agents, 'images' => $array, 'savedrivertag' => $savedrivertag, 'saveteamtag' => $saveteamtag,'main' => $lastbaseurl]);
     }
 
     /**
@@ -200,11 +216,32 @@ class TaskController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $task_id = Task::find($id);
+    //    dd($request->all());
+        $task_id = Order::find($id);
         $validator = $this->validator($request->all())->validate();
         $loc_id = 0;
         $cus_id = 0;
-        if (isset($request->name)) {
+        
+        $images = [];
+        $last = '';
+        if (isset($request->file) && count($request->file) > 0) {
+            $folder = str_pad(Auth::user()->id, 8, '0', STR_PAD_LEFT);
+            $folder = 'client_'.$folder;
+            $files = $request->file('file');
+            foreach ($files as $key => $value) {
+                $file = $value;
+                $file_name = uniqid() .'.'.  $file->getClientOriginalExtension();
+                
+                $s3filePath = '/assets/'.$folder.'/' . $file_name;
+                $path = Storage::disk('s3')->put($s3filePath, $file,'public');
+                array_push($images, $path);
+                // $can = Storage::disk('s3')->url('image.png');
+                // $last = str_replace('image.png', '', $can);
+               
+            }
+               $last = implode(",", $images);
+        }
+        if (!isset($request->ids)) {
             $cus = [
                 'name' => $request->name,
                 'email' => $request->email,
@@ -215,56 +252,54 @@ class TaskController extends Controller
         } else {
             $cus_id = $request->ids;
         }
-        // $images = [];
-        $last = '';
-        if (count($request->files) > 0) {
-
-            $files = $request->file('files');
-            foreach ($files as $key => $value) {
-
-                $file = $value;
-                $filenameWithExt = $value->getClientOriginalName();
-                $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
-                $fileNameToStore = $filename . '_' . time() . '.' . $file->getClientOriginalExtension();
-                $file->move(public_path() . '/taskimage', $fileNameToStore);
-                $getFileName = $fileNameToStore;
-                array_push($images, $getFileName);
-                $last = implode(",", $images);
-            }
-        }
-
-        if (isset($request->short_name) && isset($request->address) && isset($request->post_code)) {
-            $loc = [
-                'short_name' => $request->short_name,
-                'address'    => $request->address,
-                'post_code'  => $request->post_code,
-                'created_by' => $cus_id,
-            ];
-            $Loction = Location::create($loc);
-            $loc_id = $Loction->id;
-        } else {
-            $loc_id = $request->old_address_id;
-        }
-
         $order = [
             'customer_id'                => $cus_id,
             'recipient_phone'            => $request->recipient_phone,
-            'Recipient_email'            => $request->recipient_email,
+            'Recipient_email'            => $request->Recipient_email,
             'task_description'           => $request->task_description,
             'driver_id'                  => isset($request->allocation_type) && $request->allocation_type == 'Manual' ? $request->agent : null,
-            //'images_array'               => $last
+            'order_type'                 => $request->task_type,
+            'order_time'                 => $request->schedule_time,
+            'auto_alloction'             => $request->allocation_type,
         ];
         $orders = Order::where('id', $id)->update($order);
+         if($last != ''){
+            $orderimages = Order::where('id',$id)->update(['images_array' => $last]);
+         }
+       
+         Task::where('order_id',$id)->delete();
+        $dep_id = null;
+        foreach ($request->task_type_id as $key => $value) {
 
+            if (isset($request->short_name[$key])) {
+                $loc = [
+                    'short_name' => $request->short_name[$key],
+                    'address'    => $request->address[$key],
+                    'post_code'  => $request->post_code[$key],
+                    'created_by' => $cus_id,
+                ];
+               $Loction = Location::create($loc);
+               $loc_id = $Loction->id;
+            } else {
+                if($key == 0){
+                    $loc_id = $request->old_address_id;
+                }else{
+                    $loc_id = $request->input('old_address_id'.$key);
+                   
+                }
+                
+            }
 
-        $data = [
-            'order_id'                   => $id,
-            'task_type_id'               => $request->task_type_id,
-            'location_id'                => $loc_id,
-            'allocation_type'            => $request->allocation_type
-        ];
-
-        $task = Task::where('id', $task_id->id)->update($data);
+            $data = [
+                'order_id'                   => $id,
+                'task_type_id'               => $value,
+                'location_id'                => $loc_id,
+                'allocation_type'            => $request->allocation_type[$key],            
+                'dependent_task_id'          => $dep_id,
+            ];
+            $task = Task::create($data);
+            $dep_id = $task->id;
+        }
 
         if (isset($request->allocation_type) && $request->allocation_type === 'auto') {
             if (isset($request->team_tag)) {
@@ -273,7 +308,7 @@ class TaskController extends Controller
             if (isset($request->agent_tag)) {
                 $task_id->drivertags()->sync($request->agent_tag);
             }
-        } else {
+        }else {
             $teamTag = [];
             $drivertag = [];
             $task_id->teamtags()->sync($teamTag);
@@ -281,9 +316,9 @@ class TaskController extends Controller
         }
 
 
-
-
         return redirect()->route('tasks.index')->with('success', 'Task Updated successfully!');
+
+       
     }
 
     /**
@@ -294,7 +329,7 @@ class TaskController extends Controller
      */
     public function destroy($id)
     {
-        Task::where('id', $id)->delete();
+        Order::where('id', $id)->delete();
         return redirect()->back()->with('success', 'Task deleted successfully!');
     }
 

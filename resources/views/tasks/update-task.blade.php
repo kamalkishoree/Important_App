@@ -108,6 +108,14 @@
        #spancheck{
            display: none;
        }
+       .imagepri{
+        min-width: 50px;
+           height: 50px;
+           width: 50px;
+           border-style: groove;
+           margin-left: 5px;
+           margin-top: 5px;
+       }
 
     </style>
 
@@ -127,7 +135,7 @@
         <!-- start page title -->
 
         <!-- end page title -->
-        {!! Form::model($task, ['route' => ['tasks.update', $task->id]]) !!}
+        {!! Form::model($task, ['route' => ['tasks.update', $task->id],'enctype' => 'multipart/form-data']) !!}
         {{ method_field('PATCH') }}
             @csrf
             <div class="row">
@@ -145,20 +153,20 @@
                             <div class="col-md-2">
                                 <div class="custom-control custom-radio custom-control-inline">
                                     <input type="radio" class="custom-control-input check" id="tasknow"
-                                        name="task_type" value="now" checked>
+                                name="task_type" value="now" {{$task->order_type == 'now'?'checked':'' }}>
                                     <label class="custom-control-label" for="tasknow">Now</label>
                                 </div>
                             </div>
                             <div class="col-md-1">
                                 <div class="custom-control custom-radio custom-control-inline">
                                     <input type="radio" class="custom-control-input check" id="taskschedule"
-                                        name="task_type" value="schedule" >
+                                        name="task_type" value="schedule" {{$task->order_type == 'schedule'?'checked':'' }} >
                                     <label class="custom-control-label" for="taskschedule"></label>
                                 </div>
                             </div>
                             <div class="col-md-4 datenow">
                                 <input type="text" id='datetime-datepicker' name="schedule_time"
-                                    class="form-control upside" placeholder="DateTime">
+                            class="form-control upside" placeholder="DateTime" value="{{$task->order_time != null ? $task->order_time :'' }}">
                             </div>
                         </div>
 
@@ -224,7 +232,8 @@
 
                         <div class="taskrepet" id="newadd">
                           @foreach ($task->task as $keys => $item)
-                          <div class="copyin1" id="copyin1">
+                           @php $maincount = 0; @endphp
+                        <div class="copyin{{$keys == 0?'1':''}}" id="copyin1">
                             <div class="requried">
                               <div class="row firstclone1">
                                   <div class="col-md-4">
@@ -242,9 +251,8 @@
                                       </div>
                                   </div>
                                   <div class="col-md-3">
-                                      <div class="form-group appoint">
-                                          {!! Form::text('appointment_date[]', null, ['class' => 'form-control
-                                          appointment_date', 'placeholder' => 'Duration (In Min)']) !!}
+                                      <div class="form-group {{$item->task_type_id == 3 ? 'newclass' :'appoint'}}">
+                                        <input type="text" class="form-control appointment_date" name="appointment_date[]" placeholder="Duration (In Min)" value="{{$item->allocation_type}}">
                                           <span class="invalid-feedback" role="alert">
                                               <strong></strong>
                                           </span>
@@ -268,13 +276,13 @@
                                   <div class="col-md-6">
                                       <div class="form-group alladdress" id="typeInput">
                                           {!! Form::text('short_name[]', null, ['class' => 'form-control address',
-                                          'placeholder' => 'Address Short Name','required' => 'required']) !!}
+                                          'placeholder' => 'Address Short Name']) !!}
                                           {!! Form::textarea('address[]', null, ['class' => 'form-control address',
-                                          'placeholder' => 'Full Address','required' => 'required', 'rows' => 2]) !!}
+                                          'placeholder' => 'Full Address', 'rows' => 2]) !!}
                                           {!! Form::text('post_code[]', null, [
                                           'class' => 'form-control address',
                                           'placeholder' => 'PostsCode',
-                                          'required' => 'required']) !!}
+                                          ]) !!}
                                           <span class="invalid-feedback" role="alert">
                                               <strong></strong>
                                           </span>
@@ -283,12 +291,13 @@
                                   </div>
                                   <div class="col-md-6">
                                       <div class="form-group withradio" id="typeInputss">
-                                      
+                                        <h5 class="oldhide">Saved Addresses</h5>
                                         @foreach ($task->customer->location as $key => $items)
                                         
-                                      <div class="append"><div class="custom-control custom-radio"><input type="radio" id="{{$keys}}{{$items->id}}{{12}}" name="old_address_id{{$keys}}" value="{{$items->id}}" {{$item->location_id == $items->id ? 'checked':'' }} class="custom-control-input redio"><label class="custom-control-label" for="{{$keys}}{{$items->id}}{{12}}"><span class="spanbold">{{$items->short_name}}</span>-{{$items->address}}</label></div></div>
+                                      <div class="append"><div class="custom-control custom-radio"><input type="radio" id="{{$keys}}{{$items->id}}{{12}}" name="old_address_id{{$keys!=0?$keys:''}}" value="{{$items->id}}" {{$item->location_id == $items->id ? 'checked':'' }} class="custom-control-input redio"><label class="custom-control-label" for="{{$keys}}{{$items->id}}{{12}}"><span class="spanbold">{{$items->short_name}}</span>-{{$items->address}}</label></div></div>
+                                        
                                         @endforeach
-
+                                        @php $maincount++; @endphp
                                       </div>
                                   </div>
                               </div>
@@ -314,8 +323,10 @@
                                 <div class="form-group" id="make_modelInput">
                                     {!! Form::text('recipient_phone', null, ['class' => 'form-control rec', 'placeholder' =>
                                     'Recipient Phone', 'required' => 'required']) !!}
-                                    {!! Form::email('recipient_email', null, ['class' => 'form-control rec', 'placeholder'
+                                    {!! Form::email('Recipient_email', null, ['class' => 'form-control rec', 'placeholder'
                                     => 'Recipient Email', 'required' => 'required']) !!}
+                                    {!! Form::textarea('task_description', null, ['class' => 'form-control',
+                                    'placeholder' => 'Task_description', 'rows' => 2, 'cols' => 40]) !!}
                                     <span class="invalid-feedback" role="alert">
                                         <strong></strong>
                                     </span>
@@ -325,12 +336,14 @@
                             <div class="col-md-6">
                                 <div class="form-group" id="colorInput">
 
-                                    <div class="form-group" id="make_modelInput">
-                                        {!! Form::textarea('task_description', null, ['class' => 'form-control',
-                                        'placeholder' => 'Task_description', 'rows' => 3, 'cols' => 40]) !!}
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong></strong>
-                                        </span>
+                                    <input id="file" type="file" name="file[]" multiple/>
+                                    <div class="allimages">
+                                      <div id="imagePreview" class="privewcheck">
+                                          @foreach ($images as $item)
+                                          
+                                      <img src="{{$main}}{{$item}}" class="imagepri" />  
+                                          @endforeach
+                                      </div>
                                     </div>
                                 </div>
 
@@ -344,65 +357,65 @@
                             <div class="col-md-4 padd">
                                 <div class="custom-control custom-radio custom-control-inline">
                                     <input type="radio" class="custom-control-input check" id="customRadio"
-                                        name="allocation_type" value="Un-Assigend" checked>
+                                name="allocation_type" value="Un-Assigend" {{$task->auto_alloction == 'Un-Assigend'?'checked':''}}>
                                     <label class="custom-control-label" for="customRadio">Un-Assigend</label>
                                 </div>
                             </div>
                             <div class="col-md-4 padd">
                                 <div class="custom-control custom-radio custom-control-inline">
                                     <input type="radio" class="custom-control-input check" id="customRadio22"
-                                        name="allocation_type" value="auto">
+                                        name="allocation_type" value="auto" {{$task->auto_alloction == 'auto'?'checked':''}}>
                                     <label class="custom-control-label" for="customRadio22">Auto Alloc</label>
                                 </div>
                             </div>
                             <div class="col-md-4 padd">
                                 <div class="custom-control custom-radio custom-control-inline">
                                     <input type="radio" class="custom-control-input check" id="customRadio33"
-                                        name="allocation_type" value="Manual">
+                                        name="allocation_type" value="Manual" {{$task->auto_alloction == 'Manual'?'checked':''}}>
                                     <label class="custom-control-label" for="customRadio33">Manual</label>
                                 </div>
                             </div>
                         </div>
                         <span class="span1 tagspan">Please select atlest one tag for driver and agent</span>
                         <div class="row tags">
-                            <div class="col-md-6">
-                                <div class="form-group mb-3">
-                                    <label>Team Tag</label>
-                                    <select name="team_tag[]" id="selectize-optgroups" multiple placeholder="Select tag...">
-                                        <option value="">Select Tag...</option>
-                                        @foreach ($teamTag as $item)
-                                            <option value="{{ $item->id }}">{{ $item->name }}</option>
-                                        @endforeach
-
-                                    </select>
+                          <div class="col-md-6">
+                              <div class="form-group mb-3">
+                                   <label>Team Tag</label>
+                                   <select  name="team_tag[]" id="selectize-optgroups" multiple placeholder="Select tag...">
+                                       <option value="">Select Tag...</option>
+                                       @foreach ($teamTag as $item)
+                                       <option value="{{$item->id}}" {{in_array($item->id, $saveteamtag)?'selected':''}}>{{$item->name}}</option>
+                                       @endforeach
+                   
+                                   </select>
                                 </div>
-                            </div>
+                          </div>
+                          
+                          <div class="col-md-6">
+                              <div class="form-group mb-3">
+                                  <label>Driver Tag</label>
+                                  <select name="agent_tag[]" id="selectize-optgroup"  multiple placeholder="Select tag...">
+                                  <option value="">Select Tag...</option>
+                                  @foreach ($agentTag as $item)
+                                  <option value="{{$item->id}}" {{in_array($item->id, $savedrivertag)?'selected':''}}>{{$item->name}}</option>
+                                  @endforeach
+                                  </select>
+                              </div>
+                          </div>
+                     </div>
 
-                            <div class="col-md-6">
-                                <div class="form-group mb-3">
-                                    <label>Driver Tag</label>
-                                    <select name="agent_tag[]" id="selectize-optgroup" multiple placeholder="Select tag...">
-                                        <option value="">Select Tag...</option>
-                                        @foreach ($agentTag as $item)
-                                            <option value="{{ $item->id }}">{{ $item->name }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row drivers">
-                            <div class="col-md-12">
-                                <div class="form-group mb-3">
-                                    <label>Drivers</label>
-                                    <select class="form-control" name="agent" id="driverselect">
-                                        @foreach ($agents as $item)
-                                            <option value="{{ $item->id }}">{{ $item->name }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
+                     <div class="row drivers">
+                      <div class="col-md-12">
+                         <div class="form-group mb-3">
+                          <label>Drivers</label>
+                             <select class="form-control" name="agent" id="location_accuracy">
+                              @foreach ($agents as $item)
+                              <option value="{{$item->id}}" {{$task->driver_id == $item->id ? 'selected':''}}>{{$item->name}}</option>
+                              @endforeach
+                             </select>
+                         </div>
+                      </div>   
+                 </div>
 
                         <div class="row">
                             <div class="col-md-5">
@@ -419,58 +432,8 @@
             </div>
 
             {!! Form::close() !!}
-        <div class="row">
-            <div class="col-3">
-                <div class="card">
-                    <div class="card-body">
-                        <h4 class="header-title">Dropzone File Upload</h4>
 
-
-                        <form action="/" method="post" class="dropzone" id="myAwesomeDropzone" data-plugin="dropzone"
-                            data-previews-container="#file-previews" data-upload-preview-template="#uploadPreviewTemplate">
-                            <div class="fallback">
-                                <input name="file" type="file" multiple />
-                            </div>
-
-                            <div class="dz-message needsclick">
-                                <i class="h1 text-muted dripicons-cloud-upload"></i>
-                                <h3>Drop files here or click to upload.</h3>
-                                <span class="text-muted font-13">(This is just a demo dropzone. Selected files are
-                                    <strong>not</strong> actually uploaded.)</span>
-                            </div>
-                        </form>
-
-                        <!-- Preview -->
-                        <div class="dropzone-previews mt-3" id="file-previews"></div>
-
-                    </div> <!-- end card-body-->
-                </div> <!-- end card-->
-            </div><!-- end col -->
-        </div>
-        <!-- end row -->
-
-        <!-- file preview template -->
-        <div class="d-none" id="uploadPreviewTemplate">
-            <div class="card mt-1 mb-0 shadow-none border">
-                <div class="p-2">
-                    <div class="row align-items-center">
-                        <div class="col-auto">
-                            <img data-dz-thumbnail src="#" class="avatar-sm rounded bg-light" alt="">
-                        </div>
-                        <div class="col pl-0">
-                            <a href="javascript:void(0);" class="text-muted font-weight-bold" data-dz-name></a>
-                            <p class="mb-0" data-dz-size></p>
-                        </div>
-                        <div class="col-auto">
-                            <!-- Button -->
-                            <a href="" class="btn btn-link btn-lg text-muted" data-dz-remove>
-                                <i class="dripicons-cross"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        
 
 
     </div>
@@ -543,6 +506,10 @@
                 $('input[name=ids').val('');
                 $('.copyin').remove();
             });
+            $("#file").click(function() {
+                $('.imagepri').remove();
+                
+            });
             
             $(document).on('click', ".span1", function() {
                 
@@ -575,15 +542,39 @@
             // });
             var a = 0;
             $('#adds a').click(function() {
-                a = a +1;
+              var abc = "{{ isset($maincount)?$maincount:0 }}";
+              
+               if(a == 0){
+                 a = abc;
+               }
+              
+                a++;
+               // alert(abc);
+                
                 // var direction = this.defaultValue < this.value
                 // this.defaultValue = this.value;
                 // if (direction)
                 // {
-
+                        var newids = null;
+                        
                         var $div = $('div[class^="copyin"]:last');
                         var newcheck = $div.find('.redio');
-                        console.log(newcheck);
+                        $.each(newcheck, function(index, elem){
+                            var jElem = $(elem); // jQuery element
+                            var name = jElem.prop('checked');
+                            var id = jElem.prop('id');
+                            if(name == true){
+                              newids = id;
+                            }
+                            
+                            
+                            // remove the number
+                            //name = name.replace(/\d+/g, '');
+                            //name += a;
+                            //jElem.prop('name', name);
+                            //count0++;
+                        });
+                       // console.log(newcheck);
                         var num = parseInt( $div.prop("id").match(/\d+/g), 10 ) +1;
                         var $clone = $div.clone().prop('class', 'copyin')
                         $clone.insertAfter('[class^="copyin"]:last');
@@ -650,6 +641,11 @@
                             var jElem = $(elem); // jQuery element
                             jElem.prop('required', true);
                         });
+                        $('input[id='+newids+']').prop("checked",true);
+                       // $("input[type='radio'][name='userRadionButtonName']").prop('checked', true);
+                        //var everycheck = document.getElementById("#"+newids);
+                       
+                        //everycheck.prop('checked',true);
                         // $(".taskrepet").fadeOut();
                         // $(".taskrepet").fadeIn();
                 // }
@@ -703,6 +699,23 @@
                     $(".tags").hide();
                 }
             });
+
+            var edit_tag = "{{$task->auto_alloction}}";
+
+            switch(edit_tag) {
+              case "auto":
+              $(".tags").show();
+                break;
+              case "Manual":
+              $(".drivers").hide();
+                break;
+              
+            }
+            var schudle = "{{$task->order_type}}";
+            
+            if(schudle == 'schedule'){
+              $(".datenow").show();
+            }
 
             $("input[type='radio'].check").click(function() {
                 var dateredio = $("#dateredio input[type='radio']:checked").val();
@@ -825,6 +838,23 @@
 
 
             });
+
+            var inputLocalFont = document.getElementById("file");
+             inputLocalFont.addEventListener("change",previewImages,false);
+
+             function previewImages(){
+              var fileList = this.files;
+    
+              var anyWindow = window.URL || window.webkitURL;
+
+              for(var i = 0; i < fileList.length; i++){
+               var objectUrl = anyWindow.createObjectURL(fileList[i]);
+               $('#imagePreview').append('<img src="' + objectUrl + '" class="imagepri" />');
+               window.URL.revokeObjectURL(fileList[i]);
+               }
+    
+    
+            }
 
 
         });

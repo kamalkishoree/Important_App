@@ -341,7 +341,7 @@
             </a>
             @php
               if(isset(Auth::user()->logo)){
-                $image = Phumbor::url(''.URL::to('/clients').'/'. Auth::user()->logo .'')->fitIn(90,50);
+                $image = Phumbor::url(Storage::disk('s3')->url(Auth::user()->logo))->fitIn(90,50);
               }else{
                 $image = Phumbor::url(''.URL::to('/').'images/users/user-1.jpg')->fitIn(90,50);
               }

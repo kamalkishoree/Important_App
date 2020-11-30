@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "4cf35e4adca5d76736bf9a9d8cbe6b1e",
+    "content-hash": "28afbb674d2a8c02ebb79bab0922c710",
     "packages": [
         {
             "name": "99designs/phumbor",
@@ -148,42 +148,64 @@
         },
         {
             "name": "aws/aws-sdk-php",
-            "version": "2.8.31",
+            "version": "3.164.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "64fa4b07f056e338a5f0f29eece75babaa83af68"
+                "reference": "39ecf57d828eb50ab23fd70255a68b8996392ac9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/64fa4b07f056e338a5f0f29eece75babaa83af68",
-                "reference": "64fa4b07f056e338a5f0f29eece75babaa83af68",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/39ecf57d828eb50ab23fd70255a68b8996392ac9",
+                "reference": "39ecf57d828eb50ab23fd70255a68b8996392ac9",
                 "shasum": ""
             },
             "require": {
-                "guzzle/guzzle": "~3.7",
-                "php": ">=5.3.3"
+                "ext-json": "*",
+                "ext-pcre": "*",
+                "ext-simplexml": "*",
+                "guzzlehttp/guzzle": "^5.3.3|^6.2.1|^7.0",
+                "guzzlehttp/promises": "^1.0",
+                "guzzlehttp/psr7": "^1.4.1",
+                "mtdowling/jmespath.php": "^2.5",
+                "php": ">=5.5"
             },
             "require-dev": {
-                "doctrine/cache": "~1.0",
+                "andrewsville/php-token-reflection": "^1.4",
+                "aws/aws-php-sns-message-validator": "~1.0",
+                "behat/behat": "~3.0",
+                "doctrine/cache": "~1.4",
+                "ext-dom": "*",
                 "ext-openssl": "*",
-                "monolog/monolog": "~1.4",
-                "phpunit/phpunit": "~4.0",
-                "phpunit/phpunit-mock-objects": "2.3.1",
-                "symfony/yaml": "~2.1"
+                "ext-pcntl": "*",
+                "ext-sockets": "*",
+                "nette/neon": "^2.3",
+                "paragonie/random_compat": ">= 2",
+                "phpunit/phpunit": "^4.8.35|^5.4.3",
+                "psr/cache": "^1.0",
+                "psr/simple-cache": "^1.0",
+                "sebastian/comparator": "^1.2.3"
             },
             "suggest": {
-                "doctrine/cache": "Adds support for caching of credentials and responses",
-                "ext-apc": "Allows service description opcode caching, request and response caching, and credentials caching",
+                "aws/aws-php-sns-message-validator": "To validate incoming SNS notifications",
+                "doctrine/cache": "To use the DoctrineCacheAdapter",
+                "ext-curl": "To send requests using cURL",
                 "ext-openssl": "Allows working with CloudFront private distributions and verifying received SNS messages",
-                "monolog/monolog": "Adds support for logging HTTP requests and responses",
-                "symfony/yaml": "Eases the ability to write manifests for creating jobs in AWS Import/Export"
+                "ext-sockets": "To use client-side monitoring"
             },
             "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "Aws": "src/"
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "3.0-dev"
                 }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Aws\\": "src/"
+                },
+                "files": [
+                    "src/functions.php"
+                ]
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
@@ -207,7 +229,7 @@
                 "s3",
                 "sdk"
             ],
-            "time": "2016-07-25T18:03:20+00:00"
+            "time": "2020-11-24T19:18:22+00:00"
         },
         {
             "name": "brick/math",
@@ -1162,99 +1184,6 @@
                 "laravel"
             ],
             "time": "2020-04-28T08:47:37+00:00"
-        },
-        {
-            "name": "guzzle/guzzle",
-            "version": "v3.8.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/guzzle/guzzle.git",
-                "reference": "4de0618a01b34aa1c8c33a3f13f396dcd3882eba"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/guzzle/zipball/4de0618a01b34aa1c8c33a3f13f396dcd3882eba",
-                "reference": "4de0618a01b34aa1c8c33a3f13f396dcd3882eba",
-                "shasum": ""
-            },
-            "require": {
-                "ext-curl": "*",
-                "php": ">=5.3.3",
-                "symfony/event-dispatcher": ">=2.1"
-            },
-            "replace": {
-                "guzzle/batch": "self.version",
-                "guzzle/cache": "self.version",
-                "guzzle/common": "self.version",
-                "guzzle/http": "self.version",
-                "guzzle/inflection": "self.version",
-                "guzzle/iterator": "self.version",
-                "guzzle/log": "self.version",
-                "guzzle/parser": "self.version",
-                "guzzle/plugin": "self.version",
-                "guzzle/plugin-async": "self.version",
-                "guzzle/plugin-backoff": "self.version",
-                "guzzle/plugin-cache": "self.version",
-                "guzzle/plugin-cookie": "self.version",
-                "guzzle/plugin-curlauth": "self.version",
-                "guzzle/plugin-error-response": "self.version",
-                "guzzle/plugin-history": "self.version",
-                "guzzle/plugin-log": "self.version",
-                "guzzle/plugin-md5": "self.version",
-                "guzzle/plugin-mock": "self.version",
-                "guzzle/plugin-oauth": "self.version",
-                "guzzle/service": "self.version",
-                "guzzle/stream": "self.version"
-            },
-            "require-dev": {
-                "doctrine/cache": "*",
-                "monolog/monolog": "1.*",
-                "phpunit/phpunit": "3.7.*",
-                "psr/log": "1.0.*",
-                "symfony/class-loader": "*",
-                "zendframework/zend-cache": "<2.3",
-                "zendframework/zend-log": "<2.3"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "3.8-dev"
-                }
-            },
-            "autoload": {
-                "psr-0": {
-                    "Guzzle": "src/",
-                    "Guzzle\\Tests": "tests/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Michael Dowling",
-                    "email": "mtdowling@gmail.com",
-                    "homepage": "https://github.com/mtdowling"
-                },
-                {
-                    "name": "Guzzle Community",
-                    "homepage": "https://github.com/guzzle/guzzle/contributors"
-                }
-            ],
-            "description": "Guzzle is a PHP HTTP client library and framework for building RESTful web service clients",
-            "homepage": "http://guzzlephp.org/",
-            "keywords": [
-                "client",
-                "curl",
-                "framework",
-                "http",
-                "http client",
-                "rest",
-                "web service"
-            ],
-            "abandoned": "guzzlehttp/guzzle",
-            "time": "2014-01-28T22:29:15+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
@@ -2322,27 +2251,27 @@
             "time": "2020-08-23T07:39:11+00:00"
         },
         {
-            "name": "league/flysystem-aws-s3-v2",
-            "version": "1.0.3",
+            "name": "league/flysystem-aws-s3-v3",
+            "version": "1.0.29",
             "source": {
                 "type": "git",
-                "url": "https://github.com/thephpleague/flysystem-aws-s3-v2.git",
-                "reference": "e464a35e34abed572c76b76aa2f278d178e141c6"
+                "url": "https://github.com/thephpleague/flysystem-aws-s3-v3.git",
+                "reference": "4e25cc0582a36a786c31115e419c6e40498f6972"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/flysystem-aws-s3-v2/zipball/e464a35e34abed572c76b76aa2f278d178e141c6",
-                "reference": "e464a35e34abed572c76b76aa2f278d178e141c6",
+                "url": "https://api.github.com/repos/thephpleague/flysystem-aws-s3-v3/zipball/4e25cc0582a36a786c31115e419c6e40498f6972",
+                "reference": "4e25cc0582a36a786c31115e419c6e40498f6972",
                 "shasum": ""
             },
             "require": {
-                "aws/aws-sdk-php": "~2.7",
-                "league/flysystem": "~1.0",
-                "php": ">=5.4.0"
+                "aws/aws-sdk-php": "^3.20.0",
+                "league/flysystem": "^1.0.40",
+                "php": ">=5.5.0"
             },
             "require-dev": {
-                "mockery/mockery": "0.9.*",
-                "phpunit/phpunit": "~4.0"
+                "henrikbjorn/phpspec-code-coverage": "~1.0.1",
+                "phpspec/phpspec": "^2.0.0"
             },
             "type": "library",
             "extra": {
@@ -2352,7 +2281,7 @@
             },
             "autoload": {
                 "psr-4": {
-                    "League\\Flysystem\\AwsS3v2\\": "src/"
+                    "League\\Flysystem\\AwsS3v3\\": "src/"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -2365,9 +2294,8 @@
                     "email": "info@frenky.net"
                 }
             ],
-            "description": "Flysystem adapter for AWS S3 SDK v2",
-            "abandoned": "league/flysystem-aws-s3-v3",
-            "time": "2015-10-15T15:55:48+00:00"
+            "description": "Flysystem adapter for the AWS S3 SDK v3.x",
+            "time": "2020-10-08T18:58:37+00:00"
         },
         {
             "name": "league/mime-type-detection",
@@ -2567,6 +2495,63 @@
                 "psr-3"
             ],
             "time": "2020-07-23T08:41:23+00:00"
+        },
+        {
+            "name": "mtdowling/jmespath.php",
+            "version": "2.6.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/jmespath/jmespath.php.git",
+                "reference": "42dae2cbd13154083ca6d70099692fef8ca84bfb"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/jmespath/jmespath.php/zipball/42dae2cbd13154083ca6d70099692fef8ca84bfb",
+                "reference": "42dae2cbd13154083ca6d70099692fef8ca84bfb",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^5.4 || ^7.0 || ^8.0",
+                "symfony/polyfill-mbstring": "^1.17"
+            },
+            "require-dev": {
+                "composer/xdebug-handler": "^1.4",
+                "phpunit/phpunit": "^4.8.36 || ^7.5.15"
+            },
+            "bin": [
+                "bin/jp.php"
+            ],
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.6-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "JmesPath\\": "src/"
+                },
+                "files": [
+                    "src/JmesPath.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Michael Dowling",
+                    "email": "mtdowling@gmail.com",
+                    "homepage": "https://github.com/mtdowling"
+                }
+            ],
+            "description": "Declaratively specify how to extract elements from a JSON document",
+            "keywords": [
+                "json",
+                "jsonpath"
+            ],
+            "time": "2020-07-31T21:01:56+00:00"
         },
         {
             "name": "nesbot/carbon",
@@ -4199,16 +4184,16 @@
         },
         {
             "name": "symfony/event-dispatcher",
-            "version": "v5.1.8",
+            "version": "v5.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/event-dispatcher.git",
-                "reference": "26f4edae48c913fc183a3da0553fe63bdfbd361a"
+                "reference": "aa13a09811e6d2ad43f8fb336bebdb7691d85d3c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/event-dispatcher/zipball/26f4edae48c913fc183a3da0553fe63bdfbd361a",
-                "reference": "26f4edae48c913fc183a3da0553fe63bdfbd361a",
+                "url": "https://api.github.com/repos/symfony/event-dispatcher/zipball/aa13a09811e6d2ad43f8fb336bebdb7691d85d3c",
+                "reference": "aa13a09811e6d2ad43f8fb336bebdb7691d85d3c",
                 "shasum": ""
             },
             "require": {
@@ -4263,7 +4248,7 @@
             ],
             "description": "Symfony EventDispatcher Component",
             "homepage": "https://symfony.com",
-            "time": "2020-10-24T12:01:57+00:00"
+            "time": "2020-11-01T16:14:45+00:00"
         },
         {
             "name": "symfony/event-dispatcher-contracts",

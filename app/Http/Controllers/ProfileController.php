@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 use App\Jobs\UpdatePassword;
 use Auth;
+use Illuminate\Support\Facades\Storage;
 
 class ProfileController extends Controller
 {
@@ -97,13 +98,13 @@ class ProfileController extends Controller
         $getFileName = $getClient;
 
         // Handle File Upload
+
         if ($request->hasFile('logo')) {
             $file = $request->file('logo');
-            $filenameWithExt = $request->file('logo')->getClientOriginalName();
-            $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
-            $fileNameToStore = $filename . '_' . time() . '.' . $file->getClientOriginalExtension();
-            $file->move(public_path() . '/clients', $fileNameToStore);
-            $getFileName = $fileNameToStore;
+            $file_name = uniqid() .'.'.  $file->getClientOriginalExtension();
+            $s3filePath = '/assets/Clientlogo/' . $file_name;
+            $path = Storage::disk('s3')->put($s3filePath, $file,'public');
+            $getFileName = $path;
         }
 
         $data = [

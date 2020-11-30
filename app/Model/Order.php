@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Order extends Model
 {
-    protected $fillable = ['customer_id','scheduled_date_time','recipient_phone','Recipient_email','task_description','images_array','auto_alloction','driver_id','key_value_set'];
+    protected $fillable = ['customer_id','scheduled_date_time','recipient_phone','Recipient_email','task_description','images_array','auto_alloction','driver_id','key_value_set','order_time','order_type'];
 
     public function customer(){
         return $this->hasOne('App\Model\Customer', 'id', 'customer_id');
@@ -25,6 +25,13 @@ class Order extends Model
     public function agent(){
         return $this->hasOne('App\Model\Agent', 'id', 'driver_id');
         
+    }
+
+    public function teamtags(){
+        return $this->belongsToMany('App\Model\TaskTeamTag', 'task_team_tags','task_id','tag_id');
+    }
+    public function drivertags(){
+        return $this->belongsToMany('App\Model\TaskDriverTag', 'task_driver_tags','task_id','tag_id');
     }
     
 }
