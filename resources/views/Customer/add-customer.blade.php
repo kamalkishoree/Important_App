@@ -56,12 +56,5 @@
 <script src="{{asset('assets/libs/select2/select2.min.js')}}"></script>
 <script src="{{asset('assets/libs/bootstrap-select/bootstrap-select.min.js')}}"></script>
 
-    <!-- Page js-->
-
-    <script>
-      $('#adds a').click(function() {
-        $('.addapp:last').after('<div class="row address"><div class="col-md-4"><div class="form-group" id=""><input type="text"  class="form-control" placeholder="Short Name" name="short_name[]"></div></div><div class="col-md-4"><div class="form-group" id=""><input type="text"  class="form-control" placeholder="Address" name="address[]"></div></div><div class="col-md-4"><div class="form-group" id=""><input type="text"  class="form-control" placeholder="Post Code" name="post_code[]"></div></div></div>');
-        });
-    </script>
 @endsection
 

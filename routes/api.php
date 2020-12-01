@@ -20,22 +20,16 @@ use Illuminate\Support\Facades\Route;
     return $request->user();
 });*/
 
-Route::get('shortCodes', 'Api\ShortcodeController@getCode');
-
-Route::group(['middleware' => ['dbCheck','auth:api']], function() {
-	Route::get('checkShortCode', 'Api\ShortcodeController@getCode1');
-});
+Route::post('shortCode', 'Api\ShortcodeController@validateCompany');
 
 Route::group([
     'prefix' => 'auth'
 ], function () {
 
-
 	Route::group([
       'middleware' => ['dbCheck', 'AppAuth']
     ], function() {
         Route::get('logout', 'Api\AuthController@logout');
-        Route::get('user', 'Api\AuthController@user');
     });
 
     Route::group([
@@ -46,5 +40,12 @@ Route::group([
     	Route::post('signup', 'Api\AuthController@signup');
     });
 
+});
 
+Route::group([
+      'middleware' => ['dbCheck', 'AppAuth']
+    ], function() {
+        Route::get('user', 'Api\AuthController@user');
+        Route::get('orderList', 'Api\ActivityController@orders');
+        Route::get('updateStatus', 'Api\ActivityController@updateDriverStatus');
 });

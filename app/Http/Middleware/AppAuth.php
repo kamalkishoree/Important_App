@@ -9,6 +9,7 @@ use Request;
 use Config;
 use Illuminate\Support\Facades\DB;
 use JWT\Token;
+use Auth;
 
 class AppAuth
 {
@@ -25,7 +26,7 @@ class AppAuth
 
         $token = $header['authorization'][0];
 
-        if (!Token::check($token, 'secret'))
+        if (!Token::check($token, 'codebrewInd'))
         {
             return response()->json(['error' => 'Invalid Token', 'message' => 'Session Expired'], 404);
             abort(404);
@@ -41,11 +42,12 @@ class AppAuth
 
         $agent = Agent::where('access_token', $token)->first();
 
-        if($tokenBlock)
+        if(!$agent)
         {
             return response()->json(['error' => 'Invalid Session', 'message' => 'Invalid Token or session has been expired.'], 404);
             abort(404);
         }
+        Auth::login($agent);
 
         return $next($request);
         
