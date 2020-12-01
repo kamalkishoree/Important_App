@@ -17,6 +17,11 @@ class Task extends Model
         
     }
 
+    public function location(){
+        return $this->belongsTo('App\Model\Location', 'location_id', 'id');
+        
+    }
+
     public function teamtags(){
         return $this->belongsToMany('App\Model\TaskTeamTag', 'task_team_tags','task_id','tag_id');
     }

@@ -48,4 +48,5 @@ Route::group([
         Route::get('user', 'Api\AuthController@user');
         Route::get('orderList', 'Api\ActivityController@orders');
         Route::get('updateStatus', 'Api\ActivityController@updateDriverStatus');
+        //Route::get('getOrders', 'Api\ActivityController@orders');
 });

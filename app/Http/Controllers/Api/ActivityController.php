@@ -6,7 +6,7 @@ use App\Http\Controllers\Api\BaseController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
-use App\Model\{User, Agent, Client, ClientPreference};
+use App\Model\{User, Agent, Client, ClientPreference, Order};
 use Validation;
 use DB;
 
@@ -19,11 +19,11 @@ class ActivityController extends BaseController
      */
     public function updateDriverStatus(Request $request)
     {
-    	   $agent = Agent::findOrFail(Auth::user()->id); 
-           $agent->is_available = ($agent->is_available == 1) ? 0 : 1;
-           $agent->update();
+        $agent = Agent::findOrFail(Auth::user()->id); 
+        $agent->is_available = ($agent->is_available == 1) ? 0 : 1;
+        $agent->update();
 
-           return response()->json([
+        return response()->json([
             'message' => 'Status updated Successfully',
             'data' => array('is_available' => $agent->is_available)
         ]);
@@ -37,6 +37,16 @@ class ActivityController extends BaseController
      */
     public function orders(Request $request)
     {
+        $orders = Order::with('task.location', 'customer', 'agent');
+        if(!empty($request->date)){
+            $date = date('Y-m-d', strtotime($request->date));
+            $orders = $orders->whereDate('created_at', $date);
+        }
+        $orders = $orders->get();
+        return response()->json([
+            'message' => 'Status updated Successfully',
+            'data' => $orders
+        ]);
         
     }
 
