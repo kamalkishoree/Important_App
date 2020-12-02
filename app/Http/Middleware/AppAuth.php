@@ -3,12 +3,13 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Routing\Route;
-use App\Model\BlockedToken;
+use App\Model\{BlockedToken, Agent};
 use Illuminate\Support\Facades\Cache;
 use Request;
 use Config;
 use Illuminate\Support\Facades\DB;
 use JWT\Token;
+use Auth;
 
 class AppAuth
 {
@@ -22,8 +23,16 @@ class AppAuth
     public function handle($request, Closure $next)
     {
         $header = $request->header();
+
+        $token = $header['authorization'][0];
+
+        if (!Token::check($token, 'codebrewInd'))
+        {
+            return response()->json(['error' => 'Invalid Token', 'message' => 'Session Expired'], 404);
+            abort(404);
+        }
         
-        $tokenBlock = BlockedToken::where('token', $header['authorization'][0])->first();
+        $tokenBlock = BlockedToken::where('token', $token)->first();
 
         if($tokenBlock)
         {
@@ -31,11 +40,14 @@ class AppAuth
             abort(404);
         }
 
-        if (!Token::check($header['authorization'][0], 'secret'))
+        $agent = Agent::where('access_token', $token)->first();
+
+        if(!$agent)
         {
-            return response()->json(['error' => 'Invalid Session', 'message' => 'Session Expired'], 404);
+            return response()->json(['error' => 'Invalid Session', 'message' => 'Invalid Token or session has been expired.'], 404);
             abort(404);
         }
+        Auth::login($agent);
 
         return $next($request);
         

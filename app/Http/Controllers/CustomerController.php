@@ -61,13 +61,17 @@ class CustomerController extends Controller
             'email' => $request->email,
             'phone_number' => $request->phone_number,
         ];
+
+        //dd($request->all());
         $customer = Customer::create($data);
         foreach ($request->short_name as $key => $value) {
             if(isset($value) && $value != null){
                 $datas = [
                     'short_name' => $value,
-                    'address'    => $request->address[$key],
+                    'address'    => (!empty($request->address[$key])) ? $request->address[$key] : 'unnamed',
                     'post_code'  => $request->post_code[$key],
+                    'latitude'    => $request->latitude[$key],
+                    'longitude'  => $request->longitude[$key],
                     'created_by' => $customer->id,
                 ];
                 $Loction = Location::create($datas);
@@ -96,8 +100,11 @@ class CustomerController extends Controller
      */
     public function edit($id)
     {
-        $customer = Customer::where('id',$id)->with('location')->first();
-        return view('Customer/update-customer')->with(['customer'=>$customer]);
+        //echo $id.'fff';
+        $customer = Customer::where('id', $id)->with('location')->first();
+        //dd($customer->toArray());
+        $returnHTML = view('Customer.update-form')->with('customer', $customer)->render();
+        return response()->json(array('success' => true, 'html'=>$returnHTML, 'addFieldsCount'=> $customer->location->count()));
     }
 
     /**
@@ -109,6 +116,7 @@ class CustomerController extends Controller
      */
     public function update(Request $request, $id)
     {
+        //dd($request->all());
         $validator = $this->validator($request->all())->validate();
         $customer = Customer::find($id);
         $data = [
@@ -117,20 +125,37 @@ class CustomerController extends Controller
             'phone_number' => $request->phone_number,
         ];
 
-        $cost = Customer::where('id', $id)->update($data);
-        $check = Location::where('created_by',$id)->delete();
+        $customer->update($data);
+        //$check = Location::where('created_by',$id)->delete();
         foreach ($request->short_name as $key => $value) {
+
             if(isset($value) && $value != null){
-                $datas = [
-                    'short_name' => $value,
-                    'address'    => $request->address[$key],
-                    'post_code'  => $request->post_code[$key],
-                    'created_by' => $id,
-                ];
-                $Loction = Location::create($datas);
+
+                if(array_key_exists($key, $request->location_id)){
+                    $location = Location::find($request->location_id[$key]);
+                    if($location){
+                        $location->short_name = $value;
+                        $location->address = $request->address[$key];
+                        $location->post_code = $request->post_code[$key];
+                        $location->latitude = $request->latitude[$key];
+                        $location->longitude = $request->longitude[$key];
+
+                        $location->save();
+                    }
+                }else{
+
+                    $datas = [
+                        'short_name' => $value,
+                        'address'    => (!empty($request->address[$key])) ? $request->address[$key] : 'unnamed',
+                        'post_code'  => $request->post_code[$key],
+                        'latitude'    => $request->latitude[$key],
+                        'longitude'  => $request->longitude[$key],
+                        'created_by' => $customer->id,
+                    ];
+                    $Loction = Location::create($datas);
+
+                }
             }
-            
-           
         }
         return redirect()->route('customer.index')->with('success', 'Customer Updated successfully!');
 

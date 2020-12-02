@@ -16,9 +16,17 @@ class Task extends Model
         return $this->hasOne('App\Model\Order', 'id', 'order_id');
         
     }
+
     public function location(){
-        return $this->hasOne('App\Model\Location', 'id', 'location_id');
+        return $this->belongsTo('App\Model\Location', 'location_id', 'id');
         
+    }
+
+    public function teamtags(){
+        return $this->belongsToMany('App\Model\TaskTeamTag', 'task_team_tags','task_id','tag_id');
+    }
+    public function drivertags(){
+        return $this->belongsToMany('App\Model\TaskDriverTag', 'task_driver_tags','task_id','tag_id');
     }
 
     

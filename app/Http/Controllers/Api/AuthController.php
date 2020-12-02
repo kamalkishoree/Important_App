@@ -67,7 +67,7 @@ class AuthController extends BaseController
 
         ]);
         
-        $data['agent'] = $agent = Agent::with('team', 'geoFence.geo')->where('phone_number', $request->phone_number)->first();
+        $data = $agent = Agent::with('team', 'geoFence.geo')->where('phone_number', $request->phone_number)->first();
 
         
         if (!$agent) {
@@ -83,14 +83,16 @@ class AuthController extends BaseController
         $token->expires_at = Carbon::now()->addWeeks(1);
         $token->save();*/
 
-        $token = Token::make([
-            'key' => 'secret',
-            'issuer' => 'artisangang',
+        $token1 = new Token;
+
+        $token = $token1->make([
+            'key' => 'codebrewInd',
+            'issuer' => 'codebrewInnovation',
             'expiry' => strtotime('+1 month'),
             'issuedAt' => time(),
-            'algorithm' => 'HS256'
+            'algorithm' => 'HS256',
         ])->get();
-
+        $token1->setClaim('driver_id', $agent->id);
 
         try {
             Token::validate($token, 'secret');
@@ -102,13 +104,13 @@ class AuthController extends BaseController
         $agent->access_token = $token;
         $agent->save();
 
-        $data['client_preference'] = $prefer;
-        $data['token_type'] = 'Bearer';
-        $data['access_token'] = $token;
+        $agent['client_preference'] = $prefer;
+        //$data['token_type'] = 'Bearer';
+        $agent['access_token'] = $token;
         //$data['expires_at'] = Carbon::parse($tokenResult->token->expires_at)->toDateTimeString();
 
         return response()->json([
-        	'data' => $data,
+        	'data' => $agent,
         ]);
 
     }
