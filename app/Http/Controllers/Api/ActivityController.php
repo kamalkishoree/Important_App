@@ -6,7 +6,7 @@ use App\Http\Controllers\Api\BaseController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
-use App\Model\{User, Agent, Client, ClientPreference, Order};
+use App\Model\{User, Agent, Client, ClientPreference, Order, Task};
 use Validation;
 use DB;
 
@@ -35,17 +35,17 @@ class ActivityController extends BaseController
      *
 
      */
-    public function orders(Request $request)
+    public function tasks(Request $request)
     {
-        $orders = Order::with('task.location', 'customer', 'agent');
+        $tasks = Task::with('location', 'tasktype', 'pricing');
         if(!empty($request->date)){
             $date = date('Y-m-d', strtotime($request->date));
-            $orders = $orders->whereDate('created_at', $date);
+            $tasks = $tasks->whereDate('created_at', $date);
         }
-        $orders = $orders->get();
+        $tasks = $tasks->get();
         return response()->json([
             'message' => 'Status updated Successfully',
-            'data' => $orders
+            'data' => $tasks
         ]);
         
     }
