@@ -97,10 +97,10 @@
         }
 
         .copyin {
-            background-color: #dae6dd;
+            background-color: #F7F8FA;
         }
         .copyin1 {
-            background-color: #dae6dd;
+            background-color: #F7F8FA;
         }
         hr.new3 {
          border-top: 1px dashed white;
@@ -116,6 +116,31 @@
            margin-left: 5px;
            margin-top: 5px;
        }
+       .withradio{
+       
+        
+       }
+       .showsimage{
+        margin-top: 9px;
+        margin-left: 140px;
+       }
+       .showshadding{
+        margin-left: 98px;
+       }
+       .newchnageimage{
+           margin-left: 100px;
+       }
+       .showsimagegall{
+        margin-left: 148px;
+        margin-top: 21px;
+
+       }
+       .allset{
+           margin-left: 9px !important;
+           padding-top: 10px;
+       }
+
+
 
     </style>
 
@@ -234,7 +259,7 @@
                           @foreach ($task->task as $keys => $item)
                            @php $maincount = 0; @endphp
                         <div class="copyin{{$keys == 0?'1':''}}" id="copyin1">
-                            <div class="requried">
+                            <div class="requried allset">
                               <div class="row firstclone1">
                                   <div class="col-md-4">
                                       <h4 class="header-title mb-3 newgap">Task</h4>
@@ -262,14 +287,21 @@
                                   </div>
                                   <div class="col-md-1 " >
 
-                                  <span class="span1 onedelete" id="{{$keys == 0 ? 'spancheck' :'newspan'}}">Delete</span>
+                                    <span class="span1 onedelete" id="spancheck"><img src="{{asset('assets/images/ic_delete.png')}}" alt=""></span>
 
 
                                   </div>
 
                               </div>
 
-                              <h4 class="header-title mb-2">Address</h4>
+                              <div class="row">
+                                <div class="col-md-6">
+                                    <h4 class="header-title mb-2">Address</h4>
+                                </div>
+                                <div class="col-md-6">
+                                    <h4 class="header-title mb-2">Saved Addresses</h4>
+                                </div>
+                            </div>
                               <span class="span1 addspan">Please select a address or create new</span>
 
                               <div class="row">
@@ -291,7 +323,11 @@
                                   </div>
                                   <div class="col-md-6">
                                       <div class="form-group withradio" id="typeInputss">
-                                        <h5 class="oldhide">Saved Addresses</h5>
+
+                                        <div class="oldhide">
+                                               
+                                            <img class="showsimage" src="{{url('assets/images/ic_location_placeholder.png')}}" alt="">
+                                        </div>
                                         @foreach ($task->customer->location as $key => $items)
                                         
                                       <div class="append"><div class="custom-control custom-radio"><input type="radio" id="{{$keys}}{{$items->id}}{{12}}" name="old_address_id{{$keys!=0?$keys:''}}" value="{{$items->id}}" {{$item->location_id == $items->id ? 'checked':'' }} class="custom-control-input redio"><label class="custom-control-label" for="{{$keys}}{{$items->id}}{{12}}"><span class="spanbold">{{$items->short_name}}</span>-{{$items->address}}</label></div></div>
@@ -335,13 +371,20 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group" id="colorInput">
-
-                                    <input id="file" type="file" name="file[]" multiple/>
+                                    <label class="btn btn-info width-lg waves-effect waves-light newchnageimage">
+                                        <span><i class="fas fa-image"></i></span>
+                                        <input id="file" type="file" name="file[]" multiple style="display: none"/>
+                                    </label>
+                                    @if(!isset($images))
+                                    <img class="showsimagegall" src="{{url('assets/images/ic_image_placeholder.png')}}" alt="">
+                                    @endif
+                                    
+                                   
                                     <div class="allimages">
                                       <div id="imagePreview" class="privewcheck">
                                           @foreach ($images as $item)
                                           
-                                      <img src="{{$main}}{{$item}}" class="imagepri" />  
+                                          <img src="{{$main}}{{$item}}" class="imagepri" />  
                                           @endforeach
                                       </div>
                                     </div>
@@ -358,14 +401,14 @@
                                 <div class="custom-control custom-radio custom-control-inline">
                                     <input type="radio" class="custom-control-input check" id="customRadio"
                                 name="allocation_type" value="Un-Assigend" {{$task->auto_alloction == 'Un-Assigend'?'checked':''}}>
-                                    <label class="custom-control-label" for="customRadio">Un-Assigend</label>
+                                    <label class="custom-control-label" for="customRadio">Un-Assigned</label>
                                 </div>
                             </div>
                             <div class="col-md-4 padd">
                                 <div class="custom-control custom-radio custom-control-inline">
                                     <input type="radio" class="custom-control-input check" id="customRadio22"
                                         name="allocation_type" value="auto" {{$task->auto_alloction == 'auto'?'checked':''}}>
-                                    <label class="custom-control-label" for="customRadio22">Auto Alloc</label>
+                                    <label class="custom-control-label" for="customRadio22">Auto Allocation</label>
                                 </div>
                             </div>
                             <div class="col-md-4 padd">
@@ -418,11 +461,9 @@
                  </div>
 
                         <div class="row">
-                            <div class="col-md-5">
-
-                            </div>
-                            <div class="col-md-7">
-                                <button type="submit" class="btn btn-blue waves-effect waves-light ">Submit</button>
+                            
+                            <div class="col-md-12">
+                                <button type="submit" class="btn btn-block btn-lg btn-blue waves-effect waves-light">Submit</button>
                             </div>
                         </div>
 
@@ -484,6 +525,7 @@
             $(".searchspan").hide();
             $(".appoint").hide();
             $(".datenow").hide();
+            $(".oldhide").hide();
             $("#AddressInput a").click(function() {
                 $(".shows").show();
                 $(".append").hide();

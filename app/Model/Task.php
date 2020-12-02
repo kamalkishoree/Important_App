@@ -16,6 +16,10 @@ class Task extends Model
         return $this->hasOne('App\Model\Order', 'id', 'order_id');
         
     }
+    public function location(){
+        return $this->hasOne('App\Model\Location', 'id', 'location_id');
+        
+    }
 
     
 }

@@ -97,10 +97,10 @@
         }
 
         .copyin {
-            background-color: #dae6dd;
+            background-color: #F7F8FA;
         }
         .copyin1 {
-            background-color: #dae6dd;
+            background-color: #F7F8FA;
         }
         hr.new3 {
          border-top: 1px dashed white;
@@ -116,6 +116,30 @@
            margin-left: 5px;
            margin-top: 5px;
        }
+       .withradio{
+       
+        
+       }
+       .showsimage{
+        margin-top: 31px;
+        margin-left: 140px;
+       }
+       .showshadding{
+        margin-left: 98px;
+       }
+       .newchnageimage{
+           margin-left: 100px;
+       }
+       .showsimagegall{
+        margin-left: 148px;
+        margin-top: 21px;
+
+       }
+       .allset{
+           margin-left: 9px !important;
+           padding-top: 10px;
+       }
+
 
     </style>
 
@@ -231,7 +255,7 @@
 
                         <div class="taskrepet" id="newadd">
                             <div class="copyin1" id="copyin1">
-                              <div class="requried">
+                              <div class="requried allset">
                                 <div class="row firstclone1">
                                     <div class="col-md-4">
                                         <h4 class="header-title mb-3 newgap">Task</h4>
@@ -259,15 +283,22 @@
 
                                     </div>
                                     <div class="col-md-1 " >
-
-                                        <span class="span1 onedelete" id="spancheck">Delete</span>
+                                        
+                                    <span class="span1 onedelete" id="spancheck"><img src="{{asset('assets/images/ic_delete.png')}}" alt=""></span>
 
 
                                     </div>
 
                                 </div>
-
-                                <h4 class="header-title mb-2">Address</h4>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h4 class="header-title mb-2">Address</h4>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h4 class="header-title mb-2">Saved Addresses</h4>
+                                    </div>
+                                </div>
+                                
                                 <span class="span1 addspan">Please select a address or create new</span>
 
                                 <div class="row">
@@ -279,7 +310,7 @@
                                             'placeholder' => 'Full Address','required' => 'required', 'rows' => 2]) !!}
                                             {!! Form::text('post_code[]', null, [
                                             'class' => 'form-control address',
-                                            'placeholder' => 'PostsCode',
+                                            'placeholder' => 'Post Code',
                                             'required' => 'required']) !!}
                                             <span class="invalid-feedback" role="alert">
                                                 <strong></strong>
@@ -287,9 +318,15 @@
                                         </div>
 
                                     </div>
+                                    
                                     <div class="col-md-6">
                                         <div class="form-group withradio" id="typeInputss">
-                                            <h5 class="oldhide">Saved Addresses</h5>
+                                            
+                                            <div class="oldhide">
+                                               
+                                                <img class="showsimage" src="{{url('assets/images/ic_location_placeholder.png')}}" alt="">
+                                            </div>
+                                            
 
                                         </div>
                                     </div>
@@ -329,9 +366,13 @@
 
                             </div>
                             <div class="col-md-6">
+                               
                                 <div class="form-group" id="colorInput">
-
-                                    <input id="file" type="file" name="file[]" multiple/>
+                                    <label class="btn btn-info width-lg waves-effect waves-light newchnageimage">
+                                        <span><i class="fas fa-image"></i></span>
+                                        <input id="file" type="file" name="file[]" multiple style="display: none"/>
+                                    </label>
+                                    <img class="showsimagegall" src="{{url('assets/images/ic_image_placeholder.png')}}" alt="">
                                     <div class="allimages">
                                       <div id="imagePreview" class="privewcheck"></div>
                                     </div>
@@ -348,14 +389,14 @@
                                 <div class="custom-control custom-radio custom-control-inline">
                                     <input type="radio" class="custom-control-input check" id="customRadio"
                                         name="allocation_type" value="Un-Assigend" checked>
-                                    <label class="custom-control-label" for="customRadio">Un-Assigend</label>
+                                    <label class="custom-control-label" for="customRadio">Un-Assigned</label>
                                 </div>
                             </div>
                             <div class="col-md-4 padd">
                                 <div class="custom-control custom-radio custom-control-inline">
                                     <input type="radio" class="custom-control-input check" id="customRadio22"
                                         name="allocation_type" value="auto">
-                                    <label class="custom-control-label" for="customRadio22">Auto Alloc</label>
+                                    <label class="custom-control-label" for="customRadio22">Auto Allocation</label>
                                 </div>
                             </div>
                             <div class="col-md-4 padd">
@@ -408,11 +449,11 @@
                         </div>
 
                         <div class="row">
-                            <div class="col-md-5">
+                            {{-- <div class="col-md-5">
 
-                            </div>
-                            <div class="col-md-7">
-                                <button type="submit" class="btn btn-blue waves-effect waves-light ">Submit</button>
+                            </div> --}}
+                            <div class="col-md-12">
+                                <button type="submit" class="btn btn-block btn-lg btn-blue waves-effect waves-light">Submit</button>
                             </div>
                         </div>
 
@@ -497,6 +538,7 @@
             });
 
             $("#file").click(function() {
+                $('.showsimagegall').hide();
                 $('.imagepri').remove();
                 
             });
@@ -806,6 +848,9 @@
 
              function previewImages(){
               var fileList = this.files;
+              if(fileList.length == 0){
+                $('.showsimagegall').show();
+              }
     
               var anyWindow = window.URL || window.webkitURL;
 

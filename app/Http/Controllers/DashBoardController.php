@@ -2,6 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Model\Agent;
+use App\Model\Order;
+use App\Model\Task;
+use App\Model\Team;
 use Illuminate\Http\Request;
 
 class DashBoardController extends Controller
@@ -13,7 +17,11 @@ class DashBoardController extends Controller
      */
     public function index()
     {
-        return view('dashboard');
+        $teams  = Team::with('agents.order.task.location')->get();
+        dd($teams);
+        //$agents = Agent::with('order.task')->get();
+        
+        return view('dashboard')->with(['teams' => $teams]);
     }
 
     /**

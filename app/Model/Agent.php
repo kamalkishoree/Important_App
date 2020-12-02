@@ -27,4 +27,9 @@ class Agent extends Authenticatable
     public function geoFence(){
         return $this->hasMany('App\Model\DriverGeo' , 'driver_id', 'id')->select('driver_id', 'geo_id'); 
     }
+
+    public function order(){
+        return $this->hasMany('App\Model\Order','driver_id', 'id');
+    }
+
 }
