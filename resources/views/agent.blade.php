@@ -180,9 +180,10 @@
                 <h4 class="modal-title">Add {{ Session::get('agent_name') }}</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
             </div>
-            <form id="submitAgent" enctype="multipart/form-data" action="{{ route('agent.store') }}">
-                @csrf
-                <div class="modal-body p-4">
+            
+            <div class="modal-body p-4">
+                <form id="submitAgent" enctype="multipart/form-data"  action="{{ url('agent/store') }}">
+                    @csrf
                     <div class="row mb-2">
                         <div class="col-md-4">
                             <div class="form-group" id="profile_pictureInput">
@@ -323,11 +324,12 @@
 
                         </div>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-blue waves-effect waves-light">Add</button>
-                </div>
-            </form>
+                    <input type="submit" class="btn btn-blue waves-effect waves-light formSubmutBtn" value="Submit" style="display: none;" />
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-blue waves-effect waves-light submitAgentForm">Submit</button>
+            </div>
         </div>
     </div>
 </div>
@@ -337,7 +339,6 @@
 @section('script')
 
 
-    <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
     <script src="http://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="http://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 
@@ -354,9 +355,6 @@
     <script src="{{ asset('assets/js/pages/form-fileuploads.init.js') }}"></script>
     <script src="{{ asset('assets/libs/datatables/datatables.min.js') }}"></script>
     <script src="{{ asset('assets/libs/sweetalert2/sweetalert2.min.js') }}"></script> 
-
-
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/8.4.7/js/intlTelInput.js"></script>
@@ -390,91 +388,124 @@
             });
         }
 
-    </script>
+        $(document).ready(function() {
+            $('#agents-datatable').DataTable();
+            $('#basic-datatable').DataTable();
+            jQuery('#onfoot').click();
+        });
 
-    <script>
-        $("#phone_number").intlTelInput({
-            nationalMode: false,
-            formatOnDisplay: true,
-            utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/8.4.6/js/utils.js"
+        $(document).on('click', '.click', function() {
+
+            $(this).find('input[type="radio"]').prop('checked', true);
+            var check = $(this).find('input[type="radio"]').val();
+            switch (check) {
+                case "onfoot":
+                    $("#foot").attr("src", "{{ asset('assets/icons/walk_blue.png') }}");
+                    $("#cycle").attr("src", "{{ asset('assets/icons/cycle.png') }}");
+                    $("#bike").attr("src", "{{ asset('assets/icons/bike.png') }}");
+                    $("#cars").attr("src", "{{ asset('assets/icons/car.png') }}");
+                    $("#trucks").attr("src", "{{ asset('assets/icons/truck.png') }}");
+                    break;
+                case "bycycle":
+                    $("#foot").attr("src", "{{ asset('assets/icons/walk.png') }}");
+                    $("#cycle").attr("src", "{{ asset('assets/icons/cycle_blue.png') }}");
+                    $("#bike").attr("src", "{{ asset('assets/icons/bike.png') }}");
+                    $("#cars").attr("src", "{{ asset('assets/icons/car.png') }}");
+                    $("#trucks").attr("src", "{{ asset('assets/icons/truck.png') }}");
+                    break;
+                case "motorbike":
+                    $("#foot").attr("src", "{{ asset('assets/icons/walk.png') }}");
+                    $("#cycle").attr("src", "{{ asset('assets/icons/cycle.png') }}");
+                    $("#bike").attr("src", "{{ asset('assets/icons/bike_blue.png') }}");
+                    $("#cars").attr("src", "{{ asset('assets/icons/car.png') }}");
+                    $("#trucks").attr("src", "{{ asset('assets/icons/truck.png') }}");
+                    break;
+                case "car":
+                    $("#foot").attr("src", "{{ asset('assets/icons/walk.png') }}");
+                    $("#cycle").attr("src", "{{ asset('assets/icons/cycle.png') }}");
+                    $("#bike").attr("src", "{{ asset('assets/icons/bike.png') }}");
+                    $("#cars").attr("src", "{{ asset('assets/icons/car_blue.png') }}");
+                    $("#trucks").attr("src", "{{ asset('assets/icons/truck.png') }}");
+                    break;
+                case "truck":
+                    $("#foot").attr("src", "{{ asset('assets/icons/walk.png') }}");
+                    $("#cycle").attr("src", "{{ asset('assets/icons/cycle.png') }}");
+                    $("#bike").attr("src", "{{ asset('assets/icons/bike.png') }}");
+                    $("#cars").attr("src", "{{ asset('assets/icons/car.png') }}");
+                    $("#trucks").attr("src", "{{ asset('assets/icons/truck_blue.png') }}");
+                    break;
+            }
+        });
+
+        $(document).on('click', '.submitAgentForm', function() {
+            $("#add-agent-modal .formSubmutBtn").click();
+            var form =  document.getElementById('submitAgent');
+            var formData = new FormData(form);
+
+            $.ajax({
+                method: 'post',
+                headers: {
+                    Accept: "application/json"
+                },
+                url: "{{URL::route('agent.store')}}",
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function(response) {
+                    if (response.status == 'success') {
+                            $("#add-agent-modal .close").click();
+                                 location.reload(); 
+                        
+                        // $(".alert-success").removeClass('d-none');
+                        // $(".alert-success").text(response.message);
+                        // setTimeout(function() {
+                        //     $(".alert-success").addClass('d-none');
+                        // }, 5000);
+
+                    } else {
+                        $(".show_all_error.invalid-feedback").show();
+                        $(".show_all_error.invalid-feedback").text(response.message);
+                    }
+                    return response;
+                },
+                error: function(response) {
+                    if (response.status === 422) {
+                        let errors = response.responseJSON.errors;
+                        Object.keys(errors).forEach(function(key) {
+                            $("#" + key + "Input input").addClass("is-invalid");
+                            $("#" + key + "Input span.invalid-feedback").children(
+                                "strong").text(errors[key][
+                                0
+                            ]);
+                            $("#" + key + "Input span.invalid-feedback").show();
+                        });
+                    } else {
+                        $(".show_all_error.invalid-feedback").show();
+                        $(".show_all_error.invalid-feedback").text('Something went wrong, Please try Again.');
+                    }
+                    return response;
+                }
+            });
+            //console.log(formData);
+        });
+
+        $("#add-agent-modal #submitAgent").submit(function(e) {
+            e.preventDefault();
+            var formData = new FormData(this);
+
+            
+            //AjaxSubmit(formData, 'POST', '/agent', '#add-agent-modal');
+        });
+
+        $('#add-agent-modal #phone_number').focus(function() { 
+            $(this).css('color', '#6c757d');
         });
         $('.intl-tel-input').css('width', '100%');
 
-        
-
-        $(function() {
-            $('#phone_number').focus(function() {
-                $('#phone_number').css('color', '#6c757d');
-            });
-        });
-
-        $(document).ready(function() {
-            $('#agents-datatable').DataTable();
-        });
-
-        $(document).ready(function() {
-            $('#basic-datatable').DataTable();
-        });
-
-
-
-        $('.click').click(function() {
-            $('#mtl').click(function() {
-                $('#picture').attr('src',
-                    'http://profile.ak.fbcdn.net/hprofile-ak-ash3/41811_170099283015889_1174445894_q.jpg'
-                );
-            });
-
-
-        });
-        
-
-        $(document).ready(function() {
-             jQuery(function() {
-                jQuery('#onfoot').click();
-            })
-
-            $('.click').click(function() {
-                $(this).find('input[type="radio"]').prop('checked', true);
-                var check = $(this).find('input[type="radio"]').val();
-                switch (check) {
-                    case "onfoot":
-                        $("#foot").attr("src", "{{ asset('assets/icons/walk_blue.png') }}");
-                        $("#cycle").attr("src", "{{ asset('assets/icons/cycle.png') }}");
-                        $("#bike").attr("src", "{{ asset('assets/icons/bike.png') }}");
-                        $("#cars").attr("src", "{{ asset('assets/icons/car.png') }}");
-                        $("#trucks").attr("src", "{{ asset('assets/icons/truck.png') }}");
-                        break;
-                    case "bycycle":
-                        $("#foot").attr("src", "{{ asset('assets/icons/walk.png') }}");
-                        $("#cycle").attr("src", "{{ asset('assets/icons/cycle_blue.png') }}");
-                        $("#bike").attr("src", "{{ asset('assets/icons/bike.png') }}");
-                        $("#cars").attr("src", "{{ asset('assets/icons/car.png') }}");
-                        $("#trucks").attr("src", "{{ asset('assets/icons/truck.png') }}");
-                        break;
-                    case "motorbike":
-                        $("#foot").attr("src", "{{ asset('assets/icons/walk.png') }}");
-                        $("#cycle").attr("src", "{{ asset('assets/icons/cycle.png') }}");
-                        $("#bike").attr("src", "{{ asset('assets/icons/bike_blue.png') }}");
-                        $("#cars").attr("src", "{{ asset('assets/icons/car.png') }}");
-                        $("#trucks").attr("src", "{{ asset('assets/icons/truck.png') }}");
-                        break;
-                    case "car":
-                        $("#foot").attr("src", "{{ asset('assets/icons/walk.png') }}");
-                        $("#cycle").attr("src", "{{ asset('assets/icons/cycle.png') }}");
-                        $("#bike").attr("src", "{{ asset('assets/icons/bike.png') }}");
-                        $("#cars").attr("src", "{{ asset('assets/icons/car_blue.png') }}");
-                        $("#trucks").attr("src", "{{ asset('assets/icons/truck.png') }}");
-                        break;
-                    case "truck":
-                        $("#foot").attr("src", "{{ asset('assets/icons/walk.png') }}");
-                        $("#cycle").attr("src", "{{ asset('assets/icons/cycle.png') }}");
-                        $("#bike").attr("src", "{{ asset('assets/icons/bike.png') }}");
-                        $("#cars").attr("src", "{{ asset('assets/icons/car.png') }}");
-                        $("#trucks").attr("src", "{{ asset('assets/icons/truck_blue.png') }}");
-                        break;
-                }
-            });
+        $("#add-agent-modal #phone_number").intlTelInput({
+            nationalMode: false,
+            formatOnDisplay: true,
+            utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/8.4.6/js/utils.js"
         });
 
     </script>

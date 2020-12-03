@@ -334,7 +334,6 @@
 @section('script')
 
 
-    <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
     <script src="http://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="http://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 
@@ -350,8 +349,6 @@
     <script src="{{ asset('assets/libs/datatables/datatables.min.js') }}"></script>
     <script src="{{ asset('assets/libs/sweetalert2/sweetalert2.min.js') }}"></script> 
 
-
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/8.4.7/js/intlTelInput.js"></script>
@@ -391,7 +388,7 @@
     <!-- Page js-->
 
     <script>
-        $(".team-list-1").click(function() {
+        $(document).on('click', ".team-list-1", (function() {
             var data_id = $(this).attr('data-id');
             $(".team-details").hide();
             $("#team_detail_" + data_id).show();
