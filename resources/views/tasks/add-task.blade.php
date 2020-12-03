@@ -266,7 +266,7 @@
                                                 <option value="">Selcet Task </option>
                                                 <option value="1">Pickup</option>
                                                 <option value="2">Drop</option>
-                                                <option value="3">Appintment</option>
+                                                <option value="3">Appointment</option>
 
                                             </select>
                                         </div>

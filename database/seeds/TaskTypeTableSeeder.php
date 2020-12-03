@@ -26,7 +26,7 @@ class TaskTypeTableSeeder extends Seeder
             ),
             array(
                 'id' => 3,
-                'name' => 'Appintment'
+                'name' => 'Appointment'
             )
         );
         DB::table('task_types')->insert($type);

@@ -270,7 +270,7 @@
                                               <option value="">Selcet Task </option>
                                               <option value="1" {{$item->task_type_id == 1 ? 'selected' :''}}>Pickup</option>
                                               <option value="2" {{$item->task_type_id == 2 ? 'selected' :''}}>Drop</option>
-                                              <option value="3" {{$item->task_type_id == 3 ? 'selected' :''}}>Appintment</option>
+                                              <option value="3" {{$item->task_type_id == 3 ? 'selected' :''}}>Appointment</option>
 
                                           </select>
                                       </div>

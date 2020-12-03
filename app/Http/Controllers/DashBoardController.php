@@ -18,7 +18,7 @@ class DashBoardController extends Controller
     public function index()
     {
         $teams  = Team::with('agents.order.task.location')->get();
-        dd($teams);
+       
         //$agents = Agent::with('order.task')->get();
         
         return view('dashboard')->with(['teams' => $teams]);
