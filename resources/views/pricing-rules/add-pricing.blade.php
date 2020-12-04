@@ -50,11 +50,12 @@
 
 @section('script')
     <!-- Plugins js-->
-    <script src="{{asset('assets/libs/flatpickr/flatpickr.min.js')}}"></script>
+<script src="{{asset('assets/libs/flatpickr/flatpickr.min.js')}}"></script>
 <script src="{{asset('assets/libs/bootstrap-datepicker/bootstrap-datepicker.min.js')}}"></script>
+<script src="{{asset('assets/libs/bootstrap-select/bootstrap-select.min.js')}}"></script>
 <script src="{{asset('assets/js/pages/form-pickers.init.js')}}"></script>
 <script src="{{asset('assets/libs/select2/select2.min.js')}}"></script>
-<script src="{{asset('assets/libs/bootstrap-select/bootstrap-select.min.js')}}"></script>
+<script src="{{asset('assets/js/popper.min.js')}}"></script>
 
     <!-- Page js-->
 

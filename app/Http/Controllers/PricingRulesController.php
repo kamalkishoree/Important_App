@@ -24,7 +24,12 @@ class PricingRulesController extends Controller
     {
         $pricing = PricingRule::orderBy('created_at', 'DESC')->paginate(10);
         $priority = PricePriority::where('id',1)->first();
-        return view('pricing-rules.pricing-rules')->with(['pricing' => $pricing,'priority'=>$priority]);
+
+        $geos       = Geo::all()->pluck('name', 'id');
+        $teams      = Team::all()->pluck('name', 'id');
+        $team_tag   = TagsForTeam::all()->pluck('name', 'id');
+        $driver_tag = TagsForAgent::all()->pluck('name', 'id');
+        return view('pricing-rules.index')->with(['pricing' => $pricing, 'priority'=>$priority, 'geos' => $geos, 'teams' => $teams, 'team_tag' => $team_tag, 'driver_tag' => $driver_tag]);
     }
 
     /**
@@ -107,7 +112,7 @@ class PricingRulesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    /*public function edit($id)
     {
         $geos       = Geo::all()->pluck('name', 'id');
         $teams      = Team::all()->pluck('name', 'id');
@@ -115,6 +120,19 @@ class PricingRulesController extends Controller
         $driver_tag = TagsForAgent::all()->pluck('name', 'id');
         $pricing = PricingRule::where('id',$id)->first();
         return view('pricing-rules.update-pricing',compact('geos','teams','team_tag','driver_tag','pricing'));
+    }*/
+
+    public function edit($id)
+    {
+        $pricing = PricingRule::where('id',$id)->first();
+        //dd($pricing->toArray());
+        $geos       = Geo::all()->pluck('name', 'id');
+        $teams      = Team::all()->pluck('name', 'id');
+        $team_tag   = TagsForTeam::all()->pluck('name', 'id');
+        $driver_tag = TagsForAgent::all()->pluck('name', 'id');
+        $returnHTML = view('pricing-rules.form')->with(['pricing' => $pricing, 'geos' => $geos, 'teams' => $teams, 'team_tag' => $team_tag, 'driver_tag' => $driver_tag])->render();
+
+        return response()->json(array('success' => true, 'html'=>$returnHTML));
     }
 
     /**

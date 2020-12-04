@@ -43,7 +43,6 @@
 @endsection
 
 @section('content')
-@include('modals.add-customer')
 <!-- Start Content-->
 <div class="container-fluid">
 
@@ -107,7 +106,7 @@
 
                                     <td>
                                         <div class="form-ul" style="width: 60px;">
-                                            <div class="inner-div"> <a href="#" userId="{{$customer->id}}" class="action-icon"> <i class="mdi mdi-square-edit-outline"></i></a></div>
+                                            <div class="inner-div"> <a href="#" userId="{{$customer->id}}" class="action-icon editIcon"> <i class="mdi mdi-square-edit-outline"></i></a></div>
                                             <div class="inner-div">
                                                 <form method="POST" action="{{route('customer.destroy', $customer->id)}}">
                                                     @csrf
@@ -160,7 +159,7 @@
 
 <script src="{{asset('assets/libs/datatables/datatables.min.js')}}"></script>
 
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB85kLYYOmuAhBUPd7odVmL6gnQsSGWU-4&libraries=places&callback=initialize" async defer></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB85kLYYOmuAhBUPd7odVmL6gnQsSGWU-4&libraries=places" async defer></script>
 
 <script>
 
@@ -168,7 +167,7 @@
     var autocompletesWraps = ['add0'];
     var count = 1; editCount = 0;
     $('.openModal').click(function(){
-        $('#add-agent-modal').modal({
+        $('#add-customer-modal').modal({
             backdrop: 'static',
             keyboard: false
         });
@@ -223,7 +222,7 @@
                 //alert("lat=>"+event.latLng.lat());
                 //alert("long=>"+event.latLng.lng());
             });
-            $('#add-agent-modal').addClass('fadeIn');
+            $('#add-customer-modal').addClass('fadeIn');
         $('#show-map-modal').modal({
             backdrop: 'static',
             keyboard: false
@@ -232,7 +231,7 @@
     });
 
     $('#show-map-modal').on('hide.bs.modal', function () {
-         $('#add-agent-modal').removeClass('fadeIn');
+         $('#add-customer-modal').removeClass('fadeIn');
 
     });
 
@@ -271,8 +270,6 @@
             });
         })
     });
-
-    
 
     $(document).on('click', '.addField', function(){
         count = count + 1;
@@ -323,43 +320,7 @@
 </script>
 
 <script>
-    /*function initialize() {
-            var myLatlng = new google.maps.LatLng(51.508742,-0.120850);
-            var mapProp = {
-                center:myLatlng,
-                zoom:5,
-                mapTypeId:google.maps.MapTypeId.ROADMAP
-              
-            };
-            var map=new google.maps.Map(document.getElementById("googleMap"), mapProp);
-                var marker = new google.maps.Marker({
-                  position: myLatlng,
-                  map: map,
-                  title: 'Hello World!',
-                  draggable:true  
-              });
-            document.getElementById('lat').value= 51.508742
-            document.getElementById('lng').value= -0.120850  
-            // marker drag event
-            google.maps.event.addListener(marker,'drag',function(event) {
-                document.getElementById('lat').value = event.latLng.lat();
-                document.getElementById('lng').value = event.latLng.lng();
-            });
-
-            //marker drag event end
-            google.maps.event.addListener(marker,'dragend',function(event) {
-                console.log(event.latLng);
-                document.getElementById('lat').value = event.latLng.lat();
-                document.getElementById('lng').value = event.latLng.lng();
-                alert("lat=>"+event.latLng.lat());
-                alert("long=>"+event.latLng.lng());
-            });
-        }
-
-        new google.maps.event.addDomListener(window, 'load', initialize);
-        */
-
-    $(".action-icon").click(function (e) {  
+    $(".editIcon").click(function (e) {  
 
         
         $.ajaxSetup({
