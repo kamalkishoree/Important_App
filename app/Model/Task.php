@@ -8,7 +8,7 @@ class Task extends Model
 {
 
     protected $fillable = [
-        'order_id','task_type_id','location_id','pricing_rule_id','appointment_duration','dependent_task_id','allocation_type'
+        'order_id','task_type_id','location_id','pricing_rule_id','appointment_duration','dependent_task_id','allocation_type','task_status'
     ];
 
 

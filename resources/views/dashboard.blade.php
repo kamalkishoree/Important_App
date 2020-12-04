@@ -227,8 +227,8 @@
                                                                                     src="{{ asset('demo/images/ic_location_blue_1.png') }}">
                                                                             </div>
                                                                             <div class="wd-90">
-                                                                                <h6>42-sector 28 chandugrah</h6>
-                                                                                <span>Office</span>
+                                                                            <h6>{{$tasks->location->address}}</h6>
+                                                                                <span>{{$tasks->location->short_name}}</span>
                                                                                 <h5 class="mb-1"><span>Pickup before</span>
                                                                                     06:30 pm
                                                                                 </h5>
@@ -286,29 +286,29 @@
                                                     </div>
                                                 </div>
 
-                                                <div class="row mt-2">
+                                                <div class="row mt-2 teamchange">
                                                     <div class="col-md-8">
                                                         <h6>All Teams</h6>
                                                     </div>
                                                     <div class="col-md-4 text-right">
                                                         <label class="">
-                                                            <input cla type="checkbox" value="0">
+                                                            <input class="newchecks" cla type="checkbox" value="0" name="teamchecks[]" checked>
                                                             <span class="checkmark"></span>
                                                         </label>
                                                     </div>
                                                 </div>
                                                 @foreach ($teams as $item)
-                                                <div class="row mt-2">
+                                                 <div class="row mt-2 teamchange">
                                                     <div class="col-md-8">
                                                     <h6>{{$item->name}}</h6>
                                                     </div>
                                                     <div class="col-md-4 text-right">
                                                         <label class="">
-                                                            <input cla type="checkbox">
+                                                        <input class="newchecks" type="checkbox" name="teamchecks[]" value="{{$item->id}}">
                                                             <span class="checkmark"></span>
                                                         </label>
                                                     </div>
-                                                </div> 
+                                                 </div> 
                                                 @endforeach
                                             </div>
                                         </div>
@@ -486,7 +486,7 @@
         <!-- Optional JavaScript -->
         <!-- jQuery first, then Popper.js, then Bootstrap JS -->
 
-        <script async defer
+        <script defer
             src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB85kLYYOmuAhBUPd7odVmL6gnQsSGWU-4&v=3.exp&callback=initMap">
         </script>
         <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
@@ -507,12 +507,28 @@
             $(document).ready(function() {
                 $('#shortclick').trigger('click');
             });
+            
+
 
 
             $("#abc").click(function() {
                 $(this).data('id');
             });
+            var markers = {!! json_encode($newmarker) !!};
+            var cars    = [0];
 
+            $('.newchecks').click(function() {
+                var val = [];
+               $('.newchecks:checkbox:checked').each(function(i){
+                  val[i] = $(this).val();
+               });
+            //   if (!$(this).is(':checked')) {
+            //    return confirm("Are you sure?");
+            //   }
+              alert(val);
+              changeMarkerPosition();
+            });
+           // console.log(markers);
             function initMap() {
                 var map;
                 var bounds = new google.maps.LatLngBounds();
@@ -522,27 +538,29 @@
 
                 // Display a map on the page
                 map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
-                map.setTilt(45);
+               
 
-                // Multiple Markers
-                var markers = [
+                //Multiple Markers
+                var markerss = [
                     ['Marine Corps Recruit Depot (MCRD)',30.7046,76.7179],
                 ];
 
-                
-
+                //console.log(markers);
+  
                 // Display multiple markers on a map
                 var infoWindow = new google.maps.InfoWindow(),
                     marker, i;
 
                 // Loop through our array of markers & place each one on the map  
                 for (i = 0; i < markers.length; i++) {
-                    var position = new google.maps.LatLng(markers[i][1], markers[i][2]);
+                    data = markers[i];
+                    
+                    var position = new google.maps.LatLng(data[3], data[4]);
                     bounds.extend(position);
                     marker = new google.maps.Marker({
                         position: position,
                         map: map,
-                        title: markers[i][0]
+                        title: 'anb'
                     });
 
                     // Allow each marker to have an info window    
@@ -564,6 +582,23 @@
                 });
             }
 
+            function changeMarkerPosition(markerss) {
+                for (i = 0; i < markerss.length; i++) {
+                    data = markerss[i];
+                    
+                    var position = new google.maps.LatLng(data[3], data[4]);
+                    bounds.extend(position);
+                    marker = new google.maps.Marker({
+                        position: position,
+                        map: map,
+                        title: 'anb'
+                    });
+                
+                
+               }
+            }   
+
+        
         </script>
     </body>
 

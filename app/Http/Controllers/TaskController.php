@@ -138,6 +138,7 @@ class TaskController extends Controller
                 'location_id'                => $loc_id,
                 'allocation_type'            => $request->appointment_date[$key],            
                 'dependent_task_id'          => $dep_id,
+                'task_status'                => 'unassigned'
             ];
             $task = Task::create($data);
             $dep_id = $task->id;

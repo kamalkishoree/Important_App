@@ -18,10 +18,30 @@ class DashBoardController extends Controller
     public function index()
     {
         $teams  = Team::with('agents.order.task.location')->get();
+        $newmarker = [];
+        foreach ($teams as $key => $team) {
+            $append = [];
+            $append[0] = $team->id;
+            foreach ($team->agents as $key => $agent) {
+                $append[1] = $agent->id;
+                foreach ($agent->order as $key => $orders) {
+                    foreach ($orders->task as $key => $tasks) {
+                        $append[2] = $tasks->id; 
+                        $append[3] = floatval($tasks->location->latitude);
+                        $append[4] = floatval($tasks->location->longitude);
+                        $append[5] = $tasks->task_status;
+                        array_push($newmarker,$append);
+                    }
+                }
+                
+            }
+            
+        }
+       
        
         //$agents = Agent::with('order.task')->get();
         
-        return view('dashboard')->with(['teams' => $teams]);
+        return view('dashboard')->with(['teams' => $teams,'newmarker'=> $newmarker]);
     }
 
     /**
