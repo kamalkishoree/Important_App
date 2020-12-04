@@ -83,8 +83,6 @@
                                     </div>
                                 </div>
 
-                                
-
                                 <div class="row temp">
                                     <div class="col-md-6">
                                         <div class="form-group" id="typeInput">
@@ -104,7 +102,6 @@
                                             </span>
                                         </div>
                                     </div>
-
                                 </div>
 
                                 <div class="row">
@@ -128,7 +125,6 @@
                     
                                         </div>
                                     </div>
-                    
                                 </div>
 
                                 <div class="row">
@@ -149,10 +145,8 @@
                                             <span class="invalid-feedback" role="alert">
                                                 <strong></strong>
                                             </span>
-                    
                                         </div>
                                     </div>
-                    
                                 </div>
 
                                 <div class="row">
@@ -173,10 +167,8 @@
                                             <span class="invalid-feedback" role="alert">
                                                 <strong></strong>
                                             </span>
-                    
                                         </div>
                                     </div>
-                    
                                 </div>
 
                                 <div class="row">
@@ -200,7 +192,6 @@
                     
                                         </div>
                                     </div>
-                    
                                 </div>
 
                                 <div class="row">
@@ -224,7 +215,6 @@
                     
                                         </div>
                                     </div>
-                    
                                 </div>
                                 
                                 <div class="row">
@@ -245,11 +235,9 @@
                                             <span class="invalid-feedback" role="alert">
                                                 <strong></strong>
                                             </span>
-                    
                                         </div>
                                     </div>
                                 </div>
-
                             </div>
                             {{-- Do not Remove this blow div --}}
                             <div class="" id="nestable_list_1" style="display: none">
@@ -259,17 +247,14 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-blue waves-effect waves-light ">Submit</button>
+                    <button type="submit" class="btn btn-blue waves-effect waves-light">Submit</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
 
-
-
-
-<div id="edit-customer-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+<div id="edit-price-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
@@ -279,12 +264,8 @@
             
             <div class="modal-body p-4">
                 <div class="row">
-                    <div class="col-md-12">
-                        <div class="card-box" id="editCardBox">
-
-
-
-                        </div>
+                    <div class="col-md-12" id="editCardBox">
+                        
                     </div>
                 </div>
             </div>

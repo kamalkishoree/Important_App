@@ -125,14 +125,14 @@ class PricingRulesController extends Controller
     public function edit($id)
     {
         $pricing = PricingRule::where('id',$id)->first();
-        //dd($customer->toArray());
+        //dd($pricing->toArray());
         $geos       = Geo::all()->pluck('name', 'id');
         $teams      = Team::all()->pluck('name', 'id');
         $team_tag   = TagsForTeam::all()->pluck('name', 'id');
         $driver_tag = TagsForAgent::all()->pluck('name', 'id');
-        $returnHTML = view('pricing-rules.form')->with(['customer', $customer, 'geos' => $geos, 'teams' => $teams, 'team_tag' => $team_tag, 'driver_tag' => $driver_tag)->render();
-        
-        return response()->json(array('success' => true, 'html'=>$returnHTML, 'addFieldsCount'=> $customer->location->count()));
+        $returnHTML = view('pricing-rules.form')->with(['pricing' => $pricing, 'geos' => $geos, 'teams' => $teams, 'team_tag' => $team_tag, 'driver_tag' => $driver_tag])->render();
+
+        return response()->json(array('success' => true, 'html'=>$returnHTML));
     }
 
     /**

@@ -166,20 +166,14 @@
 
                                         <td>
                                             <div class="form-ul" style="width: 60px;">
-                                                <div class="inner-div"> <a
-                                                        href="{{ route('pricing-rules.edit', $price->id) }}"
-                                                        class="action-icon"> <i
-                                                            class="mdi mdi-square-edit-outline"></i></a></div>
+                                                <div class="inner-div"> <a href="#" href1="{{ route('pricing-rules.edit', $price->id) }}" class="action-icon editIcon" priceId="{{$price->id}}"> <i class="mdi mdi-square-edit-outline"></i></a> 
+                                                </div>
                                                 <div class="inner-div">
-                                                    <form method="POST"
-                                                        action="{{ route('pricing-rules.destroy', $price->id) }}">
+                                                    <form method="POST" action="{{ route('pricing-rules.destroy', $price->id) }}">
                                                         @csrf
                                                         @method('DELETE')
                                                         <div class="form-group">
-                                                            <button type="submit"
-                                                                class="btn btn-primary-outline action-icon"> <i
-                                                                    class="mdi mdi-delete"></i></button>
-
+                                                            <button type="submit" class="btn btn-primary-outline action-icon"> <i class="mdi mdi-delete"></i></button>
                                                         </div>
                                                     </form>
                                                 </div>
@@ -244,14 +238,24 @@
         $('#pricing-datatable').DataTable();
     });
 
+    function runPicker(){
+        $('.datetime-datepicker').flatpickr({
+            enableTime: true,
+            dateFormat: "Y-m-d H:i"
+        });
+
+        $('.selectpicker').selectpicker();
+    }
+
     $('.openModal').click(function(){
         $('#add-pricing-modal').modal({
             backdrop: 'static',
             keyboard: false
         });
+        runPicker();
     });
 
-    $(".action-icon").click(function (e) {
+    $(".editIcon").click(function (e) {
 
         $.ajaxSetup({
             headers: {
@@ -260,35 +264,40 @@
         });
         e.preventDefault();
        
-        var uid = $(this).attr('userId');
+        var pid = $(this).attr('priceId');
 
         $.ajax({
             type: "get",
-            url: "<?php echo url('customer'); ?>" + '/' + uid + '/edit',
+            url: "<?php echo url('pricing-rules'); ?>" + '/' + pid + '/edit',
             data: '',
             dataType: 'json',
             success: function (data) {
 
-                $('.page-title1').html('Hello');
                 console.log('data');
+        
+                $('.datetime-datepicker').flatpickr({
+                    enableTime: true,
+                    dateFormat: "Y-m-d H:i"
+                });
 
-                $('#edit-customer-modal #editCardBox').html(data.html);
-                $('#edit-customer-modal').modal({
+                $('#edit-price-modal #editCardBox').html(data.html);
+                $('#edit-price-modal').modal({
                     backdrop: 'static',
                     keyboard: false
                 });
 
-                editCount = data.addFieldsCount;
-                for (var i = 1; i <= data.addFieldsCount; i++) {
-                    autocompletesWraps.push('edit'+i);
-                    loadMap(autocompletesWraps);
-                }
+                runPicker();
+                ('.custom-switch').switch();
 
             },
             error: function (data) {
                 console.log('data2');
             }
         });
+    });
+
+    $(document).on('click', '.submitEditForm', function(){ console.log('ad');
+        document.getElementById("edit_price").submit();
     });
 
     !function($) {

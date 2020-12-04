@@ -43,7 +43,6 @@
 @endsection
 
 @section('content')
-@include('modals.add-customer')
 <!-- Start Content-->
 <div class="container-fluid">
 
@@ -107,7 +106,7 @@
 
                                     <td>
                                         <div class="form-ul" style="width: 60px;">
-                                            <div class="inner-div"> <a href="#" userId="{{$customer->id}}" class="action-icon"> <i class="mdi mdi-square-edit-outline"></i></a></div>
+                                            <div class="inner-div"> <a href="#" userId="{{$customer->id}}" class="action-icon editIcon"> <i class="mdi mdi-square-edit-outline"></i></a></div>
                                             <div class="inner-div">
                                                 <form method="POST" action="{{route('customer.destroy', $customer->id)}}">
                                                     @csrf
@@ -272,8 +271,6 @@
         })
     });
 
-    
-
     $(document).on('click', '.addField', function(){
         count = count + 1;
 
@@ -323,7 +320,7 @@
 </script>
 
 <script>
-    $(".action-icon").click(function (e) {  
+    $(".editIcon").click(function (e) {  
 
         
         $.ajaxSetup({

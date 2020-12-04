@@ -1,108 +1,253 @@
 
-<form id="edit_customer" action="{{ route('customer.update', $customer->id) }}" method="POST">
+<form id="edit_price" action="{{ route('pricing-rules.update', $pricing->id) }}" method="POST">
     @csrf
     @method('PUT')
-    <h4 class="header-title mb-3"></h4>
+    
+        <div class="card-box">
+            <h4 class="header-title mb-3"></h4>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group" id="nameInput">
+                        {!! Form::label('title', 'Name',['class' => 'control-label']) !!}
+                        {!! Form::text('name', $pricing->name, ['class' => 'form-control','placeholder'=> 'Name','required' => 'required']) !!}
+                        <span class="invalid-feedback" role="alert">
+                            <strong></strong>
+                        </span>
 
-    <div class="row">
-        <div class="col-md-12">
-            <div class="form-group" id="nameInput">
-                {!! Form::label('title', 'Name',['class' => 'control-label']) !!}
-                {!! Form::text('name', $customer->name, ['class' => 'form-control']) !!}
-                
-                <span class="invalid-feedback" role="alert">
-                    <strong></strong>
-                </span>
-
-            </div>
-        </div>
-
-    </div>
-
-    <div class="row">
-        <div class="col-md-12">
-            <div class="form-group" id="make_modelInput">
-                {!! Form::label('title', 'Email',['class' => 'control-label']) !!}
-                {!! Form::email('email', $customer->email, ['class' => 'form-control']) !!}
-                <span class="invalid-feedback" role="alert">
-                    <strong></strong>
-                </span>
-            </div>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-md-12">
-            <div class="form-group" id="make_modelInput">
-                {!! Form::label('title', 'Phone Number',['class' => 'control-label']) !!}
-                {!! Form::text('phone_number', $customer->phone_number, ['class' => 'form-control']) !!}
-                <span class="invalid-feedback" role="alert">
-                    <strong></strong>
-                </span>
-            </div>
-        </div>
-    </div>
-    <div class="editApp"> <?php $i = 1; ?>
-        {!! Form::label('title', 'Address',['class' => 'control-label']) !!} 
-        @foreach($customer->location as $loc)
-
-        <div class="row address addEditAddress" id="edit{{$i}}">
-            <div class="col-md-4">
-                <div class="form-group" id=""> 
-                    <input type="text" name="short_name[]" class="form-control" placeholder="Short Name" value="{{$loc->short_name}}">
-                    <span class="invalid-feedback" role="alert">
-                        <strong></strong>
-                    </span>
-                </div>
-            </div>
-            <div class="col-md-5">
-                <div class="form-group input-group" id="location">
-                    <input type="text" id="edit{{$i}}-input" name="address[]" class="form-control" placeholder="Address" value="{{$loc->address}}">
-                    <div class="input-group-append">
-                        <button class="btn btn-xs btn-dark waves-effect waves-light showMap" type="button" num="edit{{$i}}"> <i class="mdi mdi-map-marker-radius"></i></button>
                     </div>
-                    <input type="hidden" name="latitude[]" id="edit{{$i}}-latitude" value="{{$loc->latitude}}" />
-                    <input type="hidden" name="longitude[]" id="edit{{$i}}-longitude" value="{{$loc->longitude}}" />
-                    <input type="hidden" name="location_id[]" value="{{$loc->id}}" />
-                    <span class="invalid-feedback" role="alert" id="location">
-                        <strong></strong>
-                    </span>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group" id="">
+                        {!! Form::label('title', 'Start Date Time',['class' => 'control-label']) !!}
+                        <input type="datetime-local"  class="form-control datetime-datepicker" placeholder="Date and Time" name="start_date_time" required value="{{isset($pricing) ? date('Y-m-d H:i', strtotime($pricing->start_date_time)) : ''}}">
+                        <span class="invalid-feedback" role="alert">
+                            <strong></strong>
+                        </span>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group" id="">
+                        {!! Form::label('title', 'End End Time',['class' => 'control-label']) !!}
+                        <input type="datetime-local"  class="form-control datetime-datepicker" placeholder="Date and Time" name="end_date_time" value="{{isset($pricing) ? date('Y-m-d H:i', strtotime($pricing->end_date_time)) : ''}}"required>
+                        <span class="invalid-feedback" role="alert">
+                            <strong></strong>
+                        </span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group new" id="">
+                        <div class="custom-control custom-switch">
+                            <input type="checkbox" class="custom-control-input" id="customSwitch2" name="is_default" value="y" {{ $pricing->is_default == 'y' ? 'checked' : ''}}>
+                            <label class="custom-control-label" for="customSwitch2">Turn On For Default Alloction</label>
+                        </div>
+                    </div>
+                </div>
+               
+            </div>
+
+            <div class="row temp">
+                <div class="col-md-6">
+                    <div class="form-group" id="typeInput">
+                        {!! Form::label('title', 'Select Geo Fence',['class' => 'control-label']) !!}
+                        {!! Form::select('geo_id',$geos,$pricing->geo_id,['class' => 'selectpicker',]) !!}
+                        <span class="invalid-feedback" role="alert">
+                            <strong></strong>
+                        </span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group" id="typeInput">
+                        {!! Form::label('title', 'Select Team',['class' => 'control-label']) !!}
+                        {!! Form::select('team_id',$teams,$pricing->team_id,['class' => 'selectpicker']) !!}
+                        <span class="invalid-feedback" role="alert">
+                            <strong></strong>
+                        </span>
+                    </div>
                 </div>
             </div>
-            <div class="col-md-3">
-                <div class="form-group" id="">
-                    <input type="text" name="post_code[]" class="form-control" placeholder="Post Code" value="{{$loc->post_code}}">
-                    <span class="invalid-feedback" role="alert">
-                        <strong></strong>
-                    </span>
+
+            <div class="row temp">
+                <div class="col-md-6">
+                    <div class="form-group" id="typeInput">
+                        {!! Form::label('title', 'Select Team Tag',['class' => 'control-label']) !!}
+                        {!! Form::select('team_tag_id',$team_tag,$pricing->team_tag_id,['class' => 'selectpicker']) !!}
+                        <span class="invalid-feedback" role="alert">
+                            <strong></strong>
+                        </span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group" id="typeInput">
+                        {!! Form::label('title', 'Select Driver Tag',['class' => 'control-label']) !!}
+                        {!! Form::select('driver_tag_id',$driver_tag,$pricing->driver_tag_id,['class' => 'selectpicker']) !!}
+                        <span class="invalid-feedback" role="alert">
+                            <strong></strong>
+                        </span>
+                    </div>
                 </div>
             </div>
-        </div>
-        <?php $i++; ?>
-        @endforeach
-        <div id="editAddress-map-container" style="width:100%;height:400px; display: none;">
-            <div style="width: 100%; height: 100%" id="address-map"></div>
-        </div>
-    </div>
-    
-    <div class="row">
-        <div class="col-md-4">
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group" id="">
+                        {!! Form::label('title', 'Base Price',['class' => 'control-label']) !!}
+                        {!! Form::text('base_price', $pricing->base_price, ['class' => 'form-control','required' => 'required']) !!}
+                        <span class="invalid-feedback" role="alert">
+                            <strong></strong>
+                        </span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group" id="">
+                        {!! Form::label('title', 'Base Duration',['class' => 'control-label']) !!}
+                        {!! Form::text('base_duration', $pricing->base_duration, ['class' => 'form-control','required' => 'required']) !!}
+                        <span class="invalid-feedback" role="alert">
+                            <strong></strong>
+                        </span>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group" id="">
+                        {!! Form::label('title', 'Base Distance',['class' => 'control-label']) !!}
+                        {!! Form::text('base_distance', $pricing->base_distance, ['class' => 'form-control','required' => 'required']) !!}
+                        <span class="invalid-feedback" role="alert">
+                            <strong></strong>
+                        </span>
+
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group" id="">
+                        {!! Form::label('title', 'Base Waiting',['class' => 'control-label']) !!}
+                        {!! Form::text('base_waiting', $pricing->base_waiting, ['class' => 'form-control','required' => 'required']) !!}
+                        <span class="invalid-feedback" role="alert">
+                            <strong></strong>
+                        </span>
+
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group" id="">
+                        {!! Form::label('title', 'Duration Price(per minute)',['class' => 'control-label']) !!}
+                        {!! Form::text('duration_price', $pricing->duration_price, ['class' => 'form-control','required' => 'required']) !!}
+                        <span class="invalid-feedback" role="alert">
+                            <strong></strong>
+                        </span>
+
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group" id="">
+                        {!! Form::label('title', 'Waiting Price',['class' => 'control-label']) !!}
+                        {!! Form::text('waiting_price', $pricing->waiting_price, ['class' => 'form-control','required' => 'required']) !!}
+                        <span class="invalid-feedback" role="alert">
+                            <strong></strong>
+                        </span>
+
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group" id="">
+                        {!! Form::label('title', 'Distance Fee',['class' => 'control-label']) !!}
+                        {!! Form::text('distance_fee', $pricing->distance_fee, ['class' => 'form-control','required' => 'required']) !!}
+                        <span class="invalid-feedback" role="alert">
+                            <strong></strong>
+                        </span>
+
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group" id="">
+                        {!! Form::label('title', 'Cancel Fee',['class' => 'control-label']) !!}
+                        {!! Form::text('cancel_fee', $pricing->cancel_fee, ['class' => 'form-control','required' => 'required']) !!}
+                        <span class="invalid-feedback" role="alert">
+                            <strong></strong>
+                        </span>
+
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group" id="">
+                        {!! Form::label('title', 'Agent Commission Percentage',['class' => 'control-label']) !!}
+                        {!! Form::text('agent_commission_percentage', $pricing->agent_commission_percentage, ['class' => 'form-control','required' => 'required']) !!}
+                        <span class="invalid-feedback" role="alert">
+                            <strong></strong>
+                        </span>
+
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group" id="">
+                        {!! Form::label('title', 'Agent Commission Fixed',['class' => 'control-label']) !!}
+                        {!! Form::text('agent_commission_fixed', $pricing->agent_commission_fixed, ['class' => 'form-control','required' => 'required']) !!}
+                        <span class="invalid-feedback" role="alert">
+                            <strong></strong>
+                        </span>
+
+                    </div>
+                </div>
+
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group" id="">
+                        {!! Form::label('title', 'Freelancer Commission Percentage',['class' => 'control-label']) !!}
+                        {!! Form::text('freelancer_commission_percentage', $pricing->freelancer_commission_percentage, ['class' => 'form-control']) !!}
+                        <span class="invalid-feedback" role="alert">
+                            <strong></strong>
+                        </span>
+
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group" id="">
+                        {!! Form::label('title', 'Freelancer Commission Fixed',['class' => 'control-label']) !!}
+                        {!! Form::text('freelancer_commission_fixed', $pricing->freelancer_commission_fixed, ['class' => 'form-control']) !!}
+                        <span class="invalid-feedback" role="alert">
+                            <strong></strong>
+                        </span>
+
+                    </div>
+                </div>
+            </div>
+
+            
+
+            
+            <div class="row">
+                
+                <div class="col-md-12">
+                    <button type="submit" class="btn btn-blue waves-effect waves-light" style="display: none">Submit</button>
+                </div>
+            </div>
+
+
 
         </div>
-        <div class="col-md-8" id="edit_add">
-            <a href="#"  class="btn btn-success btn-rounded waves-effect waves-light editInput" >Add More Address</a>
-        </div>
-    </div>
-    
-
-
-    <div class="row">
-        <div class="col-md-5">
+        {{-- Do not Remove this blow div --}}
+        <div class="" id="nestable_list_1" style="display: none">
             
         </div>
-        <div class="col-md-7">
-            
-        </div>
-    </div>
-    <input type="submit" class="btn btn-blue waves-effect waves-light" value="Submit" style="display: none;" />
+    
 </form>
