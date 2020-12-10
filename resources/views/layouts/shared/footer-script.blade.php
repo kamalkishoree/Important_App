@@ -16,12 +16,16 @@
     checkMap();
   });
 
+
+
   function checkMap() {
-    const mapDiv = document.getElementById("my_mapZX");
-    const map = new google.maps.Map(mapDiv, {
-      zoom: 8,
-      center: new google.maps.LatLng(-34.397, 150.644),
-    });
+
+    var mapProp = {
+        center: new google.maps.LatLng(38, -78),
+        zoom: 10,
+        mapTypeId: google.maps.MapTypeId.ROADMAP
+    };
+    map = new google.maps.Map(document.getElementById('my_mapZX'), mapProp);
   }
 
 const startLoader = function(element) {

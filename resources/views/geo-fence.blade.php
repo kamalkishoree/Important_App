@@ -182,7 +182,7 @@ exit;
                                                     id="{{ $agent->id }}" name="agents[]" value="{{ $agent->id }}">
                                                 <label class="custom-control-label new" for="{{ $agent->id }}"></label>
                                                 <img class="imageagent"
-                                                    src="{{ Phumbor::url('' . URL::to('/agents') . '/' . $agent->profile_picture . '')->trim() }}"
+                                                    src="{{isset($agent->profile_picture) ? Phumbor::url(Storage::disk('s3')->url($agent->profile_picture))->trim() : Phumbor::url(URL::to('/asset/images/no-image.png')) }}"
                                                     alt="" style="border-radius:50%; ">
                                             </div>
                                             <div class="col-md-8">
