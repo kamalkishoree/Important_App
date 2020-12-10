@@ -82,8 +82,7 @@
                             </div>
                         </div>
                         <div class="col-sm-4 text-right">
-                            <button type="button" class="btn btn-blue waves-effect waves-light openModal" data-toggle="modal"
-                                data-target="" data-backdrop="static" data-keyboard="false"><i class="mdi mdi-plus-circle mr-1"></i> Add {{ Session::get('agent_name') }}</button>
+                            <button type="button" class="btn btn-blue waves-effect waves-light openModal" data-toggle="modal" data-target="" data-backdrop="static" data-keyboard="false"><i class="mdi mdi-plus-circle mr-1"></i> Add {{ Session::get('agent_name') }}</button>
                         </div>
 
                     </div>
@@ -92,6 +91,7 @@
                         <table class="table table-striped dt-responsive nowrap w-100" id="agents-datatable">
                             <thead>
                                 <tr>
+                                    <th>#</th>
                                     <th>Name</th>
                                     <th>Phone</th>
                                     <th>Type</th>
@@ -103,6 +103,7 @@
                             <tbody>
                             @foreach ($agents as $agent)
                                 <tr>
+                                    <td><img alt="{{$agent->id}}" src="{{isset($agent->profile_picture) ? Storage::disk('s3')->url($agent->profile_picture) : '' }}" width="40"></td>
                                     <td class="table-user">
                                         <a href="javascript:void(0);"
                                             class="text-body font-weight-semibold">{{ $agent->name }}</a>

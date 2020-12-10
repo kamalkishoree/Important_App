@@ -6,7 +6,7 @@ class CurrenciesTableSeeder extends Seeder {
 
     public function run() {
         // Uncomment the below to wipe the table clean before populating
-        DB::table('currencies')->truncate();
+        DB::table('currencies')->delete();
 
         $currencies = [ ['priority'=>'100',
                        'iso_code'=>'AED',

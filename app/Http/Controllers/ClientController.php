@@ -134,9 +134,9 @@ class ClientController extends Controller
             'logo' => $getFileName,
             'status'=> 1,
         ];
+        $data['code'] = $this->randomString();
 
        $client = Client::create($data);
-
 
         // $redis = Redis::connection();
 
@@ -146,7 +146,18 @@ class ClientController extends Controller
 
         $this->dispatchNow(new ProcessClientDataBase($client->id));
         return redirect()->route('client.index')->with('success', 'Client Added successfully!');
-        //
+        
+    }
+
+    private function randomString(){
+        $random_string = substr(md5(microtime()), 0, 6);
+        // after creating, check if string is already used
+
+        while(Client::where('code', $random_string )->exists()){
+            $random_string = substr(md5(microtime()), 0, 6);
+        }
+        return $random_string;
+
     }
 
     /**
@@ -261,11 +272,11 @@ class ClientController extends Controller
      */
     public function storePreference(Request $request, $id)
     {
-        
+        $client = Client::where('code', $id)->firstOrFail();
         //update the client custom_domain if value is set //
         if ($request->domain_name == 'custom_domain') {
             // check the availability of the domain //
-            $exists = Client::where('id', '<>', $id)->where('custom_domain', $request->custom_domain_name)->count();
+            $exists = Client::where('code', '<>', $id)->where('custom_domain', $request->custom_domain_name)->count();
             if ($exists) {
                 return redirect()->back()->withErrors(new \Illuminate\Support\MessageBag(['domain_name' => 'Domain name "' . $request->custom_domain_name . '" is not available. Please select a different domain']));
             }
@@ -291,7 +302,7 @@ class ClientController extends Controller
      */
     public function ShowPreference()
     {
-        $preference = ClientPreference::where('client_id',Auth::user()->id)->first();
+        $preference = ClientPreference::where('client_id', Auth::user()->code)->first();
         $currencies = Currency::orderBy('iso_code')->get();
         return view('customize')->with(['preference' => $preference, 'currencies' => $currencies]);
     }
@@ -302,7 +313,7 @@ class ClientController extends Controller
      */
     public function ShowConfiguration()
     {
-        $preference = ClientPreference::where('client_id',Auth::user()->id)->first();
+        $preference = ClientPreference::where('client_id',Auth::user()->code)->first();
         $client = Auth::user();
         return view('configure')->with(['preference' => $preference, 'client' => $client]);
     }

@@ -33,8 +33,10 @@ class TeamController extends Controller
     public function index()
     {
         $agents = Agent::with(['team.manager'])->orderBy('created_at', 'DESC')->paginate(10);
-        $managers = Manager::where('client_id', auth()->user()->id)->orderBy('name')->get();
-        $teams  = Team::with(['manager', 'tags', 'agents'])->where('client_id', auth()->user()->id)->orderBy('created_at', 'DESC')->paginate(10);
+
+        $managers = Manager::where('client_id', auth()->user()->code)->orderBy('name')->get();
+        $teams  = Team::with(['manager', 'tags', 'agents'])->where('client_id', auth()->user()->code)->orderBy('created_at', 'DESC')->paginate(10);
+
         $tags   = TagsForTeam::all();
 
         $showTag = array();
@@ -110,7 +112,7 @@ class TeamController extends Controller
         $data = [
             'name'          => $request->name,
             //'manager_id'    => $request->manager_id,
-            'client_id'     => auth()->user()->id,
+            'client_id'     => auth()->user()->code,
             'location_accuracy' => $request->location_accuracy,
             'location_frequency' => $request->location_frequency
         ];
@@ -239,7 +241,7 @@ class TeamController extends Controller
         $data = [
             'name'          => $request->name,
             //'manager_id'    => $request->manager_id,
-            'client_id'     => auth()->user()->id,
+            //'client_id'     => auth()->user()->code,
             'location_accuracy' => $request->location_accuracy,
             'location_frequency' => $request->location_frequency
         ];

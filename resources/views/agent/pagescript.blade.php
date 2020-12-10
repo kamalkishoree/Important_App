@@ -31,35 +31,35 @@
         var check = radi.val(); 
         var act = radi.attr('act'); console.log(act +'-'+ check);
         switch (check) {
-            case "onfoot":
+            case "1":
                 $("#foot_" + act).attr("src", "{{ asset('assets/icons/walk_blue.png') }}");
                 $("#cycle_" + act).attr("src", "{{ asset('assets/icons/cycle.png') }}");
                 $("#bike_" + act).attr("src", "{{ asset('assets/icons/bike.png') }}");
                 $("#cars_" + act).attr("src", "{{ asset('assets/icons/car.png') }}");
                 $("#trucks_" + act).attr("src", "{{ asset('assets/icons/truck.png') }}");
                 break;
-            case "bycycle":
+            case "2":
                 $("#foot_" + act).attr("src", "{{ asset('assets/icons/walk.png') }}");
                 $("#cycle_" + act).attr("src", "{{ asset('assets/icons/cycle_blue.png') }}");
                 $("#bike_" + act).attr("src", "{{ asset('assets/icons/bike.png') }}");
                 $("#cars_" + act).attr("src", "{{ asset('assets/icons/car.png') }}");
                 $("#trucks_" + act).attr("src", "{{ asset('assets/icons/truck.png') }}");
                 break;
-            case "motorbike":
+            case "3":
                 $("#foot_" + act).attr("src", "{{ asset('assets/icons/walk.png') }}");
                 $("#cycle_" + act).attr("src", "{{ asset('assets/icons/cycle.png') }}");
                 $("#bike_" + act).attr("src", "{{ asset('assets/icons/bike_blue.png') }}");
                 $("#cars_" + act).attr("src", "{{ asset('assets/icons/car.png') }}");
                 $("#trucks_" + act).attr("src", "{{ asset('assets/icons/truck.png') }}");
                 break;
-            case "car":
+            case "4":
                 $("#foot_" + act).attr("src", "{{ asset('assets/icons/walk.png') }}");
                 $("#cycle_" + act).attr("src", "{{ asset('assets/icons/cycle.png') }}");
                 $("#bike_" + act).attr("src", "{{ asset('assets/icons/bike.png') }}");
                 $("#cars_" + act).attr("src", "{{ asset('assets/icons/car_blue.png') }}");
                 $("#trucks_" + act).attr("src", "{{ asset('assets/icons/truck.png') }}");
                 break;
-            case "truck":
+            case "5":
                 $("#foot_" + act).attr("src", "{{ asset('assets/icons/walk.png') }}");
                 $("#cycle_" + act).attr("src", "{{ asset('assets/icons/cycle.png') }}");
                 $("#bike_" + act).attr("src", "{{ asset('assets/icons/bike.png') }}");
@@ -93,7 +93,11 @@
                 });
                 makeTag();
                 //$('.dropify').dropify();
-                $('#profile_pictureInputEdit').dropify();
+                var imgs =  $('#profilePic').attr('showImg');
+
+                $('#profilePic').attr("data-default-file", imgs);
+                $('#profilePic').dropify();
+                $('').dropify();
             },
             error: function (data) {
                 console.log('data2');

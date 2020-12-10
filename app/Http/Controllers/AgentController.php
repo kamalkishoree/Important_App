@@ -26,9 +26,9 @@ class AgentController extends Controller
         foreach ($tags as $key => $value) {
             array_push($tag,$value->name);
         }
-        $teams  = Team::where('client_id',auth()->user()->id)->orderBy('name')->get();
+        $teams  = Team::where('client_id',auth()->user()->code)->orderBy('name')->get();
         $tags   = TagsForTeam::all();
-        //dd($tags->toArray());
+        //dd($teams->toArray());
         return view('agent.index')->with(['agents' => $agents,'teams'=>$teams, 'tags' => $tags, 'showTag' => implode(',', $tag)]);
     }
 
@@ -82,7 +82,7 @@ class AgentController extends Controller
 
         // Handle File Upload
         if ($request->hasFile('profile_picture')) {
-            $folder = str_pad(Auth::user()->id, 8, '0', STR_PAD_LEFT);
+            $folder = str_pad(Auth::user()->code, 8, '0', STR_PAD_LEFT);
             $folder = 'client_'.$folder;
             $file = $request->file('profile_picture');
             $file_name = uniqid() .'.'.  $file->getClientOriginalExtension();
@@ -148,7 +148,7 @@ class AgentController extends Controller
     public function edit($id)
     {
         $agent = Agent::with(['tags'])->where('id', $id)->first();
-        $teams = Team::where('client_id', auth()->user()->id)->get();
+        $teams = Team::where('client_id', auth()->user()->code)->get();
         $tags  = TagsForAgent::all();
         //print_r($agent->toArray());
         $uptag   = [];
@@ -206,7 +206,6 @@ class AgentController extends Controller
                 array_push($tag_id,$check->id);
             }
         }
-
         //handal image upload
         if ($request->hasFile('profile_picture')) {
             $folder = str_pad(Auth::user()->id, 8, '0', STR_PAD_LEFT);

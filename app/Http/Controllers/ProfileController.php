@@ -101,8 +101,9 @@ class ProfileController extends Controller
 
         if ($request->hasFile('logo')) {
             $file = $request->file('logo');
-            $file_name = uniqid() .'.'.  $file->getClientOriginalExtension();
-            $s3filePath = '/assets/Clientlogo/' . $file_name;
+            $s3filePath = '/assets/Clientlogo';
+            //$file_name = uniqid() .'.'.  $file->getClientOriginalExtension();
+            //$s3filePath = '/assets/Clientlogo/' . $file_name;
             $path = Storage::disk('s3')->put($s3filePath, $file,'public');
             $getFileName = $path;
         }
@@ -137,4 +138,32 @@ class ProfileController extends Controller
     {
         //
     }
+
+    public function displayImage()
+    {
+            $client = \Storage::disk('s3')->getDriver()->getAdapter()->getClient();
+            $bucket = \Config::get('filesystems.disks.s3.bucket');
+
+            //echo Auth::user()->logo;die;
+
+            $command = $client->getCommand('GetObject', [
+                'Bucket' => $bucket,
+                'Key' => Auth::user()->logo  // file name in s3 bucket which you want to access
+            ]);
+
+            $request = $client->createPresignedRequest($command, '+20 minutes');
+            
+            $image = (string)$request->getUri();          
+
+            //$file = File::get($path);
+
+            //$type = File::mimeType($path);
+
+            //$response = imagecreatefromfile($image);
+
+            return \Image::make($image)->fit(90,50)->response('png');
+
+    }
+
+    
 }

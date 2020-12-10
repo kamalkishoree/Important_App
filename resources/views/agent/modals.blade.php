@@ -77,24 +77,24 @@
                             <div class="form-group" id="vehicle_type_idInput">
                                 <p class="text-muted mt-3 mb-2">TRANSPORT TYPE</p>
                                 <div class="radio radio-blue form-check-inline click cursors">
-                                    <input type="radio" id="onfoot" value="onfoot" name="vehicle_type_id" act="add" checked>
+                                    <input type="radio" id="onfoot" value="1" name="vehicle_type_id" act="add" checked>
                                     <img id="foot_add" src="{{asset('assets/icons/walk.png')}}"> 
                                 </div>
 
                                 <div class="radio radio-primery form-check-inline click cursors">
-                                    <input type="radio" id="bycycle" value="bycycle" name="vehicle_type_id" act="add">
+                                    <input type="radio" id="bycycle" value="2" name="vehicle_type_id" act="add">
                                     <img id="cycle_add" src="{{asset('assets/icons/cycle.png')}}">
                                 </div>
                                 <div class="radio radio-info form-check-inline click cursors">
-                                    <input type="radio" id="motorbike" value="motorbike" name="vehicle_type_id" act="add">
+                                    <input type="radio" id="motorbike" value="3" name="vehicle_type_id" act="add">
                                     <img id="bike_add" src="{{asset('assets/icons/bike.png')}}">
                                 </div>
                                 <div class="radio radio-danger form-check-inline click cursors">
-                                    <input type="radio" id="car" value="car" name="vehicle_type_id" act="add">
+                                    <input type="radio" id="car" value="4" name="vehicle_type_id" act="add">
                                     <img id="cars_add" src="{{asset('assets/icons/car.png')}}">
                                 </div>
                                 <div class="radio radio-warning form-check-inline click cursors">
-                                    <input type="radio" id="truck" value="truck" name="vehicle_type_id" act="add">
+                                    <input type="radio" id="truck" value="5" name="vehicle_type_id" act="add">
                                     <img id="trucks_add" src="{{asset('assets/icons/truck.png')}}">
                                 </div>
                                 <span class="invalid-feedback" role="alert">

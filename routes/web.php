@@ -43,6 +43,10 @@ Route::group(['prefix' => '/godpanel'], function () {
 // 	'uses' => 'Auth\LoginController@Clientlogin'
 //   ]);
 
+//https://royodelivery-assets.s3.us-west-2.amazonaws.com/assets/Clientlogo/5ex9fta7UC0ZYFXZtVHtyxIBSbH1YOOnYT009apA.png
+
+	
+
 	Auth::routes();  
 	
 
@@ -50,7 +54,7 @@ Route::group(['prefix' => '/godpanel'], function () {
 
 	Route::group(['middleware' => 'database'], function()
 		{
-			
+		Route::get('profileImg', 'ProfileController@displayImage');	
 		
 		
 	Route::get('','DashBoardController@index')->name('index');

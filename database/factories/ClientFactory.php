@@ -18,6 +18,8 @@ use Illuminate\Support\Str;
 */
 
 $factory->define(Client::class, function (Faker $faker) {
+
+    $code = substr(md5(microtime()), 0, 6);
     return [
         'name' => $faker->name,
         'email' => $faker->unique()->safeEmail,
@@ -30,6 +32,7 @@ $factory->define(Client::class, function (Faker $faker) {
         'company_name' => $faker->company,
         'company_address' => $faker->address,
         'custom_domain' => $faker->domainName,
+        'code' => $code,
 
     ];
 });

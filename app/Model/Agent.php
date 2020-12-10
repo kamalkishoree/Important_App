@@ -33,7 +33,7 @@ class Agent extends Authenticatable
     }
 
     public function tags(){
-        return $this->belongsToMany('App\Model\TagsForAgent', 'agent_tags','agent_id','tag_id');
+        return $this->belongsToMany('App\Model\TagsForAgent', 'agents_tags','agent_id','tag_id');
     }
 
 }

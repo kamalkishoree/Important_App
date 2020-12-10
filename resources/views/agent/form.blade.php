@@ -1,8 +1,7 @@
  <div class="row mb-2">
     <div class="col-md-4">
         <div class="form-group" id="profile_pictureInputEdit">
-            <input type="file" data-plugins="dropify" name="profile_picture"
-                data-default-file="{{ isset($agent->profile_picture) ? asset('agents/' . $agent->profile_picture . '') : '' }}" />
+            <input type="file" id="profilePic" data-plugins="dropify" name="profile_picture" data-default-file="" showImg="{{ isset($agent->profile_picture) ? Storage::disk('s3')->url($agent->profile_picture) : '' }}" />
             <span class="invalid-feedback" role="alert">
                 <strong></strong>
             </span>
@@ -77,31 +76,29 @@
         <div class="form-group" id="vehicle_type_idInputEdit">
             <p class="text-muted mt-3 mb-2">TRANSPORT TYPE</p>
             <div class="radio radio-blue form-check-inline click cursors">
-                <input type="radio" id="onfoot" value="onfoot" act="edit" name="vehicle_type_id" @if ($agent->vehicle_type_id == 'onfoot') checked
+                <input type="radio" id="onfoot" value="1" act="edit" name="vehicle_type_id" @if ($agent->vehicle_type_id == '1') checked
                 @endif>
-                <img id="foot_edit" src="{{ $agent->vehicle_type_id == 'onfoot' ? asset('assets/icons/walk_blue.png') : asset('assets/icons/walk.png') }}">
+                <img id="foot_edit" src="{{ $agent->vehicle_type_id == '1' ? asset('assets/icons/walk_blue.png') : asset('assets/icons/walk.png') }}">
             </div>
 
             <div class="radio radio-primery form-check-inline click cursors">
-                <input type="radio" id="bycycle" value="bycycle" name="vehicle_type_id" act="edit" @if ($agent->vehicle_type_id == 'bycycle')
+                <input type="radio" id="bycycle" value="2" name="vehicle_type_id" act="edit" @if ($agent->vehicle_type_id == '2')
                 checked @endif >
-                <img id="cycle_edit"
-                    src="{{ $agent->vehicle_type_id == 'bycycle' ? asset('assets/icons/cycle_blue.png') : asset('assets/icons/cycle.png') }}">
+                <img id="cycle_edit" src="{{ $agent->vehicle_type_id == '2' ? asset('assets/icons/cycle_blue.png') : asset('assets/icons/cycle.png') }}">
             </div>
             <div class="radio radio-info form-check-inline click cursors">
-                <input type="radio" id="motorbike" value="motorbike" name="vehicle_type_id" act="edit" @if ($agent->vehicle_type_id == 'motorbike') checked @endif>
-                <img id="bike_edit"
-                    src="{{ $agent->vehicle_type_id == 'motorbike' ? asset('assets/icons/bike_blue.png') : asset('assets/icons/bike.png') }}">
+                <input type="radio" id="motorbike" value="3" name="vehicle_type_id" act="edit" @if ($agent->vehicle_type_id == '3') checked @endif>
+                <img id="bike_edit" src="{{ $agent->vehicle_type_id == '3' ? asset('assets/icons/bike_blue.png') : asset('assets/icons/bike.png') }}">
             </div>
             <div class="radio radio-danger form-check-inline click cursors">
-                <input type="radio" id="car" value="car" name="vehicle_type_id" act="edit" @if ($agent->vehicle_type_id == 'car') checked
+                <input type="radio" id="car" value="4" name="vehicle_type_id" act="edit" @if ($agent->vehicle_type_id == '4') checked
                 @endif>
-                <img id="cars_edit" src="{{ $agent->vehicle_type_id == 'car' ? asset('assets/icons/car_blue.png') : asset('assets/icons/car.png') }}">
+                <img id="cars_edit" src="{{ $agent->vehicle_type_id == '4' ? asset('assets/icons/car_blue.png') : asset('assets/icons/car.png') }}">
             </div>
             <div class="radio radio-warning form-check-inline click cursors">
-                <input type="radio" id="truck" value="truck" name="vehicle_type_id" act="edit" @if ($agent->vehicle_type_id == 'truck') checked @endif>
+                <input type="radio" id="truck" value="5" name="vehicle_type_id" act="edit" @if ($agent->vehicle_type_id == '5') checked @endif>
                 <img id="trucks_edit"
-                    src="{{ $agent->vehicle_type_id == 'truck' ? asset('assets/icons/truck_blue.png') : asset('assets/icons/truck.png') }}">
+                    src="{{ $agent->vehicle_type_id == '5' ? asset('assets/icons/truck_blue.png') : asset('assets/icons/truck.png') }}">
             </div>
             <span class="invalid-feedback" role="alert">
                 <strong></strong>
