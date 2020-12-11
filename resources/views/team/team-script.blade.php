@@ -1,5 +1,5 @@
 <script type="text/javascript">
-
+$.noConflict();
     $('.openModal').click(function(){
         $('#add-team-modal').modal({
             backdrop: 'static',
