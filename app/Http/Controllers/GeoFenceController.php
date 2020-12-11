@@ -20,14 +20,14 @@ class GeoFenceController extends Controller
      */
     public function index()
     {
-        $teams = Team::with(['agents'])->where('client_id', auth()->user()->id)->orderBy('name')->get();
+        $teams = Team::with(['agents'])->where('client_id', auth()->user()->code)->orderBy('name')->get();
 
         $agents = Agent::all();
 
-        $geos = Geo::where('client_id', auth()->user()->id)->orderBy('created_at', 'DESC')->first();
+        $geos = Geo::where('client_id', auth()->user()->code)->orderBy('created_at', 'DESC')->first();
 
         $all_coordinates = [];
-        $geo = Geo::where('client_id', auth()->user()->id)->orderBy('created_at', 'DESC')->get();
+        $geo = Geo::where('client_id', auth()->user()->code)->orderBy('created_at', 'DESC')->get();
 
         foreach ($geo as $k => $v) {
             $all_coordinates[] = [
@@ -67,7 +67,7 @@ class GeoFenceController extends Controller
     public function allList()
     {
         $all_coordinates = [];
-        $geos = Geo::where('client_id', auth()->user()->id)->orderBy('created_at', 'DESC')->get();
+        $geos = Geo::where('client_id', auth()->user()->code)->orderBy('created_at', 'DESC')->get();
         foreach ($geos as $k => $v) {
             $all_coordinates[] = [
                 'name' => 'abc',
