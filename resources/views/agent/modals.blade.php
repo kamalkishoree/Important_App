@@ -163,7 +163,7 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title">Edit Team</h4>
+                <h4 class="modal-title">Edit {{ Session::get('agent_name') }}</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
             </div>
             <form id="UpdateAgent" method="post" enctype="multipart/form-data">

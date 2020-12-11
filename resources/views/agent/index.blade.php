@@ -102,8 +102,8 @@
                             </thead>
                             <tbody>
                             @foreach ($agents as $agent)
-                                <tr>
-                                    <td><img alt="{{$agent->id}}" src="{{isset($agent->profile_picture) ? Storage::disk('s3')->url($agent->profile_picture) : '' }}" width="40"></td>
+                                <tr> 
+                                    <td><img alt="{{$agent->id}}" src="{{isset($agent->profile_picture) ? Phumbor::url(Storage::disk('s3')->url($agent->profile_picture))->trim() : Phumbor::url(URL::to('/asset/images/no-image.png')) }}" width="40"></td>
                                     <td class="table-user">
                                         <a href="javascript:void(0);"
                                             class="text-body font-weight-semibold">{{ $agent->name }}</a>

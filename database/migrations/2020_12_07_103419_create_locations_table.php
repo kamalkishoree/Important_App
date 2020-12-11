@@ -21,12 +21,12 @@ class CreateLocationsTable extends Migration {
 			$table->string('short_name', 50)->nullable();
 			$table->string('address', 100)->nullable();
 			$table->integer('post_code')->nullable();
-			$table->bigInteger('created_by')->unsigned()->nullable();
+			$table->bigInteger('customer_id')->unsigned()->nullable();
 			$table->timestamps();
 		});
 
 		Schema::table('locations', function (Blueprint $table) {
-			$table->foreign('created_by')->references('id')->on('clients')->onUpdate('cascade')->onDelete('cascade');
+			$table->foreign('created_by')->references('id')->on('customers')->onUpdate('cascade')->onDelete('cascade');
 
 			$table->index('short_name');
 			$table->index('post_code');
