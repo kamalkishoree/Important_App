@@ -253,7 +253,7 @@
    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tagsinput/0.8.0/bootstrap-tagsinput.js"></script>
     <link rel="stylesheet" href="{{ asset('assets/css/jquery.tagsinput-revisited.css') }}" />
-<script>if (window.module) module = window.module;</script>
+
 @include('team.team-script')  
 
 @endsection
