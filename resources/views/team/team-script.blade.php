@@ -1,8 +1,8 @@
 <script type="text/javascript">
-//jQuery.noConflict();
+//$.noConflict();
 jQuery.noConflict();
-    jQuery('.openModal').click(function(){
-        jQuery('#add-team-modal').modal({
+jQuery('.openModal').click(function(){
+    jQuery('#add-team-modal').modal({
             backdrop: 'static',
             keyboard: false
         });
@@ -10,7 +10,7 @@ jQuery.noConflict();
     });
 
    
-    var tagList = "{{jQueryshowTag}}";
+    var tagList = "{{$showTag}}";
 
     tagList = tagList.split(',');
 
@@ -23,12 +23,12 @@ jQuery.noConflict();
     }
 
     jQuery(document).on('click', ".team-list-1", function() {
-        var data_id = jQuery(this).attr('data-id');
+        var data_id = $(this).attr('data-id');
         jQuery(".team-details").hide();
         jQuery("#team_detail_" + data_id).show();
 
-        jQuery(".team-agent-list").hide();
-        jQuery("#team_agents_" + data_id).show();
+        $(".team-agent-list").hide();
+        $("#team_agents_" + data_id).show();
     });
 
 
@@ -41,7 +41,7 @@ jQuery.noConflict();
     });
 
     jQuery('.delete-team-form').on('submit', function() {
-        team_agent_count = jQuery(this).attr('data-team-agent-count');
+        team_agent_count = $(this).attr('data-team-agent-count');
         if (team_agent_count > 0) {
             alert("Please assign other team to agents linked to this team before deleting");
             return false;
@@ -54,27 +54,27 @@ jQuery.noConflict();
     });
 
     jQuery(".editIcon").click(function (e) {  
-        jQuery.ajaxSetup({
+        $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
             }
         });
         e.preventDefault();
        
-        var uid = jQuery(this).attr('teamId');
+        var uid = $(this).attr('teamId');
 
-        jQuery.ajax({
+        $.ajax({
             type: "get",
             url: "<?php echo url('team'); ?>" + '/' + uid + '/edit',
             data: '',
             dataType: 'json',
             success: function (data) {
 
-                //jQuery('.page-title1').html('Hello');
+                //$('.page-title1').html('Hello');
                 console.log('data');
 
-                jQuery('#edit-team-modal #editCardBox').html(data.html);
-                jQuery('#edit-team-modal').modal({
+                $('#edit-team-modal #editCardBox').html(data.html);
+                $('#edit-team-modal').modal({
                     backdrop: 'static',
                     keyboard: false
                 });
@@ -88,11 +88,11 @@ jQuery.noConflict();
     });
 
     /* add Team using ajax*/
-    jQuery("#add-team-modal #submitTeam").submit(function(e) {
+    $("#add-team-modal #submitTeam").submit(function(e) {
             e.preventDefault();
     });
 
-    jQuery(document).on('click', '.addTeamForm', function() { 
+    $(document).on('click', '.addTeamForm', function() { 
         var form =  document.getElementById('submitTeam');
         var formData = new FormData(form);
         var urls = "{{URL::route('team.store')}}";
@@ -100,11 +100,11 @@ jQuery.noConflict();
     });
 
     /* edit Team using ajax*/
-    jQuery("#edit-team-modal #UpdateTeam").submit(function(e) {
+    $("#edit-team-modal #UpdateTeam").submit(function(e) {
             e.preventDefault();
     });
 
-    jQuery(document).on('click', '.submitEditForm', function() {
+    $(document).on('click', '.submitEditForm', function() {
         var form =  document.getElementById('UpdateTeam');
         var formData = new FormData(form);
         var urls =  document.getElementById('team_id').getAttribute('url');
@@ -113,7 +113,7 @@ jQuery.noConflict();
 
     function saveTeam(urls, formData, inp = '', modal = ''){
 
-        jQuery.ajax({
+        $.ajax({
             method: 'post',
             headers: {
                 Accept: "application/json"
@@ -124,11 +124,11 @@ jQuery.noConflict();
             processData: false,
             success: function(response) {
                 if (response.status == 'success') {
-                        jQuery("#" + modal + " .close").click();
+                        $("#" + modal + " .close").click();
                         location.reload(); 
                 } else { console.log('wa-1');
-                    jQuery(".show_all_error.invalid-feedback").show();
-                    jQuery(".show_all_error.invalid-feedback").text(response.message);
+                    $(".show_all_error.invalid-feedback").show();
+                    $(".show_all_error.invalid-feedback").text(response.message);
                 }
                 return response;
             },
@@ -136,16 +136,16 @@ jQuery.noConflict();
                 if (response.status === 422) { console.log('err2');
                     let errors = response.responseJSON.errors;
                     Object.keys(errors).forEach(function(key) {
-                        jQuery("#" + key + "Input" + inp + " input").addClass("is-invalid");
-                        jQuery("#" + key + "Input" + inp + " span.invalid-feedback").children(
+                        $("#" + key + "Input" + inp + " input").addClass("is-invalid");
+                        $("#" + key + "Input" + inp + " span.invalid-feedback").children(
                             "strong").text(errors[key][
                             0
                         ]);
-                        jQuery("#" + key + "Input span.invalid-feedback").show();
+                        $("#" + key + "Input span.invalid-feedback").show();
                     });
                 } else {
-                    jQuery(".show_all_error.invalid-feedback").show();
-                    jQuery(".show_all_error.invalid-feedback").text('Something went wrong, Please try Again.');
+                    $(".show_all_error.invalid-feedback").show();
+                    $(".show_all_error.invalid-feedback").text('Something went wrong, Please try Again.');
                 }
                 return response;
             }
