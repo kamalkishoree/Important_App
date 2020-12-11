@@ -14,7 +14,7 @@ class AddFieldTaskStatusTableTasks extends Migration
     public function up()
     {
         Schema::table('tasks', function (Blueprint $table) {
-            $table->string('task_status')->nullable();
+            //$table->string('task_status')->nullable();
         });
     }
 

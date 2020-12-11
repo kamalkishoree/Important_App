@@ -14,7 +14,7 @@ class AddFieldOrderTypeTableOrders extends Migration
     public function up()
     {
         Schema::table('orders', function (Blueprint $table) {
-            $table->string('order_type')->nullable();
+           // $table->string('order_type')->nullable();
         });
     }
 

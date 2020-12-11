@@ -34,5 +34,10 @@ class Order extends Model
     public function drivertags(){
         return $this->belongsToMany('App\Model\TaskDriverTag', 'task_driver_tags','task_id','tag_id');
     }
+
+    public function customerdata()
+    {
+      return $this->hasOne('App\Model\Customer');
+    }
     
 }
