@@ -44,7 +44,7 @@
                     }
                 @endphp
 
-                <div class="row" class="displaySettingsError" style="{{$style}}">
+                <div class="row displaySettingsError" style="{{$style}}">
                     <div class="col-12">
                         <div class="alert alert-danger excetion_keys" role="alert">
                             @if(session('preferences.twilio_status') == 'invalid_key')

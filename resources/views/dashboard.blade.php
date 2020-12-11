@@ -2,173 +2,108 @@
 
 @section('css')
     <!-- Plugins css -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro&display=swap" rel="stylesheet">
+<link href="{{ asset('assets/libs/dropzone/dropzone.min.css') }}" rel="stylesheet" type="text/css" />
+<link href="{{ asset('demo/css/style.css') }}" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" type="text/css"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="preconnect" href="https://fonts.gstatic.com">
+<link
+    href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+    rel="stylesheet">
+<link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<link href="{{asset('assets/libs/flatpickr/flatpickr.min.css')}}" rel="stylesheet" type="text/css" />
+<link href="{{asset('assets/libs/bootstrap-colorpicker/bootstrap-colorpicker.min.css')}}" rel="stylesheet"
+type="text/css" />
+<link href="{{asset('assets/libs/clockpicker/clockpicker.min.css')}}" rel="stylesheet" type="text/css" />
+<link href="{{asset('assets/libs/bootstrap-datepicker/bootstrap-datepicker.min.css')}}" rel="stylesheet"
+type="text/css" />
+
+<style>
+    .mb-0>a {
+        display: block;
+        position: relative;
+    }
+
+    .mb-0>a:after {
+        content: "\f078";
+        /* fa-chevron-down */
+        font-family: 'FontAwesome';
+        position: absolute;
+        right: 0;
+    }
+
+    .mb-0>a[aria-expanded="true"]:after {
+        content: "\f077";
+        /* fa-chevron-up */
+    }
+
+    .card-header {
+        height: 70px;
+    }
+
+    /* #map_wrapper {
+                    height: 400px;
+
+                    #map_canvas {
+                        width: 100%;
+                        height: 100%;
+                    }
+
+                    a {
+                        text-decoration: none;
+
+                        &:hover {
+                            text-decoration: underline;
+                        }
+                    }
+
+                    .clustered-hovercard-content {
+                        max-width: 265px;
+                        overflow: hidden;
+                    }
+
+                    .entity-headline {
+                        padding: 3px 0 1px;
+                    }
+
+                    .entity-title {
+                        font-size: 15px;
+                        line-height: 16px;
+                        overflow: hidden;
+                        padding-bottom: 2px;
+                        text-overflow: ellipsis;
+                        white-space: nowrap;
+                        font-weight: 400;
+                    }
+
+                    .entity-short-summary {
+                        color: #666666;
+                        font-size: 12px;
+                        font-weight: 400;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                    }
+
+                    .entity-summary-line {
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        white-space: nowrap;
+                    }
+                } */
+
+</style>
 
 @endsection
 
 @section('content')
-    <!-- Start Content-->
-    <!doctype html>
-    <html lang="en">
-
-    <head>
-        <!-- Required meta tags -->
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
-        <!-- Bootstrap CSS -->
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-            integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-        <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro&display=swap" rel="stylesheet">
-        <link href="{{ asset('assets/libs/dropzone/dropzone.min.css') }}" rel="stylesheet" type="text/css" />
-        <link href="{{ asset('demo/css/style.css') }}" rel="stylesheet" type="text/css" />
-        <link rel="stylesheet" type="text/css"
-            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-        <link rel="preconnect" href="https://fonts.gstatic.com">
-        <link
-            href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
-            rel="stylesheet">
-        <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-        <link href="{{asset('assets/libs/flatpickr/flatpickr.min.css')}}" rel="stylesheet" type="text/css" />
-        <link href="{{asset('assets/libs/bootstrap-colorpicker/bootstrap-colorpicker.min.css')}}" rel="stylesheet"
-    type="text/css" />
-        <link href="{{asset('assets/libs/clockpicker/clockpicker.min.css')}}" rel="stylesheet" type="text/css" />
-        <link href="{{asset('assets/libs/bootstrap-datepicker/bootstrap-datepicker.min.css')}}" rel="stylesheet"
-    type="text/css" />
-        {{--
-        <link href="{{ asset('demo/css/propeller.min.css') }}" rel="stylesheet" type="text/css" />
-        --}}
-        <title>Landing Page</title>
-
-        <style>
-            .mb-0>a {
-                display: block;
-                position: relative;
-            }
-
-            .mb-0>a:after {
-                content: "\f078";
-                /* fa-chevron-down */
-                font-family: 'FontAwesome';
-                position: absolute;
-                right: 0;
-            }
-
-            .mb-0>a[aria-expanded="true"]:after {
-                content: "\f077";
-                /* fa-chevron-up */
-            }
-
-            .card-header {
-                height: 70px;
-            }
-
-            /* #map_wrapper {
-                            height: 400px;
-
-                            #map_canvas {
-                                width: 100%;
-                                height: 100%;
-                            }
-
-                            a {
-                                text-decoration: none;
-
-                                &:hover {
-                                    text-decoration: underline;
-                                }
-                            }
-
-                            .clustered-hovercard-content {
-                                max-width: 265px;
-                                overflow: hidden;
-                            }
-
-                            .entity-headline {
-                                padding: 3px 0 1px;
-                            }
-
-                            .entity-title {
-                                font-size: 15px;
-                                line-height: 16px;
-                                overflow: hidden;
-                                padding-bottom: 2px;
-                                text-overflow: ellipsis;
-                                white-space: nowrap;
-                                font-weight: 400;
-                            }
-
-                            .entity-short-summary {
-                                color: #666666;
-                                font-size: 12px;
-                                font-weight: 400;
-                                overflow: hidden;
-                                text-overflow: ellipsis;
-                            }
-
-                            .entity-summary-line {
-                                overflow: hidden;
-                                text-overflow: ellipsis;
-                                white-space: nowrap;
-                            }
-                        } */
-
-        </style>
-    </head>
-
-    <body>
-        <!-- Header section -->
-        <!-- <header class="fixed-top bg-white">
-                                                                                  <nav class="navbar navbar-expand-lg navbar-light">
-                                                                                    <a class="navbar-brand" href="#"><img src="images/logo.png"></a>
-                                                                                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                                                                                      <span class="navbar-toggler-icon"></span>
-                                                                                    </button>
-                                                                            
-                                                                                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                                                                                      <ul class="navbar-nav ml-auto display-flex align-items-center">
-                                                                                        <li class="nav-item">
-                                                                                          <a class="nav-link" href="">Map</a>
-                                                                                        </li>
-                                                                                        <li class="nav-item">
-                                                                                          <a class="nav-link" href="">Table</a>          
-                                                                                        </li>
-                                                                                        <li class="nav-item active">
-                                                                                          <a class="nav-link" href="">Analytics</a>          
-                                                                                        </li>
-                                                                                      </ul>
-                                                                                      <ul class="navbar-nav ml-auto display-flex align-items-center">
-                                                                                        <li class="nav-item brdr-1 pr-3">
-                                                                                            <div class="dropdown">
-                                                                                            <button class="create-task dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                                                              Create Task <span class="ml-1 mr-1">|</span> 
-                                                                                            </button>
-                                                                                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                                                                              <a class="dropdown-item" href="#">Action</a>
-                                                                                              <a class="dropdown-item" href="#">Action</a>
-                                                                                              <a class="dropdown-item" href="#">Action</a>
-                                                                                            </div>
-                                                                                            </div>
-                                                                                        </li>
-                                                                                        <li class="nav-item">
-                                                                                          <a class="nav-link" href=""><img src="images/ic_upload.png"></a>
-                                                                                        </li>
-                                                                                        <li class="nav-item">
-                                                                                          <a class="nav-link" href=""><img src="images/ic_download.png"></a>
-                                                                                        </li>
-                                                                                        <li class="nav-item">
-                                                                                          <a class="nav-link" href=""><img src="images/ic_notification.png"></a>
-                                                                                        </li>
-                                                                                        <li class="nav-item">
-                                                                                          <a class="nav-link" href=""><img src="images/ic_settings.png"></a>
-                                                                                        </li>
-                                                                                      </ul>
-                                                                                  </div>
-                                                                                </nav>
-                                                                              </header> -->
+    
         <!-- Bannar Section -->
-        <section class="bannar header-setting">
+        {{-- <section class="bannar header-setting"> --}}
             <div class="container-fluid p-0">
-                <div class="row">
+                <div class="row coolcheck">
                     <div class="col-md-3 left-sidebar">
                         <div id="accordion">
                             <div class="card">
@@ -445,13 +380,13 @@
                                                 </div>
 
                                                 <div class="row mt-2">
-                                                    <div class="col-md-8">
+                                                    <div class="col-md-9">
                                                         <h6><img class="mr-2"
                                                                 src=""></span>All
                                                         </h6>
                                                     </div>
-                                                    <div class="col-md-4 text-right">
-                                                        <label class="">
+                                                    <div class="col-md-3 text-right">
+                                                        <label class="mt-2">
                                                             <input class="taskchecks" type="checkbox" name="taskstatus[]"
                                                                 value="all">
                                                             <span class="checkmark"></span>
@@ -460,13 +395,13 @@
                                                 </div>
 
                                                 <div class="row mt-2">
-                                                    <div class="col-md-8">
+                                                    <div class="col-md-9">
                                                         <h6><img class="mr-2"
                                                                 src="{{ asset('demo/images/blue-dot.png') }}"></span>Unassigned
                                                         </h6>
                                                     </div>
-                                                    <div class="col-md-4 text-right">
-                                                        <label class="">
+                                                    <div class="col-md-3 text-right">
+                                                        <label class="mt-2">
                                                             <input class="taskchecks" type="checkbox" name="taskstatus[]"
                                                                 value="unassigned">
                                                             <span class="checkmark"></span>
@@ -474,13 +409,13 @@
                                                     </div>
                                                 </div>
                                                 <div class="row mt-2">
-                                                    <div class="col-md-8">
+                                                    <div class="col-md-9">
                                                         <h6><img class="mr-2"
                                                                 src="{{ asset('demo/images/green-dot.png') }}"></span>Assigned
                                                         </h6>
                                                     </div>
-                                                    <div class="col-md-4 text-right">
-                                                        <label class="">
+                                                    <div class="col-md-3 text-right">
+                                                        <label class="mt-2">
                                                             <input class="taskchecks" type="checkbox" name="taskstatus[]"
                                                                 value="assigned">
                                                             <span class="checkmark"></span>
@@ -488,13 +423,13 @@
                                                     </div>
                                                 </div>
                                                 <div class="row mt-2">
-                                                    <div class="col-md-8">
+                                                    <div class="col-md-9">
                                                         <h6><img class="mr-2"
                                                                 src="{{ asset('demo/images/yellow-dot.png') }}"></span>In
                                                             transit</h6>
                                                     </div>
-                                                    <div class="col-md-4 text-right">
-                                                        <label class="">
+                                                    <div class="col-md-3 text-right">
+                                                        <label class="mt-2">
                                                             <input class="taskchecks" type="checkbox" name="taskstatus[]"
                                                                 value="in-transit">
                                                             <span class="checkmark"></span>
@@ -502,13 +437,13 @@
                                                     </div>
                                                 </div>
                                                 <div class="row mt-2">
-                                                    <div class="col-md-8">
+                                                    <div class="col-md-9">
                                                         <h6><img class="mr-2"
                                                                 src="{{ asset('demo/images/pink-dot.png') }}"></span>Completed
                                                         </h6>
                                                     </div>
-                                                    <div class="col-md-4 text-right">
-                                                        <label class="">
+                                                    <div class="col-md-3 text-right">
+                                                        <label class="mt-2">
                                                             <input class="taskchecks" type="checkbox" name="taskstatus[]"
                                                                 value="completed">
                                                             <span class="checkmark"></span>
@@ -522,7 +457,7 @@
                                                         </h6>
                                                     </div>
                                                     <div class="col-md-3 text-right">
-                                                        <label class="">
+                                                        <label class="mt-2">
                                                             <input class="taskchecks" type="checkbox" name="taskstatus[]"
                                                                 value="failed">
                                                             <span class="checkmark"></span>
@@ -532,7 +467,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="dropdown d-inline-block">
+                                    <div class="dropdown d-inline-block brdr-1">
                                         <button class="dropdown-toggle" type="button" id="dropdownMenuButton"
                                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                             <img class="mr-1" src="{{ asset('demo/images/ic_time.png') }}">All Drivers
@@ -593,28 +528,22 @@
                     </div>
                 </div>
             </div>
-        </section>
+        @php
+            $key = session('preferences.map_key_1') != null ? session('preferences.map_key_1'):'kdsjhfkjsdhfsf';
+        @endphp
+    @endsection
 
 
-
-        <!-- Optional JavaScript -->
+    @section('script')
+    
+    <!-- Optional JavaScript -->
         <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-
+            
         <script defer
-            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB85kLYYOmuAhBUPd7odVmL6gnQsSGWU-4&callback=initMap&libraries=&v=weekly">
+        src="https://maps.googleapis.com/maps/api/js?key={{$key}}&libraries=&v=weekly">
         </script>
-        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-            integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous">
-        </script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
-            integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous">
-        </script>
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
-            integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
-        </script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
-            integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous">
-        </script>
+       
+       
         <script src="{{asset('assets/libs/flatpickr/flatpickr.min.js')}}"></script>
         <script src="{{asset('assets/libs/bootstrap-colorpicker/bootstrap-colorpicker.min.js')}}"></script>
         <script src="{{asset('assets/libs/clockpicker/clockpicker.min.js')}}"></script>
@@ -626,15 +555,24 @@
         --}}
         <script>
             $(document).ready(function() {
+                initMap();
                 $('#shortclick').trigger('click');
             });
+            
+           
+
+            function gm_authFailure() {
+                
+              $('.excetion_keys').append('<span><i class="mdi mdi-block-helper mr-2"></i> <strong>Google Map</strong> key is not valid</span><br/>');
+              $('.displaySettingsError').show();
+            };
 
             // var marker;
             var show = [0];
             let map;
             let markers = [];
 
-
+            var url = window.location.origin;
             // $("#abc").click(function() {
             //     $(this).data('id');
             // });
@@ -742,7 +680,7 @@
                 //    return confirm("Are you sure?");
                 //   }
                 //console.log(agentval);
-                var url = window.location.origin;
+               
                 
                 for (let i = 0; i < allagent.length; i++) {
                     checkdata = allagent[i];
@@ -888,7 +826,7 @@
                
                 
                 var matchvalue = $(this).val(); // this.value
-                newabc =  'http://192.168.100.211:8000/'+'?date='+matchvalue;
+                newabc =  url+'?date='+matchvalue;
                 
                 
                 window.location.href = newabc;
@@ -897,7 +835,5 @@
           
 
         </script>
-    </body>
-
-    </html>
+    
 @endsection
