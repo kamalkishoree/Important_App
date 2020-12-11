@@ -476,7 +476,7 @@ class TaskController extends Controller
             return response()->json($response);
         } else {
             $id = $request->id;
-            $loction = Location::where('created_by', $id)->get();
+            $loction = Location::where('customer_id', $id)->get();
             return response()->json($loction);
         }
     }

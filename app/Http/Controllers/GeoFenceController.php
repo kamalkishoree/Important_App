@@ -125,7 +125,7 @@ class GeoFenceController extends Controller
             'description'   => $request->description,
             'zoom_level'    => $request->zoom_level,
             'geo_array'     => $request->latlongs,
-            'client_id'     => auth()->user()->id
+            'client_id'     => auth()->user()->code
         ];
 
         $geo = Geo::create($data);
@@ -161,7 +161,7 @@ class GeoFenceController extends Controller
     public function edit($id)
     {
         $geo = Geo::with(['agents'])->where('id', $id)->first();
-        $teams = Team::with(['agents'])->where('client_id', auth()->user()->id)->orderBy('name')->get();
+        $teams = Team::with(['agents'])->where('client_id', auth()->user()->code)->orderBy('name')->get();
         $agents = Agent::all();
 
         return view('update-geo-fence')->with([
@@ -219,7 +219,7 @@ class GeoFenceController extends Controller
      */
     public function destroy($id)
     {
-        Geo::where('id', $id)->where('client_id', auth()->user()->id)->delete();
+        Geo::where('id', $id)->where('client_id', auth()->user()->code)->delete();
         return redirect()->back()->with('success', 'Deleted successfully!');
     }
     public function dummy(Request $request)
