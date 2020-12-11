@@ -142,7 +142,7 @@
                     <p class="sub-header">
                         View and edit your organization's profile details.
                     </p>
-                    <form id="UpdateClient" method="post" action="{{route('profile.update',Auth::user()->id)}}" enctype="multipart/form-data">
+                    <form id="UpdateClient" method="post" action="{{route('profile.update',Auth::user()->code)}}" enctype="multipart/form-data">
                         @method('PUT')
                         @csrf
                         <div class="row mb-2">

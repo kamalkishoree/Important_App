@@ -70,7 +70,7 @@
         <!-- end page title -->
         <div class="row">
             <div class="col-xl-11 col-md-offset-1">
-                <form method="POST" action="{{ route('preference', Auth::user()->id) }}">
+                <form method="POST" action="{{ route('preference', Auth::user()->code) }}">
                     @csrf
                     <div class="row">
                         <div class="col-xl-12">
@@ -123,7 +123,7 @@
                         </div>
                     </div>
                 </form>
-                <form method="post" action="{{ route('auto-allocation.update', Auth::user()->id ?? '') }}" id="logic_form">
+                <form method="post" action="{{ route('auto-allocation.update', Auth::user()->code ?? '') }}" id="logic_form">
                     @csrf
                     @method('PUT')
                     <div class="card-box">
