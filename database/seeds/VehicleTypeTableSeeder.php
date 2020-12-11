@@ -25,11 +25,11 @@ class VehicleTypeTableSeeder extends Seeder
             array(
                 'id' => 3,
                 'name' => 'motorbike'
-            )
+            ),
             array(
                 'id' => 3,
                 'name' => 'car'
-            )
+            ),
             array(
                 'id' => 3,
                 'name' => 'truck'
