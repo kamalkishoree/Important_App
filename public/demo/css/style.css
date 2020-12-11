@@ -340,7 +340,7 @@ header .navbar-light .navbar-nav .nav-link {
   line-height: 17px;
 }
 .bottom-content .dropdown-menu.show{
-  min-width: 233px;
+  min-width: 250px;
 }
 .bottom-content label {
   margin-bottom:0px; 
