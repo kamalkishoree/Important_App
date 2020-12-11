@@ -20,9 +20,9 @@ class AllocationController extends Controller
     {
         
         
-        $preference = ClientPreference::where('client_id',Auth::user()->id)->first();
+        $preference = ClientPreference::where('client_id',Auth::user()->code)->first();
 
-        $allocation = AllocationRule::where('client_id',Auth::user()->id)->first();;
+        $allocation = AllocationRule::where('client_id',Auth::user()->code)->first();;
       
         
         return view('auto-allocation')->with([
