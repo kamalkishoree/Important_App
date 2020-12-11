@@ -15,21 +15,51 @@ class DashBoardController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $teams  = Team::with('agents.order.task.location')->get();
+        
+        if(isset($request->date)){
+           $date =  $request->date;
+        }else{
+            $date = \Carbon\Carbon::today();
+        }
+        
+        $teams  = Team::with([
+            'agents.order'=> function($o) use ($date){
+                $o->whereDate('created_at',$date)->with('customer')->with('task.location');
+            }]
+            )->get()->toArray();
+            
+        $unassigned = Agent::where('team_id',0)->with(['order'=> function($o) use ($date){
+            $o->whereDate('created_at',$date)->with('customer')->with('task.location');
+        }])->get()->toArray();
+        
+            
         $newmarker = [];
         foreach ($teams as $key => $team) {
             $append = [];
-            $append[0] = $team->id;
-            foreach ($team->agents as $key => $agent) {
-                $append[1] = $agent->id;
-                foreach ($agent->order as $key => $orders) {
-                    foreach ($orders->task as $key => $tasks) {
-                        $append[2] = $tasks->id; 
-                        $append[3] = floatval($tasks->location->latitude);
-                        $append[4] = floatval($tasks->location->longitude);
-                        $append[5] = $tasks->task_status;
+            $append[0] = $team['id'];
+            foreach ($team['agents'] as $key => $agent) {
+                $append[1] = $agent['id'];
+                foreach ($agent['order'] as $key => $orders) {
+                    foreach ($orders['task'] as $key => $tasks) {
+                        if($tasks['task_type_id'] == 1){
+                            $name = 'Pickup';
+                        }elseif($tasks['task_type_id'] == 2){
+                            $name = 'Drop';
+                        }else{
+                            $name = 'Appointment';
+                        }
+                        $append[2]  = $tasks['id']; 
+                        $append[3]  = floatval($tasks['location']['latitude']);
+                        $append[4]  = floatval($tasks['location']['longitude']);
+                        $append[5]  = $tasks['task_status'];
+                        $append[6]  = $tasks['task_type_id'];
+                        $append[7]  = $agent['name'];
+                        $append[8]  = $tasks['location']['address'];
+                        $append[9]  = $orders['customer']['name'];
+                        $append[10] = $orders['customer']['phone_number'];
+                        $append[11] = $name;
                         array_push($newmarker,$append);
                     }
                 }
@@ -37,11 +67,48 @@ class DashBoardController extends Controller
             }
             
         }
-       
-       
-        //$agents = Agent::with('order.task')->get();
+
         
-        return view('dashboard')->with(['teams' => $teams,'newmarker'=> $newmarker]);
+           
+        foreach ($unassigned as $key => $agent) {
+                $append = [];
+                $append[0] = 0;
+                $append[1] = $agent['id'];
+                foreach ($agent['order'] as $key => $orders) {
+                    foreach ($orders['task'] as $key => $tasks) {
+
+                        if($tasks['task_type_id'] == 1){
+                            $name = 'Pickup';
+                        }elseif($tasks['task_type_id'] == 2){
+                            $name = 'Drop';
+                        }else{
+                            $name = 'Appointment';
+                        }
+
+                        $append[2] = $tasks['id']; 
+                        $append[3] = floatval($tasks['location']['latitude']);
+                        $append[4] = floatval($tasks['location']['longitude']);
+                        $append[5] = $tasks['task_status'];
+                        $append[6] = $tasks['task_type_id'];
+                        $append[7]  = $agent['name'];
+                        $append[8]  = $tasks['location']['address'];
+                        $append[9]  = $orders['customer']['name'];
+                        $append[10] = $orders['customer']['phone_number'];
+                        $append[11] = $name;
+                        array_push($newmarker,$append);
+                    }
+                }
+                
+        }
+
+            
+        
+            
+       
+       
+        $agents = Agent::with('agentlog')->get()->toArray();
+
+        return view('dashboard')->with(['teams' => $teams,'newmarker'=> $newmarker,'unassigned'=> $unassigned,'agents'=> $agents]);
     }
 
     /**

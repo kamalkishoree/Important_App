@@ -10,7 +10,7 @@
                 <div class="col-md-8">
                     <div class="form-group" id="nameInput">
 
-                        {!! Form::text('search', null, ['class' => 'form-control', 'placeholder' => 'search Customer',
+                        {!! Form::text('search', null, ['class' => 'form-control', 'placeholder' => 'Search Customer',
                         'id' => 'search']) !!}
                         <input type="hidden" id='cusid' name="ids" readonly>
 

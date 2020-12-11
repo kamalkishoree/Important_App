@@ -11,10 +11,12 @@ use App\Model\TaskDriverTag;
 use App\Model\TaskTeamTag;
 use Illuminate\Http\Request;
 use App\Model\Agent;
+use App\Model\Geo;
 use App\Model\Order;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 
 class TaskController extends Controller
@@ -62,11 +64,12 @@ class TaskController extends Controller
         $validator = $this->validator($request->all())->validate();
         $loc_id = 0;
         $cus_id = 0;
+        $send_loc_id = 0;
 
         $images = [];
         $last = '';
         
-        if (count($request->file) > 0) {
+        if (isset($request->file) && count($request->file) > 0) {
             $folder = str_pad(Auth::user()->id, 8, '0', STR_PAD_LEFT);
             $folder = 'client_'.$folder;
             $files = $request->file('file');
@@ -94,7 +97,7 @@ class TaskController extends Controller
         } else {
             $cus_id = $request->ids;
         }
-
+          
 
         $order = [
             'customer_id'                => $cus_id,
@@ -105,7 +108,7 @@ class TaskController extends Controller
             'auto_alloction'             => $request->allocation_type,
             'images_array'               => $last,
             'order_type'                 => $request->task_type,
-            'order_time'                 => $request->schedule_time,
+            'order_time'                 => isset($request->schedule_time)?$request->schedule_time:Carbon::now()->toDateTimeString(),
         ];
         $orders = Order::create($order);
 
@@ -125,6 +128,7 @@ class TaskController extends Controller
             } else {
                 if($key == 0){
                     $loc_id = $request->old_address_id;
+                    $send_loc_id = $loc_id;
                 }else{
                     $loc_id = $request->input('old_address_id'.$key);
                    
@@ -153,10 +157,104 @@ class TaskController extends Controller
                 $orders->drivertags()->sync($request->agent_tag);
             }
         }
-
+       // $this->createRoster($send_loc_id,$orders->id,$orders->order_time);
 
         return redirect()->route('tasks.index')->with('success', 'Task Added successfully!');
     }
+
+
+    public function createRoster($location_id,$order_id,$ordertime)
+    {
+        
+        $getletlong = Location::where('id',$location_id)->first();
+        $lat = $getletlong->latitude;
+        $long = $getletlong->longitude;
+        //$allgeo     = Geo::all();
+
+       // $check = $this->findLocalityByLatLng($lat,$long);
+
+       
+
+        die($check);
+    }
+
+    public function findLocalityByLatLng($lat,$lng){
+        // get the locality_id by the coordinate //
+ 
+        $latitude_y = $lat;
+        $longitude_x = $lng;
+ 
+        $localities = Geo::all();
+ 
+        if(empty($localities))
+            return false;
+ 
+ 
+        foreach ($localities as $k => $locality) {
+            
+            $all_points = $locality->geo_array;
+            $temp = $all_points;
+            $temp = str_replace('(','[',$temp);
+            $temp = str_replace(')',']',$temp);
+            $temp = '['.$temp.']';
+            $temp_array =  json_decode($temp,true);
+    
+            foreach($temp_array as $k=>$v){
+                $data[] = [
+                    'lat' => $v[0],
+                    'lng' => $v[1]
+                ];
+            }
+           
+               //dd($data);
+            // $all_points[]= $all_points[0]; // push the first point in end to complete
+            $vertices_x = $vertices_y = array();
+            
+            foreach ($data as $key => $value) {
+                
+                $vertices_y[] = $value['lat'];
+                $vertices_x[] = $value['lng'];
+            }
+             print_r($vertices_x);
+             print_r($vertices_y);
+             
+            $points_polygon = count($vertices_x) - 1;  // number vertices - zero-based array
+            echo $points_polygon;
+            die();
+            if ($this->is_in_polygon($points_polygon, $vertices_x, $vertices_y, $longitude_x, $latitude_y)){
+              return $locality->id;
+            }
+        }
+ 
+        return false;
+    }
+ 
+    public function is_in_polygon($points_polygon, $vertices_x, $vertices_y, $longitude_x, $latitude_y){
+          $i = $j = $c = 0;
+          for ($i = 0, $j = $points_polygon ; $i < $points_polygon; $j = $i++) {
+            if ( (($vertices_y[$i]  >  $latitude_y != ($vertices_y[$j] > $latitude_y)) &&
+             ($longitude_x < ($vertices_x[$j] - $vertices_x[$i]) * ($latitude_y - $vertices_y[$i]) / ($vertices_y[$j] - $vertices_y[$i]) + $vertices_x[$i]) ) )
+               $c = !$c;
+          }
+          return $c;
+    }
+
+    // public function getGeoCoordinatesAttribute($geoarray){
+    //     $data = [];  
+    //     $temp = $geoarray;
+    //     $temp = str_replace('(','[',$temp);
+    //     $temp = str_replace(')',']',$temp);
+    //     $temp = '['.$temp.']';
+    //     $temp_array =  json_decode($temp,true);
+
+    //     foreach($temp_array as $k=>$v){
+    //         $data[] = [
+    //             'lat' => $v[0],
+    //             'lng' => $v[1]
+    //         ];
+    //     }
+    //     return $data;
+    // }
 
     /**
      * Display the specified resource.

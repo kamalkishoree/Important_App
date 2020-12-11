@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Exception;
+use Thumbor\Url;
 
 
 class Agent extends Authenticatable
@@ -15,6 +17,30 @@ class Agent extends Authenticatable
     protected $fillable = [
         'team_id', 'name', 'profile_picture', 'type', 'vehicle_type_id', 'make_model', 'plate_number', 'phone_number', 'color', 'is_activated', 'is_available'
     ];
+
+    protected $appends = ['image_url'];
+    
+    
+    public function getImageUrlAttribute()
+    {
+        $secret = '';
+        $server = 'http://192.168.100.211:8888';
+        $new    = \Thumbor\Url\Builder::construct($server, $secret, 'http://images.example.com/llamas.jpg')->fitIn(90,50);
+        //  \Phumbor::url(\Storage::disk("s3")->url($this->profile_picture))->fitIn(90,50)->build();
+        return $new; 
+
+    }
+
+    // public function build()
+    // {
+    //     return new Url(
+    //         $this->server,
+    //         $this->secret,
+    //         $this->original,
+    //         $this->commands->toArray()
+    //     );
+    // }
+   
 
     public function team(){
        return $this->belongsTo('App\Model\Team')->select("id", "name", "location_accuracy", "location_frequency"); 
@@ -30,6 +56,9 @@ class Agent extends Authenticatable
 
     public function order(){
         return $this->hasMany('App\Model\Order','driver_id', 'id');
+    }
+    public function agentlog(){
+        return $this->hasOne('App\Model\AgentLog','agent_id', 'id');
     }
 
     public function tags(){

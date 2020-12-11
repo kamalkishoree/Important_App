@@ -9,7 +9,7 @@
                 <div class="col-md-8">
                     <div class="form-group" id="nameInput">
                         {!! Form::label('title', 'Search',['class' => 'control-label']) !!}
-                        <input type="text" id='search' class="form-control" name="search" placeholder="search Customer" value="{{$task->customer->name}}">
+                        <input type="text" id='search' class="form-control" name="search" placeholder="earch Customer" value="{{$task->customer->name}}">
                         <input type="hidden" id='cusid' name="ids" value="{{$task->customer->id}}" readonly>
 
                     </div>
