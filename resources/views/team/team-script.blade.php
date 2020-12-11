@@ -1,10 +1,8 @@
 <script type="text/javascript">
-//$.noConflict();
-$.noConflict {
-
-
-    $('.openModal').click(function(){
-        $('#add-team-modal').modal({
+//jQuery.noConflict();
+jQuery.noConflict();
+    jQuery('.openModal').click(function(){
+        jQuery('#add-team-modal').modal({
             backdrop: 'static',
             keyboard: false
         });
@@ -12,38 +10,38 @@ $.noConflict {
     });
 
    
-    var tagList = "{{$showTag}}";
+    var tagList = "{{jQueryshowTag}}";
 
     tagList = tagList.split(',');
 
     function makeTag(){
-        $('.myTag1').tagsInput({
+        jQuery('.myTag1').tagsInput({
             'autocomplete': {
                 source: tagList
             } 
         });
     }
 
-    $(document).on('click', ".team-list-1", function() {
-        var data_id = $(this).attr('data-id');
-        $(".team-details").hide();
-        $("#team_detail_" + data_id).show();
+    jQuery(document).on('click', ".team-list-1", function() {
+        var data_id = jQuery(this).attr('data-id');
+        jQuery(".team-details").hide();
+        jQuery("#team_detail_" + data_id).show();
 
-        $(".team-agent-list").hide();
-        $("#team_agents_" + data_id).show();
+        jQuery(".team-agent-list").hide();
+        jQuery("#team_agents_" + data_id).show();
     });
 
 
-    $(".tag1").click(function() {
-        var val = $(this).text();
+    jQuery(".tag1").click(function() {
+        var val = jQuery(this).text();
 
-        var selectElement = $('#teamtag').eq(0);
+        var selectElement = jQuery('#teamtag').eq(0);
         var selectize = selectElement.data('selectize');
         selectize.additem(1, 2);
     });
 
-    $('.delete-team-form').on('submit', function() {
-        team_agent_count = $(this).attr('data-team-agent-count');
+    jQuery('.delete-team-form').on('submit', function() {
+        team_agent_count = jQuery(this).attr('data-team-agent-count');
         if (team_agent_count > 0) {
             alert("Please assign other team to agents linked to this team before deleting");
             return false;
@@ -55,28 +53,28 @@ $.noConflict {
         return false;
     });
 
-    $(".editIcon").click(function (e) {  
-        $.ajaxSetup({
+    jQuery(".editIcon").click(function (e) {  
+        jQuery.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
             }
         });
         e.preventDefault();
        
-        var uid = $(this).attr('teamId');
+        var uid = jQuery(this).attr('teamId');
 
-        $.ajax({
+        jQuery.ajax({
             type: "get",
             url: "<?php echo url('team'); ?>" + '/' + uid + '/edit',
             data: '',
             dataType: 'json',
             success: function (data) {
 
-                //$('.page-title1').html('Hello');
+                //jQuery('.page-title1').html('Hello');
                 console.log('data');
 
-                $('#edit-team-modal #editCardBox').html(data.html);
-                $('#edit-team-modal').modal({
+                jQuery('#edit-team-modal #editCardBox').html(data.html);
+                jQuery('#edit-team-modal').modal({
                     backdrop: 'static',
                     keyboard: false
                 });
@@ -90,11 +88,11 @@ $.noConflict {
     });
 
     /* add Team using ajax*/
-    $("#add-team-modal #submitTeam").submit(function(e) {
+    jQuery("#add-team-modal #submitTeam").submit(function(e) {
             e.preventDefault();
     });
 
-    $(document).on('click', '.addTeamForm', function() { 
+    jQuery(document).on('click', '.addTeamForm', function() { 
         var form =  document.getElementById('submitTeam');
         var formData = new FormData(form);
         var urls = "{{URL::route('team.store')}}";
@@ -102,11 +100,11 @@ $.noConflict {
     });
 
     /* edit Team using ajax*/
-    $("#edit-team-modal #UpdateTeam").submit(function(e) {
+    jQuery("#edit-team-modal #UpdateTeam").submit(function(e) {
             e.preventDefault();
     });
 
-    $(document).on('click', '.submitEditForm', function() {
+    jQuery(document).on('click', '.submitEditForm', function() {
         var form =  document.getElementById('UpdateTeam');
         var formData = new FormData(form);
         var urls =  document.getElementById('team_id').getAttribute('url');
@@ -115,7 +113,7 @@ $.noConflict {
 
     function saveTeam(urls, formData, inp = '', modal = ''){
 
-        $.ajax({
+        jQuery.ajax({
             method: 'post',
             headers: {
                 Accept: "application/json"
@@ -126,11 +124,11 @@ $.noConflict {
             processData: false,
             success: function(response) {
                 if (response.status == 'success') {
-                        $("#" + modal + " .close").click();
+                        jQuery("#" + modal + " .close").click();
                         location.reload(); 
                 } else { console.log('wa-1');
-                    $(".show_all_error.invalid-feedback").show();
-                    $(".show_all_error.invalid-feedback").text(response.message);
+                    jQuery(".show_all_error.invalid-feedback").show();
+                    jQuery(".show_all_error.invalid-feedback").text(response.message);
                 }
                 return response;
             },
@@ -138,22 +136,21 @@ $.noConflict {
                 if (response.status === 422) { console.log('err2');
                     let errors = response.responseJSON.errors;
                     Object.keys(errors).forEach(function(key) {
-                        $("#" + key + "Input" + inp + " input").addClass("is-invalid");
-                        $("#" + key + "Input" + inp + " span.invalid-feedback").children(
+                        jQuery("#" + key + "Input" + inp + " input").addClass("is-invalid");
+                        jQuery("#" + key + "Input" + inp + " span.invalid-feedback").children(
                             "strong").text(errors[key][
                             0
                         ]);
-                        $("#" + key + "Input span.invalid-feedback").show();
+                        jQuery("#" + key + "Input span.invalid-feedback").show();
                     });
                 } else {
-                    $(".show_all_error.invalid-feedback").show();
-                    $(".show_all_error.invalid-feedback").text('Something went wrong, Please try Again.');
+                    jQuery(".show_all_error.invalid-feedback").show();
+                    jQuery(".show_all_error.invalid-feedback").text('Something went wrong, Please try Again.');
                 }
                 return response;
             }
         });
 
     }
-}
 
 </script>
