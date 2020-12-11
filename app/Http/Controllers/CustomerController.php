@@ -34,16 +34,23 @@ class CustomerController extends Controller
     /**
      * Validation method for agents data 
     */
-    protected function validator(array $data)
+    private function validationRules($id = '')
     {
-        return Validator::make($data, [
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255'],
-            'phone_number' => ['required'],
-            'short_name'   => ['required'],
-            'address'   => ['required'],
-            'post_code'   => ['required'],
-        ]);
+        
+        $rules = [
+            'name' => "required|string|max:50",
+            //'short_name'// => "required",
+            //'address' => "required",
+            //'post_code' => "required"
+        ];
+        if($id != ''){
+            $rules['email'] = 'required|email|unique:customers,email,' . $id;
+            $rules['phone_number'] = 'required|digits:10|unique:customers,phone_number,' . $id;
+        }else{
+            $rules['email'] = 'required|email|unique:customers,email';
+            $rules['phone_number'] = 'required|digits:10|unique:customers,phone_number';
+        }
+        return $rules;
     }
 
 
@@ -55,7 +62,9 @@ class CustomerController extends Controller
      */
     public function store(Request $request)
     {
-        $validator = $this->validator($request->all())->validate();
+        $rule = $this->validationRules();
+        $validation  = Validator::make($request->all(), $rule)->validate();
+        //$validator = $this->validator($request->all())->validate();
         $data = [
             'name' => $request->name,
             'email' => $request->email,
@@ -77,7 +86,15 @@ class CustomerController extends Controller
                 $Loction = Location::create($datas);
             }
         }
-        return redirect()->route('customer.index')->with('success', 'Customer Added successfully!');
+
+        if($customer->wasRecentlyCreated){
+            return response()->json([
+                'status'=>'success',
+                'message' => 'Customer created Successfully!',
+                'data' => $customer
+            ]);
+        }
+        //return redirect()->route('customer.index')->with('success', 'Customer Added successfully!');
       
     }
 
@@ -116,9 +133,11 @@ class CustomerController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //dd($request->all());
-        $validator = $this->validator($request->all())->validate();
+        $rule = $this->validationRules($id);
         $customer = Customer::find($id);
+        $validation  = Validator::make($request->all(), $rule)->validate();
+        //$validator = $this->validator($request->all())->validate();
+        
         $data = [
             'name' => $request->name,
             'email' => $request->email,
@@ -157,7 +176,15 @@ class CustomerController extends Controller
                 }
             }
         }
-        return redirect()->route('customer.index')->with('success', 'Customer Updated successfully!');
+
+        if($customer){
+            return response()->json([
+                'status'=>'success',
+                'message' => 'Customer updated Successfully!',
+                'data' => $customer
+            ]);
+        }
+        //return redirect()->route('customer.index')->with('success', 'Customer Updated successfully!');
 
         
     }

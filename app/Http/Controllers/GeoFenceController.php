@@ -20,12 +20,10 @@ class GeoFenceController extends Controller
      */
     public function index()
     {
-        
         $teams = Team::with(['agents'])->where('client_id', auth()->user()->id)->orderBy('name')->get();
 
         $agents = Agent::all();
 
-        
         $geos = Geo::where('client_id', auth()->user()->id)->orderBy('created_at', 'DESC')->first();
 
         $all_coordinates = [];

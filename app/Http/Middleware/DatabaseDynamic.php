@@ -52,7 +52,8 @@ class DatabaseDynamic
               $clientPreference = ClientPreference::where('client_id',Auth::user()->code)->first();
 
               if(isset($clientPreference)){
-                Session::put('agent_name', $clientPreference->agent_name);
+                $agentTitle = empty($clientPreference->agent_name) ? 'Agent' : $clientPreference->agent_name;
+                Session::put('agent_name', $agentTitle);
                 Session::put('preferences', $clientPreference->toArray());
 
               }else{

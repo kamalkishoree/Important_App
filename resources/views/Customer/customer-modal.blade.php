@@ -31,7 +31,7 @@
 
                                 <div class="row">
                                     <div class="col-md-12">
-                                        <div class="form-group" id="make_modelInput">
+                                        <div class="form-group" id="emailInput">
                                             {!! Form::label('title', 'Email',['class' => 'control-label']) !!}
                                             {!! Form::email('email', null, ['class' => 'form-control']) !!}
                                             <span class="invalid-feedback" role="alert">
@@ -43,7 +43,7 @@
 
                                 <div class="row">
                                     <div class="col-md-12">
-                                        <div class="form-group" id="make_modelInput">
+                                        <div class="form-group" id="phone_numberInput">
                                             {!! Form::label('title', 'Phone Number',['class' => 'control-label']) !!}
                                             {!! Form::text('phone_number', null, ['class' => 'form-control']) !!}
                                             <span class="invalid-feedback" role="alert">
@@ -56,7 +56,7 @@
                                     {!! Form::label('title', 'Address',['class' => 'control-label']) !!} 
                                     <div class="row address" id="add1">
                                         <div class="col-md-4">
-                                            <div class="form-group" id=""> 
+                                            <div class="form-group" id="short_nameInput"> 
                                                 <input type="text" name="short_name[]" class="form-control" placeholder="Short Name">
                                                 <span class="invalid-feedback" role="alert">
                                                     <strong></strong>
@@ -64,20 +64,20 @@
                                             </div>
                                         </div>
                                         <div class="col-md-5">
-                                            <div class="form-group input-group" id="location">
+                                            <div class="form-group input-group" id="addressInput">
                                                 <input type="text" id="add1-input" name="address[]" class="form-control" placeholder="Address">
                                                 <div class="input-group-append">
                                                     <button class="btn btn-xs btn-dark waves-effect waves-light showMap" type="button" num="add1"> <i class="mdi mdi-map-marker-radius"></i></button>
                                                 </div>
                                                 <input type="hidden" name="latitude[]" id="add1-latitude" value="0" />
                                                 <input type="hidden" name="longitude[]" id="add1-longitude" value="0" />
-                                                <span class="invalid-feedback" role="alert" id="location">
+                                                <span class="invalid-feedback" role="alert" id="address">
                                                     <strong></strong>
                                                 </span>
                                             </div>
                                         </div>
                                         <div class="col-md-3">
-                                            <div class="form-group" id="">
+                                            <div class="form-group" id="post_codeInput">
                                                 <input type="text" name="post_code[]" class="form-control" placeholder="Post Code">
                                                 <span class="invalid-feedback" role="alert">
                                                     <strong></strong>
@@ -114,7 +114,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-blue waves-effect waves-light ">Submit</button>
+                    <button type="submit" class="btn btn-blue waves-effect waves-light submitCustomerForm">Submit</button>
                 </div>
             </form>
         </div>
@@ -128,18 +128,19 @@
                 <h4 class="modal-title">Edit Customer</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
             </div>
-            
-            <div class="modal-body p-4">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="card-box" id="editCardBox">
-                        </div>
-                    </div>
+
+            <form id="edit_customer" method="post" enctype="multipart/form-data">
+                @csrf
+                @method('PUT')
+                <div class="modal-body p-4" id="editCardBox">
+                    
                 </div>
-            </div>
-            <div class="modal-footer">
-                <button type="submit" class="btn btn-blue waves-effect waves-light submitEditForm">Submit</button>
-            </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-blue waves-effect waves-light submitEditForm">Submit</button>
+                </div>
+                
+            </form>
         </div>
     </div>
 </div>
