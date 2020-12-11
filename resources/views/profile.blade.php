@@ -150,6 +150,18 @@
                                 <input type="file" data-plugins="dropify" name="logo" data-default-file="{{isset(Auth::user()->logo) ? Storage::disk('s3')->url(Auth::user()->logo) : ''}}" />
                                 <p class="text-muted text-center mt-2 mb-0">Upload Logo</p>
                             </div>
+                            <div class="col-md-2"></div>
+                            <div class="col-md-4">
+                                <label class="control-label">Short Code</label><br/>
+                                <h1 class="control-label" style="font-size: 7.25rem;">{{Auth::user()->code}}</h1>
+                                
+                            </div>
+                            <div class="col-md-2">
+                                <a href="https://www.apple.com/in/app-store/" target="_blank"><img src="{{asset('assets/images/iosstore.png')}}" alt="image" style="width:120px;height:60px;padding: 3px;"> </a>
+                                <p class="mb-0"></p>
+                                <a href="https://play.google.com/store" target="_blank"><img src="{{asset('assets/images/playstore.png')}}" alt="image" style="width:120px;height:60px;" > </a>
+
+                            </div>
                         </div>
 
                         <div class=" row">
