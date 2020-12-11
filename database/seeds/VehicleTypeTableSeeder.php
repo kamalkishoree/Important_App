@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Seeder;
 
-class VehicleTypeSeeder extends Seeder
+class VehicleTypeTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -11,7 +11,7 @@ class VehicleTypeSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('task_types')->delete();
+        DB::table('vehicle_types')->delete();
  
         $type = array(
             array(
@@ -35,6 +35,6 @@ class VehicleTypeSeeder extends Seeder
                 'name' => 'truck'
             )
         );
-        DB::table('task_types')->insert($type);
+        DB::table('vehicle_types')->insert($type);
     }
 }

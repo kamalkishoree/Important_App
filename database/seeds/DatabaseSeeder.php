@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
               ClientsTableSeeder::class,
               CurrenciesTableSeeder::class,
               LanguageTableSeeder::class,
+              VehicleTypeTableSeeder::class,
               //PassportSeeder::class,
            // TeamSeeder::class,
               //UsersTableDataSeeder::class,
