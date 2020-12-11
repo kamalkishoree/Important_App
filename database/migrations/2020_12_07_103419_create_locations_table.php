@@ -26,7 +26,7 @@ class CreateLocationsTable extends Migration {
 		});
 
 		Schema::table('locations', function (Blueprint $table) {
-			$table->foreign('created_by')->references('id')->on('customers')->onUpdate('cascade')->onDelete('cascade');
+			$table->foreign('customer_id')->references('id')->on('customers')->onUpdate('cascade')->onDelete('cascade');
 
 			$table->index('short_name');
 			$table->index('post_code');
