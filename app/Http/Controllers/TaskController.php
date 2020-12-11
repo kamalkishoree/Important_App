@@ -10,7 +10,7 @@ use App\Model\TagsForTeam;
 use App\Model\TaskDriverTag;
 use App\Model\TaskTeamTag;
 use Illuminate\Http\Request;
-use App\Model\Agent;
+use App\Model\{Agent, PricingRule};
 use App\Model\Geo;
 use App\Model\Order;
 use Illuminate\Support\Facades\Validator;
@@ -26,12 +26,17 @@ class TaskController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $tasks   = Order::orderBy('created_at', 'DESC')->with(['customer', 'location', 'task','agent'])->paginate(10);
-        
+        /* Orter status will be done as per task completed. task assigned than assigned all task of order completed tha completed and so on*/
+        $tasks = Order::orderBy('created_at', 'DESC')->with(['customer', 'location', 'taskFirst','agent']);
+        if($request->has('status') && $request->status != 'all'){
+            $tasks = $tasks->where('status', $request->status);
+        }
 
-        return view('tasks/task')->with(['tasks' => $tasks]);
+        $tasks = $tasks->paginate(10);
+        
+        return view('tasks/task')->with(['tasks' => $tasks, 'status' =>$request->status]);
     }
 
     /**
@@ -43,8 +48,16 @@ class TaskController extends Controller
     {
         $teamTag    = TagsForTeam::all();
         $agentTag   = TagsForAgent::all();
+        $pricingRule = PricingRule::select('id', 'name')->get();
+
+        /*$pricingRule = PricingRule::select('id', 'name')->whereDate('start_date_time', '<', Carbon::now())
+                            ->whereDate('end_date_time', '>', Carbon::now())->get();*/
+
+
+        //$agents = Agent::orderBy('created_at', 'DESC')->where('is_activated', 1)->get();
         $agents = Agent::orderBy('created_at', 'DESC')->get();
-        return view('tasks/add-task')->with(['teamTag' => $teamTag, 'agentTag' => $agentTag, 'agents' => $agents]);
+
+        return view('tasks/add-task')->with(['teamTag' => $teamTag, 'agentTag' => $agentTag, 'agents' => $agents, 'pricingRule' => $pricingRule]);
     }
 
     protected function validator(array $data)
@@ -68,6 +81,8 @@ class TaskController extends Controller
 
         $images = [];
         $last = '';
+
+       // dd($request->all());
         
         if (isset($request->file) && count($request->file) > 0) {
             $folder = str_pad(Auth::user()->id, 8, '0', STR_PAD_LEFT);
@@ -135,15 +150,19 @@ class TaskController extends Controller
                 }
                 
             }
+            $task_allo_type = empty($request->appointment_date[$key]) ? '0' : $request->appointment_date[$key];
 
             $data = [
                 'order_id'                   => $orders->id,
                 'task_type_id'               => $value,
                 'location_id'                => $loc_id,
-                'allocation_type'            => $request->appointment_date[$key],            
+                'allocation_type'            => $task_allo_type,            
                 'dependent_task_id'          => $dep_id,
                 'task_status'                => 'unassigned'
             ];
+            if(!empty($request->pricing_rule_id)){
+                $data['pricing_rule_id'] = $request->pricing_rule_id;
+            }
             $task = Task::create($data);
             $dep_id = $task->id;
         }
@@ -303,7 +322,12 @@ class TaskController extends Controller
             $array = '';
         }
 
-        return view('tasks/update-task')->with(['task' => $task, 'teamTag' => $teamTag, 'agentTag' => $agentTag, 'agents' => $agents, 'images' => $array, 'savedrivertag' => $savedrivertag, 'saveteamtag' => $saveteamtag,'main' => $lastbaseurl]);
+        $pricingRule = PricingRule::select('id', 'name')->get();
+
+        /*$pricingRule = PricingRule::select('id', 'name')->whereDate('start_date_time', '<', Carbon::now())
+                            ->whereDate('end_date_time', '>', Carbon::now())->get();*/
+
+        return view('tasks/update-task')->with(['task' => $task, 'teamTag' => $teamTag, 'agentTag' => $agentTag, 'agents' => $agents, 'images' => $array, 'savedrivertag' => $savedrivertag, 'saveteamtag' => $saveteamtag,'main' => $lastbaseurl, 'pricingRule' => $pricingRule]);
     }
 
     /**

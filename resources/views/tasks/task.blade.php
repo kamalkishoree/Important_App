@@ -34,6 +34,10 @@
   border-bottom-left-radius: 4px;
   border-bottom-right-radius: 0;
 }
+#radio1, #radio2, #radio3, #radio4 {  
+    -ms-transform: scale(1.2); /* IE 9 */
+    -webkit-transform: scale(1.2); /* Chrome, Safari, Opera */
+    transform: scale(1.2); }
 </style>
 @endsection
 
@@ -55,7 +59,7 @@
             <div class="card">
                 <div class="card-body">
                     <div class="row mb-2">
-                        <div class="col-sm-8">
+                        <div class="col-sm-12">
                             <div class="text-sm-left">
                                 @if (\Session::has('success'))
                                 <div class="alert alert-success">
@@ -63,7 +67,23 @@
                                 </div>
                                 @endif
                             </div>
+                        </div> 
+
+                        <div class="col-sm-3">
+                        <form name="getTask" id="getTask" method="get" action="{{route('tasks.index')}}">
+
+                                <input type="radio" name="status" onclick="handleClick(this);" id="radio1" value="all" {{(!isset($status) || $status == 'all') ? 'checked' : ''}}>
+                                <label for="radio1">All</label>
+                                <input type="radio" name="status" onclick="handleClick(this);" id="radio2" value="pending" {{(isset($status) && $status == 'pending') ? 'checked' : ''}}>
+                                <label for="radio2">Pending</label>
+                                <input type="radio" name="status" onclick="handleClick(this);" id="radio3" value="active" {{(isset($status) && $status == 'active') ? 'checked' : ''}}>
+                                <label for="radio3">Active</label>
+                                <input type="radio" name="status" onclick="handleClick(this);" id="radio4" value="completed" {{(isset($status) && $status == 'completed') ? 'checked' : ''}}>
+                                <label for="radio4">Completed</label>
+
+                        </form>
                         </div>
+                        <div class="col-sm-5"></div>
                         <div class="col-sm-4 text-right">
                         <a href="{{ route('tasks.create') }}" class="btn btn-blue waves-effect waves-light"><i class="mdi mdi-plus-circle mr-1"></i> Add Task</a>
                         </div>
@@ -162,6 +182,11 @@
 <script src="{{asset('assets/libs/sweetalert2/sweetalert2.min.js')}}"></script>
 
 <script>
+
+    function handleClick(myRadio) {
+        $('#getTask').submit();
+    }
+
 $("#phone_number").intlTelInput({
   utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/8.4.6/js/utils.js"
 });

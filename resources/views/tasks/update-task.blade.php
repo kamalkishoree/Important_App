@@ -393,7 +393,19 @@
                             </div>
                         </div>
 
-
+                        <div class="row priceRule">
+                            <div class="col-md-12">
+                                <div class="form-group mb-3">
+                                    <label>Price Rule</label>
+                                    <select class="form-control" name="pricing_rule_id" id="ruleselect">
+                                        <option value="">Select Price Rule</option>
+                                        @foreach ($pricingRule as $rule)
+                                            <option value="{{ $rule->id }}" {{ ($task->task[0]->pricing_rule_id == $rule->id) ? 'selected' : '' }}>{{ $rule->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
 
                         <h4 class="header-title mb-3">Allocation</h4>
                         <div class="row my-3" id="rediodiv">

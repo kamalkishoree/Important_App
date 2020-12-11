@@ -39,5 +39,13 @@ class Order extends Model
     {
       return $this->hasOne('App\Model\Customer');
     }
+
+    public function taskFirst()
+    {
+      return $this->task()->where('pricing_rule_id', 1);
+    }
+
+
+
     
 }
