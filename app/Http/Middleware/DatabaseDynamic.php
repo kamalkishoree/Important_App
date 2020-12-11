@@ -65,17 +65,25 @@ class DatabaseDynamic
 
               if($clientPreference){
 
-                $token = $clientPreference->sms_provider_key_1;
-                $sid = $clientPreference->sms_provider_key_2;
-                $twilio = new TwilioC($sid, $token);
-                try {
-                  $account = $twilio->api->v2010->accounts($sid)->fetch();
+                if(!empty($clientPreference->sms_provider_key_1) && !empty($clientPreference->sms_provider_key_2)){
 
-                  Session::put('twilio_status', $account->status);
+                  $token = $clientPreference->sms_provider_key_1;
+                  $sid = $clientPreference->sms_provider_key_2;
+                  $twilio = new TwilioC($sid, $token);
+                  try {
+                    $account = $twilio->api->v2010->accounts($sid)->fetch();
 
-                } catch (\Exception $e) {
-                    Session::put('twilio_status', 'invalid_key');
+                    Session::put('twilio_status', $account->status);
+
+                  } catch (\Exception $e) {
+                      Session::put('twilio_status', 'invalid_key');
+                  }
+
+                }else{
+                  Session::put('twilio_status', 'null_key');
                 }
+
+                
               }
 
               
