@@ -140,7 +140,7 @@
 @section('script')
 
 <!-- Plugins js-->
-
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB85kLYYOmuAhBUPd7odVmL6gnQsSGWU-4&libraries=places" async defer></script>
 <script src="{{asset('assets/libs/select2/select2.min.js')}}"></script>
 <script src="{{asset('assets/libs/bootstrap-select/bootstrap-select.min.js')}}"></script>
 <!-- Page js-->
