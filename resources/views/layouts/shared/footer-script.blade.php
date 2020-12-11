@@ -11,7 +11,7 @@
 
 <script>
 
-
+ 
 
 const startLoader = function(element) {
     // check if the element is not specified
