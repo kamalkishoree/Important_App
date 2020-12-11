@@ -171,11 +171,11 @@ class TaskController extends Controller
         $long = $getletlong->longitude;
         //$allgeo     = Geo::all();
 
-       // $check = $this->findLocalityByLatLng($lat,$long);
+          //$check = $this->findLocalityByLatLng($lat,$long);
 
        
 
-        die($check);
+          //die($check);
     }
 
     public function findLocalityByLatLng($lat,$lng){
