@@ -234,23 +234,24 @@
 @section('script')
 
 <script src="http://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
-<link rel="stylesheet" href="http://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-<script src="{{ asset('assets/libs/flatpickr/flatpickr.min.js') }}"></script>
-<script src="{{ asset('assets/libs/select2/select2.min.js') }}"></script>
-<script src="{{ asset('assets/libs/bootstrap-select/bootstrap-select.min.js') }}"></script>
-<script src="{{ asset('assets/js/pages/form-advanced.init.js') }}"></script>
-<script src="{{ asset('assets/js/pages/form-pickers.init.js') }}"></script>
-<script src="{{ asset('assets/js/storeAgent.js') }}"></script>
-<script src="{{ asset('assets/libs/dropzone/dropzone.min.js') }}"></script>
-<script src="{{ asset('assets/libs/dropify/dropify.min.js') }}"></script>
-<script src="{{ asset('assets/js/pages/form-fileuploads.init.js') }}"></script>
-<script src="{{ asset('assets/libs/datatables/datatables.min.js') }}"></script>
-<script src="{{ asset('assets/libs/sweetalert2/sweetalert2.min.js') }}"></script> 
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB85kLYYOmuAhBUPd7odVmL6gnQsSGWU-4&libraries=places" async defer></script>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/8.4.7/js/intlTelInput.js"></script>
-<script src="{{ asset('assets/js/jquery.tagsinput-revisited.js') }}"></script>
-<link rel="stylesheet" href="{{ asset('assets/css/jquery.tagsinput-revisited.css') }}" />
+    <script src="{{ asset('assets/libs/flatpickr/flatpickr.min.js') }}"></script>
+    <script src="{{ asset('assets/libs/select2/select2.min.js') }}"></script>
+    <script src="{{ asset('assets/libs/bootstrap-select/bootstrap-select.min.js') }}"></script>
+    <script src="{{ asset('assets/js/pages/form-advanced.init.js') }}"></script>
+    <script src="{{ asset('assets/js/pages/form-pickers.init.js') }}"></script>
+    <script src="{{ asset('assets/js/storeAgent.js') }}"></script>
+    <script src="{{ asset('assets/libs/dropzone/dropzone.min.js') }}"></script>
+    <script src="{{ asset('assets/libs/dropify/dropify.min.js') }}"></script>
+    <script src="{{ asset('assets/js/pages/form-fileuploads.init.js') }}"></script>
+    <script src="{{ asset('assets/libs/datatables/datatables.min.js') }}"></script>
+    <script src="{{ asset('assets/libs/sweetalert2/sweetalert2.min.js') }}"></script> 
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/8.4.7/js/intlTelInput.js"></script>
+    <script src="{{ asset('assets/js/jquery.tagsinput-revisited.js') }}"></script>
+    <link rel="stylesheet" href="{{ asset('assets/css/jquery.tagsinput-revisited.css') }}" />
 <script>if (window.module) module = window.module;</script>
 @include('team.team-script')  
 
