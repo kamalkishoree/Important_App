@@ -1,8 +1,7 @@
 <script type="text/javascript">
-//$.noConflict();
-jQuery.noConflict();
-jQuery('.openModal').click(function(){
-    jQuery('#add-team-modal').modal({
+
+    $('.openModal').click(function(){
+        $('#add-team-modal').modal({
             backdrop: 'static',
             keyboard: false
         });
@@ -15,32 +14,32 @@ jQuery('.openModal').click(function(){
     tagList = tagList.split(',');
 
     function makeTag(){
-        jQuery('.myTag1').tagsInput({
+        $('.myTag1').tagsInput({
             'autocomplete': {
                 source: tagList
             } 
         });
     }
 
-    jQuery(document).on('click', ".team-list-1", function() {
+    $(document).on('click', ".team-list-1", function() {
         var data_id = $(this).attr('data-id');
-        jQuery(".team-details").hide();
-        jQuery("#team_detail_" + data_id).show();
+        $(".team-details").hide();
+        $("#team_detail_" + data_id).show();
 
         $(".team-agent-list").hide();
         $("#team_agents_" + data_id).show();
     });
 
 
-    jQuery(".tag1").click(function() {
-        var val = jQuery(this).text();
+    $(".tag1").click(function() {
+        var val = $(this).text();
 
-        var selectElement = jQuery('#teamtag').eq(0);
+        var selectElement = $('#teamtag').eq(0);
         var selectize = selectElement.data('selectize');
         selectize.additem(1, 2);
     });
 
-    jQuery('.delete-team-form').on('submit', function() {
+    $('.delete-team-form').on('submit', function() {
         team_agent_count = $(this).attr('data-team-agent-count');
         if (team_agent_count > 0) {
             alert("Please assign other team to agents linked to this team before deleting");
@@ -53,7 +52,7 @@ jQuery('.openModal').click(function(){
         return false;
     });
 
-    jQuery(".editIcon").click(function (e) {  
+    $(".editIcon").click(function (e) {  
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
