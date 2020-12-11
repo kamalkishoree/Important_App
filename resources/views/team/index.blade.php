@@ -250,10 +250,10 @@
     <script src="{{ asset('assets/libs/sweetalert2/sweetalert2.min.js') }}"></script> 
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/8.4.7/js/intlTelInput.js"></script>
-   
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tagsinput/0.8.0/bootstrap-tagsinput.js"></script>
+    <script src="{{ asset('assets/js/jquery.tagsinput-revisited.js') }}"></script>
+    
     <link rel="stylesheet" href="{{ asset('assets/css/jquery.tagsinput-revisited.css') }}" />
-
+<script>if (window.module) module = window.module;</script>
 @include('team.team-script')  
 
 @endsection
