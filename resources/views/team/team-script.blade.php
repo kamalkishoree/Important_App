@@ -14,7 +14,7 @@
     tagList = tagList.split(',');
 
     function makeTag(){
-        JQuery('.myTag1').tagsInput({
+        $('.myTag1').tagsInput({
             'autocomplete': {
                 source: tagList
             } 
