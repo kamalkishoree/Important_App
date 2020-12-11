@@ -81,7 +81,7 @@ class CustomerController extends Controller
                     'post_code'  => $request->post_code[$key],
                     'latitude'    => $request->latitude[$key],
                     'longitude'  => $request->longitude[$key],
-                    'created_by' => $customer->id,
+                    'customer_id' => $customer->id,
                 ];
                 $Loction = Location::create($datas);
             }
@@ -169,7 +169,7 @@ class CustomerController extends Controller
                         'post_code'  => $request->post_code[$key],
                         'latitude'    => $request->latitude[$key],
                         'longitude'  => $request->longitude[$key],
-                        'created_by' => $customer->id,
+                        'customer_id' => $customer->id,
                     ];
                     $Loction = Location::create($datas);
 
