@@ -61,4 +61,8 @@ class Agent extends Authenticatable
         return $this->hasOne('App\Model\AgentLog','agent_id', 'id');
     }
 
+    public function tags(){
+        return $this->belongsToMany('App\Model\TagsForAgent', 'agents_tags','agent_id','tag_id');
+    }
+
 }

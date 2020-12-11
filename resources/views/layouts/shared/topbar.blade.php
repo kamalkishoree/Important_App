@@ -329,6 +329,40 @@
 
         <!-- LOGO -->
         <div class="logo-box">
+            <?php
+
+            //echo $ur = Storage::disk('s3')->url(Auth::user()->logo);
+
+           //$image = Phumbor::url(''.URL::to('/').'images/users/user-1.jpg')->fitIn(90,50);
+
+            if(isset(Auth::user()->logo)){
+
+               /* $client = Storage::disk('s3')->getDriver()->getAdapter()->getClient();
+                $bucket = Config::get('filesystems.disks.s3.bucket');
+
+                $command = $client->getCommand('GetObject', [
+                    'Bucket' => $bucket,
+                    'Key' => Auth::user()->logo  // file name in s3 bucket which you want to access
+                ]);
+http://192.168.100.211:8888/unsafe/fit-in/90x50/https://royodelivery-assets.s3.us-west-2.amazonaws.com/assets/Clientlogo/x8EVJTlbXQU8ia2H6Dd4zpJQSl60I5jAZCzZ6dse.jpg
+                $request = $client->createPresignedRequest($command, '+20 minutes');
+
+                //$generate_url = $request->getUri();
+                
+                $image = (string)$request->getUri();*/
+
+                //echo $url = Storage::disk('s3')->temporaryUrl(Auth::user()->logo , now()->addMinutes(5));
+            }
+            ?>
+            @php
+                    $urlImg = URL::to('/').'images/users/user-1.jpg';
+              
+                  if(isset(Auth::user()->logo)){
+                    $urlImg = Storage::disk('s3')->url(Auth::user()->logo);
+                  }
+                  $image = Phumbor::url($urlImg)->fitIn(90,50);
+
+            @endphp
             <a href="{{ route('any', ['dashboard']) }}" class="logo logo-dark text-center">
                 <span class="logo-sm">
                     <img src="{{ asset('assets/images/logo-sm.png') }}" alt="" height="22">
@@ -339,13 +373,7 @@
                     <!-- <span class="logo-lg-text-light">U</span> -->
                 </span>
             </a>
-            @php
-              if(isset(Auth::user()->logo)){
-                $image = Phumbor::url(Storage::disk('s3')->url(Auth::user()->logo))->fitIn(90,50);
-              }else{
-                $image = Phumbor::url(''.URL::to('/').'images/users/user-1.jpg')->fitIn(90,50);
-              }
-            @endphp
+            
             <a href="{{ route('any', ['dashboard']) }}" class="logo logo-light text-center">
                 <span class="logo-sm">
                     <img src="{{$image}}"

@@ -14,11 +14,12 @@ $(document).ready(function() {
  * Submit Agents Detail
  */
 
-$("#submitAgent").submit(function(e) {
+/*$("#submitAgent").submit(function(e) {
     e.preventDefault();
     var formData = new FormData(this);
-    AjaxSubmit(formData, 'POST', '/agent', '#add-agent-modal');
-});
+    var action = $("#submitAgent").attr('action');
+    AjaxSubmit(formData, 'POST', action, '#add-agent-modal');
+});*/
 
 
 /**

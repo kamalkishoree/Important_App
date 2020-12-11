@@ -20,7 +20,7 @@ class Team extends Model
 
 
     public function client(){
-        return $this->belongsTo('App\Model\Client');
+        return $this->belongsTo('App\Model\Client', 'client_id', 'code');
     }
 
     public function manager(){

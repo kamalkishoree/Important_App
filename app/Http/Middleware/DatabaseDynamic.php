@@ -9,6 +9,7 @@ use Config;
 use Session;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Twilio\Rest\Client as TwilioC;
 
 class DatabaseDynamic
 {
@@ -48,12 +49,36 @@ class DatabaseDynamic
               DB::setDefaultConnection($database_name);
               DB::purge($database_name);
 
-              $client_name = ClientPreference::where('client_id',Auth::user()->id)->first('agent_name');
-              if(isset($client_name)){
-                Session::put('agent_name', $client_name->agent_name);
+              $clientPreference = ClientPreference::where('client_id',Auth::user()->code)->first();
+
+              if(isset($clientPreference)){
+                Session::put('agent_name', $clientPreference->agent_name);
+                Session::put('preferences', $clientPreference->toArray());
+
               }else{
                 Session::put('agent_name', 'Agent');
+                Session::put('preferences', '');
               }
+
+             // dd($clientPreference->toArray());
+
+              if($clientPreference){
+
+                $token = $clientPreference->sms_provider_key_1;
+                $sid = $clientPreference->sms_provider_key_2;
+                $twilio = new TwilioC($sid, $token);
+                try {
+                  $account = $twilio->api->v2010->accounts($sid)->fetch();
+
+                  Session::put('twilio_status', $account->status);
+
+                } catch (\Exception $e) {
+                    Session::put('twilio_status', 'invalid_key');
+                }
+              }
+
+              
+              //Session::put('testImage', url('profileImg'));
               
           }
       }

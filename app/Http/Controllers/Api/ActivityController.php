@@ -6,7 +6,7 @@ use App\Http\Controllers\Api\BaseController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
-use App\Model\{User, Agent, Client, ClientPreference, Order};
+use App\Model\{User, Agent, Client, ClientPreference, Order, Task};
 use Validation;
 use DB;
 
@@ -33,20 +33,19 @@ class ActivityController extends BaseController
     /**
      * Login user and create token
      *
-
      */
-    public function orders(Request $request)
+    public function tasks(Request $request)
     {
-        $orders = Order::with('task.location', 'customer', 'agent');
+        $tasks = Task::with('location', 'tasktype', 'pricing')
+                        ->select('tasks.*', 'orders.recipient_phone', 'orders.Recipient_email', 'orders.task_description', 'customers.phone_number  as customer_mobile', 'customers.email  as customer_email', 'customers.name as customer_name')
+                        ->join('orders', 'orders.id' , 'tasks.order_id')
+                        ->join('customers', 'customers.id' , 'orders.customer_id');
         if(!empty($request->date)){
             $date = date('Y-m-d', strtotime($request->date));
-            $orders = $orders->whereDate('created_at', $date);
+            $tasks = $tasks->whereDate('tasks.created_at', $date);
         }
-        $orders = $orders->get();
-        return response()->json([
-            'message' => 'Status updated Successfully',
-            'data' => $orders
-        ]);
+        $tasks = $tasks->where('orders.driver_id', Auth::user()->id)->paginate();
+        return response()->json($tasks);
         
     }
 

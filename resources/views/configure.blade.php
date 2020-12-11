@@ -18,7 +18,7 @@
         </div>
     </div>
     <!-- end page title -->
-    <form method="POST" action="{{route('preference', Auth::user()->id)}}">
+    <form method="POST" action="{{route('preference', Auth::user()->code)}}">
         @csrf
         <div class="row">
             <div class="col-xl-11 col-md-offset-1">
@@ -92,7 +92,7 @@
             </div>
         </div>
     </form>
-    <form method="POST" action="{{route('preference', Auth::user()->id)}}">
+    <form method="POST" action="{{route('preference', Auth::user()->code)}}">
         @csrf
         <div class="row">
             <div class="col-xl-11 col-md-offset-1">
@@ -171,7 +171,7 @@
     </form>
 
     <div style="display:none;">
-    <form method="POST" action="{{route('preference', Auth::user()->id)}}">
+    <form method="POST" action="{{route('preference', Auth::user()->code)}}">
         @csrf
         <div class="row">
             <div class="col-xl-11 col-md-offset-1">
@@ -241,7 +241,7 @@
     </form>
     </div>
 
-    <form method="POST" action="{{route('preference', Auth::user()->id)}}">
+    <form method="POST" action="{{route('preference', Auth::user()->code)}}">
         @csrf
         <div class="row">
             <div class="col-xl-11 col-md-offset-1">
@@ -310,7 +310,7 @@
         </div>
     </form>
 
-    <form method="POST" action="{{route('preference', Auth::user()->id)}}">
+    <form method="POST" action="{{route('preference', Auth::user()->code)}}">
         @csrf
         <div class="row">
             <div class="col-xl-11 col-md-offset-1">

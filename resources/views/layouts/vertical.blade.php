@@ -11,7 +11,11 @@
         <div id="wrapper">
             @include('layouts.shared/topbar')
 
+            
             @include('layouts.shared/left-sidebar')
+
+
+
 
         <!-- ============================================================== -->
         <!-- Start Page Content here -->
@@ -33,9 +37,30 @@
             <div class="content">
                 <div class="content">                    
             <div class="content">
+                @php 
+                    $style = "";
+                    if(session('preferences.twilio_status') != 'invalid_key'){
+                        $style = "display:none;";
+                    }
+                @endphp
+
+                <div class="row" class="displaySettingsError" style="{{$style}}">
+                    <div class="col-12">
+                        <div class="alert alert-danger excetion_keys" role="alert">
+                            @if(session('preferences.twilio_status') == 'invalid_key')
+                            <span><i class="mdi mdi-block-helper mr-2"></i> <strong>Twilio</strong> key is not valid</span> <br/>
+                            @endif
+                        </div>
+                    </div>
+
+
+                </div>
+
+
                 @yield('content')
             </div>
             <!-- content -->
+
 
             @include('layouts.shared/footer')
 

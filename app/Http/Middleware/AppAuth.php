@@ -28,7 +28,7 @@ class AppAuth
 
         if (!Token::check($token, 'codebrewInd'))
         {
-            return response()->json(['error' => 'Invalid Token', 'message' => 'Session Expired'], 404);
+            return response()->json(['error' => 'Invalid Token', 'message' => 'Session Expired'], 401);
             abort(404);
         }
         
@@ -36,7 +36,7 @@ class AppAuth
 
         if($tokenBlock)
         {
-            return response()->json(['error' => 'Invalid Session', 'message' => 'Session Expired'], 404);
+            return response()->json(['error' => 'Invalid Session', 'message' => 'Session Expired'], 401);
             abort(404);
         }
 
@@ -44,7 +44,7 @@ class AppAuth
 
         if(!$agent)
         {
-            return response()->json(['error' => 'Invalid Session', 'message' => 'Invalid Token or session has been expired.'], 404);
+            return response()->json(['error' => 'Invalid Session', 'message' => 'Invalid Token or session has been expired.'], 401);
             abort(404);
         }
         Auth::login($agent);

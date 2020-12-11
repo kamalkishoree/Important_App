@@ -46,7 +46,7 @@ Route::group([
       'middleware' => ['dbCheck', 'AppAuth']
     ], function() {
         Route::get('user', 'Api\AuthController@user');
-        Route::get('orderList', 'Api\ActivityController@orders');
+        Route::get('taskList', 'Api\ActivityController@tasks');
         Route::get('updateStatus', 'Api\ActivityController@updateDriverStatus');
         //Route::get('getOrders', 'Api\ActivityController@orders');
 });

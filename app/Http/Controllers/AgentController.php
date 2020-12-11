@@ -26,10 +26,10 @@ class AgentController extends Controller
         foreach ($tags as $key => $value) {
             array_push($tag,$value->name);
         }
-        $teams  = Team::where('client_id',auth()->user()->id)->orderBy('name')->get();
+        $teams  = Team::where('client_id',auth()->user()->code)->orderBy('name')->get();
         $tags   = TagsForTeam::all();
-        //dd($tags->toArray());
-        return view('agent')->with(['agents' => $agents,'teams'=>$teams, 'tags' => $tags]);
+        //dd($teams->toArray());
+        return view('agent.index')->with(['agents' => $agents,'teams'=>$teams, 'tags' => $tags, 'showTag' => implode(',', $tag)]);
     }
 
     /**
@@ -68,13 +68,21 @@ class AgentController extends Controller
      */
     public function store(Request $request)
     {
-        
-
         $validator = $this->validator($request->all())->validate();
         $getFileName = NULL;
+
+        $newtag = explode(",", $request->tags);
+        $tag_id = [];
+        foreach ($newtag as $key => $value) {
+            if(!empty($value)){
+                $check = TagsForAgent::firstOrCreate(['name' => $value]);
+                array_push($tag_id,$check->id);
+            }
+        }
+
         // Handle File Upload
         if ($request->hasFile('profile_picture')) {
-            $folder = str_pad(Auth::user()->id, 8, '0', STR_PAD_LEFT);
+            $folder = str_pad(Auth::user()->code, 8, '0', STR_PAD_LEFT);
             $folder = 'client_'.$folder;
             $file = $request->file('profile_picture');
             $file_name = uniqid() .'.'.  $file->getClientOriginalExtension();
@@ -99,6 +107,8 @@ class AgentController extends Controller
         ];
 
         $agent = Agent::create($data);
+        $agent->tags()->sync($tag_id);
+
         if($agent->wasRecentlyCreated){
             return response()->json([
                 'status'=>'success',
@@ -125,7 +135,7 @@ class AgentController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    /*public function edit($id)
     {
         $agent = Agent::find($id);
         $teams = Team::where('client_id',auth()->user()->id)->get();
@@ -133,6 +143,26 @@ class AgentController extends Controller
             'agent' => $agent,
             'teams' => $teams
         ]);
+    }*/
+
+    public function edit($id)
+    {
+        $agent = Agent::with(['tags'])->where('id', $id)->first();
+        $teams = Team::where('client_id', auth()->user()->code)->get();
+        $tags  = TagsForAgent::all();
+        //print_r($agent->toArray());
+        $uptag   = [];
+        foreach ($tags as $key => $value) {
+            array_push($uptag,$value->name);
+        }
+
+        $tagIds = [];
+        foreach ($agent->tags as $tag) {
+            $tagIds[] = $tag->name;
+        }
+ 
+        $returnHTML = view('agent.form')->with(['agent' => $agent, 'teams' => $teams, 'tags' => $uptag, 'tagIds' => $tagIds,])->render();
+        return response()->json(array('success' => true, 'html'=>$returnHTML));
     }
 
     /**
@@ -140,7 +170,6 @@ class AgentController extends Controller
     */
     protected function updateValidator(array $data)
     {
-        
         return Validator::make($data, [
             'name' => ['required', 'string', 'max:255'],
             'type' => ['required'],
@@ -164,9 +193,19 @@ class AgentController extends Controller
     {
         $validator = $this->updateValidator($request->all())->validate();
         
-        $getAgent = Agent::find($id);
-        $getFileName = $getAgent->profile_picture;
+        $agent = Agent::findOrFail($id);
+        $getFileName = $agent->profile_picture;
 
+        $newtag = explode(",", $request->tags);
+
+        $tag_id = [];
+        foreach ($newtag as $key => $value) {
+
+            if(!empty($value)){
+                $check = TagsForAgent::firstOrCreate(['name' => $value]);
+                array_push($tag_id,$check->id);
+            }
+        }
         //handal image upload
         if ($request->hasFile('profile_picture')) {
             $folder = str_pad(Auth::user()->id, 8, '0', STR_PAD_LEFT);
@@ -178,24 +217,23 @@ class AgentController extends Controller
             $getFileName = $path;
         }
 
-        $data = [
-            'name' => $request->name,
-            'team_id' => $request->team_id,
-            'type' => $request->type,
-            'vehicle_type_id' => $request->vehicle_type_id,
-            'make_model' => $request->make_model,
-            'type' => $request->type,
-            'vehicle_type_id' => $request->vehicle_type_id,
-            'make_model' => $request->make_model,
-            'plate_number' => $request->plate_number,
-            'phone_number' => $request->phone_number,
-            'color' => $request->color,
-            'profile_picture' => $getFileName
-        ];
+        foreach ($request->only('name' ,'team_id' ,'type' ,'vehicle_type_id' ,'make_model' ,'plate_number' ,'phone_number' ,'color') as $key => $value) {
+            $agent->{$key} = $value;
+        }
+        $agent->profile_picture = $getFileName;
+        $agent->save();
+
+        $agent->tags()->sync($tag_id);
         
-        $agent = Agent::where('id', $id)->update($data);
+        if($agent){
+            return response()->json([
+                'status'=>'success',
+                'message' => 'Agent updated Successfully!',
+                'data' => $agent
+            ]);
+        }
         
-        return redirect()->back()->with('success', 'Agent Updated successfully!');
+        //return redirect()->back()->with('success', 'Agent Updated successfully!');
     }
 
     /**

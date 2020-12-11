@@ -1,4 +1,4 @@
-<div id="add-agent-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+<div id="add-customer-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
@@ -24,7 +24,6 @@
                                             <span class="invalid-feedback" role="alert">
                                                 <strong></strong>
                                             </span>
-
                                         </div>
                                     </div>
 
@@ -122,9 +121,6 @@
     </div>
 </div>
 
-
-
-
 <div id="edit-customer-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -137,9 +133,6 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="card-box" id="editCardBox">
-
-
-
                         </div>
                     </div>
                 </div>
@@ -147,7 +140,6 @@
             <div class="modal-footer">
                 <button type="submit" class="btn btn-blue waves-effect waves-light submitEditForm">Submit</button>
             </div>
-          
         </div>
     </div>
 </div>

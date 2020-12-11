@@ -11,7 +11,7 @@ class LanguageTableSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('languages')->truncate();
+        DB::table('languages')->delete();
 
         $language = [ 
                        ['name'=>'English','sort_code'=>'en'],

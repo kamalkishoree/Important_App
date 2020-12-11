@@ -12,8 +12,8 @@ class BaseController extends Controller
 	protected function sendSms($recipients, $message)
 	{
 		//echo $recipients;die;
-	    $account_sid = getenv("TWILIO_SID");
-	    $auth_token = getenv("TWILIO_AUTH_TOKEN");
+	    $sid = getenv("TWILIO_SID");
+	    $token = getenv("TWILIO_AUTH_TOKEN");
 	    $twilio_number = getenv("TWILIO_NUMBER");
 	    $client = new Client($account_sid, $auth_token);
 	    $client->messages->create('+91'.$recipients, 

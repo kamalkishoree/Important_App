@@ -6,14 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class Task extends Model
 {
-
     protected $fillable = [
-        'order_id','task_type_id','location_id','pricing_rule_id','appointment_duration','dependent_task_id','allocation_type','task_status'
+        'order_id', 'dependent_task_id', 'task_type_id', 'location_id', 'appointment_duration', 'pricing_rule_id', 'distance', 'assigned_time', 'accepted_time', 'declined_time', 'started_time', 'reached_time', 'failed_time', 'cancelled_time', 'cancelled_by_admin_id', 'Completed_time', 'allocation_type'
     ];
 
-
     public function order(){
-        return $this->hasOne('App\Model\Order', 'id', 'order_id');
+        return $this->belongsTo('App\Model\Order', 'order_id', 'id');
         
     }
 
@@ -22,12 +20,21 @@ class Task extends Model
         
     }
 
-    public function teamtags(){
+    public function tasktype(){
+        return $this->belongsTo('App\Model\TaskType', 'task_type_id', 'id')->select('id', 'name');
+        
+    }
+
+    public function pricing(){
+        return $this->belongsTo('App\Model\PricingRule', 'pricing_rule_id', 'id');
+        
+    }
+
+    /*public function teamtags(){
         return $this->belongsToMany('App\Model\TaskTeamTag', 'task_team_tags','task_id','tag_id');
     }
     public function drivertags(){
         return $this->belongsToMany('App\Model\TaskDriverTag', 'task_driver_tags','task_id','tag_id');
-    }
-
+    }*/
     
 }
