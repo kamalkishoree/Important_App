@@ -269,7 +269,7 @@
     
             <li class="dropdown notification-list topbar-dropdown">
                 <a class="nav-link dropdown-toggle nav-user mr-0 waves-effect waves-light" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
-                    <img src="{{ isset(Auth::user()->logo) ? asset('clients/'.Auth::user()->logo.'') : asset('assets/images/users/user-1.jpg') }}" alt="user-image" class="rounded-circle">
+                    {{-- <img src="{{ isset(Auth::user()->logo) ? asset('clients/'.Auth::user()->logo.'') : asset('assets/images/users/user-1.jpg') }}" alt="user-image" class="rounded-circle"> --}}
                     <span class="pro-user-name ml-1">
                         {{ auth()->user()->company_name ?? auth()->user()->name  }} <i class="mdi mdi-chevron-down"></i> 
                     </span>
@@ -339,13 +339,23 @@
                     <!-- <span class="logo-lg-text-light">U</span> -->
                 </span>
             </a>
+
+            @php
+            
+      
+             
+                $urlImg = \Storage::disk('s3')->url('assets/client_00000125/agents5fc76c71abdb3.png/A9B2zHkr5thbcyTKHivaYm4kNYrSXOiov6USdFpV.png');
+             
+             $image = \Phumbor::url($urlImg)->fitIn(90,50);
+
+            @endphp
     
             <a href="{{route('any', ['dashboard'])}}" class="logo logo-light text-center">
                 <span class="logo-sm">
-                    <img src="{{asset('assets/images/logo-sm.png')}}"alt="" height="22">
+                    <img src="{{$image}}"alt="" height="30" style="padding-top: 4px;">
                 </span>
                 <span class="logo-lg">
-                    <img src="{{asset('assets/images/logo-light.png')}}"alt="" height="20">
+                    <img src="{{$image}}"alt="" height="50" style="padding-top: 4px;">
                 </span>
             </a>
         </div>
