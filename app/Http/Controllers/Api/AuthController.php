@@ -6,7 +6,7 @@ use App\Http\Controllers\Api\BaseController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
-use App\Model\{User, Agent, Client, ClientPreference, BlockedToken};
+use App\Model\{User, Agent, Client, ClientPreference, BlockedToken, Otp};
 use Validation;
 use DB;
 use JWT\Token;
@@ -36,9 +36,12 @@ class AuthController extends BaseController
 	        return response()->json([
 	            'error' => 'User not found'], 404);
 	    }
+        $otp = new Otp();
+        $otp->phone = $data['phone_number'] = $agent->phone_number;
+        $otp->opt = $data['otp'] = substr(str_shuffle("0123456789abcdefghijklmnopqrstvwxyz"), 0, 6);
+        $otp->valid_till = $data['valid_till'] = Date('Y-m-d H:i:s', strtotime("+10 minutes"));
 
-        $data['phone_number'] = $agent->phone_number;
-        $data['otp'] = substr(str_shuffle("0123456789abcdefghijklmnopqrstvwxyz"), 0, 6);
+        $otp->save();
 
         //parent::sendSms($request->phone_number, 'Your OTP for login into Royo App is ' . $data['otp']);
 
@@ -66,6 +69,22 @@ class AuthController extends BaseController
             'otp' => 'required|string|min:6|max:6',
 
         ]);
+
+        $otp = Otp::where('phone', $request->phone_number)->where('opt', $request->otp)->first();
+
+        if(!$otp){
+            return response()->json(['error' => 'Please enter a valid opt'], 422);
+        }
+
+        $date = Date('Y-m-d H:i:s');
+
+        if(!$otp){
+            return response()->json(['error' => 'Please enter a valid opt'], 422);
+        }
+        if($date > $otp->valid_till){
+            return response()->json(['error' => 'Your otp has been expired. Please try again.'], 422);
+        }
+
         
         $data = $agent = Agent::with('team', 'geoFence.geo')->where('phone_number', $request->phone_number)->first();
 
