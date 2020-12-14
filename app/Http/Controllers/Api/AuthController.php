@@ -34,7 +34,7 @@ class AuthController extends BaseController
 
         if (!$agent) {
 	        return response()->json([
-	            'error' => 'User not found'], 404);
+	            'message' => 'User not found'], 404);
 	    }
         $otp = new Otp();
         $otp->phone = $data['phone_number'] = $agent->phone_number;
@@ -73,16 +73,16 @@ class AuthController extends BaseController
         $otp = Otp::where('phone', $request->phone_number)->where('opt', $request->otp)->first();
 
         if(!$otp){
-            return response()->json(['error' => 'Please enter a valid opt'], 422);
+            return response()->json(['message' => 'Please enter a valid opt'], 422);
         }
 
         $date = Date('Y-m-d H:i:s');
 
         if(!$otp){
-            return response()->json(['error' => 'Please enter a valid opt'], 422);
+            return response()->json(['message' => 'Please enter a valid opt'], 422);
         }
         if($date > $otp->valid_till){
-            return response()->json(['error' => 'Your otp has been expired. Please try again.'], 422);
+            return response()->json(['message' => 'Your otp has been expired. Please try again.'], 422);
         }
 
         
@@ -91,7 +91,7 @@ class AuthController extends BaseController
         
         if (!$agent) {
 	        return response()->json([
-	            'error' => 'User not found'], 404);
+	            'message' => 'User not found'], 404);
 	    }
 
 	    $prefer = ClientPreference::select('theme', 'distance_unit', 'currency_id', 'language_id', 'agent_name', 'date_format', 'time_format', 'map_type')->first();
