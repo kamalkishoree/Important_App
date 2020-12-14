@@ -233,8 +233,8 @@
 
 @section('script')
 
-    <script src="asset('assets/js/jquery-ui.min.js}}" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="asset('assets/css/jquery-ui.css}}">
+    <script src="{{ asset('assets/js/jquery-ui.min.js) }}" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="{ {asset('assets/css/jquery-ui.css) }}">
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB85kLYYOmuAhBUPd7odVmL6gnQsSGWU-4&libraries=places" async defer></script>
 
     <script src="{{ asset('assets/libs/flatpickr/flatpickr.min.js') }}"></script>
