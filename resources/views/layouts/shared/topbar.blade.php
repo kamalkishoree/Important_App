@@ -355,7 +355,7 @@ http://192.168.100.211:8888/unsafe/fit-in/90x50/https://royodelivery-assets.s3.u
             }
             ?>
             @php
-                    $urlImg = URL::to('/').'images/users/user-1.jpg';
+                    // $urlImg = URL::to('/').'images/users/user-1.jpg';
               
                   if(isset(Auth::user()->logo)){
                     $urlImg = Storage::disk('s3')->url(Auth::user()->logo);

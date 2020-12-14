@@ -244,7 +244,7 @@ class ClientController extends Controller
             'company_name' => $request->company_name,
             'company_address' => $request->company_address,
             'custom_domain' => $request->custom_domain,
-            'country' => $request->country ? $request->country : NULL,
+            'country_id' => $request->country ? $request->country : NULL,
             'timezone' => $request->timezone ? $request->timezone : NULL,
             'logo' => $getFileName,
         ];
