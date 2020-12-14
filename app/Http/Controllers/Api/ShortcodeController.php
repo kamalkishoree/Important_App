@@ -19,7 +19,7 @@ class ShortcodeController extends BaseController
      */
     public function validateCompany(Request $request)
     {
-        $client = Client::select('id', 'name', 'database_name',  'country', 'timezone', 'custom_domain', 'logo', 'company_name', 'company_address', 'is_blocked')
+        $client = Client::select('id', 'name', 'database_name', 'timezone', 'custom_domain', 'logo', 'company_name', 'company_address', 'is_blocked')
                     ->where('is_deleted', 0)->where('code', $request->shortCode)->first();
 
         

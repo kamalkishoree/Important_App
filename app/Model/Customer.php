@@ -10,7 +10,7 @@ class Customer extends Model
         'name', 'email', 'address', 'phone_number','status'
     ];
     public function location(){
-        return $this->hasMany('App\Model\Location', 'created_by', 'id');
+        return $this->hasMany('App\Model\Location', 'created_at', 'id');
         
     }
 }
