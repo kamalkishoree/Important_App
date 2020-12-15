@@ -400,21 +400,21 @@
                             <div class="col-md-4 padd">
                                 <div class="custom-control custom-radio custom-control-inline">
                                     <input type="radio" class="custom-control-input check" id="customRadio"
-                                        name="allocation_type" value="Un-Assigend" checked>
+                                        name="allocation_type" value="u" checked>
                                     <label class="custom-control-label" for="customRadio">Un-Assigned</label>
                                 </div>
                             </div>
                             <div class="col-md-4 padd">
                                 <div class="custom-control custom-radio custom-control-inline">
                                     <input type="radio" class="custom-control-input check" id="customRadio22"
-                                        name="allocation_type" value="auto">
+                                        name="allocation_type" value="a">
                                     <label class="custom-control-label" for="customRadio22">Auto Allocation</label>
                                 </div>
                             </div>
                             <div class="col-md-4 padd">
                                 <div class="custom-control custom-radio custom-control-inline">
                                     <input type="radio" class="custom-control-input check" id="customRadio33"
-                                        name="allocation_type" value="Manual">
+                                        name="allocation_type" value="m">
                                     <label class="custom-control-label" for="customRadio33">Manual</label>
                                 </div>
                             </div>
@@ -719,15 +719,15 @@
             $(".drivers").hide();
             $("input[type='radio'].check").click(function() {
                 var radioValue = $("#rediodiv input[type='radio']:checked").val();
-                if (radioValue == 'auto') {
+                if (radioValue == 'a') {
                     $(".tags").show();
                     $(".drivers").hide();
                 }
-                if (radioValue == 'Un-Assigend') {
+                if (radioValue == 'u') {
                     $(".tags").hide();
                     $(".drivers").hide();
                 }
-                if (radioValue == 'Manual') {
+                if (radioValue == 'm') {
                     $(".drivers").show();
                     $(".tags").hide();
                 }
@@ -784,6 +784,7 @@
                     },
                     success: function(data) {
                         var array = data;
+                        
                         jQuery.each(array, function(i, val) {
                             $(".withradio").append(
                                 '<div class="append"><div class="custom-control custom-radio count"><input type="radio" id="' +

@@ -37,7 +37,7 @@ class Client extends Authenticatable
     */
     public function getPreference()
     {
-      return $this->hasOne('App\Model\ClientPreference');
+      return $this->hasOne('App\Model\ClientPreference','client_id','code');
     }
 
     /**
@@ -45,6 +45,6 @@ class Client extends Authenticatable
     */
     public function getAllocation()
     {
-      return $this->hasOne('App\Model\AllocationRule');
+      return $this->hasOne('App\Model\AllocationRule','client_id','code');
     }
 }

@@ -4,14 +4,14 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateTaskTeamTagsTable extends Migration {
-
-	/**
-	 * Run the migrations.
-	 *
-	 * @return void
-	 */
-	public function up()
+class CreateTaskTeamTag extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
 	{
 		Schema::create('task_team_tags', function(Blueprint $table)
 		{
@@ -23,19 +23,17 @@ class CreateTaskTeamTagsTable extends Migration {
 
 		Schema::table('task_team_tags', function (Blueprint $tab) {
 			$tab->foreign('task_id')->references('id')->on('tasks')->onUpdate('cascade')->onDelete('cascade');
-			$tab->foreign('tag_id')->references('id')->on('tags')->onUpdate('cascade')->onDelete('cascade');
+			$tab->foreign('tag_id')->references('id')->on('tags_for_teams')->onUpdate('cascade')->onDelete('cascade');
 		});
 	}
 
-
-	/**
-	 * Reverse the migrations.
-	 *
-	 * @return void
-	 */
-	public function down()
-	{
-		Schema::drop('task_team_tags');
-	}
-
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::dropIfExists('task_team_tags');
+    }
 }

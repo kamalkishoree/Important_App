@@ -15,14 +15,13 @@ class CreateRosters extends Migration
     {
         Schema::create('rosters', function (Blueprint $table) {
             $table->id();
+            $table->bigInteger('order_id')->unsigned()->nullable();
             $table->bigInteger('driver_id')->unsigned()->nullable();
             $table->dateTime('notification_time')->nullable();
+            $table->string('type',20);
             $table->timestamps();
         });
 
-        // Schema::create('rosters', function (Blueprint $table) {
-        //     $table->foreign('driver_id')->references('id')->on('agents')->onUpdate('cascade')->onDelete('set null');
-        // });
     }
 
     /**

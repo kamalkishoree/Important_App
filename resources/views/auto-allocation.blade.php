@@ -129,9 +129,9 @@
                     <div class="card-box">
                         <h4 class="header-title">Auto Allocation</h4>
                         <div class="custom-switch redio-all">
-                            <input type="checkbox" value="y" class="custom-control-input large-icon" id="manual_allocation"
+                            <input type="checkbox" value="1" class="custom-control-input large-icon" id="manual_allocation"
                                 name="manual_allocation"
-                                {{ isset($allocation) && $allocation->manual_allocation == 'y' ? 'checked' : '' }}>
+                                {{ isset($allocation) && $allocation->manual_allocation == 1 ? 'checked' : '' }}>
                             <label class="custom-control-label check" for="manual_allocation"></label>
                             <p class="sub-header message">
                                 Enable this option to automatically assign Task to your agent.
@@ -148,9 +148,9 @@
                         </div>
 
                         <div class="custom-switch redio-all">
-                            <input type="checkbox" value="y" class="custom-control-input large-icon" id="self_assign"
+                            <input type="checkbox" value="1" class="custom-control-input large-icon" id="self_assign"
                                 name="self_assign"
-                                {{ isset($allocation) && $allocation->self_assign == 'y' ? 'checked' : '' }}>
+                                {{ isset($allocation) && $allocation->self_assign == 1 ? 'checked' : '' }}>
                             <label class="custom-control-label check" for="self_assign"></label>
                             <p class="sub-header message">
                                 Enable this option to alow self Assign.

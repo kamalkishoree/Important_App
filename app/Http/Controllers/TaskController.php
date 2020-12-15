@@ -10,7 +10,7 @@ use App\Model\TagsForTeam;
 use App\Model\TaskDriverTag;
 use App\Model\TaskTeamTag;
 use Illuminate\Http\Request;
-use App\Model\{Agent, PricingRule};
+use App\Model\{Agent, Client, DriverGeo, PricingRule, Roster};
 use App\Model\Geo;
 use App\Model\Order;
 use Illuminate\Support\Facades\Validator;
@@ -33,8 +33,10 @@ class TaskController extends Controller
         if($request->has('status') && $request->status != 'all'){
             $tasks = $tasks->where('status', $request->status);
         }
-
         $tasks = $tasks->paginate(10);
+        
+    
+        
         
         return view('tasks/task')->with(['tasks' => $tasks, 'status' =>$request->status]);
     }
@@ -73,10 +75,11 @@ class TaskController extends Controller
      */
     public function store(Request $request)
     {
-        
-        $validator = $this->validator($request->all())->validate();
-        $loc_id = 0;
-        $cus_id = 0;
+       
+
+        $validator   = $this->validator($request->all())->validate();
+        $loc_id      = 0;
+        $cus_id      = 0;
         $send_loc_id = 0;
 
         $images = [];
@@ -113,17 +116,18 @@ class TaskController extends Controller
             $cus_id = $request->ids;
         }
           
-
+        $notification_time = isset($request->schedule_time)?$request->schedule_time:Carbon::now()->toDateTimeString();
+        $agent_id        = $request->allocation_type === 'm' ? $request->agent:null;
         $order = [
             'customer_id'                => $cus_id,
             'recipient_phone'            => $request->recipient_phone,
             'Recipient_email'            => $request->recipient_email,
             'task_description'           => $request->task_description,
-            'driver_id'                  => $request->allocation_type === 'Manual' ? $request->agent:null,
+            'driver_id'                  => $agent_id,
             'auto_alloction'             => $request->allocation_type,
             'images_array'               => $last,
             'order_type'                 => $request->task_type,
-            'order_time'                 => isset($request->schedule_time)?$request->schedule_time:Carbon::now()->toDateTimeString(),
+            'order_time'                 => $notification_time,
         ];
         $orders = Order::create($order);
 
@@ -168,7 +172,7 @@ class TaskController extends Controller
         }
        
 
-        if (isset($request->allocation_type) && $request->allocation_type === 'auto') {
+        if (isset($request->allocation_type) && $request->allocation_type === 'a') {
             if (isset($request->team_tag)) {
                 $orders->teamtags()->sync($request->team_tag);
             }
@@ -176,13 +180,23 @@ class TaskController extends Controller
                 $orders->drivertags()->sync($request->agent_tag);
             }
         }
-       // $this->createRoster($send_loc_id,$orders->id,$orders->order_time);
-
+         $geo = null;
+        if($request->allocation_type === 'a'){
+            $geo = $this->createRoster($send_loc_id);
+            $agent_id = null;
+        }
+         
+        if($request->allocation_type === 'a' || $request->allocation_type === 'm'){
+            $this->finalRoster($geo,$notification_time,$agent_id,$orders->id);
+        }
+        
+         
+         
         return redirect()->route('tasks.index')->with('success', 'Task Added successfully!');
     }
 
 
-    public function createRoster($location_id,$order_id,$ordertime)
+    public function createRoster($location_id)
     {
         
         $getletlong = Location::where('id',$location_id)->first();
@@ -190,12 +204,11 @@ class TaskController extends Controller
         $long = $getletlong->longitude;
         //$allgeo     = Geo::all();
 
-          //$check = $this->findLocalityByLatLng($lat,$long);
+        return $check = $this->findLocalityByLatLng($lat,$long);
 
-       
-
-          //die($check);
+         
     }
+
 
     public function findLocalityByLatLng($lat,$lng){
         // get the locality_id by the coordinate //
@@ -225,7 +238,7 @@ class TaskController extends Controller
                 ];
             }
            
-               //dd($data);
+               
             // $all_points[]= $all_points[0]; // push the first point in end to complete
             $vertices_x = $vertices_y = array();
             
@@ -234,13 +247,13 @@ class TaskController extends Controller
                 $vertices_y[] = $value['lat'];
                 $vertices_x[] = $value['lng'];
             }
-             print_r($vertices_x);
-             print_r($vertices_y);
+             
              
             $points_polygon = count($vertices_x) - 1;  // number vertices - zero-based array
-            echo $points_polygon;
-            die();
+            $points_polygon;
+            
             if ($this->is_in_polygon($points_polygon, $vertices_x, $vertices_y, $longitude_x, $latitude_y)){
+                
               return $locality->id;
             }
         }
@@ -256,6 +269,112 @@ class TaskController extends Controller
                $c = !$c;
           }
           return $c;
+    }
+
+    public function finalRoster($geo,$notification_time,$agent_id,$orders_id)
+    {
+        $date = \Carbon\Carbon::today();
+        $auth = Client::where('code',Auth::user()->code)->with('getAllocation')->first();
+        
+        if(!isset($geo)){
+            $data = [
+                'order_id'            => $orders_id,
+                'driver_id'           => $agent_id,
+                'notification_time'   => $notification_time,
+                'type'                => 'N',
+            ];
+            $task = Roster::create($data);
+        } else {
+
+            $expriedate = (int)$auth->getAllocation->request_expiry;
+            $beforetime = (int)$auth->getAllocation->start_before_task_time;
+            $maxsize    = (int)$auth->getAllocation->maximum_batch_size;
+            $time       = $this->checkTimeDiffrence(Carbon::now()->toDateTimeString(),$notification_time,$beforetime);
+            
+           
+            $all   = [];
+            $extra = [];
+            $getgeo = DriverGeo::where('geo_id',$geo)->get('driver_id');
+            
+
+            $totalcount = $getgeo->count();
+            $orders = order::where('driver_id','!=',null)->whereDate('created_at',$date)->groupBy('driver_id')->get('driver_id');
+            
+            $allreadytaken = [];
+            foreach($orders as $ids){
+                array_push($allreadytaken,$ids->driver_id);
+            }
+            //print_r($allreadytaken);
+            $counter = 0;
+            $remening = [];
+            foreach($getgeo as $key =>  $geoitem){
+                if($counter <= $maxsize){
+                    $data = [];
+                    if(in_array($geoitem->driver_id, $allreadytaken)){
+                           
+                        array_push($remening,$geoitem->driver_id);
+                    } else{
+                        
+                        $data = [
+                        'order_id'            => $orders_id,
+                        'driver_id'           => $geoitem->driver_id,
+                        'notification_time'   => $time,
+                        'type'                => 'AR',
+                        ];
+                        $time = Carbon::parse($time)
+                        ->addSeconds($expriedate)
+                        ->format('Y-m-d H:i:s');
+                        array_push($all,$data);
+                        $counter++;
+                    }
+                    //print_r($remening);
+                }else{
+                    break;
+                }
+                
+                
+            }
+            //echo $counter;
+            //echo $totalcount;
+           
+            // print_r($getgeo);
+            // print_r($all->toarray());
+            // print_r($orders->toarray());
+            //print_r($remening);
+            if($totalcount > $counter){
+               $loopcount =  $totalcount - $counter;
+              
+               for($i=0;$i>$loopcount;$i++){
+                   
+                $data = [
+                    'order_id'            => $orders_id,
+                    'driver_id'           => $remening[$i],
+                    'notification_time'   => $time,
+                    'type'                => 'pr',
+                    ];
+                    $time = Carbon::parse($time)
+                    ->addSeconds($expriedate)
+                    ->format('Y-m-d H:i:s');
+                    array_push($all,$data);
+               } 
+            }
+            // die();
+            Roster::insert($all);
+        }
+        
+
+    }
+    public function checkTimeDiffrence($now,$notification_time,$beforetime)
+    {
+        $to = \Carbon\Carbon::createFromFormat('Y-m-d H:s:i',$now);
+        $from = \Carbon\Carbon::createFromFormat('Y-m-d H:s:i',$notification_time);
+          $diff_in_minutes = $to->diffInMinutes($from);
+        if($diff_in_minutes < $beforetime){
+            return  Carbon::now()->toDateTimeString();
+        }else{
+            return  $notification_time;
+        }
+        
     }
 
     // public function getGeoCoordinatesAttribute($geoarray){
@@ -297,7 +416,7 @@ class TaskController extends Controller
         
         $savedrivertag = [];
         $saveteamtag   = [];
-        $task           = Order::where('id', $id)->with(['customer.location', 'location', 'task','agent'])->first();
+        $task           = Order::where('id', $id)->with(['customer.location','task','agent'])->first();
         $fatchdrivertag  = TaskDriverTag::where('task_id', $id)->get('tag_id');
         $fatchteamtag    = TaskTeamTag::where('task_id', $id)->get('tag_id');
         if (count($fatchdrivertag) > 0 && count($fatchteamtag) > 0) {
@@ -466,12 +585,12 @@ class TaskController extends Controller
             } else {
                 $employees = Customer::orderby('name', 'asc')->select('id', 'name')->where('name', 'like', '%' . $search . '%')->limit(10)->get();
             }
-
             $response = array();
             foreach ($employees as $employee) {
                 $response[] = array("value" => $employee->id, "label" => $employee->name);
             }
 
+            
 
             return response()->json($response);
         } else {

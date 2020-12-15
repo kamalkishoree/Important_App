@@ -93,7 +93,7 @@ class AgentController extends Controller
            
         $data = [
             'name' => $request->name,
-            'team_id' => $request->team_id == null ? $team_id = 0:$request->team_id,
+            'team_id' => $request->team_id == null ? $team_id = null:$request->team_id,
             'type' => $request->type,
             'vehicle_type_id' => $request->vehicle_type_id,
             'make_model' => $request->make_model,

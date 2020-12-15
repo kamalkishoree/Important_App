@@ -13,8 +13,8 @@ class Order extends Model
         
     }
     public function location(){
-        return $this->hasMany('App\Model\Location', 'created_by', 'customer_id')
-                    ->select('latitude', 'longitude', 'short_name', 'address', 'post_code', 'created_by');
+        return $this->hasMany('App\Model\Location', 'customer_id', 'customer_id')
+                    ->select('latitude', 'longitude', 'short_name', 'address', 'post_code', 'customer_id');
         
     }
 

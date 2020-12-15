@@ -89,7 +89,7 @@
                 <div class="col-md-6">
                     
                     <div class="form-group" id="typeInputss">
-                        @foreach ($task->location as $item)
+                        @foreach ($task->customer->location as $item)
                     <div class="append"><label for="title" class="control-label mt-2">{{$item->short_name}}</label><div class="custom-control custom-radio"><input type="radio" id="{{$item->id}}" name="old_address_id" value="{{$item->id}}" {{$task->task->location_id == $item->id ? 'checked':'' }} class="custom-control-input"><label class="custom-control-label" for="{{$item->id}}">{{$item->address}}</label></div></div>
                         @endforeach
                     </div>  
