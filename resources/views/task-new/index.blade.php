@@ -38,6 +38,126 @@
     -ms-transform: scale(1.2); /* IE 9 */
     -webkit-transform: scale(1.2); /* Chrome, Safari, Opera */
     transform: scale(1.2); }
+
+#adds {
+            margin-bottom: 14px;
+        }
+
+        .shows {
+            display: none;
+        }
+
+        .rec {
+            margin-bottom: 7px;
+        }
+
+        .needsclick {
+
+            margin-left: 27%;
+        }
+
+        .padd {
+            padding-left: 9% !important;
+        }
+
+        .newchnage {
+            margin-left: 27% !important;
+        }
+
+        .address {
+            margin-bottom: 6px
+        }
+
+        .tags {
+            display: none;
+        }
+
+        #typeInputss {
+            overflow-y: auto;
+            height: 142px;
+        }
+
+        .upload {
+            margin-bottom: 20px;
+            margin-top: 10px;
+
+        }
+
+        .span1 {
+            color: #ff0000;
+        }
+
+        .check {
+            margin-left: 116px !important;
+        }
+
+        .newcheck {
+            margin-left: -54px;
+        }
+
+        .upside {
+            margin-top: -10px;
+        }
+
+        .newgap {
+            margin-top: 11px !important;
+        }
+
+        
+
+        .append {
+            margin-bottom: 15px;
+        }
+
+        .spanbold {
+            font-weight: bolder;
+        }
+
+        .copyin {
+            background-color: #F7F8FA;
+        }
+        .copyin1 {
+            background-color: #F7F8FA;
+        }
+        hr.new3 {
+         border-top: 1px dashed white;
+       }
+       #spancheck{
+           display: none;
+       }
+       .imagepri{
+        min-width: 50px;
+           height: 50px;
+           width: 50px;
+           border-style: groove;
+           margin-left: 5px;
+           margin-top: 5px;
+       }
+       .withradio{
+       
+        
+       }
+       .showsimage{
+        margin-top: 31px;
+        margin-left: 140px;
+       }
+       .showshadding{
+        margin-left: 98px;
+       }
+       .newchnageimage{
+           margin-left: 100px;
+       }
+       .showsimagegall{
+        margin-left: 148px;
+        margin-top: 21px;
+
+       }
+       .allset{
+           margin-left: 9px !important;
+           padding-top: 10px;
+       }
+
+.pac-container, .pac-container .pac-item { z-index: 99999 !important; }
 </style>
 @endsection
 
@@ -85,8 +205,8 @@
                         </div>
                         <div class="col-sm-5"></div>
                         <div class="col-sm-4 text-right">
-                            <!--<button type="button" class="btn btn-blue waves-effect waves-light showTaskPop" data-toggle="modal" data-target="" data-backdrop="static" data-keyboard="false"><i class="mdi mdi-plus-circle mr-1"></i> Add Task</button> -->
-                         <a href="{{ route('tasks.create') }}" class="btn btn-blue waves-effect waves-light"><i class="mdi mdi-plus-circle mr-1"></i> Add Task</a>
+                            <button type="button" class="btn btn-blue waves-effect waves-light openModal" data-toggle="modal" data-target="" data-backdrop="static" data-keyboard="false"><i class="mdi mdi-plus-circle mr-1"></i> Add Task</button> 
+                         <!--<a href="{{ route('tasks.create') }}" class="btn btn-blue waves-effect waves-light"><i class="mdi mdi-plus-circle mr-1"></i> Add Task</a> -->
                         </div>
 
                     </div>
@@ -107,26 +227,13 @@
                             <tbody>
                                 @foreach($tasks as $task)
                                 <tr>
-                                    
-                                    <td>
-                                        {{$task->id}}
+                                    <td>{{$task->id}}</td>
+                                    <td>{{$task->customer->name}}</td>
+                                    {{-- <td>{{$task->order->id}}</td> --}}
+                                    <td>UnAssigned
                                     </td>
-                                    <td>
-                                        {{$task->customer->name}}
-                                    </td>
-                                    {{-- <td>
-                                        {{$task->order->id}}
-                                    </td> --}}
-                                    <td>
-                                        UnAssind
-                                    </td>
-                                    <td>
-                                        {{$task->created_at}}
-                                    </td>
-                                    <td>
-                                        Not Alloted
-                                    </td>
-
+                                    <td>{{$task->created_at}}</td>
+                                    <td>Not Alloted</td>
                                     <td>
                                         <div class="form-ul" style="width: 60px;">
                                             <div class="inner-div"> <a href1="#" href="{{route('tasks.edit', $task->id)}}"  class="action-icon editIconBtn"> <i class="mdi mdi-square-edit-outline"></i></a></div>
@@ -147,37 +254,17 @@
                             </tbody>
                         </table>
                     </div>
+                    <div class="row address" id="add0" style="display: none;">
+                        <input type="text" id="add0-input" name="test" class="autocomplete form-control add0-input" placeholder="Address">
+                    </div>
 
                 </div> <!-- end card-body-->
             </div> <!-- end card-->
         </div> <!-- end col -->
     </div>
-
-
 </div>
 
-<div id="add-task-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
-    <div class="modal-dialog modal-full-width">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title">Add Task</h4>
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-            </div>
-            <div class="modal-body p-4">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="card-box" id="editCardBox">
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-                
-                
-            </form>
-        </div>
-    </div>
-</div>
+@include('task-new.modal')
 @endsection
 
 @section('script')
@@ -204,67 +291,18 @@
 
 <script>
 
-/*$('.showTaskPop').click(function(){ 
-    console.log('top');
-    var src1 = "{{url('tasks/create')}}";
-    $('#add-task-modal .modal-title').html('Add Task');
-    $('#add-task-modal #editCardBox').html('<iframe id="iframe" src="'+src1+'" style="width:100%; height:700px;"></iframe>');
 
-    $('#add-task-modal').modal({
-            //backdrop: 'static',
-            keyboard: false
-    });
-});
-
-$('.editIconBtn').click(function(){ 
-    console.log('top');
-    var src1 = #(this).attr('href1');
-    $('#add-task-modal .modal-title').html('Edit Task');
-    $('#add-task-modal #editCardBox').html('<iframe id="iframe" src="'+src1+'" style="width:100%; height:700px;"></iframe>');
-
-    $('#add-task-modal').modal({
-            backdrop: 'static',
-            keyboard: false
-    });
-});*/
 
 $(document).ready( function () {
     $('#agents-datatable').DataTable();
 });
 
-    function handleClick(myRadio) {
-        $('#getTask').submit();
-    }
-/*
-$("#phone_number").intlTelInput({
-  utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/8.4.6/js/utils.js"
-});
-$('.intl-tel-input').css('width','100%');
-
-var regEx = /\(?([0-9]{3})\)?([ .-]?)([0-9]{3})\2([0-9]{4})/;
-$("#addAgent").bind("submit", function() {
-       var val = $("#phone_number").val();
-       if (!val.match(regEx)) {
-            $('#phone_number').css('color','red');
-            return false;
-        }
-});
-
-$(function(){
-    $('#phone_number').focus(function(){
-        $('#phone_number').css('color','#6c757d');
-    });
-});
-
-$(document).ready( function () {
-    $('#basic-datatable').DataTable();
-});
-
-
-$("#phone_number").inputFilter(function(value) {
-  return /^-?\d*$/.test(value); 
-});*/
+function handleClick(myRadio) {
+    $('#getTask').submit();
+}
 
 </script>
+
+@include('task-new.modal')
 
 @endsection

@@ -37,8 +37,8 @@ class TaskController extends Controller
         
     
         
-        
-        return view('tasks/task')->with(['tasks' => $tasks, 'status' =>$request->status]);
+        return view('task-new/index')->with(['tasks' => $tasks, 'status' =>$request->status]);
+        //return view('tasks/task')->with(['tasks' => $tasks, 'status' =>$request->status]);
     }
 
     /**

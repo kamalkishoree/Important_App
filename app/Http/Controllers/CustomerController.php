@@ -150,7 +150,7 @@ class CustomerController extends Controller
 
             if(isset($value) && $value != null){
 
-                if(array_key_exists($key, $request->location_id)){
+                if(is_array($request->location_id) && array_key_exists($key, $request->location_id)){
                     $location = Location::find($request->location_id[$key]);
                     if($location){
                         $location->short_name = $value;
