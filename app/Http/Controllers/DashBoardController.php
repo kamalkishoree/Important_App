@@ -30,7 +30,7 @@ class DashBoardController extends Controller
             }]
             )->get()->toArray();
             
-        $unassigned = Agent::where('team_id',0)->with(['order'=> function($o) use ($date){
+        $unassigned = Agent::where('team_id',null)->with(['order'=> function($o) use ($date){
             $o->whereDate('created_at',$date)->with('customer')->with('task.location');
         }])->get()->toArray();
         
@@ -53,7 +53,7 @@ class DashBoardController extends Controller
                         $append[2]  = $tasks['id']; 
                         $append[3]  = floatval($tasks['location']['latitude']);
                         $append[4]  = floatval($tasks['location']['longitude']);
-                        $append[5]  = $tasks['task_status'];
+                        $append[5]  = (int)$tasks['task_status'];
                         $append[6]  = $tasks['task_type_id'];
                         $append[7]  = $agent['name'];
                         $append[8]  = $tasks['location']['address'];
@@ -86,11 +86,11 @@ class DashBoardController extends Controller
                             $name = 'Appointment';
                         }
 
-                        $append[2] = $tasks['id']; 
-                        $append[3] = floatval($tasks['location']['latitude']);
-                        $append[4] = floatval($tasks['location']['longitude']);
-                        $append[5] = $tasks['task_status'];
-                        $append[6] = $tasks['task_type_id'];
+                        $append[2]  = $tasks['id']; 
+                        $append[3]  = floatval($tasks['location']['latitude']);
+                        $append[4]  = floatval($tasks['location']['longitude']);
+                        $append[5]  = (int)$tasks['task_status'];
+                        $append[6]  = $tasks['task_type_id'];
                         $append[7]  = $agent['name'];
                         $append[8]  = $tasks['location']['address'];
                         $append[9]  = $orders['customer']['name'];

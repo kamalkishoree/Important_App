@@ -364,7 +364,7 @@
                     </a>
                 </li> --}}
 
-                <li class="menu-title mt-2">Custom</li>
+                {{-- <li class="menu-title mt-2">Custom</li>
 
                 <li>
                     <a href="#sidebarAuth" data-toggle="collapse">
@@ -848,7 +848,7 @@
                             </li>
                         </ul>
                     </div>
-                </li>
+                </li> --}}
                 @endif
             </ul>
 

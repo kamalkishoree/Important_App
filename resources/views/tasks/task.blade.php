@@ -69,21 +69,46 @@
                             </div>
                         </div> 
 
-                        <div class="col-sm-3">
+                        <div class="col-sm-6">
                         <form name="getTask" id="getTask" method="get" action="{{route('tasks.index')}}">
-
-                                <input type="radio" name="status" onclick="handleClick(this);" id="radio1" value="all" {{(!isset($status) || $status == 'all') ? 'checked' : ''}}>
-                                <label for="radio1">All</label>
-                                <input type="radio" name="status" onclick="handleClick(this);" id="radio2" value="pending" {{(isset($status) && $status == 'pending') ? 'checked' : ''}}>
-                                <label for="radio2">Pending</label>
-                                <input type="radio" name="status" onclick="handleClick(this);" id="radio3" value="active" {{(isset($status) && $status == 'active') ? 'checked' : ''}}>
-                                <label for="radio3">Active</label>
+                            <div class="login-form">
+                            <ul class="list-inline">
+                                <li class="d-inline-block mr-2">
+                                  <input type="radio" id="student" onclick="handleClick(this);" name="animal" value="" checked>
+                                  <label for="student">All</label>
+                                </li>
+                                <li class="d-inline-block mr-2">
+                                  <input type="radio" id="teacher" name="animal" onclick="handleClick(this);">
+                                  <label for="teacher">Pending</label>
+                                </li>
+                  
+                                <li class="d-inline-block mr-2">
+                                  <input type="radio" id="parent" name="animal" value="" onclick="handleClick(this);">
+                                  <label for="parent">History</label>
+                                </li>
+                              </ul>
+                            </div>
+                                {{-- <div class="d-inline-block mr-3">
+                                    <input type="radio" name="status" onclick="handleClick(this);" id="radio1" value="all" {{(!isset($status) || $status == 'all') ? 'checked' : ''}}>
+                                    <label for="radio1">All</label>
+                                </div>
+                                <div class="d-inline-block mr-3">
+                                    <input type="radio" name="status" onclick="handleClick(this);" id="radio2" value="pending" {{(isset($status) && $status == 'pending') ? 'checked' : ''}}>
+                                    <label for="radio2">Pending</label>
+                                </div>
+                                
+                                <div class="d-inline-block mr-3">
+                                    <input type="radio" name="status" onclick="handleClick(this);" id="radio3" value="active" {{(isset($status) && $status == 'active') ? 'checked' : ''}}>
+                                    <label for="radio3">Active</label>
+                                </div>
+                               <div class="d-inline-block">
                                 <input type="radio" name="status" onclick="handleClick(this);" id="radio4" value="completed" {{(isset($status) && $status == 'completed') ? 'checked' : ''}}>
                                 <label for="radio4">Completed</label>
+                               </div> --}}
 
                         </form>
                         </div>
-                        <div class="col-sm-5"></div>
+                        <div class="col-sm-2"></div>
                         <div class="col-sm-4 text-right">
                         <a href="{{ route('tasks.create') }}" class="btn btn-blue waves-effect waves-light"><i class="mdi mdi-plus-circle mr-1"></i> Add Task</a>
                         </div>
