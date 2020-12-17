@@ -21,21 +21,7 @@
         <!-- Start Page Content here -->
         <!-- ============================================================== -->
 
-        <div class="content-page">
-            <div class="content">
-                <div class="content">                    
-            <div class="content">
-                <div class="content">                    
-            <div class="content">
-                <div class="content">                    
-            <div class="content">
-                <div class="content">                    
-            <div class="content">
-                <div class="content">                    
-            <div class="content">
-                <div class="content">                    
-            <div class="content">
-                <div class="content">                    
+        <div class="content-page">                                    
             <div class="content">
                 @php 
                     $style = "";

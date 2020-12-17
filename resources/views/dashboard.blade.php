@@ -34,16 +34,44 @@ type="text/css" />
         position: absolute;
         right: 0;
     }
-
+    body[data-sidebar-size=condensed]:not([data-layout=compact]) {
+        min-height: auto!important;
+    }
     .mb-0>a[aria-expanded="true"]:after {
         content: "\f077";
         /* fa-chevron-up */
     }
 
     .card-header {
-        height: 70px;
+        padding: .5rem 1rem;
     }
-
+    body {
+        background: #FFF !important;
+    }
+    /* body.menuitem-active {
+    background: #3c4752 !important;
+}    */
+/* body.menuitem-active .left-sidebar h6 {
+    color: #fff;
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0;
+}
+body.menuitem-active .left-sidebar p {
+    color: #d4d4d4
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0;
+}
+body.menuitem-active .assigned-block {
+    background-color: #3f49546b;
+} */
+body.menuitem-active .profile-status {
+    border: none!important;
+}
+    /* body[data-sidebar-size=condensed]:not([data-layout=compact]){
+        min-height: auto !important
+    } */
     /* #map_wrapper {
                     height: 400px;
 
@@ -104,21 +132,21 @@ type="text/css" />
         {{-- <section class="bannar header-setting"> --}}
             <div class="container-fluid p-0">
                 <div class="row coolcheck">
-                    <div class="col-md-3 left-sidebar">
+                    <div class="col-md-4 col-xl-3 left-sidebar pt-3">
                         <div id="accordion">
                             <div class="card">
                                 
                                     <div class="card-header" id="heading-1">
-                                        <h5 class="mb-0">
+
                                             <a role="button" data-toggle="collapse" href="#collapse-new"
                                                 aria-expanded="true" aria-controls="collapse-new">
                                                 <div class="newcheckit">
-                                                    <div class="row" class="mb-0">
-                                                        <div class="col-md-2">
+                                                    <div class="row d-flex align-items-center" class="mb-0">
+                                                        <div class="col-md-4 col-lg-3 col-xl-2">
                                                             <img src="{{ asset('demo/images/ic_assigned_to.png') }}">
                                                         </div>
-                                                        <div class="col-md-9 pl-0">
-                                                            <h6 class="mb-0">Un-Assigned</h6>
+                                                        <div class="col-md-8 col-lg-9 col-xl-10">
+                                                            <h6 class="mb-0">Unassigned</h6>
                                                             <p class="mb-0">{{count($unassigned)}} Agents : <span>1 Busy ・ 1 Inactive</span></p>
                                                         </div>
                                                     </div>
@@ -126,7 +154,6 @@ type="text/css" />
 
                                             </a>
 
-                                        </h5>
                                     </div>
 
                                     <div id="collapse-new" class="collapse" data-parent="#accordion"
@@ -137,24 +164,26 @@ type="text/css" />
                                             @foreach ($unassigned as $agent)
                                                 <div id="accordion-{{ $agent['id'] }}">
                                                     <div class="card">
-                                                        <div class="card-header" id="by{{ $agent['id'] }}">
-                                                            <h5 class="mb-0">
+                                                        <div class="card-header profile-status" id="by{{ $agent['id'] }}">
+
                                                                 <a class="profile-block collapsed" role="button"
                                                                     data-toggle="collapse" href="#collapse{{ $agent['id'] }}"
                                                                     aria-expanded="false"
                                                                     aria-controls="collapse{{ $agent['id'] }}">
-                                                                    <div class="row">
-                                                                        <div class="col-md-2">
-                                                                            <img class="profile-image"
-                                                                                src="https://dummyimage.com/36x36/ccc/fff">
-                                                                        </div>
-                                                                        <div class="col-md-10">
-                                                                            <h6 class="mb-0">{{ $agent['name'] }}</h6>
-                                                                            <p class="mb-0">Busy ・ <span>2 Tasks</span></p>
+                                                                    <div class="">
+                                                                        <div class="row d-flex align-items-center">
+                                                                            <div class="col-md-4 col-lg-3 col-xl-2">
+                                                                                <img class="profile-image"
+                                                                                    src="https://dummyimage.com/36x36/ccc/fff">
+                                                                            </div>
+                                                                            <div class="col-md-8 col-lg-9 col-xl-10">
+                                                                                <h6 class="mb-0">{{ $agent['name'] }}</h6>
+                                                                                <p class="mb-0">Busy ・ <span>2 Tasks</span></p>
+                                                                            </div>
                                                                         </div>
                                                                     </div>
                                                                 </a>
-                                                            </h5>
+
                                                         </div>
                                                         <div id="collapse{{ $agent['id'] }}" class="collapse"
                                                             data-parent="#accordion-{{ $agent['id'] }}"
@@ -162,7 +191,7 @@ type="text/css" />
                                                             @foreach ($agent['order'] as $orders)
                                                                 @foreach ($orders['task'] as $tasks)
                                                                     <div class="card-body">
-                                                                        <div class="p-3 assigned-block">
+                                                                        <div class="p-3 assigned-block mb-1">
                                                                             <div class="wd-10">
                                                                                 <img class="vt-top"
                                                                                     src="{{ asset('demo/images/ic_location_blue_1.png') }}">
@@ -201,15 +230,15 @@ type="text/css" />
                             <div class="card">
                                 @foreach ($teams as $item)
                                     <div class="card-header" id="heading-1">
-                                        <h5 class="mb-0">
+
                                             <a role="button" data-toggle="collapse" href="#collapse-{{ $item['id'] }}"
                                                 aria-expanded="true" aria-controls="collapse-{{ $item['id'] }}">
                                                 <div class="newcheckit">
-                                                    <div class="row" class="mb-0">
-                                                        <div class="col-md-2">
+                                                    <div class="row d-flex align-items-center" class="mb-0">
+                                                        <div class="col-md-3 col-xl-2">
                                                             <img src="{{ asset('demo/images/ic_assigned_to.png') }}">
                                                         </div>
-                                                        <div class="col-md-9 pl-0">
+                                                        <div class="col-md-9 col-xl-10">
                                                             <h6 class="mb-0">{{ $item['name'] }}</h6>
                                                             <p class="mb-0">{{count($item['agents'])}} Agents : <span>1 Busy ・ 1 Inactive</span></p>
                                                         </div>
@@ -218,7 +247,6 @@ type="text/css" />
 
                                             </a>
 
-                                        </h5>
                                     </div>
 
                                     <div id="collapse-{{ $item['id'] }}" class="collapse" data-parent="#accordion"
@@ -230,7 +258,7 @@ type="text/css" />
                                                 <div id="accordion-{{ $agent['id'] }}">
                                                     <div class="card">
                                                         <div class="card-header" id="by{{ $agent['id'] }}">
-                                                            <h5 class="mb-0">
+
                                                                 <a class="profile-block collapsed" role="button"
                                                                     data-toggle="collapse" href="#collapse{{ $agent['id'] }}"
                                                                     aria-expanded="false"
@@ -246,7 +274,6 @@ type="text/css" />
                                                                         </div>
                                                                     </div>
                                                                 </a>
-                                                            </h5>
                                                         </div>
                                                         <div id="collapse{{ $agent['id'] }}" class="collapse"
                                                             data-parent="#accordion-{{ $agent['id'] }}"
@@ -294,10 +321,10 @@ type="text/css" />
 
                         </div>
                     </div>
-                    <div class="col-md-9">
+                    <div class="col-md-8 col-xl-9">
                         <div class="map-wrapper">
                             <div style="width: 100%">
-                                <div id="map_canvas" style="width: 100%; height: 800px;"></div>
+                                <div id="map_canvas" style="width: 100%; height:95vh;"></div>
                             </div>
                             <div class="contant">
                                 <div class="bottom-content">
@@ -310,7 +337,7 @@ type="text/css" />
                                             Teams
                                         </button>
                                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                            <div class="task-block pl-3 pr-3">
+                                            <div class="task-block pl-2 pr-2">
                                                 <div class="row">
                                                     <div class="col-md-6">
                                                         <span>Tasks</span>
@@ -368,7 +395,7 @@ type="text/css" />
                                             <img class="mr-1" src="{{ asset('demo/images/ic_time.png') }}">All Tasks
                                         </button>
                                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                            <div class="task-block pl-3 pr-3">
+                                            <div class="task-block pl-2 pr-2">
                                                 <div class="row">
                                                     <div class="col-md-6">
                                                         <span>Task Status </span>
@@ -403,7 +430,7 @@ type="text/css" />
                                                     <div class="col-md-3 text-right">
                                                         <label class="mt-2">
                                                             <input class="taskchecks" type="checkbox" name="taskstatus[]"
-                                                                value="unassigned">
+                                                                value="0">
                                                             <span class="checkmark"></span>
                                                         </label>
                                                     </div>
@@ -417,7 +444,7 @@ type="text/css" />
                                                     <div class="col-md-3 text-right">
                                                         <label class="mt-2">
                                                             <input class="taskchecks" type="checkbox" name="taskstatus[]"
-                                                                value="assigned">
+                                                                value="1">
                                                             <span class="checkmark"></span>
                                                         </label>
                                                     </div>
@@ -431,7 +458,7 @@ type="text/css" />
                                                     <div class="col-md-3 text-right">
                                                         <label class="mt-2">
                                                             <input class="taskchecks" type="checkbox" name="taskstatus[]"
-                                                                value="in-transit">
+                                                                value="2">
                                                             <span class="checkmark"></span>
                                                         </label>
                                                     </div>
@@ -445,7 +472,7 @@ type="text/css" />
                                                     <div class="col-md-3 text-right">
                                                         <label class="mt-2">
                                                             <input class="taskchecks" type="checkbox" name="taskstatus[]"
-                                                                value="completed">
+                                                                value="3">
                                                             <span class="checkmark"></span>
                                                         </label>
                                                     </div>
@@ -459,7 +486,7 @@ type="text/css" />
                                                     <div class="col-md-3 text-right">
                                                         <label class="mt-2">
                                                             <input class="taskchecks" type="checkbox" name="taskstatus[]"
-                                                                value="failed">
+                                                                value="4">
                                                             <span class="checkmark"></span>
                                                         </label>
                                                     </div>
@@ -467,13 +494,13 @@ type="text/css" />
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="dropdown d-inline-block brdr-1">
+                                    <div class="dropdown d-inline-block">
                                         <button class="dropdown-toggle" type="button" id="dropdownMenuButton"
                                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                             <img class="mr-1" src="{{ asset('demo/images/ic_time.png') }}">All Drivers
                                         </button>
                                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                            <div class="task-block pl-3 pr-3">
+                                            <div class="task-block pl-2 pr-2">
                                                 <div class="row">
                                                     <div class="col-md-6">
                                                         <span>Drivers</span>
@@ -624,7 +651,7 @@ type="text/css" />
                     taskval[i] = $(this).val();
 
                 });
-
+                
                 setMapOnAll(null);
                 $(".newchecks").prop('checked', false);
                 $(".agentdisplay").prop('checked', false); 
@@ -634,28 +661,29 @@ type="text/css" />
                 //   }
                 for (let i = 0; i < olddata.length; i++) {
                     checkdata = olddata[i];
-                    console.log(checkdata);
+                    console.log(checkdata[5]);
                     // addMarker({ lat: checkdata[3], lng: checkdata[4] });
                     if ($.inArray(checkdata[5], taskval) != -1 || $.inArray('all', taskval) != -1) {
 
                         
+                       
 
                         switch (checkdata[5]) {
                             
-                            case "assigned":
-                                image = 'http://maps.google.com/mapfiles/ms/icons/green-dot.png';
+                            case 1:
+                                image = 'http://192.168.100.211:8000/assets/icons/completed.png';
                                 break;
-                            case "unassigned":
-                                image = 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png';
+                            case 0:
+                                image = 'http://192.168.100.211:8000/assets/icons/completed.png';
                                 break;
-                            case "in-transit":
-                                image = 'http://maps.google.com/mapfiles/ms/icons/yellow-dot.png';
+                            case 2:
+                                image = 'http://192.168.100.211:8000/assets/icons/completed.png';
                                 break;
-                            case "completed":
-                                image = 'http://maps.google.com/mapfiles/ms/icons/pink-dot.png';
+                            case 3:
+                                image = 'http://192.168.100.211:8000/assets/icons/completed.png';
                                 break;
-                            case "failed":
-                                image = 'http://maps.google.com/mapfiles/ms/icons/purple-dot.png';
+                            case 4:
+                                image = 'http://192.168.100.211:8000/assets/icons/completed.png';
                                 break;
                         }
                         send = null;

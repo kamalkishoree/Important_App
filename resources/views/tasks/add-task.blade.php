@@ -97,13 +97,18 @@
         }
 
         .copyin {
-            background-color: #F7F8FA;
+            background-color: rgb(148 148 148 / 11%);
+            margin-top: 10px;
+            
+ 
         }
         .copyin1 {
-            background-color: #F7F8FA;
+            background-color: rgb(148 148 148 / 11%);
+           
         }
         hr.new3 {
          border-top: 1px dashed white;
+         margin: 0 0 .5rem 0;
        }
        #spancheck{
            display: none;
@@ -163,33 +168,33 @@
             @csrf
             <div class="row">
 
-                <div class="col-md-6">
+                <div class="col-md-12 col-lg-9 col-xl-7">
                     <div class="card-box">
                         @csrf
-                        <div class="row" id="dateredio">
+                        <div class="row d-flex align-items-center" id="dateredio">
+                            
                             <div class="col-md-3">
                                 <h4 class="header-title mb-3">Customer</h4>
                             </div>
-                            <div class="col-md-2">
-                                <span class="header-title mb-4">Task Date:</span>
-                            </div>
-                            <div class="col-md-2">
-                                <div class="custom-control custom-radio custom-control-inline">
-                                    <input type="radio" class="custom-control-input check" id="tasknow"
-                                        name="task_type" value="now" checked>
-                                    <label class="custom-control-label" for="tasknow">Now</label>
-                                </div>
-                            </div>
-                            <div class="col-md-1">
-                                <div class="custom-control custom-radio custom-control-inline">
-                                    <input type="radio" class="custom-control-input check" id="taskschedule"
-                                        name="task_type" value="schedule" >
-                                    <label class="custom-control-label" for="taskschedule"></label>
-                                </div>
+                            <div class="col-md-5 text-right">
+                                <div class="login-form">
+                                    <ul class="list-inline">
+                                        <li class="d-inline-block mr-2">
+                                            <input type="radio" class="custom-control-input check" id="tasknow"
+                                            name="task_type" value="now" checked>
+                                            <label class="custom-control-label" for="tasknow">Now</label>
+                                        </li>
+                                        <li class="d-inline-block">
+                                            <input type="radio" class="custom-control-input check" id="taskschedule"
+                                            name="task_type" value="schedule" >
+                                            <label class="custom-control-label" for="taskschedule">Schedule</label>
+                                        </li>
+                                      </ul>
+                                    </div>
                             </div>
                             <div class="col-md-4 datenow">
                                 <input type="text" id='datetime-datepicker' name="schedule_time"
-                                    class="form-control upside" placeholder="DateTime">
+                                    class="form-control upside" placeholder="Date Time">
                             </div>
                         </div>
 
@@ -198,15 +203,14 @@
                             <div class="col-md-8">
                                 <div class="form-group" id="nameInput">
 
-                                    {!! Form::text('search', null, ['class' => 'form-control', 'placeholder' => 'search Customer', 'id' => 'search']) !!}
+                                    {!! Form::text('search', null, ['class' => 'form-control', 'placeholder' => 'Search Customer', 'id' => 'search']) !!}
                                     <input type="hidden" id='cusid' name="ids" readonly>
 
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group" id="AddressInput">
-                                    <a href="#" class=" form-control btn btn-blue waves-effect waves-light newAdd"><i
-                                            class="mdi mdi-plus-circle mr-1"></i>New Customer</a>
+                                    <a href="#" class="add-sub-task-btn">New Customer</a>
 
                                 </div>
                             </div>
@@ -246,7 +250,7 @@
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group" id="Inputsearch">
-                                    <a href="#" class=" form-control btn btn-blue waves-effect waves-light">Previous</a>
+                                    <a href="#" class="add-sub-task-btn">Previous</a>
 
                                 </div>
 
@@ -257,22 +261,19 @@
                             <div class="copyin1" id="copyin1">
                               <div class="requried allset">
                                 <div class="row firstclone1">
-                                    <div class="col-md-4">
-                                        <h4 class="header-title mb-3 newgap">Task</h4>
-                                    </div>
-                                    <div class="col-md-4">
+                                    
+                                    <div class="col-md-6">
                                         <div class="form-group mb-3">
-                                            <select class="form-control selecttype" id="task_type"  name="task_type_id[]" required>
-                                                <option value="">Selcet Task </option>
-                                                <option value="1">Pickup</option>
-                                                <option value="2">Drop</option>
+                                            <select class="form-control selecttype mt-1 taskselect" id="task_type"  name="task_type_id[]" required>
+                                                <option value="1">Pickup Task</option>
+                                                <option value="2">Drop Off Task</option>
                                                 <option value="3">Appointment</option>
 
                                             </select>
                                         </div>
                                     </div>
-                                    <div class="col-md-3">
-                                        <div class="form-group appoint">
+                                    <div class="col-md-5">
+                                        <div class="form-group appoint mt-1">
                                             {!! Form::text('appointment_date[]', null, ['class' => 'form-control
                                             appointment_date', 'placeholder' => 'Duration (In Min)']) !!}
                                             <span class="invalid-feedback" role="alert">
@@ -282,9 +283,9 @@
 
 
                                     </div>
-                                    <div class="col-md-1 " >
+                                    <div class="col-md-1 text-center pt-2" >
                                         
-                                    <span class="span1 onedelete" id="spancheck"><img src="{{asset('assets/images/ic_delete.png')}}" alt=""></span>
+                                    <span class="span1 onedelete" id="spancheck"><img style="filter: grayscale(.5);" src="{{asset('assets/images/ic_delete.png')}}"  alt=""></span>
 
 
                                     </div>
@@ -295,7 +296,7 @@
                                         <h4 class="header-title mb-2">Address</h4>
                                     </div>
                                     <div class="col-md-6">
-                                        <h4 class="header-title mb-2">Saved Addresses</h4>
+                                        {{-- <h4 class="header-title mb-2">Saved Addresses</h4> --}}
                                     </div>
                                 </div>
                                 
@@ -336,13 +337,13 @@
                                         </div>
                                     </div>
                                 </div>
-                                <hr class="new3">
+                                
                             </div>
                         </div>
                     </div>
                         <div class="row">
                             <div class="col-md-12" id="adds">
-                                <a href="#" class="btn btn-block btn-sm btn-success waves-effect waves-light">Add Sub
+                                <a href="#" class="add-sub-task-btn waves-effect waves-light">Add Sub
                                     Task</a>
                             </div>
                         </div>
@@ -373,8 +374,8 @@
                             <div class="col-md-6">
                                
                                 <div class="form-group" id="colorInput">
-                                    <label class="btn btn-info width-lg waves-effect waves-light newchnageimage">
-                                        <span><i class="fas fa-image"></i></span>
+                                    <label class="btn btn-info width-lg waves-effect waves-light newchnageimage upload-img-btn">
+                                        <span><i class="fas fa-image mr-2"></i>Upload Image</span>
                                         <input id="file" type="file" name="file[]" multiple style="display: none"/>
                                     </label>
                                     <img class="showsimagegall" src="{{url('assets/images/ic_image_placeholder.png')}}" alt="">
@@ -386,23 +387,32 @@
                             </div>
                         </div>
 
-                        <div class="row priceRule">
-                            <div class="col-md-12">
-                                <div class="form-group mb-3">
-                                    <label>Price Rule</label>
-                                    <select class="form-control" name="pricing_rule_id" id="ruleselect">
-                                        <option value="">Select Price Rule</option>
-                                        @foreach ($pricingRule as $rule)
-                                            <option value="{{ $rule->id }}">{{ $rule->name }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
+                        
 
                         <h4 class="header-title mb-3">Allocation</h4>
                         <div class="row my-3" id="rediodiv">
-                            <div class="col-md-4 padd">
+                            <div class="col-md-12">
+                                <div class="login-form">
+                                    <ul class="list-inline">
+                                        <li class="d-inline-block mr-2">
+                                            <input type="radio" class="custom-control-input check" id="customRadio"
+                                            name="allocation_type" value="u" checked>
+                                        <label class="custom-control-label" for="customRadio">Unassigned</label>
+                                        </li>
+                                        <li class="d-inline-block mr-2">
+                                            <input type="radio" class="custom-control-input check" id="customRadio22"
+                                            name="allocation_type" value="a">
+                                        <label class="custom-control-label" for="customRadio22">Auto Allocation</label>
+                                        </li>
+                                        <li class="d-inline-block">
+                                            <input type="radio" class="custom-control-input check" id="customRadio33"
+                                            name="allocation_type" value="m">
+                                        <label class="custom-control-label" for="customRadio33">Manual</label>
+                                        </li>
+                                      </ul>
+                                    </div>
+                            </div>
+                            {{-- <div class="col-md-4 padd">
                                 <div class="custom-control custom-radio custom-control-inline">
                                     <input type="radio" class="custom-control-input check" id="customRadio"
                                         name="allocation_type" value="u" checked>
@@ -422,7 +432,7 @@
                                         name="allocation_type" value="m">
                                     <label class="custom-control-label" for="customRadio33">Manual</label>
                                 </div>
-                            </div>
+                            </div> --}}
                         </div>
                         <span class="span1 tagspan">Please select atlest one tag for driver and agent</span>
                         <div class="row tags">

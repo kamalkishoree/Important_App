@@ -12,7 +12,7 @@
 <link href="{{asset('assets/libs/dropify/dropify.min.css')}}" rel="stylesheet" type="text/css" />
 <style>
     #map-canvas {
-  height: 90%;
+  height:100%;
   margin: 0px;
   padding: 0px;
   position: unset;
@@ -105,7 +105,7 @@
 
 
         <div class="col-9">
-            <div class="card-box" style="height:700px;">
+            <div class="card-box p-0 m-0" style="height:650px;">
                 <div id="map-canvas"></div>
             </div>
         </div>

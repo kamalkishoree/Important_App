@@ -128,6 +128,7 @@ class TaskController extends Controller
             'images_array'               => $last,
             'order_type'                 => $request->task_type,
             'order_time'                 => $notification_time,
+            'status'                     => $agent_id != null ? 'assigned' :'unassigned'
         ];
         $orders = Order::create($order);
 
@@ -162,7 +163,7 @@ class TaskController extends Controller
                 'location_id'                => $loc_id,
                 'allocation_type'            => $task_allo_type,            
                 'dependent_task_id'          => $dep_id,
-                'task_status'                => 'unassigned'
+                'task_status'                => $agent_id != null ? 1 : 0,
             ];
             if(!empty($request->pricing_rule_id)){
                 $data['pricing_rule_id'] = $request->pricing_rule_id;

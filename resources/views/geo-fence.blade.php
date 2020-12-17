@@ -45,11 +45,11 @@ exit;
         }
 
         .cornar {
-            border: solid thin;
+            border: 1px solid #ddd;
             padding-top: 10px;
             height: 240px;
-            width: 103%;
-            overflow-y: auto
+            overflow-y: auto;
+            padding: 10px;
         }
 
         .teamshow {
@@ -81,6 +81,19 @@ exit;
         .search {
             background-color: #02f2cc;
         }
+        .card-box {
+
+            padding: 1.5rem;
+            box-shadow: 0 0 8px 0 rgba(154, 161, 171, 0.15) !important;
+            margin-bottom: 24px !important;
+            border-radius: 0.25rem;
+            /* margin-bottom: 10px; */
+        }
+        .select_all{
+            position: relative;
+            top: 8px;
+        }
+
 
     </style>
 @endsection
@@ -208,11 +221,16 @@ exit;
                     </div>
                 </div>
                 <div class="col-lg-7">
-                    <div class="card-box" style="height:96%;">
-                        <input id="pac-input" class="controls serch" type="text" placeholder="Search Location" />
-                        <div id="floating-panel">
-                            <input id="refresh" type="button" value="Edit Mode" />
-                        </div>
+                    <div class="input-group mb-3">
+
+                      <input type="text" id="pac-input" class="form-control" placeholder="Search by name " aria-label="Recipient's username" aria-describedby="button-addon2">
+                      <div class="input-group-append">
+                        <button class="btn btn-info" type="button" id="refresh">Edit Mode</button>
+                      </div>
+                      
+                    </div>
+                    <div class="" style="height:96%;">
+
                         <div id="map-canvas"></div>
                     </div>
                 </div>

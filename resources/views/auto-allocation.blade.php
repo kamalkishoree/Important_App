@@ -85,7 +85,30 @@
                                 dd($preference->);
                                 @endphp --}}
                                 <div class="row mb-2">
-                                    <div class="col-sm-12">
+                                    <div class="col-md-12">
+                                    <div class="login-form">
+                                        <ul class="list-inline">
+                                            <li class="d-inline-block mr-2">
+                                                <input type="radio" id="acknowledge1" value="acknowledge"
+                                                name="acknowledgement_type"
+                                                {{ isset($preference) && $preference->acknowledgement_type == 'acknowledge' ? 'checked' : '' }}>
+                                            <label for="acknowledge1"> Acknowledge </label>
+                                            </li>
+                                            <li class="d-inline-block mr-2">
+                                                <input type="radio" id="acknowledge2" value="acceptreject"
+                                                name="acknowledgement_type"
+                                                {{ isset($preference) && $preference->acknowledgement_type == 'acceptreject' ? 'checked' : '' }}>
+                                            <label for="acknowledge2"> Accept/Reject </label>
+                                            </li>
+                                            <li class="d-inline-block">
+                                                <input type="radio" id="acknowledge3" value="none" name="acknowledgement_type"
+                                                {{ isset($preference) && $preference->acknowledgement_type == 'none' ? 'checked' : '' }}>
+                                            <label for="acknowledge3"> None </label>
+                                            </li>
+                                          </ul>
+                                        </div>
+                                    </div> 
+                                    {{-- <div class="col-sm-12">
                                         <p class="text-muted mb-2">SELECT PREFERENCE</p>
                                         <div class="radio radio-info form-check-inline">
                                             <input type="radio" id="acknowledge1" value="acknowledge"
@@ -109,7 +132,7 @@
                                                 <strong>{{ $errors->first('acknowledgement_type') }}</strong>
                                             </span>
                                         @endif
-                                    </div>
+                                    </div> --}}
 
                                 </div>
                                 <div class="row mb-2">

@@ -132,23 +132,16 @@ header .navbar-light .navbar-nav .nav-link {
   border: none;
   margin-bottom: 0px;
 }   
-.left-sidebar .accordion .card-header {
+.left-sidebar #accordion .card-header {
   position: relative;
   cursor: pointer;
   background-color: rgb(203 203 203 / 0.17);
   margin-bottom: 5px;
   border: 1px solid rgb(129 129 129 / .17);
-  padding: 1.25rem 1.25rem; 
+  padding: .5rem 1rem; 
 }
-.left-sidebar .accordion .card-header:after {
-    font-family: 'FontAwesome';  
-    content: "\f106";
-    float: right; 
-    position: absolute;
-    right: 12px;
-    bottom: 20px;
-}
-.left-sidebar .accordion .card-header.collapsed:after {
+
+.left-sidebar #accordion .card-header.collapsed:after {
     /* symbol for "collapsed" panels */
     content: "\f107"; 
 }
@@ -179,12 +172,11 @@ header .navbar-light .navbar-nav .nav-link {
   box-shadow: 0 2px 4px 0 rgba(0,0,0,0.12);
 }
 .profile-status {
-    margin-top: -6px;
-    border: 1px solid #ddd;
-    margin-bottom: 5px;
-    padding: 10px;
-    background-color: rgb(242 190 61 / .11);
-    position: relative;
+    border: 1px solid #ddd!important;
+    margin-bottom: 5px!important;
+    padding: 10px!important;
+    background-color: rgb(242 190 61 / .11)!important;
+    position: relative!important;
     border-bottom: 1px dashed #ddd!important;
 }
 .left-sidebar .profile-status p {
@@ -221,7 +213,8 @@ header .navbar-light .navbar-nav .nav-link {
   letter-spacing: 0;
   line-height: 15px;
   margin-bottom: 0px;
-}
+  margin-top: 4px;
+} 
 .assigned-block span {
   color: #797979;
   font-size: 13px;
@@ -263,12 +256,12 @@ header .navbar-light .navbar-nav .nav-link {
   border: none;
 }
 .wd-10 {
-  width: 7%;
+  width: 10%;
   display: inline-block;
   vertical-align: top;
 }
 .wd-90 {
-  width: 91%;
+  width: 87%;
   display: inline-block;
 }
 .vt-top {
@@ -338,6 +331,7 @@ header .navbar-light .navbar-nav .nav-link {
   font-size: 14px;
   letter-spacing: 0;
   line-height: 17px;
+  margin: 0px;
 }
 .bottom-content .dropdown-menu.show{
   min-width: 250px;
@@ -361,34 +355,49 @@ header .navbar-light .navbar-nav .nav-link {
 }
 .circle.lia-castro {
   background-color: #00C99B;
-}
+} 
+/* .map-wrapper {
+  height: 100vh;
+  overflow: hidden;
+} */
 .map-wrapper .contant {
   position: absolute;
-  bottom: 0px;;
+  bottom: 15px;
   background: transparent;
   z-index: 55;
   left: 0;
-  width: 50%;
+  width: 80%;
   height: 100px;
   padding: 30px;
   display: inline-block;
 }
-.card-header .mb-0>a {
+.card-header >a {
   display: block;
   position: relative;
 }
 
-.card-header .mb-0>a:after {
+.card-header >a:after {
   content: "\f078";
-  /* fa-chevron-down */
   font-family: 'FontAwesome';
   position: absolute;
-  right: 0;
-  top: 5px;
+  right: -10px;
+  top: 10px;
+  color: #777;
+  font-weight: 300;
 }
 
-.card-header .mb-0>a[aria-expanded="true"]:after {
+.card-header >a[aria-expanded="true"]:after {
   content: "\f077";
   /* fa-chevron-up */
 }
- 
+
+.card-header.profile-status >a:after {
+  right: -5px;
+}
+.map-wrapper {
+  height: cal(100vh - 70px);
+  overflow: hidden;
+}
+body.menuitem-active .task-block h6 {
+  color: #cecece;
+}

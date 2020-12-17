@@ -22,10 +22,6 @@ class DatabaseSeeder extends Seeder
               UsersTableDataSeeder::class,
               PlanSeeder::class,
               PricePriority::class,
-              //PassportSeeder::class,
-           // TeamSeeder::class,
-              //UsersTableDataSeeder::class,
-              //TagSeeder::class
               
              ]);
     }
