@@ -443,3 +443,6 @@ body.menuitem-active .task-block h6 {
   font-size: .7rem;
   margin-top: 6px;
 }
+.navbar-custom .dropdown-toggle::after {
+  display: none;
+}

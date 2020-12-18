@@ -420,7 +420,7 @@ $color = ['one','two','three','four','five','six','seven','eight']
                                                 <div class="row mt-2">
                                                     <div class="col-md-9">
                                                         <h6><img class="mr-2"
-                                                                src="{{ asset('demo/images/blue-dot.png') }}"></span>Unassigned
+                                                                src="{{ asset('assets/icons/unassigned.png') }}"></span>Unassigned
                                                         </h6>
                                                     </div>
                                                     <div class="col-md-3 text-right">
@@ -434,7 +434,7 @@ $color = ['one','two','three','four','five','six','seven','eight']
                                                 <div class="row mt-2">
                                                     <div class="col-md-9">
                                                         <h6><img class="mr-2"
-                                                                src="{{ asset('demo/images/green-dot.png') }}"></span>Assigned
+                                                                src="{{ asset('assets/icons/assigned.png') }}"></span>Assigned
                                                         </h6>
                                                     </div>
                                                     <div class="col-md-3 text-right">
@@ -445,24 +445,11 @@ $color = ['one','two','three','four','five','six','seven','eight']
                                                         </label>
                                                     </div>
                                                 </div>
+
                                                 <div class="row mt-2">
                                                     <div class="col-md-9">
                                                         <h6><img class="mr-2"
-                                                                src="{{ asset('demo/images/yellow-dot.png') }}"></span>In
-                                                            transit</h6>
-                                                    </div>
-                                                    <div class="col-md-3 text-right">
-                                                        <label class="mt-2">
-                                                            <input class="taskchecks" type="checkbox" name="taskstatus[]"
-                                                                value="2">
-                                                            <span class="checkmark"></span>
-                                                        </label>
-                                                    </div>
-                                                </div>
-                                                <div class="row mt-2">
-                                                    <div class="col-md-9">
-                                                        <h6><img class="mr-2"
-                                                                src="{{ asset('demo/images/pink-dot.png') }}"></span>Completed
+                                                                src="{{ asset('assets/icons/completed.png') }}"></span>Completed
                                                         </h6>
                                                     </div>
                                                     <div class="col-md-3 text-right">
@@ -476,7 +463,7 @@ $color = ['one','two','three','four','five','six','seven','eight']
                                                 <div class="row mt-2">
                                                     <div class="col-md-9">
                                                         <h6><img class="mr-2"
-                                                                src="{{ asset('demo/images/purple-dot.png') }}"></span>Failed
+                                                                src="{{ asset('assets/icons/failed.png') }}"></span>Failed
                                                         </h6>
                                                     </div>
                                                     <div class="col-md-3 text-right">
@@ -773,19 +760,16 @@ $color = ['one','two','three','four','five','six','seven','eight']
                         switch (checkdata[5]) {
                             
                             case 1:
-                                image = 'http://192.168.100.211:8000/assets/icons/assigned.png';
+                                image = '{{ asset('assets/icons/assigned.png') }}';
                                 break;
                             case 0:
-                                image = 'http://192.168.100.211:8000/assets/icons/unassigned.png';
+                                image = '{{ asset('assets/icons/unassigned.png') }}';
                                 break;
                             case 2:
-                                image = 'http://192.168.100.211:8000/assets/icons/completed.png';
+                                image = '{{ asset('assets/icons/completed.png') }}';
                                 break;
                             case 3:
-                                image = 'http://192.168.100.211:8000/assets/icons/completed.png';
-                                break;
-                            case 4:
-                                image = 'http://192.168.100.211:8000/assets/icons/failed.png';
+                                image = '{{ asset('assets/icons/failed.png') }}';
                                 break;
                         }
                         send = null;

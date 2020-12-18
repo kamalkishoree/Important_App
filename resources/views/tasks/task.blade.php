@@ -4,14 +4,14 @@
 <link href="{{asset('assets/libs/select2/select2.min.css')}}" rel="stylesheet" type="text/css" />
 <link href="{{asset('assets/libs/bootstrap-select/bootstrap-select.min.css')}}" rel="stylesheet" type="text/css" />
 <link href="{{asset('assets/libs/flatpickr/flatpickr.min.css')}}" rel="stylesheet" type="text/css" />
-<link href="{{asset('assets/libs/sweetalert2/sweetalert2.min.css')}}" rel="stylesheet" type="text/css" />
+
 
 
 <!-- for File Upload -->
 
 <link href="{{asset('assets/libs/dropzone/dropzone.min.css')}}" rel="stylesheet" type="text/css" />
 <link href="{{asset('assets/libs/dropify/dropify.min.css')}}" rel="stylesheet" type="text/css" />
-<link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/8.4.6/css/intlTelInput.css'>
+<link rel="stylesheet" href="{{ asset('assets/css/jquery-ui.css') }}">
 <style>
 // workaround
 .intl-tel-input {
@@ -190,7 +190,7 @@
                                             data-target="#task-list-modal" ><i class="fe-eye"></i></button>
                                     </td>
                                     <td>
-                                        Not Alloted
+                                        basic rule
                                     </td>
 
                                     <td>
@@ -255,53 +255,22 @@
 
   
 <script src="{{ asset('assets/js/jquery-ui.min.js') }}" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="{{ asset('assets/css/jquery-ui.css') }}">
-<script src="{{asset('assets/libs/flatpickr/flatpickr.min.js')}}"></script>
+   
+
 <script src="{{asset('assets/libs/select2/select2.min.js')}}"></script>
 <script src="{{asset('assets/libs/bootstrap-select/bootstrap-select.min.js')}}"></script>
 <!-- Page js-->
-<script src="{{asset('assets/js/pages/form-advanced.init.js')}}"></script>
-<script src="{{asset('assets/js/pages/form-pickers.init.js')}}"></script>
+
 <script src="{{asset('assets/js/storeAgent.js')}}"></script>
 <!-- for File Upload -->
 
 <!-- Page js-->
 
-
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-
-
-<script src="{{asset('assets/js/pages/form-fileuploads.init.js')}}"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/8.4.7/js/intlTelInput.js"></script>
 <script src="{{asset('assets/libs/datatables/datatables.min.js')}}"></script>
-<script src="{{asset('assets/libs/sweetalert2/sweetalert2.min.js')}}"></script>
 
 <script>
 
-/*$('.showTaskPop').click(function(){ 
-    console.log('top');
-    var src1 = "{{url('tasks/create')}}";
-    $('#add-task-modal .modal-title').html('Add Task');
-    $('#add-task-modal #editCardBox').html('<iframe id="iframe" src="'+src1+'" style="width:100%; height:700px;"></iframe>');
 
-    $('#add-task-modal').modal({
-            //backdrop: 'static',
-            keyboard: false
-    });
-});
-
-$('.editIconBtn').click(function(){ 
-    console.log('top');
-    var src1 = #(this).attr('href1');
-    $('#add-task-modal .modal-title').html('Edit Task');
-    $('#add-task-modal #editCardBox').html('<iframe id="iframe" src="'+src1+'" style="width:100%; height:700px;"></iframe>');
-
-    $('#add-task-modal').modal({
-            backdrop: 'static',
-            keyboard: false
-    });
-});*/
 
 $(document).ready( function () {
     $('#agents-datatable').DataTable();
@@ -310,52 +279,13 @@ $(document).ready( function () {
     function handleClick(myRadio) {
         $('#getTask').submit();
     }
-/*
-$("#phone_number").intlTelInput({
-  utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/8.4.6/js/utils.js"
-});
-$('.intl-tel-input').css('width','100%');
-
-var regEx = /\(?([0-9]{3})\)?([ .-]?)([0-9]{3})\2([0-9]{4})/;
-$("#addAgent").bind("submit", function() {
-       var val = $("#phone_number").val();
-       if (!val.match(regEx)) {
-            $('#phone_number').css('color','red');
-            return false;
-        }
-});
 
 
 
 
 
-$(document).ready( function () {
-    $('#basic-datatable').DataTable();
-});
 
 
-  $(document).on('click', '.showtasks', function () {
-      var CSRF_TOKEN = $("input[name=_token]").val();
-      var tour_id = $(this).val();
-      var basic = window.location.origin;
-      var url = basic+"/tasks/list/"+tour_id;
-        $.ajax({
-            url: url,
-            type: 'post',
-            dataType: "json",
-            data: {
-            _token: CSRF_TOKEN,
-            },
-            success: function(data) {
-                console.log(data);
-            }
-                            
-        });
-    });
-                     
-$("#phone_number").inputFilter(function(value) {
-  return /^-?\d*$/.test(value); 
-});*/
 
 </script>
 

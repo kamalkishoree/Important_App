@@ -6,7 +6,7 @@
         <div class="card-box">
             <h4 class="header-title mb-3"></h4>
             <div class="row">
-                <div class="col-md-6">
+                <div class="col-md-12">
                     <div class="form-group" id="nameInput">
                         {!! Form::label('title', 'Name',['class' => 'control-label']) !!}
                         {!! Form::text('name', $pricing->name, ['class' => 'form-control','placeholder'=> 'Name','required' => 'required']) !!}
@@ -16,7 +16,7 @@
 
                     </div>
                 </div>
-                <div class="col-md-6">
+                {{-- <div class="col-md-6">
                     <div class="form-group" id="">
                         {!! Form::label('title', 'Start Date Time',['class' => 'control-label']) !!}
                         <input type="datetime-local"  class="form-control datetime-datepicker" placeholder="Date and Time" name="start_date_time" required value="{{isset($pricing) ? date('Y-m-d H:i', strtotime($pricing->start_date_time)) : ''}}">
@@ -24,11 +24,11 @@
                             <strong></strong>
                         </span>
                     </div>
-                </div>
+                </div> --}}
 
             </div>
 
-            <div class="row">
+            {{-- <div class="row">
                 <div class="col-md-6">
                     <div class="form-group" id="">
                         {!! Form::label('title', 'End End Time',['class' => 'control-label']) !!}
@@ -47,9 +47,9 @@
                     </div>
                 </div>
                
-            </div>
+            </div> --}}
 
-            <div class="row temp">
+            {{-- <div class="row temp">
                 <div class="col-md-6">
                     <div class="form-group" id="typeInput">
                         {!! Form::label('title', 'Select Geo Fence',['class' => 'control-label']) !!}
@@ -68,8 +68,8 @@
                         </span>
                     </div>
                 </div>
-            </div>
-
+            </div> --}}
+{{-- 
             <div class="row temp">
                 <div class="col-md-6">
                     <div class="form-group" id="typeInput">
@@ -89,7 +89,7 @@
                         </span>
                     </div>
                 </div>
-            </div>
+            </div> --}}
 
             <div class="row">
                 <div class="col-md-6">
