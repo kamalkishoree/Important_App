@@ -125,8 +125,8 @@
                         </table>
                     </div>
                     <div class="row address" id="add0" style="display: none;">
-                    <input type="text" id="add0-input" name="test" class="autocomplete form-control add0-input" placeholder="Address">
-                </div>
+                        <input type="text" id="add0-input" name="test" class="autocomplete form-control add0-input" placeholder="Address">
+                    </div>
                 </div> <!-- end card-body-->
             </div> <!-- end card-->
         </div> <!-- end col -->

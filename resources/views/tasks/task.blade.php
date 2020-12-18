@@ -142,7 +142,8 @@
                         </div>
                         <div class="col-sm-2"></div>
                         <div class="col-sm-4 text-right">
-                        <a href="{{ route('tasks.create') }}" class="btn btn-blue waves-effect waves-light"><i class="mdi mdi-plus-circle mr-1"></i> Add Task</a>
+                            <!--<button type="button" class="btn btn-blue waves-effect waves-light showTaskPop" data-toggle="modal" data-target="" data-backdrop="static" data-keyboard="false"><i class="mdi mdi-plus-circle mr-1"></i> Add Task</button> -->
+                         <a href="{{ route('tasks.create') }}" class="btn btn-blue waves-effect waves-light"><i class="mdi mdi-plus-circle mr-1"></i> Add Task</a>
                         </div>
 
                     </div>
@@ -194,7 +195,7 @@
 
                                     <td>
                                         <div class="form-ul" style="width: 60px;">
-                                            <div class="inner-div"> <a href="{{route('tasks.edit', $task->id)}}" class="action-icon"> <i class="mdi mdi-square-edit-outline"></i></a></div>
+                                            <div class="inner-div"> <a href1="#" href="{{route('tasks.edit', $task->id)}}"  class="action-icon editIconBtn"> <i class="mdi mdi-square-edit-outline"></i></a></div>
                                             <div class="inner-div">
                                                 <form method="POST" action="{{route('tasks.destroy', $task->id)}}">
                                                     @csrf
@@ -220,6 +221,29 @@
 
 
 </div>
+
+<div id="add-task-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-full-width">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Add Task</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            </div>
+            <div class="modal-body p-4">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card-box" id="editCardBox">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+                
+                
+            </form>
+        </div>
+    </div>
+</div>
 @endsection
 
 @section('script')
@@ -229,8 +253,16 @@
 <script src="{{asset('assets/libs/bootstrap-select/bootstrap-select.min.js')}}"></script>
 <!-- Page js-->
 
+  
+<script src="{{ asset('assets/js/jquery-ui.min.js') }}" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="{{ asset('assets/css/jquery-ui.css') }}">
+<script src="{{asset('assets/libs/flatpickr/flatpickr.min.js')}}"></script>
+<script src="{{asset('assets/libs/select2/select2.min.js')}}"></script>
+<script src="{{asset('assets/libs/bootstrap-select/bootstrap-select.min.js')}}"></script>
+<!-- Page js-->
+<script src="{{asset('assets/js/pages/form-advanced.init.js')}}"></script>
+<script src="{{asset('assets/js/pages/form-pickers.init.js')}}"></script>
 <script src="{{asset('assets/js/storeAgent.js')}}"></script>
-
 <!-- for File Upload -->
 
 <!-- Page js-->
@@ -240,23 +272,62 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 
 
+<script src="{{asset('assets/js/pages/form-fileuploads.init.js')}}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/8.4.7/js/intlTelInput.js"></script>
 <script src="{{asset('assets/libs/datatables/datatables.min.js')}}"></script>
 <script src="{{asset('assets/libs/sweetalert2/sweetalert2.min.js')}}"></script>
 
 <script>
 
-    function handleClick(myRadio) {
-        $('#getTask').submit();
-    }
+/*$('.showTaskPop').click(function(){ 
+    console.log('top');
+    var src1 = "{{url('tasks/create')}}";
+    $('#add-task-modal .modal-title').html('Add Task');
+    $('#add-task-modal #editCardBox').html('<iframe id="iframe" src="'+src1+'" style="width:100%; height:700px;"></iframe>');
 
+    $('#add-task-modal').modal({
+            //backdrop: 'static',
+            keyboard: false
+    });
+});
 
+$('.editIconBtn').click(function(){ 
+    console.log('top');
+    var src1 = #(this).attr('href1');
+    $('#add-task-modal .modal-title').html('Edit Task');
+    $('#add-task-modal #editCardBox').html('<iframe id="iframe" src="'+src1+'" style="width:100%; height:700px;"></iframe>');
 
-
-
+    $('#add-task-modal').modal({
+            backdrop: 'static',
+            keyboard: false
+    });
+});*/
 
 $(document).ready( function () {
     $('#agents-datatable').DataTable();
 });
+
+    function handleClick(myRadio) {
+        $('#getTask').submit();
+    }
+/*
+$("#phone_number").intlTelInput({
+  utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/8.4.6/js/utils.js"
+});
+$('.intl-tel-input').css('width','100%');
+
+var regEx = /\(?([0-9]{3})\)?([ .-]?)([0-9]{3})\2([0-9]{4})/;
+$("#addAgent").bind("submit", function() {
+       var val = $("#phone_number").val();
+       if (!val.match(regEx)) {
+            $('#phone_number').css('color','red');
+            return false;
+        }
+});
+
+
+
+
 
 $(document).ready( function () {
     $('#basic-datatable').DataTable();
@@ -282,6 +353,9 @@ $(document).ready( function () {
         });
     });
                      
+$("#phone_number").inputFilter(function(value) {
+  return /^-?\d*$/.test(value); 
+});*/
 
 </script>
 

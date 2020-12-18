@@ -1,11 +1,9 @@
-
 <script>
-
     var autocomplete = {};
     var autocompletesWraps = ['add0'];
     var count = 1; editCount = 0;
     $('.openModal').click(function(){
-        $('#add-customer-modal').modal({
+        $('#add-task-modal').modal({
             //backdrop: 'static',
             keyboard: false
         });
@@ -13,7 +11,42 @@
         loadMap(autocompletesWraps);
     });
 
-    $(document).on('click', '.showMap', function(){
+    var latitudes = []; 
+    var longitude = [];
+
+    function loadMap(autocompletesWraps){
+
+        console.log(autocompletesWraps);
+        $.each(autocompletesWraps, function(index, name) {
+            const geocoder = new google.maps.Geocoder;
+        
+            if($('#'+name).length == 0) {
+                return;
+            }
+            //autocomplete[name] = new google.maps.places.Autocomplete(('.form-control')[0], { types: ['geocode'] }); console.log('hello');
+            autocomplete[name] = new google.maps.places.Autocomplete(document.getElementById(name+'-input'), { types: ['geocode'] });
+                
+            google.maps.event.addListener(autocomplete[name], 'place_changed', function() {
+                
+                var place = autocomplete[name].getPlace();
+
+                geocoder.geocode({'placeId': place.place_id}, function (results, status) {
+                    
+                    if (status === google.maps.GeocoderStatus.OK) {
+                        const lat = results[0].geometry.location.lat();
+                        const lng = results[0].geometry.location.lng();
+                        console.log(latitudes);
+                        document.getElementById(name + '-latitude').value = lat;
+                        document.getElementById(name + '-longitude').value = lng;
+                    }
+                });
+            });
+        });
+
+    }
+
+
+    /*$(document).on('click', '.showMap', function(){
         var no = $(this).attr('num');
         var lats = document.getElementById(no+'-latitude').value;
         var lngs = document.getElementById(no+'-longitude').value;
@@ -66,7 +99,7 @@
             keyboard: false
         });
 
-    });
+    });*/
 
     $('#show-map-modal').on('hide.bs.modal', function () {
          $('#add-customer-modal').removeClass('fadeIn');
@@ -86,28 +119,6 @@
         $('#show-map-modal').modal('hide');
     });
 
-    $(document).ready( function () {
-        $('#pricing-datatable').DataTable();
-        loadMap(autocompletesWraps);
-        
-    });
-
-    $(function() {
-        $('.custom-control-input').change(function() {
-            var status = $(this).prop('checked') == true ? "Active" : 'In-Active'; 
-            var user_id = $(this).data('id'); 
-             
-            $.ajax({
-                type: "GET",
-                dataType: "json",
-                url: '/changeStatus',
-                data: {'status': status, 'id': user_id},
-                success: function(data){
-                  console.log(data.success)
-                }
-            });
-        })
-    });
 
     $(document).on('click', '.addField', function(){
         count = count + 1;
@@ -121,39 +132,7 @@
 
     });
 
-    var latitudes = []; 
-    var longitude = [];
 
-    function loadMap(autocompletesWraps){
-
-        console.log(autocompletesWraps);
-        $.each(autocompletesWraps, function(index, name) {
-            const geocoder = new google.maps.Geocoder;
-        
-            if($('#'+name).length == 0) {
-                return;
-            }
-            //autocomplete[name] = new google.maps.places.Autocomplete(('.form-control')[0], { types: ['geocode'] }); console.log('hello');
-            autocomplete[name] = new google.maps.places.Autocomplete(document.getElementById(name+'-input'), { types: ['geocode'] });
-                
-            google.maps.event.addListener(autocomplete[name], 'place_changed', function() {
-                
-                var place = autocomplete[name].getPlace();
-
-                geocoder.geocode({'placeId': place.place_id}, function (results, status) {
-                    
-                    if (status === google.maps.GeocoderStatus.OK) {
-                        const lat = results[0].geometry.location.lat();
-                        const lng = results[0].geometry.location.lng();
-                        console.log(latitudes);
-                        document.getElementById(name + '-latitude').value = lat;
-                        document.getElementById(name + '-longitude').value = lng;
-                    }
-                });
-            });
-        });
-
-    }
     $(".editIcon").click(function (e) {  
 
         
