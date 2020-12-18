@@ -45,9 +45,7 @@ type="text/css" />
     .card-header {
         padding: .5rem 1rem;
     }
-    body {
-        background: #FFF !important;
-    }
+    
     /* body.menuitem-active {
     background: #3c4752 !important;
 }    */
@@ -125,7 +123,9 @@ body.menuitem-active .profile-status {
 </style>
 
 @endsection
-
+@php
+$color = ['one','two','three','four','five','six','seven','eight']
+@endphp
 @section('content')
     
         <!-- Bannar Section -->
@@ -135,7 +135,8 @@ body.menuitem-active .profile-status {
                     <div class="col-md-4 col-xl-3 left-sidebar pt-3">
                         <div id="accordion">
                             <div class="card">
-                                
+                               
+
                                     <div class="card-header" id="heading-1">
 
                                             <a role="button" data-toggle="collapse" href="#collapse-new"
@@ -143,10 +144,10 @@ body.menuitem-active .profile-status {
                                                 <div class="newcheckit">
                                                     <div class="row d-flex align-items-center" class="mb-0">
                                                         <div class="col-md-4 col-lg-3 col-xl-2">
-                                                            <img src="{{ asset('demo/images/ic_assigned_to.png') }}">
+                                                            <span class="profile-circle">U</span>
                                                         </div>
                                                         <div class="col-md-8 col-lg-9 col-xl-10">
-                                                            <h6 class="mb-0">Unassigned</h6>
+                                                            <h6 class="header-title">Unassigned</h6>
                                                             <p class="mb-0">{{count($unassigned)}} Agents : <span>1 Busy ・ 1 Inactive</span></p>
                                                         </div>
                                                     </div>
@@ -159,12 +160,11 @@ body.menuitem-active .profile-status {
                                     <div id="collapse-new" class="collapse" data-parent="#accordion"
                                         aria-labelledby="heading-1">
                                         <div class="card-body">
-
-
+                                              
                                             @foreach ($unassigned as $agent)
                                                 <div id="accordion-{{ $agent['id'] }}">
                                                     <div class="card">
-                                                        <div class="card-header profile-status" id="by{{ $agent['id'] }}">
+                                                        <div class="card-header profile-status ml-2" id="by{{ $agent['id'] }}">
 
                                                                 <a class="profile-block collapsed" role="button"
                                                                     data-toggle="collapse" href="#collapse{{ $agent['id'] }}"
@@ -177,7 +177,7 @@ body.menuitem-active .profile-status {
                                                                                     src="https://dummyimage.com/36x36/ccc/fff">
                                                                             </div>
                                                                             <div class="col-md-8 col-lg-9 col-xl-10">
-                                                                                <h6 class="mb-0">{{ $agent['name'] }}</h6>
+                                                                                <h6 class="mb-0 header-title scnd">{{ $agent['name'] }}</h6>
                                                                                 <p class="mb-0">Busy ・ <span>2 Tasks</span></p>
                                                                             </div>
                                                                         </div>
@@ -191,7 +191,7 @@ body.menuitem-active .profile-status {
                                                             @foreach ($agent['order'] as $orders)
                                                                 @foreach ($orders['task'] as $tasks)
                                                                     <div class="card-body">
-                                                                        <div class="p-3 assigned-block mb-1">
+                                                                        <div class="pt-3 pl-3 pr-3 assigned-block mb-1">
                                                                             <div class="wd-10">
                                                                                 <img class="vt-top"
                                                                                     src="{{ asset('demo/images/ic_location_blue_1.png') }}">
@@ -199,7 +199,7 @@ body.menuitem-active .profile-status {
                                                                             <div class="wd-90">
                                                                                 <h6>{{ $tasks['location']['address'] }}</h6>
                                                                                 <span>{{ $tasks['location']['short_name'] }}</span>
-                                                                                <h5 class="mb-1"><span>Pickup before</span>
+                                                                                <h5 class="mb-1"><span>Due</span>
                                                                                     06:30 pm
                                                                                 </h5>
                                                                                 <div class="row">
@@ -230,16 +230,16 @@ body.menuitem-active .profile-status {
                             <div class="card">
                                 @foreach ($teams as $item)
                                     <div class="card-header" id="heading-1">
-
+                                       
                                             <a role="button" data-toggle="collapse" href="#collapse-{{ $item['id'] }}"
                                                 aria-expanded="true" aria-controls="collapse-{{ $item['id'] }}">
                                                 <div class="newcheckit">
                                                     <div class="row d-flex align-items-center" class="mb-0">
                                                         <div class="col-md-3 col-xl-2">
-                                                            <img src="{{ asset('demo/images/ic_assigned_to.png') }}">
+                                                            <span class="profile-circle {{$color[rand(0,7)]}}">{{ $item['name'][0] }}</span>
                                                         </div>
                                                         <div class="col-md-9 col-xl-10">
-                                                            <h6 class="mb-0">{{ $item['name'] }}</h6>
+                                                            <h6 class="header-title">{{ $item['name'] }}</h6>
                                                             <p class="mb-0">{{count($item['agents'])}} Agents : <span>1 Busy ・ 1 Inactive</span></p>
                                                         </div>
                                                     </div>
@@ -257,7 +257,7 @@ body.menuitem-active .profile-status {
                                             @foreach ($item['agents'] as $agent)
                                                 <div id="accordion-{{ $agent['id'] }}">
                                                     <div class="card">
-                                                        <div class="card-header" id="by{{ $agent['id'] }}">
+                                                        <div class="card-header ml-2" id="by{{ $agent['id'] }}">
 
                                                                 <a class="profile-block collapsed" role="button"
                                                                     data-toggle="collapse" href="#collapse{{ $agent['id'] }}"
@@ -265,11 +265,11 @@ body.menuitem-active .profile-status {
                                                                     aria-controls="collapse{{ $agent['id'] }}">
                                                                     <div class="row">
                                                                         <div class="col-md-2">
-                                                                            <img class="profile-image"
-                                                                                src="https://dummyimage.com/36x36/ccc/fff">
+                                                                            <img class="profile-circle"
+                                                                                src="{{isset($agent['profile_picture']) ? Phumbor::url(Storage::disk('s3')->url($agent['profile_picture']))->fitIn(55,30):'https://dummyimage.com/36x36/ccc/fff'}}">
                                                                         </div>
                                                                         <div class="col-md-10">
-                                                                            <h6 class="mb-0">{{ $agent['name'] }}</h6>
+                                                                            <h6 class="mb-0 header-title scnd">{{ $agent['name'] }}</h6>
                                                                             <p class="mb-0">Busy ・ <span>2 Tasks</span></p>
                                                                         </div>
                                                                     </div>
@@ -281,7 +281,7 @@ body.menuitem-active .profile-status {
                                                             @foreach ($agent['order'] as $orders)
                                                                 @foreach ($orders['task'] as $tasks)
                                                                     <div class="card-body">
-                                                                        <div class="p-3 assigned-block">
+                                                                        <div class="pt-3 pl-3 pr-3 assigned-block">
                                                                             <div class="wd-10">
                                                                                 <img class="vt-top"
                                                                                     src="{{ asset('demo/images/ic_location_blue_1.png') }}">
@@ -289,25 +289,21 @@ body.menuitem-active .profile-status {
                                                                             <div class="wd-90">
                                                                                 <h6>{{ $tasks['location']['address'] }}</h6>
                                                                                 <span>{{ $tasks['location']['short_name'] }}</span>
-                                                                                <h5 class="mb-1"><span>Pickup before</span>
+                                                                                <h5 class="mb-1"><span>Due</span>
                                                                                     06:30 pm
+                                                                                    <button
+                                                                                            class="assigned-btn float-right">Assigned</button>
                                                                                 </h5>
-                                                                                <div class="row">
-                                                                                    <div class="col-md-6">
-                                                                                        <a class="view-task-details"
-                                                                                            href="">View Task
-                                                                                            Details</a>
-                                                                                    </div>
-                                                                                    <div class="col-md-6 text-right">
-                                                                                        <button
-                                                                                            class="assigned-btn">Assigned</button>
-                                                                                    </div>
-                                                                                </div>
+     
+                                                                            </div>
+                                                                            <div class="pb-3">
+
                                                                             </div>
                                                                         </div>
+                                                                        
                                                                     </div>
                                                                 @endforeach
-
+                                                                
                                                             @endforeach
                                                         </div>
                                                     </div>
@@ -392,7 +388,7 @@ body.menuitem-active .profile-status {
                                     <div class="dropdown d-inline-block brdr-1">
                                         <button class="dropdown-toggle" type="button" id="dropdownMenuButton"
                                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            <img class="mr-1" src="{{ asset('demo/images/ic_time.png') }}">All Tasks
+                                            <img class="mr-1" src="{{ asset('demo/images/ic_time.png') }}">Tasks
                                         </button>
                                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                             <div class="task-block pl-2 pr-2">
@@ -424,7 +420,7 @@ body.menuitem-active .profile-status {
                                                 <div class="row mt-2">
                                                     <div class="col-md-9">
                                                         <h6><img class="mr-2"
-                                                                src="{{ asset('demo/images/blue-dot.png') }}"></span>Unassigned
+                                                                src="{{ asset('assets/icons/unassigned.png') }}"></span>Unassigned
                                                         </h6>
                                                     </div>
                                                     <div class="col-md-3 text-right">
@@ -438,7 +434,7 @@ body.menuitem-active .profile-status {
                                                 <div class="row mt-2">
                                                     <div class="col-md-9">
                                                         <h6><img class="mr-2"
-                                                                src="{{ asset('demo/images/green-dot.png') }}"></span>Assigned
+                                                                src="{{ asset('assets/icons/assigned.png') }}"></span>Assigned
                                                         </h6>
                                                     </div>
                                                     <div class="col-md-3 text-right">
@@ -449,24 +445,11 @@ body.menuitem-active .profile-status {
                                                         </label>
                                                     </div>
                                                 </div>
+
                                                 <div class="row mt-2">
                                                     <div class="col-md-9">
                                                         <h6><img class="mr-2"
-                                                                src="{{ asset('demo/images/yellow-dot.png') }}"></span>In
-                                                            transit</h6>
-                                                    </div>
-                                                    <div class="col-md-3 text-right">
-                                                        <label class="mt-2">
-                                                            <input class="taskchecks" type="checkbox" name="taskstatus[]"
-                                                                value="2">
-                                                            <span class="checkmark"></span>
-                                                        </label>
-                                                    </div>
-                                                </div>
-                                                <div class="row mt-2">
-                                                    <div class="col-md-9">
-                                                        <h6><img class="mr-2"
-                                                                src="{{ asset('demo/images/pink-dot.png') }}"></span>Completed
+                                                                src="{{ asset('assets/icons/completed.png') }}"></span>Completed
                                                         </h6>
                                                     </div>
                                                     <div class="col-md-3 text-right">
@@ -480,7 +463,7 @@ body.menuitem-active .profile-status {
                                                 <div class="row mt-2">
                                                     <div class="col-md-9">
                                                         <h6><img class="mr-2"
-                                                                src="{{ asset('demo/images/purple-dot.png') }}"></span>Failed
+                                                                src="{{ asset('assets/icons/failed.png') }}"></span>Failed
                                                         </h6>
                                                     </div>
                                                     <div class="col-md-3 text-right">
@@ -497,7 +480,7 @@ body.menuitem-active .profile-status {
                                     <div class="dropdown d-inline-block">
                                         <button class="dropdown-toggle" type="button" id="dropdownMenuButton"
                                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            <img class="mr-1" src="{{ asset('demo/images/ic_time.png') }}">All Drivers
+                                            <img class="mr-1" src="{{ asset('demo/images/ic_time.png') }}">Drivers
                                         </button>
                                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                             <div class="task-block pl-2 pr-2">
@@ -605,6 +588,112 @@ body.menuitem-active .profile-status {
             // });
             var olddata  = {!!json_encode($newmarker)!!};
             var allagent = {!!json_encode($agents)!!};
+            var theme    = {!!json_encode($theme->theme)!!};
+            if(theme == 'dark'){
+                var themeType = [
+                        { elementType: "geometry", stylers: [{ color: "#242f3e" }] },
+                        {
+                        elementType: "labels.text.stroke",
+                        stylers: [{ color: "#242f3e" }],
+                        },
+                        {
+                        elementType: "labels.text.fill",
+                        stylers: [{ color: "#746855" }],
+                        },
+                        {
+                        featureType: "administrative.locality",
+                        elementType: "labels.text.fill",
+                        stylers: [{ color: "#d59563" }],
+                        },
+                        {
+                        featureType: "poi",
+                        elementType: "labels.text.fill",
+                        stylers: [{ color: "#d59563" }],
+                        },
+                        {
+                        featureType: "poi.park",
+                        elementType: "geometry",
+                        stylers: [{ color: "#263c3f" }],
+                        },
+                        {
+                        featureType: "poi.park",
+                        elementType: "labels.text.fill",
+                        stylers: [{ color: "#6b9a76" }],
+                        },
+                        {
+                        featureType: "road",
+                        elementType: "geometry",
+                        stylers: [{ color: "#38414e" }],
+                        },
+                        {
+                        featureType: "road",
+                        elementType: "geometry.stroke",
+                        stylers: [{ color: "#212a37" }],
+                        },
+                        {
+                        featureType: "road",
+                        elementType: "labels.text.fill",
+                        stylers: [{ color: "#9ca5b3" }],
+                        },
+                        {
+                        featureType: "road.highway",
+                        elementType: "geometry",
+                        stylers: [{ color: "#746855" }],
+                        },
+                        {
+                        featureType: "road.highway",
+                        elementType: "geometry.stroke",
+                        stylers: [{ color: "#1f2835" }],
+                        },
+                        {
+                        featureType: "road.highway",
+                        elementType: "labels.text.fill",
+                        stylers: [{ color: "#f3d19c" }],
+                        },
+                        {
+                        featureType: "transit",
+                        elementType: "geometry",
+                        stylers: [{ color: "#2f3948" }],
+                        },
+                        {
+                        featureType: "transit.station",
+                        elementType: "labels.text.fill",
+                        stylers: [{ color: "#d59563" }],
+                        },
+                        {
+                        featureType: "water",
+                        elementType: "geometry",
+                        stylers: [{ color: "#17263c" }],
+                        },
+                        {
+                        featureType: "water",
+                        elementType: "labels.text.fill",
+                        stylers: [{ color: "#515c6d" }],
+                        },
+                        {
+                        featureType: "water",
+                        elementType: "labels.text.stroke",
+                        stylers: [{ color: "#17263c" }],
+                        },
+                        {
+                        featureType: "poi",
+                        elementType: "labels",
+                        stylers: [
+                            { visibility: "off" }
+                        ]
+                       },
+                    ];
+            }else{
+                themeType = [
+                    {
+                        featureType: "poi",
+                        elementType: "labels",
+                        stylers: [
+                            { visibility: "off" }
+                        ]
+                    }
+                ];
+            }
             // var teamdata = {!!json_encode($teams)!!};
             // var cars    = [0];
 
@@ -671,19 +760,16 @@ body.menuitem-active .profile-status {
                         switch (checkdata[5]) {
                             
                             case 1:
-                                image = 'http://192.168.100.211:8000/assets/icons/completed.png';
+                                image = '{{ asset('assets/icons/assigned.png') }}';
                                 break;
                             case 0:
-                                image = 'http://192.168.100.211:8000/assets/icons/completed.png';
+                                image = '{{ asset('assets/icons/unassigned.png') }}';
                                 break;
                             case 2:
-                                image = 'http://192.168.100.211:8000/assets/icons/completed.png';
+                                image = '{{ asset('assets/icons/completed.png') }}';
                                 break;
                             case 3:
-                                image = 'http://192.168.100.211:8000/assets/icons/completed.png';
-                                break;
-                            case 4:
-                                image = 'http://192.168.100.211:8000/assets/icons/completed.png';
+                                image = '{{ asset('assets/icons/failed.png') }}';
                                 break;
                         }
                         send = null;
@@ -743,6 +829,7 @@ body.menuitem-active .profile-status {
                     zoom: 12,
                     center: haightAshbury,
                     mapTypeId: "roadmap",
+                    styles: themeType,
                 });
                 // This event listener will call addMarker() when the map is clicked.
                 // map.addListener("click", (event) => {

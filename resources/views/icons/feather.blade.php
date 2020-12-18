@@ -782,7 +782,7 @@
                             <i class="fe-database"></i> fe-database
                         </div>
                         <div class="col-sm-6 col-md-4 col-lg-3">
-                            <i class="fe-dollar-sign"></i> fe-dollar-sign
+                             fe-dollar-sign
                         </div>
                         <div class="col-sm-6 col-md-4 col-lg-3">
                             <i class="fe-folder-plus"></i> fe-folder-plus

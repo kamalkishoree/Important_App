@@ -7,7 +7,7 @@
         }
 
         .book {
-            height: 100px !important;
+            
             margin-bottom: 10px;
         }
 
@@ -39,7 +39,8 @@
             display: none;
         }
 
-        .book {}
+        
+       
 
     </style>
 @endsection
@@ -89,19 +90,19 @@
                                     <div class="login-form">
                                         <ul class="list-inline">
                                             <li class="d-inline-block mr-2">
-                                                <input type="radio" id="acknowledge1" value="acknowledge"
+                                                <input type="radio" id="acknowledge1" class="autoredio" value="acknowledge"
                                                 name="acknowledgement_type"
                                                 {{ isset($preference) && $preference->acknowledgement_type == 'acknowledge' ? 'checked' : '' }}>
                                             <label for="acknowledge1"> Acknowledge </label>
                                             </li>
                                             <li class="d-inline-block mr-2">
-                                                <input type="radio" id="acknowledge2" value="acceptreject"
+                                                <input type="radio" id="acknowledge2" class="autoredio" value="acceptreject"
                                                 name="acknowledgement_type"
                                                 {{ isset($preference) && $preference->acknowledgement_type == 'acceptreject' ? 'checked' : '' }}>
                                             <label for="acknowledge2"> Accept/Reject </label>
                                             </li>
                                             <li class="d-inline-block">
-                                                <input type="radio" id="acknowledge3" value="none" name="acknowledgement_type"
+                                                <input type="radio" id="acknowledge3" class="autoredio" value="none" name="acknowledgement_type"
                                                 {{ isset($preference) && $preference->acknowledgement_type == 'none' ? 'checked' : '' }}>
                                             <label for="acknowledge3"> None </label>
                                             </li>
@@ -135,13 +136,13 @@
                                     </div> --}}
 
                                 </div>
-                                <div class="row mb-2">
+                                {{-- <div class="row mb-2">
                                     <div class="col-md-2">
                                         <div class="form-group mb-0 text-center">
                                             <button class="btn btn-blue btn-block" type="submit"> Update </button>
                                         </div>
                                     </div>
-                                </div>
+                                </div> --}}
                             </div>
                         </div>
                     </div>
@@ -269,7 +270,7 @@
                             <div class="col-md-6 click first_click five" id="redio1">
                                 <div class="border p-3 rounded book ">
                                     <div class="row">
-                                        <div class="col-md-10 first-part">
+                                        <div class="col-md-8 first-part">
                                     
                                         <div class="custom-control custom-radio">
                                             <input type="radio" id="shippingMethodRadio1" name="auto_assign_logic"
@@ -280,8 +281,8 @@
                                         </div>
                                         <strong class="tagline one_by_one" style="">Allocation will done one by one</strong>
                                     </div>
-                                    <div class="col-md-2 icon-part">
-                                    <img src="{{asset('assets/icons/onebyone.png')}}" style="height:60px;" alt="">
+                                    <div class="col-md-4 icon-part">
+                                    <img class="img-fluid" src="{{asset('assets/icons/onebyone.png')}}"  alt="">
                                     </div>
                                     </div>
                                 </div>
@@ -289,7 +290,7 @@
                             <div class="col-md-6 click five" id="redio2">
                                 <div class="border p-3 rounded book">
                                     <div class="row">
-                                    <div class="col-md-10 first-part">
+                                    <div class="col-md-8 first-part">
                                         <div class="custom-control custom-radio">
                                             <input type="radio" id="shippingMethodRadio2" name="auto_assign_logic"
                                                 class="custom-control-input custom-logic" value="send_to_all"
@@ -299,8 +300,8 @@
                                         </div>
                                         <strong class="tagline send_to_all">Allocation request will send to all</strong>
                                     </div>
-                                    <div class="col-md-2 icon-part">
-                                        <img src="{{asset('assets/icons/sendtoall.png')}}" style="height:60px;" alt="">
+                                    <div class="col-md-4 icon-part">
+                                        <img class="img-fluid" src="{{asset('assets/icons/sendtoall.png')}}"  alt="">
                                     </div>
                                 </div>
                                 </div>
@@ -308,7 +309,7 @@
                             <div class="col-md-6 click batch" id="redio3">
                                 <div class="border p-3 rounded book">
                                     <div class="row">
-                                        <div class="col-md-10 first-part">
+                                        <div class="col-md-8 first-part">
                                 
                                         <div class="custom-control custom-radio">
                                             <input type="radio" id="shippingMethodRadio3" name="auto_assign_logic"
@@ -319,8 +320,8 @@
                                         </div>
                                         <strong class="tagline batch_wise">Allocation request will done batch wise</strong>
                                     </div>
-                                    <div class="col-md-2 icon-part">
-                                        <img src="{{asset('assets/icons/batch.png')}}" style="height:60px;" alt="">
+                                    <div class="col-md-4 icon-part">
+                                        <img class="img-fluid" src="{{asset('assets/icons/batch.png')}}"  alt="">
                                     </div>
                                     </div>
                                 </div>
@@ -328,7 +329,7 @@
                             <div class="col-md-6 click five" id="redio4">
                                 <div class="border p-3 rounded book set">
                                     <div class="row">
-                                        <div class="col-md-10 first-part">
+                                        <div class="col-md-8 first-part">
                                         <div class="custom-control custom-radio">
                                             <input type="radio" id="shippingMethodRadio4" name="auto_assign_logic"
                                                 class="custom-control-input custom-logic" value="round_robin"
@@ -339,8 +340,8 @@
                                         <strong class="tagline round_robin">Allocation request will done in round robin
                                             format</strong>
                                     </div>
-                                    <div class="col-md-2 icon-part">
-                                        <img src="{{asset('assets/icons/roundrobin.png')}}" style="height:60px;" alt="">
+                                    <div class="col-md-4 icon-part">
+                                        <img class="img-fluid" src="{{asset('assets/icons/roundrobin.png')}}"  alt="">
                                     </div>
                                     </div>
                                 </div>
@@ -474,6 +475,22 @@
                 $('.extra').hide();
 
             });
+
+            var CSRF_TOKEN = $("input[name=_token]").val();
+            
+            
+            $(document).on('click', '.autoredio', function () {
+                var value = $("input[name='acknowledgement_type']:checked").val();
+               
+            $.ajax({
+                url: "{{ route('auto-update', Auth::user()->code ?? '') }}",
+                type: 'PATCH',
+                data: { _token: CSRF_TOKEN,acknowledgement_type: value,_method: "PATCH"},
+                success: function(res) {
+
+                }
+            });
+          });
 
 
 

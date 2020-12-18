@@ -70,6 +70,7 @@ Route::group(['prefix' => '/godpanel'], function () {
 	Route::get('tag/{id}/{type}/edit', 'TagController@edit')->name('tag.edit');
 	Route::delete('tag/{id}/{type}', 'TagController@destroy')->name('tag.destroy');
 	Route::resource('auto-allocation', 'AllocationController');
+	Route::patch('auto-allocation-update/{id}', 'AllocationController@updateAllocation')->name('auto-update');
 	Route::resource('profile', 'ProfileController');
 	Route::resource('geo-fence', 'GeoFenceController');
 	Route::get('geo-fence-all', 'GeoFenceController@allList')->name('geo.fence.list');
@@ -82,6 +83,7 @@ Route::group(['prefix' => '/godpanel'], function () {
 	Route::resource('manager', 'ManagerController');
 	Route::resource('plan-billing', 'PlanBillingController');
 	Route::resource('tasks','TaskController');
+	Route::post('tasks/list/{id}','TaskController@tasklist')->name('task.list');
 	Route::post('search/customer', 'TaskController@search')->name('search');
 
 	Route::get('{first}/{second}/{third}', 'RoutingController@thirdLevel')->name('third');

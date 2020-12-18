@@ -145,7 +145,7 @@
            padding-top: 10px;
        }
 
-.pac-container, .pac-container .pac-item { z-index: 99999 !important; }
+
     </style>
 
 
@@ -307,13 +307,8 @@
                                         <div class="form-group alladdress" id="typeInput">
                                             {!! Form::text('short_name[]', null, ['class' => 'form-control address',
                                             'placeholder' => 'Address Short Name','required' => 'required']) !!}
-
-                                            <input type="text" id="add1-input" name="address[]" class="form-control address cust_add" placeholder="Address">
-                                            <div class="input-group-append">
-                                                <button class="btn btn-xs btn-dark waves-effect waves-light showMap" type="button" num="add1"> <i class="mdi mdi-map-marker-radius"></i></button>
-                                            </div>
-                                            <input type="hidden" name="latitude[]" id="add1-latitude" value="0" class="cust_latitude" />
-                                            <input type="hidden" name="longitude[]" id="add1-longitude" value="0" class="cust_longitude" />
+                                            {!! Form::textarea('address[]', null, ['class' => 'form-control address',
+                                            'placeholder' => 'Full Address','required' => 'required', 'rows' => 2]) !!}
                                             {!! Form::text('post_code[]', null, [
                                             'class' => 'form-control address',
                                             'placeholder' => 'Post Code',
@@ -494,44 +489,12 @@
 
 
     </div>
-
-<div id="show-map-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
-    <div class="modal-dialog modal-full-width">
-        <div class="modal-content">
-
-            <div class="modal-header">
-                <h4 class="modal-title">Select Location</h4>
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-            </div>
-            <div class="modal-body p-4">
-                
-                <div class="row">
-                    <form id="task_form" action="#" method="POST" style="width: 100%">
-                        <div class="col-md-12">
-                            <div id="googleMap" style="height: 500px; min-width: 500px; width:100%"></div>
-                            <input type="hidden" name="lat_input" id="lat_map" value="0" />
-                            <input type="hidden" name="lng_input" id="lng_map" value="0" />
-                            <input type="hidden" name="for" id="map_for" value="" />
-                        </div>
-                    </form>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="submit" class="btn btn-blue waves-effect waves-light selectMapLocation">Ok</button>
-                <!--<button type="Cancel" class="btn btn-blue waves-effect waves-light cancelMapLocation">cancel</button>-->
-            </div>
-        </div>
-    </div>
-</div>
-<div class="row address" id="add0" style="display: none;">
-    <input type="text" id="add0-input" name="test" class="autocomplete form-control add0-input" placeholder="Address">
-</div>
 @endsection
 
 
 @section('script')
     <!-- google maps api -->
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB85kLYYOmuAhBUPd7odVmL6gnQsSGWU-4&libraries=places"></script> 
+
     <!-- Plugins js-->
     <script src="{{ asset('assets/libs/selectize/selectize.min.js') }}"></script>
     <script src="{{ asset('assets/libs/mohithg-switchery/mohithg-switchery.min.js') }}"></script>
@@ -541,7 +504,8 @@
     <script src="{{ asset('assets/libs/bootstrap-touchspin/bootstrap-touchspin.min.js') }}"></script>
     <script src="{{ asset('assets/libs/bootstrap-maxlength/bootstrap-maxlength.min.js') }}"></script>
     <script src="{{ asset('assets/libs/devbridge-autocomplete/devbridge-autocomplete.min.js') }}"></script>
- 
+    {{-- <script src="{{ asset('assets/libs/jquery-mockjax/jquery-mockjax.min.js') }}">
+    </script> --}}
     <script src="{{ asset('assets/libs/sweetalert2/sweetalert2.min.js') }}"></script>
 
     <!-- Plugins js-->
@@ -557,134 +521,13 @@
     <script src="{{ asset('assets/libs/dropzone/dropzone.min.js') }}"></script>
     <script src="{{ asset('assets/libs/dropify/dropify.min.js') }}"></script>
     <script src="{{ asset('assets/js/pages/form-fileuploads.init.js') }}"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
     <!-- Page js-->
 
 
-    <script type="text/javascript">
-        
-    /*$('.openModal').click(function(){
-        $('#add-customer-modal').modal({
-            //backdrop: 'static',
-            keyboard: false
-        });
-        loadMap(autocompletesWraps);
-    });*/
 
-    var autocomplete = {};
-    var autocompletesWraps = ['add0'];
-    var count = 1; editCount = 0;
-    autocompletesWraps.push('add1');
-    $(document).ready(function(){
-        //autocompletesWraps.push('add1');
-        loadMap(autocompletesWraps);
-    })
-
-        function loadMap(autocompletesWraps){
-
-        
-            $.each(autocompletesWraps, function(index, name) {
-                const geocoder = new google.maps.Geocoder;
-
-                //console.log(name+'--');
-                if($('#'+name).length == 0) {
-                    return;
-                }
-                //autocomplete[name] = new google.maps.places.Autocomplete(('.form-control')[0], { types: ['geocode'] }); console.log('hello');
-                autocomplete[name] = new google.maps.places.Autocomplete(document.getElementById(name+'-input'), { types: ['geocode'] });
-                    console.log('hello');
-                google.maps.event.addListener(autocomplete[name], 'place_changed', function() {
-                    
-                    var place = autocomplete[name].getPlace();
-
-                    geocoder.geocode({'placeId': place.place_id}, function (results, status) {
-                        
-                        if (status === google.maps.GeocoderStatus.OK) {
-                            const lat = results[0].geometry.location.lat();
-                            const lng = results[0].geometry.location.lng();
-                            console.log(latitudes);
-                            document.getElementById(name + '-latitude').value = lat;
-                            document.getElementById(name + '-longitude').value = lng;
-                        }
-                    });
-                });
-            });
-
-        }
-
-        loadMap(autocompletesWraps);
-
-        $(document).on('click', '.showMap', function(){
-            var no = $(this).attr('num');
-            var lats = document.getElementById(no+'-latitude').value;
-            var lngs = document.getElementById(no+'-longitude').value;
-
-            document.getElementById('map_for').value = no;
-
-            if(lats == null || lats == '0'){
-                lats = 51.508742;
-            }
-            if(lngs == null || lngs == '0'){
-                lngs = -0.120850;
-            }
-
-            var myLatlng = new google.maps.LatLng(lats, lngs);
-                var mapProp = {
-                    center:myLatlng,
-                    zoom:5,
-                    mapTypeId:google.maps.MapTypeId.ROADMAP
-                  
-                };
-                var map=new google.maps.Map(document.getElementById("googleMap"), mapProp);
-                    var marker = new google.maps.Marker({
-                      position: myLatlng,
-                      map: map,
-                      title: 'Hello World!',
-                      draggable:true  
-                  });
-                document.getElementById('lat_map').value= lats;
-                document.getElementById('lng_map').value= lngs ; 
-                // marker drag event
-                google.maps.event.addListener(marker,'drag',function(event) {
-                    document.getElementById('lat_map').value = event.latLng.lat();
-                    document.getElementById('lng_map').value = event.latLng.lng();
-                });
-
-                //marker drag event end
-                google.maps.event.addListener(marker,'dragend',function(event) {
-                    var zx =JSON.stringify(event);
-                    console.log(zx);
-
-
-                    document.getElementById('lat_map').value = event.latLng.lat();
-                    document.getElementById('lng_map').value = event.latLng.lng();
-                    //alert("lat=>"+event.latLng.lat());
-                    //alert("long=>"+event.latLng.lng());
-                });
-                $('#add-customer-modal').addClass('fadeIn');
-            $('#show-map-modal').modal({
-                //backdrop: 'static',
-                keyboard: false
-            });
-
-        });
-
-        $(document).on('click', '.selectMapLocation', function () {
-
-            var mapLat = document.getElementById('lat_map').value;
-            var mapLlng = document.getElementById('lng_map').value;
-            var mapFor = document.getElementById('map_for').value;
-            console.log(mapLat+'-'+mapLlng+'-'+mapFor);
-            document.getElementById(mapFor + '-latitude').value = mapLat;
-            document.getElementById(mapFor + '-longitude').value = mapLlng;
-
-
-            $('#show-map-modal').modal('hide');
-        });
-    </script>
 
     <script>
-
-        
         $(document).ready(function() {
             $(".shows").hide();
             $(".addspan").hide();
@@ -752,11 +595,9 @@
             //     // secondDivContent.innerHTML = firstDivContent.innerHTML;
 
             // });
-            var a = 0; countZ = 1;
+            var a = 0;
             $('#adds a').click(function() {
                 a = a +1;
-                countZ = countZ + 1;
-
                 // var direction = this.defaultValue < this.value
                 // this.defaultValue = this.value;
                 // if (direction)
@@ -830,14 +671,6 @@
                             jElem.prop('for', name);
                             count2++;
                         });
-
-                        $clone.find('.cust_add').prop('id', 'add'+countZ+'-input');
-                        $clone.find('.showMap').prop('id', 'add'+countZ);
-                        $clone.find('.cust_latitude').prop('id', 'add'+countZ+'-latitude');
-                        $clone.find('.cust_longitude').prop('id', 'add'+countZ+'-longitude');
-
-
-
                         var spancheck = $clone.find('.onedelete');
                         $.each(spancheck, function(index, elem){
                                
@@ -855,18 +688,11 @@
                             var jElem = $(elem); // jQuery element
                             jElem.prop('required', true);
                         });
-
-
                         // $(".taskrepet").fadeOut();
                         // $(".taskrepet").fadeIn();
                 // }
                 // else $('[id^="newadd"]:last').remove();
                 $('input[id='+newids+']').prop("checked",true);
-
-            autocompletesWraps.indexOf('add'+countZ) === -1 ? autocompletesWraps.push('add'+countZ) : console.log("This item already exists");
-        
-        console.log(autocompletesWraps);
-            loadMap(autocompletesWraps);
             });
 
             //$("#myselect").val();
@@ -1064,6 +890,4 @@
         });
 
     </script>
-
-    
 @endsection

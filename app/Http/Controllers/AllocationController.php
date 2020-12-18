@@ -90,13 +90,26 @@ class AllocationController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
-    {
+    { 
+        
         $validator = $this->updateValidator($request->all())->validate();
         $request['manual_allocation'] = $request->manual_allocation ?? 'n';
         $updatePreference = AllocationRule::updateOrCreate([
             'client_id' => $id
         ],$request->all());
-        return redirect()->back()->with('success', 'Allocation updated successfully!');
+        
+       return redirect()->back()->with('success', 'Allocation updated successfully!');
+    }
+
+    public function updateAllocation(Request $request, $id)
+    { 
+        
+        
+        $updatePreference = ClientPreference::updateOrCreate([
+            'client_id' => $id
+        ],$request->all());
+        return response()->json(true);
+    //    return redirect()->back()->with('success', 'Allocation updated successfully!');
     }
 
     /**
