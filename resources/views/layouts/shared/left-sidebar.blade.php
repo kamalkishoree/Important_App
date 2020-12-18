@@ -44,7 +44,7 @@
                 </li> 
                 <li>   
                     <a href="{{route('customer.index')}}">
-                        <i data-feather="users"></i>
+                        <i class="fe-user-plus"></i>
                         <span> Customers </span>
                     </a>
                 </li>
@@ -71,7 +71,7 @@
                 
                 <li>
                     <a href="{{route('preference.show')}}">
-                        <i data-feather="rss"></i>
+                        <i class="fe-settings"></i>
                         <span> Customize </span>
                     </a>
                 </li>
@@ -83,14 +83,14 @@
                 </li>
                 <li>
                     <a href="{{route('agent.index')}}">
-                        <i data-feather="users"></i>
+                        <i class="fe-user-check"></i>
                         <span> {{ Session::get('agent_name') ? Session::get('agent_name') : 'Agent' }}</span>
                     </a>
                 </li>
 
                 <li>
                     <a href="{{route('geo.fence.list')}}">
-                        <i data-feather="map"></i>
+                        <i class="fe-map"></i>
                         <span> Geo Fence </span>
                     </a>
                 </li>
@@ -103,7 +103,7 @@
                 </li>
                 <li>
                     <a href="{{route('pricing-rules.index')}}">
-                        <i data-feather="paperclip"></i>
+                        <i class="fe-dollar-sign"></i>
                         <span>Pricing Rules</span>
                     </a>
                 </li>
@@ -475,7 +475,7 @@
                             </li>
                         </ul>
                     </div>
-                </li>
+                </li> 
 
                 <li>
                     <a href="#sidebarLayouts" data-toggle="collapse">
@@ -504,7 +504,7 @@
                     </div>
                 </li> 
 
-                <li class="menu-title mt-2">Components</li>
+               <li class="menu-title mt-2">Components</li>
 
                 <li>
                     <a href="#sidebarBaseui" data-toggle="collapse">
@@ -616,7 +616,7 @@
                         <i data-feather="gift"></i>
                         <span> Widgets </span>
                     </a>
-                </li>
+                </li> 
 
                 <li>
                     <a href="#sidebarIcons" data-toggle="collapse">
@@ -653,7 +653,7 @@
                         </ul>
                     </div>
                 </li> 
-
+                
                 <li>
                     <a href="#sidebarForms" data-toggle="collapse">
                         <i data-feather="bookmark"></i>

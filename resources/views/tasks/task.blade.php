@@ -38,9 +38,58 @@
     -ms-transform: scale(1.2); /* IE 9 */
     -webkit-transform: scale(1.2); /* Chrome, Safari, Opera */
     transform: scale(1.2); }
+.showspan{
+    font-weight: normal;
+}
+.showtasks{
+    border: none;
+    outline:none;
+}
+
+
+.assigned-block {
+  background-color: #EAECFD;
+}
+.assigned-block h6 {
+  color: #272727;
+  font-size: 13px;
+  letter-spacing: 0;
+  line-height: 15px;
+  margin-bottom: 0px;
+  margin-top: 4px;
+} 
+.assigned-block span {
+  color: #797979;
+  font-size: 13px;
+  letter-spacing: 0;
+}
+.assigned-block h5 {
+   color: #272727;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0;
+}
+.assigned-block a {
+  color: #797979;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0;
+  border-bottom: 1px dashed #979797;
+}
+.assigned-btn {
+  border-radius: 10px;
+  background-color: rgb(44 129 255 / .21);
+  color: #5664EA;
+  padding: 4px 10px;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0;
+  line-height: 13px;
+  border: none;
+}
 </style>
 @endsection
-
+@include('modals.task-list')
 @section('content')
 <!-- Start Content-->
 <div class="container-fluid">
@@ -68,44 +117,27 @@
                                 @endif
                             </div>
                         </div> 
-
+                        @csrf
                         <div class="col-sm-6">
                         <form name="getTask" id="getTask" method="get" action="{{route('tasks.index')}}">
                             <div class="login-form">
-                            <ul class="list-inline">
+                              <ul class="list-inline">
                                 <li class="d-inline-block mr-2">
-                                  <input type="radio" id="student" onclick="handleClick(this);" name="animal" value="" checked>
-                                  <label for="student">All</label>
-                                </li>
+                                    <input type="radio" id="teacher" name="status" onclick="handleClick(this);" value="pending">
+                                    <label for="teacher">Pending<span class="showspan">{{' ('.$panding_count.')'}}</span></label>
+                                  </li>
                                 <li class="d-inline-block mr-2">
-                                  <input type="radio" id="teacher" name="animal" onclick="handleClick(this);">
-                                  <label for="teacher">Pending</label>
+                                  <input type="radio" id="student" onclick="handleClick(this);" name="status" value="active" checked>
+                                  <label for="student">Active<span class="showspan">{{' ('.$history_count.')'}}</span></label>
                                 </li>
+                                
                   
                                 <li class="d-inline-block mr-2">
-                                  <input type="radio" id="parent" name="animal" value="" onclick="handleClick(this);">
-                                  <label for="parent">History</label>
+                                  <input type="radio" id="parent" name="status" value="" onclick="handleClick(this);" value="completed">
+                                  <label for="parent">History<span class="showspan">{{' ('.$history_count.')'}}</span></label>
                                 </li>
                               </ul>
                             </div>
-                                {{-- <div class="d-inline-block mr-3">
-                                    <input type="radio" name="status" onclick="handleClick(this);" id="radio1" value="all" {{(!isset($status) || $status == 'all') ? 'checked' : ''}}>
-                                    <label for="radio1">All</label>
-                                </div>
-                                <div class="d-inline-block mr-3">
-                                    <input type="radio" name="status" onclick="handleClick(this);" id="radio2" value="pending" {{(isset($status) && $status == 'pending') ? 'checked' : ''}}>
-                                    <label for="radio2">Pending</label>
-                                </div>
-                                
-                                <div class="d-inline-block mr-3">
-                                    <input type="radio" name="status" onclick="handleClick(this);" id="radio3" value="active" {{(isset($status) && $status == 'active') ? 'checked' : ''}}>
-                                    <label for="radio3">Active</label>
-                                </div>
-                               <div class="d-inline-block">
-                                <input type="radio" name="status" onclick="handleClick(this);" id="radio4" value="completed" {{(isset($status) && $status == 'completed') ? 'checked' : ''}}>
-                                <label for="radio4">Completed</label>
-                               </div> --}}
-
                         </form>
                         </div>
                         <div class="col-sm-2"></div>
@@ -119,11 +151,13 @@
                         <table class="table table-striped dt-responsive nowrap w-100"  id="agents-datatable">
                             <thead>
                                 <tr>
-                                    <th>Order Id</th>
+                                    <th>Id</th>
                                     <th>Customer</th>
-                                    {{-- <th>Order Id</th> --}}
+                                    <th>Phone.No</th>
                                     <th>Driver</th>
                                     <th>Create Time</th>
+                                    <th>Due Time</th>
+                                    <th>Tasks</th>
                                     <th>Pricing Rule</th>
                                     <th style="width: 85px;">Action</th>
                                 </tr>
@@ -138,14 +172,21 @@
                                     <td>
                                         {{$task->customer->name}}
                                     </td>
-                                    {{-- <td>
-                                        {{$task->order->id}}
-                                    </td> --}}
                                     <td>
-                                        UnAssind
+                                        {{$task->customer->phone_number}}
+                                    </td>
+                                    <td>
+                                        {{isset($task->agent->name) ? $task->agent->name : 'Unassigned'}}
+                                    </td>
+                                    <td>
+                                        {{$task->order_time}}
                                     </td>
                                     <td>
                                         {{$task->created_at}}
+                                    </td>
+                                    <td>
+                                        <button class="showtasks" value="{{$task->id}}" data-toggle="modal"
+                                            data-target="#task-list-modal" ><i class="fe-eye"></i></button>
                                     </td>
                                     <td>
                                         Not Alloted
@@ -184,24 +225,20 @@
 @section('script')
 
 <!-- Plugins js-->
-<script src="{{asset('assets/libs/flatpickr/flatpickr.min.js')}}"></script>
-<script src="{{asset('assets/libs/select2/select2.min.js')}}"></script>
+
 <script src="{{asset('assets/libs/bootstrap-select/bootstrap-select.min.js')}}"></script>
 <!-- Page js-->
-<script src="{{asset('assets/js/pages/form-advanced.init.js')}}"></script>
-<script src="{{asset('assets/js/pages/form-pickers.init.js')}}"></script>
 
 <script src="{{asset('assets/js/storeAgent.js')}}"></script>
 
 <!-- for File Upload -->
-<script src="{{asset('assets/libs/dropzone/dropzone.min.js')}}"></script>
-<script src="{{asset('assets/libs/dropify/dropify.min.js')}}"></script>
+
 <!-- Page js-->
-<script src="{{asset('assets/js/pages/form-fileuploads.init.js')}}"></script>
+
 
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/8.4.7/js/intlTelInput.js"></script>
+
 
 <script src="{{asset('assets/libs/datatables/datatables.min.js')}}"></script>
 <script src="{{asset('assets/libs/sweetalert2/sweetalert2.min.js')}}"></script>
@@ -212,25 +249,10 @@
         $('#getTask').submit();
     }
 
-$("#phone_number").intlTelInput({
-  utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/8.4.6/js/utils.js"
-});
-$('.intl-tel-input').css('width','100%');
 
-var regEx = /\(?([0-9]{3})\)?([ .-]?)([0-9]{3})\2([0-9]{4})/;
-$("#addAgent").bind("submit", function() {
-       var val = $("#phone_number").val();
-       if (!val.match(regEx)) {
-            $('#phone_number').css('color','red');
-            return false;
-        }
-});
 
-$(function(){
-    $('#phone_number').focus(function(){
-        $('#phone_number').css('color','#6c757d');
-    });
-});
+
+
 
 $(document).ready( function () {
     $('#agents-datatable').DataTable();
@@ -240,8 +262,26 @@ $(document).ready( function () {
     $('#basic-datatable').DataTable();
 });
 
-$("#phone_number").inputFilter(function(value) {
-  return /^-?\d*$/.test(value); });
+
+  $(document).on('click', '.showtasks', function () {
+      var CSRF_TOKEN = $("input[name=_token]").val();
+      var tour_id = $(this).val();
+      var basic = window.location.origin;
+      var url = basic+"/tasks/list/"+tour_id;
+        $.ajax({
+            url: url,
+            type: 'post',
+            dataType: "json",
+            data: {
+            _token: CSRF_TOKEN,
+            },
+            success: function(data) {
+                console.log(data);
+            }
+                            
+        });
+    });
+                     
 
 </script>
 

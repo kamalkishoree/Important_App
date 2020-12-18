@@ -104,12 +104,12 @@ class DashBoardController extends Controller
 
             
         
-            
+        $theme = \App\Model\ClientPreference::where(['id' => 1])->first('theme');
        
        
         $agents = Agent::with('agentlog')->get()->toArray();
 
-        return view('dashboard')->with(['teams' => $teams,'newmarker'=> $newmarker,'unassigned'=> $unassigned,'agents'=> $agents]);
+        return view('dashboard')->with(['teams' => $teams,'newmarker'=> $newmarker,'unassigned'=> $unassigned,'agents'=> $agents,'theme' => $theme]);
     }
 
     /**

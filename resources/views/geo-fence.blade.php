@@ -195,7 +195,7 @@ exit;
                                                     id="{{ $agent->id }}" name="agents[]" value="{{ $agent->id }}">
                                                 <label class="custom-control-label new" for="{{ $agent->id }}"></label>
                                                 <img class="imageagent"
-                                                    src="{{isset($agent->profile_picture) ? Phumbor::url(Storage::disk('s3')->url($agent->profile_picture))->trim() : Phumbor::url(URL::to('/asset/images/no-image.png')) }}"
+                                                    src="{{isset($agent->profile_picture) ? Phumbor::url(Storage::disk('s3')->url($agent->profile_picture))->fitin(90,50) : '' }}"
                                                     alt="" style="border-radius:50%; ">
                                             </div>
                                             <div class="col-md-8">
@@ -237,12 +237,15 @@ exit;
             </div>
         </form>
     </div>
+    @php
+    $key = session('preferences.map_key_1') != null ? session('preferences.map_key_1'):'kdsjhfkjsdhfsf';
+   @endphp
 @endsection
 
 @section('script')
     <!-- google maps api -->
     <script
-        src="https://maps.google.com/maps/api/js?key=AIzaSyB85kLYYOmuAhBUPd7odVmL6gnQsSGWU-4&v=3.exp&libraries=drawing,places">
+        src="https://maps.google.com/maps/api/js?key={{$key}}&v=3.exp&libraries=drawing,places">
     </script>
 
     <!-- Plugins js-->
@@ -276,6 +279,12 @@ exit;
         var lat = parseFloat(first_location.lat);
         var lng = parseFloat(first_location.lng);
 
+
+        function gm_authFailure() {
+                
+                $('.excetion_keys').append('<span><i class="mdi mdi-block-helper mr-2"></i> <strong>Google Map</strong> key is not valid</span><br/>');
+                $('.displaySettingsError').show();
+        };
 
         function deleteSelectedShape() {
             drawingManager.setMap(null);

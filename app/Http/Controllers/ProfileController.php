@@ -81,6 +81,7 @@ class ProfileController extends Controller
      */
     public function update(Request $request, $id)
     {
+       
         
         $validator = Validator::make($request->all(), [
             'name' => ['required', 'string', 'max:255'],
@@ -120,7 +121,7 @@ class ProfileController extends Controller
             'logo' => $getFileName,
         ];
 
-       // $client = Client::where('id', $id)->update($data);
+        $client = Client::where('code', $id)->update($data);
         $password = null;
         $this->dispatchNow(new UpdatePassword($password,$data));
 

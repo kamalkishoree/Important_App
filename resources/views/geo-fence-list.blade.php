@@ -112,17 +112,24 @@
 
     </div>
 
-
+    @php
+    $key = session('preferences.map_key_1') != null ? session('preferences.map_key_1'):'kdsjhfkjsdhfsf';
+    @endphp
 </div>
 @endsection
 
 @section('script')
 <!-- google maps api -->
-<script src="https://maps.google.com/maps/api/js?key=AIzaSyB85kLYYOmuAhBUPd7odVmL6gnQsSGWU-4&v=3.exp&libraries=drawing"></script>
+<script src="https://maps.google.com/maps/api/js?key={{$key}}&v=3.exp&libraries=drawing"></script>
 
 <script>
     var no_parking_geofences_json = {!! json_encode($all_coordinates) !!};
 
+    function gm_authFailure() {
+                
+                $('.excetion_keys').append('<span><i class="mdi mdi-block-helper mr-2"></i> <strong>Google Map</strong> key is not valid</span><br/>');
+                $('.displaySettingsError').show();
+    };
     var map; // Global declaration of the map
     function initialize() {     
 

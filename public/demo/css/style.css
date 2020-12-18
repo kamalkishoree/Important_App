@@ -145,12 +145,7 @@ header .navbar-light .navbar-nav .nav-link {
     /* symbol for "collapsed" panels */
     content: "\f107"; 
 }
-.left-sidebar h6 {
-   color: #272727;
-  font-size: 14px;
-  font-weight: 500;
-  letter-spacing: 0;
-}
+
 .left-sidebar p{
    color: #797979;
   font-size: 13px;
@@ -400,4 +395,51 @@ header .navbar-light .navbar-nav .nav-link {
 }
 body.menuitem-active .task-block h6 {
   color: #cecece;
+}
+.profile-circle{
+  height: 40px;
+  width: 40px;
+  border-radius: 50%;
+  line-height: 40px;
+  display: inline-block;
+  color: #FFF!important;
+  background-color: rgba(233, 130, 27, 0.5);
+  text-align: center;
+  font-size: 22px!important;
+  font-weight: bold !important;
+}
+.profile-circle.one{
+  background-color: hsla(0, 100%, 50%, 0.5)!important;
+}
+.profile-circle.two{
+  background-color: hsla(120, 100%, 25%, 0.5)!important;
+}
+.profile-circle.three{
+  background-color: hsla(240, 100%, 50%, 0.5)!important;
+}
+.profile-circle.four{
+  background-color: rgba(165, 42, 42, 0.5), 0.527)!important;
+}
+.profile-circle.five{
+  background-color: hsla(182, 100%, 50%, 0.5)!important;
+}
+.profile-circle.six{
+  background-color: hsla(350, 100%, 88%, 0.5)!important;
+}
+.profile-circle.seven{
+  background-color: hsla(0, 0%, 50%, 0.5)!important;
+}
+.profile-circle.eight{
+  background-color: hsla(0, 0%, 0%, 0.5)!important;
+}
+.left-sidebar .card {
+  background: transparent !important;
+}
+.left-sidebar .header-title {
+  font-size: .8rem;
+  margin-top: 6px;
+}
+.left-sidebar .card-header.scnd {
+  font-size: .7rem;
+  margin-top: 6px;
 }

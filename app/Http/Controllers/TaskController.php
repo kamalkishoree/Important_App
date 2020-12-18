@@ -29,16 +29,20 @@ class TaskController extends Controller
     public function index(Request $request)
     {
         /* Orter status will be done as per task completed. task assigned than assigned all task of order completed tha completed and so on*/
-        $tasks = Order::orderBy('created_at', 'DESC')->with(['customer', 'location', 'taskFirst','agent']);
+        $tasks = Order::orderBy('created_at', 'DESC')->with(['customer', 'location', 'taskFirst','agent','task']);
         if($request->has('status') && $request->status != 'all'){
             $tasks = $tasks->where('status', $request->status);
         }
+        $all      =  Order::where('status','!=',null)->get();
+        $active   =  count($all->where('status','active'));
+        $pending  =  count($all->where('status','pending'));
+        $history  =  count($all->where('status','completed'));
         $tasks = $tasks->paginate(10);
         
     
         
         
-        return view('tasks/task')->with(['tasks' => $tasks, 'status' =>$request->status]);
+        return view('tasks/task')->with(['tasks' => $tasks, 'status' =>$request->status,'active_count' => $active,'panding_count' => $pending,'history_count'=> $history]);
     }
 
     /**
@@ -48,8 +52,8 @@ class TaskController extends Controller
      */
     public function create()
     {
-        $teamTag    = TagsForTeam::all();
-        $agentTag   = TagsForAgent::all();
+        $teamTag     = TagsForTeam::all();
+        $agentTag    = TagsForAgent::all();
         $pricingRule = PricingRule::select('id', 'name')->get();
 
         /*$pricingRule = PricingRule::select('id', 'name')->whereDate('start_date_time', '<', Carbon::now())
@@ -599,5 +603,13 @@ class TaskController extends Controller
             $loction = Location::where('customer_id', $id)->get();
             return response()->json($loction);
         }
+    }
+
+    public function tasklist($id)
+    {
+        $task = Order::where('id',$id)->with('task.location')->get();
+        return response()->json($task);
+       
+        # code...
     }
 }

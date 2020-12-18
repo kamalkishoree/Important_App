@@ -81,3 +81,7 @@
   .taskselect{
       font-weight: 700;
   }
+
+  .dropify-wrapper{
+    height: 130px !important;
+  }

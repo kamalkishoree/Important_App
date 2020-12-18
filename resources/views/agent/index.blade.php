@@ -1,4 +1,4 @@
-@extends('layouts.vertical', ['title' => 'Options'])
+@extends('layouts.vertical', ['title' => 'Agents'])
 
 @section('css')
     <link href="{{ asset('assets/libs/select2/select2.min.css') }}" rel="stylesheet" type="text/css" />
@@ -91,19 +91,19 @@
                         <table class="table table-striped dt-responsive nowrap w-100" id="agents-datatable">
                             <thead>
                                 <tr>
-                                    <th>#</th>
+                                    <th></th>
                                     <th>Name</th>
                                     <th>Phone</th>
                                     <th>Type</th>
                                     <th>Team</th>
-                                    <th>Transport Type</th>
+                                    <th>Vehicle</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
                             @foreach ($agents as $agent)
                                 <tr> 
-                                    <td><img alt="{{$agent->id}}" src="{{isset($agent->profile_picture) ? Phumbor::url(Storage::disk('s3')->url($agent->profile_picture))->trim() : Phumbor::url(URL::to('/asset/images/no-image.png')) }}" width="40"></td>
+                                    <td><img alt="{{$agent->id}}" src="{{isset($agent->profile_picture) ? Phumbor::url(Storage::disk('s3')->url($agent->profile_picture))->fitin(90,50) : Phumbor::url(URL::to('/asset/images/no-image.png')) }}" width="40"></td>
                                     <td class="table-user">
                                         <a href="javascript:void(0);"
                                             class="text-body font-weight-semibold">{{ $agent->name }}</a>
@@ -122,9 +122,7 @@
                                         @endif
 
                                     </td>
-                                    <td>
-                                        {{ $agent->vehicle_type_id }}
-                                    </td>
+                                    <td><img alt=""  style="width: 80px;" src="{{ asset('assets/icons/extra/'. $agent->vehicle_type_id.'.png') }}" ></td>
                                     <!-- <td><span class="badge bg-soft-success text-success">Active</span></td> -->
 
                                     <td>
