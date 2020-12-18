@@ -136,7 +136,7 @@
       var myLatlng = new google.maps.LatLng({{ $center['lat'] }},{{ $center['lng']  }});
       console.log(myLatlng);
       var myOptions = {
-        zoom: parseInt(10),
+        zoom: parseInt(13),
         center: myLatlng,
         mapTypeId: google.maps.MapTypeId.ROADMAP
       }
