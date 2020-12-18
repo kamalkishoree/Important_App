@@ -186,14 +186,14 @@ class TaskController extends Controller
             }
         }
          $geo = null;
-        if($request->allocation_type === 'a'){
-            $geo = $this->createRoster($send_loc_id);
-            $agent_id = null;
-        }
+        // if($request->allocation_type === 'a'){
+        //     $geo = $this->createRoster($send_loc_id);
+        //     $agent_id = null;
+        // }
          
-        if($request->allocation_type === 'a' || $request->allocation_type === 'm'){
-            $this->finalRoster($geo,$notification_time,$agent_id,$orders->id);
-        }
+        // if($request->allocation_type === 'a' || $request->allocation_type === 'm'){
+        //     $this->finalRoster($geo,$notification_time,$agent_id,$orders->id);
+        // }
         
          
          
