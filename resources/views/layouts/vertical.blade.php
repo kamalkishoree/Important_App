@@ -4,6 +4,8 @@
     <head>
         @include('layouts.shared/title-meta', ['title' => $title])
         @include('layouts.shared/head-css', ["demo" => "creative"])
+
+        <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 </head>
 
     <body @yield('body-extra')>
@@ -60,8 +62,9 @@
     <!-- END wrapper -->
 
     @include('layouts.shared/right-sidebar')
+    @include('layouts.shared/add-task-head')
 
-        @include('layouts.shared/footer-script')
+    @include('layouts.shared/footer-script')
         
     </body>
 

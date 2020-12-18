@@ -36,9 +36,12 @@ class TaskController extends Controller
         $tasks = $tasks->paginate(10);
         
     
-        
-        return view('task-new/index')->with(['tasks' => $tasks, 'status' =>$request->status]);
-        //return view('tasks/task')->with(['tasks' => $tasks, 'status' =>$request->status]);
+        $pricingRule = PricingRule::select('id', 'name')->get();
+        $teamTag    = TagsForTeam::all();
+        $agentTag   = TagsForAgent::all();
+
+        //return view('task-new/index')->with(['tasks' => $tasks, 'status' =>$request->status]);
+        return view('tasks/task')->with(['tasks' => $tasks, 'status' =>$request->status]);
     }
 
     /**
@@ -58,8 +61,12 @@ class TaskController extends Controller
 
         //$agents = Agent::orderBy('created_at', 'DESC')->where('is_activated', 1)->get();
         $agents = Agent::orderBy('created_at', 'DESC')->get();
+        //print_r($agents);die;
 
-        return view('tasks/add-task')->with(['teamTag' => $teamTag, 'agentTag' => $agentTag, 'agents' => $agents, 'pricingRule' => $pricingRule]);
+        $returnHTML = view('modals/add-task-modal')->with(['teamTag' => $teamTag, 'agentTag' => $agentTag, 'agents' => $agents, 'pricingRule' => $pricingRule])->render();
+        return response()->json(array('success' => true, 'html'=>$returnHTML));
+
+        //return view('tasks/add-task')->with(['teamTag' => $teamTag, 'agentTag' => $agentTag, 'agents' => $agents, 'pricingRule' => $pricingRule]);
     }
 
     protected function validator(array $data)
@@ -75,12 +82,8 @@ class TaskController extends Controller
      */
     public function store(Request $request)
     {
-       
-
         $validator   = $this->validator($request->all())->validate();
-        $loc_id      = 0;
-        $cus_id      = 0;
-        $send_loc_id = 0;
+        $loc_id = $cus_id = $send_loc_id = 0;
 
         $images = [];
         $last = '';

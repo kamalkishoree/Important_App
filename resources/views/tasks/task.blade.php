@@ -143,7 +143,7 @@
                                         {{$task->order->id}}
                                     </td> --}}
                                     <td>
-                                        UnAssind
+                                        {{ empty($task->agent) ? 'Unassigned' : $task->agent->name }}
                                     </td>
                                     <td>
                                         {{$task->created_at}}
@@ -179,29 +179,6 @@
     </div>
 
 
-</div>
-
-<div id="add-task-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
-    <div class="modal-dialog modal-full-width">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title">Add Task</h4>
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-            </div>
-            <div class="modal-body p-4">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="card-box" id="editCardBox">
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-                
-                
-            </form>
-        </div>
-    </div>
 </div>
 @endsection
 

@@ -78,10 +78,15 @@
                 </a>
                 <div class="dropdown-menu dropdown-lg dropdown-menu-right p-0">
                     <form class="p-3">
-                        <input type="text" class="form-control" placeholder="Search ..."
-                            aria-label="Recipient's username">
+                        <input type="text" class="form-control" placeholder="Search ..." aria-label="Recipient's username">
                     </form>
                 </div>
+            </li>
+
+            <li class=" d-none d-lg-inline-block" >
+                <a class="nav-link" href="#"> 
+                    <button type="button" class="btn btn-blue waves-effect waves-light addTaskModalHeader" data-toggle="modal" data-target="" data-backdrop="static" title="Add Task" data-keyboard="false"><i class="mdi mdi-plus-circle mr-1"></i> Add Task</button>
+                </a>
             </li>
 
             <li class="dropdown d-none d-lg-inline-block">
