@@ -384,7 +384,6 @@
 <script src="{{asset('assets/js/pages/form-fileuploads.init.js')}}"></script>
 <script src="{{asset('assets/js/storeClients.js')}}"></script>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/8.4.7/js/intlTelInput.js"></script>
 
 <script>

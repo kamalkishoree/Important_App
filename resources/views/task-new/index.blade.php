@@ -13,156 +13,159 @@
 <link href="{{asset('assets/libs/dropify/dropify.min.css')}}" rel="stylesheet" type="text/css" />
 <link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/8.4.6/css/intlTelInput.css'>
 <style>
-// workaround
-.intl-tel-input {
-  display: table-cell;
-}
-
-.inner-div {
-        width: 50%;
-        float: left;
+    .intl-tel-input {
+      display: table-cell;
     }
-.intl-tel-input .selected-flag {
-  z-index: 4;
-}
-.intl-tel-input .country-list {
-  z-index: 5;
-}
-.input-group .intl-tel-input .form-control {
-  border-top-left-radius: 4px;
-  border-top-right-radius: 0;
-  border-bottom-left-radius: 4px;
-  border-bottom-right-radius: 0;
-}
-#radio1, #radio2, #radio3, #radio4 {  
-    -ms-transform: scale(1.2); /* IE 9 */
-    -webkit-transform: scale(1.2); /* Chrome, Safari, Opera */
-    transform: scale(1.2); }
 
-#adds {
-            margin-bottom: 14px;
+    .inner-div {
+            width: 50%;
+            float: left;
         }
+    .intl-tel-input .selected-flag {
+      z-index: 4;
+    }
+    .intl-tel-input .country-list {
+      z-index: 5;
+    }
+    .input-group .intl-tel-input .form-control {
+      border-top-left-radius: 4px;
+      border-top-right-radius: 0;
+      border-bottom-left-radius: 4px;
+      border-bottom-right-radius: 0;
+    }
+    #radio1, #radio2, #radio3, #radio4 {  
+        -ms-transform: scale(1.2); /* IE 9 */
+        -webkit-transform: scale(1.2); /* Chrome, Safari, Opera */
+        transform: scale(1.2); }
+    #adds {
+        margin-bottom: 14px;
+    }
 
-        .shows {
-            display: none;
-        }
+    .shows {
+        display: none;
+    }
 
-        .rec {
-            margin-bottom: 7px;
-        }
+    .rec {
+        margin-bottom: 7px;
+    }
 
-        .needsclick {
+    .needsclick {
 
-            margin-left: 27%;
-        }
+        margin-left: 27%;
+    }
 
-        .padd {
-            padding-left: 9% !important;
-        }
+    .padd {
+        padding-left: 9% !important;
+    }
 
-        .newchnage {
-            margin-left: 27% !important;
-        }
+    .newchnage {
+        margin-left: 27% !important;
+    }
 
-        .address {
-            margin-bottom: 6px
-        }
+    .address {
+        margin-bottom: 6px
+    }
 
-        .tags {
-            display: none;
-        }
+    .tags {
+        display: none;
+    }
 
-        #typeInputss {
-            overflow-y: auto;
-            height: 142px;
-        }
+    #typeInputss {
+        overflow-y: auto;
+        height: 142px;
+    }
 
-        .upload {
-            margin-bottom: 20px;
-            margin-top: 10px;
+    .upload {
+        margin-bottom: 20px;
+        margin-top: 10px;
 
-        }
+    }
 
-        .span1 {
-            color: #ff0000;
-        }
+    .span1 {
+        color: #ff0000;
+    }
 
-        .check {
-            margin-left: 116px !important;
-        }
+    .check {
+        margin-left: 116px !important;
+    }
 
-        .newcheck {
-            margin-left: -54px;
-        }
+    .newcheck {
+        margin-left: -54px;
+    }
 
-        .upside {
-            margin-top: -10px;
-        }
+    .upside {
+        margin-top: -10px;
+    }
 
-        .newgap {
-            margin-top: 11px !important;
-        }
+    .newgap {
+        margin-top: 11px !important;
+    }
 
+    
+
+    .append {
+        margin-bottom: 15px;
+    }
+
+    .spanbold {
+        font-weight: bolder;
+    }
+
+    .copyin {
+        background-color: rgb(148 148 148 / 11%);
+        margin-top: 10px;
         
 
-        .append {
-            margin-bottom: 15px;
-        }
-
-        .spanbold {
-            font-weight: bolder;
-        }
-
-        .copyin {
-            background-color: #F7F8FA;
-        }
-        .copyin1 {
-            background-color: #F7F8FA;
-        }
-        hr.new3 {
-         border-top: 1px dashed white;
-       }
-       #spancheck{
-           display: none;
-       }
-       .imagepri{
-        min-width: 50px;
-           height: 50px;
-           width: 50px;
-           border-style: groove;
-           margin-left: 5px;
-           margin-top: 5px;
-       }
-       .withradio{
+    }
+    .copyin1 {
+        background-color: rgb(148 148 148 / 11%);
        
-        
-       }
-       .showsimage{
-        margin-top: 31px;
-        margin-left: 140px;
-       }
-       .showshadding{
-        margin-left: 98px;
-       }
-       .newchnageimage{
-           margin-left: 100px;
-       }
-       .showsimagegall{
-        margin-left: 148px;
-        margin-top: 21px;
+    }
+    hr.new3 {
+     border-top: 1px dashed white;
+     margin: 0 0 .5rem 0;
+   }
+   #spancheck{
+       display: none;
+   }
+   .imagepri{
+    min-width: 50px;
+       height: 50px;
+       width: 50px;
+       border-style: groove;
+       margin-left: 5px;
+       margin-top: 5px;
+   }
+   .withradio{
+   
+    
+   }
+   .showsimage{
+    margin-top: 31px;
+    margin-left: 140px;
+   }
+   .showshadding{
+    margin-left: 98px;
+   }
+   .newchnageimage{
+       margin-left: 100px;
+   }
+   .showsimagegall{
+    margin-left: 148px;
+    margin-top: 21px;
 
-       }
-       .allset{
-           margin-left: 9px !important;
-           padding-top: 10px;
-       }
+   }
+   .allset{
+       margin-left: 9px !important;
+       padding-top: 10px;
+   }
 
-.pac-container, .pac-container .pac-item { z-index: 99999 !important; }
+.pac-container, .pac-container .pac-item, .ui-menu.ui-autocomplete { z-index: 99999 !important; }
+
 </style>
 @endsection
 
 @section('content')
-<!-- Start Content-->
 <div class="container-fluid">
 
     <!-- start page title -->
@@ -189,23 +192,48 @@
                             </div>
                         </div> 
 
-                        <div class="col-sm-3">
+                        <div class="col-sm-6">
                         <form name="getTask" id="getTask" method="get" action="{{route('tasks.index')}}">
-
-                                <input type="radio" name="status" onclick="handleClick(this);" id="radio1" value="all" {{(!isset($status) || $status == 'all') ? 'checked' : ''}}>
-                                <label for="radio1">All</label>
-                                <input type="radio" name="status" onclick="handleClick(this);" id="radio2" value="pending" {{(isset($status) && $status == 'pending') ? 'checked' : ''}}>
-                                <label for="radio2">Pending</label>
-                                <input type="radio" name="status" onclick="handleClick(this);" id="radio3" value="active" {{(isset($status) && $status == 'active') ? 'checked' : ''}}>
-                                <label for="radio3">Active</label>
+                            <div class="login-form">
+                            <ul class="list-inline">
+                                <li class="d-inline-block mr-2">
+                                  <input type="radio" id="student" onclick="handleClick(this);" name="animal" value="" checked>
+                                  <label for="student">All</label>
+                                </li>
+                                <li class="d-inline-block mr-2">
+                                  <input type="radio" id="teacher" name="animal" onclick="handleClick(this);">
+                                  <label for="teacher">Pending</label>
+                                </li>
+                  
+                                <li class="d-inline-block mr-2">
+                                  <input type="radio" id="parent" name="animal" value="" onclick="handleClick(this);">
+                                  <label for="parent">History</label>
+                                </li>
+                              </ul>
+                            </div>
+                                {{-- <div class="d-inline-block mr-3">
+                                    <input type="radio" name="status" onclick="handleClick(this);" id="radio1" value="all" {{(!isset($status) || $status == 'all') ? 'checked' : ''}}>
+                                    <label for="radio1">All</label>
+                                </div>
+                                <div class="d-inline-block mr-3">
+                                    <input type="radio" name="status" onclick="handleClick(this);" id="radio2" value="pending" {{(isset($status) && $status == 'pending') ? 'checked' : ''}}>
+                                    <label for="radio2">Pending</label>
+                                </div>
+                                
+                                <div class="d-inline-block mr-3">
+                                    <input type="radio" name="status" onclick="handleClick(this);" id="radio3" value="active" {{(isset($status) && $status == 'active') ? 'checked' : ''}}>
+                                    <label for="radio3">Active</label>
+                                </div>
+                               <div class="d-inline-block">
                                 <input type="radio" name="status" onclick="handleClick(this);" id="radio4" value="completed" {{(isset($status) && $status == 'completed') ? 'checked' : ''}}>
                                 <label for="radio4">Completed</label>
+                               </div> --}}
 
                         </form>
                         </div>
-                        <div class="col-sm-5"></div>
+                        <div class="col-sm-2"></div>
                         <div class="col-sm-4 text-right">
-                            <button type="button" class="btn btn-blue waves-effect waves-light openModal" data-toggle="modal" data-target="" data-backdrop="static" data-keyboard="false"><i class="mdi mdi-plus-circle mr-1"></i> Add Task</button> 
+                            <button type="button" class="btn btn-blue waves-effect waves-light addTaskModal1" data-toggle="modal" data-target="" data-backdrop="static" data-keyboard="false"><i class="mdi mdi-plus-circle mr-1"></i> Add Task</button>
                          <!--<a href="{{ route('tasks.create') }}" class="btn btn-blue waves-effect waves-light"><i class="mdi mdi-plus-circle mr-1"></i> Add Task</a> -->
                         </div>
 
@@ -227,13 +255,26 @@
                             <tbody>
                                 @foreach($tasks as $task)
                                 <tr>
-                                    <td>{{$task->id}}</td>
-                                    <td>{{$task->customer->name}}</td>
-                                    {{-- <td>{{$task->order->id}}</td> --}}
-                                    <td>UnAssigned
+                                    
+                                    <td>
+                                        {{$task->id}}
                                     </td>
-                                    <td>{{$task->created_at}}</td>
-                                    <td>Not Alloted</td>
+                                    <td>
+                                        {{$task->customer->name}}
+                                    </td>
+                                    {{-- <td>
+                                        {{$task->order->id}}
+                                    </td> --}}
+                                    <td>
+                                        UnAssind
+                                    </td>
+                                    <td>
+                                        {{$task->created_at}}
+                                    </td>
+                                    <td>
+                                        Not Alloted
+                                    </td>
+
                                     <td>
                                         <div class="form-ul" style="width: 60px;">
                                             <div class="inner-div"> <a href1="#" href="{{route('tasks.edit', $task->id)}}"  class="action-icon editIconBtn"> <i class="mdi mdi-square-edit-outline"></i></a></div>
@@ -254,13 +295,79 @@
                             </tbody>
                         </table>
                     </div>
-                    <div class="row address" id="add0" style="display: none;">
-                        <input type="text" id="add0-input" name="test" class="autocomplete form-control add0-input" placeholder="Address">
-                    </div>
-
                 </div> <!-- end card-body-->
             </div> <!-- end card-->
         </div> <!-- end col -->
+    </div>
+</div>
+
+<div class="copyin forClone" id="copyin1" style="display: none;">
+    <div class="requried allset">
+        <div class="row firstclone1">
+            <div class="col-md-4">
+                <h4 class="header-title mb-3 newgap">Task</h4>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group mb-3">
+                    <select class="form-control selecttype" id="task_type" name="task_type_id[]" required="">
+                        <option value="">Selcet Task </option>
+                        <option value="1">Pickup</option>
+                        <option value="2">Drop</option>
+                        <option value="3">Appointment</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group appoint" style="display: none;">
+                    <input class="form-control
+                    appointment_date" placeholder="Duration (In Min)" name="appointment_date[]" type="text">
+                    <span class="invalid-feedback" role="alert">
+                        <strong></strong>
+                    </span>
+                </div>
+
+            </div>
+            <div class="col-md-1 ">
+                <span class="span1 onedelete" id="newspan"><img src="https://royodelivery.com/assets/images/ic_delete.png" alt=""></span>
+            </div>
+
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <h4 class="header-title mb-2">Address</h4>
+            </div>
+            <div class="col-md-6">
+                <h4 class="header-title mb-2">Saved Addresses</h4>
+            </div>
+        </div>
+        
+        <span class="span1 addspan" style="display: none;">Please select a address or create new</span>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group alladdress" id="typeInput">
+                    {!! Form::text('short_name[]', null, ['class' => 'form-control address',
+                    'placeholder' => 'Address Short Name','required' => 'required']) !!}
+
+                    <input type="text" id="#CURRENTMAP-input" name="address[]" class="form-control address cust_add" placeholder="Address">
+                    <div class="input-group-append">
+                        <button class="btn btn-xs btn-dark waves-effect waves-light showMap" type="button" num="#CURRENTMAP"> <i class="mdi mdi-map-marker-radius"></i></button>
+                    </div>
+                    <input type="hidden" name="latitude[]" id="#CURRENTMAP-latitude" value="0" class="cust_latitude" />
+                    <input type="hidden" name="longitude[]" id="#CURRENTMAP-longitude" value="0" class="cust_longitude" />
+                    {!! Form::text('post_code[]', null, ['class' => 'form-control address','placeholder' => 'Post Code','required' => 'required']) !!}
+                    <span class="invalid-feedback" role="alert">
+                        <strong></strong>
+                    </span>
+                </div>
+
+            </div>
+            
+            <div class="col-md-6 secondDiv">
+
+            </div>
+        </div>
+        <hr class="new3">
     </div>
 </div>
 
@@ -272,15 +379,15 @@
 <!-- Plugins js-->
   
 <script src="{{ asset('assets/js/jquery-ui.min.js') }}" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="{{ asset('assets/css/jquery-ui.css') }}">
+<link rel="stylesheet" href="{{ asset('assets/css/jquery-ui.css') }}">
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB85kLYYOmuAhBUPd7odVmL6gnQsSGWU-4&libraries=places" async defer></script>
+
 <script src="{{asset('assets/libs/flatpickr/flatpickr.min.js')}}"></script>
 <script src="{{asset('assets/libs/select2/select2.min.js')}}"></script>
 <script src="{{asset('assets/libs/bootstrap-select/bootstrap-select.min.js')}}"></script>
 <!-- Page js-->
 <script src="{{asset('assets/js/pages/form-advanced.init.js')}}"></script>
 <script src="{{asset('assets/js/pages/form-pickers.init.js')}}"></script>
-<script src="{{asset('assets/js/storeAgent.js')}}"></script>
-<!-- for File Upload -->
 <script src="{{asset('assets/libs/dropzone/dropzone.min.js')}}"></script>
 <script src="{{asset('assets/libs/dropify/dropify.min.js')}}"></script>
 <!-- Page js-->
@@ -290,9 +397,6 @@
 <script src="{{asset('assets/libs/sweetalert2/sweetalert2.min.js')}}"></script>
 
 <script>
-
-
-
 $(document).ready( function () {
     $('#agents-datatable').DataTable();
 });
@@ -303,6 +407,6 @@ function handleClick(myRadio) {
 
 </script>
 
-@include('task-new.modal')
+@include('task-new.pagescript')
 
 @endsection

@@ -1,18 +1,12 @@
 <!-- bundle -->
 <!-- Vendor js -->
 <script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
-<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 
-<script src="{{asset('assets/js/vendor.min.js')}}"></script>
+
+
 <script src="{{asset('assets/js/waitMe.min.js')}}"></script>
 
-
-
-
-
 <script>
-
- 
 
 const startLoader = function(element) {
     // check if the element is not specified
