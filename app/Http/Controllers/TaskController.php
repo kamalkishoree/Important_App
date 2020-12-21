@@ -109,6 +109,10 @@ class TaskController extends Controller
                $last = implode(",", $images);
         }
         if (!isset($request->ids)) {
+            if(sizeof(Customer::where('email','=',$request->email)->get()) > 0){
+                return redirect()->back()->with('message', 'Customer email is already exist');
+            }
+            
             $cus = [
                 'name' => $request->name,
                 'email' => $request->email,
@@ -555,7 +559,7 @@ class TaskController extends Controller
             if (isset($request->agent_tag)) {
                 $task_id->drivertags()->sync($request->agent_tag);
             }
-        }else {
+        } else {
             $teamTag = [];
             $drivertag = [];
             $task_id->teamtags()->sync($teamTag);

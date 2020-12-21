@@ -186,8 +186,7 @@
                                         {{$task->created_at}}
                                     </td>
                                     <td>
-                                        <button class="showtasks" value="{{$task->id}}" data-toggle="modal"
-                                            data-target="#task-list-modal" ><i class="fe-eye"></i></button>
+                                        <button class="showtasks" value="{{$task->id}}"><i class="fe-eye"></i></button>
                                     </td>
                                     <td>
                                         basic rule
@@ -280,7 +279,54 @@ $(document).ready( function () {
         $('#getTask').submit();
     }
 
+    $(document).on('click', '.showtasks', function () {
+      var CSRF_TOKEN = $("input[name=_token]").val();
+      var tour_id = $(this).val();
+      var basic = window.location.origin;
+      var url = basic+"/tasks/list/"+tour_id;
+        $.ajax({
+            url: url,
+            type: 'post',
+            dataType: "json",
+            data: {
+            _token: CSRF_TOKEN,
+            },
+            success: function(data) {
+                
+                // console.log(data[0].task);
+                 //abc = $('#removedata').html('');
+                //console.log(abc);
+                // $('#removedata').hide();
+                $('.repet').remove();
+                var taskname = '';
+                $.each(data, function(index, elem){
+                  $.each(elem.task,function(indexs, tasks){
+                      console.log(tasks.location);
+                    switch (tasks.task_type_id) {
+                        case 1:
+                              taskname = 'Pickup task';
+                            break;
+                        case 2:
+                              taskname = 'Drop Off task';
+                            break;
+                        case 3:
+                              taskname = 'Appointment';
+                            break;
+                    }
+                    var date = new Date(elem.order_time);
+                    var options = { hour12: true };
+                    $(document).find('.allin').before('<div class="repet"><h5>'+taskname+'</h5><div class="task-card"><div class="p-3 assigned-block"><div class="wd-10"><img class="vt-top" src="http://192.168.100.211:8000/demo/images/ic_location_blue_1.png"></div><div class="wd-90"><h6>'+tasks.location.address+'</h6><span>'+tasks.location.short_name+'</span><h5 class="mb-1"><span></span></h5><div class="row"><div class="col-md-6"></div><div class="col-md-6 text-right"><button class="assigned-btn">'+elem.status+'</button></div></div></div></div></div></div>');
+                  });
+                         
+                });
 
+                $('#task-list-modal').modal('show');
+                 
+            }
+                            
+        });
+    });
+        
 
 
 

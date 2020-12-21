@@ -193,9 +193,9 @@
 
 
                         <div class="row mb-2">
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="form-group mb-3">
-                                    <label for="number_of_retries">NO. OF RETRIES</label>
+                                    <label for="number_of_retries">No. Of Retries</label>
                                     <input type="text" name="number_of_retries" id="number_of_retries" placeholder="0"
                                         class="form-control"
                                         value="{{ isset($allocation) && $allocation->number_of_retries != null ? $allocation->number_of_retries : '' }}"
@@ -207,21 +207,17 @@
                                     </span>
                                 @endif
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="form-group mb-3">
-                                    <label for="start_before_task_time">START ALLOCATION BEFORE TASK TIME (IN
-                                        MINUTES)</label>
+                                    <label for="start_before_task_time">Start Allocation Before (In Min)</label>
                                     <input type="text" name="start_before_task_time" id="start_before_task_time"
                                         placeholder="5" class="form-control"
                                         value="{{ isset($allocation) && $allocation->start_before_task_time != null ? $allocation->start_before_task_time : '' }}">
                                 </div>
                             </div>
-                        </div>
-
-                        <div class="row mb-2">
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="form-group mb-3">
-                                    <label for="request_expiry">REQUEST EXPIRES IN SEC</label>
+                                    <label for="request_expiry">Request Expires In Sec</label>
                                     <input type="text" name="request_expiry" id="request_expiry" placeholder="30"
                                         class="form-control"
                                         value="{{ isset($allocation) && $allocation->request_expiry != null ? $allocation->request_expiry : '' }}"
@@ -233,7 +229,11 @@
                                     </span>
                                 @endif
                             </div>
-                            <div class="col-md-6">
+                        </div>
+
+
+                        <div class="row mb-2">
+                            <div class="col-md-4">
                                 <div class="form-group mb-3">
                                     <label for="task_priority">Maximum Task Per Person</label>
                                     <input type="text" name="maximum_task_per_person" id="request_expiry" placeholder="10"
@@ -242,10 +242,7 @@
                                         require>
                                 </div>
                             </div>
-                        </div>
-
-                        <div class="row mb-2">
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="form-group mb-3">
                                     <label for="maximum_radius">Maximum Radius</label>
                                     <input type="text" name="maximum_radius" id="maximum_radius" placeholder="30"
@@ -254,7 +251,7 @@
                                 </div>
 
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="form-group mb-3">
                                     <label for="maximum_batch_size">Maximum Batch Size</label>
                                     <input type="text" name="maximum_batch_size" id="maximum_batch_size"

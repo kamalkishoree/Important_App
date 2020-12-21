@@ -363,7 +363,7 @@ http://192.168.100.211:8888/unsafe/fit-in/90x50/https://royodelivery-assets.s3.u
                   $image = Phumbor::url($urlImg)->fitIn(90,50);
 
             @endphp
-            <a href="{{ route('any', ['dashboard']) }}" class="logo logo-dark text-center">
+            <a href="{{ route('index') }}" class="logo logo-dark text-center">
                 <span class="logo-sm">
                     <img src="{{ asset('assets/images/logo-sm.png') }}" alt="" height="22">
                     <!-- <span class="logo-lg-text-light">UBold</span> -->
@@ -374,7 +374,7 @@ http://192.168.100.211:8888/unsafe/fit-in/90x50/https://royodelivery-assets.s3.u
                 </span>
             </a>
             
-            <a href="{{ route('any', ['dashboard']) }}" class="logo logo-light text-center">
+            <a href="{{ route('index') }}" class="logo logo-light text-center">
                 <span class="logo-sm">
                     <img src="{{$image}}"
                         alt="" height="30" style="padding-top: 4px;">
