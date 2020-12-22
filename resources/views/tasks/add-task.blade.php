@@ -218,7 +218,7 @@
                         </div>
 
                         <div class="row newcus shows">
-                            <div class="col-md-3">
+                            <div class="col-md-2">
                                 <div class="form-group" id="">
                                     {!! Form::text('name', null, ['class' => 'form-control', 'placeholder' => 'Name']) !!}
                                     <span class="invalid-feedback" role="alert">
@@ -227,7 +227,7 @@
 
                                 </div>
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-md-4">
                                 <div class="form-group" id="">
                                     {!! Form::text('email', null, ['class' => 'form-control', 'placeholder' => 'Email']) !!}
                                     <span class="invalid-feedback" role="alert">

@@ -49,42 +49,42 @@
             </div>
             <div class="newcus shows">
                 <div class="row ">
-                <div class="col-md-3">
-                    <div class="form-group" id="">
-                        {!! Form::text('name', null, ['class' => 'form-control', 'placeholder' => 'Name']) !!}
-                        <span class="invalid-feedback" role="alert">
-                            <strong></strong>
-                        </span>
+                    <div class="col-md-3">
+                        <div class="form-group" id="">
+                            {!! Form::text('name', null, ['class' => 'form-control', 'placeholder' => 'Name']) !!}
+                            <span class="invalid-feedback" role="alert">
+                                <strong></strong>
+                            </span>
+
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group" id="">
+                            {!! Form::text('email', null, ['class' => 'form-control', 'placeholder' => 'Email']) !!}
+                            <span class="invalid-feedback" role="alert">
+                                <strong></strong>
+                            </span>
+
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group" id="">
+                            {!! Form::text('phone_number', null, ['class' => 'form-control', 'placeholder' => 'Phone Number',
+                            ]) !!}
+                            <span class="invalid-feedback" role="alert">
+                                <strong></strong>
+                            </span>
+
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group" id="Inputsearch">
+                            <a href="#" class="add-sub-task-btn">Previous</a>
+
+                        </div>
 
                     </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="form-group" id="">
-                        {!! Form::text('email', null, ['class' => 'form-control', 'placeholder' => 'Email']) !!}
-                        <span class="invalid-feedback" role="alert">
-                            <strong></strong>
-                        </span>
-
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="form-group" id="">
-                        {!! Form::text('phone_number', null, ['class' => 'form-control', 'placeholder' => 'Phone Number',
-                        ]) !!}
-                        <span class="invalid-feedback" role="alert">
-                            <strong></strong>
-                        </span>
-
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="form-group" id="Inputsearch">
-                        <a href="#" class="add-sub-task-btn">Previous</a>
-
-                    </div>
-
-                </div>
-            </div>
+               </div>
             </div>
             
 
@@ -157,10 +157,10 @@
                         </div>
                     </div>
                     
+                  </div>
                 </div>
+                <div id="addSubFields" style="width:100%;height:400px; display: none;">&nbsp;</div>
               </div>
-              <div id="addSubFields" style="width:100%;height:400px; display: none;">&nbsp;</div>
-            </div>
             <div class="row">
                 <div class="col-md-12" id="adds">
                     <a href="#" class="add-sub-task-btn waves-effect waves-light subTaskHeader">Add Sub

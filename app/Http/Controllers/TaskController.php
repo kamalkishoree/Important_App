@@ -110,17 +110,20 @@ class TaskController extends Controller
                $last = implode(",", $images);
         }
         if (!isset($request->ids)) {
-            if(sizeof(Customer::where('email','=',$request->email)->get()) > 0){
-                return redirect()->back()->with('message', 'Customer email is already exist');
+            $customer = Customer::where('email','=',$request->email)->first();
+            if(isset($customer->id)){
+                $cus_id = $customer->id;
+            }else{
+                $cus = [
+                    'name' => $request->name,
+                    'email' => $request->email,
+                    'phone_number' => $request->phone_number,
+                ];
+                $customer = Customer::create($cus);
+                $cus_id = $customer->id;
             }
             
-            $cus = [
-                'name' => $request->name,
-                'email' => $request->email,
-                'phone_number' => $request->phone_number,
-            ];
-            $customer = Customer::create($cus);
-            $cus_id = $customer->id;
+           
         } else {
             $cus_id = $request->ids;
         }
@@ -468,7 +471,7 @@ class TaskController extends Controller
      */
     public function update(Request $request, $id)
     {
-    //    dd($request->all());
+        dd($request->all());
         $task_id = Order::find($id);
         $validator = $this->validator($request->all())->validate();
         $loc_id = 0;

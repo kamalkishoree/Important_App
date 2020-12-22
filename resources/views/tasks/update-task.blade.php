@@ -153,7 +153,7 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="page-title-box">
-                    <h4 class="page-title">Add Task</h4>
+                    <h4 class="page-title">Edit Task</h4>
                 </div>
             </div>
         </div>
@@ -168,31 +168,31 @@
                 <div class="col-md-6">
                     <div class="card-box">
                         @csrf
-                        <div class="row" id="dateredio">
+                        <div class="row d-flex align-items-center" id="dateredio">
                             <div class="col-md-3">
                                 <h4 class="header-title mb-3">Customer</h4>
                             </div>
-                            <div class="col-md-2">
-                                <span class="header-title mb-4">Task Date:</span>
-                            </div>
-                            <div class="col-md-2">
-                                <div class="custom-control custom-radio custom-control-inline">
-                                    <input type="radio" class="custom-control-input check" id="tasknow"
-                                name="task_type" value="now" {{$task->order_type == 'now'?'checked':'' }}>
-                                    <label class="custom-control-label" for="tasknow">Now</label>
-                                </div>
-                            </div>
-                            <div class="col-md-1">
-                                <div class="custom-control custom-radio custom-control-inline">
-                                    <input type="radio" class="custom-control-input check" id="taskschedule"
-                                        name="task_type" value="schedule" {{$task->order_type == 'schedule'?'checked':'' }} >
-                                    <label class="custom-control-label" for="taskschedule"></label>
-                                </div>
+                            <div class="col-md-5 text-right">
+                                <div class="login-form">
+                                    <ul class="list-inline">
+                                        <li class="d-inline-block mr-2">
+                                            <input type="radio" class="custom-control-input check" id="tasknow"
+                                            name="task_type" value="now" checked>
+                                            <label class="custom-control-label" for="tasknow">Now</label>
+                                        </li>
+                                        <li class="d-inline-block">
+                                            <input type="radio" class="custom-control-input check" id="taskschedule"
+                                            name="task_type" value="schedule" >
+                                            <label class="custom-control-label" for="taskschedule">Schedule</label>
+                                        </li>
+                                      </ul>
+                                    </div>
                             </div>
                             <div class="col-md-4 datenow">
                                 <input type="text" id='datetime-datepicker' name="schedule_time"
-                            class="form-control upside" placeholder="DateTime" value="{{$task->order_time != null ? $task->order_time :'' }}">
+                                    class="form-control upside" placeholder="Date Time">
                             </div>
+                            
                         </div>
 
                         <span class="span1 searchspan">Please search a customer or add a customer</span>
@@ -207,75 +207,74 @@
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group" id="AddressInput">
-                                    <a href="#" class=" form-control btn btn-blue waves-effect waves-light newAdd"><i
-                                            class="mdi mdi-plus-circle mr-1"></i>New Customer</a>
+                                    <a href="#" class="add-sub-task-btn">New Customer</a>
 
                                 </div>
                             </div>
 
                         </div>
 
-                        <div class="row newcus shows">
-                            <div class="col-md-3">
-                                <div class="form-group" id="">
-                                    {!! Form::text('name', null, ['class' => 'form-control', 'placeholder' => 'Name']) !!}
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong></strong>
-                                    </span>
-
+                        <div class="newcus shows">
+                            <div class="row ">
+                                <div class="col-md-3">
+                                    <div class="form-group" id="">
+                                        {!! Form::text('name', null, ['class' => 'form-control', 'placeholder' => 'Name']) !!}
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong></strong>
+                                        </span>
+            
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="form-group" id="">
-                                    {!! Form::text('email', null, ['class' => 'form-control', 'placeholder' => 'Email']) !!}
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong></strong>
-                                    </span>
-
+                                <div class="col-md-4">
+                                    <div class="form-group" id="">
+                                        {!! Form::text('email', null, ['class' => 'form-control', 'placeholder' => 'Email']) !!}
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong></strong>
+                                        </span>
+            
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="form-group" id="">
-                                    {!! Form::text('phone_number', null, [
-                                    'class' => 'form-control',
-                                    'placeholder' => 'Phone Number',
-                                    ]) !!}
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong></strong>
-                                    </span>
-
+                                <div class="col-md-3">
+                                    <div class="form-group" id="">
+                                        {!! Form::text('phone_number', null, ['class' => 'form-control', 'placeholder' => 'Phone Number',
+                                        ]) !!}
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong></strong>
+                                        </span>
+            
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="form-group" id="Inputsearch">
-                                    <a href="#" class=" form-control btn btn-blue waves-effect waves-light">Previous</a>
-
+                                <div class="col-md-2">
+                                    <div class="form-group" id="Inputsearch">
+                                        <a href="#" class="add-sub-task-btn">Previous</a>
+            
+                                    </div>
+            
                                 </div>
-
-                            </div>
+                           </div>
                         </div>
-
+                        @php
+                            $newcount = 0;
+                        @endphp
                         <div class="taskrepet" id="newadd">
                           @foreach ($task->task as $keys => $item)
-                           @php $maincount = 0; @endphp
+                           @php $maincount = 0; $newcount++; @endphp
                         <div class="copyin{{$keys == 0?'1':''}}" id="copyin1">
                             <div class="requried allset">
                               <div class="row firstclone1">
-                                  <div class="col-md-4">
-                                      <h4 class="header-title mb-3 newgap">Task</h4>
-                                  </div>
-                                  <div class="col-md-4">
+                                 
+                                  <div class="col-md-6">
                                       <div class="form-group mb-3">
-                                          <select class="form-control selecttype" id="task_type"  name="task_type_id[]" required>
+                                          <select class="form-control selecttype mt-1 taskselect" id="task_type"  name="task_type_id[]" required>
                                               <option value="">Selcet Task </option>
-                                              <option value="1" {{$item->task_type_id == 1 ? 'selected' :''}}>Pickup</option>
-                                              <option value="2" {{$item->task_type_id == 2 ? 'selected' :''}}>Drop</option>
+                                              <option value="1" {{$item->task_type_id == 1 ? 'selected' :''}}>Pickup Task</option>
+                                              <option value="2" {{$item->task_type_id == 2 ? 'selected' :''}}>Drop Off Task</option>
                                               <option value="3" {{$item->task_type_id == 3 ? 'selected' :''}}>Appointment</option>
 
                                           </select>
                                       </div>
                                   </div>
-                                  <div class="col-md-3">
+                                  <div class="col-md-5">
                                       <div class="form-group {{$item->task_type_id == 3 ? 'newclass' :'appoint'}}">
                                         <input type="text" class="form-control appointment_date" name="appointment_date[]" placeholder="Duration (In Min)" value="{{$item->allocation_type}}">
                                           <span class="invalid-feedback" role="alert">
@@ -287,7 +286,7 @@
                                   </div>
                                   <div class="col-md-1 " >
 
-                                    <span class="span1 onedelete" id="spancheck"><img src="{{asset('assets/images/ic_delete.png')}}" alt=""></span>
+                                    <span class="span1 onedelete" id="spancheck"><img style="filter: grayscale(.5);" src="{{asset('assets/images/ic_delete.png')}}" alt=""></span>
 
 
                                   </div>
@@ -299,18 +298,29 @@
                                     <h4 class="header-title mb-2">Address</h4>
                                 </div>
                                 <div class="col-md-6">
-                                    <h4 class="header-title mb-2">Saved Addresses</h4>
+                                    {{-- <h4 class="header-title mb-2">Saved Addresses</h4> --}}
                                 </div>
                             </div>
                               <span class="span1 addspan">Please select a address or create new</span>
 
                               <div class="row">
-                                  <div class="col-md-6">
+                                  <div class="col-md-6 cust_add_div" id="add{{$newcount}}">
                                       <div class="form-group alladdress" id="typeInput">
                                           {!! Form::text('short_name[]', null, ['class' => 'form-control address',
                                           'placeholder' => 'Address Short Name']) !!}
-                                          {!! Form::textarea('address[]', null, ['class' => 'form-control address',
-                                          'placeholder' => 'Full Address', 'rows' => 2]) !!}
+
+                                            <div class="form-group input-group" id="addressInput">
+                                                <input type="text" id="add{{$newcount}}-input" name="address[]" class="form-control cust_add" placeholder="Address">
+                                                <div class="input-group-append">
+                                                    <button class="btn btn-xs btn-dark waves-effect waves-light showMapTask cust_btn" type="button" num="add{{$newcount}}"> <i class="mdi mdi-map-marker-radius"></i></button>
+                                                </div>
+                                                <input type="hidden" name="latitude[]" id="add{{$newcount}}-latitude" class="cust_latitude" value="0" />
+                                                <input type="hidden" name="longitude[]" id="add{{$newcount}}-longitude" class="cust_longitude" value="0" />
+                                                <span class="invalid-feedback" role="alert" id="address">
+                                                    <strong></strong>
+                                                </span>
+                                            </div>
+
                                           {!! Form::text('post_code[]', null, [
                                           'class' => 'form-control address',
                                           'placeholder' => 'PostsCode',
@@ -345,7 +355,7 @@
                        </div>
                         <div class="row">
                             <div class="col-md-12" id="adds">
-                                <a href="#" class="btn btn-block btn-sm btn-success waves-effect waves-light">Add Sub
+                                <a href="#" class="add-sub-task-btn waves-effect waves-light subTask">Add Sub
                                     Task</a>
                             </div>
                         </div>
@@ -371,8 +381,8 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group" id="colorInput">
-                                    <label class="btn btn-info width-lg waves-effect waves-light newchnageimage">
-                                        <span><i class="fas fa-image"></i></span>
+                                    <label class="btn btn-info width-lg waves-effect waves-light newchnageimage upload-img-btn">
+                                        <span><i class="fas fa-image mr-2"></i>Upload Image</span>
                                         <input id="file" type="file" name="file[]" multiple style="display: none"/>
                                     </label>
                                     @if(!isset($images))
@@ -393,46 +403,35 @@
                             </div>
                         </div>
 
-                        <div class="row priceRule">
-                            <div class="col-md-12">
-                                <div class="form-group mb-3">
-                                    <label>Price Rule</label>
-                                    <select class="form-control" name="pricing_rule_id" id="ruleselect">
-                                        <option value="">Select Price Rule</option>
-                                        @foreach ($pricingRule as $rule)
-                                            <option value="{{ $rule->id }}" {{ ($task->task[0]->pricing_rule_id == $rule->id) ? 'selected' : '' }}>{{ $rule->name }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
+                      
 
                         <h4 class="header-title mb-3">Allocation</h4>
                         <div class="row my-3" id="rediodiv">
-                            <div class="col-md-4 padd">
-                                <div class="custom-control custom-radio custom-control-inline">
-                                    <input type="radio" class="custom-control-input check" id="customRadio"
-                                name="allocation_type" value="Un-Assigend" {{$task->auto_alloction == 'Un-Assigend'?'checked':''}}>
-                                    <label class="custom-control-label" for="customRadio">Un-Assigned</label>
-                                </div>
-                            </div>
-                            <div class="col-md-4 padd">
-                                <div class="custom-control custom-radio custom-control-inline">
-                                    <input type="radio" class="custom-control-input check" id="customRadio22"
-                                        name="allocation_type" value="auto" {{$task->auto_alloction == 'auto'?'checked':''}}>
-                                    <label class="custom-control-label" for="customRadio22">Auto Allocation</label>
-                                </div>
-                            </div>
-                            <div class="col-md-4 padd">
-                                <div class="custom-control custom-radio custom-control-inline">
-                                    <input type="radio" class="custom-control-input check" id="customRadio33"
-                                        name="allocation_type" value="Manual" {{$task->auto_alloction == 'Manual'?'checked':''}}>
-                                    <label class="custom-control-label" for="customRadio33">Manual</label>
-                                </div>
+                            <div class="col-md-12">
+                                <div class="login-form">
+                                    <ul class="list-inline">
+                                        <li class="d-inline-block mr-2">
+                                            <input type="radio" class="custom-control-input check assignRadio" id="customRadio"
+                                            name="allocation_type" value="u" {{$task->auto_alloction == 'u'?'checked':''}}>
+                                        <label class="custom-control-label" for="customRadio">Unassigned</label>
+                                        </li>
+                                        <li class="d-inline-block mr-2">
+                                            <input type="radio" class="custom-control-input check assignRadio" id="customRadio22"
+                                            name="allocation_type" value="a" {{$task->auto_alloction == 'a'?'checked':''}}>
+                                        <label class="custom-control-label" for="customRadio22">Auto Allocation</label>
+                                        </li>
+                                        <li class="d-inline-block">
+                                            <input type="radio" class="custom-control-input check assignRadio" id="customRadio33"
+                                            name="allocation_type" value="m" {{$task->auto_alloction == 'm'?'checked':''}}>
+                                        <label class="custom-control-label" for="customRadio33">Manual</label>
+                                        </li>
+                                      </ul>
+                                    </div>
                             </div>
                         </div>
                         <span class="span1 tagspan">Please select atlest one tag for driver and agent</span>
-                        <div class="row tags">
+                        <div class="tags">
+                        <div class="row">
                           <div class="col-md-6">
                               <div class="form-group mb-3">
                                    <label>Team Tag</label>
@@ -458,7 +457,7 @@
                               </div>
                           </div>
                      </div>
-
+                    </div>
                      <div class="row drivers">
                       <div class="col-md-12">
                          <div class="form-group mb-3">
@@ -490,6 +489,35 @@
 
 
     </div>
+
+    <div id="show-map-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+        <div class="modal-dialog modal-full-width">
+            <div class="modal-content">
+    
+                <div class="modal-header">
+                    <h4 class="modal-title">Select Location</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                </div>
+                <div class="modal-body p-4">
+                    
+                    <div class="row">
+                        <form id="task_form" action="#" method="POST" style="width: 100%">
+                            <div class="col-md-12">
+                                <div id="googleMap" style="height: 500px; min-width: 500px; width:100%"></div>
+                                <input type="hidden" name="lat_input" id="lat_map" value="0" />
+                                <input type="hidden" name="lng_input" id="lng_map" value="0" />
+                                <input type="hidden" name="for" id="map_for" value="" />
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-blue waves-effect waves-light selectMapLocation">Ok</button>
+                    <!--<button type="Cancel" class="btn btn-blue waves-effect waves-light cancelMapLocation">cancel</button>-->
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 
@@ -497,6 +525,7 @@
     <!-- google maps api -->
 
     <!-- Plugins js-->
+    
     <script src="{{ asset('assets/libs/selectize/selectize.min.js') }}"></script>
     <script src="{{ asset('assets/libs/mohithg-switchery/mohithg-switchery.min.js') }}"></script>
     <script src="{{ asset('assets/libs/multiselect/multiselect.min.js') }}"></script>
@@ -512,8 +541,9 @@
     <!-- Plugins js-->
     <script src="{{ asset('assets/libs/flatpickr/flatpickr.min.js') }}"></script>
     <!-- Page js-->
-    <script src="{{ asset('assets/js/pages/form-advanced.init.js') }}"></script>
     <script src="{{ asset('assets/js/pages/form-advanced2.init.js') }}"></script>
+    <script src="{{ asset('assets/js/pages/form-advanced.init.js') }}"></script>
+    
     <script src="{{ asset('assets/libs/bootstrap-colorpicker/bootstrap-colorpicker.min.js') }}"></script>
     <script src="{{ asset('assets/libs/clockpicker/clockpicker.min.js') }}"></script>
     <script src="{{ asset('assets/libs/bootstrap-datepicker/bootstrap-datepicker.min.js') }}"></script>
@@ -522,13 +552,26 @@
     <script src="{{ asset('assets/libs/dropzone/dropzone.min.js') }}"></script>
     <script src="{{ asset('assets/libs/dropify/dropify.min.js') }}"></script>
     <script src="{{ asset('assets/js/pages/form-fileuploads.init.js') }}"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
     <!-- Page js-->
 
 
 
 
     <script>
+        var autocomplete = {};
+        var countEdit = parseInt('{{$task->task->count()}}');
+    var autocompletesWraps = [];
+     editCount = 0;
+    $(document).ready(function(){
+        console.log(countEdit);
+       // autocompletesWraps.push('add1');
+
+        for (var i = 1; i <= countEdit; i++) {
+            autocompletesWraps.push('add'+i);
+            loadMap(autocompletesWraps);
+        }
+        loadMap(autocompletesWraps);
+    });
         $(document).ready(function() {
             $(".shows").hide();
             $(".addspan").hide();
@@ -545,12 +588,18 @@
                 $('input[name=ids').val('');
                 $('input[name=search').val('');
                 $('.copyin').remove();
+                autoWrap = ['add1'];
+                countEdit = 1;
+
             });
             $("#Inputsearch a").click(function() {
                 $(".shows").hide();
                 $(".append").hide();
                 $(".searchshow").show();
                 $('.copyin').remove();
+                autoWrap = ['add1'];
+                countEdit = 1;
+
             });
 
             $("#nameInput").keyup(function() {
@@ -559,6 +608,9 @@
                 $(".append").hide();
                 $('input[name=ids').val('');
                 $('.copyin').remove();
+                autoWrap = ['add1'];
+                countEdit = 1;
+
             });
             $("#file").click(function() {
                 $('.imagepri').remove();
@@ -596,6 +648,7 @@
             // });
             var a = 0;
             $('#adds a').click(function() {
+                countEdit = countEdit + 1;
               var abc = "{{ isset($maincount)?$maincount:0 }}";
               
                if(a == 0){
@@ -634,6 +687,14 @@
                         $clone.insertAfter('[class^="copyin"]:last');
                         // get all the inputs inside the clone
                         var inputs = $clone.find('.redio');
+
+                        $clone.find('.cust_add_div').prop('id', 'add' + countEdit);
+                        $clone.find('.cust_add').prop('id', 'add' + countEdit +'-input');
+                        $clone.find('.cust_btn').prop('num', 'add' + countEdit);
+                        $clone.find('.cust_latitude').prop('id', 'add' + countEdit +'-latitude');
+                        $clone.find('.cust_longitude').prop('id', 'add' + countEdit +'-longitude');
+
+
                         // for each input change its name/id appending the num value
                         var count0 = 1;
                         $.each(inputs, function(index, elem){
@@ -704,6 +765,10 @@
                         // $(".taskrepet").fadeIn();
                 // }
                 // else $('[id^="newadd"]:last').remove();
+
+                autocompletesWraps.indexOf('add'+countEdit) === -1 ? autocompletesWraps.push('add'+countEdit) : console.log("exists");
+                loadMap(autocompletesWraps);
+                
             });
 
             //$("#myselect").val();
@@ -757,10 +822,10 @@
             var edit_tag = "{{$task->auto_alloction}}";
 
             switch(edit_tag) {
-              case "auto":
+              case "a":
               $(".tags").show();
                 break;
-              case "Manual":
+              case "m":
               $(".drivers").hide();
                 break;
               
@@ -912,6 +977,106 @@
 
 
         });
+
+    function loadMap(autocompletesWraps){
+
+        console.log(autocompletesWraps);
+        $.each(autocompletesWraps, function(index, name) {
+            const geocoder = new google.maps.Geocoder; 
+
+            if($('#'+name).length == 0) {
+                return;
+            }
+            //autocomplete[name] = new google.maps.places.Autocomplete(('.form-control')[0], { types: ['geocode'] }); console.log('hello');
+            autocomplete[name] = new google.maps.places.Autocomplete(document.getElementById(name+'-input'), { types: ['geocode'] });
+            google.maps.event.addListener(autocomplete[name], 'place_changed', function() {
+                
+                var place = autocomplete[name].getPlace();
+
+                geocoder.geocode({'placeId': place.place_id}, function (results, status) {
+                    
+                    if (status === google.maps.GeocoderStatus.OK) {
+                        const lat = results[0].geometry.location.lat();
+                        const lng = results[0].geometry.location.lng();
+                        console.log(latitudes);
+                        document.getElementById(name + '-latitude').value = lat;
+                        document.getElementById(name + '-longitude').value = lng;
+                    }
+                });
+            });
+        });
+
+    }
+
+    $(document).on('click', '.showMapTask', function(){
+        var no = $(this).attr('num');
+        console.log(no);
+        var lats = document.getElementById(no+'-latitude').value;
+        var lngs = document.getElementById(no+'-longitude').value;
+        console.log(lats);
+        console.log(lngs);
+        document.getElementById('map_for').value = no;
+
+        if(lats == null || lats == '0'){
+            lats = 51.508742;
+        }
+        if(lngs == null || lngs == '0'){
+            lngs = -0.120850;
+        }
+
+        var myLatlng = new google.maps.LatLng(lats, lngs);
+            var mapProp = {
+                center:myLatlng,
+                zoom:13,
+                mapTypeId:google.maps.MapTypeId.ROADMAP
+              
+            };
+            var map=new google.maps.Map(document.getElementById("googleMap"), mapProp);
+                var marker = new google.maps.Marker({
+                  position: myLatlng,
+                  map: map,
+                  title: 'Hello World!',
+                  draggable:true  
+              });
+            document.getElementById('lat_map').value= lats;
+            document.getElementById('lng_map').value= lngs ; 
+            // marker drag event
+            google.maps.event.addListener(marker,'drag',function(event) {
+                document.getElementById('lat_map').value = event.latLng.lat();
+                document.getElementById('lng_map').value = event.latLng.lng();
+            });
+
+            //marker drag event end
+            google.maps.event.addListener(marker,'dragend',function(event) {
+                var zx =JSON.stringify(event);
+                console.log(zx);
+
+
+                document.getElementById('lat_map').value = event.latLng.lat();
+                document.getElementById('lng_map').value = event.latLng.lng();
+                //alert("lat=>"+event.latLng.lat());
+                //alert("long=>"+event.latLng.lng());
+            });
+            $('#add-customer-modal').addClass('fadeIn');
+        $('#show-map-modal').modal({
+            //backdrop: 'static',
+            keyboard: false
+        });
+
+    });
+
+    $(document).on('click', '.selectMapLocation', function () {
+
+        var mapLat = document.getElementById('lat_map').value;
+        var mapLlng = document.getElementById('lng_map').value;
+        var mapFor = document.getElementById('map_for').value;
+        console.log(mapLat+'-'+mapLlng+'-'+mapFor);
+        document.getElementById(mapFor + '-latitude').value = mapLat;
+        document.getElementById(mapFor + '-longitude').value = mapLlng;
+
+
+        $('#show-map-modal').modal('hide');
+    });
 
     </script>
 @endsection
