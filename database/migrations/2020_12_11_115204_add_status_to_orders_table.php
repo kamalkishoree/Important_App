@@ -14,7 +14,7 @@ class AddStatusToOrdersTable extends Migration
     public function up()
     {
         Schema::table('orders', function (Blueprint $table) {
-            $table->string('status', 15)->default('pending')->comment('pending, completed, Un-assigned, in-process');
+           $table->string('status', 15)->default('pending')->comment('pending, completed, Un-assigned, in-process');
         });
     }
 

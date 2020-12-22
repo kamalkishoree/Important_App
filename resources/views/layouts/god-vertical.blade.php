@@ -4,6 +4,8 @@
     <head>
         @include('layouts.shared/title-meta', ['title' => $title])
         @include('layouts.shared/head-css', ["demo" => "creative"])
+        <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+        <script src="{{asset('assets/js/vendor.min.js')}}"></script>
     </head>
 
     <body @yield('body-extra')>

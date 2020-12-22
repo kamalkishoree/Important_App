@@ -180,7 +180,6 @@
     <input type="hidden" name="longitude[]" id="addHeader0-longitude" value="0" class="cust_longitude" />
 </div>
 <link href="{{ asset('assets/libs/selectize/selectize.min.css') }}" rel="stylesheet" type="text/css" />
-<script src="{{asset('assets/js/vendor.min.js')}}"></script>
 
 <script src="{{ asset('assets/js/jquery-ui.min.js') }}" crossorigin="anonymous"></script>
 <link rel="stylesheet" href="{{ asset('assets/css/jquery-ui.css') }}">
@@ -363,6 +362,7 @@
         $clone.find('.cust_add_div').prop('id', 'addHeader' + countZ);
         $clone.find('.cust_add').prop('id', 'addHeader' + countZ +'-input');
         $clone.find('.cust_btn').prop('id', 'addHeader' + countZ);
+        $clone.find('.cust_btn').prop('num', 'addHeader' + countZ);
         $clone.find('.cust_latitude').prop('id', 'addHeader' + countZ +'-latitude');
         $clone.find('.cust_longitude').prop('id', 'addHeader' + countZ +'-longitude');
 

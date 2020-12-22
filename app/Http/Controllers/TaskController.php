@@ -84,6 +84,7 @@ class TaskController extends Controller
      */
     public function store(Request $request)
     {
+        
         $validator   = $this->validator($request->all())->validate();
         $loc_id = $cus_id = $send_loc_id = 0;
 
@@ -150,10 +151,10 @@ class TaskController extends Controller
 
             if (isset($request->short_name[$key])) {
                 $loc = [
-                    'short_name' => $request->short_name[$key],
-                    'address'    => $request->address[$key],
-                    'post_code'  => $request->post_code[$key],
-                    'created_by' => $cus_id,
+                    'short_name'  => $request->short_name[$key],
+                    'address'     => $request->address[$key],
+                    'post_code'   => $request->post_code[$key],
+                    'customer_id' => $cus_id,
                 ];
                $Loction = Location::create($loc);
                $loc_id = $Loction->id;
@@ -427,9 +428,9 @@ class TaskController extends Controller
     public function edit($id)
     {
         
-        $savedrivertag = [];
-        $saveteamtag   = [];
-        $task           = Order::where('id', $id)->with(['customer.location','task','agent'])->first();
+        $savedrivertag   = [];
+        $saveteamtag     = [];
+        $task            = Order::where('id', $id)->with(['customer.location','task','agent'])->first();
         $fatchdrivertag  = TaskDriverTag::where('task_id', $id)->get('tag_id');
         $fatchteamtag    = TaskTeamTag::where('task_id', $id)->get('tag_id');
         if (count($fatchdrivertag) > 0 && count($fatchteamtag) > 0) {
@@ -471,7 +472,7 @@ class TaskController extends Controller
      */
     public function update(Request $request, $id)
     {
-        dd($request->all());
+        
         $task_id = Order::find($id);
         $validator = $this->validator($request->all())->validate();
         $loc_id = 0;
@@ -531,7 +532,9 @@ class TaskController extends Controller
                     'short_name' => $request->short_name[$key],
                     'address'    => $request->address[$key],
                     'post_code'  => $request->post_code[$key],
-                    'created_by' => $cus_id,
+                    'latitude'   => $request->latitude[$key],
+                    'longitude'  => $request->longitude[$key],
+                    'customer_id' => $cus_id,
                 ];
                $Loction = Location::create($loc);
                $loc_id = $Loction->id;
@@ -549,7 +552,7 @@ class TaskController extends Controller
                 'order_id'                   => $id,
                 'task_type_id'               => $value,
                 'location_id'                => $loc_id,
-                'allocation_type'            => $request->allocation_type[$key],            
+                'allocation_type'            => $request->allocation_type,            
                 'dependent_task_id'          => $dep_id,
             ];
             $task = Task::create($data);

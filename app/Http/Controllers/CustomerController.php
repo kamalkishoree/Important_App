@@ -119,7 +119,8 @@ class CustomerController extends Controller
     {
         //echo $id.'fff';
         $customer = Customer::where('id', $id)->with('location')->first();
-        //dd($customer->toArray());
+
+       
         $returnHTML = view('Customer.form')->with('customer', $customer)->render();
         return response()->json(array('success' => true, 'html'=>$returnHTML, 'addFieldsCount'=> $customer->location->count()));
     }

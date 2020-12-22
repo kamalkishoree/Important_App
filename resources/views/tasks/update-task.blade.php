@@ -266,7 +266,6 @@
                                   <div class="col-md-6">
                                       <div class="form-group mb-3">
                                           <select class="form-control selecttype mt-1 taskselect" id="task_type"  name="task_type_id[]" required>
-                                              <option value="">Selcet Task </option>
                                               <option value="1" {{$item->task_type_id == 1 ? 'selected' :''}}>Pickup Task</option>
                                               <option value="2" {{$item->task_type_id == 2 ? 'selected' :''}}>Drop Off Task</option>
                                               <option value="3" {{$item->task_type_id == 3 ? 'selected' :''}}>Appointment</option>
@@ -304,18 +303,18 @@
                               <span class="span1 addspan">Please select a address or create new</span>
 
                               <div class="row">
-                                  <div class="col-md-6 cust_add_div" id="add{{$newcount}}">
+                                  <div class="col-md-6 cust1_add_div" id="add{{$newcount}}">
                                       <div class="form-group alladdress" id="typeInput">
                                           {!! Form::text('short_name[]', null, ['class' => 'form-control address',
                                           'placeholder' => 'Address Short Name']) !!}
 
                                             <div class="form-group input-group" id="addressInput">
-                                                <input type="text" id="add{{$newcount}}-input" name="address[]" class="form-control cust_add" placeholder="Address">
+                                                <input type="text" id="add{{$newcount}}-input" name="address[]" class="form-control cust1_add" placeholder="Address">
                                                 <div class="input-group-append">
-                                                    <button class="btn btn-xs btn-dark waves-effect waves-light showMapTask cust_btn" type="button" num="add{{$newcount}}"> <i class="mdi mdi-map-marker-radius"></i></button>
+                                                    <button class="btn btn-xs btn-dark waves-effect waves-light showMapTask cust1_btn" type="button" num="add{{$newcount}}"> <i class="mdi mdi-map-marker-radius"></i></button>
                                                 </div>
-                                                <input type="hidden" name="latitude[]" id="add{{$newcount}}-latitude" class="cust_latitude" value="0" />
-                                                <input type="hidden" name="longitude[]" id="add{{$newcount}}-longitude" class="cust_longitude" value="0" />
+                                                <input type="hidden" name="latitude[]" id="add{{$newcount}}-latitude" class="cust1_latitude" value="0" />
+                                                <input type="hidden" name="longitude[]" id="add{{$newcount}}-longitude" class="cust1_longitude" value="0" />
                                                 <span class="invalid-feedback" role="alert" id="address">
                                                     <strong></strong>
                                                 </span>
@@ -688,13 +687,12 @@
                         // get all the inputs inside the clone
                         var inputs = $clone.find('.redio');
 
-                        $clone.find('.cust_add_div').prop('id', 'add' + countEdit);
-                        $clone.find('.cust_add').prop('id', 'add' + countEdit +'-input');
-                        $clone.find('.cust_btn').prop('num', 'add' + countEdit);
-                        $clone.find('.cust_latitude').prop('id', 'add' + countEdit +'-latitude');
-                        $clone.find('.cust_longitude').prop('id', 'add' + countEdit +'-longitude');
-
-
+                        $clone.find('.cust1_add_div').prop('id', 'add' + countEdit);
+                        $clone.find('.cust1_add').prop('id', 'add' + countEdit +'-input');
+                        $clone.find('.cust1_btn').prop('num', 'add' + countEdit);
+                        $clone.find('.cust1_btn').prop('id', 'add' + countEdit);
+                        $clone.find('.cust1_latitude').prop('id', 'add' + countEdit +'-latitude');
+                        $clone.find('.cust1_longitude').prop('id', 'add' + countEdit +'-longitude');
                         // for each input change its name/id appending the num value
                         var count0 = 1;
                         $.each(inputs, function(index, elem){
@@ -1009,7 +1007,7 @@
     }
 
     $(document).on('click', '.showMapTask', function(){
-        var no = $(this).attr('num');
+        var no = $(this).attr('id');
         console.log(no);
         var lats = document.getElementById(no+'-latitude').value;
         var lngs = document.getElementById(no+'-longitude').value;
