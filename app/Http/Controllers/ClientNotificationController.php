@@ -7,6 +7,9 @@ use Illuminate\Support\Facades\Validator;
 use App\Model\NotificationType;
 use App\Model\NotificationEvent;
 use App\Model\ClientNotification;
+use App\Model\Roster;
+use Carbon\Carbon;
+use App\Jobs\SendPushNotifications;
 
 class ClientNotificationController extends Controller
 {
@@ -18,7 +21,7 @@ class ClientNotificationController extends Controller
     public function index()
     {
         $notification_types = NotificationType::with('notification_events')->get();
-        $client_notifications = ClientNotification::where('client_id',1)->get(); 
+        $client_notifications = ClientNotification::where('client_id', 1)->get();
         return view('notifications')->with([
             'client_notifications' => $client_notifications,
             'notification_types'   => $notification_types
@@ -91,32 +94,33 @@ class ClientNotificationController extends Controller
         //
     }
 
-        /**
+    /**
      * Validation method for clients Update 
-    */
+     */
     protected function updateClientEventValidator(array $data)
     {
         return Validator::make($data, [
             'notification_event_id' => ['required'],
             'current_value' => ['required'],
-            'notification_type'=>['required']
+            'notification_type' => ['required']
         ]);
     }
 
-    public function updateClientNotificationEvent(Request $request){
+    public function updateClientNotificationEvent(Request $request)
+    {
 
         $validator = $this->updateClientEventValidator($request->all())->validate();
 
         switch ($request->notification_type) {
             case 'sms':
-                $update = ['request_recieved_sms'=>$request->current_value];
-            break;
+                $update = ['request_recieved_sms' => $request->current_value];
+                break;
             case 'email':
-                $update = ['request_received_email'=>$request->current_value];
-            break;
+                $update = ['request_received_email' => $request->current_value];
+                break;
             case 'webhook':
-                $update = ['request_recieved_webhook'=>$request->current_value];
-            break;
+                $update = ['request_recieved_webhook' => $request->current_value];
+                break;
             default:
                 # code...
                 break;
@@ -125,37 +129,72 @@ class ClientNotificationController extends Controller
         ClientNotification::updateOrCreate([
             'client_id' => 1,
             'notification_event_id' => $request->notification_event_id
-        ],$update);
+        ], $update);
 
         return response()->json([
-            'status'=>'success',
+            'status' => 'success',
             'message' => 'Updated Successfully',
             'data' => ''
         ]);
-
     }
 
     protected function updateWebhookValidator(array $data)
     {
         return Validator::make($data, [
             'notification_event_id' => ['required'],
-            'webhook_url'=>['required']
+            'webhook_url' => ['required']
         ]);
     }
 
-    public function setWebhookUrl(Request $request){
+    public function setWebhookUrl(Request $request)
+    {
 
         $validator = $this->updateWebhookValidator($request->all())->validate();
 
         $update = [
             'webhook_url' => $request->webhook_url
         ];
-        
+
         ClientNotification::updateOrCreate([
             'client_id' => 1,
             'notification_event_id' => $request->notification_event_id
-        ],$update);
+        ], $update);
 
         return redirect()->back();
+    }
+
+
+    //Push notification to drivers
+
+    public function SendPushNotification()
+    {
+        $recipients = [];
+        $date =  Carbon::now()->toDateTimeString();
+        $get = Roster::where('notification_time', '<=', $date)->with('agent')->get();
+        dd($get);
+        foreach($get as $item){
+            array_push($recipients,$item->agent->device_token);
+        }
+        // if(isset($recipients)){
+        //     //dispatch(new SendPushNotifications($recipients));
+        //     $this->dispatchNow(new SendPushNotifications($recipients));
+        // }
+       
+        if(isset($recipients)){
+            fcm()
+            ->to($recipients) // $recipients must an array
+            ->priority('high')
+            ->timeToLive(0)
+            ->data([
+                'title' => 'Test FCM',
+                'body' => 'This is a test of FCM',
+            ])
+            ->notification([
+                'title' => 'Test FCM',
+                'body' => 'This is a test of FCM',
+            ])
+            ->send();
+        }
+        
     }
 }

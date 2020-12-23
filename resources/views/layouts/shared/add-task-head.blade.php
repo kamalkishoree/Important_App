@@ -190,6 +190,13 @@
 <script src="{{ asset('assets/libs/bootstrap-select/bootstrap-select.min.js') }}"></script>
 <script src="{{ asset('assets/libs/bootstrap-touchspin/bootstrap-touchspin.min.js') }}"></script>
 <script src="{{ asset('assets/libs/bootstrap-maxlength/bootstrap-maxlength.min.js') }}"></script>
+<script src="{{asset('assets/libs/flatpickr/flatpickr.min.js')}}"></script>
+<script src="{{asset('assets/libs/bootstrap-colorpicker/bootstrap-colorpicker.min.js')}}"></script>
+<script src="{{asset('assets/libs/clockpicker/clockpicker.min.js')}}"></script>
+<script src="{{asset('assets/libs/bootstrap-datepicker/bootstrap-datepicker.min.js')}}"></script>
+
+<!-- Page js-->
+<script src="{{asset('assets/js/pages/form-pickers.init.js')}}"></script>
 <script>
     var maoArray = {};
     var autoWrap = ['addHeader0'];
@@ -206,6 +213,15 @@
     $(document).ready(function(){
       loadMapHeader(autoWrap);
     });
+
+    function runPicker(){
+        $('.datetime-datepicker').flatpickr({
+            enableTime: true,
+            dateFormat: "Y-m-d H:i"
+        });
+
+        $('.selectpicker').selectpicker();
+    }
 
     var latitudes = []; 
     var longitude = [];
@@ -285,6 +301,8 @@
                     //backdrop: 'static',
                     keyboard: false
                 });
+
+                runPicker();
             },
             error: function (data) {
             }

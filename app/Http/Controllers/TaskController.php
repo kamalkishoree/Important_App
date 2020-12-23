@@ -195,14 +195,15 @@ class TaskController extends Controller
             }
         }
          $geo = null;
-        // if($request->allocation_type === 'a'){
-        //     $geo = $this->createRoster($send_loc_id);
-        //     $agent_id = null;
-        // }
+        if($request->allocation_type === 'a'){
+            $geo = $this->createRoster($send_loc_id);
+           
+            $agent_id = null;
+        }
          
-        // if($request->allocation_type === 'a' || $request->allocation_type === 'm'){
-        //     $this->finalRoster($geo,$notification_time,$agent_id,$orders->id);
-        // }
+        if($request->allocation_type === 'a' || $request->allocation_type === 'm'){
+            $this->finalRoster($geo,$notification_time,$agent_id,$orders->id);
+        }
         
          
          
@@ -287,30 +288,33 @@ class TaskController extends Controller
 
     public function finalRoster($geo,$notification_time,$agent_id,$orders_id)
     {
+        // print($geo);
+        // print($notification_time);
+        // print($agent_id);
+        // print($orders_id);
+        // die;
         $date = \Carbon\Carbon::today();
         $auth = Client::where('code',Auth::user()->code)->with('getAllocation')->first();
-        
+        $expriedate = (int)$auth->getAllocation->request_expiry;
+        $beforetime = (int)$auth->getAllocation->start_before_task_time;
+        $maxsize    = (int)$auth->getAllocation->maximum_batch_size;
+        $time       = $this->checkTimeDiffrence($notification_time,$beforetime);
+       
         if(!isset($geo)){
             $data = [
                 'order_id'            => $orders_id,
                 'driver_id'           => $agent_id,
-                'notification_time'   => $notification_time,
+                'notification_time'   => $time,
                 'type'                => 'N',
             ];
             $task = Roster::create($data);
         } else {
-
-            $expriedate = (int)$auth->getAllocation->request_expiry;
-            $beforetime = (int)$auth->getAllocation->start_before_task_time;
-            $maxsize    = (int)$auth->getAllocation->maximum_batch_size;
-            $time       = $this->checkTimeDiffrence(Carbon::now()->toDateTimeString(),$notification_time,$beforetime);
             
            
             $all   = [];
             $extra = [];
             $getgeo = DriverGeo::where('geo_id',$geo)->get('driver_id');
             
-
             $totalcount = $getgeo->count();
             $orders = order::where('driver_id','!=',null)->whereDate('created_at',$date)->groupBy('driver_id')->get('driver_id');
             
@@ -322,6 +326,7 @@ class TaskController extends Controller
             $counter = 0;
             $remening = [];
             foreach($getgeo as $key =>  $geoitem){
+                
                 if($counter <= $maxsize){
                     $data = [];
                     if(in_array($geoitem->driver_id, $allreadytaken)){
@@ -341,13 +346,14 @@ class TaskController extends Controller
                         array_push($all,$data);
                         $counter++;
                     }
-                    //print_r($remening);
+                   
                 }else{
                     break;
                 }
                 
                 
             }
+           
             //echo $counter;
             //echo $totalcount;
            
@@ -372,16 +378,23 @@ class TaskController extends Controller
                     array_push($all,$data);
                } 
             }
-            // die();
+           
             Roster::insert($all);
         }
         
 
     }
-    public function checkTimeDiffrence($now,$notification_time,$beforetime)
+    public function checkTimeDiffrence($notification_time,$beforetime)
     {
-        $to = \Carbon\Carbon::createFromFormat('Y-m-d H:s:i',$now);
-        $from = \Carbon\Carbon::createFromFormat('Y-m-d H:s:i',$notification_time);
+        // print($now);
+        // print($notification_time);
+       
+        
+        
+        $to   = Carbon::createFromFormat('Y-m-d H:s:i',Carbon::now()->toDateTimeString());
+        
+        $from = Carbon::createFromFormat('Y-m-d H:s:i',Carbon::parse($notification_time) ->format('Y-m-d H:i:s'));
+        
           $diff_in_minutes = $to->diffInMinutes($from);
         if($diff_in_minutes < $beforetime){
             return  Carbon::now()->toDateTimeString();

@@ -17,6 +17,7 @@ class Kernel extends ConsoleKernel
         Commands\ClientRollbcakMigrate::class,
         Commands\UpdateRedis::class,
         Commands\NewChanges::class,
+        Commands\SendPushNotification::class,
     ];
 
     /**
@@ -27,8 +28,8 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')->hourly();
-       // $schedule->command('client:migrate')->everyMinute();
+        
+        //    $schedule->command('push:send')->everyMinute();
     }
 
     /**

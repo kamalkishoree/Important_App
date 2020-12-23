@@ -177,6 +177,7 @@ return [
         App\Providers\RouteServiceProvider::class,
         R0bdiabl0\Laravel5Phumbor\Laravel5PhumborServiceProvider::class,
         Intervention\Image\ImageServiceProvider::class,
+        Kawankoding\Fcm\FcmServiceProvider::class,
 
     ],
 
@@ -233,6 +234,7 @@ return [
         'Html' => Collective\Html\HtmlFacade::class,
         'Phumbor'   => R0bdiabl0\Laravel5Phumbor\Facades\Phumbor::class,
         'Image' => Intervention\Image\Facades\Image::class,
+        'Fcm' => Kawankoding\Fcm\FcmFacade::class,
         
 
 

@@ -24,8 +24,8 @@
                         </div>
                 </div>
                 <div class="col-md-4 datenow">
-                    <input type="text" id='datetime-datepicker' name="schedule_time"
-                        class="form-control upside" placeholder="Date Time">
+                    <input type="text"  name="schedule_time"
+                        class="form-control upside datetime-datepicker" placeholder="Date Time">
                 </div>
             </div>
 

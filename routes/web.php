@@ -98,7 +98,9 @@ Route::group(['prefix' => '/godpanel'], function () {
 	Route::put('client/profile/{id}','ClientProfileController@update')->name('client.profile.update');
 	Route::post('client/password/update','ClientProfileController@changePassword')->name('client.password.update');
 
-	//dummy ajax
+	//dummy route for testing
+	 route::get('testing','ClientNotificationController@SendPushNotification');
+
 
 	
 	});
