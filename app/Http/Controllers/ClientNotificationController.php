@@ -171,7 +171,7 @@ class ClientNotificationController extends Controller
         $recipients = [];
         $date =  Carbon::now()->toDateTimeString();
         $get = Roster::where('notification_time', '<=', $date)->with('agent')->get();
-        dd($get);
+        
         foreach($get as $item){
             array_push($recipients,$item->agent->device_token);
         }

@@ -3,10 +3,11 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Api\BaseController;
+use App\Model\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
-use App\Model\{User, Client};
+use App\User;
 use Validation;
 use DB;
 
@@ -19,8 +20,8 @@ class ShortcodeController extends BaseController
      */
     public function validateCompany(Request $request)
     {
-        $client = Client::select('id', 'name', 'database_name', 'timezone', 'custom_domain', 'logo', 'company_name', 'company_address', 'is_blocked')
-                    ->where('is_deleted', 0)->where('code', $request->shortCode)->first();
+        
+        $client = Client::where('is_deleted', 0)->where('code', $request->shortCode)->first(['id', 'name', 'database_name', 'timezone', 'custom_domain', 'logo', 'company_name', 'company_address', 'is_blocked']);
 
         
         if (!$client) {

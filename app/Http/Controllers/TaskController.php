@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
+use App\Jobs\RosterCreate;
 
 
 class TaskController extends Controller
@@ -207,7 +208,7 @@ class TaskController extends Controller
         
          
          
-        return redirect()->route('tasks.index')->with('success', 'Task Added successfully!');
+        return redirect()->route('tasks.index')->with('success', 'Task Added Successfully!');
     }
 
 
@@ -299,22 +300,30 @@ class TaskController extends Controller
         $beforetime = (int)$auth->getAllocation->start_before_task_time;
         $maxsize    = (int)$auth->getAllocation->maximum_batch_size;
         $time       = $this->checkTimeDiffrence($notification_time,$beforetime);
-       
+        
         if(!isset($geo)){
+            $oneagent = Agent::where('id',$agent_id)->first();
             $data = [
                 'order_id'            => $orders_id,
                 'driver_id'           => $agent_id,
                 'notification_time'   => $time,
                 'type'                => 'N',
+                'client_code'         => Auth::user()->code,
+                'created_at'          => Carbon::now()->toDateTimeString(),
+                'updated_at'          => Carbon::now()->toDateTimeString(),
+                'device_type'         => $oneagent->device_type,
+                'device_token'        => $oneagent->device_token,
             ];
-            $task = Roster::create($data);
+           
+            $this->dispatchNow(new RosterCreate($data));
+            return $task = Roster::create($data);
         } else {
             
+            $dummyentry = [];
+            $all        = [];
+            $extra      = [];
+            $getgeo = DriverGeo::where('geo_id',$geo)->with('agent')->get('driver_id');
            
-            $all   = [];
-            $extra = [];
-            $getgeo = DriverGeo::where('geo_id',$geo)->get('driver_id');
-            
             $totalcount = $getgeo->count();
             $orders = order::where('driver_id','!=',null)->whereDate('created_at',$date)->groupBy('driver_id')->get('driver_id');
             
@@ -326,12 +335,12 @@ class TaskController extends Controller
             $counter = 0;
             $remening = [];
             foreach($getgeo as $key =>  $geoitem){
-                
                 if($counter <= $maxsize){
                     $data = [];
                     if(in_array($geoitem->driver_id, $allreadytaken)){
-                           
-                        array_push($remening,$geoitem->driver_id);
+                           $extra = ['id'=>$geoitem->driver_id,
+                           'device_type'=> $geoitem->agent->device_type,'device_token'=> $geoitem->agent->device_token];
+                        array_push($remening,$extra);
                     } else{
                         
                         $data = [
@@ -339,7 +348,15 @@ class TaskController extends Controller
                         'driver_id'           => $geoitem->driver_id,
                         'notification_time'   => $time,
                         'type'                => 'AR',
+                        'client_code'         => Auth::user()->code,
+                        'created_at'          => Carbon::now()->toDateTimeString(),
+                        'updated_at'          => Carbon::now()->toDateTimeString(),
+                        'device_type'         => $geoitem->agent->device_type,
+                        'device_token'        => $geoitem->agent->device_token,
                         ];
+                        if(count($dummyentry)<1){
+                            array_push($dummyentry,$data); 
+                        }
                         $time = Carbon::parse($time)
                         ->addSeconds($expriedate)
                         ->format('Y-m-d H:i:s');
@@ -353,6 +370,9 @@ class TaskController extends Controller
                 
                 
             }
+        //    print_r($extra);
+        //      echo $totalcount;
+        //     echo $counter;
            
             //echo $counter;
             //echo $totalcount;
@@ -363,23 +383,34 @@ class TaskController extends Controller
             //print_r($remening);
             if($totalcount > $counter){
                $loopcount =  $totalcount - $counter;
+                
+               for($i=0;$i<$loopcount;$i++){
+               
               
-               for($i=0;$i>$loopcount;$i++){
-                   
-                $data = [
+                  $data = [
                     'order_id'            => $orders_id,
-                    'driver_id'           => $remening[$i],
+                    'driver_id'           => $remening[$i]['id'],
                     'notification_time'   => $time,
                     'type'                => 'pr',
+                    'client_code'         => Auth::user()->code,
+                    'created_at'          => Carbon::now()->toDateTimeString(),
+                    'updated_at'          => Carbon::now()->toDateTimeString(),
+                    'device_type'         => $remening[$i]['device_type'],
+                    'device_token'        => $remening[$i]['device_token'],
                     ];
+                    if(count($dummyentry)<1){
+                        array_push($dummyentry,$data); 
+                    }
                     $time = Carbon::parse($time)
                     ->addSeconds($expriedate)
                     ->format('Y-m-d H:i:s');
                     array_push($all,$data);
+                    
                } 
             }
-           
-            Roster::insert($all);
+               
+               $this->dispatchNow(new RosterCreate($all));
+               return Roster::create($dummyentry);
         }
         
 
