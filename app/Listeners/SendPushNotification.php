@@ -33,7 +33,7 @@ class SendPushNotification
     public function handle(PushNotification $event)
     {
         //Log::info('message');
-        $recipients = [];
+        
         $date =  Carbon::now()->toDateTimeString();
         try {
            
@@ -56,14 +56,8 @@ class SendPushNotification
                 Config::set("database.connections.$schemaName", $default);
                 config(["database.connections.mysql.database" => $schemaName]);
 
-                $get =  DB::connection($schemaName)->table('rosters')->where('notification_time', '<=', $date)->get();
+                $this->getData();
                 
-                foreach($get as $item){
-                    if(isset($item->device_token))
-                    array_push($recipients,$item->device_token);
-                }
-                
-                $this->sendnotification($recipients);
 
                 DB::disconnect($schemaName);
         } catch (Exception $ex) {
@@ -73,24 +67,47 @@ class SendPushNotification
         
     }
 
+    public function getData()
+    {
+        $recipients       = [];
+        $updateStatus     = [];
+        $schemaName = 'royodelivery_db';
+        $date =  Carbon::now()->toDateTimeString();
+        $get =  DB::connection($schemaName)->table('rosters')->where('notification_time', '<=', $date)->where('status',0)->leftJoin('roster_details', 'rosters.detail_id', '=', 'roster_details.unique_id')->get();
+        //dd($get);
+                DB::connection($schemaName)->table('rosters')->where('status',1)->delete();
+        if(isset($get)){
+            foreach($get as $item){
+                array_push($updateStatus,$item->id);
+            }
+            DB::connection($schemaName)->table('rosters')->whereIn('id',$updateStatus)->update(['status'=>1]);
+            $this->sendnotification($get);
+        }else{
+            return;
+        }        
+        
+    }
+
     public function sendnotification($recipients)
     {
         // dd($recipients);
-        Log::info('good man');
-        if(isset($recipients)){
-            fcm()
-            ->to($recipients) // $recipients must an array
-            ->priority('high')
-            ->timeToLive(0)
-            ->data([
-                'title' => 'Test FCM',
-                'body' =>  'This is a test of FCM',
-            ])
-            ->notification([
-                'title' => 'Pickup Request',
-                'body' =>  'Accecpt Request Task From App',
-            ])
-            ->send();
+        foreach($recipients as $item){
+            if(isset($item->device_token)){
+                fcm()
+                ->to($item->device_token) // $recipients must an array
+                ->priority('high')
+                ->timeToLive(0)
+                ->data($item)
+                ->notification([
+                    'title' => 'Pickup Request',
+                    'body' =>  'Accecpt Request Task From App',
+                ])
+                ->send();
+            }
         }
+        
+         $this->getData();
+       
+       
     }
 }

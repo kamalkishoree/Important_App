@@ -49,4 +49,6 @@ Route::group([
         Route::get('taskList', 'Api\ActivityController@tasks');
         Route::get('updateStatus', 'Api\ActivityController@updateDriverStatus');
         Route::post('updateTaskStatus', 'Api\TaskController@updateTaskStatus');
+        Route::post('task/accecpt/reject', 'Api\TaskController@TaskUpdateReject');
+
 });

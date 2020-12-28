@@ -16,15 +16,17 @@ class RosterCreate implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     protected $data;
+    protected $extraData;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct($data)
+    public function __construct($data,$extraData)
     {
-        $this->data = $data;
+        $this->data      = $data;
+        $this->extraData = $extraData;
     }
 
     /**
@@ -60,6 +62,7 @@ class RosterCreate implements ShouldQueue
             Config::set("database.connections.$schemaName", $default);
             config(["database.connections.mysql.database" => $schemaName]);
             DB::connection($schemaName)->table('rosters')->insert($this->data);
+            DB::connection($schemaName)->table('roster_details')->insert($this->extraData);
             DB::disconnect($schemaName);
         } catch (Exception $ex) {
            return $ex->getMessage();

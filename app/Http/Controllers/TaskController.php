@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use App\Jobs\RosterCreate;
-
+use App\Models\RosterDeatil;
 
 class TaskController extends Controller
 {
@@ -91,6 +91,9 @@ class TaskController extends Controller
 
         $images = [];
         $last = '';
+        $customer = [];
+        $finalLocation = [];
+        $taskcount = 0;
 
        // dd($request->all());
         
@@ -128,6 +131,7 @@ class TaskController extends Controller
            
         } else {
             $cus_id = $request->ids;
+            $customer = Customer::where('id',$request->ids)->first();
         }
           
         $notification_time = isset($request->schedule_time)?$request->schedule_time:Carbon::now()->toDateTimeString();
@@ -149,7 +153,7 @@ class TaskController extends Controller
        
         $dep_id = null;
         foreach ($request->task_type_id as $key => $value) {
-
+            $taskcount++;
             if (isset($request->short_name[$key])) {
                 $loc = [
                     'short_name'  => $request->short_name[$key],
@@ -163,6 +167,7 @@ class TaskController extends Controller
                 if($key == 0){
                     $loc_id = $request->old_address_id;
                     $send_loc_id = $loc_id;
+                    $finalLocation = Location::where('id',$send_loc_id)->first();
                 }else{
                     $loc_id = $request->input('old_address_id'.$key);
                    
@@ -203,7 +208,7 @@ class TaskController extends Controller
         }
          
         if($request->allocation_type === 'a' || $request->allocation_type === 'm'){
-            $this->finalRoster($geo,$notification_time,$agent_id,$orders->id);
+            $this->finalRoster($geo,$notification_time,$agent_id,$orders->id,$customer,$finalLocation,$taskcount);
         }
         
          
@@ -287,8 +292,9 @@ class TaskController extends Controller
           return $c;
     }
 
-    public function finalRoster($geo,$notification_time,$agent_id,$orders_id)
+    public function finalRoster($geo,$notification_time,$agent_id,$orders_id,$customer,$finalLocation,$taskcount)
     {
+        //dd($customer);
         // print($geo);
         // print($notification_time);
         // print($agent_id);
@@ -300,7 +306,7 @@ class TaskController extends Controller
         $beforetime = (int)$auth->getAllocation->start_before_task_time;
         $maxsize    = (int)$auth->getAllocation->maximum_batch_size;
         $time       = $this->checkTimeDiffrence($notification_time,$beforetime);
-        
+        $randem     = rand(11111111,99999999);;
         if(!isset($geo)){
             $oneagent = Agent::where('id',$agent_id)->first();
             $data = [
@@ -313,9 +319,22 @@ class TaskController extends Controller
                 'updated_at'          => Carbon::now()->toDateTimeString(),
                 'device_type'         => $oneagent->device_type,
                 'device_token'        => $oneagent->device_token,
+                'detail_id'           => $randem,
+            ];
+            $extraData = [
+                'customer_name'            => $customer->name,
+                'customer_phone_number'    => $customer->phone_number,
+                'sort_name'                => $finalLocation->short_name,
+                'address'                  => $finalLocation->address,
+                'lat'                      => $finalLocation->latitude,
+                'long'                     => $finalLocation->longitude,
+                'task_count'               => $taskcount,
+                'unique_id'                => $randem,
+                'created_at'               => Carbon::now()->toDateTimeString(),
+                'updated_at'          => Carbon::now()->toDateTimeString(),
             ];
            
-            $this->dispatchNow(new RosterCreate($data));
+            $this->dispatchNow(new RosterCreate($data,$extraData));
             return $task = Roster::create($data);
         } else {
             
@@ -342,6 +361,18 @@ class TaskController extends Controller
                            'device_type'=> $geoitem->agent->device_type,'device_token'=> $geoitem->agent->device_token];
                         array_push($remening,$extra);
                     } else{
+                        $extraData = [
+                            'customer_name'            => $customer->name,
+                            'customer_phone_number'    => $customer->phone_number,
+                            'sort_name'                => $finalLocation->short_name,
+                            'address'                  => $finalLocation->address,
+                            'lat'                      => $finalLocation->latitude,
+                            'long'                     => $finalLocation->longitude,
+                            'task_count'               => $taskcount,
+                            'unique_id'                => $randem,
+                            'created_at'               => Carbon::now()->toDateTimeString(),
+                            'updated_at'               => Carbon::now()->toDateTimeString(),
+                        ];
                         
                         $data = [
                         'order_id'            => $orders_id,
@@ -353,6 +384,8 @@ class TaskController extends Controller
                         'updated_at'          => Carbon::now()->toDateTimeString(),
                         'device_type'         => $geoitem->agent->device_type,
                         'device_token'        => $geoitem->agent->device_token,
+                        'detail_id'           => $randem,
+
                         ];
                         if(count($dummyentry)<1){
                             array_push($dummyentry,$data); 
@@ -368,7 +401,7 @@ class TaskController extends Controller
                     break;
                 }
                 
-                
+               
             }
         //    print_r($extra);
         //      echo $totalcount;
@@ -397,6 +430,7 @@ class TaskController extends Controller
                     'updated_at'          => Carbon::now()->toDateTimeString(),
                     'device_type'         => $remening[$i]['device_type'],
                     'device_token'        => $remening[$i]['device_token'],
+                    'detail_id'           => $randem,
                     ];
                     if(count($dummyentry)<1){
                         array_push($dummyentry,$data); 
@@ -409,7 +443,7 @@ class TaskController extends Controller
                } 
             }
                
-               $this->dispatchNow(new RosterCreate($all));
+               $this->dispatchNow(new RosterCreate($all,$extraData));
                return Roster::create($dummyentry);
         }
         
