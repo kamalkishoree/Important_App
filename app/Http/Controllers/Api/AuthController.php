@@ -38,7 +38,7 @@ class AuthController extends BaseController
 	    }
         $otp = new Otp();
         $otp->phone = $data['phone_number'] = $agent->phone_number;
-        $otp->opt = $data['otp'] = substr(str_shuffle("0123456789abcdefghijklmnopqrstvwxyz"), 0, 6);
+        $otp->opt = $data['otp'] = rand(111111,999999);
         $otp->valid_till = $data['valid_till'] = Date('Y-m-d H:i:s', strtotime("+10 minutes"));
 
         $otp->save();

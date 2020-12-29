@@ -25,9 +25,9 @@ class Agent extends Authenticatable
     {
         $secret = '';
         $server = 'http://192.168.100.211:8888';
-        $new    = \Thumbor\Url\Builder::construct($server, $secret, 'http://images.example.com/llamas.jpg')->fitIn(90,50);
-        //  \Phumbor::url(\Storage::disk("s3")->url($this->profile_picture))->fitIn(90,50)->build();
-        return $new; 
+        //$new    = \Thumbor\Url\Builder::construct($server, $secret, 'http://images.example.com/llamas.jpg')->fitIn(90,50);
+        return    \Storage::disk("s3")->url($this->profile_picture);
+        ///return $new; 
 
     }
 

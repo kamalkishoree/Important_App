@@ -306,7 +306,7 @@ class TaskController extends Controller
         $beforetime = (int)$auth->getAllocation->start_before_task_time;
         $maxsize    = (int)$auth->getAllocation->maximum_batch_size;
         $time       = $this->checkTimeDiffrence($notification_time,$beforetime);
-        $randem     = rand(11111111,99999999);;
+        $randem     = rand(11111111,99999999);
         if(!isset($geo)){
             $oneagent = Agent::where('id',$agent_id)->first();
             $data = [
@@ -331,7 +331,7 @@ class TaskController extends Controller
                 'task_count'               => $taskcount,
                 'unique_id'                => $randem,
                 'created_at'               => Carbon::now()->toDateTimeString(),
-                'updated_at'          => Carbon::now()->toDateTimeString(),
+                'updated_at'               => Carbon::now()->toDateTimeString(),
             ];
            
             $this->dispatchNow(new RosterCreate($data,$extraData));

@@ -6,9 +6,10 @@ use App\Http\Controllers\Api\BaseController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
-use App\Model\{User, Agent, Client, ClientPreference, Order, Task};
+use App\Model\{User, Agent, AgentLog, Client, ClientPreference, Order, Task};
 use Validation;
 use DB;
+use Illuminate\Support\Facades\Storage;
 
 class ActivityController extends BaseController
 {
@@ -56,7 +57,81 @@ class ActivityController extends BaseController
      */
     public function profile(Request $request)
     {
+       
+       $agent = Agent::where('id',Auth::user()->id)->first();
+
+       return response()->json([
+        'data' => $agent,
+       ],200);
+
+    }
+
+    public function updateProfile(Request $request)
+    {
+        $saved = Agent::where('id',Auth::user()->id)->first();
         
+        $header = $request->header();
+        $client_code = Client::where('database_name',$header['client'][0])->first('code');
+        $getFileName = '';
+        // Handle File Upload
+        if(isset($request->profile_picture)){
+
+            if ($request->hasFile('profile_picture')) {
+                $folder = str_pad($client_code->code, 8, '0', STR_PAD_LEFT);
+                $folder = 'client_'.$folder;
+                $file = $request->file('profile_picture');
+                $file_name = uniqid() .'.'.  $file->getClientOriginalExtension();
+                $s3filePath = '/assets/'.$folder.'/agents' . $file_name;
+                $path = Storage::disk('s3')->put($s3filePath, $file,'public');
+                $getFileName = $path;
+            }
+
+        }else{
+            $getFileName = $saved->profile_picture;
+        }
+        
+        
+        $agent                   = Agent::find(Auth::user()->id);
+        $agent->name             = isset($request->name)?$request->name:$saved->name;
+        $agent->profile_picture  = $getFileName;
+        $agent->vehicle_type_id  = $request->vehicle_type_id;
+        $agent->make_model       = isset($request->make_model)?$request->make_model:$saved->make_model;
+        $agent->plate_number     = isset($request->plate_number)?$request->plate_number:$saved->plate_number;
+        $agent->phone_number     = isset($request->phone_number)?$request->phone_number:$saved->phone_number;
+        $agent->color            = isset($request->color)?$request->color:$saved->color;
+
+        if($agent->save()){
+            return response()->json([
+                'message' => 'Profile Updated Successfully',
+            ],200);
+        } else {
+            return response()->json([
+                'message' => 'Sorry Something Went Wrong',
+            ],404);
+        }
+
+
+    }
+
+    public function agentLog(Request $request)
+    {
+        $user = AgentLog::firstOrCreate([
+            'agent_id'          => $request->agent_id,
+        ], [
+            'agent_id'          => $request->agent_id,
+            'current_task_id'   => $request->current_task_id,
+            'lat'               => $request->lat,
+            'long'              => $request->long,
+            'battery_level'     => $request->battery_level,
+            'android_version'   => $request->android_version,
+            'app_version'       => $request->app_version,
+            'current_speed'     => $request->current_speed,
+            'on_route'          => $request->on_route,
+        ]);
+        
+        return response()->json([
+            'message' => 'Log Saved Successfully',
+        ],200);
     }
   
 }

@@ -45,10 +45,13 @@ Route::group([
 Route::group([
       'middleware' => ['dbCheck', 'AppAuth']
     ], function() {
-        Route::get('user', 'Api\AuthController@user');
-        Route::get('taskList', 'Api\ActivityController@tasks');
-        Route::get('updateStatus', 'Api\ActivityController@updateDriverStatus');
-        Route::post('updateTaskStatus', 'Api\TaskController@updateTaskStatus');
-        Route::post('task/accecpt/reject', 'Api\TaskController@TaskUpdateReject');
+        Route::get('user', 'Api\AuthController@user');                              
+        Route::get('taskList', 'Api\ActivityController@tasks');                    // api for task list
+        Route::get('updateStatus', 'Api\ActivityController@updateDriverStatus');   // api for chnage driver status active ,in-active
+        Route::post('updateTaskStatus', 'Api\TaskController@updateTaskStatus');    // api for chnage task status like start,cpmplate,faild
+        Route::post('task/accecpt/reject', 'Api\TaskController@TaskUpdateReject'); // api for accecpt task reject task
+        Route::post('agent/logs', 'Api\ActivityController@agentLog');              // api for save agent logs
+        Route::get('get/profile','Api\ActivityController@profile');                // api for get agent profile
+        Route::post('update/profile','Api\ActivityController@updateProfile');
 
 });
