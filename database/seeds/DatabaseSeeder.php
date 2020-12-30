@@ -22,6 +22,7 @@ class DatabaseSeeder extends Seeder
               UsersTableDataSeeder::class,
               PlanSeeder::class,
               PricePriority::class,
+              CmsTableSeeder::class,
               
              ]);
     }

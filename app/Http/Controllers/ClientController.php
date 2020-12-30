@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use App\Jobs\ProcessClientDatabase;
 use App\Model\Client;
+use App\Model\Cms;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Redis;
 use Session;
@@ -304,7 +305,9 @@ class ClientController extends Controller
     {
         $preference = ClientPreference::where('client_id', Auth::user()->code)->first();
         $currencies = Currency::orderBy('iso_code')->get();
-        return view('customize')->with(['preference' => $preference, 'currencies' => $currencies]);
+        $cms        = Cms::all('content');
+       
+        return view('customize')->with(['preference' => $preference, 'currencies' => $currencies,'cms'=>$cms]);
     }
 
 
@@ -325,5 +328,12 @@ class ClientController extends Controller
     {
         $preference = ClientPreference::where('client_id',Auth::user()->id)->first();
         return view('options')->with(['preference' => $preference]);
+    }
+
+    public function cmsSave(Request $request,$id)
+    {
+       
+        Cms::where('id',$id)->update(['content'=>$request->content]);
+        return response()->json(true);
     }
 }

@@ -59,6 +59,7 @@ Route::group(['prefix' => '/godpanel'], function () {
 		
 	Route::get('','DashBoardController@index')->name('index');
 	Route::get('customize', 'ClientController@ShowPreference')->name('preference.show');
+	Route::post('save/cms/{id}','ClientController@cmsSave')->name('cms.save');
 	Route::post('client_preference/{id}', 'ClientController@storePreference')->name('preference');
 	Route::get('configure', 'ClientController@ShowConfiguration')->name('configure');
 	Route::get('options', 'ClientController@ShowOptions')->name('options');
@@ -99,8 +100,8 @@ Route::group(['prefix' => '/godpanel'], function () {
 	Route::post('client/password/update','ClientProfileController@changePassword')->name('client.password.update');
 
 	//dummy route for testing
-	 route::get('testing','ClientNotificationController@SendPushNotification');
-
+	route::get('testing','ClientNotificationController@SendPushNotification');
+		
 
 	
 	});

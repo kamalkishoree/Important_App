@@ -85,7 +85,7 @@ class TaskController extends Controller
      */
     public function store(Request $request)
     {
-        
+        //dd($request->all());
         $validator   = $this->validator($request->all())->validate();
         $loc_id = $cus_id = $send_loc_id = 0;
 

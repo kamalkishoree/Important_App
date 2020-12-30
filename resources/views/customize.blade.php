@@ -288,5 +288,51 @@
 @endsection
 
 @section('script')
+<script>
 
+    $(document).ready(function() {
+
+
+
+        var CSRF_TOKEN = $("input[name=_token]").val();
+        
+      
+
+        $( '#tandc_form' ).on( 'submit', function(e) {
+            e.preventDefault();
+
+            var content = $(this).find('textarea[name=content]').val();
+
+           
+            $.ajax({
+            type: "POST",
+            url: "{{ route('cms.save',1) }}",
+            data: { _token: CSRF_TOKEN,content:content}, 
+            success: function( msg ) {
+                $("#create-tandc-modal .close").click();
+            }
+           });
+
+        });
+
+        $( '#pandp_form' ).on( 'submit', function(e) {
+            e.preventDefault();
+
+            var content = $(this).find('textarea[name=content]').val();
+
+           
+            $.ajax({
+            type: "POST",
+            url: "{{ route('cms.save',2) }}",
+            data: { _token: CSRF_TOKEN,content:content}, 
+            success: function( msg ) {
+                $("#create-pandp-modal .close").click();
+            }
+           });
+
+        });
+
+    });
+
+</script>
 @endsection

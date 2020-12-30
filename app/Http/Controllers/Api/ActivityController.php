@@ -6,10 +6,12 @@ use App\Http\Controllers\Api\BaseController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
-use App\Model\{User, Agent, AgentLog, Client, ClientPreference, Order, Task};
+use App\Model\{User, Agent, AgentLog, Client, ClientPreference, Cms, Order, Task};
 use Validation;
 use DB;
 use Illuminate\Support\Facades\Storage;
+use App\Model\Roster;
+use Config;
 
 class ActivityController extends BaseController
 {
@@ -28,7 +30,7 @@ class ActivityController extends BaseController
             'message' => 'Status updated Successfully',
             'data' => array('is_available' => $agent->is_available)
         ]);
-
+            
     }
 
     /**
@@ -113,6 +115,8 @@ class ActivityController extends BaseController
 
     }
 
+
+
     public function agentLog(Request $request)
     {
         $user = AgentLog::firstOrCreate([
@@ -133,5 +137,15 @@ class ActivityController extends BaseController
             'message' => 'Log Saved Successfully',
         ],200);
     }
+
+    public function cmsData(Request $request)
+    {
+        $data = Cms::where('id',$request->cms_id)->first();
+
+        return response()->json([
+            'data' => $data,
+           ],200);
+    }
+    
   
 }

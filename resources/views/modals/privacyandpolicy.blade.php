@@ -1,5 +1,7 @@
 <div id="create-pandp-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
     aria-hidden="true" style="display: none;">
+    <form method="post" action="{{ route('cms.save',2) }}" id="pandp_form">
+        @csrf
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
@@ -14,7 +16,7 @@
                     <div class="col-md-12">
                         <div class="form-group">
                             <label for="field-3" class="control-label">Content</label>
-                            <textarea class="form-control" id="example-textarea" rows="25"></textarea>
+                            <textarea name="content" class="form-control" id="example-textarea" rows="25" >{{$cms[1]->content}}</textarea>
                         </div>
                     </div>
                 </div>
@@ -22,8 +24,9 @@
                
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-info waves-effect waves-light">Save</button>
+                <button type="submit" class="btn btn-info waves-effect waves-light">Save</button>
             </div>
         </div>
     </div>
+  </form>
 </div><!-- /.modal -->

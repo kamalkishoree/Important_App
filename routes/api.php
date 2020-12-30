@@ -37,7 +37,7 @@ Route::group([
     ], function() {
     	Route::post('sendOtp', 'Api\AuthController@sendOtp');
         Route::post('login', 'Api\AuthController@login');
-    	Route::post('signup', 'Api\AuthController@signup');
+        Route::post('signup', 'Api\AuthController@signup');
     });
 
 });
@@ -53,5 +53,14 @@ Route::group([
         Route::post('agent/logs', 'Api\ActivityController@agentLog');              // api for save agent logs
         Route::get('get/profile','Api\ActivityController@profile');                // api for get agent profile
         Route::post('update/profile','Api\ActivityController@updateProfile');
+        Route::get('get/cms/content','Api\ActivityController@cmsData');
 
+});
+
+
+Route::group([
+    'middleware' => 'dbCheck','prefix' => 'public'
+  ], function() {
+      Route::post('task/create', 'Api\TaskController@CreateTask');                              
+      
 });

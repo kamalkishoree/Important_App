@@ -73,7 +73,7 @@ class SendPushNotification
         $updateStatus     = [];
         $schemaName = 'royodelivery_db';
         $date =  Carbon::now()->toDateTimeString();
-        $get =  DB::connection($schemaName)->table('rosters')->where('notification_time', '<=', $date)->where('status',0)->leftJoin('roster_details', 'rosters.detail_id', '=', 'roster_details.unique_id')->get();
+        $get =  DB::connection($schemaName)->table('rosters')->where('notification_time', '<=', $date)->where('status',0)->leftJoin('roster_details', 'rosters.detail_id', '=', 'roster_details.unique_id')->get()->toArray();
         //dd($get);
                 DB::connection($schemaName)->table('rosters')->where('status',1)->delete();
         if(isset($get)){
@@ -90,23 +90,29 @@ class SendPushNotification
 
     public function sendnotification($recipients)
     {
-        // dd($recipients);
-        foreach($recipients as $item){
-            if(isset($item->device_token)){
+        // print_r($recipients->toArray());
+        // die();
+        $array = json_decode(json_encode($recipients), true);
+       
+    
+        foreach($array as $item){
+                $new = [];
+                array_push($new,$item['device_token']);
+            if(isset($new)){
                 fcm()
-                ->to($item->device_token) // $recipients must an array
+                ->to($new) // $recipients must an array
                 ->priority('high')
                 ->timeToLive(0)
                 ->data($item)
                 ->notification([
                     'title' => 'Pickup Request',
-                    'body' =>  'Accecpt Request Task From App',
+                    'body' =>  'Check All Details For This Request In App',
                 ])
                 ->send();
             }
         }
         
-         $this->getData();
+        // $this->getData();
        
        
     }
