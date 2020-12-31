@@ -66,7 +66,7 @@ class TaskController extends BaseController
             Order::where('id',$request->order_id)->update(['driver_id' => $request->driver_id,'status'=>'assigned']);
 
             return response()->json([
-                'message' => 'Task Accecpted Successfully',
+                'data' => 'Task Accecpted Successfully',
             ],200);
 
         } else {
@@ -81,7 +81,7 @@ class TaskController extends BaseController
             TaskReject::create($data);
 
             return response()->json([
-                'message' => 'Task Rejected Successfully',
+                'data' => 'Task Rejected Successfully',
             ],200);
 
         }
@@ -155,7 +155,6 @@ class TaskController extends BaseController
             'status'                     => $agent_id != null ? 'assigned' :'unassigned'
         ];
         $orders = Order::create($order);
-
         $dep_id = null;
         foreach ($request->task_type_id as $key => $value) {
             $taskcount++;
@@ -220,6 +219,8 @@ class TaskController extends BaseController
         
         return response()->json([
             'message' => 'Task Created Successfully',
+            'task_id' => $orders->id,
+            'status'  => $orders->status,
         ],200);
          
        // return redirect()->route('tasks.index')->with('success', 'Task Added Successfully!');
@@ -473,6 +474,16 @@ class TaskController extends BaseController
             return  $notification_time;
         }
         
+    }
+
+    public function currentstatus(Request $request)
+    {
+        $status = Order::where('id',$request->task_id)->first();
+
+        return response()->json([
+            'task_id' => $status->id,
+            'status'  => $status->status,
+        ],200);
     }
 
 }

@@ -39,7 +39,17 @@ class DashBoardController extends Controller
         foreach ($teams as $key => $team) {
             $append = [];
             $append[0] = $team['id'];
+            $busycounter = 0;
+            $inactivecounter = 0;
             foreach ($team['agents'] as $key => $agent) {
+                // dd($agent);
+                if(count($agent['order']) >0){
+                    $busycounter++;
+                }
+                if($agent['is_available'] == 0){
+                    $inactivecounter++;
+                }
+                
                 $append[1] = $agent['id'];
                 foreach ($agent['order'] as $key => $orders) {
                     foreach ($orders['task'] as $key => $tasks) {
@@ -65,6 +75,8 @@ class DashBoardController extends Controller
                 }
                 
             }
+            // $team['busycount']     = $busycounter;
+            // $team['inactivecount'] = $inactivecounter;
             
         }
 

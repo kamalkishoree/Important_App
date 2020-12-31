@@ -74,7 +74,7 @@ class SendPushNotification
         $schemaName = 'royodelivery_db';
         $date =  Carbon::now()->toDateTimeString();
         $get =  DB::connection($schemaName)->table('rosters')->where('notification_time', '<=', $date)->where('status',0)->leftJoin('roster_details', 'rosters.detail_id', '=', 'roster_details.unique_id')->get()->toArray();
-        //dd($get);
+        
                 DB::connection($schemaName)->table('rosters')->where('status',1)->delete();
         if(isset($get)){
             foreach($get as $item){
@@ -96,6 +96,8 @@ class SendPushNotification
        
     
         foreach($array as $item){
+                $item['title'] = 'Pickup Request';
+                $item['body']  = 'Check All Details For This Request In App';
                 $new = [];
                 array_push($new,$item['device_token']);
             if(isset($new)){

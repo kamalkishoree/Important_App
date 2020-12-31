@@ -127,7 +127,7 @@
 </style>
 <div id="task-modal-header" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
     <div class="modal-dialog modal-lg">
-        <div class="modal-content" style="max-height: 750px; overflow: scroll;">
+        <div class="modal-content" style="">
             <div class="modal-header">
 
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>

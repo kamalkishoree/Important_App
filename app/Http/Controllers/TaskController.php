@@ -313,7 +313,7 @@ class TaskController extends Controller
                 'order_id'            => $orders_id,
                 'driver_id'           => $agent_id,
                 'notification_time'   => $time,
-                'type'                => 'N',
+                'type'                => 'AR',
                 'client_code'         => Auth::user()->code,
                 'created_at'          => Carbon::now()->toDateTimeString(),
                 'updated_at'          => Carbon::now()->toDateTimeString(),

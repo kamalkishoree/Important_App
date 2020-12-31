@@ -210,11 +210,11 @@
                                 <li class="d-inline-block mr-2">
                                    
                         
-                                <label for="acknowledge1"><a href="#" type="button" data-toggle="modal" data-target="#create-tandc-modal">Terms and Conditions</a></label>
+                                <label for="acknowledge1"><a href="#" type="button" style="color: #5a5a5a;" data-toggle="modal" data-target="#create-tandc-modal">Terms and Conditions</a></label>
                                 </li>
                                 <li class="d-inline-block mr-2">
                                     
-                                <label for="acknowledge2"><a href="#" type="button" data-toggle="modal" data-target="#create-pandp-modal">Privacy Policy</a></label>
+                                <label for="acknowledge2"><a href="#" type="button" style="color: #5a5a5a;" data-toggle="modal" data-target="#create-pandp-modal">Privacy Policy</a></label>
                                 </li>
                               </ul>
                             </div>

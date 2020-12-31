@@ -178,7 +178,7 @@ $color = ['one','two','three','four','five','six','seven','eight']
                                                                             </div>
                                                                             <div class="col-md-8 col-lg-9 col-xl-10">
                                                                                 <h6 class="mb-0 header-title scnd">{{ $agent['name'] }}</h6>
-                                                                                <p class="mb-0">Busy ・ <span>2 Tasks</span></p>
+                                                                                <p class="mb-0">{{count($agent['order'])>0?'Busy ・':'Free ・'}} <span>2 Tasks</span></p>
                                                                             </div>
                                                                         </div>
                                                                     </div>
@@ -229,6 +229,8 @@ $color = ['one','two','three','four','five','six','seven','eight']
                             </div>
                             <div class="card">
                                 @foreach ($teams as $item)
+                                    
+                                   
                                     <div class="card-header" id="heading-1">
                                        
                                             <a role="button" data-toggle="collapse" href="#collapse-{{ $item['id'] }}"
@@ -270,7 +272,7 @@ $color = ['one','two','three','four','five','six','seven','eight']
                                                                         </div>
                                                                         <div class="col-md-10">
                                                                             <h6 class="mb-0 header-title scnd">{{ $agent['name'] }}</h6>
-                                                                            <p class="mb-0">Busy ・ <span>2 Tasks</span></p>
+                                                                            <p class="mb-0">{{count($agent['order'])>0?'Busy  ':'Free  '}}<span>{{count($agent['order'])}} Tasks</span></p>
                                                                         </div>
                                                                     </div>
                                                                 </a>

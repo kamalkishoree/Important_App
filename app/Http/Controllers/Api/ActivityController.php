@@ -39,7 +39,7 @@ class ActivityController extends BaseController
      */
     public function tasks(Request $request)
     {
-        $tasks = Task::with('location', 'tasktype', 'pricing')
+        $tasks = Task::where('task_status',1)->orWhere('task_status',2)->with('location', 'tasktype', 'pricing')
                         ->select('tasks.*', 'orders.recipient_phone', 'orders.Recipient_email', 'orders.task_description', 'customers.phone_number  as customer_mobile', 'customers.email  as customer_email', 'customers.name as customer_name')
                         ->join('orders', 'orders.id' , 'tasks.order_id')
                         ->join('customers', 'customers.id' , 'orders.customer_id');
@@ -47,6 +47,7 @@ class ActivityController extends BaseController
             $date = date('Y-m-d', strtotime($request->date));
             $tasks = $tasks->whereDate('tasks.created_at', $date);
         }
+       
         $tasks = $tasks->where('orders.driver_id', Auth::user()->id)->paginate();
         return response()->json($tasks);
         

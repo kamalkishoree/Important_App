@@ -1,9 +1,9 @@
 <!-- Topbar Start -->
 <div class="navbar-custom">
     <div class="container-fluid">
-        <ul class="list-unstyled topnav-menu float-right mb-0">
+        <ul class="list-unstyled topnav-menu float-right mb-0 d-flex align-items-center">
 
-            <li class="d-none d-lg-block">
+            {{-- <li class="d-none d-lg-block">
                 <form class="app-search">
                     <div class="app-search-box dropdown">
                         <!-- <div class="input-group">
@@ -69,7 +69,7 @@
                         </div> -->
                     </div>
                 </form>
-            </li>
+            </li> --}}
 
             <li class="dropdown d-inline-block d-lg-none">
                 <a class="nav-link dropdown-toggle arrow-none waves-effect waves-light" data-toggle="dropdown" href="#"
@@ -85,7 +85,7 @@
 
             <li class=" d-none d-lg-inline-block" >
                 <a class="nav-link" href="#"> 
-                    <button type="button" class="btn btn-blue waves-effect waves-light addTaskModalHeader" data-toggle="modal" data-target="" data-backdrop="static" title="Add Task" data-keyboard="false"><i class="mdi mdi-plus-circle mr-1"></i> Add Task</button>
+                    <button type="button" class="btn btn-blue waves-effect waves-light addTaskModalHeader" data-toggle="modal" data-target="" data-backdrop="static" title="Add Task" data-keyboard="false"><span><i class="mdi mdi-plus-circle mr-1"></i> Add Task</span></button>
                 </a>
             </li>
 
