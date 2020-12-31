@@ -106,10 +106,10 @@ class SendPushNotification
                 ->priority('high')
                 ->timeToLive(0)
                 ->data($item)
-                ->notification([
-                    'title' => 'Pickup Request',
-                    'body' =>  'Check All Details For This Request In App',
-                ])
+                // ->notification([
+                //     'title' => 'Pickup Request',
+                //     'body' =>  'Check All Details For This Request In App',
+                // ])
                 ->send();
             }
         }
