@@ -324,7 +324,7 @@ class TaskController extends Controller
             $extraData = [
                 'customer_name'            => $customer->name,
                 'customer_phone_number'    => $customer->phone_number,
-                'short_name'                => $finalLocation->short_name,
+                'sort_name'                => $finalLocation->short_name,
                 'address'                  => $finalLocation->address,
                 'lat'                      => $finalLocation->latitude,
                 'long'                     => $finalLocation->longitude,
