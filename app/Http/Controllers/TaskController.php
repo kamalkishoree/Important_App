@@ -324,7 +324,7 @@ class TaskController extends Controller
             $extraData = [
                 'customer_name'            => $customer->name,
                 'customer_phone_number'    => $customer->phone_number,
-                'sort_name'                => $finalLocation->short_name,
+                'short_name'                => $finalLocation->short_name,
                 'address'                  => $finalLocation->address,
                 'lat'                      => $finalLocation->latitude,
                 'long'                     => $finalLocation->longitude,
@@ -595,7 +595,7 @@ class TaskController extends Controller
             $cus_id = $request->ids;
             $customer = Customer::where('id',$request->ids)->first();
         }
-        
+
         $order = [
             'customer_id'                => $cus_id,
             'recipient_phone'            => $request->recipient_phone,
