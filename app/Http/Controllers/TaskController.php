@@ -575,17 +575,27 @@ class TaskController extends Controller
             }
                $last = implode(",", $images);
         }
+
         if (!isset($request->ids)) {
-            $cus = [
-                'name' => $request->name,
-                'email' => $request->email,
-                'phone_number' => $request->phone_number,
-            ];
-            $customer = Customer::create($cus);
-            $cus_id = $customer->id;
+            $customer = Customer::where('email','=',$request->email)->first();
+            if(isset($customer->id)){
+                $cus_id = $customer->id;
+            }else{
+                $cus = [
+                    'name' => $request->name,
+                    'email' => $request->email,
+                    'phone_number' => $request->phone_number,
+                ];
+                $customer = Customer::create($cus);
+                $cus_id = $customer->id;
+            }
+            
+           
         } else {
             $cus_id = $request->ids;
+            $customer = Customer::where('id',$request->ids)->first();
         }
+        
         $order = [
             'customer_id'                => $cus_id,
             'recipient_phone'            => $request->recipient_phone,

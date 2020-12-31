@@ -156,11 +156,8 @@
                             <input type="checkbox" value="1" class="custom-control-input large-icon" id="manual_allocation"
                                 name="manual_allocation"
                                 {{ isset($allocation) && $allocation->manual_allocation == 1 ? 'checked' : '' }}>
-                            <label class="custom-control-label check" for="manual_allocation"></label>
-                            <p class="sub-header message">
-                                Enable this option to automatically assign Task to your agent.
+                            <label class="custom-control-label check" for="manual_allocation">Enable this option to automatically assign Task to your agent.</label>
 
-                            </p>
                             <div class="col-sm-4 text-right">
 
                                 @if ($errors->has('manual_allocation'))
@@ -171,15 +168,12 @@
                             </div>
                         </div>
 
-                        <div class="custom-switch redio-all">
+                        <div class="custom-switch redio-all mb-3">
                             <input type="checkbox" value="1" class="custom-control-input large-icon" id="self_assign"
                                 name="self_assign"
                                 {{ isset($allocation) && $allocation->self_assign == 1 ? 'checked' : '' }}>
-                            <label class="custom-control-label check" for="self_assign"></label>
-                            <p class="sub-header message">
-                                Enable this option to alow self Assign.
-
-                            </p>
+                            <label class="custom-control-label check" for="self_assign">Enable this option to alow self Assign.</label>
+ 
                             <div class="col-sm-4 text-right">
 
                                 @if ($errors->has('manual_allocation'))

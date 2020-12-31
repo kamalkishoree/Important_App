@@ -127,9 +127,9 @@
                 <div class="col-md-6">
                     <div class="form-group" id="make_modelInput">
                         {!! Form::text('recipient_phone', null, ['class' => 'form-control rec', 'placeholder' =>
-                        'Recipient Phone', 'required' => 'required']) !!}
+                        'Recipient Phone']) !!}
                         {!! Form::email('recipient_email', null, ['class' => 'form-control rec', 'placeholder' =>
-                        'Recipient Email', 'required' => 'required']) !!}
+                        'Recipient Email']) !!}
                         <span class="invalid-feedback" role="alert">
                             <strong></strong>
                         </span>

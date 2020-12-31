@@ -48,7 +48,7 @@
         }
 
         .check {
-            margin-left: 116px !important;
+            
         }
 
         .newcheck {
