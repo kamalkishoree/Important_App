@@ -133,17 +133,17 @@
                             <div class="login-form">
                               <ul class="list-inline">
                                 <li class="d-inline-block mr-2">
-                                    <input type="radio" id="teacher" name="status" onclick="handleClick(this);" value="pending">
+                                    <input type="radio" id="teacher" name="status" onclick="handleClick(this);" value="unassigned" {{$status == "unassigned"?"checked":''}}>
                                     <label for="teacher">Pending<span class="showspan">{{' ('.$panding_count.')'}}</span></label>
                                   </li>
                                 <li class="d-inline-block mr-2">
-                                  <input type="radio" id="student" onclick="handleClick(this);" name="status" value="active" checked>
-                                  <label for="student">Active<span class="showspan">{{' ('.$history_count.')'}}</span></label>
+                                  <input type="radio" id="student" onclick="handleClick(this);" name="status" value="assigned" {{$status == "assigned"?"checked":''}}>
+                                  <label for="student">Active<span class="showspan">{{' ('.$active_count.')'}}</span></label>
                                 </li>
                                 
                   
                                 <li class="d-inline-block mr-2">
-                                  <input type="radio" id="parent" name="status" value="" onclick="handleClick(this);" value="completed">
+                                  <input type="radio" id="parent" name="status"  onclick="handleClick(this);" value="completed" {{$status == "completed"?"checked":''}}>
                                   <label for="parent">History<span class="showspan">{{' ('.$history_count.')'}}</span></label>
                                 </li>
                               </ul>

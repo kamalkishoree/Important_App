@@ -267,7 +267,7 @@ class TeamController extends Controller
      */
     public function destroy($id)
     {
-        Team::where('id', $id)->where('client_id', auth()->user()->id)->delete();
+        Team::where('id', $id)->delete();
         return redirect()->back()->with('success', 'Team deleted successfully!');
     }
 

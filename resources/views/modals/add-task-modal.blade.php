@@ -1,5 +1,9 @@
 <div class="row">
+            
+       
+    
     <div class="col-md-12">
+        <h4 class="page-title">Add Task</h4>
         <div class="card-box">
             @csrf
             <div class="row d-flex align-items-center" id="dateredio">
@@ -133,9 +137,9 @@
                         <div class="col-md-6">
                             <div class="form-group alladdress" id="typeInput">
                                 {!! Form::text('short_name[]', null, ['class' => 'form-control address',
-                                'placeholder' => 'Address Short Name']) !!}
+                                'placeholder' => 'Short Name']) !!}
                                 <div class="input-group mb-1">
-                                    <input type="text" id="addHeader1-input" name="address[]" class="form-control address cust_add" placeholder="Address">
+                                    <input type="text" id="addHeader1-input" name="address[]" class="form-control address cust_add" placeholder="Location">
                                     <div class="input-group-append">
                                         <button class="btn btn-xs btn-dark waves-effect waves-light showMapHeader cust_btn" type="button" num="addHeader1"> <i class="mdi mdi-map-marker-radius"></i></button>
                                     </div>
@@ -211,15 +215,15 @@
             <div class="row my-3" id="rediodiv">
                 <div class="col-md-12">
                     <div class="login-form">
-                        <ul class="list-inline">
+                         <ul class="list-inline">
                             <li class="d-inline-block mr-2">
                                 <input type="radio" class="custom-control-input check assignRadio" id="customRadio"
-                                name="allocation_type" value="u" checked>
+                                name="allocation_type" value="u" {{$allcation->manual_allocation == 0 ?'checked':''}}>
                             <label class="custom-control-label" for="customRadio">Unassigned</label>
                             </li>
                             <li class="d-inline-block mr-2">
                                 <input type="radio" class="custom-control-input check assignRadio" id="customRadio22"
-                                name="allocation_type" value="a">
+                                name="allocation_type" value="a" {{$allcation->manual_allocation == 1 ?'checked':''}}>
                             <label class="custom-control-label" for="customRadio22">Auto Allocation</label>
                             </li>
                             <li class="d-inline-block">
@@ -227,7 +231,7 @@
                                 name="allocation_type" value="m">
                             <label class="custom-control-label" for="customRadio33">Manual</label>
                             </li>
-                          </ul>
+                         </ul>
                         </div>
                 </div>
                 {{-- <div class="col-md-4 padd">
@@ -253,7 +257,7 @@
                 </div> --}}
             </div>
             <span class="span1 tagspan">Please select atlest one tag for driver and agent</span>
-            <div class="tags">
+            <div class="tags{{$allcation->manual_allocation == 1 ?'':'hidealloction'}}">
                 <div class="row ">
                     <div class="col-md-6">
                         <div class="form-group mb-3">
@@ -283,7 +287,7 @@
                 </div>
             </div>
 
-            <div class="row drivers" style="display: none;">
+            <div class="row drivers hidealloction">
                 <div class="col-md-12">
                     <div class="form-group mb-3">
                         <label>Drivers</label>

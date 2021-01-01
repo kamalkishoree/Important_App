@@ -190,10 +190,18 @@
                             <div class="col-md-4">
                                 <div class="form-group mb-3">
                                     <label for="number_of_retries">No. Of Retries</label>
-                                    <input type="text" name="number_of_retries" id="number_of_retries" placeholder="0"
+                                    <select name="number_of_retries" id="number_of_retries" class="form-control">
+                                        <option value="1" {{ isset($allocation) && $allocation->number_of_retries == 1 ? 'selected' : '' }}>1</option>
+                                        <option value="2" {{ isset($allocation) && $allocation->number_of_retries == 2 ? 'selected' : '' }}>2</option>
+                                        <option value="3" {{ isset($allocation) && $allocation->number_of_retries == 3 ? 'selected' : '' }}>3</option>
+                                        <option value="4" {{ isset($allocation) && $allocation->number_of_retries == 4 ? 'selected' : '' }}>4</option>
+                                        <option value="5" {{ isset($allocation) && $allocation->number_of_retries == 5 ? 'selected' : '' }}>5</option>
+
+                                    </select>
+                                    {{-- <input type="text" name="number_of_retries" id="number_of_retries" placeholder="0"
                                         class="form-control"
                                         value="{{ isset($allocation) && $allocation->number_of_retries != null ? $allocation->number_of_retries : '' }}"
-                                        require>
+                                        require> --}}
                                 </div>
                                 @if ($errors->has('number_of_retries'))
                                     <span class="text-danger" role="alert">
@@ -257,7 +265,7 @@
 
                         <h4 class="header-title">Select a method to allocate task</h4>
 
-                        <div class="row mb-2 mt-2" id="rediodiv">
+                        <div class="row mb-2 mt-2" id="rediodivs">
                             <div class="col-md-6 click first_click five" id="redio1">
                                 <div class="border p-3 rounded book ">
                                     <div class="row">
@@ -278,7 +286,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-6 click five" id="redio2">
+                            <div class="col-md-6 click five sendtoall" id="redio2">
                                 <div class="border p-3 rounded book">
                                     <div class="row">
                                     <div class="col-md-8 first-part">
@@ -429,8 +437,10 @@
 
 
 
-
-
+            var sendtoall = "{{$preference->acknowledgement_type}}";
+                if(sendtoall == 'acknowledge'){
+                    $('.sendtoall').hide();
+                }
 
             $(function() {
                 $('#manual_allocation').change(function() {
@@ -472,7 +482,11 @@
             
             $(document).on('click', '.autoredio', function () {
                 var value = $("input[name='acknowledgement_type']:checked").val();
-               
+                if(value == 'acknowledge'){
+                    $('.sendtoall').hide();
+                }else{
+                    $('.sendtoall').show();
+                }
             $.ajax({
                 url: "{{ route('auto-update', Auth::user()->code ?? '') }}",
                 type: 'PATCH',
@@ -482,7 +496,6 @@
                 }
             });
           });
-
 
 
         });

@@ -18,7 +18,7 @@
     display: inline-block;
     cursor: pointer;
     border-radius: 4px;
-    background-color: #ECF6FF;
+    background-color: #79a0c3;
     color: #000000;
     font-size: 13px;
     letter-spacing: 0.5px;
@@ -32,7 +32,7 @@
   
   .login-form input[type="radio"]:checked + label {
       color: #010101;
-      background-color: #F8ECEC;
+      background-color: #ebc6c6;
       color: #000000;
       font-size: 13px;  
       letter-spacing: 0.5px;

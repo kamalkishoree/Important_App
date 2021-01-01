@@ -391,12 +391,12 @@
                                     <ul class="list-inline">
                                         <li class="d-inline-block mr-2">
                                             <input type="radio" class="custom-control-input check" id="customRadio"
-                                            name="allocation_type" value="u" checked>
+                                            name="allocation_type" value="u">
                                         <label class="custom-control-label" for="customRadio">Unassigned</label>
                                         </li>
                                         <li class="d-inline-block mr-2">
                                             <input type="radio" class="custom-control-input check" id="customRadio22"
-                                            name="allocation_type" value="a">
+                                            name="allocation_type" value="a" {{$allcation->manual_allocation == 1 ?'checked':''}}>
                                         <label class="custom-control-label" for="customRadio22">Auto Allocation</label>
                                         </li>
                                         <li class="d-inline-block">

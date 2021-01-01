@@ -360,7 +360,7 @@ $color = ['one','two','three','four','five','six','seven','eight']
                                                 </div>
                                                 <div class="row mt-2 teamchange">
                                                     <div class="col-md-8">
-                                                        <h6>Unassigend team</h6>
+                                                        <h6>Unassigned team</h6>
                                                     </div>
                                                     <div class="col-md-4 text-right">
                                                         <label class="">

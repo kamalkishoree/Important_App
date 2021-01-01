@@ -144,7 +144,7 @@ class PricingRulesController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $validator = $this->validator($request->all())->validate();
+       //$validator = $this->validator($request->all())->validate();
 
         $getAgent = PricingRule::find($id);
         
@@ -153,18 +153,18 @@ class PricingRulesController extends Controller
         $data = [
             'name'                            => $request->name,
             'start_date_time'                 => $request->start_date_time,
-            'end_date_time'                   => $request->end_date_time,
-            'is_default'                      => $request->is_default,
-            'geo_id'                          => $request->geo_id,
-            'team_id'                         => $request->team_id,
-            'team_tag_id'                     => $request->team_tag_id,
-            'driver_tag_id'                   => $request->driver_tag_id,
+            // 'end_date_time'                   => $request->end_date_time,
+            // 'is_default'                      => $request->is_default,
+            // 'geo_id'                          => $request->geo_id,
+            // 'team_id'                         => $request->team_id,
+            // 'team_tag_id'                     => $request->team_tag_id,
+            // 'driver_tag_id'                   => $request->driver_tag_id,
             'base_price'                      => $request->base_price,
             'base_duration'                   => $request->base_duration,
             'base_distance'                   => $request->base_distance,
-            'base_waiting'                    => $request->base_waiting,
+            //'base_waiting'                    => $request->base_waiting,
             'duration_price'                  => $request->duration_price,
-            'waiting_price'                   => $request->waiting_price,
+            //'waiting_price'                   => $request->waiting_price,
             'distance_fee'                    => $request->distance_fee,
             'cancel_fee'                      => $request->cancel_fee,
             'agent_commission_percentage'     => $request->agent_commission_percentage,

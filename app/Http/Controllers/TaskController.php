@@ -10,7 +10,7 @@ use App\Model\TagsForTeam;
 use App\Model\TaskDriverTag;
 use App\Model\TaskTeamTag;
 use Illuminate\Http\Request;
-use App\Model\{Agent, Client, DriverGeo, PricingRule, Roster};
+use App\Model\{Agent, AllocationRule, Client, DriverGeo, PricingRule, Roster};
 use App\Model\Geo;
 use App\Model\Order;
 use Illuminate\Support\Facades\Validator;
@@ -32,19 +32,22 @@ class TaskController extends Controller
         /* Orter status will be done as per task completed. task assigned than assigned all task of order completed tha completed and so on*/
         $tasks = Order::orderBy('created_at', 'DESC')->with(['customer', 'location', 'taskFirst','agent','task']);
         if($request->has('status') && $request->status != 'all'){
+           
             $tasks = $tasks->where('status', $request->status);
         }
+       
         $all      =  Order::where('status','!=',null)->get();
-        $active   =  count($all->where('status','active'));
-        $pending  =  count($all->where('status','pending'));
+        $active   =  count($all->where('status','assigned'));
+        $pending  =  count($all->where('status','unassigned'));
         $history  =  count($all->where('status','completed'));
-        $tasks = $tasks->paginate(10);
-
+        $tasks    =  $tasks->paginate(10);
+        
+        
         $pricingRule = PricingRule::select('id', 'name')->get();
         $teamTag    = TagsForTeam::all();
         $agentTag   = TagsForAgent::all();
 
-        return view('tasks/task')->with(['tasks' => $tasks, 'status' =>$request->status,'active_count' => $active,'panding_count' => $pending,'history_count'=> $history]);
+        return view('tasks/task')->with(['tasks' => $tasks, 'status' =>$request->status,'active_count' => $active,'panding_count' => $pending,'history_count'=> $history,'status'=>$request->status]);
     }
 
     /**
@@ -57,7 +60,8 @@ class TaskController extends Controller
         $teamTag     = TagsForTeam::all();
         $agentTag    = TagsForAgent::all();
         $pricingRule = PricingRule::select('id', 'name')->get();
-
+        $allcation   = AllocationRule::where('id',1)->first();
+       
         /*$pricingRule = PricingRule::select('id', 'name')->whereDate('start_date_time', '<', Carbon::now())
                             ->whereDate('end_date_time', '>', Carbon::now())->get();*/
 
@@ -66,7 +70,7 @@ class TaskController extends Controller
         $agents = Agent::orderBy('created_at', 'DESC')->get();
         //print_r($agents);die;
 
-        $returnHTML = view('modals/add-task-modal')->with(['teamTag' => $teamTag, 'agentTag' => $agentTag, 'agents' => $agents, 'pricingRule' => $pricingRule])->render();
+        $returnHTML = view('modals/add-task-modal')->with(['teamTag' => $teamTag, 'agentTag' => $agentTag, 'agents' => $agents, 'pricingRule' => $pricingRule,'allcation' => $allcation ])->render();
         return response()->json(array('success' => true, 'html'=>$returnHTML));
 
         //return view('tasks/add-task')->with(['teamTag' => $teamTag, 'agentTag' => $agentTag, 'agents' => $agents, 'pricingRule' => $pricingRule]);
@@ -85,7 +89,7 @@ class TaskController extends Controller
      */
     public function store(Request $request)
     {
-        //dd($request->all());
+       
         $validator   = $this->validator($request->all())->validate();
         $loc_id = $cus_id = $send_loc_id = 0;
 
@@ -156,6 +160,8 @@ class TaskController extends Controller
             $taskcount++;
             if (isset($request->short_name[$key])) {
                 $loc = [
+                    'latitude'    => $request->latitude[$key],
+                    'longitude'   => $request->longitude[$key],
                     'short_name'  => $request->short_name[$key],
                     'address'     => $request->address[$key],
                     'post_code'   => $request->post_code[$key],
@@ -167,12 +173,15 @@ class TaskController extends Controller
                 if($key == 0){
                     $loc_id = $request->old_address_id;
                     $send_loc_id = $loc_id;
-                    $finalLocation = Location::where('id',$send_loc_id)->first();
+                    
                 }else{
                     $loc_id = $request->input('old_address_id'.$key);
                    
                 }
                 
+            }
+            if($key == 0){
+                $finalLocation = Location::where('id',$loc_id)->first();
             }
             $task_allo_type = empty($request->appointment_date[$key]) ? '0' : $request->appointment_date[$key];
 
@@ -601,9 +610,8 @@ class TaskController extends Controller
             'recipient_phone'            => $request->recipient_phone,
             'Recipient_email'            => $request->Recipient_email,
             'task_description'           => $request->task_description,
-            'driver_id'                  => isset($request->allocation_type) && $request->allocation_type == 'Manual' ? $request->agent : null,
+            'driver_id'                  => isset($request->allocation_type) && $request->allocation_type == 'm' ? $request->agent : null,
             'order_type'                 => $request->task_type,
-            'order_time'                 => $request->schedule_time,
             'auto_alloction'             => $request->allocation_type,
         ];
         $orders = Order::where('id', $id)->update($order);
@@ -647,7 +655,7 @@ class TaskController extends Controller
             $dep_id = $task->id;
         }
 
-        if (isset($request->allocation_type) && $request->allocation_type === 'auto') {
+        if (isset($request->allocation_type) && $request->allocation_type === 'a') {
             if (isset($request->team_tag)) {
                 $task_id->teamtags()->sync($request->team_tag);
             }

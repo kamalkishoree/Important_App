@@ -29,7 +29,7 @@
         }
 
         .tags {
-            display: none;
+            
         }
 
         #typeInputss {
@@ -120,6 +120,9 @@
        .allset{
            margin-left: 9px !important;
            padding-top: 10px;
+       }
+       .hidealloction{
+           display: none;
        }
        .ui-menu.ui-autocomplete { z-index: 9000 !important; }
 
@@ -589,21 +592,28 @@
          window.URL.revokeObjectURL(fileList[i]);
        }
     }
-
+   
     $(document).on('click', '.assignRadio', function () {
 
         var radioValue = $("#rediodiv input[type='radio']:checked").val();
         if (radioValue == 'a') {
-            $(".tags").show();
-            $(".drivers").hide();
+           
+            $( ".tags" ).removeClass("hidealloction");
+            $( ".drivers" ).addClass("hidealloction");
+            // $(".tags").show();
+            // $(".drivers").hide();
         }
         if (radioValue == 'u') {
-            $(".tags").hide();
-            $(".drivers").hide();
+            $( ".tags" ).addClass("hidealloction");
+            $( ".drivers" ).addClass("hidealloction");
+            // $(".tags").hide();
+            // $(".drivers").hide();
         }
         if (radioValue == 'm') {
-            $(".drivers").show();
-            $(".tags").hide();
+            $( ".drivers" ).removeClass("hidealloction");
+            $( ".tags" ).addClass("hidealloction");
+            // $(".drivers").show();
+            // $(".tags").hide();
         }
     });
 

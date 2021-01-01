@@ -803,28 +803,27 @@
             $(".drivers").hide();
             $("input[type='radio'].check").click(function() {
                 var radioValue = $("#rediodiv input[type='radio']:checked").val();
-                if (radioValue == 'auto') {
+                if (radioValue == 'a') {
                     $(".tags").show();
                     $(".drivers").hide();
                 }
-                if (radioValue == 'Un-Assigend') {
+                if (radioValue == 'u') {
                     $(".tags").hide();
                     $(".drivers").hide();
                 }
-                if (radioValue == 'Manual') {
+                if (radioValue == 'm') {
                     $(".drivers").show();
                     $(".tags").hide();
                 }
             });
 
             var edit_tag = "{{$task->auto_alloction}}";
-
             switch(edit_tag) {
               case "a":
               $(".tags").show();
                 break;
               case "m":
-              $(".drivers").hide();
+              $(".drivers").show();
                 break;
               
             }

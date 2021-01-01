@@ -197,7 +197,7 @@
         </div>
     </form>
     
-        <div class="row">
+        {{-- <div class="row">
             <div class="col-xl-11 col-md-offset-1">
                 <div class="card-box">
                     <h4 class="header-title">Cms</h4>
@@ -229,7 +229,7 @@
                     </div> --}}
                 </div>
             </div>
-        </div>
+        </div> --}}
     {{-- </form> --}}
 
     <!-- <form method="POST" action="{{route('preference', Auth::user()->code)}}">

@@ -103,7 +103,7 @@
                 </div>
                 <div class="col-md-6">
                     <div class="form-group" id="">
-                        {!! Form::label('title', 'Base Duration',['class' => 'control-label']) !!}
+                        {!! Form::label('title', 'Base Duration (In Minutes)',['class' => 'control-label']) !!}
                         {!! Form::text('base_duration', $pricing->base_duration, ['class' => 'form-control','required' => 'required']) !!}
                         <span class="invalid-feedback" role="alert">
                             <strong></strong>
@@ -124,7 +124,18 @@
 
                     </div>
                 </div>
+
                 <div class="col-md-6">
+                    <div class="form-group" id="">
+                        {!! Form::label('title', 'Duration Price(per minute)',['class' => 'control-label']) !!}
+                        {!! Form::text('duration_price', $pricing->duration_price, ['class' => 'form-control','required' => 'required']) !!}
+                        <span class="invalid-feedback" role="alert">
+                            <strong></strong>
+                        </span>
+
+                    </div>
+                </div>
+                {{-- <div class="col-md-6">
                     <div class="form-group" id="">
                         {!! Form::label('title', 'Base Waiting',['class' => 'control-label']) !!}
                         {!! Form::text('base_waiting', $pricing->base_waiting, ['class' => 'form-control','required' => 'required']) !!}
@@ -133,11 +144,11 @@
                         </span>
 
                     </div>
-                </div>
+                </div> --}}
 
             </div>
 
-            <div class="row">
+            {{-- <div class="row">
                 <div class="col-md-6">
                     <div class="form-group" id="">
                         {!! Form::label('title', 'Duration Price(per minute)',['class' => 'control-label']) !!}
@@ -159,7 +170,7 @@
                     </div>
                 </div>
 
-            </div>
+            </div> --}}
 
             <div class="row">
                 <div class="col-md-6">
