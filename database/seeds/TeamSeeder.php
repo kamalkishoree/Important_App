@@ -11,6 +11,22 @@ class TeamSeeder extends Seeder
      */
     public function run()
     {
-        factory(App\Model\Team::class, 10)->create();
+        DB::table('vehicle_types')->delete();
+ 
+        $type = array(
+            array(
+                'id' => 1,
+                'name' => 'onfoot'
+            ),
+            array(
+                'id' => 2,
+                'name' => 'bycycle'
+            ),
+            array(
+                'id' => 3,
+                'name' => 'motorbike'
+            ),
+        );
+        DB::table('vehicle_types')->insert($type);
     }
 }

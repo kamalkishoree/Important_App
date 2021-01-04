@@ -91,7 +91,11 @@ class TaskController extends BaseController
 
     public function CreateTask(Request $request)
     {
-        
+        // $orders = Order::where('id',200)->with('task')->first();
+        // return response()->json([
+        //     'data' => $orders,
+        // ],200);
+
         $loc_id = $cus_id = $send_loc_id = 0;
 
         $images = [];
@@ -119,15 +123,15 @@ class TaskController extends BaseController
             }
                $last = implode(",", $images);
         }
-        if (isset($request->email)) {
-            $customer = Customer::where('email','=',$request->email)->first();
+        if (isset($request->customer_email)) {
+            $customer = Customer::where('email','=',$request->customer_email)->first();
             if(isset($customer->id)){
                 $cus_id = $customer->id;
             }else{
                 $cus = [
-                    'name' => $request->name,
-                    'email' => $request->email,
-                    'phone_number' => $request->phone_number,
+                    'name' => $request->customer_name,
+                    'email' => $request->customer_email,
+                    'phone_number' => $request->customer_phone_number,
                 ];
                 $customer = Customer::create($cus);
                 $cus_id = $customer->id;
@@ -150,45 +154,54 @@ class TaskController extends BaseController
             'driver_id'                  => $agent_id,
             'auto_alloction'             => $request->allocation_type,
             'images_array'               => $last,
-            'order_type'                 => $request->task_type,
+            'order_type'                 => $request->task_dispatch,
             'order_time'                 => $notification_time,
             'status'                     => $agent_id != null ? 'assigned' :'unassigned'
         ];
         $orders = Order::create($order);
+        
         $dep_id = null;
-        foreach ($request->task_type_id as $key => $value) {
+       
+        foreach ($request->task as $key => $value) {
             $taskcount++;
-            if (isset($request->short_name[$key])) {
+            if (isset($value)) {
+                
                 $loc = [
-                    'short_name'  => $request->short_name[$key],
-                    'address'     => $request->address[$key],
-                    'post_code'   => $request->post_code[$key],
+                    'latitude'    => $value['latitude'],
+                    'longitude'   => $value['longitude'],
+                    'short_name'  => $value['short_name'],
+                    'address'     => $value['address'],
+                    'post_code'   => $value['post_code'],
                     'customer_id' => $cus_id,
                 ];
                $Loction = Location::create($loc);
                $loc_id = $Loction->id;
-            } else {
-                if($key == 0){
-                    $loc_id = $request->old_address_id;
+            } 
+            // else {
+            //     if($key == 0){
+            //         $loc_id = $request->old_address_id;
                    
-                }else{
-                    $loc_id = $request->input('old_address_id'.$key);
+            //     }else{
+            //         $loc_id = $request->input('old_address_id'.$key);
                    
-                }
+            //     }
                 
+            // }
+             
+            if($key == 0){
+                $send_loc_id = $loc_id;
+                $finalLocation = Location::where('id',$loc_id)->first();
             }
-            $send_loc_id = $loc_id;
-            $finalLocation = Location::where('id',$send_loc_id)->first();
-            
-            $task_allo_type = empty($request->appointment_date[$key]) ? '0' : $request->appointment_date[$key];
+            $task_allo_type = isset($request->appointment_duration) ? $request->appointment_duration : null;
 
             $data = [
                 'order_id'                   => $orders->id,
-                'task_type_id'               => $value,
+                'task_type_id'               => $value['task_type_id'],
                 'location_id'                => $loc_id,
-                'allocation_type'            => $task_allo_type,            
+                'appointment_duration'       => $request['appointment_duration'],            
                 'dependent_task_id'          => $dep_id,
                 'task_status'                => $agent_id != null ? 1 : 0,
+                'allocation_type'            => $request->allocation_type
             ];
             // if(!empty($request->pricing_rule_id)){
             //     $data['pricing_rule_id'] = $request->pricing_rule_id;
@@ -199,12 +212,12 @@ class TaskController extends BaseController
        
 
         if (isset($request->allocation_type) && $request->allocation_type === 'a') {
-            if (isset($request->team_tag)) {
-                $orders->teamtags()->sync($request->team_tag);
-            }
-            if (isset($request->agent_tag)) {
-                $orders->drivertags()->sync($request->agent_tag);
-            }
+            // if (isset($request->team_tag)) {
+            //     $orders->teamtags()->sync($request->team_tag);
+            // }
+            // if (isset($request->agent_tag)) {
+            //     $orders->drivertags()->sync($request->agent_tag);
+            // }
         }
          $geo = null;
         if($request->allocation_type === 'a'){
@@ -239,7 +252,8 @@ class TaskController extends BaseController
     }
     
 
-    public function findLocalityByLatLng($lat,$lng){
+    public function findLocalityByLatLng($lat,$lng)
+    {
         // get the locality_id by the coordinate //
         $latitude_y = $lat;
         $longitude_x = $lng;
@@ -289,7 +303,8 @@ class TaskController extends BaseController
         return false;
     }
  
-    public function is_in_polygon($points_polygon, $vertices_x, $vertices_y, $longitude_x, $latitude_y){
+    public function is_in_polygon($points_polygon, $vertices_x, $vertices_y, $longitude_x, $latitude_y)
+    {
           $i = $j = $c = 0;
           for ($i = 0, $j = $points_polygon ; $i < $points_polygon; $j = $i++) {
             if ( (($vertices_y[$i]  >  $latitude_y != ($vertices_y[$j] > $latitude_y)) &&
@@ -314,6 +329,7 @@ class TaskController extends BaseController
         $maxsize    = (int)$auth->getAllocation->maximum_batch_size;
         $time       = $this->checkTimeDiffrence($notification_time,$beforetime);
         $randem     = rand(11111111,99999999);
+        $extraData  = [];
         if(!isset($geo)){
             $oneagent = Agent::where('id',$agent_id)->first();
             $data = [

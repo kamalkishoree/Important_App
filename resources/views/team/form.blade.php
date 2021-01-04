@@ -1,5 +1,5 @@
 <div class=" row">
-    <div class="col-md-6">
+    <div class="col-md-12">
         <div class="form-group" id="nameInputEdit">
             <label for="name" class="control-label">NAME</label>
             <input type="text" class="form-control" name="name" id="name" value="{{ old('name', $team->name ?? '') }}" placeholder="John Doe">
@@ -9,7 +9,7 @@
         </div>
     </div>
 
-    <div class="col-md-6">
+    {{-- <div class="col-md-6">
         <div class="form-group" id="manager_idInputEdit">
             <label for="team-manager">Manager</label>
             <select class="form-control" id="team-manager" name="manager_id">
@@ -19,7 +19,7 @@
                 @endforeach
             </select>
         </div>
-    </div>
+    </div> --}}
 
     <div class="col-md-6">
         <div class="form-group" id="location_accuracyInputEdit">

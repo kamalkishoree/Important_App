@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\Route;
 });*/
 
 Route::post('shortCode', 'Api\ShortcodeController@validateCompany');
+Route::get('cmscontent','Api\ActivityController@cmsData');
 
 Route::group([
     'prefix' => 'auth'
@@ -38,6 +39,8 @@ Route::group([
     	Route::post('sendOtp', 'Api\AuthController@sendOtp');
         Route::post('login', 'Api\AuthController@login');
         Route::post('signup', 'Api\AuthController@signup');
+        Route::get('cmscontent','Api\ActivityController@cmsData');
+        
     });
 
 });
@@ -53,7 +56,6 @@ Route::group([
         Route::post('agent/logs', 'Api\ActivityController@agentLog');              // api for save agent logs
         Route::get('get/profile','Api\ActivityController@profile');                // api for get agent profile
         Route::post('update/profile','Api\ActivityController@updateProfile');
-        Route::get('get/cms/content','Api\ActivityController@cmsData');
 
 });
 

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Model\AgentsTag;
+use App\Model\ClientPreference;
 use App\Model\Geo;
 use App\Model\PricePriority;
 use App\Model\PricingRule;
@@ -43,6 +44,8 @@ class PricingRulesController extends Controller
         $teams      = Team::all()->pluck('name', 'id');
         $team_tag   = TagsForTeam::all()->pluck('name', 'id');
         $driver_tag = TagsForAgent::all()->pluck('name', 'id');
+        $clientPre  = ClientPreference::where('id',1)->with('currency')->first();
+        dd($clientPre);
         return view('pricing-rules.add-pricing', compact('geos','teams','team_tag','driver_tag'));
     }
 
@@ -130,7 +133,8 @@ class PricingRulesController extends Controller
         $teams      = Team::all()->pluck('name', 'id');
         $team_tag   = TagsForTeam::all()->pluck('name', 'id');
         $driver_tag = TagsForAgent::all()->pluck('name', 'id');
-        $returnHTML = view('pricing-rules.form')->with(['pricing' => $pricing, 'geos' => $geos, 'teams' => $teams, 'team_tag' => $team_tag, 'driver_tag' => $driver_tag])->render();
+        $clientPre  = ClientPreference::where('id',1)->with('currency')->first();
+        $returnHTML = view('pricing-rules.form')->with(['pricing' => $pricing, 'geos' => $geos, 'teams' => $teams, 'team_tag' => $team_tag, 'driver_tag' => $driver_tag,'client_pre'=> $clientPre])->render();
 
         return response()->json(array('success' => true, 'html'=>$returnHTML));
     }
@@ -144,6 +148,8 @@ class PricingRulesController extends Controller
      */
     public function update(Request $request, $id)
     {
+        // $clientPre  = ClientPreference::where('id',1)->with('currency')->first();
+        // dd($clientPre);
        //$validator = $this->validator($request->all())->validate();
 
         $getAgent = PricingRule::find($id);

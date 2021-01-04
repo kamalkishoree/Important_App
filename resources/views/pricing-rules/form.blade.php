@@ -94,7 +94,9 @@
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-group" id="">
+                        
                         {!! Form::label('title', 'Base Price',['class' => 'control-label']) !!}
+                        {{isset($client_pre->currency)?'('.$client_pre->currency->iso_code.')':''}}
                         {!! Form::text('base_price', $pricing->base_price, ['class' => 'form-control','required' => 'required']) !!}
                         <span class="invalid-feedback" role="alert">
                             <strong></strong>
@@ -117,6 +119,7 @@
                 <div class="col-md-6">
                     <div class="form-group" id="">
                         {!! Form::label('title', 'Base Distance',['class' => 'control-label']) !!}
+                        {{isset($client_pre->distance_unit) && $client_pre->distance_unit == 'metric' ?'(Km)':'(Mile)'}}
                         {!! Form::text('base_distance', $pricing->base_distance, ['class' => 'form-control','required' => 'required']) !!}
                         <span class="invalid-feedback" role="alert">
                             <strong></strong>
@@ -176,6 +179,7 @@
                 <div class="col-md-6">
                     <div class="form-group" id="">
                         {!! Form::label('title', 'Distance Fee',['class' => 'control-label']) !!}
+                        {{isset($client_pre->currency)?'('.$client_pre->currency->iso_code.')':''}}
                         {!! Form::text('distance_fee', $pricing->distance_fee, ['class' => 'form-control','required' => 'required']) !!}
                         <span class="invalid-feedback" role="alert">
                             <strong></strong>
@@ -186,6 +190,7 @@
                 <div class="col-md-6">
                     <div class="form-group" id="">
                         {!! Form::label('title', 'Cancel Fee',['class' => 'control-label']) !!}
+                        {{isset($client_pre->currency)?'('.$client_pre->currency->iso_code.')':''}}
                         {!! Form::text('cancel_fee', $pricing->cancel_fee, ['class' => 'form-control','required' => 'required']) !!}
                         <span class="invalid-feedback" role="alert">
                             <strong></strong>

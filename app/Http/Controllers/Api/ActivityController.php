@@ -141,6 +141,7 @@ class ActivityController extends BaseController
 
     public function cmsData(Request $request)
     {
+       
         $data = Cms::where('id',$request->cms_id)->first();
 
         return response()->json([

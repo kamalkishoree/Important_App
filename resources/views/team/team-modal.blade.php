@@ -2,7 +2,7 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title">Add {{ Session::get('agent_name') }}</h4>
+                <h4 class="modal-title">Add Team</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
             </div>
             <form id="submitTeam" action="{{ route('team.store') }}" method="POST">
