@@ -33,8 +33,6 @@ class DbChooserApi
         if (array_key_exists("client", $header)){
             $database_name =  'db_'.$header['client'][0];
         }
-        print($database);
-        die;
 
         if (isset($database_name)) {
             $default = [
