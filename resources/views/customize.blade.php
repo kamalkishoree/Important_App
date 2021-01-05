@@ -197,40 +197,33 @@
         </div>
     </form>
     
-        {{-- <div class="row">
+        <div class="row">
             <div class="col-xl-11 col-md-offset-1">
                 <div class="card-box">
                     <h4 class="header-title">Cms</h4>
                     <p class="sub-header">
                         View and update the date & time format.
                     </p>
-                    <div class="row mb-2">
-                        <div class="login-form">
+                    <div class="row">
+                        <div class="login-forms">
                             <ul class="list-inline">
-                                <li class="d-inline-block mr-2">
+                                <li class="d-inline-block ml-2">
                                    
                         
-                                <label for="acknowledge1"><a href="#" type="button" style="color: #5a5a5a;" data-toggle="modal" data-target="#create-tandc-modal">Terms and Conditions</a></label>
+                                <label for="acknowledge1"><a href="#" class="btn btn-blue btn-block" type="button" style="color: #ffffff;" data-toggle="modal" data-target="#create-tandc-modal">Terms and Conditions</a></label>
                                 </li>
-                                <li class="d-inline-block mr-2">
+                                <li class="d-inline-block ml-2">
                                     
-                                <label for="acknowledge2"><a href="#" type="button" style="color: #5a5a5a;" data-toggle="modal" data-target="#create-pandp-modal">Privacy Policy</a></label>
+                                <label for="acknowledge2"><a href="#" class="btn btn-blue btn-block" type="button" style="color: #ffffff;" data-toggle="modal" data-target="#create-pandp-modal">Privacy Policy</a></label>
                                 </li>
                               </ul>
                             </div>
                     </div>
 
-                    {{-- <div class="row mb-2">
-                        <div class="col-md-2">
-                            <div class="form-group mb-0 text-center">
-                                <button class="btn btn-blue btn-block" type="submit"> Update </button>
-                            </div>
-                        </div>
-                    </div> --}}
                 </div>
             </div>
-        </div> --}}
-    {{-- </form> --}}
+        </div>
+    
 
     <!-- <form method="POST" action="{{route('preference', Auth::user()->code)}}">
         @csrf

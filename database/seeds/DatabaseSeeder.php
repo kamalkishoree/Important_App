@@ -14,7 +14,7 @@ class DatabaseSeeder extends Seeder
          $this->call([
               CurrenciesTableSeeder::class,
               CountriesTableSeeder::class,
-              ClientsTableSeeder::class,
+             // ClientsTableSeeder::class,
               LanguageTableSeeder::class,
               VehicleTypeTableSeeder::class,
               TaskTypeTableSeeder::class,

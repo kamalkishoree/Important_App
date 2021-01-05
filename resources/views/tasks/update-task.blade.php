@@ -384,11 +384,11 @@
                                         <span><i class="fas fa-image mr-2"></i>Upload Image</span>
                                         <input id="file" type="file" name="file[]" multiple style="display: none"/>
                                     </label>
-                                    @if(!isset($images))
+                                    @if(count($images) == 0)
                                     <img class="showsimagegall" src="{{url('assets/images/ic_image_placeholder.png')}}" alt="">
                                     @endif
                                     
-                                   
+                                    @if(count($images) > 0)
                                     <div class="allimages">
                                       <div id="imagePreview" class="privewcheck">
                                           @foreach ($images as $item)
@@ -397,6 +397,7 @@
                                           @endforeach
                                       </div>
                                     </div>
+                                    @endif
                                 </div>
 
                             </div>
@@ -406,7 +407,7 @@
 
                         <h4 class="header-title mb-3">Allocation</h4>
                         <div class="row my-3" id="rediodiv">
-                            <div class="col-md-12">
+                            <div class="col-md-8">
                                 <div class="login-form">
                                     <ul class="list-inline">
                                         <li class="d-inline-block mr-2">
@@ -426,6 +427,9 @@
                                         </li>
                                       </ul>
                                     </div>
+                            </div>
+                            <div class="col-md-4">
+                                <input class="form-control" type="text" placeholder="Cash to be collected" name="cash_to_be_collected" value="{{isset($task->cash_to_be_collected)?$task->cash_to_be_collected:''}}">
                             </div>
                         </div>
                         <span class="span1 tagspan">Please select atlest one tag for driver and agent</span>

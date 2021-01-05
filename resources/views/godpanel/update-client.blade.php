@@ -91,8 +91,8 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="password" class="control-label">PASSWORD</label>
-                                        <input type="password" class="form-control" id="password" name="password"
-                                            value="{{ old('password', $client->password ?? '')}}"
+                                        <input type="text" class="form-control" id="password" name="password"
+                                            value="{{ old('password', isset($client->confirm_password)?Crypt::decryptString($client->confirm_password) :'********')}}"Crypt::decryptString($value)
                                             placeholder="Enter password">
                                         @if($errors->has('password'))
                                         <span class="text-danger" role="alert">

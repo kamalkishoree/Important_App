@@ -8,6 +8,12 @@
         </div>
         <p class="text-muted text-center mt-2 mb-0">Profile Pic</p>
     </div>
+    <div class="col-md-5"></div>
+    <div class="col_md-3">
+        <span>Live OTP</span>
+        <h4>{{isset($otp->opt)?$otp->opt:'Otp Not Found'}}</h4>
+    </div>
+    
 </div>
 <div class="row">
     <div class="col-md-6">

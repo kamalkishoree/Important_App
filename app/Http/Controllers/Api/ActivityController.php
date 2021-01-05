@@ -135,7 +135,7 @@ class ActivityController extends BaseController
         ]);
         
         return response()->json([
-            'message' => 'Log Saved Successfully',
+            'data' => 'Log Saved Successfully',
         ],200);
     }
 

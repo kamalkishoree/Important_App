@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Redis;
 use Session;
 use Illuminate\Support\Facades\Storage;
+use Crypt;
 
 class ClientController extends Controller
 {
@@ -124,6 +125,7 @@ class ClientController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make('password'),
+            'confirm_password' => Crypt::encryptString($request->password),
             'phone_number' => $request->phone_number,
             'database_path' => $request->database_path,
             'database_name' => $database_name,
@@ -137,12 +139,12 @@ class ClientController extends Controller
         ];
         $data['code'] = $this->randomString();
 
-       $client = Client::create($data);
+        $client = Client::create($data);
 
-        // $redis = Redis::connection();
+         // $redis = Redis::connection();
 
-        // $redis->set($database_name, json_encode($data));
-        //$minutes = 600;
+         // $redis->set($database_name, json_encode($data));
+         //$minutes = 600;
         Cache::set($database_name, $data);
 
         $this->dispatchNow(new ProcessClientDataBase($client->id));

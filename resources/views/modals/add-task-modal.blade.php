@@ -213,7 +213,7 @@
 
             <h4 class="header-title mb-3">Allocation</h4>
             <div class="row my-3" id="rediodiv">
-                <div class="col-md-12">
+                <div class="col-md-8">
                     <div class="login-form">
                          <ul class="list-inline">
                             <li class="d-inline-block mr-2">
@@ -234,27 +234,10 @@
                          </ul>
                         </div>
                 </div>
-                {{-- <div class="col-md-4 padd">
-                    <div class="custom-control custom-radio custom-control-inline">
-                        <input type="radio" class="custom-control-input check" id="customRadio"
-                            name="allocation_type" value="u" checked>
-                        <label class="custom-control-label" for="customRadio">Un-Assigned</label>
-                    </div>
+                <div class="col-md-4">
+                    <input class="form-control mt-2" type="text" placeholder="Cash to be collected" name="cash_to_be_collected">
                 </div>
-                <div class="col-md-4 padd">
-                    <div class="custom-control custom-radio custom-control-inline">
-                        <input type="radio" class="custom-control-input check" id="customRadio22"
-                            name="allocation_type" value="a">
-                        <label class="custom-control-label" for="customRadio22">Auto Allocation</label>
-                    </div>
-                </div>
-                <div class="col-md-4 padd">
-                    <div class="custom-control custom-radio custom-control-inline">
-                        <input type="radio" class="custom-control-input check" id="customRadio33"
-                            name="allocation_type" value="m">
-                        <label class="custom-control-label" for="customRadio33">Manual</label>
-                    </div>
-                </div> --}}
+              
             </div>
             <span class="span1 tagspan">Please select atlest one tag for driver and agent</span>
             <div class="tags{{$allcation->manual_allocation == 1 ?'':'hidealloction'}}">

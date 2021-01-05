@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Model\Agent;
+use App\Model\Otp;
 use App\Model\Team;
 use App\Model\TagsForAgent;
 use App\Model\TagsForTeam;
@@ -20,7 +21,7 @@ class AgentController extends Controller
      */
     public function index()
     {
-        $agents = Agent::orderBy('created_at', 'DESC')->get();
+        $agents = Agent::orderBy('id', 'DESC')->get();
         $tags  = TagsForAgent::all();
         $tag   = [];
         foreach ($tags as $key => $value) {
@@ -160,8 +161,9 @@ class AgentController extends Controller
         foreach ($agent->tags as $tag) {
             $tagIds[] = $tag->name;
         }
- 
-        $returnHTML = view('agent.form')->with(['agent' => $agent, 'teams' => $teams, 'tags' => $uptag, 'tagIds' => $tagIds,])->render();
+        $date = Date('Y-m-d H:i:s');
+        $otp = Otp::where('phone',$agent->phone_number)->whereDate('valid_till','>=',$date)->first();
+        $returnHTML = view('agent.form')->with(['agent' => $agent, 'teams' => $teams, 'tags' => $uptag, 'tagIds' => $tagIds,'otp'=>$otp])->render();
         return response()->json(array('success' => true, 'html'=>$returnHTML));
     }
 

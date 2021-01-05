@@ -91,7 +91,7 @@ class TaskController extends Controller
     {
        
         $validator   = $this->validator($request->all())->validate();
-        $loc_id = $cus_id = $send_loc_id = 0;
+        $loc_id = $cus_id = $send_loc_id = $newlat = $newlong = 0;
 
         $images = [];
         $last = '';
@@ -150,7 +150,8 @@ class TaskController extends Controller
             'images_array'               => $last,
             'order_type'                 => $request->task_type,
             'order_time'                 => $notification_time,
-            'status'                     => $agent_id != null ? 'assigned' :'unassigned'
+            'status'                     => $agent_id != null ? 'assigned' :'unassigned',
+            'cash_to_be_collected'       => $request->cash_to_be_collected
         ];
         $orders = Order::create($order);
 
@@ -158,7 +159,7 @@ class TaskController extends Controller
         $dep_id = null;
         foreach ($request->task_type_id as $key => $value) {
             $taskcount++;
-            if (isset($request->short_name[$key])) {
+            if (isset($request->short_name[$key]) && isset($request->address)) {
                 $loc = [
                     'latitude'    => $request->latitude[$key],
                     'longitude'   => $request->longitude[$key],
@@ -169,19 +170,47 @@ class TaskController extends Controller
                 ];
                $Loction = Location::create($loc);
                $loc_id = $Loction->id;
+              
             } else {
-                if($key == 0){
-                    $loc_id = $request->old_address_id;
-                    $send_loc_id = $loc_id;
+                if(count($finalLocation) < 1 && !isset($request->short_name[$key]) && isset($request->address)){
+                    $finalLocation = [
+                        'latitude'   => $request->latitude[$key],
+                        'longitude'  => $request->longitude[$key],
+                        'short_name' => 'pickup Location',
+                        'address'    => $request->address[$key],
+                        'post_code'  => $request->post_code[$key],
+
+                    ]; 
+                    $loc_id = null;
+                    $send_loc_id = null;
+                    $newlat  = $request->latitude[$key];
+                    $newlong = $request->longitude[$key];
                     
-                }else{
-                    $loc_id = $request->input('old_address_id'.$key);
+                }
+                if(!isset($request->short_name[$key]) && !isset($request->address)){
+                    if($key == 0){
+                        $loc_id = $request->old_address_id;
+                        $send_loc_id = $loc_id;
+                        $newlat  = null;
+                        $newlong = null;
+                        
+                    }else{
+                        $loc_id = $request->input('old_address_id'.$key);
+                       
+                    }
                    
+                    
                 }
                 
             }
             if($key == 0){
-                $finalLocation = Location::where('id',$loc_id)->first();
+                if(count($finalLocation) < 1){
+                    $send_loc_id = $loc_id;
+                    $newlat  = null;
+                    $newlong = null;
+                    $finalLocation = Location::where('id',$loc_id)->first()->toArray();
+                }
+                
             }
             $task_allo_type = empty($request->appointment_date[$key]) ? '0' : $request->appointment_date[$key];
 
@@ -211,7 +240,7 @@ class TaskController extends Controller
         }
          $geo = null;
         if($request->allocation_type === 'a'){
-            $geo = $this->createRoster($send_loc_id);
+            $geo = $this->createRoster($send_loc_id,$newlat,$newlong);
            
             $agent_id = null;
         }
@@ -226,12 +255,16 @@ class TaskController extends Controller
     }
 
 
-    public function createRoster($location_id)
+    public function createRoster($send_loc_id,$newlat,$newlong)
     {
-        
-        $getletlong = Location::where('id',$location_id)->first();
-        $lat = $getletlong->latitude;
-        $long = $getletlong->longitude;
+        if($send_loc_id != null){
+            $getletlong = Location::where('id',$send_loc_id)->first();
+            $lat = $getletlong->latitude;
+            $long = $getletlong->longitude;
+        }else{
+            $lat = $newlat;
+            $long = $newlong; 
+        }
         //$allgeo     = Geo::all();
 
         return $check = $this->findLocalityByLatLng($lat,$long);
@@ -333,8 +366,8 @@ class TaskController extends Controller
             $extraData = [
                 'customer_name'            => $customer->name,
                 'customer_phone_number'    => $customer->phone_number,
-                'sort_name'                => $finalLocation->short_name,
-                'address'                  => $finalLocation->address,
+                'sort_name'                => $finalLocation['short_name'],
+                'address'                  => $finalLocation['address'],
                 'lat'                      => $finalLocation->latitude,
                 'long'                     => $finalLocation->longitude,
                 'task_count'               => $taskcount,
@@ -613,6 +646,7 @@ class TaskController extends Controller
             'driver_id'                  => isset($request->allocation_type) && $request->allocation_type == 'm' ? $request->agent : null,
             'order_type'                 => $request->task_type,
             'auto_alloction'             => $request->allocation_type,
+            'cash_to_be_collected'       => $request->cash_to_be_collected
         ];
         $orders = Order::where('id', $id)->update($order);
          if($last != ''){

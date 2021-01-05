@@ -61,6 +61,17 @@ class TaskController extends BaseController
     public function TaskUpdateReject(Request $request)
     {
           //die($request->order_id);
+          $check = Order::where('id',$request->order_id)->first();
+          if(!isset($check)){
+            return response()->json([
+                'message' => 'Order Not Found With This Id',
+            ],404);
+          }
+          if(isset($check) && $check->driver_id != null){
+            return response()->json([
+                'message' => 'Order Already Assigned',
+            ],404);
+          }
         if($request->status == 1){
 
             Order::where('id',$request->order_id)->update(['driver_id' => $request->driver_id,'status'=>'assigned']);
@@ -156,7 +167,8 @@ class TaskController extends BaseController
             'images_array'               => $last,
             'order_type'                 => $request->task_dispatch,
             'order_time'                 => $notification_time,
-            'status'                     => $agent_id != null ? 'assigned' :'unassigned'
+            'status'                     => $agent_id != null ? 'assigned' :'unassigned',
+            'cash_to_be_collected'       => $request->cash_to_be_collected
         ];
         $orders = Order::create($order);
         

@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 use App\Jobs\UpdatePassword;
+use Crypt;
 
 class ClientProfileController extends Controller
 {
@@ -40,9 +41,11 @@ class ClientProfileController extends Controller
 
         if (Hash::check($request->old_password, $user->password)) {
             $user->fill([
-                'password' => Hash::make($request->password)
+                'password'         => Hash::make($request->password),
+                'confirm_password' => Crypt::encryptString($request->password),
             ])->save();
-            $password = Hash::make($request->password);
+            $password['password']         = Hash::make($request->password);
+            $password['confirm_password'] = Crypt::encryptString($request->password);
             $client = 'empty';
             $this->dispatchNow(new UpdatePassword($password,$client));
             $request->session()->flash('success', 'Password changed');
