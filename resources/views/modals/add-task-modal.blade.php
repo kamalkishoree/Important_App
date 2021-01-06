@@ -240,7 +240,7 @@
               
             </div>
             <span class="span1 tagspan">Please select atlest one tag for driver and agent</span>
-            <div class="tags{{$allcation->manual_allocation == 1 ?'':'hidealloction'}}">
+            <div class="tags {{ $allcation->manual_allocation == 0 ? "hidealloction":""}}">
                 <div class="row ">
                     <div class="col-md-6">
                         <div class="form-group mb-3">
