@@ -540,9 +540,8 @@ $color = ['one','two','three','four','five','six','seven','eight']
                     </div>
                 </div>
             </div>
-        @php
-            $key = session('preferences.map_key_1') != null ? session('preferences.map_key_1'):'kdsjhfkjsdhfsf';
-        @endphp
+            
+        
     @endsection
 
 
@@ -551,9 +550,9 @@ $color = ['one','two','three','four','five','six','seven','eight']
     <!-- Optional JavaScript -->
         <!-- jQuery first, then Popper.js, then Bootstrap JS -->
             
-        <script defer
+        {{-- <script defer
         src="https://maps.googleapis.com/maps/api/js?key={{$key}}&libraries=&v=weekly">
-        </script>
+        </script> --}}
        
        
         <script src="{{asset('assets/libs/flatpickr/flatpickr.min.js')}}"></script>

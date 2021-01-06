@@ -235,7 +235,7 @@
                         </div>
                 </div>
                 <div class="col-md-4">
-                    <input class="form-control mt-2" type="text" placeholder="Cash to be collected" name="cash_to_be_collected">
+                    <input class="form-control" type="text" placeholder="Cash to be collected" name="cash_to_be_collected">
                 </div>
               
             </div>

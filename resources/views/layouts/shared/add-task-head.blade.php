@@ -176,18 +176,41 @@
         </div>
     </div>
 </div>
+            @php 
+                $style = "";
+                if(session('preferences.twilio_status') != 'invalid_key'){
+                        $style = "display:none;";
+                }
+            @endphp
+            <div class="row displaySettingsError" style="{{$style}}">
+                <div class="col-12">
+                    <div class="alert alert-danger excetion_keys" role="alert">
+                        @if(session('preferences.twilio_status') == 'invalid_key')
+                        <span><i class="mdi mdi-block-helper mr-2"></i> <strong>Twilio</strong> key is not valid</span> <br/>
+                        @endif
+                    </div>
+                </div>
+
+
+            </div>
 
 <div class="row address" id="addHeader0" style="display: none;">
     <input type="text" id="addHeader0-input" name="address" class="autocomplete form-control addHeader0-input" placeholder="Address">
     <input type="hidden" name="latitude[]" id="addHeader0-latitude" value="0" class="cust_latitude" />
     <input type="hidden" name="longitude[]" id="addHeader0-longitude" value="0" class="cust_longitude" />
 </div>
+@php
+    $key = session('preferences.map_key_1') != null ? session('preferences.map_key_1'):'kdsjhfkjsdhfsf';
+@endphp
 <link href="{{ asset('assets/libs/selectize/selectize.min.css') }}" rel="stylesheet" type="text/css" />
 
 <script src="{{ asset('assets/js/jquery-ui.min.js') }}" crossorigin="anonymous"></script>
 <link rel="stylesheet" href="{{ asset('assets/css/jquery-ui.css') }}">
 <script src='https://cdn.rawgit.com/pguso/jquery-plugin-circliful/master/js/jquery.circliful.min.js'></script>
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB85kLYYOmuAhBUPd7odVmL6gnQsSGWU-4&libraries=places"></script> 
+{{-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB85kLYYOmuAhBUPd7odVmL6gnQsSGWU-4&libraries=places"></script>  --}}
+<script defer
+        src="https://maps.googleapis.com/maps/api/js?key={{$key}}&libraries=places&v=weekly">
+        </script>
 <script src="{{ asset('assets/libs/selectize/selectize.min.js') }}"></script>
 <script src="{{ asset('assets/libs/multiselect/multiselect.min.js') }}"></script>
 <script src="{{ asset('assets/libs/bootstrap-select/bootstrap-select.min.js') }}"></script>
@@ -216,7 +239,11 @@
     $(document).ready(function(){
       loadMapHeader(autoWrap);
     });
-
+    function gm_authFailure() {
+                
+                $('.excetion_keys').append('<span><i class="mdi mdi-block-helper mr-2"></i> <strong>Google Map</strong> key is not valid</span><br/>');
+                $('.displaySettingsError').show();
+    };
     function runPicker(){
         $('.datetime-datepicker').flatpickr({
             enableTime: true,
