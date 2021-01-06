@@ -302,7 +302,7 @@ $(document).ready( function () {
                     }
                     var date = new Date(elem.order_time);
                     var options = { hour12: true };
-                    $(document).find('.allin').before('<div class="repet"><div class="task-card p-3"><div class="p-2 assigned-block"><h5>'+taskname+'</h5><div class="wd-10"><img class="vt-top" src="http://192.168.100.211:8000/demo/images/ic_location_blue_1.png"></div><div class="wd-90"><h6>'+tasks.location.address+'</h6><span>'+tasks.location.short_name+'</span><h5 class="mb-1"><span></span></h5><div class="row"><div class="col-md-6"></div><div class="col-md-6 text-right"><button class="assigned-btn">'+elem.status+'</button></div></div></div></div></div></div>');
+                    $(document).find('.allin').before('<div class="repet"><div class="task-card p-3"><div class="p-2 assigned-block"><h5>'+taskname+'</h5><div class="wd-10"><img class="vt-top" src="{{ asset('demo/images/ic_location_blue_1.png') }}"></div><div class="wd-90"><h6>'+tasks.location.address+'</h6><span>'+tasks.location.short_name+'</span><h5 class="mb-1"><span></span></h5><div class="row"><div class="col-md-6"></div><div class="col-md-6 text-right"><button class="assigned-btn">'+elem.status+'</button></div></div></div></div></div></div>');
                   });
                          
                 });
