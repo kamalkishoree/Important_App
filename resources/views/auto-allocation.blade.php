@@ -253,14 +253,7 @@
                                 </div>
 
                             </div>
-                            <div class="col-md-4">
-                                <div class="form-group mb-3">
-                                    <label for="maximum_batch_size">Maximum Batch Size</label>
-                                    <input type="text" name="maximum_batch_size" id="maximum_batch_size"
-                                        placeholder="10" class="form-control"
-                                        value="{{ isset($allocation) && $allocation->maximum_batch_size != null ? $allocation->maximum_batch_size : '' }}">
-                                </div>
-                            </div>
+                            
                         </div>
 
                         <h4 class="header-title">Select a method to allocate task</h4>
@@ -386,7 +379,7 @@
 
                         <div class="extra">
                             <div class="row mb-2">
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <div class="form-group mb-3">
                                         <label for="start_radius">Start Radius</label>
                                         <input type="text" name="start_radius" id="start_radius" placeholder="0"
@@ -394,12 +387,20 @@
                                             value="{{ isset($allocation) && $allocation->start_radius != null ? $allocation->start_radius : '' }}">
                                     </div>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <div class="form-group mb-3">
                                         <label for="increment_radius">Increment Radius</label>
                                         <input type="text" name="increment_radius" id="increment_radius" placeholder="5"
                                             class="form-control"
                                             value="{{ isset($allocation) && $allocation->increment_radius != null ? $allocation->increment_radius : '' }}">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group mb-3">
+                                        <label for="maximum_batch_size">Maximum Batch Size</label>
+                                        <input type="text" name="maximum_batch_size" id="maximum_batch_size"
+                                            placeholder="10" class="form-control"
+                                            value="{{ isset($allocation) && $allocation->maximum_batch_size != null ? $allocation->maximum_batch_size : '' }}">
                                     </div>
                                 </div>
                             </div>
