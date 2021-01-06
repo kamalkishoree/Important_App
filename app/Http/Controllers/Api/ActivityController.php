@@ -121,10 +121,9 @@ class ActivityController extends BaseController
     public function agentLog(Request $request)
     {
         $user = AgentLog::firstOrCreate([
-            'agent_id'          => $request->agent_id,
+            'agent_id'          => Auth::user()->id,
         ], [
-            'agent_id'          => $request->agent_id,
-            'current_task_id'   => $request->current_task_id,
+            'agent_id'          => Auth::user()->id,
             'lat'               => $request->lat,
             'long'              => $request->long,
             'battery_level'     => $request->battery_level,
