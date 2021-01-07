@@ -127,10 +127,11 @@ class ActivityController extends BaseController
             'lat'               => $request->lat,
             'long'              => $request->long,
             'battery_level'     => $request->battery_level,
-            'android_version'   => $request->android_version,
+            'os_version'   => $request->android_version,
             'app_version'       => $request->app_version,
             'current_speed'     => $request->current_speed,
             'on_route'          => $request->on_route,
+            'device_type'       => $request->device_type
         ]);
         
         return response()->json([
