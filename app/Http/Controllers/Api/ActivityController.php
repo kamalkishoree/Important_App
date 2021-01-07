@@ -120,20 +120,27 @@ class ActivityController extends BaseController
 
     public function agentLog(Request $request)
     {
-        $user = AgentLog::firstOrCreate([
-            'agent_id'          => Auth::user()->id,
-        ], [
-            'agent_id'          => Auth::user()->id,
+        
+       
+        $agent = AgentLog::where('agent_id',Auth::user()->id)->first();
+        
+        $data =  [
             'lat'               => $request->lat,
             'long'              => $request->long,
             'battery_level'     => $request->battery_level,
-            'os_version'   => $request->android_version,
+            'os_version'        => $request->os_version,
             'app_version'       => $request->app_version,
             'current_speed'     => $request->current_speed,
             'on_route'          => $request->on_route,
             'device_type'       => $request->device_type
-        ]);
-        
+        ];
+
+        if(isset($agent)){
+            AgentLog::where('agent_id',Auth::user()->id)->update($data);
+        }else{
+            $data['agent_id'] = Auth::user()->id;
+            AgentLog::create($data);
+        }
         return response()->json([
             'data' => 'Log Saved Successfully',
         ],200);

@@ -626,7 +626,7 @@ class TaskController extends Controller
         } else {
 
             $getgeo = DriverGeo::where('geo_id', $geo)->with('agent')->get('driver_id');
-            
+            $this->haversineGreatCircleDistance($getgeo);
 
             for ($i = 1; $i <= $try; $i++) {
                 foreach ($getgeo as $key =>  $geoitem) {
@@ -663,8 +663,9 @@ class TaskController extends Controller
 
 
     
-    function haversineGreatCircleDistance($latitudeFrom, $longitudeFrom, $latitudeTo, $longitudeTo, $earthRadius = 6371000)
+    function haversineGreatCircleDistance()
     {
+        //$latitudeFrom, $longitudeFrom, $latitudeTo, $longitudeTo, $earthRadius = 6371000;
             // convert from degrees to radians
             $latFrom = deg2rad($latitudeFrom);
             $lonFrom = deg2rad($longitudeFrom);
