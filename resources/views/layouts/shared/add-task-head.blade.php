@@ -568,18 +568,18 @@
         var auto = $("#rediodiv input[type='radio']:checked");
         autoval = auto.val();
         console.log(autoval);
-        if (autoval == 'auto' || autoval == 'a') {
-            var value = $("#selectize-optgroups option:selected").text();
-            var value2 = $("#selectize-optgroup option:selected").text();
-            if (value == '') {
-                $(".tagspan").show();  err = 1;
-                return false;
-            }
-            if (value2 == '') {
-                $(".tagspan").show();  err = 1;
-                return false;
-            }
-        }
+        // if (autoval == 'auto' || autoval == 'a') {
+        //     var value = $("#selectize-optgroups option:selected").text();
+        //     var value2 = $("#selectize-optgroup option:selected").text();
+        //     if (value == '') {
+        //         $(".tagspan").show();  err = 1;
+        //         return false;
+        //     }
+        //     if (value2 == '') {
+        //         $(".tagspan").show();  err = 1;
+        //         return false;
+        //     }
+        // }
         if( err == 0){
           $("#taskFormHeader").submit();
         }
