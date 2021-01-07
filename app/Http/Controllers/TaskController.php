@@ -229,7 +229,7 @@ class TaskController extends Controller
                     $this->SendToAll($geo, $notification_time, $agent_id, $orders->id, $customer, $finalLocation, $taskcount, $allocation);
                     break;
                 case 'round_robin':
-                    $this->finalRoster($geo, $notification_time, $agent_id, $orders->id, $customer, $finalLocation, $taskcount, $allocation);
+                    $this->RoundRobin($geo, $notification_time, $agent_id, $orders->id, $customer, $finalLocation, $taskcount, $allocation);
                     break;
                 default:
                     $this->finalRoster($geo, $notification_time, $agent_id, $orders->id, $customer, $finalLocation, $taskcount, $allocation);
@@ -578,8 +578,107 @@ class TaskController extends Controller
 
     public function batchWise($geo, $notification_time, $agent_id, $orders_id, $customer, $finalLocation, $taskcount)
     {
-        # code...
+        
+        $allcation_type = 'N';
+        $date       = \Carbon\Carbon::today();
+        $auth       = Client::where('code', Auth::user()->code)->with(['getAllocation', 'getPreference'])->first();
+        $expriedate = (int)$auth->getAllocation->request_expiry;
+        $beforetime = (int)$auth->getAllocation->start_before_task_time;
+        $maxsize    = (int)$auth->getAllocation->maximum_batch_size;
+        $type       = $auth->getPreference->acknowledgement_type;
+        $try        = $auth->getAllocation->number_of_retries;
+        $time       = $this->checkTimeDiffrence($notification_time, $beforetime);
+        $randem     = rand(11111111, 99999999);
+        $data = [];
+        if ($type == 'acceptreject') {
+            $allcation_type = 'AR';
+        }
+
+        $extraData = [
+            'customer_name'            => $customer->name,
+            'customer_phone_number'    => $customer->phone_number,
+            'sort_name'                => $finalLocation->short_name,
+            'address'                  => $finalLocation->address,
+            'lat'                      => $finalLocation->latitude,
+            'long'                     => $finalLocation->longitude,
+            'task_count'               => $taskcount,
+            'unique_id'                => $randem,
+            'created_at'               => Carbon::now()->toDateTimeString(),
+            'updated_at'               => Carbon::now()->toDateTimeString(),
+        ];
+
+        if (!isset($geo)) {
+            $oneagent = Agent::where('id', $agent_id)->first();
+            $data = [
+                'order_id'            => $orders_id,
+                'driver_id'           => $agent_id,
+                'notification_time'   => $time,
+                'type'                => $allcation_type,
+                'client_code'         => Auth::user()->code,
+                'created_at'          => Carbon::now()->toDateTimeString(),
+                'updated_at'          => Carbon::now()->toDateTimeString(),
+                'device_type'         => $oneagent->device_type,
+                'device_token'        => $oneagent->device_token,
+                'detail_id'           => $randem,
+            ];
+            $this->dispatchNow(new RosterCreate($data, $extraData));
+            return $task = Roster::create($data);
+        } else {
+
+            $getgeo = DriverGeo::where('geo_id', $geo)->with('agent')->get('driver_id');
+            
+
+            for ($i = 1; $i <= $try; $i++) {
+                foreach ($getgeo as $key =>  $geoitem) {
+
+                    $datas = [
+                        'order_id'            => $orders_id,
+                        'driver_id'           => $geoitem->driver_id,
+                        'notification_time'   => $time,
+                        'type'                => $allcation_type,
+                        'client_code'         => Auth::user()->code,
+                        'created_at'          => Carbon::now()->toDateTimeString(),
+                        'updated_at'          => Carbon::now()->toDateTimeString(),
+                        'device_type'         => $geoitem->agent->device_type,
+                        'device_token'        => $geoitem->agent->device_token,
+                        'detail_id'           => $randem,
+
+                    ];
+                    array_push($data, $datas);
+                    if ($allcation_type == 'N') {
+
+                        break;
+                    }
+                }
+
+                if ($allcation_type == 'N') {
+
+                    break;
+                }
+            }
+            $this->dispatchNow(new RosterCreate($data, $extraData));
+            return $task = Roster::create($data[0]);
+        }
     }
+
+
+    
+    function haversineGreatCircleDistance($latitudeFrom, $longitudeFrom, $latitudeTo, $longitudeTo, $earthRadius = 6371000)
+    {
+            // convert from degrees to radians
+            $latFrom = deg2rad($latitudeFrom);
+            $lonFrom = deg2rad($longitudeFrom);
+            $latTo = deg2rad($latitudeTo);
+            $lonTo = deg2rad($longitudeTo);
+          
+            $latDelta = $latTo - $latFrom;
+            $lonDelta = $lonTo - $lonFrom;
+          
+            $angle = 2 * asin(sqrt(pow(sin($latDelta / 2), 2) +
+              cos($latFrom) * cos($latTo) * pow(sin($lonDelta / 2), 2)));
+            return $angle * $earthRadius;
+    }
+    
 
 
 

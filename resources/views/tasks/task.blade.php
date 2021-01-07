@@ -162,8 +162,8 @@
                         <table class="table table-striped dt-responsive nowrap w-100"  id="agents-datatable">
                             <thead>
                                 <tr>
-                                    <th>Id</th>
-                                    <th>Customer</th>
+                                    {{-- <th>Id</th> --}}
+                                    <th>Customer</th>  
                                     <th>Phone.No</th>
                                     <th>Driver</th>
                                     <th>Create Time</th>
@@ -177,12 +177,12 @@
                                 @foreach($tasks as $task)
                                 <tr>
                                     
-                                    <td>
+                                    {{-- <td>
                                         {{$task->id}}
-                                    </td>
+                                    </td> --}}
                                     <td>
                                         {{$task->customer->name}}
-                                    </td>
+                                    </td>  
                                     <td>
                                         {{$task->customer->phone_number}}
                                     </td>
