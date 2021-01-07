@@ -125,6 +125,7 @@ class ActivityController extends BaseController
         $agent = AgentLog::where('agent_id',Auth::user()->id)->first();
         
         $data =  [
+            'agent_id'          => Auth::user()->id,
             'lat'               => $request->lat,
             'long'              => $request->long,
             'battery_level'     => $request->battery_level,
@@ -135,12 +136,9 @@ class ActivityController extends BaseController
             'device_type'       => $request->device_type
         ];
 
-        if(isset($agent)){
-            AgentLog::where('agent_id',Auth::user()->id)->update($data);
-        }else{
-            $data['agent_id'] = Auth::user()->id;
-            AgentLog::create($data);
-        }
+           
+        AgentLog::create($data);
+        
         return response()->json([
             'data' => 'Log Saved Successfully',
         ],200);
