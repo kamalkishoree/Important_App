@@ -231,7 +231,7 @@ class TaskController extends Controller
                     $this->SendToAll($geo, $notification_time, $agent_id, $orders->id, $customer, $finalLocation, $taskcount, $allocation);
                     break;
                 case 'round_robin':
-                    $this->RoundRobin($geo, $notification_time, $agent_id, $orders->id, $customer, $finalLocation, $taskcount, $allocation);
+                    $this->finalRoster($geo, $notification_time, $agent_id, $orders->id, $customer, $finalLocation, $taskcount, $allocation);
                     break;
                 default:
                     $this->finalRoster($geo, $notification_time, $agent_id, $orders->id, $customer, $finalLocation, $taskcount, $allocation);
@@ -582,7 +582,7 @@ class TaskController extends Controller
     public function batchWise($geo, $notification_time, $agent_id, $orders_id, $customer, $finalLocation, $taskcount)
     {
         
-        $allcation_type = 'N';
+        $allcation_type = 'AR';
         $date       = \Carbon\Carbon::today();
         $auth       = Client::where('code', Auth::user()->code)->with(['getAllocation', 'getPreference'])->first();
         $expriedate = (int)$auth->getAllocation->request_expiry;
@@ -593,8 +593,8 @@ class TaskController extends Controller
         $time       = $this->checkTimeDiffrence($notification_time, $beforetime);
         $randem     = rand(11111111, 99999999);
         $data = [];
-        if ($type == 'acceptreject') {
-            $allcation_type = 'AR';
+        if ($type != 'acceptreject') {
+            $allcation_type = 'N';
         }
 
         $extraData = [
@@ -628,7 +628,11 @@ class TaskController extends Controller
             return $task = Roster::create($data);
         } else {
 
-            $getgeo = DriverGeo::where('geo_id', $geo)->with('agent')->get('driver_id');
+            //$getgeo = DriverGeo::where('geo_id', $geo)->with('agent')->get('driver_id');
+            $getgeo = DriverGeo::where('geo_id', $geo)->with([
+                'agents.logs'=> function($o){
+                    $o->orderBy('id','DESC');
+                }])->get()->toArray();
             $this->haversineGreatCircleDistance($getgeo);
 
             for ($i = 1; $i <= $try; $i++) {

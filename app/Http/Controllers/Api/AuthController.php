@@ -94,7 +94,7 @@ class AuthController extends BaseController
 	            'message' => 'User not found'], 404);
 	    }
 
-	    $prefer = ClientPreference::select('theme', 'distance_unit', 'currency_id', 'language_id', 'agent_name', 'date_format', 'time_format', 'map_type')->first();
+	    $prefer = ClientPreference::select('theme', 'distance_unit', 'currency_id', 'language_id', 'agent_name', 'date_format', 'time_format', 'map_type','map_key_1')->first();
         
         Auth::login($agent);
         /*$tokenResult = $agent->createToken('Personal Access Token');

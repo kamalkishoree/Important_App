@@ -162,8 +162,15 @@ class AgentController extends Controller
             $tagIds[] = $tag->name;
         }
         $date = Date('Y-m-d H:i:s');
-        $otp = Otp::where('phone',$agent->phone_number)->whereDate('valid_till','>=',$date)->first();
-        $returnHTML = view('agent.form')->with(['agent' => $agent, 'teams' => $teams, 'tags' => $uptag, 'tagIds' => $tagIds,'otp'=>$otp])->render();
+        
+        $otp = Otp::where('phone',$agent->phone_number)->where('valid_till','>=',$date)->first();
+        if(isset($otp)){
+            $send_otp = $otp->opt;
+        }else{
+            $send_otp = 'View Otp After Loging in Driver App';
+        }
+        
+        $returnHTML = view('agent.form')->with(['agent' => $agent, 'teams' => $teams, 'tags' => $uptag, 'tagIds' => $tagIds,'otp'=>$send_otp])->render();
         return response()->json(array('success' => true, 'html'=>$returnHTML));
     }
 
