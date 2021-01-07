@@ -167,7 +167,7 @@ class AgentController extends Controller
         if(isset($otp)){
             $send_otp = $otp->opt;
         }else{
-            $send_otp = 'View Otp After Loging in Driver App';
+            $send_otp = 'View OTP after Logging in the Driver App';
         }
         
         $returnHTML = view('agent.form')->with(['agent' => $agent, 'teams' => $teams, 'tags' => $uptag, 'tagIds' => $tagIds,'otp'=>$send_otp])->render();

@@ -346,7 +346,7 @@ class TaskController extends Controller
         $extraData = [
             'customer_name'            => $customer->name,
             'customer_phone_number'    => $customer->phone_number,
-            'sort_name'                => $finalLocation->short_name,
+            'short_name'                => $finalLocation->short_name,
             'address'                  => $finalLocation->address,
             'lat'                      => $finalLocation->latitude,
             'long'                     => $finalLocation->longitude,
@@ -515,7 +515,7 @@ class TaskController extends Controller
         $extraData = [
             'customer_name'            => $customer->name,
             'customer_phone_number'    => $customer->phone_number,
-            'sort_name'                => $finalLocation->short_name,
+            'short_name'                => $finalLocation->short_name,
             'address'                  => $finalLocation->address,
             'lat'                      => $finalLocation->latitude,
             'long'                     => $finalLocation->longitude,
@@ -600,7 +600,7 @@ class TaskController extends Controller
         $extraData = [
             'customer_name'            => $customer->name,
             'customer_phone_number'    => $customer->phone_number,
-            'sort_name'                => $finalLocation->short_name,
+            'short_name'                => $finalLocation->short_name,
             'address'                  => $finalLocation->address,
             'lat'                      => $finalLocation->latitude,
             'long'                     => $finalLocation->longitude,
@@ -815,6 +815,10 @@ class TaskController extends Controller
             $cus_id = $request->ids;
             $customer = Customer::where('id', $request->ids)->first();
         }
+        $assign = '';
+        if($request->allocation_type == 'm'){
+            $assign = 'assigned';
+        }
 
         $order = [
             'customer_id'                => $cus_id,
@@ -824,7 +828,8 @@ class TaskController extends Controller
             'driver_id'                  => isset($request->allocation_type) && $request->allocation_type == 'm' ? $request->agent : null,
             'order_type'                 => $request->task_type,
             'auto_alloction'             => $request->allocation_type,
-            'cash_to_be_collected'       => $request->cash_to_be_collected
+            'cash_to_be_collected'       => $request->cash_to_be_collected,
+            'status'                     => $assign,
         ];
         $orders = Order::where('id', $id)->update($order);
         if ($last != '') {
@@ -915,7 +920,7 @@ class TaskController extends Controller
             return response()->json($response);
         } else {
             $id = $request->id;
-            $loction = Location::where('customer_id', $id)->get();
+            $loction = Location::where('customer_id', $id)->where('short_name','!=',null)->get();
             return response()->json($loction);
         }
     }

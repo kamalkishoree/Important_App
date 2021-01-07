@@ -36,14 +36,14 @@ class ShortcodeController extends BaseController
                 'error' => 'Blocked Company',
                 'message' => 'Company has been blocked. Please contact administration.'], 404);
         }
-
+        
         $img = env('APP_URL').'/assets/images/default_image.png';
 
         if (file_exists( public_path().'/assets/images/'.$client->logo)) {
 
             $img = public_path().'/assets/images/'.$client->logo;
         }
-        $client->logo = $img;
+        $client->logo = \Storage::disk("s3")->url($client->logo);
 
         return response()->json([
             'data' => $client,

@@ -384,11 +384,14 @@
                                         <span><i class="fas fa-image mr-2"></i>Upload Image</span>
                                         <input id="file" type="file" name="file[]" multiple style="display: none"/>
                                     </label>
-                                    @if(count($images) == 0)
+                                    {{-- @php
+                                        dd($images);
+                                    @endphp --}}
+                                    @if($images[0] == '')
                                     <img class="showsimagegall" src="{{url('assets/images/ic_image_placeholder.png')}}" alt="">
                                     @endif
                                     
-                                    @if(count($images) > 0)
+                                    @if(count($images) > 0 && $images[0] != '')
                                     <div class="allimages">
                                       <div id="imagePreview" class="privewcheck">
                                           @foreach ($images as $item)
