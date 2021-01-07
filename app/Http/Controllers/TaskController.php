@@ -169,6 +169,8 @@ class TaskController extends Controller
                 ];
                 $Loction = Location::create($loc);
                 $loc_id = $Loction->id;
+                $send_loc_id = $loc_id;
+               
             } else {
 
 
@@ -244,6 +246,7 @@ class TaskController extends Controller
 
     public function createRoster($send_loc_id)
     {
+        
 
         $getletlong = Location::where('id', $send_loc_id)->first();
         $lat = $getletlong->latitude;
