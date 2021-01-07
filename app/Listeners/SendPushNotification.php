@@ -79,8 +79,9 @@ class SendPushNotification
         if(isset($get)){
             foreach($get as $item){
                 array_push($updateStatus,$item->id);
+                DB::connection($schemaName)->table('rosters')->where('id',$item->id)->update(['status'=>1]);
             }
-            DB::connection($schemaName)->table('rosters')->whereIn('id',$updateStatus)->update(['status'=>1]);
+            
             $this->sendnotification($get);
         }else{
             return;
