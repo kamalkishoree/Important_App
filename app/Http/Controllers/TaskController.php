@@ -387,7 +387,7 @@ class TaskController extends Controller
             //print_r($allreadytaken);
             $counter = 0;
             $data = [];
-            for ($i = 1; $i <= $try; $i++) {
+            //for ($i = 1; $i <= $try; $i++) {
                 foreach ($getgeo as $key =>  $geoitem) {
 
 
@@ -430,11 +430,11 @@ class TaskController extends Controller
                         break;
                     }
                 }
-                if ($allcation_type == 'N' && count($all) > 0) {
+                // if ($allcation_type == 'N' && count($all) > 0) {
 
-                    break;
-                }
-            }
+                //     break;
+                // }
+            //}
 
             if ($totalcount > $counter) {
                 $loopcount =  $totalcount - $counter;
@@ -543,7 +543,7 @@ class TaskController extends Controller
             $getgeo = DriverGeo::where('geo_id', $geo)->with('agent')->get('driver_id');
 
 
-            for ($i = 1; $i <= $try; $i++) {
+            //for ($i = 1; $i <= $try; $i++) {
                 foreach ($getgeo as $key =>  $geoitem) {
 
                     $datas = [
@@ -566,11 +566,11 @@ class TaskController extends Controller
                     }
                 }
 
-                if ($allcation_type == 'N') {
+            //     if ($allcation_type == 'N') {
 
-                    break;
-                }
-            }
+            //         break;
+            //     }
+            // }
             $this->dispatchNow(new RosterCreate($data, $extraData));
             return $task = Roster::create($data[0]);
         }
