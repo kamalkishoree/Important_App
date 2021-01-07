@@ -31,9 +31,14 @@ class TaskController extends Controller
     {
         /* Orter status will be done as per task completed. task assigned than assigned all task of order completed tha completed and so on*/
         $tasks = Order::orderBy('created_at', 'DESC')->with(['customer', 'location', 'taskFirst', 'agent', 'task']);
+        $check = '';
         if ($request->has('status') && $request->status != 'all') {
 
-            $tasks = $tasks->where('status', $request->status);
+                $tasks = $tasks->where('status', $request->status);
+                $check = $request->status;
+        }else{
+            $tasks = $tasks->where('status', 'unassigned');
+            $check = 'unassigned';
         }
 
         $all      =  Order::where('status', '!=', null)->get();
@@ -47,7 +52,7 @@ class TaskController extends Controller
         $teamTag    = TagsForTeam::all();
         $agentTag   = TagsForAgent::all();
 
-        return view('tasks/task')->with(['tasks' => $tasks, 'status' => $request->status, 'active_count' => $active, 'panding_count' => $pending, 'history_count' => $history, 'status' => $request->status]);
+        return view('tasks/task')->with(['tasks' => $tasks, 'status' => $request->status, 'active_count' => $active, 'panding_count' => $pending, 'history_count' => $history, 'status' => $check ]);
     }
 
     /**
