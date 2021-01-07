@@ -73,7 +73,7 @@ class SendPushNotification
         $updateStatus     = [];
         $schemaName = 'royodelivery_db';
         $date =  Carbon::now()->toDateTimeString();
-        $get =  DB::connection($schemaName)->table('rosters')->where('notification_time', '<=', $date)->where('status',0)->leftJoin('roster_details', 'rosters.detail_id', '=', 'roster_details.unique_id')->get()->toArray();
+        $get =  DB::connection($schemaName)->table('rosters')->where('notification_time', '=', $date)->where('status',0)->leftJoin('roster_details', 'rosters.detail_id', '=', 'roster_details.unique_id')->get()->toArray();
         
                 DB::connection($schemaName)->table('rosters')->where('status',1)->delete();
         if(isset($get)){
