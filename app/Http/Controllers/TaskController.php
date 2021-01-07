@@ -326,7 +326,7 @@ class TaskController extends Controller
         // print($agent_id);
         // print($orders_id);
         // die;
-        $allcation_type = 'N';
+        $allcation_type = 'AR';
         $date = \Carbon\Carbon::today();
         $auth = Client::where('code', Auth::user()->code)->with(['getAllocation', 'getPreference'])->first();
         $expriedate = (int)$auth->getAllocation->request_expiry;
@@ -337,8 +337,8 @@ class TaskController extends Controller
         $time       = $this->checkTimeDiffrence($notification_time, $beforetime);
         $randem     = rand(11111111, 99999999);
 
-        if ($type == 'acceptreject') {
-            $allcation_type = 'AR';
+        if ($type != 'acceptreject') {
+            $allcation_type = 'N';
         }
         $extraData = [
             'customer_name'            => $customer->name,
@@ -494,7 +494,7 @@ class TaskController extends Controller
 
     public function SendToAll($geo, $notification_time, $agent_id, $orders_id, $customer, $finalLocation, $taskcount)
     {
-        $allcation_type = 'N';
+        $allcation_type = 'AR';
         $date       = \Carbon\Carbon::today();
         $auth       = Client::where('code', Auth::user()->code)->with(['getAllocation', 'getPreference'])->first();
         $expriedate = (int)$auth->getAllocation->request_expiry;
@@ -505,8 +505,8 @@ class TaskController extends Controller
         $time       = $this->checkTimeDiffrence($notification_time, $beforetime);
         $randem     = rand(11111111, 99999999);
         $data = [];
-        if ($type == 'acceptreject') {
-            $allcation_type = 'AR';
+        if ($type != 'acceptreject') {
+            $allcation_type = 'N';
         }
 
         $extraData = [
