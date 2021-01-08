@@ -4,102 +4,102 @@
 <link href="{{asset('assets/libs/select2/select2.min.css')}}" rel="stylesheet" type="text/css" />
 <link href="{{asset('assets/libs/bootstrap-select/bootstrap-select.min.css')}}" rel="stylesheet" type="text/css" />
 <link href="{{asset('assets/libs/flatpickr/flatpickr.min.css')}}" rel="stylesheet" type="text/css" />
-
+<link href="{{asset('assets/libs/sweetalert2/sweetalert2.min.css')}}" rel="stylesheet" type="text/css" />
 
 
 <!-- for File Upload -->
 
 <link href="{{asset('assets/libs/dropzone/dropzone.min.css')}}" rel="stylesheet" type="text/css" />
 <link href="{{asset('assets/libs/dropify/dropify.min.css')}}" rel="stylesheet" type="text/css" />
-<link rel="stylesheet" href="{{ asset('assets/css/jquery-ui.css') }}">
+<link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/8.4.6/css/intlTelInput.css'>
 <style>
-// workaround
-.intl-tel-input {
-  display: table-cell;
-}
-
-.inner-div {
-        width: 50%;
-        float: left;
+    // workaround
+    .intl-tel-input {
+      display: table-cell;
     }
-.intl-tel-input .selected-flag {
-  z-index: 4;
-}
-.intl-tel-input .country-list {
-  z-index: 5;
-}
-.input-group .intl-tel-input .form-control {
-  border-top-left-radius: 4px;
-  border-top-right-radius: 0;
-  border-bottom-left-radius: 4px;
-  border-bottom-right-radius: 0;
-}
-#radio1, #radio2, #radio3, #radio4 {  
-    -ms-transform: scale(1.2); /* IE 9 */
-    -webkit-transform: scale(1.2); /* Chrome, Safari, Opera */
-    transform: scale(1.2); }
-.showspan{
-    font-weight: normal;
-}
-.showtasks{
-    border: none;
-    outline:none;
-}
-
-
-.assigned-block {
-  background-color: #EAECFD;
-}
-.assigned-block h6 {
-  color: #272727;
-  font-size: 13px;
-  letter-spacing: 0;
-  line-height: 15px;
-  margin-bottom: 0px;
-  margin-top: 4px;
-} 
-.assigned-block span {
-  color: #797979;
-  font-size: 13px;
-  letter-spacing: 0;
-}
-.assigned-block h5 {
-   color: #272727;
-  font-size: 13px;
-  font-weight: 500;
-  letter-spacing: 0;
-}
-.assigned-block a {
-  color: #797979;
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 0;
-  border-bottom: 1px dashed #979797;
-}
-.assigned-btn {
-  border-radius: 10px;
-  background-color: rgb(44 129 255 / .21);
-  color: #5664EA;
-  padding: 4px 10px;
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 0;
-  line-height: 13px;
-  border: none;
-}
-.wd-10{
-    width: 6%;
-    display: inline-block;
-    vertical-align: top;
-    padding-top: 4px;
-}
-.wd-90{
-    width: 89%;
-    display: inline-block;
-}
-</style>
+    
+    .inner-div {
+            width: 50%;
+            float: left;
+        }
+    .intl-tel-input .selected-flag {
+      z-index: 4;
+    }
+    .intl-tel-input .country-list {
+      z-index: 5;
+    }
+    .input-group .intl-tel-input .form-control {
+      border-top-left-radius: 4px;
+      border-top-right-radius: 0;
+      border-bottom-left-radius: 4px;
+      border-bottom-right-radius: 0;
+    }
+    #radio1, #radio2, #radio3, #radio4 {  
+        -ms-transform: scale(1.2); /* IE 9 */
+        -webkit-transform: scale(1.2); /* Chrome, Safari, Opera */
+        transform: scale(1.2); }
+    .showspan{
+        font-weight: normal;
+    }
+    .showtasks{
+        border: none;
+        outline:none;
+    }
+    
+    
+    .assigned-block {
+      background-color: #EAECFD;
+    }
+    .assigned-block h6 {
+      color: #272727;
+      font-size: 13px;
+      letter-spacing: 0;
+      line-height: 15px;
+      margin-bottom: 0px;
+      margin-top: 4px;
+    } 
+    .assigned-block span {
+      color: #797979;
+      font-size: 13px;
+      letter-spacing: 0;
+    }
+    .assigned-block h5 {
+       color: #272727;
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0;
+    }
+    .assigned-block a {
+      color: #797979;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0;
+      border-bottom: 1px dashed #979797;
+    }
+    .assigned-btn {
+      border-radius: 10px;
+      background-color: rgb(44 129 255 / .21);
+      color: #5664EA;
+      padding: 4px 10px;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0;
+      line-height: 13px;
+      border: none;
+    }
+    .wd-10{
+        width: 6%;
+        display: inline-block;
+        vertical-align: top;
+        padding-top: 4px;
+    }
+    .wd-90{
+        width: 89%;
+        display: inline-block;
+    }
+    </style>
 @endsection
-@include('modals.task-list')
+
 @section('content')
 <!-- Start Content-->
 <div class="container-fluid">
@@ -204,7 +204,7 @@
 
                                     <td>
                                         <div class="form-ul" style="width: 60px;">
-                                            <div class="inner-div"> <a href1="#" href="{{route('tasks.edit', $task->id)}}"  class="action-icon editIconBtn"> <i class="mdi mdi-square-edit-outline"></i></a></div>
+                                            <div class="inner-div"> <div class="set-size"> <a href1="#" href="{{route('tasks.edit', $task->id)}}"  class="action-icon editIconBtn"> <i class="mdi mdi-square-edit-outline"></i></a></div></div>
                                             <div class="inner-div">
                                                 <form method="POST" action="{{route('tasks.destroy', $task->id)}}">
                                                     @csrf
@@ -230,29 +230,29 @@
 
 
 </div>
+@include('Customer.customer-modal')
+
 @endsection
 
 @section('script')
 
 <!-- Plugins js-->
-
-<script src="{{asset('assets/libs/bootstrap-select/bootstrap-select.min.js')}}"></script>
-<!-- Page js-->
-
-  
-<script src="{{ asset('assets/js/jquery-ui.min.js') }}" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
-   
-
+{{-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB85kLYYOmuAhBUPd7odVmL6gnQsSGWU-4&libraries=places" async defer></script> --}}
 <script src="{{asset('assets/libs/select2/select2.min.js')}}"></script>
 <script src="{{asset('assets/libs/bootstrap-select/bootstrap-select.min.js')}}"></script>
 <!-- Page js-->
+{{-- <script src="{{asset('assets/js/pages/form-advanced.init.js')}}"></script>
+<script src="{{asset('assets/js/pages/form-pickers.init.js')}}"></script> --}}
 
 <script src="{{asset('assets/js/storeAgent.js')}}"></script>
+
 <!-- for File Upload -->
-
+<script src="{{asset('assets/libs/dropzone/dropzone.min.js')}}"></script>
+<script src="{{asset('assets/libs/dropify/dropify.min.js')}}"></script>
 <!-- Page js-->
-
+<script src="{{asset('assets/js/pages/form-fileuploads.init.js')}}"></script>
 <script src="{{asset('assets/libs/datatables/datatables.min.js')}}"></script>
+
 
 <script>
 
@@ -321,5 +321,8 @@ $(document).ready( function () {
 
 
 </script>
+
+
+  
 
 @endsection

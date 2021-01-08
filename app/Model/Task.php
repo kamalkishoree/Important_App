@@ -7,7 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class Task extends Model
 {
     protected $fillable = [
-        'order_id', 'dependent_task_id', 'task_type_id', 'location_id', 'appointment_duration', 'pricing_rule_id', 'distance', 'assigned_time', 'accepted_time', 'declined_time', 'started_time', 'reached_time', 'failed_time', 'cancelled_time', 'cancelled_by_admin_id', 'Completed_time', 'allocation_type','task_status'
+        'order_id', 'dependent_task_id', 'task_type_id', 'location_id', 'appointment_duration', 'pricing_rule_id', 'distance', 'assigned_time', 'accepted_time', 'declined_time', 'started_time', 'reached_time', 'failed_time', 'cancelled_time', 'cancelled_by_admin_id', 'Completed_time', 'allocation_type','task_status',
+        'cash_to_be_collected'
     ];
 
     public function order(){

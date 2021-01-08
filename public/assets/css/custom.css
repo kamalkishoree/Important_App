@@ -85,3 +85,15 @@
   .dropify-wrapper{
     height: 130px !important;
   }
+  .card-box,          .card {
+    -webkit-box-shadow: 0 16px 32px 0 rgba(0,0,0,0.05) !important;
+    box-shadow: 0 16px 32px 0 rgba(0,0,0,0.05) !important;
+    border-radius: 16px !important;
+  }
+.table-responsive{
+  padding: 15px;
+}
+.set-size {
+  position: relative;
+}
+/* zz */

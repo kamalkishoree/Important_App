@@ -36,12 +36,12 @@
 
                 <li class="menu-title mt-2">Home</li>
 
-                <li>
+                {{-- <li>
                     <a href="{{route('god.dashboard')}}">
                         <i data-feather="airplay"></i>
                         <span> Dashboard </span>
                     </a>
-                </li>
+                </li> --}}
 
 
                 <li>

@@ -118,12 +118,14 @@ class ClientController extends Controller
         $data = [
             'name' => $request->name,
             'email' => $request->email,
-            'password' => Hash::make('password'),
+            'password' => Hash::make($request->password),
             'confirm_password' => Crypt::encryptString($request->password),
             'phone_number' => $request->phone_number,
             'database_name' => $database_name,
             'company_name' => $request->company_name,
-            'company_address' => $request->company_address,
+            'company_address'  => $request->company_address,
+            'database_username' => 'root',
+            'database_password' => 'codebrew',
             'logo' => isset($getFileName) ? $getFileName : 'assets/Clientlogo/5ff41c4b5a9f0.png/KQb50SOKZckXbcmMBXgqz3pqfCZcOTpkpljs8sJq.png',
             'status'=> 1,
         ];
