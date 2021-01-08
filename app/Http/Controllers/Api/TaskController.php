@@ -51,12 +51,12 @@ class TaskController extends BaseController
         }
 
         $task = Task::where('id', $request->task_id)->update(['task_status' => $request->task_status]);
-       // $newDetails = Task::where('id', $request->task_id)->first();
+       $newDetails = Task::where('id', $request->task_id)->with(['location','tasktype','pricing','orders','customers'])->first();
 
-        $newDetails = Task::where('id', $request->task_id)->with('location', 'tasktype', 'pricing')
-                        ->select('tasks.*', 'orders.recipient_phone', 'orders.Recipient_email', 'orders.task_description', 'customers.phone_number  as customer_mobile', 'customers.email  as customer_email', 'customers.name as customer_name')
-                        ->join('orders', 'orders.id' , 'tasks.order_id')
-                        ->join('customers', 'customers.id' , 'orders.customer_id')->get();
+        // $newDetails = Task::where('id', $request->task_id)->with('location', 'tasktype', 'pricing')
+        //                 ->select('tasks.*', 'orders.recipient_phone', 'orders.Recipient_email', 'orders.task_description', 'customers.phone_number  as customer_mobile', 'customers.email  as customer_email', 'customers.name as customer_name')
+        //                 ->join('orders', 'orders.id' , 'tasks.order_id')
+        //                 ->join('customers', 'customers.id' , 'orders.customer_id')->get();
                        
 
         return response()->json([
