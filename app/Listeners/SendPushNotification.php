@@ -109,7 +109,8 @@ class SendPushNotification
                 ->data($item)
                 ->notification([
                     'title' => 'Pickup Request',
-                    'body' =>  'Check All Details For This Request In App',
+                    'body'  =>  'Check All Details For This Request In App',
+                    'sound' =>   'default',
                 ])
                 ->send();
             }

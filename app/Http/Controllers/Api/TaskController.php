@@ -51,7 +51,7 @@ class TaskController extends BaseController
         }
 
         $task = Task::where('id', $request->task_id)->update(['task_status' => $request->task_status]);
-       $newDetails = Task::where('id', $request->task_id)->with(['location','tasktype','pricing','orders','customers'])->first();
+       $newDetails = Task::where('id', $request->task_id)->with(['location','tasktype','pricing','order.customer'])->first();
 
         // $newDetails = Task::where('id', $request->task_id)->with('location', 'tasktype', 'pricing')
         //                 ->select('tasks.*', 'orders.recipient_phone', 'orders.Recipient_email', 'orders.task_description', 'customers.phone_number  as customer_mobile', 'customers.email  as customer_email', 'customers.name as customer_name')

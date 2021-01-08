@@ -30,6 +30,7 @@ class Task extends Model
         return $this->belongsTo('App\Model\PricingRule', 'pricing_rule_id', 'id');
         
     }
+    
 
     /*public function teamtags(){
         return $this->belongsToMany('App\Model\TaskTeamTag', 'task_team_tags','task_id','tag_id');
