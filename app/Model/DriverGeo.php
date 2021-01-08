@@ -11,7 +11,7 @@ class DriverGeo extends Model
     }
 
     public function agent(){
-        return $this->belongsTo('App\Model\Agent', 'driver_id', 'id')->select('id','device_type','device_token');;
+        return $this->belongsTo('App\Model\Agent', 'driver_id', 'id')->select('id','profile_picture','device_type','device_token');;
         
     }
 }

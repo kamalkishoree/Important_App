@@ -36,7 +36,7 @@
                         <div class="col-sm-4 text-right">
                             <a class="btn btn-blue waves-effect waves-light text-sm-right"
                                 href="{{route('client.create')}}"><i class="mdi mdi-plus-circle mr-1"></i> Add
-                                Clients</a>
+                                Client</a>
                         </div>
 
                     </div>
@@ -49,9 +49,8 @@
                                     <th>Email</th>
                                     <th>Phone</th>
                                     <th>DB Path</th>
-                                    <th>DB Name</th>
-                                    <th>DB Username</th>
-                                    <th>DB Password</th>
+                                    <th>Database Name</th>
+                                    <th>Client Code</th>
                                     <th style="width: 85px;">Action</th>
                                 </tr>
                             </thead>
@@ -75,31 +74,29 @@
                                         {{$client->database_name}}
                                     </td>
                                     <td>
-                                        {{$client->database_username}}
-                                    </td>
-                                    <td>
-                                        {{$client->database_password}}
+                                        {{ $client->code }}
                                     </td>
                                     <!-- <td>
                                         <span class="badge bg-soft-success text-success">Active</span>
                                     </td> -->
 
-                                    <td>
-                                        <a href="{{route('client.edit', $client->id)}}" class="action-icon"> <i
-                                                class="mdi mdi-square-edit-outline"></i></a>
-                                        <!-- <a href="{{route('client.destroy', $client->id)}}" class="action-icon">
-                                            <i class="mdi mdi-delete"></i>
-                                        </a> -->
-                                        <form method="POST" action="{{route('client.destroy', $client->id)}}">
-                                            @csrf
-                                            @method('DELETE')
-                                            <div class="form-group">
-                                                <button type="submit" class="btn btn-primary-outline action-icon"> <i
-                                                        class="mdi mdi-delete"></i></button>
 
+                                    <td>
+                                        <div class="form-ul" style="width: 60px;">
+                                            <div class="inner-div"> <a href1="#" href="{{route('client.edit', $client->id)}}"  class="action-icon editIconBtn"> <i class="mdi mdi-square-edit-outline"></i></a></div>
+                                            <div class="inner-div">
+                                                <form method="POST" action="{{route('client.destroy', $client->id)}}">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <div class="form-group">
+                                                        <button type="submit" class="btn btn-primary-outline action-icon"> <i class="mdi mdi-delete"></i></button>
+
+                                                    </div>
+                                                </form>
                                             </div>
-                                        </form>
+                                        </div>
                                     </td>
+                                    
                                 </tr>
                                 @endforeach
                             </tbody>

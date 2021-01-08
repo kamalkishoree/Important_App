@@ -52,7 +52,7 @@
             //marker drag event end
             google.maps.event.addListener(marker,'dragend',function(event) {
                 var zx =JSON.stringify(event);
-                console.log(zx);
+                // console.log(zx);
 
 
                 document.getElementById('lat_map').value = event.latLng.lat();
@@ -78,7 +78,7 @@
         var mapLat = document.getElementById('lat_map').value;
         var mapLlng = document.getElementById('lng_map').value;
         var mapFor = document.getElementById('map_for').value;
-        console.log(mapLat+'-'+mapLlng+'-'+mapFor);
+        //console.log(mapLat+'-'+mapLlng+'-'+mapFor);
         document.getElementById(mapFor + '-latitude').value = mapLat;
         document.getElementById(mapFor + '-longitude').value = mapLlng;
 
@@ -103,7 +103,7 @@
                 url: '/changeStatus',
                 data: {'status': status, 'id': user_id},
                 success: function(data){
-                  console.log(data.success)
+                  //console.log(data.success)
                 }
             });
         })
@@ -114,7 +114,7 @@
 
         $(document).find('#address-map-container').before('<div class="row address" id="add'+count+'"><div class="col-md-4"><div class="form-group" id=""><input type="text"  class="form-control" placeholder="Short Name" name="short_name[]"></div></div><div class="col-md-5"><div class="form-group input-group" id=""><input type="text" id="add'+count+'-input" name="address[]" class="autocomplete form-control" placeholder="Address"><div class="input-group-append"><button class="btn btn-xs btn-dark waves-effect waves-light showMap" type="button" num="add'+count+'"> <i class="mdi mdi-map-marker-radius"></i></button></div><input type="hidden" name="latitude[]" id="add'+count+'-latitude" value="0" /><input type="hidden" name="longitude[]" id="add'+count+'-longitude" value="0" /></div></div><div class="col-md-3"><div class="form-group" id=""><input type="text"  class="form-control" placeholder="Post Code" name="post_code[]"></div></div></div>');
 
-        autocompletesWraps.indexOf('add'+count) === -1 ? autocompletesWraps.push('add'+count) : console.log("This item already exists");
+        autocompletesWraps.indexOf('add'+count) === -1 ? autocompletesWraps.push('add'+count) : "This item already exists";
         
         //console.log(autocompletesWraps);
         loadMap(autocompletesWraps);
@@ -126,7 +126,7 @@
 
     function loadMap(autocompletesWraps){
 
-        console.log(autocompletesWraps);
+        //console.log(autocompletesWraps);
         $.each(autocompletesWraps, function(index, name) {
             const geocoder = new google.maps.Geocoder;
         
@@ -145,7 +145,7 @@
                     if (status === google.maps.GeocoderStatus.OK) {
                         const lat = results[0].geometry.location.lat();
                         const lng = results[0].geometry.location.lng();
-                        console.log(latitudes);
+                        //console.log(latitudes);
                         document.getElementById(name + '-latitude').value = lat;
                         document.getElementById(name + '-longitude').value = lng;
                     }
@@ -174,7 +174,7 @@
             success: function (data) {
 
                 $('.page-title1').html('Hello');
-                console.log('data');
+                //console.log('data');
 
                 $('#edit-customer-modal #editCardBox').html(data.html);
                 $('#edit-customer-modal').modal({
@@ -190,7 +190,7 @@
 
             },
             error: function (data) {
-                console.log('data2');
+               // console.log('data2');
             }
         });
     });
@@ -200,7 +200,7 @@
 
         $(document).find('#editAddress-map-container').before('<div class="row address" id="edit'+editCount+'"><div class="col-md-4"><div class="form-group" id=""><input type="text"  class="form-control" placeholder="Short Name" name="short_name[]"></div></div><div class="col-md-5"><div class="form-group input-group" id=""><input type="text" id="edit'+editCount+'-input" name="address[]" class="autocomplete form-control" placeholder="Address"><div class="input-group-append"><button class="btn btn-xs btn-dark waves-effect waves-light showMap" type="button" num="edit'+editCount+'"> <i class="mdi mdi-map-marker-radius"></i></button></div><input type="hidden" name="latitude[]" id="edit'+editCount+'-latitude" value="0" /><input type="hidden" name="longitude[]" id="edit'+editCount+'-longitude" value="0" /></div></div><div class="col-md-3"><div class="form-group" id=""><input type="text"  class="form-control" placeholder="Post Code" name="post_code[]"></div></div></div>');
 
-        autocompletesWraps.indexOf('edit'+editCount) === -1 ? autocompletesWraps.push('edit'+editCount) : console.log("This item already exists");
+        autocompletesWraps.indexOf('edit'+editCount) === -1 ? autocompletesWraps.push('edit'+editCount) : "This item already exists";
         
         //console.log(autocompletesWraps);
         loadMap(autocompletesWraps);
@@ -228,7 +228,7 @@
         var formData = new FormData(form);
         var urls =  document.getElementById('customer_id').getAttribute('url');
         saveCustomer(urls, formData, inp = 'Edit', modal = 'edit-customer-modal');
-        console.log(urls);
+        //console.log(urls);
     });
 
     function saveCustomer(urls, formData, inp = '', modal = ''){

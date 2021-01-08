@@ -182,7 +182,7 @@
                         $style = "display:none;";
                 }
             @endphp
-            <div class="row displaySettingsError" style="{{$style}}">
+            {{-- <div class="row displaySettingsError" style="{{$style}}">
                 <div class="col-12">
                     <div class="alert alert-danger excetion_keys" role="alert">
                         @if(session('preferences.twilio_status') == 'invalid_key')
@@ -192,7 +192,7 @@
                 </div>
 
 
-            </div>
+            </div> --}}
 
 <div class="row address" id="addHeader0" style="display: none;">
     <input type="text" id="addHeader0-input" name="address" class="autocomplete form-control addHeader0-input" placeholder="Address">
@@ -206,7 +206,7 @@
 
 <script src="{{ asset('assets/js/jquery-ui.min.js') }}" crossorigin="anonymous"></script>
 <link rel="stylesheet" href="{{ asset('assets/css/jquery-ui.css') }}">
-<script src='https://cdn.rawgit.com/pguso/jquery-plugin-circliful/master/js/jquery.circliful.min.js'></script>
+{{-- <script src='https://cdn.rawgit.com/pguso/jquery-plugin-circliful/master/js/jquery.circliful.min.js'></script> --}}
 {{-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB85kLYYOmuAhBUPd7odVmL6gnQsSGWU-4&libraries=places"></script>  --}}
 <script defer
         src="https://maps.googleapis.com/maps/api/js?key={{$key}}&libraries=places&v=weekly">
@@ -263,7 +263,8 @@
             }
         });
 
-        autoWrap.indexOf('addHeader1') === -1 ? autoWrap.push('addHeader1') : console.log("exists");
+        autoWrap.indexOf('addHeader1') === -1 ? autoWrap.push('addHeader1') : '' ; 
+        // console.log("exists");
         e.preventDefault();
        
         $.ajax({
@@ -401,7 +402,7 @@
     $(document).on('click', '.subTaskHeader', function(){
       var cur = countZ;
       countZ = countZ + 1;
-      console.log(countZ);
+      //console.log(countZ);
         var $clone = $('.cloningDiv').clone();
         $clone.removeClass('cloningDiv');
         $clone.removeClass('copyin1');
@@ -470,13 +471,15 @@
         autoWrap.indexOf('addHeader'+countZ) === -1 ? autoWrap.push('addHeader'+countZ) : console.log("exists");
           loadMapHeader(autoWrap);
     });
+    
     function loadMapHeader(autoWrap){  
-        console.log(autoWrap);
+       // console.log(autoWrap);
         $.each(autoWrap, function(index, name) {
             const geocoder = new google.maps.Geocoder;
 
-        console.log(index+'--'+name);
-            if($('#'+name).length == 0) { console.log('blank - ' + name);
+        //console.log(index+'--'+name);
+            if($('#'+name).length == 0) { 
+                //console.log('blank - ' + name);
                 return;
             }
             //maoArray[name] = new google.maps.places.Autocomplete(('.form-control')[0], { types: ['geocode'] }); //console.log('hello');
@@ -491,7 +494,7 @@
                     if (status === google.maps.GeocoderStatus.OK) {
                         const lat = results[0].geometry.location.lat();
                         const lng = results[0].geometry.location.lng();
-                        console.log(name+'-input');
+                        //console.log(name+'-input');
                         document.getElementById(name + '-latitude').value = lat;
                         document.getElementById(name + '-longitude').value = lng;
                     }
@@ -537,7 +540,7 @@
         var email = $("input[name=email]").val();
         var phone_no = $("input[name=phone_number]").val();
 
-        console.log(cus_id + ' - '+ name + '-' + phone_no + '-' + email);
+        //console.log(cus_id + ' - '+ name + '-' + phone_no + '-' + email);
 
         if (cus_id == '') {
             if (name != '' && email != '' && phone_no != '') {
@@ -551,7 +554,7 @@
         var selectedVal = "";
         var selected = $("#typeInputss input[type='radio']:checked");
         selectedVal = selected.val();
-        console.log(selectedVal);
+        //console.log(selectedVal);
         if (typeof(selectedVal) == "undefined") {
             var short_name = $("#task-modal-header input[name=short_name").val();
             var address = $("#task-modal-header input[name=address]").val();
@@ -567,7 +570,7 @@
         var autoval = "";
         var auto = $("#rediodiv input[type='radio']:checked");
         autoval = auto.val();
-        console.log(autoval);
+        //console.log(autoval);
         // if (autoval == 'auto' || autoval == 'a') {
         //     var value = $("#selectize-optgroups option:selected").text();
         //     var value2 = $("#selectize-optgroup option:selected").text();

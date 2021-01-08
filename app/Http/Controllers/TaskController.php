@@ -239,7 +239,7 @@ class TaskController extends Controller
                     $this->finalRoster($geo, $notification_time, $agent_id, $orders->id, $customer, $finalLocation, $taskcount, $allocation);
                     break;
                 default:
-                    $this->finalRoster($geo, $notification_time, $agent_id, $orders->id, $customer, $finalLocation, $taskcount, $allocation);
+                    $this->batchWise($geo, $notification_time, $agent_id, $orders->id, $customer, $finalLocation, $taskcount, $allocation);
             }
         }
 
@@ -566,7 +566,7 @@ class TaskController extends Controller
                         'device_token'        => $geoitem->agent->device_token,
                         'detail_id'           => $randem,
 
-                    ];
+                     ];
                     array_push($data, $datas);
                     if ($allcation_type == 'N') {
 
@@ -594,6 +594,7 @@ class TaskController extends Controller
         $beforetime = (int)$auth->getAllocation->start_before_task_time;
         $maxsize    = (int)$auth->getAllocation->maximum_batch_size;
         $type       = $auth->getPreference->acknowledgement_type;
+        $unit       = $auth->getPreference->distance_unit;
         $try        = $auth->getAllocation->number_of_retries;
         $time       = $this->checkTimeDiffrence($notification_time, $beforetime);
         $randem     = rand(11111111, 99999999);
@@ -605,7 +606,7 @@ class TaskController extends Controller
         $extraData = [
             'customer_name'            => $customer->name,
             'customer_phone_number'    => $customer->phone_number,
-            'short_name'                => $finalLocation->short_name,
+            'short_name'               => $finalLocation->short_name,
             'address'                  => $finalLocation->address,
             'lat'                      => $finalLocation->latitude,
             'long'                     => $finalLocation->longitude,
@@ -635,10 +636,11 @@ class TaskController extends Controller
 
             //$getgeo = DriverGeo::where('geo_id', $geo)->with('agent')->get('driver_id');
             $getgeo = DriverGeo::where('geo_id', $geo)->with([
-                'agents.logs'=> function($o){
+                'agent.logs'=> function($o){
                     $o->orderBy('id','DESC');
                 }])->get()->toArray();
-            $this->haversineGreatCircleDistance($getgeo);
+            
+            $this->haversineGreatCircleDistance($getgeo,$finalLocation,$unit);
 
             for ($i = 1; $i <= $try; $i++) {
                 foreach ($getgeo as $key =>  $geoitem) {
@@ -675,22 +677,48 @@ class TaskController extends Controller
 
 
     
-    // function haversineGreatCircleDistance()
-    // {
-    //     //$latitudeFrom, $longitudeFrom, $latitudeTo, $longitudeTo, $earthRadius = 6371000;
-    //         // convert from degrees to radians
-    //         $latFrom = deg2rad($latitudeFrom);
-    //         $lonFrom = deg2rad($longitudeFrom);
-    //         $latTo = deg2rad($latitudeTo);
-    //         $lonTo = deg2rad($longitudeTo);
+    function haversineGreatCircleDistance($getgeo,$finalLocation,$unit)
+    {
+        //$latitudeFrom, $longitudeFrom, $latitudeTo, $longitudeTo, 
+        // convert from degrees to radians
+
+        $earthRadius = 6371;  // earth radius in km
+        $latitudeFrom  = $finalLocation->latitude;
+        $longitudeFrom = $finalLocation->longitude;
+        $lastarray     = [];
+        foreach($getgeo as $item){
+            $latitudeTo  = $item['agent']['logs']['lat'];
+            $longitudeTo = $item['agent']['logs']['long'];
+            if(isset($latitudeFrom) && isset($latitudeFrom) && isset($latitudeTo) && isset($longitudeTo)){
+
+                $latFrom = deg2rad($latitudeFrom);
+                $lonFrom = deg2rad($longitudeFrom);
+                $latTo   = deg2rad($latitudeTo);
+                $lonTo   = deg2rad($longitudeTo);
           
-    //         $latDelta = $latTo - $latFrom;
-    //         $lonDelta = $lonTo - $lonFrom;
+                $latDelta = $latTo - $latFrom;
+                $lonDelta = $lonTo - $lonFrom;
           
-    //         $angle = 2 * asin(sqrt(pow(sin($latDelta / 2), 2) +
-    //           cos($latFrom) * cos($latTo) * pow(sin($lonDelta / 2), 2)));
-    //         return $angle * $earthRadius;
-    // }
+                $angle = 2 * asin(sqrt(pow(sin($latDelta / 2), 2) +
+                cos($latFrom) * cos($latTo) * pow(sin($lonDelta / 2), 2)));
+                
+                if($unit == 'metric'){
+                    $lastarray[$item['agent']['logs']['agent_id']] = round($angle * $earthRadius);
+                }else{
+                    $lastarray[$item['agent']['logs']['agent_id']] = round(($angle * $earthRadius) * 0.6214);
+                }
+                
+                //return $angle * $earthRadius;
+                
+
+            }
+            
+
+        }
+        dd($lastarray);
+
+          
+    }
     
 
 

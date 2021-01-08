@@ -125,11 +125,11 @@
 <script>
     var no_parking_geofences_json = {!! json_encode($all_coordinates) !!};
 
-    function gm_authFailure() {
+    // function gm_authFailure() {
                 
-                $('.excetion_keys').append('<span><i class="mdi mdi-block-helper mr-2"></i> <strong>Google Map</strong> key is not valid</span><br/>');
-                $('.displaySettingsError').show();
-    };
+    //             $('.excetion_keys').append('<span><i class="mdi mdi-block-helper mr-2"></i> <strong>Google Map</strong> key is not valid</span><br/>');
+    //             $('.displaySettingsError').show();
+    // };
     var map; // Global declaration of the map
     function initialize() {     
 

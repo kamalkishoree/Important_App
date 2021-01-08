@@ -709,7 +709,7 @@ $color = ['one','two','three','four','five','six','seven','eight']
                 //   if (!$(this).is(':checked')) {
                 //    return confirm("Are you sure?");
                 //   }
-                console.log(val);
+                //console.log(val);
                 for (let i = 0; i < olddata.length; i++) {
                     checkdata = olddata[i];
                     var info = []
@@ -751,7 +751,7 @@ $color = ['one','two','three','four','five','six','seven','eight']
                 //   }
                 for (let i = 0; i < olddata.length; i++) {
                     checkdata = olddata[i];
-                    console.log(checkdata[5]);
+                    //console.log(checkdata[5]);
                     // addMarker({ lat: checkdata[3], lng: checkdata[4] });
                     if ($.inArray(checkdata[5], taskval) != -1 || $.inArray('all', taskval) != -1) {
 
@@ -799,7 +799,7 @@ $color = ['one','two','three','four','five','six','seven','eight']
                 
                 for (let i = 0; i < allagent.length; i++) {
                     checkdata = allagent[i];
-                    console.log(checkdata);
+                    //console.log(checkdata);
                     // addMarker({ lat: checkdata[3], lng: checkdata[4] });
                     if ($.inArray(checkdata['is_available'], agentval) != -1 || $.inArray(2, agentval) != -1) {
                         if (checkdata['is_available'] == 1) {
@@ -839,7 +839,7 @@ $color = ['one','two','three','four','five','six','seven','eight']
                 // Adds a marker at the center of the map.
                 for (let i = 0; i < olddata.length; i++) {
                     checkdata = olddata[i];
-                    console.log(checkdata);
+                   // console.log(checkdata);
                     if (checkdata[6] == 1) {
                         send = "P";
                     } else if (checkdata[6] == 2) {

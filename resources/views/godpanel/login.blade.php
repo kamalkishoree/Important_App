@@ -126,11 +126,11 @@
 
     <footer class="footer footer-alt">
         <script>
-            document.write(new Date().getFullYear())
+            // document.write(new Date().getFullYear())
         </script> &copy; All rights reserved by <a href="https://royoapps.com/" class="text-white-50">Royo Apps</a>
     </footer>
 
-    @include('layouts.shared.footer-script')
+    {{-- @include('layouts.shared.footer-script') --}}
 
 </body>
 

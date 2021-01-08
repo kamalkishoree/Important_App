@@ -91,9 +91,13 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="password" class="control-label">PASSWORD</label>
+                                        @if(isset($client))
                                         <input type="text" class="form-control" id="password" name="password"
-                                            value="{{ old('password', isset($client->confirm_password)?Crypt::decryptString($client->confirm_password) :'********')}}"Crypt::decryptString($value)
+                                            value="{{ old('password', isset($client->confirm_password)?Crypt::decryptString($client->confirm_password) :'********')}}"
                                             placeholder="Enter password">
+                                        @else
+                                        <input type="password" class="form-control" id="password" name="password" value="" placeholder="Enter password">
+                                        @endif
                                         @if($errors->has('password'))
                                         <span class="text-danger" role="alert">
                                             <strong>{{ $errors->first('password') }}</strong>
@@ -105,23 +109,17 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="database_path" class="control-label">DATABASE PATH</label>
-                                        <input type="text" class="form-control" name="database_path" id="database_path"
-                                            value="{{ old('database_path', $client->database_path ?? '')}}"
-                                            placeholder="Enter Path">
-                                        @if($errors->has('database_path'))
-                                        <span class="text-danger" role="alert">
-                                            <strong>{{ $errors->first('database_path') }}</strong>
-                                        </span>
-                                        @endif
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
                                         <label for="database_name" class="control-label">DATABASE NAME</label>
+                                        
+                                        @if(isset($client))
                                         <input type="text" class="form-control" name="database_name" id="database_name"
                                             value="{{ old('database_name', $client->database_name ?? '')}}"
-                                            placeholder="Please Enter One String Example:-'mydatabase' ">
+                                            placeholder="Please Enter One String Example:-'mydatabase' " readonly>
+                                        @else
+                                        <input type="text" class="form-control" name="database_name" id="database_name"
+                                            value=""
+                                            placeholder="Please Enter One String Example:-'mydatabase'" >
+                                        @endif
                                         @if($errors->has('database_name'))
                                         <span class="text-danger" role="alert">
                                             <strong>{{ $errors->first('database_name') }}</strong>
@@ -129,22 +127,24 @@
                                         @endif
                                     </div>
                                 </div>
-                            </div>
-                            <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="database_username" class="control-label">DATABASE USERNAME</label>
-                                        <input type="text" class="form-control" name="database_username"
-                                            id="database_username"
-                                            value="{{ old('database_username', $client->database_username ?? '')}}"
-                                            placeholder="Enter database username">
-                                        @if($errors->has('database_username'))
+                                        <label for="company_name" class="control-label">COMPANY NAME</label>
+                                        <input type="text" class="form-control" name="company_name" id="company_name"
+                                            value="{{ old('company_name', $client->company_name ?? '')}}"
+                                            placeholder="Enter company name">
+                                        @if($errors->has('company_name'))
                                         <span class="text-danger" role="alert">
-                                            <strong>{{ $errors->first('database_username') }}</strong>
+                                            <strong>{{ $errors->first('company_name') }}</strong>
                                         </span>
                                         @endif
                                     </div>
                                 </div>
+                               
+                            </div>
+                            
+                            {{-- <div class="row">
+                                
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="database_password" class="control-label">DATABASE PASSWORD</label>
@@ -159,22 +159,10 @@
                                         @endif
                                     </div>
                                 </div>
-                            </div>
+                            </div> --}}
 
                             <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="company_name" class="control-label">COMPANY NAME</label>
-                                        <input type="text" class="form-control" name="company_name" id="company_name"
-                                            value="{{ old('company_name', $client->company_name ?? '')}}"
-                                            placeholder="Enter company name">
-                                        @if($errors->has('company_name'))
-                                        <span class="text-danger" role="alert">
-                                            <strong>{{ $errors->first('company_name') }}</strong>
-                                        </span>
-                                        @endif
-                                    </div>
-                                </div>
+                                
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="company_address" class="control-label">COMPANY ADDRESS</label>
@@ -191,7 +179,7 @@
                                 </div>
                             </div>
 
-                            <div class="row">
+                            {{-- <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="custom_domain" class="control-label">CUSTOM DOMAIN</label>
@@ -205,7 +193,7 @@
                                         @endif
                                     </div>
                                 </div>
-                            </div>
+                            </div> --}}
                             <div class="row">
                                 <div class="col-md-12">
                                     <button type="submit" class="btn btn-info waves-effect waves-light">Submit</button>

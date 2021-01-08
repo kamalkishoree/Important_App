@@ -280,11 +280,11 @@ exit;
         var lng = parseFloat(first_location.lng);
 
 
-        function gm_authFailure() {
+        // function gm_authFailure() {
                 
-                $('.excetion_keys').append('<span><i class="mdi mdi-block-helper mr-2"></i> <strong>Google Map</strong> key is not valid</span><br/>');
-                $('.displaySettingsError').show();
-        };
+        //         $('.excetion_keys').append('<span><i class="mdi mdi-block-helper mr-2"></i> <strong>Google Map</strong> key is not valid</span><br/>');
+        //         $('.displaySettingsError').show();
+        // };
 
         function deleteSelectedShape() {
             drawingManager.setMap(null);

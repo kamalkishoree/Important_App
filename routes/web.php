@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Redirect;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,8 +21,14 @@ use Illuminate\Support\Facades\Cache;
         // $value = Cache::get('key1');
 		// dd($value);
 		Route::get('/testing','ProcessController@task');
+		// Route::get('/godpanel', function(){
+		// 	return redirect()->route('login');
+		// });
 Route::group(['prefix' => '/godpanel'], function () {
-	Route::get('login', function(){
+	Route::get('/', function(){
+		return view('godpanel/login');
+	});
+	Route::get('/login', function(){
 		return view('godpanel/login');
 	});
 	Route::post('login','Godpanel\LoginController@Login')->name('god.login');

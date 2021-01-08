@@ -81,13 +81,7 @@ class ClientController extends Controller
             'email' => ['required', 'string', 'email', 'max:255', 'unique:clients'],
             'phone_number' => ['required'],
             'password' => ['required'],
-            'database_path' => ['required'],
             'database_name' => ['required','unique:clients'],
-            'database_username' => ['required'],
-            'database_password' => ['required'],
-            'company_name' => ['required'],
-            'company_address' => ['required'],
-            'custom_domain' => ['required'],
             //'logo' => ['required'],
         ]);
     }
@@ -127,14 +121,10 @@ class ClientController extends Controller
             'password' => Hash::make('password'),
             'confirm_password' => Crypt::encryptString($request->password),
             'phone_number' => $request->phone_number,
-            'database_path' => $request->database_path,
             'database_name' => $database_name,
-            'database_username' => $request->database_username,
-            'database_password' => $request->database_password,
             'company_name' => $request->company_name,
             'company_address' => $request->company_address,
-            'custom_domain' => $request->custom_domain,
-            'logo' => $getFileName,
+            'logo' => isset($getFileName) ? $getFileName : 'assets/Clientlogo/5ff41c4b5a9f0.png/KQb50SOKZckXbcmMBXgqz3pqfCZcOTpkpljs8sJq.png',
             'status'=> 1,
         ];
         $data['code'] = $this->randomString();
@@ -196,13 +186,8 @@ class ClientController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255'],
             'phone_number' => ['required'],
-            'database_path' => ['required'],
             'database_name' => ['required'],
-            'database_username' => ['required'],
             'database_password' => ['required'],
-            'company_name' => ['required'],
-            'company_address' => ['required'],
-            'custom_domain' => ['required'],
         ]);
     }
 

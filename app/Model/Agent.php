@@ -47,7 +47,7 @@ class Agent extends Authenticatable
     }
 
     public function logs(){
-        return $this->belongsTo('App\Model\AgentLog')->select("id", "agent_id", "lat", "long"); 
+        return $this->hasOne('App\Model\AgentLog' , 'agent_id','id')->select("id", "agent_id", "lat", "long"); 
     }
 
     public function vehicle_type(){
