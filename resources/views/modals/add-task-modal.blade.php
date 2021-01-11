@@ -55,7 +55,7 @@
                 <div class="row ">
                     <div class="col-md-3">
                         <div class="form-group" id="">
-                            {!! Form::text('name', null, ['class' => 'form-control', 'placeholder' => 'Name']) !!}
+                            {!! Form::text('name', null, ['class' => 'form-control', 'placeholder' => 'Name','id'=>'name_new']) !!}
                             <span class="invalid-feedback" role="alert">
                                 <strong></strong>
                             </span>
@@ -64,7 +64,7 @@
                     </div>
                     <div class="col-md-4">
                         <div class="form-group" id="">
-                            {!! Form::text('email', null, ['class' => 'form-control', 'placeholder' => 'Email']) !!}
+                            {!! Form::text('email', null, ['class' => 'form-control', 'placeholder' => 'Email','id'=>'email_new']) !!}
                             <span class="invalid-feedback" role="alert">
                                 <strong></strong>
                             </span>
@@ -73,7 +73,7 @@
                     </div>
                     <div class="col-md-3">
                         <div class="form-group" id="">
-                            {!! Form::text('phone_number', null, ['class' => 'form-control', 'placeholder' => 'Phone Number',
+                            {!! Form::text('phone_number', null, ['class' => 'form-control', 'placeholder' => 'Phone Number','id'=> 'phone_new'
                             ]) !!}
                             <span class="invalid-feedback" role="alert">
                                 <strong></strong>

@@ -96,4 +96,7 @@
 .set-size {
   position: relative;
 }
+.lite-box-brdr {
+  border: 1px solid #ececec;
+}
 /* zz */

@@ -90,7 +90,7 @@ class ProfileController extends Controller
             'company_name' => ['required'],
             'company_address' => ['required'],
         ]);
-
+            
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator, 'update');
         }

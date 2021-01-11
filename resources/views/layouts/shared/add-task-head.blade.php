@@ -535,12 +535,13 @@
         $(".tagspan2").hide();
         $(".searchspan").hide();
 
-        var cus_id = $("input[name=ids]").val();
-        var name = $("input[name=name]").val();
-        var email = $("input[name=email]").val();
-        var phone_no = $("input[name=phone_number]").val();
+        var cus_id = $('#cusid').val();
+        var name = $('#name_new').val();
+        var email = $('#email_new').val();
+        var phone_no = $('#phone_new').val();
 
-        //console.log(cus_id + ' - '+ name + '-' + phone_no + '-' + email);
+      
+        console.log(cus_id + ' - '+ name + '-' + phone_no + '-' + email);
 
         if (cus_id == '') {
             if (name != '' && email != '' && phone_no != '') {
