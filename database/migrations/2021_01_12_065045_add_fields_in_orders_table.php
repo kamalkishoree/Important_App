@@ -14,7 +14,7 @@ class AddFieldsInOrdersTable extends Migration
     public function up()
     {
         Schema::table('orders', function (Blueprint $table) {
-            //
+            
         });
     }
 
@@ -26,7 +26,7 @@ class AddFieldsInOrdersTable extends Migration
     public function down()
     {
         Schema::table('orders', function (Blueprint $table) {
-            //
+            
         });
     }
 }

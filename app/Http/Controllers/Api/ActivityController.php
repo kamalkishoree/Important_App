@@ -39,19 +39,22 @@ class ActivityController extends BaseController
      */
     public function tasks(Request $request)
     {
-        $id   = Auth::user()->id;
-        $date = $request->date; 
-        $tasks  = Task::where('task_status',1)->orWhere('task_status',2)->with([
-                'location','tasktype','order'=> function($o) use ($id,$date){
-                    if(isset($date)){
-                        $o->where('driver_id',$id)->whereDate('order_time',date('Y-m-d', strtotime($date)))->with('customer');
+        $id    = Auth::user()->id;
+        $today = $request->today; 
+        $tasks = Task::where('task_status',1)->orWhere('task_status',2)->with([
+                'location','tasktype','order'=> function($o) use ($id,$today){
+                    if($today == 1){
+                        $o->where('driver_id',$id)->where('order_time',Carbon::today())->with('customer');
                     }else{
                         $o->where('driver_id',$id)->with('customer');
                     }
                
-                }])->get();
+                }])->get(['id','order_id','dependent_task_id','task_type_id','location_id','appointment_duration','task_status','allocation_type','created_at']);
 
-        return response()->json($tasks);
+
+                return response()->json([
+                    'data' => $tasks,
+                   ],200);
         
     }
 
