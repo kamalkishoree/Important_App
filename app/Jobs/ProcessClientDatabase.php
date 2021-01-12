@@ -81,6 +81,7 @@ class ProcessClientDatabase implements ShouldQueue
             Artisan::call('db:seed', ['--class' => 'CreateAgentSeeder', '--database' => $schemaName]);
             Artisan::call('db:seed', ['--class' => 'CreateGeoSeeder', '--database' => $schemaName]);
             Artisan::call('db:seed', ['--class' => 'createPricingRule', '--database' => $schemaName]);
+            Artisan::call('db:seed', ['--class' => 'createTaskProof', '--database' => $schemaName]);
             DB::disconnect($schemaName);
         } catch (Exception $ex) {
            return $ex->getMessage();

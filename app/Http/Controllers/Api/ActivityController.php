@@ -6,7 +6,7 @@ use App\Http\Controllers\Api\BaseController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
-use App\Model\{User, Agent, AgentLog, Client, ClientPreference, Cms, Order, Task};
+use App\Model\{User, Agent, AgentLog, Client, ClientPreference, Cms, Order, Task, TaskProof};
 use Validation;
 use DB;
 use Illuminate\Support\Facades\Storage;
@@ -40,10 +40,10 @@ class ActivityController extends BaseController
     public function tasks(Request $request)
     {
         $id    = Auth::user()->id;
-        $today = $request->today; 
+        $all = $request->all; 
         $tasks = Task::where('task_status',1)->orWhere('task_status',2)->with([
-                'location','tasktype','order'=> function($o) use ($id,$today){
-                    if($today == 1){
+                'location','tasktype','order'=> function($o) use ($id,$all){
+                    if($all == 0){
                         $o->where('driver_id',$id)->where('order_time',Carbon::today())->with('customer');
                     }else{
                         $o->where('driver_id',$id)->with('customer');
@@ -143,9 +143,28 @@ class ActivityController extends BaseController
 
            
         AgentLog::create($data);
+
+        $id    = Auth::user()->id;
+        $all   = $request->all; 
+        $tasks = Task::where('task_status',1)->orWhere('task_status',2)->with([
+                'location','tasktype','order'=> function($o) use ($id,$all){
+                    if($all == 0){
+                        $o->where('driver_id',$id)->where('order_time',Carbon::today())->with('customer');
+                    }else{
+                        $o->where('driver_id',$id)->with('customer');
+                    }
+               
+                }])->get(['id','order_id','dependent_task_id','task_type_id','location_id','appointment_duration','task_status','allocation_type','created_at']);
         
+        $agents     = Agent::where('id',$id)->with('team')->first();
+        $taskProof = TaskProof::where('id',1)->first();
+        $prefer    = ClientPreference::select('theme', 'distance_unit', 'currency_id', 'language_id', 'agent_name', 'date_format', 'time_format', 'map_type','map_key_1')->first();
+        $agents['client_preference'] = $prefer;
+        $agents['task_proof']        = $taskProof;
+        $datas['user']                = $agents;
+        $datas['tasks']               = $tasks;
         return response()->json([
-            'data' => 'Log Saved Successfully',
+            'data' => $datas,
         ],200);
     }
 

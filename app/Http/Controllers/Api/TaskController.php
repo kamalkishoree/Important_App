@@ -116,6 +116,8 @@ class TaskController extends BaseController
         $customer = [];
         $finalLocation = [];
         $taskcount = 0;
+        $latitude  = [];
+        $longitude = [];
 
         // dd($request->all());
 

@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use App\Jobs\RosterCreate;
 use App\Models\RosterDeatil;
+use GuzzleHttp\Client as Gclient;
 
 class TaskController extends Controller
 {
@@ -104,6 +105,8 @@ class TaskController extends Controller
         $customer = [];
         $finalLocation = [];
         $taskcount = 0;
+        $latitude  = [];
+        $longitude = [];
 
         // dd($request->all());
 
@@ -187,11 +190,19 @@ class TaskController extends Controller
                     $send_loc_id = $loc_id;
                 }
             }
+            $location = Location::where('id', $loc_id)->first();
 
             if ($key == 0) {
 
-                $finalLocation = Location::where('id', $loc_id)->first();
+                $finalLocation = $location;
             }
+
+        
+            array_push($latitude,$location->latitude);
+            array_push($longitude,$location->longitude);
+           
+
+            
             $task_allo_type = empty($request->appointment_date[$key]) ? '0' : $request->appointment_date[$key];
 
             $data = [
@@ -209,6 +220,7 @@ class TaskController extends Controller
             $dep_id = $task->id;
         }
 
+        // $this->GoogleDistanceMatrix($latitude,$longitude);
 
         if (isset($request->allocation_type) && $request->allocation_type === 'a') {
             if (isset($request->team_tag)) {
@@ -718,6 +730,26 @@ class TaskController extends Controller
         
 
           
+    }
+
+    public function GoogleDistanceMatrix($latitude,$longitude)
+    {
+        
+        
+        // print_r($latitude);
+        // print_r($longitude);
+        // die($longitude);
+        $count = count($latitude);
+        $client = new Gclient(); 
+        $result = $client->request('GET', 'https://maps.googleapis.com/maps/api/distancematrix/json',
+            ['query' => [
+                'units'=> 'imperial',
+                'origin' =>  30.68017680,30.68017680,
+                'destination' => 30.71158940,76.69399390,
+                'key' => 'AIzaSyB85kLYYOmuAhBUPd7odVmL6gnQsSGWU-4'
+            ]
+        ]);
+        dd($result->getBody());
     }
     
 
