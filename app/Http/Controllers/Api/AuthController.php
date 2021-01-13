@@ -6,7 +6,7 @@ use App\Http\Controllers\Api\BaseController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
-use App\Model\{User, Agent, Client, ClientPreference, BlockedToken, Otp};
+use App\Model\{User, Agent, Client, ClientPreference, BlockedToken, Otp, TaskProof};
 use Validation;
 use DB;
 use JWT\Token;
@@ -92,10 +92,10 @@ class AuthController extends BaseController
         if (!$agent) {
 	        return response()->json([
 	            'message' => 'User not found'], 404);
-	    }
-
-	    $prefer = ClientPreference::select('theme', 'distance_unit', 'currency_id', 'language_id', 'agent_name', 'date_format', 'time_format', 'map_type','map_key_1')->first();
+        }
         
+	    $prefer = ClientPreference::select('theme', 'distance_unit', 'currency_id', 'language_id', 'agent_name', 'date_format', 'time_format', 'map_type','map_key_1')->first();
+        $taskProof = TaskProof::where('id',1)->first();
         Auth::login($agent);
         /*$tokenResult = $agent->createToken('Personal Access Token');
         $token = $tokenResult->token;
@@ -122,8 +122,9 @@ class AuthController extends BaseController
         $agent->device_token = $request->device_token;
         $agent->access_token = $token;
         $agent->save();
-
+        
         $agent['client_preference'] = $prefer;
+        $agent['task_proof']       = $taskProof;
         //$data['token_type'] = 'Bearer';
         $agent['access_token'] = $token;
         //$data['expires_at'] = Carbon::parse($tokenResult->token->expires_at)->toDateTimeString();

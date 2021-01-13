@@ -10,7 +10,7 @@ use App\Model\TagsForTeam;
 use App\Model\TaskDriverTag;
 use App\Model\TaskTeamTag;
 use Illuminate\Http\Request;
-use App\Model\{Agent, AllocationRule, Client, DriverGeo, PricingRule, Roster};
+use App\Model\{Agent, AllocationRule, Client, ClientPreference, DriverGeo, PricingRule, Roster};
 use App\Model\Geo;
 use App\Model\Order;
 use Illuminate\Support\Facades\Validator;
@@ -212,6 +212,7 @@ class TaskController extends Controller
                 'allocation_type'            => $task_allo_type,
                 'dependent_task_id'          => $dep_id,
                 'task_status'                => $agent_id != null ? 1 : 0,
+                'created_at'                 => $notification_time
             ];
             if (!empty($request->pricing_rule_id)) {
                 $data['pricing_rule_id'] = $request->pricing_rule_id;
@@ -220,7 +221,7 @@ class TaskController extends Controller
             $dep_id = $task->id;
         }
 
-        // $this->GoogleDistanceMatrix($latitude,$longitude);
+       // $this->GoogleDistanceMatrix($latitude,$longitude);
 
         if (isset($request->allocation_type) && $request->allocation_type === 'a') {
             if (isset($request->team_tag)) {
@@ -734,22 +735,48 @@ class TaskController extends Controller
 
     public function GoogleDistanceMatrix($latitude,$longitude)
     {
+        $send   = []; 
+        $client = ClientPreference::where('id',1)->first();
+        $lengths = count($latitude) - 1;
+        $value = [];
+      for($i = 1; $i<=$lengths; $i++) {
+        $count  = 0;
+        $count1 = 1;
+        $ch = curl_init();
+        $headers = array('Accept: application/json',
+                   'Content-Type: application/json',
+                   );
+        $url =  'https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&origins='.$latitude[$count].','.$longitude[$count].'&destinations='.$latitude[$count1].','.$longitude[$count1].'&key='.$client->map_key_1.'';
+        curl_setopt($ch, CURLOPT_URL,$url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        $response = curl_exec($ch);
+        $result = json_decode($response);
+        curl_close($ch); // Close the connection
+        $new =   $result;
         
-        
-        // print_r($latitude);
-        // print_r($longitude);
-        // die($longitude);
-        $count = count($latitude);
-        $client = new Gclient(); 
-        $result = $client->request('GET', 'https://maps.googleapis.com/maps/api/distancematrix/json',
-            ['query' => [
-                'units'=> 'imperial',
-                'origin' =>  30.68017680,30.68017680,
-                'destination' => 30.71158940,76.69399390,
-                'key' => 'AIzaSyB85kLYYOmuAhBUPd7odVmL6gnQsSGWU-4'
-            ]
-        ]);
-        dd($result->getBody());
+        // print_r($result);
+         array_push($value,$result->rows[0]->elements);
+          $count++;
+          $count1++;
+          //dd($result);
+
+      }
+        if(isset($value)){
+            $totalDistance = 0;
+            $totalDuration = 0;
+            foreach($value as $item){
+                //dd($item);
+                $totalDistance = $totalDistance + $item[0]->distance->value;
+                $totalDuration = $totalDuration + $item[0]->duration->value;
+            }
+
+            $send['distance'] = round($totalDistance/1000, 2);
+            $send['duration'] = round($totalDuration/60, 2);
+        }
+        dd($send);
+        return $send;        
+
     }
     
 
