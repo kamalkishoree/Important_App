@@ -104,21 +104,19 @@
        }
        .showsimage{
         margin-top: 31px;
-        margin-left: 140px;
        }
        .showshadding{
         margin-left: 98px;
        }
        .newchnageimage{
-           margin-left: 100px;
        }
        .showsimagegall{
-        margin-left: 148px;
-        margin-top: 21px;
+        margin-top: 20px;
 
        }
        .allset{
            margin-left: 9px !important;
+           margin-right: 9px !important;
            padding-top: 10px;
        }
        .hidealloction{

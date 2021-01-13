@@ -96,6 +96,73 @@
 .set-size {
   position: relative;
 }
+<<<<<<< HEAD
+.no-border-radius {
+  border-radius: 0px!important;
+}
+/* zz */
+
+
+@media (max-width:767px) {
+  .map-wrapper {
+    margin-top: 25px;
+  }
+  .bottom-content {
+    width: 95%;
+    background: transparent!important;
+    box-shadow: none!important;
+  }
+  .bottom-content .datetime {
+    background: #fff;
+    padding: 9px;
+    border-radius: 4px;
+    width: 49%;
+    margin-bottom: 5px;
+  }
+  .bottom-content .dropdown.d-inline-block {
+    padding: 8px;
+    border-radius: 4px;
+    width: 49%;
+    background: #fff;
+    margin-bottom: 5px;
+  }
+  #addCardBox .card-box {
+    padding: 8px;
+  }
+  .map-wrapper .contant .bottom-content {
+    bottom: 0px;
+  }
+  .login-form label {
+    font-size: 10px!important;
+  }
+  .login-form {
+    text-align: left;
+  }
+  .map-wrapper .contant {
+    left: 0;
+    width: 80%;
+    height: 100px;
+    padding: 0px;
+    display: inline-block;
+    bottom: 10px;
+}
+.newchnageimage, .showsimagegall {
+  margin-left: 0px!important;
+}
+#colorInput {
+  text-align: center;
+}
+} 
+
+
+
+
+@media (max-width: 991.98px){
+.left-side-menu {
+    display: none;
+    z-index: 1000 !important;
+}
+}
 .lite-box-brdr {
   border: 1px solid #ececec;
 }
