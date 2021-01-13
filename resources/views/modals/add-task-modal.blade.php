@@ -154,7 +154,7 @@
                         </div>
                         <div class="col-md-6" id="onlyFirst">
                             <div class="form-group withradio" id="typeInputss">
-                                <div class="oldhide">
+                                <div class="oldhide text-center">
                                     <img class="showsimage" src="{{url('assets/images/ic_location_placeholder.png')}}" alt="">
                                 </div>
                             </div>
@@ -197,12 +197,14 @@
                 </div>
                 <div class="col-md-6">
                    
-                    <div class="form-group" id="colorInput">
+                    <div class="form-group text-center" id="colorInput">
                         <label class="btn btn-info width-lg waves-effect waves-light newchnageimage upload-img-btn">
                             <span><i class="fas fa-image mr-2"></i>Upload Image</span>
                             <input id="file" type="file" name="file[]" multiple style="display: none"/>
                         </label>
-                        <img class="showsimagegall" src="{{url('assets/images/ic_image_placeholder.png')}}" alt="">
+                        <div>
+                            <img class="showsimagegall" src="{{url('assets/images/ic_image_placeholder.png')}}" alt="">
+                        </div>
                         <div class="allimages">
                           <div id="imagePreview" class="privewcheck"></div>
                         </div>
