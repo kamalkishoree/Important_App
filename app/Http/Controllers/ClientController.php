@@ -16,6 +16,7 @@ use Illuminate\Support\Str;
 use App\Jobs\ProcessClientDatabase;
 use App\Model\Client;
 use App\Model\Cms;
+use App\Model\TaskProof;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Redis;
 use Session;
@@ -204,7 +205,15 @@ class ClientController extends Controller
     {
         
         
-        $validator = $this->updateValidator($request->all())->validate();
+       
+        // $validator = Validator::make($request->all(), [
+        //     'name' => ['required', 'string', 'max:255'],
+        //     'email' => ['required', 'string', 'email', 'max:255','unique:clients,id,'. $id],
+        //     'phone_number' => ['required'],
+        //     'database_name' => ['required','unique:clients,id,'. $id],
+        //     'database_password' => ['required'],
+        // ]);
+        //     dd($validator->fails());
         // if ($validator->fails()) {
         //     return redirect()->back()->withErrors($validator, 'update');
         // }
@@ -295,8 +304,8 @@ class ClientController extends Controller
         $preference = ClientPreference::where('client_id', Auth::user()->code)->first();
         $currencies = Currency::orderBy('iso_code')->get();
         $cms        = Cms::all('content');
-       
-        return view('customize')->with(['preference' => $preference, 'currencies' => $currencies,'cms'=>$cms]);
+        $task_proof = TaskProof::where('id',1)->first();
+        return view('customize')->with(['preference' => $preference, 'currencies' => $currencies,'cms'=>$cms,'taskproof' => $task_proof]);
     }
 
 
@@ -321,8 +330,29 @@ class ClientController extends Controller
 
     public function cmsSave(Request $request,$id)
     {
-       
         Cms::where('id',$id)->update(['content'=>$request->content]);
         return response()->json(true);
+    }
+
+    public function taskProof(Request $request)
+    {
+        
+        $check = TaskProof::where('id',1)->first();
+        
+        if(isset($check)){
+            $update                     = TaskProof::find(1);
+        }else{
+            $update                     = new TaskProof;
+        }
+            $update->image              = isset($request->image)? 1 : 0 ;
+            $update->image_requried     = isset($request->image_requried)? 1 : 0 ;
+            $update->signature          = isset($request->signature)? 1 : 0 ;
+            $update->signature_requried = isset($request->signature_requried)? 1 : 0 ;
+            $update->note               = isset($request->note)? 1 : 0 ;
+            $update->note_requried      = isset($request->note_requried)? 1 : 0 ;
+            $update->save();
+        
+            return redirect()->route('preference.show')->with('success', 'Preference updated successfully!');
+        
     }
 }

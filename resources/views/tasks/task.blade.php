@@ -99,7 +99,7 @@
     }
     </style>
 @endsection
-
+@include('modals.task-list')
 @section('content')
 <!-- Start Content-->
 <div class="container-fluid">
@@ -169,7 +169,7 @@
                                     <th>Create Time</th>
                                     <th>Due Time</th>
                                     <th>Tasks</th>
-                                    <th>Pricing Rule</th>
+                                    <th>Pricing</th>
                                     <th style="width: 85px;">Action</th>
                                 </tr>
                             </thead>
@@ -199,7 +199,7 @@
                                         <button class="showtasks" value="{{$task->id}}"><i class="fe-eye"></i></button>
                                     </td>
                                     <td>
-                                        basic rule
+                                        <button class="showtasks" value="{{$task->id}}"><i class="fe-credit-card"></i></button>
                                     </td>
 
                                     <td>
@@ -230,7 +230,7 @@
 
 
 </div>
-@include('Customer.customer-modal')
+
 
 @endsection
 

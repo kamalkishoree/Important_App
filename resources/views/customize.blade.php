@@ -39,7 +39,7 @@
                     </p>
                     <div class="row mb-2">
                         <div class="col-sm-12">
-                            <div class="radio radio-blue form-check-inline">
+                            <div class="radio radio-info form-check-inline">
                                 <input type="radio" id="light_theme" value="light" name="theme" {{ (isset($preference) && $preference->theme =="light")? "checked" : "" }}>
                                 <label for="light_theme"> Light theme </label>
                             </div>
@@ -223,6 +223,114 @@
                 </div>
             </div>
         </div>
+
+        <form method="POST" action="{{route('task.proof')}}">
+        @csrf
+        <div class="row">
+            <div class="col-xl-11 col-md-offset-1">
+                <div class="card-box">
+                    <h4 class="header-title mb-3">Task Completion Proofs</h4>
+                    
+                   
+                    <div>
+                        <div class="table-responsive">
+                            <table class="table table-borderless table-nowrap table-hover table-centered m-0">
+
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th>Type</th>
+                                        <th>Enable</th>
+                                        <th>Requried</th>
+                                        
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                   
+                                    <tr>
+                                        <td>
+                                            <h5 class="m-0 font-weight-normal">Image</h5>
+                                        </td>
+
+                                        <td>
+                                            <div class="custom-control custom-switch">
+                                                <input type="checkbox" class="custom-control-input event_type" id="customSwitch_1" name="image" {{isset($taskproof->image) && $taskproof->image == 1 ? 'checked':''}}>
+                                                <label class="custom-control-label" for="customSwitch_1"></label>
+                                            </div>
+                                        </td>
+
+                                        <td>
+                                            <div class="custom-control custom-switch">
+                                                <input type="checkbox" class="custom-control-input event_type" id="customSwitch_2" name="image_requried" {{isset($taskproof->image_requried) && $taskproof->image_requried == 1 ? 'checked':''}}>
+                                                <label class="custom-control-label" for="customSwitch_2"></label>
+                                            </div>
+                                        </td>
+
+                                        
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <h5 class="m-0 font-weight-normal">Signature</h5>
+                                        </td>
+
+                                        <td>
+                                            <div class="custom-control custom-switch">
+                                                <input type="checkbox" class="custom-control-input event_type" id="customSwitch_3" name="signature" {{isset($taskproof->signature) && $taskproof->signature == 1 ? 'checked':''}}>
+                                                <label class="custom-control-label" for="customSwitch_3"></label>
+                                            </div>
+                                        </td>
+
+                                        <td>
+                                            <div class="custom-control custom-switch">
+                                                <input type="checkbox" class="custom-control-input event_type" id="customSwitch_4" name="signature_requried" {{isset($taskproof->signature_requried) && $taskproof->signature_requried == 1 ? 'checked':''}}>
+                                                <label class="custom-control-label" for="customSwitch_4"></label>
+                                            </div>
+                                        </td>
+
+                                        
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <h5 class="m-0 font-weight-normal">Notes</h5>
+                                        </td>
+
+                                        <td>
+                                            <div class="custom-control custom-switch">
+                                                <input type="checkbox" class="custom-control-input event_type" id="customSwitch_5" name="note" {{isset($taskproof->note) && $taskproof->note == 1 ? 'checked':''}}>
+                                                <label class="custom-control-label" for="customSwitch_5"></label>
+                                            </div>
+                                        </td>
+
+                                        <td>
+                                            <div class="custom-control custom-switch">
+                                                <input type="checkbox" class="custom-control-input event_type" id="customSwitch_6" name="note_requried" {{isset($taskproof->note_requried) && $taskproof->note_requried == 1 ? 'checked':''}}>
+                                                <label class="custom-control-label" for="customSwitch_6"></label>
+                                            </div>
+                                        </td>
+
+                                        
+                                    </tr>
+                                   
+
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        
+                        
+                        
+                    </div>
+
+                    <div class="row mb-2 mt-2">
+                        <div class="col-md-2">
+                            <div class="form-group mb-0 text-center">
+                                <button class="btn btn-blue btn-block" type="submit"> Update </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form> 
     
 
     <!-- <form method="POST" action="{{route('preference', Auth::user()->code)}}">

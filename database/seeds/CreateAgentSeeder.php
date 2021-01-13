@@ -30,8 +30,8 @@ class CreateAgentSeeder extends Seeder
             array(
                 'id'               => 2,
                 'team_id'          => 2,
-                'name'             => 'Michael Schumacher',
-                'profile_picture'  => 'assets/client_00000051/agents5fedb209f1eea.jpeg/Ec9WxFN1qAgIGdU2lCcatJN5F8UuFMyQvvb4Byar.jpg',
+                'name'             => 'Sebastian Vettel',
+                'profile_picture'  => 'assets/client_00000051/agents5fedb446c1e33.jpg/cadu0HOMN8xyQc8NAuMhao5SNWgZgUohzrXwJqYA.jpg',
                 'type'             => 'Employee',
                 'vehicle_type_id'  => 3,
                 'make_model'       => '2021',

@@ -86,7 +86,7 @@ class AuthController extends BaseController
         }
 
         
-        $data = $agent = Agent::with('team', 'geoFence.geo')->where('phone_number', $request->phone_number)->first();
+        $data = $agent = Agent::with('team')->where('phone_number', $request->phone_number)->first();
 
         
         if (!$agent) {

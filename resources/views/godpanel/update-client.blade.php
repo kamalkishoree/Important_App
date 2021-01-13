@@ -45,7 +45,7 @@
                                     <div class="form-group">
                                         <label for="name" class="control-label">NAME</label>
                                         <input type="text" class="form-control" name="name" id="name"
-                                            value="{{ old('name', $client->name ?? '')}}" placeholder="John Doe">
+                                            value="{{ old('name', $client->name ?? '')}}" placeholder="John Doe" required>
                                         @if($errors->has('name'))
                                         <span class="text-danger" role="alert">
                                             <strong>{{ $errors->first('name') }}</strong>
@@ -58,7 +58,7 @@
                                         <label for="email" class="control-label">EMAIL</label>
                                         <input type="email" class="form-control" id="email" name="email"
                                             value="{{ old('email', $client->email ?? '')}}"
-                                            placeholder="Enter email address">
+                                            placeholder="Enter email address" required>
                                         @if($errors->has('email'))
                                         <span class="text-danger" role="alert">
                                             <strong>{{ $errors->first('email') }}</strong>
@@ -79,7 +79,7 @@
                                             <input type="text" class="form-control" name="phone_number"
                                                 id="phone_number"
                                                 value="{{ old('phone_number', $client->phone_number ?? '')}}"
-                                                placeholder="Enter mobile number">
+                                                placeholder="Enter mobile number" required>
                                         </div>
                                         @if($errors->has('phone_number'))
                                         <span class="text-danger" role="alert">
@@ -96,7 +96,7 @@
                                             value="{{ old('password', isset($client->confirm_password)?Crypt::decryptString($client->confirm_password) :'********')}}"
                                             placeholder="Enter password">
                                         @else
-                                        <input type="password" class="form-control" id="password" name="password" value="" placeholder="Enter password">
+                                        <input type="password" class="form-control" id="password" name="password" value="" placeholder="Enter password" required>
                                         @endif
                                         @if($errors->has('password'))
                                         <span class="text-danger" role="alert">
@@ -118,7 +118,7 @@
                                         @else
                                         <input type="text" class="form-control" name="database_name" id="database_name"
                                             value=""
-                                            placeholder="Please Enter One String Example:-'mydatabase'" >
+                                            placeholder="Please Enter One String Example:-'mydatabase'" required>
                                         @endif
                                         @if($errors->has('database_name'))
                                         <span class="text-danger" role="alert">
