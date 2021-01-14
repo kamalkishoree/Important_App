@@ -96,7 +96,7 @@
 .set-size {
   position: relative;
 }
-<<<<<<< HEAD
+
 .no-border-radius {
   border-radius: 0px!important;
 }
@@ -166,4 +166,18 @@
 .lite-box-brdr {
   border: 1px solid #ececec;
 }
-/* zz */
+
+@media (min-width: 576px){
+#task-modal-header .modal-dialog {
+    max-width: 600px!important;
+    margin: 1.75rem auto;
+}
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .map-wrapper .contant {
+    width: 90%;
+    height: 100px;
+    padding: 10px;
+  }
+}
