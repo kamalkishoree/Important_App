@@ -107,6 +107,7 @@ class TaskController extends Controller
         $taskcount = 0;
         $latitude  = [];
         $longitude = [];
+        $percentage = 0;
 
         // dd($request->all());
 
@@ -144,22 +145,36 @@ class TaskController extends Controller
             $cus_id = $request->ids;
             $customer = Customer::where('id', $request->ids)->first();
         }
+            $pricingRule = PricingRule::where('id',1)->first();
 
         $notification_time = isset($request->schedule_time) ? $request->schedule_time : Carbon::now()->toDateTimeString();
         $agent_id        = $request->allocation_type === 'm' ? $request->agent : null;
         $order = [
-            'customer_id'                => $cus_id,
-            'recipient_phone'            => $request->recipient_phone,
-            'Recipient_email'            => $request->recipient_email,
-            'task_description'           => $request->task_description,
-            'driver_id'                  => $agent_id,
-            'auto_alloction'             => $request->allocation_type,
-            'images_array'               => $last,
-            'order_type'                 => $request->task_type,
-            'order_time'                 => $notification_time,
-            'status'                     => $agent_id != null ? 'assigned' : 'unassigned',
-            'cash_to_be_collected'       => $request->cash_to_be_collected
+            'customer_id'                     => $cus_id,
+            'recipient_phone'                 => $request->recipient_phone,
+            'Recipient_email'                 => $request->recipient_email,
+            'task_description'                => $request->task_description,
+            'driver_id'                       => $agent_id,
+            'auto_alloction'                  => $request->allocation_type,
+            'images_array'                    => $last,
+            'order_type'                      => $request->task_type,
+            'order_time'                      => $notification_time,
+            'status'                          => $agent_id != null ? 'assigned' : 'unassigned',
+            'cash_to_be_collected'            => $request->cash_to_be_collected,
+            'base_price'                      => $pricingRule->base_price,
+            'base_duration'                   => $pricingRule->base_duration,
+            'base_distance'                   => $pricingRule->base_distance,
+            'base_waiting'                    => $pricingRule->base_waiting,
+            'duration_price'                  => $pricingRule->duration_price,
+            'waiting_price'                   => $pricingRule->waiting_price,
+            'distance_fee'                    => $pricingRule->distance_fee,
+            'cancel_fee'                      => $pricingRule->cancel_fee,
+            'agent_commission_percentage'     => $pricingRule->agent_commission_percentage,
+            'agent_commission_fixed'          => $pricingRule->agent_commission_fixed,
+            'freelancer_commission_percentage'=> $pricingRule->freelancer_commission_percentage,
+            'freelancer_commission_fixed'     => $pricingRule->freelancer_commission_fixed
         ];
+
         $orders = Order::create($order);
 
 
@@ -221,7 +236,35 @@ class TaskController extends Controller
             $dep_id = $task->id;
         }
 
-       // $this->GoogleDistanceMatrix($latitude,$longitude);
+        //accounting
+         $getdata = $this->GoogleDistanceMatrix($latitude,$longitude);
+    
+         $paid_duration = $getdata['duration'] - $pricingRule->base_duration;
+         $paid_distance = $getdata['distance'] - $pricingRule->base_distance;
+         $paid_duration = $paid_duration < 0 ? 0 : $paid_duration;
+         $paid_distance = $paid_distance < 0 ? 0 : $paid_distance;
+         $total         = $pricingRule->base_price + ($paid_distance * $pricingRule->distance_fee ) + ($paid_duration * $pricingRule->duration_price);
+
+         if(isset($agent_id)){
+             $agent_details = Agent::where('id',$agent_id)->first();
+                if($agent_details->type == 'Employee'){
+                    $percentage = $pricingRule->agent_commission_fixed + (($total / 100) * $pricingRule->agent_commission_percentage);
+    
+                    
+                }
+         }
+         $updateorder = [
+            'actual_time'        => $getdata['duration'],
+            'actual_distance'    => $getdata['distance'],
+            'order_cost'         => $total,
+            'driver_cost'        => $percentage,
+
+         ];
+         
+
+
+         Order::where('id',$orders->id)->update($updateorder);
+
 
         if (isset($request->allocation_type) && $request->allocation_type === 'a') {
             if (isset($request->team_tag)) {
@@ -754,14 +797,13 @@ class TaskController extends Controller
         $result = json_decode($response);
         curl_close($ch); // Close the connection
         $new =   $result;
-        
-        // print_r($result);
          array_push($value,$result->rows[0]->elements);
           $count++;
           $count1++;
           //dd($result);
 
       }
+      
         if(isset($value)){
             $totalDistance = 0;
             $totalDuration = 0;
@@ -770,11 +812,25 @@ class TaskController extends Controller
                 $totalDistance = $totalDistance + $item[0]->distance->value;
                 $totalDuration = $totalDuration + $item[0]->duration->value;
             }
+           
+           
+            if($client->distance_unit == 'metric'){
+                $send['distance'] = round($totalDistance/1000, 2);      //km
+            }else{
+                $send['distance'] = round($totalDistance/1609.34, 2);  //mile
+            }
+            // 
+            $newvalue = round($totalDuration/60, 2);
+            $whole = floor($newvalue); 
+            $fraction = $newvalue - $whole;
 
-            $send['distance'] = round($totalDistance/1000, 2);
-            $send['duration'] = round($totalDuration/60, 2);
+            if($fraction >= 0.60){
+                $send['duration'] = $whole + 1;
+            }else{
+                $send['duration'] = $whole;
+            } 
+            
         }
-        dd($send);
         return $send;        
 
     }
