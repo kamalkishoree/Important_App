@@ -39,17 +39,19 @@ class ActivityController extends BaseController
      */
     public function tasks(Request $request)
     {
-        $id    = Auth::user()->id;
-        $all = $request->all; 
-        $tasks = Task::where('task_status',1)->orWhere('task_status',2)->with([
-                'location','tasktype','order'=> function($o) use ($id,$all){
-                    if($all == 0){
-                        $o->where('driver_id',$id)->where('order_time',Carbon::today())->with('customer');
-                    }else{
-                        $o->where('driver_id',$id)->with('customer');
-                    }
-               
-                }])->get(['id','order_id','dependent_task_id','task_type_id','location_id','appointment_duration','task_status','allocation_type','created_at']);
+        $id     = Auth::user()->id;
+        $all    = $request->all; 
+        // $order = 
+        // print_r($order);
+        // die;
+        if($all == 1){
+            $orders = Order::whereDate('order_time',Carbon::today())->where('driver_id',$id)->pluck('id');
+        }else{
+            $orders = Order::whereDate('order_time','>=',Carbon::today())->where('driver_id',$id)->pluck('id');
+        }
+        
+        $tasks = Task::whereIn('order_id',$orders)->with(['location','tasktype','order.customer'])
+            ->get(['id','order_id','dependent_task_id','task_type_id','location_id','appointment_duration','task_status','allocation_type','created_at']);
 
 
                 return response()->json([
@@ -146,15 +148,14 @@ class ActivityController extends BaseController
 
         $id    = Auth::user()->id;
         $all   = $request->all; 
-        $tasks = Task::where('task_status',1)->orWhere('task_status',2)->with([
-                'location','tasktype','order'=> function($o) use ($id,$all){
-                    if($all == 0){
-                        $o->where('driver_id',$id)->where('order_time',Carbon::today())->with('customer');
-                    }else{
-                        $o->where('driver_id',$id)->with('customer');
-                    }
-               
-                }])->get(['id','order_id','dependent_task_id','task_type_id','location_id','appointment_duration','task_status','allocation_type','created_at']);
+        if($all == 1){
+            $orders = Order::whereDate('order_time',Carbon::today())->where('driver_id',$id)->pluck('id');
+        }else{
+            $orders = Order::whereDate('order_time','>=',Carbon::today())->where('driver_id',$id)->pluck('id');
+        }
+        
+        $tasks = Task::whereIn('order_id',$orders)->with(['location','tasktype','order.customer'])
+            ->get(['id','order_id','dependent_task_id','task_type_id','location_id','appointment_duration','task_status','allocation_type','created_at']);
         
         $agents     = Agent::where('id',$id)->with('team')->first();
         $taskProof = TaskProof::where('id',1)->first();

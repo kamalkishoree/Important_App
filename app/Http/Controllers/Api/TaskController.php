@@ -111,9 +111,9 @@ class TaskController extends BaseController
 
         $loc_id = $cus_id = $send_loc_id = 0;
 
-        $images = [];
-        $last = '';
-        $customer = [];
+        $images    = [];
+        $last      = '';
+        $customer  = [];
         $finalLocation = [];
         $taskcount = 0;
         $latitude  = [];
