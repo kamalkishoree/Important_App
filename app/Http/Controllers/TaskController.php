@@ -251,6 +251,8 @@ class TaskController extends Controller
                     $percentage = $pricingRule->agent_commission_fixed + (($total / 100) * $pricingRule->agent_commission_percentage);
     
                     
+                }else{
+                    $percentage = $pricingRule->freelancer_commission_percentage + (($total / 100) * $pricingRule->freelancer_commission_fixed);
                 }
          }
          $updateorder = [
@@ -605,7 +607,7 @@ class TaskController extends Controller
         } else {
 
             $getgeo = DriverGeo::where('geo_id', $geo)->with('agent')->get('driver_id');
-
+            
 
             //for ($i = 1; $i <= $try; $i++) {
                 foreach ($getgeo as $key =>  $geoitem) {
@@ -925,6 +927,7 @@ class TaskController extends Controller
         $validator = $this->validator($request->all())->validate();
         $loc_id = 0;
         $cus_id = 0;
+        $percentage = 0;
 
         $images = [];
         $last = '';
@@ -968,16 +971,37 @@ class TaskController extends Controller
             $assign = 'assigned';
         }
 
+        $pricingRule = PricingRule::where('id',1)->first();
+        $agent_id =  isset($request->allocation_type) && $request->allocation_type == 'm' ? $request->agent : null;
+        
+        if(isset($agent_id) && $task_id->driver_cost <= 0.00){
+           
+            $agent_details = Agent::where('id',$agent_id)->first();
+               if($agent_details->type == 'Employee'){
+                   $percentage = $pricingRule->agent_commission_fixed + (($task_id->order_cost / 100) * $pricingRule->agent_commission_percentage);
+   
+                   
+               }else{
+                   $percentage = $pricingRule->freelancer_commission_percentage + (($task_id->order_cost / 100) * $pricingRule->freelancer_commission_fixed);
+               }
+        }
+        if($task_id->driver_cost != 0.00){
+            $percentage = $task_id->driver_cost;
+        }
+        
+        
+
         $order = [
             'customer_id'                => $cus_id,
             'recipient_phone'            => $request->recipient_phone,
             'Recipient_email'            => $request->Recipient_email,
             'task_description'           => $request->task_description,
-            'driver_id'                  => isset($request->allocation_type) && $request->allocation_type == 'm' ? $request->agent : null,
+            'driver_id'                  => $agent_id,
             'order_type'                 => $request->task_type,
             'auto_alloction'             => $request->allocation_type,
             'cash_to_be_collected'       => $request->cash_to_be_collected,
             'status'                     => $assign,
+            'driver_cost'                => $percentage,
         ];
         $orders = Order::where('id', $id)->update($order);
         if ($last != '') {
@@ -1013,6 +1037,7 @@ class TaskController extends Controller
                 'location_id'                => $loc_id,
                 'allocation_type'            => $request->allocation_type,
                 'dependent_task_id'          => $dep_id,
+                'task_status'                => isset($agent_id) ? 1 : 0
             ];
             $task = Task::create($data);
             $dep_id = $task->id;

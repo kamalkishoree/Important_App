@@ -22,17 +22,54 @@ use Illuminate\Support\Facades\Storage;
 use App\Jobs\RosterCreate;
 use App\Model\AllocationRule;
 use App\Model\DriverGeo;
+use App\Model\PricingRule;
 
 class TaskController extends BaseController
 {
 
     public function updateTaskStatus(Request $request)
     {
+        $header = $request->header();
+        $client_code = Client::where('database_name',$header['client'][0])->first('code');
+        $proof_image = '';
+        $proof_signature = '';
         $note = '';
         if (isset($request->note)) {
             $note = $request->note;
         } else {
             $note = '';
+        }
+
+        if(isset($request->image)){
+
+            if ($request->hasFile('image')) {
+                $folder = str_pad($client_code->code, 8, '0', STR_PAD_LEFT);
+                $folder = 'client_'.$folder;
+                $file = $request->file('image');
+                $file_name = uniqid() .'.'.  $file->getClientOriginalExtension();
+                $s3filePath = '/assets/'.$folder.'/orders' . $file_name;
+                $path = Storage::disk('s3')->put($s3filePath, $file,'public');
+                $proof_image = $path;
+            }
+
+        }else{
+            $proof_image = null;
+        }
+
+        if(isset($request->signature)){
+
+            if ($request->hasFile('signature')) {
+                $folder = str_pad($client_code->code, 8, '0', STR_PAD_LEFT);
+                $folder = 'client_'.$folder;
+                $file = $request->file('signature');
+                $file_name = uniqid() .'.'.  $file->getClientOriginalExtension();
+                $s3filePath = '/assets/'.$folder.'/orders' . $file_name;
+                $path = Storage::disk('s3')->put($s3filePath, $file,'public');
+                $proof_signature = $path;
+            }
+
+        }else{
+            $proof_signature = null;
         }
 
 
@@ -42,12 +79,13 @@ class TaskController extends BaseController
         $inProgress = $orderAll->where('task_status', 2);
         $lasttask   = count($orderAll->where('task_status', 3));
         $check      = $allCount - $lasttask;
-        if ($request->task_id == 3) {
+        if ($request->task_status == 3) {
+           
             if ($check == 1) {
-                $Order  = Order::where('id', $orderId)->update(['status' => $request->task_status, 'note' => $note]);
+                $Order  = Order::where('id',$orderId->order_id)->update(['status' => $request->task_status, 'note' => $note ,'proof_image' => $proof_image,'proof_signature' => $proof_signature ]);
             }
         } else {
-            $Order  = Order::where('id', $orderId)->update(['status' => $request->task_status, 'note' => $note]);
+            $Order  = Order::where('id',$orderId->order_id)->update(['status' => $request->task_status, 'note' => $note]);
         }
 
         $task = Task::where('id', $request->task_id)->update(['task_status' => $request->task_status]);
@@ -66,6 +104,8 @@ class TaskController extends BaseController
 
     public function TaskUpdateReject(Request $request)
     {
+       
+        $percentage = 0;
         //die($request->order_id);
         $check = Order::where('id', $request->order_id)->first();
         if (!isset($check)) {
@@ -78,9 +118,32 @@ class TaskController extends BaseController
                 'message' => 'Order Already Assigned',
             ], 404);
         }
-        if ($request->status == 1) {
 
-            Order::where('id', $request->order_id)->update(['driver_id' => $request->driver_id, 'status' => 'assigned']);
+        
+        
+
+        if ($request->status == 1) {
+                        $task_id = Order::where('id',$request->order_id)->first();
+                        $pricingRule = PricingRule::where('id',1)->first();
+                        $agent_id =  isset($request->allocation_type) && $request->allocation_type == 'm' ? $request->agent : null;
+                    
+                    if(isset($agent_id) && $task_id->driver_cost <= 0.00){
+                    
+                        $agent_details = Agent::where('id',$agent_id)->first();
+                        if($agent_details->type == 'Employee'){
+                            $percentage = $pricingRule->agent_commission_fixed + (($task_id->order_cost / 100) * $pricingRule->agent_commission_percentage);
+            
+                            
+                        }else{
+                            $percentage = $pricingRule->freelancer_commission_percentage + (($task_id->order_cost / 100) * $pricingRule->freelancer_commission_fixed);
+                        }
+                    }
+                    if($task_id->driver_cost != 0.00){
+                        $percentage = $task_id->driver_cost;
+                    }
+
+
+            Order::where('id', $request->order_id)->update(['driver_id' => $request->driver_id, 'status' => 'assigned','driver_cost'=> $percentage]);
             Task::where('order_id',$request->order_id)->update(['task_status' => 1]);
             return response()->json([
                 'data' => 'Task Accecpted Successfully',

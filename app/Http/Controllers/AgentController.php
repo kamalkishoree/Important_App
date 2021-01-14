@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Model\Agent;
+use App\Model\DriverGeo;
 use App\Model\Otp;
 use App\Model\Team;
 use App\Model\TagsForAgent;
@@ -253,6 +254,7 @@ class AgentController extends Controller
      */
     public function destroy($id)
     {
+        DriverGeo::where('driver_id',$id)->delete();  // i have to fix it latter
         Agent::where('id',$id)->delete();
         return redirect()->back()->with('success', 'Agent deleted successfully!');
     }

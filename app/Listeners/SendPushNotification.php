@@ -110,7 +110,7 @@ class SendPushNotification
                 ->notification([
                     'title' => 'Pickup Request',
                     'body'  =>  'Check All Details For This Request In App',
-                    'sound' =>   'default',
+                    'sound' =>   'notification.mp3',
                 ])
                 ->send();
             }

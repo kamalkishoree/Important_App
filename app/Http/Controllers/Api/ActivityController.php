@@ -45,15 +45,15 @@ class ActivityController extends BaseController
         // print_r($order);
         // die;
         if($all == 1){
-            $orders = Order::whereDate('order_time',Carbon::today())->where('driver_id',$id)->pluck('id');
+            $orders = Order::whereDate('order_time',Carbon::today())->where('status','!=',4)->where('driver_id',$id)->pluck('id')->toArray();
         }else{
-            $orders = Order::whereDate('order_time','>=',Carbon::today())->where('driver_id',$id)->pluck('id');
+            $orders = Order::whereDate('order_time','>=',Carbon::today())->where('status','!=',4)->where('driver_id',$id)->pluck('id')->toArray();
         }
-        
-        $tasks = Task::whereIn('order_id',$orders)->with(['location','tasktype','order.customer'])
+       
+        $tasks = Task::whereIn('order_id',$orders)->where('task_status','!=',3)->orWhere('task_status',2)->with(['location','tasktype','order.customer'])
             ->get(['id','order_id','dependent_task_id','task_type_id','location_id','appointment_duration','task_status','allocation_type','created_at']);
 
-
+            
                 return response()->json([
                     'data' => $tasks,
                    ],200);
@@ -149,12 +149,12 @@ class ActivityController extends BaseController
         $id    = Auth::user()->id;
         $all   = $request->all; 
         if($all == 1){
-            $orders = Order::whereDate('order_time',Carbon::today())->where('driver_id',$id)->pluck('id');
+            $orders = Order::whereDate('order_time',Carbon::today())->where('status','!=',4)->where('driver_id',$id)->pluck('id')->toArray();
         }else{
-            $orders = Order::whereDate('order_time','>=',Carbon::today())->where('driver_id',$id)->pluck('id');
+            $orders = Order::whereDate('order_time','>=',Carbon::today())->where('status','!=',4)->where('driver_id',$id)->pluck('id')->toArray();
         }
         
-        $tasks = Task::whereIn('order_id',$orders)->with(['location','tasktype','order.customer'])
+        $tasks = Task::whereIn('order_id',$orders)->where('task_status','!=',3)->with(['location','tasktype','order.customer'])
             ->get(['id','order_id','dependent_task_id','task_type_id','location_id','appointment_duration','task_status','allocation_type','created_at']);
         
         $agents     = Agent::where('id',$id)->with('team')->first();
