@@ -35,6 +35,7 @@ class SendPushNotification
         //Log::info('message');
         
         $date =  Carbon::now()->toDateTimeString();
+        
         try {
            
                 $schemaName = 'royodelivery_db';
@@ -69,30 +70,28 @@ class SendPushNotification
 
     public function getData()
     {
-        $recipients       = [];
-        $updateStatus     = [];
-        $schemaName = 'royodelivery_db';
-        $date =  Carbon::now()->toDateTimeString();
-        $get =  DB::connection($schemaName)->table('rosters')->where('notification_time', '=', $date)->where('status',0)->leftJoin('roster_details', 'rosters.detail_id', '=', 'roster_details.unique_id')->get()->toArray();
         
-                DB::connection($schemaName)->table('rosters')->where('status',1)->delete();
-        if(isset($get)){
-            foreach($get as $item){
-                array_push($updateStatus,$item->id);
-                DB::connection($schemaName)->table('rosters')->where('id',$item->id)->update(['status'=>1]);
-            }
-            
+        $schemaName       = 'royodelivery_db';
+        $date             =  Carbon::now()->toDateTimeString();
+        $get              =  DB::connection($schemaName)->table('rosters')->where('notification_time', '<=', $date)->where('status',0)->leftJoin('roster_details', 'rosters.detail_id', '=', 'roster_details.unique_id')->select('rosters.*', 'roster_details.customer_name', 'roster_details.customer_phone_number',
+        'roster_details.short_name','roster_details.address','roster_details.lat','roster_details.long','roster_details.task_count')->get();
+        $newget           = $get->pluck('id');
+        
+        if(count($get) > 0){
+            // DB::connection($schemaName)->table('rosters')->whereIn('id',$newget)->update(['status'=>1]);
+            DB::connection($schemaName)->table('rosters')->whereIn('id',$newget)->delete();
             $this->sendnotification($get);
-        }else{
-            return;
-        }        
+        }
+        
+        return;
+               
+       
         
     }
 
     public function sendnotification($recipients)
     {
-        // print_r($recipients->toArray());
-        // die();
+        
         $array = json_decode(json_encode($recipients), true);
        
     
@@ -115,7 +114,8 @@ class SendPushNotification
                 ->send();
             }
         }
-        
+
+           sleep(5);
         // $this->getData();
        
        

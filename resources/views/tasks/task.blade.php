@@ -100,6 +100,7 @@
     </style>
 @endsection
 @include('modals.task-list')
+@include('modals.task-accounting')
 @section('content')
 <!-- Start Content-->
 <div class="container-fluid">
@@ -199,7 +200,7 @@
                                         <button class="showtasks" value="{{$task->id}}"><i class="fe-eye"></i></button>
                                     </td>
                                     <td>
-                                        <button class="showtasks" value="{{$task->id}}"><i class="fe-credit-card"></i></button>
+                                        <button class="showaccounting" value="{{$task->id}}"><i class="fe-credit-card"></i></button>
                                     </td>
 
                                     <td>
@@ -277,6 +278,7 @@ $(document).ready( function () {
             dataType: "json",
             data: {
             _token: CSRF_TOKEN,
+            status:status
             },
             success: function(data) {
                 
@@ -308,6 +310,46 @@ $(document).ready( function () {
                 });
 
                 $('#task-list-modal').modal('show');
+                 
+            }
+                            
+        });
+    });
+
+    $(document).on('click', '.showaccounting', function () {
+        // $('#task-accounting-modal').modal('show');
+        //   return;
+      var CSRF_TOKEN = $("input[name=_token]").val();
+      var tour_id = $(this).val();
+      var basic = window.location.origin;
+      var url = basic+"/tasks/list/"+tour_id;
+        $.ajax({
+            url: url,
+            type: 'post',
+            dataType: "json",
+            data: {
+            _token: CSRF_TOKEN,
+            },
+            success: function(data) {
+                
+                $("#base_price").val(data.base_price);
+                $("#base_duration").val(data.base_duration);
+                $("#base_distance").val(data.base_distance);
+                $("#base_waiting").val(data.base_waiting);
+                $("#duration_price").val(data.duration_price);
+                $("#waiting_price").val(data.waiting_price);
+                $("#distance_fee").val(data.distance_fee);
+                $("#cancel_fee").val(data.cancel_fee);
+                $("#agent_commission_percentage").val(data.agent_commission_percentage);
+                $("#agent_commission_fixed").val(data.agent_commission_fixed);
+                $("#freelancer_commission_percentage").val(data.freelancer_commission_percentage);
+                $("#freelancer_commission_fixed").val(data.freelancer_commission_fixed);
+                $("#actual_time").val(data.actual_time);
+                $("#actual_distance").val(data.actual_distance);
+                $("#order_cost").val(data.order_cost);
+                $("#driver_cost").val(data.driver_cost);
+
+                $('#task-accounting-modal').modal('show');
                  
             }
                             

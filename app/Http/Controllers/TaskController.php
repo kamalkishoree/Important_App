@@ -147,6 +147,8 @@ class TaskController extends Controller
         }
             $pricingRule = PricingRule::where('id',1)->first();
 
+        //order save
+
         $notification_time = isset($request->schedule_time) ? $request->schedule_time : Carbon::now()->toDateTimeString();
         $agent_id        = $request->allocation_type === 'm' ? $request->agent : null;
         $order = [
@@ -177,6 +179,7 @@ class TaskController extends Controller
 
         $orders = Order::create($order);
 
+        //task save
 
         $dep_id = null;
         foreach ($request->task_type_id as $key => $value) {
@@ -236,7 +239,7 @@ class TaskController extends Controller
             $dep_id = $task->id;
         }
 
-        //accounting
+        //accounting for task duration distanse 
          $getdata = $this->GoogleDistanceMatrix($latitude,$longitude);
     
          $paid_duration = $getdata['duration'] - $pricingRule->base_duration;
@@ -276,6 +279,7 @@ class TaskController extends Controller
                 $orders->drivertags()->sync($request->agent_tag);
             }
         }
+        //this function is called when allocation type is Accept/Reject it find the current task location belongs to which geo fence
         $geo = null;
         if ($request->allocation_type === 'a') {
             $geo = $this->createRoster($send_loc_id);
@@ -283,21 +287,26 @@ class TaskController extends Controller
             $agent_id = null;
         }
 
+        //this is roster create accounding to the allocation methed
+
         if ($request->allocation_type === 'a' || $request->allocation_type === 'm') {
             $allocation = AllocationRule::where('id', 1)->first();
             switch ($allocation->auto_assign_logic) {
                 case 'one_by_one':
-
+                    //this is called when allocation type is one by one
                     $this->finalRoster($geo, $notification_time, $agent_id, $orders->id, $customer, $finalLocation, $taskcount, $allocation);
                     break;
                 case 'send_to_all':
+                    //this is called when allocation type is send to all
                     $this->SendToAll($geo, $notification_time, $agent_id, $orders->id, $customer, $finalLocation, $taskcount, $allocation);
                     break;
                 case 'round_robin':
-                    $this->finalRoster($geo, $notification_time, $agent_id, $orders->id, $customer, $finalLocation, $taskcount, $allocation);
+                    //this is called when allocation type is round robin
+                    $this->SendToAll($geo, $notification_time, $agent_id, $orders->id, $customer, $finalLocation, $taskcount, $allocation);
                     break;
                 default:
-                    $this->batchWise($geo, $notification_time, $agent_id, $orders->id, $customer, $finalLocation, $taskcount, $allocation);
+                    //this is called when allocation type is batch wise 
+                    $this->SendToAll($geo, $notification_time, $agent_id, $orders->id, $customer, $finalLocation, $taskcount, $allocation);
             }
         }
 
@@ -305,6 +314,7 @@ class TaskController extends Controller
 
         return redirect()->route('tasks.index')->with('success', 'Task Added Successfully!');
     }
+
 
 
     public function createRoster($send_loc_id)
@@ -441,6 +451,7 @@ class TaskController extends Controller
             $dummyentry = [];
             $all        = [];
             $extra      = [];
+            $remening   = [];
             $getgeo = DriverGeo::where('geo_id', $geo)->with('agent')->get('driver_id');
 
             $totalcount = $getgeo->count();
@@ -492,6 +503,7 @@ class TaskController extends Controller
                     }
 
                     if ($allcation_type == 'N' && count($all) > 0) {
+                        Order::where('id',$orders_id)->update(['driver_id'=>$geoitem->driver_id]);
 
                         break;
                     }
@@ -532,6 +544,11 @@ class TaskController extends Controller
                         ->addSeconds($expriedate)
                         ->format('Y-m-d H:i:s');
                     array_push($all, $data);
+                    if ($allcation_type == 'N' && count($all) > 0) {
+                        Order::where('id',$orders_id)->update(['driver_id'=>$remening[$i]['id']]);
+
+                        break;
+                    }
                 }
             }
 
@@ -578,7 +595,7 @@ class TaskController extends Controller
         $extraData = [
             'customer_name'            => $customer->name,
             'customer_phone_number'    => $customer->phone_number,
-            'short_name'                => $finalLocation->short_name,
+            'short_name'               => $finalLocation->short_name,
             'address'                  => $finalLocation->address,
             'lat'                      => $finalLocation->latitude,
             'long'                     => $finalLocation->longitude,
@@ -627,7 +644,7 @@ class TaskController extends Controller
                      ];
                     array_push($data, $datas);
                     if ($allcation_type == 'N') {
-
+                        Order::where('id',$orders_id)->update(['driver_id'=>$geoitem->driver_id]);
                         break;
                     }
                 }
@@ -637,8 +654,9 @@ class TaskController extends Controller
             //         break;
             //     }
             // }
-            $this->dispatchNow(new RosterCreate($data, $extraData));
+            $this->dispatch(new RosterCreate($data, $extraData));
             return $task = Roster::create($data[0]);
+            die('hello');
         }
     }
 
@@ -688,7 +706,7 @@ class TaskController extends Controller
                 'device_token'        => $oneagent->device_token,
                 'detail_id'           => $randem,
             ];
-            $this->dispatchNow(new RosterCreate($data, $extraData));
+            $this->dispatch(new RosterCreate($data, $extraData));
             return $task = Roster::create($data);
         } else {
 
@@ -728,7 +746,7 @@ class TaskController extends Controller
                     break;
                 }
             }
-            $this->dispatchNow(new RosterCreate($data, $extraData));
+            $this->dispatch(new RosterCreate($data, $extraData));
             return $task = Roster::create($data[0]);
         }
     }
@@ -1100,8 +1118,11 @@ class TaskController extends Controller
 
     public function tasklist($id)
     {
-        $task = Order::where('id', $id)->with('task.location')->get();
-        return response()->json($task);
+        
+            $task = Order::where('id', $id)->with('task.location')->first();
+            return response()->json($task);
+        
+        
 
         # code...
     }
