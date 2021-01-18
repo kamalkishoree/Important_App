@@ -48,7 +48,6 @@
                                     <th>Name</th>
                                     <th>Email</th>
                                     <th>Phone</th>
-                                    <th>DB Path</th>
                                     <th>Database Name</th>
                                     <th>Client Code</th>
                                     <th style="width: 85px;">Action</th>
@@ -66,9 +65,6 @@
                                     </td>
                                     <td>
                                         {{$client->phone_number}}
-                                    </td>
-                                    <td>
-                                        {{$client->database_path}}
                                     </td>
                                     <td>
                                         {{$client->database_name}}

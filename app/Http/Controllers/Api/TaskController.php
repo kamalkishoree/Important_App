@@ -145,6 +145,7 @@ class TaskController extends BaseController
 
             Order::where('id', $request->order_id)->update(['driver_id' => $request->driver_id, 'status' => 'assigned','driver_cost'=> $percentage]);
             Task::where('order_id',$request->order_id)->update(['task_status' => 1]);
+            
             return response()->json([
                 'data' => 'Task Accecpted Successfully',
             ], 200);
