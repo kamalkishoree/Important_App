@@ -31,7 +31,6 @@ class AddFieldsInOrdersTable extends Migration
             $table->decimal('order_cost',6,2)->nullable();
             $table->decimal('driver_cost',6,2)->nullable();
 
-            
         });
     }
 

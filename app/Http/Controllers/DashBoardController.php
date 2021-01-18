@@ -26,14 +26,17 @@ class DashBoardController extends Controller
         
         $teams  = Team::with([
             'agents.order'=> function($o) use ($date){
-                $o->whereDate('created_at',$date)->with('customer')->with('task.location');
+                $o->whereDate('order_time',$date)->with('customer')->with('task.location');
             }]
             )->get()->toArray();
             
         $unassigned = Agent::where('team_id',null)->with(['order'=> function($o) use ($date){
-            $o->whereDate('created_at',$date)->with('customer')->with('task.location');
+            $o->whereDate('order_time',$date)->with('customer')->with('task.location');
         }])->get()->toArray();
+         
+       // $unassignedTask = Order::where('order_time',$date)->with('task.location')->get();
         
+       // dd($teams);
             
         $newmarker = [];
         foreach ($teams as $key => $team) {

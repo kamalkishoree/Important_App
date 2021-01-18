@@ -422,7 +422,7 @@ $color = ['one','two','three','four','five','six','seven','eight']
                                 <div class="row mt-2">
                                     <div class="col-md-9">
                                         <h6><img class="mr-2"
-                                                src="{{ asset('assets/icons/unassigned.png') }}"></span>Unassigned
+                                                src="{{ asset('assets/newicons/red.png') }}"></span>Unassigned
                                         </h6>
                                     </div>
                                     <div class="col-md-3 text-right">
@@ -436,7 +436,7 @@ $color = ['one','two','three','four','five','six','seven','eight']
                                 <div class="row mt-2">
                                     <div class="col-md-9">
                                         <h6><img class="mr-2"
-                                                src="{{ asset('assets/icons/assigned.png') }}"></span>Assigned
+                                                src="{{ asset('assets/newicons/orange.png') }}"></span>Assigned
                                         </h6>
                                     </div>
                                     <div class="col-md-3 text-right">
@@ -451,7 +451,7 @@ $color = ['one','two','three','four','five','six','seven','eight']
                                 <div class="row mt-2">
                                     <div class="col-md-9">
                                         <h6><img class="mr-2"
-                                                src="{{ asset('assets/icons/completed.png') }}"></span>Completed
+                                                src="{{ asset('assets/newicons/green.png') }}"></span>Completed
                                         </h6>
                                     </div>
                                     <div class="col-md-3 text-right">
@@ -465,7 +465,7 @@ $color = ['one','two','three','four','five','six','seven','eight']
                                 <div class="row mt-2">
                                     <div class="col-md-9">
                                         <h6><img class="mr-2"
-                                                src="{{ asset('assets/icons/failed.png') }}"></span>Failed
+                                                src="{{ asset('assets/newicons/grey.png') }}"></span>Failed
                                         </h6>
                                     </div>
                                     <div class="col-md-3 text-right">
@@ -755,24 +755,27 @@ for (let i = 0; i < olddata.length; i++) {
     // addMarker({ lat: checkdata[3], lng: checkdata[4] });
     if ($.inArray(checkdata[5], taskval) != -1 || $.inArray('all', taskval) != -1) {
 
-        
+        var urlnewcreate = '';
+       if(checkdata[5] == 0){
+         urlnewcreate = 'unassigned';
+       }else if(checkdata[5] == 1 || checkdata[5] == 2){
+         urlnewcreate = 'assigned';
+       }else if(checkdata[5] == 3){
+         urlnewcreate = 'complate';
+       }else{
+         urlnewcreate = 'faild';
+       }
        
-
-        switch (checkdata[5]) {
-            
-            case 1:
-                image = '{{ asset('assets/icons/assigned.png') }}';
-                break;
-            case 0:
-                image = '{{ asset('assets/icons/unassigned.png') }}';
-                break;
-            case 2:
-                image = '{{ asset('assets/icons/completed.png') }}';
-                break;
-            case 3:
-                image = '{{ asset('assets/icons/failed.png') }}';
-                break;
+        if(checkdata[6] == 1){
+            urlnewcreate += '_P.png';
+        }else if(checkdata == 2){
+            urlnewcreate +='_D.png';
+        }else{
+            urlnewcreate +='_A.png';
         }
+        
+        image = '{{ asset('assets/newicons/') }}'+'/'+urlnewcreate;
+
         send = null;
         type = 1;
         addMarker({lat: checkdata[3],lng: checkdata[4]}, send,image,checkdata,type);
