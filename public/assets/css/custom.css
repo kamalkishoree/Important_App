@@ -181,3 +181,7 @@
     padding: 10px;
   }
 }
+
+.modal{
+  overflow:scroll !important;
+}

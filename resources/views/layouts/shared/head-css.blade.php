@@ -1,4 +1,5 @@
 @yield('css')
+<link rel="shortcut icon" href="{{asset('assets/images/favicon.ico')}}">
 @php $theme = \App\Model\ClientPreference::where(['id' => 1])->first('theme');@endphp
 
 <!-- icons -->

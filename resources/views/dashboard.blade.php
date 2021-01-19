@@ -413,7 +413,7 @@ $color = ['one','two','three','four','five','six','seven','eight']
                                     <div class="col-md-3 text-right">
                                         <label class="mt-2">
                                             <input class="taskchecks" type="checkbox" name="taskstatus[]"
-                                                value="all">
+                                                value="-1">
                                             <span class="checkmark"></span>
                                         </label>
                                     </div>
@@ -713,21 +713,38 @@ $(".agentdisplay").prop('checked', false);
 for (let i = 0; i < olddata.length; i++) {
     checkdata = olddata[i];
     var info = []
+    //alert(val);
     // addMarker({ lat: checkdata[3], lng: checkdata[4] });
-    if ($.inArray(checkdata[0], val) != -1 || $.inArray(-1, val) != -1) {
-        if (checkdata[6] == 1) {
-            send = "P";
-        } else if (checkdata[6] == 2) {
-            send = "D";
-        } else {
-            send = "A";
-        }
-        img = null;
+    if ($.inArray(checkdata['team_id'], val) != -1 || $.inArray(-1, val) != -1) {
+        
+        var urlnewcreate = '';
+            if(checkdata['task_status'] == 0){
+                urlnewcreate = 'unassigned';
+            }else if(checkdata['task_status'] == 1 || checkdata['task_status'] == 2){
+                urlnewcreate = 'assigned';
+            }else if(checkdata['task_status'] == 3){
+                urlnewcreate = 'complete';
+            }else{
+                urlnewcreate = 'faild';
+            }
+            
+            if(checkdata['task_type_id'] == 1){
+                    urlnewcreate += '_P.png';
+            }else if(checkdata['task_type_id'] == 2){
+                    urlnewcreate +='_D.png';
+            }else{
+                    urlnewcreate +='_A.png';
+            }    
+        
+        image = '{{ asset('assets/newicons/') }}'+'/'+urlnewcreate;
+
+        send = null;
         type = 1;
+
         addMarker({
-            lat: checkdata[3],
-            lng: checkdata[4]
-        }, send, img,checkdata,type);
+            lat: checkdata['latitude'],
+            lng: checkdata['longitude']
+        }, send, image,checkdata,type);
     }
 }
 
@@ -742,6 +759,7 @@ $('.taskchecks:checkbox:checked').each(function(i) {
 
 });
 
+
 setMapOnAll(null);
 $(".newchecks").prop('checked', false);
 $(".agentdisplay").prop('checked', false); 
@@ -753,32 +771,32 @@ for (let i = 0; i < olddata.length; i++) {
     checkdata = olddata[i];
     //console.log(checkdata[5]);
     // addMarker({ lat: checkdata[3], lng: checkdata[4] });
-    if ($.inArray(checkdata[5], taskval) != -1 || $.inArray('all', taskval) != -1) {
-
+    if ($.inArray(checkdata['task_status'], taskval) != -1 || $.inArray(-1, taskval) != -1) {
+        //alert('hello');
         var urlnewcreate = '';
-       if(checkdata[5] == 0){
-         urlnewcreate = 'unassigned';
-       }else if(checkdata[5] == 1 || checkdata[5] == 2){
-         urlnewcreate = 'assigned';
-       }else if(checkdata[5] == 3){
-         urlnewcreate = 'complate';
-       }else{
-         urlnewcreate = 'faild';
-       }
-       
-        if(checkdata[6] == 1){
-            urlnewcreate += '_P.png';
-        }else if(checkdata == 2){
-            urlnewcreate +='_D.png';
+        if(checkdata['task_status'] == 0){
+            urlnewcreate = 'unassigned';
+        }else if(checkdata['task_status'] == 1 || checkdata['task_status'] == 2){
+            urlnewcreate = 'assigned';
+        }else if(checkdata['task_status'] == 3){
+            urlnewcreate = 'complete';
         }else{
-            urlnewcreate +='_A.png';
+            urlnewcreate = 'faild';
         }
         
-        image = '{{ asset('assets/newicons/') }}'+'/'+urlnewcreate;
-
-        send = null;
-        type = 1;
-        addMarker({lat: checkdata[3],lng: checkdata[4]}, send,image,checkdata,type);
+            if(checkdata['task_type_id'] == 1){
+                urlnewcreate += '_P.png';
+            }else if(checkdata['task_type_id'] == 2){
+                urlnewcreate +='_D.png';
+            }else{
+                urlnewcreate +='_A.png';
+            }
+            
+            image = '{{ asset('assets/newicons/') }}'+'/'+urlnewcreate;
+           
+            send = null;
+            type = 1;
+        addMarker({lat:checkdata['latitude'],lng:checkdata['longitude']}, send,image,checkdata,type);
     }
 }
 
@@ -824,39 +842,53 @@ for (let i = 0; i < allagent.length; i++) {
 
 function initMap() {
 
-const haightAshbury = {
-    lat: 30.7046,
-    lng: 76.7179
-};
+    const haightAshbury = {
+        lat: 30.7046,
+        lng: 76.7179
+    };
 
-map = new google.maps.Map(document.getElementById("map_canvas"), {
-    zoom: 12,
-    center: haightAshbury,
-    mapTypeId: "roadmap",
-    styles: themeType,
-});
+    map = new google.maps.Map(document.getElementById("map_canvas"), {
+        zoom: 12,
+        center: haightAshbury,
+        mapTypeId: "roadmap",
+        styles: themeType,
+    });
 // This event listener will call addMarker() when the map is clicked.
 // map.addListener("click", (event) => {
 //   addMarker(event.latLng);
 // });
 // Adds a marker at the center of the map.
-for (let i = 0; i < olddata.length; i++) {
-    checkdata = olddata[i];
-   // console.log(checkdata);
-    if (checkdata[6] == 1) {
-        send = "P";
-    } else if (checkdata[6] == 2) {
-        send = "D";
-    } else {
-        send = "A";
+    for (let i = 0; i < olddata.length; i++) {
+        checkdata = olddata[i];
+    // console.log(checkdata);
+    var urlnewcreate = '';
+        if(checkdata['task_status'] == 0){
+            urlnewcreate = 'unassigned';
+        }else if(checkdata['task_status'] == 1 || checkdata['task_status'] == 2){
+            urlnewcreate = 'assigned';
+        }else if(checkdata['task_status'] == 3){
+            urlnewcreate = 'complete';
+        }else{
+            urlnewcreate = 'faild';
+        }
+        
+            if(checkdata['task_type_id'] == 1){
+                urlnewcreate += '_P.png';
+            }else if(checkdata['task_type_id'] == 2){
+                urlnewcreate +='_D.png';
+            }else{
+                urlnewcreate +='_A.png';
+            }
+            
+            img = '{{ asset('assets/newicons/') }}'+'/'+urlnewcreate;
+           
+            send = null;
+            type = 1;
+        addMarker({
+            lat: checkdata['latitude'],
+            lng: checkdata['longitude']
+        }, send, img,checkdata,type);
     }
-    img = null
-    type = 1;
-    addMarker({
-        lat: checkdata[3],
-        lng: checkdata[4]
-    }, send, img,checkdata,type);
-}
 }
 
 
@@ -868,12 +900,12 @@ if(type == 1){
     '<div id="content">' +
     '<div id="siteNotice">' +
     "</div>" +
-    '<h5 id="firstHeading" class="firstHeading">'+data[7]+'</h5>' +
-    '<h6 id="firstHeading" class="firstHeading">'+data[11]+'</h6>' +
+    '<h5 id="firstHeading" class="firstHeading">'+data['driver_name']+'</h5>' +
+    '<h6 id="firstHeading" class="firstHeading">'+data['task_type']+'</h6>' +
     '<div id="bodyContent">' +
-    "<p><b>Address :- </b> " +data[8]+ " " +
+    "<p><b>Address :- </b> " +data['address']+ " " +
     ".</p>" +
-    '<p><b>Customer: '+data[9]+'</b>('+data[10]+') </p>' +
+    '<p><b>Customer: '+data['customer_name']+'</b>('+data['customer_phone_number']+') </p>' +
     "</div>" +
     "</div>";
 }else{

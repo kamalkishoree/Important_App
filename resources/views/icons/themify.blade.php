@@ -1112,12 +1112,12 @@
                         <div class="col-sm-6 col-md-4 col-lg-3">
                             <i class="ti-themify-logo"></i> ti-themify-logo
                         </div>
-                        <div class="col-sm-6 col-md-4 col-lg-3">
+                        {{-- <div class="col-sm-6 col-md-4 col-lg-3">
                             <i class="ti-themify-favicon"></i> ti-themify-favicon
                         </div>
                         <div class="col-sm-6 col-md-4 col-lg-3">
                             <i class="ti-themify-favicon-alt"></i> ti-themify-favicon-alt
-                        </div>
+                        </div> --}}
 
                     </div>
                     <!-- End row -->

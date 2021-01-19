@@ -50,7 +50,7 @@ class ActivityController extends BaseController
             $orders = Order::whereDate('order_time','>=',Carbon::today())->where('status','!=',4)->where('driver_id',$id)->pluck('id')->toArray();
         }
        
-        $tasks = Task::whereIn('order_id',$orders)->where('task_status','!=',3)->orWhere('task_status',2)->with(['location','tasktype','order.customer'])
+        $tasks = Task::whereIn('order_id',$orders)->where('task_status','!=',3)->orWhere('task_status',2)->with(['location','tasktype','order.customer'])->orderBy('id', 'DESC')
             ->get(['id','order_id','dependent_task_id','task_type_id','location_id','appointment_duration','task_status','allocation_type','created_at']);
 
             
@@ -154,7 +154,7 @@ class ActivityController extends BaseController
             $orders = Order::whereDate('order_time','>=',Carbon::today())->where('status','!=',4)->where('driver_id',$id)->pluck('id')->toArray();
         }
         
-        $tasks = Task::whereIn('order_id',$orders)->where('task_status','!=',3)->with(['location','tasktype','order.customer'])
+        $tasks = Task::whereIn('order_id',$orders)->where('task_status','!=',3)->with(['location','tasktype','order.customer'])->orderBy('id','DESC')
             ->get(['id','order_id','dependent_task_id','task_type_id','location_id','appointment_duration','task_status','allocation_type','created_at']);
         
         $agents     = Agent::where('id',$id)->with('team')->first();

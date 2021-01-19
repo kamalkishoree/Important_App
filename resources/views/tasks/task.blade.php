@@ -97,10 +97,18 @@
         width: 89%;
         display: inline-block;
     }
+    .content-page {
+    margin-left: 240px;
+
+    padding: 0 15px 65px 15px;
+    min-height: 80vh;
+    margin-top: 70px;
+    height: 98vh;
+    overflow-y: scroll !important;
+    }
     </style>
 @endsection
-@include('modals.task-list')
-@include('modals.task-accounting')
+
 @section('content')
 <!-- Start Content-->
 <div class="container-fluid">
@@ -232,18 +240,16 @@
 
 </div>
 
-
+@include('modals.task-list')
+@include('modals.task-accounting')
 @endsection
 
 @section('script')
 
-<!-- Plugins js-->
-{{-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB85kLYYOmuAhBUPd7odVmL6gnQsSGWU-4&libraries=places" async defer></script> --}}
+
 <script src="{{asset('assets/libs/select2/select2.min.js')}}"></script>
 <script src="{{asset('assets/libs/bootstrap-select/bootstrap-select.min.js')}}"></script>
-<!-- Page js-->
-{{-- <script src="{{asset('assets/js/pages/form-advanced.init.js')}}"></script>
-<script src="{{asset('assets/js/pages/form-pickers.init.js')}}"></script> --}}
+
 
 <script src="{{asset('assets/js/storeAgent.js')}}"></script>
 
@@ -253,6 +259,7 @@
 <!-- Page js-->
 <script src="{{asset('assets/js/pages/form-fileuploads.init.js')}}"></script>
 <script src="{{asset('assets/libs/datatables/datatables.min.js')}}"></script>
+
 
 
 <script>
@@ -281,17 +288,17 @@ $(document).ready( function () {
             status:status
             },
             success: function(data) {
-                
+                console.log(data.task);
                 // console.log(data[0].task);
                  //abc = $('#removedata').html('');
                 //console.log(abc);
                 // $('#removedata').hide();
                 $('.repet').remove();
                 var taskname = '';
-                $.each(data, function(index, elem){
-                  $.each(elem.task,function(indexs, tasks){
-                      console.log(tasks.location);
-                    switch (tasks.task_type_id) {
+                $.each(data.task, function(index, elem){
+                  
+                      
+                    switch (elem.task_type_id) {
                         case 1:
                               taskname = 'Pickup task';
                             break;
@@ -304,8 +311,8 @@ $(document).ready( function () {
                     }
                     var date = new Date(elem.order_time);
                     var options = { hour12: true };
-                    $(document).find('.allin').before('<div class="repet"><div class="task-card p-3"><div class="p-2 assigned-block"><h5>'+taskname+'</h5><div class="wd-10"><img class="vt-top" src="{{ asset('demo/images/ic_location_blue_1.png') }}"></div><div class="wd-90"><h6>'+tasks.location.address+'</h6><span>'+tasks.location.short_name+'</span><h5 class="mb-1"><span></span></h5><div class="row"><div class="col-md-6"></div><div class="col-md-6 text-right"><button class="assigned-btn">'+elem.status+'</button></div></div></div></div></div></div>');
-                  });
+                    $(document).find('.allin').before('<div class="repet"><div class="task-card p-3"><div class="p-2 assigned-block"><h5>'+taskname+'</h5><div class="wd-10"><img class="vt-top" src="{{ asset('demo/images/ic_location_blue_1.png') }}"></div><div class="wd-90"><h6>'+elem.location.address+'</h6><span>'+elem.location.short_name+'</span><h5 class="mb-1"><span></span></h5><div class="row"><div class="col-md-6"></div><div class="col-md-6 text-right"><button class="assigned-btn">'+data.status+'</button></div></div></div></div></div></div>');
+                  
                          
                 });
 

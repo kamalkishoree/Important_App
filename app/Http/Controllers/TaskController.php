@@ -656,7 +656,7 @@ class TaskController extends Controller
             // }
             $this->dispatch(new RosterCreate($data, $extraData));
             return $task = Roster::create($data[0]);
-            die('hello');
+            //die('hello');
         }
     }
 
