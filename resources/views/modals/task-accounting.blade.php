@@ -2,7 +2,6 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title">Accounting Details</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
             </div>
             <form id="add_customer" action="" method="">
@@ -16,30 +15,7 @@
                                 <h4 class="header-title mb-3"></h4>
                                 
                                 <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group" id="">
-                                            {!! Form::label('title', 'Base Price',['class' => 'control-label']) !!}
-                                            {!! Form::text('base_price', null, ['class' => 'form-control','required' => 'required','id' => 'base_price']) !!}
-                                            <span class="invalid-feedback" role="alert">
-                                                <strong></strong>
-                                            </span>
-                    
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group" id="">
-                                            {!! Form::label('title', 'Base Duration',['class' => 'control-label']) !!}
-                                            {!! Form::text('base_duration', null, ['class' => 'form-control','required' => 'required','id' => 'base_duration']) !!}
-                                            <span class="invalid-feedback" role="alert">
-                                                <strong></strong>
-                                            </span>
-                    
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-md-6">
+                                    <div class="col-md-3">
                                         <div class="form-group" id="">
                                             {!! Form::label('title', 'Base Distance',['class' => 'control-label']) !!}
                                             {!! Form::text('base_distance', null, ['class' => 'form-control','required' => 'required','id' => 'base_distance']) !!}
@@ -49,10 +25,99 @@
                     
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
+
+                                    <div class="col-md-3">
                                         <div class="form-group" id="">
-                                            {!! Form::label('title', 'Base Waiting',['class' => 'control-label']) !!}
-                                            {!! Form::text('base_waiting', null, ['class' => 'form-control','required' => 'required','id' => 'base_waiting']) !!}
+                                            {!! Form::label('title', 'Actual Distance',['class' => 'control-label']) !!}
+                                            {!! Form::text('actual_distance', null, ['class' => 'form-control','id' => 'actual_distance']) !!}
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong></strong>
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-3">
+                                        <div class="form-group" id="">
+                                            {!! Form::label('title', 'Billing Distance',['class' => 'control-label']) !!}
+                                            {!! Form::text('billing_distance', null, ['class' => 'form-control','required' => 'required','id' => 'billing_distance']) !!}
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong></strong>
+                                            </span>
+                    
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-3">
+                                        <div class="form-group" id="">
+                                            {!! Form::label('title', 'Distance Cost',['class' => 'control-label']) !!}
+                                            {!! Form::text('distance_cost', null, ['class' => 'form-control','required' => 'required','id' => 'distance_cost']) !!}
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong></strong>
+                                            </span>
+                    
+                                        </div>
+                                    </div>
+
+                                    {{-- <div class="col-md-3">
+                                        <div class="form-group" id="">
+                                            {!! Form::label('title', 'Actual Distance',['class' => 'control-label']) !!}
+                                            {!! Form::text('actual_distance', null, ['class' => 'form-control','id' => 'actual_distance']) !!}
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong></strong>
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-3">
+                                        <div class="form-group" id="">
+                                            {!! Form::label('title', 'Actual Distance',['class' => 'control-label']) !!}
+                                            {!! Form::text('actual_distance', null, ['class' => 'form-control','id' => 'actual_distance']) !!}
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong></strong>
+                                            </span>
+                                        </div>
+                                    </div> --}}
+                                    
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="form-group" id="">
+                                            {!! Form::label('title', 'Base Duration',['class' => 'control-label']) !!}
+                                            {!! Form::text('base_duration', null, ['class' => 'form-control','required' => 'required','id' => 'base_duration']) !!}
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong></strong>
+                                            </span>
+                    
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-3">
+                                        <div class="form-group" id="">
+                                            {!! Form::label('title', 'Actual Duration',['class' => 'control-label']) !!}
+                                            {!! Form::text('actual_duration', null, ['class' => 'form-control','required' => 'required','id' => 'actual_duration']) !!}
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong></strong>
+                                            </span>
+                    
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-3">
+                                        <div class="form-group" id="">
+                                            {!! Form::label('title', 'Billing Duration',['class' => 'control-label']) !!}
+                                            {!! Form::text('billing_duration', null, ['class' => 'form-control','required' => 'required','id' => 'billing_duration']) !!}
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong></strong>
+                                            </span>
+                    
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-md-3">
+                                        <div class="form-group" id="">
+                                            {!! Form::label('title', 'Duration Cost',['class' => 'control-label']) !!}
+                                            {!! Form::text('duration_cost', null, ['class' => 'form-control','required' => 'required','id' => 'duration_cost']) !!}
                                             <span class="invalid-feedback" role="alert">
                                                 <strong></strong>
                                             </span>

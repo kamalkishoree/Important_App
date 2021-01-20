@@ -355,7 +355,9 @@ $(document).ready( function () {
                 $("#actual_distance").val(data.actual_distance);
                 $("#order_cost").val(data.order_cost);
                 $("#driver_cost").val(data.driver_cost);
-
+                $("#billing_distance").val(data.actual_distance - data.base_distance);
+                var sendDistance = (data.actual_distance - data.base_distance) * data.distance_fee;
+                $("#distance_cost").val(round(sendDistance,2));
                 $('#task-accounting-modal').modal('show');
                  
             }
@@ -363,7 +365,24 @@ $(document).ready( function () {
         });
     });
         
+            function round(value, exp) {
+        if (typeof exp === 'undefined' || +exp === 0)
+            return Math.round(value);
 
+        value = +value;
+        exp = +exp;
+
+        if (isNaN(value) || !(typeof exp === 'number' && exp % 1 === 0))
+            return NaN;
+
+        // Shift
+        value = value.toString().split('e');
+        value = Math.round(+(value[0] + 'e' + (value[1] ? (+value[1] + exp) : exp)));
+
+        // Shift back
+        value = value.toString().split('e');
+        return +(value[0] + 'e' + (value[1] ? (+value[1] - exp) : -exp));
+        }
 
 
 

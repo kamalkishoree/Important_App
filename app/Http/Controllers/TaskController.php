@@ -655,7 +655,10 @@ class TaskController extends Controller
             //     }
             // }
             $this->dispatch(new RosterCreate($data, $extraData));
-            return $task = Roster::create($data[0]);
+            if(isset($data[0])){
+                return $task = Roster::create($data[0]);
+            }
+            
             //die('hello');
         }
     }
@@ -820,7 +823,7 @@ class TaskController extends Controller
          array_push($value,$result->rows[0]->elements);
           $count++;
           $count1++;
-          //dd($result);
+          
 
       }
       
@@ -851,6 +854,8 @@ class TaskController extends Controller
             } 
             
         }
+        // print_r($send);
+        // die();
         return $send;        
 
     }

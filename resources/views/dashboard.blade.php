@@ -124,7 +124,8 @@ min-height: auto !important
 
 @endsection
 @php
-$color = ['one','two','three','four','five','six','seven','eight']
+$color = ['one','two','three','four','five','six','seven','eight'];
+
 @endphp
 @section('content')
 
@@ -148,7 +149,7 @@ $color = ['one','two','three','four','five','six','seven','eight']
                                         </div>
                                         <div class="col-md-8 col-lg-9 col-xl-10 col-10">
                                             <h6 class="header-title">Unassigned</h6>
-                                            <p class="mb-0">{{count($unassigned)}} Agents : <span>1 Busy ・ 1 Inactive</span></p>
+                                            <p class="mb-0">{{isset($unassigned[0]['agent_count'])?$unassigned[0]['agent_count']:''}} Agents : <span>{{isset($unassigned[0]['offline_agents'])?$unassigned[0]['offline_agents']:''}} Offline ・ {{isset($unassigned[0]['online_agents'])?$unassigned[0]['online_agents']:''}} Online</span></p>
                                         </div>
                                     </div>
                                 </div>
@@ -162,6 +163,7 @@ $color = ['one','two','three','four','five','six','seven','eight']
                         <div class="card-body">
                               
                             @foreach ($unassigned as $agent)
+                             
                                 <div id="accordion-{{ $agent['id'] }}">
                                     <div class="card">
                                         <div class="card-header profile-status ml-2" id="by{{ $agent['id'] }}">
@@ -178,7 +180,7 @@ $color = ['one','two','three','four','five','six','seven','eight']
                                                             </div>
                                                             <div class="col-md-8 col-lg-9 col-xl-10">
                                                                 <h6 class="mb-0 header-title scnd">{{ $agent['name'] }}</h6>
-                                                                <p class="mb-0">{{count($agent['order'])>0?'Busy ・':'Free ・'}} <span>2 Tasks</span></p>
+                                                                <p class="mb-0">{{$agent['free'].' '}} <span>{{$agent['agent_task_count']}} Tasks</span></p>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -188,8 +190,9 @@ $color = ['one','two','three','four','five','six','seven','eight']
                                         <div id="collapse{{ $agent['id'] }}" class="collapse"
                                             data-parent="#accordion-{{ $agent['id'] }}"
                                             aria-labelledby="by{{ $agent['id'] }}">
-                                            @foreach ($agent['order'] as $orders)
-                                                @foreach ($orders['task'] as $tasks)
+                                           
+                                            @foreach($agent['order'] as $orders)
+                                                @foreach($orders['task'] as $tasks)
                                                     <div class="card-body">
                                                         <div class="pt-3 pl-3 pr-3 assigned-block mb-1">
                                                             <div class="wd-10">
@@ -200,13 +203,13 @@ $color = ['one','two','three','four','five','six','seven','eight']
                                                                 <h6>{{ $tasks['location']['address'] }}</h6>
                                                                 <span>{{ $tasks['location']['short_name'] }}</span>
                                                                 <h5 class="mb-1"><span>Due</span>
-                                                                    06:30 pm
+                                                                    {{date('h:i a ', strtotime($tasks->created_at))}}
                                                                 </h5>
                                                                 <div class="row">
                                                                     <div class="col-md-6">
-                                                                        <a class="view-task-details"
+                                                                        {{-- <a class="view-task-details"
                                                                             href="">View Task
-                                                                            Details</a>
+                                                                            Details</a> --}}
                                                                     </div>
                                                                     <div class="col-md-6 text-right">
                                                                         <button
@@ -242,7 +245,7 @@ $color = ['one','two','three','four','five','six','seven','eight']
                                         </div>
                                         <div class="col-md-9 col-xl-10 col-10">
                                             <h6 class="header-title">{{ $item['name'] }}</h6>
-                                            <p class="mb-0">{{count($item['agents'])}} Agents : <span>1 Busy ・ 1 Inactive</span></p>
+                                            <p class="mb-0">{{count($item['agents'])}} Agents : <span>{{$item['online_agents']}} Online ・ {{$item['offline_agents']}} Offline</span></p>
                                         </div>
                                     </div>
                                 </div>
@@ -272,7 +275,7 @@ $color = ['one','two','three','four','five','six','seven','eight']
                                                         </div>
                                                         <div class="col-md-10 col-10">
                                                             <h6 class="mb-0 header-title scnd">{{ $agent['name'] }}</h6>
-                                                            <p class="mb-0">{{count($agent['order'])>0?'Busy  ':'Free  '}}<span>{{count($agent['order'])}} Tasks</span></p>
+                                                            <p class="mb-0">{{count($agent['order'])>0?'Busy  ':'Free  '}}<span>{{$agent['agent_task_count']}} Tasks</span></p>
                                                         </div>
                                                     </div>
                                                 </a>
@@ -292,7 +295,7 @@ $color = ['one','two','three','four','five','six','seven','eight']
                                                                 <h6>{{ $tasks['location']['address'] }}</h6>
                                                                 <span>{{ $tasks['location']['short_name'] }}</span>
                                                                 <h5 class="mb-1"><span>Due</span>
-                                                                    06:30 pm
+                                                                    {{date('h:i a ', strtotime($tasks->created_at))}}
                                                                     <button
                                                                             class="assigned-btn float-right">Assigned</button>
                                                                 </h5>
@@ -413,7 +416,7 @@ $color = ['one','two','three','four','five','six','seven','eight']
                                     <div class="col-md-3 text-right">
                                         <label class="mt-2">
                                             <input class="taskchecks" type="checkbox" name="taskstatus[]"
-                                                value="-1">
+                                                value="5">
                                             <span class="checkmark"></span>
                                         </label>
                                     </div>
@@ -755,7 +758,7 @@ for (let i = 0; i < olddata.length; i++) {
 $('.taskchecks').click(function() {
 var taskval = [];
 $('.taskchecks:checkbox:checked').each(function(i) {
-    taskval[i] = $(this).val();
+    taskval[i] = parseInt($(this).val());
 
 });
 
@@ -769,10 +772,12 @@ $(".agentdisplay").prop('checked', false);
 //   }
 for (let i = 0; i < olddata.length; i++) {
     checkdata = olddata[i];
+    console.log(checkdata);
     //console.log(checkdata[5]);
     // addMarker({ lat: checkdata[3], lng: checkdata[4] });
-    if ($.inArray(checkdata['task_status'], taskval) != -1 || $.inArray(-1, taskval) != -1) {
-        //alert('hello');
+    //alert(checkdata['task_status']);
+    if($.inArray(checkdata['task_status'], taskval) !== -1 || $.inArray(5, taskval) != -1) {
+        
         var urlnewcreate = '';
         if(checkdata['task_status'] == 0){
             urlnewcreate = 'unassigned';
@@ -793,7 +798,7 @@ for (let i = 0; i < olddata.length; i++) {
             }
             
             image = '{{ asset('assets/newicons/') }}'+'/'+urlnewcreate;
-           
+            
             send = null;
             type = 1;
         addMarker({lat:checkdata['latitude'],lng:checkdata['longitude']}, send,image,checkdata,type);
@@ -801,8 +806,8 @@ for (let i = 0; i < olddata.length; i++) {
 }
 
 
-
 });
+
 
 $('.agentdisplay').click(function() {
 var agentval = [];
@@ -823,11 +828,18 @@ for (let i = 0; i < allagent.length; i++) {
     //console.log(checkdata);
     // addMarker({ lat: checkdata[3], lng: checkdata[4] });
     if ($.inArray(checkdata['is_available'], agentval) != -1 || $.inArray(2, agentval) != -1) {
+        
         if (checkdata['is_available'] == 1) {
-            image = url+'/demo/images/online1.png';
+            images = url+'/demo/images/blue_ripple.gif';
         }else {
-            image = url+'/demo/images/offline1.png';
+            images = url+'/demo/images/grey_ripple.gif';
         }
+        var image = {
+         url: images, // url
+         scaledSize: new google.maps.Size(50, 50), // scaled size
+         origin: new google.maps.Point(0,0), // origin
+         anchor: new google.maps.Point(0, 0) // anchor
+        };
         send = null;
         type = 2;
        addMarker({lat: parseFloat(checkdata.agentlog['lat']),lng:  parseFloat(checkdata.agentlog['long'])}, send, image,checkdata,type);

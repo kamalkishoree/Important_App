@@ -24,28 +24,91 @@ class DashBoardController extends Controller
             $date = \Carbon\Carbon::today();
         }
         
+        //left side bar list for display all teams
+
         $teams  = Team::with([
             'agents.order'=> function($o) use ($date){
                 $o->whereDate('order_time',$date)->with('customer')->with('task.location');
             }]
-            )->get()->toArray();
+            )->get();
             
+            foreach($teams as $team){
+                $online  = 0;
+                $offline = 0;
+                $count   = 0;
+                foreach($team->agents as $agent ){
+                    $agent_task_count = 0;
+                    foreach($agent->order as $tasks){
+                
+                        $agent_task_count = $agent_task_count + count($tasks->task);
+                    }
+                      if($agent->is_available == 1){
+                        $online++;
+                      }else{
+                        $offline++;
+                      }
+                      $count++;
+                      $agent['free'] = count($agent->order) > 0 ? 'Busy':'Free';
+                      $agent['agent_task_count'] = $agent_task_count;
+                }
+
+                $team['online_agents']  = $online;
+                $team['offline_agents'] = $offline;
+                $agent['agent_count']   = $count;
+                
+                
+            }
+            
+           
+        //left side bar list for display unassigned team
         $unassigned = Agent::where('team_id',null)->with(['order'=> function($o) use ($date){
             $o->whereDate('order_time',$date)->with('customer')->with('task.location');
-        }])->get()->toArray();
+        }])->get();
+
+        $online  = 0;
+        $offline = 0;
+        $count   = 0;
+
+        foreach($unassigned as $agent){
+            
+            $agent_task_count = 0;
+            foreach($agent->order as $tasks){
+                
+                $agent_task_count = $agent_task_count + count($tasks->task);
+            }
+          
+            if($agent->is_available == 1){
+                $online++;
+            }else{
+                $offline++;
+            }
+            $count++;
+            
+            $agent['free'] = count($agent->order) > 0 ? 'Busy':'Free';
+            $agent['online_agents']    = $online;
+            $agent['offline_agents']   = $offline;
+            $agent['agent_count']      = $count;
+            $agent['agent_task_count'] = $agent_task_count;
+            
+            
+        }
+        
+       
+       
+
          
        $allTasks = Order::whereDate('order_time',$date)->with(['customer','task.location','agent.team'])->get();
        
        $newmarker = [];
-
+        //create array for map marker
        foreach($allTasks as $key => $tasks){
            $append = [];
            foreach($tasks->task as $task){
                
-            if($tasks['task_type_id'] == 1){
+            if($task->task_type_id == 1){
                 $name = 'Pickup';
-            }elseif($tasks['task_type_id'] == 2){
-                $name = 'Drop';
+            }elseif($task->task_type_id == 2){
+                $name = 'DropOff';
             }else{
                 $name = 'Appointment';
             }
@@ -56,136 +119,28 @@ class DashBoardController extends Controller
             $append['address']               = $task->location->address;
             $append['task_type_id']          = $task->task_type_id;
             $append['task_status']           = (int)$task->task_status;
-           }
-            
             $append['team_id']               = isset($tasks->driver_id)? $tasks->agent->team_id:0;
             $append['driver_name']           = isset($tasks->driver_id)? $tasks->agent->name:'';
             $append['customer_name']         = $tasks->customer->name;
             $append['customer_phone_number'] = $tasks->customer->phone_number;
-            
+
             array_push($newmarker,$append);
+
+           }    
+            
+            
        }
+        
+    
+       $unassigned->toArray();
+       $teams->toArray();
        
-
-        
-    //   // dd($unassignedTask);
-            
-    //     $newmarker = [];
-    //     foreach ($teams as $key => $team) {
-    //         $append = [];
-    //         $append[0] = $team['id'];
-    //         $busycounter = 0;
-    //         $inactivecounter = 0;
-    //         foreach ($team['agents'] as $key => $agent) {
-    //             // dd($agent);
-    //             if(count($agent['order']) >0){
-    //                 $busycounter++;
-    //             }
-    //             if($agent['is_available'] == 0){
-    //                 $inactivecounter++;
-    //             }
-                
-    //             $append[1] = $agent['id'];
-    //             foreach ($agent['order'] as $key => $orders) {
-    //                 foreach ($orders['task'] as $key => $tasks) {
-    //                     if($tasks['task_type_id'] == 1){
-    //                         $name = 'Pickup';
-    //                     }elseif($tasks['task_type_id'] == 2){
-    //                         $name = 'Drop';
-    //                     }else{
-    //                         $name = 'Appointment';
-    //                     }
-    //                     $append[2]  = $tasks['id']; 
-    //                     $append[3]  = floatval($tasks['location']['latitude']);
-    //                     $append[4]  = floatval($tasks['location']['longitude']);
-    //                     $append[5]  = (int)$tasks['task_status'];
-    //                     $append[6]  = $tasks['task_type_id'];
-    //                     $append[7]  = $agent['name'];
-    //                     $append[8]  = $tasks['location']['address'];
-    //                     $append[9]  = $orders['customer']['name'];
-    //                     $append[10] = $orders['customer']['phone_number'];
-    //                     $append[11] = $name;
-    //                     array_push($newmarker,$append);
-    //                 }
-    //             }
-                
-    //         }
-    //         // $team['busycount']     = $busycounter;
-    //         // $team['inactivecount'] = $inactivecounter;
-            
-    //     }
-
-        
-        
-           
-    //     foreach ($unassigned as $key => $agent) {
-    //             $append = [];
-    //             $append[0] = 0; //team id
-    //             $append[1] = $agent['id'];
-    //             foreach ($agent['order'] as $key => $orders) {
-    //                 foreach ($orders['task'] as $key => $tasks) {
-
-    //                     if($tasks['task_type_id'] == 1){
-    //                         $name = 'Pickup';
-    //                     }elseif($tasks['task_type_id'] == 2){
-    //                         $name = 'Drop';
-    //                     }else{
-    //                         $name = 'Appointment';
-    //                     }
-
-    //                     $append[2]  = $tasks['id']; 
-    //                     $append[3]  = floatval($tasks['location']['latitude']);
-    //                     $append[4]  = floatval($tasks['location']['longitude']);
-    //                     $append[5]  = (int)$tasks['task_status'];
-    //                     $append[6]  = $tasks['task_type_id'];
-    //                     $append[7]  = $agent['name'];
-    //                     $append[8]  = $tasks['location']['address'];
-    //                     $append[9]  = $orders['customer']['name'];
-    //                     $append[10] = $orders['customer']['phone_number'];
-    //                     $append[11] = $name;
-    //                     array_push($newmarker,$append);
-    //                 }
-    //             }
-                
-    //     }
-
-    //     foreach ($unassignedTask as $key => $orders) {
-    //         $append = [];
-    //         $append[0] = 0;   //team id
-    //         $append[1] = 0;   //agent id
-    //         foreach ($orders as $key => $order) {
-    //             foreach ($order['task'] as $key => $tasks) {
-
-    //                 if($tasks['task_type_id'] == 1){
-    //                     $name = 'Pickup';
-    //                 }elseif($tasks['task_type_id'] == 2){
-    //                     $name = 'Drop';
-    //                 }else{
-    //                     $name = 'Appointment';
-    //                 }
-
-    //                 $append[2]  = $tasks['id']; 
-    //                 $append[3]  = floatval($tasks['location']['latitude']);
-    //                 $append[4]  = floatval($tasks['location']['longitude']);
-    //                 $append[5]  = (int)$tasks['task_status'];
-    //                 $append[6]  = $tasks['task_type_id'];
-    //                 $append[7]  = $agent['name'];
-    //                 $append[8]  = $tasks['location']['address'];
-    //                 $append[9]  = $orders['customer']['name'];
-    //                 $append[10] = $orders['customer']['phone_number'];
-    //                 $append[11] = $name;
-    //                 array_push($newmarker,$append);
-    //             }
-    //         }
-            
-    //     }
-
-            
         
         $theme = \App\Model\ClientPreference::where(['id' => 1])->first('theme');
        
        
         $agents = Agent::with('agentlog')->get()->toArray();
+        
 
         return view('dashboard')->with(['teams' => $teams,'newmarker'=> $newmarker,'unassigned'=> $unassigned,'agents'=> $agents,'theme' => $theme]);
     }
