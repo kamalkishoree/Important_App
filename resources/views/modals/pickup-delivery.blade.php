@@ -15,8 +15,8 @@
                                 <div class="col-md-4">
                                     <div class="card-box border mb-1 p-1 rounded">
                                         <div class="radio radio-blue form-check-inline">
-                                            <input type="radio" id="pickup" value="pickup" name="radioInline" checked>
-                                            <label for="pickup">Pickup </label>
+                                            {{-- <input type="radio" id="pickup" value="pickup" name="radioInline" checked> --}}
+                                            {{-- <label for="pickup">Pickup </label> --}}
                                         </div>
                                     </div>
                                 </div>

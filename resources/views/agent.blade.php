@@ -98,6 +98,9 @@
                                         <th>Type</th>
                                         <th>Team</th>
                                         <th>Transport Type</th>
+                                        <th>Order Earning</th>
+                                        <th>Cash Collected</th>
+                                        <th>Final Balance</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
@@ -125,6 +128,15 @@
                                             </td>
                                             <td>
                                                 {{ $agent->vehicle_type_id }}
+                                            </td>
+                                            <td>
+                                                {{ 1000 }}
+                                            </td>
+                                            <td>
+                                                {{ 500 }}
+                                            </td>
+                                            <td>
+                                                {{ 500 }}
                                             </td>
                                             <!-- <td>
                                                                                             <span class="badge bg-soft-success text-success">Active</span>

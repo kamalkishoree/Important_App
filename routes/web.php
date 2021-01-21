@@ -24,6 +24,10 @@ use Illuminate\Support\Facades\Redirect;
 		// Route::get('/godpanel', function(){
 		// 	return redirect()->route('login');
 		// });
+		Route::get('/howto/signup', function(){
+			return view('How-to-SignUp-in-Royo-Dispatcher');
+		});
+		
 Route::group(['prefix' => '/godpanel'], function () {
 	Route::get('/', function(){
 		return view('godpanel/login');

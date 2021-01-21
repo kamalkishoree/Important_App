@@ -22,7 +22,10 @@ class AgentController extends Controller
      */
     public function index()
     {
+       
         $agents = Agent::orderBy('id', 'DESC')->get();
+        
+
         $tags  = TagsForAgent::all();
         $tag   = [];
         foreach ($tags as $key => $value) {
@@ -30,6 +33,8 @@ class AgentController extends Controller
         }
         $teams  = Team::where('client_id',auth()->user()->code)->orderBy('name')->get();
         $tags   = TagsForTeam::all();
+
+        
         //dd($teams->toArray());
         return view('agent.index')->with(['agents' => $agents,'teams'=>$teams, 'tags' => $tags, 'showTag' => implode(',', $tag)]);
     }

@@ -1124,7 +1124,14 @@ class TaskController extends Controller
     public function tasklist($id)
     {
         
-            $task = Order::where('id', $id)->with('task.location')->first();
+            $task = Order::where('id', $id)->with(['task.location'])->first();
+            $client = ClientPreference::where('id',1)->first();
+                $agent = Agent::where('id',$task->driver_id)->first();
+                $task['driver_type']   = isset($agent->type) ? $agent->type :'';
+                $task['distance_type'] = $client->distance_unit == 'metric' ? 'Km':'Mile';
+            
+            
+            
             return response()->json($task);
         
         

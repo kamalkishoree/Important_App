@@ -106,6 +106,12 @@
     height: 98vh;
     overflow-y: scroll !important;
     }
+    .dispaly-cards{
+        background-color: rgb(251 247 247) !important;
+         text-align: center;
+         padding: 5px !important;
+    }
+   
     </style>
 @endsection
 
@@ -208,7 +214,7 @@
                                         <button class="showtasks" value="{{$task->id}}"><i class="fe-eye"></i></button>
                                     </td>
                                     <td>
-                                        <button class="showaccounting" value="{{$task->id}}"><i class="fe-credit-card"></i></button>
+                                        <button class="showaccounting btn btn-primary-outline action-icon" value="{{$task->id}}">{{$task->order_cost}}</button>
                                     </td>
 
                                     <td>
@@ -329,6 +335,7 @@ $(document).ready( function () {
       var CSRF_TOKEN = $("input[name=_token]").val();
       var tour_id = $(this).val();
       var basic = window.location.origin;
+     
       var url = basic+"/tasks/list/"+tour_id;
         $.ajax({
             url: url,
@@ -338,26 +345,39 @@ $(document).ready( function () {
             _token: CSRF_TOKEN,
             },
             success: function(data) {
-                
-                $("#base_price").val(data.base_price);
-                $("#base_duration").val(data.base_duration);
-                $("#base_distance").val(data.base_distance);
+               
+                $("#base_distance").text(round(data.base_distance));
+                $("#actual_distance").text(data.actual_distance);
+                $("#billing_distance").text(round(data.actual_distance - data.base_distance,2));
+                var sendDistance = (data.actual_distance - data.base_distance) * data.distance_fee;
+                $("#distance_cost").text(round(sendDistance,2));
+
+                $("#base_duration").text(data.base_duration);
+                $("#actual_duration").text(data.actual_time);
+                $("#billing_duration").text(data.actual_time - data.base_duration);
+                var sendDuration = (data.actual_time - data.base_duration) * data.duration_price;
+                $("#duration_cost").text(sendDuration);
+
+                $("#base_price").text(data.base_price);
+                $("#duration_price").text(data.duration_price + ' (Per min)');
+                $("#distance_fee").text(data.distance_fee +' ('+data.distance_type + ')');
+                $("#driver_type").text(data.driver_type);
+
+                $("#order_cost").text(data.order_cost);
+                $("#driver_cost").text(data.driver_cost != 0.00 ? data.driver_cost :'Not assigned yet'); 
+
                 $("#base_waiting").val(data.base_waiting);
-                $("#duration_price").val(data.duration_price);
-                $("#waiting_price").val(data.waiting_price);
                 $("#distance_fee").val(data.distance_fee);
                 $("#cancel_fee").val(data.cancel_fee);
-                $("#agent_commission_percentage").val(data.agent_commission_percentage);
-                $("#agent_commission_fixed").val(data.agent_commission_fixed);
-                $("#freelancer_commission_percentage").val(data.freelancer_commission_percentage);
-                $("#freelancer_commission_fixed").val(data.freelancer_commission_fixed);
-                $("#actual_time").val(data.actual_time);
-                $("#actual_distance").val(data.actual_distance);
-                $("#order_cost").val(data.order_cost);
-                $("#driver_cost").val(data.driver_cost);
-                $("#billing_distance").val(data.actual_distance - data.base_distance);
-                var sendDistance = (data.actual_distance - data.base_distance) * data.distance_fee;
-                $("#distance_cost").val(round(sendDistance,2));
+                $("#agent_commission_percentage").text(data.agent_commission_percentage);
+                $("#agent_commission_fixed").text(data.agent_commission_fixed);
+                $("#freelancer_commission_percentage").text(data.freelancer_commission_percentage);
+                $("#freelancer_commission_fixed").text(data.freelancer_commission_fixed);
+                
+               
+               
+               
+               
                 $('#task-accounting-modal').modal('show');
                  
             }
@@ -365,7 +385,7 @@ $(document).ready( function () {
         });
     });
         
-            function round(value, exp) {
+    function round(value, exp) {
         if (typeof exp === 'undefined' || +exp === 0)
             return Math.round(value);
 
@@ -382,7 +402,7 @@ $(document).ready( function () {
         // Shift back
         value = value.toString().split('e');
         return +(value[0] + 'e' + (value[1] ? (+value[1] - exp) : -exp));
-        }
+    }
 
 
 

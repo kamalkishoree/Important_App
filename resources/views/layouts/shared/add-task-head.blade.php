@@ -207,7 +207,7 @@
 {{-- <script src='https://cdn.rawgit.com/pguso/jquery-plugin-circliful/master/js/jquery.circliful.min.js'></script> --}}
 {{-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB85kLYYOmuAhBUPd7odVmL6gnQsSGWU-4&libraries=places"></script>  --}}
 <script defer
-        src="https://maps.googleapis.com/maps/api/js?key={{$key}}&libraries=places&v=weekly">
+        src="https://maps.googleapis.com/maps/api/js?key={{$key}}&libraries=places,drawing&v=weekly">
         </script>
 <script src="{{ asset('assets/libs/selectize/selectize.min.js') }}"></script>
 <script src="{{ asset('assets/libs/multiselect/multiselect.min.js') }}"></script>

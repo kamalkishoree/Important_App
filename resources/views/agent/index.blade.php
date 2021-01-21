@@ -83,6 +83,7 @@
                         </div>
                         <div class="col-sm-4 text-right">
                             <button type="button" class="btn btn-blue waves-effect waves-light openModal" data-toggle="modal" data-target="" data-backdrop="static" data-keyboard="false"><i class="mdi mdi-plus-circle mr-1"></i> Add {{ Session::get('agent_name') }}</button>
+                            <button type="button" class="btn btn-success waves-effect waves-light" data-toggle="modal" data-target="#pay-receive-modal" data-backdrop="static" data-keyboard="false">Pay / Receive</button>
                         </div>
 
                     </div>
@@ -97,6 +98,9 @@
                                     <th>Type</th>
                                     <th>Team</th>
                                     <th>Vehicle</th>
+                                    <th>Order Earning</th>
+                                    <th>Cash Collected</th>
+                                    <th>Final Balance</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -124,7 +128,15 @@
                                     </td>
                                     <td><img alt=""  style="width: 80px;" src="{{ asset('assets/icons/extra/'. $agent->vehicle_type_id.'.png') }}" ></td>
                                     <!-- <td><span class="badge bg-soft-success text-success">Active</span></td> -->
-
+                                    <td>
+                                        {{ $orders = $agent->order->sum('order_cost') }}
+                                    </td>
+                                    <td>
+                                        {{ $cash = $agent->order->sum('cash_to_be_collected') }}
+                                    </td>
+                                    <td>
+                                        {{ $cash - $orders }}
+                                    </td>
                                     <td>
                                         <div class="form-ul" style="width: 60px;">
                                             <div class="inner-div"> <a href1="{{ route('agent.edit', $agent->id) }}" class="action-icon editIcon" agentId="{{$agent->id}}"> <i class="mdi mdi-square-edit-outline"></i></a></div>
@@ -155,7 +167,7 @@
 </div>
 
 @include('agent.modals')  
-
+@include('modals.pay-receive')
 @endsection
 
 @section('script')

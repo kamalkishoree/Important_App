@@ -253,6 +253,16 @@
                                 </div>
 
                             </div>
+
+                            <div class="col-md-4">
+                                <div class="form-group mb-3">
+                                    <label for="maximum_radius">Maximum Cash At Hand Per Person</label>
+                                    <input type="text" name="maximum_cash_at_hand_per_person" id="maximum_radius" placeholder="3000"
+                                        class="form-control"
+                                        value="{{ isset($allocation) && $allocation->maximum_cash_at_hand_per_person != null ? $allocation->maximum_cash_at_hand_per_person : '' }}">
+                                </div>
+
+                            </div>
                             
                         </div>
 

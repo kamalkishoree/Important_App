@@ -502,7 +502,7 @@
                             </li>
                         </ul>
                     </div>
-                </li> 
+                </li> --}}
 
                <li class="menu-title mt-2">Components</li>
 
@@ -575,7 +575,7 @@
                     </div>
                 </li>
 
-                <li>
+              {{--  <li>
                     <a href="#sidebarExtendedui" data-toggle="collapse">
                         <i data-feather="layers"></i>
                         <span class="badge badge-info float-right">Hot</span>
