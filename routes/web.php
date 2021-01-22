@@ -77,6 +77,8 @@ Route::group(['prefix' => '/godpanel'], function () {
 	Route::get('options', 'ClientController@ShowOptions')->name('options');
 	// Route::resource('client','ClientController');
 	Route::resource('agent', 'AgentController');
+	Route::post('pay/receive','AgentController@payreceive')->name('pay.receive');
+	Route::get('agent/paydetails/{id}','AgentController@agentPayDetails')->name('agent.paydetails');
 	Route::resource('customer', 'CustomerController');
 	Route::get('changeStatus', 'CustomerController@changeStatus');
 	Route::resource('tag', 'TagController');

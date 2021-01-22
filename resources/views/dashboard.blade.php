@@ -830,9 +830,9 @@ for (let i = 0; i < allagent.length; i++) {
     if ($.inArray(checkdata['is_available'], agentval) != -1 || $.inArray(2, agentval) != -1) {
         
         if (checkdata['is_available'] == 1) {
-            images = url+'/demo/images/blue_ripple.gif';
+            images = url+'/demo/images/location.png';
         }else {
-            images = url+'/demo/images/grey_ripple.gif';
+            images = url+'/demo/images/location_grey.png';
         }
         var image = {
          url: images, // url

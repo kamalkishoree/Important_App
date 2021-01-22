@@ -50,6 +50,13 @@
     #ui-id-1 li, #ui-id-2 li{
         z-index: 9999 ;
     }
+    .setmodal{
+        margin-left: 158px;
+    }
+    .dispaly-cards {
+        background-color: rgb(251 247 247) !important;
+        text-align: center;
+    }
         
 
     </style>
@@ -83,7 +90,7 @@
                         </div>
                         <div class="col-sm-4 text-right">
                             <button type="button" class="btn btn-blue waves-effect waves-light openModal" data-toggle="modal" data-target="" data-backdrop="static" data-keyboard="false"><i class="mdi mdi-plus-circle mr-1"></i> Add {{ Session::get('agent_name') }}</button>
-                            <button type="button" class="btn btn-success waves-effect waves-light" data-toggle="modal" data-target="#pay-receive-modal" data-backdrop="static" data-keyboard="false">Pay / Receive</button>
+                            <button type="button" class="btn btn-success waves-effect waves-light saveaccounting" data-toggle="modal" data-target="#pay-receive-modal" data-backdrop="static" data-keyboard="false">Pay / Receive</button>
                         </div>
 
                     </div>
@@ -190,5 +197,61 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/8.4.7/js/intlTelInput.js"></script>
     <script src="{{ asset('assets/js/jquery.tagsinput-revisited.js') }}"></script>
     <link rel="stylesheet" href="{{ asset('assets/css/jquery.tagsinput-revisited.css') }}" />
-@include('agent.pagescript')  
+@include('agent.pagescript')
+<script>
+     
+     $('#selectAgent').on('change',function (e) {
+        
+        var optionSelected = $("option:selected", this);
+        var valueSelected = this.value;
+        $.ajax({
+                type: 'get',
+                url: "{{ url('/agent/paydetails') }}/"+valueSelected,
+                data: '', 
+                success: function (data) {
+                    console.log(data);
+                    var order = round(data.order_cost,2);
+                    var cash = round(data.cash_to_be_collected,2);
+                    $("#order_earning").text(order);
+                    $("#cash_collected").text(cash);
+                    $("#final_balance").text(cash - order);
+                },
+        });
+        
+    });
+
+    function round(value, exp) {
+        if (typeof exp === 'undefined' || +exp === 0)
+            return Math.round(value);
+
+        value = +value;
+        exp = +exp;
+
+        if (isNaN(value) || !(typeof exp === 'number' && exp % 1 === 0))
+            return NaN;
+
+        // Shift
+        value = value.toString().split('e');
+        value = Math.round(+(value[0] + 'e' + (value[1] ? (+value[1] + exp) : exp)));
+
+        // Shift back
+        value = value.toString().split('e');
+        return +(value[0] + 'e' + (value[1] ? (+value[1] - exp) : -exp));
+    }
+
+    $("#submitpayreceive").submit(function(stay){
+        
+        var formdata = $(this).serialize(); 
+            $.ajax({
+                type: 'POST',
+                url: "{{ route('pay.receive') }}",
+                data: formdata, 
+                success: function (data) {
+                    $("#pay-receive-modal .close").click();
+                },
+            });
+            stay.preventDefault(); 
+    });
+
+</script>
 @endsection

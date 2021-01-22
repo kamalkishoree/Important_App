@@ -179,4 +179,44 @@
         utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/8.4.6/js/utils.js"
     });
 
+    /* Get agent by ajax */
+    $(".submitpayreceive").click(function (e) {  
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
+            }
+        });
+        e.preventDefault();
+       
+
+        $.ajax({
+            type: "post",
+            url: "",
+            data: '',
+            dataType: 'json',
+            success: function (data) {
+                $('#edit-agent-modal #editCardBox').html(data.html);
+                $('#edit-agent-modal').modal({
+                    backdrop: 'static',
+                    keyboard: false
+                });
+                makeTag();
+                //$('.dropify').dropify();
+                var imgs =  $('#profilePic').attr('showImg');
+
+                $('#profilePic').attr("data-default-file", imgs);
+                $('#profilePic').dropify();
+                $('').dropify();
+            },
+            error: function (data) {
+                console.log('data2');
+            }
+        });
+    });
+   
+    
+
+    
+   
+
 </script>

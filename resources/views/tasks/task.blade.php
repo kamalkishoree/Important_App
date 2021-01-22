@@ -110,6 +110,10 @@
         background-color: rgb(251 247 247) !important;
          text-align: center;
          padding: 5px !important;
+         
+    }
+    .setcolor{
+        color: blue !important;
     }
    
     </style>
@@ -214,7 +218,7 @@
                                         <button class="showtasks" value="{{$task->id}}"><i class="fe-eye"></i></button>
                                     </td>
                                     <td>
-                                        <button class="showaccounting btn btn-primary-outline action-icon" value="{{$task->id}}">{{$task->order_cost}}</button>
+                                        <button class="showaccounting btn btn-primary-outline action-icon setcolor" value="{{$task->id}}">{{$task->order_cost}}</button>
                                     </td>
 
                                     <td>

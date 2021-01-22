@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Model\Agent;
+use App\Model\AgentPayment;
 use App\Model\DriverGeo;
+use App\Model\Order;
 use App\Model\Otp;
 use App\Model\Team;
 use App\Model\TagsForAgent;
@@ -262,5 +264,40 @@ class AgentController extends Controller
         DriverGeo::where('driver_id',$id)->delete();  // i have to fix it latter
         Agent::where('id',$id)->delete();
         return redirect()->back()->with('success', 'Agent deleted successfully!');
+    }
+
+    public function payreceive(Request $request)
+    {
+        
+        $data = [
+            'driver_id' => $request->driver_id,
+            'dr' => $request->payment_type == 1 ? $request->amount:null,
+            'cr' => $request->payment_type == 2 ? $request->amount:null,
+        ];
+        
+        $agent = AgentPayment::create($data);
+
+        return response()->json(true);
+    }
+
+    public function agentPayDetails($id)
+    {
+        
+       $data = [];
+       $agent = Agent::where('id',$id)->first();
+       if(isset($agent)){
+        $cash  = $agent->order->sum('cash_to_be_collected');
+        $order = $agent->order->sum('order_cost');
+       }else{
+        $cash  = 0;
+        $order = 0;
+       }
+      
+       $data['cash_to_be_collected'] = $cash;
+       $data['order_cost']           = $order;
+       
+      
+       return response()->json($data);
+
     }
 }
