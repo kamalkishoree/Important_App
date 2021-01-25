@@ -15,7 +15,7 @@ class Agent extends Authenticatable
 	use Notifiable;
 
     protected $fillable = [
-        'team_id', 'name', 'profile_picture', 'type', 'vehicle_type_id', 'make_model', 'plate_number', 'phone_number', 'color', 'is_activated', 'is_available'
+        'team_id', 'name', 'profile_picture', 'type', 'vehicle_type_id', 'make_model', 'plate_number', 'phone_number', 'color', 'is_activated', 'is_available','cash_at_hand'
     ];
 
     protected $appends = ['image_url'];

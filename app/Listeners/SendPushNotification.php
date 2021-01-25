@@ -116,7 +116,7 @@ class SendPushNotification
         }
 
            sleep(5);
-        // $this->getData();
+        $this->getData();
        
        
     }
