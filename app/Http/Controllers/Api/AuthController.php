@@ -6,7 +6,7 @@ use App\Http\Controllers\Api\BaseController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
-use App\Model\{User, Agent, Client, ClientPreference, BlockedToken, Otp, TaskProof};
+use App\Model\{User, Agent, AllocationRule, Client, ClientPreference, BlockedToken, Otp, TaskProof};
 use Validation;
 use DB;
 use JWT\Token;
@@ -70,7 +70,7 @@ class AuthController extends BaseController
 
         ]);
 
-        $otp = Otp::where('phone', $request->phone_number)->where('opt', $request->otp)->first();
+        $otp = Otp::where('phone', $request->phone_number)->where('opt', $request->otp)->orderBy('id', 'DESC')->first();
 
         if(!$otp){
             return response()->json(['message' => 'Please enter a valid opt'], 422);
@@ -93,10 +93,13 @@ class AuthController extends BaseController
 	        return response()->json([
 	            'message' => 'User not found'], 404);
         }
-        
-	    $prefer = ClientPreference::select('theme', 'distance_unit', 'currency_id', 'language_id', 'agent_name', 'date_format', 'time_format', 'map_type','map_key_1')->first();
+
+        $prefer = ClientPreference::select('theme', 'distance_unit', 'currency_id', 'language_id', 'agent_name', 'date_format', 'time_format', 'map_type','map_key_1')->first();
+        $allcation = AllocationRule::first('request_expiry');
+        $prefer['alert_dismiss_time'] = (int)$allcation->request_expiry;
         $taskProof = TaskProof::where('id',1)->first();
         Auth::login($agent);
+        
         /*$tokenResult = $agent->createToken('Personal Access Token');
         $token = $tokenResult->token;
         $token->expires_at = Carbon::now()->addWeeks(1);

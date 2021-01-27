@@ -287,7 +287,7 @@ class TaskController extends Controller
 
             $agent_id = null;
         }
-
+        
         //this is roster create accounding to the allocation methed
 
         if ($request->allocation_type === 'a' || $request->allocation_type === 'm') {
@@ -397,7 +397,8 @@ class TaskController extends Controller
 
     public function finalRoster($geo, $notification_time, $agent_id, $orders_id, $customer, $finalLocation, $taskcount, $allocation)
     {
-        //dd($customer);
+        
+        
         // print($geo);
         // print($notification_time);
         // print($agent_id);
@@ -406,17 +407,19 @@ class TaskController extends Controller
         $allcation_type = 'AR';
         $date = \Carbon\Carbon::today();
         $auth = Client::where('code', Auth::user()->code)->with(['getAllocation', 'getPreference'])->first();
+       
         $expriedate = (int)$auth->getAllocation->request_expiry;
         $beforetime = (int)$auth->getAllocation->start_before_task_time;
         $maxsize    = (int)$auth->getAllocation->maximum_batch_size;
-        $type       = $auth->getAllocation->acknowledgement_type;
+        $type       = $auth->getPreference->acknowledgement_type;
         $try        = $auth->getAllocation->number_of_retries;
         $time       = $this->checkTimeDiffrence($notification_time, $beforetime);
         $randem     = rand(11111111, 99999999);
 
-        if ($type != 'acceptreject') {
+        if ($type !== 'acceptreject') {
             $allcation_type = 'N';
         }
+
         $extraData = [
             'customer_name'            => $customer->name,
             'customer_phone_number'    => $customer->phone_number,
@@ -445,16 +448,35 @@ class TaskController extends Controller
                 'detail_id'           => $randem,
             ];
 
-            $this->dispatchNow(new RosterCreate($data, $extraData));
-            return $task = Roster::create($data);
+            $this->dispatch(new RosterCreate($data, $extraData));
+            
         } else {
+
+           
+            
+            
+           
+            
+            
+            $unit              = $auth->getPreference->distance_unit;
+            $try               = $auth->getAllocation->number_of_retries;
+            $cash_at_hand      = $auth->getAllocation->maximum_cash_at_hand_per_person;
+            $max_redius        = $auth->getAllocation->maximum_radius;
+            $max_task          = $auth->getAllocation->maximum_batch_size;
+            
 
             $dummyentry = [];
             $all        = [];
             $extra      = [];
             $remening   = [];
-            $getgeo = DriverGeo::where('geo_id', $geo)->with('agent')->get('driver_id');
-
+            
+            $getgeo = DriverGeo::where('geo_id', $geo)->with([
+                'agent'=> function($o) use ($cash_at_hand,$date){
+                    $o->where('cash_at_hand','<',$cash_at_hand)->orderBy('id','DESC')->with(['logs','order'=> function($f) use ($date){
+                        $f->whereDate('order_time',$date)->with('task');
+                    }]);
+                }])->get();
+           
             $totalcount = $getgeo->count();
             $orders = order::where('driver_id', '!=', null)->whereDate('created_at', $date)->groupBy('driver_id')->get('driver_id');
 
@@ -462,10 +484,11 @@ class TaskController extends Controller
             foreach ($orders as $ids) {
                 array_push($allreadytaken, $ids->driver_id);
             }
-            //print_r($allreadytaken);
+            // print_r($allreadytaken);
+            // die;
             $counter = 0;
             $data = [];
-            //for ($i = 1; $i <= $try; $i++) {
+            for ($i = 1; $i <= $try; $i++) {
                 foreach ($getgeo as $key =>  $geoitem) {
 
 
@@ -493,11 +516,10 @@ class TaskController extends Controller
                         ];
                         if (count($dummyentry) < 1) {
                             array_push($dummyentry, $data);
-                            array_push($dummyentry, $data);
-                            array_push($dummyentry, $data);
+                           
                         }
                         $time = Carbon::parse($time)
-                            ->addSeconds($expriedate)
+                            ->addSeconds($expriedate + 10)
                             ->format('Y-m-d H:i:s');
                         array_push($all, $data);
                         $counter++;
@@ -509,52 +531,48 @@ class TaskController extends Controller
                         break;
                     }
                 }
-                // if ($allcation_type == 'N' && count($all) > 0) {
-
-                //     break;
-                // }
-            //}
-
-            if ($totalcount > $counter) {
-                $loopcount =  $totalcount - $counter;
-
-                for ($i = 0; $i < $loopcount; $i++) {
-                    if ($allcation_type == 'N' && count($all) > 0) {
-
-                        break;
-                    }
-
+                
+                foreach($remening as $key =>  $rem){
                     $data = [
                         'order_id'            => $orders_id,
-                        'driver_id'           => $remening[$i]['id'],
+                        'driver_id'           => $rem['id'],
                         'notification_time'   => $time,
                         'type'                => $allcation_type,
                         'client_code'         => Auth::user()->code,
                         'created_at'          => Carbon::now()->toDateTimeString(),
                         'updated_at'          => Carbon::now()->toDateTimeString(),
-                        'device_type'         => $remening[$i]['device_type'],
-                        'device_token'        => $remening[$i]['device_token'],
+                        'device_type'         => $rem['device_type'],
+                        'device_token'        => $rem['device_token'],
                         'detail_id'           => $randem,
                     ];
-                    if (count($dummyentry) < 1) {
-                        array_push($dummyentry, $data);
-                        array_push($dummyentry, $data);
-                        array_push($dummyentry, $data);
-                    }
-                    $time = Carbon::parse($time)
-                        ->addSeconds($expriedate)
-                        ->format('Y-m-d H:i:s');
-                    array_push($all, $data);
-                    if ($allcation_type == 'N' && count($all) > 0) {
-                        Order::where('id',$orders_id)->update(['driver_id'=>$remening[$i]['id']]);
 
-                        break;
-                    }
+                        $time = Carbon::parse($time)
+                        ->addSeconds($expriedate + 10)
+                        ->format('Y-m-d H:i:s');
+
+                        if (count($dummyentry) < 1) {
+                            array_push($dummyentry, $data);
+                        }
+                        array_push($all, $data);
+                        if ($allcation_type == 'N' && count($all) > 0) {
+                            Order::where('id',$orders_id)->update(['driver_id'=>$remening[$i]['id']]);
+    
+                            break;
+                        }
+                }
+                $remening = [];
+                if ($allcation_type == 'N' && count($all) > 0) {
+
+                    break;
                 }
             }
-
-            $this->dispatchNow(new RosterCreate($all, $extraData));
-            return Roster::create($dummyentry);
+           
+            // print_r($all);
+            // print()
+            
+            $this->dispatch(new RosterCreate($all, $extraData));
+            
+            
         }
     }
     public function checkTimeDiffrence($notification_time, $beforetime)
@@ -576,18 +594,23 @@ class TaskController extends Controller
         }
     }
 
-    public function SendToAll($geo, $notification_time, $agent_id, $orders_id, $customer, $finalLocation, $taskcount)
+    public function SendToAll($geo, $notification_time, $agent_id, $orders_id, $customer, $finalLocation, $taskcount,$allocation)
     {
-        $allcation_type = 'AR';
-        $date       = \Carbon\Carbon::today();
-        $auth       = Client::where('code', Auth::user()->code)->with(['getAllocation', 'getPreference'])->first();
-        $expriedate = (int)$auth->getAllocation->request_expiry;
-        $beforetime = (int)$auth->getAllocation->start_before_task_time;
-        $maxsize    = (int)$auth->getAllocation->maximum_batch_size;
-        $type       = $auth->getPreference->acknowledgement_type;
-        $try        = $auth->getAllocation->number_of_retries;
-        $time       = $this->checkTimeDiffrence($notification_time, $beforetime);
-        $randem     = rand(11111111, 99999999);
+       
+        $allcation_type    = 'AR';
+        $date              = \Carbon\Carbon::today();
+        $auth              = Client::where('code', Auth::user()->code)->with(['getAllocation', 'getPreference'])->first();
+        $expriedate        = (int)$auth->getAllocation->request_expiry;
+        $beforetime        = (int)$auth->getAllocation->start_before_task_time;
+        $maxsize           = (int)$auth->getAllocation->maximum_batch_size;
+        $type              = $auth->getPreference->acknowledgement_type;
+        $unit              = $auth->getPreference->distance_unit;
+        $try               = $auth->getAllocation->number_of_retries;
+        $cash_at_hand      = $auth->getAllocation->maximum_cash_at_hand_per_person;
+        $max_redius        = $auth->getAllocation->maximum_radius;
+        $max_task          = $auth->getAllocation->maximum_batch_size;
+        $time              = $this->checkTimeDiffrence($notification_time, $beforetime);
+        $randem            = rand(11111111, 99999999);
         $data = [];
         if ($type != 'acceptreject') {
             $allcation_type = 'N';
@@ -620,14 +643,19 @@ class TaskController extends Controller
                 'device_token'        => $oneagent->device_token,
                 'detail_id'           => $randem,
             ];
-            $this->dispatchNow(new RosterCreate($data, $extraData));
+            $this->dispatch(new RosterCreate($data, $extraData));
             return $task = Roster::create($data);
         } else {
 
-            $getgeo = DriverGeo::where('geo_id', $geo)->with('agent')->get('driver_id');
+            $getgeo = DriverGeo::where('geo_id', $geo)->with([
+                'agent'=> function($o) use ($cash_at_hand,$date){
+                    $o->where('cash_at_hand','<',$cash_at_hand)->orderBy('id','DESC')->with(['logs','order'=> function($f) use ($date){
+                        $f->whereDate('order_time',$date)->with('task');
+                    }]);
+                }])->get();
             
 
-            //for ($i = 1; $i <= $try; $i++) {
+            for ($i = 1; $i <= $try; $i++) {
                 foreach ($getgeo as $key =>  $geoitem) {
 
                     $datas = [
@@ -649,22 +677,26 @@ class TaskController extends Controller
                         break;
                     }
                 }
+                $time = Carbon::parse($time)
+                        ->addSeconds($expriedate + 10)
+                        ->format('Y-m-d H:i:s');
+                if ($allcation_type == 'N') {
 
-            //     if ($allcation_type == 'N') {
-
-            //         break;
-            //     }
-            // }
+                    break;
+                }
+            }
+            
             $this->dispatch(new RosterCreate($data, $extraData));
             if(isset($data[0])){
                 return $task = Roster::create($data[0]);
             }
-            
+            // print_r($data);
+            //  die;
             //die('hello');
         }
     }
 
-    public function batchWise($geo, $notification_time, $agent_id, $orders_id, $customer, $finalLocation, $taskcount)
+    public function batchWise($geo, $notification_time, $agent_id, $orders_id, $customer, $finalLocation, $taskcount,$allocation)
     {
         
         $allcation_type    = 'AR';
@@ -721,13 +753,16 @@ class TaskController extends Controller
             //$getgeo = DriverGeo::where('geo_id', $geo)->with('agent')->get('driver_id');
             $getgeo = DriverGeo::where('geo_id', $geo)->with([
                 'agent'=> function($o) use ($cash_at_hand,$date){
-                    $o->where('cash_at_hand','<',$cash_at_hand)->orderBy('id','DESC')->with(['logs','order'=> function($f) use ($date){
+                    $o->where('cash_at_hand','<',$cash_at_hand)->orderBy('id','DESC')->with(['logs' => function($g){
+                        $g->orderBy('id','DESC');}
+                        ,'order'=> function($f) use ($date){
                         $f->whereDate('order_time',$date)->with('task');
                     }]);
                 }])->get()->toArray();
-            
+           
            $distenseResult = $this->haversineGreatCircleDistance($getgeo,$finalLocation,$unit,$max_redius,$max_task);
            
+          
            
             for ($i = 1; $i <= $try; $i++) {
                 $counter = 0;
@@ -760,7 +795,7 @@ class TaskController extends Controller
                     }
                 }
                 $time = Carbon::parse($time)
-                ->addSeconds($expriedate)
+                ->addSeconds($expriedate + 10)
                 ->format('Y-m-d H:i:s');
 
                 if ($allcation_type == 'N') {
@@ -877,6 +912,11 @@ class TaskController extends Controller
                         break;
                     }
                 }
+
+                $time = Carbon::parse($time)
+                    ->addSeconds($expriedate +10)
+                    ->format('Y-m-d H:i:s');
+
 
                 if ($allcation_type == 'N') {
 

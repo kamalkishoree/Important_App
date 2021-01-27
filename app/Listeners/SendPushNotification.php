@@ -32,7 +32,7 @@ class SendPushNotification
      */
     public function handle(PushNotification $event)
     {
-        //Log::info('message');
+        Log::info('message');
         
         $date =  Carbon::now()->toDateTimeString();
         
@@ -70,6 +70,7 @@ class SendPushNotification
 
     public function getData()
     {
+        Log::info('getData');
         
         $schemaName       = 'royodelivery_db';
         $date             =  Carbon::now()->toDateTimeString();
@@ -78,9 +79,11 @@ class SendPushNotification
         $newget           = $get->pluck('id');
         
         if(count($get) > 0){
-            // DB::connection($schemaName)->table('rosters')->whereIn('id',$newget)->update(['status'=>1]);
+            //DB::connection($schemaName)->table('rosters')->whereIn('id',$newget)->update(['status'=>1]);
             DB::connection($schemaName)->table('rosters')->whereIn('id',$newget)->delete();
             $this->sendnotification($get);
+        }else{
+            $this->extraTime($schemaName);
         }
         
         return;
@@ -91,6 +94,8 @@ class SendPushNotification
 
     public function sendnotification($recipients)
     {
+
+        Log::info('sendnotification');
         
         $array = json_decode(json_encode($recipients), true);
        
@@ -119,5 +124,19 @@ class SendPushNotification
         $this->getData();
        
        
+    }
+
+    public function extraTime($schemaName)
+    {
+        Log::info('extraTime');
+
+        $check = DB::connection($schemaName)->table('rosters')->get();
+
+        if(count($check) > 0){
+            sleep(5);
+            $this->getData();
+        }else{
+            return;
+        }
     }
 }

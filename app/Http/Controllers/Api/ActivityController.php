@@ -6,7 +6,7 @@ use App\Http\Controllers\Api\BaseController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
-use App\Model\{User, Agent, AgentLog, Client, ClientPreference, Cms, Order, Task, TaskProof};
+use App\Model\{User, Agent, AgentLog, AllocationRule, Client, ClientPreference, Cms, Order, Task, TaskProof};
 use Validation;
 use DB;
 use Illuminate\Support\Facades\Storage;
@@ -160,10 +160,13 @@ class ActivityController extends BaseController
         $agents     = Agent::where('id',$id)->with('team')->first();
         $taskProof = TaskProof::where('id',1)->first();
         $prefer    = ClientPreference::select('theme', 'distance_unit', 'currency_id', 'language_id', 'agent_name', 'date_format', 'time_format', 'map_type','map_key_1')->first();
-        $agents['client_preference'] = $prefer;
-        $agents['task_proof']        = $taskProof;
+        $allcation = AllocationRule::first('request_expiry');
+        $prefer['alert_dismiss_time'] = (int)$allcation->request_expiry;
+        $agents['client_preference']  = $prefer;
+        $agents['task_proof']         = $taskProof;
         $datas['user']                = $agents;
         $datas['tasks']               = $tasks;
+
         return response()->json([
             'data' => $datas,
         ],200);

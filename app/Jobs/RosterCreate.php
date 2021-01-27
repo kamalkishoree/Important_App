@@ -64,6 +64,7 @@ class RosterCreate implements ShouldQueue
             DB::connection($schemaName)->table('rosters')->insert($this->data);
             DB::connection($schemaName)->table('roster_details')->insert($this->extraData);
             DB::disconnect($schemaName);
+            Roster::create($this->data[0]);
         } catch (Exception $ex) {
            return $ex->getMessage();
         }
