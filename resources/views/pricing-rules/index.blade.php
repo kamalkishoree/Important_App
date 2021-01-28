@@ -127,8 +127,6 @@
                             <thead>
                                 <tr>
                                     <th>Name</th>
-                                    <th>Start Time</th>
-                                    <th>End Time</th>
                                     <th>Base Price</th>
                                     <th>Base Duration</th>
                                     <th>Base Distance</th>
@@ -141,12 +139,6 @@
                                     <tr>
                                         <td>
                                             {{ $price->name }}
-                                        </td>
-                                        <td>
-                                            {{ $price->start_date_time }}
-                                        </td>
-                                        <td>
-                                            {{ $price->end_date_time }}
                                         </td>
                                         <td>
                                             {{ $price->base_price }}

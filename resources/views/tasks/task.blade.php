@@ -118,7 +118,9 @@
    
     </style>
 @endsection
-
+@php
+    use Carbon\Carbon;
+@endphp
 @section('content')
 <!-- Start Content-->
 <div class="container-fluid">
@@ -209,10 +211,18 @@
                                         {{ empty($task->agent) ? 'Unassigned' : $task->agent->name }}
                                     </td>
                                     <td>
-                                        {{$task->order_time}}
+                                        @php
+                                            $create = Carbon::createFromFormat('Y-m-d H:i:s', $task->created_at, 'UTC');
+                                        @endphp
+                                        {{$create->setTimezone(isset(Auth::user()->timezone)? Auth::user()->timezone : 'Asia/Kolkata')}}
+                                        
                                     </td>
                                     <td>
-                                        {{$task->created_at}}
+                                        @php
+                                            $order = Carbon::createFromFormat('Y-m-d H:i:s', $task->order_time, 'UTC');
+                                        @endphp
+                                         {{$order->setTimezone(isset(Auth::user()->timezone)? Auth::user()->timezone : 'Asia/Kolkata')}}
+                                        
                                     </td>
                                     <td>
                                         <button class="showtasks" value="{{$task->id}}"><i class="fe-eye"></i></button>

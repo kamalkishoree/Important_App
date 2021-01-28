@@ -233,9 +233,9 @@ class TaskController extends Controller
                 'task_status'                => $agent_id != null ? 1 : 0,
                 'created_at'                 => $notification_time
             ];
-            if (!empty($request->pricing_rule_id)) {
-                $data['pricing_rule_id'] = $request->pricing_rule_id;
-            }
+            // if (!empty($request->pricing_rule_id)) {
+            //     $data['pricing_rule_id'] = $request->pricing_rule_id;
+            // }
             $task = Task::create($data);
             $dep_id = $task->id;
         }

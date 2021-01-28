@@ -129,6 +129,7 @@ class ClientController extends Controller
             'database_password' => 'codebrew',
             'logo' => isset($getFileName) ? $getFileName : 'assets/Clientlogo/5ff41c4b5a9f0.png/KQb50SOKZckXbcmMBXgqz3pqfCZcOTpkpljs8sJq.png',
             'status'=> 1,
+            'timezone' => $request->timezone ? $request->timezone : 'America/New_York',
         ];
         $data['code'] = $this->randomString();
 
@@ -244,7 +245,7 @@ class ClientController extends Controller
             'company_address' => $request->company_address,
             'custom_domain' => $request->custom_domain,
             'country_id' => $request->country ? $request->country : NULL,
-            'timezone' => $request->timezone ? $request->timezone : NULL,
+            'timezone' => $request->timezone ? $request->timezone : 'America/New_York',
             'logo' => $getFileName,
         ];
         
