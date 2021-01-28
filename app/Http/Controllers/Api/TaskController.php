@@ -20,6 +20,7 @@ use PHPUnit\Framework\Constraint\Count;
 use Validation;
 use Illuminate\Support\Facades\Storage;
 use App\Jobs\RosterCreate;
+use App\Jobs\RosterDelete;
 use App\Model\AllocationRule;
 use App\Model\DriverGeo;
 use App\Model\PricingRule;
@@ -123,6 +124,7 @@ class TaskController extends BaseController
         
 
         if ($request->status == 1) {
+                        $this->dispatchNow(new RosterDelete($request->order_id));
                         $task_id = Order::where('id',$request->order_id)->first();
                         $pricingRule = PricingRule::where('id',1)->first();
                         $agent_id =  isset($request->allocation_type) && $request->allocation_type == 'm' ? $request->agent : null;
@@ -455,7 +457,7 @@ class TaskController extends BaseController
                 'detail_id'           => $randem,
             ];
 
-            $this->dispatchNow(new RosterCreate($data, $extraData));
+            $this->dispatch(new RosterCreate($data, $extraData));
             return $task = Roster::create($data);
         } else {
             $dummyentry = [];

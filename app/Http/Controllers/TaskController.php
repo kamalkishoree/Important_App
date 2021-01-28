@@ -519,7 +519,7 @@ class TaskController extends Controller
                            
                         }
                         $time = Carbon::parse($time)
-                            ->addSeconds($expriedate + 10)
+                            ->addSeconds($expriedate + 3)
                             ->format('Y-m-d H:i:s');
                         array_push($all, $data);
                         $counter++;
@@ -644,7 +644,7 @@ class TaskController extends Controller
                 'detail_id'           => $randem,
             ];
             $this->dispatch(new RosterCreate($data, $extraData));
-            return $task = Roster::create($data);
+            
         } else {
 
             $getgeo = DriverGeo::where('geo_id', $geo)->with([
@@ -687,9 +687,7 @@ class TaskController extends Controller
             }
             
             $this->dispatch(new RosterCreate($data, $extraData));
-            if(isset($data[0])){
-                return $task = Roster::create($data[0]);
-            }
+           
             // print_r($data);
             //  die;
             //die('hello');
@@ -747,7 +745,7 @@ class TaskController extends Controller
                 'detail_id'           => $randem,
             ];
             $this->dispatch(new RosterCreate($data, $extraData));
-            return $task = Roster::create($data);
+            
         } else {
 
             //$getgeo = DriverGeo::where('geo_id', $geo)->with('agent')->get('driver_id');
@@ -806,10 +804,6 @@ class TaskController extends Controller
             
             
             $this->dispatch(new RosterCreate($data, $extraData));
-
-            if(isset($data[0])){
-                return $task = Roster::create($data[0]);
-            }
             
         }
     }
@@ -871,7 +865,6 @@ class TaskController extends Controller
                 'detail_id'           => $randem,
             ];
             $this->dispatch(new RosterCreate($data, $extraData));
-            return $task = Roster::create($data);
         } else {
 
             //$getgeo = DriverGeo::where('geo_id', $geo)->with('agent')->get('driver_id');
@@ -926,10 +919,6 @@ class TaskController extends Controller
             
             
             $this->dispatch(new RosterCreate($data, $extraData));
-
-            if(isset($data[0])){
-                return $task = Roster::create($data[0]);
-            }
             
         }
     }
