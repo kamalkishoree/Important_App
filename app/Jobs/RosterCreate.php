@@ -10,6 +10,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\DB;
 use Config;
+Use Log;
 
 class RosterCreate implements ShouldQueue
 {
@@ -36,7 +37,7 @@ class RosterCreate implements ShouldQueue
      */
     public function handle()
     {
-       
+        Log::info('mesooooo');
         try {
            
             $schemaName = 'royodelivery_db';
@@ -64,7 +65,14 @@ class RosterCreate implements ShouldQueue
             DB::connection($schemaName)->table('rosters')->insert($this->data);
             DB::connection($schemaName)->table('roster_details')->insert($this->extraData);
             DB::disconnect($schemaName);
-            Roster::create($this->data[0]);
+            //Roster::insert($this->data);
+            Log::info($this->data);
+            Log::info($this->extraData);
+            // Roster::create([
+            //     'type'  => 'extra',
+            //     'status'=> 10
+            // ]);
+            // Roster::where('status',10)->delete();
         } catch (Exception $ex) {
            return $ex->getMessage();
         }

@@ -20,6 +20,8 @@ use Carbon\Carbon;
 use App\Jobs\RosterCreate;
 use App\Models\RosterDeatil;
 use Illuminate\Support\Arr;
+use App\Jobs\scheduleNotification;
+
 use GuzzleHttp\Client as Gclient;
 
 class TaskController extends Controller
@@ -31,6 +33,7 @@ class TaskController extends Controller
      */
     public function index(Request $request)
     {
+        
         /* Orter status will be done as per task completed. task assigned than assigned all task of order completed tha completed and so on*/
         $tasks = Order::orderBy('created_at', 'DESC')->with(['customer', 'location', 'taskFirst', 'agent', 'task']);
         $check = '';
@@ -129,6 +132,7 @@ class TaskController extends Controller
             }
             $last = implode(",", $images);
         }
+
         if (!isset($request->ids)) {
             $customer = Customer::where('email', '=', $request->email)->first();
             if (isset($customer->id)) {
@@ -151,7 +155,7 @@ class TaskController extends Controller
         //order save
 
         $notification_time = isset($request->schedule_time) ? $request->schedule_time : Carbon::now()->toDateTimeString();
-        $agent_id        = $request->allocation_type === 'm' ? $request->agent : null;
+        $agent_id          = $request->allocation_type === 'm' ? $request->agent : null;
         $order = [
             'customer_id'                     => $cus_id,
             'recipient_phone'                 => $request->recipient_phone,
@@ -287,11 +291,80 @@ class TaskController extends Controller
 
             $agent_id = null;
         }
+
+        // task schdule code is hare
+        $allocation = AllocationRule::where('id', 1)->first();
+
+        if($request->task_type != 'now'){
+
+                
+                 $auth = Client::where('code', Auth::user()->code)->with(['getAllocation', 'getPreference'])->first();
+
+                 $beforetime        = (int)$auth->getAllocation->start_before_task_time;
+
+                //  $to   = Carbon::createFromFormat('Y-m-d H:s:i', Carbon::now()->toDateTimeString());
+                //  $to->timezone = isset(Auth::user()->timezone)? Auth::user()->timezone : 'Asia/Kolkata';
+                 $to = new \DateTime("now", new \DateTimeZone(isset(Auth::user()->timezone)? Auth::user()->timezone : 'Asia/Kolkata') );
+                 $sendTime = Carbon::now();
+                
+                 $to = Carbon::parse($to)->format('Y-m-d H:i:s');
+                // $to->setTimezone(isset(Auth::user()->timezone)? Auth::user()->timezone : 'Asia/Kolkata');
+                
+                $from = Carbon::parse($notification_time)->format('Y-m-d H:i:s');
+                //$from->setTimezone(isset(Auth::user()->timezone)? Auth::user()->timezone : 'Asia/Kolkata');
+                // $from->setTimezone(isset(Auth::user()->timezone)? Auth::user()->timezone : 'Asia/Kolkata');
+                 $datecheck = 0;
+                 $to_time = strtotime($to);
+                 $from_time = strtotime($from);
+               
+                 if($to_time >= $from_time){
+                    return redirect()->route('tasks.index')->with('success', 'Task Added Successfully!');
+                 }
+
+                $diff_in_minutes = round(abs($to_time - $from_time) / 60);
+                
+               
+
+                $schduledata = [];
+
+                if($diff_in_minutes > $beforetime){
+
+                    $finaldelay = (int)$diff_in_minutes - $beforetime;
+
+                    $time = Carbon::parse($sendTime)
+                    ->addMinutes($finaldelay)
+                    ->format('Y-m-d H:i:s');
+
+                    $schduledata['geo']               = $geo;
+                    $schduledata['notification_time'] = $time;
+                    $schduledata['agent_id']          = $agent_id;
+                    $schduledata['orders_id']         = $orders->id;
+                    $schduledata['customer']          = $customer;
+                    $schduledata['finalLocation']     = $finalLocation;
+                    $schduledata['taskcount']         = $taskcount;
+                    $schduledata['allocation']        = $allocation;
+                    $schduledata['database']          = $auth;
+                    
+                    
+                   
+                    //->delay(now()->addMinutes($finaldelay));
+                    
+                    scheduleNotification::dispatch($schduledata);
+                    //$this->dispatch(new scheduleNotification($schduledata));
+
+
+
+                    return redirect()->route('tasks.index')->with('success', 'Task Added Successfully!');
+                }
+               
+
+        }
+        
         
         //this is roster create accounding to the allocation methed
-
+        
         if ($request->allocation_type === 'a' || $request->allocation_type === 'm') {
-            $allocation = AllocationRule::where('id', 1)->first();
+            
             switch ($allocation->auto_assign_logic) {
                 case 'one_by_one':
                     //this is called when allocation type is one by one
@@ -547,7 +620,7 @@ class TaskController extends Controller
                     ];
 
                         $time = Carbon::parse($time)
-                        ->addSeconds($expriedate + 10)
+                        ->addSeconds($expriedate + 3)
                         ->format('Y-m-d H:i:s');
 
                         if (count($dummyentry) < 1) {
@@ -712,6 +785,7 @@ class TaskController extends Controller
         $time              = $this->checkTimeDiffrence($notification_time, $beforetime);
         $randem            = rand(11111111, 99999999);
         $data = [];
+
 
         if ($type != 'acceptreject') {
             $allcation_type = 'N';

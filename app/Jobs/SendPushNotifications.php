@@ -70,18 +70,18 @@ class SendPushNotifications implements ShouldQueue
         $date =  Carbon::now()->toDateTimeString();
         $database_name = 'db_' .$this->client_db;
         $default = [
-            'driver' => env('DB_CONNECTION', 'mysql'),
-            'host' => env('DB_HOST'),
-            'port' => env('DB_PORT'),
-            'database' => $database_name,
-            'username' => env('DB_USERNAME'),
-            'password' => env('DB_PASSWORD'),
-            'charset' => 'utf8mb4',
-            'collation' => 'utf8mb4_unicode_ci',
-            'prefix' => '',
+            'driver'         => env('DB_CONNECTION', 'mysql'),
+            'host'           => env('DB_HOST'),
+            'port'           => env('DB_PORT'),
+            'database'       => $database_name,
+            'username'       => env('DB_USERNAME'),
+            'password'       => env('DB_PASSWORD'),
+            'charset'        => 'utf8mb4',
+            'collation'      => 'utf8mb4_unicode_ci',
+            'prefix'         => '',
             'prefix_indexes' => true,
-            'strict' => false,
-            'engine' => null
+            'strict'         => false,
+            'engine'         => null
         ];
 
 
