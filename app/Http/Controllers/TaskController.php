@@ -347,9 +347,9 @@ class TaskController extends Controller
                     
                     
                    
-                    //->delay(now()->addMinutes($finaldelay));
                     
-                    scheduleNotification::dispatch($schduledata);
+                    
+                    scheduleNotification::dispatch($schduledata)->delay(now()->addMinutes($finaldelay));
                     //$this->dispatch(new scheduleNotification($schduledata));
 
 

@@ -68,11 +68,11 @@ class RosterCreate implements ShouldQueue
             //Roster::insert($this->data);
             Log::info($this->data);
             Log::info($this->extraData);
-            // Roster::create([
-            //     'type'  => 'extra',
-            //     'status'=> 10
-            // ]);
-            // Roster::where('status',10)->delete();
+            Roster::create([
+                'type'  => 'extra',
+                'status'=> 10
+            ]);
+            
         } catch (Exception $ex) {
            return $ex->getMessage();
         }

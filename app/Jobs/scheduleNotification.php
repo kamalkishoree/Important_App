@@ -33,6 +33,22 @@ class scheduleNotification implements ShouldQueue
     {
         $this->data       = $data;
         
+        $databaseName = $this->data['database']['database_name'];
+
+            $schemaName = 'db_'.$databaseName;
+
+        
+        $this->schemaName = $schemaName;
+    }
+
+    /**
+     * Execute the job.
+     *
+     * @return void
+     */
+    public function handle()
+    {
+
 
         try {
             $databaseName = $this->data['database']['database_name'];
@@ -59,41 +75,33 @@ class scheduleNotification implements ShouldQueue
 
 
             Config::set("database.connections.$schemaName", $default);
-            //config(["database.connections.mysql.database" => $schemaName]);
+            config(["database.connections.mysql.database" => $schemaName]);
             
-           DB::disconnect($schemaName);
+        //    DB::disconnect($schemaName);
         } catch (Exception $ex) {
            return $ex->getMessage();
         }
-        $this->schemaName = $schemaName;
-    }
 
-    /**
-     * Execute the job.
-     *
-     * @return void
-     */
-    public function handle()
-    {
+        
 
-       
+        $databaseName = 'db_'.$this->data['database']['database_name'];
 
         switch ($this->data['allocation']['auto_assign_logic']) {
             case 'one_by_one':
                 //this is called when allocation type is one by one
-                $this->OneByOne($this->data);
+                $this->OneByOne($this->data,$databaseName);
                 break;
             case 'send_to_all':
                 //this is called when allocation type is send to all
-                $this->SendToAll($this->data);
+                $this->SendToAll($this->data,$databaseName);
                 break;
             case 'round_robin':
                 //this is called when allocation type is round robin
-                $this->roundRobin($this->data);
+                $this->roundRobin($this->data,$databaseName);
                 break;
             default:
                 //this is called when allocation type is batch wise 
-                $this->batchWise($this->data);
+                $this->batchWise($this->data,$databaseName);
         }
 
        
@@ -110,7 +118,7 @@ class scheduleNotification implements ShouldQueue
     }
 
 
-    public function OneByOne($dataget)
+    public function OneByOne($dataget,$databaseName)
     {
 
         
@@ -120,7 +128,8 @@ class scheduleNotification implements ShouldQueue
         // print($orders_id);
         // die;
         $allcation_type = 'AR';
-        $date = \Carbon\Carbon::today();
+        $date = \Carbon\Carbon::today()->toDateString();
+        // dd($date);
         //$auth = Client::where('code', Auth::user()->code)->with(['getAllocation', 'getPreference'])->first();
        
         $expriedate = (int)$dataget['database']['getAllocation']['request_expiry'];
@@ -150,7 +159,7 @@ class scheduleNotification implements ShouldQueue
 
          $geo = $dataget['geo'];
         if (!isset($geo)) {
-            $oneagent = Agent::where('id', $dataget['agent_id'])->first();
+            $oneagent = DB::connection($databaseName)->table('agents')->where('id', $dataget['agent_id'])->first();
             
             $data = [
                 'order_id'            => $dataget['orders_id'],
@@ -188,16 +197,29 @@ class scheduleNotification implements ShouldQueue
             $extra      = [];
             $remening   = [];
 
-            $getgeo =  DriverGeo::where('geo_id', $geo)->with([
-                'agent'=> function($o) use ($cash_at_hand,$date){
-                    $o->where('cash_at_hand','<',$cash_at_hand)->orderBy('id','DESC')->with(['logs','order'=> function($f) use ($date){
-                        $f->whereDate('order_time',$date)->with('task');
-                    }]);
-                }])->get();
+           $getgeo = DB::connection($databaseName)->table('driver_geos')
+            ->select('driver_geos.driver_id as driId', 'agents.*', 'agent_logs.*', 'ord.num_order')
+            ->join('agents','driver_geos.driver_id','agents.id')
+            ->join('agent_logs','agent_logs.agent_id','agents.id')
+            ->leftjoin(DB::raw('(SELECT COUNT(id) num_order, driver_id FROM `orders` WHERE DATE(order_time) = "'.$date.'" GROUP BY driver_id  ) ord'), function($join){
+                $join->on('agents.id', '=', 'ord.driver_id');
+                
+            })
+            ->groupBy('agent_logs.agent_id')
+            ->get();
+            
+            
+
+
+            
+
+           
+
+           
            
             $totalcount = $getgeo->count();
             
-            $orders = Order::where('driver_id', '!=', null)->whereDate('created_at', $date)->groupBy('driver_id')->get('driver_id');
+            $orders = DB::connection($databaseName)->table('orders')->where('driver_id', '!=', null)->whereDate('created_at', $date)->groupBy('driver_id')->get('driver_id');
 
             $allreadytaken = [];
             foreach ($orders as $ids) {
@@ -211,10 +233,10 @@ class scheduleNotification implements ShouldQueue
                 foreach ($getgeo as $key =>  $geoitem) {
 
 
-                    if (in_array($geoitem->driver_id, $allreadytaken)) {
+                    if (in_array($geoitem->driId, $allreadytaken)) {
                         $extra = [
-                            'id' => $geoitem->driver_id,
-                            'device_type' => $geoitem->agent->device_type, 'device_token' => $geoitem->agent->device_token
+                            'id' => $geoitem->driId,
+                            'device_type' => $geoitem->device_type, 'device_token' => $geoitem->device_token
                         ];
                         array_push($remening, $extra);
                     } else {
@@ -222,14 +244,14 @@ class scheduleNotification implements ShouldQueue
 
                         $data = [
                             'order_id'            => $dataget['orders_id'],
-                            'driver_id'           => $geoitem->driver_id,
+                            'driver_id'           => $geoitem->driId,
                             'notification_time'   => $time,
                             'type'                => $allcation_type,
                             'client_code'         => $dataget['database']['code'],
                             'created_at'          => Carbon::now()->toDateTimeString(),
                             'updated_at'          => Carbon::now()->toDateTimeString(),
-                            'device_type'         => $geoitem->agent->device_type,
-                            'device_token'        => $geoitem->agent->device_token,
+                            'device_type'         => $geoitem->device_type,
+                            'device_token'        => $geoitem->device_token,
                             'detail_id'           => $randem,
 
                         ];
@@ -246,7 +268,7 @@ class scheduleNotification implements ShouldQueue
 
                     if ($allcation_type == 'N' && count($all) > 0) {
 
-                        Order::where('id',$dataget['orders_id'])->update(['driver_id'=>$geoitem->driver_id]);
+                        DB::connection($databaseName)->table('orders')->where('id',$dataget['orders_id'])->update(['driver_id'=>$geoitem->driId]);
 
                         break;
                     }
@@ -275,7 +297,7 @@ class scheduleNotification implements ShouldQueue
                         }
                         array_push($all, $data);
                         if ($allcation_type == 'N' && count($all) > 0) {
-                            Order::where('id',$dataget['orders_id'])->update(['driver_id'=>$remening[$i]['id']]);
+                            DB::connection($databaseName)->table('orders')->where('id',$dataget['orders_id'])->update(['driver_id'=>$remening[$i]['id']]);
     
                             break;
                         }
@@ -297,22 +319,25 @@ class scheduleNotification implements ShouldQueue
         }
     }
 
-    public function SendToAll($dataget)
+    public function SendToAll($dataget,$databaseName)
     {
        // Log::info($dataget);
         $allcation_type    = 'AR';
-        $date              = \Carbon\Carbon::today();
-        $auth              = Client::where('code', $dataget['database']['code'])->with(['getAllocation', 'getPreference'])->first();
-        Log::info($auth);
-        $expriedate        = (int)$auth->getAllocation->request_expiry;
-        $beforetime        = (int)$auth->getAllocation->start_before_task_time;
-        $maxsize           = (int)$auth->getAllocation->maximum_batch_size;
-        $type              = $auth->getPreference->acknowledgement_type;
-        $unit              = $auth->getPreference->distance_unit;
-        $try               = $auth->getAllocation->number_of_retries;
-        $cash_at_hand      = $auth->getAllocation->maximum_cash_at_hand_per_person;
-        $max_redius        = $auth->getAllocation->maximum_radius;
-        $max_task          = $auth->getAllocation->maximum_batch_size;
+        $date = \Carbon\Carbon::today()->toDateString();
+        //$auth              = Client::where('code', $dataget['database']['code'])->with(['getAllocation', 'getPreference'])->first();
+        
+
+        
+
+        $expriedate        = (int)$dataget['database']['getAllocation']['request_expiry'];
+        $beforetime        = (int)$dataget['database']['getAllocation']['start_before_task_time'];
+        $maxsize           = (int)$dataget['database']['getAllocation']['maximum_batch_size'];
+        $type              = $dataget['database']['getPreference']['acknowledgement_type'];
+        $unit              = $dataget['database']['getPreference']['distance_unit'];
+        $try               = $dataget['database']['getAllocation']['number_of_retries'];
+        $cash_at_hand      = $dataget['database']['getAllocation']['maximum_cash_at_hand_per_person'];
+        $max_redius        = $dataget['database']['getAllocation']['maximum_radius'];
+        $max_task          = $dataget['database']['getAllocation']['maximum_task_per_person'];
         $time              = $dataget['notification_time'];
         $randem            = rand(11111111, 99999999);
         $data = [];
@@ -335,13 +360,13 @@ class scheduleNotification implements ShouldQueue
 
         $geo = $dataget['geo'];
         if (!isset($geo)) {
-            $oneagent = Agent::where('id', $dataget['agent_id'])->first();
+            $oneagent = DB::connection($databaseName)->table('agents')->where('id', $dataget['agent_id'])->first();
             $data = [
                 'order_id'            => $dataget['orders_id'],
                 'driver_id'           => $dataget['agent_id'],
                 'notification_time'   => $time,
                 'type'                => $allcation_type,
-                'client_code'         => $auth->code,
+                'client_code'         => $dataget['database']['code'],
                 'created_at'          => Carbon::now()->toDateTimeString(),
                 'updated_at'          => Carbon::now()->toDateTimeString(),
                 'device_type'         => $oneagent->device_type,
@@ -354,12 +379,16 @@ class scheduleNotification implements ShouldQueue
             
         } else {
 
-            $getgeo = DriverGeo::where('geo_id', $geo)->with([
-                'agent'=> function($o) use ($cash_at_hand,$date){
-                    $o->where('cash_at_hand','<',$cash_at_hand)->orderBy('id','DESC')->with(['logs','order'=> function($f) use ($date){
-                        $f->whereDate('order_time',$date)->with('task');
-                    }]);
-                }])->get();
+            $getgeo = DB::connection($databaseName)->table('driver_geos')
+            ->select('driver_geos.driver_id as driId', 'agents.*', 'agent_logs.*', 'ord.num_order')
+            ->join('agents','driver_geos.driver_id','agents.id')
+            ->join('agent_logs','agent_logs.agent_id','agents.id')
+            ->leftjoin(DB::raw('(SELECT COUNT(id) num_order, driver_id FROM `orders` WHERE DATE(order_time) = "'.$date.'" GROUP BY driver_id  ) ord'), function($join){
+                $join->on('agents.id', '=', 'ord.driver_id');
+                
+            })
+            ->groupBy('agent_logs.agent_id')
+            ->get();
            
 
             for ($i = 1; $i <= $try; $i++) {
@@ -367,20 +396,20 @@ class scheduleNotification implements ShouldQueue
 
                     $datas = [
                         'order_id'            => $dataget['orders_id'],
-                        'driver_id'           => $geoitem->driver_id,
+                        'driver_id'           => $geoitem->driId,
                         'notification_time'   => $time,
                         'type'                => $allcation_type,
-                        'client_code'         => $auth->code,
+                        'client_code'         => $dataget['database']['code'],
                         'created_at'          => Carbon::now()->toDateTimeString(),
                         'updated_at'          => Carbon::now()->toDateTimeString(),
-                        'device_type'         => $geoitem->agent->device_type,
-                        'device_token'        => $geoitem->agent->device_token,
+                        'device_type'         => $geoitem->device_type,
+                        'device_token'        => $geoitem->device_token,
                         'detail_id'           => $randem,
 
                      ];
                     array_push($data, $datas);
                     if ($allcation_type == 'N') {
-                        Order::where('id',$dataget['orders_id'])->update(['driver_id'=>$geoitem->driver_id]);
+                        DB::connection($databaseName)->table('orders')->where('id',$dataget['orders_id'])->update(['driver_id'=>$geoitem->driId]);
                         break;
                     }
                 }
@@ -403,21 +432,24 @@ class scheduleNotification implements ShouldQueue
         }
     }
 
-    public function roundRobin($dataget)
+    public function roundRobin($dataget,$databaseName)
     {
         $allcation_type    = 'AR';
-        $date              = \Carbon\Carbon::today();
-        $auth              = Client::where('code', $dataget['database']['code'])->with(['getAllocation', 'getPreference'])->first();
+        $date = \Carbon\Carbon::today()->toDateString();
+       // $auth              = Client::where('code', $dataget['database']['code'])->with(['getAllocation', 'getPreference'])->first();
         
-        $expriedate        = (int)$auth->getAllocation->request_expiry;
-        $beforetime        = (int)$auth->getAllocation->start_before_task_time;
-        $maxsize           = (int)$auth->getAllocation->maximum_batch_size;
-        $type              = $auth->getPreference->acknowledgement_type;
-        $unit              = $auth->getPreference->distance_unit;
-        $try               = $auth->getAllocation->number_of_retries;
-        $cash_at_hand      = $auth->getAllocation->maximum_cash_at_hand_per_person;
-        $max_redius        = $auth->getAllocation->maximum_radius;
-        $max_task          = $auth->getAllocation->maximum_batch_size;
+                  
+        
+
+        $expriedate        = (int)$dataget['database']['getAllocation']['request_expiry'];
+        $beforetime        = (int)$dataget['database']['getAllocation']['start_before_task_time'];
+        $maxsize           = (int)$dataget['database']['getAllocation']['maximum_batch_size'];
+        $type              = $dataget['database']['getPreference']['acknowledgement_type'];
+        $unit              = $dataget['database']['getPreference']['distance_unit'];
+        $try               = $dataget['database']['getAllocation']['number_of_retries'];
+        $cash_at_hand      = $dataget['database']['getAllocation']['maximum_cash_at_hand_per_person'];
+        $max_redius        = $dataget['database']['getAllocation']['maximum_radius'];
+        $max_task          = $dataget['database']['getAllocation']['maximum_task_per_person'];
         $time              = $dataget['notification_time'];
         $randem            = rand(11111111, 99999999);
         $data = [];
@@ -440,13 +472,13 @@ class scheduleNotification implements ShouldQueue
         ];
         $geo = $dataget['geo'];
         if (!isset($geo)) {
-            $oneagent = Agent::where('id', $dataget['agent_id'])->first();
+            $oneagent = DB::connection($databaseName)->table('agents')->where('id', $dataget['agent_id'])->first();
             $data = [
                 'order_id'            => $dataget['orders_id'],
                 'driver_id'           => $dataget['agent_id'],
                 'notification_time'   => $time,
                 'type'                => $allcation_type,
-                'client_code'         => $auth->code,
+                'client_code'         => $dataget['database']['code'],
                 'created_at'          => Carbon::now()->toDateTimeString(),
                 'updated_at'          => Carbon::now()->toDateTimeString(),
                 'device_type'         => $oneagent->device_type,
@@ -458,12 +490,16 @@ class scheduleNotification implements ShouldQueue
         } else {
 
             //$getgeo = DriverGeo::where('geo_id', $geo)->with('agent')->get('driver_id');
-            $getgeo = DriverGeo::where('geo_id', $geo)->with([
-                'agent'=> function($o) use ($cash_at_hand,$date){
-                    $o->where('cash_at_hand','<',$cash_at_hand)->orderBy('id','DESC')->with(['logs','order'=> function($f) use ($date){
-                        $f->whereDate('order_time',$date)->with('task');
-                    }]);
-                }])->get()->toArray();
+            $getgeo = DB::connection($databaseName)->table('driver_geos')
+            ->select('driver_geos.driver_id as driId', 'agents.*', 'agent_logs.*', 'ord.num_order')
+            ->join('agents','driver_geos.driver_id','agents.id')
+            ->join('agent_logs','agent_logs.agent_id','agents.id')
+            ->leftjoin(DB::raw('(SELECT COUNT(id) num_order, driver_id FROM `orders` WHERE DATE(order_time) = "'.$date.'" GROUP BY driver_id  ) ord'), function($join){
+                $join->on('agents.id', '=', 'ord.driver_id');
+                
+            })
+            ->groupBy('agent_logs.agent_id')
+            ->get();
            
            $distenseResult = $this->roundCalculation($getgeo,$dataget['finalLocation'],$unit,$max_redius,$max_task);
            
@@ -474,14 +510,14 @@ class scheduleNotification implements ShouldQueue
 
                     $datas = [
                         'order_id'            => $dataget['orders_id'],
-                        'driver_id'           => $geoitem['driver_id'],
+                        'driver_id'           => $geoitem->driId,
                         'notification_time'   => $time,
                         'type'                => $allcation_type,
-                        'client_code'         => $auth->code,
+                        'client_code'         => $dataget['database']['code'],
                         'created_at'          => Carbon::now()->toDateTimeString(),
                         'updated_at'          => Carbon::now()->toDateTimeString(),
-                        'device_type'         => $geoitem['device_type'],
-                        'device_token'        => $geoitem['device_token'],
+                        'device_type'         => $geoitem->device_type,
+                        'device_token'        => $geoitem->device_token,
                         'detail_id'           => $randem,
                     ];
                    
@@ -523,14 +559,14 @@ class scheduleNotification implements ShouldQueue
         
         foreach($getgeo as $item){
             
-                    $count = isset($item['agent']['order']) ? count($item['agent']['order']):0;
+                    $count = isset($item->num_order) ? $item->num_order:0;
                     
                     if($max_task > $count){
                        
                             $data = [
-                                'driver_id'    =>  $item['agent']['id'],
-                                'device_type'  =>  $item['agent']['device_type'], 
-                                'device_token' =>  $item['agent']['device_token'],
+                                'driver_id'    =>  $item->driId,
+                                'device_type'  =>  $item->device_type, 
+                                'device_token' =>  $item->device_token,
                                 'task_count'   =>  $count,
                             ];
                            
@@ -549,20 +585,24 @@ class scheduleNotification implements ShouldQueue
     }
 
 
-    public function batchWise($dataget)
+    public function batchWise($dataget,$databaseName)
     {
         $allcation_type    = 'AR';
-        $date              = \Carbon\Carbon::today();
-        $auth              = Client::where('code', $dataget['database']['code'])->with(['getAllocation', 'getPreference'])->first();
-        $expriedate        = (int)$auth->getAllocation->request_expiry;
-        $beforetime        = (int)$auth->getAllocation->start_before_task_time;
-        $maxsize           = (int)$auth->getAllocation->maximum_batch_size;
-        $type              = $auth->getPreference->acknowledgement_type;
-        $unit              = $auth->getPreference->distance_unit;
-        $try               = $auth->getAllocation->number_of_retries;
-        $cash_at_hand      = $auth->getAllocation->maximum_cash_at_hand_per_person;
-        $max_redius        = $auth->getAllocation->maximum_radius;
-        $max_task          = $auth->getAllocation->maximum_batch_size;
+        $date = \Carbon\Carbon::today()->toDateString();
+       // $auth              = Client::where('code', $dataget['database']['code'])->with(['getAllocation', 'getPreference'])->first();
+        
+                  
+        
+
+        $expriedate        = (int)$dataget['database']['getAllocation']['request_expiry'];
+        $beforetime        = (int)$dataget['database']['getAllocation']['start_before_task_time'];
+        $maxsize           = (int)$dataget['database']['getAllocation']['maximum_batch_size'];
+        $type              = $dataget['database']['getPreference']['acknowledgement_type'];
+        $unit              = $dataget['database']['getPreference']['distance_unit'];
+        $try               = $dataget['database']['getAllocation']['number_of_retries'];
+        $cash_at_hand      = $dataget['database']['getAllocation']['maximum_cash_at_hand_per_person'];
+        $max_redius        = $dataget['database']['getAllocation']['maximum_radius'];
+        $max_task          = $dataget['database']['getAllocation']['maximum_task_per_person'];
         $time              = $dataget['notification_time'];
         $randem            = rand(11111111, 99999999);
         $data = [];
@@ -587,13 +627,13 @@ class scheduleNotification implements ShouldQueue
 
         $geo = $dataget['geo'];
         if (!isset($geo)) {
-            $oneagent = Agent::where('id', $dataget['agent_id'])->first();
+            $oneagent = DB::connection($databaseName)->table('agents')->where('id', $dataget['agent_id'])->first();
             $data = [               
                 'order_id'            => $dataget['orders_id'],
                 'driver_id'           => $dataget['agent_id'],
                 'notification_time'   => $time,
                 'type'                => $allcation_type,
-                'client_code'         => $auth->code,
+                'client_code'         => $dataget['database']['code'],
                 'created_at'          => Carbon::now()->toDateTimeString(),
                 'updated_at'          => Carbon::now()->toDateTimeString(),
                 'device_type'         => $oneagent->device_type,
@@ -607,14 +647,16 @@ class scheduleNotification implements ShouldQueue
         } else {
 
             //$getgeo = DriverGeo::where('geo_id', $geo)->with('agent')->get('driver_id');
-            $getgeo = DriverGeo::where('geo_id', $geo)->with([
-                'agent'=> function($o) use ($cash_at_hand,$date){
-                    $o->where('cash_at_hand','<',$cash_at_hand)->orderBy('id','DESC')->with(['logs' => function($g){
-                        $g->orderBy('id','DESC');}
-                        ,'order'=> function($f) use ($date){
-                        $f->whereDate('order_time',$date)->with('task');
-                    }]);
-                }])->get()->toArray();
+            $getgeo = DB::connection($databaseName)->table('driver_geos')
+            ->select('driver_geos.driver_id as driId', 'agents.*', 'agent_logs.*', 'ord.num_order')
+            ->join('agents','driver_geos.driver_id','agents.id')
+            ->join('agent_logs','agent_logs.agent_id','agents.id')
+            ->leftjoin(DB::raw('(SELECT COUNT(id) num_order, driver_id FROM `orders` WHERE DATE(order_time) = "'.$date.'" GROUP BY driver_id  ) ord'), function($join){
+                $join->on('agents.id', '=', 'ord.driver_id');
+                
+            })
+            ->groupBy('agent_logs.agent_id')
+            ->get();
            
            $distenseResult = $this->haversineGreatCircleDistance($getgeo,$dataget['finalLocation'],$unit,$max_redius,$max_task);
            
@@ -629,7 +671,7 @@ class scheduleNotification implements ShouldQueue
                         'driver_id'           => $geoitem['driver_id'],
                         'notification_time'   => $time,
                         'type'                => $allcation_type,
-                        'client_code'         => $auth->code,
+                        'client_code'         => $dataget['database']['code'],
                         'created_at'          => Carbon::now()->toDateTimeString(),
                         'updated_at'          => Carbon::now()->toDateTimeString(),
                         'device_type'         => $geoitem['device_type'],
@@ -651,7 +693,7 @@ class scheduleNotification implements ShouldQueue
                     }
                 }
                 $time = Carbon::parse($time)
-                ->addSeconds($expriedate + 10)
+                ->addSeconds($expriedate + 5)
                 ->format('Y-m-d H:i:s');
 
                 if ($allcation_type == 'N') {
@@ -677,8 +719,8 @@ class scheduleNotification implements ShouldQueue
         $lastarray     = [];
         $extraarray    = [];
         foreach($getgeo as $item){
-            $latitudeTo  = $item['agent']['logs']['lat'];
-            $longitudeTo = $item['agent']['logs']['long'];
+            $latitudeTo  = $item->lat;
+            $longitudeTo = $item->long;
             
             if(isset($latitudeFrom) && isset($latitudeFrom) && isset($latitudeTo) && isset($longitudeTo)){
 
@@ -694,16 +736,16 @@ class scheduleNotification implements ShouldQueue
                 cos($latFrom) * cos($latTo) * pow(sin($lonDelta / 2), 2)));
              
                 $final = round($angle * $earthRadius);
-                $count = isset($item['agent']['order']) ? count($item['agent']['order']):0;
+                $count = isset($item->num_order) ? $item->num_order:0;
                 if($unit == 'metric'){
                     
                     if($final <= $max_redius && $max_task > $count ){
                         
 
                         $data = [
-                            'driver_id'    =>  $item['agent']['logs']['agent_id'],
-                            'device_type'  =>  $item['agent']['device_type'], 
-                            'device_token' =>  $item['agent']['device_token'],
+                            'driver_id'    =>  $item->driId,
+                            'device_type'  =>  $item->device_type, 
+                            'device_token' =>  $item->device_token,
                             'distance'     =>  $final
                         ];
                         array_push($extraarray,$data); 
@@ -713,9 +755,9 @@ class scheduleNotification implements ShouldQueue
                     
                     if($final <= $max_redius && $max_task > $count ){
                         $data = [
-                            'driver_id'    =>  $item['agent']['logs']['agent_id'],
-                            'devide_type'  =>  $item['agent']['device_type'], 
-                            'device_token' =>  $item['agent']['device_token'],
+                            'driver_id'    =>  $item->driId,
+                            'device_type'  =>  $item->device_type, 
+                            'device_token' =>  $item->device_token,
                             'distance'     =>  round($final * 0.6214)
                         ];
                         array_push($extraarray,$data);
@@ -725,7 +767,6 @@ class scheduleNotification implements ShouldQueue
                     
                 }
                 
-               
                 
 
             }
