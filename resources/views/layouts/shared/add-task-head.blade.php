@@ -206,8 +206,9 @@
 <link rel="stylesheet" href="{{ asset('assets/css/jquery-ui.css') }}">
 {{-- <script src='https://cdn.rawgit.com/pguso/jquery-plugin-circliful/master/js/jquery.circliful.min.js'></script> --}}
 {{-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB85kLYYOmuAhBUPd7odVmL6gnQsSGWU-4&libraries=places"></script>  --}}
+<script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
 <script defer
-        src="https://maps.googleapis.com/maps/api/js?key={{$key}}&libraries=places,drawing&v=weekly">
+        src="https://maps.googleapis.com/maps/api/js?key={{$key}}&libraries=places,drawing,visualization&v=weekly">
         </script>
 <script src="{{ asset('assets/libs/selectize/selectize.min.js') }}"></script>
 <script src="{{ asset('assets/libs/multiselect/multiselect.min.js') }}"></script>

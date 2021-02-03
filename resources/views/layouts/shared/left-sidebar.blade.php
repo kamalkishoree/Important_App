@@ -120,11 +120,17 @@
                     </a>
                 </li> -->
                 <li>
+                    <a href="{{route('accounting')}}">
+                        <i data-feather="bell"></i>
+                        <span> Accounting </span>
+                    </a>
+                </li>
+                {{-- <li>
                     <a href="{{route('notifications.index')}}">
                         <i data-feather="bell"></i>
                         <span> Notifications </span>
                     </a>
-                </li>
+                </li> --}}
 
                 {{-- <li>
                     <a href="#">

@@ -113,8 +113,13 @@ Route::group(['prefix' => '/godpanel'], function () {
 	Route::put('client/profile/{id}','ClientProfileController@update')->name('client.profile.update');
 	Route::post('client/password/update','ClientProfileController@changePassword')->name('client.password.update');
 
+	//accounting
+	
+
 	//dummy route for testing
-	route::get('testing','ClientNotificationController@SendPushNotification');
+	Route::get('testing','AccountingController@index')->name('accounting');
+	//Route::resource('accounting', 'AccountingController');
+	//Route::get('accounting','AccountingController@index')->name('accounting');
 		
 
 	

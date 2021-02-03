@@ -235,7 +235,8 @@ class TaskController extends Controller
                 'allocation_type'            => $task_allo_type,
                 'dependent_task_id'          => $dep_id,
                 'task_status'                => $agent_id != null ? 1 : 0,
-                'created_at'                 => $notification_time
+                'created_at'                 => $notification_time,
+                'assigned_time'              => $notification_time
             ];
             // if (!empty($request->pricing_rule_id)) {
             //     $data['pricing_rule_id'] = $request->pricing_rule_id;
@@ -347,7 +348,8 @@ class TaskController extends Controller
                     
                     
                    
-                    
+                    Order::where('id',$orders->id)->update(['order_time'=>$time]);
+                    Task::where('order_id',$orders->id)->update(['assigned_time'=>$time,'created_at' =>$time]);
                     
                     scheduleNotification::dispatch($schduledata)->delay(now()->addMinutes($finaldelay));
                     //$this->dispatch(new scheduleNotification($schduledata));
