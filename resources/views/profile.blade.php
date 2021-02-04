@@ -158,10 +158,10 @@
                             </div>
                             <div class="col-md-3 mb-4">
                                 <div class="text-center mb-3">
-                                    <a href="https://www.apple.com/in/app-store/" target="_blank"><img src="{{asset('assets/images/iosstore.png')}}" alt="image" > </a>
+                                    <a href="https://apps.apple.com/us/app/royo-dispatcher/id1546990347" target="_blank"><img src="{{asset('assets/images/iosstore.png')}}" alt="image" > </a>
                                 </div>
                                 <div class="text-center">
-                                <a href="https://play.google.com/store" target="_blank"><img src="{{asset('assets/images/playstore.png')}}" alt="image"  > </a>
+                                <a href="https://play.google.com/store/apps/details?id=com.codebew.deliveryagent&hl=en_US&gl=US" target="_blank"><img src="{{asset('assets/images/playstore.png')}}" alt="image"  > </a>
                                 </div>
                             </div>
 

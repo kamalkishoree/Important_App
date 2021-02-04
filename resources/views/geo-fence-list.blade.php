@@ -49,7 +49,7 @@
 
     <!-- end page title -->
     <div class="row">
-        <div class="col-3">
+        <div class="col-12 col-md-3">
             <div class="card">
                 <div class="card-body">
 
@@ -104,7 +104,7 @@
         </div> <!-- end col -->
 
 
-        <div class="col-9">
+        <div class="col-12 col-md-9">
             <div class="card-box p-0 m-0" style="height:650px;">
                 <div id="map-canvas"></div>
             </div>

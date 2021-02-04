@@ -7,6 +7,7 @@ use App\Model\Customer;
 use App\Model\Location;
 use App\Model\Order;
 use App\Model\Task;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class AccountingController extends Controller
@@ -16,37 +17,140 @@ class AccountingController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $date = \Carbon\Carbon::today();
+       
+        if ($request->has('date')) {
 
-   
-        $totalearning       = Order::whereDate('order_time', $date)->sum('order_cost');
-        $totalagentearning  = Order::whereDate('order_time', $date)->sum('driver_cost');
-        $totalorders        = Order::whereDate('order_time', $date)->count();
+           $date_array =  (explode(" to ",$request->date));
+
+           $dateform = Carbon::parse($date_array[0])->startOfDay();
+           $dateto   = Carbon::parse(isset($date_array[1]) ? $date_array[1]:$date_array[0])->endOfDay();
+            // $tasks = $tasks->where('status', $request->time);
+            // $check = $request->status;
+        }else{
+            $dateform = \Carbon\Carbon::today()->startOfDay();
+            $dateto   = \Carbon\Carbon::today()->endOfDay();
+        }
+        
+       
+        $counter            = 0;
+        $totalearning       = Order::whereBetween('order_time', [$dateform,$dateto])->sum('order_cost');
+        $totalagentearning  = Order::whereBetween('order_time', [$dateform,$dateto])->sum('driver_cost');
+        $totalorders        = Order::whereBetween('order_time', [$dateform,$dateto])->count();
         $totalagents        = Agent::count();
 
         $agents             = Agent::orderBy('cash_at_hand','DESC')->limit(5)->get();
         $customers          = Customer::withCount('orders')->orderBy('orders_count','DESC')->limit(5)->get();
-        $heatLatLog         = Location::whereIn('id', function($query) use($date){
+        $heatLatLog         = Location::whereIn('id', function($query) use($dateform,$dateto){
                               $query->select('location_id')
                               ->from(with(new Task)->getTable())
-                              ->whereDate('created_at',$date);
+                              ->whereBetween('created_at', [$dateform,$dateto]);
                               })->get();
     
         
-        //     // for each day in the month
-        // for($i = 1; $i <=  date('t'); $i++)
-        // {
-        //     // add the date to the dates array
-        //     $dates[] = str_pad($i, 2, '0', STR_PAD_LEFT) . " " . date('M') . " " . date('Y');
-        // }
+        if($request->has('type')){
+            $type = $request->type;
+        }else{
+            $type = 3;
+        }
+        
+        switch ($type) {
+            case 1:
 
-        // // show the dates array
-        // print_r($dates);
-        // die;
+               
+               
+
+                    
+                    $dates[]    = date("d M Y");
+                    $serchdate  = date("Y-m-d");
+                   
+                    $countOrders[]  = Order::whereDate('order_time', $serchdate)->count();
+                    $sumOrders[]    = Order::whereDate('order_time', $serchdate)->sum('order_cost');
+
+                        $display        = date('d M Y', strtotime('-1 day', strtotime($serchdate)));
+                        $check          = date('Y-m-d', strtotime('-1 day', strtotime($serchdate)));
+                        $lastcount      = 0;
+                        $lastsum        = 0;
+
+                        // array_unshift($dates , $display);
+                        // array_unshift($countOrders , $lastcount);
+                        // array_unshift($sumOrders , $lastsum);
+                    
+                       // dd($dates);
+                       
+                
+                
+                break;
+            case 2:
+                
+                
+                $date = \Carbon\Carbon::today();
+                
+                $ts = strtotime($date);
+                
+                $year = date('o', $ts);
+                $week = date('W', $ts);
+                
+                for($i = 1; $i <= 7; $i++) {
+
+                    $ts = strtotime($year.'W'.$week.$i);
+                    $dates[]    = date("d M Y", $ts);
+                    $serchdate  = date("Y-m-d", $ts);
+                    $countOrders[]  = Order::whereDate('order_time', $serchdate)->count();
+                    $sumOrders[]    = Order::whereDate('order_time', $serchdate)->sum('order_cost');
+
+                    if($i == 1){
+                        $display        = date('d M Y', strtotime('-1 day', strtotime($serchdate)));
+                        $check          = date('Y-m-d', strtotime('-1 day', strtotime($serchdate)));
+                        $lastcount      = Order::whereDate('order_time', $check)->count();
+                        $lastsum        = Order::whereDate('order_time', $check)->sum('order_cost');
+
+                        
+                        array_unshift($countOrders , $lastcount);
+                        array_unshift($sumOrders , $lastsum);
+                    }
+                    
+                }
+
+                
+            break;
+            
+            default:
+
+                for($i = 1; $i <=  date('t'); $i++)
+                {
+                    $counter++;
+                    // add the date to the dates array
+                    $dates[]        = str_pad($i, 2, '0', STR_PAD_LEFT) . " " . date('M') . " " . date('Y');
+                    $serchdate      = date('Y')."-" . date('m') . "-" .str_pad($i, 2, '0', STR_PAD_LEFT);
+                    $countOrders[]  = Order::whereDate('order_time', $serchdate)->count();
+                    $sumOrders[]    = Order::whereDate('order_time', $serchdate)->sum('order_cost');
+            
+                    if($i == 1){
+                        $display        = date('d M Y', strtotime('-1 day', strtotime($serchdate)));
+                        $check          = date('Y-m-d', strtotime('-1 day', strtotime($serchdate)));
+                        $lastcount      = Order::whereDate('order_time', $check)->count();
+                        $lastsum        = Order::whereDate('order_time', $check)->sum('order_cost');
+
+                       
+                        array_unshift($countOrders , $lastcount);
+                        array_unshift($sumOrders , $lastsum);
+                    }
+                    
+                }
+        }
+
+        
+
+        // //date('d-m-y:D', mktime(0,0,0,$m,($de-1),$y)); 
+        //  print_r($dates);
+        // // print_r($countOrders);
+        // // print_r($sumOrders);
        
-        return view('accounting',compact('totalearning','totalagentearning','totalorders','totalagents','agents','customers','heatLatLog'));
+        //  die();
+       
+        return view('accounting',compact('totalearning','totalagentearning','totalorders','totalagents','agents','customers','heatLatLog','countOrders','sumOrders','dates','type'));
     }
 
     /**
