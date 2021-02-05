@@ -279,8 +279,8 @@
                         <div class="col-md-6">
                             <div class="form-group mb-3">
                                 <label for="personal_access_token_v2" class="row">
-                                    <span class="col-md-6">V2 API KEYS</span>
-                                    <span class="text-right col-md-6"><a href="javascript: genrateKeyAndToken();">Generate Key</a></span>
+                                    <span class="col-md-6 col-6">V2 API KEYS</span>
+                                    <span class="text-right col-6 col-md-6"><a href="javascript: genrateKeyAndToken();">Generate Key</a></span>
                                 </label>
                                 <input type="text" name="personal_access_token_v2" id="personal_access_token_v2"
                                     placeholder="No API key found.." class="form-control"
