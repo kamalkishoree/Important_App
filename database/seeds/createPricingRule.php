@@ -16,7 +16,7 @@ class createPricingRule extends Seeder
         $type = array(
             array(
                 'id'                               => 1,
-                'name'                             => 'defult',
+                'name'                             => 'default',
                 'start_date_time'                  => '2021-01-01 00:00:00',
                 'end_date_time'                    => '2030-01-29 00:00:00',
                 'is_default'                       => 1,

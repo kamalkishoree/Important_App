@@ -122,7 +122,7 @@
                 <li>
                     <a href="{{route('accounting')}}">
                         <i data-feather="bell"></i>
-                        <span> Accounting </span>
+                        <span> Analytics </span>
                     </a>
                 </li>
                 {{-- <li>

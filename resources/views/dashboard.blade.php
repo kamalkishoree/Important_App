@@ -1,132 +1,16 @@
 @extends('layouts.vertical', ['title' => 'Dashboard','demo'=>'creative'])
 
 @section('css')
-<!-- Plugins css -->
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-<link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro&display=swap" rel="stylesheet">
-<link href="{{ asset('assets/libs/dropzone/dropzone.min.css') }}" rel="stylesheet" type="text/css" />
-<link href="{{ asset('demo/css/style.css') }}" rel="stylesheet" type="text/css" />
-<link rel="stylesheet" type="text/css"
-href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-<link rel="preconnect" href="https://fonts.gstatic.com">
-<link
-href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
-rel="stylesheet">
-<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-<link href="{{asset('assets/libs/flatpickr/flatpickr.min.css')}}" rel="stylesheet" type="text/css" />
-<link href="{{asset('assets/libs/bootstrap-colorpicker/bootstrap-colorpicker.min.css')}}" rel="stylesheet"
-type="text/css" />
-<link href="{{asset('assets/libs/clockpicker/clockpicker.min.css')}}" rel="stylesheet" type="text/css" />
-<link href="{{asset('assets/libs/bootstrap-datepicker/bootstrap-datepicker.min.css')}}" rel="stylesheet"
-type="text/css" />
-
-<style>
-.mb-0>a {
-display: block;
-position: relative;
-}
-
-.mb-0>a:after {
-content: "\f078";
-/* fa-chevron-down */
-font-family: 'FontAwesome';
-position: absolute;
-right: 0;
-}
-body[data-sidebar-size=condensed]:not([data-layout=compact]) {
-min-height: auto!important;
-}
-.mb-0>a[aria-expanded="true"]:after {
-content: "\f077";
-/* fa-chevron-up */
-}
-
-.card-header {
-padding: .5rem 1rem;
-}
-
-/* body.menuitem-active {
-background: #3c4752 !important;
-}    */
-/* body.menuitem-active .left-sidebar h6 {
-color: #fff;
-font-size: 14px;
-font-weight: 500;
-letter-spacing: 0;
-}
-body.menuitem-active .left-sidebar p {
-color: #d4d4d4
-font-size: 13px;
-font-weight: 500;
-letter-spacing: 0;
-}
-body.menuitem-active .assigned-block {
-background-color: #3f49546b;
-} */
-body.menuitem-active .profile-status {
-border: none!important;
-}
-/* body[data-sidebar-size=condensed]:not([data-layout=compact]){
-min-height: auto !important
-} */
-/* #map_wrapper {
-    height: 400px;
-
-    #map_canvas {
-        width: 100%;
-        height: 100%;
-    }
-
-    a {
-        text-decoration: none;
-
-        &:hover {
-            text-decoration: underline;
-        }
-    }
-
-    .clustered-hovercard-content {
-        max-width: 265px;
-        overflow: hidden;
-    }
-
-    .entity-headline {
-        padding: 3px 0 1px;
-    }
-
-    .entity-title {
-        font-size: 15px;
-        line-height: 16px;
-        overflow: hidden;
-        padding-bottom: 2px;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        font-weight: 400;
-    }
-
-    .entity-short-summary {
-        color: #666666;
-        font-size: 12px;
-        font-weight: 400;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-
-    .entity-summary-line {
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-    }
-} */
-
-</style>
-
+    <!-- Plugins css -->
+    <link href="{{ asset('demo/css/style.css') }}" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" type="text/css"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
 @endsection
 @php
 $color = ['one','two','three','four','five','six','seven','eight'];
-
 @endphp
+
 @section('content')
 
 <!-- Bannar Section -->
@@ -550,23 +434,10 @@ $color = ['one','two','three','four','five','six','seven','eight'];
 
 @section('script')
 
-<!-- Optional JavaScript -->
-<!-- jQuery first, then Popper.js, then Bootstrap JS -->
-
-{{-- <script defer
-src="https://maps.googleapis.com/maps/api/js?key={{$key}}&libraries=&v=weekly">
-</script> --}}
 
 
-<script src="{{asset('assets/libs/flatpickr/flatpickr.min.js')}}"></script>
-<script src="{{asset('assets/libs/bootstrap-colorpicker/bootstrap-colorpicker.min.js')}}"></script>
-<script src="{{asset('assets/libs/clockpicker/clockpicker.min.js')}}"></script>
-<script src="{{asset('assets/libs/bootstrap-datepicker/bootstrap-datepicker.min.js')}}"></script>
 
-<!-- Page js-->
-<script src="{{asset('assets/js/pages/form-pickers.init.js')}}"></script>
-{{-- <script src="{{ asset('demo/js/propeller.min.js') }}"></script>
---}}
+
 <script>
 $(document).ready(function() {
 initMap();
