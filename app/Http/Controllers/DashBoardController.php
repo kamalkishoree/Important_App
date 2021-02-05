@@ -17,132 +17,129 @@ class DashBoardController extends Controller
      */
     public function index(Request $request)
     {
-        
-        if(isset($request->date)){
-           $date =  $request->date;
-        }else{
+        //date for display tasks on map 
+
+        if (isset($request->date)) {
+            $date =  $request->date;
+        } else {
             $date = \Carbon\Carbon::today();
         }
-        
+
         //left side bar list for display all teams
 
-        $teams  = Team::with([
-            'agents.order'=> function($o) use ($date){
-                $o->whereDate('order_time',$date)->with('customer')->with('task.location');
-            }]
-            )->get();
-            
-            foreach($teams as $team){
-                $online  = 0;
-                $offline = 0;
-                $count   = 0;
-                foreach($team->agents as $agent ){
-                    $agent_task_count = 0;
-                    foreach($agent->order as $tasks){
-                
-                        $agent_task_count = $agent_task_count + count($tasks->task);
-                    }
-                      if($agent->is_available == 1){
-                        $online++;
-                      }else{
-                        $offline++;
-                      }
-                      $count++;
-                      $agent['free'] = count($agent->order) > 0 ? 'Busy':'Free';
-                      $agent['agent_task_count'] = $agent_task_count;
+        $teams  = Team::with(
+            [
+                'agents.order' => function ($o) use ($date) {
+                    $o->whereDate('order_time', $date)->with('customer')->with('task.location');
                 }
+            ]
+        )->get();
 
-                $team['online_agents']  = $online;
-                $team['offline_agents'] = $offline;
-                $agent['agent_count']   = $count;
-                
-                
+        foreach ($teams as $team) {
+            $online  = 0;
+            $offline = 0;
+            $count   = 0;
+            foreach ($team->agents as $agent) {
+                $agent_task_count = 0;
+                foreach ($agent->order as $tasks) {
+
+                    $agent_task_count = $agent_task_count + count($tasks->task);
+                }
+                if ($agent->is_available == 1) {
+                    $online++;
+                } else {
+                    $offline++;
+                }
+                $count++;
+                $agent['free'] = count($agent->order) > 0 ? 'Busy' : 'Free';
+                $agent['agent_task_count'] = $agent_task_count;
             }
-            
-           
+
+            $team['online_agents']  = $online;
+            $team['offline_agents'] = $offline;
+            $agent['agent_count']   = $count;
+        }
+
+
         //left side bar list for display unassigned team
-        $unassigned = Agent::where('team_id',null)->with(['order'=> function($o) use ($date){
-            $o->whereDate('order_time',$date)->with('customer')->with('task.location');
+        $unassigned = Agent::where('team_id', null)->with(['order' => function ($o) use ($date) {
+            $o->whereDate('order_time', $date)->with('customer')->with('task.location');
         }])->get();
 
         $online  = 0;
         $offline = 0;
         $count   = 0;
 
-        foreach($unassigned as $agent){
-            
+        foreach ($unassigned as $agent) {
+
             $agent_task_count = 0;
-            foreach($agent->order as $tasks){
-                
+            foreach ($agent->order as $tasks) {
+
                 $agent_task_count = $agent_task_count + count($tasks->task);
             }
-          
-            if($agent->is_available == 1){
+
+            if ($agent->is_available == 1) {
                 $online++;
-            }else{
+            } else {
                 $offline++;
             }
             $count++;
-            
-            $agent['free'] = count($agent->order) > 0 ? 'Busy':'Free';
+
+            $agent['free'] = count($agent->order) > 0 ? 'Busy' : 'Free';
             $agent['online_agents']    = $online;
             $agent['offline_agents']   = $offline;
             $agent['agent_count']      = $count;
             $agent['agent_task_count'] = $agent_task_count;
-            
-            
         }
-        
-       
-       
 
-         
-       $allTasks = Order::whereDate('order_time',$date)->with(['customer','task.location','agent.team'])->get();
-       
-       $newmarker = [];
+
+
         //create array for map marker
-       foreach($allTasks as $key => $tasks){
-           $append = [];
-           foreach($tasks->task as $task){
-               
-            if($task->task_type_id == 1){
-                $name = 'Pickup';
-            }elseif($task->task_type_id == 2){
-                $name = 'DropOff';
-            }else{
-                $name = 'Appointment';
+
+        $allTasks = Order::whereDate('order_time', $date)->with(['customer', 'task.location', 'agent.team'])->get();
+
+        $newmarker = [];
+
+        foreach ($allTasks as $key => $tasks) {
+
+            $append = [];
+            foreach ($tasks->task as $task) {
+
+                if ($task->task_type_id == 1) {
+                    $name = 'Pickup';
+                } elseif ($task->task_type_id == 2) {
+                    $name = 'DropOff';
+                } else {
+                    $name = 'Appointment';
+                }
+                $append['task_type']             = $name;
+                $append['task_id']               = $task->id;
+                $append['latitude']              = floatval($task->location->latitude);
+                $append['longitude']             = floatval($task->location->longitude);
+                $append['address']               = $task->location->address;
+                $append['task_type_id']          = $task->task_type_id;
+                $append['task_status']           = (int)$task->task_status;
+                $append['team_id']               = isset($tasks->driver_id) ? $tasks->agent->team_id : 0;
+                $append['driver_name']           = isset($tasks->driver_id) ? $tasks->agent->name : '';
+                $append['customer_name']         = $tasks->customer->name;
+                $append['customer_phone_number'] = $tasks->customer->phone_number;
+
+                array_push($newmarker, $append);
             }
-            $append['task_type']             = $name;
-            $append['task_id']               = $task->id;
-            $append['latitude']              = floatval($task->location->latitude);
-            $append['longitude']             = floatval($task->location->longitude);
-            $append['address']               = $task->location->address;
-            $append['task_type_id']          = $task->task_type_id;
-            $append['task_status']           = (int)$task->task_status;
-            $append['team_id']               = isset($tasks->driver_id)? $tasks->agent->team_id:0;
-            $append['driver_name']           = isset($tasks->driver_id)? $tasks->agent->name:'';
-            $append['customer_name']         = $tasks->customer->name;
-            $append['customer_phone_number'] = $tasks->customer->phone_number;
+        }
 
-            array_push($newmarker,$append);
 
-           }    
-            
-            
-       }
-        
-    
-       $unassigned->toArray();
-       $teams->toArray();
-       
-        
+        $unassigned->toArray();
+        $teams->toArray();
+
+
         $theme = \App\Model\ClientPreference::where(['id' => 1])->first('theme');
-       
-       
-        $agents = Agent::with('agentlog')->get()->toArray();
-        
 
-        return view('dashboard')->with(['teams' => $teams,'newmarker'=> $newmarker,'unassigned'=> $unassigned,'agents'=> $agents,'theme' => $theme]);
+
+        $agents = Agent::with('agentlog')->get()->toArray();
+
+
+        return view('dashboard')->with(['teams' => $teams, 'newmarker' => $newmarker, 'unassigned' => $unassigned, 'agents' => $agents, 'theme' => $theme]);
     }
 
     /**

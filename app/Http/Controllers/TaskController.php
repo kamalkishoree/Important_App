@@ -35,6 +35,7 @@ class TaskController extends Controller
     {
         
         /* Orter status will be done as per task completed. task assigned than assigned all task of order completed tha completed and so on*/
+
         $tasks = Order::orderBy('created_at', 'DESC')->with(['customer', 'location', 'taskFirst', 'agent', 'task']);
         $check = '';
         if ($request->has('status') && $request->status != 'all') {
@@ -71,19 +72,13 @@ class TaskController extends Controller
         $agentTag    = TagsForAgent::all();
         $pricingRule = PricingRule::select('id', 'name')->get();
         $allcation   = AllocationRule::where('id', 1)->first();
-
-        /*$pricingRule = PricingRule::select('id', 'name')->whereDate('start_date_time', '<', Carbon::now())
-                            ->whereDate('end_date_time', '>', Carbon::now())->get();*/
-
-
-        //$agents = Agent::orderBy('created_at', 'DESC')->where('is_activated', 1)->get();
+        
         $agents = Agent::orderBy('created_at', 'DESC')->get();
-        //print_r($agents);die;
+        
 
         $returnHTML = view('modals/add-task-modal')->with(['teamTag' => $teamTag, 'agentTag' => $agentTag, 'agents' => $agents, 'pricingRule' => $pricingRule, 'allcation' => $allcation])->render();
         return response()->json(array('success' => true, 'html' => $returnHTML));
 
-        //return view('tasks/add-task')->with(['teamTag' => $teamTag, 'agentTag' => $agentTag, 'agents' => $agents, 'pricingRule' => $pricingRule]);
     }
 
     protected function validator(array $data)
@@ -113,7 +108,8 @@ class TaskController extends Controller
         $longitude = [];
         $percentage = 0;
 
-        // dd($request->all());
+        
+        //save task images on s3 bucket
 
         if (isset($request->file) && count($request->file) > 0) {
             $folder = str_pad(Auth::user()->id, 8, '0', STR_PAD_LEFT);
@@ -126,8 +122,6 @@ class TaskController extends Controller
                 $s3filePath = '/assets/' . $folder . '/' . $file_name;
                 $path = Storage::disk('s3')->put($s3filePath, $file, 'public');
                 array_push($images, $path);
-                // $can = Storage::disk('s3')->url('image.png');
-                // $last = str_replace('image.png', '', $can);
 
             }
             $last = implode(",", $images);
@@ -150,12 +144,16 @@ class TaskController extends Controller
             $cus_id = $request->ids;
             $customer = Customer::where('id', $request->ids)->first();
         }
-            $pricingRule = PricingRule::where('id',1)->first();
 
-        //order save
+        //get pricing rule  for save with every order
+        $pricingRule = PricingRule::where('id',1)->first();
+
+        //here order save code is started
 
         $notification_time = isset($request->schedule_time) ? $request->schedule_time : Carbon::now()->toDateTimeString();
+
         $agent_id          = $request->allocation_type === 'm' ? $request->agent : null;
+
         $order = [
             'customer_id'                     => $cus_id,
             'recipient_phone'                 => $request->recipient_phone,
@@ -184,9 +182,10 @@ class TaskController extends Controller
 
         $orders = Order::create($order);
 
-        //task save
+        //here is task save code is started
 
-        $dep_id = null;
+        $dep_id = null; // this is used as dependent task id 
+
         foreach ($request->task_type_id as $key => $value) {
             $taskcount++;
             if (isset($request->address[$key])) {
@@ -238,14 +237,12 @@ class TaskController extends Controller
                 'created_at'                 => $notification_time,
                 'assigned_time'              => $notification_time
             ];
-            // if (!empty($request->pricing_rule_id)) {
-            //     $data['pricing_rule_id'] = $request->pricing_rule_id;
-            // }
             $task = Task::create($data);
             $dep_id = $task->id;
         }
 
         //accounting for task duration distanse 
+
          $getdata = $this->GoogleDistanceMatrix($latitude,$longitude);
     
          $paid_duration = $getdata['duration'] - $pricingRule->base_duration;
@@ -264,6 +261,9 @@ class TaskController extends Controller
                     $percentage = $pricingRule->freelancer_commission_percentage + (($total / 100) * $pricingRule->freelancer_commission_fixed);
                 }
          }
+
+         //update order with order cost details
+
          $updateorder = [
             'actual_time'        => $getdata['duration'],
             'actual_distance'    => $getdata['distance'],
@@ -271,11 +271,11 @@ class TaskController extends Controller
             'driver_cost'        => $percentage,
 
          ];
-         
-
-
+        
          Order::where('id',$orders->id)->update($updateorder);
 
+
+        //task tages save code is here
 
         if (isset($request->allocation_type) && $request->allocation_type === 'a') {
             if (isset($request->team_tag)) {
@@ -285,7 +285,9 @@ class TaskController extends Controller
                 $orders->drivertags()->sync($request->agent_tag);
             }
         }
+
         //this function is called when allocation type is Accept/Reject it find the current task location belongs to which geo fence
+
         $geo = null;
         if ($request->allocation_type === 'a') {
             $geo = $this->createRoster($send_loc_id);
@@ -294,6 +296,7 @@ class TaskController extends Controller
         }
 
         // task schdule code is hare
+
         $allocation = AllocationRule::where('id', 1)->first();
 
         if($request->task_type != 'now'){
@@ -301,19 +304,19 @@ class TaskController extends Controller
                 
                  $auth = Client::where('code', Auth::user()->code)->with(['getAllocation', 'getPreference'])->first();
 
-                 $beforetime        = (int)$auth->getAllocation->start_before_task_time;
+                
+                 $beforetime = (int)$auth->getAllocation->start_before_task_time;  
 
-                //  $to   = Carbon::createFromFormat('Y-m-d H:s:i', Carbon::now()->toDateTimeString());
-                //  $to->timezone = isset(Auth::user()->timezone)? Auth::user()->timezone : 'Asia/Kolkata';
+                
                  $to = new \DateTime("now", new \DateTimeZone(isset(Auth::user()->timezone)? Auth::user()->timezone : 'Asia/Kolkata') );
+
                  $sendTime = Carbon::now();
                 
                  $to = Carbon::parse($to)->format('Y-m-d H:i:s');
-                // $to->setTimezone(isset(Auth::user()->timezone)? Auth::user()->timezone : 'Asia/Kolkata');
+               
                 
                 $from = Carbon::parse($notification_time)->format('Y-m-d H:i:s');
-                //$from->setTimezone(isset(Auth::user()->timezone)? Auth::user()->timezone : 'Asia/Kolkata');
-                // $from->setTimezone(isset(Auth::user()->timezone)? Auth::user()->timezone : 'Asia/Kolkata');
+                
                  $datecheck = 0;
                  $to_time = strtotime($to);
                  $from_time = strtotime($from);
@@ -352,11 +355,9 @@ class TaskController extends Controller
                     Task::where('order_id',$orders->id)->update(['assigned_time'=>$time,'created_at' =>$time]);
                     
                     scheduleNotification::dispatch($schduledata)->delay(now()->addMinutes($finaldelay));
-                    //$this->dispatch(new scheduleNotification($schduledata));
-
-
 
                     return redirect()->route('tasks.index')->with('success', 'Task Added Successfully!');
+
                 }
                
 
@@ -488,7 +489,7 @@ class TaskController extends Controller
         $maxsize    = (int)$auth->getAllocation->maximum_batch_size;
         $type       = $auth->getPreference->acknowledgement_type;
         $try        = $auth->getAllocation->number_of_retries;
-        $time       = $this->checkTimeDiffrence($notification_time, $beforetime);
+        $time       = $this->checkTimeDiffrence($notification_time, $beforetime); //this function is check the time diffrence and give the notification time
         $randem     = rand(11111111, 99999999);
 
         if ($type !== 'acceptreject') {
@@ -523,7 +524,7 @@ class TaskController extends Controller
                 'detail_id'           => $randem,
             ];
 
-            $this->dispatch(new RosterCreate($data, $extraData));
+            $this->dispatch(new RosterCreate($data, $extraData)); //this job is for create roster in main database for send the notification  in manual alloction
             
         } else {
 
@@ -593,6 +594,9 @@ class TaskController extends Controller
                             array_push($dummyentry, $data);
                            
                         }
+
+                        //here i am seting the time diffrence for every notification
+
                         $time = Carbon::parse($time)
                             ->addSeconds($expriedate + 3)
                             ->format('Y-m-d H:i:s');
@@ -642,18 +646,18 @@ class TaskController extends Controller
                 }
             }
            
-            // print_r($all);
-            // print()
-            
-            $this->dispatch(new RosterCreate($all, $extraData));
+          
+            $this->dispatch(new RosterCreate($all, $extraData)); // //this job is for create roster in main database for send the notification  in auto alloction
             
             
         }
     }
+
+    //this function for check time diffrence and give a time for notification send betwwen current time and task time
+
     public function checkTimeDiffrence($notification_time, $beforetime)
     {
-        // print($now);
-        // print($notification_time);
+        
 
 
 
@@ -824,7 +828,7 @@ class TaskController extends Controller
             
         } else {
 
-            //$getgeo = DriverGeo::where('geo_id', $geo)->with('agent')->get('driver_id');
+            
             $getgeo = DriverGeo::where('geo_id', $geo)->with([
                 'agent'=> function($o) use ($cash_at_hand,$date){
                     $o->where('cash_at_hand','<',$cash_at_hand)->orderBy('id','DESC')->with(['logs' => function($g){
@@ -834,6 +838,8 @@ class TaskController extends Controller
                     }]);
                 }])->get()->toArray();
            
+            //this function is give me nearest drivers list accourding to the the task location.
+
            $distenseResult = $this->haversineGreatCircleDistance($getgeo,$finalLocation,$unit,$max_redius,$max_task);
            
           
@@ -879,7 +885,7 @@ class TaskController extends Controller
             }
             
             
-            $this->dispatch(new RosterCreate($data, $extraData));
+            $this->dispatch(new RosterCreate($data, $extraData)); // job for create roster
             
         }
     }
@@ -943,7 +949,7 @@ class TaskController extends Controller
             $this->dispatch(new RosterCreate($data, $extraData));
         } else {
 
-            //$getgeo = DriverGeo::where('geo_id', $geo)->with('agent')->get('driver_id');
+           
             $getgeo = DriverGeo::where('geo_id', $geo)->with([
                 'agent'=> function($o) use ($cash_at_hand,$date){
                     $o->where('cash_at_hand','<',$cash_at_hand)->orderBy('id','DESC')->with(['logs','order'=> function($f) use ($date){
@@ -951,6 +957,8 @@ class TaskController extends Controller
                     }]);
                 }])->get()->toArray();
            
+           //this function give me the driver list accourding to who have liest task for the current date
+
            $distenseResult = $this->roundCalculation($getgeo,$finalLocation,$unit,$max_redius,$max_task);
            
            
@@ -994,7 +1002,7 @@ class TaskController extends Controller
             }
             
             
-            $this->dispatch(new RosterCreate($data, $extraData));
+            $this->dispatch(new RosterCreate($data, $extraData));      // job for insert data in roster table for send notification
             
         }
     }
@@ -1175,24 +1183,6 @@ class TaskController extends Controller
 
 
 
-
-    // public function getGeoCoordinatesAttribute($geoarray){
-    //     $data = [];  
-    //     $temp = $geoarray;
-    //     $temp = str_replace('(','[',$temp);
-    //     $temp = str_replace(')',']',$temp);
-    //     $temp = '['.$temp.']';
-    //     $temp_array =  json_decode($temp,true);
-
-    //     foreach($temp_array as $k=>$v){
-    //         $data[] = [
-    //             'lat' => $v[0],
-    //             'lng' => $v[1]
-    //         ];
-    //     }
-    //     return $data;
-    // }
-
     /**
      * Display the specified resource.
      *
@@ -1240,12 +1230,9 @@ class TaskController extends Controller
             $array = '';
         }
 
-        $pricingRule = PricingRule::select('id', 'name')->get();
 
-        /*$pricingRule = PricingRule::select('id', 'name')->whereDate('start_date_time', '<', Carbon::now())
-                            ->whereDate('end_date_time', '>', Carbon::now())->get();*/
 
-        return view('tasks/update-task')->with(['task' => $task, 'teamTag' => $teamTag, 'agentTag' => $agentTag, 'agents' => $agents, 'images' => $array, 'savedrivertag' => $savedrivertag, 'saveteamtag' => $saveteamtag, 'main' => $lastbaseurl, 'pricingRule' => $pricingRule]);
+        return view('tasks/update-task')->with(['task' => $task, 'teamTag' => $teamTag, 'agentTag' => $agentTag, 'agents' => $agents, 'images' => $array, 'savedrivertag' => $savedrivertag, 'saveteamtag' => $saveteamtag, 'main' => $lastbaseurl]);
     }
 
     /**
@@ -1408,6 +1395,8 @@ class TaskController extends Controller
         return redirect()->back()->with('success', 'Task deleted successfully!');
     }
 
+    //this is for serch customer for when create tasking
+
     public function search(Request $request)
     {
 
@@ -1433,6 +1422,9 @@ class TaskController extends Controller
         }
     }
 
+
+    //this function is give task list of an order
+
     public function tasklist($id)
     {
         
@@ -1446,8 +1438,5 @@ class TaskController extends Controller
             
             return response()->json($task);
         
-        
-
-        # code...
     }
 }
