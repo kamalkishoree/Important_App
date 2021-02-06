@@ -104,8 +104,33 @@
 
 
 @media (max-width:767px) {
-  .card-box {
-    padding: 1.5rem .8rem!important;
+  #show-map-modal .btn.btn-blue.waves-effect.waves-light.selectMapLocation, #submitAgent .btn.btn-blue.waves-effect.waves-light, #submitpayreceive .btn.btn-blue.waves-effect.waves-light {
+    width: 100%;
+  }
+  #add_customer .btn.btn-blue.waves-effect.waves-light.submitCustomerForm {
+    width: 100%;
+  }
+  #UpdateClient .btn.btn-blue.waves-effect.waves-light {
+    width: 100%;
+  }
+  #UpdateClient h1 {
+    font-size: 38px!important;
+  }
+  li.paginate_button.previous, li.paginate_button.next {
+    display: inline-block;
+    font-size: 1rem!important;
+  }
+  #taskFormHeader .modal-footer {
+    padding-top: 0px!important;
+  }
+  #taskFormHeader .submitTaskHeader {
+    width: 100%;
+  }
+  #task_form_header #googleMapHeader {
+    min-width: 100%!important;
+  }
+  #taskFormHeader .modal-body {
+    padding-bottom: 0px!important;
   }
   #agents-datatable_wrapper label {
     width: 100%;
@@ -128,8 +153,14 @@
   #pricing-datatable_length label, #pricing-datatable_filter label {
     width: 100%;
   }
+  #addCardBox .datenow input {
+    margin-bottom: 8px;
+  }
   .card-body {
-    padding: 1.5rem .5rem;
+    padding: 1.5rem 1rem;
+  }
+  .card-box {
+    padding: 1.5rem 1rem;
   }
   .map-wrapper {
     margin-top: 25px;

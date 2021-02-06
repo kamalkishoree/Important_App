@@ -225,20 +225,20 @@ $color = ['one','two','three','four','five','six','seven','eight'];
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                             <div class="task-block pl-2 pr-2">
                                 <div class="row">
-                                    <div class="col-md-6">
+                                    <div class="col-md-6 col-6">
                                         <span>Tasks</span>
                                     </div>
-                                    <div class="col-md-6 text-right">
+                                    <div class="col-md-6 col-6 text-right">
                                         <a href=""><span>All</span></a>
                                         <a class="ml-3" href=""><span>None</span></a>
                                     </div>
                                 </div>
 
                                 <div class="row mt-2 teamchange">
-                                    <div class="col-md-8">
+                                    <div class="col-md-8 col-8">
                                         <h6>All Teams</h6>
                                     </div>
-                                    <div class="col-md-4 text-right">
+                                    <div class="col-md-4 col-4 text-right">
                                         <label class="">
                                             <input class="newchecks" cla type="checkbox" value="-1"
                                                 name="teamchecks[]" checked>
@@ -247,10 +247,10 @@ $color = ['one','two','three','four','five','six','seven','eight'];
                                     </div>
                                 </div>
                                 <div class="row mt-2 teamchange">
-                                    <div class="col-md-8">
+                                    <div class="col-md-8 col-8">
                                         <h6>Unassigned team</h6>
                                     </div>
-                                    <div class="col-md-4 text-right">
+                                    <div class="col-md-4 col-4 text-right">
                                         <label class="">
                                             <input class="newchecks" cla type="checkbox" value="0"
                                                 name="teamchecks[]">
@@ -260,10 +260,10 @@ $color = ['one','two','three','four','five','six','seven','eight'];
                                 </div>
                                 @foreach ($teams as $item)
                                     <div class="row mt-2 teamchange">
-                                        <div class="col-md-8">
+                                        <div class="col-md-8 col-8">
                                             <h6>{{ $item['name'] }}</h6>
                                         </div>
-                                        <div class="col-md-4 text-right">
+                                        <div class="col-md-4 col-4 text-right">
                                             <label class="">
                                                 <input class="newchecks" type="checkbox" name="teamchecks[]"
                                                     value="{{ $item['id'] }}">
@@ -283,22 +283,22 @@ $color = ['one','two','three','four','five','six','seven','eight'];
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                             <div class="task-block pl-2 pr-2">
                                 <div class="row">
-                                    <div class="col-md-6">
+                                    <div class="col-md-6 col-8">
                                         <span>Task Status </span>
                                     </div>
-                                    <div class="col-md-6 text-right">
+                                    <div class="col-md-6 col-4 text-right">
                                         <a href=""><span></span></a>
                                         <a class="ml-3" href=""><span></span></a>
                                     </div>
                                 </div>
 
-                                <div class="row mt-2">
-                                    <div class="col-md-9">
+                                <div class="row d-flex align-items-center mt-2">
+                                    <div class="col-md-9 col-9">
                                         <h6><img class="mr-2"
                                                 src=""></span>All
                                         </h6>
                                     </div>
-                                    <div class="col-md-3 text-right">
+                                    <div class="col-md-3 col-3 text-right">
                                         <label class="mt-2">
                                             <input class="taskchecks" type="checkbox" name="taskstatus[]"
                                                 value="5">
@@ -308,12 +308,12 @@ $color = ['one','two','three','four','five','six','seven','eight'];
                                 </div>
 
                                 <div class="row mt-2">
-                                    <div class="col-md-9">
+                                    <div class="col-md-9 col-9">
                                         <h6><img class="mr-2"
                                                 src="{{ asset('assets/newicons/red.png') }}"></span>Unassigned
                                         </h6>
                                     </div>
-                                    <div class="col-md-3 text-right">
+                                    <div class="col-md-3 col-3 text-right">
                                         <label class="mt-2">
                                             <input class="taskchecks" type="checkbox" name="taskstatus[]"
                                                 value="0">
@@ -322,12 +322,12 @@ $color = ['one','two','three','four','five','six','seven','eight'];
                                     </div>
                                 </div>
                                 <div class="row mt-2">
-                                    <div class="col-md-9">
+                                    <div class="col-md-9 col-9">
                                         <h6><img class="mr-2"
                                                 src="{{ asset('assets/newicons/orange.png') }}"></span>Assigned
                                         </h6>
                                     </div>
-                                    <div class="col-md-3 text-right">
+                                    <div class="col-md-3 col-3 text-right">
                                         <label class="mt-2">
                                             <input class="taskchecks" type="checkbox" name="taskstatus[]"
                                                 value="1">
@@ -337,12 +337,12 @@ $color = ['one','two','three','four','five','six','seven','eight'];
                                 </div>
 
                                 <div class="row mt-2">
-                                    <div class="col-md-9">
+                                    <div class="col-md-9 col-9">
                                         <h6><img class="mr-2"
                                                 src="{{ asset('assets/newicons/green.png') }}"></span>Completed
                                         </h6>
                                     </div>
-                                    <div class="col-md-3 text-right">
+                                    <div class="col-md-3 col-3 text-right">
                                         <label class="mt-2">
                                             <input class="taskchecks" type="checkbox" name="taskstatus[]"
                                                 value="3">
@@ -351,12 +351,12 @@ $color = ['one','two','three','four','five','six','seven','eight'];
                                     </div>
                                 </div>
                                 <div class="row mt-2">
-                                    <div class="col-md-9">
+                                    <div class="col-md-9 col-9">
                                         <h6><img class="mr-2"
                                                 src="{{ asset('assets/newicons/grey.png') }}"></span>Failed
                                         </h6>
                                     </div>
-                                    <div class="col-md-3 text-right">
+                                    <div class="col-md-3 col-3 text-right">
                                         <label class="mt-2">
                                             <input class="taskchecks" type="checkbox" name="taskstatus[]"
                                                 value="4">
@@ -375,20 +375,20 @@ $color = ['one','two','three','four','five','six','seven','eight'];
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                             <div class="task-block pl-2 pr-2">
                                 <div class="row">
-                                    <div class="col-md-6">
+                                    <div class="col-md-6 col-8">
                                         <span>Drivers</span>
                                     </div>
-                                    <div class="col-md-6 text-right">
+                                    <div class="col-md-6 col-4 text-right">
                                         <a href=""><span></span></a>
                                         <a class="ml-3" href=""><span></span></a>
                                     </div>
                                 </div>
 
                                 <div class="row mt-2">
-                                    <div class="col-md-8">
+                                    <div class="col-md-8 col-8">
                                         <h6>All Drivers</h6>
                                     </div>
-                                    <div class="col-md-4 text-right">
+                                    <div class="col-md-4 col-4 text-right">
                                         <label class="">
                                             <input class="agentdisplay" type="checkbox" name="agentcheck[]" value="2">
                                             <span class="checkmark" ></span>
@@ -396,10 +396,10 @@ $color = ['one','two','three','four','five','six','seven','eight'];
                                     </div>
                                 </div>
                                 <div class="row mt-2">
-                                    <div class="col-md-8">
+                                    <div class="col-md-8 col-8">
                                         <h6><span class="circle lia-castro mr-2"></span>Online</h6>
                                     </div>
-                                    <div class="col-md-4 text-right">
+                                    <div class="col-md-4 col-4 text-right">
                                         <label class="">
                                             <input class="agentdisplay" type="checkbox" name="agentcheck[]" value="1">
                                             <span class="checkmark"></span>
@@ -407,10 +407,10 @@ $color = ['one','two','three','four','five','six','seven','eight'];
                                     </div>
                                 </div>
                                 <div class="row mt-2">
-                                    <div class="col-md-8">
+                                    <div class="col-md-8 col-8">
                                         <h6><span class="circle mr-2"></span>Offline</h6>
                                     </div>
-                                    <div class="col-md-4 text-right">
+                                    <div class="col-md-4 col-4 text-right">
                                         <label class="">
                                             <input class="agentdisplay" type="checkbox" name="agentcheck[]" value="0">
                                             <span class="checkmark"></span>
