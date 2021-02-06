@@ -333,57 +333,7 @@
     </form> 
     
 
-    <!-- <form method="POST" action="{{route('preference', Auth::user()->code)}}">
-        @csrf
-        <div class="row">
-            <div class="col-xl-11 col-md-offset-1">
-                <div class="card-box">
-                    <h4 class="header-title">Tracking URL</h4>
-                    <p class="sub-header">
-                        Customize the Tracking URL.
-                    </p>
-                    <p class="sub-header m-0">
-                        Preview
-                    </p>
-                    <p class="sub-header ">
-                        <code>https://royodispatcher.com/tasktrack</code>/<code
-                            style="text-decoration: underline;">Pickup</code>/<code
-                            style="text-decoration: underline;">00023</code>
-                    </p>
-
-                    <h4 class="header-title">Allow Feedback on Tracking Url</h4>
-                    <div class="row mb-2" style="margin-left: 0px;">
-                        <div class="col-sm-12">
-                            <div class="radio radio-info form-check-inline">
-                                <input type="radio" id="feedback1" value="y" name="allow_feedback_tracking_url"
-                                    {{ ($preference && $preference->allow_feedback_tracking_url =="y")? "checked" : "" }}>
-                                <label for="feedback1"> Yes </label>
-                            </div>
-                            <div class="radio form-check-inline">
-                                <input type="radio" id="feedback2" value="n" name="allow_feedback_tracking_url"
-                                    {{ ($preference && $preference->allow_feedback_tracking_url =="n")? "checked" : "" }}>
-                                <label for="feedback2"> No </label>
-                            </div>
-                            @if($errors->has('allow_feedback_tracking_url'))
-                            <span class="text-danger" role="alert">
-                                <strong>{{ $errors->first('allow_feedback_tracking_url') }}</strong>
-                            </span>
-                            @endif
-                        </div>
-
-                    </div>
-
-                    <div class="row mb-2">
-                        <div class="col-md-2">
-                            <div class="form-group mb-0 text-center">
-                                <button class="btn btn-blue btn-block" type="submit"> Update </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </form> -->
+    
 
 </div> <!-- container -->
 @endsection

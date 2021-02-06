@@ -327,3 +327,196 @@
   .setcolor{
       color: blue !important;
   }
+
+
+
+  /* edit task css */
+  #adds {
+    margin-bottom: 14px;
+}
+
+.shows {
+    display: none;
+}
+
+.rec {
+    margin-bottom: 7px;
+}
+
+.needsclick {
+
+    margin-left: 27%;
+}
+
+.padd {
+    padding-left: 9% !important;
+}
+
+.newchnage {
+    margin-left: 27% !important;
+}
+
+.address {
+    margin-bottom: 6px
+}
+
+.tags {
+    display: none;
+}
+
+#typeInputss {
+    overflow-y: auto;
+    height: 142px;
+}
+
+.upload {
+    margin-bottom: 20px;
+    margin-top: 10px;
+
+}
+
+.span1 {
+    color: #ff0000;
+}
+
+.check {
+    margin-left: 116px !important;
+}
+
+.newcheck {
+    margin-left: -54px;
+}
+
+.upside {
+    margin-top: -10px;
+}
+
+.newgap {
+    margin-top: 11px !important;
+}
+
+
+
+.append {
+    margin-bottom: 15px;
+}
+
+.spanbold {
+    font-weight: bolder;
+}
+
+.copyin {
+    background-color: #F7F8FA;
+}
+
+.copyin1 {
+    background-color: #F7F8FA;
+}
+
+hr.new3 {
+    border-top: 1px dashed white;
+}
+
+#spancheck {
+    display: none;
+}
+
+.imagepri {
+    min-width: 50px;
+    height: 50px;
+    width: 50px;
+    border-style: groove;
+    margin-left: 5px;
+    margin-top: 5px;
+}
+
+
+
+.showsimage {
+    margin-top: 9px;
+    margin-left: 140px;
+}
+
+.showshadding {
+    margin-left: 98px;
+}
+
+.newchnageimage {
+    margin-left: 100px;
+}
+
+.showsimagegall {
+    margin-left: 148px;
+    margin-top: 21px;
+
+}
+
+.allset {
+    margin-left: 9px !important;
+    padding-top: 10px;
+}
+
+
+/* team */
+
+.cursors {
+  cursor: pointer;
+}
+
+.label-info {
+  background-color: #5bc0de;
+  display: inline-block;
+  padding: 0.2em 0.6em 0.3em;
+  font-size: 75%;
+  font-weight: 700;
+  line-height: 1;
+  color: #fff;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+  border-radius: 0.25em;
+}
+
+.containers {
+  margin: 20px;
+}
+
+/* autocomplete tagsinput*/
+.label-info {
+  background-color: #5bc0de;
+  display: inline-block;
+  padding: 0.2em 0.6em 0.3em;
+  font-size: 75%;
+  font-weight: 700;
+  line-height: 1;
+  color: #fff;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+  border-radius: 0.25em;
+}
+#ui-id-1, #ui-id-2{
+  z-index: 9999 ;
+
+}
+#ui-id-1 li, #ui-id-2 li{
+  z-index: 9999 ;
+}
+
+
+
+#ui-id-1, #ui-id-2{
+z-index: 9999 ;
+
+}
+#ui-id-1 li, #ui-id-2 li{
+z-index: 9999 ;
+}
+.setmodal{
+margin-left: 158px;
+}
+.dispaly-cards {
+background-color: rgb(251 247 247) !important;
+text-align: center;
+}
+

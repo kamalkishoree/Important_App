@@ -22,6 +22,8 @@ class ClientProfileController extends Controller
 
     public function update(Request $request, $id)
     {
+
+        
     }
 
     public function changePassword(Request $request)

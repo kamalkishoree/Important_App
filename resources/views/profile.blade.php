@@ -4,27 +4,6 @@
 <link href="{{asset('assets/libs/dropzone/dropzone.min.css')}}" rel="stylesheet" type="text/css" />
 <link href="{{asset('assets/libs/dropify/dropify.min.css')}}" rel="stylesheet" type="text/css" />
 <link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/8.4.6/css/intlTelInput.css'>
-<style>
-    // workaround
-    .intl-tel-input {
-        display: table-cell;
-    }
-
-    .intl-tel-input .selected-flag {
-        z-index: 4;
-    }
-
-    .intl-tel-input .country-list {
-        z-index: 5;
-    }
-
-    .input-group .intl-tel-input .form-control {
-        border-top-left-radius: 4px;
-        border-top-right-radius: 0;
-        border-bottom-left-radius: 4px;
-        border-bottom-right-radius: 0;
-    }
-</style>
 @endsection
 
 @section('content')
@@ -47,6 +26,7 @@
         </div>
         @endif
     </div>
+
     <div class="text-sm-left">
         @if (\Session::has('error'))
         <div class="alert alert-error">
@@ -394,14 +374,6 @@
     });
     $('.intl-tel-input').css('width', '100%');
 
-    // var regEx = /\(?([0-9]{3})\)?([ .-]?)([0-9]{3})\2([0-9]{4})/;
-    // $("#UpdateClient").bind("submit", function() {
-    //     var val = $("#phone_number").val();
-    //     if (!val.match(regEx)) {
-    //         $('#phone_number').css('color', 'red');
-    //         return false;
-    //     }
-    // });
 
     $(function() {
         $('#phone_number').focus(function() {

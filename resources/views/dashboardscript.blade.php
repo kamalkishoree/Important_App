@@ -1,8 +1,5 @@
 <script>
-    $(document).ready(function() {
-    initMap();
-    $('#shortclick').trigger('click');
-    });
+    
     
     
     
