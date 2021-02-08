@@ -1,6 +1,6 @@
 <!-- bundle -->
 <!-- Vendor js -->
-
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
 
 <script src="{{asset('assets/js/waitMe.min.js')}}"></script>
 
@@ -42,10 +42,25 @@ const stopLoader = function(element) {
     $(element).waitMe("hide");
 }
 
+$('#newcheck').click(function(){
+    $('.checking').toggleClass('classB', $('#pass').prop('type', 'text'));
+    // var element = document.getElementById("newcheck");
+    // element.classList.remove("checking");
+    // element.classList.add("show");
+    // $('#pass').prop('type', 'text');
+});
 
+$('.show').click(function(){
+    var element = document.getElementById("newcheck");
+    element.classList.add("checking");
+    element.classList.remove("show");
+    $('#pass').prop('type', 'password');
+});
 
 </script>
 @yield('script')
 <!-- App js -->
+
 <script src="{{asset('assets/js/app.min.js')}}"></script>
+
 @yield('script-bottom')

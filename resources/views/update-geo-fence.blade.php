@@ -13,11 +13,11 @@
 
     <!-- for File Upload -->
 
-    <link href="{{ asset('assets/libs/dropzone/dropzone.min.css') }}" rel="stylesheet" type="text/css" />
-    <link href="{{ asset('assets/libs/dropify/dropify.min.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('assets/libs/dropzone/dropzone.min.css') }}" rel="stylesheet" type="text/css"/>
+    <link href="{{ asset('assets/libs/dropify/dropify.min.css') }}" rel="stylesheet" type="text/css"/>
     <style>
         #map-canvas {
-            height: 90%;
+            height: 100%;
             margin: 0px;
             padding: 0px;
             position: unset;
@@ -207,7 +207,7 @@
                     </div>
                 </div>
                 <div class="col-lg-7">
-                    <div class="card-box" style="height:500px;">
+                    <div class="card-box" style="height:770px;">
                         <!-- <div id="gmaps-basic" class="gmaps"></div> -->
                         <div id="map-canvas"></div>
                     </div>
@@ -291,6 +291,7 @@
             var myOptions = {
                 zoom: parseInt(zoomLevel),
                 center: myLatlng,
+                styles: themeType,
                 mapTypeId: google.maps.MapTypeId.ROADMAP
             }
             map = new google.maps.Map(document.getElementById("map-canvas"), myOptions);

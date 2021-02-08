@@ -240,7 +240,7 @@
                                     <tr>
                                         <th>Type</th>
                                         <th>Enable</th>
-                                        <th>Requried</th>
+                                        <th>Required</th>
                                         
                                     </tr>
                                 </thead>

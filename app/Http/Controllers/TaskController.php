@@ -1205,7 +1205,8 @@ class TaskController extends Controller
 
         $savedrivertag   = [];
         $saveteamtag     = [];
-        $task            = Order::where('id', $id)->with(['customer.location', 'task', 'agent'])->first();
+        //=> function($o){$o->where('short_name','!=',null);}
+        $task            = Order::where('id', $id)->with(['task','agent','customer.location'])->first();
         $fatchdrivertag  = TaskDriverTag::where('task_id', $id)->get('tag_id');
         $fatchteamtag    = TaskTeamTag::where('task_id', $id)->get('tag_id');
         if (count($fatchdrivertag) > 0 && count($fatchteamtag) > 0) {

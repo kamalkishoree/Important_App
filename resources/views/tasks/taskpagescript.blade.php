@@ -88,15 +88,15 @@
 
                 $("#base_distance").text(round(data.base_distance));
                 $("#actual_distance").text(data.actual_distance);
-                $("#billing_distance").text(round(data.actual_distance - data.base_distance, 2));
+                $("#billing_distance").text(Math.max(0, round(data.actual_distance - data.base_distance, 2)));
                 var sendDistance = (data.actual_distance - data.base_distance) * data.distance_fee;
-                $("#distance_cost").text(round(sendDistance, 2));
+                $("#distance_cost").text(Math.max(0,round(sendDistance, 2)));
 
                 $("#base_duration").text(data.base_duration);
                 $("#actual_duration").text(data.actual_time);
-                $("#billing_duration").text(data.actual_time - data.base_duration);
+                $("#billing_duration").text(Math.max(0,data.actual_time - data.base_duration));
                 var sendDuration = (data.actual_time - data.base_duration) * data.duration_price;
-                $("#duration_cost").text(sendDuration);
+                $("#duration_cost").text(Math.max(0,sendDuration));
 
                 $("#base_price").text(data.base_price);
                 $("#duration_price").text(data.duration_price + ' (Per min)');

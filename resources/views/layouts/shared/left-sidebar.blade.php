@@ -121,7 +121,7 @@
                 </li> -->
                 <li>
                     <a href="{{route('accounting')}}">
-                        <i data-feather="bell"></i>
+                        <i class="fe-trending-up"></i>
                         <span> Analytics </span>
                     </a>
                 </li>
@@ -130,9 +130,9 @@
                         <i data-feather="bell"></i>
                         <span> Notifications </span>
                     </a>
-                </li> --}}
+                </li> 
 
-                {{-- <li>
+               <li>
                     <a href="#">
                         <i data-feather="package"></i>
                         <span> Tasks </span>
@@ -151,17 +151,17 @@
                         <i data-feather="users"></i>
                         <span> Managers </span>
                     </a>
-                </li>
+                </li> 
                 
                 <li>
                     <a href="{{url('modals')}}">
                         <i data-feather="users"></i>
                         <span> Modals </span>
                     </a>
-                </li>  --}}
+                </li> --}}
                 
-            @if(env('APP_DEBUG'))
-                {{-- <li class="menu-title mt-5">Other Pages</li>
+            {{-- @if(env('APP_DEBUG'))
+                <li class="menu-title mt-5">Other Pages</li>
 
                 <li>
                     <a href="{{route('second', ['apps', 'calendar'])}}">
@@ -581,7 +581,7 @@
                     </div>
                 </li> --}}
 
-              {{--  <li>
+               {{-- <li>
                     <a href="#sidebarExtendedui" data-toggle="collapse">
                         <i data-feather="layers"></i>
                         <span class="badge badge-info float-right">Hot</span>
@@ -854,8 +854,8 @@
                             </li>
                         </ul>
                     </div>
-                </li> --}}
-                @endif
+                </li>  --}}
+                {{-- @endif --}}
             </ul>
 
         </div>

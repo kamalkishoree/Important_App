@@ -1,4 +1,4 @@
-@extends('layouts.god-vertical', ['title' => 'Options'])
+@extends('layouts.god-vertical', ['title' => 'Clients'])
 
 @section('css')
 <link href="{{asset('assets/libs/dropzone/dropzone.min.css')}}" rel="stylesheet" type="text/css" />

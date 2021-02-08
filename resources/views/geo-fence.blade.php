@@ -268,6 +268,7 @@ exit;
             var myOptions = {
                 zoom: 13,
                 center: myLatlng,
+                styles: themeType,
                 mapTypeId: google.maps.MapTypeId.ROADMAP
             }
             const input = document.getElementById("pac-input");
@@ -276,7 +277,7 @@ exit;
             // Bias the SearchBox results towards current map's viewport.
 
             map = new google.maps.Map(document.getElementById("map-canvas"), myOptions);
-
+       
 
             drawingManager = new google.maps.drawing.DrawingManager({
                 drawingMode: google.maps.drawing.OverlayType.POLYGON,

@@ -55,11 +55,11 @@
                                             password?</small></a> -->
                                         <label for="password">Password</label>
                                         <div class="input-group input-group-merge @if($errors->has('password')) is-invalid @endif">
-                                            <input class="form-control @if($errors->has('password')) is-invalid @endif" name="password" type="password" required=""
+                                            <input class="form-control @if($errors->has('password')) is-invalid @endif" name="password" type="password" id="pass" required=""
                                                 id="password" placeholder="Enter your password" />
                                                 <div class="input-group-append" data-password="false">
                                                 <div class="input-group-text">
-                                                    <span class="password-eye"></span>
+                                                    <span class="password-eye checking" id="newcheck"></span>
                                                 </div>
                                             </div>
                                         </div>
@@ -131,6 +131,9 @@
         </footer>
 
         @include('layouts.shared.footer-script')
-        
     </body>
+    
 </html>
+
+
+    

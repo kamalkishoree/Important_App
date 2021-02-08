@@ -130,6 +130,7 @@
       var myOptions = {
         zoom: parseInt(13),
         center: myLatlng,
+        styles: themeType,
         mapTypeId: google.maps.MapTypeId.ROADMAP
       }
       map = new google.maps.Map(document.getElementById("map-canvas"), myOptions);     
