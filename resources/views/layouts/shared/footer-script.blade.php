@@ -1,6 +1,6 @@
 <!-- bundle -->
 <!-- Vendor js -->
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+{{-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script> --}}
 
 <script src="{{asset('assets/js/waitMe.min.js')}}"></script>
 
@@ -42,19 +42,34 @@ const stopLoader = function(element) {
     $(element).waitMe("hide");
 }
 
-$('#newcheck').click(function(){
-    $('.checking').toggleClass('classB', $('#pass').prop('type', 'text'));
-    // var element = document.getElementById("newcheck");
-    // element.classList.remove("checking");
-    // element.classList.add("show");
-    // $('#pass').prop('type', 'text');
-});
+// $('#newcheck').click(function(){
 
-$('.show').click(function(){
-    var element = document.getElementById("newcheck");
-    element.classList.add("checking");
-    element.classList.remove("show");
-    $('#pass').prop('type', 'password');
+//     //$('.checking').toggleClass('classB', $('#pass').prop('type', 'text'));
+//     // var element = document.getElementById("newcheck");
+//     // element.classList.remove("checking");
+//     // element.classList.add("show");
+//     // $('#pass').prop('type', 'text');
+// });
+
+$('.showpassword').click(function(){
+    var element = document.getElementById("pass");
+    var spanid  = document.getElementById("newcheck");
+    if(element.type == 'password'){
+        $('#pass').prop('type', 'text');
+        spanid.classList.remove("fe-eye-off");
+        spanid.classList.remove("showpassword");
+        spanid.classList.add("fe-eye");
+        spanid.classList.add("showpassword");
+        
+    }else{
+        $('#pass').prop('type', 'password');
+        spanid.classList.remove("fe-eye");
+        spanid.classList.remove("showpassword");
+        spanid.classList.add("fe-eye-off");
+        spanid.classList.add("showpassword");
+        
+    }
+     
 });
 
 </script>

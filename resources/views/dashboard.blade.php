@@ -2,57 +2,7 @@
 
 @section('css')
 <!-- Plugins css -->
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-<link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro&display=swap" rel="stylesheet">
-<link href="{{ asset('assets/libs/dropzone/dropzone.min.css') }}" rel="stylesheet" type="text/css" />
 <link href="{{ asset('demo/css/style.css') }}" rel="stylesheet" type="text/css" />
-<link rel="stylesheet" type="text/css"
-href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-<link rel="preconnect" href="https://fonts.gstatic.com">
-<link
-href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
-rel="stylesheet">
-<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-<link href="{{asset('assets/libs/flatpickr/flatpickr.min.css')}}" rel="stylesheet" type="text/css" />
-<link href="{{asset('assets/libs/bootstrap-colorpicker/bootstrap-colorpicker.min.css')}}" rel="stylesheet"
-type="text/css" />
-<link href="{{asset('assets/libs/clockpicker/clockpicker.min.css')}}" rel="stylesheet" type="text/css" />
-<link href="{{asset('assets/libs/bootstrap-datepicker/bootstrap-datepicker.min.css')}}" rel="stylesheet"
-type="text/css" />
-
-<style>
-.mb-0>a {
-display: block;
-position: relative;
-}
-
-.mb-0>a:after {
-content: "\f078";
-/* fa-chevron-down */
-font-family: 'FontAwesome';
-position: absolute;
-right: 0;
-}
-body[data-sidebar-size=condensed]:not([data-layout=compact]) {
-min-height: auto!important;
-}
-.mb-0>a[aria-expanded="true"]:after {
-content: "\f077";
-/* fa-chevron-up */
-}
-
-.card-header {
-padding: .5rem 1rem;
-}
-
-body.menuitem-active .profile-status {
-border: none!important;
-}
-
-
-</style>
-
 @endsection
 @php
 $color = ['one','two','three','four','five','six','seven','eight'];
@@ -481,21 +431,14 @@ $color = ['one','two','three','four','five','six','seven','eight'];
 
 @section('script')
 
-<!-- Optional JavaScript -->
-<!-- jQuery first, then Popper.js, then Bootstrap JS -->
 
-{{-- <script defer
-src="https://maps.googleapis.com/maps/api/js?key={{$key}}&libraries=&v=weekly">
-</script> --}}
-
-
-<script src="{{asset('assets/libs/flatpickr/flatpickr.min.js')}}"></script>
+{{-- <script src="{{asset('assets/libs/flatpickr/flatpickr.min.js')}}"></script>
 <script src="{{asset('assets/libs/bootstrap-colorpicker/bootstrap-colorpicker.min.js')}}"></script>
 <script src="{{asset('assets/libs/clockpicker/clockpicker.min.js')}}"></script>
 <script src="{{asset('assets/libs/bootstrap-datepicker/bootstrap-datepicker.min.js')}}"></script>
 
 <!-- Page js-->
-<script src="{{asset('assets/js/pages/form-pickers.init.js')}}"></script>
+<script src="{{asset('assets/js/pages/form-pickers.init.js')}}"></script> --}}
 {{-- <script src="{{ asset('demo/js/propeller.min.js') }}"></script>
 --}}
 <script>
@@ -540,6 +483,8 @@ $(".agentdisplay").prop('checked', false);
 //    return confirm("Are you sure?");
 //   }
 //console.log(val);
+
+//main task markers
 for (let i = 0; i < olddata.length; i++) {
     checkdata = olddata[i];
     var info = []
@@ -580,6 +525,9 @@ for (let i = 0; i < olddata.length; i++) {
 
 
 
+
+
+
 });
 
 $('.taskchecks').click(function() {
@@ -599,7 +547,7 @@ $(".agentdisplay").prop('checked', false);
 //   }
 for (let i = 0; i < olddata.length; i++) {
     checkdata = olddata[i];
-    console.log(checkdata);
+   // console.log(checkdata);
     //console.log(checkdata[5]);
     // addMarker({ lat: checkdata[3], lng: checkdata[4] });
     //alert(checkdata['task_status']);
@@ -631,6 +579,7 @@ for (let i = 0; i < olddata.length; i++) {
         addMarker({lat:checkdata['latitude'],lng:checkdata['longitude']}, send,image,checkdata,type);
     }
 }
+
 
 
 });
@@ -665,7 +614,7 @@ for (let i = 0; i < allagent.length; i++) {
          url: images, // url
          scaledSize: new google.maps.Size(50, 50), // scaled size
          origin: new google.maps.Point(0,0), // origin
-         anchor: new google.maps.Point(0, 0) // anchor
+         anchor: new google.maps.Point(22,22) // anchor
         };
         send = null;
         type = 2;
@@ -692,15 +641,12 @@ function initMap() {
         mapTypeId: "roadmap",
         styles: themeType,
     });
-// This event listener will call addMarker() when the map is clicked.
-// map.addListener("click", (event) => {
-//   addMarker(event.latLng);
-// });
-// Adds a marker at the center of the map.
+
+    // Adds a marker at the center of the map.
     for (let i = 0; i < olddata.length; i++) {
         checkdata = olddata[i];
-    // console.log(checkdata);
-    var urlnewcreate = '';
+    
+        var urlnewcreate = '';
         if(checkdata['task_status'] == 0){
             urlnewcreate = 'unassigned';
         }else if(checkdata['task_status'] == 1 || checkdata['task_status'] == 2){
@@ -711,118 +657,150 @@ function initMap() {
             urlnewcreate = 'faild';
         }
         
-            if(checkdata['task_type_id'] == 1){
+        if(checkdata['task_type_id'] == 1){
                 urlnewcreate += '_P.png';
-            }else if(checkdata['task_type_id'] == 2){
+        }else if(checkdata['task_type_id'] == 2){
                 urlnewcreate +='_D.png';
-            }else{
+        }else{
                 urlnewcreate +='_A.png';
-            }
+        }
             
-            img = '{{ asset('assets/newicons/') }}'+'/'+urlnewcreate;
+        img = '{{ asset('assets/newicons/') }}'+'/'+urlnewcreate;
            
-            send = null;
+        send = null;
             type = 1;
         addMarker({
             lat: checkdata['latitude'],
             lng: checkdata['longitude']
         }, send, img,checkdata,type);
     }
+
+    
+    //agents markers
+    for (let i = 0; i < allagent.length; i++) {
+            checkdata = allagent[i];
+            //console.log(checkdata);
+            // addMarker({ lat: checkdata[3], lng: checkdata[4] });
+            
+                
+                if (checkdata['is_available'] == 1) {
+                    images = url+'/demo/images/location.png';
+                }else {
+                    images = url+'/demo/images/location_grey.png';
+                }
+                var image = {
+                url: images, // url
+                scaledSize: new google.maps.Size(50, 50), // scaled size
+                origin: new google.maps.Point(0,0), // origin
+                anchor: new google.maps.Point(22,22) // anchor
+                };
+                send = null;
+                type = 2;
+            addMarker({lat: parseFloat(checkdata.agentlog['lat']),lng:  parseFloat(checkdata.agentlog['long'])}, send, image,checkdata,type);
+            
+    }
 }
 
 
 // Adds a marker to the map and push to the array.
 function addMarker(location, lables, images,data,type) {
-var contentString = '';
-if(type == 1){
-    contentString =
-    '<div id="content">' +
-    '<div id="siteNotice">' +
-    "</div>" +
-    '<h5 id="firstHeading" class="firstHeading">'+data['driver_name']+'</h5>' +
-    '<h6 id="firstHeading" class="firstHeading">'+data['task_type']+'</h6>' +
-    '<div id="bodyContent">' +
-    "<p><b>Address :- </b> " +data['address']+ " " +
-    ".</p>" +
-    '<p><b>Customer: '+data['customer_name']+'</b>('+data['customer_phone_number']+') </p>' +
-    "</div>" +
-    "</div>";
-}else{
-    img = data['image_url'];
-    //console.log(img);
-    contentString =
-    '<div style="float:left">'+
-    '<img src="{{\Phumbor::url(\Storage::disk("s3")->url("assets/client_00000125/agents5fc76c71abdb3.png/A9B2zHkr5thbcyTKHivaYm4kNYrSXOiov6USdFpV.png"))->fitIn(90,50)}}">'+
-    "</div>"+
-    '<div style="float:right; padding: 10px;"><b>'+data['name']+'</b><br/><br/>'+data['phone_number']+'</div>';
-}
+
+    var contentString = '';
+
+    if(type == 1){
+        contentString =
+        '<div id="content">' +
+        '<div id="siteNotice">' +
+        "</div>" +
+        '<h5 id="firstHeading" class="firstHeading">'+data['driver_name']+'</h5>' +
+        '<h6 id="firstHeading" class="firstHeading">'+data['task_type']+'</h6>' +
+        '<div id="bodyContent">' +
+        "<p><b>Address :- </b> " +data['address']+ " " +
+        ".</p>" +
+        '<p><b>Customer: '+data['customer_name']+'</b>('+data['customer_phone_number']+') </p>' +
+        "</div>" +
+        "</div>";
+    }else{
+        img = data['image_url'];
+        //console.log(img);
+        contentString =
+        '<div style="float:left">'+
+        '<img src="{{\Phumbor::url(\Storage::disk("s3")->url("assets/client_00000125/agents5fc76c71abdb3.png/A9B2zHkr5thbcyTKHivaYm4kNYrSXOiov6USdFpV.png"))->fitIn(90,50)}}">'+
+        "</div>"+
+        '<div style="float:right; padding: 10px;"><b>'+data['name']+'</b><br/><br/>'+data['phone_number']+'</div>';
+    }
 
 
 
-const infowindow = new google.maps.InfoWindow({
-    content: contentString,
-    maxWidth: 250,
-    maxheight: 250,
-});
+    const infowindow = new google.maps.InfoWindow({
+        content: contentString,
+        maxWidth: 250,
+        maxheight: 250,
+    });
 
 
 
+    const marker = new google.maps.Marker({
+        position: location,
+        label: lables,
+        icon: images,
+        map: map,
+        animation: google.maps.Animation.DROP,
+    });
 
+    markers.push(marker);
 
-
-
-
-const marker = new google.maps.Marker({
-    position: location,
-    label: lables,
-    icon: images,
-    map: map,
-    animation: google.maps.Animation.DROP,
-});
-markers.push(marker);
-
-marker.addListener("click", () => {
-   infowindow.open(map, marker);
-});
+    marker.addListener("click", () => {
+    infowindow.open(map, marker);
+    });
 
 }
 
 // Sets the map on all markers in the array.
 function setMapOnAll(map) {
 
-for (let i = 0; i < markers.length; i++) {
-    markers[i].setMap(null);
-}
+    for (let i = 0; i < markers.length; i++) {
+        markers[i].setMap(null);
+    }
 }
 
 // Removes the markers from the map, but keeps them in the array.
 function clearMarkers() {
-setMapOnAll(null);
+    setMapOnAll(null);
 }
 
 // Shows any markers currently in the array.
 function showMarkers() { 
-setMapOnAll(map);
+    setMapOnAll(map);
 }
 
 // Deletes all markers in the array by removing references to them.
 function deleteMarkers() {
-clearMarkers();
-markers = [];
+    clearMarkers();
+    markers = [];
 }
 
 
 $(".datetime").on('change', function postinput(){
 
+    var matchvalue = $(this).val(); // this.value
+    newabc =  url+'?date='+matchvalue;
 
-var matchvalue = $(this).val(); // this.value
-newabc =  url+'?date='+matchvalue;
 
-
-window.location.href = newabc;
+    window.location.href = newabc;
 
 });
 
+// $('.datepicker').datepicker({
+//     format: 'yyyy/mm/dd',
+//     startDate: '-3d'
+// });
+
+setTimeout(function(){
+
+location.reload();
+
+},10000);
 
 </script>
 

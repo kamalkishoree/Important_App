@@ -165,6 +165,8 @@ use Carbon\Carbon;
 @endsection
 
 @section('script')
+    <script src="{{asset('assets/libs/select2/select2.min.js')}}"></script>
+    <script src="{{asset('assets/libs/bootstrap-select/bootstrap-select.min.js')}}"></script>
     <script src="{{ asset('assets/libs/datatables/datatables.min.js') }}"></script>
     @include('tasks.taskpagescript')
 @endsection
