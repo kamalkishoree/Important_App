@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Model\Agent;
+use App\Model\ClientPreference;
 use App\Model\Order;
 use App\Model\Task;
 use App\Model\Team;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class DashBoardController extends Controller
@@ -20,9 +22,15 @@ class DashBoardController extends Controller
         //date for display tasks on map 
 
         if (isset($request->date)) {
-            $date =  $request->date;
+              
+             // $date = date('Y-m-d', strtotime($request->date));
+              $date = Carbon::parse(strtotime($request->date))->format('Y-m-d');
+              
+
         } else {
-            $date = \Carbon\Carbon::today();
+            
+            $date = date('Y-m-d');
+            
         }
 
         //left side bar list for display all teams
@@ -135,11 +143,10 @@ class DashBoardController extends Controller
 
         
 
-
         $agents = Agent::with('agentlog')->get()->toArray();
+        $preference  = ClientPreference::where('id',1)->first(['theme','date_format','time_format']);
 
-
-        return view('dashboard')->with(['teams' => $teams, 'newmarker' => $newmarker, 'unassigned' => $unassigned, 'agents' => $agents]);
+        return view('dashboard')->with(['teams' => $teams, 'newmarker' => $newmarker, 'unassigned' => $unassigned, 'agents' => $agents,'date'=> $date,'preference' =>$preference]);
     }
 
     /**

@@ -57,8 +57,9 @@ class TaskController extends Controller
         $pricingRule = PricingRule::select('id', 'name')->get();
         $teamTag    = TagsForTeam::all();
         $agentTag   = TagsForAgent::all();
+        $preference  = ClientPreference::where('id',1)->first(['theme','date_format','time_format']);
 
-        return view('tasks/task')->with(['tasks' => $tasks, 'status' => $request->status, 'active_count' => $active, 'panding_count' => $pending, 'history_count' => $history, 'status' => $check ]);
+        return view('tasks/task')->with(['tasks' => $tasks, 'status' => $request->status, 'active_count' => $active, 'panding_count' => $pending, 'history_count' => $history, 'status' => $check,'preference' => $preference]);
     }
 
     /**

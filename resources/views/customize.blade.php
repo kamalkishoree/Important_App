@@ -153,11 +153,11 @@
                             <div class="form-group mb-3">
                                 <label for="date_format">DATE FORMAT</label>
                                 <select class="form-control" id="date_format" name="date_format">
-                                    <option value="DD-MM-YYYY" {{ ($preference && $preference->date_format =="DD-MM-YYYY")? "selected" : "" }}>
+                                    <option value="d-m-Y" {{ ($preference && $preference->date_format =="d-m-Y")? "selected" : "" }}>
                                         DD-MM-YYYY</option>
-                                    <option value="DD/MM/YYYY" {{ ($preference && $preference->date_format =="DD/MM/YYYY")? "selected" : "" }}>
+                                    <option value="d/m/Y" {{ ($preference && $preference->date_format =="d/m/Y")? "selected" : "" }}>
                                         DD/MM/YYYY</option>
-                                    <option value="YYYY-MM-DD" {{ ($preference && $preference->date_format =="YYYY-MM-DD")? "selected" : "" }}>
+                                    <option value="Y-m-d" {{ ($preference && $preference->date_format =="Y-m-d")? "selected" : "" }}>
                                         YYYY-MM-DD</option>
                                 </select>
                                 @if($errors->has('date_format'))

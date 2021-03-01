@@ -103,15 +103,18 @@ use Carbon\Carbon;
                                             <td>
                                                 @php
                                                     $create = Carbon::createFromFormat('Y-m-d H:i:s', $task->created_at, 'UTC');
+                                                    $create->setTimezone(isset(Auth::user()->timezone) ? Auth::user()->timezone : 'Asia/Kolkata');
+                                                    $timeformat = $preference->time_format == '24' ? 'H:i:s':'g:i a';
                                                 @endphp
-                                                {{ $create->setTimezone(isset(Auth::user()->timezone) ? Auth::user()->timezone : 'Asia/Kolkata') }}
+                                               {{date(''.$preference->date_format.' '.$timeformat.'', strtotime($create))}}
 
                                             </td>
                                             <td>
                                                 @php
                                                     $order = Carbon::createFromFormat('Y-m-d H:i:s', $task->order_time, 'UTC');
+                                                    $order->setTimezone(isset(Auth::user()->timezone) ? Auth::user()->timezone : 'Asia/Kolkata');
                                                 @endphp
-                                                {{ $order->setTimezone(isset(Auth::user()->timezone) ? Auth::user()->timezone : 'Asia/Kolkata') }}
+                                                {{date(''.$preference->date_format.' '.$timeformat.'', strtotime($order))}}
 
                                             </td>
                                             <td>

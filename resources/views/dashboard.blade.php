@@ -7,6 +7,7 @@
 @php
 $color = ['one','two','three','four','five','six','seven','eight'];
 
+// dd($preference->date_format);
 @endphp
 @section('content')
 
@@ -203,6 +204,7 @@ $color = ['one','two','three','four','five','six','seven','eight'];
 
         </div>
     </div>
+    
     <div class="col-md-8 col-xl-9">
         <div class="map-wrapper">
             <div style="width: 100%">
@@ -210,7 +212,7 @@ $color = ['one','two','three','four','five','six','seven','eight'];
             </div>
             <div class="contant">
                 <div class="bottom-content">
-                <input type="text" placeholder="mm/dd/yy" id="basic-datepicker" class="brdr-1 datetime" value="{{date('Y-m-d')}}">
+                <input type="text"  id="basic-datepicker" class="brdr-1 datetime" value="{{date($preference->date_format, strtotime($date))}}" data-date-format="{{$preference->date_format}}">
                     <div class="dropdown d-inline-block brdr-1">
                         <button class="dropdown-toggle" type="button" id="dropdownMenuButton"
                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -800,7 +802,7 @@ setTimeout(function(){
 
 location.reload();
 
-},10000);
+},30000);
 
 </script>
 

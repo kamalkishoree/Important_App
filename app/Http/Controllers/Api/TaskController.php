@@ -30,6 +30,7 @@ class TaskController extends BaseController
 
     public function updateTaskStatus(Request $request)
     {
+        
         $header = $request->header();
         $client_code = Client::where('database_name',$header['client'][0])->first('code');
         $proof_image = '';
@@ -80,16 +81,32 @@ class TaskController extends BaseController
         $inProgress = $orderAll->where('task_status', 2);
         $lasttask   = count($orderAll->where('task_status', 3));
         $check      = $allCount - $lasttask;
+
+        switch ($request->task_status) {
+            case 2:
+                 $task_type = 'assigned';
+                break;
+            case 3:
+                $task_type = 'completed';
+                break;
+            case 3:
+                $task_type = 'failed';
+            break;
+        }
+
         if ($request->task_status == 3) {
            
             if ($check == 1) {
-                $Order  = Order::where('id',$orderId->order_id)->update(['status' => $request->task_status, 'note' => $note ,'proof_image' => $proof_image,'proof_signature' => $proof_signature ]);
+                $Order  = Order::where('id',$orderId->order_id)->update(['status' => $task_type ]);
             }
+
         } else {
-            $Order  = Order::where('id',$orderId->order_id)->update(['status' => $request->task_status, 'note' => $note]);
+
+            $Order  = Order::where('id',$orderId->order_id)->update(['status' => $task_type, 'note' => $note]);
+
         }
 
-        $task = Task::where('id', $request->task_id)->update(['task_status' => $request->task_status]);
+        $task = Task::where('id', $request->task_id)->update(['task_status' => $request->task_status,'note' => $note ,'proof_image' => $proof_image,'proof_signature' => $proof_signature]);
         $newDetails = Task::where('id', $request->task_id)->with(['location','tasktype','pricing','order.customer'])->first();
 
         // $newDetails = Task::where('id', $request->task_id)->with('location', 'tasktype', 'pricing')

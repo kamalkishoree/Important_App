@@ -216,7 +216,7 @@
                                 <a href="{{route('second', ['ecommerce', 'checkout'])}}">Checkout</a>
                             </li>
                         </ul>
-                    </div> -->
+                    </div> 
                  </li> --}}
 
                 {{-- <li>
