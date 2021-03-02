@@ -126,6 +126,96 @@
         });
     });
 
+     //this is for task proofs  pop-up
+
+     $(document).on('click', '.showTaskProofs', function() {
+        // $('#task-accounting-modal').modal('show');
+        //   return;
+        var CSRF_TOKEN = $("input[name=_token]").val();
+        var tour_id = $(this).val();
+        var basic = window.location.origin;
+
+        var url = basic + "/tasks/list/" + tour_id;
+        $.ajax({
+            url: url,
+            type: 'post',
+            dataType: "json",
+            data: {
+                _token: CSRF_TOKEN,
+            },
+            success: function(data) {
+
+                $.each(data.task, function(index, elem) {
+
+
+                    switch (elem.task_type_id) {
+                        case 1:
+                            taskname = 'Pickup task';
+                            break;
+                        case 2:
+                            taskname = 'Drop Off task';
+                            break;
+                        case 3:
+                            taskname = 'Appointment';
+                            break;
+                    }
+                    var date = new Date(elem.order_time);
+                    var options = {
+                        hour12: true
+                    };
+                    var note  = (elem.note != null) ? elem.note : '';
+                    
+                    $(document).find('.new-proofs').before(
+                        '<div class="col-md-12">'+
+                                                '<div class="task-card">'+
+                                                    '<div class="p-2 assigned-block"><h5>'+ taskname +'</h5>'+
+                                                            '<div class="row">'+
+                                                                
+                                                                '<div class="col-md-4">'+
+                                                                    '<label class="mb-3">Image</label>'+
+                                                                    '<div class="status-wrap-block">'+
+                                                                        '<div class="image-wrap-sign">'+
+                                                                            '<img src="https://imgproxy.royodispatch.com/insecure/fill/400/400/sm/0/plain/https://royodelivery-assets.s3.us-west-2.amazonaws.com/'+ elem.proof_image +'" alt="">'+
+                                                                        '</div>'+
+                                                                    '</div>'+
+                                                                '</div>'+
+                                                                '<div class="col-md-4">'+
+                                                                    '<label class="mb-3">Signature</label>'+
+                                                                    '<div class="status-wrap-block">'+
+                                                                        '<div class="image-wrap-sign">'+
+                                                                            '<img src="https://imgproxy.royodispatch.com/insecure/fill/400/400/sm/0/plain/https://royodelivery-assets.s3.us-west-2.amazonaws.com/'+ elem.proof_signature +'" alt="">'+
+                                                                        '</div>'+
+                                                                    '</div>'+
+                                                                '</div>'+
+                                                                '<div class="col-md-4">'+
+                                                                    '<label class="mb-3">Notes</label>'+
+                                                                    '<div class="status-wrap-block">'+
+                                                                        '<div class="note-wrap">'+
+                                                                            '<span>'+note+'</span>'+
+                                                                        '</div>'+
+                                                                    '</div>'+
+                                                                '</div>'+
+                                                            '</div>'+
+                                                            
+                                                            '<div class="row"><div class="col-md-6"></div>'+
+                                                            '<div class="col-md-6 text-right"><button class="assigned-btn">complated</button>'+
+                                                            '</div>'+
+                                                            '</div>'+
+
+                                                    '</div>'+
+                                                '</div>'+    
+                                            '</div>');
+
+
+
+                });
+                $('#task-proofs-modal').modal('show');
+
+            }
+
+        });
+    });
+
     function round(value, exp) {
         if (typeof exp === 'undefined' || +exp === 0)
             return Math.round(value);

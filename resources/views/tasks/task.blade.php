@@ -80,6 +80,7 @@ use Carbon\Carbon;
                                         <th>Create Time</th>
                                         <th>Due Time</th>
                                         <th>Tasks</th>
+                                        <th>Task Proofs</th>
                                         <th>Pricing</th>
                                         <th style="width: 85px;">Action</th>
                                     </tr>
@@ -122,10 +123,14 @@ use Carbon\Carbon;
                                                         class="fe-eye"></i></button>
                                             </td>
                                             <td>
+                                                <button class="showTaskProofs btn btn-primary-outline action-icon"
+                                                    value="{{ $task->id }}"><i class="fe-layers"></i></button>
+                                            </td>
+                                            <td>
                                                 <button class="showaccounting btn btn-primary-outline action-icon setcolor"
                                                     value="{{ $task->id }}">{{ $task->order_cost }}</button>
                                             </td>
-
+                                           
                                             <td>
                                                 <div class="form-ul" style="width: 60px;">
                                                     <div class="inner-div">
@@ -165,6 +170,7 @@ use Carbon\Carbon;
 
     @include('modals.task-list')
     @include('modals.task-accounting')
+    @include('modals.task-proofs')
 @endsection
 
 @section('script')
