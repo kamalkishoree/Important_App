@@ -3,61 +3,17 @@
 @section('css')
     <link href="{{ asset('assets/libs/select2/select2.min.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('assets/libs/bootstrap-select/bootstrap-select.min.css') }}" rel="stylesheet" type="text/css" />
-    <link href="{{ asset('assets/libs/flatpickr/flatpickr.min.css') }}" rel="stylesheet" type="text/css" />
-    <link href="{{ asset('assets/libs/sweetalert2/sweetalert2.min.css') }}" rel="stylesheet" type="text/css" />
-
-
     <!-- for File Upload -->
 
     <link href="{{ asset('assets/libs/dropzone/dropzone.min.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('assets/libs/dropify/dropify.min.css') }}" rel="stylesheet" type="text/css" />
     <link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/8.4.6/css/intlTelInput.css'>
     <style>
-        // workaround
-        .intl-tel-input {
-            display: table-cell;
-        }
-
-        .inner-div {
-            width: 50%;
-            float: left;
-        }
-
-        .intl-tel-input .selected-flag {
-            z-index: 4;
-        }
-
-        .intl-tel-input .country-list {
-            z-index: 5;
-        }
-
-        .input-group .intl-tel-input .form-control {
-            border-top-left-radius: 4px;
-            border-top-right-radius: 0;
-            border-bottom-left-radius: 4px;
-            border-bottom-right-radius: 0;
-        }
 
         .cursors {
             cursor:move;
             margin-right: 0rem !important;
-        }
-
-        #ui-id-1, #ui-id-2{
-        z-index: 9999 ;
-
-    }
-    #ui-id-1 li, #ui-id-2 li{
-        z-index: 9999 ;
-    }
-    .setmodal{
-        margin-left: 158px;
-    }
-    .dispaly-cards {
-        background-color: rgb(251 247 247) !important;
-        text-align: center;
-    }
-        
+     }
 
     </style>
 @endsection
@@ -181,20 +137,11 @@
 
     <script src="{{ asset('assets/js/jquery-ui.min.js') }}" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="{{ asset('assets/css/jquery-ui.css') }}">
-
-    <script src="{{ asset('assets/libs/flatpickr/flatpickr.min.js') }}"></script>
-    <script src="{{ asset('assets/libs/select2/select2.min.js') }}"></script>
-    <script src="{{ asset('assets/libs/bootstrap-select/bootstrap-select.min.js') }}"></script>
-    <script src="{{ asset('assets/js/pages/form-advanced.init.js') }}"></script>
-    <script src="{{ asset('assets/js/pages/form-pickers.init.js') }}"></script>
     <script src="{{ asset('assets/js/storeAgent.js') }}"></script>
     <script src="{{ asset('assets/libs/dropzone/dropzone.min.js') }}"></script>
     <script src="{{ asset('assets/libs/dropify/dropify.min.js') }}"></script>
     <script src="{{ asset('assets/js/pages/form-fileuploads.init.js') }}"></script>
-    <script src="{{ asset('assets/libs/datatables/datatables.min.js') }}"></script>
-    <script src="{{ asset('assets/libs/sweetalert2/sweetalert2.min.js') }}"></script> 
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/8.4.7/js/intlTelInput.js"></script>
+    <script src="{{ asset('assets/libs/datatables/datatables.min.js') }}"></script> 
     <script src="{{ asset('assets/js/jquery.tagsinput-revisited.js') }}"></script>
     <link rel="stylesheet" href="{{ asset('assets/css/jquery.tagsinput-revisited.css') }}" />
 @include('agent.pagescript')
@@ -211,10 +158,11 @@
                 success: function (data) {
                     console.log(data);
                     var order = round(data.order_cost,2);
-                    var cash = round(data.cash_to_be_collected,2);
+                    var cash  = round(data.cash_to_be_collected,2);
+                    var final = round(cash - order,2) 
                     $("#order_earning").text(order);
                     $("#cash_collected").text(cash);
-                    $("#final_balance").text(cash - order);
+                    $("#final_balance").text(final);
                 },
         });
         

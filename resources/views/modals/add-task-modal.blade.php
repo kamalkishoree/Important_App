@@ -184,7 +184,7 @@
                         {!! Form::email('recipient_email', null, ['class' => 'form-control rec', 'placeholder'
                         => 'Recipient Email', 'required' => 'required']) !!}
                             {!! Form::textarea('task_description', null, ['class' => 'form-control',
-                            'placeholder' => 'Task_description', 'rows' => 2, 'cols' => 40]) !!}
+                            'placeholder' => 'Task Description', 'rows' => 2, 'cols' => 40]) !!}
                             <span class="invalid-feedback" role="alert">
                                 <strong></strong>
                             </span>

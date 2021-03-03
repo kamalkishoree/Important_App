@@ -5,74 +5,7 @@
 
 
     <style>
-        // workaround
-        .intl-tel-input {
-            display: table-cell;
-        }
-
-        .inner-div {
-            width: 50%;
-            float: left;
-        }
-
-        .intl-tel-input .selected-flag {
-            z-index: 4;
-        }
-
-        .intl-tel-input .country-list {
-            z-index: 5;
-        }
-
-        .input-group .intl-tel-input .form-control {
-            border-top-left-radius: 4px;
-            border-top-right-radius: 0;
-            border-bottom-left-radius: 4px;
-            border-bottom-right-radius: 0;
-        }
-
-        .cursors {
-            cursor: pointer;
-        }
-
-        .label-info {
-            background-color: #5bc0de;
-            display: inline-block;
-            padding: 0.2em 0.6em 0.3em;
-            font-size: 75%;
-            font-weight: 700;
-            line-height: 1;
-            color: #fff;
-            text-align: center;
-            white-space: nowrap;
-            vertical-align: baseline;
-            border-radius: 0.25em;
-        }
-
-        .containers {
-            margin: 20px;
-        }
-
-        /* autocomplete tagsinput*/
-        .label-info {
-            background-color: #5bc0de;
-            display: inline-block;
-            padding: 0.2em 0.6em 0.3em;
-            font-size: 75%;
-            font-weight: 700;
-            line-height: 1;
-            color: #fff;
-            text-align: center;
-            white-space: nowrap;
-            vertical-align: baseline;
-            border-radius: 0.25em;
-        }
-        #ui-id-1, #ui-id-2{
-            z-index: 9999 ;
-
-        }
-        #ui-id-1 li, #ui-id-2 li{
-            z-index: 9999 ;
-        }
+       
 
     </style>
 @endsection
@@ -235,21 +168,6 @@
 
     <script src="{{ asset('assets/js/jquery-ui.min.js') }}" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="{{ asset('assets/css/jquery-ui.css') }}">
-    
-
-    <script src="{{ asset('assets/libs/flatpickr/flatpickr.min.js') }}"></script>
-    <script src="{{ asset('assets/libs/select2/select2.min.js') }}"></script>
-    <script src="{{ asset('assets/libs/bootstrap-select/bootstrap-select.min.js') }}"></script>
-    <script src="{{ asset('assets/js/pages/form-advanced.init.js') }}"></script>
-    <script src="{{ asset('assets/js/pages/form-pickers.init.js') }}"></script>
-    <script src="{{ asset('assets/js/storeAgent.js') }}"></script>
-    <script src="{{ asset('assets/libs/dropzone/dropzone.min.js') }}"></script>
-    <script src="{{ asset('assets/libs/dropify/dropify.min.js') }}"></script>
-    <script src="{{ asset('assets/js/pages/form-fileuploads.init.js') }}"></script>
-    <script src="{{ asset('assets/libs/datatables/datatables.min.js') }}"></script>
-    <script src="{{ asset('assets/libs/sweetalert2/sweetalert2.min.js') }}"></script> 
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/8.4.7/js/intlTelInput.js"></script>
     <script src="{{ asset('assets/js/jquery.tagsinput-revisited.js') }}"></script>
     
     <link rel="stylesheet" href="{{ asset('assets/css/jquery.tagsinput-revisited.css') }}" />

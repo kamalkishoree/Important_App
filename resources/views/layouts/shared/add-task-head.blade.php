@@ -198,7 +198,10 @@
     <input type="hidden" name="longitude[]" id="addHeader0-longitude" value="0" class="cust_longitude" />
 </div>
 @php
-    $key = session('preferences.map_key_1') != null ? session('preferences.map_key_1'):'kdsjhfkjsdhfsf';
+    $key    = session('preferences.map_key_1') != null ? session('preferences.map_key_1'):'kdsjhfkjsdhfsf';
+    $theme  = \App\Model\ClientPreference::where(['id' => 1])->first('theme');
+
+
 @endphp
 <link href="{{ asset('assets/libs/selectize/selectize.min.css') }}" rel="stylesheet" type="text/css" />
 
@@ -223,6 +226,8 @@
 <!-- Page js-->
 <script src="{{asset('assets/js/pages/form-pickers.init.js')}}"></script>
 <script>
+    var theme    = {!!json_encode($theme)!!};
+    console.log(theme);
     var maoArray = {};
     var autoWrap = ['addHeader0'];
     var count = 1; editCount = 0; var a = 0; countZ = 1;
@@ -720,4 +725,115 @@
     });
 
 
+
+
+    if(theme['theme'] == 'dark'){
+        
+            var themeType = [
+                { elementType: "geometry", stylers: [{ color: "#242f3e" }] },
+                {
+                elementType: "labels.text.stroke",
+                stylers: [{ color: "#242f3e" }],
+                },
+                {
+                elementType: "labels.text.fill",
+                stylers: [{ color: "#746855" }],
+                },
+                {
+                featureType: "administrative.locality",
+                elementType: "labels.text.fill",
+                stylers: [{ color: "#d59563" }],
+                },
+                {
+                featureType: "poi",
+                elementType: "labels.text.fill",
+                stylers: [{ color: "#d59563" }],
+                },
+                {
+                featureType: "poi.park",
+                elementType: "geometry",
+                stylers: [{ color: "#263c3f" }],
+                },
+                {
+                featureType: "poi.park",
+                elementType: "labels.text.fill",
+                stylers: [{ color: "#6b9a76" }],
+                },
+                {
+                featureType: "road",
+                elementType: "geometry",
+                stylers: [{ color: "#38414e" }],
+                },
+                {
+                featureType: "road",
+                elementType: "geometry.stroke",
+                stylers: [{ color: "#212a37" }],
+                },
+                {
+                featureType: "road",
+                elementType: "labels.text.fill",
+                stylers: [{ color: "#9ca5b3" }],
+                },
+                {
+                featureType: "road.highway",
+                elementType: "geometry",
+                stylers: [{ color: "#746855" }],
+                },
+                {
+                featureType: "road.highway",
+                elementType: "geometry.stroke",
+                stylers: [{ color: "#1f2835" }],
+                },
+                {
+                featureType: "road.highway",
+                elementType: "labels.text.fill",
+                stylers: [{ color: "#f3d19c" }],
+                },
+                {
+                featureType: "transit",
+                elementType: "geometry",
+                stylers: [{ color: "#2f3948" }],
+                },
+                {
+                featureType: "transit.station",
+                elementType: "labels.text.fill",
+                stylers: [{ color: "#d59563" }],
+                },
+                {
+                featureType: "water",
+                elementType: "geometry",
+                stylers: [{ color: "#17263c" }],
+                },
+                {
+                featureType: "water",
+                elementType: "labels.text.fill",
+                stylers: [{ color: "#515c6d" }],
+                },
+                {
+                featureType: "water",
+                elementType: "labels.text.stroke",
+                stylers: [{ color: "#17263c" }],
+                },
+                {
+                featureType: "poi",
+                elementType: "labels",
+                stylers: [
+                    { visibility: "off" }
+                ]
+            },
+            ];
+   
+    }else{
+        themeType = [
+            {
+                featureType: "poi",
+                elementType: "labels",
+                stylers: [
+                    { visibility: "off" }
+                ]
+            }
+        ];
+    }
+
+    
 </script>

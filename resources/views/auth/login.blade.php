@@ -55,11 +55,11 @@
                                             password?</small></a> -->
                                         <label for="password">Password</label>
                                         <div class="input-group input-group-merge @if($errors->has('password')) is-invalid @endif">
-                                            <input class="form-control @if($errors->has('password')) is-invalid @endif" name="password" type="password" required=""
+                                            <input class="form-control @if($errors->has('password')) is-invalid @endif" name="password" type="password" id="pass" required=""
                                                 id="password" placeholder="Enter your password" />
                                                 <div class="input-group-append" data-password="false">
                                                 <div class="input-group-text">
-                                                    <span class="password-eye"></span>
+                                                    <span class="fe-eye-off showpassword" id="newcheck"></span>
                                                 </div>
                                             </div>
                                         </div>
@@ -127,10 +127,14 @@
 
 
         <footer class="footer footer-alt">
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
             <script>document.write(new Date().getFullYear())</script> &copy; All rights reserved by <a href="https://royoapps.com/" class="text-white-50">Royo Apps</a> 
         </footer>
 
         @include('layouts.shared.footer-script')
-        
     </body>
+    
 </html>
+
+
+    

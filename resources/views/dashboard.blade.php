@@ -1,16 +1,14 @@
 @extends('layouts.vertical', ['title' => 'Dashboard','demo'=>'creative'])
 
 @section('css')
-    <!-- Plugins css -->
-    <link href="{{ asset('demo/css/style.css') }}" rel="stylesheet" type="text/css" />
-    <link rel="stylesheet" type="text/css"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="preconnect" href="https://fonts.gstatic.com">
+<!-- Plugins css -->
+<link href="{{ asset('demo/css/style.css') }}" rel="stylesheet" type="text/css" />
 @endsection
 @php
 $color = ['one','two','three','four','five','six','seven','eight'];
-@endphp
 
+// dd($preference->date_format);
+@endphp
 @section('content')
 
 <!-- Bannar Section -->
@@ -206,6 +204,7 @@ $color = ['one','two','three','four','five','six','seven','eight'];
 
         </div>
     </div>
+    
     <div class="col-md-8 col-xl-9">
         <div class="map-wrapper">
             <div style="width: 100%">
@@ -213,7 +212,7 @@ $color = ['one','two','three','four','five','six','seven','eight'];
             </div>
             <div class="contant">
                 <div class="bottom-content">
-                <input type="text" placeholder="mm/dd/yy" id="basic-datepicker" class="brdr-1 datetime" value="{{date('Y-m-d')}}">
+                <input type="text"  id="basic-datepicker" class="brdr-1 datetime" value="{{date($preference->date_format, strtotime($date))}}" data-date-format="{{$preference->date_format}}">
                     <div class="dropdown d-inline-block brdr-1">
                         <button class="dropdown-toggle" type="button" id="dropdownMenuButton"
                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -224,20 +223,20 @@ $color = ['one','two','three','four','five','six','seven','eight'];
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                             <div class="task-block pl-2 pr-2">
                                 <div class="row">
-                                    <div class="col-md-6 col-6">
+                                    <div class="col-md-6">
                                         <span>Tasks</span>
                                     </div>
-                                    <div class="col-md-6 col-6 text-right">
+                                    <div class="col-md-6 text-right">
                                         <a href=""><span>All</span></a>
                                         <a class="ml-3" href=""><span>None</span></a>
                                     </div>
                                 </div>
 
                                 <div class="row mt-2 teamchange">
-                                    <div class="col-md-8 col-8">
+                                    <div class="col-md-8">
                                         <h6>All Teams</h6>
                                     </div>
-                                    <div class="col-md-4 col-4 text-right">
+                                    <div class="col-md-4 text-right">
                                         <label class="">
                                             <input class="newchecks" cla type="checkbox" value="-1"
                                                 name="teamchecks[]" checked>
@@ -246,10 +245,10 @@ $color = ['one','two','three','four','five','six','seven','eight'];
                                     </div>
                                 </div>
                                 <div class="row mt-2 teamchange">
-                                    <div class="col-md-8 col-8">
+                                    <div class="col-md-8">
                                         <h6>Unassigned team</h6>
                                     </div>
-                                    <div class="col-md-4 col-4 text-right">
+                                    <div class="col-md-4 text-right">
                                         <label class="">
                                             <input class="newchecks" cla type="checkbox" value="0"
                                                 name="teamchecks[]">
@@ -259,10 +258,10 @@ $color = ['one','two','three','four','five','six','seven','eight'];
                                 </div>
                                 @foreach ($teams as $item)
                                     <div class="row mt-2 teamchange">
-                                        <div class="col-md-8 col-8">
+                                        <div class="col-md-8">
                                             <h6>{{ $item['name'] }}</h6>
                                         </div>
-                                        <div class="col-md-4 col-4 text-right">
+                                        <div class="col-md-4 text-right">
                                             <label class="">
                                                 <input class="newchecks" type="checkbox" name="teamchecks[]"
                                                     value="{{ $item['id'] }}">
@@ -282,22 +281,22 @@ $color = ['one','two','three','four','five','six','seven','eight'];
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                             <div class="task-block pl-2 pr-2">
                                 <div class="row">
-                                    <div class="col-md-6 col-8">
+                                    <div class="col-md-6">
                                         <span>Task Status </span>
                                     </div>
-                                    <div class="col-md-6 col-4 text-right">
+                                    <div class="col-md-6 text-right">
                                         <a href=""><span></span></a>
                                         <a class="ml-3" href=""><span></span></a>
                                     </div>
                                 </div>
 
-                                <div class="row d-flex align-items-center mt-2">
-                                    <div class="col-md-9 col-9">
+                                <div class="row mt-2">
+                                    <div class="col-md-9">
                                         <h6><img class="mr-2"
                                                 src=""></span>All
                                         </h6>
                                     </div>
-                                    <div class="col-md-3 col-3 text-right">
+                                    <div class="col-md-3 text-right">
                                         <label class="mt-2">
                                             <input class="taskchecks" type="checkbox" name="taskstatus[]"
                                                 value="5">
@@ -307,12 +306,12 @@ $color = ['one','two','three','four','five','six','seven','eight'];
                                 </div>
 
                                 <div class="row mt-2">
-                                    <div class="col-md-9 col-9">
+                                    <div class="col-md-9">
                                         <h6><img class="mr-2"
                                                 src="{{ asset('assets/newicons/red.png') }}"></span>Unassigned
                                         </h6>
                                     </div>
-                                    <div class="col-md-3 col-3 text-right">
+                                    <div class="col-md-3 text-right">
                                         <label class="mt-2">
                                             <input class="taskchecks" type="checkbox" name="taskstatus[]"
                                                 value="0">
@@ -321,12 +320,12 @@ $color = ['one','two','three','four','five','six','seven','eight'];
                                     </div>
                                 </div>
                                 <div class="row mt-2">
-                                    <div class="col-md-9 col-9">
+                                    <div class="col-md-9">
                                         <h6><img class="mr-2"
                                                 src="{{ asset('assets/newicons/orange.png') }}"></span>Assigned
                                         </h6>
                                     </div>
-                                    <div class="col-md-3 col-3 text-right">
+                                    <div class="col-md-3 text-right">
                                         <label class="mt-2">
                                             <input class="taskchecks" type="checkbox" name="taskstatus[]"
                                                 value="1">
@@ -336,12 +335,12 @@ $color = ['one','two','three','four','five','six','seven','eight'];
                                 </div>
 
                                 <div class="row mt-2">
-                                    <div class="col-md-9 col-9">
+                                    <div class="col-md-9">
                                         <h6><img class="mr-2"
                                                 src="{{ asset('assets/newicons/green.png') }}"></span>Completed
                                         </h6>
                                     </div>
-                                    <div class="col-md-3 col-3 text-right">
+                                    <div class="col-md-3 text-right">
                                         <label class="mt-2">
                                             <input class="taskchecks" type="checkbox" name="taskstatus[]"
                                                 value="3">
@@ -350,12 +349,12 @@ $color = ['one','two','three','four','five','six','seven','eight'];
                                     </div>
                                 </div>
                                 <div class="row mt-2">
-                                    <div class="col-md-9 col-9">
+                                    <div class="col-md-9">
                                         <h6><img class="mr-2"
                                                 src="{{ asset('assets/newicons/grey.png') }}"></span>Failed
                                         </h6>
                                     </div>
-                                    <div class="col-md-3 col-3 text-right">
+                                    <div class="col-md-3 text-right">
                                         <label class="mt-2">
                                             <input class="taskchecks" type="checkbox" name="taskstatus[]"
                                                 value="4">
@@ -374,20 +373,20 @@ $color = ['one','two','three','four','five','six','seven','eight'];
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                             <div class="task-block pl-2 pr-2">
                                 <div class="row">
-                                    <div class="col-md-6 col-8">
+                                    <div class="col-md-6">
                                         <span>Drivers</span>
                                     </div>
-                                    <div class="col-md-6 col-4 text-right">
+                                    <div class="col-md-6 text-right">
                                         <a href=""><span></span></a>
                                         <a class="ml-3" href=""><span></span></a>
                                     </div>
                                 </div>
 
                                 <div class="row mt-2">
-                                    <div class="col-md-8 col-8">
+                                    <div class="col-md-8">
                                         <h6>All Drivers</h6>
                                     </div>
-                                    <div class="col-md-4 col-4 text-right">
+                                    <div class="col-md-4 text-right">
                                         <label class="">
                                             <input class="agentdisplay" type="checkbox" name="agentcheck[]" value="2">
                                             <span class="checkmark" ></span>
@@ -395,10 +394,10 @@ $color = ['one','two','three','four','five','six','seven','eight'];
                                     </div>
                                 </div>
                                 <div class="row mt-2">
-                                    <div class="col-md-8 col-8">
+                                    <div class="col-md-8">
                                         <h6><span class="circle lia-castro mr-2"></span>Online</h6>
                                     </div>
-                                    <div class="col-md-4 col-4 text-right">
+                                    <div class="col-md-4 text-right">
                                         <label class="">
                                             <input class="agentdisplay" type="checkbox" name="agentcheck[]" value="1">
                                             <span class="checkmark"></span>
@@ -406,10 +405,10 @@ $color = ['one','two','three','four','five','six','seven','eight'];
                                     </div>
                                 </div>
                                 <div class="row mt-2">
-                                    <div class="col-md-8 col-8">
+                                    <div class="col-md-8">
                                         <h6><span class="circle mr-2"></span>Offline</h6>
                                     </div>
-                                    <div class="col-md-4 col-4 text-right">
+                                    <div class="col-md-4 text-right">
                                         <label class="">
                                             <input class="agentdisplay" type="checkbox" name="agentcheck[]" value="0">
                                             <span class="checkmark"></span>
@@ -435,9 +434,15 @@ $color = ['one','two','three','four','five','six','seven','eight'];
 @section('script')
 
 
+{{-- <script src="{{asset('assets/libs/flatpickr/flatpickr.min.js')}}"></script>
+<script src="{{asset('assets/libs/bootstrap-colorpicker/bootstrap-colorpicker.min.js')}}"></script>
+<script src="{{asset('assets/libs/clockpicker/clockpicker.min.js')}}"></script>
+<script src="{{asset('assets/libs/bootstrap-datepicker/bootstrap-datepicker.min.js')}}"></script>
 
-
-
+<!-- Page js-->
+<script src="{{asset('assets/js/pages/form-pickers.init.js')}}"></script> --}}
+{{-- <script src="{{ asset('demo/js/propeller.min.js') }}"></script>
+--}}
 <script>
 $(document).ready(function() {
 initMap();
@@ -463,112 +468,8 @@ var url = window.location.origin;
 // });
 var olddata  = {!!json_encode($newmarker)!!};
 var allagent = {!!json_encode($agents)!!};
-var theme    = {!!json_encode($theme->theme)!!};
-if(theme == 'dark'){
-var themeType = [
-        { elementType: "geometry", stylers: [{ color: "#242f3e" }] },
-        {
-        elementType: "labels.text.stroke",
-        stylers: [{ color: "#242f3e" }],
-        },
-        {
-        elementType: "labels.text.fill",
-        stylers: [{ color: "#746855" }],
-        },
-        {
-        featureType: "administrative.locality",
-        elementType: "labels.text.fill",
-        stylers: [{ color: "#d59563" }],
-        },
-        {
-        featureType: "poi",
-        elementType: "labels.text.fill",
-        stylers: [{ color: "#d59563" }],
-        },
-        {
-        featureType: "poi.park",
-        elementType: "geometry",
-        stylers: [{ color: "#263c3f" }],
-        },
-        {
-        featureType: "poi.park",
-        elementType: "labels.text.fill",
-        stylers: [{ color: "#6b9a76" }],
-        },
-        {
-        featureType: "road",
-        elementType: "geometry",
-        stylers: [{ color: "#38414e" }],
-        },
-        {
-        featureType: "road",
-        elementType: "geometry.stroke",
-        stylers: [{ color: "#212a37" }],
-        },
-        {
-        featureType: "road",
-        elementType: "labels.text.fill",
-        stylers: [{ color: "#9ca5b3" }],
-        },
-        {
-        featureType: "road.highway",
-        elementType: "geometry",
-        stylers: [{ color: "#746855" }],
-        },
-        {
-        featureType: "road.highway",
-        elementType: "geometry.stroke",
-        stylers: [{ color: "#1f2835" }],
-        },
-        {
-        featureType: "road.highway",
-        elementType: "labels.text.fill",
-        stylers: [{ color: "#f3d19c" }],
-        },
-        {
-        featureType: "transit",
-        elementType: "geometry",
-        stylers: [{ color: "#2f3948" }],
-        },
-        {
-        featureType: "transit.station",
-        elementType: "labels.text.fill",
-        stylers: [{ color: "#d59563" }],
-        },
-        {
-        featureType: "water",
-        elementType: "geometry",
-        stylers: [{ color: "#17263c" }],
-        },
-        {
-        featureType: "water",
-        elementType: "labels.text.fill",
-        stylers: [{ color: "#515c6d" }],
-        },
-        {
-        featureType: "water",
-        elementType: "labels.text.stroke",
-        stylers: [{ color: "#17263c" }],
-        },
-        {
-        featureType: "poi",
-        elementType: "labels",
-        stylers: [
-            { visibility: "off" }
-        ]
-       },
-    ];
-}else{
-themeType = [
-    {
-        featureType: "poi",
-        elementType: "labels",
-        stylers: [
-            { visibility: "off" }
-        ]
-    }
-];
-}
+
+
 // var teamdata = {!!json_encode($teams)!!};
 // var cars    = [0];
 
@@ -584,6 +485,8 @@ $(".agentdisplay").prop('checked', false);
 //    return confirm("Are you sure?");
 //   }
 //console.log(val);
+
+//main task markers
 for (let i = 0; i < olddata.length; i++) {
     checkdata = olddata[i];
     var info = []
@@ -624,6 +527,9 @@ for (let i = 0; i < olddata.length; i++) {
 
 
 
+
+
+
 });
 
 $('.taskchecks').click(function() {
@@ -643,7 +549,7 @@ $(".agentdisplay").prop('checked', false);
 //   }
 for (let i = 0; i < olddata.length; i++) {
     checkdata = olddata[i];
-    console.log(checkdata);
+   // console.log(checkdata);
     //console.log(checkdata[5]);
     // addMarker({ lat: checkdata[3], lng: checkdata[4] });
     //alert(checkdata['task_status']);
@@ -675,6 +581,7 @@ for (let i = 0; i < olddata.length; i++) {
         addMarker({lat:checkdata['latitude'],lng:checkdata['longitude']}, send,image,checkdata,type);
     }
 }
+
 
 
 });
@@ -709,7 +616,7 @@ for (let i = 0; i < allagent.length; i++) {
          url: images, // url
          scaledSize: new google.maps.Size(50, 50), // scaled size
          origin: new google.maps.Point(0,0), // origin
-         anchor: new google.maps.Point(0, 0) // anchor
+         anchor: new google.maps.Point(22,22) // anchor
         };
         send = null;
         type = 2;
@@ -736,15 +643,12 @@ function initMap() {
         mapTypeId: "roadmap",
         styles: themeType,
     });
-// This event listener will call addMarker() when the map is clicked.
-// map.addListener("click", (event) => {
-//   addMarker(event.latLng);
-// });
-// Adds a marker at the center of the map.
+
+    // Adds a marker at the center of the map.
     for (let i = 0; i < olddata.length; i++) {
         checkdata = olddata[i];
-    // console.log(checkdata);
-    var urlnewcreate = '';
+    
+        var urlnewcreate = '';
         if(checkdata['task_status'] == 0){
             urlnewcreate = 'unassigned';
         }else if(checkdata['task_status'] == 1 || checkdata['task_status'] == 2){
@@ -755,118 +659,150 @@ function initMap() {
             urlnewcreate = 'faild';
         }
         
-            if(checkdata['task_type_id'] == 1){
+        if(checkdata['task_type_id'] == 1){
                 urlnewcreate += '_P.png';
-            }else if(checkdata['task_type_id'] == 2){
+        }else if(checkdata['task_type_id'] == 2){
                 urlnewcreate +='_D.png';
-            }else{
+        }else{
                 urlnewcreate +='_A.png';
-            }
+        }
             
-            img = '{{ asset('assets/newicons/') }}'+'/'+urlnewcreate;
+        img = '{{ asset('assets/newicons/') }}'+'/'+urlnewcreate;
            
-            send = null;
+        send = null;
             type = 1;
         addMarker({
             lat: checkdata['latitude'],
             lng: checkdata['longitude']
         }, send, img,checkdata,type);
     }
+
+    
+    //agents markers
+    for (let i = 0; i < allagent.length; i++) {
+            checkdata = allagent[i];
+            //console.log(checkdata);
+            // addMarker({ lat: checkdata[3], lng: checkdata[4] });
+            
+                
+                if (checkdata['is_available'] == 1) {
+                    images = url+'/demo/images/location.png';
+                }else {
+                    images = url+'/demo/images/location_grey.png';
+                }
+                var image = {
+                url: images, // url
+                scaledSize: new google.maps.Size(50, 50), // scaled size
+                origin: new google.maps.Point(0,0), // origin
+                anchor: new google.maps.Point(22,22) // anchor
+                };
+                send = null;
+                type = 2;
+            addMarker({lat: parseFloat(checkdata.agentlog['lat']),lng:  parseFloat(checkdata.agentlog['long'])}, send, image,checkdata,type);
+            
+    }
 }
 
 
 // Adds a marker to the map and push to the array.
 function addMarker(location, lables, images,data,type) {
-var contentString = '';
-if(type == 1){
-    contentString =
-    '<div id="content">' +
-    '<div id="siteNotice">' +
-    "</div>" +
-    '<h5 id="firstHeading" class="firstHeading">'+data['driver_name']+'</h5>' +
-    '<h6 id="firstHeading" class="firstHeading">'+data['task_type']+'</h6>' +
-    '<div id="bodyContent">' +
-    "<p><b>Address :- </b> " +data['address']+ " " +
-    ".</p>" +
-    '<p><b>Customer: '+data['customer_name']+'</b>('+data['customer_phone_number']+') </p>' +
-    "</div>" +
-    "</div>";
-}else{
-    img = data['image_url'];
-    //console.log(img);
-    contentString =
-    '<div style="float:left">'+
-    '<img src="{{\Phumbor::url(\Storage::disk("s3")->url("assets/client_00000125/agents5fc76c71abdb3.png/A9B2zHkr5thbcyTKHivaYm4kNYrSXOiov6USdFpV.png"))->fitIn(90,50)}}">'+
-    "</div>"+
-    '<div style="float:right; padding: 10px;"><b>'+data['name']+'</b><br/><br/>'+data['phone_number']+'</div>';
-}
+
+    var contentString = '';
+
+    if(type == 1){
+        contentString =
+        '<div id="content">' +
+        '<div id="siteNotice">' +
+        "</div>" +
+        '<h5 id="firstHeading" class="firstHeading">'+data['driver_name']+'</h5>' +
+        '<h6 id="firstHeading" class="firstHeading">'+data['task_type']+'</h6>' +
+        '<div id="bodyContent">' +
+        "<p><b>Address :- </b> " +data['address']+ " " +
+        ".</p>" +
+        '<p><b>Customer: '+data['customer_name']+'</b>('+data['customer_phone_number']+') </p>' +
+        "</div>" +
+        "</div>";
+    }else{
+        img = data['image_url'];
+        //console.log(img);
+        contentString =
+        '<div style="float:left">'+
+        '<img src="{{\Phumbor::url(\Storage::disk("s3")->url("assets/client_00000125/agents5fc76c71abdb3.png/A9B2zHkr5thbcyTKHivaYm4kNYrSXOiov6USdFpV.png"))->fitIn(90,50)}}">'+
+        "</div>"+
+        '<div style="float:right; padding: 10px;"><b>'+data['name']+'</b><br/><br/>'+data['phone_number']+'</div>';
+    }
 
 
 
-const infowindow = new google.maps.InfoWindow({
-    content: contentString,
-    maxWidth: 250,
-    maxheight: 250,
-});
+    const infowindow = new google.maps.InfoWindow({
+        content: contentString,
+        maxWidth: 250,
+        maxheight: 250,
+    });
 
 
 
+    const marker = new google.maps.Marker({
+        position: location,
+        label: lables,
+        icon: images,
+        map: map,
+        animation: google.maps.Animation.DROP,
+    });
 
+    markers.push(marker);
 
-
-
-
-const marker = new google.maps.Marker({
-    position: location,
-    label: lables,
-    icon: images,
-    map: map,
-    animation: google.maps.Animation.DROP,
-});
-markers.push(marker);
-
-marker.addListener("click", () => {
-   infowindow.open(map, marker);
-});
+    marker.addListener("click", () => {
+    infowindow.open(map, marker);
+    });
 
 }
 
 // Sets the map on all markers in the array.
 function setMapOnAll(map) {
 
-for (let i = 0; i < markers.length; i++) {
-    markers[i].setMap(null);
-}
+    for (let i = 0; i < markers.length; i++) {
+        markers[i].setMap(null);
+    }
 }
 
 // Removes the markers from the map, but keeps them in the array.
 function clearMarkers() {
-setMapOnAll(null);
+    setMapOnAll(null);
 }
 
 // Shows any markers currently in the array.
-function showMarkers() {
-setMapOnAll(map);
+function showMarkers() { 
+    setMapOnAll(map);
 }
 
 // Deletes all markers in the array by removing references to them.
 function deleteMarkers() {
-clearMarkers();
-markers = [];
+    clearMarkers();
+    markers = [];
 }
 
 
 $(".datetime").on('change', function postinput(){
 
+    var matchvalue = $(this).val(); // this.value
+    newabc =  url+'?date='+matchvalue;
 
-var matchvalue = $(this).val(); // this.value
-newabc =  url+'?date='+matchvalue;
 
-
-window.location.href = newabc;
+    window.location.href = newabc;
 
 });
 
+// $('.datepicker').datepicker({
+//     format: 'yyyy/mm/dd',
+//     startDate: '-3d'
+// });
+
+setTimeout(function(){
+
+location.reload();
+
+},30000);
 
 </script>
 

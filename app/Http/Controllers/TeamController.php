@@ -85,7 +85,6 @@ class TeamController extends Controller
     {
         return Validator::make($data, [
             'name' => ['required', 'string', 'max:255'],
-            //'manager_id' => ['required'],
             'location_accuracy' => ['required'],
             'location_frequency' => ['required']
         ]);
@@ -111,7 +110,6 @@ class TeamController extends Controller
         }
         $data = [
             'name'          => $request->name,
-            //'manager_id'    => $request->manager_id,
             'client_id'     => auth()->user()->code,
             'location_accuracy' => $request->location_accuracy,
             'location_frequency' => $request->location_frequency
@@ -128,15 +126,6 @@ class TeamController extends Controller
             ]);
         }
 
-        //return redirect()->route('team.index')->with('success', 'Team Added successfully!');
-
-        // return response()->json([
-        //     'status' => 'success',
-        //     'message' => 'Team Created Successfully!',
-        // ]);
-
-
-        //return redirect()->back();
     }
 
     /**
@@ -194,9 +183,6 @@ class TeamController extends Controller
         foreach ($team->tags as $tag) {
             $teamTagIds[] = $tag->name;
         }
-        //print_r($teamTagIds);
-        //dd($tags->toArray());
-        //dd($customer->toArray());
         $returnHTML = view('team.form')->with(['team' => $team, 'tags' => $uptag, 'agents' => $agents, 'teamTagIds' => $teamTagIds, 'location_accuracy' => $this->location_accuracy, 'location_frequency' => $this->location_frequency])->render();
         return response()->json(array('success' => true, 'html'=>$returnHTML));
     }
@@ -208,7 +194,6 @@ class TeamController extends Controller
     {
         return Validator::make($data, [
             'name' => ['required', 'string', 'max:255'],
-            //'manager_id' => ['required'],
             'location_accuracy' => ['required'],
             'location_frequency' => ['required']
         ]);
@@ -240,8 +225,6 @@ class TeamController extends Controller
 
         $data = [
             'name'          => $request->name,
-            //'manager_id'    => $request->manager_id,
-            //'client_id'     => auth()->user()->code,
             'location_accuracy' => $request->location_accuracy,
             'location_frequency' => $request->location_frequency
         ];
@@ -255,8 +238,6 @@ class TeamController extends Controller
                 'data' => $team
             ]);
         }
-        //return redirect()->route('team.index')->with('success', 'Team Added successfully!');
-        //return redirect()->back()->with('success', 'Team Updated successfully!');
     }
 
     /**

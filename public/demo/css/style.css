@@ -392,3 +392,30 @@ body.menuitem-active .task-block h6 {
   display: none;
 }
 
+.mb-0>a {
+  display: block;
+  position: relative;
+  }
+  
+  .mb-0>a:after {
+  content: "\f078";
+  /* fa-chevron-down */
+  font-family: 'FontAwesome';
+  position: absolute;
+  right: 0;
+  }
+  body[data-sidebar-size=condensed]:not([data-layout=compact]) {
+  min-height: auto!important;
+  }
+  .mb-0>a[aria-expanded="true"]:after {
+  content: "\f077";
+  /* fa-chevron-up */
+  }
+  
+  .card-header {
+  padding: .5rem 1rem;
+  }
+  
+  body.menuitem-active .profile-status {
+  border: none!important;
+  }

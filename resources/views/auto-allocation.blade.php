@@ -16,9 +16,9 @@
             margin-bottom: 19px !important;
         }
 
-        .check {
+        .checkss {
             margin-top: 20px;
-
+            
 
         }
 
@@ -156,7 +156,7 @@
                             <input type="checkbox" value="1" class="custom-control-input large-icon" id="manual_allocation"
                                 name="manual_allocation"
                                 {{ isset($allocation) && $allocation->manual_allocation == 1 ? 'checked' : '' }}>
-                            <label class="custom-control-label check" for="manual_allocation">Enable this option to automatically assign Task to your agent.</label>
+                            <label class="custom-control-label checkss" for="manual_allocation">Enable this option to automatically assign Task to your agent.</label>
 
                             <div class="col-sm-4 text-right">
 
@@ -172,7 +172,7 @@
                             <input type="checkbox" value="1" class="custom-control-input large-icon" id="self_assign"
                                 name="self_assign"
                                 {{ isset($allocation) && $allocation->self_assign == 1 ? 'checked' : '' }}>
-                            <label class="custom-control-label check" for="self_assign">Enable this option to alow self Assign.</label>
+                            <label class="custom-control-label checkss" for="self_assign">Enable this option to alow self Assign.</label>
  
                             <div class="col-sm-4 text-right">
 

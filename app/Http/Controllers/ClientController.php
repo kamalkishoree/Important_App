@@ -141,7 +141,7 @@ class ClientController extends Controller
          //$minutes = 600;
         Cache::set($database_name, $data);
 
-        $this->dispatch(new ProcessClientDataBase($client->id));
+        $this->dispatchNow(new ProcessClientDataBase($client->id));
         return redirect()->route('client.index')->with('success', 'Client Added successfully!');
         
     }

@@ -1,45 +1,6 @@
 @extends('layouts.vertical', ['title' => 'Customers'])
 
 @section('css')
-<link href="{{asset('assets/libs/select2/select2.min.css')}}" rel="stylesheet" type="text/css" />
-<link href="{{asset('assets/libs/bootstrap-select/bootstrap-select.min.css')}}" rel="stylesheet" type="text/css" />
-<link href="{{asset('assets/libs/flatpickr/flatpickr.min.css')}}" rel="stylesheet" type="text/css" />
-<link href="{{asset('assets/libs/sweetalert2/sweetalert2.min.css')}}" rel="stylesheet" type="text/css" />
-
-
-<!-- for File Upload -->
-
-<link href="{{asset('assets/libs/dropzone/dropzone.min.css')}}" rel="stylesheet" type="text/css" />
-<link href="{{asset('assets/libs/dropify/dropify.min.css')}}" rel="stylesheet" type="text/css" />
-<link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/8.4.6/css/intlTelInput.css'>
-<style>
-// workaround
-.intl-tel-input {
-  display: table-cell;
-}
-
-.inner-div {
-        width: 50%;
-        float: left;
-    }
-.intl-tel-input .selected-flag {
-  z-index: 4;
-}
-.intl-tel-input .country-list {
-  z-index: 5;
-}
-.input-group .intl-tel-input .form-control {
-  border-top-left-radius: 4px;
-  border-top-right-radius: 0;
-  border-bottom-left-radius: 4px;
-  border-bottom-right-radius: 0;
-}
-
-.modal.fadeIn {
-  opacity:.4;
-}
-.pac-container, .pac-container .pac-item { z-index: 99999 !important; }
-</style>
 @endsection
 
 @section('content')
@@ -138,24 +99,8 @@
 @endsection
 
 @section('script')
-
-<!-- Plugins js-->
-{{-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB85kLYYOmuAhBUPd7odVmL6gnQsSGWU-4&libraries=places" async defer></script> --}}
-<script src="{{asset('assets/libs/select2/select2.min.js')}}"></script>
-<script src="{{asset('assets/libs/bootstrap-select/bootstrap-select.min.js')}}"></script>
-<!-- Page js-->
-{{-- <script src="{{asset('assets/js/pages/form-advanced.init.js')}}"></script>
-<script src="{{asset('assets/js/pages/form-pickers.init.js')}}"></script> --}}
-
-<script src="{{asset('assets/js/storeAgent.js')}}"></script>
-
-<!-- for File Upload -->
-<script src="{{asset('assets/libs/dropzone/dropzone.min.js')}}"></script>
-<script src="{{asset('assets/libs/dropify/dropify.min.js')}}"></script>
-<!-- Page js-->
-<script src="{{asset('assets/js/pages/form-fileuploads.init.js')}}"></script>
-<script src="{{asset('assets/libs/datatables/datatables.min.js')}}"></script>
-
+    <script src="{{asset('assets/js/storeAgent.js')}}"></script>
+    <script src="{{asset('assets/libs/datatables/datatables.min.js')}}"></script>
 @include('Customer.pagescript')  
 
 @endsection

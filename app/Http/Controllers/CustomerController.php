@@ -18,7 +18,8 @@ class CustomerController extends Controller
     public function index()
     {
         $customer = Customer::orderBy('created_at', 'DESC')->paginate(10);
-        return view('Customer.customer')->with(['customers' => $customer]); 
+        
+        return view('Customer.customer')->with(['customers' => $customer]);
     }
 
     /**
@@ -28,25 +29,26 @@ class CustomerController extends Controller
      */
     public function create()
     {
+        //not in use
         return view('Customer/add-customer');
     }
 
     /**
-     * Validation method for agents data 
-    */
+     * Validation method for customer 
+     */
     private function validationRules($id = '')
     {
-        
+
         $rules = [
             'name' => "required|string|max:50",
             //'short_name'// => "required",
             //'address' => "required",
             //'post_code' => "required"
         ];
-        if($id != ''){
+        if ($id != '') {
             $rules['email'] = 'required|email|unique:customers,email,' . $id;
             $rules['phone_number'] = 'required|digits:10|unique:customers,phone_number,' . $id;
-        }else{
+        } else {
             $rules['email'] = 'required|email|unique:customers,email';
             $rules['phone_number'] = 'required|digits:10|unique:customers,phone_number';
         }
@@ -64,17 +66,17 @@ class CustomerController extends Controller
     {
         $rule = $this->validationRules();
         $validation  = Validator::make($request->all(), $rule)->validate();
-        //$validator = $this->validator($request->all())->validate();
+        
         $data = [
             'name' => $request->name,
             'email' => $request->email,
             'phone_number' => $request->phone_number,
         ];
 
-        //dd($request->all());
+        
         $customer = Customer::create($data);
         foreach ($request->short_name as $key => $value) {
-            if(isset($value) && $value != null){
+            if (isset($value) && $value != null) {
                 $datas = [
                     'short_name' => $value,
                     'address'    => (!empty($request->address[$key])) ? $request->address[$key] : 'unnamed',
@@ -87,15 +89,14 @@ class CustomerController extends Controller
             }
         }
 
-        if($customer->wasRecentlyCreated){
+        if ($customer->wasRecentlyCreated) {
             return response()->json([
-                'status'=>'success',
+                'status' => 'success',
                 'message' => 'Customer created Successfully!',
                 'data' => $customer
             ]);
         }
-        //return redirect()->route('customer.index')->with('success', 'Customer Added successfully!');
-      
+
     }
 
     /**
@@ -117,12 +118,13 @@ class CustomerController extends Controller
      */
     public function edit($id)
     {
-        //echo $id.'fff';
+       
         $customer = Customer::where('id', $id)->with('location')->first();
 
-       
+
         $returnHTML = view('Customer.form')->with('customer', $customer)->render();
-        return response()->json(array('success' => true, 'html'=>$returnHTML, 'addFieldsCount'=> $customer->location->count()));
+
+        return response()->json(array('success' => true, 'html' => $returnHTML, 'addFieldsCount' => $customer->location->count()));
     }
 
     /**
@@ -137,8 +139,7 @@ class CustomerController extends Controller
         $rule = $this->validationRules($id);
         $customer = Customer::find($id);
         $validation  = Validator::make($request->all(), $rule)->validate();
-        //$validator = $this->validator($request->all())->validate();
-        
+
         $data = [
             'name' => $request->name,
             'email' => $request->email,
@@ -146,14 +147,14 @@ class CustomerController extends Controller
         ];
 
         $customer->update($data);
-        //$check = Location::where('created_by',$id)->delete();
+
         foreach ($request->short_name as $key => $value) {
 
-            if(isset($value) && $value != null){
+            if (isset($value) && $value != null) {
 
-                if(is_array($request->location_id) && array_key_exists($key, $request->location_id)){
+                if (is_array($request->location_id) && array_key_exists($key, $request->location_id)) {
                     $location = Location::find($request->location_id[$key]);
-                    if($location){
+                    if ($location) {
                         $location->short_name = $value;
                         $location->address = $request->address[$key];
                         $location->post_code = $request->post_code[$key];
@@ -162,7 +163,7 @@ class CustomerController extends Controller
 
                         $location->save();
                     }
-                }else{
+                } else {
 
                     $datas = [
                         'short_name' => $value,
@@ -173,21 +174,19 @@ class CustomerController extends Controller
                         'customer_id' => $customer->id,
                     ];
                     $Loction = Location::create($datas);
-
                 }
             }
         }
 
-        if($customer){
+        if ($customer) {
             return response()->json([
-                'status'=>'success',
+                'status' => 'success',
                 'message' => 'Customer updated Successfully!',
                 'data' => $customer
             ]);
         }
-        //return redirect()->route('customer.index')->with('success', 'Customer Updated successfully!');
 
-        
+
     }
 
     /**
@@ -198,17 +197,21 @@ class CustomerController extends Controller
      */
     public function destroy($id)
     {
-        Customer::where('id',$id)->delete();
+        Customer::where('id', $id)->delete();
+
         return redirect()->back()->with('success', 'Customer deleted successfully!');
     }
 
+
+    //this function for change status of customer active/in-active
+    
     public function changeStatus(Request $request)
     {
-       
+
         $customer = Customer::find($request->id);
         $customer->status = $request->status;
         $customer->save();
-  
-        return response()->json(['success'=>'Status change successfully.']);
+
+        return response()->json(['success' => 'Status change successfully.']);
     }
 }

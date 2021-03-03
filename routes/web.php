@@ -16,14 +16,8 @@ use Illuminate\Support\Facades\Redirect;
 |
 */
 
-        // $url = Request::url();
-        // $client = str_replace(array('http://','.test.com/login'), '', $url);
-        // $value = Cache::get('key1');
-		// dd($value);
-		Route::get('/testing','ProcessController@task');
-		// Route::get('/godpanel', function(){
-		// 	return redirect()->route('login');
-		// });
+       
+		
 		Route::get('/howto/signup', function(){
 			return view('How-to-SignUp-in-Royo-Dispatcher');
 		});
