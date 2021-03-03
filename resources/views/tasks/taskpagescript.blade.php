@@ -164,11 +164,11 @@
                         hour12: true
                     };
                     var note  = (elem.note != null) ? elem.note : '';
-                    
+                    // $('.all-remove').remove();
                     $(document).find('.new-proofs').before(
-                        '<div class="col-md-12">'+
+                        '<div class="col-md-12 all-remove">'+
                                                 '<div class="task-card">'+
-                                                    '<div class="p-2 assigned-block"><h5>'+ taskname +'</h5>'+
+                                                    '<div class="p-2 assigned-block bg-transparent""><h5>'+ taskname +'</h5>'+
                                                             '<div class="row">'+
                                                                 
                                                                 '<div class="col-md-4">'+
@@ -197,8 +197,8 @@
                                                                 '</div>'+
                                                             '</div>'+
                                                             
-                                                            '<div class="row"><div class="col-md-6"></div>'+
-                                                            '<div class="col-md-6 text-right"><button class="assigned-btn">complated</button>'+
+                                                            
+                                                            '<div class="col-md-6 text-right"><button class="assigned-btn"></button>'+
                                                             '</div>'+
                                                             '</div>'+
 

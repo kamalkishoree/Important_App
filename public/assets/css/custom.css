@@ -570,3 +570,17 @@ text-align: center;
   max-height: 80px;
   overflow-y: scroll;
 }
+
+
+.pay-detail-box{
+  border: 1px solid #ddd;
+  text-align: center;
+  border-radius: 4px;
+  margin-bottom: 15px;
+  padding: 4px;
+}
+.pay-detail-box label {
+  margin-bottom: 0px;
+  font-size: 12px;
+  letter-spacing: -.3px;
+}
