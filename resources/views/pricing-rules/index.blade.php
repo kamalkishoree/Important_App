@@ -65,7 +65,7 @@
                 </div><!-- end col -->
 
                 <div class="">
-                    <h4 class="header-title mt-3 mt-md-0">Set Priority</h4>
+                    <h4 class="header-title mt-3 mt-md-0 small-mt-0">Set Priority</h4>
                     <div class="custom-dd dd" id="nestable_list_2">
                         @if(!empty($priority))
                         <ol class="dd-list" id="priority">

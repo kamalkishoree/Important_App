@@ -186,10 +186,10 @@ exit;
 
                             @foreach ($agents as $agent)
                                 <div
-                                    class="col-md-6 boxes card-box agent_boxes team_{{ $agent->team_id ?? 0 }} agent_{{ $agent->id }}">
+                                    class="col-md-12 boxes card-box agent_boxes team_{{ $agent->team_id ?? 0 }} agent_{{ $agent->id }}">
                                     <div class="custom-control custom-checkbox">
                                         <div class="row">
-                                            <div class="col-md-4">
+                                            <div class="col-md-2 col-3">
                                                 <input type="checkbox"
                                                     class="custom-control-input agent_checkbox team_checkbox_{{ $agent->team_id ?? 0 }}"
                                                     id="{{ $agent->id }}" name="agents[]" value="{{ $agent->id }}">
@@ -198,7 +198,7 @@ exit;
                                                     src="{{isset($agent->profile_picture) ? Phumbor::url(Storage::disk('s3')->url($agent->profile_picture))->fitin(90,50) : '' }}"
                                                     alt="" style="border-radius:50%; ">
                                             </div>
-                                            <div class="col-md-8">
+                                            <div class="col-md-10 col-9">
                                                 <span class="spans">{{ $agent->name }}</span><br>
                                                 <span>{{ isset($agent->team->name) ? $agent->team->name : 'No Team Alloted' }}</span>
                                             </div>
@@ -229,7 +229,7 @@ exit;
                       </div>
                       
                     </div>
-                    <div class="" style="height:96%;">
+                    <div class="" style="height:780px;">
 
                         <div id="map-canvas"></div>
                     </div>

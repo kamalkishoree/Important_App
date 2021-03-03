@@ -7,12 +7,12 @@
             </div>
             <form id="add_customer" action="{{ route('customer.store') }}" method="POST">
                 @csrf
-                <div class="modal-body p-4">
+                <div class="modal-body pl-4 pr-4 pt-4">
                     
                     <div class="row">
 
                         <div class="col-md-12">
-                            <div class="card-box">
+                            <div class="card-box mb-0 pb-0">
                                 <h4 class="header-title mb-3"></h4>
 
                                 <div class="row">
@@ -91,10 +91,7 @@
                                 </div>
                                 
                                 <div class="row">
-                                    <div class="col-md-4">
-
-                                    </div>
-                                    <div class="col-md-8" id="adds">
+                                    <div class="col-md-12 text-center" id="adds">
                                         <a href="#"  class="btn btn-success btn-rounded waves-effect waves-light addField" >Add More Address</a>
                                     </div>
                                 </div>

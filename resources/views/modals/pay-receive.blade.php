@@ -47,18 +47,24 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-4 card-box dispaly-cards">
+                        <div class="col-md-4">
+                            <div class="card-box dispaly-cards">
                             {!! Form::label('title', 'Order Earning',['class' => 'control-label']) !!} <br>
                             <span id="order_earning"></span>
+                            </div>
                         </div>
-                        <div class="col-md-4 card-box dispaly-cards">
+                        <div class="col-md-4 ">
+                            <div class="card-box dispaly-cards">
                             {!! Form::label('title', 'Cash Collected',['class' => 'control-label']) !!} <br>
                             <span id="cash_collected"></span>
                         </div>
-                        <div class="col-md-4 card-box dispaly-cards">
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card-box dispaly-cards">
                             {!! Form::label('title', 'Final Balance',['class' => 'control-label']) !!} <br>
                             <span id="final_balance"></span>
                         </div>
+                    </div>
                     </div>
                 </div>
                 <div class="modal-footer">

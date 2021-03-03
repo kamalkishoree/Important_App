@@ -100,10 +100,60 @@
 .no-border-radius {
   border-radius: 0px!important;
 }
+#submitpayreceive .card-box {
+    padding: 12px;
+    border: 1px solid #dddddd4a;
+    border-radius: 4px;
+  }
+  #submitpayreceive .card-box label {
+    margin-bottom: 0px;
+  }
 /* zz */
 
 
 @media (max-width:767px) {
+  .dataTables_paginate ul {
+    margin-bottom: 25px!important;
+  }
+  .small-mt-0 {
+    margin-top: 0px!important;
+  }
+  .card-body .table-responsive {
+    padding: 0px!important;
+  }
+  .rounded.book strong {
+    display: block;
+    margin-bottom: 15px;
+  }
+  #geo_form button {
+    margin-bottom: 8px;
+  }
+  #submitpayreceive .card-box {
+    padding: 8px;
+  }
+
+  #submitTeam .modal-body.p-4 {
+    padding-bottom: 0!important;
+  }
+  #submitTeam .addTeamForm {
+    width: 100%;
+  }
+  #adds {
+    margin-bottom: 5px!important;
+}
+  #add_customer .card-box {
+    padding-top: 0px!important;
+  }
+  #adds a {
+    width: 100%;
+    border-radius: 4px;
+  }
+  #add_customer .pl-4.pr-4.pt-4 {
+    padding: 0px!important;
+  }
+  #colorInput label {
+    float: left;
+  }
   #show-map-modal .btn.btn-blue.waves-effect.waves-light.selectMapLocation, #submitAgent .btn.btn-blue.waves-effect.waves-light, #submitpayreceive .btn.btn-blue.waves-effect.waves-light {
     width: 100%;
   }
