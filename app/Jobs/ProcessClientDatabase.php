@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\DB;
 use Config;
 use Exception;
 use Illuminate\Support\Facades\Artisan;
+Use Log;
 
 class ProcessClientDatabase implements ShouldQueue
 {
