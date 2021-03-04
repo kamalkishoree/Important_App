@@ -6,8 +6,7 @@
 @endsection
 @php
 $color = ['one','two','three','four','five','six','seven','eight'];
-
-// dd($preference->date_format);
+$imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain/';
 @endphp
 @section('content')
 
@@ -153,7 +152,7 @@ $color = ['one','two','three','four','five','six','seven','eight'];
                                                     <div class="row">
                                                         <div class="col-md-2 col-2">
                                                             <img class="profile-circle"
-                                                                src="{{isset($agent['profile_picture']) ? Phumbor::url(Storage::disk('s3')->url($agent['profile_picture']))->fitIn(55,30):'https://dummyimage.com/36x36/ccc/fff'}}">
+                                                                src="{{isset($agent['profile_picture']) ? $imgproxyurl.Storage::disk('s3')->url($agent['profile_picture']):'https://dummyimage.com/36x36/ccc/fff'}}">
                                                         </div>
                                                         <div class="col-md-10 col-10">
                                                             <h6 class="mb-0 header-title scnd">{{ $agent['name'] }}</h6>
@@ -468,6 +467,7 @@ var url = window.location.origin;
 // });
 var olddata  = {!!json_encode($newmarker)!!};
 var allagent = {!!json_encode($agents)!!};
+var imgproxyurl         = {!!json_encode($imgproxyurl)!!};
 
 
 // var teamdata = {!!json_encode($teams)!!};
@@ -727,7 +727,7 @@ function addMarker(location, lables, images,data,type) {
         //console.log(img);
         contentString =
         '<div style="float:left">'+
-        '<img src="{{\Phumbor::url(\Storage::disk("s3")->url("assets/client_00000125/agents5fc76c71abdb3.png/A9B2zHkr5thbcyTKHivaYm4kNYrSXOiov6USdFpV.png"))->fitIn(90,50)}}">'+
+        '<img src="https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain/'+data['image_url']+'">'+
         "</div>"+
         '<div style="float:right; padding: 10px;"><b>'+data['name']+'</b><br/><br/>'+data['phone_number']+'</div>';
     }

@@ -72,7 +72,9 @@
 
     </style>
 @endsection
-
+@php
+    $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain/';
+@endphp
 @section('content')
     <div class="container-fluid">
 
@@ -180,7 +182,7 @@
                                                     {{ $val == 'checked' ? 'checked' : '' }}>
                                                 <label class="custom-control-label new" for="{{ $agent->id }}"></label>
                                                 <img class="imageagent"
-                                                    src="{{Phumbor::url(Storage::disk('s3')->url($agent->profile_picture))->fitin(90,50)}}"
+                                                    src="{{$imgproxyurl.Storage::disk('s3')->url($agent->profile_picture)}}"
                                                     alt="" style="border-radius:50%; ">
                                             </div>
                                             <div class="col-md-8">
