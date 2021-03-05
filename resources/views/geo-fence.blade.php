@@ -3,6 +3,9 @@ if( isset($_POST['name']) ){
 echo $_POST['name'];
 exit;
 }
+
+    $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain/';
+
 @endphp
 
 @extends('layouts.vertical', ['title' => 'Geo Fence'])
@@ -181,7 +184,7 @@ exit;
                                                     id="{{ $agent->id }}" name="agents[]" value="{{ $agent->id }}">
                                                 <label class="custom-control-label new" for="{{ $agent->id }}"></label>
                                                 <img class="imageagent"
-                                                    src="{{isset($agent->profile_picture) ? Phumbor::url(Storage::disk('s3')->url($agent->profile_picture))->fitin(90,50) : '' }}"
+                                                    src="{{isset($agent->profile_picture) ? $imgproxyurl.Storage::disk('s3')->url($agent->profile_picture) : '' }}"
                                                     alt="" style="border-radius:50%; ">
                                             </div>
                                             <div class="col-md-10 col-9">

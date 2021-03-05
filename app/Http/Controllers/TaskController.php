@@ -1290,7 +1290,7 @@ class TaskController extends Controller
             $cus_id = $request->ids;
             $customer = Customer::where('id', $request->ids)->first();
         }
-        $assign = '';
+        $assign = 'unassigned';
         if($request->allocation_type == 'm'){
             $assign = 'assigned';
         }

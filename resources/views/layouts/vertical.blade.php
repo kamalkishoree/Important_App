@@ -31,6 +31,7 @@
                     if(session('preferences.twilio_status') != 'invalid_key'){
                         $style = "display:none;";
                     }
+                    
                 @endphp
 
                 <div class="row displaySettingsError" style="{{$style}}">

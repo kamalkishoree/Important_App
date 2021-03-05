@@ -46,7 +46,9 @@
     </style>
 
 @endsection
-
+@php
+    $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain/';
+@endphp
 @section('content')
     <!-- Start Content-->
     <div class="container-fluid">
@@ -239,7 +241,7 @@
                                 @foreach ($agents as $agent)
                                 <tr>
                                     <td style="width: 36px;">
-                                        <img src="{{Phumbor::url(Storage::disk('s3')->url($agent->profile_picture))->fitIn(55,30)}}" alt="contact-img" title="contact-img" class="rounded-circle avatar-sm" />
+                                        <img src="{{$imgproxyurl.Storage::disk('s3')->url($agent->profile_picture)}}" alt="contact-img" title="contact-img" class="rounded-circle avatar-sm" />
                                     </td>
 
                                     <td>
@@ -380,7 +382,7 @@
         function initMap() {
         map = new google.maps.Map(document.getElementById("map"), {
             zoom: 10,
-            
+            styles: themeType,
             center: { lat: lat, lng: long },
             mapTypeId: "roadmap",
         });
