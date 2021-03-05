@@ -112,6 +112,34 @@
 
 
 @media (max-width:767px) {
+  #add-customer-modal .modal-header {
+    padding-bottom: 0px!important;
+  }
+  .repeated-block #task_type {
+    width: 85%;
+  }
+  .repeated-block .span1.onedelete {
+    position: absolute;
+    right: 18px;
+    top: -55px;
+  }
+  #typeInputss {
+    height: 92px!important;
+  }
+  .showsimage {
+    margin-left: 0px!important;
+  }
+  #task-modal-header .modal-header button {
+    position: absolute;
+    right: 22px;
+    z-index: 55;
+  }
+  #task-modal-header .modal-header {
+    padding-bottom: 0px!important;
+  }
+  #addCardBox {
+    padding-top: 0px!important;
+  }
   .dataTables_paginate ul {
     margin-bottom: 25px!important;
   }
@@ -139,7 +167,7 @@
     width: 100%;
   }
   #adds {
-    margin-bottom: 5px!important;
+    margin-bottom: 15px!important;
 }
   #add_customer .card-box {
     padding-top: 0px!important;
@@ -256,6 +284,7 @@
 }
 .newchnageimage, .showsimagegall {
   margin-left: 0px!important;
+  margin-top: 0px!important;
 }
 #colorInput {
   text-align: center;

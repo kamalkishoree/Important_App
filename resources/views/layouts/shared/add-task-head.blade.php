@@ -411,6 +411,7 @@
         $clone.removeClass('cloningDiv');
         $clone.removeClass('copyin1');
         $clone.addClass('copyin');
+        $clone.addClass('repeated-block');
         
         $clone.find('.cust_add_div').prop('id', 'addHeader' + countZ);
         $clone.find('.cust_add').prop('id', 'addHeader' + countZ +'-input');
