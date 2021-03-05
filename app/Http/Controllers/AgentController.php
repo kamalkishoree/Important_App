@@ -26,7 +26,7 @@ class AgentController extends Controller
     {
        
         $agents = Agent::orderBy('id', 'DESC')->get();
-        
+        $agent = Agent::where('id',10)->first();
 
         $tags  = TagsForAgent::all();
         $tag   = [];

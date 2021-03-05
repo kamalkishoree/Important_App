@@ -61,6 +61,9 @@ class Agent extends Authenticatable
     public function order(){
         return $this->hasMany('App\Model\Order','driver_id', 'id');
     }
+    public function agentPayment(){
+        return $this->hasMany('App\Model\AgentPayment','driver_id', 'id');
+    }
     public function agentlog(){
         return $this->hasOne('App\Model\AgentLog','agent_id', 'id');
     }
