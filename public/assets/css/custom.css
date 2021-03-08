@@ -605,11 +605,11 @@ hr.new3 {
   vertical-align: baseline;
   border-radius: 0.25em;
 }
-#ui-id-1, #ui-id-2{
+#ui-id-1, #ui-id-2 {
   z-index: 9999 ;
 
 }
-#ui-id-1 li, #ui-id-2 li{
+#ui-id-1 li, #ui-id-2 li {
   z-index: 9999 ;
 }
 
@@ -662,4 +662,16 @@ text-align: center;
   margin-bottom: 0px;
   font-size: 12px;
   letter-spacing: -.3px;
+}
+
+.table_spacing table {
+  border-collapse: separate;
+  border-spacing: 0 5px;
+}
+
+.new_head{
+
+     color: #dee2e6;
+   
+    
 }

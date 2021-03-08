@@ -337,6 +337,8 @@ class ClientController extends Controller
 
     public function taskProof(Request $request)
     {
+
+        dd($request->all());
         
         $check = TaskProof::where('id',1)->first();
         
