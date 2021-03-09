@@ -5,6 +5,7 @@
 @section('content')
 @include('modals.tandc')
 @include('modals.privacyandpolicy')
+
 <!-- Start Content-->
 <div class="container-fluid">
 
@@ -231,9 +232,123 @@
                 <div class="card-box">
                     <h4 class="header-title mb-3">Task Completion Proofs</h4>
                     
-                    <h5 class="header-title mb-3">Pickup</h5>
                     <div>
+                        
+                        @foreach ($task_proofs as $key => $taskproof)
+                        @php $counter = 1; @endphp
+                        <h5 class="header-title mb-3">{{$task_list[$key]->name}}</h5>
+                         <div class="table-responsive table_spacing">
+                            <table class="table table-borderless table-nowrap table-hover table-centered m-0">
 
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th>Type</th>
+                                        <th>Enable</th>
+                                        <th>Required</th>
+                                        
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    </td>
+
+                                    <tr>
+                                        <td>
+                                            <h5 class="m-0 font-weight-normal">Image</h5>
+                                        </td>
+
+                                        <td>
+                                            <div class="custom-control custom-switch">
+                                                <input type="checkbox" class="custom-control-input event_type" id="customSwitch_{{$key.''.$counter.'1'}}" name="image_{{$key+1}}" {{isset($taskproof->image) && $taskproof->image == 1 ? 'checked':''}}>
+                                                <label class="custom-control-label" for="customSwitch_{{$key.''.$counter.'1'}}"></label>
+                                            </div>
+                                        </td>
+
+                                        <td>
+                                            <div class="custom-control custom-switch">
+                                                <input type="checkbox" class="custom-control-input event_type" id="customSwitch_{{$key.''.$counter.'2'}}" name="image_requried_{{$key+1}}" {{isset($taskproof->image_requried) && $taskproof->image_requried == 1 ? 'checked':''}}>
+                                                <label class="custom-control-label" for="customSwitch_{{$key.''.$counter.'2'}}"></label>
+                                            </div>
+                                        </td>
+
+                                        
+                                    </tr>
+
+                                    <tr>
+                                        <td>
+                                            <h5 class="m-0 font-weight-normal">Signature</h5>
+                                        </td>
+
+                                        <td>
+                                            <div class="custom-control custom-switch">
+                                                <input type="checkbox" class="custom-control-input event_type" id="customSwitch_{{$key.''.$counter.'3'}}" name="signature_{{$key+1}}" {{isset($taskproof->signature) && $taskproof->signature == 1 ? 'checked':''}}>
+                                                <label class="custom-control-label" for="customSwitch_{{$key.''.$counter.'3'}}"></label>
+                                            </div>
+                                        </td>
+
+                                        <td>
+                                            <div class="custom-control custom-switch">
+                                                <input type="checkbox" class="custom-control-input event_type" id="customSwitch_{{$key.''.$counter.'4'}}" name="signature_requried_{{$key+1}}" {{isset($taskproof->signature_requried) && $taskproof->signature_requried == 1 ? 'checked':''}}>
+                                                <label class="custom-control-label" for="customSwitch_{{$key.''.$counter.'4'}}"></label>
+                                            </div>
+                                        </td>
+
+                                        
+                                    </tr>
+                                    
+                                    <tr>
+                                        <td>
+                                            <h5 class="m-0 font-weight-normal">Notes</h5>
+                                        </td>
+
+                                        <td>
+                                            <div class="custom-control custom-switch">
+                                                <input type="checkbox" class="custom-control-input event_type" id="customSwitch_{{$key.''.$counter.'5'}}" name="note_{{$key+1}}" {{isset($taskproof->note) && $taskproof->note == 1 ? 'checked':''}}>
+                                                <label class="custom-control-label" for="customSwitch_{{$key.''.$counter.'5'}}"></label>
+                                            </div>
+                                        </td>
+
+                                        <td>
+                                            <div class="custom-control custom-switch">
+                                                <input type="checkbox" class="custom-control-input event_type" id="customSwitch_{{$key.''.$counter.'6'}}" name="note_requried_{{$key+1}}" {{isset($taskproof->note_requried) && $taskproof->note_requried == 1 ? 'checked':''}}>
+                                                <label class="custom-control-label" for="customSwitch_{{$key.''.$counter.'6'}}"></label>
+                                            </div>
+                                        </td>
+
+                                        
+                                    </tr>
+
+
+                                    <tr>
+                                        <td>
+                                            <h5 class="m-0 font-weight-normal">Barcode</h5>
+                                        </td>
+
+                                        <td>
+                                            <div class="custom-control custom-switch">
+                                                <input type="checkbox" class="custom-control-input event_type" id="customSwitch_{{$key.''.$counter.'7'}}" name="barcode_{{$key+1}}" {{isset($taskproof->barcode) && $taskproof->barcode == 1 ? 'checked':''}}>
+                                                <label class="custom-control-label" for="customSwitch_{{$key.''.$counter.'7'}}"></label>
+                                            </div>
+                                        </td>
+
+                                        <td>
+                                            <div class="custom-control custom-switch">
+                                                <input type="checkbox" class="custom-control-input event_type" id="customSwitch_{{$key.''.$counter.'8'}}" name="barcode_requried_{{$key+1}}" {{isset($taskproof->barcode_requried) && $taskproof->barcode_requried == 1 ? 'checked':''}}>
+                                                <label class="custom-control-label" for="customSwitch_{{$key.''.$counter.'8'}}"></label>
+                                            </div>
+                                        </td>
+
+                                        
+                                    </tr>
+
+
+                                </tbody>
+                            </table>
+                         </div>
+                         {{-- <h4 class="header-title mb-3">{{$key == 0 ? 'Drop-Off': $key == 1 ? 'Appointment':''}}</h4> --}}
+                         @php $counter++; @endphp
+                        @endforeach
+                        
+                        {{-- <h4 class="header-title mb-3">Drop-Off</h4>
                         <div class="table-responsive table_spacing">
                             <table class="table table-borderless table-nowrap table-hover table-centered m-0">
 
@@ -255,15 +370,15 @@
 
                                         <td>
                                             <div class="custom-control custom-switch">
-                                                <input type="checkbox" class="custom-control-input event_type" id="customSwitch_1" name="image[]" {{isset($taskproof->image) && $taskproof->image == 1 ? 'checked':''}}>
-                                                <label class="custom-control-label" for="customSwitch_1"></label>
+                                                <input type="checkbox" class="custom-control-input event_type" id="customSwitch_7" name="image_2" {{isset($taskproof->image) && $taskproof->image == 1 ? 'checked':''}}>
+                                                <label class="custom-control-label" for="customSwitch_7"></label>
                                             </div>
                                         </td>
 
                                         <td>
                                             <div class="custom-control custom-switch">
-                                                <input type="checkbox" class="custom-control-input event_type" id="customSwitch_2" name="image_requried[]" {{isset($taskproof->image_requried) && $taskproof->image_requried == 1 ? 'checked':''}}>
-                                                <label class="custom-control-label" for="customSwitch_2"></label>
+                                                <input type="checkbox" class="custom-control-input event_type" id="customSwitch_8" name="image_requried_2" {{isset($taskproof->image_requried) && $taskproof->image_requried == 1 ? 'checked':''}}>
+                                                <label class="custom-control-label" for="customSwitch_8"></label>
                                             </div>
                                         </td>
 
@@ -277,15 +392,15 @@
 
                                         <td>
                                             <div class="custom-control custom-switch">
-                                                <input type="checkbox" class="custom-control-input event_type" id="customSwitch_3" name="signature[]" {{isset($taskproof->signature) && $taskproof->signature == 1 ? 'checked':''}}>
-                                                <label class="custom-control-label" for="customSwitch_3"></label>
+                                                <input type="checkbox" class="custom-control-input event_type" id="customSwitch_9" name="signature_2" {{isset($taskproof->signature) && $taskproof->signature == 1 ? 'checked':''}}>
+                                                <label class="custom-control-label" for="customSwitch_9"></label>
                                             </div>
                                         </td>
 
                                         <td>
                                             <div class="custom-control custom-switch">
-                                                <input type="checkbox" class="custom-control-input event_type" id="customSwitch_4" name="signature_requried[]" {{isset($taskproof->signature_requried) && $taskproof->signature_requried == 1 ? 'checked':''}}>
-                                                <label class="custom-control-label" for="customSwitch_4"></label>
+                                                <input type="checkbox" class="custom-control-input event_type" id="customSwitch_10" name="signature_requried_2" {{isset($taskproof->signature_requried) && $taskproof->signature_requried == 1 ? 'checked':''}}>
+                                                <label class="custom-control-label" for="customSwitch_10"></label>
                                             </div>
                                         </td>
 
@@ -299,15 +414,15 @@
 
                                         <td>
                                             <div class="custom-control custom-switch">
-                                                <input type="checkbox" class="custom-control-input event_type" id="customSwitch_5" name="note[]" {{isset($taskproof->note) && $taskproof->note == 1 ? 'checked':''}}>
-                                                <label class="custom-control-label" for="customSwitch_5"></label>
+                                                <input type="checkbox" class="custom-control-input event_type" id="customSwitch_11" name="note_2" {{isset($taskproof->note) && $taskproof->note == 1 ? 'checked':''}}>
+                                                <label class="custom-control-label" for="customSwitch_11"></label>
                                             </div>
                                         </td>
 
                                         <td>
                                             <div class="custom-control custom-switch">
-                                                <input type="checkbox" class="custom-control-input event_type" id="customSwitch_6" name="note_requried[]" {{isset($taskproof->note_requried) && $taskproof->note_requried == 1 ? 'checked':''}}>
-                                                <label class="custom-control-label" for="customSwitch_6"></label>
+                                                <input type="checkbox" class="custom-control-input event_type" id="customSwitch_12" name="note_requried_2" {{isset($taskproof->note_requried) && $taskproof->note_requried == 1 ? 'checked':''}}>
+                                                <label class="custom-control-label" for="customSwitch_12"></label>
                                             </div>
                                         </td>
 
@@ -317,8 +432,9 @@
 
                                 </tbody>
                             </table>
-                        </div>
-                        <h4 class="header-title mb-3">Drop-Off</h4>
+                        </div> --}}
+
+                        {{-- <h4 class="header-title mb-3">Appointment</h4>
                         <div class="table-responsive table_spacing">
                             <table class="table table-borderless table-nowrap table-hover table-centered m-0">
 
@@ -340,15 +456,15 @@
 
                                         <td>
                                             <div class="custom-control custom-switch">
-                                                <input type="checkbox" class="custom-control-input event_type" id="customSwitch_1" name="image[]" {{isset($taskproof->image) && $taskproof->image == 1 ? 'checked':''}}>
-                                                <label class="custom-control-label" for="customSwitch_1"></label>
+                                                <input type="checkbox" class="custom-control-input event_type" id="customSwitch_13" name="image_3" {{isset($taskproof->image) && $taskproof->image == 1 ? 'checked':''}}>
+                                                <label class="custom-control-label" for="customSwitch_13"></label>
                                             </div>
                                         </td>
 
                                         <td>
                                             <div class="custom-control custom-switch">
-                                                <input type="checkbox" class="custom-control-input event_type" id="customSwitch_2" name="image_requried[]" {{isset($taskproof->image_requried) && $taskproof->image_requried == 1 ? 'checked':''}}>
-                                                <label class="custom-control-label" for="customSwitch_2"></label>
+                                                <input type="checkbox" class="custom-control-input event_type" id="customSwitch_14" name="image_requried_3" {{isset($taskproof->image_requried) && $taskproof->image_requried == 1 ? 'checked':''}}>
+                                                <label class="custom-control-label" for="customSwitch_14"></label>
                                             </div>
                                         </td>
 
@@ -362,15 +478,15 @@
 
                                         <td>
                                             <div class="custom-control custom-switch">
-                                                <input type="checkbox" class="custom-control-input event_type" id="customSwitch_3" name="signature[]" {{isset($taskproof->signature) && $taskproof->signature == 1 ? 'checked':''}}>
-                                                <label class="custom-control-label" for="customSwitch_3"></label>
+                                                <input type="checkbox" class="custom-control-input event_type" id="customSwitch_15" name="signature_3" {{isset($taskproof->signature) && $taskproof->signature == 1 ? 'checked':''}}>
+                                                <label class="custom-control-label" for="customSwitch_15"></label>
                                             </div>
                                         </td>
 
                                         <td>
                                             <div class="custom-control custom-switch">
-                                                <input type="checkbox" class="custom-control-input event_type" id="customSwitch_4" name="signature_requried[]" {{isset($taskproof->signature_requried) && $taskproof->signature_requried == 1 ? 'checked':''}}>
-                                                <label class="custom-control-label" for="customSwitch_4"></label>
+                                                <input type="checkbox" class="custom-control-input event_type" id="customSwitch_16" name="signature_requried_3" {{isset($taskproof->signature_requried) && $taskproof->signature_requried == 1 ? 'checked':''}}>
+                                                <label class="custom-control-label" for="customSwitch_16"></label>
                                             </div>
                                         </td>
 
@@ -384,15 +500,15 @@
 
                                         <td>
                                             <div class="custom-control custom-switch">
-                                                <input type="checkbox" class="custom-control-input event_type" id="customSwitch_5" name="note[]" {{isset($taskproof->note) && $taskproof->note == 1 ? 'checked':''}}>
-                                                <label class="custom-control-label" for="customSwitch_5"></label>
+                                                <input type="checkbox" class="custom-control-input event_type" id="customSwitch_17" name="note_3" {{isset($taskproof->note) && $taskproof->note == 1 ? 'checked':''}}>
+                                                <label class="custom-control-label" for="customSwitch_17"></label>
                                             </div>
                                         </td>
 
                                         <td>
                                             <div class="custom-control custom-switch">
-                                                <input type="checkbox" class="custom-control-input event_type" id="customSwitch_6" name="note_requried[]" {{isset($taskproof->note_requried) && $taskproof->note_requried == 1 ? 'checked':''}}>
-                                                <label class="custom-control-label" for="customSwitch_6"></label>
+                                                <input type="checkbox" class="custom-control-input event_type" id="customSwitch_18" name="note_requried_3" {{isset($taskproof->note_requried) && $taskproof->note_requried == 1 ? 'checked':''}}>
+                                                <label class="custom-control-label" for="customSwitch_18"></label>
                                             </div>
                                         </td>
 
@@ -402,92 +518,7 @@
 
                                 </tbody>
                             </table>
-                        </div>
-                        <h4 class="header-title mb-3">Appointment</h4>
-                        <div class="table-responsive table_spacing">
-                            <table class="table table-borderless table-nowrap table-hover table-centered m-0">
-
-                                <thead class="thead-light">
-                                    <tr>
-                                        <th>Type</th>
-                                        <th>Enable</th>
-                                        <th>Required</th>
-                                        
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    </td>
-
-                                    <tr>
-                                        <td>
-                                            <h5 class="m-0 font-weight-normal">Image</h5>
-                                        </td>
-
-                                        <td>
-                                            <div class="custom-control custom-switch">
-                                                <input type="checkbox" class="custom-control-input event_type" id="customSwitch_1" name="image[]" {{isset($taskproof->image) && $taskproof->image == 1 ? 'checked':''}}>
-                                                <label class="custom-control-label" for="customSwitch_1"></label>
-                                            </div>
-                                        </td>
-
-                                        <td>
-                                            <div class="custom-control custom-switch">
-                                                <input type="checkbox" class="custom-control-input event_type" id="customSwitch_2" name="image_requried[]" {{isset($taskproof->image_requried) && $taskproof->image_requried == 1 ? 'checked':''}}>
-                                                <label class="custom-control-label" for="customSwitch_2"></label>
-                                            </div>
-                                        </td>
-
-                                        
-                                    </tr>
-
-                                    <tr>
-                                        <td>
-                                            <h5 class="m-0 font-weight-normal">Signature</h5>
-                                        </td>
-
-                                        <td>
-                                            <div class="custom-control custom-switch">
-                                                <input type="checkbox" class="custom-control-input event_type" id="customSwitch_3" name="signature[]" {{isset($taskproof->signature) && $taskproof->signature == 1 ? 'checked':''}}>
-                                                <label class="custom-control-label" for="customSwitch_3"></label>
-                                            </div>
-                                        </td>
-
-                                        <td>
-                                            <div class="custom-control custom-switch">
-                                                <input type="checkbox" class="custom-control-input event_type" id="customSwitch_4" name="signature_requried[]" {{isset($taskproof->signature_requried) && $taskproof->signature_requried == 1 ? 'checked':''}}>
-                                                <label class="custom-control-label" for="customSwitch_4"></label>
-                                            </div>
-                                        </td>
-
-                                        
-                                    </tr>
-                                    
-                                    <tr>
-                                        <td>
-                                            <h5 class="m-0 font-weight-normal">Notes</h5>
-                                        </td>
-
-                                        <td>
-                                            <div class="custom-control custom-switch">
-                                                <input type="checkbox" class="custom-control-input event_type" id="customSwitch_5" name="note[]" {{isset($taskproof->note) && $taskproof->note == 1 ? 'checked':''}}>
-                                                <label class="custom-control-label" for="customSwitch_5"></label>
-                                            </div>
-                                        </td>
-
-                                        <td>
-                                            <div class="custom-control custom-switch">
-                                                <input type="checkbox" class="custom-control-input event_type" id="customSwitch_6" name="note_requried[]" {{isset($taskproof->note_requried) && $taskproof->note_requried == 1 ? 'checked':''}}>
-                                                <label class="custom-control-label" for="customSwitch_6"></label>
-                                            </div>
-                                        </td>
-
-                                        
-                                    </tr>
-
-
-                                </tbody>
-                            </table>
-                        </div>
+                        </div> --}}
 
                         
             
@@ -559,6 +590,16 @@
                 $("#create-pandp-modal .close").click();
             }
            });
+
+        });
+
+
+        $(document).on('click', '[name="myRadios"]', function () {
+
+            if (lastSelected != $(this).val() && typeof lastSelected != "undefined") {
+                alert("radio box with value " + $('[name="myRadios"][value="' + lastSelected + '"]').val() + " was deselected");
+            }
+            lastSelected = $(this).val();
 
         });
 

@@ -798,11 +798,11 @@ $(".datetime").on('change', function postinput(){
 //     startDate: '-3d'
 // });
 
-setTimeout(function(){
+// setTimeout(function(){
 
-location.reload();
+// location.reload();
 
-},30000);
+// },30000);
 
 </script>
 

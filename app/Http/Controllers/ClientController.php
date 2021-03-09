@@ -17,6 +17,7 @@ use App\Jobs\ProcessClientDatabase;
 use App\Model\Client;
 use App\Model\Cms;
 use App\Model\TaskProof;
+use App\Model\TaskType;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Redis;
 use Session;
@@ -302,11 +303,12 @@ class ClientController extends Controller
      */
     public function ShowPreference()
     {
-        $preference = ClientPreference::where('client_id', Auth::user()->code)->first();
-        $currencies = Currency::orderBy('iso_code')->get();
-        $cms        = Cms::all('content');
-        $task_proof = TaskProof::where('id',1)->first();
-        return view('customize')->with(['preference' => $preference, 'currencies' => $currencies,'cms'=>$cms,'taskproof' => $task_proof]);
+        $preference  = ClientPreference::where('client_id', Auth::user()->code)->first();
+        $currencies  = Currency::orderBy('iso_code')->get();
+        $cms         = Cms::all('content');
+        $task_proofs = TaskProof::where('type','!=',0)->get();
+        $task_list   = TaskType::all();
+        return view('customize')->with(['preference' => $preference, 'currencies' => $currencies,'cms'=>$cms,'task_proofs' => $task_proofs,'task_list' => $task_list]);
     }
 
 
@@ -338,24 +340,37 @@ class ClientController extends Controller
     public function taskProof(Request $request)
     {
 
-        dd($request->all());
-        
-        $check = TaskProof::where('id',1)->first();
-        
-        if(isset($check)){
-            $update                     = TaskProof::find(1);
-        }else{
-            $update                     = new TaskProof;
+        $requestAll = $request->all();
+
+        for ($i=1; $i <= 3 ; $i++) { 
+
+            $check = TaskProof::where('id',$i)->first();
+
+            if(isset($check)){
+                $update                     = TaskProof::find($i);
+            }else{
+                $update                     = new TaskProof;
+            }
+                
+                $update->image              = isset($requestAll['image_'.$i])? 1 : 0 ;
+                $update->image_requried     = isset($request['image_requried_'.$i])? 1 : 0 ;
+                $update->signature          = isset($request['signature_'.$i])? 1 : 0 ;
+                $update->signature_requried = isset($request['signature_requried_'.$i])? 1 : 0 ;
+                $update->note               = isset($request['note_'.$i])? 1 : 0 ;
+                $update->note_requried      = isset($request['note_requried_'.$i])? 1 : 0 ;
+                $update->barcode            = isset($request['barcode_'.$i])? 1 : 0 ;
+                $update->barcode_requried   = isset($request['barcode_requried_'.$i])? 1 : 0 ;
+
+                $update->save();
+                
         }
-            $update->image              = isset($request->image)? 1 : 0 ;
-            $update->image_requried     = isset($request->image_requried)? 1 : 0 ;
-            $update->signature          = isset($request->signature)? 1 : 0 ;
-            $update->signature_requried = isset($request->signature_requried)? 1 : 0 ;
-            $update->note               = isset($request->note)? 1 : 0 ;
-            $update->note_requried      = isset($request->note_requried)? 1 : 0 ;
-            $update->save();
+
+       
         
-            return redirect()->route('preference.show')->with('success', 'Preference updated successfully!');
+        
+        return redirect()->route('preference.show')->with('success', 'Preference updated successfully!');
         
     }
+
+
 }

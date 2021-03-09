@@ -365,7 +365,7 @@ http://192.168.100.211:8888/unsafe/fit-in/90x50/https://royodelivery-assets.s3.u
                   if(isset(Auth::user()->logo)){
                     $urlImg = Storage::disk('s3')->url(Auth::user()->logo);
                   }
-                  $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain/';
+                  $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fit/300/100/sm/0/plain/';
                   $image = $imgproxyurl.$urlImg;
 
             @endphp

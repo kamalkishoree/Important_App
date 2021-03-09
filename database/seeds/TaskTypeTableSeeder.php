@@ -22,7 +22,7 @@ class TaskTypeTableSeeder extends Seeder
             ),
             array(
                 'id' => 2,
-                'name' => 'Drop'
+                'name' => 'Drop-off'
             ),
             array(
                 'id' => 3,
