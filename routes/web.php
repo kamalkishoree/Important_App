@@ -18,9 +18,9 @@ use Illuminate\Support\Facades\Redirect;
 
        
 		
-		Route::get('/howto/signup', function(){
-			return view('How-to-SignUp-in-Royo-Dispatcher');
-		});
+	Route::get('/howto/signup', function(){
+		return view('How-to-SignUp-in-Royo-Dispatcher');
+	});
 		
 Route::group(['prefix' => '/godpanel'], function () {
 	Route::get('/', function(){
@@ -116,6 +116,12 @@ Route::group(['prefix' => '/godpanel'], function () {
 
 Route::post('/login/client', 'LoginController@clientLogin')->name('client.login');
 Route::get('/wrong/url','LoginController@wrongurl')->name('wrong.client');
+
+//feedback & tracking
+
+Route::get('/order/tracking/{clientcode}/{order_id}','TrackingController@OrderTracking')->name('order.tracking');
+
+Route::get('/order/feedback/{clientcode}/{order_id}','TrackingController@OrderFeedback')->name('order.feedback');
 
 
 

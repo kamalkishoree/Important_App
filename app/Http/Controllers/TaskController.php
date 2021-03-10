@@ -10,7 +10,7 @@ use App\Model\TagsForTeam;
 use App\Model\TaskDriverTag;
 use App\Model\TaskTeamTag;
 use Illuminate\Http\Request;
-use App\Model\{Agent, AllocationRule, Client, ClientPreference, DriverGeo, PricingRule, Roster};
+use App\Model\{Agent, AllocationRule, Client, ClientPreference, DriverGeo, PricingRule, Roster, TaskProof};
 use App\Model\Geo;
 use App\Model\Order;
 use Illuminate\Support\Facades\Validator;
@@ -74,10 +74,11 @@ class TaskController extends Controller
         $pricingRule = PricingRule::select('id', 'name')->get();
         $allcation   = AllocationRule::where('id', 1)->first();
         
-        $agents = Agent::orderBy('created_at', 'DESC')->get();
+        $agents      = Agent::orderBy('created_at', 'DESC')->get();
         
+        $task_proofs = TaskProof::all(); 
 
-        $returnHTML = view('modals/add-task-modal')->with(['teamTag' => $teamTag, 'agentTag' => $agentTag, 'agents' => $agents, 'pricingRule' => $pricingRule, 'allcation' => $allcation])->render();
+        $returnHTML = view('modals/add-task-modal')->with(['teamTag' => $teamTag, 'agentTag' => $agentTag, 'agents' => $agents, 'pricingRule' => $pricingRule, 'allcation' => $allcation ,'task_proofs' => $task_proofs ])->render();
         return response()->json(array('success' => true, 'html' => $returnHTML));
 
     }
@@ -95,7 +96,7 @@ class TaskController extends Controller
      */
     public function store(Request $request)
     {
-
+       
 
         $validator   = $this->validator($request->all())->validate();
         $loc_id = $cus_id = $send_loc_id = $newlat = $newlong = 0;
@@ -109,7 +110,11 @@ class TaskController extends Controller
         $longitude = [];
         $percentage = 0;
 
+        $pool = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
+        $unique_order_id = substr(str_shuffle(str_repeat($pool, 5)), 0, 6);
         
+
         //save task images on s3 bucket
 
         if (isset($request->file) && count($request->file) > 0) {
@@ -178,9 +183,10 @@ class TaskController extends Controller
             'agent_commission_percentage'     => $pricingRule->agent_commission_percentage,
             'agent_commission_fixed'          => $pricingRule->agent_commission_fixed,
             'freelancer_commission_percentage'=> $pricingRule->freelancer_commission_percentage,
-            'freelancer_commission_fixed'     => $pricingRule->freelancer_commission_fixed
+            'freelancer_commission_fixed'     => $pricingRule->freelancer_commission_fixed,
+            'unique_id'                       => $unique_order_id
         ];
-
+        
         $orders = Order::create($order);
 
         //here is task save code is started
@@ -236,7 +242,8 @@ class TaskController extends Controller
                 'dependent_task_id'          => $dep_id,
                 'task_status'                => $agent_id != null ? 1 : 0,
                 'created_at'                 => $notification_time,
-                'assigned_time'              => $notification_time
+                'assigned_time'              => $notification_time,
+                'barcode'                    => $request->barcode[$key]
             ];
             $task = Task::create($data);
             $dep_id = $task->id;
@@ -253,6 +260,7 @@ class TaskController extends Controller
          $total         = $pricingRule->base_price + ($paid_distance * $pricingRule->distance_fee ) + ($paid_duration * $pricingRule->duration_price);
 
          if(isset($agent_id)){
+
              $agent_details = Agent::where('id',$agent_id)->first();
                 if($agent_details->type == 'Employee'){
                     $percentage = $pricingRule->agent_commission_fixed + (($total / 100) * $pricingRule->agent_commission_percentage);
@@ -261,6 +269,7 @@ class TaskController extends Controller
                 }else{
                     $percentage = $pricingRule->freelancer_commission_percentage + (($total / 100) * $pricingRule->freelancer_commission_fixed);
                 }
+
          }
 
          //update order with order cost details
@@ -1361,7 +1370,8 @@ class TaskController extends Controller
                 'location_id'                => $loc_id,
                 'allocation_type'            => $request->allocation_type,
                 'dependent_task_id'          => $dep_id,
-                'task_status'                => isset($agent_id) ? 1 : 0
+                'task_status'                => isset($agent_id) ? 1 : 0,
+                'barcode'                    => $request->barcode[$key]
             ];
             $task = Task::create($data);
             $dep_id = $task->id;

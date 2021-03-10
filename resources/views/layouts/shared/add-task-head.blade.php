@@ -226,8 +226,9 @@
 <!-- Page js-->
 <script src="{{asset('assets/js/pages/form-pickers.init.js')}}"></script>
 <script>
-    var theme    = {!!json_encode($theme)!!};
-    console.log(theme);
+    var theme      = {!!json_encode($theme)!!};
+    
+    
     var maoArray = {};
     var autoWrap = ['addHeader0'];
     var count = 1; editCount = 0; var a = 0; countZ = 1;
@@ -345,6 +346,7 @@
     });
 
     var CSRF_TOKEN = $("input[name=_token]").val();
+
     function searchRes(){
 
         $("#task-modal-header #searchCust").autocomplete({
@@ -556,7 +558,7 @@
                 return false;
             }
         }
-//return false;
+       //return false;
         var selectedVal = "";
         var selected = $("#typeInputss input[type='radio']:checked");
         selectedVal = selected.val();
@@ -594,7 +596,27 @@
         }
     });
 
-    $(document).on('change', ".selecttype", function() {
+    // show proofs initial check 
+    // $(document).ready(function() {
+    //     $('.selecttype').val("1").click();
+    // });
+   
+
+
+    //on select of task type
+
+    $(document).on('change', ".selecttype", function() { 
+        
+            // proof = task_proofs[this.value-1].barcode;
+
+            // if(proof != 0){
+
+            //  $(".barcode").show();
+
+            // }else{
+            //     $(".barcode").hide();
+            // }
+
         if (this.value == 3){
            $span = $(this).closest(".firstclone1").find(".appoint").show();
            //console.log($span); 
@@ -657,6 +679,7 @@
          $('#task-modal-header').removeClass('fadeIn');
 
     });
+
     $(document).on('click', '.showMapHeader', function(){
         var no = $(this).attr('num');
         var lats = document.getElementById(no+'-latitude').value;

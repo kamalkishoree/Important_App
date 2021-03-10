@@ -112,7 +112,7 @@ class AgentController extends Controller
             'plate_number' => $request->plate_number,
             'phone_number' => $request->phone_number,
             'color' => $request->color,
-            'profile_picture' => $getFileName
+            'profile_picture' => $getFileName != Null ? $getFileName : 'assets/client_00000051/agents5fedb209f1eea.jpeg/Ec9WxFN1qAgIGdU2lCcatJN5F8UuFMyQvvb4Byar.jpg',
         ];
 
         $agent = Agent::create($data);

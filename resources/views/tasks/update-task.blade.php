@@ -199,6 +199,10 @@
                                                 'class' => 'form-control address',
                                                 'placeholder' => 'PostsCode',
                                                 ]) !!}
+                                                {!! Form::text('barcode[]', $item->barcode, [
+                                                    'class' => 'form-control address',
+                                                    'placeholder' => 'PostsCode',
+                                                    ]) !!}
                                                 <span class="invalid-feedback" role="alert">
                                                     <strong></strong>
                                                 </span>
