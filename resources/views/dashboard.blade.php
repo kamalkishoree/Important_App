@@ -452,8 +452,8 @@ $('#shortclick').trigger('click');
 
 function gm_authFailure() {
 
-$('.excetion_keys').append('<span><i class="mdi mdi-block-helper mr-2"></i> <strong>Google Map</strong> key is not valid</span><br/>');
-$('.displaySettingsError').show();
+    $('.excetion_keys').append('<span><i class="mdi mdi-block-helper mr-2"></i> <strong>Google Map</strong> key is not valid</span><br/>');
+    $('.displaySettingsError').show();
 };
 
 // var marker;
@@ -742,7 +742,7 @@ function addMarker(location, lables, images,data,type) {
 
 
 
-    const marker = new google.maps.Marker({
+    const marker = new google.maps.LatLngBounds({
         position: location,
         label: lables,
         icon: images,
@@ -750,7 +750,13 @@ function addMarker(location, lables, images,data,type) {
         animation: google.maps.Animation.DROP,
     });
 
-    markers.push(marker);
+
+   
+
+
+
+    
+    markers.fitBounds(marker);
 
     marker.addListener("click", () => {
     infowindow.open(map, marker);
