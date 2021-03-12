@@ -123,6 +123,8 @@ Route::get('/order/tracking/{clientcode}/{order_id}','TrackingController@OrderTr
 
 Route::get('/order/feedback/{clientcode}/{order_id}','TrackingController@OrderFeedback')->name('order.feedback');
 
+Route::post('/feedback/save','TrackingController@SaveFeedback')->name('feedbackSave');
+
 
 
 

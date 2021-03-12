@@ -98,7 +98,7 @@ class TaskController extends Controller
     {
        
 
-        $validator   = $this->validator($request->all())->validate();
+        
         $loc_id = $cus_id = $send_loc_id = $newlat = $newlong = 0;
 
         $images = [];
@@ -132,6 +132,8 @@ class TaskController extends Controller
             }
             $last = implode(",", $images);
         }
+
+        //create new customer for task or get id of old customer
 
         if (!isset($request->ids)) {
             $customer = Customer::where('email', '=', $request->email)->first();
@@ -232,13 +234,13 @@ class TaskController extends Controller
            
 
             
-            $task_allo_type = empty($request->appointment_date[$key]) ? '0' : $request->appointment_date[$key];
+            $task_appointment_duration = empty($request->appointment_date[$key]) ? '0' : $request->appointment_date[$key];
 
             $data = [
                 'order_id'                   => $orders->id,
                 'task_type_id'               => $value,
                 'location_id'                => $loc_id,
-                'allocation_type'            => $task_allo_type,
+                'appointment_duration'       => $task_appointment_duration,
                 'dependent_task_id'          => $dep_id,
                 'task_status'                => $agent_id != null ? 1 : 0,
                 'created_at'                 => $notification_time,

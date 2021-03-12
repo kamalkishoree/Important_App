@@ -189,22 +189,25 @@ class TaskController extends BaseController
 
     public function CreateTask(Request $request)
     {
-        // $orders = Order::where('id',200)->with('task')->first();
-        // return response()->json([
-        //     'data' => $orders,
-        // ],200);
+       
 
-        $loc_id = $cus_id = $send_loc_id = 0;
+        $loc_id = $cus_id = $send_loc_id = $newlat = $newlong = 0;
 
-        $images    = [];
-        $last      = '';
-        $customer  = [];
+        $images = [];
+        $last = '';
+        $customer = [];
         $finalLocation = [];
         $taskcount = 0;
         $latitude  = [];
         $longitude = [];
+        $percentage = 0;
 
-        // dd($request->all());
+        $pool = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
+        $unique_order_id = substr(str_shuffle(str_repeat($pool, 5)), 0, 6);
+
+        //save task images on s3 bucket
+
 
         if (isset($request->file) && count($request->file) > 0) {
             $folder = str_pad(Auth::user()->id, 8, '0', STR_PAD_LEFT);
@@ -217,12 +220,13 @@ class TaskController extends BaseController
                 $s3filePath = '/assets/' . $folder . '/' . $file_name;
                 $path = Storage::disk('s3')->put($s3filePath, $file, 'public');
                 array_push($images, $path);
-                // $can = Storage::disk('s3')->url('image.png');
-                // $last = str_replace('image.png', '', $can);
-
+                
             }
             $last = implode(",", $images);
         }
+
+         //create new customer for task or get id of old customer
+
         if (isset($request->customer_email)) {
             $customer = Customer::where('email', '=', $request->customer_email)->first();
             if (isset($customer->id)) {
@@ -241,22 +245,43 @@ class TaskController extends BaseController
             // $customer = Customer::where('id',$request->ids)->first();
         }
 
-        $notification_time = isset($request->schedule_time) ? $request->schedule_time : Carbon::now()->toDateTimeString();
 
-        $agent_id        = $request->allocation_type === 'm' ? $request->agent : null;
+          //get pricing rule  for save with every order
+          $pricingRule = PricingRule::where('id',1)->first();
+
+          //here order save code is started
+  
+          $notification_time = isset($request->schedule_time) ? $request->schedule_time : Carbon::now()->toDateTimeString();
+  
+          $agent_id          = $request->allocation_type === 'm' ? $request->agent : null;
+
         $order = [
-            'customer_id'                => $cus_id,
-            'recipient_phone'            => $request->recipient_phone,
-            'Recipient_email'            => $request->recipient_email,
-            'task_description'           => $request->task_description,
-            'driver_id'                  => $agent_id,
-            'auto_alloction'             => $request->allocation_type,
-            'images_array'               => $last,
-            'order_type'                 => $request->task_dispatch,
-            'order_time'                 => $notification_time,
-            'status'                     => $agent_id != null ? 'assigned' : 'unassigned',
-            'cash_to_be_collected'       => $request->cash_to_be_collected
+            'customer_id'                     => $cus_id,
+            'recipient_phone'                 => $request->recipient_phone,
+            'Recipient_email'                 => $request->recipient_email,
+            'task_description'                => $request->task_description,
+            'driver_id'                       => $agent_id,
+            'auto_alloction'                  => $request->allocation_type,
+            'images_array'                    => $last,
+            'order_type'                      => $request->task_type,
+            'order_time'                      => $notification_time,
+            'status'                          => $agent_id != null ? 'assigned' : 'unassigned',
+            'cash_to_be_collected'            => $request->cash_to_be_collected,
+            'base_price'                      => $pricingRule->base_price,
+            'base_duration'                   => $pricingRule->base_duration,
+            'base_distance'                   => $pricingRule->base_distance,
+            'base_waiting'                    => $pricingRule->base_waiting,
+            'duration_price'                  => $pricingRule->duration_price,
+            'waiting_price'                   => $pricingRule->waiting_price,
+            'distance_fee'                    => $pricingRule->distance_fee,
+            'cancel_fee'                      => $pricingRule->cancel_fee,
+            'agent_commission_percentage'     => $pricingRule->agent_commission_percentage,
+            'agent_commission_fixed'          => $pricingRule->agent_commission_fixed,
+            'freelancer_commission_percentage'=> $pricingRule->freelancer_commission_percentage,
+            'freelancer_commission_fixed'     => $pricingRule->freelancer_commission_fixed,
+            'unique_id'                       => $unique_order_id
         ];
+
         $orders = Order::create($order);
 
         $dep_id = null;
@@ -276,37 +301,30 @@ class TaskController extends BaseController
                 $Loction = Location::create($loc);
                 $loc_id = $Loction->id;
             }
-            // else {
-            //     if($key == 0){
-            //         $loc_id = $request->old_address_id;
-
-            //     }else{
-            //         $loc_id = $request->input('old_address_id'.$key);
-
-            //     }
-
-            // }
+           
 
             if ($key == 0) {
                 $send_loc_id = $loc_id;
                 $finalLocation = Location::where('id', $loc_id)->first();
             }
-            $task_allo_type = isset($request->appointment_duration) ? $request->appointment_duration : null;
 
+            $task_allo_type = isset($value->appointment_duration) ? $value->appointment_duration : null;
+            
             $data = [
                 'order_id'                   => $orders->id,
                 'task_type_id'               => $value['task_type_id'],
                 'location_id'                => $loc_id,
-                'appointment_duration'       => $request['appointment_duration'],
+                'appointment_duration'       => $task_allo_type,
                 'dependent_task_id'          => $dep_id,
                 'task_status'                => $agent_id != null ? 1 : 0,
-                'allocation_type'            => $request->allocation_type
+                'allocation_type'            => $request->allocation_type,
+                'assigned_time'              => $notification_time,
+                'barcode'                    => $value->barcode
             ];
-            // if(!empty($request->pricing_rule_id)){
-            //     $data['pricing_rule_id'] = $request->pricing_rule_id;
-            // }
+
             $task = Task::create($data);
             $dep_id = $task->id;
+            
         }
 
 
@@ -318,6 +336,7 @@ class TaskController extends BaseController
             //     $orders->drivertags()->sync($request->agent_tag);
             // }
         }
+        
         $geo = null;
         if ($request->allocation_type === 'a') {
             $geo = $this->createRoster($send_loc_id);
@@ -344,12 +363,12 @@ class TaskController extends BaseController
         }
 
         return response()->json([
-            'message' => 'Task Created Successfully',
+            'message' => 'Task Added Successfully',
             'task_id' => $orders->id,
             'status'  => $orders->status,
         ], 200);
 
-        // return redirect()->route('tasks.index')->with('success', 'Task Added Successfully!');
+       
     }
     public function createRoster($location_id)
     {

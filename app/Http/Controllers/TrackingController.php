@@ -10,63 +10,96 @@ use Config;
 
 class TrackingController extends Controller
 {
-    
-    public function OrderTracking($user,$id)
+
+    public function OrderTracking($user, $id)
     {
-        $respnse = $this->connection($user,$id);
-        
-        if($respnse['status'] == 'connected'){
+        $respnse = $this->connection($user);
 
-            $order   = DB::connection($respnse['database'])->table('orders')->where('unique_id',$id)->leftJoin('agents', 'orders.driver_id', '=', 'agents.id')
-            ->select('orders.*', 'agents.name', 'agents.profile_picture','agents.phone_number')->first();
+        if ($respnse['status'] == 'connected') {
+
+            $order   = DB::connection($respnse['database'])->table('orders')->where('unique_id', $id)->leftJoin('agents', 'orders.driver_id', '=', 'agents.id')
+                ->select('orders.*', 'agents.name', 'agents.profile_picture', 'agents.phone_number')->first();
+            if (isset($order->id)) {
+                $tasks   = DB::connection($respnse['database'])->table('tasks')->where('order_id', $order->id)->leftJoin('locations', 'tasks.location_id', '=', 'locations.id')
+                    ->select('tasks.*', 'locations.latitude', 'locations.longitude', 'locations.short_name', 'locations.address')->get();
+
+                return view('tracking/tracking', compact('tasks', 'order'));
+            } else {
+                return view('tracking/order_not_found');
+            }
+
+
+
             
-            $tasks   = DB::connection($respnse['database'])->table('tasks')->where('order_id', $order->id)->leftJoin('locations', 'tasks.location_id', '=', 'locations.id')
-            ->select('tasks.*', 'locations.latitude', 'locations.longitude','locations.short_name','locations.address')->get();
+        } else {
 
-
-            return view('tracking/tracking',compact('tasks','order'));
-
-        }else{
-
-            
+            return view('tracking/order_not_found');
         }
-        
     }
 
-    public function OrderFeedback($user,$id)
+    public function OrderFeedback($user, $id)
     {
-        $respnse = $this->connection($user,$id);
-        
-        if($respnse['status'] == 'connected'){
+        $respnse = $this->connection($user);
 
-            $order   = DB::connection($respnse['database'])->table('orders')->where('unique_id',$id)->first();
-            
-            $tasks   = DB::connection($respnse['database'])->table('tasks')->where('order_id', $order->id)->leftJoin('locations', 'tasks.location_id', '=', 'locations.id')
-            ->select('tasks.*', 'locations.latitude', 'locations.longitude','locations.short_name','locations.address')->get();
+        if ($respnse['status'] == 'connected') {
 
+            $order   = DB::connection($respnse['database'])->table('orders')->where('unique_id', $id)->first();
 
-            return view('tracking/tracking',compact('tasks','order'));
-
-        }else{
-
-            
+            if (isset($order->id)) {
+                return view('tracking/feedback', compact('user', 'id'));
+            } else {
+                return view('tracking/order_not_found');
+            }
+        } else {
+            return view('tracking/order_not_found');
         }
-        if($respnse['status'] == 'connected'){
-            return view('tracking/feedback');
-        }else{
-            
-        }
-
-        return view('tracking/feedback');
     }
 
-    public function connection($user,$id)
-    {
-        
-        $client = Client::where('code',$user)->first();
 
-        if(isset($client->database_name))
-        {
+    public function SaveFeedback(Request $request)
+    {
+        $respnse = $this->connection($request->client_code);
+
+        if ($respnse['status'] == 'connected') {
+
+            $order   = DB::connection($respnse['database'])->table('orders')->where('unique_id', $request->unique_id)->first();
+
+            if (isset($order->id)) {
+
+                $check_alredy  = DB::connection($respnse['database'])->table('order_ratings')->where('order_id', $order->id)->first();
+
+                if (isset($check_alredy->id)) {
+
+                    return response()->json(['status' => true, 'message' => 'Feedback is alredy submitted']);
+                } else {
+
+                    $data = [
+                        'order_id'    => $order->id,
+                        'rating'      => $request->rating,
+                        'review'      => $request->review,
+                    ];
+
+                    DB::connection($respnse['database'])->table('order_ratings')->insert($data);
+
+                    return response()->json(['status' => true, 'message' => 'Your feedback is submitted']);
+                }
+            } else {
+
+                return response()->json(['status' => true, 'message' => 'Order Not Found']);
+            }
+        } else {
+
+            return response()->json(['status' => true, 'message' => 'Sorry Wrong Url']);
+        }
+    }
+
+
+    public function connection($user)
+    {
+
+        $client = Client::where('code', $user)->first();
+
+        if (isset($client->database_name)) {
             $database_name = 'db_' . $client->database_name;
 
             $default = [
@@ -85,14 +118,11 @@ class TrackingController extends Controller
             ];
 
             Config::set("database.connections.$database_name", $default);
-            
-            return  $respnse = ['status' => 'connected','database'=>$database_name];
-             
+
+            return  $respnse = ['status' => 'connected', 'database' => $database_name];
         } else {
 
             return  $respnse = ['status' => 'failed'];
-        
         }
-        
     }
 }
