@@ -45,7 +45,7 @@ class ClientMigrateDataBase extends Command
     {
        
 
-        $clients = Client::where('status', 1)->where('is_deleted',0)->get();
+        $clients = Client::where('status', 1)->get();
         //$clients = Client::all();
         foreach ($clients as $key => $client) {
 
