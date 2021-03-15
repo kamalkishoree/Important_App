@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Api\BaseController;
+use App\Http\Requests\UserLogin;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
@@ -10,6 +11,7 @@ use App\Model\{User, Agent, AllocationRule, Client, ClientPreference, BlockedTok
 use Validation;
 use DB;
 use JWT\Token;
+use Twilio\Http\Client as TwilioClient;
 
 class AuthController extends BaseController
 {
@@ -29,6 +31,7 @@ class AuthController extends BaseController
         $request->validate([
             'phone_number' => 'required|numeric',
         ]);
+
         
         $agent = Agent::where('phone_number', $request->phone_number)->first();
 
@@ -36,6 +39,16 @@ class AuthController extends BaseController
 	        return response()->json([
 	            'message' => 'User not found'], 404);
 	    }
+
+        
+        //    $token = getenv("TWILIO_AUTH_TOKEN");
+        //    $twilio_sid = getenv("TWILIO_SID");
+        //    $twilio_verify_sid = getenv("TWILIO_VERIFY_SID");
+        //    $twilio = new TwilioClient($twilio_sid, $token);
+        //    $twilio->verify->v2->services($twilio_verify_sid)
+        //        ->verifications
+        //        ->create($agent->phone_number, "sms");
+
         $otp = new Otp();
         $otp->phone = $data['phone_number'] = $agent->phone_number;
         $otp->opt = $data['otp'] = rand(111111,999999);
@@ -60,27 +73,30 @@ class AuthController extends BaseController
      * @return [string] token_type
      * @return [string] expires_at
      */
-    public function login(Request $request)
+    public function login(UserLogin $request)
     {
-        $request->validate([
-            'phone_number' => 'required|numeric',
-            'device_type' => 'required|string',
-            'device_token' => 'required|string',
-            'otp' => 'required|string|min:6|max:6',
-
-        ]);
+       
 
         $otp = Otp::where('phone', $request->phone_number)->where('opt', $request->otp)->orderBy('id', 'DESC')->first();
 
-        if(!$otp){
-            return response()->json(['message' => 'Please enter a valid opt'], 422);
-        }
+       
 
         $date = Date('Y-m-d H:i:s');
 
         if(!$otp){
             return response()->json(['message' => 'Please enter a valid opt'], 422);
         }
+         /* Get credentials from .env */
+        //  $token = getenv("TWILIO_AUTH_TOKEN");
+        //  $twilio_sid = getenv("TWILIO_SID");
+        //  $twilio_verify_sid = getenv("TWILIO_VERIFY_SID");
+        //  $twilio = new TwilioClient($twilio_sid, $token);
+        //  $verification = $twilio->verify->v2->services($twilio_verify_sid)
+        //      ->verificationChecks
+        //      ->create($request->otp, array('to' => $request->phone_number));
+
+        //if ($verification->valid) {
+
         if($date > $otp->valid_till){
             return response()->json(['message' => 'Your otp has been expired. Please try again.'], 422);
         }
@@ -114,6 +130,7 @@ class AuthController extends BaseController
             'issuedAt' => time(),
             'algorithm' => 'HS256',
         ])->get();
+
         $token1->setClaim('driver_id', $agent->id);
 
         try {
