@@ -221,6 +221,7 @@ class TaskController extends Controller
                     $send_loc_id = $loc_id;
                 }
             }
+            
             $location = Location::where('id', $loc_id)->first();
 
             if ($key == 0) {
@@ -333,7 +334,7 @@ class TaskController extends Controller
                  $to_time = strtotime($to);
                  $from_time = strtotime($from);
                
-                 if($to_time >= $from_time){
+                 if($to_time >= $from_time) {
                     return redirect()->route('tasks.index')->with('success', 'Task Added Successfully!');
                  }
 
@@ -487,11 +488,6 @@ class TaskController extends Controller
     {
         
         
-        // print($geo);
-        // print($notification_time);
-        // print($agent_id);
-        // print($orders_id);
-        // die;
         $allcation_type = 'AR';
         $date = \Carbon\Carbon::today();
         $auth = Client::where('code', Auth::user()->code)->with(['getAllocation', 'getPreference'])->first();

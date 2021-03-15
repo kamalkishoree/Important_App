@@ -799,17 +799,6 @@ $(".datetime").on('change', function postinput(){
 
 });
 
-// $('.datepicker').datepicker({
-//     format: 'yyyy/mm/dd',
-//     startDate: '-3d'
-// });
-
-// setTimeout(function(){
-
-// location.reload();
-
-// },30000);
-
 </script>
 
 @endsection
