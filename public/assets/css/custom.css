@@ -417,7 +417,7 @@
       width: 89%;
       display: inline-block;
   }
-  .content-page {
+  /* .content-page {
     margin-left: 240px;
 
     padding: 0 15px 65px 15px;
@@ -425,7 +425,7 @@
     margin-top: 70px;
     height: 98vh;
     overflow-y: scroll !important;
-  }
+  } */
 
   .dispaly-cards{
       background-color: rgb(251 247 247) !important;

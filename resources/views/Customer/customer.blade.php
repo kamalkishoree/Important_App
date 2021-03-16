@@ -85,6 +85,9 @@
                             </tbody>
                         </table>
                     </div>
+                    <div class="pagination pagination-rounded justify-content-end mb-0">
+                        {{ $customers->links() }}
+                    </div>
                     <div class="row address" id="add0" style="display: none;">
                         <input type="text" id="add0-input" name="test" class="autocomplete form-control add0-input" placeholder="Address">
                     </div>
@@ -100,7 +103,7 @@
 
 @section('script')
     <script src="{{asset('assets/js/storeAgent.js')}}"></script>
-    <script src="{{asset('assets/libs/datatables/datatables.min.js')}}"></script>
+    {{-- <script src="{{asset('assets/libs/datatables/datatables.min.js')}}"></script> --}}
 @include('Customer.pagescript')  
 
 @endsection

@@ -159,6 +159,9 @@ use Carbon\Carbon;
                                 </tbody>
                             </table>
                         </div>
+                        <div class="pagination pagination-rounded justify-content-end mb-0">
+                            {{ $tasks->appends(['status'=>$status])->links() }}
+                        </div>
 
                     </div> <!-- end card-body-->
                 </div> <!-- end card-->
@@ -176,6 +179,6 @@ use Carbon\Carbon;
 @section('script')
     <script src="{{asset('assets/libs/select2/select2.min.js')}}"></script>
     <script src="{{asset('assets/libs/bootstrap-select/bootstrap-select.min.js')}}"></script>
-    <script src="{{ asset('assets/libs/datatables/datatables.min.js') }}"></script>
+    {{-- <script src="{{ asset('assets/libs/datatables/datatables.min.js') }}"></script> --}}
     @include('tasks.taskpagescript')
 @endsection
