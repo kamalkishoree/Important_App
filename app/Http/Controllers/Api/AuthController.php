@@ -30,7 +30,7 @@ class AuthController extends BaseController
         
     	//echo "Connected ".DB::connection()->getDatabaseName();
         $request->validate([
-            'phone_number' => 'required|numeric',
+            'phone_number' => 'required',
         ]);
 
         
