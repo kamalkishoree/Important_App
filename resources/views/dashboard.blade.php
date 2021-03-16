@@ -519,8 +519,8 @@ for (let i = 0; i < olddata.length; i++) {
         type = 1;
 
         addMarker({
-            lat: checkdata['latitude'],
-            lng: checkdata['longitude']
+            lat:  parseFloat(checkdata['latitude']),
+            lng:  parseFloat(checkdata['longitude'])
         }, send, image,checkdata,type);
     }
 }
@@ -578,7 +578,7 @@ for (let i = 0; i < olddata.length; i++) {
             
             send = null;
             type = 1;
-        addMarker({lat:checkdata['latitude'],lng:checkdata['longitude']}, send,image,checkdata,type);
+        addMarker({lat:parseFloat(checkdata['latitude']),lng:parseFloat(checkdata['longitude'])}, send,image,checkdata,type);
     }
 }
 
@@ -672,8 +672,8 @@ function initMap() {
         send = null;
             type = 1;
         addMarker({
-            lat: checkdata['latitude'],
-            lng: checkdata['longitude']
+            lat: parseFloat(checkdata['latitude']),
+            lng:  parseFloat(checkdata['longitude'])
         }, send, img,checkdata,type);
     }
 
@@ -742,21 +742,20 @@ function addMarker(location, lables, images,data,type) {
 
 
 
-    const marker = new google.maps.LatLngBounds({
-        position: location,
-        label: lables,
-        icon: images,
-        map: map,
-        animation: google.maps.Animation.DROP,
-    });
 
-
+    const marker = new google.maps.Marker({
+                    position: location,
+                    label: lables,
+                    icon: images,
+                    map: map,
+                    animation: google.maps.Animation.DROP,
+                });
    
 
 
 
     
-    markers.fitBounds(marker);
+     markers.push(marker);
 
     marker.addListener("click", () => {
     infowindow.open(map, marker);
