@@ -675,3 +675,6 @@ text-align: center;
    
     
 }
+.same-size {
+  min-height: 360px;
+}

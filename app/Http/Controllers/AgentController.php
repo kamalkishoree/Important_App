@@ -216,6 +216,7 @@ class AgentController extends Controller
         $newtag = explode(",", $request->tags);
 
         $tag_id = [];
+
         foreach ($newtag as $key => $value) {
 
             if(!empty($value)){
@@ -223,6 +224,7 @@ class AgentController extends Controller
                 array_push($tag_id,$check->id);
             }
         }
+
         //handal image upload
         if ($request->hasFile('profile_picture')) {
             $folder = str_pad(Auth::user()->id, 8, '0', STR_PAD_LEFT);
@@ -237,6 +239,7 @@ class AgentController extends Controller
         foreach ($request->only('name' ,'team_id' ,'type' ,'vehicle_type_id' ,'make_model' ,'plate_number' ,'phone_number' ,'color') as $key => $value) {
             $agent->{$key} = $value;
         }
+        
         $agent->profile_picture = $getFileName;
         $agent->save();
 
@@ -250,7 +253,6 @@ class AgentController extends Controller
             ]);
         }
         
-        //return redirect()->back()->with('success', 'Agent Updated successfully!');
     }
 
     /**

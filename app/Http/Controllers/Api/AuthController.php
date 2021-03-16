@@ -11,7 +11,7 @@ use App\Model\{User, Agent, AllocationRule, Client, ClientPreference, BlockedTok
 use Validation;
 use DB;
 use JWT\Token;
-use Twilio\Http\Client as TwilioClient;
+use Twilio\Rest\Client as TwilioClient;
 
 class AuthController extends BaseController
 {
@@ -27,6 +27,7 @@ class AuthController extends BaseController
      */
     public function sendOtp(Request $request)
     {
+        
     	//echo "Connected ".DB::connection()->getDatabaseName();
         $request->validate([
             'phone_number' => 'required|numeric',
@@ -39,24 +40,35 @@ class AuthController extends BaseController
 	        return response()->json([
 	            'message' => 'User not found'], 404);
 	    }
+            Otp::where('phone', $request->phone_number)->delete();
+            $otp = new Otp();
+            $otp->phone = $data['phone_number'] = $agent->phone_number;
+            $otp->opt = $data['otp'] = rand(111111,999999);
+            $otp->valid_till = $data['valid_till'] = Date('Y-m-d H:i:s', strtotime("+10 minutes"));
+            $otp->save();
 
-        
-        //    $token = getenv("TWILIO_AUTH_TOKEN");
-        //    $twilio_sid = getenv("TWILIO_SID");
-        //    $twilio_verify_sid = getenv("TWILIO_VERIFY_SID");
-        //    $twilio = new TwilioClient($twilio_sid, $token);
-        //    $twilio->verify->v2->services($twilio_verify_sid)
-        //        ->verifications
-        //        ->create($agent->phone_number, "sms");
+            $client_prefrerence = ClientPreference::where('id',1)->first();
+            
+           //twilio opt code
 
-        $otp = new Otp();
-        $otp->phone = $data['phone_number'] = $agent->phone_number;
-        $otp->opt = $data['otp'] = rand(111111,999999);
-        $otp->valid_till = $data['valid_till'] = Date('Y-m-d H:i:s', strtotime("+10 minutes"));
+           $token             = $client_prefrerence->sms_provider_key_2;
+           $twilio_sid        = $client_prefrerence->sms_provider_key_1;
+           
+           try {
+            $twilio = new TwilioClient($twilio_sid, $token);
 
-        $otp->save();
+            $message = $twilio->messages
+                   ->create($agent->phone_number,  //to number
+                     [
+                                "body" => "Your Dispatcher verification code is: ".$data['otp']."",
+                                "from" => $client_prefrerence->sms_provider_number   //form_number
+                     ]
+                   );
+           } catch (\Exception $e) {
+               
+           }
+           
 
-        //parent::sendSms($request->phone_number, 'Your OTP for login into Royo App is ' . $data['otp']);
 
         return response()->json([
             'data' => $data,
@@ -86,7 +98,7 @@ class AuthController extends BaseController
         if(!$otp){
             return response()->json(['message' => 'Please enter a valid opt'], 422);
         }
-         /* Get credentials from .env */
+         /* twilio credentials from .env */
         //  $token = getenv("TWILIO_AUTH_TOKEN");
         //  $twilio_sid = getenv("TWILIO_SID");
         //  $twilio_verify_sid = getenv("TWILIO_VERIFY_SID");
