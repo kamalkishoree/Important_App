@@ -58,7 +58,7 @@ class AuthController extends BaseController
             $twilio = new TwilioClient($twilio_sid, $token);
 
             $message = $twilio->messages
-                   ->create('+91'.$agent->phone_number,  //to number
+                   ->create('+1'.$agent->phone_number,  //to number
                      [
                                 "body" => "Your Dispatcher verification code is: ".$data['otp']."",
                                 "from" => $client_prefrerence->sms_provider_number   //form_number
