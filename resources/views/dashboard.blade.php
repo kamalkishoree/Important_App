@@ -680,25 +680,32 @@ function initMap() {
     
     //agents markers
     for (let i = 0; i < allagent.length; i++) {
-            checkdata = allagent[i];
-            //console.log(checkdata);
-            // addMarker({ lat: checkdata[3], lng: checkdata[4] });
+            displayagent = allagent[i];
+            
+            if(displayagent.agentlog != null){
+                console.log(displayagent.agentlog);
+                        if (displayagent['is_available'] == 1) {
+                            images = url+'/demo/images/location.png';
+                        }else {
+                            images = url+'/demo/images/location_grey.png';
+                        }
+                        var image = {
+                        url: images, // url
+                        scaledSize: new google.maps.Size(50, 50), // scaled size
+                        origin: new google.maps.Point(0,0), // origin
+                        anchor: new google.maps.Point(22,22) // anchor
+                        };
+                        send = null;
+                        type = 2;
+
+                        addMarker({lat: parseFloat(displayagent.agentlog['lat']),
+                        lng:  parseFloat(displayagent.agentlog['long'])
+                        }, send, image,displayagent,type);
+            }
             
                 
-                if (checkdata['is_available'] == 1) {
-                    images = url+'/demo/images/location.png';
-                }else {
-                    images = url+'/demo/images/location_grey.png';
-                }
-                var image = {
-                url: images, // url
-                scaledSize: new google.maps.Size(50, 50), // scaled size
-                origin: new google.maps.Point(0,0), // origin
-                anchor: new google.maps.Point(22,22) // anchor
-                };
-                send = null;
-                type = 2;
-            addMarker({lat: parseFloat(checkdata.agentlog['lat']),lng:  parseFloat(checkdata.agentlog['long'])}, send, image,checkdata,type);
+               
+
             
     }
 }
