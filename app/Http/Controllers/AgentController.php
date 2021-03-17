@@ -26,7 +26,7 @@ class AgentController extends Controller
     {
        
         $agents = Agent::orderBy('id', 'DESC')->get();
-        $agent = Agent::where('id',10)->first();
+       
 
         $tags  = TagsForAgent::all();
         $tag   = [];
@@ -113,6 +113,7 @@ class AgentController extends Controller
             'phone_number' => $request->phone_number,
             'color' => $request->color,
             'profile_picture' => $getFileName != Null ? $getFileName : 'assets/client_00000051/agents5fedb209f1eea.jpeg/Ec9WxFN1qAgIGdU2lCcatJN5F8UuFMyQvvb4Byar.jpg',
+            'uid' => $request->uid
         ];
 
         $agent = Agent::create($data);
@@ -236,7 +237,7 @@ class AgentController extends Controller
             $getFileName = $path;
         }
 
-        foreach ($request->only('name' ,'team_id' ,'type' ,'vehicle_type_id' ,'make_model' ,'plate_number' ,'phone_number' ,'color') as $key => $value) {
+        foreach ($request->only('name' ,'team_id' ,'type' ,'vehicle_type_id' ,'make_model' ,'plate_number' ,'phone_number' ,'color','uid') as $key => $value) {
             $agent->{$key} = $value;
         }
         

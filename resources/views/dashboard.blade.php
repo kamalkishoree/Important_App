@@ -633,8 +633,8 @@ for (let i = 0; i < allagent.length; i++) {
 function initMap() {
 
     const haightAshbury = {
-        lat: olddata[0] ? olddata[0]['latitude']: 30.7046,
-        lng: olddata[0]? olddata[0]['longitude']:76.7179
+        lat: allagent[0] ? parseFloat(allagent[0].agentlog['lat']): 30.7046,
+        lng: allagent[0] ? parseFloat(allagent[0].agentlog['long']):76.7179
     };
 
     map = new google.maps.Map(document.getElementById("map_canvas"), {

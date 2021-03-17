@@ -114,10 +114,19 @@
                     </div>
 
                     <div class="row">
-                        <div class="col-md-12">
+                        <div class="col-md-6">
                             <div class="form-group" id="make_modelInput">
                                 <label for="make_model" class="control-label">TRANSPORT DETAILS</label>
                                 <input type="text" class="form-control" id="make_model" placeholder="Year, Make, Model" name="make_model">
+                                <span class="invalid-feedback" role="alert">
+                                    <strong></strong>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group" id="make_modelInput">
+                                <label for="make_model" class="control-label">UID</label>
+                                <input type="text" class="form-control" id="uid" placeholder="897abd" name="uid">
                                 <span class="invalid-feedback" role="alert">
                                     <strong></strong>
                                 </span>

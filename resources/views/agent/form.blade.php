@@ -63,8 +63,7 @@
             <select class="form-control" data-style="btn-light" name="team_id" id="team_id">
                 <option>Select Team</option>
                 @foreach ($teams as $team)
-                    <option value="{{ $team->id }}" @if ($agent->team_id == $team->id) selected
-                @endif>{{ $team->name }}</option>
+                    <option value="{{ $team->id }}" {{$team->id == $agent->team_id ? 'selected':''}}>{{ $team->name }}</option>
                 @endforeach
                 <option value="other">other</option>
             </select>
@@ -124,13 +123,22 @@
 </div>
 
 <div class="row">
-    <div class="col-md-12">
+    <div class="col-md-6">
         <div class="form-group" id="make_modelInputEdit">
             <input type="hidden" id="agent_id" val_id="{{ $agent->id }}" url="{{route('agent.update', $agent->id)}}">
             <label for="make_model" class="control-label">TRANSPORT DETAILS</label>
             <input type="text" class="form-control" id="make_model"
                 placeholder="Year, Make, Model" name="make_model"
                 value="{{ old('name', $agent->make_model ?? '') }}">
+            <span class="invalid-feedback" role="alert">
+                <strong></strong>
+            </span>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group" id="make_modelInput">
+            <label for="make_model" class="control-label">UID</label>
+            <input type="text" class="form-control" id="uid" placeholder="897abd" name="uid" value="{{ $agent->uid}}">
             <span class="invalid-feedback" role="alert">
                 <strong></strong>
             </span>

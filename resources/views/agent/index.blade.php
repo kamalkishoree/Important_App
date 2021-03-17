@@ -15,6 +15,9 @@
             margin-right: 0rem !important;
      }
 
+    
+   
+
     </style>
 @endsection
 @php
@@ -57,7 +60,7 @@
                         <table class="table table-striped dt-responsive nowrap w-100" id="agents-datatable">
                             <thead>
                                 <tr>
-                                    <th>Id</th>
+                                    <th>Uid</th>
                                     <th>Profile</th>
                                     <th>Name</th>
                                     <th>Phone</th>
@@ -77,7 +80,7 @@
                             @foreach ($agents as $agent)
                                 <tr> 
                                     <td>
-                                        {{ $agent->id }}
+                                        {{ $agent->uid }}
                                     </td>
                                     <td><img alt="{{$agent->id}}" src="{{isset($agent->profile_picture) ? $imgproxyurl.Storage::disk('s3')->url($agent->profile_picture) : Phumbor::url(URL::to('/asset/images/no-image.png')) }}" width="40"></td>
                                     <td class="table-user">
@@ -157,6 +160,7 @@
 @section('script')
 
     <script src="{{ asset('assets/js/jquery-ui.min.js') }}" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
+    {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/8.4.7/js/intlTelInput.js"></script> --}}
     <link rel="stylesheet" href="{{ asset('assets/css/jquery-ui.css') }}">
     <script src="{{ asset('assets/js/storeAgent.js') }}"></script>
     <script src="{{ asset('assets/libs/dropzone/dropzone.min.js') }}"></script>
@@ -164,10 +168,16 @@
     <script src="{{ asset('assets/js/pages/form-fileuploads.init.js') }}"></script>
     <script src="{{ asset('assets/libs/datatables/datatables.min.js') }}"></script> 
     <script src="{{ asset('assets/js/jquery.tagsinput-revisited.js') }}"></script>
-    <link rel="stylesheet" href="{{ asset('assets/css/jquery.tagsinput-revisited.css') }}" />
+   
+    <link rel="stylesheet" href="{{ asset('assets/css/jquery.tagsinput-revisited.css') }}" />>
 @include('agent.pagescript')
 <script>
-     
+
+    //  $("#phone").intlTelInput({
+    //     utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/8.4.6/js/utils.js"
+    //  });
+
+
      $('#selectAgent').on('change',function (e) {
         
         var optionSelected = $("option:selected", this);
