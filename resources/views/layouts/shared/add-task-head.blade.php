@@ -334,7 +334,7 @@
                 loadMapHeader(autoWrap);
                 searchRes();
                 $('#task-modal-header').modal({
-                    //backdrop: 'static',
+                    backdrop: 'static',
                     keyboard: false
                 });
 
