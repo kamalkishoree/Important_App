@@ -108,6 +108,7 @@ Route::group(['prefix' => '/godpanel'], function () {
 
 			Route::get('{any}', 'RoutingController@root')->name('any');
 			
+			Route::resource('subclient','SubClientController');
 
 		});
 	});

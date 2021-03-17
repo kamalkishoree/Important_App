@@ -107,6 +107,7 @@ class GeoFenceController extends Controller
         return Validator::make($data, [
             'name' => ['required', 'string', 'max:255'],
             'zoom_level' => ['required'],
+            'latlongs'   => ['required']
         ]);
     }
     /**

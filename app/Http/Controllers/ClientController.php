@@ -16,6 +16,7 @@ use Illuminate\Support\Str;
 use App\Jobs\ProcessClientDatabase;
 use App\Model\Client;
 use App\Model\Cms;
+use App\Model\SubClient;
 use App\Model\TaskProof;
 use App\Model\TaskType;
 use Illuminate\Support\Facades\Cache;
@@ -287,11 +288,14 @@ class ClientController extends Controller
         $updatePreference = ClientPreference::updateOrCreate([
             'client_id' => $id
         ], $request->all());
+
+        
+
         if ($request->ajax()) {
             return response()->json([
                 'status' => 'success',
                 'message' => 'Preference updated successfully!',
-                'data' => $updatePreference
+                'data' =>    $updatePreference
             ]);
         } else {
             return redirect()->back()->with('success', 'Preference updated successfully!');
@@ -308,7 +312,9 @@ class ClientController extends Controller
         $cms         = Cms::all('content');
         $task_proofs = TaskProof::where('type','!=',0)->get();
         $task_list   = TaskType::all();
-        return view('customize')->with(['preference' => $preference, 'currencies' => $currencies,'cms'=>$cms,'task_proofs' => $task_proofs,'task_list' => $task_list]);
+        $subClients  = SubClient::all();
+
+        return view('customize')->with(['preference' => $preference, 'currencies' => $currencies,'cms'=>$cms,'task_proofs' => $task_proofs,'task_list' => $task_list,'subClient'=> $subClients]);
     }
 
 

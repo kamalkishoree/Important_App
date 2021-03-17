@@ -357,69 +357,35 @@
                         <table class="table table-striped dt-responsive nowrap w-100" id="agents-datatable">
                             <thead>
                                 <tr>
-                                    <th></th>
+                                    <th>Uid</th>
                                     <th>Name</th>
-                                    <th>Phone</th>
-                                    <th>Type</th>
-                                    <th>Team</th>
-                                    <th>Vehicle</th>
-                                    <th>Cash Collected</th>
-                                    <th>Order Earning</th>
-                                    <th>Total Received</th>
-                                    <th>Total Pay</th>
-                                    <th>Final Balance</th>
-                                   
+                                    <th>email</th>
+                                    <th>phone_number</th>
+                                    <th>status</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
-                            @foreach ($agents as $agent)
+                            @foreach ($subClients as $subClient)
                                 <tr> 
-                                    <td><img alt="{{$agent->id}}" src="{{isset($agent->profile_picture) ? $imgproxyurl.Storage::disk('s3')->url($agent->profile_picture) : Phumbor::url(URL::to('/asset/images/no-image.png')) }}" width="40"></td>
-                                    <td class="table-user">
-                                        <a href="javascript:void(0);"
-                                            class="text-body font-weight-semibold">{{ $agent->name }}</a>
-                                    </td>
-                                    <td>
-                                        {{ $agent->phone_number }}
-                                    </td>
-                                    <td>
-                                        {{ $agent->type }}
-                                    </td>
-                                    <td>
-                                        @if (isset($agent->team->name))
-                                            {{ $agent->team->name }}
-                                        @else
-                                            {{ 'Team Not Alloted' }}
-                                        @endif
-
-                                    </td>
-                                    <td><img alt=""  style="width: 80px;" src="{{ asset('assets/icons/extra/'. $agent->vehicle_type_id.'.png') }}" ></td>
-                                    <!-- <td><span class="badge bg-soft-success text-success">Active</span></td> -->
-                                    <td>
-                                        {{ $cash = $agent->order->sum('cash_to_be_collected') }}
-                                    </td>
-
-                                    <td>
-                                        {{ $orders = $agent->order->sum('driver_cost') }}
-                                    </td>
-
-                                    <td>
-                                        {{ $receive = $agent->agentPayment->sum('cr') }}
-                                    </td>
-
-                                    <td>
-                                        {{ $pay = $agent->agentPayment->sum('dr') }}
-                                    </td>
-
-                                    <td>
-                                        {{ ($pay - $receive) - ($cash - $orders) }}
-                                    </td>
                                     
+                                    <td>
+                                        {{ $subClient->uid }}
+                                    </td>
+                                    <td>
+                                        {{ $subClient->name }}
+                                    </td>
+                                    <td>
+                                        {{ $subClient->email }}
+                                    </td>
+                                    <td>
+                                        {{ $subClient->phone_number }}
+                                    </td>
+                                
                                     
                                     <td>
                                         <div class="form-ul" style="width: 60px;">
-                                            <div class="inner-div"> <a href1="{{ route('agent.edit', $agent->id) }}" class="action-icon editIcon" agentId="{{$agent->id}}"> <i class="mdi mdi-square-edit-outline"></i></a></div>
+                                            <div class="inner-div"> <a href1="{{ route('agent.edit', $subClient->id) }}" class="action-icon editIcon" agentId="{{$agent->id}}"> <i class="mdi mdi-square-edit-outline"></i></a></div>
                                             <div class="inner-div">
                                                 <form method="POST" action="{{ route('agent.destroy', $agent->id) }}">
                                                     @csrf
@@ -446,74 +412,7 @@
     </div> --}}
 
 
-        {{-- <form method="POST" action="{{route('preference', Auth::user()->code)}}">
-        @csrf
-        <div class="row">
-            <div class="col-xl-11 col-md-offset-1">
-                <div class="card-box">
-                    <h4 class="header-title">Domain</h4>
-                    <p class="sub-header">
-                        Choose the domain you want to publish your platform on.
-                    </p>
-                    <div class="row mb-2">
-                        <div class="col-md-12">
-                            <div class=" p-1 mb-3">
-                                <div class="custom-control custom-radio">
-                                    <input type="radio" id="domain_type_1" value="domain" name="domain_name"
-                                        class="custom-control-input"
-                                        {{ (isset($preference) && $preference->domain_name =="domain")? "checked" : "" }}>
-                                    <label class="custom-control-label font-16 font-weight-bold"
-                                        for="domain_type_1">{{ $client->custom_domain }}</label>
-                                </div>
-                                <p class="mb-0 pl-3 pt-6">Published </p>
-                            </div>
-                            <div class=" p-1 mb-1">
-                                <div class="custom-control custom-radio">
-                                    <input type="radio" id="domain_type_1" value="domain" name="domain_name"
-                                        class="custom-control-input"
-                                        {{ (isset($preference) && $preference->domain_name =="domain")? "checked" : "" }}>
-                                    <label class="custom-control-label font-16 font-weight-bold"
-                                        for="domain_type_1">Main Domain</label>
-                                   
-                                </div>
-                            </div>
-
-                            <div class=" p-1 mb-1">
-                                <div class="custom-control custom-radio">
-                                    <input type="radio" id="domain_type_2" value="custom_domain" name="domain_name"
-                                        class="custom-control-input"
-                                        {{ (isset($preference) && $preference->domain_name =="custom_domain")? "checked" : "" }}>
-                                    <label class="custom-control-label font-16 font-weight-bold"
-                                        for="domain_type_2">Custom
-                                        Domain</label>
-                                    @if (isset($preference) && $preference->domain_name == 'custom_domain')
-                                    <p class="mb-0 pl-3 pt-1">{{ $client->custom_domain }}</p>
-                                    @endif
-                                </div>
-                                <div class="custom-control">
-                                    <input type="text" name="custom_domain_name" id="custom_domain_name" value="" style="display:none;">
-                                </div>
-                                <p class="mb-0 pl-3 pt-1"><a href="javascript: toggleDisplayCustomDomain();">Click here</a> to add custom domain</p>
-                            </div>
-
-                            @if ($errors->has('domain_name'))
-                            <span class="text-danger" role="alert">
-                                <strong>{{ $errors->first('domain_name') }}</strong>
-                            </span>
-                            @endif
-                        </div>
-                    </div>
-                    <div class="row mb-2">
-                        <div class="col-md-2">
-                            <div class="form-group mb-0 text-center">
-                                <button class="btn btn-blue btn-block" type="submit"> Update </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </form> --}}
+        
 
 
 

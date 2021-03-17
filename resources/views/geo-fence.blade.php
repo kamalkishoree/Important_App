@@ -105,6 +105,18 @@ exit;
             </div>
         </div>
 
+        <div class="row">
+            <div class="col-12">
+                <div class="text-sm-left">
+                    @if (\Session::has('success'))
+                    <div class="alert alert-success">
+                        <span>{!! \Session::get('success') !!}</span>
+                    </div>
+                    @endif
+                </div>
+            </div>
+        </div>
+
         <form id="geo_form" action="{{ route('geo-fence.store') }}" method="POST">
             @csrf
             <input type="hidden" name="latlongs" value="" id="latlongs" />
@@ -232,6 +244,7 @@ exit;
 @endsection
 
 @section('script')
+
     <!-- google maps api -->
     <script
         src="https://maps.google.com/maps/api/js?key={{$key}}&v=3.exp&libraries=drawing,places">
@@ -240,7 +253,7 @@ exit;
     <script src="{{ asset('assets/libs/select2/select2.min.js') }}"></script>
    
     <script src="{{ asset('assets/js/pages/form-advanced.init.js') }}"></script>
-   
+    <script src="{{ asset('assets/libs/sweetalert2/sweetalert2.min.js') }}"></script>
 
     <script>
         var map; // Global declaration of the map
@@ -424,11 +437,13 @@ exit;
         });
 
         $("#geo_form").on("submit", function(e) {
+
             var lat = $('#latlongs').val();
             var trainindIdArray = lat.replace("[", "").replace("]", "").split(',');
             var length = trainindIdArray.length;
-
+           
             if (length < 6) {
+                
                 Swal.fire(
                     'Select Location?',
                     'Please Drow a Location On Map first',
