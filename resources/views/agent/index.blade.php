@@ -7,7 +7,6 @@
 
     <link href="{{ asset('assets/libs/dropzone/dropzone.min.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('assets/libs/dropify/dropify.min.css') }}" rel="stylesheet" type="text/css" />
-    <link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/8.4.6/css/intlTelInput.css'>
     <style>
 
         .cursors {
@@ -160,7 +159,6 @@
 @section('script')
 
     <script src="{{ asset('assets/js/jquery-ui.min.js') }}" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
-    {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/8.4.7/js/intlTelInput.js"></script> --}}
     <link rel="stylesheet" href="{{ asset('assets/css/jquery-ui.css') }}">
     <script src="{{ asset('assets/js/storeAgent.js') }}"></script>
     <script src="{{ asset('assets/libs/dropzone/dropzone.min.js') }}"></script>
@@ -173,9 +171,6 @@
 @include('agent.pagescript')
 <script>
 
-    //  $("#phone").intlTelInput({
-    //     utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/8.4.6/js/utils.js"
-    //  });
 
 
      $('#selectAgent').on('change',function (e) {
