@@ -60,7 +60,7 @@
                             <div class="form-group" id="team_idInput">
                                 <label for="team_id" class="control-label">ASSIGN TEAM</label>
                                 <select class="selectpicker" data-style="btn-light" name="team_id" id="team_id">
-                                    <option hidden="true"></option>
+                                    <option value="other">none</option>
                                     @foreach($teams as $team)
                                     <option value="{{$team->id}}">{{$team->name}}</option>
                                     @endforeach

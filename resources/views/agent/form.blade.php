@@ -61,11 +61,10 @@
         <div class="form-group" id="team_idInputEdit">
             <label for="team_id" class="control-label">ASSIGN TEAM</label>
             <select class="form-control" data-style="btn-light" name="team_id" id="team_id">
-                <option>Select Team</option>
                 @foreach ($teams as $team)
                     <option value="{{ $team->id }}" {{$team->id == $agent->team_id ? 'selected':''}}>{{ $team->name }}</option>
                 @endforeach
-                <option value="other">other</option>
+                
             </select>
             <span class="invalid-feedback" role="alert">
                 <strong></strong>
