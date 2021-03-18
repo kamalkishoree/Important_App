@@ -81,6 +81,7 @@
                                     <td>
                                         {{ $agent->uid }}
                                     </td>
+
                                     <td><img alt="{{$agent->id}}" src="{{isset($agent->profile_picture) ? $imgproxyurl.Storage::disk('s3')->url($agent->profile_picture) : Phumbor::url(URL::to('/asset/images/no-image.png')) }}" width="40"></td>
                                     <td class="table-user">
                                         <a href="javascript:void(0);"
@@ -145,7 +146,9 @@
                             </tbody>
                         </table>
                     </div>
-
+                    <div class="pagination pagination-rounded justify-content-end mb-0">
+                        {{ $agents->links() }}
+                    </div>
                 </div> <!-- end card-body-->
             </div> <!-- end card-->
         </div> <!-- end col -->
@@ -164,7 +167,7 @@
     <script src="{{ asset('assets/libs/dropzone/dropzone.min.js') }}"></script>
     <script src="{{ asset('assets/libs/dropify/dropify.min.js') }}"></script>
     <script src="{{ asset('assets/js/pages/form-fileuploads.init.js') }}"></script>
-    <script src="{{ asset('assets/libs/datatables/datatables.min.js') }}"></script> 
+    {{-- <script src="{{ asset('assets/libs/datatables/datatables.min.js') }}"></script>  --}}
     <script src="{{ asset('assets/js/jquery.tagsinput-revisited.js') }}"></script>
    
     <link rel="stylesheet" href="{{ asset('assets/css/jquery.tagsinput-revisited.css') }}" />>

@@ -25,7 +25,7 @@ class AgentController extends Controller
     public function index()
     {
        
-        $agents = Agent::orderBy('id', 'DESC')->get();
+        $agents = Agent::orderBy('id', 'DESC')->paginate(10);
        
 
         $tags  = TagsForAgent::all();
@@ -237,10 +237,10 @@ class AgentController extends Controller
             $getFileName = $path;
         }
 
-        foreach ($request->only('name' ,'team_id' ,'type' ,'vehicle_type_id' ,'make_model' ,'plate_number' ,'phone_number' ,'color','uid') as $key => $value) {
+        foreach ($request->only('name' ,'type' ,'vehicle_type_id' ,'make_model' ,'plate_number' ,'phone_number' ,'color','uid') as $key => $value) {
             $agent->{$key} = $value;
         }
-        
+        $agent->team_id         = $request->team_id;
         $agent->profile_picture = $getFileName;
         $agent->save();
 
