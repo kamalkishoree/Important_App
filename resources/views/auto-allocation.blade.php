@@ -246,7 +246,7 @@
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group mb-3">
-                                    <label for="maximum_radius">Maximum Radius {{isset($preference->distance_unit) ? $preference->distance_unit  == "metric" ? '(In Km)':'(In Mile)'}}</label>
+                                    <label for="maximum_radius">Maximum Radius {{$preference->distance_unit  == "metric" ? '(In Km)':'(In Mile)'}}</label>
                                     <input type="text" name="maximum_radius" id="maximum_radius" placeholder="30"
                                         class="form-control"
                                         value="{{ isset($allocation) && $allocation->maximum_radius != null ? $allocation->maximum_radius : '' }}">
