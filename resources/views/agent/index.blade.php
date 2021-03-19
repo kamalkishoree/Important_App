@@ -6,13 +6,16 @@
     <!-- for File Upload -->
 
     <link href="{{ asset('assets/libs/dropzone/dropzone.min.css') }}" rel="stylesheet" type="text/css" />
-    <link href="{{ asset('assets/libs/dropify/dropify.min.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('assets/libs/dropify/dropify.min.css') }}" rel="stylesheet"  />
+    <link rel="stylesheet" href="{{ asset('telinput/css/intlTelInput.css') }}" type="text/css">
+    <link rel="stylesheet" href="{{ asset('telinput/css/demo.css') }}" type="text/css">
     <style>
 
         .cursors {
             cursor:move;
             margin-right: 0rem !important;
      }
+
 
     
    
@@ -56,7 +59,7 @@
                     </div>
 
                     <div class="table-responsive">
-                        <table class="table table-striped dt-responsive nowrap w-100" id="agents-datatable">
+                        <table class="table table-striped dt-responsive nowrap w-100" id="">
                             <thead>
                                 <tr>
                                     <th>Uid</th>
@@ -169,8 +172,9 @@
     <script src="{{ asset('assets/js/pages/form-fileuploads.init.js') }}"></script>
     {{-- <script src="{{ asset('assets/libs/datatables/datatables.min.js') }}"></script>  --}}
     <script src="{{ asset('assets/js/jquery.tagsinput-revisited.js') }}"></script>
-   
+    <script src="{{ asset('telinput/js/intlTelInput.js') }}"></script>
     <link rel="stylesheet" href="{{ asset('assets/css/jquery.tagsinput-revisited.css') }}" />>
+
 @include('agent.pagescript')
 <script>
 
@@ -230,5 +234,11 @@
             stay.preventDefault(); 
     });
 
+    $(document).ready(function() {
+       
+        
+
+   });
+   
 </script>
 @endsection

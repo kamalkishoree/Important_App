@@ -1,7 +1,7 @@
 <script type="text/javascript">
     var tagList = "{{$showTag}}";
     tagList = tagList.split(',');
-    console.log(tagList);
+    
 
     function makeTag(){
         $('.myTag1').tagsInput({
@@ -10,6 +10,45 @@
             } 
         });
     }
+    var mobile_number = '';
+
+   // $('#add-agent-modal .xyz').val(mobile_number.getSelectedCountryData().dialCode); 
+   $('#add-agent-modal .xyz').change(function() { 
+        var phonevalue = $('.xyz').val();
+        $("#countryCode").val(mobile_number.getSelectedCountryData().dialCode);
+    });
+
+
+
+    function phoneInput() {
+        console.log('phone working');
+        var input = document.querySelector(".xyz");
+
+        var mobile_number_input = document.querySelector(".xyz"); 
+        mobile_number = window.intlTelInput(mobile_number_input, { 
+            separateDialCode: true, 
+            hiddenInput: "full_number",
+            utilsScript: "{{ asset('telinput/js/utils.js') }}",
+         }); 
+        
+       /*window.intlTelInput(input, {
+        // allowDropdown: false,
+        // autoHideDialCode: false,
+        // autoPlaceholder: "off",
+        // dropdownContainer: document.body,
+        // excludeCountries: ["us"],
+        // formatOnDisplay: false,
+            hiddenInput: "full_number",
+        // initialCountry: "auto",
+        // localizedCountries: { 'de': 'Deutschland' },
+        // nationalMode: false,
+        // onlyCountries: ['us', 'gb', 'ch', 'ca', 'do'],
+        // placeholderNumberType: "MOBILE",
+        // preferredCountries: ['cn', 'jp'],
+        separateDialCode: true,
+        utilsScript: "{{ asset('telinput/js/utils.js') }}",
+        });*/
+    }
 
     $('.openModal').click(function(){
         $('#add-agent-modal').modal({
@@ -17,11 +56,14 @@
             keyboard: false
         });
         makeTag();
+        //$(''.xyz).intlTelInput()
+        
+        phoneInput();
+        
     });
 
     $(document).ready(function() {
-        $('#agents-datatable').DataTable();
-        $('#basic-datatable').DataTable();
+       
         jQuery('#onfoot').click();
     });
 
@@ -29,7 +71,7 @@
         var radi = $(this).find('input[type="radio"]');
         radi.prop('checked', true);
         var check = radi.val(); 
-        var act = radi.attr('act'); console.log(act +'-'+ check);
+        var act = radi.attr('act'); 
         switch (check) {
             case "1":
                 $("#foot_" + act).attr("src", "{{ asset('assets/icons/walk_blue.png') }}");
@@ -106,10 +148,12 @@
     });
 
     /* add Team using ajax*/
-    $("#add-agent-modal #submitAgent").submit(function(e) {
-            e.preventDefault();
-    });
-    $(document).on('click', '.submitAgentForm', function() { 
+    // $("#add-agent-modal #submitAgent").submit(function(e) {
+            
+    // });
+    $("#submitAgent").submit(function(e) {
+        e.preventDefault();
+    // $(document).on('click', '.submitAgentForm', function() { 
         var form =  document.getElementById('submitAgent');
         var formData = new FormData(form);
         var urls = "{{URL::route('agent.store')}}";
@@ -131,7 +175,7 @@
 
     function saveTeam(urls, formData, inp = '', modal = ''){
 
-         $.ajax({
+        $.ajax({
             method: 'post',
             headers: {
                 Accept: "application/json"
@@ -168,16 +212,13 @@
 
     }
 
-    $('#add-agent-modal #phone_number').focus(function() { 
-        $(this).css('color', '#6c757d');
-    });
-    $('.intl-tel-input').css('width', '100%');
+    // $('#add-agent-modal #phone_number').focus(function() { 
+    //     $(this).css('color', '#6c757d');
+    // });
 
-    $("#add-agent-modal #phone_number").intlTelInput({
-        nationalMode: false,
-        formatOnDisplay: true,
-        utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/8.4.6/js/utils.js"
-    });
+   
+
+   
 
     /* Get agent by ajax */
     $(".submitpayreceive").click(function (e) {  

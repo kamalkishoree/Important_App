@@ -632,9 +632,10 @@ for (let i = 0; i < allagent.length; i++) {
 
 function initMap() {
 
+    console.log(allagent[0].agentlog);
     const haightAshbury = {
-        lat: allagent[0].agentlog ? parseFloat(allagent[0].agentlog['lat']): 30.7046,
-        lng: allagent[0].agentlog ? parseFloat(allagent[0].agentlog['long']):76.7179
+        lat: allagent[0].agentlog && allagent[0].agentlog['lat']  != "0.00000000" ? parseFloat(allagent[0].agentlog['lat']): 30.7046,
+        lng: allagent[0].agentlog && allagent[0].agentlog['long'] != "0.00000000" ? parseFloat(allagent[0].agentlog['long']):76.7179
     };
 
     map = new google.maps.Map(document.getElementById("map_canvas"), {
@@ -682,7 +683,7 @@ function initMap() {
     for (let i = 0; i < allagent.length; i++) {
             displayagent = allagent[i];
             
-            if(displayagent.agentlog != null){
+            if(displayagent.agentlog != null && displayagent.agentlog['lat'] != "0.00000000" && displayagent.agentlog['long'] != "0.00000000" ){
                 console.log(displayagent.agentlog);
                         if (displayagent['is_available'] == 1) {
                             images = url+'/demo/images/location.png';

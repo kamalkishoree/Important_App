@@ -105,7 +105,9 @@ Route::group(['prefix' => '/godpanel'], function () {
 			//Route::get('client/edit/{id}','ClientProfileController@edit')->name('client.profile.edit');
 			Route::put('client/profile/{id}','ClientProfileController@update')->name('client.profile.update');
 			Route::post('client/password/update','ClientProfileController@changePassword')->name('client.password.update');
-
+			Route::get('/newdemo', function(){
+				return view('extraremoved');
+			});
 			Route::get('{any}', 'RoutingController@root')->name('any');
 			
 			Route::resource('subclient','SubClientController');

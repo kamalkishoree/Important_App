@@ -9,6 +9,7 @@
                 <div class="modal-body p-4">
                 
                     @csrf
+                    <input type="hidden" name="country_code" id="countryCode">
                     <div class="row mb-2">
                         <div class="col-md-4">
                             <div class="form-group" id="profile_pictureInput">
@@ -35,7 +36,7 @@
                             <div class="form-group" id="phone_numberInput">
                                 <label for="phone_number" class="control-label">CONTACT NUMBER</label>
                                 <div class="input-group">
-                                    <input type="text" name="phone_number" class="form-control" id="phone_number" placeholder="+919876543210" maxlength="14">
+                                    <input type="tel" name="phone_number" class="form-control xyz" id="phone_number" placeholder="+919876543210" maxlength="14">
                                 </div>
                                 <span class="invalid-feedback" role="alert">
                                     <strong></strong>
@@ -60,7 +61,6 @@
                             <div class="form-group" id="team_idInput">
                                 <label for="team_id" class="control-label">ASSIGN TEAM</label>
                                 <select class="selectpicker" data-style="btn-light" name="team_id" id="team_id">
-                                    <option value="other">none</option>
                                     @foreach($teams as $team)
                                     <option value="{{$team->id}}">{{$team->name}}</option>
                                     @endforeach
@@ -124,8 +124,8 @@
                             </div>
                         </div>
                         <div class="col-md-6">
-                            <div class="form-group" id="make_modelInput">
-                                <label for="make_model" class="control-label">UID</label>
+                            <div class="form-group" id="uid_modelInput">
+                                <label for="uid_model" class="control-label">UID</label>
                                 <input type="text" class="form-control" id="uid" placeholder="897abd" name="uid">
                                 <span class="invalid-feedback" role="alert">
                                     <strong></strong>
@@ -186,8 +186,8 @@
                     <button type="submit" class="btn btn-blue waves-effect waves-light submitEditForm">Submit</button>
                 </div>
                 
-            </form>
+            
         </div>
     </div>
 </div>
-
+</form>

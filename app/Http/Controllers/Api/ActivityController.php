@@ -40,25 +40,30 @@ class ActivityController extends BaseController
     public function tasks(Request $request)
     {
         $id     = Auth::user()->id;
+
         $all    = $request->all; 
-        // $order = 
-        // print_r($order);
-        // die;
+        $tasks   = [];
+        
         if($all == 1){
-            $orders = Order::whereDate('order_time',Carbon::today())->where('status','!=',4)->where('driver_id',$id)->pluck('id')->toArray();
+            $orders = Order::where('driver_id',$id)->where('status','assigned')->pluck('id')->toArray();
+            
         }else{
-            $orders = Order::whereDate('order_time','>=',Carbon::today())->where('status','!=',4)->where('driver_id',$id)->pluck('id')->toArray();
+            $orders = Order::where('driver_id',$id)->whereDate('order_time','>=',Carbon::today())->where('status','assigned')->pluck('id')->toArray();
         }
        
-        $tasks = Task::whereIn('order_id',$orders)->where('task_status','!=',3)->orWhere('task_status',2)->with(['location','tasktype','order.customer'])->orderBy('order_id', 'DESC')
-            ->get(['id','order_id','dependent_task_id','task_type_id','location_id','appointment_duration','task_status','allocation_type','created_at']);
+
+        if (count($orders) > 0) {
+            $tasks = Task::whereIn('order_id',$orders)->where('task_status','!=',4)->Where('task_status','!=',5)->with(['location','tasktype','order.customer'])->orderBy('order_id', 'DESC')
+            ->get(['id','order_id','dependent_task_id','task_type_id','location_id','appointment_duration','task_status','allocation_type','barcode','created_at']);
+        }
+       
 
             
-                return response()->json([
-                    'data' => $tasks,
-                   ],200);
+        return response()->json([
+            'data' => $tasks,
+        ],200);
         
-    }
+    } 
 
     /**
      * Login user and create token
@@ -75,6 +80,7 @@ class ActivityController extends BaseController
        ],200);
 
     }
+
 
     public function updateProfile(Request $request)
     {
@@ -128,7 +134,7 @@ class ActivityController extends BaseController
     public function agentLog(Request $request)
     {
         
-       
+        $tasks   = [];
         $agent = AgentLog::where('agent_id',Auth::user()->id)->first();
         
         $data =  [
@@ -148,17 +154,22 @@ class ActivityController extends BaseController
 
         $id    = Auth::user()->id;
         $all   = $request->all; 
+
         if($all == 1){
-            $orders = Order::whereDate('order_time',Carbon::today())->where('status','!=',4)->where('driver_id',$id)->pluck('id')->toArray();
+            $orders = Order::where('driver_id',$id)->where('status','assigned')->pluck('id')->toArray();
+            
         }else{
-            $orders = Order::whereDate('order_time','>=',Carbon::today())->where('status','!=',4)->where('driver_id',$id)->pluck('id')->toArray();
+            $orders = Order::where('driver_id',$id)->whereDate('order_time','>=',Carbon::today())->where('status','assigned')->pluck('id')->toArray();
         }
         
-        $tasks = Task::whereIn('order_id',$orders)->where('task_status','!=',3)->with(['location','tasktype','order.customer'])->orderBy('order_id','DESC')
-            ->get(['id','order_id','dependent_task_id','task_type_id','location_id','appointment_duration','task_status','allocation_type','created_at']);
+       
+        if (count($orders) > 0) {
+            $tasks = Task::whereIn('order_id',$orders)->where('task_status','!=',4)->Where('task_status','!=',5)->with(['location','tasktype','order.customer'])->orderBy('order_id', 'DESC')
+            ->get(['id','order_id','dependent_task_id','task_type_id','location_id','appointment_duration','task_status','allocation_type','barcode','created_at']);
+        }
         
         $agents     = Agent::where('id',$id)->with('team')->first();
-        $taskProof = TaskProof::where('id',1)->first();
+        $taskProof = TaskProof::all();
         $prefer    = ClientPreference::select('theme', 'distance_unit', 'currency_id', 'language_id', 'agent_name', 'date_format', 'time_format', 'map_type','map_key_1')->first();
         $allcation = AllocationRule::first('request_expiry');
         $prefer['alert_dismiss_time'] = (int)$allcation->request_expiry;
@@ -180,6 +191,25 @@ class ActivityController extends BaseController
         return response()->json([
             'data' => $data,
            ],200);
+    }
+
+
+    public function taskHistory()
+    {
+        $id    = Auth::user()->id;
+       
+        $orders = Order::where('driver_id',$id)->pluck('id')->toArray();
+        if (isset($orders)) {
+            $tasks = Task::whereIn('order_id',$orders)->whereIn('task_status',[4,5])->with(['location','tasktype','order.customer'])->orderBy('order_id','DESC')
+             ->get(['id','order_id','dependent_task_id','task_type_id','location_id','appointment_duration','task_status','allocation_type','created_at','barcode']);
+        }else{
+            $task = [];
+        }
+
+        return response()->json([
+            'data' => $tasks,
+        ],200);
+            
     }
     
   

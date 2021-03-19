@@ -90,14 +90,17 @@ class TaskController extends BaseController
                  $task_type = 'assigned';
                 break;
             case 3:
+                 $task_type = 'assigned';
+                break;
+            case 4:
                 $task_type = 'completed';
                 break;
-            case 3:
+            case 5:
                 $task_type = 'failed';
             break;
         }
 
-        if ($request->task_status == 3) {
+        if ($request->task_status == 4) {
            
             if ($check == 1) {
                 $Order  = Order::where('id',$orderId->order_id)->update(['status' => $task_type ]);
@@ -109,15 +112,15 @@ class TaskController extends BaseController
 
         }
 
+        if($task_type == 'failed'){
+            $task = Task::where('order_id', $orderId->order_id)->update(['task_status' => $request->task_status,'note' => $note ,'proof_image' => $proof_image,'proof_signature' => $proof_signature]);
+        }
+
         $task = Task::where('id', $request->task_id)->update(['task_status' => $request->task_status,'note' => $note ,'proof_image' => $proof_image,'proof_signature' => $proof_signature]);
+
         $newDetails = Task::where('id', $request->task_id)->with(['location','tasktype','pricing','order.customer'])->first();
 
-        // $newDetails = Task::where('id', $request->task_id)->with('location', 'tasktype', 'pricing')
-        //                 ->select('tasks.*', 'orders.recipient_phone', 'orders.Recipient_email', 'orders.task_description', 'customers.phone_number  as customer_mobile', 'customers.email  as customer_email', 'customers.name as customer_name')
-        //                 ->join('orders', 'orders.id' , 'tasks.order_id')
-        //                 ->join('customers', 'customers.id' , 'orders.customer_id')->get();
-                       
-
+       
         return response()->json([
             'data' => $newDetails,
         ]);
@@ -134,6 +137,7 @@ class TaskController extends BaseController
                 'message' => 'Order Not Found With This Id',
             ], 404);
         }
+        
         if (isset($check) && $check->driver_id != null) {
             return response()->json([
                 'message' => 'Order Already Assigned',

@@ -58,7 +58,7 @@ class AuthController extends BaseController
             $twilio = new TwilioClient($twilio_sid, $token);
 
             $message = $twilio->messages
-                   ->create('+1'.$agent->phone_number,  //to number
+                   ->create($agent->phone_number,  //to number
                      [
                                 "body" => "Your Dispatcher verification code is: ".$data['otp']."",
                                 "from" => $client_prefrerence->sms_provider_number   //form_number
@@ -98,16 +98,7 @@ class AuthController extends BaseController
         if(!$otp){
             return response()->json(['message' => 'Please enter a valid opt'], 422);
         }
-         /* twilio credentials from .env */
-        //  $token = getenv("TWILIO_AUTH_TOKEN");
-        //  $twilio_sid = getenv("TWILIO_SID");
-        //  $twilio_verify_sid = getenv("TWILIO_VERIFY_SID");
-        //  $twilio = new TwilioClient($twilio_sid, $token);
-        //  $verification = $twilio->verify->v2->services($twilio_verify_sid)
-        //      ->verificationChecks
-        //      ->create($request->otp, array('to' => $request->phone_number));
-
-        //if ($verification->valid) {
+       
 
         if($date > $otp->valid_till){
             return response()->json(['message' => 'Your otp has been expired. Please try again.'], 422);
@@ -125,13 +116,9 @@ class AuthController extends BaseController
         $prefer = ClientPreference::select('theme', 'distance_unit', 'currency_id', 'language_id', 'agent_name', 'date_format', 'time_format', 'map_type','map_key_1')->first();
         $allcation = AllocationRule::first('request_expiry');
         $prefer['alert_dismiss_time'] = (int)$allcation->request_expiry;
-        $taskProof = TaskProof::where('id',1)->first();
+        $taskProof = TaskProof::all();
         Auth::login($agent);
         
-        /*$tokenResult = $agent->createToken('Personal Access Token');
-        $token = $tokenResult->token;
-        $token->expires_at = Carbon::now()->addWeeks(1);
-        $token->save();*/
 
         $token1 = new Token;
 

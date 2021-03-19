@@ -77,6 +77,7 @@ class AgentController extends Controller
      */
     public function store(Request $request)
     {
+       
         $validator = $this->validator($request->all())->validate();
         $getFileName = NULL;
 
@@ -110,7 +111,7 @@ class AgentController extends Controller
             'vehicle_type_id' => $request->vehicle_type_id,
             'make_model' => $request->make_model,
             'plate_number' => $request->plate_number,
-            'phone_number' => $request->phone_number,
+            'phone_number' => '+'.$request->country_code.$request->phone_number,
             'color' => $request->color,
             'profile_picture' => $getFileName != Null ? $getFileName : 'assets/client_00000051/agents5fedb209f1eea.jpeg/Ec9WxFN1qAgIGdU2lCcatJN5F8UuFMyQvvb4Byar.jpg',
             'uid' => $request->uid

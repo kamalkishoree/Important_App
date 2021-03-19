@@ -15,6 +15,7 @@
     </div>
     
 </div>
+
 <div class="row">
     <div class="col-md-6">
         <div class="form-group" id="nameInputEdit">
@@ -31,9 +32,10 @@
             <label for="phone_number" class="control-label">CONTACT NUMBER</label>
             <div class="input-group">
                
-                <input type="text" name="phone_number" class="form-control" id="phone_number"
+                <input type="tel" name="phone_number" class="form-control" id="phone"
                     placeholder="Enter mobile number"
-                    value="{{ $agent->phone_number }}">
+                    value="{{ $agent->phone_number }}" >
+                    {{-- <input id="phone" name="phone" type="tel" class="form-control"> --}}
             </div>
             <span class="invalid-feedback" role="alert">
                 <strong></strong>
@@ -41,6 +43,7 @@
         </div>
     </div>
 </div>
+
 <div class="row">
     <div class="col-md-6">
         <div class="form-group" id="typeInputEdit">

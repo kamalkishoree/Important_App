@@ -55,7 +55,8 @@ Route::group([
         Route::post('task/accecpt/reject', 'Api\TaskController@TaskUpdateReject'); // api for accecpt task reject task
         Route::post('agent/logs', 'Api\ActivityController@agentLog');              // api for save agent logs
         Route::get('get/profile','Api\ActivityController@profile');                // api for get agent profile
-        Route::post('update/profile','Api\ActivityController@updateProfile');
+        Route::post('update/profile','Api\ActivityController@updateProfile');       // api for updateprofile
+        Route::get('task/history','Api\ActivityController@taskHistory');            // api for get task history
 
 });
 
