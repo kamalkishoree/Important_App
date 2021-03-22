@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\SubClient;
+use App\Model\SubClient as ModelSubClient;
 use Illuminate\Http\Request;
 
 class SubClientController extends Controller
@@ -23,7 +25,7 @@ class SubClientController extends Controller
      */
     public function create()
     {
-        //
+       
     }
 
     /**
@@ -32,9 +34,24 @@ class SubClientController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(SubClient $request)
     {
-        //
+        $pool = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
+        $unique_id = substr(str_shuffle(str_repeat($pool, 5)), 0, 6);
+
+        $data = [
+            'uid'          =>  $unique_id,
+            'name'         => $request->name,
+            'email'        => $request->email,
+            'phone_number' => $request->phone_number,
+            'status'       => $request->status
+        ];
+        
+
+        $subclient = ModelSubClient::create($data);
+
+        return redirect()->back()->with('success', 'Client Created successfully!');
     }
 
     /**

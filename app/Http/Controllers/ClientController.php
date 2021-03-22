@@ -274,6 +274,7 @@ class ClientController extends Controller
      */
     public function storePreference(Request $request, $id)
     {
+       
         $client = Client::where('code', $id)->firstOrFail();
         //update the client custom_domain if value is set //
         if ($request->domain_name == 'custom_domain') {
@@ -314,7 +315,8 @@ class ClientController extends Controller
         $task_list   = TaskType::all();
         $subClients  = SubClient::all();
 
-        return view('customize')->with(['preference' => $preference, 'currencies' => $currencies,'cms'=>$cms,'task_proofs' => $task_proofs,'task_list' => $task_list,'subClient'=> $subClients]);
+        
+        return view('customize')->with(['preference' => $preference, 'currencies' => $currencies,'cms'=>$cms,'task_proofs' => $task_proofs,'task_list' => $task_list]);
     }
 
 
@@ -325,7 +327,9 @@ class ClientController extends Controller
     {
         $preference = ClientPreference::where('client_id',Auth::user()->code)->first();
         $client = Auth::user();
-        return view('configure')->with(['preference' => $preference, 'client' => $client]);
+        $subClients  = SubClient::all();
+
+        return view('configure')->with(['preference' => $preference, 'client' => $client,'subClients'=> $subClients]);
     }
 
     /**

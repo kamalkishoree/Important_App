@@ -331,9 +331,9 @@
 
 
    
-    {{-- <!-- end page title -->
+    <!-- end page title -->
     <div class="row">
-        <div class="col-12">
+        <div class="col-11">
             <div class="card">
                 <div class="card-body">
                     <div class="row mb-2">
@@ -347,8 +347,7 @@
                             </div>
                         </div>
                         <div class="col-sm-4 text-right">
-                            <button type="button" class="btn btn-blue waves-effect waves-light openModal" data-toggle="modal" data-target="" data-backdrop="static" data-keyboard="false"><i class="mdi mdi-plus-circle mr-1"></i> Add {{ Session::get('agent_name') }}</button>
-                            <button type="button" class="btn btn-success waves-effect waves-light saveaccounting" data-toggle="modal" data-target="#pay-receive-modal" data-backdrop="static" data-keyboard="false">Pay / Receive</button>
+                            <button type="button" class="btn btn-blue waves-effect waves-light sub-client_modal" data-toggle="modal" data-target="#add-sub-client-modal" data-backdrop="static" data-keyboard="false" data-backdrop="static" data-keyboard="false"><i class="mdi mdi-plus-circle mr-1"></i> Add Client</button>
                         </div>
 
                     </div>
@@ -381,13 +380,16 @@
                                     <td>
                                         {{ $subClient->phone_number }}
                                     </td>
+                                    <td>
+                                        {{ $subClient->status == 1 ? 'Active' :'In-active' }}
+                                    </td>
                                 
                                     
                                     <td>
                                         <div class="form-ul" style="width: 60px;">
-                                            <div class="inner-div"> <a href1="{{ route('agent.edit', $subClient->id) }}" class="action-icon editIcon" agentId="{{$agent->id}}"> <i class="mdi mdi-square-edit-outline"></i></a></div>
+                                            <div class="inner-div"> <a href="#" class="action-icon editIcon" > <i class="mdi mdi-square-edit-outline"></i></a></div>
                                             <div class="inner-div">
-                                                <form method="POST" action="{{ route('agent.destroy', $agent->id) }}">
+                                                <form method="POST" action="#">   {{--{{ route('subclient.destroy', $subClient->id) }} --}}
                                                     @csrf
                                                     @method('DELETE')
                                                     <div class="form-group">
@@ -397,7 +399,7 @@
                                                 </form>
                                             </div>
                                         </div>
-                                        <!-- <a href="{{ route('agent.destroy', $agent->id) }}" class="action-icon"> <i class="mdi mdi-delete"></i></a> -->
+                                        
 
                                     </td>
                                 </tr>
@@ -409,7 +411,7 @@
                 </div> <!-- end card-body-->
             </div> <!-- end card-->
         </div> <!-- end col -->
-    </div> --}}
+    </div>
 
 
         
@@ -417,6 +419,7 @@
 
 
     </div> <!-- container -->
+    @include('modals.add-sub-client') 
 @endsection
 
 @section('script')

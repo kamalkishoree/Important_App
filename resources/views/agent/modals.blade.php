@@ -36,7 +36,7 @@
                             <div class="form-group" id="phone_numberInput">
                                 <label for="phone_number" class="control-label">CONTACT NUMBER</label>
                                 <div class="input-group">
-                                    <input type="tel" name="phone_number" class="form-control xyz" id="phone_number" placeholder="+919876543210" maxlength="14">
+                                    <input type="tel" name="phone_number" class="form-control xyz" id="phone_number" placeholder="9876543210" maxlength="14">
                                 </div>
                                 <span class="invalid-feedback" role="alert">
                                     <strong></strong>
