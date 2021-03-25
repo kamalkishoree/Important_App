@@ -39,7 +39,7 @@ class TaskController extends BaseController
     {
         
         $header = $request->header();
-        $client_details = Client::where('database_name',$header['client'][0])->first(['code']);
+        $client_details = Client::where('database_name',$header['client'][0])->first();
         $proof_image = '';
         $proof_signature = '';
         $note = '';
@@ -189,7 +189,7 @@ class TaskController extends BaseController
     
                    Log::info($e->getMessage());
             }
-            dd($client_details);
+            dd($client_details->logo);
             echo $order_details->agent->profile_picture;
             die;
             $sendto        = 'anil.choudhary@codebrewinnovations.com';
