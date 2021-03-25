@@ -189,7 +189,7 @@ class TaskController extends BaseController
     
                    Log::info($e->getMessage());
             }
-            echo $client_details->logo;
+            dd($client_details);
             echo $order_details->agent->profile_picture;
             die;
             $sendto        = 'anil.choudhary@codebrewinnovations.com';
