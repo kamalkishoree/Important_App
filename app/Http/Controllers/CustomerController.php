@@ -47,10 +47,10 @@ class CustomerController extends Controller
         ];
         if ($id != '') {
             $rules['email'] = 'required|email|unique:customers,email,' . $id;
-            $rules['phone_number'] = 'required|digits:15|unique:customers,phone_number,' . $id;
+            $rules['phone_number'] = 'required|unique:customers,phone_number,' . $id;
         } else {
             $rules['email'] = 'required|email|unique:customers,email';
-            $rules['phone_number'] = 'required|digits:15|unique:customers,phone_number';
+            $rules['phone_number'] = 'required|unique:customers,phone_number';
         }
         return $rules;
     }
