@@ -10,6 +10,7 @@ use App\Model\ClientNotification;
 use App\Model\Roster;
 use Carbon\Carbon;
 use App\Jobs\SendPushNotifications;
+use Illuminate\Support\Facades\Auth;
 
 class ClientNotificationController extends Controller
 {
@@ -108,7 +109,6 @@ class ClientNotificationController extends Controller
 
     public function updateClientNotificationEvent(Request $request)
     {
-
         $validator = $this->updateClientEventValidator($request->all())->validate();
 
         switch ($request->notification_type) {
@@ -127,7 +127,7 @@ class ClientNotificationController extends Controller
         }
 
         ClientNotification::updateOrCreate([
-            'client_id' => 1,
+            'client_id' => Auth::user()->code,
             'notification_event_id' => $request->notification_event_id
         ], $update);
 

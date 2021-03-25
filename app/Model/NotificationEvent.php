@@ -26,4 +26,9 @@ class NotificationEvent extends Model
             return $url->webhook_url;
         return "";
     }
+
+    public function client_notification()
+    {
+      return $this->hasOne('App\Model\ClientNotification');
+    }
 }

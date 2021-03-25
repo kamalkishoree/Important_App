@@ -18,6 +18,7 @@ class Kernel extends ConsoleKernel
         Commands\UpdateRedis::class,
         Commands\NewChanges::class,
         Commands\SendPushNotification::class,
+        Commands\RunSingleSeederCommand::class,
     ];
 
     /**

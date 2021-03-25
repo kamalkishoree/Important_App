@@ -632,7 +632,7 @@ for (let i = 0; i < allagent.length; i++) {
 
 function initMap() {
 
-    console.log(allagent[0].agentlog);
+    console.log(allagent);
     const haightAshbury = {
         lat: allagent[0].agentlog && allagent[0].agentlog['lat']  != "0.00000000" ? parseFloat(allagent[0].agentlog['lat']): 30.7046,
         lng: allagent[0].agentlog && allagent[0].agentlog['long'] != "0.00000000" ? parseFloat(allagent[0].agentlog['long']):76.7179

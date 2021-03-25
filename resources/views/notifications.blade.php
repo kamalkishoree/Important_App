@@ -23,7 +23,7 @@
                     <p class="sub-header">
                         Send custom SMS's,emails and webhooks based on each trigger and customize the content by clicking on the pencil icon.         
                     </p>
-                    @foreach($notification_types as $notification_type)
+                    @foreach($notification_types as $key => $notification_type)
                     <div class="card-box">
                         <div class="row mb-2">
                             <div class="col-sm-8">
@@ -33,6 +33,7 @@
                             </div>
                             
                         </div>
+                        
                         <div class="table-responsive">
                             <table class="table table-borderless table-nowrap table-hover table-centered m-0">
 
@@ -41,9 +42,9 @@
                                         <th>Events</th>
                                         <th>SMS</th>
                                         <th>EMAIL</th>
-                                        <th>WEBHOOK</th>
+                                        {{-- <th>WEBHOOK</th>
                                         <th>WEBHOOK URL</th>
-                                        <th></th>
+                                        <th></th> --}}
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -55,19 +56,19 @@
 
                                         <td>
                                             <div class="custom-control custom-switch">
-                                                <input type="checkbox" class="custom-control-input event_type" data-id="{{ $event->id }}" data-event-type="sms" id="smscustomSwitch_{{ $event->id}}" @if($event->is_checked_sms(1))  checked @endif>
+                                                <input type="checkbox" class="custom-control-input event_type" data-id="{{ $event->id }}" data-event-type="sms" id="smscustomSwitch_{{ $event->id}}"  @if($event->is_checked_sms(Auth::user()->code))  checked @endif>
                                                 <label class="custom-control-label" for="smscustomSwitch_{{ $event->id}}"></label>
                                             </div>
                                         </td>
 
                                         <td>
                                             <div class="custom-control custom-switch">
-                                                <input type="checkbox" class="custom-control-input event_type" data-id="{{ $event->id }}" data-event-type="email" id="emailcustomSwitch_{{ $event->id}}" @if($event->is_checked_email(1))  checked @endif>
+                                                <input type="checkbox" class="custom-control-input event_type" data-id="{{ $event->id }}" data-event-type="email" id="emailcustomSwitch_{{ $event->id}}" @if($event->is_checked_email(Auth::user()->code))  checked @endif >
                                                 <label class="custom-control-label" for="emailcustomSwitch_{{ $event->id}}"></label>
                                             </div>
                                         </td>
 
-                                        <td>
+                                        {{-- <td>
                                             <div class="custom-control custom-switch">
                                                 <input type="checkbox" class="custom-control-input event_type" data-id="{{ $event->id }}" data-event-type="webhook" id="webhookcustomSwitch_{{ $event->id}}" @if($event->is_checked_webhook(1))  checked @endif>
                                                 <label class="custom-control-label" for="webhookcustomSwitch_{{ $event->id}}"></label>
@@ -90,7 +91,7 @@
                                             <a href="javascript: void(0);" class="action-icon">
                                                 <i class="mdi mdi-square-edit-outline web-hook-add" data-id="{{ $event->id }}" data-webhook-url="{{ $event->get_client_webhook_url(1) }}"></i>
                                             </a>
-                                        </td>
+                                        </td> --}}
                                     </tr>
                                     @endforeach
 

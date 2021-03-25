@@ -6,7 +6,7 @@
    <meta charset="utf-8">
    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
    <meta name=”format-detection” content=”telephone=no”>
-   <link rel="shortcut icon" type="image/x-icon" href="images/favicon.ico">
+   <link rel="shortcut icon" type="image/x-icon" href="{{asset('assets/images/favicon.ico')}}">
    <!-- Bootstrap CSS -->
    <!-- <link rel="stylesheet" href="css/fontawesome.css"> -->
    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css">
@@ -15,7 +15,7 @@
    <link rel="stylesheet" href="{{asset('tracking/css/bootstrap.css')}}">
    <link rel="stylesheet" href="{{asset('tracking/css/style.css')}}">
    <link rel="stylesheet" href="{{asset('tracking/css/responsive.css')}}">
-   <title>Customer Ordering Home</title>
+   <title>Royo Order Tracking</title>
 </head>
 @php
     $task_type_array = ['pickup','Drop-Off','Appointment']

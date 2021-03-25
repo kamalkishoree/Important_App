@@ -1,3 +1,4 @@
+
  <div class="row mb-2">
     <div class="col-md-4">
         <div class="form-group" id="profile_pictureInputEdit">
@@ -32,7 +33,7 @@
             <label for="phone_number" class="control-label">CONTACT NUMBER</label>
             <div class="input-group">
                
-                <input type="tel" name="phone_number" class="form-control" id="phone"
+                <input type="tel" name="phone_number" class="form-control xyz" id="phone"
                     placeholder="Enter mobile number"
                     value="{{ $agent->phone_number }}" >
                     {{-- <input id="phone" name="phone" type="tel" class="form-control"> --}}

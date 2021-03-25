@@ -25,8 +25,11 @@ use App\Jobs\scheduleNotification;
 use App\Model\AllocationRule;
 use App\Model\ClientPreference;
 use App\Model\DriverGeo;
+use App\Model\NotificationEvent;
+use App\Model\NotificationType;
 use App\Model\PricingRule;
 use Illuminate\Support\Arr;
+use Twilio\Rest\Client as TwilioClient;
 
 class TaskController extends BaseController
 {
@@ -44,6 +47,8 @@ class TaskController extends BaseController
         } else {
             $note = '';
         }
+
+        // $cheking = NotificationEvent::is_checked_sms();
 
         if(isset($request->image)){
 
@@ -78,27 +83,65 @@ class TaskController extends BaseController
         }
 
 
-        $orderAll   = Task::where('id', $request->task_id)->get();
-        $orderId    = Task::where('id', $request->task_id)->first('order_id');
-        $allCount   = Count($orderAll);
-        $inProgress = $orderAll->where('task_status', 2);
-        $lasttask   = count($orderAll->where('task_status', 3));
-        $check      = $allCount - $lasttask;
+       
+        $orderId        = Task::where('id', $request->task_id)->first(['order_id','task_type_id']);
+        $orderAll       = Task::where('order_id', $orderId->order_id)->get();
+        $order_details  = Order::where('id',$orderId->order_id)->with(['agent','customer'])->first();
+        $allCount       = Count($orderAll);
+        $inProgress     = $orderAll->where('task_status', 2);
+        $lasttask       = count($orderAll->where('task_status', 4));
+        $check          = $allCount - $lasttask;
 
-        switch ($request->task_status) {
+        $sms_body       = '';
+
+        $notification_type = NotificationType::with('notification_events.client_notification')->get();
+        
+       
+
+        switch ( $orderId->task_type_id) {
+            case 1:
+                
+              $sms_settings   = $notification_type[0];
+                break;
             case 2:
-                 $task_type = 'assigned';
+                
+              $sms_settings = $notification_type[1];
                 break;
             case 3:
-                 $task_type = 'assigned';
+               
+              $sms_settings = $notification_type[2];
+                break;
+        }
+
+       
+        switch ($request->task_status) {
+
+            case 2:
+                 $task_type        = 'assigned';
+                 $sms_final_status =  $sms_settings['notification_events'][0];
+                 $sms_body         = 'Driver '.$order_details->agent->name.' in our '.$order_details->agent->make_model.' with license plate '.$order_details->agent->plate_number.' is heading to your location. ';
+                break;
+            case 3:
+                 $task_type        = 'assigned';
+                 $sms_final_status =   $sms_settings['notification_events'][1];
+                 $sms_body         = 'Driver '.$order_details->agent->name.' in our '.$order_details->agent->make_model.' with license plate '.$order_details->agent->plate_number.' has arrived at your location ';
                 break;
             case 4:
-                $task_type = 'completed';
+                $task_type        = 'completed';
+                $sms_final_status =   $sms_settings['notification_events'][2];
+                $sms_body         = 'Thank you, your order has been delivered successfully by driver'.$order_details->agent->name.'';
                 break;
             case 5:
-                $task_type = 'failed';
+                $task_type        = 'failed';
+                $sms_final_status =   $sms_settings['notification_events'][3];
+                $sms_body         = 'Sorry, our driver '.$order_details->agent->name.' is not able to complete your order delivery';
             break;
+
         }
+
+            $send_sms_status   = $sms_final_status['client_notification']['request_recieved_sms'];
+            $send_email_status = $sms_final_status['client_notification']['request_recieved_sms'];
+        
 
         if ($request->task_status == 4) {
            
@@ -113,12 +156,42 @@ class TaskController extends BaseController
         }
 
         if($task_type == 'failed'){
+
             $task = Task::where('order_id', $orderId->order_id)->update(['task_status' => $request->task_status,'note' => $note ,'proof_image' => $proof_image,'proof_signature' => $proof_signature]);
+            
         }
 
         $task = Task::where('id', $request->task_id)->update(['task_status' => $request->task_status,'note' => $note ,'proof_image' => $proof_image,'proof_signature' => $proof_signature]);
 
         $newDetails = Task::where('id', $request->task_id)->with(['location','tasktype','pricing','order.customer'])->first();
+
+
+        //twilio sms send keys
+        $client_prefrerence = ClientPreference::where('id',1)->first();
+
+        $token             = $client_prefrerence->sms_provider_key_2;
+        $twilio_sid        = $client_prefrerence->sms_provider_key_1;
+
+        if($send_sms_status == 1) {
+
+            try {
+                $twilio = new TwilioClient($twilio_sid, $token);
+    
+                $message = $twilio->messages
+                       ->create($order_details->customer->phone_number,  //to number
+                         [
+                                    "body" => $sms_body,
+                                    "from" => $client_prefrerence->sms_provider_number   //form_number
+                         ]
+                       );
+            } catch (\Exception $e) {
+    
+                   
+            }
+
+        }
+
+        
 
        
         return response()->json([
@@ -1286,8 +1359,6 @@ class TaskController extends BaseController
             } 
             
         }
-        // print_r($send);
-        // die();
         return $send;        
 
     }

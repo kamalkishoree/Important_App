@@ -80,6 +80,7 @@ use Carbon\Carbon;
                                         <th>Create Time</th>
                                         <th>Due Time</th>
                                         <th>Tasks</th>
+                                        <th>Tracking Url</th>
                                         <th>Task Proofs</th>
                                         <th>Pricing</th>
                                         <th style="width: 85px;">Action</th>
@@ -121,6 +122,9 @@ use Carbon\Carbon;
                                             <td>
                                                 <button class="showtasks" value="{{ $task->id }}"><i
                                                         class="fe-eye"></i></button>
+                                            </td>
+                                            <td>
+                                                <a onclick="window.open(this.href,'_blank');return false;" href="{{url('/order/tracking/'.Auth::user()->code.'/'.$task->unique_id.'')}}">Track</a>
                                             </td>
                                             <td>
                                                 <button class="showTaskProofs btn btn-primary-outline action-icon"

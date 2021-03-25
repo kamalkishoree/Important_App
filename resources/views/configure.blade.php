@@ -332,7 +332,7 @@
 
    
     <!-- end page title -->
-    <div class="row">
+    {{-- <div class="row">
         <div class="col-11">
             <div class="card">
                 <div class="card-body">
@@ -387,9 +387,9 @@
                                     
                                     <td>
                                         <div class="form-ul" style="width: 60px;">
-                                            <div class="inner-div"> <a href="#" class="action-icon editIcon" > <i class="mdi mdi-square-edit-outline"></i></a></div>
+                                            <div class="inner-div"> <a href="{{ route('subclient.edit', $subClient->id) }}" class="action-icon editIcon" > <i class="mdi mdi-square-edit-outline"></i></a></div>
                                             <div class="inner-div">
-                                                <form method="POST" action="#">   {{--{{ route('subclient.destroy', $subClient->id) }} --}}
+                                                <form method="POST" action="{{ route('subclient.destroy', $subClient->id) }}">   
                                                     @csrf
                                                     @method('DELETE')
                                                     <div class="form-group">
@@ -411,7 +411,7 @@
                 </div> <!-- end card-body-->
             </div> <!-- end card-->
         </div> <!-- end col -->
-    </div>
+    </div> --}}
 
 
         

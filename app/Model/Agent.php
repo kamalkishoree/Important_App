@@ -46,9 +46,9 @@ class Agent extends Authenticatable
        return $this->belongsTo('App\Model\Team')->select("id", "name", "location_accuracy", "location_frequency"); 
     }
 
-    public function logs(){
-        return $this->hasOne('App\Model\AgentLog' , 'agent_id','id')->select("id", "agent_id", "lat", "long"); 
-    }
+    // public function logs(){
+    //     return $this->hasOne('App\Model\AgentLog' , 'agent_id','id')->select("id", "agent_id", "lat", "long"); 
+    // }
 
     public function vehicle_type(){
         return $this->belongsTo('App\Model\VehicleType'); 
@@ -65,7 +65,7 @@ class Agent extends Authenticatable
         return $this->hasMany('App\Model\AgentPayment','driver_id', 'id');
     }
     public function agentlog(){
-        return $this->hasOne('App\Model\AgentLog','agent_id', 'id');
+        return $this->hasOne('App\Model\AgentLog','agent_id', 'id')->latest();
     }
 
     public function tags(){

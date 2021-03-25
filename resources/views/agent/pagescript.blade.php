@@ -50,6 +50,8 @@
         });*/
     }
 
+   
+
     $('.openModal').click(function(){
         $('#add-agent-modal').modal({
             backdrop: 'static',
@@ -134,6 +136,7 @@
                     keyboard: false
                 });
                 makeTag();
+                phoneInput();
                 //$('.dropify').dropify();
                 var imgs =  $('#profilePic').attr('showImg');
 

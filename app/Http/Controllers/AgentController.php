@@ -181,6 +181,7 @@ class AgentController extends Controller
         }
         
         $returnHTML = view('agent.form')->with(['agent' => $agent, 'teams' => $teams, 'tags' => $uptag, 'tagIds' => $tagIds,'otp'=>$send_otp])->render();
+        
         return response()->json(array('success' => true, 'html'=>$returnHTML));
     }
 

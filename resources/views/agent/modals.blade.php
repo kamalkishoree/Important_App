@@ -21,6 +21,7 @@
                             <p class="text-muted text-center mt-2 mb-0">Profile Pic</p>
                         </div>
                     </div>
+
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group" id="nameInput">
@@ -44,6 +45,7 @@
                             </div>
                         </div>
                     </div>
+                    
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group" id="typeInput">

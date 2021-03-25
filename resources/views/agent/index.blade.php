@@ -129,7 +129,7 @@
                                     
                                     <td>
                                         <div class="form-ul" style="width: 60px;">
-                                            <div class="inner-div"> <a href1="{{ route('agent.edit', $agent->id) }}" class="action-icon editIcon" agentId="{{$agent->id}}"> <i class="mdi mdi-square-edit-outline"></i></a></div>
+                                            <div class="inner-div" style="margin-top: 3px;"> <a href="{{ route('agent.edit', $agent->id) }}" class="action-icon editIcon" agentId="{{$agent->id}}"> <i class="mdi mdi-square-edit-outline"></i></a></div>
                                             <div class="inner-div">
                                                 <form method="POST" action="{{ route('agent.destroy', $agent->id) }}">
                                                     @csrf
@@ -141,9 +141,9 @@
                                                 </form>
                                             </div>
                                         </div>
-                                        <!-- <a href="{{ route('agent.destroy', $agent->id) }}" class="action-icon"> <i class="mdi mdi-delete"></i></a> -->
 
                                     </td>
+
                                 </tr>
                             @endforeach
                             </tbody>
@@ -180,7 +180,7 @@
 
 
 
-     $('#selectAgent').on('change',function (e) {
+    $('#selectAgent').on('change',function (e) {
         
         var optionSelected = $("option:selected", this);
         var valueSelected = this.value;
