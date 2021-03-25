@@ -58,7 +58,7 @@
                                         style="width: 100%;height: 100%;object-fit: cover;">
                                 </div>
                                 <div class="right_text" style="text-align: left;display: inline-block;vertical-align: middle;padding: 0 0 0 15px;">
-                                    <h4 style="font-weight: 600;font-size: 20px;color: #3c4854;"><b>{{$agent_name}}/b></h4>
+                                    <h4 style="font-weight: 600;font-size: 20px;color: #3c4854;"><b>{{$agent_name}}</b></h4>
                                     <p style="font-size: 14px;text-transform: uppercase;font-weight: 600;">{{$number_plate}}</p>
                                 </div>
                             </div>
