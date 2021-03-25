@@ -189,7 +189,7 @@ class TaskController extends BaseController
     
                    Log::info($e->getMessage());
             }
-            $sendto = $order_details->customer->email;
+            $sendto = 'anil.choudhary@codebrewinnovations.com';
             try {
                 \Mail::send('email.verify', ['customer_name' => $order_details->customer->name,'content' => $sms_body,'agent_name' => $order_details->agent->name,'agent_profile' =>$order_details->agent->profile_picture,'number_plate' =>$order_details->agent->plate_number,'client_logo'=>$client_details->logo,'link'=>'https://www.google.com'], function ($message) use($sendto,$client_details) {
 
