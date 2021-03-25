@@ -39,7 +39,7 @@ class TaskController extends BaseController
     {
         
         $header = $request->header();
-        $client_code = Client::where('database_name',$header['client'][0])->first('code');
+        $client_details = Client::where('database_name',$header['client'][0])->first(['code']);
         $proof_image = '';
         $proof_signature = '';
         $note = '';
@@ -54,7 +54,7 @@ class TaskController extends BaseController
         if(isset($request->image)){
 
             if ($request->hasFile('image')) {
-                $folder = str_pad($client_code->code, 8, '0', STR_PAD_LEFT);
+                $folder = str_pad($client_details->code, 8, '0', STR_PAD_LEFT);
                 $folder = 'client_'.$folder;
                 $file = $request->file('image');
                 $file_name = uniqid() .'.'.  $file->getClientOriginalExtension();
@@ -70,7 +70,7 @@ class TaskController extends BaseController
         if(isset($request->signature)){
 
             if ($request->hasFile('signature')) {
-                $folder = str_pad($client_code->code, 8, '0', STR_PAD_LEFT);
+                $folder = str_pad($client_details->code, 8, '0', STR_PAD_LEFT);
                 $folder = 'client_'.$folder;
                 $file = $request->file('signature');
                 $file_name = uniqid() .'.'.  $file->getClientOriginalExtension();
@@ -120,17 +120,17 @@ class TaskController extends BaseController
             case 2:
                  $task_type        = 'assigned';
                  $sms_final_status =  $sms_settings['notification_events'][0];
-                 $sms_body         = 'Driver '.$order_details->agent->name.' in our '.$order_details->agent->make_model.' with license plate '.$order_details->agent->plate_number.' is heading to your location. ';
+                 $sms_body         = 'Driver '.$order_details->agent->name.' in our '.$order_details->agent->make_model.' with license plate '.$order_details->agent->plate_number.' is heading to your location. You can track them here .';
                 break;
             case 3:
                  $task_type        = 'assigned';
                  $sms_final_status =   $sms_settings['notification_events'][1];
-                 $sms_body         = 'Driver '.$order_details->agent->name.' in our '.$order_details->agent->make_model.' with license plate '.$order_details->agent->plate_number.' has arrived at your location ';
+                 $sms_body         = 'Driver '.$order_details->agent->name.' in our '.$order_details->agent->make_model.' with license plate '.$order_details->agent->plate_number.' has arrived at your location. ';
                 break;
             case 4:
                 $task_type        = 'completed';
                 $sms_final_status =   $sms_settings['notification_events'][2];
-                $sms_body         = 'Thank you, your order has been delivered successfully by driver'.$order_details->agent->name.'';
+                $sms_body         = 'Thank you, your order has been delivered successfully by driver '.$order_details->agent->name.'. You can rate them here .';
                 break;
             case 5:
                 $task_type        = 'failed';
@@ -189,6 +189,18 @@ class TaskController extends BaseController
     
                    Log::info($e->getMessage());
             }
+            $sendto = $order_details->customer->email;
+            try {
+                \Mail::send('email.varify', ['customer_name' => $order_details->customer->name,'content' => $sms_body,'agent_name' => $order_details->agent->name,'agent_profile' =>$order_details->agent->profile_picture,'number_plate' =>$order_details->agent->plate_number,'client_logo'=>$client_details->logo,'link'=>'https://www.google.com'], function ($message) use($sendto,$client_details) {
+
+                    $message->to($sendto)->subject('Order Update (g78ff) |'.$client_details->company_name);
+                });
+            } catch (\Exception $e) {
+    
+                Log::info($e->getMessage());
+            }
+
+            
 
         }
 
