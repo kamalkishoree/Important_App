@@ -189,10 +189,12 @@ class TaskController extends BaseController
     
                    Log::info($e->getMessage());
             }
-            $sendto = 'anil.choudhary@codebrewinnovations.com';
+            $sendto        = 'anil.choudhary@codebrewinnovations.com';
+            $client_logo  = 'https://imgproxy.royodispatch.com/insecure/fit/300/100/sm/0/plain/'.Storage::disk('s3')->url($client_details->logo);
+            $agent_profile = 'https://imgproxy.royodispatch.com/insecure/fit/300/100/sm/0/plain/'.Storage::disk('s3')->url($order_details->agent->profile_picture ?? 'assets/client_00000051/agents605b6deb82d1b.png/XY5GF0B3rXvZlucZMiRQjGBQaWSFhcaIpIM5Jzlv.jpg');
             try {
 
-                \Mail::send('email.verify', ['customer_name' => $order_details->customer->name,'content' => $sms_body,'agent_name' => $order_details->agent->name,'agent_profile' =>$order_details->agent->profile_picture,'number_plate' =>$order_details->agent->plate_number,'client_logo'=>$client_details->logo,'link'=>'https://www.google.com'], function ($message) use($sendto,$client_details) {
+                \Mail::send('email.verify', ['customer_name' => $order_details->customer->name,'content' => $sms_body,'agent_name' => $order_details->agent->name,'agent_profile' =>$agent_profile,'number_plate' =>$order_details->agent->plate_number,'client_logo'=>$client_logo,'link'=>'https://www.google.com'], function ($message) use($sendto,$client_details) {
                     $message->from('anilchoudharydev11@gmail.com','Anil');
                     $message->to($sendto)->subject('Order Update (g78ff) |'.$client_details->company_name);
                 });
