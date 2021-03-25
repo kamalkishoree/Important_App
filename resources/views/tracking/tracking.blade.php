@@ -18,7 +18,7 @@
    <title>Royo Order Tracking</title>
 </head>
 @php
-    $task_type_array = ['pickup','Drop-Off','Appointment']
+    $task_type_array = ['Pickup','Drop-Off','Appointment']
 @endphp
 <body >
 
