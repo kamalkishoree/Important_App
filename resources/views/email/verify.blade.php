@@ -46,7 +46,7 @@
                 <tbody>
                     <tr>
                         <td style="text-align: left;padding: 0 30px;">
-                            <p style="font-size: 14px; margin-bottom: 15px;"><b> {{'Hi' $customer_name.','}} </b></p>
+                            <p style="font-size: 14px; margin-bottom: 15px;"><b> {{'Hi '.$customer_name.','}} </b></p>
                             <p style="width: 85%;max-width: 100%; font-size: 14px;line-height: 30px; margin-bottom: 15px;">{{$content}}</p>
                         </td>
                     </tr>
