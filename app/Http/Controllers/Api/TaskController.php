@@ -29,6 +29,7 @@ use App\Model\NotificationEvent;
 use App\Model\NotificationType;
 use App\Model\PricingRule;
 use Illuminate\Support\Arr;
+use Log;
 use Twilio\Rest\Client as TwilioClient;
 
 class TaskController extends BaseController
@@ -186,7 +187,7 @@ class TaskController extends BaseController
                        );
             } catch (\Exception $e) {
     
-                   
+                   Log::info($e->getMessage());
             }
 
         }
