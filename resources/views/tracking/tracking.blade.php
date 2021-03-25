@@ -44,7 +44,7 @@
                   <div class="row no-gutters align-items-center" >
                      <div class="col-lg-4 padd-left mb-3" >
                         <div class="left-icon">
-                           <img src="{{ 'https://imgproxy.royodispatch.com/insecure/fit/300/100/sm/0/plain/'.Storage::disk('s3')->url($order->profile_picture)}}" alt="" />
+                           <img src="{{ 'https://imgproxy.royodispatch.com/insecure/fit/300/100/sm/0/plain/'.Storage::disk('s3')->url($order->profile_picture ?? 'assets/client_00000051/agents605b6deb82d1b.png/XY5GF0B3rXvZlucZMiRQjGBQaWSFhcaIpIM5Jzlv.jpg')}}" alt="" />
                         </div>
                         <h4>{{$order->name}}</h4>
                         <p>{{$order->phone_number}}</p>
