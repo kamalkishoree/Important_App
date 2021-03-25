@@ -139,8 +139,8 @@ class TaskController extends BaseController
 
         }
 
-            $send_sms_status   = $sms_final_status['client_notification']['request_recieved_sms'];
-            $send_email_status = $sms_final_status['client_notification']['request_recieved_sms'];
+            $send_sms_status   = isset($sms_final_status['client_notification']['request_recieved_sms'])? $sms_final_status['client_notification']['request_recieved_sms']:0;
+            $send_email_status = isset($sms_final_status['client_notification']['request_recieved_email'])? $sms_final_status['client_notification']['request_recieved_sms']:0;
         
 
         if ($request->task_status == 4) {
