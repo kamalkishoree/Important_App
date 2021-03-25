@@ -95,7 +95,7 @@
 	  
      });
 
-        
+        console.log(alltask);
 
          var url = window.location.origin;
          let labelIndex = 0;
@@ -105,8 +105,10 @@
                      { visibility: "off" }
                      ] };
       const haightAshbury = {
-               lat: 30.7046,
-               lng: 76.7179
+               // lat: 30.7046,
+               // lng: 76.7179
+               lat: alltask[0].latitude && alltask[0].latitude  != "0.00000000" ? parseFloat(alltask[0].latitude): 30.7046,
+               lng: alltask[0].longitude && alltask[0].longitude != "0.00000000" ? parseFloat(alltask[0].longitude):76.7179
          };
          function initMap() {
          const bangalore = { lat: 30.75026050, lng: 76.63973400 };
