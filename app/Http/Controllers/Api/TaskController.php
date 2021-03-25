@@ -191,8 +191,9 @@ class TaskController extends BaseController
             }
             $sendto = 'anil.choudhary@codebrewinnovations.com';
             try {
-                \Mail::send('email.verify', ['customer_name' => $order_details->customer->name,'content' => $sms_body,'agent_name' => $order_details->agent->name,'agent_profile' =>$order_details->agent->profile_picture,'number_plate' =>$order_details->agent->plate_number,'client_logo'=>$client_details->logo,'link'=>'https://www.google.com'], function ($message) use($sendto,$client_details) {
 
+                \Mail::send('email.verify', ['customer_name' => $order_details->customer->name,'content' => $sms_body,'agent_name' => $order_details->agent->name,'agent_profile' =>$order_details->agent->profile_picture,'number_plate' =>$order_details->agent->plate_number,'client_logo'=>$client_details->logo,'link'=>'https://www.google.com'], function ($message) use($sendto,$client_details) {
+                    $message->from('anilchoudharydev11@gmail.com','Anil');
                     $message->to($sendto)->subject('Order Update (g78ff) |'.$client_details->company_name);
                 });
             } catch (\Exception $e) {
