@@ -62,18 +62,21 @@ use Carbon\Carbon;
                                 </form>
                             </div>
                             <div class="col-sm-2"></div>
-                            {{-- <div class="col-sm-4 text-right">
-                            <!--<button type="button" class="btn btn-blue waves-effect waves-light showTaskPop" data-toggle="modal" data-target="" data-backdrop="static" data-keyboard="false"><i class="mdi mdi-plus-circle mr-1"></i> Add Task</button> -->
-                         <a href="{{ route('tasks.create') }}" class="btn btn-blue waves-effect waves-light"><i class="mdi mdi-plus-circle mr-1"></i> Add Task</a>
-                        </div> --}}
-
+                            @if (!isset($status) || $status == 'unassigned')
+                                <div class="col-sm-4 text-right">
+                                <!--<button type="button" class="btn btn-blue waves-effect waves-light showTaskPop" data-toggle="modal" data-target="" data-backdrop="static" data-keyboard="false"><i class="mdi mdi-plus-circle mr-1"></i> Add Task</button> -->
+                                <a href="#" class="btn btn-info">Assign</a>
+                                </div>
+                            @endif
                         </div>
 
                         <div class="table-responsive">
                             <table class="table table-striped dt-responsive nowrap w-100" id="agents-datatable">
                                 <thead>
                                     <tr>
-                                        {{-- <th>Id</th> --}}
+                                        @if (!isset($status) || $status == 'unassigned')
+                                        <th><input type="checkbox" class="all-driver_check" name="all_driver_id" id="all-driver_check"></th>
+                                        @endif
                                         <th>Customer</th>
                                         <th>Phone.No</th>
                                         <th>Driver</th>
@@ -89,10 +92,10 @@ use Carbon\Carbon;
                                 <tbody>
                                     @foreach ($tasks as $task)
                                         <tr>
-
-                                            {{-- <td>
-                                        {{$task->id}}
-                                    </td> --}}
+                                            @if (isset($status) && $status == 'unassigned'))
+                                            <td><input type="checkbox" class="single_driver_check" name="driver_id[]" id="single_driver"></td>
+                                            @endif
+                                            
                                             <td>
                                                 {{ $task->customer->name }}
                                             </td>

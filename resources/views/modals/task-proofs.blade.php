@@ -13,7 +13,7 @@
                         <div class="col-md-12">
                             <div class="">
                                 
-                                <div class="row new-proofs">
+                                <div id="new-all-class" class="row new-proofs">
 
                                             
                                             

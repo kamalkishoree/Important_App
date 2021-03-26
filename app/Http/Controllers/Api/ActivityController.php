@@ -45,10 +45,10 @@ class ActivityController extends BaseController
         $tasks   = [];
         
         if($all == 1){
-            $orders = Order::where('driver_id',$id)->where('status','assigned')->pluck('id')->toArray();
+            $orders = Order::where('driver_id',$id)->where('status','assigned')->orderBy('order_time')->pluck('id')->toArray();
             
         }else{
-            $orders = Order::where('driver_id',$id)->whereDate('order_time','>=',Carbon::today())->where('status','assigned')->pluck('id')->toArray();
+            $orders = Order::where('driver_id',$id)->whereDate('order_time','>=',Carbon::today())->where('status','assigned')->orderBy('order_time')->pluck('id')->toArray();
         }
        
 
@@ -56,6 +56,9 @@ class ActivityController extends BaseController
             $tasks = Task::whereIn('order_id',$orders)->where('task_status','!=',4)->Where('task_status','!=',5)->with(['location','tasktype','order.customer'])->orderBy('order_id', 'DESC')
             ->get(['id','order_id','dependent_task_id','task_type_id','location_id','appointment_duration','task_status','allocation_type','barcode','created_at']);
         }
+
+
+        
        
 
             
@@ -156,10 +159,10 @@ class ActivityController extends BaseController
         $all   = $request->all; 
 
         if($all == 1){
-            $orders = Order::where('driver_id',$id)->where('status','assigned')->pluck('id')->toArray();
+            $orders = Order::where('driver_id',$id)->where('status','assigned')->orderBy('order_time')->pluck('id')->toArray();
             
         }else{
-            $orders = Order::where('driver_id',$id)->whereDate('order_time','>=',Carbon::today())->where('status','assigned')->pluck('id')->toArray();
+            $orders = Order::where('driver_id',$id)->whereDate('order_time','>=',Carbon::today())->where('status','assigned')->orderBy('order_time')->pluck('id')->toArray();
         }
         
        
@@ -170,8 +173,10 @@ class ActivityController extends BaseController
         
         $agents     = Agent::where('id',$id)->with('team')->first();
         $taskProof = TaskProof::all();
+
         $prefer    = ClientPreference::select('theme', 'distance_unit', 'currency_id', 'language_id', 'agent_name', 'date_format', 'time_format', 'map_type','map_key_1')->first();
         $allcation = AllocationRule::first('request_expiry');
+
         $prefer['alert_dismiss_time'] = (int)$allcation->request_expiry;
         $agents['client_preference']  = $prefer;
         $agents['task_proof']         = $taskProof;

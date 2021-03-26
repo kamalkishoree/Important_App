@@ -104,8 +104,7 @@
                 $("#driver_type").text(data.driver_type);
 
                 $("#order_cost").text(data.order_cost);
-                $("#driver_cost").text(data.driver_cost != 0.00 ? data.driver_cost :
-                    'Not assigned yet');
+                $("#driver_cost").text(data.driver_cost ? data.driver_cost : 0.00 );
 
                 $("#base_waiting").val(data.base_waiting);
                 $("#distance_fee").val(data.distance_fee);
@@ -134,7 +133,7 @@
         var CSRF_TOKEN = $("input[name=_token]").val();
         var tour_id = $(this).val();
         var basic = window.location.origin;
-
+        $("#new-all-class").empty();
         var url = basic + "/tasks/list/" + tour_id;
         $.ajax({
             url: url,
@@ -165,7 +164,7 @@
                     };
                     var note  = (elem.note != null) ? elem.note : '';
                     // $('.all-remove').remove();
-                    $(document).find('.new-proofs').before(
+                    $(document).find('.new-proofs').append(
                         '<div class="col-md-12 all-remove">'+
                                                 '<div class="task-card">'+
                                                     '<div class="p-2 assigned-block bg-transparent""><h5>'+ taskname +'</h5>'+
@@ -234,6 +233,15 @@
         value = value.toString().split('e');
         return +(value[0] + 'e' + (value[1] ? (+value[1] - exp) : -exp));
     }
+
+
+    $(".all-driver_check").click(function() {
+            if ($(this).is(':checked')) {
+                $('.single_driver_check').prop('checked', true);
+            } else {
+                $('.single_driver_check').prop('checked', false);
+            }
+        });
 
 </script>
 

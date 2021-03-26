@@ -120,25 +120,30 @@ class TaskController extends BaseController
             case 2:
                  $task_type        = 'assigned';
                  $sms_final_status =  $sms_settings['notification_events'][0];
-                 $sms_body         = 'Driver '.$order_details->agent->name.' in our '.$order_details->agent->make_model.' with license plate '.$order_details->agent->plate_number.' is heading to your location. You can track them here .';
+                 $sms_body         = 'Driver '.$order_details->agent->name.' in our '.$order_details->agent->make_model.' with license plate '.$order_details->agent->plate_number.' is heading to your location. You can track them here .'.url('/order/tracking/'.$client_details->code.'/'.$order_details->unique_id.'');
+                 $link             =  "url('/order/tracking/'.$client_details->code.'/'.$order_details->unique_id.'')";
                 break;
             case 3:
                  $task_type        = 'assigned';
                  $sms_final_status =   $sms_settings['notification_events'][1];
                  $sms_body         = 'Driver '.$order_details->agent->name.' in our '.$order_details->agent->make_model.' with license plate '.$order_details->agent->plate_number.' has arrived at your location. ';
+                 $link             =  '';
                 break;
             case 4:
-                $task_type        = 'completed';
-                $sms_final_status =   $sms_settings['notification_events'][2];
-                $sms_body         = 'Thank you, your order has been delivered successfully by driver '.$order_details->agent->name.'. You can rate them here .';
+                $task_type         = 'completed';
+                $sms_final_status  =   $sms_settings['notification_events'][2];
+                $sms_body          = 'Thank you, your order has been delivered successfully by driver '.$order_details->agent->name.'. You can rate them here .'.url('/order/feedback/'.$client_details->code.'/'.$order_details->unique_id.'');
+                $link              =  "url('/order/feedback/'.$client_details->code.'/'.$order_details->unique_id.'')";
                 break;
             case 5:
-                $task_type        = 'failed';
-                $sms_final_status =   $sms_settings['notification_events'][3];
-                $sms_body         = 'Sorry, our driver '.$order_details->agent->name.' is not able to complete your order delivery';
+                $task_type         = 'failed';
+                $sms_final_status  =   $sms_settings['notification_events'][3];
+                $sms_body          = 'Sorry, our driver '.$order_details->agent->name.' is not able to complete your order delivery';
+                $link              =  '';
             break;
 
         }
+
 
             $send_sms_status   = isset($sms_final_status['client_notification']['request_recieved_sms'])? $sms_final_status['client_notification']['request_recieved_sms']:0;
             $send_email_status = isset($sms_final_status['client_notification']['request_recieved_email'])? $sms_final_status['client_notification']['request_recieved_sms']:0;
@@ -191,11 +196,14 @@ class TaskController extends BaseController
             }
             
             $sendto        = $order_details->customer->email;
-            $client_logo  = 'https://imgproxy.royodispatch.com/insecure/fit/300/100/sm/0/plain/'.Storage::disk('s3')->url($client_details->logo);
+            $client_logo   = 'https://imgproxy.royodispatch.com/insecure/fit/300/100/sm/0/plain/'.Storage::disk('s3')->url($client_details->logo);
             $agent_profile = 'https://imgproxy.royodispatch.com/insecure/fit/300/100/sm/0/plain/'.Storage::disk('s3')->url($order_details->agent->profile_picture ?? 'assets/client_00000051/agents605b6deb82d1b.png/XY5GF0B3rXvZlucZMiRQjGBQaWSFhcaIpIM5Jzlv.jpg');
+
+          
+
             try {
 
-                \Mail::send('email.verify', ['customer_name' => $order_details->customer->name,'content' => $sms_body,'agent_name' => $order_details->agent->name,'agent_profile' =>$agent_profile,'number_plate' =>$order_details->agent->plate_number,'client_logo'=>$client_logo,'link'=>'https://www.google.com'], function ($message) use($sendto,$client_details) {
+                \Mail::send('email.verify', ['customer_name' => $order_details->customer->name,'content' => $sms_body,'agent_name' => $order_details->agent->name,'agent_profile' =>$agent_profile,'number_plate' =>$order_details->agent->plate_number,'client_logo'=>$client_logo,'link'=>$link], function ($message) use($sendto,$client_details) {
                     $message->from('anilchoudharydev11@gmail.com','Anil');
                     $message->to($sendto)->subject('Order Update (g78ff) |'.$client_details->company_name);
                 });
