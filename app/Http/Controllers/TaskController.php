@@ -58,8 +58,14 @@ class TaskController extends Controller
         $teamTag    = TagsForTeam::all();
         $agentTag   = TagsForAgent::all();
         $preference  = ClientPreference::where('id',1)->first(['theme','date_format','time_format']);
+        $agents      = Agent::all();
 
-        return view('tasks/task')->with(['tasks' => $tasks, 'status' => $request->status, 'active_count' => $active, 'panding_count' => $pending, 'history_count' => $history, 'status' => $check,'preference' => $preference]);
+        return view('tasks/task')->with(['tasks' => $tasks, 'status' => $request->status, 'active_count' => $active, 'panding_count' => $pending, 'history_count' => $history, 'status' => $check,'preference' => $preference,'agents'=>$agents]);
+    }
+
+    public function assignAgent(Request $request)
+    {
+        dd($request->all());
     }
 
     /**

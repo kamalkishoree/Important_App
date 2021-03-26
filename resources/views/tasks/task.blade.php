@@ -62,12 +62,11 @@ use Carbon\Carbon;
                                 </form>
                             </div>
                             <div class="col-sm-2"></div>
-                            @if (!isset($status) || $status == 'unassigned')
+                            {{-- @if (!isset($status) || $status == 'unassigned')
                                 <div class="col-sm-4 text-right">
-                                <!--<button type="button" class="btn btn-blue waves-effect waves-light showTaskPop" data-toggle="modal" data-target="" data-backdrop="static" data-keyboard="false"><i class="mdi mdi-plus-circle mr-1"></i> Add Task</button> -->
-                                <a href="#" class="btn btn-info">Assign</a>
+                                <button type="button" class="btn btn-info assign_agent" data-toggle="modal" data-target="#add-assgin-agent-model" data-backdrop="static" data-keyboard="false">Assign</button> 
                                 </div>
-                            @endif
+                            @endif --}}
                         </div>
 
                         <div class="table-responsive">
@@ -92,8 +91,8 @@ use Carbon\Carbon;
                                 <tbody>
                                     @foreach ($tasks as $task)
                                         <tr>
-                                            @if (isset($status) && $status == 'unassigned'))
-                                            <td><input type="checkbox" class="single_driver_check" name="driver_id[]" id="single_driver"></td>
+                                            @if (isset($status) && $status == 'unassigned')
+                                            <td><input type="checkbox" class="single_driver_check" name="driver_id" id="single_driver" value="{{$task->id}}"></td>
                                             @endif
                                             
                                             <td>
@@ -181,6 +180,7 @@ use Carbon\Carbon;
     @include('modals.task-list')
     @include('modals.task-accounting')
     @include('modals.task-proofs')
+    @include('modals.assgin_task_agent')
 @endsection
 
 @section('script')

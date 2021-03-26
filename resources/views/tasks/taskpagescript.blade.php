@@ -215,6 +215,10 @@
         });
     });
 
+
+    $(document).on('click', '.showaccounting', function() {
+        $('#assign_agent').modal('show');
+    });
     function round(value, exp) {
         if (typeof exp === 'undefined' || +exp === 0)
             return Math.round(value);
@@ -243,5 +247,23 @@
             }
         });
 
+
+        // $('#submit_assign_agent').on('submit', function(e) {
+        //     e.preventDefault(); 
+        //     var name = $('#name').val();
+        //     var agent_id = $('#agent_id').val();
+        //     var order_id = [];
+        //     $.each($("input[name='driver_id']:checked"), function(){
+        //         order_id.push($(this).val());
+        //    });
+        //     $.ajax({
+        //         type: "POST",
+        //         url: '{{route("assign.agent")}}',
+        //         data: {_token: CSRF_TOKEN, orders_id: order_id, agent_id: agent_id},
+        //         success: function( msg ) {
+                    
+        //         }
+        //     });
+        // });
 </script>
 

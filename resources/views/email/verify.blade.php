@@ -64,16 +64,11 @@
                             </div>
                         </td>
                     </tr>
-                    <tr>
-                        <td style="padding: 30px 0 60px;font-size: 14px;color: #000;">
-                            You can take your order from <a href="{{$link}}" style="text-decoration: none;"><b>here</b>.</a>
-                        </td>
-                    </tr>
                 </tbody>
                 <tfoot style="background:#fafafa">
                     <tr>
                         <td style="padding: 20px 30px;font-size: 14px;">
-                            ©Copyright 2021. All Rights Reserved.
+                            © Copyright 2021. All Rights Reserved.
                         </td>
                     </tr>
                 </tfoot>

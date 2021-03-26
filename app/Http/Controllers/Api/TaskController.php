@@ -120,7 +120,7 @@ class TaskController extends BaseController
             case 2:
                  $task_type        = 'assigned';
                  $sms_final_status =  $sms_settings['notification_events'][0];
-                 $sms_body         = 'Driver '.$order_details->agent->name.' in our '.$order_details->agent->make_model.' with license plate '.$order_details->agent->plate_number.' is heading to your location. You can track them here .'.url('/order/tracking/'.$client_details->code.'/'.$order_details->unique_id.'');
+                 $sms_body         = 'Driver '.$order_details->agent->name.' in our '.$order_details->agent->make_model.' with license plate '.$order_details->agent->plate_number.' is heading to your location. You can track them here.'.url('/order/tracking/'.$client_details->code.'/'.$order_details->unique_id.'');
                  $link             =  "url('/order/tracking/'.$client_details->code.'/'.$order_details->unique_id.'')";
                 break;
             case 3:
@@ -204,7 +204,7 @@ class TaskController extends BaseController
             try {
 
                 \Mail::send('email.verify', ['customer_name' => $order_details->customer->name,'content' => $sms_body,'agent_name' => $order_details->agent->name,'agent_profile' =>$agent_profile,'number_plate' =>$order_details->agent->plate_number,'client_logo'=>$client_logo,'link'=>$link], function ($message) use($sendto,$client_details) {
-                    $message->from('anilchoudharydev11@gmail.com','Anil');
+                    $message->from('anilchoudharydev11@gmail.com','Royo Dispatch');
                     $message->to($sendto)->subject('Order Update (g78ff) |'.$client_details->company_name);
                 });
             } catch (\Exception $e) {
@@ -238,9 +238,9 @@ class TaskController extends BaseController
         
         if (isset($check) && $check->driver_id != null) {
             return response()->json([
-                'message' => 'Order Already Assigned',
-            ], 404);
-        }
+                'message' => 'Task Accecpted Successfully',
+            ], 200); 
+        }  // need to we change
 
         
         
