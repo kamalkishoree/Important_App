@@ -442,10 +442,12 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
 <script src="{{asset('assets/js/pages/form-pickers.init.js')}}"></script> --}}
 {{-- <script src="{{ asset('demo/js/propeller.min.js') }}"></script>
 --}}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-timeago/1.6.3/jquery.timeago.js"></script>
 <script>
 $(document).ready(function() {
 initMap();
 $('#shortclick').trigger('click');
+$(".timeago").timeago();
 });
 
 
@@ -737,7 +739,9 @@ function addMarker(location, lables, images,data,type) {
         '<div style="float:left">'+
         '<img src="https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain/'+data['image_url']+'">'+
         "</div>"+
-        '<div style="float:right; padding: 10px;"><b>'+data['name']+'</b><br/><br/>'+data['phone_number']+'</div>';
+        '<div style="float:right; "><b>'+data['name']+'</b><br/><br/>'+data['phone_number']+'</div>'+
+        '<div style="float:right; padding: 10px;"><b>Last Updated : '+jQuery.timeago(new Date(data['agentlog']['created_at']))+'</b><br/><br/>OS : '+data['agentlog']['os_version']+'</div>'+
+        '<div style="float:left; margin-left:35px;"><b>Battery Level : '+data['agentlog']['battery_level']+'%</b><br/>      <br/></div>';
     }
 
 

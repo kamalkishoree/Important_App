@@ -24,6 +24,7 @@ use Illuminate\Support\Facades\Redis;
 use Session;
 use Illuminate\Support\Facades\Storage;
 use Crypt;
+use Carbon\Carbon;
 
 class ClientController extends Controller
 {

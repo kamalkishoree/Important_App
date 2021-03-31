@@ -154,6 +154,8 @@
                             <div class="form-group mb-3">
                                 <label for="date_format">DATE FORMAT</label>
                                 <select class="form-control" id="date_format" name="date_format">
+                                    <option value="m/d/Y" {{ ($preference && $preference->date_format =="m/d/Y")? "selected" : "" }}>
+                                        MM/DD/YYYY</option>
                                     <option value="d-m-Y" {{ ($preference && $preference->date_format =="d-m-Y")? "selected" : "" }}>
                                         DD-MM-YYYY</option>
                                     <option value="d/m/Y" {{ ($preference && $preference->date_format =="d/m/Y")? "selected" : "" }}>

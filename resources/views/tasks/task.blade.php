@@ -40,7 +40,7 @@ use Carbon\Carbon;
                                             <li class="d-inline-block mr-2">
                                                 <input type="radio" id="teacher" name="status" onclick="handleClick(this);"
                                                     value="unassigned" {{ $status == 'unassigned' ? 'checked' : '' }}>
-                                                <label for="teacher">Pending<span
+                                                <label for="teacher">Pending Allocation<span
                                                         class="showspan">{{ ' (' . $panding_count . ')' }}</span></label>
                                             </li>
                                             <li class="d-inline-block mr-2">
@@ -57,6 +57,14 @@ use Carbon\Carbon;
                                                 <label for="parent">History<span
                                                         class="showspan">{{ ' (' . $history_count . ')' }}</span></label>
                                             </li>
+
+                                            <li class="d-inline-block mr-2">
+                                                <input type="radio" id="failed" name="status" onclick="handleClick(this);"
+                                                    value="failed" {{ $status == 'completed' ? 'checked' : '' }}>
+                                                <label for="failed">Failed<span
+                                                        class="showspan">{{ ' (' . $failed_count . ')' }}</span></label>
+                                            </li>
+
                                         </ul>
                                     </div>
                                 </form>

@@ -39,6 +39,14 @@ class ActivityController extends BaseController
      */
     public function tasks(Request $request)
     {
+        $header = $request->header();
+        $client_code = Client::where('database_name',$header['client'][0])->first();
+       
+        $start     = Carbon::now($client_code->timezone ?? 'UTC')->startOfDay();
+        $end       = Carbon::now($client_code->timezone ?? 'UTC')->endOfDay();
+        $utc_start = Carbon::parse($start . $client_code->timezone ?? 'UTC')->tz('UTC');
+        $utc_end   = Carbon::parse($end . $client_code->timezone ?? 'UTC')->tz('UTC');
+        
         $id     = Auth::user()->id;
 
         $all    = $request->all; 
@@ -48,20 +56,16 @@ class ActivityController extends BaseController
             $orders = Order::where('driver_id',$id)->where('status','assigned')->orderBy('order_time')->pluck('id')->toArray();
             
         }else{
-            $orders = Order::where('driver_id',$id)->whereDate('order_time','>=',Carbon::today())->where('status','assigned')->orderBy('order_time')->pluck('id')->toArray();
+            $orders = Order::where('driver_id',$id)->where('order_time','>=',$utc_start)->where('order_time','<=',$utc_end)->where('status','assigned')->orderBy('order_time')->pluck('id')->toArray();
         }
        
 
         if (count($orders) > 0) {
             $tasks = Task::whereIn('order_id',$orders)->where('task_status','!=',4)->Where('task_status','!=',5)->with(['location','tasktype','order.customer'])->orderBy('order_id', 'DESC')
-            ->get(['id','order_id','dependent_task_id','task_type_id','location_id','appointment_duration','task_status','allocation_type','barcode','created_at']);
+            ->get();
         }
 
-
-        
-       
-
-            
+   
         return response()->json([
             'data' => $tasks,
         ],200);
@@ -136,6 +140,14 @@ class ActivityController extends BaseController
 
     public function agentLog(Request $request)
     {
+
+        $header = $request->header();
+        $client_code = Client::where('database_name',$header['client'][0])->first();
+       
+        $start     = Carbon::now($client_code->timezone ?? 'UTC')->startOfDay();
+        $end       = Carbon::now($client_code->timezone ?? 'UTC')->endOfDay();
+        $utc_start = Carbon::parse($start . $client_code->timezone ?? 'UTC')->tz('UTC');
+        $utc_end   = Carbon::parse($end . $client_code->timezone ?? 'UTC')->tz('UTC');
         
         $tasks   = [];
         $agent = AgentLog::where('agent_id',Auth::user()->id)->first();
@@ -162,13 +174,13 @@ class ActivityController extends BaseController
             $orders = Order::where('driver_id',$id)->where('status','assigned')->orderBy('order_time')->pluck('id')->toArray();
             
         }else{
-            $orders = Order::where('driver_id',$id)->whereDate('order_time','>=',Carbon::today())->where('status','assigned')->orderBy('order_time')->pluck('id')->toArray();
+            $orders = Order::where('driver_id',$id)->where('order_time','>=',$utc_start)->where('order_time','<=',$utc_end)->where('status','assigned')->orderBy('order_time')->pluck('id')->toArray();
         }
         
        
         if (count($orders) > 0) {
             $tasks = Task::whereIn('order_id',$orders)->where('task_status','!=',4)->Where('task_status','!=',5)->with(['location','tasktype','order.customer'])->orderBy('order_id', 'DESC')
-            ->get(['id','order_id','dependent_task_id','task_type_id','location_id','appointment_duration','task_status','allocation_type','barcode','created_at']);
+            ->get();
         }
         
         $agents     = Agent::where('id',$id)->with('team')->first();

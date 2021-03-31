@@ -557,8 +557,8 @@ class TaskController extends BaseController
                      
                      
                     
-                     Order::where('id',$orders->id)->update(['order_time'=>$time]);
-                     Task::where('order_id',$orders->id)->update(['assigned_time'=>$time,'created_at' =>$time]);
+                     //Order::where('id',$orders->id)->update(['order_time'=>$time]);
+                     //Task::where('order_id',$orders->id)->update(['assigned_time'=>$time,'created_at' =>$time]);
                      
                      scheduleNotification::dispatch($schduledata)->delay(now()->addMinutes($finaldelay));
  
@@ -701,7 +701,11 @@ class TaskController extends BaseController
         $time       = $this->checkTimeDiffrence($notification_time, $beforetime); //this function is check the time diffrence and give the notification time
         $randem     = rand(11111111, 99999999);
 
-        if ($type !== 'acceptreject') {
+        if ($type == 'acceptreject') {
+            $allcation_type = 'AR';
+        }elseif ($type == 'acknowledge') {
+            $allcation_type = 'ACK';
+        }else {
             $allcation_type = 'N';
         }
 
@@ -813,7 +817,7 @@ class TaskController extends BaseController
                         $counter++;
                     }
 
-                    if ($allcation_type == 'N' && count($all) > 0) {
+                    if ($allcation_type == 'N' && 'ACK' && count($all) > 0) {
                         Order::where('id',$orders_id)->update(['driver_id'=>$geoitem->driver_id]);
 
                         break;
@@ -842,14 +846,14 @@ class TaskController extends BaseController
                             array_push($dummyentry, $data);
                         }
                         array_push($all, $data);
-                        if ($allcation_type == 'N' && count($all) > 0) {
+                        if ($allcation_type == 'N' && 'ACK'  && count($all) > 0) {
                             Order::where('id',$orders_id)->update(['driver_id'=>$remening[$i]['id']]);
     
                             break;
                         }
                 }
                 $remening = [];
-                if ($allcation_type == 'N' && count($all) > 0) {
+                if ($allcation_type == 'N'  && 'ACK' && count($all) > 0) {
 
                     break;
                 }
@@ -900,7 +904,12 @@ class TaskController extends BaseController
         $time              = $this->checkTimeDiffrence($notification_time, $beforetime);
         $randem            = rand(11111111, 99999999);
         $data = [];
-        if ($type != 'acceptreject') {
+
+        if ($type == 'acceptreject') {
+            $allcation_type = 'AR';
+        }elseif ($type == 'acknowledge') {
+            $allcation_type = 'ACK';
+        }else {
             $allcation_type = 'N';
         }
 
@@ -960,7 +969,7 @@ class TaskController extends BaseController
 
                      ];
                     array_push($data, $datas);
-                    if ($allcation_type == 'N') {
+                    if ($allcation_type == 'N' && 'ACK') {
                         Order::where('id',$orders_id)->update(['driver_id'=>$geoitem->driver_id]);
                         break;
                     }
@@ -968,7 +977,7 @@ class TaskController extends BaseController
                 $time = Carbon::parse($time)
                         ->addSeconds($expriedate + 10)
                         ->format('Y-m-d H:i:s');
-                if ($allcation_type == 'N') {
+                if ($allcation_type == 'N' && 'ACK') {
 
                     break;
                 }
@@ -1002,7 +1011,11 @@ class TaskController extends BaseController
         $data = [];
 
 
-        if ($type != 'acceptreject') {
+        if ($type == 'acceptreject') {
+            $allcation_type = 'AR';
+        }elseif ($type == 'acknowledge') {
+            $allcation_type = 'ACK';
+        }else {
             $allcation_type = 'N';
         }
 
@@ -1078,7 +1091,7 @@ class TaskController extends BaseController
                         $counter = 0;
                     }
                     array_push($data, $datas);
-                    if ($allcation_type == 'N') {
+                    if ($allcation_type == 'N' && 'ACK') {
 
                         break;
                     }
@@ -1087,7 +1100,7 @@ class TaskController extends BaseController
                 ->addSeconds($expriedate + 10)
                 ->format('Y-m-d H:i:s');
 
-                if ($allcation_type == 'N') {
+                if ($allcation_type == 'N' && 'ACK') {
 
                     break;
                 }
@@ -1124,7 +1137,11 @@ class TaskController extends BaseController
         $randem            = rand(11111111, 99999999);
         $data = [];
 
-        if ($type != 'acceptreject') {
+        if ($type == 'acceptreject') {
+            $allcation_type = 'AR';
+        }elseif ($type == 'acknowledge') {
+            $allcation_type = 'ACK';
+        }else {
             $allcation_type = 'N';
         }
 
@@ -1193,7 +1210,7 @@ class TaskController extends BaseController
                     ->format('Y-m-d H:i:s');
 
                     array_push($data, $datas);
-                    if ($allcation_type == 'N') {
+                    if ($allcation_type == 'N' && 'ACK') {
 
                         break;
                     }
@@ -1204,7 +1221,7 @@ class TaskController extends BaseController
                     ->format('Y-m-d H:i:s');
 
 
-                if ($allcation_type == 'N') {
+                if ($allcation_type == 'N' && 'ACK') {
 
                     break;
                 }

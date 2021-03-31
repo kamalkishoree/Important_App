@@ -140,7 +140,11 @@ class scheduleNotification implements ShouldQueue
         $time       = $dataget['notification_time'];
         $randem     = rand(11111111, 99999999);
 
-        if ($type !== 'acceptreject') {
+        if ($type == 'acceptreject') {
+            $allcation_type = 'AR';
+        }elseif ($type == 'acknowledge') {
+            $allcation_type = 'A';
+        }else {
             $allcation_type = 'N';
         }
 
@@ -266,7 +270,7 @@ class scheduleNotification implements ShouldQueue
                         $counter++;
                     }
 
-                    if ($allcation_type == 'N' && count($all) > 0) {
+                    if ($allcation_type == 'N' && 'A' &&  count($all) > 0) {
 
                         DB::connection($databaseName)->table('orders')->where('id',$dataget['orders_id'])->update(['driver_id'=>$geoitem->driId]);
 
@@ -296,14 +300,14 @@ class scheduleNotification implements ShouldQueue
                             array_push($dummyentry, $data);
                         }
                         array_push($all, $data);
-                        if ($allcation_type == 'N' && count($all) > 0) {
+                        if ($allcation_type == 'N' && 'A' && count($all) > 0) {
                             DB::connection($databaseName)->table('orders')->where('id',$dataget['orders_id'])->update(['driver_id'=>$remening[$i]['id']]);
     
                             break;
                         }
                 }
                 $remening = [];
-                if ($allcation_type == 'N' && count($all) > 0) {
+                if ($allcation_type == 'N' && 'A' && count($all) > 0) {
 
                     break;
                 }
@@ -341,7 +345,12 @@ class scheduleNotification implements ShouldQueue
         $time              = $dataget['notification_time'];
         $randem            = rand(11111111, 99999999);
         $data = [];
-        if ($type != 'acceptreject') {
+
+        if ($type == 'acceptreject') {
+            $allcation_type = 'AR';
+        }elseif ($type == 'acknowledge') {
+            $allcation_type = 'A';
+        }else {
             $allcation_type = 'N';
         }
 
@@ -408,7 +417,7 @@ class scheduleNotification implements ShouldQueue
 
                      ];
                     array_push($data, $datas);
-                    if ($allcation_type == 'N') {
+                    if ($allcation_type == 'N' && 'A') {
                         DB::connection($databaseName)->table('orders')->where('id',$dataget['orders_id'])->update(['driver_id'=>$geoitem->driId]);
                         break;
                     }
@@ -416,7 +425,7 @@ class scheduleNotification implements ShouldQueue
                 $time = Carbon::parse($time)
                         ->addSeconds($expriedate + 3)
                         ->format('Y-m-d H:i:s');
-                if ($allcation_type == 'N') {
+                if ($allcation_type == 'N' && 'A' ) {
 
                     break;
                 }
@@ -454,7 +463,11 @@ class scheduleNotification implements ShouldQueue
         $randem            = rand(11111111, 99999999);
         $data = [];
 
-        if ($type != 'acceptreject') {
+        if ($type == 'acceptreject') {
+            $allcation_type = 'AR';
+        }elseif ($type == 'acknowledge') {
+            $allcation_type = 'A';
+        }else {
             $allcation_type = 'N';
         }
 
@@ -526,7 +539,7 @@ class scheduleNotification implements ShouldQueue
                     ->format('Y-m-d H:i:s');
 
                     array_push($data, $datas);
-                    if ($allcation_type == 'N') {
+                    if ($allcation_type == 'N' && 'A') {
 
                         break;
                     }
@@ -537,7 +550,7 @@ class scheduleNotification implements ShouldQueue
                     ->format('Y-m-d H:i:s');
 
 
-                if ($allcation_type == 'N') {
+                if ($allcation_type == 'N' && 'A') {
 
                     break;
                 }
@@ -608,7 +621,11 @@ class scheduleNotification implements ShouldQueue
         $data = [];
 
 
-        if ($type != 'acceptreject') {
+        if ($type == 'acceptreject') {
+            $allcation_type = 'AR';
+        }elseif ($type == 'acknowledge') {
+            $allcation_type = 'A';
+        }else {
             $allcation_type = 'N';
         }
 
@@ -687,7 +704,7 @@ class scheduleNotification implements ShouldQueue
                         $counter = 0;
                     }
                     array_push($data, $datas);
-                    if ($allcation_type == 'N') {
+                    if ($allcation_type == 'N' && 'A') {
 
                         break;
                     }
@@ -696,7 +713,7 @@ class scheduleNotification implements ShouldQueue
                 ->addSeconds($expriedate + 5)
                 ->format('Y-m-d H:i:s');
 
-                if ($allcation_type == 'N') {
+                if ($allcation_type == 'N' && 'A') {
 
                     break;
                 }
