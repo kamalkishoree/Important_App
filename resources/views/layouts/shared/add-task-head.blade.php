@@ -404,7 +404,7 @@
               }
           });
       }
-
+      var post_count = 2;
     $(document).on('click', '.subTaskHeader', function(){
       var cur = countZ;
       countZ = countZ + 1;
@@ -473,6 +473,20 @@
               var jElem = $(elem); // jQuery element
               //jElem.prop('required', true);
           });
+         
+          var postcode1 = $clone.find('.postcode');
+          $.each(postcode1, function(index, elem){
+            var jElem = $(elem)
+            var name = jElem.prop('id');
+            console.log(name);
+            name = name.replace(/\d+/g, '');
+            name = 'addHeader'+post_count+'-postcode';
+            jElem.prop('id', name);
+            //   var jElem = $(elem); // jQuery element
+              //jElem.prop('required', true);
+              post_count++;
+              console.log(post_count);
+          });
           
         $(document).find('#addSubFields').before($clone);
         autoWrap.indexOf('addHeader'+countZ) === -1 ? autoWrap.push('addHeader'+countZ) : console.log("exists");
@@ -499,11 +513,14 @@
                 geocoder.geocode({'placeId': place.place_id}, function (results, status) {
                     
                     if (status === google.maps.GeocoderStatus.OK) {
+                       
+                        var postCode = results[0].address_components[7].long_name;
                         const lat = results[0].geometry.location.lat();
                         const lng = results[0].geometry.location.lng();
                         //console.log(name+'-input');
                         document.getElementById(name + '-latitude').value = lat;
                         document.getElementById(name + '-longitude').value = lng;
+                        document.getElementById(name + '-postcode').value = postCode;
                     }
                 });
             });

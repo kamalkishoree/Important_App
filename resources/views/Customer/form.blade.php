@@ -67,7 +67,7 @@
         </div>
         <div class="col-md-3">
             <div class="form-group" id="">
-                <input type="text" name="post_code[]" class="form-control" placeholder="Post Code" value="{{$loc->post_code}}">
+                <input type="text" id="edit{{$i}}-postcode" name="post_code[]" class="form-control" placeholder="Post Code" value="{{$loc->post_code}}">
                 <span class="invalid-feedback" role="alert">
                     <strong></strong>
                 </span>

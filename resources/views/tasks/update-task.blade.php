@@ -195,13 +195,13 @@
                                                     </span>
                                                 </div>
 
-                                                {!! Form::text('post_code[]', null, [
-                                                'class' => 'form-control address',
-                                                'placeholder' => 'PostsCode',
-                                                ]) !!}
+                                                <input type="text" name="post_code[]"
+                                                id="add{{ $newcount }}-postcode" class="form-control address postcode"
+                                                placeholder="PostsCode" />
+
                                                 {!! Form::text('barcode[]', $item->barcode, [
                                                     'class' => 'form-control address',
-                                                    'placeholder' => 'PostsCode',
+                                                    'placeholder' => 'Barcode',
                                                     ]) !!}
                                                 <span class="invalid-feedback" role="alert">
                                                     <strong></strong>

@@ -78,7 +78,7 @@
                                         </div>
                                         <div class="col-md-3">
                                             <div class="form-group" id="post_codeInput">
-                                                <input type="text" name="post_code[]" class="form-control" placeholder="Post Code">
+                                                <input type="text" name="post_code[]" class="form-control" placeholder="Post Code" id="add1-postcode">
                                                 <span class="invalid-feedback" role="alert">
                                                     <strong></strong>
                                                 </span>
