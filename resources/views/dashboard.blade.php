@@ -718,7 +718,7 @@ function initMap() {
 function addMarker(location, lables, images,data,type) {
 
     var contentString = '';
-
+    images
     if(type == 1){
         contentString =
         '<div id="content">' +
@@ -736,19 +736,19 @@ function addMarker(location, lables, images,data,type) {
         img = data['image_url'];
         //console.log(img);
         contentString =
-        '<div style="float:left">'+
+        '<div style="width:48%;display:inline-block">'+
         '<img src="https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain/'+data['image_url']+'">'+
         "</div>"+
-        '<div style="float:right; "><b>'+data['name']+'</b><br/><br/>'+data['phone_number']+'</div>'+
-        '<div style="float:right; padding: 10px;"><b>Last Updated : '+jQuery.timeago(new Date(data['agentlog']['created_at']))+'</b><br/><br/>OS : '+data['agentlog']['os_version']+'</div>'+
-        '<div style="float:left; margin-left:35px;"><b>Battery Level : '+data['agentlog']['battery_level']+'%</b><br/>      <br/></div>';
+        '<div style="width:48%;display:inline-block;vertical-align:middle;margin-left:5px;"><b>'+data['name']+'</b><br/><br/>'+data['phone_number']+'</div>'+
+        '<div style="margin-top:8px;"><b><img src="{{ asset("demo/images/clock.png") }}"> : '+jQuery.timeago(new Date(data['agentlog']['created_at']))+'</b><br/><br/><img src="{{ asset("demo/images/operating-system.png") }}"> : '+data['agentlog']['os_version']+'</div>'+
+        '<div style="float:left;"><b> <img src="{{ asset("demo/images/battery-status.png") }}"> :  '+data['agentlog']['battery_level']+'%</b><br/>      <br/></div>';
     }
 
 
 
     const infowindow = new google.maps.InfoWindow({
         content: contentString,
-        maxWidth: 250,
+        Width: 250,
         maxheight: 250,
     });
 

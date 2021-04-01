@@ -121,7 +121,7 @@ class TaskController extends Controller
 
         $unique_order_id = substr(str_shuffle(str_repeat($pool, 5)), 0, 6);
         
-
+        $auth = Client::where('code', Auth::user()->code)->with(['getAllocation', 'getPreference'])->first();
         //save task images on s3 bucket
 
         if (isset($request->file) && count($request->file) > 0) {
@@ -165,8 +165,8 @@ class TaskController extends Controller
 
         //here order save code is started
 
-        $notification_time = isset($request->schedule_time) ? $request->schedule_time : Carbon::now()->toDateTimeString();
-
+        $settime = isset($request->schedule_time) ? $request->schedule_time : Carbon::now()->toDateTimeString();
+        $notification_time = Carbon::parse($settime . $auth->timezone ?? 'UTC')->tz('UTC');
         $agent_id          = $request->allocation_type === 'm' ? $request->agent : null;
 
         $order = [
@@ -322,7 +322,7 @@ class TaskController extends Controller
         if($request->task_type != 'now'){
 
                 
-                 $auth = Client::where('code', Auth::user()->code)->with(['getAllocation', 'getPreference'])->first();
+                 
 
                 
                  $beforetime = (int)$auth->getAllocation->start_before_task_time;  

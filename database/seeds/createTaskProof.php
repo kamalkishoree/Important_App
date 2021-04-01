@@ -50,18 +50,6 @@ class createTaskProof extends Seeder
                 'barcode'             => 0,
                 'barcode_requried'    => 0,
                 'type'                => 3
-            ),
-            array(
-                'id'                  => 4,
-                'image'               => 0,
-                'image_requried'      => 0,
-                'signature'           => 0,
-                'signature_requried'  => 0,
-                'note'                => 0,
-                'note_requried'       => 0,
-                'barcode'             => 0,
-                'barcode_requried'    => 0,
-                'type'                => 4
             )
 
         );
