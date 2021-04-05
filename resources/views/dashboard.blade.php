@@ -237,7 +237,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                     </div>
                                     <div class="col-md-4 col-3 text-right">
                                         <label class="">
-                                            <input class="newchecks" cla type="checkbox" value="-1"
+                                            <input class="newchecks filtercheck" cla type="checkbox" value="-1"
                                                 name="teamchecks[]" checked>
                                             <span class="checkmark"></span>
                                         </label>
@@ -249,7 +249,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                     </div>
                                     <div class="col-md-4 col-3 text-right">
                                         <label class="">
-                                            <input class="newchecks" cla type="checkbox" value="0"
+                                            <input class="newchecks filtercheck" cla type="checkbox" value="0"
                                                 name="teamchecks[]">
                                             <span class="checkmark"></span>
                                         </label>
@@ -262,7 +262,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                         </div>
                                         <div class="col-md-4 col-3 text-right">
                                             <label class="">
-                                                <input class="newchecks" type="checkbox" name="teamchecks[]"
+                                                <input class="newchecks filtercheck" type="checkbox" name="teamchecks[]"
                                                     value="{{ $item['id'] }}">
                                                 <span class="checkmark"></span>
                                             </label>
@@ -297,7 +297,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                     </div>
                                     <div class="col-md-3 col-3 text-right">
                                         <label class="mt-2">
-                                            <input class="taskchecks" type="checkbox" name="taskstatus[]"
+                                            <input class="taskchecks filtercheck" type="checkbox" name="taskstatus[]"
                                                 value="5">
                                             <span class="checkmark"></span>
                                         </label>
@@ -312,7 +312,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                     </div>
                                     <div class="col-md-3 col-3 text-right">
                                         <label class="mt-2">
-                                            <input class="taskchecks" type="checkbox" name="taskstatus[]"
+                                            <input class="taskchecks filtercheck" type="checkbox" name="taskstatus[]"
                                                 value="0">
                                             <span class="checkmark"></span>
                                         </label>
@@ -326,7 +326,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                     </div>
                                     <div class="col-md-3 col-3 text-right">
                                         <label class="mt-2">
-                                            <input class="taskchecks" type="checkbox" name="taskstatus[]"
+                                            <input class="taskchecks filtercheck" type="checkbox" name="taskstatus[]"
                                                 value="1">
                                             <span class="checkmark"></span>
                                         </label>
@@ -341,7 +341,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                     </div>
                                     <div class="col-md-3 col-3 text-right">
                                         <label class="mt-2">
-                                            <input class="taskchecks" type="checkbox" name="taskstatus[]"
+                                            <input class="taskchecks filtercheck" type="checkbox" name="taskstatus[]"
                                                 value="3">
                                             <span class="checkmark"></span>
                                         </label>
@@ -355,7 +355,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                     </div>
                                     <div class="col-md-3 col-3 text-right">
                                         <label class="mt-2">
-                                            <input class="taskchecks" type="checkbox" name="taskstatus[]"
+                                            <input class="taskchecks filtercheck" type="checkbox" name="taskstatus[]"
                                                 value="4">
                                             <span class="checkmark"></span>
                                         </label>
@@ -387,7 +387,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                     </div>
                                     <div class="col-md-4 text-right">
                                         <label class="">
-                                            <input class="agentdisplay" type="checkbox" name="agentcheck[]" value="2">
+                                            <input class="agentdisplay filtercheck" type="checkbox" name="agentcheck[]" value="2">
                                             <span class="checkmark" ></span>
                                         </label>
                                     </div>
@@ -398,7 +398,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                     </div>
                                     <div class="col-md-4 text-right">
                                         <label class="">
-                                            <input class="agentdisplay" type="checkbox" name="agentcheck[]" value="1">
+                                            <input class="agentdisplay filtercheck" type="checkbox" name="agentcheck[]" value="1">
                                             <span class="checkmark"></span>
                                         </label>
                                     </div>
@@ -409,7 +409,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                     </div>
                                     <div class="col-md-4 text-right">
                                         <label class="">
-                                            <input class="agentdisplay" type="checkbox" name="agentcheck[]" value="0">
+                                            <input class="agentdisplay filtercheck" type="checkbox" name="agentcheck[]" value="0">
                                             <span class="checkmark"></span>
                                         </label>
                                     </div>
@@ -475,14 +475,30 @@ var imgproxyurl         = {!!json_encode($imgproxyurl)!!};
 // var teamdata = {!!json_encode($teams)!!};
 // var cars    = [0];
 
-$('.newchecks').click(function() {
+//$('.newchecks').click(function() {
+$('.filtercheck').click(function() {    
+// for teams
 var val = [];
 $('.newchecks:checkbox:checked').each(function(i) {
     val[i] = parseInt($(this).val());
 });
+
+//for tasks
+var taskval = [];
+$('.taskchecks:checkbox:checked').each(function(i) {
+    taskval[i] = parseInt($(this).val());    
+});
+
+//for drivers
+var agentval = [];
+$('.agentdisplay:checkbox:checked').each(function(i) {
+    agentval[i] = parseInt($(this).val());
+});
+
+
 setMapOnAll(null);
-$(".taskchecks").prop('checked', false);
-$(".agentdisplay").prop('checked', false);
+//$(".taskchecks").prop('checked', false);
+//$(".agentdisplay").prop('checked', false);
 //   if (!$(this).is(':checked')) {
 //    return confirm("Are you sure?");
 //   }
@@ -525,22 +541,72 @@ for (let i = 0; i < olddata.length; i++) {
             lng:  parseFloat(checkdata['longitude'])
         }, send, image,checkdata,type);
     }
+
+    // for tasks
+
+        if($.inArray(checkdata['task_status'], taskval) !== -1 || $.inArray(5, taskval) != -1) {
+            
+            var urlnewcreate = '';
+            if(checkdata['task_status'] == 0){
+                urlnewcreate = 'unassigned';
+            }else if(checkdata['task_status'] == 1 || checkdata['task_status'] == 2){
+                urlnewcreate = 'assigned';
+            }else if(checkdata['task_status'] == 3){
+                urlnewcreate = 'complete';
+            }else{
+                urlnewcreate = 'faild';
+            }
+            
+                if(checkdata['task_type_id'] == 1){
+                    urlnewcreate += '_P.png';
+                }else if(checkdata['task_type_id'] == 2){
+                    urlnewcreate +='_D.png';
+                }else{
+                    urlnewcreate +='_A.png';
+                }
+                
+                image = '{{ asset('assets/newicons/') }}'+'/'+urlnewcreate;
+                
+                send = null;
+                type = 1;
+            addMarker({lat:parseFloat(checkdata['latitude']),lng:parseFloat(checkdata['longitude'])}, send,image,checkdata,type);
+        }
+
+    
 }
 
-
-
-
-
+    //for agents
+    for (let i = 0; i < allagent.length; i++) {
+        checkdata = allagent[i];
+        //for agents
+        if ($.inArray(checkdata['is_available'], agentval) != -1 || $.inArray(2, agentval) != -1) {
+            
+            if (checkdata['is_available'] == 1) {
+                images = url+'/demo/images/location.png';
+            }else {
+                images = url+'/demo/images/location_grey.png';
+            }
+            var image = {
+             url: images, // url
+             scaledSize: new google.maps.Size(50, 50), // scaled size
+             origin: new google.maps.Point(0,0), // origin
+             anchor: new google.maps.Point(22,22) // anchor
+            };
+            send = null;
+            type = 2;
+           addMarker({lat: parseFloat(checkdata.agentlog['lat']),lng:  parseFloat(checkdata.agentlog['long'])}, send, image,checkdata,type);
+        }
+    }
 
 });
 
-$('.taskchecks').click(function() {
+//$('.taskchecks').click(function() {
+$('.taskchecks_old').click(function() {
 var taskval = [];
 $('.taskchecks:checkbox:checked').each(function(i) {
     taskval[i] = parseInt($(this).val());
 
 });
-
 
 setMapOnAll(null);
 $(".newchecks").prop('checked', false);
@@ -589,7 +655,8 @@ for (let i = 0; i < olddata.length; i++) {
 });
 
 
-$('.agentdisplay').click(function() {
+// $('.agentdisplay').click(function() {
+$('.agentdisplay_old').click(function() {
 var agentval = [];
 $('.agentdisplay:checkbox:checked').each(function(i) {
     agentval[i] = parseInt($(this).val());

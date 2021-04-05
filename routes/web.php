@@ -91,6 +91,10 @@ Route::group(['prefix' => '/godpanel'], function () {
 			Route::resource('manager', 'ManagerController');
 			Route::resource('plan-billing', 'PlanBillingController');
 			Route::resource('tasks','TaskController');
+
+			Route::post('newtasks','TaskController@newtasks');
+
+
 			Route::post('tasks/list/{id}','TaskController@tasklist')->name('task.list');
 			Route::post('search/customer', 'TaskController@search')->name('search');
 

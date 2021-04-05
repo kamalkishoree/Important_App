@@ -19,20 +19,22 @@ class DashBoardController extends Controller
      */
     public function index(Request $request)
     {
+        // echo "<pre>";
+        // print_r($request); die;
         //date for display tasks on map 
 
         if (isset($request->date)) {
-              
+              //echo $request->date; die;
              // $date = date('Y-m-d', strtotime($request->date));
               $date = Carbon::parse(strtotime($request->date))->format('Y-m-d');
-              
+             
 
         } else {
             
             $date = date('Y-m-d');
             
         }
-
+        //echo $date; die; 
         //left side bar list for display all teams
 
         $teams  = Team::with(
@@ -135,6 +137,8 @@ class DashBoardController extends Controller
                 array_push($newmarker, $append);
             }
         }
+        // echo "<pre>";
+        // print_r($newmarker); die;
 
 
         $unassigned->toArray();
@@ -145,7 +149,7 @@ class DashBoardController extends Controller
 
         $agents = Agent::with('agentlog')->get()->toArray();
         $preference  = ClientPreference::where('id',1)->first(['theme','date_format','time_format']);
-
+       // print_r($preference); die;
         return view('dashboard')->with(['teams' => $teams, 'newmarker' => $newmarker, 'unassigned' => $unassigned, 'agents' => $agents,'date'=> $date,'preference' =>$preference]);
     }
 

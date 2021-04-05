@@ -235,11 +235,14 @@
                     <h4 class="header-title mb-3">Task Completion Proofs</h4>
                     
                     <div>
-                        
+                        {{-- @php 
+                            echo "<pre>";
+                            print_r($task_list); @endphp --}}
                         @foreach ($task_proofs as $key => $taskproof)
                         @php $counter = 1; @endphp
                         <h5 class="header-title mb-3">{{$task_list[$key]->name}}</h5>
-                         <div class="table-responsive table_spacing">
+                         
+                        <div class="table-responsive table_spacing">
                             <table class="table table-borderless table-nowrap table-hover table-centered m-0">
 
                                 <thead class="thead-light">

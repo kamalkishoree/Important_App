@@ -314,6 +314,7 @@ class ClientController extends Controller
         $cms         = Cms::all('content');
         $task_proofs = TaskProof::where('type','!=',0)->get();
         $task_list   = TaskType::all();
+        //print_r($task_list); die;
         $subClients  = SubClient::all();
 
         
