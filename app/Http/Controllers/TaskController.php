@@ -66,7 +66,67 @@ class TaskController extends Controller
 
     public function assignAgent(Request $request)
     {
-        dd($request->all());
+        $order_update = Order::whereIn('id',$request->orders_id)->update(['driver_id'=>$request->agent_id,'status'=>'assigned']);
+        $task         = Task::whereIn('order_id',$request->orders_id)->update(['task_status'=>1]);
+        $this->MassAndEditNotification($request->orders_id[0],$request->agent_id);
+    }
+
+    public function MassAndEditNotification($orders_id,$agent_id)
+    {
+       
+        $order_details = Order::where('id',$orders_id)->with(['customer','agent', 'task.location'])->first();
+        $auth = Client::where('code', Auth::user()->code)->with(['getAllocation', 'getPreference'])->first();
+        $notification_time = $order_details->order_time;
+        $expriedate = (int)$auth->getAllocation->request_expiry;
+        $beforetime = (int)$auth->getAllocation->start_before_task_time;
+        $maxsize    = (int)$auth->getAllocation->maximum_batch_size;
+        $type       = $auth->getPreference->acknowledgement_type;
+        $try        = $auth->getAllocation->number_of_retries;
+        $time       = $this->checkTimeDiffrence($notification_time, $beforetime); //this function is check the time diffrence and give the notification time
+        $randem     = rand(11111111, 99999999);
+
+       
+        $allcation_type = 'ACK';
+        
+        foreach ($order_details->task as $key => $value) {
+
+            $taskcount = count($order_details->task);
+
+            $extraData = [
+                'customer_name'            => $order_details->customer->name,
+                'customer_phone_number'    => $order_details->customer->phone_number,
+                'short_name'               => $value->location->short_name,
+                'address'                  => $value->location->address,
+                'lat'                      => $value->location->latitude,
+                'long'                     => $value->location->longitude,
+                'task_count'               => $taskcount,
+                'unique_id'                => $randem,
+                'created_at'               => Carbon::now()->toDateTimeString(),
+                'updated_at'               => Carbon::now()->toDateTimeString(),
+            ];
+
+            break;
+        }
+        
+
+        
+        $oneagent = Agent::where('id', $agent_id)->first();
+
+        $data = [
+            'order_id'            => $orders_id,
+            'driver_id'           => $agent_id,
+            'notification_time'   => $time,
+            'type'                => $allcation_type,
+            'client_code'         => Auth::user()->code,
+            'created_at'          => Carbon::now()->toDateTimeString(),
+            'updated_at'          => Carbon::now()->toDateTimeString(),
+            'device_type'         => $oneagent->device_type,
+            'device_token'        => $oneagent->device_token,
+            'detail_id'           => $randem,
+        ];
+
+        $this->dispatch(new RosterCreate($data, $extraData)); //this job is for create roster in main database for send the notification  in manual alloction
+       
     }
 
     /**
@@ -1352,6 +1412,8 @@ class TaskController extends Controller
                }else{
                    $percentage = $pricingRule->freelancer_commission_percentage + (($task_id->order_cost / 100) * $pricingRule->freelancer_commission_fixed);
                }
+
+               $this->MassAndEditNotification($id,$agent_id);
         }
         if($task_id->driver_cost != 0.00){
             $percentage = $task_id->driver_cost;

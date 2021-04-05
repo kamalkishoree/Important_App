@@ -248,22 +248,30 @@
         });
 
 
-        // $('#submit_assign_agent').on('submit', function(e) {
-        //     e.preventDefault(); 
-        //     var name = $('#name').val();
-        //     var agent_id = $('#agent_id').val();
-        //     var order_id = [];
+        $('#submit_assign_agent').on('submit', function(e) {
+            e.preventDefault(); 
+            var name = $('#name').val();
+            var agent_id = $('#agent_id').val();
+            var order_id = [];
         //     $.each($("input[name='driver_id']:checked"), function(){
         //         order_id.push($(this).val());
         //    });
-        //     $.ajax({
-        //         type: "POST",
-        //         url: '{{route("assign.agent")}}',
-        //         data: {_token: CSRF_TOKEN, orders_id: order_id, agent_id: agent_id},
-        //         success: function( msg ) {
-                    
-        //         }
-        //     });
-        // });
+            $('.single_driver_check:checked').each(function(i){
+                order_id[i] = $(this).val();
+            });
+            if (order_id.length == 0) {
+               
+                $("#add-assgin-agent-model .close").click();
+                return;
+            }
+            $.ajax({
+                type: "POST",
+                url: '{{route("assign.agent")}}',
+                data: {_token: CSRF_TOKEN, orders_id: order_id, agent_id: agent_id},
+                success: function( msg ) {
+                    location.reload();
+                }
+            });
+        });
 </script>
 
