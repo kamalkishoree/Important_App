@@ -592,9 +592,39 @@
         //     }
         // }
         if( err == 0){
-          $("#taskFormHeader").submit();
+            var formData = new FormData(document.querySelector("#taskFormHeader"));
+            TaskSubmit(formData, 'POST', '/newtasks', '#task-modal-header');            
+          //$("#taskFormHeader").submit();
         }
     });
+
+    function TaskSubmit(data, method, url, modals) {
+    //alert(data);
+    $.ajax({
+        method: method,
+        headers: {
+            Accept: "application/json"
+        },
+        url: url,
+        data: data,
+        contentType: false,
+        processData: false,
+        success: function(response) {
+            //alert(response)
+            if (response) {
+                    $("#task-modal-header .close").click();
+                         location.reload();
+            } else {
+                $(".show_all_error.invalid-feedback").show();
+                $(".show_all_error.invalid-feedback").text(response.message);
+            }
+            //return response;
+        },
+        error: function(response) {
+            
+        }
+    });
+}
 
     // show proofs initial check 
     // $(document).ready(function() {

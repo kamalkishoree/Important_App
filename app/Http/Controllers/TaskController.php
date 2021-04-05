@@ -63,6 +63,315 @@ class TaskController extends Controller
         return view('tasks/task')->with(['tasks' => $tasks, 'status' => $request->status, 'active_count' => $active, 'panding_count' => $pending, 'history_count' => $history, 'status' => $check,'preference' => $preference,'agents'=>$agents]);
     }
 
+    
+    public function newtasks(Request $request)
+    {   
+        $loc_id = $cus_id = $send_loc_id = $newlat = $newlong = 0;
+
+        $images = [];
+        $last = '';
+        $customer = [];
+        $finalLocation = [];
+        $taskcount = 0;
+        $latitude  = [];
+        $longitude = [];
+        $percentage = 0;
+
+        $pool = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
+        $unique_order_id = substr(str_shuffle(str_repeat($pool, 5)), 0, 6);
+        
+
+        //save task images on s3 bucket
+
+        if (isset($request->file) && count($request->file) > 0) {
+            $folder = str_pad(Auth::user()->id, 8, '0', STR_PAD_LEFT);
+            $folder = 'client_' . $folder;
+            $files = $request->file('file');
+            foreach ($files as $key => $value) {
+                $file = $value;
+                $file_name = uniqid() . '.' .  $file->getClientOriginalExtension();
+
+                $s3filePath = '/assets/' . $folder . '/' . $file_name;
+                $path = Storage::disk('s3')->put($s3filePath, $file, 'public');
+                array_push($images, $path);
+
+            }
+            $last = implode(",", $images);
+        }
+
+        //create new customer for task or get id of old customer
+
+        if (!isset($request->ids)) {
+            $customer = Customer::where('email', '=', $request->email)->first();
+            if (isset($customer->id)) {
+                $cus_id = $customer->id;
+            } else {
+                $cus = [
+                    'name' => $request->name,
+                    'email' => $request->email,
+                    'phone_number' => $request->phone_number,
+                ];
+                $customer = Customer::create($cus);
+                $cus_id = $customer->id;
+            }
+        } else {
+            $cus_id = $request->ids;
+            $customer = Customer::where('id', $request->ids)->first();
+        }
+
+        //get pricing rule  for save with every order
+        $pricingRule = PricingRule::where('id',1)->first();
+
+        //here order save code is started
+
+        $notification_time = isset($request->schedule_time) ? $request->schedule_time : Carbon::now()->toDateTimeString();
+
+        $agent_id          = $request->allocation_type === 'm' ? $request->agent : null;
+
+        $order = [
+            'customer_id'                     => $cus_id,
+            'recipient_phone'                 => $request->recipient_phone,
+            'Recipient_email'                 => $request->recipient_email,
+            'task_description'                => $request->task_description,
+            'driver_id'                       => $agent_id,
+            'auto_alloction'                  => $request->allocation_type,
+            'images_array'                    => $last,
+            'order_type'                      => $request->task_type,
+            'order_time'                      => $notification_time,
+            'status'                          => $agent_id != null ? 'assigned' : 'unassigned',
+            'cash_to_be_collected'            => $request->cash_to_be_collected,
+            'base_price'                      => $pricingRule->base_price,
+            'base_duration'                   => $pricingRule->base_duration,
+            'base_distance'                   => $pricingRule->base_distance,
+            'base_waiting'                    => $pricingRule->base_waiting,
+            'duration_price'                  => $pricingRule->duration_price,
+            'waiting_price'                   => $pricingRule->waiting_price,
+            'distance_fee'                    => $pricingRule->distance_fee,
+            'cancel_fee'                      => $pricingRule->cancel_fee,
+            'agent_commission_percentage'     => $pricingRule->agent_commission_percentage,
+            'agent_commission_fixed'          => $pricingRule->agent_commission_fixed,
+            'freelancer_commission_percentage'=> $pricingRule->freelancer_commission_percentage,
+            'freelancer_commission_fixed'     => $pricingRule->freelancer_commission_fixed,
+            'unique_id'                       => $unique_order_id
+        ];
+        
+        $orders = Order::create($order);
+
+        //here is task save code is started
+
+        $dep_id = null; // this is used as dependent task id 
+
+        foreach ($request->task_type_id as $key => $value) {
+            $taskcount++;
+            if (isset($request->address[$key])) {
+                $loc = [
+                    'latitude'    => $request->latitude[$key],
+                    'longitude'   => $request->longitude[$key],
+                    'short_name'  => $request->short_name[$key],
+                    'address'     => $request->address[$key],
+                    'post_code'   => $request->post_code[$key],
+                    'customer_id' => $cus_id,
+                ];
+                $Loction = Location::create($loc);
+                $loc_id = $Loction->id;
+                $send_loc_id = $loc_id;
+               
+            } else {
+
+
+                if ($key == 0) {
+                    $loc_id = $request->old_address_id;
+                    $send_loc_id = $loc_id;
+                } else {
+                    $loc_id = $request->input('old_address_id' . $key);
+                    $send_loc_id = $loc_id;
+                }
+            }
+            
+            $location = Location::where('id', $loc_id)->first();
+
+            if ($key == 0) {
+
+                $finalLocation = $location;
+            }
+
+        
+            array_push($latitude,$location->latitude);
+            array_push($longitude,$location->longitude);
+           
+
+            
+            $task_appointment_duration = empty($request->appointment_date[$key]) ? '0' : $request->appointment_date[$key];
+
+            $data = [
+                'order_id'                   => $orders->id,
+                'task_type_id'               => $value,
+                'location_id'                => $loc_id,
+                'appointment_duration'       => $task_appointment_duration,
+                'dependent_task_id'          => $dep_id,
+                'task_status'                => $agent_id != null ? 1 : 0,
+                'created_at'                 => $notification_time,
+                'assigned_time'              => $notification_time,
+                'barcode'                    => $request->barcode[$key]
+            ];
+            $task = Task::create($data);
+            $dep_id = $task->id;
+        }
+
+        //accounting for task duration distanse 
+
+         $getdata = $this->GoogleDistanceMatrix($latitude,$longitude);
+    
+         $paid_duration = $getdata['duration'] - $pricingRule->base_duration;
+         $paid_distance = $getdata['distance'] - $pricingRule->base_distance;
+         $paid_duration = $paid_duration < 0 ? 0 : $paid_duration;
+         $paid_distance = $paid_distance < 0 ? 0 : $paid_distance;
+         $total         = $pricingRule->base_price + ($paid_distance * $pricingRule->distance_fee ) + ($paid_duration * $pricingRule->duration_price);
+
+         if(isset($agent_id)){
+
+             $agent_details = Agent::where('id',$agent_id)->first();
+                if($agent_details->type == 'Employee'){
+                    $percentage = $pricingRule->agent_commission_fixed + (($total / 100) * $pricingRule->agent_commission_percentage);
+    
+                    
+                }else{
+                    $percentage = $pricingRule->freelancer_commission_percentage + (($total / 100) * $pricingRule->freelancer_commission_fixed);
+                }
+
+         }
+
+         //update order with order cost details
+
+         $updateorder = [
+            'actual_time'        => $getdata['duration'],
+            'actual_distance'    => $getdata['distance'],
+            'order_cost'         => $total,
+            'driver_cost'        => $percentage,
+
+         ];
+        
+         Order::where('id',$orders->id)->update($updateorder);
+
+
+        //task tages save code is here
+
+        if (isset($request->allocation_type) && $request->allocation_type === 'a') {
+            if (isset($request->team_tag)) {
+                $orders->teamtags()->sync($request->team_tag);
+            }
+            if (isset($request->agent_tag)) {
+                $orders->drivertags()->sync($request->agent_tag);
+            }
+        }
+
+        //this function is called when allocation type is Accept/Reject it find the current task location belongs to which geo fence
+
+        $geo = null;
+        if ($request->allocation_type === 'a') {
+            $geo = $this->createRoster($send_loc_id);
+
+            $agent_id = null;
+        }
+
+        // task schdule code is hare
+
+        $allocation = AllocationRule::where('id', 1)->first();
+
+        if($request->task_type != 'now'){
+
+                
+                 $auth = Client::where('code', Auth::user()->code)->with(['getAllocation', 'getPreference'])->first();
+
+                
+                 $beforetime = (int)$auth->getAllocation->start_before_task_time;  
+
+                
+                 $to = new \DateTime("now", new \DateTimeZone(isset(Auth::user()->timezone)? Auth::user()->timezone : 'Asia/Kolkata') );
+
+                 $sendTime = Carbon::now();
+                
+                 $to = Carbon::parse($to)->format('Y-m-d H:i:s');
+               
+                
+                $from = Carbon::parse($notification_time)->format('Y-m-d H:i:s');
+                
+                 $datecheck = 0;
+                 $to_time = strtotime($to);
+                 $from_time = strtotime($from);
+               
+                 if($to_time >= $from_time) {
+                    return redirect()->route('tasks.index')->with('success', 'Task Added Successfully!');
+                 }
+
+                $diff_in_minutes = round(abs($to_time - $from_time) / 60);
+                
+               
+
+                $schduledata = [];
+
+                if($diff_in_minutes > $beforetime){
+
+                    $finaldelay = (int)$diff_in_minutes - $beforetime;
+
+                    $time = Carbon::parse($sendTime)
+                    ->addMinutes($finaldelay)
+                    ->format('Y-m-d H:i:s');
+
+                    $schduledata['geo']               = $geo;
+                    $schduledata['notification_time'] = $time;
+                    $schduledata['agent_id']          = $agent_id;
+                    $schduledata['orders_id']         = $orders->id;
+                    $schduledata['customer']          = $customer;
+                    $schduledata['finalLocation']     = $finalLocation;
+                    $schduledata['taskcount']         = $taskcount;
+                    $schduledata['allocation']        = $allocation;
+                    $schduledata['database']          = $auth;
+                    
+                    
+                   
+                    Order::where('id',$orders->id)->update(['order_time'=>$time]);
+                    Task::where('order_id',$orders->id)->update(['assigned_time'=>$time,'created_at' =>$time]);
+                    
+                    scheduleNotification::dispatch($schduledata)->delay(now()->addMinutes($finaldelay));
+
+                    return true;
+
+                }
+               
+
+        }
+        
+        
+        //this is roster create accounding to the allocation methed
+        
+        if ($request->allocation_type === 'a' || $request->allocation_type === 'm') {
+            
+            switch ($allocation->auto_assign_logic) {
+                case 'one_by_one':
+                    //this is called when allocation type is one by one
+                    $this->finalRoster($geo, $notification_time, $agent_id, $orders->id, $customer, $finalLocation, $taskcount, $allocation);
+                    break;
+                case 'send_to_all':
+                    //this is called when allocation type is send to all
+                    $this->SendToAll($geo, $notification_time, $agent_id, $orders->id, $customer, $finalLocation, $taskcount, $allocation);
+                    break;
+                case 'round_robin':
+                    //this is called when allocation type is round robin
+                    $this->roundRobin($geo, $notification_time, $agent_id, $orders->id, $customer, $finalLocation, $taskcount, $allocation);
+                    break;
+                default:
+                    //this is called when allocation type is batch wise 
+                    $this->batchWise($geo, $notification_time, $agent_id, $orders->id, $customer, $finalLocation, $taskcount, $allocation);
+            }
+        }
+
+
+
+        return true;
+    }
+
     public function assignAgent(Request $request)
     {
         dd($request->all());
