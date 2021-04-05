@@ -51,6 +51,7 @@ class TaskController extends Controller
         $active   =  count($all->where('status', 'assigned'));
         $pending  =  count($all->where('status', 'unassigned'));
         $history  =  count($all->where('status', 'completed'));
+        $failed   =  count($all->where('status','failed'));
         $tasks    =  $tasks->paginate(10);
 
 
@@ -60,7 +61,7 @@ class TaskController extends Controller
         $preference  = ClientPreference::where('id',1)->first(['theme','date_format','time_format']);
         $agents      = Agent::all();
 
-        return view('tasks/task')->with(['tasks' => $tasks, 'status' => $request->status, 'active_count' => $active, 'panding_count' => $pending, 'history_count' => $history, 'status' => $check,'preference' => $preference,'agents'=>$agents]);
+        return view('tasks/task')->with(['tasks' => $tasks, 'status' => $request->status, 'active_count' => $active, 'panding_count' => $pending, 'history_count' => $history, 'status' => $check,'preference' => $preference,'agents'=>$agents,'failed_count'=>$failed]);
     }
 
     
@@ -429,7 +430,7 @@ class TaskController extends Controller
 
         $unique_order_id = substr(str_shuffle(str_repeat($pool, 5)), 0, 6);
         
-
+        $auth = Client::where('code', Auth::user()->code)->with(['getAllocation', 'getPreference'])->first();
         //save task images on s3 bucket
 
         if (isset($request->file) && count($request->file) > 0) {
@@ -473,8 +474,8 @@ class TaskController extends Controller
 
         //here order save code is started
 
-        $notification_time = isset($request->schedule_time) ? $request->schedule_time : Carbon::now()->toDateTimeString();
-
+        $settime = isset($request->schedule_time) ? $request->schedule_time : Carbon::now()->toDateTimeString();
+        $notification_time = Carbon::parse($settime . $auth->timezone ?? 'UTC')->tz('UTC');
         $agent_id          = $request->allocation_type === 'm' ? $request->agent : null;
 
         $order = [
@@ -630,7 +631,7 @@ class TaskController extends Controller
         if($request->task_type != 'now'){
 
                 
-                 $auth = Client::where('code', Auth::user()->code)->with(['getAllocation', 'getPreference'])->first();
+                 
 
                 
                  $beforetime = (int)$auth->getAllocation->start_before_task_time;  
@@ -679,8 +680,8 @@ class TaskController extends Controller
                     
                     
                    
-                    Order::where('id',$orders->id)->update(['order_time'=>$time]);
-                    Task::where('order_id',$orders->id)->update(['assigned_time'=>$time,'created_at' =>$time]);
+                    // Order::where('id',$orders->id)->update(['order_time'=>$time]);
+                   // Task::where('order_id',$orders->id)->update(['assigned_time'=>$time,'created_at' =>$time]);
                     
                     scheduleNotification::dispatch($schduledata)->delay(now()->addMinutes($finaldelay));
 
@@ -815,7 +816,11 @@ class TaskController extends Controller
         $time       = $this->checkTimeDiffrence($notification_time, $beforetime); //this function is check the time diffrence and give the notification time
         $randem     = rand(11111111, 99999999);
 
-        if ($type !== 'acceptreject') {
+        if ($type == 'acceptreject') {
+            $allcation_type = 'AR';
+        }elseif ($type == 'acknowledge') {
+            $allcation_type = 'ACK';
+        }else {
             $allcation_type = 'N';
         }
 
@@ -927,7 +932,7 @@ class TaskController extends Controller
                         $counter++;
                     }
 
-                    if ($allcation_type == 'N' && count($all) > 0) {
+                    if ($allcation_type == 'N' && 'ACK' && count($all) > 0) {
                         Order::where('id',$orders_id)->update(['driver_id'=>$geoitem->driver_id]);
 
                         break;
@@ -956,14 +961,14 @@ class TaskController extends Controller
                             array_push($dummyentry, $data);
                         }
                         array_push($all, $data);
-                        if ($allcation_type == 'N' && count($all) > 0) {
+                        if ($allcation_type == 'N' && 'ACK' && count($all) > 0) {
                             Order::where('id',$orders_id)->update(['driver_id'=>$remening[$i]['id']]);
     
                             break;
                         }
                 }
                 $remening = [];
-                if ($allcation_type == 'N' && count($all) > 0) {
+                if ($allcation_type == 'N' && 'ACK' && count($all) > 0) {
 
                     break;
                 }
@@ -1014,7 +1019,12 @@ class TaskController extends Controller
         $time              = $this->checkTimeDiffrence($notification_time, $beforetime);
         $randem            = rand(11111111, 99999999);
         $data = [];
-        if ($type != 'acceptreject') {
+
+        if ($type == 'acceptreject') {
+            $allcation_type = 'AR';
+        }elseif ($type == 'acknowledge') {
+            $allcation_type = 'ACK';
+        }else {
             $allcation_type = 'N';
         }
 
@@ -1074,7 +1084,7 @@ class TaskController extends Controller
 
                      ];
                     array_push($data, $datas);
-                    if ($allcation_type == 'N') {
+                    if ($allcation_type == 'N' && 'ACK') {
                         Order::where('id',$orders_id)->update(['driver_id'=>$geoitem->driver_id]);
                         break;
                     }
@@ -1082,7 +1092,7 @@ class TaskController extends Controller
                 $time = Carbon::parse($time)
                         ->addSeconds($expriedate + 10)
                         ->format('Y-m-d H:i:s');
-                if ($allcation_type == 'N') {
+                if ($allcation_type == 'N' && 'ACK') {
 
                     break;
                 }
@@ -1116,7 +1126,11 @@ class TaskController extends Controller
         $data = [];
 
 
-        if ($type != 'acceptreject') {
+       if ($type == 'acceptreject') {
+            $allcation_type = 'AR';
+        }elseif ($type == 'acknowledge') {
+            $allcation_type = 'ACK';
+        }else {
             $allcation_type = 'N';
         }
 
@@ -1192,7 +1206,7 @@ class TaskController extends Controller
                         $counter = 0;
                     }
                     array_push($data, $datas);
-                    if ($allcation_type == 'N') {
+                    if ($allcation_type == 'N' && 'ACK') {
 
                         break;
                     }
@@ -1201,7 +1215,7 @@ class TaskController extends Controller
                 ->addSeconds($expriedate + 10)
                 ->format('Y-m-d H:i:s');
 
-                if ($allcation_type == 'N') {
+                if ($allcation_type == 'N' && 'ACK') {
 
                     break;
                 }
@@ -1238,7 +1252,11 @@ class TaskController extends Controller
         $randem            = rand(11111111, 99999999);
         $data = [];
 
-        if ($type != 'acceptreject') {
+        if ($type == 'acceptreject') {
+            $allcation_type = 'AR';
+        }elseif ($type == 'acknowledge') {
+            $allcation_type = 'ACK';
+        }else {
             $allcation_type = 'N';
         }
 
@@ -1307,7 +1325,7 @@ class TaskController extends Controller
                     ->format('Y-m-d H:i:s');
 
                     array_push($data, $datas);
-                    if ($allcation_type == 'N') {
+                    if ($allcation_type == 'N' && 'ACK') {
 
                         break;
                     }
@@ -1318,7 +1336,7 @@ class TaskController extends Controller
                     ->format('Y-m-d H:i:s');
 
 
-                if ($allcation_type == 'N') {
+                if ($allcation_type == 'N' && 'ACK') {
 
                     break;
                 }
@@ -1444,13 +1462,24 @@ class TaskController extends Controller
 
     public function GoogleDistanceMatrix($latitude,$longitude)
     {
+
+        
+    //    print_r($latitude);
+    //     print_r($longitude);
+        
         $send   = []; 
         $client = ClientPreference::where('id',1)->first();
-        $lengths = count($latitude) - 1;
+        $lengths = count($latitude)-1;
+        //print_r($latitude);
+       // print($lengths);
+      
         $value = [];
-      for($i = 1; $i<=$lengths; $i++) {
         $count  = 0;
         $count1 = 1;
+
+      for($i = 0; $i<$lengths; $i++) {
+        // print_r($count);
+        // print($count1);
         $ch = curl_init();
         $headers = array('Accept: application/json',
                    'Content-Type: application/json',
@@ -1467,7 +1496,9 @@ class TaskController extends Controller
           $count++;
           $count1++;
           
+        
 
+       
       }
       
         if(isset($value)){

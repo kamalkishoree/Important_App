@@ -88,13 +88,17 @@ $(document).ready(function(){
 
         // });
         var a = 0;
+        var post_count = 1;
         $('#adds a').click(function() {
             countEdit = countEdit + 1;
           var abc = "{{ isset($maincount)?$maincount:0 }}";
-          
+          var newcount = "{{ isset($newcount)?$newcount:0 }}"
+          alert(newcount);
            if(a == 0){
              a = abc;
+             post_count = parseInt(newcount) + 1;
            }
+          
           
             a++;
            // alert(abc);
@@ -196,6 +200,22 @@ $(document).ready(function(){
                         var jElem = $(elem); // jQuery element
                         jElem.prop('required', true);
                     });
+
+                    var postcode1 = $clone.find('.postcode');
+                    $.each(postcode1, function(index, elem){
+                        var jElem = $(elem)
+                        var name = jElem.prop('id');
+                        console.log(name);
+                        name = name.replace(/\d+/g, '');
+                        name = 'add'+post_count+'-postcode';
+                        jElem.prop('id', name);
+                        //   var jElem = $(elem); // jQuery element
+                        //jElem.prop('required', true);
+                        post_count++;
+                        console.log(post_count);
+                    });
+
+
                     $('input[id='+newids+']').prop("checked",true);
                    // $("input[type='radio'][name='userRadionButtonName']").prop('checked', true);
                     //var everycheck = document.getElementById("#"+newids);
@@ -435,11 +455,14 @@ function loadMap(autocompletesWraps){
             geocoder.geocode({'placeId': place.place_id}, function (results, status) {
                 
                 if (status === google.maps.GeocoderStatus.OK) {
+
+                    var postCode = results[0].address_components[7].long_name;
                     const lat = results[0].geometry.location.lat();
                     const lng = results[0].geometry.location.lng();
                     console.log(latitudes);
                     document.getElementById(name + '-latitude').value = lat;
                     document.getElementById(name + '-longitude').value = lng;
+                    document.getElementById(name + '-postcode').value = postCode;
                 }
             });
         });

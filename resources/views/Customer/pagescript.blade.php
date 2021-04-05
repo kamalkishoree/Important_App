@@ -74,7 +74,7 @@
     });
 
     $(document).on('click', '.selectMapLocation', function() {
-
+        
         var mapLat = document.getElementById('lat_map').value;
         var mapLlng = document.getElementById('lng_map').value;
         var mapFor = document.getElementById('map_for').value;
@@ -125,7 +125,8 @@
             count +
             '"> <i class="mdi mdi-map-marker-radius"></i></button></div><input type="hidden" name="latitude[]" id="add' +
             count + '-latitude" value="0" /><input type="hidden" name="longitude[]" id="add' + count +
-            '-longitude" value="0" /></div></div><div class="col-md-3"><div class="form-group" id=""><input type="text"  class="form-control" placeholder="Post Code" name="post_code[]"></div></div></div>'
+            '-longitude" value="0" /></div></div><div class="col-md-3"><div class="form-group" id=""><input type="text" id="add' +
+            count + '-postcode" class="form-control" placeholder="Post Code" name="post_code[]"></div></div></div>'
             );
 
         autocompletesWraps.indexOf('add' + count) === -1 ? autocompletesWraps.push('add' + count) :
@@ -162,11 +163,14 @@
                 }, function(results, status) {
 
                     if (status === google.maps.GeocoderStatus.OK) {
+                       var postCode = results[0].address_components[7].long_name;
                         const lat = results[0].geometry.location.lat();
                         const lng = results[0].geometry.location.lng();
+                        
                         //console.log(latitudes);
                         document.getElementById(name + '-latitude').value = lat;
                         document.getElementById(name + '-longitude').value = lng;
+                        document.getElementById(name + '-postcode').value = postCode;
                     }
                 });
             });
@@ -228,7 +232,8 @@
             '"> <i class="mdi mdi-map-marker-radius"></i></button></div><input type="hidden" name="latitude[]" id="edit' +
             editCount + '-latitude" value="0" /><input type="hidden" name="longitude[]" id="edit' +
             editCount +
-            '-longitude" value="0" /></div></div><div class="col-md-3"><div class="form-group" id=""><input type="text"  class="form-control" placeholder="Post Code" name="post_code[]"></div></div></div>'
+            '-longitude" value="0" /></div></div><div class="col-md-3"><div class="form-group" id=""><input type="text" id="edit' +
+                editCount + '-postcode" class="form-control" placeholder="Post Code" name="post_code[]"></div></div></div>'
             );
 
         autocompletesWraps.indexOf('edit' + editCount) === -1 ? autocompletesWraps.push('edit' + editCount) :

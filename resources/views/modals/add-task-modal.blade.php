@@ -146,7 +146,7 @@
                                 </div>
                                 <input type="hidden" name="latitude[]" id="addHeader1-latitude" value="0" class="cust_latitude" />
                                 <input type="hidden" name="longitude[]" id="addHeader1-longitude" value="0" class="cust_longitude" />
-                                {!! Form::text('post_code[]', null, ['class' => 'form-control address','placeholder' => 'Post Code']) !!}
+                                {!! Form::text('post_code[]', null, ['class' => 'form-control address postcode','placeholder' => 'Post Code','id'=>'addHeader1-postcode']) !!}
                                 {!! Form::text('barcode[]', null, ['class' => 'form-control barcode','placeholder' => 'Task Barcode']) !!}
                                 <span class="invalid-feedback" role="alert">
                                     <strong></strong>
