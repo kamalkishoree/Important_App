@@ -27,6 +27,7 @@ use App\Model\ClientPreference;
 use App\Model\DriverGeo;
 use App\Model\NotificationEvent;
 use App\Model\NotificationType;
+use App\Model\SmtpDetail;
 use App\Model\PricingRule;
 use Illuminate\Support\Arr;
 use Log;
@@ -48,6 +49,9 @@ class TaskController extends BaseController
         } else {
             $note = '';
         }
+
+        //set dynamic smtp for email send
+        $this->setMailDetail($client_details);
 
         // $cheking = NotificationEvent::is_checked_sms();
 
@@ -222,6 +226,25 @@ class TaskController extends BaseController
         return response()->json([
             'data' => $newDetails,
         ]);
+    }
+
+    public function setMailDetail($client)
+    {
+      
+        $mail = SmtpDetail::where('client_id',$client->id)->first();
+
+        $config = array(
+            'host'       => $mail->host,
+            'port'       => $mail->port,
+            'from'       => array('name' => $client->name),
+            'encryption' => $mail->encryption,
+            'username'   => $mail->username,
+            'password'   => $mail->password
+        );
+
+            Config::set('mail', $config);
+
+            return;
     }
 
     public function TaskUpdateReject(Request $request)
