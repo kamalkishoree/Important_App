@@ -67,6 +67,7 @@ Route::group(['prefix' => '/godpanel'], function () {
 			Route::post('client_preference/{id}', 'ClientController@storePreference')->name('preference');
 			Route::post('task/proof','ClientController@taskProof')->name('task.proof');
 			Route::get('configure', 'ClientController@ShowConfiguration')->name('configure');
+			Route::post('smtp/save','ClientController@saveSmtp')->name('smtp');
 			Route::get('options', 'ClientController@ShowOptions')->name('options');
 			// Route::resource('client','ClientController');
 			Route::resource('agent', 'AgentController');

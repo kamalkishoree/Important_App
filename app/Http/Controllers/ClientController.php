@@ -19,6 +19,7 @@ use App\Model\Cms;
 use App\Model\SubClient;
 use App\Model\TaskProof;
 use App\Model\TaskType;
+use App\Model\SmtpDetail;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Redis;
 use Session;
@@ -327,11 +328,11 @@ class ClientController extends Controller
      */
     public function ShowConfiguration()
     {
-        $preference = ClientPreference::where('client_id',Auth::user()->code)->first();
-        $client = Auth::user();
+        $preference  = ClientPreference::where('client_id',Auth::user()->code)->first();
+        $client      = Auth::user();
         $subClients  = SubClient::all();
-
-        return view('configure')->with(['preference' => $preference, 'client' => $client,'subClients'=> $subClients]);
+        $smtp        = SmtpDetail::where('id',1)->first();
+        return view('configure')->with(['preference' => $preference, 'client' => $client,'subClients'=> $subClients,'smtp_details'=>$smtp]);
     }
 
     /**
@@ -384,5 +385,30 @@ class ClientController extends Controller
         
     }
 
+    public function saveSmtp(Request $request)
+    {
+
+            $check = SmtpDetail::where('id',1)->first();
+
+            if(isset($check)){
+                $update                     = SmtpDetail::find(1);
+            }else{
+                $update                     = new SmtpDetail;
+            }
+                
+                $update->client_id          = Auth::user()->id;
+                $update->driver             = 'smtp';
+                $update->host               = $request->host;
+                $update->port               = $request->port;
+                $update->encryption         = $request->encryption;
+                $update->username           = $request->username;
+                $update->password           = $request->password;
+                $update->from_address       = $request->from_address;
+
+                $update->save();
+
+                return redirect()->route('configure')->with('success', 'Configure updated successfully!');
+    }
+    
 
 }

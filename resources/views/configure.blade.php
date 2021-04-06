@@ -255,6 +255,128 @@
 
         </div>
 
+        <div class="row">
+
+            <div class="col-xl-11">
+                <form method="POST" action="{{ route('smtp') }}">
+                    @csrf
+                    <div class="card-box same-size">
+                        <h4 class="header-title">Email-SMTP</h4>
+                        <p class="sub-header">
+                        </p>
+                        <div class="row mb-2">
+
+                            <div class="col-md-4">
+                                <div class="form-group mb-3">
+                                    <label for="host">Host</label>
+                                    <input type="text" name="host" id="host"
+                                        placeholder="smtp.mailgun.org" class="form-control"
+                                        value="{{ old('host', $smtp_details->host ?? '') }}">
+                                    @if ($errors->has('host'))
+                                        <span class="text-danger" role="alert">
+                                            <strong>{{ $errors->first('host') }}</strong>
+                                        </span>
+                                    @endif
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <div class="form-group mb-3">
+                                    <label for="port">Port</label>
+                                    <input type="text" name="port" id="port"
+                                        placeholder="587" class="form-control"
+                                        value="{{ old('port', $smtp_details->port ?? '') }}">
+                                    @if ($errors->has('port'))
+                                        <span class="text-danger" role="alert">
+                                            <strong>{{ $errors->first('port') }}</strong>
+                                        </span>
+                                    @endif
+                                </div>
+                            </div>
+
+
+                            <div class="col-md-4">
+                                <div class="form-group mb-3">
+                                    <label for="encryption">Encryption</label>
+                                    <select class="form-control" id="encryption" name="encryption">
+                                        <option value="tls">
+                                            tls</option>
+                                    </select>
+                                    @if ($errors->has('sms_provider'))
+                                        <span class="text-danger" role="alert">
+                                            <strong>{{ $errors->first('sms_provider') }}</strong>
+                                        </span>
+                                    @endif
+                                </div>
+                            </div>
+
+                           
+                            
+                        </div>
+                        {{-- <div class="row mb-0">
+                        <div class="col-md-6">
+                            <p class="sub-header">
+                                To Configure your Bumbl SMS Service, go to <a href="#">Bumble Dashboard</a>
+                            </p>
+                        </div>
+                    </div> --}}
+                        <div class="row mb-2">
+
+                            <div class="col-md-4">
+                                <div class="form-group mb-3">
+                                    <label for="username">User-Name</label>
+                                    <input type="text" name="username" id="username"
+                                        placeholder="user@gmail.com" class="form-control"
+                                        value="{{ old('username', $smtp_details->username ?? '') }}">
+                                    @if ($errors->has('user_name'))
+                                        <span class="text-danger" role="alert">
+                                            <strong>{{ $errors->first('user_name') }}</strong>
+                                        </span>
+                                    @endif
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <div class="form-group mb-3">
+                                    <label for="password">Password</label>
+                                    <input type="text" name="password" id="password"
+                                        placeholder="********" class="form-control"
+                                        value="{{ old('password', $smtp_details->password ?? '') }}">
+                                    @if ($errors->has('password'))
+                                        <span class="text-danger" role="alert">
+                                            <strong>{{ $errors->first('password') }}</strong>
+                                        </span>
+                                    @endif
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group mb-3">
+                                    <label for="from_address">Form Address</label>
+                                    <input type="text" name="from_address" id="from_address"
+                                        placeholder="user@gmail.com" class="form-control"
+                                        value="{{ old('from_address', $smtp_details->from_address ?? '') }}">
+                                    @if ($errors->has('from_address'))
+                                        <span class="text-danger" role="alert">
+                                            <strong>{{ $errors->first('from_address') }}</strong>
+                                        </span>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-md-2">
+                                <div class="form-group mb-0 text-center">
+                                    <button class="btn btn-blue btn-block" type="submit"> Update </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+
+
 
         <div style="display:none;">
             <form method="POST" action="{{ route('preference', Auth::user()->code) }}">

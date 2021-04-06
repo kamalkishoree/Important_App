@@ -27,6 +27,7 @@ use App\Model\ClientPreference;
 use App\Model\DriverGeo;
 use App\Model\NotificationEvent;
 use App\Model\NotificationType;
+use App\Model\SmtpDetail;
 use App\Model\PricingRule;
 use Illuminate\Support\Arr;
 use Log;
@@ -48,6 +49,9 @@ class TaskController extends BaseController
         } else {
             $note = '';
         }
+
+        //set dynamic smtp for email send
+        $this->setMailDetail($client_details);
 
         // $cheking = NotificationEvent::is_checked_sms();
 
@@ -199,12 +203,12 @@ class TaskController extends BaseController
             $client_logo   = 'https://imgproxy.royodispatch.com/insecure/fit/300/100/sm/0/plain/'.Storage::disk('s3')->url($client_details->logo);
             $agent_profile = 'https://imgproxy.royodispatch.com/insecure/fit/300/100/sm/0/plain/'.Storage::disk('s3')->url($order_details->agent->profile_picture ?? 'assets/client_00000051/agents605b6deb82d1b.png/XY5GF0B3rXvZlucZMiRQjGBQaWSFhcaIpIM5Jzlv.jpg');
 
-          
+            // $mail = SmtpDetail::where('client_id',$client_details->id)->first();
 
             try {
 
                 \Mail::send('email.verify', ['customer_name' => $order_details->customer->name,'content' => $sms_body,'agent_name' => $order_details->agent->name,'agent_profile' =>$agent_profile,'number_plate' =>$order_details->agent->plate_number,'client_logo'=>$client_logo,'link'=>$link], function ($message) use($sendto,$client_details) {
-                    $message->from('anilchoudharydev11@gmail.com','Royo Dispatch');
+                    $message->from($client_details->email,$client_details->name);
                     $message->to($sendto)->subject('Order Update (g78ff) |'.$client_details->company_name);
                 });
             } catch (\Exception $e) {
@@ -222,6 +226,25 @@ class TaskController extends BaseController
         return response()->json([
             'data' => $newDetails,
         ]);
+    }
+
+    public function setMailDetail($client)
+    {
+      
+        $mail = SmtpDetail::where('client_id',$client->id)->first();
+
+        $config = array(
+            'host'       => $mail->host,
+            'port'       => $mail->port,
+            'from'       => array('name' => $client->name),
+            'encryption' => $mail->encryption,
+            'username'   => $mail->username,
+            'password'   => $mail->password
+        );
+
+            Config::set('mail', $config);
+
+            return;
     }
 
     public function TaskUpdateReject(Request $request)
