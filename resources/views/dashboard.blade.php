@@ -17,8 +17,12 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
     <div class="col-md-4 col-xl-3 left-sidebar pt-3">
         <div id="accordion">
             <div class="card no-border-radius">
-               
-
+                
+                <?php
+                    //for ($u=0; $u < count($routedata) ; $u++) { ?>
+                        {{-- <span id="directions-panel<?=$u?>"></span>
+                        <span id="waypoints<?=//$u?>"></span> --}}
+                    <?php //} ?>
                     <div class="card-header" id="heading-1">
 
                             <a role="button" data-toggle="collapse" href="#collapse-new"
@@ -112,6 +116,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                 
             </div>
             <div class="card no-border-radius">
+                
                 @foreach ($teams as $item)
                     
                    
@@ -429,6 +434,19 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
 
 @endsection
 
+<?php
+//$aagent = array();
+// foreach ($agents as $singleagent) {
+//     if(is_array($singleagent['agentlog']))
+//     {
+//         $aagent[] = $singleagent['agentlog'];
+//     }
+    
+// }
+// echo "<pre>";
+// print_r($aagent); die;
+?>
+
 
 @section('script')
 
@@ -442,12 +460,11 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
 <script src="{{asset('assets/js/pages/form-pickers.init.js')}}"></script> --}}
 {{-- <script src="{{ asset('demo/js/propeller.min.js') }}"></script>
 --}}
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-timeago/1.6.3/jquery.timeago.js"></script>
 <script>
+
 $(document).ready(function() {
 initMap();
 $('#shortclick').trigger('click');
-$(".timeago").timeago();
 });
 
 
@@ -699,9 +716,15 @@ for (let i = 0; i < allagent.length; i++) {
 
 
 
+
 function initMap() {
 
-    console.log(allagent);
+    //console.log(allagent);
+
+    // const directionsService = new google.maps.DirectionsService();
+    // const directionsRenderer = new google.maps.DirectionsRenderer({suppressMarkers: true});
+
+
     const haightAshbury = {
         lat: allagent[0].agentlog && allagent[0].agentlog['lat']  != "0.00000000" ? parseFloat(allagent[0].agentlog['lat']): 30.7046,
         lng: allagent[0].agentlog && allagent[0].agentlog['long'] != "0.00000000" ? parseFloat(allagent[0].agentlog['long']):76.7179
@@ -713,6 +736,48 @@ function initMap() {
         mapTypeId: "roadmap",
         styles: themeType,
     });
+
+    //directionsRenderer.setMap(map);
+    //calculateAndDisplayRoute(directionsService, directionsRenderer,map);
+
+    //new code for route
+    var color = [
+        "blue",
+        "green",
+        "red",
+        "purple",
+        "skyblue",
+        "yellow",
+        "orange",
+        
+        ];
+
+    var allroutes = {!! json_encode($routedata) !!};
+    $.each(allroutes, function(i, item) {
+        const directionsService = new google.maps.DirectionsService();
+        const directionsRenderer = new google.maps.DirectionsRenderer({suppressMarkers: true});
+        if(i < color.length)
+        {
+            var routecolor = color[i];
+        }else{
+            var routecolor = "pink";
+        }
+        
+        directionsRenderer.setOptions({
+            polylineOptions: {
+                strokeColor: routecolor                
+            }
+        });
+        directionsRenderer.setMap(map);
+
+        var al_task = allroutes[i].task_details;
+        var agent_locatn = allroutes[i].driver_detail;
+        calculateAndDisplayRoute(directionsService, directionsRenderer,map,al_task,agent_locatn);
+    });
+
+   
+
+
 
     // Adds a marker at the center of the map.
     for (let i = 0; i < olddata.length; i++) {
@@ -781,11 +846,67 @@ function initMap() {
 }
 
 
+
+function calculateAndDisplayRoute(directionsService, directionsRenderer,map,alltask,agent_location) {    
+            const waypts = [];
+            const checkboxArray = document.getElementById("waypoints");
+
+            for (let i = 0; i < alltask.length; i++) {
+                if (i != alltask.length - 1 && alltask[i].task_status != 4 && alltask[i].task_status != 5 ) {
+                   console.log(alltask[i]);
+                    waypts.push({
+                        location: new google.maps.LatLng(parseFloat(alltask[i].latitude), parseFloat(alltask[i]
+                            .longitude)),
+                        stopover: true,
+                    });
+
+                    
+                }
+                var image = url+'/assets/newicons/'+alltask[i].task_type_id+'.png';
+
+                // makeMarker({lat: parseFloat(alltask[i].latitude),lng:  parseFloat(alltask[i]
+                //             .longitude)},image,map);
+            }
+
+            directionsService.route({
+                    origin: new google.maps.LatLng(parseFloat(agent_location.lat), parseFloat(agent_location.long)),
+                    destination: new google.maps.LatLng(parseFloat(alltask[alltask.length - 1].latitude),
+                        parseFloat(alltask[alltask.length - 1].longitude)),
+                    waypoints: waypts,
+                    optimizeWaypoints: false,
+                    travelMode: google.maps.TravelMode.DRIVING,
+                },
+                (response, status) => {
+                    if (status === "OK" && response) {
+                        directionsRenderer.setDirections(response);
+                        // const route = response.routes[0];
+                        // const summaryPanel = document.getElementById("directions-panel"+m);
+                        // summaryPanel.innerHTML = "";
+
+                        // // For each route, display summary information.
+                        // for (let i = 0; i < route.legs.length; i++) {
+                        //     const routeSegment = i + 1;
+                        //     summaryPanel.innerHTML +=
+                        //         "<b>Route Segment: " + routeSegment + "</b><br>";
+                        //     summaryPanel.innerHTML += route.legs[i].start_address + " to ";
+                        //     summaryPanel.innerHTML += route.legs[i].end_address + "<br>";
+                        //     summaryPanel.innerHTML += route.legs[i].distance.text + "<br><br>";
+                        // }
+                    } else {
+                        window.alert("Directions request failed due to " + status);
+                    }
+                }
+            );
+        }
+
+
+
+
 // Adds a marker to the map and push to the array.
 function addMarker(location, lables, images,data,type) {
 
     var contentString = '';
-    images
+
     if(type == 1){
         contentString =
         '<div id="content">' +
@@ -803,19 +924,17 @@ function addMarker(location, lables, images,data,type) {
         img = data['image_url'];
         //console.log(img);
         contentString =
-        '<div style="width:48%;display:inline-block">'+
+        '<div style="float:left">'+
         '<img src="https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain/'+data['image_url']+'">'+
         "</div>"+
-        '<div style="width:48%;display:inline-block;vertical-align:middle;margin-left:5px;"><b>'+data['name']+'</b><br/><br/>'+data['phone_number']+'</div>'+
-        '<div style="margin-top:8px;"><b><img src="{{ asset("demo/images/clock.png") }}"> : '+jQuery.timeago(new Date(data['agentlog']['created_at']))+'</b><br/><br/><img src="{{ asset("demo/images/operating-system.png") }}"> : '+data['agentlog']['os_version']+'</div>'+
-        '<div style="float:left;"><b> <img src="{{ asset("demo/images/battery-status.png") }}"> :  '+data['agentlog']['battery_level']+'%</b><br/>      <br/></div>';
+        '<div style="float:right; padding: 10px;"><b>'+data['name']+'</b><br/><br/>'+data['phone_number']+'</div>';
     }
 
 
 
     const infowindow = new google.maps.InfoWindow({
         content: contentString,
-        Width: 250,
+        maxWidth: 250,
         maxheight: 250,
     });
 
@@ -876,6 +995,14 @@ $(".datetime").on('change', function postinput(){
     window.location.href = newabc;
 
 });
+
+// function makeMarker( position,icon,map) {
+//             new google.maps.Marker({
+//             position: position,
+//             map: map,
+//             icon: icon,
+//             });
+//          }
 
 </script>
 

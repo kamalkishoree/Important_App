@@ -107,7 +107,7 @@ class DashBoardController extends Controller
         //create array for map marker
 
         $allTasks = Order::whereDate('order_time', $date)->with(['customer', 'task.location', 'agent.team'])->get();
-
+        //echo "<pre>"; print_r($allTasks); die;
         $newmarker = [];
 
         foreach ($allTasks as $key => $tasks) {
@@ -131,6 +131,7 @@ class DashBoardController extends Controller
                 $append['task_status']           = (int)$task->task_status;
                 $append['team_id']               = isset($tasks->driver_id) ? $tasks->agent->team_id : 0;
                 $append['driver_name']           = isset($tasks->driver_id) ? $tasks->agent->name : '';
+                $append['driver_id']             = isset($tasks->driver_id) ? $tasks->driver_id : '';
                 $append['customer_name']         = $tasks->customer->name;
                 $append['customer_phone_number'] = $tasks->customer->phone_number;
 
@@ -150,7 +151,103 @@ class DashBoardController extends Controller
         $agents = Agent::with('agentlog')->get()->toArray();
         $preference  = ClientPreference::where('id',1)->first(['theme','date_format','time_format']);
        // print_r($preference); die;
-        return view('dashboard')->with(['teams' => $teams, 'newmarker' => $newmarker, 'unassigned' => $unassigned, 'agents' => $agents,'date'=> $date,'preference' =>$preference]);
+
+    //    echo "<pre>"; 
+    //    echo "tasks";
+    //    print_r($newmarker); die;
+    //    echo "agent";
+
+       //print_r($agents); die; 
+
+    
+       $uniquedrivers = array();       
+       $j = 0;
+        foreach ($agents as $singleagent) {
+            if(is_array($singleagent['agentlog']))
+            {
+                
+                $taskarray = array();
+                foreach($newmarker as $singlemark)
+                {
+                    if($singlemark['driver_id'] == $singleagent['agentlog']['agent_id'])
+                    {
+                        $taskarray[] = $singlemark;
+                        
+                    }
+                }
+                if(!empty($taskarray))
+                {
+                    $uniquedrivers[$j]['driver_detail'] = $singleagent['agentlog'];
+                    $uniquedrivers[$j]['task_details'] = $taskarray;
+                    $j++;                    
+                }
+                
+            }
+
+            
+        }
+        
+        // echo "<pre>";
+        // print_r($uniquedrivers); die;
+
+        //for route optimization
+        $routeoptimization = array();
+        foreach($uniquedrivers as $singledriver)
+        {
+            if(count($singledriver['task_details'])>1)
+            {   
+                $points[] = array($singledriver['driver_detail']['lat'],$singledriver['driver_detail']['long']);
+                foreach($singledriver['task_details'] as $singletask)
+                {
+                    $points[] = array($singletask['latitude'],$singletask['longitude']);
+                }
+                
+
+
+                $routeoptimization[$singledriver['driver_detail']['agent_id']] = $points;
+            }
+        }
+
+        //create distance matrix
+        foreach($routeoptimization as $key=>$value)
+        {
+            $matrixarray = array();
+
+            
+            for ($i=0; $i < count($value); $i++) { 
+
+                for ($k=0; $k < count($value); $k++) { 
+                    if($i==$k)
+                    {
+                        $matrixarray[$i][$k] = 0; 
+                    }elseif($i > $k)
+                    {
+                       $matrixarray[$i][$k] = $matrixarray[$k][$i];
+                    }else{
+                        $distance = $this->GoogleDistanceMatrix($value[$i][0],$value[$i][1],$value[$k][0],$value[$k][1] );                    
+                        $matrixarray[$i][$k] = $distance;
+                    }
+                    // $distance = $this->GoogleDistanceMatrix($value[$i][0],$value[$i][1],$value[$k][0],$value[$k][1] );
+                    
+                    // $matrixarray[$i][$k] = $distance; 
+                }
+                
+            }
+
+            //echo json_encode($matrixarray);
+
+        }
+
+       
+
+
+
+        //    echo "<pre>"; 
+        //    print_r($routeoptimization); die;
+
+
+        
+        return view('dashboard')->with(['teams' => $teams, 'newmarker' => $newmarker, 'unassigned' => $unassigned, 'agents' => $agents,'date'=> $date,'preference' =>$preference, 'routedata' => $uniquedrivers]);
     }
 
     /**
@@ -218,4 +315,28 @@ class DashBoardController extends Controller
     {
         //
     }
+
+    public function GoogleDistanceMatrix($lat1,$long1,$lat2,$long2)
+    {
+        $client = ClientPreference::where('id',1)->first();        
+        $ch = curl_init();
+        $headers = array('Accept: application/json',
+                   'Content-Type: application/json',
+                   );
+        $url =  'https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&origins='.$lat1.','.$long1.'&destinations='.$lat2.','.$long2.'&key='.$client->map_key_1.'';
+        curl_setopt($ch, CURLOPT_URL,$url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        $response = curl_exec($ch);
+        $result = json_decode($response);
+        curl_close($ch); // Close the connection
+        
+        $value =   $result->rows[0]->elements;
+        $totalDistance = $value[0]->distance->value;
+        return round($totalDistance);
+      
+        
+
+    }
+
 }

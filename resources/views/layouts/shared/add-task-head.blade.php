@@ -253,6 +253,7 @@
         $('.datetime-datepicker').flatpickr({
             enableTime: true,
             dateFormat: "Y-m-d H:i"
+            //wrap:true,
         });
 
         $('.selectpicker').selectpicker();
@@ -543,7 +544,8 @@
 
           var dateredio = $("#dateredio input[type='radio']:checked").val();
           if (dateredio == 'schedule') {
-              $(".datenow").show();
+            $(".datenow").show();
+            $(".opendatepicker").focus();
           }else{
               $(".datenow").hide();
           }

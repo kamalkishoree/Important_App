@@ -10,6 +10,7 @@
     "require": {
         "php": "^7.2.5",
         "artisangang/jwt": "^0.2.0",
+        "beyondcode/laravel-websockets": "^1.11",
         "darkaonline/l5-swagger": "^8.0",
         "doctrine/dbal": "^2.10",
         "fideloper/proxy": "^4.2",
@@ -24,6 +25,7 @@
         "lcobucci/jwt": "3.3.3",
         "league/flysystem-aws-s3-v3": "~1.0",
         "predis/predis": "^1.1",
+        "pusher/pusher-php-server": "~3.0",
         "r0bdiablo/laravel5-phumbor": "^1.0",
         "rinvex/countries": "^6.1",
         "sarav/laravel-multiauth": "dev-master",
