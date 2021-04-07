@@ -148,6 +148,7 @@
                                 <input type="hidden" name="longitude[]" id="addHeader1-longitude" value="0" class="cust_longitude" />
                                 {!! Form::text('post_code[]', null, ['class' => 'form-control address postcode','placeholder' => 'Post Code','id'=>'addHeader1-postcode']) !!}
                                 {!! Form::text('barcode[]', null, ['class' => 'form-control barcode','placeholder' => 'Task Barcode']) !!}
+                                {!! Form::text('quantity[]', null, ['class' => 'form-control quantity mt-1','placeholder' => 'Quantity']) !!}
                                 <span class="invalid-feedback" role="alert">
                                     <strong></strong>
                                 </span>

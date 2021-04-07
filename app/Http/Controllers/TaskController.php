@@ -214,7 +214,8 @@ class TaskController extends Controller
                 'task_status'                => $agent_id != null ? 1 : 0,
                 'created_at'                 => $notification_time,
                 'assigned_time'              => $notification_time,
-                'barcode'                    => $request->barcode[$key]
+                'barcode'                    => $request->barcode[$key],
+                'quantity'                   => $request->quantity[$key]
             ];
             $task = Task::create($data);
             $dep_id = $task->id;
@@ -473,7 +474,6 @@ class TaskController extends Controller
     public function store(Request $request)
     {
        
-
         
         $loc_id = $cus_id = $send_loc_id = $newlat = $newlong = 0;
 
@@ -622,7 +622,8 @@ class TaskController extends Controller
                 'task_status'                => $agent_id != null ? 1 : 0,
                 'created_at'                 => $notification_time,
                 'assigned_time'              => $notification_time,
-                'barcode'                    => $request->barcode[$key]
+                'barcode'                    => $request->barcode[$key],
+                'quantity'                   => $request->quantity[$key]
             ];
             $task = Task::create($data);
             $dep_id = $task->id;
@@ -1644,7 +1645,7 @@ class TaskController extends Controller
         } else {
             $array = '';
         }
-
+       
 
 
         return view('tasks/update-task')->with(['task' => $task, 'teamTag' => $teamTag, 'agentTag' => $agentTag, 'agents' => $agents, 'images' => $array, 'savedrivertag' => $savedrivertag, 'saveteamtag' => $saveteamtag, 'main' => $lastbaseurl]);
@@ -1777,7 +1778,8 @@ class TaskController extends Controller
                 'allocation_type'            => $request->allocation_type,
                 'dependent_task_id'          => $dep_id,
                 'task_status'                => isset($agent_id) ? 1 : 0,
-                'barcode'                    => $request->barcode[$key]
+                'barcode'                    => $request->barcode[$key],
+                'quantity'                   => $request->quantity[$key]
             ];
             $task = Task::create($data);
             $dep_id = $task->id;

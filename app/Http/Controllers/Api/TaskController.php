@@ -31,6 +31,11 @@ use App\Model\SmtpDetail;
 use App\Model\PricingRule;
 use Illuminate\Support\Arr;
 use Log;
+use Config;
+use Closure;  
+use Mail;  
+use App;
+
 use Twilio\Rest\Client as TwilioClient;
 
 class TaskController extends BaseController
@@ -38,7 +43,7 @@ class TaskController extends BaseController
 
     public function updateTaskStatus(Request $request)
     {
-        
+       
         $header = $request->header();
         $client_details = Client::where('database_name',$header['client'][0])->first();
         $proof_image = '';
@@ -49,9 +54,9 @@ class TaskController extends BaseController
         } else {
             $note = '';
         }
-
+     
         //set dynamic smtp for email send
-        $this->setMailDetail($client_details);
+       $this->setMailDetail($client_details);
 
         // $cheking = NotificationEvent::is_checked_sms();
 
@@ -203,13 +208,13 @@ class TaskController extends BaseController
             $client_logo   = 'https://imgproxy.royodispatch.com/insecure/fit/300/100/sm/0/plain/'.Storage::disk('s3')->url($client_details->logo);
             $agent_profile = 'https://imgproxy.royodispatch.com/insecure/fit/300/100/sm/0/plain/'.Storage::disk('s3')->url($order_details->agent->profile_picture ?? 'assets/client_00000051/agents605b6deb82d1b.png/XY5GF0B3rXvZlucZMiRQjGBQaWSFhcaIpIM5Jzlv.jpg');
 
-            // $mail = SmtpDetail::where('client_id',$client_details->id)->first();
-
+            $mail = SmtpDetail::where('client_id',$client_details->id)->first();
+            
             try {
-
-                \Mail::send('email.verify', ['customer_name' => $order_details->customer->name,'content' => $sms_body,'agent_name' => $order_details->agent->name,'agent_profile' =>$agent_profile,'number_plate' =>$order_details->agent->plate_number,'client_logo'=>$client_logo,'link'=>$link], function ($message) use($sendto,$client_details) {
-                    $message->from($client_details->email,$client_details->name);
-                    $message->to($sendto)->subject('Order Update (g78ff) |'.$client_details->company_name);
+               
+                \Mail::send('email.verify', ['customer_name' => $order_details->customer->name,'content' => $sms_body,'agent_name' => $order_details->agent->name,'agent_profile' =>$agent_profile,'number_plate' =>$order_details->agent->plate_number,'client_logo'=>$client_logo,'link'=>$link], function ($message) use($sendto,$client_details,$mail) {
+                    $message->from($mail->from_address,$client_details->name);
+                    $message->to($sendto)->subject('Order Update |'.$client_details->company_name);
                 });
             } catch (\Exception $e) {
     
@@ -230,19 +235,31 @@ class TaskController extends BaseController
 
     public function setMailDetail($client)
     {
-      
+       // print_r($client);
+        
         $mail = SmtpDetail::where('client_id',$client->id)->first();
+        
+      
+        if(isset($mail)){
 
-        $config = array(
-            'host'       => $mail->host,
-            'port'       => $mail->port,
-            'from'       => array('name' => $client->name),
-            'encryption' => $mail->encryption,
-            'username'   => $mail->username,
-            'password'   => $mail->password
-        );
+            $config = array(
+                'driver'     => $mail->driver,
+                'host'       => $mail->host,
+                'port'       => $mail->port,
+                'encryption' => $mail->encryption,
+                'username'   => $mail->username,
+                'password'   => $mail->password,
+                'sendmail'   => '/usr/sbin/sendmail -bs',
+                'pretend'    => false,
+            );
+           
 
             Config::set('mail', $config);
+
+            $app = App::getInstance();
+            $app->register('Illuminate\Mail\MailServiceProvider');
+        }
+            
 
             return;
     }

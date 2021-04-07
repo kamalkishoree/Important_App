@@ -460,11 +460,13 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
 <script src="{{asset('assets/js/pages/form-pickers.init.js')}}"></script> --}}
 {{-- <script src="{{ asset('demo/js/propeller.min.js') }}"></script>
 --}}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-timeago/1.6.3/jquery.timeago.js"></script>
 <script>
 
 $(document).ready(function() {
 initMap();
 $('#shortclick').trigger('click');
+$(".timeago").timeago();
 });
 
 
@@ -908,6 +910,7 @@ function addMarker(location, lables, images,data,type) {
     var contentString = '';
 
     if(type == 1){
+
         contentString =
         '<div id="content">' +
         '<div id="siteNotice">' +
@@ -920,14 +923,18 @@ function addMarker(location, lables, images,data,type) {
         '<p><b>Customer: '+data['customer_name']+'</b>('+data['customer_phone_number']+') </p>' +
         "</div>" +
         "</div>";
+
     }else{
+
         img = data['image_url'];
         //console.log(img);
         contentString =
-        '<div style="float:left">'+
+        '<div style="width:48%;display:inline-block">'+
         '<img src="https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain/'+data['image_url']+'">'+
         "</div>"+
-        '<div style="float:right; padding: 10px;"><b>'+data['name']+'</b><br/><br/>'+data['phone_number']+'</div>';
+        '<div style="width:48%;display:inline-block;vertical-align:middle;margin-left:5px;"><b>'+data['name']+'</b><br/><br/>'+data['phone_number']+'</div>'+
+        '<div style="margin-top:8px;"><b><img src="{{ asset("demo/images/clock.png") }}"> : '+jQuery.timeago(new Date(data['agentlog']['created_at']))+'</b><br/><br/><img src="{{ asset("demo/images/operating-system.png") }}"> : '+data['agentlog']['device_type']+'</div>'+
+        '<div style="float:left;margin-top:10px;"><b> <img src="{{ asset("demo/images/battery-status.png") }}"> :  '+data['agentlog']['battery_level']+'%</b><br/>      <br/></div>';
     }
 
 
