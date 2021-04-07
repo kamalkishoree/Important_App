@@ -514,8 +514,8 @@
                 geocoder.geocode({'placeId': place.place_id}, function (results, status) {
                     
                     if (status === google.maps.GeocoderStatus.OK) {
+                        const postCode = results[0].address_components.find(addr => addr.types[0] === "postal_code").short_name;
                        
-                        var postCode = results[0].address_components[7].long_name;
                         const lat = results[0].geometry.location.lat();
                         const lng = results[0].geometry.location.lng();
                         //console.log(name+'-input');

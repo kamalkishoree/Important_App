@@ -271,7 +271,7 @@
                                     <label for="host">Host</label>
                                     <input type="text" name="host" id="host"
                                         placeholder="smtp.mailgun.org" class="form-control"
-                                        value="{{ old('host', $smtp_details->host ?? '') }}">
+                                        value="{{ old('host', $smtp_details->host ?? '') }}" required>
                                     @if ($errors->has('host'))
                                         <span class="text-danger" role="alert">
                                             <strong>{{ $errors->first('host') }}</strong>
@@ -285,7 +285,7 @@
                                     <label for="port">Port</label>
                                     <input type="text" name="port" id="port"
                                         placeholder="587" class="form-control"
-                                        value="{{ old('port', $smtp_details->port ?? '') }}">
+                                        value="{{ old('port', $smtp_details->port ?? '') }}" required>
                                     @if ($errors->has('port'))
                                         <span class="text-danger" role="alert">
                                             <strong>{{ $errors->first('port') }}</strong>
@@ -327,7 +327,7 @@
                                     <label for="username">User-Name</label>
                                     <input type="text" name="username" id="username"
                                         placeholder="user@gmail.com" class="form-control"
-                                        value="{{ old('username', $smtp_details->username ?? '') }}">
+                                        value="{{ old('username', $smtp_details->username ?? '') }}" required>
                                     @if ($errors->has('user_name'))
                                         <span class="text-danger" role="alert">
                                             <strong>{{ $errors->first('user_name') }}</strong>
@@ -339,9 +339,9 @@
                             <div class="col-md-4">
                                 <div class="form-group mb-3">
                                     <label for="password">Password</label>
-                                    <input type="text" name="password" id="password"
+                                    <input type="password" name="password" id="password"
                                         placeholder="********" class="form-control"
-                                        value="{{ old('password', $smtp_details->password ?? '') }}">
+                                        value="{{ old('password', $smtp_details->password ?? '') }}" required>
                                     @if ($errors->has('password'))
                                         <span class="text-danger" role="alert">
                                             <strong>{{ $errors->first('password') }}</strong>
@@ -354,7 +354,7 @@
                                     <label for="from_address">Form Address</label>
                                     <input type="text" name="from_address" id="from_address"
                                         placeholder="user@gmail.com" class="form-control"
-                                        value="{{ old('from_address', $smtp_details->from_address ?? '') }}">
+                                        value="{{ old('from_address', $smtp_details->from_address ?? '') }}" required>
                                     @if ($errors->has('from_address'))
                                         <span class="text-danger" role="alert">
                                             <strong>{{ $errors->first('from_address') }}</strong>

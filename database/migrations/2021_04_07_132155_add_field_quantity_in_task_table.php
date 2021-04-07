@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddFieldsInAgentLogTable extends Migration
+class AddFieldQuantityInTaskTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,8 @@ class AddFieldsInAgentLogTable extends Migration
      */
     public function up()
     {
-        Schema::table('agent_logs', function (Blueprint $table) {
-            $table->renameColumn('android_version', 'os_version');
-            $table->string('device_type')->nullable();
+        Schema::table('tasks', function (Blueprint $table) {
+            $table->integer('quantity')->nullable();
         });
     }
 
@@ -26,7 +25,7 @@ class AddFieldsInAgentLogTable extends Migration
      */
     public function down()
     {
-        Schema::table('agent_logs', function (Blueprint $table) {
+        Schema::table('tasks', function (Blueprint $table) {
             //
         });
     }

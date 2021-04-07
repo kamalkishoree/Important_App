@@ -203,6 +203,9 @@
                                                     'class' => 'form-control address',
                                                     'placeholder' => 'Barcode',
                                                     ]) !!}
+
+                                                {!! Form::text('quantity[]', $item->quantity, ['class' => 'form-control quantity','placeholder' => 'Quantity']) !!}
+
                                                 <span class="invalid-feedback" role="alert">
                                                     <strong></strong>
                                                 </span>
