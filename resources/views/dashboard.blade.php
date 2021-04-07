@@ -146,6 +146,20 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
 
 
                             @foreach ($item['agents'] as $agent)
+
+                                <?php
+                                if(isset($distance_matrix[$agent['id']]))
+                                {
+                                    //print_r($distance_matrix[$agent['id']]); 
+                                    $routeperams = "'".$distance_matrix[$agent['id']]['tasks']."','".json_encode($distance_matrix[$agent['id']]['distance'])."'";
+                                    
+                                    $optimize = '<span onclick="RouteOptimization('.$routeperams.')">Optimize</span>';
+                                }else{
+                                    $optimize="";
+                                }
+                                
+                                ?>
+                            
                                 <div id="accordion-{{ $agent['id'] }}">
                                     <div class="card no-border-radius">
                                         <div class="card-header ml-2" id="by{{ $agent['id'] }}">
@@ -160,7 +174,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                                                 src="{{isset($agent['profile_picture']) ? $imgproxyurl.Storage::disk('s3')->url($agent['profile_picture']):'https://dummyimage.com/36x36/ccc/fff'}}">
                                                         </div>
                                                         <div class="col-md-10 col-10">
-                                                            <h6 class="mb-0 header-title scnd">{{ $agent['name'] }}</h6>
+                                                            <h6 class="mb-0 header-title scnd">{{ $agent['name'] }} {!! $optimize !!} </h6>
                                                             <p class="mb-0">{{count($agent['order'])>0?'Busy  ':'Free  '}}<span>{{$agent['agent_task_count']}} Tasks</span></p>
                                                         </div>
                                                     </div>
@@ -460,12 +474,16 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
 <script src="{{asset('assets/js/pages/form-pickers.init.js')}}"></script> --}}
 {{-- <script src="{{ asset('demo/js/propeller.min.js') }}"></script>
 --}}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-timeago/1.6.3/jquery.timeago.js"></script>
 <script>
 
 $(document).ready(function() {
+
 initMap();
 $('#shortclick').trigger('click');
+$(".timeago").timeago();
 });
+
 
 
 
@@ -924,10 +942,12 @@ function addMarker(location, lables, images,data,type) {
         img = data['image_url'];
         //console.log(img);
         contentString =
-        '<div style="float:left">'+
+        '<div style="width:48%;display:inline-block">'+
         '<img src="https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain/'+data['image_url']+'">'+
         "</div>"+
-        '<div style="float:right; padding: 10px;"><b>'+data['name']+'</b><br/><br/>'+data['phone_number']+'</div>';
+        '<div style="width:48%;display:inline-block;vertical-align:middle;margin-left:5px;"><b>'+data['name']+'</b><br/><br/>'+data['phone_number']+'</div>'+
+        '<div style="margin-top:8px;"><b><img src="{{ asset("demo/images/clock.png") }}"> : '+jQuery.timeago(new Date(data['agentlog']['created_at']))+'</b><br/><br/><img src="{{ asset("demo/images/operating-system.png") }}"> : '+data['agentlog']['device_type']+'</div>'+
+        '<div style="float:left;margin-top:10px;"><b> <img src="{{ asset("demo/images/battery-status.png") }}"> : '+data['agentlog']['battery_level']+'%</b><br/> <br/></div>';
     }
 
 
@@ -1003,6 +1023,26 @@ $(".datetime").on('change', function postinput(){
 //             icon: icon,
 //             });
 //          }
+
+
+function RouteOptimization(taskids,distancematrix) {
+    $.ajax({
+        type: 'POST',
+        
+        url: '{{url("/optimize-route")}}',
+        headers: {
+            'X-CSRF-Token': '{{ csrf_token() }}',
+        },
+        data: {'taskids':taskids,'distance':distancematrix},
+        success: function(response) {
+            location.reload();
+            
+        },
+        error: function(response) {
+            
+        }
+    });
+}
 
 </script>
 

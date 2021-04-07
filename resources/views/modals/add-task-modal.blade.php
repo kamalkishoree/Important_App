@@ -30,6 +30,7 @@
                 <div class="col-md-4 datenow">
                     <input type="text"  name="schedule_time"
                         class="form-control opendatepicker upside datetime-datepicker" placeholder="Date Time">
+                        <button type="button" class="cstmbtn btn btn-info"><i class="fa fa-check" aria-hidden="true"></i></button>
                 </div>
             </div>
 
@@ -148,6 +149,7 @@
                                 <input type="hidden" name="longitude[]" id="addHeader1-longitude" value="0" class="cust_longitude" />
                                 {!! Form::text('post_code[]', null, ['class' => 'form-control address postcode','placeholder' => 'Post Code','id'=>'addHeader1-postcode']) !!}
                                 {!! Form::text('barcode[]', null, ['class' => 'form-control barcode','placeholder' => 'Task Barcode']) !!}
+                                {!! Form::text('quantity[]', null, ['class' => 'form-control quantity mt-1','placeholder' => 'Quantity']) !!}
                                 <span class="invalid-feedback" role="alert">
                                     <strong></strong>
                                 </span>
