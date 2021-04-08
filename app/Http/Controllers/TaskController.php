@@ -1740,6 +1740,7 @@ class TaskController extends Controller
 
                $this->MassAndEditNotification($id,$agent_id);
         }
+        
         if($task_id->driver_cost != 0.00){
             $percentage = $task_id->driver_cost;
         }
