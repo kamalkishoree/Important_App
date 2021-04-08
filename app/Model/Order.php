@@ -21,7 +21,7 @@ class Order extends Model
     }
 
     public function task(){
-        return $this->hasMany('App\Model\Task', 'order_id', 'id');
+        return $this->hasMany('App\Model\Task', 'order_id', 'id')->orderBy('task_order');
         
     }
 

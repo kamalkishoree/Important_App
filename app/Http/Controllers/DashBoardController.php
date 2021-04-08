@@ -42,8 +42,16 @@ class DashBoardController extends Controller
                 'agents.order' => function ($o) use ($date) {
                     $o->whereDate('order_time', $date)->with('customer')->with('task.location');
                 }
+
+                // 'agents.order' => function ($o) use ($date) {
+                //     $o->whereDate('order_time', $date)->with('customer')->with('task' => function ($p) {
+                //         $p->orderBy('task_order')->with('location');
+                //     });
+                // }
             ]
-        )->get();
+        )->get();   
+        
+       // dd($teams);
 
         foreach ($teams as $team) {
             $online  = 0;
@@ -69,6 +77,8 @@ class DashBoardController extends Controller
             $team['offline_agents'] = $offline;
             $agent['agent_count']   = $count;
         }
+
+      //  dd($teams);
 
 
         //left side bar list for display unassigned team
@@ -192,23 +202,27 @@ class DashBoardController extends Controller
 
         //for route optimization
         $routeoptimization = array();
+        $taskarray = array();        
         foreach($uniquedrivers as $singledriver)
         {
             if(count($singledriver['task_details'])>1)
             {   
                 $points[] = array($singledriver['driver_detail']['lat'],$singledriver['driver_detail']['long']);
+                $taskids = array();
                 foreach($singledriver['task_details'] as $singletask)
                 {
                     $points[] = array($singletask['latitude'],$singletask['longitude']);
+                    $taskids[] = $singletask['task_id'];
                 }
                 
 
-
+                $taskarray[$singledriver['driver_detail']['agent_id']] = implode(',',$taskids);
                 $routeoptimization[$singledriver['driver_detail']['agent_id']] = $points;
             }
         }
 
         //create distance matrix
+        $distancematrix = array();
         foreach($routeoptimization as $key=>$value)
         {
             $matrixarray = array();
@@ -233,21 +247,66 @@ class DashBoardController extends Controller
                 }
                 
             }
-
-            //echo json_encode($matrixarray);
-
+            $distancematrix[$key]['tasks'] = $taskarray[$key];
+            $distancematrix[$key]['distance'] = $matrixarray;
         }
 
-       
-
-
-
         //    echo "<pre>"; 
-        //    print_r($routeoptimization); die;
+        //   dd($teams);
+        //    print_r($uniquedrivers); 
+        //    print_r($routeoptimization); 
+        //    print_r($distancematrix);
+           
+        //    print_r($teams); die;
+        // $newteam = array();
+        // foreach($teams as $singleteam)
+        // {
+        //     echo "<pre>";
+        //     // print_r($singleteam->agents); die;
+        //     foreach($singleteam->agents as $singleagent)
+        //     {
+        //         //print_r($singleagent->toArray());
+        //         $newarray = array();
+        //         foreach($singleagent['order'] as $orders)
+        //         {
+        //             if(isset($orders->task))
+        //             {
+        //                 if(count($orders->task)==1)
+        //                 {
+        //                     $newarray[] = $orders;
+        //                 }elseif(count($orders->task)>1){
+        //                     for ($u=0; $u < count($orders->task); $u++) { 
+        //                         $orders->task = $orders->task[$u];
+        //                         $newarray[] = $orders;
+        //                     }
+        //                 }else{
+        //                     $newarray[] = $orders;
+        //                 }
 
+        //             }
+                    
+
+        //             print_r($orders->toArray());
+                    
+                   
+
+        //         }
+        //         // if(isset($singleagent['order']))
+        //         // {
+        //         //     $singleagent['order'] = $newarray;
+        //         // }
+                
+
+        //         //print_r($singleagent->toArray());
+                
+                
+        //     }
+        //     die;
+            
+        // }
 
         
-        return view('dashboard')->with(['teams' => $teams, 'newmarker' => $newmarker, 'unassigned' => $unassigned, 'agents' => $agents,'date'=> $date,'preference' =>$preference, 'routedata' => $uniquedrivers]);
+        return view('dashboard')->with(['teams' => $teams, 'newmarker' => $newmarker, 'unassigned' => $unassigned, 'agents' => $agents,'date'=> $date,'preference' =>$preference, 'routedata' => $uniquedrivers,'distance_matrix' => $distancematrix]);
     }
 
     /**
@@ -337,6 +396,39 @@ class DashBoardController extends Controller
       
         
 
+    }
+
+    public function optimizeRoute(Request $request)
+    {
+        $taskids =  $request->taskids; 
+        // $distance_matrix = '{"data":'.$request->distance.'}'; 
+        $distance_matrix = json_decode($request->distance); 
+        $payload = json_encode(array("data" => $distance_matrix));
+        //return $distance_matrix;
+        //hit the api for getting optimize path
+
+        $url = "https://optimizeroute.royodispatch.com/optimize";
+        $ch = curl_init ($url);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $result = curl_exec($ch);
+        curl_close($ch);
+        if($result)
+        {
+            $taskids = explode(',',$taskids);
+            $newroute = json_decode($result);
+            $routecount = count($newroute->data)-1;
+            for ($i=1; $i < $routecount; $i++) {                 
+                $taskorder = [
+                    'task_order'        => $newroute->data[$i]        
+                 ];                
+                 Task::where('id',$taskids[$i-1])->update($taskorder);
+            }
+            echo "route optimized successfully";
+        }else{
+            echo "Try again later";
+        }
     }
 
 }

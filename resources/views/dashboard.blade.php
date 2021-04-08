@@ -146,6 +146,20 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
 
 
                             @foreach ($item['agents'] as $agent)
+
+                                <?php
+                                if(isset($distance_matrix[$agent['id']]))
+                                {
+                                    //print_r($distance_matrix[$agent['id']]); 
+                                    $routeperams = "'".$distance_matrix[$agent['id']]['tasks']."','".json_encode($distance_matrix[$agent['id']]['distance'])."'";
+                                    
+                                    $optimize = '<span onclick="RouteOptimization('.$routeperams.')">Optimize</span>';
+                                }else{
+                                    $optimize="";
+                                }
+                                
+                                ?>
+                            
                                 <div id="accordion-{{ $agent['id'] }}">
                                     <div class="card no-border-radius">
                                         <div class="card-header ml-2" id="by{{ $agent['id'] }}">
@@ -160,7 +174,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                                                 src="{{isset($agent['profile_picture']) ? $imgproxyurl.Storage::disk('s3')->url($agent['profile_picture']):'https://dummyimage.com/36x36/ccc/fff'}}">
                                                         </div>
                                                         <div class="col-md-10 col-10">
-                                                            <h6 class="mb-0 header-title scnd">{{ $agent['name'] }}</h6>
+                                                            <h6 class="mb-0 header-title scnd">{{ $agent['name'] }} {!! $optimize !!} </h6>
                                                             <p class="mb-0">{{count($agent['order'])>0?'Busy  ':'Free  '}}<span>{{$agent['agent_task_count']}} Tasks</span></p>
                                                         </div>
                                                     </div>
@@ -464,10 +478,12 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
 <script>
 
 $(document).ready(function() {
+
 initMap();
 $('#shortclick').trigger('click');
 $(".timeago").timeago();
 });
+
 
 
 
@@ -1010,6 +1026,26 @@ $(".datetime").on('change', function postinput(){
 //             icon: icon,
 //             });
 //          }
+
+
+function RouteOptimization(taskids,distancematrix) {
+    $.ajax({
+        type: 'POST',
+        
+        url: '{{url("/optimize-route")}}',
+        headers: {
+            'X-CSRF-Token': '{{ csrf_token() }}',
+        },
+        data: {'taskids':taskids,'distance':distancematrix},
+        success: function(response) {
+            location.reload();
+            
+        },
+        error: function(response) {
+            
+        }
+    });
+}
 
 </script>
 

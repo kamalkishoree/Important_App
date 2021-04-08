@@ -95,6 +95,8 @@ Route::group(['prefix' => '/godpanel'], function () {
 
 			Route::post('newtasks','TaskController@newtasks');
 
+			Route::post('optimize-route','DashBoardController@optimizeRoute');
+
 
 			Route::post('tasks/list/{id}','TaskController@tasklist')->name('task.list');
 			Route::post('search/customer', 'TaskController@search')->name('search');

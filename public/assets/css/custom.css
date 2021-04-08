@@ -682,3 +682,11 @@ text-align: center;
 .same-size {
   min-height: 360px;
 }
+
+
+.cstmbtn {
+  position: absolute;
+  top: -8px;
+  right: -23px;
+  padding: 5px 8px;
+}

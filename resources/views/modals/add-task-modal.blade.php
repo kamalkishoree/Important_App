@@ -30,6 +30,7 @@
                 <div class="col-md-4 datenow">
                     <input type="text"  name="schedule_time"
                         class="form-control opendatepicker upside datetime-datepicker" placeholder="Date Time">
+                        <button type="button" class="cstmbtn btn btn-info"><i class="fa fa-check" aria-hidden="true"></i></button>
                 </div>
             </div>
 
