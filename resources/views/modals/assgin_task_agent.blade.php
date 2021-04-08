@@ -2,7 +2,7 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title">Assgin {{ Session::get('agent_name') }}</h4>
+                <h4 class="modal-title">Assign {{ Session::get('agent_name') }}</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
             </div>
             <form id="submit_assign_agent" method="POST" enctype="multipart/form-data" action="{{route('assign.agent')}}">

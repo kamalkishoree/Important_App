@@ -199,12 +199,14 @@
                                                 id="add{{ $newcount }}-postcode" class="form-control address postcode"
                                                 placeholder="PostsCode" />
 
-                                                {!! Form::text('barcode[]', $item->barcode, [
-                                                    'class' => 'form-control address',
-                                                    'placeholder' => 'Barcode',
-                                                    ]) !!}
-
-                                                {!! Form::text('quantity[]', $item->quantity, ['class' => 'form-control quantity','placeholder' => 'Quantity']) !!}
+                                                <div class="row no-gutters">
+                                                    <div class="col-6 pr-1">
+                                                        {!! Form::text('barcode[]', null, ['class' => 'form-control barcode','placeholder' => 'Task Barcode']) !!}  
+                                                    </div>
+                                                    <div class="col-6 pl-1">
+                                                        {!! Form::text('quantity[]', null, ['class' => 'form-control quantity','placeholder' => 'Quantity']) !!}
+                                                    </div>
+                                                </div> 
 
                                                 <span class="invalid-feedback" role="alert">
                                                     <strong></strong>

@@ -1,6 +1,8 @@
 <script>
+    
     $(document).ready(function() {
         $('#agents-datatable').DataTable();
+        
     });
 
     function handleClick(myRadio) {
@@ -239,14 +241,27 @@
     }
 
 
-    $(".all-driver_check").click(function() {
+       $(".all-driver_check").click(function() {
             if ($(this).is(':checked')) {
+                 $(".assign-toggle").removeClass("assign-show");
                 $('.single_driver_check').prop('checked', true);
             } else {
+                $(".assign-toggle").addClass("assign-show");
                 $('.single_driver_check').prop('checked', false);
             }
         });
 
+        $(".single_driver_check").change(function() {
+            if ($('input:checkbox.single_driver_check:checked').length > 0)
+            {
+                $(".assign-toggle").removeClass("assign-show");
+            }
+            else
+            {
+                $('.all-driver_check').prop('checked', false);
+                $(".assign-toggle").addClass("assign-show");
+            }
+        });
 
         $('#submit_assign_agent').on('submit', function(e) {
             e.preventDefault(); 

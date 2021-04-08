@@ -690,3 +690,7 @@ text-align: center;
   right: -23px;
   padding: 5px 8px;
 }
+
+.assign-show{
+  display: none;
+}

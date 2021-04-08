@@ -8,7 +8,7 @@
             @csrf
             <div class="row d-flex align-items-center" id="dateredio">
                 
-                <div class="col-md-3">
+                <div class="col-md-2">
                     <h4 class="header-title mb-3">Customer</h4>
                 </div>
                 <div class="col-md-5 text-right">
@@ -27,10 +27,10 @@
                           </ul>
                         </div>
                 </div>
-                <div class="col-md-4 datenow">
+                <div class="col-md-5 datenow">
                     <input type="text"  name="schedule_time"
                         class="form-control opendatepicker upside datetime-datepicker" placeholder="Date Time">
-                        <button type="button" class="cstmbtn btn btn-info"><i class="fa fa-check" aria-hidden="true"></i></button>
+                        <button type="button" class="cstmbtn check_btn btn btn-info"><i class="fa fa-check" aria-hidden="true"></i></button>
                 </div>
             </div>
 
@@ -47,7 +47,6 @@
                 <div class="col-md-4">
                     <div class="form-group" id="AddressInput">
                         <a href="#" class="add-sub-task-btn">New Customer</a>
-
                     </div>
                 </div>
 
