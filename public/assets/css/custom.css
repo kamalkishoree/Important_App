@@ -108,6 +108,10 @@
   #submitpayreceive .card-box label {
     margin-bottom: 0px;
   }
+
+  .oldhide.text-center .showsimage {
+    margin: auto;
+}
 /* zz */
 
 
@@ -476,7 +480,7 @@
 
 #typeInputss {
     overflow-y: auto;
-    height: 142px;
+    height: 168px;
 }
 
 .upload {
@@ -685,4 +689,8 @@ text-align: center;
   top: -8px;
   right: -23px;
   padding: 5px 8px;
+}
+
+.assign-show{
+  display: none;
 }

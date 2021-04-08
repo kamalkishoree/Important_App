@@ -8,7 +8,7 @@
             @csrf
             <div class="row d-flex align-items-center" id="dateredio">
                 
-                <div class="col-md-3">
+                <div class="col-md-2">
                     <h4 class="header-title mb-3">Customer</h4>
                 </div>
                 <div class="col-md-5 text-right">
@@ -27,10 +27,10 @@
                           </ul>
                         </div>
                 </div>
-                <div class="col-md-4 datenow">
+                <div class="col-md-5 datenow">
                     <input type="text"  name="schedule_time"
                         class="form-control opendatepicker upside datetime-datepicker" placeholder="Date Time">
-                        <button type="button" class="cstmbtn btn btn-info"><i class="fa fa-check" aria-hidden="true"></i></button>
+                        <button type="button" class="cstmbtn check_btn btn btn-info"><i class="fa fa-check" aria-hidden="true"></i></button>
                 </div>
             </div>
 
@@ -47,7 +47,6 @@
                 <div class="col-md-4">
                     <div class="form-group" id="AddressInput">
                         <a href="#" class="add-sub-task-btn">New Customer</a>
-
                     </div>
                 </div>
 
@@ -148,8 +147,17 @@
                                 <input type="hidden" name="latitude[]" id="addHeader1-latitude" value="0" class="cust_latitude" />
                                 <input type="hidden" name="longitude[]" id="addHeader1-longitude" value="0" class="cust_longitude" />
                                 {!! Form::text('post_code[]', null, ['class' => 'form-control address postcode','placeholder' => 'Post Code','id'=>'addHeader1-postcode']) !!}
-                                {!! Form::text('barcode[]', null, ['class' => 'form-control barcode','placeholder' => 'Task Barcode']) !!}
-                                {!! Form::number('quantity[]', null, ['class' => 'form-control quantity mt-1 onlynumber','placeholder' => 'Quantity']) !!}
+                                
+                                    
+                                 <div class="row no-gutters">
+                                    <div class="col-6 pr-1">
+                                        {!! Form::text('barcode[]', null, ['class' => 'form-control barcode','placeholder' => 'Task Barcode']) !!}  
+                                    </div>
+                                    <div class="col-6 pl-1">
+                                        {!! Form::text('quantity[]', null, ['class' => 'form-control quantity','placeholder' => 'Quantity']) !!}
+                                    </div>
+                                 </div>   
+
                                 <span class="invalid-feedback" role="alert">
                                     <strong></strong>
                                 </span>
@@ -160,6 +168,7 @@
                                 <div class="oldhide text-center">
                                     <img class="showsimage" src="{{url('assets/images/ic_location_placeholder.png')}}" alt="">
                                 </div>
+                                
                             </div>
                             
                         </div>

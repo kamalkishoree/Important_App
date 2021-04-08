@@ -60,7 +60,7 @@ use Carbon\Carbon;
 
                                             <li class="d-inline-block mr-2">
                                                 <input type="radio" id="failed" name="status" onclick="handleClick(this);"
-                                                    value="failed" {{ $status == 'completed' ? 'checked' : '' }}>
+                                                    value="failed" {{ $status == 'failed' ? 'checked' : '' }}>
                                                 <label for="failed">Failed<span
                                                         class="showspan">{{ ' (' . $failed_count . ')' }}</span></label>
                                             </li>
@@ -70,11 +70,11 @@ use Carbon\Carbon;
                                 </form>
                             </div>
                             <div class="col-sm-2"></div>
-                            @if (!isset($status) || $status == 'unassigned')
-                                <div class="col-sm-4 text-right">
+                            <!-- @if (isset($status) && $status == 'unassigned' && $panding_count != 0 ) -->
+                                <div class="col-sm-4 text-right assign-toggle assign-show ">
                                 <button type="button" class="btn btn-info assign_agent" data-toggle="modal" data-target="#add-assgin-agent-model" data-backdrop="static" data-keyboard="false">Assign</button> 
                                 </div>
-                            @endif
+                            <!-- @endif -->
                         </div>
 
                         <div class="table-responsive">
