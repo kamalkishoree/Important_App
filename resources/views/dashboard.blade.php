@@ -945,23 +945,30 @@ function addMarker(location, lables, images,data,type) {
         img = data['image_url'];
         //console.log(img);
         contentString =
-        '<div style="width:48%;display:inline-block">'+
-        '<img src="https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain/'+data['image_url']+'">'+
-        "</div>"+
 
-        '<div style="width:48%;display:inline-block;vertical-align:middle;margin-left:5px;"><b>'+data['name']+'</b><br/><br/>'+data['phone_number']+'</div>'+
+        '<div class="row no-gutters align-items-center">'+
+            '<div class="col-sm-4">'+
+                '<div class="img_box"> <img src="https://imgproxy.royodispatch.com/insecure/fit/200/200/sm/0/plain/'+data["image_url"]+'"/></div> </div>'+
+            '<div class="col-sm-8 pl-2 user_info">'+
+                '<div class="user_name mb-2"><label class="d-block m-0">'+data["name"]+'</label><span> <i class="fas fa-phone-alt"></i>'+data["phone_number"]+'</span></div>'+
+                '<div><b class="d-block mb-2"><i class="far fa-clock"></i> <span> '+jQuery.timeago(new Date(data['agentlog']['created_at']))+
+                ' </span></b> <b><i class="fas fa-mobile-alt"></i> '+data['agentlog']['device_type']+'</b> <b class="ml-2"> <i class="fas fa-battery-half"></i>  '+data['agentlog']['battery_level']+'%</b> </div>'
+            '</div>'+
+        '</div>'
         
-        '<div style="margin-top:15px;"><b style="display:block;text-transform: uppercase;"><img src="{{ asset("demo/images/clock.png") }}" style="width: 18px;margin: 0 3px 0 0;"> : <span> '+jQuery.timeago(new Date(data['agentlog']['created_at']))+ 
+
         
-        ' </span></b> <b style="display:block;margin:10px 0;text-transform: uppercase;"><img src="{{ asset("demo/images/operating-system.png") }}" style="width: 12px;margin: 0 5px 0 3px;"> : '+data['agentlog']['device_type']+'</b> <b style="display:block;text-transform: uppercase;"> <img src="{{ asset("demo/images/battery-status.png") }}" style="width: 17px;margin: 0 5px 0 0;"> :  '+data['agentlog']['battery_level']+'%</b> </div>'
+         
+        
+        
     }
 
 
 
     const infowindow = new google.maps.InfoWindow({
         content: contentString,
-        maxWidth: 250,
-        maxheight: 250,
+        minWidth: 250,
+        minheight: 250,
     });
 
 
@@ -1051,5 +1058,42 @@ function RouteOptimization(taskids,distancematrix) {
 }
 
 </script>
+
+
+<style>
+    .gm-style-iw.gm-style-iw-c {
+    width: 300px !important;
+}
+.img_box {
+    width: 100%;
+    height: 100px;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.img_box img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.user_name label {
+    font-size: 14px;
+    color: #000;
+    text-transform: capitalize;
+    margin: 0 0 12px !important;
+    display: block;
+}
+.user_info i {
+    font-size: 14px;
+    width: 20px;
+    text-align: center;
+    color: #6658dd;
+}
+
+.user_info span,.user_info b {
+    font-size: 12px;
+    font-weight: 500;
+}
+</style>
 
 @endsection
