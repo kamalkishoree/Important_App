@@ -34,7 +34,7 @@
 
         #typeInputss {
             overflow-y: auto;
-            height: 142px;
+            height: 168px;
         }
 
         .upload {

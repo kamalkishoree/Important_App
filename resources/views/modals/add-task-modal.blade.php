@@ -147,8 +147,17 @@
                                 <input type="hidden" name="latitude[]" id="addHeader1-latitude" value="0" class="cust_latitude" />
                                 <input type="hidden" name="longitude[]" id="addHeader1-longitude" value="0" class="cust_longitude" />
                                 {!! Form::text('post_code[]', null, ['class' => 'form-control address postcode','placeholder' => 'Post Code','id'=>'addHeader1-postcode']) !!}
-                                {!! Form::text('barcode[]', null, ['class' => 'form-control barcode','placeholder' => 'Task Barcode']) !!}
-                                {!! Form::text('quantity[]', null, ['class' => 'form-control quantity mt-1','placeholder' => 'Quantity']) !!}
+                                
+                                    
+                                 <div class="row no-gutters">
+                                    <div class="col-6 pr-1">
+                                        {!! Form::text('barcode[]', null, ['class' => 'form-control barcode','placeholder' => 'Task Barcode']) !!}  
+                                    </div>
+                                    <div class="col-6 pl-1">
+                                        {!! Form::text('quantity[]', null, ['class' => 'form-control quantity','placeholder' => 'Quantity']) !!}
+                                    </div>
+                                 </div>   
+
                                 <span class="invalid-feedback" role="alert">
                                     <strong></strong>
                                 </span>
@@ -159,6 +168,7 @@
                                 <div class="oldhide text-center">
                                     <img class="showsimage" src="{{url('assets/images/ic_location_placeholder.png')}}" alt="">
                                 </div>
+                                
                             </div>
                             
                         </div>
