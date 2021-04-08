@@ -619,6 +619,8 @@
         }
     });
 
+    
+
     function TaskSubmit(data, method, url, modals) {
     //alert(data);
     $.ajax({
@@ -916,6 +918,11 @@
             }
         ];
     }
+
+    $('.onlynumber').keyup(function ()
+        {    
+        this.value = this.value.replace(/[^0-9\.]/g,'');
+        });
 
     
 </script>

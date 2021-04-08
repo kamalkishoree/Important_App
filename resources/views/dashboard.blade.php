@@ -195,7 +195,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                                                 <h6>{{ $tasks['location']['address'] }}</h6>
                                                                 <span>{{ $tasks['location']['short_name'] }}</span>
                                                                 <h5 class="mb-1"><span>Due</span>
-                                                                    {{date('h:i a ', strtotime($tasks->created_at))}}
+                                                                    {{date('h:i a ', strtotime($tasks['created_at']))}}
                                                                     <button
                                                                             class="assigned-btn float-right">Assigned</button>
                                                                 </h5>
