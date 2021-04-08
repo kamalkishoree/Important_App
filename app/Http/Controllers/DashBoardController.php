@@ -112,7 +112,8 @@ class DashBoardController extends Controller
         //create array for map marker
 
         $allTasks = Order::whereDate('order_time', $date)->with(['customer', 'task.location', 'agent.team'])->get();
-        //echo "<pre>"; print_r($allTasks); die;
+       // echo "<pre>"; print_r($allTasks); die;
+        // dd($allTasks);
         $newmarker = [];
 
         foreach ($allTasks as $key => $tasks) {
@@ -139,13 +140,14 @@ class DashBoardController extends Controller
                 $append['driver_id']             = isset($tasks->driver_id) ? $tasks->driver_id : '';
                 $append['customer_name']         = $tasks->customer->name;
                 $append['customer_phone_number'] = $tasks->customer->phone_number;
+                $append['task_order']            = $task->task_order;
 
                 array_push($newmarker, $append);
             }
         }
+
         // echo "<pre>";
         // print_r($newmarker); die;
-
 
         $unassigned->toArray();
         $teams->toArray();
@@ -159,8 +161,8 @@ class DashBoardController extends Controller
         foreach ($agents as $singleagent) {
             if(is_array($singleagent['agentlog']))
             {
-                
-                $taskarray = array();
+
+                $taskarray = array();                
                 foreach($newmarker as $singlemark)
                 {
                     if($singlemark['driver_id'] == $singleagent['agentlog']['agent_id'])
@@ -171,6 +173,9 @@ class DashBoardController extends Controller
                 }
                 if(!empty($taskarray))
                 {
+                    usort($taskarray, function($a, $b) {
+                        return $a['task_order'] <=> $b['task_order'];
+                    });
                     $uniquedrivers[$j]['driver_detail'] = $singleagent['agentlog'];
                     $uniquedrivers[$j]['task_details'] = $taskarray;
                     $j++;                    
@@ -201,6 +206,10 @@ class DashBoardController extends Controller
                 $routeoptimization[$singledriver['driver_detail']['agent_id']] = $points;
             }
         }
+
+
+        // echo "<pre>";
+        // print_r($uniquedrivers); die;
 
         //create distance matrix
         $distancematrix = array();
