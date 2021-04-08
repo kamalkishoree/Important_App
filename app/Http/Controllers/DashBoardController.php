@@ -43,11 +43,6 @@ class DashBoardController extends Controller
                     $o->whereDate('order_time', $date)->with('customer')->with('task.location');
                 }
 
-                // 'agents.order' => function ($o) use ($date) {
-                //     $o->whereDate('order_time', $date)->with('customer')->with('task' => function ($p) {
-                //         $p->orderBy('task_order')->with('location');
-                //     });
-                // }
             ]
         )->get();   
         
@@ -155,19 +150,8 @@ class DashBoardController extends Controller
         $unassigned->toArray();
         $teams->toArray();
 
-
-        
-
         $agents = Agent::with('agentlog')->get()->toArray();
         $preference  = ClientPreference::where('id',1)->first(['theme','date_format','time_format']);
-       // print_r($preference); die;
-
-    //    echo "<pre>"; 
-    //    echo "tasks";
-    //    print_r($newmarker); die;
-    //    echo "agent";
-
-       //print_r($agents); die; 
 
     
        $uniquedrivers = array();       
@@ -196,9 +180,6 @@ class DashBoardController extends Controller
 
             
         }
-        
-        // echo "<pre>";
-        // print_r($uniquedrivers); die;
 
         //for route optimization
         $routeoptimization = array();
@@ -250,63 +231,59 @@ class DashBoardController extends Controller
             $distancematrix[$key]['tasks'] = $taskarray[$key];
             $distancematrix[$key]['distance'] = $matrixarray;
         }
+        
 
-        //    echo "<pre>"; 
-        //   dd($teams);
-        //    print_r($uniquedrivers); 
-        //    print_r($routeoptimization); 
-        //    print_r($distancematrix);
-           
-        //    print_r($teams); die;
-        // $newteam = array();
-        // foreach($teams as $singleteam)
-        // {
-        //     echo "<pre>";
-        //     // print_r($singleteam->agents); die;
-        //     foreach($singleteam->agents as $singleagent)
-        //     {
-        //         //print_r($singleagent->toArray());
-        //         $newarray = array();
-        //         foreach($singleagent['order'] as $orders)
-        //         {
-        //             if(isset($orders->task))
-        //             {
-        //                 if(count($orders->task)==1)
-        //                 {
-        //                     $newarray[] = $orders;
-        //                 }elseif(count($orders->task)>1){
-        //                     for ($u=0; $u < count($orders->task); $u++) { 
-        //                         $orders->task = $orders->task[$u];
-        //                         $newarray[] = $orders;
-        //                     }
-        //                 }else{
-        //                     $newarray[] = $orders;
-        //                 }
+        $teamdata = $teams->toArray();
 
-        //             }
-                    
-
-        //             print_r($orders->toArray());
-                    
-                   
-
-        //         }
-        //         // if(isset($singleagent['order']))
-        //         // {
-        //         //     $singleagent['order'] = $newarray;
-        //         // }
-                
-
-        //         //print_r($singleagent->toArray());
-                
-                
-        //     }
-        //     die;
-            
-        // }
+        foreach($teamdata as $k1=>$singleteam)
+        {  
+            foreach($singleteam['agents'] as $k2=>$singleagent)
+            {                
+                if(count($singleagent['order'])>0)
+                { 
+                    $teamdata[$k1]['agents'][$k2]['order'] = $this->splitOrder($singleagent['order']);                    
+                }
+            }            
+        }
+        // echo "<pre>";
+        //    print_r($teamdata); die;
 
         
-        return view('dashboard')->with(['teams' => $teams, 'newmarker' => $newmarker, 'unassigned' => $unassigned, 'agents' => $agents,'date'=> $date,'preference' =>$preference, 'routedata' => $uniquedrivers,'distance_matrix' => $distancematrix]);
+        return view('dashboard')->with(['teams' => $teamdata, 'newmarker' => $newmarker, 'unassigned' => $unassigned, 'agents' => $agents,'date'=> $date,'preference' =>$preference, 'routedata' => $uniquedrivers,'distance_matrix' => $distancematrix]);
+    }
+
+    public static function splitOrder($orders){
+        // array //
+        $new_order = [];
+        
+        if(is_array($orders) && count($orders)>0 && !empty($orders))
+        {
+            $counter = 0;
+            foreach($orders as $order){
+               // print_r($order); die;
+                foreach($order['task'] as $task){
+                    $new_order[] = $order;
+                    $new_order[$counter]['task_order'] = $task['task_order'];
+                    unset($new_order[$counter]['task']);
+                    $new_order[$counter]['task'][] = $task;
+                    $counter++;    
+                }
+                
+            }
+            
+            
+                //sort array
+                usort($new_order, function($a, $b) {
+                    return $a['task_order'] <=> $b['task_order'];
+                });
+
+            
+
+            return $new_order;
+        }else{
+            return $orders;
+        }
+        
     }
 
     /**
