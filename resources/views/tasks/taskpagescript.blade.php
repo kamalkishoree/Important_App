@@ -54,12 +54,12 @@
                     var options = {
                         hour12: true
                     };
+                    var short_name = (elem.location.short_name) ??'';
                     $(document).find('.allin').before(
                         '<div class="repet"><div class="task-card p-3"><div class="p-2 assigned-block"><h5>' +
                         taskname +
                         '</h5><div class="wd-10"><img class="vt-top" src="{{ asset('demo/images/ic_location_blue_1.png') }}"></div><div class="wd-90"><h6>' +
-                        elem.location.address + '</h6><span>' + elem.location
-                        .short_name +
+                        elem.location.address + '</h6><span>' +short_name+
                         '</span><h5 class="mb-1"><span></span></h5><div class="row"><div class="col-md-6"></div><div class="col-md-6 text-right"><button class="assigned-btn">' +
                         data.status + '</button></div></div></div></div></div></div>');
 
@@ -168,48 +168,67 @@
                     var options = {
                         hour12: true
                     };
-                    var note  = (elem.note != null) ? elem.note : '';
-                    // $('.all-remove').remove();
-                    $(document).find('.new-proofs').append(
-                        '<div class="col-md-12 all-remove">'+
+
+                    var note  = (elem.note != null) ? 1 : 0;
+                    var image_proof = (elem.proof_image) ? 1 : 0;
+                    var sign_proof  = (elem.proof_signature) ? 1 :0;
+                    var all = 0;
+                    if(elem.note == null && elem.proof_image == null && elem.proof_signature == null){
+                        var all = 1;
+                    }
+
+                    var html = '<div class="col-md-12 all-remove">'+
                                                 '<div class="task-card">'+
                                                     '<div class="p-2 assigned-block bg-transparent""><h5>'+ taskname +'</h5>'+
-                                                            '<div class="row">'+
-                                                                
-                                                                '<div class="col-md-4">'+
-                                                                    '<label class="mb-3">Image</label>'+
-                                                                    '<div class="status-wrap-block">'+
-                                                                        '<div class="image-wrap-sign">'+
-                                                                            '<img src="https://imgproxy.royodispatch.com/insecure/fill/400/400/sm/0/plain/https://royodelivery-assets.s3.us-west-2.amazonaws.com/'+ elem.proof_image +'" alt="">'+
-                                                                        '</div>'+
-                                                                    '</div>'+
-                                                                '</div>'+
-                                                                '<div class="col-md-4">'+
-                                                                    '<label class="mb-3">Signature</label>'+
-                                                                    '<div class="status-wrap-block">'+
-                                                                        '<div class="image-wrap-sign">'+
-                                                                            '<img src="https://imgproxy.royodispatch.com/insecure/fill/400/400/sm/0/plain/https://royodelivery-assets.s3.us-west-2.amazonaws.com/'+ elem.proof_signature +'" alt="">'+
-                                                                        '</div>'+
-                                                                    '</div>'+
-                                                                '</div>'+
-                                                                '<div class="col-md-4">'+
-                                                                    '<label class="mb-3">Notes</label>'+
-                                                                    '<div class="status-wrap-block">'+
-                                                                        '<div class="note-wrap">'+
-                                                                            '<span>'+note+'</span>'+
-                                                                        '</div>'+
-                                                                    '</div>'+
-                                                                '</div>'+
-                                                            '</div>'+
+                                                            '<div class="row">';
+                    if (image_proof == 1) {
+                    html  = html+'<div class="col-md-4">'+
+                            '<label class="mb-3">Image</label>'+
+                            '<div class="status-wrap-block">'+
+                                '<div class="image-wrap-sign">'+
+                                    '<img src="https://imgproxy.royodispatch.com/insecure/fill/400/400/sm/0/plain/'+ image_proof +'" alt="">'+
+                                '</div>'+
+                            '</div>'+
+                        '</div>' ;
+                    }
                                                             
-                                                            
-                                                            '<div class="col-md-6 text-right"><button class="assigned-btn"></button>'+
-                                                            '</div>'+
-                                                            '</div>'+
+                    if (sign_proof == 1) {
+                        html  = html+ '<div class="col-md-4">'+
+                                      '<label class="mb-3">Signature</label>'+
+                                       '<div class="status-wrap-block">'+
+                                        '<div class="image-wrap-sign">'+
+                                      '<img src="https://imgproxy.royodispatch.com/insecure/fit/200/200/sm/0/plain/https://royodelivery-assets.s3.us-west-2.amazonaws.com/'+ sign_proof +'" alt="">'+
+                                      '</div>'+
+                                      '</div>'+
+                                      '</div>';
+ 
+                     }
 
-                                                    '</div>'+
-                                                '</div>'+    
-                                            '</div>');
+                    if (note == 1) {
+                        html  = html+   '<div class="col-md-4">'+
+                                        '<label class="mb-3">Notes</label>'+
+                                        '<div class="status-wrap-block">'+
+                                        '<div class="note-wrap">'+
+                                            '<span>'+note+'</span>'+
+                                             '</div>'+
+                                            '</div>'+
+                                          '</div>';
+                    }
+
+                    if(all == 1){
+                        html  = html+   '<div class="col-12 text-center">'+
+                                            '<h5>No Proof Found</h5>'+
+                                          '</div>';
+                    }
+
+
+                                                            
+                    html  = html+   '</div>'+
+                                    '</div>'+
+                                    '</div>'+
+                                    '</div>';
+                    // $('.all-remove').remove();
+                    $(document).find('.new-proofs').append(html);
 
 
 
