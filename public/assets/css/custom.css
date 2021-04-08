@@ -694,3 +694,14 @@ text-align: center;
 .assign-show{
   display: none;
 }
+
+
+.datenow .form-control {
+  width: calc(100% - 50px);
+}
+
+.datenow .cstmbtn.check_btn.btn {
+  right: 15px;
+  line-height: 25.39px;
+  top: -10px;
+}

@@ -948,9 +948,12 @@ function addMarker(location, lables, images,data,type) {
         '<div style="width:48%;display:inline-block">'+
         '<img src="https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain/'+data['image_url']+'">'+
         "</div>"+
+
         '<div style="width:48%;display:inline-block;vertical-align:middle;margin-left:5px;"><b>'+data['name']+'</b><br/><br/>'+data['phone_number']+'</div>'+
-        '<div style="margin-top:8px;"><b><img src="{{ asset("demo/images/clock.png") }}"> : '+jQuery.timeago(new Date(data['agentlog']['created_at']))+'</b><br/><br/><img src="{{ asset("demo/images/operating-system.png") }}"> : '+data['agentlog']['device_type']+'</div>'+
-        '<div style="float:left;margin-top:10px;"><b> <img src="{{ asset("demo/images/battery-status.png") }}"> :  '+data['agentlog']['battery_level']+'%</b><br/>      <br/></div>';
+        
+        '<div style="margin-top:15px;"><b style="display:block;text-transform: uppercase;"><img src="{{ asset("demo/images/clock.png") }}" style="width: 18px;margin: 0 3px 0 0;"> : <span> '+jQuery.timeago(new Date(data['agentlog']['created_at']))+ 
+        
+        ' </span></b> <b style="display:block;margin:10px 0;text-transform: uppercase;"><img src="{{ asset("demo/images/operating-system.png") }}" style="width: 12px;margin: 0 5px 0 3px;"> : '+data['agentlog']['device_type']+'</b> <b style="display:block;text-transform: uppercase;"> <img src="{{ asset("demo/images/battery-status.png") }}" style="width: 17px;margin: 0 5px 0 0;"> :  '+data['agentlog']['battery_level']+'%</b> </div>'
     }
 
 

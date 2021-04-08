@@ -243,6 +243,7 @@
 
     $(document).ready(function(){
       loadMapHeader(autoWrap);
+      
     });
     function gm_authFailure() {
                 
@@ -514,13 +515,14 @@
                 geocoder.geocode({'placeId': place.place_id}, function (results, status) {
                     
                     if (status === google.maps.GeocoderStatus.OK) {
-                        const postCode = results[0].address_components.find(addr => addr.types[0] === "postal_code").short_name;
+                        
                        
                         const lat = results[0].geometry.location.lat();
                         const lng = results[0].geometry.location.lng();
                         //console.log(name+'-input');
                         document.getElementById(name + '-latitude').value = lat;
                         document.getElementById(name + '-longitude').value = lng;
+                        const postCode = results[0].address_components.find(addr => addr.types[0] === "postal_code").short_name;
                         document.getElementById(name + '-postcode').value = postCode;
                     }
                 });
@@ -649,8 +651,12 @@
     // $(document).ready(function() {
     //     $('.selecttype').val("1").click();
     // });
-   
-
+    $(document).on('keyup', ".onlynumber", function() { 
+    this.value = this.value.replace(/[^0-9\.]/g,'');
+    });
+    // $(document).on("change", "#file", function() {
+    //    previewImages(this);
+    // });
 
     //on select of task type
 
@@ -796,6 +802,9 @@
 
         $('#show-map-Header').modal('hide');
     });
+
+
+    
 
 
 

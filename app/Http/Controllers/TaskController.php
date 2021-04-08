@@ -162,7 +162,8 @@ class TaskController extends Controller
         //here is task save code is started
 
         $dep_id = null; // this is used as dependent task id 
-
+        $pickup_quantity = 0;
+        $drop_quantity   = 0;
         foreach ($request->task_type_id as $key => $value) {
             $taskcount++;
             if (isset($request->address[$key])) {
@@ -219,6 +220,18 @@ class TaskController extends Controller
             ];
             $task = Task::create($data);
             $dep_id = $task->id;
+
+
+            //for net quantity
+
+            if ($value == 1) {
+                $pickup_quantity = $pickup_quantity+$request->quantity[$key];
+            } elseif ($value == 2) {
+                $drop_quantity   = $drop_quantity+$request->quantity[$key];
+            }
+            $net_quantity = $pickup_quantity - $drop_quantity;
+
+
         }
 
         //accounting for task duration distanse 
@@ -251,6 +264,7 @@ class TaskController extends Controller
             'actual_distance'    => $getdata['distance'],
             'order_cost'         => $total,
             'driver_cost'        => $percentage,
+            'net_quantity'       => $net_quantity
 
          ];
         
@@ -625,6 +639,7 @@ class TaskController extends Controller
                 'barcode'                    => $request->barcode[$key],
                 'quantity'                   => $request->quantity[$key]
             ];
+
             $task = Task::create($data);
             $dep_id = $task->id;
         }

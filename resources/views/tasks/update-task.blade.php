@@ -45,8 +45,9 @@
                             </div>
                         </div>
                         <div class="col-md-4 datenow">
-                            <input type="text" id='datetime-datepicker' name="schedule_time" class="form-control upside"
+                            <input type="text" id='datetime-datepicker' name="schedule_time" class="form-control upside opendatepicker"
                                 placeholder="Date Time">
+                            <button type="button" class="cstmbtn check_btn btn btn-info"><i class="fa fa-check" aria-hidden="true"></i></button>
                         </div>
 
                     </div>
@@ -201,10 +202,10 @@
 
                                                 <div class="row no-gutters">
                                                     <div class="col-6 pr-1">
-                                                        {!! Form::text('barcode[]', null, ['class' => 'form-control barcode','placeholder' => 'Task Barcode']) !!}  
+                                                        {!! Form::text('barcode[]', $item->barcode, ['class' => 'form-control barcode','placeholder' => 'Task Barcode']) !!}  
                                                     </div>
                                                     <div class="col-6 pl-1">
-                                                        {!! Form::text('quantity[]', null, ['class' => 'form-control quantity','placeholder' => 'Quantity']) !!}
+                                                        {!! Form::text('quantity[]', $item->quantity, ['class' => 'form-control quantity onlynumber','placeholder' => 'Quantity']) !!}
                                                     </div>
                                                 </div> 
 
@@ -269,6 +270,8 @@
                                 'Recipient Email']) !!}
                                 {!! Form::textarea('task_description', null, ['class' => 'form-control', 'placeholder' =>
                                 'Task Description', 'rows' => 2, 'cols' => 40]) !!}
+                                {!! Form::text('net_quantity', null, ['class' => 'form-control rec mt-1', 'placeholder' =>
+                                'Net Quantity']) !!}
                                 <span class="invalid-feedback" role="alert">
                                     <strong></strong>
                                 </span>

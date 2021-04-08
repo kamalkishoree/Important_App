@@ -8,10 +8,10 @@
             @csrf
             <div class="row d-flex align-items-center" id="dateredio">
                 
-                <div class="col-md-2">
+                <div class="col-sm-2">
                     <h4 class="header-title mb-3">Customer</h4>
                 </div>
-                <div class="col-md-5 text-right">
+                <div class="col-sm-5 text-right">
                     <div class="login-form">
                         <ul class="list-inline">
                             <li class="d-inline-block mr-2">
@@ -27,7 +27,7 @@
                           </ul>
                         </div>
                 </div>
-                <div class="col-md-5 datenow">
+                <div class="col-sm-5 datenow">
                     <input type="text"  name="schedule_time"
                         class="form-control opendatepicker upside datetime-datepicker" placeholder="Date Time">
                         <button type="button" class="cstmbtn check_btn btn btn-info"><i class="fa fa-check" aria-hidden="true"></i></button>
@@ -154,7 +154,7 @@
                                         {!! Form::text('barcode[]', null, ['class' => 'form-control barcode','placeholder' => 'Task Barcode']) !!}  
                                     </div>
                                     <div class="col-6 pl-1">
-                                        {!! Form::text('quantity[]', null, ['class' => 'form-control quantity','placeholder' => 'Quantity']) !!}
+                                        {!! Form::text('quantity[]', null, ['class' => 'form-control quantity onlynumber','placeholder' => 'Quantity']) !!}
                                     </div>
                                  </div>   
 

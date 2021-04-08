@@ -162,17 +162,18 @@
                     'placeId': place.place_id
                 }, function(results, status) {
 
-                   // console.log(results);
+                console.log(results);
 
                     if (status === google.maps.GeocoderStatus.OK) {
                        console.log('hello');
-                       const zip_code = results[0].address_components.find(addr => addr.types[0] === "postal_code").short_name;
+                       
                         const lat = results[0].geometry.location.lat();
                         const lng = results[0].geometry.location.lng();
                         
                         //console.log(latitudes);
                         document.getElementById(name + '-latitude').value = lat;
                         document.getElementById(name + '-longitude').value = lng;
+                        const zip_code = results[0].address_components.find(addr => addr.types[0] === "postal_code").short_name;
                         document.getElementById(name + '-postcode').value = zip_code;
                         
                     }

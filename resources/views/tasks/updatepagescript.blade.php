@@ -456,12 +456,13 @@ function loadMap(autocompletesWraps){
                 
                 if (status === google.maps.GeocoderStatus.OK) {
 
-                    const postCode = results[0].address_components.find(addr => addr.types[0] === "postal_code").short_name;
+                    
                     const lat = results[0].geometry.location.lat();
                     const lng = results[0].geometry.location.lng();
-                    console.log(latitudes);
+                    
                     document.getElementById(name + '-latitude').value = lat;
                     document.getElementById(name + '-longitude').value = lng;
+                    const postCode = results[0].address_components.find(addr => addr.types[0] === "postal_code").short_name;
                     document.getElementById(name + '-postcode').value = postCode;
                 }
             });
@@ -538,6 +539,11 @@ $(document).on('click', '.selectMapLocation', function () {
 
 
     $('#show-map-modal').modal('hide');
+});
+
+$('.onlynumber').keyup(function ()
+    { 
+    this.value = this.value.replace(/[^0-9\.]/g,'');
 });
 
 </script>
