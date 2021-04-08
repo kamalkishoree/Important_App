@@ -368,7 +368,13 @@ class DashBoardController extends Controller
         curl_close($ch); // Close the connection
         
         $value =   $result->rows[0]->elements;
-        $totalDistance = $value[0]->distance->value;
+        if(isset($value[0]->distance))
+        {
+            $totalDistance = $value[0]->distance->value;
+        }else{
+            $totalDistance = 0;
+        }
+        
         return round($totalDistance);
       
         
