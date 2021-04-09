@@ -166,7 +166,7 @@ class AuthController extends BaseController
         $blockToken->token = $header['authorization'][0];
         $blockToken->expired = '1';
         $blockToken->save();
-
+        Agent::where('id',Auth::user()->id)->update(['device_token'=>null,'device_type'=>null]);
         return response()->json([
             'message' => 'Successfully logged out'
         ]);
