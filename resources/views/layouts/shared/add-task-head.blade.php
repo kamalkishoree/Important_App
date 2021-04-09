@@ -253,7 +253,9 @@
     function runPicker(){
         $('.datetime-datepicker').flatpickr({
             enableTime: true,
-            dateFormat: "Y-m-d H:i"
+            dateFormat: "Y-m-d H:i",
+            minDate: "today",
+
             //wrap:true,
         });
 

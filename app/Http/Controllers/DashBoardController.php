@@ -33,7 +33,7 @@ class DashBoardController extends Controller
             
             $date = date('Y-m-d');
             
-        }
+        }        
         //echo $date; die; 
         //left side bar list for display all teams
 
@@ -176,6 +176,11 @@ class DashBoardController extends Controller
                     usort($taskarray, function($a, $b) {
                         return $a['task_order'] <=> $b['task_order'];
                     });
+                    if($date != date('Y-m-d'))
+                    {
+                        $singleagent['agentlog']['lat'] = $taskarray[0]['latitude'];
+                        $singleagent['agentlog']['long'] = $taskarray[0]['longitude'];
+                    }
                     $uniquedrivers[$j]['driver_detail'] = $singleagent['agentlog'];
                     $uniquedrivers[$j]['task_details'] = $taskarray;
                     $j++;                    
@@ -223,19 +228,19 @@ class DashBoardController extends Controller
             for ($i=0; $i < count($value); $i++) { 
 
                 for ($k=0; $k < count($value); $k++) { 
-                    // if($i==$k)
-                    // {
-                    //     $matrixarray[$i][$k] = 0; 
-                    // }elseif($i > $k)
-                    // {
-                    //    $matrixarray[$i][$k] = $matrixarray[$k][$i];
-                    // }else{
-                    //     $distance = $this->GoogleDistanceMatrix($value[$i][0],$value[$i][1],$value[$k][0],$value[$k][1] );                    
-                    //     $matrixarray[$i][$k] = $distance;
-                    // }
-                    $distance = $this->GoogleDistanceMatrix($value[$i][0],$value[$i][1],$value[$k][0],$value[$k][1] );
+                    if($i==$k)
+                    {
+                        $matrixarray[$i][$k] = 0; 
+                    }elseif($i > $k)
+                    {
+                       $matrixarray[$i][$k] = $matrixarray[$k][$i];
+                    }else{
+                        $distance = $this->GoogleDistanceMatrix($value[$i][0],$value[$i][1],$value[$k][0],$value[$k][1] );                    
+                        $matrixarray[$i][$k] = $distance;
+                    }
+                    // $distance = $this->GoogleDistanceMatrix($value[$i][0],$value[$i][1],$value[$k][0],$value[$k][1] );
                     
-                    $matrixarray[$i][$k] = $distance; 
+                    // $matrixarray[$i][$k] = $distance; 
                 }
                 
             }
