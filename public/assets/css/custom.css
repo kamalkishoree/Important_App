@@ -705,3 +705,24 @@ text-align: center;
   line-height: 25.39px;
   top: -10px;
 }
+
+
+.red_{
+  background-color: hsl(357deg 100% 50% / 50%);
+  color: #fff;
+}
+
+.yellow_ {
+  background-color: rgb(204 136 153 / 60%);
+  color: #fff;
+}
+
+.green_{
+  background-color: rgb(64 179 35 / 50%);
+  color: #fff;
+}
+
+.light_green{
+  background-color: rgb(235 183 133 / 65%);
+  color: #fff;
+}

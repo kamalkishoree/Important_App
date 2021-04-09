@@ -21,6 +21,7 @@ use App\Jobs\RosterCreate;
 use App\Models\RosterDeatil;
 use Illuminate\Support\Arr;
 use App\Jobs\scheduleNotification;
+Use Log;
 
 use GuzzleHttp\Client as Gclient;
 
@@ -397,7 +398,7 @@ class TaskController extends Controller
 
     public function MassAndEditNotification($orders_id,$agent_id)
     {
-       
+        Log::info('mass and edit notification');
         $order_details = Order::where('id',$orders_id)->with(['customer','agent', 'task.location'])->first();
         $auth = Client::where('code', Auth::user()->code)->with(['getAllocation', 'getPreference'])->first();
         $notification_time = $order_details->order_time;

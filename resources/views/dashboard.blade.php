@@ -123,7 +123,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                     <div class="card-header" id="heading-1">
                        
                             <a role="button" data-toggle="collapse" href="#collapse-{{ $item['id'] }}"
-                                aria-expanded="true" aria-controls="collapse-{{ $item['id'] }}">
+                                aria-expanded="false" aria-controls="collapse-{{ $item['id'] }}">
                                 <div class="newcheckit">
                                     <div class="row d-flex align-items-center" class="mb-0">
                                         <div class="col-md-3 col-xl-2 col-2">
@@ -153,7 +153,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                     //print_r($distance_matrix[$agent['id']]); 
                                     $routeperams = "'".$distance_matrix[$agent['id']]['tasks']."','".json_encode($distance_matrix[$agent['id']]['distance'])."'";
                                     
-                                    $optimize = '<span onclick="RouteOptimization('.$routeperams.')">Optimize</span>';
+                                    $optimize = '<span class="optimize_btn" onclick="RouteOptimization('.$routeperams.')">Optimize</span>';
                                 }else{
                                     $optimize="";
                                 }
@@ -191,13 +191,35 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                                                 <img class="vt-top"
                                                                     src="{{ asset('demo/images/ic_location_blue_1.png') }}">
                                                             </div>
+                                                            @php
+                                                                    if($tasks['task_status']==1)
+                                                                    {
+                                                                    $st = "Assigned";
+                                                                    $color_class = "assign_";
+                                                                    }elseif($tasks['task_status']==2)
+                                                                    {
+                                                                    $st = "Started";
+                                                                    $color_class = "yellow_";
+                                                                    }elseif($tasks['task_status']==3)
+                                                                    {
+                                                                    $st = "Arrived";
+                                                                    $color_class = "light_green";
+                                                                    }elseif($tasks['task_status']==4)
+                                                                    {
+                                                                    $st = "Completed";
+                                                                    $color_class = "green_";
+                                                                    }else{
+                                                                    $st = "Failed";
+                                                                    $color_class = "red_";
+                                                                    }
+                                                            @endphp
                                                             <div class="wd-90">
                                                                 <h6>{{ $tasks['location']['address'] }}</h6>
                                                                 <span>{{ $tasks['location']['short_name'] }}</span>
                                                                 <h5 class="mb-1"><span>Due</span>
                                                                     {{date('h:i a ', strtotime($tasks['created_at']))}}
                                                                     <button
-                                                                            class="assigned-btn float-right">Assigned</button>
+                                                                            class="assigned-btn float-right {{$color_class}}">{{$st}}</button>
                                                                 </h5>
 
                                                             </div>

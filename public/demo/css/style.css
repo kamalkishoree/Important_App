@@ -318,17 +318,36 @@ header .navbar-light .navbar-nav .nav-link {
 
 .card-header >a:after {
   content: "\f078";
-  font-family: 'FontAwesome';
+  font-family: "Font Awesome 5 free";
+  font-weight: 700;
   position: absolute;
-  right: -10px;
+  right: 0;
   top: 10px;
   color: #777;
-  font-weight: 300;
 }
 
-.card-header >a[aria-expanded="true"]:after {
+.card-header > a[aria-expanded="true"]::after {
   content: "\f077";
-  /* fa-chevron-up */
+  font-family: "Font Awesome 5 free";
+  font-weight: 700;
+}
+
+.left-sidebar .optimize_btn {
+  position: absolute;
+  right: 50px;
+  top: 9px;
+  background: #6658dd;
+  display: inline-block;
+  padding: 4px 5px;
+  border-radius: 5px;
+  color: #fff;
+  font-size: 12px;
+  transition: all 0.5s;
+  font-weight: 700;
+}
+
+.left-sidebar .optimize_btn:hover{
+  background-color: rgba(233, 130, 27, 0.5);
 }
 
 .card-header.profile-status >a:after {
