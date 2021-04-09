@@ -34,6 +34,11 @@ class DashBoardController extends Controller
             $date = date('Y-m-d');
             
         }
+        if($date != date('Y-m-d')){
+            $day = "past";
+        }else{
+            $day = "present";
+        }
         //echo $date; die; 
         //left side bar list for display all teams
 
@@ -176,6 +181,11 @@ class DashBoardController extends Controller
                     usort($taskarray, function($a, $b) {
                         return $a['task_order'] <=> $b['task_order'];
                     });
+                    if($day=="past")
+                    {
+                        $singleagent['agentlog']['lat'] = $taskarray[0]['latitude'];
+                        $singleagent['agentlog']['long'] = $taskarray[0]['longitude'];
+                    }
                     $uniquedrivers[$j]['driver_detail'] = $singleagent['agentlog'];
                     $uniquedrivers[$j]['task_details'] = $taskarray;
                     $j++;                    
