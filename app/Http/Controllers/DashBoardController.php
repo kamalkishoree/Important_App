@@ -197,9 +197,11 @@ class DashBoardController extends Controller
         $routeoptimization = array();
         $taskarray = array();        
         foreach($uniquedrivers as $singledriver)
-        {
+        {         
+
             if(count($singledriver['task_details'])>1)
             {   
+                $points = array();
                 $points[] = array($singledriver['driver_detail']['lat'],$singledriver['driver_detail']['long']);
                 $taskids = array();
                 foreach($singledriver['task_details'] as $singletask)
@@ -217,6 +219,9 @@ class DashBoardController extends Controller
 
         // echo "<pre>";
         // print_r($uniquedrivers); die;
+
+        // echo "<pre>";
+        // print_r($routeoptimization); die;
 
         //create distance matrix
         $distancematrix = array();
@@ -247,6 +252,8 @@ class DashBoardController extends Controller
             $distancematrix[$key]['tasks'] = $taskarray[$key];
             $distancematrix[$key]['distance'] = $matrixarray;
         }
+        // echo "<pre>";
+        // print_r($distancematrix); die;
         
 
         $teamdata = $teams->toArray();

@@ -150,6 +150,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
 
                                 <?php
                                 
+                                    //print_r($distance_matrix[$agent['id']]); die;
 
                                 if(isset($distance_matrix[$agent['id']]))
                                 {
