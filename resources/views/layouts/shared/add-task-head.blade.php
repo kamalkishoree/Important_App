@@ -549,12 +549,20 @@
           var dateredio = $("#dateredio input[type='radio']:checked").val();
           if (dateredio == 'schedule') {
             $(".datenow").show();
-            $(".opendatepicker").focus();
           }else{
               $(".datenow").hide();
           }
           
       });
+
+      
+      $(document).on('click', "#taskschedule", function() {
+                
+            var dateredio = $("#dateredio input[type='radio']:checked").val();
+                if (dateredio == 'schedule') {
+                    $(".opendatepicker").focus();
+                }
+        });
 
     $(document).on("click", ".submitTaskHeader", function(e) {
       e.preventDefault();
