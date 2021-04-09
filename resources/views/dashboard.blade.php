@@ -26,7 +26,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                     <div class="card-header" id="heading-1">
 
                             <a role="button" data-toggle="collapse" href="#collapse-new"
-                                aria-expanded="true" aria-controls="collapse-new">
+                                aria-expanded="false" aria-controls="collapse-new">
                                 <div class="newcheckit">
                                     <div class="row d-flex align-items-center" class="mb-0">
                                         <div class="col-md-4 col-lg-3 col-xl-2 col-2">
