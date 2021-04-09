@@ -144,16 +144,25 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                         aria-labelledby="heading-1">
                         <div class="card-body">
 
-
+                            <?php //echo "<pre>";
+                               // print_r($item['agents']); die;?>
                             @foreach ($item['agents'] as $agent)
 
                                 <?php
+                                
+
                                 if(isset($distance_matrix[$agent['id']]))
                                 {
+                                    if($agent['order'][0]['task_order']==0){
+                                        $opti = "yes";
+                                    }else{
+                                        $opti = "";
+                                    }
+                                
                                     //print_r($distance_matrix[$agent['id']]); 
-                                    $routeperams = "'".$distance_matrix[$agent['id']]['tasks']."','".json_encode($distance_matrix[$agent['id']]['distance'])."'";
+                                    $routeperams = "'".$distance_matrix[$agent['id']]['tasks']."','".json_encode($distance_matrix[$agent['id']]['distance'])."','".$opti."'";
                                     
-                                    $optimize = '<span onclick="RouteOptimization('.$routeperams.')">Optimize</span>';
+                                    $optimize = '<span class="optimize_btn" onclick="RouteOptimization('.$routeperams.')">Optimize</span>';
                                 }else{
                                     $optimize="";
                                 }
@@ -1038,23 +1047,29 @@ $(".datetime").on('change', function postinput(){
 //          }
 
 
-function RouteOptimization(taskids,distancematrix) {
-    $.ajax({
-        type: 'POST',
-        
-        url: '{{url("/optimize-route")}}',
-        headers: {
-            'X-CSRF-Token': '{{ csrf_token() }}',
-        },
-        data: {'taskids':taskids,'distance':distancematrix},
-        success: function(response) {
-            location.reload();
+function RouteOptimization(taskids,distancematrix,optimize) {
+    if(optimize=="yes")
+    {
+        $.ajax({
+            type: 'POST',
             
-        },
-        error: function(response) {
-            
-        }
-    });
+            url: '{{url("/optimize-route")}}',
+            headers: {
+                'X-CSRF-Token': '{{ csrf_token() }}',
+            },
+            data: {'taskids':taskids,'distance':distancematrix},
+            success: function(response) {
+                location.reload();
+                
+            },
+            error: function(response) {
+                
+            }
+        });
+    }else{
+        location.reload();
+    }
+    
 }
 
 </script>
