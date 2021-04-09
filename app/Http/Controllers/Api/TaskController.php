@@ -258,7 +258,7 @@ class TaskController extends BaseController
             Config::set('mail', $config);
 
             $app = App::getInstance();
-            $app->register('Illuminate\Mail\MailServiceProvider');
+            $app->register('\Illuminate\Mail\MailServiceProvider');
         }
             
 
