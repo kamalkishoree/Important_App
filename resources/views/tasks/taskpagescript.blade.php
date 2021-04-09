@@ -186,7 +186,7 @@
                             '<label class="mb-3">Image</label>'+
                             '<div class="status-wrap-block">'+
                                 '<div class="image-wrap-sign">'+
-                                    '<img src="https://imgproxy.royodispatch.com/insecure/fill/400/400/sm/0/plain/'+ image_proof +'" alt="">'+
+                                    '<img src="https://imgproxy.royodispatch.com/insecure/fill/400/400/sm/0/plain/https://royodelivery-assets.s3.us-west-2.amazonaws.com/'+ image_proof +'" alt="">'+
                                 '</div>'+
                             '</div>'+
                         '</div>' ;
