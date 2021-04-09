@@ -12,9 +12,20 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
 
 <!-- Bannar Section -->
 {{-- <section class="bannar header-setting"> --}}
+   
 <div class="container-fluid p-0">
 <div class="row coolcheck">
+    <div class="pageloader" style="display: none;">
+        <div class="box">
+            <h4>Optimizing Route</h4>
+            <div class="spinner-border avatar-lg text-primary m-2" role="status"></div>
+        </div>
+    </div>   
+    
+
     <div class="col-md-4 col-xl-3 left-sidebar pt-3">
+        
+        
         <div id="accordion">
             <div class="card no-border-radius">
                 
@@ -116,6 +127,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                 
             </div>
             <div class="card no-border-radius">
+                
                 
                 @foreach ($teams as $item)
                     
@@ -1071,6 +1083,7 @@ $(".datetime").on('change', function postinput(){
 
 
 function RouteOptimization(taskids,distancematrix,optimize) {
+    $('.pageloader').css('display','block');
     if(optimize=="yes")
     {
         $.ajax({
@@ -1082,6 +1095,7 @@ function RouteOptimization(taskids,distancematrix,optimize) {
             },
             data: {'taskids':taskids,'distance':distancematrix},
             success: function(response) {
+                $('.pageloader').css('display','none');
                 location.reload();
                 
             },
@@ -1090,6 +1104,7 @@ function RouteOptimization(taskids,distancematrix,optimize) {
             }
         });
     }else{
+        $('.pageloader').css('display','none');
         location.reload();
     }
     
@@ -1132,6 +1147,33 @@ function RouteOptimization(taskids,distancematrix,optimize) {
     font-size: 12px;
     font-weight: 500;
 }
+
+.pageloader {
+    width: 100%;
+    height: 100%;
+   position: absolute;
+    top: 40%;
+    z-index: 999;
+    left: 50%;    
+}
+
+.box {
+    background: #fff;
+    width: 250px;
+    height: 170px;
+    text-align: center;
+    padding: 17px;
+    color: blue;
+    opacity: 0.9;
+    border-radius: 5px;
+}
+
+.box h4 {
+    color: #3283f6;
+}
+
+
+
 </style>
 
 @endsection
