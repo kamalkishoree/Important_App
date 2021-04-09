@@ -24,7 +24,6 @@
             max-width: 730px;
             margin: 0 auto;
             border-radius: 4px;
-            /*background-image: url(./assets/invoice-images/pattern.png);*/
             background-repeat: repeat;
             width: 600px;
         }
@@ -39,7 +38,7 @@
                 <thead style="padding: 0 30px;">
                     <tr>
                         <th style="padding: 0 0 30px 30px;">
-                            <img style="width: 100px;" src="{{$client_logo}}" alt="">
+                            <img style="width: 100px;" src="" alt="">
                         </th>
                     </tr>
                 </thead>
@@ -54,7 +53,7 @@
                         <td style="padding: 40px 30px 20px;">
                             <div class="driver_deatil">
                                 <div class="left-icon" style="width: 60px;height: 60px;overflow: hidden;border-radius: 50%;display: inline-block;vertical-align: middle;">
-                                    <img src="{{$agent_profile}}" alt=""
+                                    <img src="" alt=""
                                         style="width: 100%;height: 100%;object-fit: cover;">
                                 </div>
                                 <div class="right_text" style="text-align: left;display: inline-block;vertical-align: middle;padding: 0 0 0 15px;">
