@@ -393,6 +393,8 @@
     font-weight: 500;
     letter-spacing: 0;
   }
+
+
   .assigned-block a {
     color: #797979;
     font-size: 11px;
@@ -725,4 +727,73 @@ text-align: center;
 .light_green{
   background-color: rgb(235 183 133 / 65%);
   color: #fff;
+}
+
+
+#accordion{
+  padding-bottom: 50px;
+}
+
+.left-sidebar {
+  height: 100vh;
+  overflow: auto;
+}
+
+#accordion .left-sidebar .card-body {
+  padding: 0;
+  border-bottom: 1px dashed #000;
+}
+
+
+#accordion .card-body .assigned-block h5 {
+  color: #272727;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0;
+  margin: 0;
+  width: 70px;
+  display: flex;
+  align-content: center;
+  justify-content: center;
+  padding: 10px 0;
+  position: relative;
+}
+
+#accordion .card-body .assigned-block h5::after {
+  content: "";
+  border-right: 2px dotted #000;
+  width: 1px;
+  height: calc(100% + 24px);
+  position: absolute;
+  top: -11px;
+  right: 0;
+}
+
+#accordion .card-body .assigned-block h6 {
+  color: #272727;
+  font-size: 13px;
+  letter-spacing: 0;
+  line-height: 15px;
+  margin-bottom: 0px;
+  margin-top: 0;
+  float: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 77%;
+  padding-left: 20px;
+  position: relative;
+  margin-left: 10px;
+}
+.vt-top {
+  position: absolute;
+  left: 0;
+}
+
+.left-sidebar .card-body {
+  border-bottom: 2px dotted #000;
+}
+
+.left-sidebar .card-body:last-child {
+  border: 0;
 }

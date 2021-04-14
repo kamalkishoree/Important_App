@@ -23,9 +23,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
     </div>   
     
 
-    <div class="col-md-4 col-xl-3 left-sidebar pt-3">
-        
-        
+    <div class="col-md-4 col-xl-3 left-sidebar pt-3">                
         <div id="accordion">
             <div class="card no-border-radius">
                 
@@ -173,7 +171,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                     }
                                 
                                     //print_r($distance_matrix[$agent['id']]); 
-                                    $routeperams = "'".$distance_matrix[$agent['id']]['tasks']."','".json_encode($distance_matrix[$agent['id']]['distance'])."','".$opti."'";
+                                    $routeperams = "'".$distance_matrix[$agent['id']]['tasks']."','".json_encode($distance_matrix[$agent['id']]['distance'])."','".$opti."',".$agent['id'];
                                     
                                     $optimize = '<span class="optimize_btn" onclick="RouteOptimization('.$routeperams.')">Optimize</span>';
                                 }else{
@@ -208,16 +206,13 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                             @foreach ($agent['order'] as $orders)
                                                 @foreach ($orders['task'] as $tasks)
                                                     <div class="card-body">
-                                                        <div class="pt-3 pl-3 pr-3 assigned-block">
-                                                            <div class="wd-10">
-                                                                <img class="vt-top"
-                                                                    src="{{ asset('demo/images/ic_location_blue_1.png') }}">
-                                                            </div>
+                                                        <div class="p-2 assigned-block">
+                                                            
                                                             @php
                                                                     if($tasks['task_status']==1)
                                                                     {
                                                                     $st = "Assigned";
-                                                                    $color_class = "assign_";
+                                                                    $color_class = "assign_";                                                                    
                                                                     }elseif($tasks['task_status']==2)
                                                                     {
                                                                     $st = "Started";
@@ -234,18 +229,34 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                                                     $st = "Failed";
                                                                     $color_class = "red_";
                                                                     }
-                                                            @endphp
-                                                            <div class="wd-90">
-                                                                <h6>{{ $tasks['location']['address'] }}</h6>
-                                                                <span>{{ $tasks['location']['short_name'] }}</span>
-                                                                <h5 class="mb-1"><span>Due</span>
-                                                                    {{date('h:i a ', strtotime($tasks['created_at']))}}
-                                                                    <button
-                                                                            class="assigned-btn float-right {{$color_class}}">{{$st}}</button>
-                                                                </h5>
 
-                                                            </div>
-                                                            <div class="pb-3">
+                                                                    if($tasks['task_type_id']==1)
+                                                                    {
+                                                                        $tasktype = "Pickup";
+                                                                        $pickup_class = "yellow_";
+                                                                    }elseif($tasks['task_type_id']==2)
+                                                                    {
+                                                                        $tasktype = "Dropoff";
+                                                                        $pickup_class = "green_";
+                                                                    }else{
+                                                                        $tasktype = "Appointment";
+                                                                        $pickup_class = "assign_";
+                                                                    }
+                                                            @endphp
+                                                            <div>
+
+                                                                <div class="row no-gutters align-items-center">
+                                                                    <div class="col-9 d-flex">
+                                                                        <h5 class="d-inline">{{date('h:i a ', strtotime($tasks['created_at']))}}</h5>
+                                                                        <h6 class="d-inline"><img class="vt-top"
+                                                                            src="{{ asset('demo/images/ic_location_blue_1.png') }}"> {{ $tasks['location']['address'] }} <span class="d-block">{{ $tasks['location']['short_name'] }}</span></h6>
+                                                                        
+                                                                    </div>
+                                                                    <div class="col-3">
+                                                                        <button class="assigned-btn float-right mb-2 {{$pickup_class}}">{{$tasktype}}</button>
+                                                                        <button class="assigned-btn float-right {{$color_class}}">{{$st}}</button>
+                                                                    </div>
+                                                                </div>
 
                                                             </div>
                                                         </div>
@@ -262,8 +273,6 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                     </div>
                 @endforeach
             </div>
-
-
         </div>
     </div>
     
@@ -477,8 +486,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                         </label>
                                     </div>
                                 </div>
-                                
-                                
+
                             </div>
                         </div>
                     </div>
@@ -489,21 +497,8 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
 </div>
 </div>
 
-
 @endsection
 
-<?php
-//$aagent = array();
-// foreach ($agents as $singleagent) {
-//     if(is_array($singleagent['agentlog']))
-//     {
-//         $aagent[] = $singleagent['agentlog'];
-//     }
-    
-// }
-// echo "<pre>";
-// print_r($aagent); die;
-?>
 
 
 @section('script')
@@ -518,6 +513,8 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
 <script src="{{asset('assets/js/pages/form-pickers.init.js')}}"></script> --}}
 {{-- <script src="{{ asset('demo/js/propeller.min.js') }}"></script>
 --}}
+<script src="{{asset('assets/libs/dragula/dragula.min.js')}}"></script>
+<script src="{{asset('assets/js/pages/dragula.init.js')}}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-timeago/1.6.3/jquery.timeago.js"></script>
 <script>
 
@@ -649,9 +646,7 @@ for (let i = 0; i < olddata.length; i++) {
                 send = null;
                 type = 1;
             addMarker({lat:parseFloat(checkdata['latitude']),lng:parseFloat(checkdata['longitude'])}, send,image,checkdata,type);
-        }
-
-    
+        }    
 }
 
     //for agents
@@ -729,50 +724,45 @@ for (let i = 0; i < olddata.length; i++) {
     }
 }
 
-
-
 });
 
 
 // $('.agentdisplay').click(function() {
 $('.agentdisplay_old').click(function() {
-var agentval = [];
-$('.agentdisplay:checkbox:checked').each(function(i) {
-    agentval[i] = parseInt($(this).val());
-});
-setMapOnAll(null);
-$(".taskchecks").prop('checked', false);
-$(".newchecks").prop('checked', false);
-//   if (!$(this).is(':checked')) {
-//    return confirm("Are you sure?");
-//   }
-//console.log(agentval);
+    var agentval = [];
+    $('.agentdisplay:checkbox:checked').each(function(i) {
+        agentval[i] = parseInt($(this).val());
+    });
+    setMapOnAll(null);
+    $(".taskchecks").prop('checked', false);
+    $(".newchecks").prop('checked', false);
+    //   if (!$(this).is(':checked')) {
+    //    return confirm("Are you sure?");
+    //   }
+    //console.log(agentval);
 
 
-for (let i = 0; i < allagent.length; i++) {
-    checkdata = allagent[i];
-    //console.log(checkdata);
-    // addMarker({ lat: checkdata[3], lng: checkdata[4] });
-    if ($.inArray(checkdata['is_available'], agentval) != -1 || $.inArray(2, agentval) != -1) {
-        
-        if (checkdata['is_available'] == 1) {
-            images = url+'/demo/images/location.png';
-        }else {
-            images = url+'/demo/images/location_grey.png';
+    for (let i = 0; i < allagent.length; i++) {
+        checkdata = allagent[i];        
+        // addMarker({ lat: checkdata[3], lng: checkdata[4] });
+        if ($.inArray(checkdata['is_available'], agentval) != -1 || $.inArray(2, agentval) != -1) {
+            
+            if (checkdata['is_available'] == 1) {
+                images = url+'/demo/images/location.png';
+            }else {
+                images = url+'/demo/images/location_grey.png';
+            }
+            var image = {
+            url: images, // url
+            scaledSize: new google.maps.Size(50, 50), // scaled size
+            origin: new google.maps.Point(0,0), // origin
+            anchor: new google.maps.Point(22,22) // anchor
+            };
+            send = null;
+            type = 2;
+        addMarker({lat: parseFloat(checkdata.agentlog['lat']),lng:  parseFloat(checkdata.agentlog['long'])}, send, image,checkdata,type);
         }
-        var image = {
-         url: images, // url
-         scaledSize: new google.maps.Size(50, 50), // scaled size
-         origin: new google.maps.Point(0,0), // origin
-         anchor: new google.maps.Point(22,22) // anchor
-        };
-        send = null;
-        type = 2;
-       addMarker({lat: parseFloat(checkdata.agentlog['lat']),lng:  parseFloat(checkdata.agentlog['long'])}, send, image,checkdata,type);
     }
-}
-
-
 
 });
 
@@ -782,10 +772,6 @@ for (let i = 0; i < allagent.length; i++) {
 function initMap() {
 
     //console.log(allagent);
-
-    // const directionsService = new google.maps.DirectionsService();
-    // const directionsRenderer = new google.maps.DirectionsRenderer({suppressMarkers: true});
-
 
     const haightAshbury = {
         lat: allagent[0].agentlog && allagent[0].agentlog['lat']  != "0.00000000" ? parseFloat(allagent[0].agentlog['lat']): 30.7046,
@@ -799,9 +785,7 @@ function initMap() {
         styles: themeType,
     });
 
-    //directionsRenderer.setMap(map);
-    //calculateAndDisplayRoute(directionsService, directionsRenderer,map);
-
+    
     //new code for route
     var color = [
         "blue",
@@ -831,15 +815,10 @@ function initMap() {
             }
         });
         directionsRenderer.setMap(map);
-
         var al_task = allroutes[i].task_details;
         var agent_locatn = allroutes[i].driver_detail;
         calculateAndDisplayRoute(directionsService, directionsRenderer,map,al_task,agent_locatn);
     });
-
-   
-
-
 
     // Adds a marker at the center of the map.
     for (let i = 0; i < olddata.length; i++) {
@@ -899,11 +878,7 @@ function initMap() {
                         lng:  parseFloat(displayagent.agentlog['long'])
                         }, send, image,displayagent,type);
             }
-            
-                
-               
-
-            
+                       
     }
 }
 
@@ -922,7 +897,6 @@ function calculateAndDisplayRoute(directionsService, directionsRenderer,map,allt
                         stopover: true,
                     });
 
-                    
                 }
                 var image = url+'/assets/newicons/'+alltask[i].task_type_id+'.png';
 
@@ -962,8 +936,6 @@ function calculateAndDisplayRoute(directionsService, directionsRenderer,map,allt
         }
 
 
-
-
 // Adds a marker to the map and push to the array.
 function addMarker(location, lables, images,data,type) {
 
@@ -998,44 +970,28 @@ function addMarker(location, lables, images,data,type) {
                 '<div><b class="d-block mb-2"><i class="far fa-clock"></i> <span> '+jQuery.timeago(new Date(data['agentlog']['created_at']))+
                 ' </span></b> <b><i class="fas fa-mobile-alt"></i> '+data['agentlog']['device_type']+'</b> <b class="ml-2"> <i class="fas fa-battery-half"></i>  '+data['agentlog']['battery_level']+'%</b> </div>'
             '</div>'+
-        '</div>'
-        
-
-        
-         
-        
-        
+        '</div>';  
     }
-
-
 
     const infowindow = new google.maps.InfoWindow({
         content: contentString,
         minWidth: 250,
         minheight: 250,
     });
-
-
-
-
+    
     const marker = new google.maps.Marker({
                     position: location,
                     label: lables,
                     icon: images,
                     map: map,
                     animation: google.maps.Animation.DROP,
-                });
-   
-
-
-
+                }); 
     
      markers.push(marker);
 
     marker.addListener("click", () => {
     infowindow.open(map, marker);
     });
-
 }
 
 // Sets the map on all markers in the array.
@@ -1082,7 +1038,8 @@ $(".datetime").on('change', function postinput(){
 //          }
 
 
-function RouteOptimization(taskids,distancematrix,optimize) {
+function RouteOptimization(taskids,distancematrix,optimize,agentid) {
+    
     $('.pageloader').css('display','block');
     if(optimize=="yes")
     {
@@ -1093,11 +1050,99 @@ function RouteOptimization(taskids,distancematrix,optimize) {
             headers: {
                 'X-CSRF-Token': '{{ csrf_token() }}',
             },
-            data: {'taskids':taskids,'distance':distancematrix},
+            data: {'taskids':taskids,'distance':distancematrix,'agentid':agentid},
+
             success: function(response) {
-                $('.pageloader').css('display','none');
-                location.reload();
-                
+                if(response!="Try again later")
+                {
+                    var data = $.parseJSON(response);
+                // alert(data);
+                    var tasklist = data.tasklist;
+                    var taskorders = tasklist.order;
+                    
+                    $('#collapse'+agentid).html('');
+                    
+                    var sidebarhtml = "";
+
+
+                    for (var i = 0; i < taskorders.length; i++) {
+                        var object = taskorders[i];
+
+                        var location_address =  object['task'][0]['location']['address'];
+                        var shortname =  object['task'][0]['location']['short_name'];
+                        var tasktime = object['task'][0]['task_time'];
+                        //alert(tasktime);
+                        
+                        var taskstatus = object['task'][0]['task_status'];
+                        var tasktypeid = object['task'][0]['task_type_id'];
+                        var classname = "";
+                        var classtext = "";
+                        var tasktype = "";
+                        var pickupclass = "";
+                        
+                        if(taskstatus==1)
+                        {
+                            classtext = "Assigned";
+                            classname = "assign_";
+                        }else if(taskstatus==2)
+                        {
+                            classtext = "Started";
+                            classname = "yellow_";
+                        }else if(taskstatus==3)
+                        {
+                            classtext = "Arrived";
+                            classname = "light_green";
+                        }else if(taskstatus==4)
+                        {
+                            classtext = "Completed";
+                            classname = "green_";
+                        }else{
+                            classtext = "Failed";
+                            classname = "red_";
+                        }
+
+                        if(tasktypeid==1)
+                        {
+                            tasktype = "Pickup";
+                            pickupclass = "yellow_";
+                        }else if(tasktypeid==2)
+                        {
+                            tasktype = "Dropoff";
+                            pickupclass = "green_";
+                        }else{
+                            tasktype = "Appointment";
+                            pickupclass = "assign_";
+                        }
+
+                        var sidebarhtml   = '<div class="card-body"><div class="p-2 assigned-block"><div><div class="row no-gutters align-items-center"><div class="col-9 d-flex"><h5 class="d-inline">'+tasktime+'</h5><h6 class="d-inline"><img class="vt-top" src="{{ asset("demo/images/ic_location_blue_1.png") }}">'+location_address+'<span class="d-block">'+shortname+'</span></h6></div><div class="col-3"><button class="assigned-btn float-right mb-2 '+pickupclass+'">'+tasktype+'</button><button class="assigned-btn float-right '+classname+'">'+classtext+'</button></div></div></div></div></div>';
+                        
+                        $('#collapse'+agentid).append(sidebarhtml);
+                    }
+
+                    // -------- for route show ------------------
+                    reInitMap(data.allroutedata);               
+
+                    // const directionsService = new google.maps.DirectionsService();
+                    // const directionsRenderer = new google.maps.DirectionsRenderer({suppressMarkers: true});
+                    // directionsRenderer.setOptions({
+                    //     polylineOptions: {
+                    //         strokeColor: 'black'                
+                    //     }
+                    // });
+                    // directionsRenderer.setMap(map);
+                    // var allroutes = data.routedata;            
+                    // var agnt_task = allroutes.task_details;
+                    // var agnt_locatn = allroutes.driver_detail;            
+                    // calculateAndDisplayRoute(directionsService, directionsRenderer,map,agnt_task,agnt_locatn);
+
+                    // ----- route show end-----------
+
+                    $('.pageloader').css('display','none');
+                    //location.reload();
+                }else{                    
+                    alert(response);
+                    $('.pageloader').css('display','none');
+                }
             },
             error: function(response) {
                 
@@ -1105,9 +1150,121 @@ function RouteOptimization(taskids,distancematrix,optimize) {
         });
     }else{
         $('.pageloader').css('display','none');
-        location.reload();
     }
     
+}
+
+
+
+function reInitMap(allroutes) {
+
+    const haightAshbury = {
+        lat: allagent[0].agentlog && allagent[0].agentlog['lat']  != "0.00000000" ? parseFloat(allagent[0].agentlog['lat']): 30.7046,
+        lng: allagent[0].agentlog && allagent[0].agentlog['long'] != "0.00000000" ? parseFloat(allagent[0].agentlog['long']):76.7179
+    };
+
+    map = new google.maps.Map(document.getElementById("map_canvas"), {
+        zoom: 12,
+        center: haightAshbury,
+        mapTypeId: "roadmap",
+        styles: themeType,
+    });
+   
+    //new code for route
+    var color = [
+        "blue",
+        "green",
+        "red",
+        "purple",
+        "skyblue",
+        "yellow",
+        "orange",
+        
+        ];
+
+    //var allroutes = {!! json_encode($routedata) !!};
+    $.each(allroutes, function(i, item) {
+        const directionsService = new google.maps.DirectionsService();
+        const directionsRenderer = new google.maps.DirectionsRenderer({suppressMarkers: true});
+        if(i < color.length)
+        {
+            var routecolor = color[i];
+        }else{
+            var routecolor = "pink";
+        }
+        
+        directionsRenderer.setOptions({
+            polylineOptions: {
+                strokeColor: routecolor                
+            }
+        });
+        directionsRenderer.setMap(map);
+
+        var al_task = allroutes[i].task_details;
+        var agent_locatn = allroutes[i].driver_detail;
+        calculateAndDisplayRoute(directionsService, directionsRenderer,map,al_task,agent_locatn);
+    });
+
+    // Adds a marker at the center of the map.
+    for (let i = 0; i < olddata.length; i++) {
+        checkdata = olddata[i];
+
+        var urlnewcreate = '';
+        if(checkdata['task_status'] == 0){
+            urlnewcreate = 'unassigned';
+        }else if(checkdata['task_status'] == 1 || checkdata['task_status'] == 2){
+            urlnewcreate = 'assigned';
+        }else if(checkdata['task_status'] == 3){
+            urlnewcreate = 'complete';
+        }else{
+            urlnewcreate = 'faild';
+        }
+        
+        if(checkdata['task_type_id'] == 1){
+                urlnewcreate += '_P.png';
+        }else if(checkdata['task_type_id'] == 2){
+                urlnewcreate +='_D.png';
+        }else{
+                urlnewcreate +='_A.png';
+        }
+            
+        img = '{{ asset('assets/newicons/') }}'+'/'+urlnewcreate;
+        
+        send = null;
+            type = 1;
+        addMarker({
+            lat: parseFloat(checkdata['latitude']),
+            lng:  parseFloat(checkdata['longitude'])
+        }, send, img,checkdata,type);
+    }
+
+
+    //agents markers
+    for (let i = 0; i < allagent.length; i++) {
+            displayagent = allagent[i];
+            
+            if(displayagent.agentlog != null && displayagent.agentlog['lat'] != "0.00000000" && displayagent.agentlog['long'] != "0.00000000" ){
+                console.log(displayagent.agentlog);
+                        if (displayagent['is_available'] == 1) {
+                            images = url+'/demo/images/location.png';
+                        }else {
+                            images = url+'/demo/images/location_grey.png';
+                        }
+                        var image = {
+                        url: images, // url
+                        scaledSize: new google.maps.Size(50, 50), // scaled size
+                        origin: new google.maps.Point(0,0), // origin
+                        anchor: new google.maps.Point(22,22) // anchor
+                        };
+                        send = null;
+                        type = 2;
+
+                        addMarker({lat: parseFloat(displayagent.agentlog['lat']),
+                        lng:  parseFloat(displayagent.agentlog['long'])
+                        }, send, image,displayagent,type);
+            }
+            
+    }
 }
 
 </script>
@@ -1171,8 +1328,6 @@ function RouteOptimization(taskids,distancematrix,optimize) {
 .box h4 {
     color: #3283f6;
 }
-
-
 
 </style>
 
