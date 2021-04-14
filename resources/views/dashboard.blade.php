@@ -194,7 +194,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                                                 src="{{isset($agent['profile_picture']) ? $imgproxyurl.Storage::disk('s3')->url($agent['profile_picture']):'https://dummyimage.com/36x36/ccc/fff'}}">
                                                         </div>
                                                         <div class="col-md-10 col-10">
-                                                            <h6 class="mb-0 header-title scnd">{{ $agent['name'] }} {!! $optimize !!} </h6>
+                                                            <h6 class="mb-0 header-title scnd">{{ $agent['name'] }} <div class="optimizebtn{{ $agent['id'] }}">{!! $optimize !!} </div></h6>
                                                             <p class="mb-0">{{count($agent['order'])>0?'Busy  ':'Free  '}}<span>{{$agent['agent_task_count']}} Tasks</span></p>
                                                         </div>
                                                     </div>
@@ -1120,7 +1120,12 @@ function RouteOptimization(taskids,distancematrix,optimize,agentid) {
                     }
 
                     // -------- for route show ------------------
-                    reInitMap(data.allroutedata);               
+                    reInitMap(data.allroutedata);    
+
+                    var params = "'"+taskids+"','"+distancematrix+"','',"+agentid;
+                    var funperams = '<span class="optimize_btn" onclick="RouteOptimization('+params+')">Optimize</span>';                    
+                    $('.optimizebtn'+agentid).html(funperams);
+                               
 
                     // const directionsService = new google.maps.DirectionsService();
                     // const directionsRenderer = new google.maps.DirectionsRenderer({suppressMarkers: true});
