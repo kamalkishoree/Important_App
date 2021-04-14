@@ -298,7 +298,7 @@ class DashBoardController extends Controller
                     {
                        $matrixarray[$i][$k] = $matrixarray[$k][$i];
                     }else{
-                        $distance = $this->GoogleDistanceMatrix($value[$i][0],$value[$i][1],$value[$k][0],$value[$k][1] );                    
+                        $distance = $this->GoogleDistanceMatrix('$value[$i][0]','$value[$i][1]','$value[$k][0]','$value[$k][1]' );                    
                         $matrixarray[$i][$k] = $distance;
                         
                         //$matrixarray[$i][$k] = 0;
