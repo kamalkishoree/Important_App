@@ -622,4 +622,88 @@ class DashBoardController extends Controller
         }
     }
 
+    public function arrangeRoute(Request $request)
+    {        
+        $taskids = explode(',',$request->taskids);
+        $taskids = array_filter($taskids);
+        for ($i=0; $i < count($taskids); $i++) {                 
+            $taskorder = [
+                'task_order' => $i 
+             ];                
+             Task::where('id',$taskids[$i])->update($taskorder);
+        }
+
+        $orderdetail = Task::where('id',$taskids[0])->with('order')->first();
+        $orderdate =  date("Y-m-d", strtotime($orderdetail->order->order_time));
+
+        //getting all routes
+        $allTasks = Order::whereDate('order_time', $orderdate)->with(['customer', 'task.location', 'agent.team'])->get();
+        $allmarker = [];
+        foreach ($allTasks as $key => $tasks) {
+            $append = [];
+            foreach ($tasks->task as $task) {
+
+                if ($task->task_type_id == 1) {
+                    $name = 'Pickup';
+                } elseif ($task->task_type_id == 2) {
+                    $name = 'DropOff';
+                } else {
+                    $name = 'Appointment';
+                }
+                $append['task_type']             = $name;
+                $append['task_id']               = $task->id;
+                $append['latitude']              = floatval($task->location->latitude);
+                $append['longitude']             = floatval($task->location->longitude);
+                $append['address']               = $task->location->address;
+                $append['task_type_id']          = $task->task_type_id;
+                $append['task_status']           = (int)$task->task_status;
+                $append['team_id']               = isset($tasks->driver_id) ? $tasks->agent->team_id : 0;
+                $append['driver_name']           = isset($tasks->driver_id) ? $tasks->agent->name : '';
+                $append['driver_id']             = isset($tasks->driver_id) ? $tasks->driver_id : '';
+                $append['customer_name']         = $tasks->customer->name;
+                $append['customer_phone_number'] = $tasks->customer->phone_number;
+                $append['task_order']            = $task->task_order;
+
+                array_push($allmarker, $append);
+            }
+        }
+
+        $allagents = Agent::with('agentlog')->get()->toArray();
+        $alldrivers = array();       
+        $j = 0;
+        foreach ($allagents as $singleagent) {
+            if(is_array($singleagent['agentlog']))
+            {
+                $alltaskarray = array();                
+                foreach($allmarker as $singlemark)
+                {
+                    if($singlemark['driver_id'] == $singleagent['agentlog']['agent_id'])
+                    {
+                        $alltaskarray[] = $singlemark;                            
+                    }
+                }
+                if(!empty($alltaskarray))
+                {
+                    usort($alltaskarray, function($a, $b) {
+                        return $a['task_order'] <=> $b['task_order'];
+                    });
+                    if($orderdate != date('Y-m-d'))
+                    {
+                        $singleagent['agentlog']['lat'] = $alltaskarray[0]['latitude'];
+                        $singleagent['agentlog']['long'] = $alltaskarray[0]['longitude'];
+                    }
+                    $alldrivers[$j]['driver_detail'] = $singleagent['agentlog'];
+                    $alldrivers[$j]['task_details'] = $alltaskarray;
+                    $j++;                    
+                }                    
+            }                
+        }            
+
+        $output = array();
+        $output['allroutedata'] = $alldrivers;            
+        echo json_encode($output);   
+            
+        
+    }
+
 }

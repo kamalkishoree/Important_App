@@ -17,19 +17,19 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
 <div class="row coolcheck">
     <div class="pageloader" style="display: none;">
         <div class="box">
-            <h4>Optimizing Route</h4>
+            <h4 class="routetext"></h4>
             <div class="spinner-border avatar-lg text-primary m-2" role="status"></div>
         </div>
     </div>   
     
 
     <div class="col-md-4 col-xl-3 left-sidebar pt-3">                
-        <div id="accordion">
+        <div id="accordion" class="overflow-hidden">
             <div class="card no-border-radius">
                 
                 <?php
                     //for ($u=0; $u < count($routedata) ; $u++) { ?>
-                        {{-- <span id="directions-panel<?=$u?>"></span>
+                        {{-- <span id="directions-panel<?php //echo $u?>"></span>
                         <span id="waypoints<?=//$u?>"></span> --}}
                     <?php //} ?>
                     <div class="card-header" id="heading-1">
@@ -174,8 +174,10 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                     $routeperams = "'".$distance_matrix[$agent['id']]['tasks']."','".json_encode($distance_matrix[$agent['id']]['distance'])."','".$opti."',".$agent['id'];
                                     
                                     $optimize = '<span class="optimize_btn" onclick="RouteOptimization('.$routeperams.')">Optimize</span>';
+                                    $params = "'".$distance_matrix[$agent['id']]['tasks']."','".json_encode($distance_matrix[$agent['id']]['distance'])."','yes',".$agent['id'];
                                 }else{
                                     $optimize="";
+                                    $params = "";
                                 }
                                 
                                 ?>
@@ -203,9 +205,13 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                         <div id="collapse{{ $agent['id'] }}" class="collapse"
                                             data-parent="#accordion-{{ $agent['id'] }}"
                                             aria-labelledby="by{{ $agent['id'] }}">
+                                            <div id="handle-dragula-left{{ $agent['id'] }}" class="dragable_tasks" agentid="{{ $agent['id'] }}"  params="{{ $params }}">
+                                                
                                             @foreach ($agent['order'] as $orders)
+                                                
                                                 @foreach ($orders['task'] as $tasks)
-                                                    <div class="card-body">
+                                                
+                                                    <div class="card-body" task_id ="{{ $tasks['id'] }}">
                                                         <div class="p-2 assigned-block">
                                                             
                                                             @php
@@ -247,7 +253,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
 
                                                                 <div class="row no-gutters align-items-center">
                                                                     <div class="col-9 d-flex">
-                                                                        <h5 class="d-inline">{{date('h:i a ', strtotime($tasks['created_at']))}}</h5>
+                                                                        <h5 class="d-inline-flex align-items-center justify-content-between"><i class="fas fa-bars"></i> <span>{{date('h:i a ', strtotime($tasks['created_at']))}}</span></h5>
                                                                         <h6 class="d-inline"><img class="vt-top"
                                                                             src="{{ asset('demo/images/ic_location_blue_1.png') }}"> {{ $tasks['location']['address'] }} <span class="d-block">{{ $tasks['location']['short_name'] }}</span></h6>
                                                                         
@@ -262,10 +268,14 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                                         </div>
                                                         
                                                     </div>
+                                                
+                                               
                                                 @endforeach
                                                 
                                             @endforeach
                                         </div>
+                                        </div>
+
                                     </div>
                                 </div>
                             @endforeach
@@ -274,6 +284,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                 @endforeach
             </div>
         </div>
+
     </div>
     
     <div class="col-md-8 col-xl-9">
@@ -513,8 +524,8 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
 <script src="{{asset('assets/js/pages/form-pickers.init.js')}}"></script> --}}
 {{-- <script src="{{ asset('demo/js/propeller.min.js') }}"></script>
 --}}
-<script src="{{asset('assets/libs/dragula/dragula.min.js')}}"></script>
-<script src="{{asset('assets/js/pages/dragula.init.js')}}"></script>
+{{-- <script src="{{asset('assets/libs/dragula/dragula.min.js')}}"></script>
+<script src="{{asset('assets/js/pages/dragula.init.js')}}"></script> --}}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-timeago/1.6.3/jquery.timeago.js"></script>
 <script>
 
@@ -524,9 +535,6 @@ initMap();
 $('#shortclick').trigger('click');
 $(".timeago").timeago();
 });
-
-
-
 
 function gm_authFailure() {
 
@@ -1039,7 +1047,7 @@ $(".datetime").on('change', function postinput(){
 
 
 function RouteOptimization(taskids,distancematrix,optimize,agentid) {
-    
+    $('.routetext').text('Optimizing Route');    
     $('.pageloader').css('display','block');
     if(optimize=="yes")
     {
@@ -1060,14 +1068,14 @@ function RouteOptimization(taskids,distancematrix,optimize,agentid) {
                     var tasklist = data.tasklist;
                     var taskorders = tasklist.order;
                     
-                    $('#collapse'+agentid).html('');
+                    //$('#collapse'+agentid).html('');
+                    $('#handle-dragula-left'+agentid).html('');
                     
-                    var sidebarhtml = "";
 
 
                     for (var i = 0; i < taskorders.length; i++) {
                         var object = taskorders[i];
-
+                        var task_id =  object['task'][0]['id'];
                         var location_address =  object['task'][0]['location']['address'];
                         var shortname =  object['task'][0]['location']['short_name'];
                         var tasktime = object['task'][0]['task_time'];
@@ -1114,9 +1122,10 @@ function RouteOptimization(taskids,distancematrix,optimize,agentid) {
                             pickupclass = "assign_";
                         }
 
-                        var sidebarhtml   = '<div class="card-body"><div class="p-2 assigned-block"><div><div class="row no-gutters align-items-center"><div class="col-9 d-flex"><h5 class="d-inline">'+tasktime+'</h5><h6 class="d-inline"><img class="vt-top" src="{{ asset("demo/images/ic_location_blue_1.png") }}">'+location_address+'<span class="d-block">'+shortname+'</span></h6></div><div class="col-3"><button class="assigned-btn float-right mb-2 '+pickupclass+'">'+tasktype+'</button><button class="assigned-btn float-right '+classname+'">'+classtext+'</button></div></div></div></div></div>';
-                        
-                        $('#collapse'+agentid).append(sidebarhtml);
+                        // var sidebarhtml   = '<div class="card-body"><div class="p-2 assigned-block"><div><div class="row no-gutters align-items-center"><div class="col-9 d-flex"><h5 class="d-inline">'+tasktime+'</h5><h6 class="d-inline"><img class="vt-top" src="{{ asset("demo/images/ic_location_blue_1.png") }}">'+location_address+'<span class="d-block">'+shortname+'</span></h6></div><div class="col-3"><button class="assigned-btn float-right mb-2 '+pickupclass+'">'+tasktype+'</button><button class="assigned-btn float-right '+classname+'">'+classtext+'</button></div></div></div></div></div>';
+                        var sidebarhtml   = '<div class="card-body ui-sortable-handle" task_id="'+task_id+'"><div class="p-2 assigned-block"><div><div class="row no-gutters align-items-center"><div class="col-9 d-flex"><h5 class="d-inline-flex align-items-center justify-content-between"><i class="fas fa-bars"></i><span>'+tasktime+'</span></h5><h6 class="d-inline"><img class="vt-top" src="{{ asset("demo/images/ic_location_blue_1.png") }}">'+location_address+'<span class="d-block">'+shortname+'</span></h6></div><div class="col-3"><button class="assigned-btn float-right mb-2 '+pickupclass+'">'+tasktype+'</button><button class="assigned-btn float-right '+classname+'">'+classtext+'</button></div></div></div></div></div>';
+                        //$('#collapse'+agentid).append(sidebarhtml);
+                        $('#handle-dragula-left'+agentid).append(sidebarhtml);
                     }
 
                     // -------- for route show ------------------
@@ -1243,7 +1252,6 @@ function reInitMap(allroutes) {
         }, send, img,checkdata,type);
     }
 
-
     //agents markers
     for (let i = 0; i < allagent.length; i++) {
             displayagent = allagent[i];
@@ -1271,6 +1279,43 @@ function reInitMap(allroutes) {
             
     }
 }
+
+// jQuery(".dragable_tasks").sortable();
+$(".dragable_tasks").sortable({
+    update : function(event, ui) {
+        $('.routetext').text('Arranging Route');    
+        $('.pageloader').css('display','block');        
+        var divid = $(this).attr('id');
+        var params = $(this).attr('params');
+        var agentid = $(this).attr('agentid');
+        
+        var taskorder = "";
+        jQuery("#"+divid+" .card-body.ui-sortable-handle").each(function (index, element) {            
+            taskorder = taskorder + $(this).attr('task_id') + ",";
+        });
+
+        $.ajax({
+            type: 'POST',            
+            url: '{{url("/arrange-route")}}',
+            headers: {
+                'X-CSRF-Token': '{{ csrf_token() }}',
+            },
+            data: {'taskids':taskorder},
+
+            success: function(response) {
+                var data = $.parseJSON(response);                                                      
+                reInitMap(data.allroutedata);    
+                var funperams = '<span class="optimize_btn" onclick="RouteOptimization('+params+')">Optimize</span>';
+                $('.optimizebtn'+agentid).html(funperams);
+                $('.pageloader').css('display','none');                
+            },
+            error: function(response) {
+                alert('There is some issue. Try again later');
+                $('.pageloader').css('display','none');
+            }
+        });
+    }
+});
 
 </script>
 
