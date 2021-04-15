@@ -768,7 +768,7 @@ text-align: center;
 
 #accordion .card-body .assigned-block h5::after {
   content: "";
-  border-right: 2px dotted #000;
+  border-right: 1px solid #ccc;
   width: 1px;
   height: calc(100% + 24px);
   position: absolute;
@@ -798,10 +798,30 @@ text-align: center;
 }
 
 .left-sidebar .card-body {
-  border-bottom: 2px dotted #000;
+  border-bottom: 1px solid #ccc;
   cursor: grab;
 }
 
 .left-sidebar .card-body:last-child {
   border: 0;
+}
+
+.side_head .mdi.mdi-sync {
+  font-size: 24px;
+  color: #6658dd;
+  cursor: pointer;
+}
+
+.side_head .mdi.mdi-sync:hover{
+  color: rgb(233, 130, 27);
+}
+
+.left-sidebar .side_head span {
+  color: #6658dd;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.left-sidebar .side_head span:hover{
+  color: rgb(233, 130, 27);
 }

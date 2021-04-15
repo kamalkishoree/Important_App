@@ -23,7 +23,11 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
     </div>   
     
 
-    <div class="col-md-4 col-xl-3 left-sidebar pt-3">                
+    <div class="col-md-4 col-xl-3 left-sidebar pt-3">  
+        <div class="side_head d-flex justify-content-between align-items-center mb-2">
+            <i class="mdi mdi-sync mr-1" onclick="reloadData()" aria-hidden="true"></i> 
+        <span class="allAccordian"><span class="" onclick="openAllAccordian()">Open All</span></span>
+        </div>
         <div id="accordion" class="overflow-hidden">
             <div class="card no-border-radius">
                 
@@ -290,11 +294,11 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
     <div class="col-md-8 col-xl-9">
         <div class="map-wrapper">
             <div style="width: 100%">
-                <div id="map_canvas" style="width: 100%; height:95vh;"></div>
+                <div id="map_canvas" style="width: 100%; height:95vh;"></div>                
             </div>
             <div class="contant">
                 <div class="bottom-content">
-                <input type="text"  id="basic-datepicker" class="brdr-1 datetime" value="{{date($preference->date_format, strtotime($date))}}" data-date-format="{{$preference->date_format}}">
+                    <input type="text"  id="basic-datepicker" class="brdr-1 datetime" value="{{date($preference->date_format, strtotime($date))}}" data-date-format="{{$preference->date_format}}">
                     <div class="dropdown d-inline-block brdr-1">
                         <button class="dropdown-toggle" type="button" id="dropdownMenuButton"
                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -1280,6 +1284,7 @@ function reInitMap(allroutes) {
     }
 }
 
+//for drag drop functionality
 // jQuery(".dragable_tasks").sortable();
 $(".dragable_tasks").sortable({
     update : function(event, ui) {
@@ -1290,7 +1295,7 @@ $(".dragable_tasks").sortable({
         var agentid = $(this).attr('agentid');
         
         var taskorder = "";
-        jQuery("#"+divid+" .card-body.ui-sortable-handle").each(function (index, element) {            
+        jQuery("#"+divid+" .card-body.ui-sortable-handle").each(function (index, element) {
             taskorder = taskorder + $(this).attr('task_id') + ",";
         });
 
@@ -1316,6 +1321,26 @@ $(".dragable_tasks").sortable({
         });
     }
 });
+
+function reloadData() {
+    location.reload();
+}
+
+function openAllAccordian() {
+    $("#accordion").find(`[data-toggle="collapse"]`).removeClass('collapsed');
+    $("#accordion").find(`[data-toggle="collapse"]`).attr('aria-expanded','true');
+    $(".collapse").addClass('show');    
+    $(".allAccordian").html('<span class="" onclick="closeAllAccordian()">Close All</span>');
+}
+
+function closeAllAccordian() {
+    $("#accordion").find(`[data-toggle="collapse"]`).addClass('collapsed');
+    $("#accordion").find(`[data-toggle="collapse"]`).attr('aria-expanded','false');
+    $(".collapse").removeClass('show');    
+    $(".allAccordian").html('<span class="" onclick="openAllAccordian()">Open All</span>');
+}
+
+
 
 </script>
 

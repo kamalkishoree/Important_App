@@ -87,7 +87,7 @@ use Carbon\Carbon;
                                         <th>Customer</th>
                                         <th>Phone.No</th>
                                         <th>Driver</th>
-                                        <th>Create Time</th>
+                                        {{-- <th>Create Time</th> --}}
                                         <th>Due Time</th>
                                         <th>Tasks</th>
                                         <th>Tracking Url</th>
@@ -112,17 +112,19 @@ use Carbon\Carbon;
                                             <td>
                                                 {{ empty($task->agent) ? 'Unassigned' : $task->agent->name }}
                                             </td>
-                                            <td>
+                                            {{-- <td>
                                                 @php
                                                     $create = Carbon::createFromFormat('Y-m-d H:i:s', $task->created_at, 'UTC');
                                                     $create->setTimezone(isset(Auth::user()->timezone) ? Auth::user()->timezone : 'Asia/Kolkata');
                                                     $timeformat = $preference->time_format == '24' ? 'H:i:s':'g:i a';
+                                                    
                                                 @endphp
                                                {{date(''.$preference->date_format.' '.$timeformat.'', strtotime($create))}}
 
-                                            </td>
+                                            </td> --}}
                                             <td>
                                                 @php
+                                                    $timeformat = $preference->time_format == '24' ? 'H:i:s':'g:i a';
                                                     $order = Carbon::createFromFormat('Y-m-d H:i:s', $task->order_time, 'UTC');
                                                     $order->setTimezone(isset(Auth::user()->timezone) ? Auth::user()->timezone : 'Asia/Kolkata');
                                                 @endphp

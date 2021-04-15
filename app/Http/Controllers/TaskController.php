@@ -61,7 +61,8 @@ class TaskController extends Controller
         $agentTag   = TagsForAgent::all();
         $preference  = ClientPreference::where('id',1)->first(['theme','date_format','time_format']);
         $agents      = Agent::all();
-
+        // echo "<pre>";
+        // print_r($tasks->toArray()); die;
         return view('tasks/task')->with(['tasks' => $tasks, 'status' => $request->status, 'active_count' => $active, 'panding_count' => $pending, 'history_count' => $history, 'status' => $check,'preference' => $preference,'agents'=>$agents,'failed_count'=>$failed]);
     }
 
