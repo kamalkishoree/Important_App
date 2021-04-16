@@ -261,11 +261,11 @@ Route::domain('{domain}')->middleware(['subdomain'])->group(function() {
 
 
 
-// Route::group(['middleware' => 'auth', 'prefix' => '/'], function () {
-//     Route::get('{first}/{second}/{third}', 'RoutingController@thirdLevel')->name('third');
-//     Route::get('{first}/{second}', 'RoutingController@secondLevel')->name('second');
-//     Route::get('{any}', 'RoutingController@root')->name('any');
-// });
+Route::group(['middleware' => 'auth', 'prefix' => '/'], function () {
+    Route::get('{first}/{second}/{third}', 'RoutingController@thirdLevel')->name('third');
+    Route::get('{first}/{second}', 'RoutingController@secondLevel')->name('second');
+    Route::get('{any}', 'RoutingController@root')->name('any');
+});
 
 // landing
 // Route::get('', 'RoutingController@index')->name('index');
