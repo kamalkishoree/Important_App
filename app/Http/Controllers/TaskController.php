@@ -37,7 +37,7 @@ class TaskController extends Controller
         
         /* Orter status will be done as per task completed. task assigned than assigned all task of order completed tha completed and so on*/
 
-        $tasks = Order::orderBy('created_at', 'DESC')->with(['customer', 'location', 'taskFirst', 'agent', 'task']);
+        $tasks = Order::orderBy('created_at', 'DESC')->with(['customer', 'location', 'taskFirst', 'agent', 'task.location']);
         $check = '';
         if ($request->has('status') && $request->status != 'all') {
 
@@ -83,7 +83,7 @@ class TaskController extends Controller
         $pool = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
         $unique_order_id = substr(str_shuffle(str_repeat($pool, 5)), 0, 6);
-        
+        $auth = Client::where('code', Auth::user()->code)->with(['getAllocation', 'getPreference'])->first();
 
         //save task images on s3 bucket
 
@@ -128,7 +128,9 @@ class TaskController extends Controller
 
         //here order save code is started
 
-        $notification_time = isset($request->schedule_time) ? $request->schedule_time : Carbon::now()->toDateTimeString();
+        $settime = isset($request->schedule_time) ? $request->schedule_time : Carbon::now()->toDateTimeString();
+        $notification_time = Carbon::parse($settime . $auth->timezone ?? 'UTC')->tz('UTC');
+        //$notification_time = isset($request->schedule_time) ? $request->schedule_time : Carbon::now()->toDateTimeString();
 
         $agent_id          = $request->allocation_type === 'm' ? $request->agent : null;
 
@@ -395,6 +397,16 @@ class TaskController extends Controller
         $order_update = Order::whereIn('id',$request->orders_id)->update(['driver_id'=>$request->agent_id,'status'=>'assigned']);
         $task         = Task::whereIn('order_id',$request->orders_id)->update(['task_status'=>1]);
         $this->MassAndEditNotification($request->orders_id[0],$request->agent_id);
+    }
+
+    public function assignDate(Request $request)
+    {
+        $auth = Client::where('code', Auth::user()->code)->with(['getAllocation', 'getPreference'])->first();        
+        $notification_time = Carbon::parse($request->newdate . $auth->timezone ?? 'UTC')->tz('UTC');
+
+        $order_update = Order::whereIn('id',$request->orders_id)->update(['order_time'=>$notification_time]);
+        // $task         = Task::whereIn('order_id',$request->orders_id)->update(['task_status'=>1]);
+        // $this->MassAndEditNotification($request->orders_id[0],$request->agent_id);
     }
 
     public function MassAndEditNotification($orders_id,$agent_id)
@@ -1633,8 +1645,7 @@ class TaskController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
-    {
-
+    {        
         $savedrivertag   = [];
         $saveteamtag     = [];
         //=> function($o){$o->where('short_name','!=',null);}
@@ -1676,7 +1687,9 @@ class TaskController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
-    {
+    {   
+        // echo "<pre>";
+        // print_r($request->toArray()); die;
 
         $task_id = Order::find($id);
         $validator = $this->validator($request->all())->validate();
@@ -1686,6 +1699,7 @@ class TaskController extends Controller
 
         $images = [];
         $last = '';
+        $auth = Client::where('code', Auth::user()->code)->with(['getAllocation', 'getPreference'])->first();
         if (isset($request->file) && count($request->file) > 0) {
             $folder = str_pad(Auth::user()->id, 8, '0', STR_PAD_LEFT);
             $folder = 'client_' . $folder;
@@ -1747,6 +1761,12 @@ class TaskController extends Controller
             $percentage = $task_id->driver_cost;
         }
         
+        //$notification_time = isset($request->schedule_time) ? $request->schedule_time : Carbon::now()->toDateTimeString();
+        $settime = ($request->task_type=="schedule") ? $request->schedule_time : Carbon::now()->toDateTimeString();
+      
+       // $settime = isset($request->schedule_time) ? $request->schedule_time : Carbon::now()->toDateTimeString();
+        $notification_time = Carbon::parse($settime . $auth->timezone ?? 'UTC')->tz('UTC');
+       
         
 
         $order = [
@@ -1755,7 +1775,8 @@ class TaskController extends Controller
             'Recipient_email'            => $request->Recipient_email,
             'task_description'           => $request->task_description,
             'driver_id'                  => $agent_id,
-            'order_type'                 => $request->task_type,
+            'order_type'                 => $request->task_type,            
+            'order_time'                 => $notification_time,
             'auto_alloction'             => $request->allocation_type,
             'cash_to_be_collected'       => $request->cash_to_be_collected,
             'status'                     => $assign,

@@ -311,5 +311,38 @@
                 }
             });
         });
+
+        $('#submit_assign_date').on('submit', function(e) {
+            e.preventDefault(); 
+            var name = $('#name').val();    
+            var newdate = $('#datetime-datepicker').val();
+            if(newdate!="")
+            {            
+                var order_id = [];
+            
+                $('.single_driver_check:checked').each(function(i){
+                    order_id[i] = $(this).val();
+                });
+                if (order_id.length == 0) {
+                
+                    $("#add-assgin-date-model .close").click();
+                    return;
+                }
+                
+                $.ajax({
+                    type: "POST",
+                    url: '{{route("assign.date")}}',
+                    data: {_token: CSRF_TOKEN, orders_id: order_id, newdate: newdate},
+                    success: function( msg ) {
+                        location.reload();
+                    }
+                });
+            }
+        });
+
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip()
+        });
+
 </script>
 

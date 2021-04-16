@@ -121,6 +121,8 @@ Route::group(['prefix' => '/godpanel'], function () {
 			Route::resource('subclient','SubClientController');
 
 			Route::post('assign/agent','TaskController@assignAgent')->name('assign.agent');
+			Route::post('assign/date','TaskController@assignDate')->name('assign.date');
+			
 
 		});
 	});

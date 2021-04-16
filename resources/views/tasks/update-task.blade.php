@@ -4,6 +4,7 @@
 @endsection
 
 @section('content')
+<style> .addTaskModalHeader{display: none;}</style>
     <!-- Start Content-->
     <div class="container-fluid">
         <div class="row">
@@ -33,12 +34,12 @@
                                 <ul class="list-inline">
                                     <li class="d-inline-block mr-2">
                                         <input type="radio" class="custom-control-input check" id="tasknow" name="task_type"
-                                            value="now" checked>
+                                            value="now">
                                         <label class="custom-control-label" for="tasknow">Now</label>
                                     </li>
                                     <li class="d-inline-block">
                                         <input type="radio" class="custom-control-input check" id="taskschedule"
-                                            name="task_type" value="schedule">
+                                            name="task_type" value="schedule" checked>
                                         <label class="custom-control-label" for="taskschedule">Schedule</label>
                                     </li>
                                 </ul>
@@ -46,13 +47,14 @@
                         </div>
                         <div class="col-md-4 datenow">
                             <input type="text" id='datetime-datepicker' name="schedule_time" class="form-control upside opendatepicker"
-                                placeholder="Date Time">
+                                placeholder="Date Time" value="{{ $task->order_time }}">
                             <button type="button" class="cstmbtn check_btn btn btn-info"><i class="fa fa-check" aria-hidden="true"></i></button>
                         </div>
 
                     </div>
 
-                    <span class="span1 searchspan">Please search a customer or add a customer</span>
+                    {{-- <span class="span1 searchspan">Please search a customer or add a customer</span> --}}
+                    <span class="span1 searchspan"></span>
                     <div class="row searchshow">
                         <div class="col-md-8">
                             <div class="form-group" id="nameInput">
@@ -139,7 +141,7 @@
                                             </div>
                                         </div>
                                         <div class="col-md-5">
-                                            <div class="form-group {{ $item->task_type_id == 3 ? 'newclass' : 'appoint' }}">
+                                            <div class="form-group {{ $item->task_type_id == 3 ? 'newclass' : 'appoint' }}" style="display: none;">
                                                 <input type="text" class="form-control appointment_date"
                                                     name="appointment_date[]" placeholder="Duration (In Min)"
                                                     value="{{ $item->allocation_type }}">
@@ -168,7 +170,8 @@
                                             {{-- <h4 class="header-title mb-2">Saved Addresses</h4> --}}
                                         </div>
                                     </div>
-                                    <span class="span1 addspan">Please select a address or create new</span>
+                                    {{-- <span class="span1 addspan">Please select a address or create new</span> --}}
+                                    <span class="span1 addspan"></span>
 
                                     <div class="row">
                                         <div class="col-md-6 cust1_add_div" id="add{{ $newcount }}">
@@ -341,7 +344,8 @@
                                 value="{{ isset($task->cash_to_be_collected) ? $task->cash_to_be_collected : '' }}">
                         </div>
                     </div>
-                    <span class="span1 tagspan">Please select atlest one tag for driver and agent</span>
+                    {{-- <span class="span1 tagspan">Please select atlest one tag for driver and agent</span> --}}
+                    <span class="span1 tagspan"></span>
                     <div class="tags">
                         <div class="row">
                             <div class="col-md-6">

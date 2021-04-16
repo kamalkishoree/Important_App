@@ -825,3 +825,56 @@ text-align: center;
 .left-sidebar .side_head span:hover{
   color: rgb(233, 130, 27);
 }
+
+#agents-datatable span {
+  display: inline-block;
+  padding: 4px 5px;
+  border-radius: 5px;
+  color: #fff;
+  font-size: 12px;
+  transition: all 0.5s;
+  font-weight: 700;
+  margin: 0 0 10px;
+}
+
+#agents-datatable span.short_name {
+  color: #6658dd;
+  text-transform: capitalize;
+  margin: 0 5px;
+}
+
+
+.address_box label {
+  width: 70%;
+  white-space: nowrap;
+  margin-bottom: 0;
+  line-height: 27px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.address_box {
+  display: flex;
+  align-content: center;
+}
+
+#add-assgin-date-model .modal-dialog.modal-lg {
+  width: 400px;
+}
+
+#add-assgin-date-model .modal-body {
+  padding: 0 10px !important;
+}
+#add-assgin-date-model .modal-footer {
+  padding: 0 10px 15px;
+}
+
+
+#add-assgin-date-model #datetime-datepicker {
+  margin: 0;
+  width: calc(100% - 51px);
+}
+#add-assgin-date-model .cstmbtn.check_btn {
+  padding: 7px 10px;
+  right: 0;
+  top: 0;
+}
