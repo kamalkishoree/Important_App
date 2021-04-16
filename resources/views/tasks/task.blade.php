@@ -72,7 +72,8 @@ use Carbon\Carbon;
                             <div class="col-sm-2"></div>
                             <!-- @if (isset($status) && $status == 'unassigned' && $panding_count != 0 ) -->
                                 <div class="col-sm-4 text-right assign-toggle assign-show ">
-                                <button type="button" class="btn btn-info assign_agent" data-toggle="modal" data-target="#add-assgin-agent-model" data-backdrop="static" data-keyboard="false">Assign</button> 
+                                    <button type="button" class="btn btn-info assign_agent" data-toggle="modal" data-target="#add-assgin-agent-model" data-backdrop="static" data-keyboard="false">Assign</button> 
+                                    <button type="button" class="btn btn-info assign_date" data-toggle="modal" data-target="#add-assgin-date-model" data-backdrop="static" data-keyboard="false">Change Date/Time</button> 
                                 </div>
                             <!-- @endif -->
                         </div>
@@ -87,8 +88,9 @@ use Carbon\Carbon;
                                         <th>Customer</th>
                                         <th>Phone.No</th>
                                         <th>Driver</th>
-                                        <th>Create Time</th>
+                                        {{-- <th>Create Time</th> --}}
                                         <th>Due Time</th>
+                                        {{-- <th>Tasks</th> --}}
                                         <th>Tasks</th>
                                         <th>Tracking Url</th>
                                         <th>Task Proofs</th>
@@ -112,26 +114,54 @@ use Carbon\Carbon;
                                             <td>
                                                 {{ empty($task->agent) ? 'Unassigned' : $task->agent->name }}
                                             </td>
-                                            <td>
+                                            {{-- <td>
                                                 @php
                                                     $create = Carbon::createFromFormat('Y-m-d H:i:s', $task->created_at, 'UTC');
                                                     $create->setTimezone(isset(Auth::user()->timezone) ? Auth::user()->timezone : 'Asia/Kolkata');
                                                     $timeformat = $preference->time_format == '24' ? 'H:i:s':'g:i a';
+                                                    
                                                 @endphp
                                                {{date(''.$preference->date_format.' '.$timeformat.'', strtotime($create))}}
 
-                                            </td>
+                                            </td> --}}
                                             <td>
                                                 @php
+                                                    $timeformat = $preference->time_format == '24' ? 'H:i:s':'g:i a';
                                                     $order = Carbon::createFromFormat('Y-m-d H:i:s', $task->order_time, 'UTC');
                                                     $order->setTimezone(isset(Auth::user()->timezone) ? Auth::user()->timezone : 'Asia/Kolkata');
                                                 @endphp
                                                 {{date(''.$preference->date_format.' '.$timeformat.'', strtotime($order))}}
 
                                             </td>
-                                            <td>
+                                            {{-- <td>
                                                 <button class="showtasks" value="{{ $task->id }}"><i
                                                         class="fe-eye"></i></button>
+                                            </td> --}}
+                                            <td>
+                                                <?php
+                                                 foreach ($task->task as $singletask) {
+                                                     
+                                                    if($singletask->task_type_id==1)
+                                                    {
+                                                        $tasktype = "Pickup";
+                                                        $pickup_class = "yellow_";
+                                                    }elseif($singletask->task_type_id==2)
+                                                    {
+                                                        $tasktype = "Dropoff";
+                                                        $pickup_class = "green_";
+                                                    }else{
+                                                        $tasktype = "Appointment";
+                                                        $pickup_class = "assign_";
+                                                    }
+                                                    
+                                                    ?>
+                                                    <div class="address_box">
+                                                        <span class="{{ $pickup_class }}"> {{ $tasktype }}</span> <span class="short_name">{{ $singletask->location->short_name }}</span> <label data-toggle="tooltip" data-placement="bottom" title="{{ $singletask->location->address }}">{{ $singletask->location->address }}</label>
+                                                    </div>
+                                                     
+                                                <?php } ?>
+                                                
+
                                             </td>
                                             <td>
                                                 <a onclick="window.open(this.href,'_blank');return false;" href="{{url('/order/tracking/'.Auth::user()->code.'/'.$task->unique_id.'')}}">Track</a>
@@ -189,6 +219,7 @@ use Carbon\Carbon;
     @include('modals.task-accounting')
     @include('modals.task-proofs')
     @include('modals.assgin_task_agent')
+    @include('modals.assgin_task_date')
 @endsection
 
 @section('script')
