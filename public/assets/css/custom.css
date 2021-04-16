@@ -726,3 +726,19 @@ text-align: center;
   background-color: rgb(235 183 133 / 65%);
   color: #fff;
 }
+
+#add-webhook-modal .modal-dialog {
+  max-width: 800px;
+}
+
+.tags_list li {
+  font-size: 16px;
+  list-style: none;
+  margin: 0 0 3px;
+}
+.tags_list {
+  padding: 0;
+}
+.tags_list li:last-child {
+  margin-bottom: 0;
+}

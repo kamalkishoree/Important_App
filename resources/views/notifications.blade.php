@@ -42,9 +42,9 @@
                                         <th>Events</th>
                                         <th>SMS</th>
                                         <th>EMAIL</th>
-                                        {{-- <th>WEBHOOK</th>
-                                        <th>WEBHOOK URL</th>
-                                        <th></th> --}}
+                                        <!--<th>WEBHOOK</th>
+                                         <th>WEBHOOK URL</th>  -->
+                                        <th></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -67,8 +67,7 @@
                                                 <label class="custom-control-label" for="emailcustomSwitch_{{ $event->id}}"></label>
                                             </div>
                                         </td>
-
-                                        {{-- <td>
+                                      <!-- <td> 
                                             <div class="custom-control custom-switch">
                                                 <input type="checkbox" class="custom-control-input event_type" data-id="{{ $event->id }}" data-event-type="webhook" id="webhookcustomSwitch_{{ $event->id}}" @if($event->is_checked_webhook(1))  checked @endif>
                                                 <label class="custom-control-label" for="webhookcustomSwitch_{{ $event->id}}"></label>
@@ -85,13 +84,13 @@
                                                     @endif
                                                 @endforeach
                                             </div>
-                                        </td>
+                                        </td>-->
 
                                         <td>
                                             <a href="javascript: void(0);" class="action-icon">
-                                                <i class="mdi mdi-square-edit-outline web-hook-add" data-id="{{ $event->id }}" data-webhook-url="{{ $event->get_client_webhook_url(1) }}"></i>
+                                                <i class="mdi mdi-square-edit-outline web-hook-add" data-id="{{ $event->id }}" data-webhook-url="{{ $event->message }}"></i>
                                             </a>
-                                        </td> --}}
+                                        </td> 
                                     </tr>
                                     @endforeach
 

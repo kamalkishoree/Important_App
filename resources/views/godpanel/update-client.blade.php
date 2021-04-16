@@ -177,9 +177,7 @@
                                         @endif
                                     </div>
                                 </div>
-                            </div>
 
-                            {{-- <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="custom_domain" class="control-label">CUSTOM DOMAIN</label>
@@ -193,7 +191,23 @@
                                         @endif
                                     </div>
                                 </div>
-                            </div> --}}
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="sub_domain" class="control-label">SUB DOMAIN</label>
+                                        <input type="text" class="form-control" name="sub_domain" id="sub_domain"
+                                            value="{{ old('sub_domain', $client->sub_domain ?? '')}}"
+                                            placeholder="Enter Sub domain">
+                                        @if($errors->has('sub_domain'))
+                                        <span class="text-danger" role="alert">
+                                            <strong>{{ $errors->first('sub_domain') }}</strong>
+                                        </span>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
                             <div class="row">
                                 <div class="col-md-12">
                                     <button type="submit" class="btn btn-info waves-effect waves-light">Submit</button>

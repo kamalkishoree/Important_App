@@ -15,20 +15,25 @@
                         <div class="card bg-pattern">
 
                             <div class="card-body p-4">
-                                
+                                        @php
+                                       
+                                            if(Cache::get('clientdetails')){
+                                                $image = Cache::get('clientdetails');
+                                                
+                                                $pic = $image->logo;
+                                            }else {
+
+                                                $pic = 'assets/Clientlogo/l8DdubW92ccY2n4xKriEUU7cKthSXrjgrJIZ6rvs.png';
+                                            }
+                                        @endphp
                                 <div class="text-center w-75 m-auto">
                                     <div class="auth-logo">
                                         <a href="{{route('index')}}" class="logo logo-dark text-center">
                                             <span class="logo-lg">
-                                                <img src="{{asset('assets/images/logo-dark.png')}}" alt="" height="40">
+                                                <img src="{{'https://imgproxy.royodispatch.com/insecure/fit/90/90/sm/0/plain/'.Storage::disk('s3')->url($pic)}}" alt="" height="40">
                                             </span>
                                         </a>
-                    
-                                        <a href="{{route('index')}}" class="logo logo-light text-center">
-                                            <span class="logo-lg">
-                                                <img src="{{asset('assets/images/logo-light.png')}}" alt="" height="40">
-                                            </span>
-                                        </a>
+                                        
                                     </div>
                                     <p class="text-muted mb-4 mt-3">Enter your email address and password to access admin panel.</p>
                                 </div>

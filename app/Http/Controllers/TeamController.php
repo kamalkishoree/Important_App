@@ -96,7 +96,7 @@ class TeamController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request,$domain = '')
     {
         $validator = $this->validator($request->all())->validate();
         $newtag = explode(",", $request->tags);
@@ -169,7 +169,7 @@ class TeamController extends Controller
         ]);
     }*/
 
-    public function edit($id)
+    public function edit($domain = '',$id)
     {
         $team = Team::with(['tags'])->where('id', $id)->first();
         $agents = Agent::all();
@@ -206,7 +206,7 @@ class TeamController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request,$domain = '', $id)
     {
         $validator = $this->updateValidator($request->all())->validate();
 

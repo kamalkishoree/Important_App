@@ -1631,7 +1631,7 @@ class TaskController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit($domain = '',$id)
     {
 
         $savedrivertag   = [];
@@ -1674,7 +1674,7 @@ class TaskController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request,$domain = '',$id)
     {
 
         $task_id = Order::find($id);
@@ -1826,7 +1826,7 @@ class TaskController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($domain = '',$id)
     {
         Order::where('id', $id)->delete();
         return redirect()->back()->with('success', 'Task deleted successfully!');
@@ -1834,7 +1834,7 @@ class TaskController extends Controller
 
     //this is for serch customer for when create tasking
 
-    public function search(Request $request)
+    public function search(Request $request,$domain = '')
     {
 
         $search = $request->search;
@@ -1862,7 +1862,7 @@ class TaskController extends Controller
 
     //this function is give task list of an order
 
-    public function tasklist($id)
+    public function tasklist($domain = '',$id)
     {
         
             $task = Order::where('id', $id)->with(['task.location'])->first();

@@ -116,7 +116,7 @@ class GeoFenceController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request,$domain = '')
     {
         
         $validator = $this->validator($request->all())->validate();
@@ -159,7 +159,7 @@ class GeoFenceController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit($domain = '',$id)
     {
         $geo = Geo::with(['agents'])->where('id', $id)->first();
         $teams = Team::with(['agents'])->where('client_id', auth()->user()->code)->orderBy('name')->get();
@@ -187,7 +187,7 @@ class GeoFenceController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $domain = '',$id)
     {
         $validator = $this->updateValidator($request->all())->validate();
         
@@ -218,12 +218,12 @@ class GeoFenceController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($domain = '',$id)
     {
         Geo::where('id', $id)->where('client_id', auth()->user()->code)->delete();
         return redirect()->back()->with('success', 'Deleted successfully!');
     }
-    public function dummy(Request $request)
+    public function dummy(Request $request,$domain = '')
     {
         return response()->json([
             'status'=>'success',

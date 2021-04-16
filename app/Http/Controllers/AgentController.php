@@ -75,7 +75,7 @@ class AgentController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request,$domain = '')
     {
        
         $validator = $this->validator($request->all())->validate();
@@ -135,7 +135,7 @@ class AgentController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($domain = '',$id)
     {
         //
     }
@@ -156,7 +156,7 @@ class AgentController extends Controller
         ]);
     }*/
 
-    public function edit($id)
+    public function edit($domain = '',$id)
     {
         $agent = Agent::with(['tags'])->where('id', $id)->first();
         $teams = Team::where('client_id', auth()->user()->code)->get();
@@ -209,7 +209,7 @@ class AgentController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $domain = '',$id)
     {
         $validator = $this->updateValidator($request->all())->validate();
         
@@ -264,14 +264,14 @@ class AgentController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($domain = '',$id)
     {
         DriverGeo::where('driver_id',$id)->delete();  // i have to fix it latter
         Agent::where('id',$id)->delete();
         return redirect()->back()->with('success', 'Agent deleted successfully!');
     }
 
-    public function payreceive(Request $request)
+    public function payreceive(Request $request,$domain = '')
     {
         
         $data = [
@@ -285,7 +285,7 @@ class AgentController extends Controller
         return response()->json(true);
     }
 
-    public function agentPayDetails($id)
+    public function agentPayDetails($domain = '',$id)
     {
         
        $data = [];

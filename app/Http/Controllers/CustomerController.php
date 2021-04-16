@@ -62,7 +62,7 @@ class CustomerController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, $domain = '')
     {
         $rule = $this->validationRules();
         $validation  = Validator::make($request->all(), $rule)->validate();
@@ -116,7 +116,7 @@ class CustomerController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit($domain = '',$id)
     {
        
         $customer = Customer::where('id', $id)->with('location')->first();
@@ -134,7 +134,7 @@ class CustomerController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request,$domain = '', $id)
     {
         $rule = $this->validationRules($id);
         $customer = Customer::find($id);
@@ -195,7 +195,7 @@ class CustomerController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($domain = '',$id)
     {
         Customer::where('id', $id)->delete();
 

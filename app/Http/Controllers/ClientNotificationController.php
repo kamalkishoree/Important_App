@@ -107,7 +107,7 @@ class ClientNotificationController extends Controller
         ]);
     }
 
-    public function updateClientNotificationEvent(Request $request)
+    public function updateClientNotificationEvent(Request $request,$domain = '')
     {
         $validator = $this->updateClientEventValidator($request->all())->validate();
 
@@ -163,6 +163,16 @@ class ClientNotificationController extends Controller
         return redirect()->back();
     }
 
+    public function setmessage(Request $request)
+    {
+        
+        $message = NotificationEvent::find($request->notification_event_id);
+        $message->message = $request->message; 
+        $message->save();
+
+        return redirect()->back();
+    }
+
 
     //Push notification to drivers
 
@@ -197,4 +207,6 @@ class ClientNotificationController extends Controller
         }
         
     }
+
+
 }

@@ -11,7 +11,7 @@ use Config;
 class TrackingController extends Controller
 {
 
-    public function OrderTracking($user, $id)
+    public function OrderTracking($domain = '',$user, $id)
     {
         $respnse = $this->connection($user);
 
@@ -45,7 +45,7 @@ class TrackingController extends Controller
         }
     }
 
-    public function OrderFeedback($user, $id)
+    public function OrderFeedback($domain = '',$user, $id)
     {
         $respnse = $this->connection($user);
 
@@ -64,7 +64,7 @@ class TrackingController extends Controller
     }
 
 
-    public function SaveFeedback(Request $request)
+    public function SaveFeedback(Request $request,$domain = '')
     {
         $respnse = $this->connection($request->client_code);
 

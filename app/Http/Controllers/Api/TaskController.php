@@ -35,6 +35,7 @@ use Config;
 use Closure;  
 use Mail;  
 use App;
+use Illuminate\Support\Str;
 
 use Twilio\Rest\Client as TwilioClient;
 
@@ -129,25 +130,29 @@ class TaskController extends BaseController
             case 2:
                  $task_type        = 'assigned';
                  $sms_final_status =  $sms_settings['notification_events'][0];
-                 $sms_body         = 'Driver '.$order_details->agent->name.' in our '.$order_details->agent->make_model.' with license plate '.$order_details->agent->plate_number.' is heading to your location. You can track them here.'.url('/order/tracking/'.$client_details->code.'/'.$order_details->unique_id.'');
-                 $link             =  "url('/order/tracking/'.$client_details->code.'/'.$order_details->unique_id.'')";
+                // $sms_body         = 'Driver '.$order_details->agent->name.' in our '.$order_details->agent->make_model.' with license plate '.$order_details->agent->plate_number.' is heading to your location. You can track them here.'.url('/order/tracking/'.$client_details->code.'/'.$order_details->unique_id.'');
+                 $sms_body         = $sms_settings['notification_events'][0]['message'];
+                 $link             =  url('/order/tracking/'.$client_details->code.'/'.$order_details->unique_id.'');
                 break;
             case 3:
                  $task_type        = 'assigned';
                  $sms_final_status =   $sms_settings['notification_events'][1];
-                 $sms_body         = 'Driver '.$order_details->agent->name.' in our '.$order_details->agent->make_model.' with license plate '.$order_details->agent->plate_number.' has arrived at your location. ';
+                // $sms_body         = 'Driver '.$order_details->agent->name.' in our '.$order_details->agent->make_model.' with license plate '.$order_details->agent->plate_number.' has arrived at your location. ';
+                 $sms_body         = $sms_settings['notification_events'][1]['message'];
                  $link             =  '';
                 break;
             case 4:
                 $task_type         = 'completed';
                 $sms_final_status  =   $sms_settings['notification_events'][2];
-                $sms_body          = 'Thank you, your order has been delivered successfully by driver '.$order_details->agent->name.'. You can rate them here .'.url('/order/feedback/'.$client_details->code.'/'.$order_details->unique_id.'');
-                $link              =  "url('/order/feedback/'.$client_details->code.'/'.$order_details->unique_id.'')";
+               // $sms_body          = 'Thank you, your order has been delivered successfully by driver '.$order_details->agent->name.'. You can rate them here .'.url('/order/feedback/'.$client_details->code.'/'.$order_details->unique_id.'');
+                $sms_body         = $sms_settings['notification_events'][2]['message'];
+                $link              =  url('/order/feedback/'.$client_details->code.'/'.$order_details->unique_id.'');
                 break;
             case 5:
                 $task_type         = 'failed';
                 $sms_final_status  =   $sms_settings['notification_events'][3];
-                $sms_body          = 'Sorry, our driver '.$order_details->agent->name.' is not able to complete your order delivery';
+                //$sms_body          = 'Sorry, our driver '.$order_details->agent->name.' is not able to complete your order delivery';
+                $sms_body          = $sms_settings['notification_events'][3]['message'];
                 $link              =  '';
             break;
 
@@ -180,6 +185,13 @@ class TaskController extends BaseController
 
         $newDetails = Task::where('id', $request->task_id)->with(['location','tasktype','pricing','order.customer'])->first();
 
+       
+
+        $sms_body = str_replace('"driver_name"',$order_details->agent->name, $sms_body);
+        $sms_body = str_replace('"vehicle_model"', $order_details->agent->make_model, $sms_body);
+        $sms_body = str_replace('"plate_number"', $order_details->agent->plate_number, $sms_body);
+        $sms_body = str_replace('"tracking_link"', $link, $sms_body);
+        $sms_body = str_replace('"feedback_url"', $link, $sms_body);
 
         //twilio sms send keys
         $client_prefrerence = ClientPreference::where('id',1)->first();

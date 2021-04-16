@@ -65,7 +65,7 @@ class PricingRulesController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request,$domain = '')
     {
         //$validator = $this->validator($request->all())->validate();
        
@@ -104,7 +104,7 @@ class PricingRulesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($domain = '',$id)
     {
         //
     }
@@ -125,7 +125,7 @@ class PricingRulesController extends Controller
         return view('pricing-rules.update-pricing',compact('geos','teams','team_tag','driver_tag','pricing'));
     }*/
 
-    public function edit($id)
+    public function edit($domain = '',$id)
     {
         $pricing = PricingRule::where('id',$id)->first();
         //dd($pricing->toArray());
@@ -146,7 +146,7 @@ class PricingRulesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $domain = '',$id)
     {
         // $clientPre  = ClientPreference::where('id',1)->with('currency')->first();
         // dd($clientPre);
@@ -189,7 +189,7 @@ class PricingRulesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($domain = '',$id)
     {
         PricingRule::where('id',$id)->delete();
         return redirect()->back()->with('success', 'Task deleted successfully!');

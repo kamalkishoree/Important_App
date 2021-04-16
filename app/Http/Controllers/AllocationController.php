@@ -89,7 +89,7 @@ class AllocationController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request,$domain = '', $id)
     { 
         
         $validator = $this->updateValidator($request->all())->validate();
@@ -101,7 +101,7 @@ class AllocationController extends Controller
        return redirect()->back()->with('success', 'Allocation updated successfully!');
     }
 
-    public function updateAllocation(Request $request, $id)
+    public function updateAllocation(Request $request,$domain = '',$id)
     { 
         
         

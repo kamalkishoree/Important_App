@@ -134,6 +134,8 @@ class ClientController extends Controller
             'logo' => isset($getFileName) ? $getFileName : 'assets/Clientlogo/5ff41c4b5a9f0.png/KQb50SOKZckXbcmMBXgqz3pqfCZcOTpkpljs8sJq.png',
             'status'=> 1,
             'timezone' => $request->timezone ? $request->timezone : 'America/New_York',
+            'custom_domain'=> $request->custom_domain,
+            'sub_domain'   => $request->sub_domain
         ];
         $data['code'] = $this->randomString();
 
@@ -251,6 +253,7 @@ class ClientController extends Controller
             'country_id' => $request->country ? $request->country : NULL,
             'timezone' => $request->timezone ? $request->timezone : 'America/New_York',
             'logo' => $getFileName,
+            'sub_domain'   => $request->sub_domain
         ];
         
         $client = Client::where('id', $id)->update($data);
@@ -274,7 +277,7 @@ class ClientController extends Controller
     /**
      * Store/Update Client Preferences 
      */
-    public function storePreference(Request $request, $id)
+    public function storePreference(Request $request,$domain = '', $id)
     {
        
         $client = Client::where('code', $id)->firstOrFail();
