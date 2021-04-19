@@ -580,7 +580,7 @@ var defaultmaplocation = {!!json_encode($agentslocations)!!};
 var defaultlat = parseFloat(defaultmaplocation[0].lat);
 var defaultlong = parseFloat(defaultmaplocation[0].long);
 
-alert(defaultlat+'dsfsd'+defaultlong);
+
 
 var imgproxyurl         = {!!json_encode($imgproxyurl)!!};
 
