@@ -517,8 +517,9 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
 <?php   // for setting default location on map
     $agentslocations = array();
     foreach ($agents as $singleagent) {
-        if(!empty($singleagent['agentlog']))
+        if((!empty($singleagent['agentlog'])) && ($singleagent['agentlog']['lat']!=0) && ($singleagent['agentlog']['long']!=0))
         {
+            // lat: allagent[0].agentlog && allagent[0].agentlog['lat']  != "0.00000000" ? parseFloat(allagent[0].agentlog['lat']): 30.7046,
             $agentslocations[] = $singleagent['agentlog'];
         }        
     }
