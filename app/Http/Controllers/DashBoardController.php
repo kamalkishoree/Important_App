@@ -272,8 +272,8 @@ class DashBoardController extends Controller
                 }
             }            
         }
-        // echo "<pre>";
-        //    print_r($teamdata); die;
+        //echo "<pre>";
+           //print_r($agents); die;
 
         
         return view('dashboard')->with(['teams' => $teamdata, 'newmarker' => $newmarker, 'unassigned' => $unassigned, 'agents' => $agents,'date'=> $date,'preference' =>$preference, 'routedata' => $uniquedrivers,'distance_matrix' => $distancematrix]);

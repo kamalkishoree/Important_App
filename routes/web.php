@@ -43,6 +43,8 @@ Route::group(['prefix' => '/godpanel'], function () {
 
 Route::domain('{domain}')->middleware(['subdomain'])->group(function() {
 	Route::group(['middleware' => ['domain']], function () {
+		
+
 		Route::get('/loginForm', function(){
 			return view('auth/login');
 		});

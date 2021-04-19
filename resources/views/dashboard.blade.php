@@ -324,7 +324,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                     </div>
                                     <div class="col-md-4 col-3 text-right">
                                         <label class="">
-                                            <input class="newchecks filtercheck" cla type="checkbox" value="-1"
+                                            <input class="newchecks filtercheck teamchecks" cla type="checkbox" value="-1"
                                                 name="teamchecks[]" checked>
                                             <span class="checkmark"></span>
                                         </label>
@@ -336,7 +336,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                     </div>
                                     <div class="col-md-4 col-3 text-right">
                                         <label class="">
-                                            <input class="newchecks filtercheck" cla type="checkbox" value="0"
+                                            <input class="newchecks filtercheck teamchecks" cla type="checkbox" value="0"
                                                 name="teamchecks[]">
                                             <span class="checkmark"></span>
                                         </label>
@@ -349,7 +349,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                         </div>
                                         <div class="col-md-4 col-3 text-right">
                                             <label class="">
-                                                <input class="newchecks filtercheck" type="checkbox" name="teamchecks[]"
+                                                <input class="newchecks filtercheck teamchecks" type="checkbox" name="teamchecks[]"
                                                     value="{{ $item['id'] }}">
                                                 <span class="checkmark"></span>
                                             </label>
@@ -474,7 +474,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                     </div>
                                     <div class="col-md-4 text-right">
                                         <label class="">
-                                            <input class="agentdisplay filtercheck" type="checkbox" name="agentcheck[]" value="2">
+                                            <input class="agentdisplay filtercheck agentcheck" type="checkbox" name="agentcheck[]" value="2">
                                             <span class="checkmark" ></span>
                                         </label>
                                     </div>
@@ -485,7 +485,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                     </div>
                                     <div class="col-md-4 text-right">
                                         <label class="">
-                                            <input class="agentdisplay filtercheck" type="checkbox" name="agentcheck[]" value="1">
+                                            <input class="agentdisplay filtercheck agentcheck" type="checkbox" name="agentcheck[]" value="1">
                                             <span class="checkmark"></span>
                                         </label>
                                     </div>
@@ -496,7 +496,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                     </div>
                                     <div class="col-md-4 text-right">
                                         <label class="">
-                                            <input class="agentdisplay filtercheck" type="checkbox" name="agentcheck[]" value="0">
+                                            <input class="agentdisplay filtercheck agentcheck" type="checkbox" name="agentcheck[]" value="0">
                                             <span class="checkmark"></span>
                                         </label>
                                     </div>
@@ -513,6 +513,22 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
 </div>
 
 @endsection
+
+<?php   // for setting default location on map
+    $agentslocations = array();
+    foreach ($agents as $singleagent) {
+        if(!empty($singleagent['agentlog']))
+        {
+            $agentslocations[] = $singleagent['agentlog'];
+        }        
+    }
+    $defaultmaplocation['lat'] = 30.7046;
+    $defaultmaplocation['long'] = 76.7179;
+    $agentslocations[] = $defaultmaplocation;
+    
+    //print_r($agentslocations);
+
+?>
 
 
 
@@ -557,6 +573,12 @@ var url = window.location.origin;
 // });
 var olddata  = {!!json_encode($newmarker)!!};
 var allagent = {!!json_encode($agents)!!};
+
+// for getting default map location
+var defaultmaplocation = {!!json_encode($agentslocations)!!};
+var defaultlat = parseFloat(defaultmaplocation[0].lat);
+var defaultlong = parseFloat(defaultmaplocation[0].long);
+
 var imgproxyurl         = {!!json_encode($imgproxyurl)!!};
 
 
@@ -786,8 +808,12 @@ function initMap() {
     //console.log(allagent);
 
     const haightAshbury = {
-        lat: allagent[0].agentlog && allagent[0].agentlog['lat']  != "0.00000000" ? parseFloat(allagent[0].agentlog['lat']): 30.7046,
-        lng: allagent[0].agentlog && allagent[0].agentlog['long'] != "0.00000000" ? parseFloat(allagent[0].agentlog['long']):76.7179
+        // lat: allagent[0].agentlog && allagent[0].agentlog['lat']  != "0.00000000" ? parseFloat(allagent[0].agentlog['lat']): 30.7046,
+        // lng: allagent[0].agentlog && allagent[0].agentlog['long'] != "0.00000000" ? parseFloat(allagent[0].agentlog['long']):76.7179
+
+        lat: allagent[0].agentlog && allagent[0].agentlog['lat']  != "0.00000000" ? parseFloat(allagent[0].agentlog['lat']): defaultlat,
+        lng: allagent[0].agentlog && allagent[0].agentlog['long'] != "0.00000000" ? parseFloat(allagent[0].agentlog['long']):defaultlong
+        
     };
 
     map = new google.maps.Map(document.getElementById("map_canvas"), {
@@ -941,7 +967,7 @@ function calculateAndDisplayRoute(directionsService, directionsRenderer,map,allt
                         //     summaryPanel.innerHTML += route.legs[i].distance.text + "<br><br>";
                         // }
                     } else {
-                        window.alert("Directions request failed due to " + status);
+                        //window.alert("Directions request failed due to " + status);
                     }
                 }
             );
@@ -1175,10 +1201,12 @@ function RouteOptimization(taskids,distancematrix,optimize,agentid) {
 
 
 function reInitMap(allroutes) {
-
+    
     const haightAshbury = {
-        lat: allagent[0].agentlog && allagent[0].agentlog['lat']  != "0.00000000" ? parseFloat(allagent[0].agentlog['lat']): 30.7046,
-        lng: allagent[0].agentlog && allagent[0].agentlog['long'] != "0.00000000" ? parseFloat(allagent[0].agentlog['long']):76.7179
+        // lat: allagent[0].agentlog && allagent[0].agentlog['lat']  != "0.00000000" ? parseFloat(allagent[0].agentlog['lat']): 30.7046,
+        // lng: allagent[0].agentlog && allagent[0].agentlog['long'] != "0.00000000" ? parseFloat(allagent[0].agentlog['long']):76.7179
+        lat: allagent[0].agentlog && allagent[0].agentlog['lat']  != "0.00000000" ? parseFloat(allagent[0].agentlog['lat']): defaultlat,
+        lng: allagent[0].agentlog && allagent[0].agentlog['long'] != "0.00000000" ? parseFloat(allagent[0].agentlog['long']):defaultlong
     };
 
     map = new google.maps.Map(document.getElementById("map_canvas"), {
@@ -1341,6 +1369,17 @@ function closeAllAccordian() {
 }
 
 
+$('.teamchecks').on('change', function() {
+    $('.teamchecks').not(this).prop('checked', false);  
+});
+
+$('.taskchecks').on('change', function() {
+    $('.taskchecks').not(this).prop('checked', false);  
+});
+
+$('.agentcheck').on('change', function() {
+    $('.agentcheck').not(this).prop('checked', false);  
+});
 
 </script>
 
