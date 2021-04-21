@@ -191,9 +191,9 @@
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-group" id="make_modelInput">
-                        {!! Form::text('recipient_phone', null, ['class' => 'form-control rec', 'placeholder' =>
+                        {!! Form::hidden('recipient_phone', null, ['class' => 'form-control rec', 'placeholder' =>
                         'Recipient Phone', 'required' => 'required']) !!}
-                        {!! Form::email('recipient_email', null, ['class' => 'form-control rec', 'placeholder'
+                        {!! Form::hidden('recipient_email', null, ['class' => 'form-control rec', 'placeholder'
                         => 'Recipient Email', 'required' => 'required']) !!}
                             {!! Form::textarea('task_description', null, ['class' => 'form-control',
                             'placeholder' => 'Task Description', 'rows' => 2, 'cols' => 40]) !!}
