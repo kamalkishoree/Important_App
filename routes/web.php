@@ -98,6 +98,7 @@ Route::domain('{domain}')->middleware(['subdomain'])->group(function() {
 
 				Route::post('tasks/list/{id}','TaskController@tasklist')->name('task.list');
 				Route::post('search/customer', 'TaskController@search')->name('search');
+				Route::post('remove-location','CustomerController@changeLocation');
 
 				
 				

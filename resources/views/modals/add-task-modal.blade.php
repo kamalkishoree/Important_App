@@ -1,7 +1,4 @@
 <div class="row">
-            
-       
-    
     <div class="col-md-12">
         <h4 class="page-title">Add Task</h4>
         <div class="card-box">
@@ -148,6 +145,8 @@
                                 <input type="hidden" name="longitude[]" id="addHeader1-longitude" value="0" class="cust_longitude" />
                                 {!! Form::text('post_code[]', null, ['class' => 'form-control address postcode','placeholder' => 'Post Code','id'=>'addHeader1-postcode']) !!}
                                 
+                                {!! Form::text('address_email[]', null, ['class' => 'form-control address address_email','placeholder' => 'Email','id'=>'addHeader1-address_email']) !!}
+                                {!! Form::text('address_phone_number[]', null, ['class' => 'form-control address address_phone_number','placeholder' => 'Phone Number','id'=>'addHeader1-address_phone_number']) !!}
                                     
                                  <div class="row no-gutters">
                                     <div class="col-6 pr-1">

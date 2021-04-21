@@ -177,6 +177,8 @@ class TaskController extends Controller
                     'short_name'  => $request->short_name[$key],
                     'address'     => $request->address[$key],
                     'post_code'   => $request->post_code[$key],
+                    'email'         => $request->address_email[$key],
+                    'phone_number'   => $request->address_phone_number[$key],
                     'customer_id' => $cus_id,
                 ];
                 $Loction = Location::create($loc);
@@ -1878,7 +1880,7 @@ class TaskController extends Controller
             return response()->json($response);
         } else {
             $id = $request->id;
-            $loction = Location::where('customer_id', $id)->where('short_name','!=',null)->get();
+            $loction = Location::where('customer_id', $id)->where('short_name','!=',null)->where('location_status',1)->get();
             return response()->json($loction);
         }
     }

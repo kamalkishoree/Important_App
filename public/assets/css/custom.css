@@ -869,12 +869,16 @@ padding: 0 10px 15px;
 }
 
 
-#add-assgin-date-model #datetime-datepicker {
-margin: 0;
+#add-assgin-date-model #datetime-datepicker {margin: 0;
 width: calc(100% - 51px);
 }
 #add-assgin-date-model .cstmbtn.check_btn {
 padding: 7px 10px;
 right: 0;
 top: 0;
+}
+
+.form-group.delete_btn {
+  display: flex;
+  align-content: center;
 }

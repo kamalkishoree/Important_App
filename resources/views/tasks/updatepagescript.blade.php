@@ -93,7 +93,7 @@ $(document).ready(function(){
             countEdit = countEdit + 1;
           var abc = "{{ isset($maincount)?$maincount:0 }}";
           var newcount = "{{ isset($newcount)?$newcount:0 }}"
-          alert(newcount);
+          //alert(newcount);
            if(a == 0){
              a = abc;
              post_count = parseInt(newcount) + 1;

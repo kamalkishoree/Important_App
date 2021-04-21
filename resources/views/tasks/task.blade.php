@@ -106,10 +106,10 @@ use Carbon\Carbon;
                                             @endif
                                             
                                             <td>
-                                                {{ $task->customer->name }}
+                                                {{ (isset($task->customer->name))?$task->customer->name:'' }}
                                             </td>
                                             <td>
-                                                {{ $task->customer->phone_number }}
+                                                {{ (isset($task->customer->phone_number))?$task->customer->phone_number:'' }}
                                             </td>
                                             <td>
                                                 {{ empty($task->agent) ? 'Unassigned' : $task->agent->name }}
@@ -156,7 +156,7 @@ use Carbon\Carbon;
                                                     
                                                     ?>
                                                     <div class="address_box">
-                                                        <span class="{{ $pickup_class }}"> {{ $tasktype }}</span> <span class="short_name">{{ $singletask->location->short_name }}</span> <label data-toggle="tooltip" data-placement="bottom" title="{{ $singletask->location->address }}">{{ $singletask->location->address }}</label>
+                                                        <span class="{{ $pickup_class }}"> {{ $tasktype }}</span> <span class="short_name">{{ (isset($singletask->location->short_name))?$singletask->location->short_name:'' }}</span> <label data-toggle="tooltip" data-placement="bottom" title="{{ (isset($singletask->location->address))?$singletask->location->address:'' }}">{{ (isset($singletask->location->address))?$singletask->location->address:'' }}</label>
                                                     </div>
                                                      
                                                 <?php } ?>

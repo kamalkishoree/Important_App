@@ -7,16 +7,18 @@
             </div>
             <form id="add_customer" action="{{ route('customer.store') }}" method="POST">
                 @csrf
-                <div class="modal-body pl-4 pr-4 pt-4">
+                <div class="modal-body py-0">
                     
                     <div class="row">
 
-                        <div class="col-md-12">
-                            <div class="card-box mb-0 pb-0">
-                                <h4 class="header-title mb-3"></h4>
+                        
 
+                        <div class="col-md-12">
+                            <div class="card-box mb-0 p-0">
+                                
                                 <div class="row">
-                                    <div class="col-md-12">
+
+                                    <div class="col-lg-4 col-sm-6 mb-lg-0 mb-3">
                                         <div class="form-group" id="nameInput">
                                             {!! Form::label('title', 'Name',['class' => 'control-label']) !!}
                                             {!! Form::text('name', null, ['class' => 'form-control']) !!}
@@ -26,11 +28,7 @@
                                             </span>
                                         </div>
                                     </div>
-
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-md-12">
+                                    <div class="col-lg-4 col-sm-6 mb-lg-0 mb-3">
                                         <div class="form-group" id="emailInput">
                                             {!! Form::label('title', 'Email',['class' => 'control-label']) !!}
                                             {!! Form::email('email', null, ['class' => 'form-control']) !!}
@@ -39,23 +37,23 @@
                                             </span>
                                         </div>
                                     </div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-md-12">
+                                    <div class="col-lg-4 col-sm-6 mb-lg-0 mb-3">
                                         <div class="form-group" id="phone_numberInput">
                                             {!! Form::label('title', 'Phone Number',['class' => 'control-label']) !!}
                                             {!! Form::text('phone_number', null, ['class' => 'form-control']) !!}
                                             <span class="invalid-feedback" role="alert">
                                                 <strong></strong>
                                             </span>
-                                        </div>
+                                        </div> 
                                     </div>
                                 </div>
+
+                                
                                 <div class="addapp"> 
                                     {!! Form::label('title', 'Address',['class' => 'control-label']) !!} 
-                                    <div class="row address" id="add1">
-                                        <div class="col-md-4">
+                                    <div class="row address addressrow1" id="add1">
+
+                                        <div class="col-lg-2 col-md-3 mb-lg-0 mb-3">
                                             <div class="form-group" id="short_nameInput"> 
                                                 <input type="text" name="short_name[]" class="form-control" placeholder="Short Name">
                                                 <span class="invalid-feedback" role="alert">
@@ -63,7 +61,7 @@
                                                 </span>
                                             </div>
                                         </div>
-                                        <div class="col-md-5">
+                                        <div class="col-lg-4 col-md-3 mb-lg-0 mb-3">
                                             <div class="form-group input-group" id="addressInput">
                                                 <input type="text" id="add1-input" name="address[]" class="form-control" placeholder="Address">
                                                 <div class="input-group-append">
@@ -76,14 +74,33 @@
                                                 </span>
                                             </div>
                                         </div>
-                                        <div class="col-md-3">
-                                            <div class="form-group" id="post_codeInput">
+                                        <div class="col-lg-2 col-md-3 mb-lg-0 mb-3">
+                                            <div class="form-group">
+                                                <input type="text" id="add1-phone_number" name="address_phone_number[]" class="form-control" placeholder="Phone Number">
+                                                <span class="invalid-feedback" role="alert">
+                                                    <strong></strong>
+                                                </span>
+                                            </div>    
+                                        </div>    
+                                        <div class="col-lg-2 col-md-3 mb-lg-0 mb-3">
+                                            <div class="form-group">
+                                                <input type="text" id="add1-email" name="address_email[]" class="form-control" placeholder="Email">
+                                                <span class="invalid-feedback" role="alert">
+                                                    <strong></strong>
+                                                </span>
+                                            </div>    
+                                        </div>    
+                                        <div class="col-lg-2 col-md-3 mb-lg-0 mb-3">
+                                            <div class="form-group d-flex align-items-center" id="post_codeInput">
                                                 <input type="text" name="post_code[]" class="form-control" placeholder="Post Code" id="add1-postcode">
                                                 <span class="invalid-feedback" role="alert">
                                                     <strong></strong>
                                                 </span>
+                                                <button type="button" class="btn btn-primary-outline action-icon" onclick="deleteAddress('',1)"> <i class="mdi mdi-delete"></i></button>
                                             </div>
-                                        </div>
+                                        </div>    
+
+
                                     </div>
                                     <div id="address-map-container" style="width:100%;height:400px; display: none;">
                                         <div style="width: 100%; height: 100%" id="address-map"></div>

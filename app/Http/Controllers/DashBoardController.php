@@ -138,9 +138,9 @@ class DashBoardController extends Controller
                 $append['team_id']               = isset($tasks->driver_id) ? $tasks->agent->team_id : 0;
                 $append['driver_name']           = isset($tasks->driver_id) ? $tasks->agent->name : '';
                 $append['driver_id']             = isset($tasks->driver_id) ? $tasks->driver_id : '';
-                $append['customer_name']         = $tasks->customer->name;
-                $append['customer_phone_number'] = $tasks->customer->phone_number;
-                $append['task_order']            = $task->task_order;
+                $append['customer_name']         = isset($tasks->customer->name)?$tasks->customer->name:'';
+                $append['customer_phone_number'] = isset($tasks->customer->phone_number)?$tasks->customer->phone_number:'';
+                $append['task_order']            = isset($task->task_order)?$task->task_order:0;
 
                 array_push($newmarker, $append);
             }
@@ -572,9 +572,9 @@ class DashBoardController extends Controller
                     $append['team_id']               = isset($tasks->driver_id) ? $tasks->agent->team_id : 0;
                     $append['driver_name']           = isset($tasks->driver_id) ? $tasks->agent->name : '';
                     $append['driver_id']             = isset($tasks->driver_id) ? $tasks->driver_id : '';
-                    $append['customer_name']         = $tasks->customer->name;
-                    $append['customer_phone_number'] = $tasks->customer->phone_number;
-                    $append['task_order']            = $task->task_order;
+                    $append['customer_name']         = isset($tasks->customer->name)? $tasks->customer->name:'';
+                    $append['customer_phone_number'] = isset($tasks->customer->phone_number)?$tasks->customer->phone_number:'';
+                    $append['task_order']            = isset($task->task_order)?$task->task_order:0;
 
                     array_push($allmarker, $append);
                 }

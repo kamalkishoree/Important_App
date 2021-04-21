@@ -203,6 +203,14 @@
                                                 id="add{{ $newcount }}-postcode" class="form-control address postcode"
                                                 placeholder="PostsCode" />
 
+                                                <input type="text" name="address_email[]"
+                                                id="add{{ $newcount }}-address_email" class="form-control address address_email"
+                                                placeholder="Email" />
+
+                                                <input type="text" name="address_phone_number[]"
+                                                id="add{{ $newcount }}-address_phone_number" class="form-control address address_phone_number"
+                                                placeholder="Phone Number" />
+
                                                 <div class="row no-gutters">
                                                     <div class="col-6 pr-1">
                                                         {!! Form::text('barcode[]', $item->barcode, ['class' => 'form-control barcode','placeholder' => 'Task Barcode']) !!}  
@@ -255,8 +263,7 @@
                     </div>
                     <div class="row">
                         <div class="col-md-12" id="adds">
-                            <a href="#" class="add-sub-task-btn waves-effect waves-light subTask">Add Sub
-                                Task</a>
+                            <a href="#" class="add-sub-task-btn waves-effect waves-light subTask">Add Sub Task</a>
                         </div>
                     </div>
 

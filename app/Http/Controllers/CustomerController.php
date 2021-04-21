@@ -84,6 +84,8 @@ class CustomerController extends Controller
                     'latitude'    => $request->latitude[$key],
                     'longitude'  => $request->longitude[$key],
                     'customer_id' => $customer->id,
+                    'phone_number' => $request->address_phone_number[$key],
+                    'email' => $request->address_email[$key],
                 ];
                 $Loction = Location::create($datas);
             }
@@ -120,8 +122,8 @@ class CustomerController extends Controller
     {
        
         $customer = Customer::where('id', $id)->with('location')->first();
-
-
+        // echo "<pre>";
+        // print_r($customer->toArray()); die;
         $returnHTML = view('Customer.form')->with('customer', $customer)->render();
 
         return response()->json(array('success' => true, 'html' => $returnHTML, 'addFieldsCount' => $customer->location->count()));
@@ -146,6 +148,8 @@ class CustomerController extends Controller
             'phone_number' => $request->phone_number,
         ];
 
+       
+
         $customer->update($data);
 
         foreach ($request->short_name as $key => $value) {
@@ -160,6 +164,8 @@ class CustomerController extends Controller
                         $location->post_code = $request->post_code[$key];
                         $location->latitude = $request->latitude[$key];
                         $location->longitude = $request->longitude[$key];
+                        $location->phone_number = $request->address_phone_number[$key];
+                        $location->email = $request->address_email[$key];
 
                         $location->save();
                     }
@@ -172,6 +178,9 @@ class CustomerController extends Controller
                         'latitude'    => $request->latitude[$key],
                         'longitude'  => $request->longitude[$key],
                         'customer_id' => $customer->id,
+                        'phone_number' => $request->address_phone_number[$key],
+                        'email' => $request->address_email[$key],
+
                     ];
                     $Loction = Location::create($datas);
                 }
@@ -213,5 +222,18 @@ class CustomerController extends Controller
         $customer->save();
 
         return response()->json(['success' => 'Status change successfully.']);
+    }
+
+    public function changeLocation(Request $request)
+    {        
+        $locationid = $request->locationid;
+        $location = Location::find($request->locationid);
+        if ($location) {
+            $location->location_status = 0;
+            $location->save();
+            echo "removed";
+        }else{
+            echo "failed";
+        }
     }
 }
