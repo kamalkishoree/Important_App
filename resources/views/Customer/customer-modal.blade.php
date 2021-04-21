@@ -76,20 +76,20 @@
                                         </div>
                                         <div class="col-lg-2 col-md-3 mb-lg-0 mb-3">
                                             <div class="form-group">
-                                                <input type="text" id="add1-phone_number" name="address_phone_number[]" class="form-control" placeholder="Phone Number">
-                                                <span class="invalid-feedback" role="alert">
-                                                    <strong></strong>
-                                                </span>
-                                            </div>    
-                                        </div>    
-                                        <div class="col-lg-2 col-md-3 mb-lg-0 mb-3">
-                                            <div class="form-group">
                                                 <input type="text" id="add1-email" name="address_email[]" class="form-control" placeholder="Email">
                                                 <span class="invalid-feedback" role="alert">
                                                     <strong></strong>
                                                 </span>
                                             </div>    
-                                        </div>    
+                                        </div> 
+                                        <div class="col-lg-2 col-md-3 mb-lg-0 mb-3">
+                                            <div class="form-group">
+                                                <input type="text" id="add1-phone_number" name="address_phone_number[]" class="form-control" placeholder="Phone Number">
+                                                <span class="invalid-feedback" role="alert">
+                                                    <strong></strong>
+                                                </span>
+                                            </div>    
+                                        </div>
                                         <div class="col-lg-2 col-md-3 mb-lg-0 mb-3">
                                             <div class="form-group d-flex align-items-center" id="post_codeInput">
                                                 <input type="text" name="post_code[]" class="form-control" placeholder="Post Code" id="add1-postcode">
