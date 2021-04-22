@@ -35,7 +35,7 @@ class DashBoardController extends Controller
             
         }        
         //echo $date; die; 
-        //left side bar list for display all teams
+        //left side bar list for display all teams       
 
         $teams  = Team::with(
             [
@@ -44,10 +44,8 @@ class DashBoardController extends Controller
                 }
 
             ]
-        )->get();          
-        
-       // dd($teams);
-
+        )->get();  
+                
         foreach ($teams as $team) {
             $online  = 0;
             $offline = 0;
@@ -112,7 +110,7 @@ class DashBoardController extends Controller
         //create array for map marker
 
         $allTasks = Order::whereDate('order_time', $date)->with(['customer', 'task.location', 'agent.team'])->get();
-       // echo "<pre>"; print_r($allTasks); die;
+       //echo "<pre>"; print_r($allTasks->toArray()); die;
         // dd($allTasks);
         $newmarker = [];
 
@@ -130,10 +128,10 @@ class DashBoardController extends Controller
                 }
                 $append['task_type']             = $name;
                 $append['task_id']               = $task->id;
-                $append['latitude']              = floatval($task->location->latitude);
-                $append['longitude']             = floatval($task->location->longitude);
-                $append['address']               = $task->location->address;
-                $append['task_type_id']          = $task->task_type_id;
+                $append['latitude']              = isset($task->location->latitude) ? floatval($task->location->latitude):0.00;
+                $append['longitude']             = isset($task->location->longitude) ? floatval($task->location->longitude): 0.00;
+                $append['address']               = isset($task->location->address) ? $task->location->address : '';
+                $append['task_type_id']          = isset($task->task_type_id) ? $task->task_type_id : '';
                 $append['task_status']           = (int)$task->task_status;
                 $append['team_id']               = isset($tasks->driver_id) ? $tasks->agent->team_id : 0;
                 $append['driver_name']           = isset($tasks->driver_id) ? $tasks->agent->name : '';
@@ -272,11 +270,16 @@ class DashBoardController extends Controller
                 }
             }            
         }
-        //echo "<pre>";
-           //print_r($agents); die;
+
+        //unassigned_orders 
+        $un_order  = Order::whereDate('order_time', $date)->where('auto_alloction','u')->with(['customer', 'task.location'])->get();        
+        $unassigned_orders = $this->splitOrder($un_order->toarray());
+        
+        // echo "<pre>";
+        //    print_r($newmarker); die;
 
         
-        return view('dashboard')->with(['teams' => $teamdata, 'newmarker' => $newmarker, 'unassigned' => $unassigned, 'agents' => $agents,'date'=> $date,'preference' =>$preference, 'routedata' => $uniquedrivers,'distance_matrix' => $distancematrix]);
+        return view('dashboard')->with(['teams' => $teamdata, 'newmarker' => $newmarker, 'unassigned' => $unassigned, 'agents' => $agents,'date'=> $date,'preference' =>$preference, 'routedata' => $uniquedrivers,'distance_matrix' => $distancematrix, 'unassigned_orders' => $unassigned_orders]);
     }
 
 
