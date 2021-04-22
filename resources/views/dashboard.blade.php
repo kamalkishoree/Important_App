@@ -264,7 +264,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                                                     <div class="col-9 d-flex">
                                                                         <h5 class="d-inline-flex align-items-center justify-content-between"><i class="fas fa-bars"></i> <span>{{date('h:i a ', strtotime($tasks['created_at']))}}</span></h5>
                                                                         <h6 class="d-inline"><img class="vt-top"
-                                                                            src="{{ asset('demo/images/ic_location_blue_1.png') }}"> {{ $tasks['location']['address'] }} <span class="d-block">{{ $tasks['location']['short_name'] }}</span></h6>
+                                                                            src="{{ asset('demo/images/ic_location_blue_1.png') }}"> {{ isset($tasks['location']['address'])? $tasks['location']['address']:'' }} <span class="d-block">{{ isset($tasks['location']['short_name'])? $tasks['location']['short_name']:'' }}</span></h6>
                                                                         
                                                                     </div>
                                                                     <div class="col-3">
