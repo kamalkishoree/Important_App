@@ -339,38 +339,66 @@ class DashBoardController extends Controller
     }
 
 
-    public function distanceMatrix($pointarray)
-    {
-        $distancematrix = array();
-        foreach($pointarray as $key=>$value)
-        {
-            $matrixarray = array();
+    // public function distanceMatrix($pointarray)
+    // {
+    //     $distancematrix = array();
+        
+        
+    //     foreach($pointarray as $key=>$value)
+    //     {
+    //         $matrixarray = array();
 
             
-            for ($i=0; $i < count($value); $i++) { 
+    //         for ($i=0; $i < count($value); $i++) { 
 
-                for ($k=0; $k < count($value); $k++) { 
-                    if($i==$k)
-                    {
-                        $matrixarray[$i][$k] = 0; 
-                    }elseif($i > $k)
-                    {
-                       $matrixarray[$i][$k] = $matrixarray[$k][$i];
-                    }else{
-                        $distance = $this->GoogleDistanceMatrix('$value[$i][0]','$value[$i][1]','$value[$k][0]','$value[$k][1]' );                    
-                        $matrixarray[$i][$k] = $distance;
+    //             for ($k=0; $k < count($value); $k++) { 
+    //                 if($i==$k)
+    //                 {
+    //                     $matrixarray[$i][$k] = 0; 
+    //                 }elseif($i > $k)
+    //                 {
+    //                    $matrixarray[$i][$k] = $matrixarray[$k][$i];
+    //                 }else{
+    //                     $distance = $this->GoogleDistanceMatrix('$value[$i][0]','$value[$i][1]','$value[$k][0]','$value[$k][1]' );                    
+    //                     $matrixarray[$i][$k] = $distance;
                         
-                        //$matrixarray[$i][$k] = 0;
-                    }
-                    // $distance = $this->GoogleDistanceMatrix($value[$i][0],$value[$i][1],$value[$k][0],$value[$k][1] );
+    //                     //$matrixarray[$i][$k] = 0;
+    //                 }
+    //                 // $distance = $this->GoogleDistanceMatrix($value[$i][0],$value[$i][1],$value[$k][0],$value[$k][1] );
                     
-                    // $matrixarray[$i][$k] = $distance; 
-                }
+    //                 // $matrixarray[$i][$k] = $distance; 
+    //             }
                 
+    //         }
+            
+    //         return $matrixarray;
+    //     }
+    // }
+
+    public function distanceMatrix($pointarray)
+    {   
+        $matrixarray = array();            
+        for ($i=0; $i < count($pointarray); $i++) { 
+
+            for ($k=0; $k < count($pointarray); $k++) { 
+                if($i==$k)
+                {
+                    $matrixarray[$i][$k] = 0; 
+                }elseif($i > $k)
+                {
+                    $matrixarray[$i][$k] = $matrixarray[$k][$i];
+                }else{                    
+                    $distance = $this->GoogleDistanceMatrix($pointarray[$i][0],$pointarray[$i][1],$pointarray[$k][0],$pointarray[$k][1]);   
+                    $matrixarray[$i][$k] = $distance;
+                }
+                // $distance = $this->GoogleDistanceMatrix($pointarray[$i][0],$pointarray[$i][1],$pointarray[$k][0],$pointarray[$k][1] );
+                // $matrixarray[$i][$k] = $distance; 
             }
             
-            return $matrixarray;
         }
+        
+        return $matrixarray;
+    
     }
 
     public static function splitOrder($orders){
@@ -475,6 +503,7 @@ class DashBoardController extends Controller
 
     public function GoogleDistanceMatrix($lat1,$long1,$lat2,$long2)
     {
+        //return $lat1.$long1;
         $client = ClientPreference::where('id',1)->first();        
         $ch = curl_init();
         $headers = array('Accept: application/json',
@@ -509,8 +538,12 @@ class DashBoardController extends Controller
         
         //$distance_matrix = json_decode($request->distance); 
         $points = json_decode($request->distance); 
+        // echo "<pre>";
+        // print_r($points); die;
         $distance_matrix = $this->distanceMatrix($points);
+       // print_r($distance_matrix); die;
         $payload = json_encode(array("data" => $distance_matrix));
+        //echo $payload; die;
         //return $distance_matrix;
         //hit the api for getting optimize path
 
