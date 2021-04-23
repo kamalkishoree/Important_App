@@ -47,7 +47,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                         </div>
                                         <div class="col-md-8 col-lg-9 col-xl-10 col-10">
                                             <h6 class="header-title">Unassigned</h6>
-                                            <p class="mb-0">{{isset($unassigned[0]['agent_count'])?$unassigned[0]['agent_count']:''}} Agents : <span>{{isset($unassigned[0]['offline_agents'])?$unassigned[0]['offline_agents']:''}} Offline ・ {{isset($unassigned[0]['online_agents'])?$unassigned[0]['online_agents']:''}} Online</span></p>
+                                            {{-- <p class="mb-0">{{isset($unassigned[0]['agent_count'])?$unassigned[0]['agent_count']:''}} Agents : <span>{{isset($unassigned[0]['offline_agents'])?$unassigned[0]['offline_agents']:''}} Offline ・ {{isset($unassigned[0]['online_agents'])?$unassigned[0]['online_agents']:''}} Online</span></p> --}}
                                         </div>
                                     </div>
                                 </div>
@@ -60,75 +60,96 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                         aria-labelledby="heading-1">
                         <div class="card-body">
 
-                            
-                            
 
+                            <div id="accordion-0">
+                                <div class="card no-border-radius">
+                                    <div class="card-header ml-2" id="by0">
 
-                              
-                            @foreach ($unassigned as $agent)
-                             
-                                <div id="accordion-{{ $agent['id'] }}">
-                                    <div class="card">
-                                        <div class="card-header profile-status ml-2" id="by{{ $agent['id'] }}">
+                                        <?php
 
-                                                <a class="profile-block collapsed" role="button"
-                                                    data-toggle="collapse" href="#collapse{{ $agent['id'] }}"
-                                                    aria-expanded="false"
-                                                    aria-controls="collapse{{ $agent['id'] }}">
-                                                    <div class="">
-                                                        <div class="row d-flex align-items-center">
-                                                            <div class="col-md-4 col-lg-3 col-xl-2">
-                                                                <img class="profile-image"
-                                                                    src="https://dummyimage.com/36x36/ccc/fff">
-                                                            </div>
-                                                            <div class="col-md-8 col-lg-9 col-xl-10">
-                                                                <h6 class="mb-0 header-title scnd">{{ $agent['name'] }}</h6>
-                                                                <p class="mb-0">{{$agent['free'].' '}} <span>{{$agent['agent_task_count']}} Tasks</span></p>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </a>
+                                        if(isset($distance_matrix[0]))
+                                        {
+                                            if($unassigned_orders[0]['task_order']==0){
+                                                $opti0 = "yes";
+                                            }else{
+                                                $opti0 = "";
+                                            }                                       
+                                            
+                                            $routeperams0 = "'".$distance_matrix[0]['tasks']."','".json_encode($distance_matrix[0]['distance'])."','".$opti0."',0";
+                                            
+                                            $optimize0 = '<span class="optimize_btn" onclick="RouteOptimization('.$routeperams0.')">Optimize</span>';
+                                            $params0 = "'".$distance_matrix[0]['tasks']."','".json_encode($distance_matrix[0]['distance'])."','yes',0";
+                                        }else{
+                                            $optimize0="";
+                                            $params0 = "";
+                                        }
+                                        ?>
 
-                                        </div>
-                                        <div id="collapse{{ $agent['id'] }}" class="collapse"
-                                            data-parent="#accordion-{{ $agent['id'] }}"
-                                            aria-labelledby="by{{ $agent['id'] }}">
-                                           
-                                            @foreach($agent['order'] as $orders)
+                                        <a class="profile-block collapsed" role="button" data-toggle="collapse" href="#collapse0" aria-expanded="false" aria-controls="collapse0">
+                                            <div class="row">
+                                                <div class="col-md-2 col-2">
+                                                    <img class="profile-circle" src="https://dummyimage.com/36x36/ccc/fff">
+                                                </div>
+                                                <div class="col-md-10 col-10">                        
+                                                    <h6 class="mb-0 header-title scnd">No Driver <div class="optimizebtn0">{!! $optimize0 !!} </div></h6>
+                                                    <p class="mb-0"> <span>{{ count($unassigned_orders) }} Tasks</span></p>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    
+                                        
+                                    <div id="collapse0" class="collapse" data-parent="#accordion-0" aria-labelledby="by0">
+                                        <div id="handle-dragula-left0" class="dragable_tasks" agentid="0"  params="{{ $params0 }}">            
+                                    
+                                            @foreach($unassigned_orders as $orders)
                                                 @foreach($orders['task'] as $tasks)
-                                                    <div class="card-body">
-                                                        <div class="pt-3 pl-3 pr-3 assigned-block mb-1">
-                                                            <div class="wd-10">
-                                                                <img class="vt-top"
-                                                                    src="{{ asset('demo/images/ic_location_blue_1.png') }}">
-                                                            </div>
-                                                            <div class="wd-90">
-                                                                <h6>{{ $tasks['location']['address'] }}</h6>
-                                                                <span>{{ $tasks['location']['short_name'] }}</span>
-                                                                <h5 class="mb-1"><span>Due</span>
-                                                                    {{date('h:i a ', strtotime($tasks->created_at))}}
-                                                                </h5>
-                                                                <div class="row">
-                                                                    <div class="col-md-6">
-                                                                        {{-- <a class="view-task-details"
-                                                                            href="">View Task
-                                                                            Details</a> --}}
+                                                    <div class="card-body" task_id ="{{ $tasks['id'] }}">
+                                                        <div class="p-2 assigned-block">
+                                                        @php
+                                                                $st = "Unassigned";
+                                                                $color_class = "assign_";
+                                                               
+                            
+                                                                if($tasks['task_type_id']==1)
+                                                                {
+                                                                    $tasktype = "Pickup";
+                                                                    $pickup_class = "yellow_";
+                                                                }elseif($tasks['task_type_id']==2)
+                                                                {
+                                                                    $tasktype = "Dropoff";
+                                                                    $pickup_class = "green_";
+                                                                }else{
+                                                                    $tasktype = "Appointment";
+                                                                    $pickup_class = "assign_";
+                                                                }
+                                                        @endphp
+                                                        
+                                                            <div>
+                                                                <div class="row no-gutters align-items-center">
+                                                                    <div class="col-9 d-flex">
+                                                                        <h5 class="d-inline-flex align-items-center justify-content-between"><i class="fas fa-bars"></i> <span>{{date('h:i a ', strtotime($tasks['created_at']))}}</span></h5>
+                                                                        <h6 class="d-inline"><img class="vt-top"
+                                                                            src="{{ asset('demo/images/ic_location_blue_1.png') }}"> {{ isset($tasks['location']['address'])? $tasks['location']['address']:'' }} <span class="d-block">{{ isset($tasks['location']['short_name'])? $tasks['location']['short_name']:'' }}</span></h6>
                                                                     </div>
-                                                                    <div class="col-md-6 text-right">
-                                                                        <button
-                                                                            class="assigned-btn">Assigned</button>
-                                                                    </div>
+                                                                    <div class="col-3">
+                                                                        <button class="assigned-btn float-right mb-2 {{$pickup_class}}">{{$tasktype}}</button>
+                                                                        <button class="assigned-btn float-right {{$color_class}}">{{$st}}</button>
+                                                                    </div>                        
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                    </div>
+                                                    </div> 
                                                 @endforeach
-
+                            
                                             @endforeach
                                         </div>
                                     </div>
                                 </div>
-                            @endforeach
+                            </div>
+
+
+
                         </div>
                     </div>
                 
@@ -1108,9 +1129,7 @@ function RouteOptimization(taskids,distancematrix,optimize,agentid) {
                     
                     //$('#collapse'+agentid).html('');
                     $('#handle-dragula-left'+agentid).html('');
-                    
-
-
+                    //alert( taskorders.length);
                     for (var i = 0; i < taskorders.length; i++) {
                         var object = taskorders[i];
                         var task_id =  object['task'][0]['id'];
@@ -1126,7 +1145,11 @@ function RouteOptimization(taskids,distancematrix,optimize,agentid) {
                         var tasktype = "";
                         var pickupclass = "";
                         
-                        if(taskstatus==1)
+                        if(taskstatus==0)
+                        {
+                            classtext = "Unassigned";
+                            classname = "assign_";
+                        }else if(taskstatus==1)
                         {
                             classtext = "Assigned";
                             classname = "assign_";
@@ -1328,7 +1351,7 @@ $(".dragable_tasks").sortable({
         $('.pageloader').css('display','block');        
         var divid = $(this).attr('id');
         var params = $(this).attr('params');
-        var agentid = $(this).attr('agentid');
+        var agentid = $(this).attr('agentid');       
         
         var taskorder = "";
         jQuery("#"+divid+" .card-body.ui-sortable-handle").each(function (index, element) {

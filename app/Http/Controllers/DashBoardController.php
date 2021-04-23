@@ -200,11 +200,11 @@ class DashBoardController extends Controller
             if(count($singledriver['task_details'])>1)
             {   
                 $points = array();
-                $points[] = array($singledriver['driver_detail']['lat'],$singledriver['driver_detail']['long']);
+                $points[] = array(floatval($singledriver['driver_detail']['lat']),floatval($singledriver['driver_detail']['long']));
                 $taskids = array();
                 foreach($singledriver['task_details'] as $singletask)
                 {
-                    $points[] = array($singletask['latitude'],$singletask['longitude']);
+                    $points[] = array(floatval($singletask['latitude']),floatval($singletask['longitude']));
                     $taskids[] = $singletask['task_id'];
                 }
                 
@@ -272,12 +272,68 @@ class DashBoardController extends Controller
         }
 
         //unassigned_orders 
+        $unassigned_orders = array();
         $un_order  = Order::whereDate('order_time', $date)->where('auto_alloction','u')->with(['customer', 'task.location'])->get();        
-        $unassigned_orders = $this->splitOrder($un_order->toarray());
-        
-        // echo "<pre>";
-        //    print_r($newmarker); die;
+        if(count($un_order)>=1)
+        {
+            $unassigned_orders = $this->splitOrder($un_order->toarray());
+            if(count($unassigned_orders)>1)
+            {
+                $unassigned_distance_mat = array(); 
+                $unassigned_points[] = array(floatval($unassigned_orders[0]['task'][0]['location']['latitude']),floatval($unassigned_orders[0]['task'][0]['location']['longitude']));
+                $unassigned_taskids = array();
+                $un_route = array();
 
+                foreach($unassigned_orders as $singleua)
+                {
+                    $unassigned_taskids[] = $singleua['task'][0]['id'];
+                    $unassigned_points[] = array(floatval($singleua['task'][0]['location']['latitude']),floatval($singleua['task'][0]['location']['longitude']));
+
+                    //for drawing route
+                    $s_task = $singleua['task'][0];
+                    if ($s_task['task_type_id'] == 1) {
+                        $nname = 'Pickup';
+                    } elseif ($s_task['task_type_id'] == 2) {
+                        $nname = 'DropOff';
+                    } else {
+                        $nname = 'Appointment';
+                    }
+                    $aappend = array();
+                    $aappend['task_type']             = $nname;
+                    $aappend['task_id']               =  $s_task['id'];
+                    $aappend['latitude']              =  $s_task['location']['latitude'];
+                    $aappend['longitude']             = $s_task['location']['longitude'];
+                    $aappend['address']               = $s_task['location']['address'];
+                    $aappend['task_type_id']          = $s_task['task_type_id'];
+                    $aappend['task_status']           = $s_task['task_status'];
+                    $aappend['team_id']               = 0;
+                    $aappend['driver_name']           = '';
+                    $aappend['driver_id']             = 0;
+                    $aappend['customer_name']         = $singleua['customer']['name'];
+                    $aappend['customer_phone_number'] = $singleua['customer']['phone_number'];
+                    $aappend['task_order']            = $singleua['task_order'];
+                    $un_route[] = $aappend;
+
+                }
+                $unassigned_distance_mat['tasks'] = implode(',',$unassigned_taskids);
+                $unassigned_distance_mat['distance'] = $unassigned_points;
+                $distancematrix[0] = $unassigned_distance_mat;
+
+                $first_un_loc = array('lat'=>floatval($unassigned_orders[0]['task'][0]['location']['latitude']),'long'=>floatval($unassigned_orders[0]['task'][0]['location']['longitude']));
+               // [driver_detail] => $first_un_loc; $un_route
+               $final_un_route['driver_detail'] = $first_un_loc;
+               $final_un_route['task_details'] = $un_route;
+               $uniquedrivers[] = $final_un_route;
+
+            }
+        }
+
+        // echo "<pre>";
+        //    print_r($unassigned_orders); 
+           
+        //    print_r($uniquedrivers);
+        //    //print_r($distancematrix);
+        //    die;
         
         return view('dashboard')->with(['teams' => $teamdata, 'newmarker' => $newmarker, 'unassigned' => $unassigned, 'agents' => $agents,'date'=> $date,'preference' =>$preference, 'routedata' => $uniquedrivers,'distance_matrix' => $distancematrix, 'unassigned_orders' => $unassigned_orders]);
     }
@@ -480,75 +536,100 @@ class DashBoardController extends Controller
             $orderdetail = Task::where('id',$taskids[0])->with('order')->first();
             $orderdate =  date("Y-m-d", strtotime($orderdetail->order->order_time));            
             
-            $agent = Agent::where('id',$agentid)->with(['order' => function ($o) use ($orderdate) {
+            if($agentid!=0)
+            {
+                $agent = Agent::where('id',$agentid)->with(['order' => function ($o) use ($orderdate) {
                     $o->whereDate('order_time', $orderdate)->with('customer')->with('task.location');
                 }])->with('agentlog')->first();
 
-            $agent = $agent->toArray();            
+                $agent = $agent->toArray();            
 
-            if(count($agent['order'])>0)
-            { 
-                $agent['order'] = $this->splitOrder($agent['order']);                    
-            }
+                if(count($agent['order'])>0)
+                { 
+                    $agent['order'] = $this->splitOrder($agent['order']);                    
+                }
 
-            $p=0;
-            foreach($agent['order'] as $singleorder)
-            {    
-                $agent['order'][$p]['task'][0]['task_time'] = date("h:i a", strtotime($singleorder['task'][0]['created_at']));
-                $p++;
+                $p=0;
+                foreach($agent['order'] as $singleorder)
+                {    
+                    $agent['order'][$p]['task'][0]['task_time'] = date("h:i a", strtotime($singleorder['task'][0]['created_at']));
+                    $p++;
+                }
+            }else{      //case of unassigned tasks with no driver
+                $agent = array(
+                    'id' => 0,
+                    'name' => ''
+
+                );
+
+                $un_order  = Order::whereDate('order_time', $orderdate)->where('auto_alloction','u')->with(['customer', 'task.location'])->get();        
+                
+                    $unassigned_tasks = $this->splitOrder($un_order->toarray());
+                    $p=0;
+                    foreach( $unassigned_tasks as $singleorder)
+                    {    
+                        $unassigned_tasks[$p]['task'][0]['task_time'] = date("h:i a", strtotime($singleorder['task'][0]['created_at']));
+                        $p++;
+                    }
+                    $agent['order'] = $unassigned_tasks;
+                   
+                    //$first_un_loc = array('lat'=>floatval($unassigned_orders[0]['task'][0]['location']['latitude']),'long'=>floatval($unassigned_orders[0]['task'][0]['location']['longitude']));  
             }
+            // echo "<pre>";
+            // print_r($agent); die;
+            
 
             //map single route data
-            $newmarker = [];
-            $append = [];
-            foreach ($agent['order'] as $singleorder) {
-                $taskdetail = $singleorder['task'][0];
-                if ($taskdetail['task_type_id'] == 1) {
-                    $name = 'Pickup';
-                } elseif ($taskdetail['task_type_id'] == 2) {
-                    $name = 'DropOff';
-                } else {
-                    $name = 'Appointment';
-                }
-                $append['task_type']             = $name;
-                $append['task_id']               = $taskdetail['id'];
-                $append['latitude']              = floatval($taskdetail['location']['latitude']);
-                $append['longitude']             = floatval($taskdetail['location']['longitude']);
-                $append['address']               = $taskdetail['location']['address'];
-                $append['task_type_id']          = $taskdetail['task_type_id'];
-                $append['task_status']           = (int)$taskdetail['task_status'];
-                $append['team_id']               = $agent['team_id'];
-                $append['driver_name']           = $agent['name'];
-                $append['driver_id']             = $agent['id'];
-                $append['customer_name']         = $singleorder['customer']['name'];
-                $append['customer_phone_number'] = $singleorder['customer']['phone_number'];
-                $append['task_order']            = $taskdetail['task_order'];
+            // $newmarker = [];
+            // $append = [];
+            // foreach ($agent['order'] as $singleorder) {
+            //     $taskdetail = $singleorder['task'][0];
+            //     if ($taskdetail['task_type_id'] == 1) {
+            //         $name = 'Pickup';
+            //     } elseif ($taskdetail['task_type_id'] == 2) {
+            //         $name = 'DropOff';
+            //     } else {
+            //         $name = 'Appointment';
+            //     }
+            //     $append['task_type']             = $name;
+            //     $append['task_id']               = $taskdetail['id'];
+            //     $append['latitude']              = floatval($taskdetail['location']['latitude']);
+            //     $append['longitude']             = floatval($taskdetail['location']['longitude']);
+            //     $append['address']               = $taskdetail['location']['address'];
+            //     $append['task_type_id']          = $taskdetail['task_type_id'];
+            //     $append['task_status']           = (int)$taskdetail['task_status'];
+            //     $append['team_id']               = $agent['team_id'];
+            //     $append['driver_name']           = $agent['name'];
+            //     $append['driver_id']             = $agent['id'];
+            //     $append['customer_name']         = $singleorder['customer']['name'];
+            //     $append['customer_phone_number'] = $singleorder['customer']['phone_number'];
+            //     $append['task_order']            = $taskdetail['task_order'];
 
-                array_push($newmarker, $append);
-            }            
+            //     array_push($newmarker, $append);
+            // }            
 
-            $routedata = array();            
-                if(is_array($agent['agentlog']))
-                {
-                    $taskarray = array();                
-                    foreach($newmarker as $singlemark)
-                    {
-                        if($singlemark['driver_id'] == $agent['agentlog']['agent_id'])
-                        {
-                            $taskarray[] = $singlemark;                            
-                        }
-                    }
-                    if(!empty($taskarray))
-                    {                        
-                        if($orderdate != date('Y-m-d'))
-                        {
-                            $agent['agentlog']['lat'] = $taskarray[0]['latitude'];
-                            $agent['agentlog']['long'] = $taskarray[0]['longitude'];
-                        }
-                        $routedata['driver_detail'] = $agent['agentlog'];
-                        $routedata['task_details'] = $taskarray;                                  
-                    }                    
-                }
+            // $routedata = array();            
+            //     if(is_array($agent['agentlog']))
+            //     {
+            //         $taskarray = array();                
+            //         foreach($newmarker as $singlemark)
+            //         {
+            //             if($singlemark['driver_id'] == $agent['agentlog']['agent_id'])
+            //             {
+            //                 $taskarray[] = $singlemark;                            
+            //             }
+            //         }
+            //         if(!empty($taskarray))
+            //         {                        
+            //             if($orderdate != date('Y-m-d'))
+            //             {
+            //                 $agent['agentlog']['lat'] = $taskarray[0]['latitude'];
+            //                 $agent['agentlog']['long'] = $taskarray[0]['longitude'];
+            //             }
+            //             $routedata['driver_detail'] = $agent['agentlog'];
+            //             $routedata['task_details'] = $taskarray;                                  
+            //         }                    
+            //     }
             //map single route data ends
             
             //getting all routes
@@ -612,11 +693,63 @@ class DashBoardController extends Controller
                         $j++;                    
                     }                    
                 }                
-            }            
+            }   
+            
+            //unassigned_orders 
+            $unassigned_orders = array();
+            $un_order  = Order::whereDate('order_time', $orderdate)->where('auto_alloction','u')->with(['customer', 'task.location'])->get();        
+            if(count($un_order)>=1)
+            {
+                $unassigned_orders = $this->splitOrder($un_order->toarray());
+                if(count($unassigned_orders)>1)
+                {   
+                    $un_route = array();
+                    foreach($unassigned_orders as $singleua)
+                    {                  
+
+                        //for drawing route
+                        $s_task = $singleua['task'][0];
+                        if ($s_task['task_type_id'] == 1) {
+                            $nname = 'Pickup';
+                        } elseif ($s_task['task_type_id'] == 2) {
+                            $nname = 'DropOff';
+                        } else {
+                            $nname = 'Appointment';
+                        }
+                        $aappend = array();
+                        $aappend['task_type']             = $nname;
+                        $aappend['task_id']               =  $s_task['id'];
+                        $aappend['latitude']              =  $s_task['location']['latitude'];
+                        $aappend['longitude']             = $s_task['location']['longitude'];
+                        $aappend['address']               = $s_task['location']['address'];
+                        $aappend['task_type_id']          = $s_task['task_type_id'];
+                        $aappend['task_status']           = $s_task['task_status'];
+                        $aappend['team_id']               = 0;
+                        $aappend['driver_name']           = '';
+                        $aappend['driver_id']             = 0;
+                        $aappend['customer_name']         = $singleua['customer']['name'];
+                        $aappend['customer_phone_number'] = $singleua['customer']['phone_number'];
+                        $aappend['task_order']            = $singleua['task_order'];
+                        $un_route[] = $aappend;
+
+                    }
+                    
+
+                    $first_un_loc = array('lat'=>floatval($unassigned_orders[0]['task'][0]['location']['latitude']),'long'=>floatval($unassigned_orders[0]['task'][0]['location']['longitude']));
+                // [driver_detail] => $first_un_loc; $un_route
+                $final_un_route['driver_detail'] = $first_un_loc;
+                $final_un_route['task_details'] = $un_route;
+                $alldrivers[] = $final_un_route;
+
+                }
+            }
+
+            // echo "<pre>";
+            // print_r($agent); die;
 
             $output = array();
             $output['tasklist'] = $agent;
-            $output['routedata'] = $routedata;
+            //$output['routedata'] = $routedata;
             $output['allroutedata'] = $alldrivers;            
             echo json_encode($output);   
             
@@ -627,7 +760,7 @@ class DashBoardController extends Controller
 
     public function arrangeRoute(Request $request)
     {        
-        $taskids = explode(',',$request->taskids);
+        $taskids = explode(',',$request->taskids);        
         $taskids = array_filter($taskids);
         for ($i=0; $i < count($taskids); $i++) {                 
             $taskorder = [
@@ -700,13 +833,66 @@ class DashBoardController extends Controller
                     $j++;                    
                 }                    
             }                
-        }            
+        }  
+        
+        //unassigned_orders 
+        $unassigned_orders = array();
+        $un_order  = Order::whereDate('order_time', $orderdate)->where('auto_alloction','u')->with(['customer', 'task.location'])->get();        
+        if(count($un_order)>=1)
+        {
+            $unassigned_orders = $this->splitOrder($un_order->toarray());
+            if(count($unassigned_orders)>1)
+            {   
+                $un_route = array();
+                foreach($unassigned_orders as $singleua)
+                {                  
 
+                    //for drawing route
+                    $s_task = $singleua['task'][0];
+                    if ($s_task['task_type_id'] == 1) {
+                        $nname = 'Pickup';
+                    } elseif ($s_task['task_type_id'] == 2) {
+                        $nname = 'DropOff';
+                    } else {
+                        $nname = 'Appointment';
+                    }
+                    $aappend = array();
+                    $aappend['task_type']             = $nname;
+                    $aappend['task_id']               =  $s_task['id'];
+                    $aappend['latitude']              =  $s_task['location']['latitude'];
+                    $aappend['longitude']             = $s_task['location']['longitude'];
+                    $aappend['address']               = $s_task['location']['address'];
+                    $aappend['task_type_id']          = $s_task['task_type_id'];
+                    $aappend['task_status']           = $s_task['task_status'];
+                    $aappend['team_id']               = 0;
+                    $aappend['driver_name']           = '';
+                    $aappend['driver_id']             = 0;
+                    $aappend['customer_name']         = $singleua['customer']['name'];
+                    $aappend['customer_phone_number'] = $singleua['customer']['phone_number'];
+                    $aappend['task_order']            = $singleua['task_order'];
+                    $un_route[] = $aappend;
+
+                }
+                
+
+                $first_un_loc = array('lat'=>floatval($unassigned_orders[0]['task'][0]['location']['latitude']),'long'=>floatval($unassigned_orders[0]['task'][0]['location']['longitude']));
+               // [driver_detail] => $first_un_loc; $un_route
+               $final_un_route['driver_detail'] = $first_un_loc;
+               $final_un_route['task_details'] = $un_route;
+               $alldrivers[] = $final_un_route;
+
+            }
+        }
+        
+        // echo "<pre>";
+        // print_r($alldrivers); die;
         $output = array();
         $output['allroutedata'] = $alldrivers;            
         echo json_encode($output);   
             
         
     }
+
+    
 
 }
