@@ -18,25 +18,18 @@ class DashBoardController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request)
-    {
-        // echo "<pre>";
-        // print_r($request); die;
-        //date for display tasks on map 
-
+    {   
         if (isset($request->date)) {
-              //echo $request->date; die;
-             // $date = date('Y-m-d', strtotime($request->date));
-              $date = Carbon::parse(strtotime($request->date))->format('Y-m-d');
-             
 
+              $date = Carbon::parse(strtotime($request->date))->format('Y-m-d');
+              
         } else {
             
             $date = date('Y-m-d');
             
-        }        
-        //echo $date; die; 
-        //left side bar list for display all teams       
+        } 
 
+        //left side bar list for display all teams    
         $teams  = Team::with(
             [
                 'agents.order' => function ($o) use ($date) {
@@ -70,9 +63,6 @@ class DashBoardController extends Controller
             $team['offline_agents'] = $offline;
             $agent['agent_count']   = $count;
         }
-
-      //  dd($teams);
-
 
         //left side bar list for display unassigned team
         $unassigned = Agent::where('team_id', null)->with(['order' => function ($o) use ($date) {
@@ -108,14 +98,10 @@ class DashBoardController extends Controller
 
 
         //create array for map marker
-
         $allTasks = Order::whereDate('order_time', $date)->with(['customer', 'task.location', 'agent.team'])->get();
-       //echo "<pre>"; print_r($allTasks->toArray()); die;
-        // dd($allTasks);
         $newmarker = [];
 
         foreach ($allTasks as $key => $tasks) {
-
             $append = [];
             foreach ($tasks->task as $task) {
 
@@ -139,27 +125,21 @@ class DashBoardController extends Controller
                 $append['customer_name']         = isset($tasks->customer->name)?$tasks->customer->name:'';
                 $append['customer_phone_number'] = isset($tasks->customer->phone_number)?$tasks->customer->phone_number:'';
                 $append['task_order']            = isset($task->task_order)?$task->task_order:0;
-
                 array_push($newmarker, $append);
             }
         }
-
-        // echo "<pre>";
-        // print_r($newmarker); die;
 
         $unassigned->toArray();
         $teams->toArray();
 
         $agents = Agent::with('agentlog')->get()->toArray();
         $preference  = ClientPreference::where('id',1)->first(['theme','date_format','time_format']);
-
     
-       $uniquedrivers = array();       
-       $j = 0;
+        $uniquedrivers = array();       
+        $j = 0;
         foreach ($agents as $singleagent) {
             if(is_array($singleagent['agentlog']))
             {
-
                 $taskarray = array();                
                 foreach($newmarker as $singlemark)
                 {
@@ -182,21 +162,15 @@ class DashBoardController extends Controller
                     $uniquedrivers[$j]['driver_detail'] = $singleagent['agentlog'];
                     $uniquedrivers[$j]['task_details'] = $taskarray;
                     $j++;                    
-                }
-                
-            }
-
-            
+                }                
+            }            
         }
-        // echo "<pre>";
-        // print_r($uniquedrivers); die;
-
+        
         //for route optimization
         $routeoptimization = array();
         $taskarray = array();        
         foreach($uniquedrivers as $singledriver)
-        {         
-
+        { 
             if(count($singledriver['task_details'])>1)
             {   
                 $points = array();
@@ -207,59 +181,21 @@ class DashBoardController extends Controller
                     $points[] = array(floatval($singletask['latitude']),floatval($singletask['longitude']));
                     $taskids[] = $singletask['task_id'];
                 }
-                
 
                 $taskarray[$singledriver['driver_detail']['agent_id']] = implode(',',$taskids);
                 $routeoptimization[$singledriver['driver_detail']['agent_id']] = $points;
             }
         }
 
-
-        // echo "<pre>";
-        // print_r($uniquedrivers); die;
-
-        // echo "<pre>";
-        // print_r($routeoptimization); die;
-
         //create distance matrix
         $distancematrix = array();
         foreach($routeoptimization as $key=>$value)
-        {
-            // $matrixarray = array();
-
-            
-            // for ($i=0; $i < count($value); $i++) { 
-
-            //     for ($k=0; $k < count($value); $k++) { 
-            //         if($i==$k)
-            //         {
-            //             $matrixarray[$i][$k] = 0; 
-            //         }elseif($i > $k)
-            //         {
-            //            $matrixarray[$i][$k] = $matrixarray[$k][$i];
-            //         }else{
-            //             $distance = $this->GoogleDistanceMatrix($value[$i][0],$value[$i][1],$value[$k][0],$value[$k][1] );                    
-            //             $matrixarray[$i][$k] = $distance;
-                        
-            //             //$matrixarray[$i][$k] = 0;
-            //         }
-            //         // $distance = $this->GoogleDistanceMatrix($value[$i][0],$value[$i][1],$value[$k][0],$value[$k][1] );
-                    
-            //         // $matrixarray[$i][$k] = $distance; 
-            //     }
-                
-            // }
-            $distancematrix[$key]['tasks'] = $taskarray[$key];
-            //$distancematrix[$key]['distance'] = $matrixarray;
+        {            
+            $distancematrix[$key]['tasks'] = $taskarray[$key];            
             $distancematrix[$key]['distance'] = $routeoptimization[$key];
-        }
-        // echo "<pre>";
-        // echo json_encode($distancematrix[9]['distance']);
-        // print_r($distancematrix); die;
-        
+        }        
 
         $teamdata = $teams->toArray();
-
         foreach($teamdata as $k1=>$singleteam)
         {  
             foreach($singleteam['agents'] as $k2=>$singleagent)
@@ -319,61 +255,16 @@ class DashBoardController extends Controller
                 $unassigned_distance_mat['distance'] = $unassigned_points;
                 $distancematrix[0] = $unassigned_distance_mat;
 
-                $first_un_loc = array('lat'=>floatval($unassigned_orders[0]['task'][0]['location']['latitude']),'long'=>floatval($unassigned_orders[0]['task'][0]['location']['longitude']));
-               // [driver_detail] => $first_un_loc; $un_route
-               $final_un_route['driver_detail'] = $first_un_loc;
-               $final_un_route['task_details'] = $un_route;
-               $uniquedrivers[] = $final_un_route;
+                $first_un_loc = array('lat'=>floatval($unassigned_orders[0]['task'][0]['location']['latitude']),'long'=>floatval($unassigned_orders[0]['task'][0]['location']['longitude']));               
+                $final_un_route['driver_detail'] = $first_un_loc;
+                $final_un_route['task_details'] = $un_route;
+                $uniquedrivers[] = $final_un_route;
 
             }
         }
-
-        // echo "<pre>";
-        //    print_r($unassigned_orders); 
-           
-        //    print_r($uniquedrivers);
-        //    //print_r($distancematrix);
-        //    die;
         
         return view('dashboard')->with(['teams' => $teamdata, 'newmarker' => $newmarker, 'unassigned' => $unassigned, 'agents' => $agents,'date'=> $date,'preference' =>$preference, 'routedata' => $uniquedrivers,'distance_matrix' => $distancematrix, 'unassigned_orders' => $unassigned_orders]);
     }
-
-
-    // public function distanceMatrix($pointarray)
-    // {
-    //     $distancematrix = array();
-        
-        
-    //     foreach($pointarray as $key=>$value)
-    //     {
-    //         $matrixarray = array();
-
-            
-    //         for ($i=0; $i < count($value); $i++) { 
-
-    //             for ($k=0; $k < count($value); $k++) { 
-    //                 if($i==$k)
-    //                 {
-    //                     $matrixarray[$i][$k] = 0; 
-    //                 }elseif($i > $k)
-    //                 {
-    //                    $matrixarray[$i][$k] = $matrixarray[$k][$i];
-    //                 }else{
-    //                     $distance = $this->GoogleDistanceMatrix('$value[$i][0]','$value[$i][1]','$value[$k][0]','$value[$k][1]' );                    
-    //                     $matrixarray[$i][$k] = $distance;
-                        
-    //                     //$matrixarray[$i][$k] = 0;
-    //                 }
-    //                 // $distance = $this->GoogleDistanceMatrix($value[$i][0],$value[$i][1],$value[$k][0],$value[$k][1] );
-                    
-    //                 // $matrixarray[$i][$k] = $distance; 
-    //             }
-                
-    //         }
-            
-    //         return $matrixarray;
-    //     }
-    // }
 
     public function distanceMatrix($pointarray)
     {   
@@ -391,8 +282,6 @@ class DashBoardController extends Controller
                     $distance = $this->GoogleDistanceMatrix($pointarray[$i][0],$pointarray[$i][1],$pointarray[$k][0],$pointarray[$k][1]);   
                     $matrixarray[$i][$k] = $distance;
                 }
-                // $distance = $this->GoogleDistanceMatrix($pointarray[$i][0],$pointarray[$i][1],$pointarray[$k][0],$pointarray[$k][1] );
-                // $matrixarray[$i][$k] = $distance; 
             }
             
         }
@@ -401,10 +290,9 @@ class DashBoardController extends Controller
     
     }
 
-    public static function splitOrder($orders){
-        // array //
-        $new_order = [];
-        
+    public static function splitOrder($orders)
+    {        
+        $new_order = [];        
         if(is_array($orders) && count($orders)>0 && !empty($orders))
         {
             $counter = 0;
@@ -416,23 +304,17 @@ class DashBoardController extends Controller
                     unset($new_order[$counter]['task']);
                     $new_order[$counter]['task'][] = $task;
                     $counter++;    
-                }
-                
+                }                
             }
-            
-            
-                //sort array
-                usort($new_order, function($a, $b) {
-                    return $a['task_order'] <=> $b['task_order'];
-                });
 
-            
-
+            //sort array
+            usort($new_order, function($a, $b) {
+                return $a['task_order'] <=> $b['task_order'];
+            });
             return $new_order;
         }else{
             return $orders;
-        }
-        
+        }        
     }
 
     /**
@@ -535,18 +417,12 @@ class DashBoardController extends Controller
     {
         $taskids =  $request->taskids; 
         $agentid = $request->agentid; 
-        
         //$distance_matrix = json_decode($request->distance); 
-        $points = json_decode($request->distance); 
-        // echo "<pre>";
-        // print_r($points); die;
+        $points = json_decode($request->distance);         
         $distance_matrix = $this->distanceMatrix($points);
-       // print_r($distance_matrix); die;
         $payload = json_encode(array("data" => $distance_matrix));
-        //echo $payload; die;
-        //return $distance_matrix;
-        //hit the api for getting optimize path
-
+        
+        //api for getting optimize path
         $url = "https://optimizeroute.royodispatch.com/optimize";
         $ch = curl_init ($url);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
@@ -595,75 +471,16 @@ class DashBoardController extends Controller
 
                 );
 
-                $un_order  = Order::whereDate('order_time', $orderdate)->where('auto_alloction','u')->with(['customer', 'task.location'])->get();        
-                
-                    $unassigned_tasks = $this->splitOrder($un_order->toarray());
-                    $p=0;
-                    foreach( $unassigned_tasks as $singleorder)
-                    {    
-                        $unassigned_tasks[$p]['task'][0]['task_time'] = date("h:i a", strtotime($singleorder['task'][0]['created_at']));
-                        $p++;
-                    }
-                    $agent['order'] = $unassigned_tasks;
-                   
-                    //$first_un_loc = array('lat'=>floatval($unassigned_orders[0]['task'][0]['location']['latitude']),'long'=>floatval($unassigned_orders[0]['task'][0]['location']['longitude']));  
-            }
-            // echo "<pre>";
-            // print_r($agent); die;
-            
-
-            //map single route data
-            // $newmarker = [];
-            // $append = [];
-            // foreach ($agent['order'] as $singleorder) {
-            //     $taskdetail = $singleorder['task'][0];
-            //     if ($taskdetail['task_type_id'] == 1) {
-            //         $name = 'Pickup';
-            //     } elseif ($taskdetail['task_type_id'] == 2) {
-            //         $name = 'DropOff';
-            //     } else {
-            //         $name = 'Appointment';
-            //     }
-            //     $append['task_type']             = $name;
-            //     $append['task_id']               = $taskdetail['id'];
-            //     $append['latitude']              = floatval($taskdetail['location']['latitude']);
-            //     $append['longitude']             = floatval($taskdetail['location']['longitude']);
-            //     $append['address']               = $taskdetail['location']['address'];
-            //     $append['task_type_id']          = $taskdetail['task_type_id'];
-            //     $append['task_status']           = (int)$taskdetail['task_status'];
-            //     $append['team_id']               = $agent['team_id'];
-            //     $append['driver_name']           = $agent['name'];
-            //     $append['driver_id']             = $agent['id'];
-            //     $append['customer_name']         = $singleorder['customer']['name'];
-            //     $append['customer_phone_number'] = $singleorder['customer']['phone_number'];
-            //     $append['task_order']            = $taskdetail['task_order'];
-
-            //     array_push($newmarker, $append);
-            // }            
-
-            // $routedata = array();            
-            //     if(is_array($agent['agentlog']))
-            //     {
-            //         $taskarray = array();                
-            //         foreach($newmarker as $singlemark)
-            //         {
-            //             if($singlemark['driver_id'] == $agent['agentlog']['agent_id'])
-            //             {
-            //                 $taskarray[] = $singlemark;                            
-            //             }
-            //         }
-            //         if(!empty($taskarray))
-            //         {                        
-            //             if($orderdate != date('Y-m-d'))
-            //             {
-            //                 $agent['agentlog']['lat'] = $taskarray[0]['latitude'];
-            //                 $agent['agentlog']['long'] = $taskarray[0]['longitude'];
-            //             }
-            //             $routedata['driver_detail'] = $agent['agentlog'];
-            //             $routedata['task_details'] = $taskarray;                                  
-            //         }                    
-            //     }
-            //map single route data ends
+                $un_order  = Order::whereDate('order_time', $orderdate)->where('auto_alloction','u')->with(['customer', 'task.location'])->get();                        
+                $unassigned_tasks = $this->splitOrder($un_order->toarray());
+                $p=0;
+                foreach( $unassigned_tasks as $singleorder)
+                {    
+                    $unassigned_tasks[$p]['task'][0]['task_time'] = date("h:i a", strtotime($singleorder['task'][0]['created_at']));
+                    $p++;
+                }
+                $agent['order'] = $unassigned_tasks;
+            }           
             
             //getting all routes
             $allTasks = Order::whereDate('order_time', $orderdate)->with(['customer', 'task.location', 'agent.team'])->get();
@@ -671,7 +488,6 @@ class DashBoardController extends Controller
             foreach ($allTasks as $key => $tasks) {
                 $append = [];
                 foreach ($tasks->task as $task) {
-
                     if ($task->task_type_id == 1) {
                         $name = 'Pickup';
                     } elseif ($task->task_type_id == 2) {
@@ -692,7 +508,6 @@ class DashBoardController extends Controller
                     $append['customer_name']         = isset($tasks->customer->name)? $tasks->customer->name:'';
                     $append['customer_phone_number'] = isset($tasks->customer->phone_number)?$tasks->customer->phone_number:'';
                     $append['task_order']            = isset($task->task_order)?$task->task_order:0;
-
                     array_push($allmarker, $append);
                 }
             }
@@ -738,8 +553,7 @@ class DashBoardController extends Controller
                 {   
                     $un_route = array();
                     foreach($unassigned_orders as $singleua)
-                    {                  
-
+                    {    
                         //for drawing route
                         $s_task = $singleua['task'][0];
                         if ($s_task['task_type_id'] == 1) {
@@ -764,21 +578,15 @@ class DashBoardController extends Controller
                         $aappend['customer_phone_number'] = $singleua['customer']['phone_number'];
                         $aappend['task_order']            = $singleua['task_order'];
                         $un_route[] = $aappend;
+                    }                   
 
-                    }
-                    
-
-                    $first_un_loc = array('lat'=>floatval($unassigned_orders[0]['task'][0]['location']['latitude']),'long'=>floatval($unassigned_orders[0]['task'][0]['location']['longitude']));
-                // [driver_detail] => $first_un_loc; $un_route
-                $final_un_route['driver_detail'] = $first_un_loc;
-                $final_un_route['task_details'] = $un_route;
-                $alldrivers[] = $final_un_route;
+                    $first_un_loc = array('lat'=>floatval($unassigned_orders[0]['task'][0]['location']['latitude']),'long'=>floatval($unassigned_orders[0]['task'][0]['location']['longitude']));                
+                    $final_un_route['driver_detail'] = $first_un_loc;
+                    $final_un_route['task_details'] = $un_route;
+                    $alldrivers[] = $final_un_route;
 
                 }
             }
-
-            // echo "<pre>";
-            // print_r($agent); die;
 
             $output = array();
             $output['tasklist'] = $agent;
@@ -829,8 +637,8 @@ class DashBoardController extends Controller
                 $append['team_id']               = isset($tasks->driver_id) ? $tasks->agent->team_id : 0;
                 $append['driver_name']           = isset($tasks->driver_id) ? $tasks->agent->name : '';
                 $append['driver_id']             = isset($tasks->driver_id) ? $tasks->driver_id : '';
-                $append['customer_name']         = $tasks->customer->name;
-                $append['customer_phone_number'] = $tasks->customer->phone_number;
+                $append['customer_name']         = isset($tasks->customer->name)?$tasks->customer->name:'';
+                $append['customer_phone_number'] = isset($tasks->customer->phone_number)?$tasks->customer->phone_number:'';
                 $append['task_order']            = $task->task_order;
 
                 array_push($allmarker, $append);
@@ -908,8 +716,7 @@ class DashBoardController extends Controller
                 }
                 
 
-                $first_un_loc = array('lat'=>floatval($unassigned_orders[0]['task'][0]['location']['latitude']),'long'=>floatval($unassigned_orders[0]['task'][0]['location']['longitude']));
-               // [driver_detail] => $first_un_loc; $un_route
+                $first_un_loc = array('lat'=>floatval($unassigned_orders[0]['task'][0]['location']['latitude']),'long'=>floatval($unassigned_orders[0]['task'][0]['location']['longitude']));               
                $final_un_route['driver_detail'] = $first_un_loc;
                $final_un_route['task_details'] = $un_route;
                $alldrivers[] = $final_un_route;
@@ -917,8 +724,6 @@ class DashBoardController extends Controller
             }
         }
         
-        // echo "<pre>";
-        // print_r($alldrivers); die;
         $output = array();
         $output['allroutedata'] = $alldrivers;            
         echo json_encode($output);   

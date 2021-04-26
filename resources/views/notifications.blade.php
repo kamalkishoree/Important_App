@@ -42,6 +42,8 @@
                                         <th>Events</th>
                                         <th>SMS</th>
                                         <th>EMAIL</th>
+                                        <th>Recipient SMS</th>
+                                        <th>Recipient EMAIL</th>
                                         <!--<th>WEBHOOK</th>
                                          <th>WEBHOOK URL</th>  -->
                                         <th></th>
@@ -65,6 +67,20 @@
                                             <div class="custom-control custom-switch">
                                                 <input type="checkbox" class="custom-control-input event_type" data-id="{{ $event->id }}" data-event-type="email" id="emailcustomSwitch_{{ $event->id}}" @if($event->is_checked_email(Auth::user()->code))  checked @endif >
                                                 <label class="custom-control-label" for="emailcustomSwitch_{{ $event->id}}"></label>
+                                            </div>
+                                        </td>
+
+                                        <td>   {{-- for receipient sms --}}
+                                            <div class="custom-control custom-switch">
+                                                <input type="checkbox" class="custom-control-input event_type" data-id="{{ $event->id }}" data-event-type="recipient_sms" id="recipient_smscustomSwitch_{{ $event->id}}"  @if($event->is_checked_recipient_sms(Auth::user()->code))  checked @endif>
+                                                <label class="custom-control-label" for="recipient_smscustomSwitch_{{ $event->id}}"></label>
+                                            </div>
+                                        </td>
+
+                                        <td>
+                                            <div class="custom-control custom-switch">
+                                                <input type="checkbox" class="custom-control-input event_type" data-id="{{ $event->id }}" data-event-type="recipient_email" id="recipient_emailcustomSwitch_{{ $event->id}}" @if($event->is_checked_recipient_email(Auth::user()->code))  checked @endif >
+                                                <label class="custom-control-label" for="recipient_emailcustomSwitch_{{ $event->id}}"></label>
                                             </div>
                                         </td>
                                       <!-- <td> 

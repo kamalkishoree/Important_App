@@ -123,6 +123,12 @@ class ClientNotificationController extends Controller
             case 'email':
                 $update = ['request_received_email' => $request->current_value];
                 break;
+            case 'recipient_sms':
+                $update = ['recipient_request_recieved_sms' => $request->current_value];
+                break;
+            case 'recipient_email':
+                $update = ['recipient_request_received_email' => $request->current_value];
+                break;
             case 'webhook':
                 $update = ['request_recieved_webhook' => $request->current_value];
                 break;

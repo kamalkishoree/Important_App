@@ -38,4 +38,13 @@ class NotificationEvent extends Model
     {
       return $this->hasOne('App\Model\ClientNotification');
     }
+
+    // for recipient sms email
+    public function is_checked_recipient_sms($client_id){
+        return ClientNotification::where('notification_event_id',$this->id)->where('client_id',$client_id)->where('recipient_request_recieved_sms',1)->count();
+    }
+
+    public function is_checked_recipient_email($client_id){
+        return ClientNotification::where('notification_event_id',$this->id)->where('client_id',$client_id)->where('recipient_request_received_email',1)->count();
+    }
 }
