@@ -173,7 +173,7 @@ $task_type_array = ['Pickup', 'Drop-Off', 'Appointment'];
                             summaryPanel.innerHTML += route.legs[i].distance.text + "<br><br>";
                         }
                     } else {
-                        window.alert("Directions request failed due to " + status);
+                        //window.alert("Directions request failed due to " + status);
                     }
                 }
             );

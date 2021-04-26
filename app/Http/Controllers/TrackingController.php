@@ -21,7 +21,7 @@ class TrackingController extends Controller
                 ->select('orders.*', 'agents.name', 'agents.profile_picture', 'agents.phone_number')->first();
             if (isset($order->id)) {
                 $tasks   = DB::connection($respnse['database'])->table('tasks')->where('order_id', $order->id)->leftJoin('locations', 'tasks.location_id', '=', 'locations.id')
-                    ->select('tasks.*', 'locations.latitude', 'locations.longitude', 'locations.short_name', 'locations.address')->orderBy('id')->get();
+                    ->select('tasks.*', 'locations.latitude', 'locations.longitude', 'locations.short_name', 'locations.address')->orderBy('task_order')->get();
 
                 $agent_location = DB::connection($respnse['database'])->table('agent_logs')->where('agent_id', $order->driver_id)->latest()->first();
 

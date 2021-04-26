@@ -95,9 +95,9 @@ class TaskController extends BaseController
 
 
        
-        $orderId        = Task::where('id', $request->task_id)->first(['order_id','task_type_id']);
-        //print_r($orderId->toArray()); die;
+        $orderId        = Task::where('id', $request->task_id)->first(['order_id','task_type_id']);        
         $orderAll       = Task::where('order_id', $orderId->order_id)->get();
+        //print_r($orderAll->toArray()); die;
         $order_details  = Order::where('id',$orderId->order_id)->with(['agent','customer'])->first();
         $allCount       = Count($orderAll);
         $inProgress     = $orderAll->where('task_status', 2);
@@ -107,8 +107,9 @@ class TaskController extends BaseController
         $sms_body       = '';
 
         $notification_type = NotificationType::with('notification_events.client_notification')->get();
-        
+        //print_r($order_details->toArray()); die;
        
+        
 
         switch ( $orderId->task_type_id) {
             case 1:
@@ -159,10 +160,13 @@ class TaskController extends BaseController
 
         }
 
-
+            
             $send_sms_status   = isset($sms_final_status['client_notification']['request_recieved_sms'])? $sms_final_status['client_notification']['request_recieved_sms']:0;
-            $send_email_status = isset($sms_final_status['client_notification']['request_recieved_email'])? $sms_final_status['client_notification']['request_recieved_sms']:0;
-        
+            $send_email_status = isset($sms_final_status['client_notification']['request_recieved_email'])? $sms_final_status['client_notification']['request_recieved_email']:0;
+            
+            //for recipient email and sms
+            $send_recipient_sms_status   = isset($sms_final_status['client_notification']['recipient_request_recieved_sms'])? $sms_final_status['client_notification']['recipient_request_recieved_sms']:0;
+            $send_recipient_email_status = isset($sms_final_status['client_notification']['recipient_request_received_email'])? $sms_final_status['client_notification']['recipient_request_received_email']:0;
 
         if ($request->task_status == 4) {
            
@@ -185,7 +189,6 @@ class TaskController extends BaseController
         $task = Task::where('id', $request->task_id)->update(['task_status' => $request->task_status,'note' => $note ,'proof_image' => $proof_image,'proof_signature' => $proof_signature]);
 
         $newDetails = Task::where('id', $request->task_id)->with(['location','tasktype','pricing','order.customer'])->first();
-
        
 
         $sms_body = str_replace('"driver_name"',$order_details->agent->name, $sms_body);
@@ -217,7 +220,49 @@ class TaskController extends BaseController
                    Log::info($e->getMessage());
             }
             
-            $sendto        = $order_details->customer->email;
+            $sendto        = isset($order_details->customer->email)?$order_details->customer->email:'';
+            $client_logo   = Storage::disk('s3')->url($client_details->logo);
+            $agent_profile = Storage::disk('s3')->url($order_details->agent->profile_picture ?? 'assets/client_00000051/agents605b6deb82d1b.png/XY5GF0B3rXvZlucZMiRQjGBQaWSFhcaIpIM5Jzlv.jpg');
+
+            $mail = SmtpDetail::where('client_id',$client_details->id)->first();
+            
+            try {
+               
+               \Mail::send('email.verify', ['customer_name' => $order_details->customer->name,'content' => $sms_body,'agent_name' => $order_details->agent->name,'agent_profile' =>$agent_profile,'number_plate' =>$order_details->agent->plate_number,'client_logo'=>$client_logo,'link'=>$link], function ($message) use($sendto,$client_details,$mail) {
+                    $message->from($mail->from_address,$client_details->name);
+                    $message->to($sendto)->subject('Order Update | '.$client_details->company_name);
+                });
+               
+            } catch (\Exception $e) {
+    
+                Log::info($e->getMessage());
+            }
+
+            
+
+        }
+        $recipient_phone = isset($newDetails->location->phone_number)?$newDetails->location->phone_number:'';
+        $recipient_email = isset($newDetails->location->email)?$newDetails->location->email:'';
+        if($send_recipient_sms_status == 1 && $recipient_phone!='') {
+
+            try {
+                $twilio = new TwilioClient($twilio_sid, $token);
+    
+                $message = $twilio->messages
+                       ->create($recipient_phone,  //to number
+                         [
+                                    "body" => $sms_body,
+                                    "from" => $client_prefrerence->sms_provider_number   //form_number
+                         ]
+                       );
+            } catch (\Exception $e) {
+    
+                   Log::info($e->getMessage());
+            }
+        }
+         
+        if($send_recipient_email_status == 0 && $recipient_email!='') {
+            $sendto        = $recipient_email;
             $client_logo   = Storage::disk('s3')->url($client_details->logo);
             $agent_profile = Storage::disk('s3')->url($order_details->agent->profile_picture ?? 'assets/client_00000051/agents605b6deb82d1b.png/XY5GF0B3rXvZlucZMiRQjGBQaWSFhcaIpIM5Jzlv.jpg');
 
