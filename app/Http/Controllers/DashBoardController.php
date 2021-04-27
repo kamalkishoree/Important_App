@@ -435,11 +435,17 @@ class DashBoardController extends Controller
             $taskids = explode(',',$taskids);
             $newroute = json_decode($result);
             $routecount = count($newroute->data)-1;
-            for ($i=1; $i < $routecount; $i++) {                 
+            for ($i=1; $i < $routecount; $i++) {  
                 $taskorder = [
-                    'task_order'        => $newroute->data[$i]        
-                 ];                
-                 Task::where('id',$taskids[$i-1])->update($taskorder);
+                    'task_order'        => $i        
+                ];  
+                $index =  $newroute->data[$i]-1;             
+                Task::where('id',$taskids[$index])->update($taskorder);
+
+                // $taskorder = [
+                //     'task_order'        => $newroute->data[$i]        
+                //  ];                
+                //  Task::where('id',$taskids[$i-1])->update($taskorder);
             }
 
             $orderdetail = Task::where('id',$taskids[0])->with('order')->first();
