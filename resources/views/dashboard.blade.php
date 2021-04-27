@@ -91,7 +91,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                                     <img class="profile-circle" src="https://dummyimage.com/36x36/ccc/fff">
                                                 </div>
                                                 <div class="col-md-10 col-10">                        
-                                                    <h6 class="mb-0 header-title scnd">No Driver <div class="optimizebtn0">{!! $optimize0 !!} </div></h6>
+                                                    <h6 class="mb-0 header-title scnd">Driver 1<div class="optimizebtn0">{!! $optimize0 !!} </div></h6>
                                                     <p class="mb-0"> <span>{{ count($unassigned_orders) }} Tasks</span></p>
                                                 </div>
                                             </div>

@@ -198,6 +198,22 @@ class TaskController extends Controller
             }
             
             $location = Location::where('id', $loc_id)->first();
+            if($location->customer_id != $cus_id)
+            {
+                $newloc = [
+                    'latitude'    => $location->latitude,
+                    'longitude'   => $location->longitude,
+                    'short_name'  => $location->short_name,
+                    'address'     => $location->address,
+                    'post_code'   => $location->post_code,
+                    'email'         => $location->address_email,
+                    'phone_number'   => $location->address_phone_number,
+                    'customer_id' => $cus_id,
+                ];
+                $location = Location::create($newloc);
+            }
+            
+            $loc_id = $location->id;
 
             if ($key == 0) {
 
@@ -1677,10 +1693,18 @@ class TaskController extends Controller
         } else {
             $array = '';
         }
-       
+        
+        $all_locations = array();
+        $address_preference  = ClientPreference::where('id',1)->first(['allow_all_location']);
+        if($address_preference->allow_all_location==1)
+        {
+            $cust_id = $task->customer_id;
+            $all_locations = Location::where('customer_id','!=', $cust_id)->where('short_name','!=',null)->where('location_status',1)->get();
+        } 
+        
 
 
-        return view('tasks/update-task')->with(['task' => $task, 'teamTag' => $teamTag, 'agentTag' => $agentTag, 'agents' => $agents, 'images' => $array, 'savedrivertag' => $savedrivertag, 'saveteamtag' => $saveteamtag, 'main' => $lastbaseurl]);
+        return view('tasks/update-task')->with(['task' => $task, 'teamTag' => $teamTag, 'agentTag' => $agentTag, 'agents' => $agents, 'images' => $array, 'savedrivertag' => $savedrivertag, 'saveteamtag' => $saveteamtag, 'main' => $lastbaseurl,'alllocations'=>$all_locations]);
     }
 
     /**
@@ -1812,6 +1836,24 @@ class TaskController extends Controller
                 } else {
                     $loc_id = $request->input('old_address_id' . $key);
                 }
+
+                $location = Location::where('id', $loc_id)->first();
+                if($location->customer_id != $cus_id)
+                {
+                    $newloc = [
+                        'latitude'    => $location->latitude,
+                        'longitude'   => $location->longitude,
+                        'short_name'  => $location->short_name,
+                        'address'     => $location->address,
+                        'post_code'   => $location->post_code,
+                        'email'         => $location->address_email,
+                        'phone_number'   => $location->address_phone_number,
+                        'customer_id' => $cus_id,
+                    ];
+                    $location = Location::create($newloc);
+                }
+                
+                $loc_id = $location->id;
             }
 
             $data = [
@@ -1883,7 +1925,11 @@ class TaskController extends Controller
             $address_preference  = ClientPreference::where('id',1)->first(['allow_all_location']);
             if($address_preference->allow_all_location==1)
             {   // show all address
-                $loction = Location::where('short_name','!=',null)->where('location_status',1)->get();
+                // $loction = Location::where('short_name','!=',null)->where('location_status',1)->get();
+                // return response()->json($loction);
+                $myloctions = Location::where('customer_id', $id)->where('short_name','!=',null)->where('location_status',1)->get();
+                $allloctions = Location::where('customer_id','!=', $id)->where('short_name','!=',null)->where('location_status',1)->get();
+                $loction = array_merge($myloctions->toArray(),$allloctions->toArray());
                 return response()->json($loction);
             }else{
                 $loction = Location::where('customer_id', $id)->where('short_name','!=',null)->where('location_status',1)->get();

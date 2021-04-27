@@ -251,6 +251,30 @@
                                                     </div>
 
                                                 @endforeach
+                                                {{-- alllocations --}}
+                                                <?php
+                                                if(count($alllocations)>0)
+                                                {
+                                                    foreach($alllocations as $key => $items)
+                                                    {?>
+                                                        <div class="append">
+                                                            <div class="custom-control custom-radio"><input type="radio"
+                                                                    id="{{ $keys }}{{ $items->id }}{{ 12 }}"
+                                                                    name="old_address_id{{ $keys != 0 ? $keys : '' }}"
+                                                                    value="{{ $items->id }}"
+                                                                    {{ $item->location_id == $items->id ? 'checked' : '' }}
+                                                                    class="custom-control-input redio"><label
+                                                                    class="custom-control-label"
+                                                                    for="{{ $keys }}{{ $items->id }}{{ 12 }}"><span
+                                                                        class="spanbold">{{ $items->short_name }}</span>-{{ $items->address }}</label>
+                                                            </div>
+                                                        </div>
+                                                    <?php }
+                                                } ?>
+                                                    
+                                                    
+                                                    
+
                                                 @php $maincount++; @endphp
                                             </div>
                                         </div>
