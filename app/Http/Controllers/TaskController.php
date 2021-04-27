@@ -1880,8 +1880,15 @@ class TaskController extends Controller
             return response()->json($response);
         } else {
             $id = $request->id;
-            $loction = Location::where('customer_id', $id)->where('short_name','!=',null)->where('location_status',1)->get();
-            return response()->json($loction);
+            $address_preference  = ClientPreference::where('id',1)->first(['allow_all_location']);
+            if($address_preference->allow_all_location==1)
+            {   // show all address
+                $loction = Location::where('short_name','!=',null)->where('location_status',1)->get();
+                return response()->json($loction);
+            }else{
+                $loction = Location::where('customer_id', $id)->where('short_name','!=',null)->where('location_status',1)->get();
+                return response()->json($loction);
+            }           
         }
     }
 

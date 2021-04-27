@@ -73,6 +73,45 @@
         <div class="row">
             <div class="col-xl-11 col-md-offset-1">
                 <div class="card-box">
+                    <h4 class="header-title">Address</h4>
+                    <p class="sub-header">
+                        Choose between all address and my address, for the platform.
+                    </p>
+                    <div class="row mb-2">
+                        <div class="col-sm-12">
+                            <div class="radio radio-info form-check-inline">
+                                <input type="radio" id="all_contact" value="1" name="allow_all_location" {{ (isset($preference) && $preference->allow_all_location ==1)? "checked" : "" }}>
+                                <label for="all_contact"> All Addresses </label>
+                            </div>
+                            <div class="radio form-check-inline">
+                                <input type="radio" id="my_contact" value="0" name="allow_all_location" {{ (isset($preference) &&  $preference->allow_all_location ==0)? "checked" : "" }}>
+                                <label for="my_contact"> My Addresses </label>
+                            </div>
+                            @if($errors->has('allow_all_location'))
+                            <span class="text-danger" role="alert">
+                                <strong>{{ $errors->first('allow_all_location') }}</strong>
+                            </span>
+                            @endif
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-md-2">
+                            <div class="form-group mb-0 text-center">
+                                <button class="btn btn-blue btn-block" type="submit"> Update </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </form>
+
+    <form method="POST" action="{{route('preference', Auth::user()->code)}}">
+        @csrf
+        <div class="row">
+            <div class="col-xl-11 col-md-offset-1">
+                <div class="card-box">
                     <h4 class="header-title">Nomenclature</h4>
                     <p class="sub-header">
                         Define and update the nomenclature
