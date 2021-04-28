@@ -174,8 +174,15 @@ class ActivityController extends BaseController
             'device_type'       => $request->device_type
         ];
 
+        if($request->lat=="" || $request->lat==0 || $request->lat== '0.00000000')
+        {
+
+        }else{
+            AgentLog::create($data);
+        }
+
            
-        AgentLog::create($data);
+        
 
         $id    = Auth::user()->id;
         $all   = $request->all; 
