@@ -13,7 +13,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
 <!-- Bannar Section -->
 {{-- <section class="bannar header-setting"> --}}
    
-<div class="container-fluid p-0">
+<div class="container-fluid p-0" id="dshboard">
 <div class="row coolcheck">
     <div class="pageloader" style="display: none;">
         <div class="box">

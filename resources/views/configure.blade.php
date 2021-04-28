@@ -56,8 +56,8 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group mb-3">
-                                    <label for="map_key_1">API KEY</label>
-                                    <input type="text" name="map_key_1" id="map_key_1" placeholder="kjadsasd66asdas"
+                                    <label for="map_key_1">API Key</label>
+                                    <input type="password" name="map_key_1" id="map_key_1" placeholder="kjadsasd66asdas"
                                         class="form-control" value="{{ old('map_key_1', $preference->map_key_1 ?? '') }}">
                                     @if ($errors->has('map_key_1'))
                                         <span class="text-danger" role="alert">
@@ -161,7 +161,7 @@
 
                             <div class="col-md-6">
                                 <div class="form-group mb-3">
-                                    <label for="sms_provider_key_1">API KEY</label>
+                                    <label for="sms_provider_key_1">Account SID</label>
                                     <input type="text" name="sms_provider_key_1" id="sms_provider_key_1"
                                         placeholder="Account Sid" class="form-control"
                                         value="{{ old('sms_provider_key_1', $preference->sms_provider_key_1 ?? '') }}">
@@ -175,8 +175,8 @@
 
                             <div class="col-md-6">
                                 <div class="form-group mb-3">
-                                    <label for="sms_provider_key_2">API Secret</label>
-                                    <input type="text" name="sms_provider_key_2" id="sms_provider_key_2"
+                                    <label for="sms_provider_key_2">Auth Token</label>
+                                    <input type="password" name="sms_provider_key_2" id="sms_provider_key_2"
                                         placeholder="Auth Token" class="form-control"
                                         value="{{ old('sms_provider_key_2', $preference->sms_provider_key_2 ?? '') }}">
                                     @if ($errors->has('sms_provider_key_2'))
@@ -261,7 +261,7 @@
                 <form method="POST" action="{{ route('smtp') }}">
                     @csrf
                     <div class="card-box same-size">
-                        <h4 class="header-title">Email-SMTP</h4>
+                        <h4 class="header-title">SMTP</h4>
                         <p class="sub-header">
                         </p>
                         <div class="row mb-2">

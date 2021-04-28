@@ -7,6 +7,7 @@ use App\Model\ClientPreference;
 use App\Model\Order;
 use App\Model\Task;
 use App\Model\Team;
+use App\Model\LocationDistance;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -266,22 +267,51 @@ class DashBoardController extends Controller
         return view('dashboard')->with(['teams' => $teamdata, 'newmarker' => $newmarker, 'unassigned' => $unassigned, 'agents' => $agents,'date'=> $date,'preference' =>$preference, 'routedata' => $uniquedrivers,'distance_matrix' => $distancematrix, 'unassigned_orders' => $unassigned_orders]);
     }
 
-    public function distanceMatrix($pointarray)
+    public function distanceMatrix($pointarray,$taskids)
     {   
+        $taskids = explode(',',$taskids);
+        $pointarray[0][2] = 0;
+        for ($t=1; $t < count($pointarray); $t++) {
+            $pointarray[$t][2] = $taskids[$t - 1];
+        }
+
         $matrixarray = array();            
         for ($i=0; $i < count($pointarray); $i++) { 
 
             for ($k=0; $k < count($pointarray); $k++) { 
-                if($i==$k)
+                if($pointarray[$i][2] ==0 || $pointarray[$k][2]==0)
                 {
-                    $matrixarray[$i][$k] = 0; 
-                }elseif($i > $k)
-                {
-                    $matrixarray[$i][$k] = $matrixarray[$k][$i];
-                }else{                    
-                    $distance = $this->GoogleDistanceMatrix($pointarray[$i][0],$pointarray[$i][1],$pointarray[$k][0],$pointarray[$k][1]);   
-                    $matrixarray[$i][$k] = $distance;
+                    if($i==$k)
+                    {
+                        $matrixarray[$i][$k] = 0; 
+                    }elseif($i > $k)
+                    {
+                        $matrixarray[$i][$k] = $matrixarray[$k][$i];
+                    }else{                    
+                        $distance = $this->GoogleDistanceMatrix($pointarray[$i][0],$pointarray[$i][1],$pointarray[$k][0],$pointarray[$k][1]);   
+                        $matrixarray[$i][$k] = $distance;
+                    }
+                }else{
+                    if($i==$k)
+                    {
+                        $matrixarray[$i][$k] = 0; 
+                    }else{
+                        $loc1 = $pointarray[$i][2];
+                        $loc2 = $pointarray[$k][2];
+                        //check if distance exist
+                        $checkdistance = LocationDistance::where(['from_loc_id'=>$loc1,'to_loc_id'=>$loc2])->first();
+                        if(isset($checkdistance->id))
+                        {
+                            $matrixarray[$i][$k] = $checkdistance->distance;
+                        }else{
+                            $distance = $this->GoogleDistanceMatrix($pointarray[$i][0],$pointarray[$i][1],$pointarray[$k][0],$pointarray[$k][1]);   
+                            $matrixarray[$i][$k] = $distance;
+                            $locdata = array('from_loc_id'=>$loc1,'to_loc_id'=>$loc2,'distance'=>$distance);
+                            LocationDistance::create($locdata);
+                        }                        
+                    }
                 }
+                
             }
             
         }
@@ -419,7 +449,7 @@ class DashBoardController extends Controller
         $agentid = $request->agentid; 
         //$distance_matrix = json_decode($request->distance); 
         $points = json_decode($request->distance);         
-        $distance_matrix = $this->distanceMatrix($points);
+        $distance_matrix = $this->distanceMatrix($points,$taskids);
         $payload = json_encode(array("data" => $distance_matrix));
         
         //api for getting optimize path
@@ -737,6 +767,46 @@ class DashBoardController extends Controller
         $output['allroutedata'] = $alldrivers;            
         echo json_encode($output);   
             
+        
+    }
+
+    public function getTotalDistance($taskids,$driverlocation)
+    {
+        // $taskids = explode(',',$taskids);
+        // $points = array();
+        // for($i=0;$i<count($taskids);$i++)
+        // {
+        //     $Taskdetail = Task::where('id',$taskids[$i])->with('location')->first();            
+        //     $points[$i]['lat'] = $Taskdetail->location->latitude;
+        //     $points[$i]['long'] = $Taskdetail->location->longitude;
+        //     $points[$i]['loc_id'] = $Taskdetail->location_id;
+        //     $points[$i]['taskid'] = $Taskdetail->id;
+
+        // }
+
+        // $totaldistance = 0;
+        // if(isset($driverlocation['lat']))
+        // {
+        //     $distance = $this->GoogleDistanceMatrix($driverlocation['lat'],$driverlocation['long'],$points[0]['lat'],$points[0]['long']);   
+        //     $totaldistance += $distance;
+        // }
+        // for($j=1; $j<count($points); $j++)
+        // {
+        //     $loc1 = $points[$j-1]['loc_id'];
+        //     $loc2 = $points[$j]['loc_id'];
+        //     //check if distance exist
+        //     $checkdistance = LocationDistance::where(['from_loc_id'=>$loc1,'to_loc_id'=>$loc2])->first();
+        //     if(isset($checkdistance->id))
+        //     {
+        //         $totaldistance += $checkdistance->distance;
+        //     }else{
+        //         $distance = $this->GoogleDistanceMatrix($points[$j-1]['lat'],$points[$j-1]['long'],$points[$j]['lat'],$points[$j]['long']);   
+        //         $totaldistance += $distance;
+        //         $locdata = array('from_loc_id'=>$loc1,'to_loc_id'=>$loc2,'distance'=>$distance);
+        //         LocationDistance::create($locdata);
+        //     }
+        // }
+        // return $totaldistance;
         
     }
 

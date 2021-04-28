@@ -22,7 +22,7 @@
         @csrf
         <div class="row">
 
-            <div class="col-md-6">
+            <div class="col-lg-8">
                 <div class="card-box">
                     @csrf
                     <div class="row d-flex align-items-center" id="dateredio">
@@ -174,59 +174,69 @@
                                     <span class="span1 addspan"></span>
 
                                     <div class="row">
-                                        <div class="col-md-6 cust1_add_div" id="add{{ $newcount }}">
+
+                                        <div class="col-lg-8 cust1_add_div" id="add{{ $newcount }}">
                                             <div class="form-group alladdress" id="typeInput">
-                                                {!! Form::text('short_name[]', null, ['class' => 'form-control address',
-                                                'placeholder' => 'Address Short Name']) !!}
 
-                                                <div class="form-group input-group" id="addressInput">
-                                                    <input type="text" id="add{{ $newcount }}-input" name="address[]"
-                                                        class="form-control cust1_add" placeholder="Address">
-                                                    <div class="input-group-append">
-                                                        <button
-                                                            class="btn btn-xs btn-dark waves-effect waves-light showMapTask cust1_btn"
-                                                            type="button" num="add{{ $newcount }}"> <i
-                                                                class="mdi mdi-map-marker-radius"></i></button>
+                                                <div class="row no-gutters row-spacing">
+                                                    <div class="col-md-6">
+                                                        {!! Form::text('short_name[]', null, ['class' => 'form-control address',
+                                                         'placeholder' => 'Address Short Name']) !!}
                                                     </div>
-                                                    <input type="hidden" name="latitude[]"
-                                                        id="add{{ $newcount }}-latitude" class="cust1_latitude"
-                                                        value="0" />
-                                                    <input type="hidden" name="longitude[]"
-                                                        id="add{{ $newcount }}-longitude" class="cust1_longitude"
-                                                        value="0" />
-                                                    <span class="invalid-feedback" role="alert" id="address">
-                                                        <strong></strong>
-                                                    </span>
-                                                </div>
-
-                                                <input type="text" name="post_code[]"
-                                                id="add{{ $newcount }}-postcode" class="form-control address postcode"
-                                                placeholder="PostsCode" />
-
-                                                <input type="text" name="address_email[]"
+                                                    <div class="col-md-6">
+                                                        <input type="text" name="address_email[]"
                                                 id="add{{ $newcount }}-address_email" class="form-control address address_email"
                                                 placeholder="Email" />
-
-                                                <input type="text" name="address_phone_number[]"
-                                                id="add{{ $newcount }}-address_phone_number" class="form-control address address_phone_number"
-                                                placeholder="Phone Number" />
-
-                                                <div class="row no-gutters">
-                                                    <div class="col-6 pr-1">
-                                                        {!! Form::text('barcode[]', $item->barcode, ['class' => 'form-control barcode','placeholder' => 'Task Barcode']) !!}  
                                                     </div>
-                                                    <div class="col-6 pl-1">
-                                                        {!! Form::text('quantity[]', $item->quantity, ['class' => 'form-control quantity onlynumber','placeholder' => 'Quantity']) !!}
+                                                    <div class="col-md-6">
+                                                        <div class="form-group input-group address" id="addressInput">
+                                                            <input type="text" id="add{{ $newcount }}-input" name="address[]"
+                                                                class="form-control cust1_add" placeholder="Address">
+                                                            <div class="input-group-append">
+                                                                <button
+                                                                    class="btn btn-xs btn-dark waves-effect waves-light showMapTask cust1_btn"
+                                                                    type="button" num="add{{ $newcount }}"> <i
+                                                                        class="mdi mdi-map-marker-radius"></i></button>
+                                                            </div>
+                                                            <input type="hidden" name="latitude[]"
+                                                                id="add{{ $newcount }}-latitude" class="cust1_latitude"
+                                                                value="0" />
+                                                            <input type="hidden" name="longitude[]"
+                                                                id="add{{ $newcount }}-longitude" class="cust1_longitude"
+                                                                value="0" />
+                                                            <span class="invalid-feedback" role="alert" id="address">
+                                                                <strong></strong>
+                                                            </span>
+                                                        </div>
                                                     </div>
-                                                </div> 
-
+                                                    <div class="col-md-6">
+                                                        <input type="text" name="address_phone_number[]"
+                                                        id="add{{ $newcount }}-address_phone_number" class="form-control address address_phone_number"
+                                                        placeholder="Phone Number" />
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <input type="text" name="post_code[]"
+                                                        id="add{{ $newcount }}-postcode" class="form-control address postcode"
+                                                        placeholder="PostsCode" />
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="row no-gutters">
+                                                            <div class="col-6 pr-1">
+                                                                {!! Form::text('barcode[]', $item->barcode, ['class' => 'form-control barcode','placeholder' => 'Task Barcode']) !!}  
+                                                            </div>
+                                                            <div class="col-6 pl-1">
+                                                                {!! Form::text('quantity[]', $item->quantity, ['class' => 'form-control quantity onlynumber','placeholder' => 'Quantity']) !!}
+                                                            </div>
+                                                        </div> 
+                                                    </div>
+                                                </div>
                                                 <span class="invalid-feedback" role="alert">
                                                     <strong></strong>
                                                 </span>
                                             </div>
 
                                         </div>
-                                        <div class="col-md-6">
+                                        <div class="col-md-4">
                                             <div class="form-group withradio" id="typeInputss">
 
                                                 <div class="oldhide">
@@ -294,9 +304,9 @@
                     <!-- end row -->
 
                     <!-- container -->
-                    <h4 class="header-title mb-2">Meta Data</h4>
+                    <h4 class="header-title mb-3">Meta Data</h4>
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-6 mb-3">
                             <div class="form-group" id="make_modelInput">
                                 {!! Form::hidden('recipient_phone', null, ['class' => 'form-control rec', 'placeholder' =>
                                 'Recipient Phone']) !!}
@@ -304,7 +314,7 @@
                                 'Recipient Email']) !!}
                                 {!! Form::textarea('task_description', null, ['class' => 'form-control', 'placeholder' =>
                                 'Task Description', 'rows' => 2, 'cols' => 40]) !!}
-                                {!! Form::text('net_quantity', null, ['class' => 'form-control rec mt-1', 'placeholder' =>
+                                {!! Form::hidden('net_quantity', null, ['class' => 'form-control rec mt-1', 'placeholder' =>
                                 'Net Quantity']) !!}
                                 <span class="invalid-feedback" role="alert">
                                     <strong></strong>
@@ -312,7 +322,7 @@
                             </div>
 
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-6 mb-3">
                             <div class="form-group" id="colorInput">
                                 <label class="btn btn-info width-lg waves-effect waves-light newchnageimage upload-img-btn">
                                     <span><i class="fas fa-image mr-2"></i>Upload Image</span>

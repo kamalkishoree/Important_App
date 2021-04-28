@@ -18,12 +18,13 @@
   display: inline-block;
   cursor: pointer;
   border-radius: 4px;
-  background-color: #79a0c3;
+  background-color: #f8ecec;
   color: #000000;
   font-size: 13px;
   letter-spacing: 0.5px;
   min-width: 80px;
   text-align: center;
+  border: 1px solid #6658dd;
 }
 
 .login-form .blank-label {
@@ -31,10 +32,9 @@
 }
 
 .login-form input[type="radio"]:checked + label {
-    color: #010101;
-    background-color: #ebc6c6;
-    color: #000000;
-    font-size: 13px;  
+    background-color: #6658dd;
+    color: #fff;
+    font-size: 13px;
     letter-spacing: 0.5px;
 }
 .login-form input{
@@ -60,7 +60,7 @@
   display: block;
   cursor: pointer;
   border-radius: 4px;
-  background-color: #ECF6FF;
+  background-color: #f8ecec;
   color: #000000;
   font-size: 13px;
   letter-spacing: 0.5px;
@@ -338,9 +338,9 @@ border: 1px solid #ececec;
 }
 }
 
-.modal{
+/* .modal{
 overflow:scroll !important;
-}
+} */
 
 
 
@@ -573,7 +573,7 @@ hr.new3 {
 }
 
 .showsimagegall {
-  margin-left: 148px;
+  margin-left: 0;
   margin-top: 21px;
 
 }
@@ -936,3 +936,36 @@ width: 100%;
 .btn.btn-blue.btn-block{
   width: 200px;
 }
+
+table.table tbody td:nth-child(2) img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50px;
+  object-fit: cover;
+  object-position: top;
+  }
+
+  .navbar-custom .topnav-menu .nav-link {
+    color: #000;
+    }
+    
+    .navbar-custom .button-menu-mobile {
+    color: #000;
+    }
+    
+    .navbar-custom {
+    background: #FFF;
+    }
+    
+    body[data-sidebar-size=condensed] .left-side-menu #sidebar-menu > ul > li:hover > a {
+    color: #FFF;
+    background-color: #6658DD;
+    }
+
+    #dshboard .content-page {
+      margin-left: 240px;
+      overflow: hidden;
+      padding: 70px 15px 0 15px !important;
+      height: 100vh !important;
+      margin-top: 0 !important;
+      }
