@@ -33,6 +33,15 @@
                             </div>
                             
                         </div>
+
+                        <div class="row no-wrap">
+                            <div class="offset-3 col-3 text-center">
+                                <h4 class="header-title pl-3">Customer</h4>
+                            </div>
+                            <div class="offset-1 col-5">
+                                <h4 class="header-title pl-4">Recipient</h4>
+                            </div>
+                        </div>
                         
                         <div class="table-responsive">
                             <table class="table table-borderless table-nowrap table-hover table-centered m-0">
@@ -42,12 +51,13 @@
                                         <th>Events</th>
                                         <th>SMS</th>
                                         <th>EMAIL</th>
-                                        <th>Recipient SMS</th>
-                                        <th>Recipient EMAIL</th>
+                                        <th>SMS</th>
+                                        <th>EMAIL</th>
                                         <!--<th>WEBHOOK</th>
                                          <th>WEBHOOK URL</th>  -->
                                         <th></th>
                                     </tr>
+                                    
                                 </thead>
                                 <tbody>
                                     @foreach($notification_type->notification_events as $index => $event)

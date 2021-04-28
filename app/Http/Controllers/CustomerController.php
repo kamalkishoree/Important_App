@@ -75,21 +75,24 @@ class CustomerController extends Controller
 
         
         $customer = Customer::create($data);
-        foreach ($request->short_name as $key => $value) {
-            if (isset($value) && $value != null) {
-                $datas = [
-                    'short_name' => $value,
-                    'address'    => (!empty($request->address[$key])) ? $request->address[$key] : 'unnamed',
-                    'post_code'  => $request->post_code[$key],
-                    'latitude'    => $request->latitude[$key],
-                    'longitude'  => $request->longitude[$key],
-                    'customer_id' => $customer->id,
-                    'phone_number' => $request->address_phone_number[$key],
-                    'email' => $request->address_email[$key],
-                ];
-                $Loction = Location::create($datas);
+        if(isset($request->short_name))
+        {
+            foreach ($request->short_name as $key => $value) {
+                if (isset($value) && $value != null) {
+                    $datas = [
+                        'short_name' => $value,
+                        'address'    => (!empty($request->address[$key])) ? $request->address[$key] : 'unnamed',
+                        'post_code'  => $request->post_code[$key],
+                        'latitude'    => $request->latitude[$key],
+                        'longitude'  => $request->longitude[$key],
+                        'customer_id' => $customer->id,
+                        'phone_number' => $request->address_phone_number[$key],
+                        'email' => $request->address_email[$key],
+                    ];
+                    $Loction = Location::create($datas);
+                }
             }
-        }
+        }        
 
         if ($customer->wasRecentlyCreated) {
             return response()->json([
@@ -151,41 +154,44 @@ class CustomerController extends Controller
        
 
         $customer->update($data);
+        if(isset($request->short_name))
+        {
+            foreach ($request->short_name as $key => $value) {
 
-        foreach ($request->short_name as $key => $value) {
+                if (isset($value) && $value != null) {
 
-            if (isset($value) && $value != null) {
+                    if (is_array($request->location_id) && array_key_exists($key, $request->location_id)) {
+                        $location = Location::find($request->location_id[$key]);
+                        if ($location) {
+                            $location->short_name = $value;
+                            $location->address = $request->address[$key];
+                            $location->post_code = $request->post_code[$key];
+                            $location->latitude = $request->latitude[$key];
+                            $location->longitude = $request->longitude[$key];
+                            $location->phone_number = $request->address_phone_number[$key];
+                            $location->email = $request->address_email[$key];
 
-                if (is_array($request->location_id) && array_key_exists($key, $request->location_id)) {
-                    $location = Location::find($request->location_id[$key]);
-                    if ($location) {
-                        $location->short_name = $value;
-                        $location->address = $request->address[$key];
-                        $location->post_code = $request->post_code[$key];
-                        $location->latitude = $request->latitude[$key];
-                        $location->longitude = $request->longitude[$key];
-                        $location->phone_number = $request->address_phone_number[$key];
-                        $location->email = $request->address_email[$key];
+                            $location->save();
+                        }
+                    } else {
 
-                        $location->save();
+                        $datas = [
+                            'short_name' => $value,
+                            'address'    => (!empty($request->address[$key])) ? $request->address[$key] : 'unnamed',
+                            'post_code'  => $request->post_code[$key],
+                            'latitude'    => $request->latitude[$key],
+                            'longitude'  => $request->longitude[$key],
+                            'customer_id' => $customer->id,
+                            'phone_number' => $request->address_phone_number[$key],
+                            'email' => $request->address_email[$key],
+
+                        ];
+                        $Loction = Location::create($datas);
                     }
-                } else {
-
-                    $datas = [
-                        'short_name' => $value,
-                        'address'    => (!empty($request->address[$key])) ? $request->address[$key] : 'unnamed',
-                        'post_code'  => $request->post_code[$key],
-                        'latitude'    => $request->latitude[$key],
-                        'longitude'  => $request->longitude[$key],
-                        'customer_id' => $customer->id,
-                        'phone_number' => $request->address_phone_number[$key],
-                        'email' => $request->address_email[$key],
-
-                    ];
-                    $Loction = Location::create($datas);
                 }
             }
         }
+        
 
         if ($customer) {
             return response()->json([

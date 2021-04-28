@@ -9,17 +9,17 @@
             <form action="{{ route('set.message')}}" method="POST">
             @csrf
             <input type="hidden" name="notification_event_id" id="notification_event_id" value=""/>
-            <div class="modal-body p-4">
+            <div class="modal-body py-0">
                 <div class="row">
                     <div class="col-md-8">
-                        <h4>Message</h4>
+                        <h4 class="mt-0 mb-2">Message</h4>
                         <div class="form-group">
-                            ​<textarea name="message" id="webhook_url" class="form-control"  rows="5" cols="5"></textarea>
+                            <textarea name="message" id="webhook_url" class="form-control" cols="30" rows="5"></textarea>
                         </div>
                     </div>
                     <div class="col-md-4">
-                        <h4>Tags</h4>
-                        <ul class="tags_list">
+                        <h4 class="mt-0 mb-2">Tags</h4>
+                        <ul class="tags_list p-0">
                             <li>"driver_name"</li>
                             <li>"vehicle_model"</li>
                             <li>"plate_number"</li>

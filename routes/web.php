@@ -51,7 +51,11 @@ Route::domain('{domain}')->middleware(['subdomain'])->group(function() {
 		Route::post('/login/client', 'LoginController@clientLogin')->name('client.login');
 		Route::get('/wrong/url','LoginController@wrongurl')->name('wrong.client');
 
-
+		Route::group(['middleware' => 'database'], function()
+		{
+			Route::get('/order/tracking/{clientcode}/{order_id}','TrackingController@OrderTracking')->name('order.tracking');
+		});
+		
 		Route::group(['middleware' => 'auth:client', 'prefix' => '/'], function () {
 
 		Route::group(['middleware' => 'database'], function()
@@ -120,7 +124,7 @@ Route::domain('{domain}')->middleware(['subdomain'])->group(function() {
 				Route::post('assign/agent','TaskController@assignAgent')->name('assign.agent');
 				Route::post('assign/date','TaskController@assignDate')->name('assign.date');
 
-				Route::get('/order/tracking/{clientcode}/{order_id}','TrackingController@OrderTracking')->name('order.tracking');
+				// Route::get('/order/tracking/{clientcode}/{order_id}','TrackingController@OrderTracking')->name('order.tracking');
 
                Route::get('/order/feedback/{clientcode}/{order_id}','TrackingController@OrderFeedback')->name('order.feedback');
 

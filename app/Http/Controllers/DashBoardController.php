@@ -448,6 +448,8 @@ class DashBoardController extends Controller
                 //  Task::where('id',$taskids[$i-1])->update($taskorder);
             }
 
+            $totaldistance = $newroute->dist/1000;
+
             $orderdetail = Task::where('id',$taskids[0])->with('order')->first();
             $orderdate =  date("Y-m-d", strtotime($orderdetail->order->order_time));            
             
@@ -597,7 +599,8 @@ class DashBoardController extends Controller
             $output = array();
             $output['tasklist'] = $agent;
             //$output['routedata'] = $routedata;
-            $output['allroutedata'] = $alldrivers;            
+            $output['allroutedata'] = $alldrivers;
+            $output['total_distance'] = $totaldistance;            
             echo json_encode($output);   
             
         }else{

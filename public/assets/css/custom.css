@@ -4,13 +4,13 @@
 }
 
 .table-responsive::-webkit-scrollbar-track {
-  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3) !important; 
+  box-shadow: inset 0 0 6px rgba(0,0,0,0.3) !important; 
   border-radius: 10px;
 }
 
 .table-responsive::-webkit-scrollbar-thumb {
   border-radius: 10px;
-  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.1) !important; 
+  box-shadow: inset 0 0 6px rgba(0,0,0,0.1) !important; 
 }
 
 .login-form label {
@@ -52,8 +52,8 @@
 }
 .add-sub-task-btn {
   background-color: #ECF6FF;
-  height: 42px;
-  line-height: 42px;
+  height: 38px;
+  line-height: 38px;
   font-size: 15px;
   font-weight: 600;
   width: 100%;
@@ -114,8 +114,20 @@ border-radius: 0px!important;
 }
 /* zz */
 
+@media(min-width:1921px){
+  .assigned-block .assigned-btn {
+    margin-left: 5px;
+    display: block;
+    float: none !important;
+    margin-left: auto;
+}
+}
+
 
 @media (max-width:767px) {
+  .btn.btn-blue.btn-block{
+    width: 100%;
+  }
 #add-customer-modal .modal-header {
   padding-bottom: 0px!important;
 }
@@ -293,6 +305,9 @@ margin-top: 0px!important;
 #colorInput {
 text-align: center;
 }
+.modal-footer .btn.btn-blue {
+  width: 100%;
+  }
 } 
 
 
@@ -309,10 +324,10 @@ border: 1px solid #ececec;
 }
 
 @media (min-width: 576px){
-#task-modal-header .modal-dialog {
-  max-width: 600px!important;
+/* #task-modal-header .modal-dialog {
+  max-width: 1000px!important;
   margin: 1.75rem auto;
-}
+} */
 }
 
 @media (min-width: 768px) and (max-width: 1023px) {
@@ -476,10 +491,6 @@ overflow:scroll !important;
   margin-bottom: 6px
 }
 
-.tags {
-  
-}
-
 #typeInputss {
   overflow-y: auto;
   height: 168px;
@@ -558,7 +569,7 @@ hr.new3 {
 }
 
 .newchnageimage {
-  margin-left: 100px;
+  margin-left: 0;
 }
 
 .showsimagegall {
@@ -881,4 +892,47 @@ top: 0;
 .form-group.delete_btn {
   display: flex;
   align-content: center;
+}
+
+
+.row-spacing{
+  margin: 0 -8px;
+}
+
+.row-spacing > div{
+  padding: 0 8px !important;
+}
+
+/* #make_modelInput textarea.form-control,#colorInput .upload-img-btn {
+  height: 100px;
+}
+#colorInput .upload-img-btn {
+  width: 100%;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#colorInput .allimages {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  transform: translateY(-50%);
+  display: none;
+} */
+#newspan {
+  cursor: pointer;
+}
+.modal-footer .btn.btn-blue {
+width: 100%;
+}
+
+#make_modelInput, #make_modelInput .form-control {
+  height: 100%;
+}
+
+.btn.btn-blue.btn-block{
+  width: 200px;
 }

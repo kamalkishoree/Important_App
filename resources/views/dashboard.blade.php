@@ -92,7 +92,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                                 </div>
                                                 <div class="col-md-10 col-10">                        
                                                     <h6 class="mb-0 header-title scnd">Driver 1<div class="optimizebtn0">{!! $optimize0 !!} </div></h6>
-                                                    <p class="mb-0"> <span>{{ count($unassigned_orders) }} Tasks</span></p>
+                                                    <p class="mb-0"> <span>{{ count($unassigned_orders) }} Tasks</span> <span class="dist_sec totdis0"></span></p>
                                                 </div>
                                             </div>
                                         </a>
@@ -227,7 +227,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                                         </div>
                                                         <div class="col-md-10 col-10">
                                                             <h6 class="mb-0 header-title scnd">{{ $agent['name'] }} <div class="optimizebtn{{ $agent['id'] }}">{!! $optimize !!} </div></h6>
-                                                            <p class="mb-0">{{count($agent['order'])>0?'Busy  ':'Free  '}}<span>{{$agent['agent_task_count']}} Tasks</span></p>
+                                                            <p class="mb-0">{{count($agent['order'])>0?'Busy  ':'Free  '}}<span>{{$agent['agent_task_count']}} Tasks</span> <span class="dist_sec totdis{{ $agent['id'] }}"></span></p>
                                                         </div>
                                                     </div>
                                                 </a>
@@ -982,6 +982,8 @@ function calculateAndDisplayRoute(directionsService, directionsRenderer,map,allt
                 (response, status) => {
                     if (status === "OK" && response) {
                         directionsRenderer.setDirections(response);
+
+                        
                         // const route = response.routes[0];
                         // const summaryPanel = document.getElementById("directions-panel"+m);
                         // summaryPanel.innerHTML = "";
@@ -1126,7 +1128,8 @@ function RouteOptimization(taskids,distancematrix,optimize,agentid) {
                 // alert(data);
                     var tasklist = data.tasklist;
                     var taskorders = tasklist.order;
-                    
+                    //alert(data.total_distance);
+                    $('.totdis'+agentid).html(' Distance :'+data.total_distance+'km')
                     //$('#collapse'+agentid).html('');
                     $('#handle-dragula-left'+agentid).html('');
                     //alert( taskorders.length);

@@ -419,7 +419,7 @@
                         </div>
 
                         <div class="row mb-2">
-                            <div class="col-md-2">
+                            <div class="col-12">
                                 <div class="form-group mb-0 text-center">
                                     <button class="btn btn-blue btn-block" type="submit"> Update </button>
                                 </div>
