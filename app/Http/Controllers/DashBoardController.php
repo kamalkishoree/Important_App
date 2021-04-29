@@ -775,41 +775,41 @@ class DashBoardController extends Controller
 
     public function getTotalDistance($taskids=null,$driverlocation=null)
     {
-        $taskids = "135,136,137,138,139,140";
-        $taskids = explode(',',$taskids);
-        $points = array();
-        for($i=0;$i<count($taskids);$i++)
-        {
-            $Taskdetail = Task::where('id',$taskids[$i])->with('location')->first();            
-            $points[$i]['lat'] = $Taskdetail->location->latitude;
-            $points[$i]['long'] = $Taskdetail->location->longitude;
-            $points[$i]['loc_id'] = $Taskdetail->location_id;
-            $points[$i]['taskid'] = $Taskdetail->id;
+        // $taskids = "135,136,137,138,139,140";
+        // $taskids = explode(',',$taskids);
+        // $points = array();
+        // for($i=0;$i<count($taskids);$i++)
+        // {
+        //     $Taskdetail = Task::where('id',$taskids[$i])->with('location')->first();            
+        //     $points[$i]['lat'] = $Taskdetail->location->latitude;
+        //     $points[$i]['long'] = $Taskdetail->location->longitude;
+        //     $points[$i]['loc_id'] = $Taskdetail->location_id;
+        //     $points[$i]['taskid'] = $Taskdetail->id;
 
-        }
-        $totaldistance = 0;
-        if(isset($driverlocation['lat']))
-        {            
-            $distance = $this->GoogleDistanceMatrix($driverlocation['lat'],$driverlocation['long'],$points[0]['lat'],$points[0]['long']);   
-            $totaldistance += $distance;            
-        }
-        for($j=1; $j<count($points); $j++)
-        {
-            $loc1 = $points[$j-1]['loc_id'];
-            $loc2 = $points[$j]['loc_id'];
-            //check if distance exist
-            $checkdistance = LocationDistance::where(['from_loc_id'=>$loc1,'to_loc_id'=>$loc2])->first();
-            if(isset($checkdistance->id))
-            {
-                $totaldistance += $checkdistance->distance;                
-            }else{
-                $distance = $this->GoogleDistanceMatrix($points[$j-1]['lat'],$points[$j-1]['long'],$points[$j]['lat'],$points[$j]['long']);   
-                $totaldistance += $distance;                
-                $locdata = array('from_loc_id'=>$loc1,'to_loc_id'=>$loc2,'distance'=>$distance);
-                LocationDistance::create($locdata);
-            }
-        }
-        return $totaldistance;
+        // }
+        // $totaldistance = 0;
+        // if(isset($driverlocation['lat']))
+        // {            
+        //     $distance = $this->GoogleDistanceMatrix($driverlocation['lat'],$driverlocation['long'],$points[0]['lat'],$points[0]['long']);   
+        //     $totaldistance += $distance;            
+        // }
+        // for($j=1; $j<count($points); $j++)
+        // {
+        //     $loc1 = $points[$j-1]['loc_id'];
+        //     $loc2 = $points[$j]['loc_id'];
+        //     //check if distance exist
+        //     $checkdistance = LocationDistance::where(['from_loc_id'=>$loc1,'to_loc_id'=>$loc2])->first();
+        //     if(isset($checkdistance->id))
+        //     {
+        //         $totaldistance += $checkdistance->distance;                
+        //     }else{
+        //         $distance = $this->GoogleDistanceMatrix($points[$j-1]['lat'],$points[$j-1]['long'],$points[$j]['lat'],$points[$j]['long']);   
+        //         $totaldistance += $distance;                
+        //         $locdata = array('from_loc_id'=>$loc1,'to_loc_id'=>$loc2,'distance'=>$distance);
+        //         LocationDistance::create($locdata);
+        //     }
+        // }
+        // return $totaldistance;
         
     }
 
