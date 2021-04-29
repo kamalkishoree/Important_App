@@ -88,11 +88,12 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                         <a class="profile-block collapsed" role="button" data-toggle="collapse" href="#collapse0" aria-expanded="false" aria-controls="collapse0">
                                             <div class="row">
                                                 <div class="col-md-2 col-2">
-                                                    <img class="profile-circle" src="https://dummyimage.com/36x36/ccc/fff">
+                                                    
+                                                    <span class="profile-circle">D</span>
                                                 </div>
                                                 <div class="col-md-10 col-10">                        
                                                     <h6 class="mb-0 header-title scnd">Driver 1<div class="optimizebtn0">{!! $optimize0 !!} </div></h6>
-                                                    <p class="mb-0"> <span>{{ count($unassigned_orders) }} Tasks</span> <span class="dist_sec totdis0"></span></p>
+                                                    <p class="mb-0"> <span>{{ count($unassigned_orders) }} Tasks</span> {!! $unassigned_distance==''?'':' <i class="fas fa-route"></i> '!!}<span class="dist_sec totdis0">{{ $unassigned_distance }}</span></p>
                                                 </div>
                                             </div>
                                         </a>
@@ -167,10 +168,10 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                 <div class="newcheckit">
                                     <div class="row d-flex align-items-center" class="mb-0">
                                         <div class="col-md-3 col-xl-2 col-2">
-                                            <span class="profile-circle {{$color[rand(0,7)]}}">{{ $item['name'][0] }}</span>
+                                            <span class="profile-circle {{$color[rand(0,7)]}}">{{ ucfirst($item['name'][0]) }}</span>
                                         </div>
                                         <div class="col-md-9 col-xl-10 col-10">
-                                            <h6 class="header-title">{{ $item['name'] }}</h6>
+                                            <h6 class="header-title">{{ ucfirst($item['name']) }}</h6>
                                             <p class="mb-0">{{count($item['agents'])}} Agents : <span>{{$item['online_agents']}} Online ・ {{$item['offline_agents']}} Offline</span></p>
                                         </div>
                                     </div>
@@ -226,8 +227,8 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                                                 src="{{isset($agent['profile_picture']) ? $imgproxyurl.Storage::disk('s3')->url($agent['profile_picture']):'https://dummyimage.com/36x36/ccc/fff'}}">
                                                         </div>
                                                         <div class="col-md-10 col-10">
-                                                            <h6 class="mb-0 header-title scnd">{{ $agent['name'] }} <div class="optimizebtn{{ $agent['id'] }}">{!! $optimize !!} </div></h6>
-                                                            <p class="mb-0">{{count($agent['order'])>0?'Busy  ':'Free  '}}<span>{{$agent['agent_task_count']}} Tasks</span> <span class="dist_sec totdis{{ $agent['id'] }}"></span></p>
+                                                            <h6 class="mb-0 header-title scnd">{{ ucfirst($agent['name']) }} <div class="optimizebtn{{ $agent['id'] }}">{!! $optimize !!} </div></h6>
+                                                            <p class="mb-0">{{count($agent['order'])>0?'Busy  ':'Free  '}}<span>{{$agent['agent_task_count']}} Tasks</span> {!!$agent['total_distance']==''?'':' <i class="fas fa-route"></i>'!!}<span class="dist_sec totdis{{ $agent['id'] }}">{{ $agent['total_distance'] }}</span></p>
                                                         </div>
                                                     </div>
                                                 </a>
@@ -1130,7 +1131,7 @@ function RouteOptimization(taskids,distancematrix,optimize,agentid) {
                     var tasklist = data.tasklist;
                     var taskorders = tasklist.order;
                     //alert(data.total_distance);
-                    $('.totdis'+agentid).html(' Distance :'+data.total_distance+'km')
+                    $('.totdis'+agentid).html(data.total_distance);
                     //$('#collapse'+agentid).html('');
                     $('#handle-dragula-left'+agentid).html('');
                     //alert( taskorders.length);
@@ -1368,11 +1369,12 @@ $(".dragable_tasks").sortable({
             headers: {
                 'X-CSRF-Token': '{{ csrf_token() }}',
             },
-            data: {'taskids':taskorder},
+            data: {'taskids':taskorder,'agentid':agentid},
 
             success: function(response) {
                 var data = $.parseJSON(response);                                                      
-                reInitMap(data.allroutedata);    
+                reInitMap(data.allroutedata);   
+                $('.totdis'+agentid).html(data.total_distance); 
                 var funperams = '<span class="optimize_btn" onclick="RouteOptimization('+params+')">Optimize</span>';
                 $('.optimizebtn'+agentid).html(funperams);
                 $('.pageloader').css('display','none');                

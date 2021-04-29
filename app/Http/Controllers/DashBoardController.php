@@ -197,19 +197,47 @@ class DashBoardController extends Controller
         }        
 
         $teamdata = $teams->toArray();
+        
         foreach($teamdata as $k1=>$singleteam)
         {  
             foreach($singleteam['agents'] as $k2=>$singleagent)
-            {                
+            {    
+                $teamdata[$k1]['agents'][$k2]['taskids']  = [];
+                $teamdata[$k1]['agents'][$k2]['total_distance']  = '';          
                 if(count($singleagent['order'])>0)
-                { 
-                    $teamdata[$k1]['agents'][$k2]['order'] = $this->splitOrder($singleagent['order']);                    
+                {                   
+                    //for calculating total distance
+                    
+                    $sorted_orders = $this->splitOrder($singleagent['order']);                    
+                    if(!empty($sorted_orders))
+                    {    
+                        $tasklistids = [];                    
+                        foreach($sorted_orders as $singlesort)
+                        {
+                            $tasklistids[] = $singlesort['task'][0]['id'];
+                        }
+                        $teamdata[$k1]['agents'][$k2]['taskids'] = $tasklistids;
+                        //$taskids = implode(',',$tasklistids);
+                        $driverlocation = [];
+                        if($singleagent['is_available']==1){
+                            $singleagentdetail = Agent::where('id',$singleagent['id'])->with('agentlog')->first();
+                            $driverlocation['lat'] = $singleagentdetail->agentlog->lat;
+                            $driverlocation['long'] = $singleagentdetail->agentlog->long;
+                            
+                        }
+                        $gettotal_distance = $this->getTotalDistance($tasklistids,$driverlocation);
+                        $teamdata[$k1]['agents'][$k2]['total_distance']  = $gettotal_distance['total_distance_km'];
+                    }
+                    //for distance calculating end
+
+                    $teamdata[$k1]['agents'][$k2]['order'] = $sorted_orders;                    
                 }
             }            
         }
 
         //unassigned_orders 
         $unassigned_orders = array();
+        $un_total_distance = '';
         $un_order  = Order::whereDate('order_time', $date)->where('auto_alloction','u')->with(['customer', 'task.location'])->get();        
         if(count($un_order)>=1)
         {
@@ -220,7 +248,6 @@ class DashBoardController extends Controller
                 $unassigned_points[] = array(floatval($unassigned_orders[0]['task'][0]['location']['latitude']),floatval($unassigned_orders[0]['task'][0]['location']['longitude']));
                 $unassigned_taskids = array();
                 $un_route = array();
-
                 foreach($unassigned_orders as $singleua)
                 {
                     $unassigned_taskids[] = $singleua['task'][0]['id'];
@@ -251,7 +278,7 @@ class DashBoardController extends Controller
                     $aappend['task_order']            = $singleua['task_order'];
                     $un_route[] = $aappend;
 
-                }
+                }                
                 $unassigned_distance_mat['tasks'] = implode(',',$unassigned_taskids);
                 $unassigned_distance_mat['distance'] = $unassigned_points;
                 $distancematrix[0] = $unassigned_distance_mat;
@@ -261,13 +288,15 @@ class DashBoardController extends Controller
                 $final_un_route['task_details'] = $un_route;
                 $uniquedrivers[] = $final_un_route;
 
+                $gettotal_un_distance = $this->getTotalDistance($unassigned_taskids);
+
+                $un_total_distance = $gettotal_un_distance['total_distance_km'];
+
+
             }
         }
-        // echo "<pre>";
-        // print_r($teamdata);
-        // die;
-        
-        return view('dashboard')->with(['teams' => $teamdata, 'newmarker' => $newmarker, 'unassigned' => $unassigned, 'agents' => $agents,'date'=> $date,'preference' =>$preference, 'routedata' => $uniquedrivers,'distance_matrix' => $distancematrix, 'unassigned_orders' => $unassigned_orders]);
+
+        return view('dashboard')->with(['teams' => $teamdata, 'newmarker' => $newmarker, 'unassigned' => $unassigned, 'agents' => $agents,'date'=> $date,'preference' =>$preference, 'routedata' => $uniquedrivers,'distance_matrix' => $distancematrix, 'unassigned_orders' => $unassigned_orders,'unassigned_distance' => $un_total_distance]);
     }
 
     public function distanceMatrix($pointarray,$taskids)
@@ -466,6 +495,7 @@ class DashBoardController extends Controller
         if($result)
         {
             $taskids = explode(',',$taskids);
+            $newtaskidorder = [];
             $newroute = json_decode($result);
             $routecount = count($newroute->data)-1;
             for ($i=1; $i < $routecount; $i++) {  
@@ -474,6 +504,7 @@ class DashBoardController extends Controller
                 ];  
                 $index =  $newroute->data[$i]-1;             
                 Task::where('id',$taskids[$index])->update($taskorder);
+                $newtaskidorder[] = $taskids[$index];
 
                 // $taskorder = [
                 //     'task_order'        => $newroute->data[$i]        
@@ -481,7 +512,7 @@ class DashBoardController extends Controller
                 //  Task::where('id',$taskids[$i-1])->update($taskorder);
             }
 
-            $totaldistance = $newroute->dist/1000;
+            //$totaldistance = $newroute->dist/1000;
 
             $orderdetail = Task::where('id',$taskids[0])->with('order')->first();
             $orderdate =  date("Y-m-d", strtotime($orderdetail->order->order_time));            
@@ -629,6 +660,21 @@ class DashBoardController extends Controller
                 }
             }
 
+            //calculate distance
+            //$newtaskidorder $agentid
+            $driverlocation = [];
+            if($agentid != 0)
+            {
+                $singleagentdetail = Agent::where('id',$agentid)->with('agentlog')->first();
+                if($singleagentdetail->is_available == 1)
+                {
+                    $driverlocation['lat'] = $singleagentdetail->agentlog->lat;
+                    $driverlocation['long'] = $singleagentdetail->agentlog->long;
+                }
+            }
+            $gettotal_distance = $this->getTotalDistance($taskids,$driverlocation);
+            $totaldistance  = $gettotal_distance['total_distance_km'];
+
             $output = array();
             $output['tasklist'] = $agent;
             //$output['routedata'] = $routedata;
@@ -643,12 +689,14 @@ class DashBoardController extends Controller
 
     public function arrangeRoute(Request $request)
     {        
-        $taskids = explode(',',$request->taskids);        
+        $taskids = explode(',',$request->taskids);
         $taskids = array_filter($taskids);
-        for ($i=0; $i < count($taskids); $i++) {                 
+        
+        $agentid = $request->agentid;
+        for ($i=0; $i < count($taskids); $i++) {
             $taskorder = [
                 'task_order' => $i 
-             ];                
+             ];
              Task::where('id',$taskids[$i])->update($taskorder);
         }
 
@@ -766,50 +814,75 @@ class DashBoardController extends Controller
             }
         }
         
+        //calculating distance        
+        $driverlocation = [];
+        if($agentid != 0)
+        {
+            $singleagentdetail = Agent::where('id',$agentid)->with('agentlog')->first();
+            if($singleagentdetail->is_available == 1)
+            {
+                $driverlocation['lat'] = $singleagentdetail->agentlog->lat;
+                $driverlocation['long'] = $singleagentdetail->agentlog->long;
+            }
+        }
+
+        $gettotal_distance = $this->getTotalDistance($taskids,$driverlocation);
+        $distance  = $gettotal_distance['total_distance_km'];
         $output = array();
-        $output['allroutedata'] = $alldrivers;            
+        $output['allroutedata'] = $alldrivers;    
+        $output['total_distance'] = $distance;        
         echo json_encode($output);   
-            
-        
+                    
     }
 
     public function getTotalDistance($taskids=null,$driverlocation=null)
     {
         // $taskids = "135,136,137,138,139,140";
         // $taskids = explode(',',$taskids);
-        // $points = array();
-        // for($i=0;$i<count($taskids);$i++)
-        // {
-        //     $Taskdetail = Task::where('id',$taskids[$i])->with('location')->first();            
-        //     $points[$i]['lat'] = $Taskdetail->location->latitude;
-        //     $points[$i]['long'] = $Taskdetail->location->longitude;
-        //     $points[$i]['loc_id'] = $Taskdetail->location_id;
-        //     $points[$i]['taskid'] = $Taskdetail->id;
+        $points = array();
+        for($i=0;$i<count($taskids);$i++)
+        {
+            $Taskdetail = Task::where('id',$taskids[$i])->with('location')->first();            
+            $points[$i]['lat'] = $Taskdetail->location->latitude;
+            $points[$i]['long'] = $Taskdetail->location->longitude;
+            $points[$i]['loc_id'] = $Taskdetail->location_id;
+            $points[$i]['taskid'] = $Taskdetail->id;
 
-        // }
-        // $totaldistance = 0;
-        // if(isset($driverlocation['lat']))
-        // {            
-        //     $distance = $this->GoogleDistanceMatrix($driverlocation['lat'],$driverlocation['long'],$points[0]['lat'],$points[0]['long']);   
-        //     $totaldistance += $distance;            
-        // }
-        // for($j=1; $j<count($points); $j++)
-        // {
-        //     $loc1 = $points[$j-1]['loc_id'];
-        //     $loc2 = $points[$j]['loc_id'];
-        //     //check if distance exist
-        //     $checkdistance = LocationDistance::where(['from_loc_id'=>$loc1,'to_loc_id'=>$loc2])->first();
-        //     if(isset($checkdistance->id))
-        //     {
-        //         $totaldistance += $checkdistance->distance;                
-        //     }else{
-        //         $distance = $this->GoogleDistanceMatrix($points[$j-1]['lat'],$points[$j-1]['long'],$points[$j]['lat'],$points[$j]['long']);   
-        //         $totaldistance += $distance;                
-        //         $locdata = array('from_loc_id'=>$loc1,'to_loc_id'=>$loc2,'distance'=>$distance);
-        //         LocationDistance::create($locdata);
-        //     }
-        // }
-        // return $totaldistance;
+        }
+        $totaldistance = 0;
+        $distancearray  = [];
+        if(isset($driverlocation['lat']))
+        {            
+            $distance = $this->GoogleDistanceMatrix($driverlocation['lat'],$driverlocation['long'],$points[0]['lat'],$points[0]['long']);   
+            $totaldistance += $distance;     
+            $distancearray[] = $distance;    
+        }else{
+            $distancearray[] = 0;
+        }
+        for($j=1; $j<count($points); $j++)
+        {
+            $loc1 = $points[$j-1]['loc_id'];
+            $loc2 = $points[$j]['loc_id'];
+            //check if distance exist
+            $checkdistance = LocationDistance::where(['from_loc_id'=>$loc1,'to_loc_id'=>$loc2])->first();
+            if(isset($checkdistance->id))
+            {
+                $totaldistance += $checkdistance->distance;    
+                $distancearray[] = $checkdistance->distance;            
+            }else{
+                $distance = $this->GoogleDistanceMatrix($points[$j-1]['lat'],$points[$j-1]['long'],$points[$j]['lat'],$points[$j]['long']);   
+                $totaldistance += $distance;      
+                $distancearray[] = $distance;          
+                $locdata = array('from_loc_id'=>$loc1,'to_loc_id'=>$loc2,'distance'=>$distance);
+                LocationDistance::create($locdata);
+            }
+        }
+        $distance_in_km = number_format($totaldistance/1000,2);
+        $output['total_distance'] = $totaldistance;
+        $output['distance'] = $distancearray;
+        $output['total_distance_km'] = $distance_in_km . 'km';
+        //print_r($output);
+        return $output;
         
     }
 
