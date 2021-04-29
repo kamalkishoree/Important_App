@@ -128,9 +128,9 @@
                         @method('PUT')
                         @csrf
                         <div class="row mb-2 d-flex align-items-center">
-                            <div class="col-md-3">
+                            <div class="col-md-3 upload_box">
                                 <input type="file" data-plugins="dropify" name="logo" data-default-file="{{isset(Auth::user()->logo) ? Storage::disk('s3')->url(Auth::user()->logo) : ''}}" />
-                                <p class="text-muted text-center mt-2 mb-0">Upload Logo</p>
+                                <p class="text-muted text-center mt-2 mb-0">Upload Logo </p>
                             </div>
                             <div class="col-md-3"></div>
                             <div class="col-md-3 mb-4">

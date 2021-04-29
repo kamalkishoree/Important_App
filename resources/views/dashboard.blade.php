@@ -13,8 +13,8 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
 <!-- Bannar Section -->
 {{-- <section class="bannar header-setting"> --}}
    
-<div class="container-fluid p-0" id="dshboard">
-<div class="row coolcheck">
+<div class="container-fluid p-0">
+<div class="row coolcheck no-gutters">
     <div class="pageloader" style="display: none;">
         <div class="box">
             <h4 class="routetext"></h4>
@@ -578,6 +578,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
 
 $(document).ready(function() {
 
+$('#wrapper').addClass('dshboard');
 initMap();
 $('#shortclick').trigger('click');
 $(".timeago").timeago();
