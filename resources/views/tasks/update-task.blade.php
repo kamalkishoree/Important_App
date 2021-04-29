@@ -60,8 +60,8 @@
                             <div class="form-group" id="nameInput">
 
                                 <input type="text" id='search' class="form-control" name="search"
-                                    placeholder="search Customer" value="{{ $task->customer->name }}">
-                                <input type="hidden" id='cusid' name="ids" value="{{ $task->customer->id }}" readonly>
+                                    placeholder="search Customer" value="{{ isset($task->customer->name)?$task->customer->name:'' }}">
+                                <input type="hidden" id='cusid' name="ids" value="{{ isset($task->customer->id)?$task->customer->id:'' }}" readonly>
 
                             </div>
                         </div>
@@ -245,6 +245,7 @@
                                                         src="{{ url('assets/images/ic_location_placeholder.png') }}"
                                                         alt="">
                                                 </div>
+                                                @if(isset($task->customer->location))
                                                 @foreach ($task->customer->location as $key => $items)
 
                                                     <div class="append">
@@ -261,6 +262,7 @@
                                                     </div>
 
                                                 @endforeach
+                                                @endif
                                                 {{-- alllocations --}}
                                                 <?php
                                                 if(count($alllocations)>0)

@@ -130,6 +130,11 @@ Route::domain('{domain}')->middleware(['subdomain'])->group(function() {
 
                Route::post('/feedback/save','TrackingController@SaveFeedback')->name('feedbackSave');
 
+			   //for testing
+			   Route::get('testing','DashBoardController@getTotalDistance');
+
+				
+
 
 			});
 		});

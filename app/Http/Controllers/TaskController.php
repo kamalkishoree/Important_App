@@ -1701,7 +1701,8 @@ class TaskController extends Controller
             $cust_id = $task->customer_id;
             $all_locations = Location::where('customer_id','!=', $cust_id)->where('short_name','!=',null)->where('location_status',1)->get();
         } 
-        
+        // echo "<pre>";
+        // print_r($task); die;
 
 
         return view('tasks/update-task')->with(['task' => $task, 'teamTag' => $teamTag, 'agentTag' => $agentTag, 'agents' => $agents, 'images' => $array, 'savedrivertag' => $savedrivertag, 'saveteamtag' => $saveteamtag, 'main' => $lastbaseurl,'alllocations'=>$all_locations]);
@@ -1947,9 +1948,12 @@ class TaskController extends Controller
             $task = Order::where('id', $id)->with(['task.location'])->first();
             $client = ClientPreference::where('id',1)->first();
                 $agent = Agent::where('id',$task->driver_id)->first();
+
+                $task = $task->toArray();
                 $task['driver_type']   = isset($agent->type) ? $agent->type :'';
                 $task['distance_type'] = $client->distance_unit == 'metric' ? 'Km':'Mile';
             
+                //print_r($task); 
             
             
             return response()->json($task);

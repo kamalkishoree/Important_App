@@ -169,7 +169,7 @@
                         hour12: true
                     };
 
-                    var note  = (elem.note != null) ? 1 : 0;
+                    var note  = (elem.note != null && elem.note != '') ? 1 : 0;
                     var image_proof = (elem.proof_image) ? 1 : 0;
                     var sign_proof  = (elem.proof_signature) ? 1 :0;
                     var all = 0;
@@ -209,7 +209,7 @@
                                         '<label class="mb-3">Notes</label>'+
                                         '<div class="status-wrap-block">'+
                                         '<div class="note-wrap">'+
-                                            '<span>'+note+'</span>'+
+                                            '<span>'+elem.note+'</span>'+
                                              '</div>'+
                                             '</div>'+
                                           '</div>';
