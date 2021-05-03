@@ -7,16 +7,15 @@
 
     <body>
         <div id="generatyepdf">
+            <div class="pathpref"> <span>Desired Path : </span> {{ implode(' --> ',$path) }}</div>
             <ul>
-                <?php //print_r($routedetail); ?>
-                <li>list 1</li>
-                <li>list 2</li>
-                <li>list 3</li>
-                <li>list 4</li>
-                <li>list 5</li>
-                <li>list 6</li>
-                <li>list 7</li>
-                <li>list 8</li>
+                <?php 
+                    foreach ($route as $singleroute) { ?>
+                        <li>{!! $singleroute['turn'] !!} Distance : {{$singleroute['distance']}}  Time : {{$singleroute['duration']}}</li>
+                    <?php }
+                
+                ?>
+                
             </ul>
         </div>
     </body>

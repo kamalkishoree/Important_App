@@ -207,7 +207,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                     $optimize = '<span class="optimize_btn" onclick="RouteOptimization('.$routeperams.')">Optimize</span>';
                                     $params = "'".$distance_matrix[$agent['id']]['tasks']."','".json_encode($distance_matrix[$agent['id']]['distance'])."','yes',".$agent['id'].",'".$date."'";
                                     
-                                    // $turnbyturn = '<span class="navigation_btn optimize_btn" onclick="NavigatePath('.$routeperams.')">Export</span>';
+                                    //$turnbyturn = '<span class="navigation_btn optimize_btn" onclick="NavigatePath('.$routeperams.')">Export</span>';
                                     $turnbyturn = "";
                                 }else{
                                     $optimize="";
@@ -1424,7 +1424,7 @@ $('.agentcheck').on('change', function() {
 });
 
 
-function NavigatePath(taskids,distancematrix,optimize,agentid) {
+function NavigatePath(taskids,distancematrix,optimize,agentid,date) {
     $('.routetext').text('Exporting Pdf');    
     $('.pageloader').css('display','block');
     
@@ -1442,6 +1442,11 @@ function NavigatePath(taskids,distancematrix,optimize,agentid) {
                     // var params = "'"+taskids+"','"+distancematrix+"','',"+agentid;
                     // var funperams = '<span class="optimize_btn" onclick="RouteOptimization('+params+')">Optimize</span>';                    
                     // $('.optimizebtn'+agentid).html(funperams);
+                    // var blob = new Blob([response], {type: 'application/pdf'})
+                    // var url = URL.createObjectURL(blob);
+                    // location.assign(url);
+
+
                     $('.pageloader').css('display','none');                    
                 }else{                    
                     alert(response);

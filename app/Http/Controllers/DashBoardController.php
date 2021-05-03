@@ -944,6 +944,10 @@ class DashBoardController extends Controller
 
     public function ExportPdfPath(Request $request)
     {
+        // $taskids	 = "94,95,96";
+        // $taskids = explode(',',$taskids);
+        // $agentid = 9;
+
         $taskids = explode(',',$request->taskids);
         $agentid = $request->agentid;
         $origin = [];
@@ -989,12 +993,13 @@ class DashBoardController extends Controller
         // print_r($waypoints); die;
         $routedetail = $this->GetRouteDirection($origin,$destination,$waypoints);
         
-        $p=[];
-        // $pdf_doc = PDF::loadView('pdf');
+        $p['route']=$routedetail;
+        $p['path'] = $location;
+        // $pdf_doc = PDF::loadView('pdf',$p);
 
-        // $pdf_doc->download('routedetail.pdf');
-        return true;
-        //return view('pdf');
+        // return $pdf_doc->download('routedetail.pdf');
+        // return true;
+        return view('pdf',$p);
     }
 
     public function GetRouteDirection($origin,$destination,$midpoints)

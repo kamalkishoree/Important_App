@@ -132,8 +132,8 @@ Route::domain('{domain}')->middleware(['subdomain'])->group(function() {
                Route::post('/feedback/save','TrackingController@SaveFeedback')->name('feedbackSave');
 
 			   //for testing
-			   //Route::get('testing','DashBoardController@generatePdf');
-			   Route::get('testing','DashBoardController@GetRouteDirection');
+			   //Route::get('testing','DashBoardController@ExportPdfPath');
+			   //Route::get('testing','DashBoardController@GetRouteDirection');
 
 				
 

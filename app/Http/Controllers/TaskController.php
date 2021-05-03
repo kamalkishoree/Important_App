@@ -128,8 +128,15 @@ class TaskController extends Controller
 
         //here order save code is started
 
-        $settime = isset($request->schedule_time) ? $request->schedule_time : Carbon::now()->toDateTimeString();
+        //$settime = isset($request->schedule_time) ? $request->schedule_time : Carbon::now()->toDateTimeString();
+        $settime = ($request->task_type=="schedule") ? $request->schedule_time : Carbon::now()->toDateTimeString();
+        
         $notification_time = Carbon::parse($settime . $auth->timezone ?? 'UTC')->tz('UTC');
+        //$notification_time = $notification_time->toDateTimeString();
+        // echo $auth->timezone;
+        // echo $request->task_type;
+        // echo $request->schedule_time;
+        // echo $notification_time; die;
         //$notification_time = isset($request->schedule_time) ? $request->schedule_time : Carbon::now()->toDateTimeString();
 
         $agent_id          = $request->allocation_type === 'm' ? $request->agent : null;
@@ -358,7 +365,8 @@ class TaskController extends Controller
                     ->format('Y-m-d H:i:s');
 
                     $schduledata['geo']               = $geo;
-                    $schduledata['notification_time'] = $time;
+                    //$schduledata['notification_time'] = $time;
+                    $schduledata['notification_time'] = $notification_time;                    
                     $schduledata['agent_id']          = $agent_id;
                     $schduledata['orders_id']         = $orders->id;
                     $schduledata['customer']          = $customer;
@@ -369,7 +377,7 @@ class TaskController extends Controller
                     
                     
                    
-                    Order::where('id',$orders->id)->update(['order_time'=>$time]);
+                    //Order::where('id',$orders->id)->update(['order_time'=>$time]);
                     Task::where('order_id',$orders->id)->update(['assigned_time'=>$time,'created_at' =>$time]);
                     
                     scheduleNotification::dispatch($schduledata)->delay(now()->addMinutes($finaldelay));
