@@ -12,7 +12,7 @@ use App\Model\Client;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use PDF;
+//use PDF;
 
 class DashBoardController extends Controller
 {
@@ -23,6 +23,7 @@ class DashBoardController extends Controller
      */
     public function index(Request $request)
     { 
+        //echo phpinfo(); die;
         $auth = Client::where('code', Auth::user()->code)->with(['getAllocation', 'getPreference'])->first();  
         if (isset($request->date)) {
 
@@ -982,16 +983,16 @@ class DashBoardController extends Controller
 
         }
 
-         //echo "<pre>";
+        //echo "<pre>";
         // print_r($origin);
         // print_r($destination);
         // print_r($waypoints); die;
         $routedetail = $this->GetRouteDirection($origin,$destination,$waypoints);
         
         $p=[];
-        $pdf_doc = PDF::loadView('pdf');
+        // $pdf_doc = PDF::loadView('pdf');
 
-        $pdf_doc->download('routedetail.pdf');
+        // $pdf_doc->download('routedetail.pdf');
         return true;
         //return view('pdf');
     }
