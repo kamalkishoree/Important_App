@@ -99,6 +99,7 @@ Route::domain('{domain}')->middleware(['subdomain'])->group(function() {
 
 				Route::post('optimize-route','DashBoardController@optimizeRoute');
 				Route::post('arrange-route','DashBoardController@arrangeRoute');
+				Route::post('export-path','DashBoardController@ExportPdfPath');
 
 				Route::post('tasks/list/{id}','TaskController@tasklist')->name('task.list');
 				Route::post('search/customer', 'TaskController@search')->name('search');
@@ -131,7 +132,8 @@ Route::domain('{domain}')->middleware(['subdomain'])->group(function() {
                Route::post('/feedback/save','TrackingController@SaveFeedback')->name('feedbackSave');
 
 			   //for testing
-			   Route::get('testing','DashBoardController@getTotalDistance');
+			   //Route::get('testing','DashBoardController@generatePdf');
+			   Route::get('testing','DashBoardController@GetRouteDirection');
 
 				
 

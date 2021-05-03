@@ -178,6 +178,7 @@ return [
         R0bdiabl0\Laravel5Phumbor\Laravel5PhumborServiceProvider::class,
         Intervention\Image\ImageServiceProvider::class,
         Kawankoding\Fcm\FcmServiceProvider::class,
+        Barryvdh\DomPDF\ServiceProvider::class,
 
     ],
 
@@ -235,6 +236,7 @@ return [
         'Phumbor'   => R0bdiabl0\Laravel5Phumbor\Facades\Phumbor::class,
         'Image' => Intervention\Image\Facades\Image::class,
         'Fcm' => Kawankoding\Fcm\FcmFacade::class,
+        'PDF' => Barryvdh\DomPDF\Facade::class,
         
 
 

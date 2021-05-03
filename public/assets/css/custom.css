@@ -1118,3 +1118,7 @@ body[data-sidebar-size=condensed] .left-side-menu #sidebar-menu>ul>li:hover>a {
   z-index: 1111;
   top: 5px;
 }
+
+.left-sidebar .navigation_btn.optimize_btn {
+    right: 120px;
+}

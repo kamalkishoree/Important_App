@@ -2,7 +2,9 @@
 @section('css')
 
 @endsection
-
+@php
+use Carbon\Carbon;
+@endphp
 @section('content')
 <style> .addTaskModalHeader{display: none;}</style>
     <!-- Start Content-->
@@ -45,9 +47,16 @@
                                 </ul>
                             </div>
                         </div>
+                        @php
+                            
+                            $order = Carbon::createFromFormat('Y-m-d H:i:s', $task->order_time, 'UTC');
+                            $order->setTimezone(isset(Auth::user()->timezone) ? Auth::user()->timezone : 'Asia/Kolkata');
+                            $scheduletime = date('Y-m-d H:i:a', strtotime($order));
+                        @endphp
+                        
                         <div class="col-md-4 datenow">
                             <input type="text" id='datetime-datepicker' name="schedule_time" class="form-control upside opendatepicker"
-                                placeholder="Date Time" value="{{ $task->order_time }}">
+                                placeholder="Date Time" value="{{ $scheduletime }}">
                             <button type="button" class="cstmbtn check_btn btn btn-info"><i class="fa fa-check" aria-hidden="true"></i></button>
                         </div>
 

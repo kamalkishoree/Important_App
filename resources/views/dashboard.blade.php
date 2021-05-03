@@ -75,10 +75,10 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                                 $opti0 = "";
                                             }                                       
                                             
-                                            $routeperams0 = "'".$distance_matrix[0]['tasks']."','".json_encode($distance_matrix[0]['distance'])."','".$opti0."',0";
+                                            $routeperams0 = "'".$distance_matrix[0]['tasks']."','".json_encode($distance_matrix[0]['distance'])."','".$opti0."',0,'".$date."'";
                                             
                                             $optimize0 = '<span class="optimize_btn" onclick="RouteOptimization('.$routeperams0.')">Optimize</span>';
-                                            $params0 = "'".$distance_matrix[0]['tasks']."','".json_encode($distance_matrix[0]['distance'])."','yes',0";
+                                            $params0 = "'".$distance_matrix[0]['tasks']."','".json_encode($distance_matrix[0]['distance'])."','yes',0,'".$date."'";
                                         }else{
                                             $optimize0="";
                                             $params0 = "";
@@ -101,7 +101,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                     
                                         
                                     <div id="collapse0" class="collapse" data-parent="#accordion-0" aria-labelledby="by0">
-                                        <div id="handle-dragula-left0" class="dragable_tasks" agentid="0"  params="{{ $params0 }}">            
+                                        <div id="handle-dragula-left0" class="dragable_tasks" agentid="0"  params="{{ $params0 }}" date="{{ $date }}">            
                                     
                                             @foreach($unassigned_orders as $orders)
                                                 @foreach($orders['task'] as $tasks)
@@ -202,13 +202,17 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                     }
                                 
                                     //print_r($distance_matrix[$agent['id']]); 
-                                    $routeperams = "'".$distance_matrix[$agent['id']]['tasks']."','".json_encode($distance_matrix[$agent['id']]['distance'])."','".$opti."',".$agent['id'];
+                                    $routeperams = "'".$distance_matrix[$agent['id']]['tasks']."','".json_encode($distance_matrix[$agent['id']]['distance'])."','".$opti."',".$agent['id'].",'".$date."'";
                                     
                                     $optimize = '<span class="optimize_btn" onclick="RouteOptimization('.$routeperams.')">Optimize</span>';
-                                    $params = "'".$distance_matrix[$agent['id']]['tasks']."','".json_encode($distance_matrix[$agent['id']]['distance'])."','yes',".$agent['id'];
+                                    $params = "'".$distance_matrix[$agent['id']]['tasks']."','".json_encode($distance_matrix[$agent['id']]['distance'])."','yes',".$agent['id'].",'".$date."'";
+                                    
+                                    // $turnbyturn = '<span class="navigation_btn optimize_btn" onclick="NavigatePath('.$routeperams.')">Export</span>';
+                                    $turnbyturn = "";
                                 }else{
                                     $optimize="";
                                     $params = "";
+                                    $turnbyturn = "";
                                 }
                                 
                                 ?>
@@ -227,7 +231,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                                                 src="{{isset($agent['profile_picture']) ? $imgproxyurl.Storage::disk('s3')->url($agent['profile_picture']):'https://dummyimage.com/36x36/ccc/fff'}}">
                                                         </div>
                                                         <div class="col-md-10 col-10">
-                                                            <h6 class="mb-0 header-title scnd">{{ ucfirst($agent['name']) }} <div class="optimizebtn{{ $agent['id'] }}">{!! $optimize !!} </div></h6>
+                                                            <h6 class="mb-0 header-title scnd">{{ ucfirst($agent['name']) }} <div class="optimizebtn{{ $agent['id'] }}">{!! $optimize !!}</div><div class="exportbtn{{ $agent['id'] }}">{!! $turnbyturn !!} </div></h6>
                                                             <p class="mb-0">{{count($agent['order'])>0?'Busy  ':'Free  '}}<span>{{$agent['agent_task_count']}} Tasks</span> {!!$agent['total_distance']==''?'':' <i class="fas fa-route"></i>'!!}<span class="dist_sec totdis{{ $agent['id'] }}">{{ $agent['total_distance'] }}</span></p>
                                                         </div>
                                                     </div>
@@ -236,7 +240,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                         <div id="collapse{{ $agent['id'] }}" class="collapse"
                                             data-parent="#accordion-{{ $agent['id'] }}"
                                             aria-labelledby="by{{ $agent['id'] }}">
-                                            <div id="handle-dragula-left{{ $agent['id'] }}" class="dragable_tasks" agentid="{{ $agent['id'] }}"  params="{{ $params }}">
+                                            <div id="handle-dragula-left{{ $agent['id'] }}" class="dragable_tasks" agentid="{{ $agent['id'] }}"  params="{{ $params }}" date="{{ $date }}">
                                                 
                                             @foreach ($agent['order'] as $orders)
                                                 
@@ -1109,7 +1113,7 @@ $(".datetime").on('change', function postinput(){
 //          }
 
 
-function RouteOptimization(taskids,distancematrix,optimize,agentid) {
+function RouteOptimization(taskids,distancematrix,optimize,agentid,date) {
     $('.routetext').text('Optimizing Route');    
     $('.pageloader').css('display','block');
     if(optimize=="yes")
@@ -1121,7 +1125,7 @@ function RouteOptimization(taskids,distancematrix,optimize,agentid) {
             headers: {
                 'X-CSRF-Token': '{{ csrf_token() }}',
             },
-            data: {'taskids':taskids,'distance':distancematrix,'agentid':agentid},
+            data: {'taskids':taskids,'distance':distancematrix,'agentid':agentid,'date':date},
 
             success: function(response) {
                 if(response!="Try again later")
@@ -1356,7 +1360,8 @@ $(".dragable_tasks").sortable({
         $('.pageloader').css('display','block');        
         var divid = $(this).attr('id');
         var params = $(this).attr('params');
-        var agentid = $(this).attr('agentid');       
+        var agentid = $(this).attr('agentid');
+        var date = $(this).attr('date');       
         
         var taskorder = "";
         jQuery("#"+divid+" .card-body.ui-sortable-handle").each(function (index, element) {
@@ -1369,7 +1374,7 @@ $(".dragable_tasks").sortable({
             headers: {
                 'X-CSRF-Token': '{{ csrf_token() }}',
             },
-            data: {'taskids':taskorder,'agentid':agentid},
+            data: {'taskids':taskorder,'agentid':agentid,'date':date},
 
             success: function(response) {
                 var data = $.parseJSON(response);                                                      
@@ -1417,6 +1422,40 @@ $('.taskchecks').on('change', function() {
 $('.agentcheck').on('change', function() {
     $('.agentcheck').not(this).prop('checked', false);  
 });
+
+
+function NavigatePath(taskids,distancematrix,optimize,agentid) {
+    $('.routetext').text('Exporting Pdf');    
+    $('.pageloader').css('display','block');
+    
+        $.ajax({
+            type: 'POST',            
+            url: '{{url("/export-path")}}',
+            headers: {
+                'X-CSRF-Token': '{{ csrf_token() }}',
+            },
+            data: {'taskids':taskids,'agentid':agentid},
+
+            success: function(response) {
+                if(response!="Try again later")
+                {   
+                    // var params = "'"+taskids+"','"+distancematrix+"','',"+agentid;
+                    // var funperams = '<span class="optimize_btn" onclick="RouteOptimization('+params+')">Optimize</span>';                    
+                    // $('.optimizebtn'+agentid).html(funperams);
+                    $('.pageloader').css('display','none');                    
+                }else{                    
+                    alert(response);
+                    $('.pageloader').css('display','none');
+                }
+            },
+            error: function(response) {
+                
+            }
+        });
+    
+    
+}
+
 
 </script>
 
