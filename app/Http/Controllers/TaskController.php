@@ -130,13 +130,16 @@ class TaskController extends Controller
 
         //$settime = isset($request->schedule_time) ? $request->schedule_time : Carbon::now()->toDateTimeString();
         $settime = ($request->task_type=="schedule") ? $request->schedule_time : Carbon::now()->toDateTimeString();
+        $notification_time = ($request->task_type=="schedule")? Carbon::parse($settime . $auth->timezone ?? 'UTC')->tz('UTC') : Carbon::now()->toDateTimeString();
+        //$notification_time = Carbon::parse($settime . $auth->timezone ?? 'UTC')->tz('UTC');
         
-        $notification_time = Carbon::parse($settime . $auth->timezone ?? 'UTC')->tz('UTC');
-        //$notification_time = $notification_time->toDateTimeString();
+        // echo date('Y-m-d H:i:s');
+        // echo  Carbon::now()->toDateTimeString();
         // echo $auth->timezone;
-        // echo $request->task_type;
-        // echo $request->schedule_time;
-        // echo $notification_time; die;
+        //  print_r($notification_time);
+        // // echo $request->task_type;
+        // // echo $request->schedule_time;
+        //  echo $notification_time; die;
         //$notification_time = isset($request->schedule_time) ? $request->schedule_time : Carbon::now()->toDateTimeString();
 
         $agent_id          = $request->allocation_type === 'm' ? $request->agent : null;
@@ -1802,7 +1805,8 @@ class TaskController extends Controller
         $settime = ($request->task_type=="schedule") ? $request->schedule_time : Carbon::now()->toDateTimeString();
       
        // $settime = isset($request->schedule_time) ? $request->schedule_time : Carbon::now()->toDateTimeString();
-        $notification_time = Carbon::parse($settime . $auth->timezone ?? 'UTC')->tz('UTC');
+        $notification_time = ($request->task_type=="schedule")? Carbon::parse($settime . $auth->timezone ?? 'UTC')->tz('UTC') : Carbon::now()->toDateTimeString();
+        //$notification_time = Carbon::parse($settime . $auth->timezone ?? 'UTC')->tz('UTC');
        
         
 
