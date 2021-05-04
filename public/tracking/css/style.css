@@ -284,4 +284,36 @@ h1 {
     color: #9c9c9c;
 }
 
+/* .............. */
 
+.left-sidebar #accordion .card-header:hover, .left-sidebar #accordion .card-header:focus,.left-sidebar #accordion .card-header:visited {
+    background: #FFF;
+    }
+    
+    .left-sidebar #accordion .card-header {
+    transition: all 0.5s;
+    margin-left: 0 !important;
+    }
+    
+    .left-sidebar {
+    padding: 16px 10px 16px 0 !important;
+    }
+    
+    
+    
+    .dragable_tasks {
+    border: 1px solid #c0c2c49c;
+    margin: 0 0 5px;
+    }
+    
+    .assigned-block {
+    background-color: #FFFFFF;
+    }
+    
+    #accordion .card-body .assigned-block h5 {
+    font-weight: 900;
+    }
+    
+    body {
+    background: #FFF;
+    }
