@@ -79,9 +79,11 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                             
                                             $optimize0 = '<span class="optimize_btn" onclick="RouteOptimization('.$routeperams0.')">Optimize</span>';
                                             $params0 = "'".$distance_matrix[0]['tasks']."','".json_encode($distance_matrix[0]['distance'])."','yes',0,'".$date."'";
+                                            $turnbyturn0 = '<span class="navigation_btn optimize_btn" onclick="NavigatePath('.$routeperams0.')">Export</span>';
                                         }else{
                                             $optimize0="";
                                             $params0 = "";
+                                            $turnbyturn0 = "";
                                         }
                                         ?>
 
@@ -92,7 +94,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                                     <span class="profile-circle">D</span>
                                                 </div>
                                                 <div class="col-md-10 col-10">                        
-                                                    <h6 class="mb-0 header-title scnd">Driver 1<div class="optimizebtn0">{!! $optimize0 !!} </div></h6>
+                                                    <h6 class="mb-0 header-title scnd">Driver 1<div class="optimizebtn0">{!! $optimize0 !!} </div><div class="exportbtn0">{!! $turnbyturn0 !!} </div></h6>
                                                     <p class="mb-0"> <span>{{ count($unassigned_orders) }} Tasks</span> {!! $unassigned_distance==''?'':' <i class="fas fa-route"></i> '!!}<span class="dist_sec totdis0">{{ $unassigned_distance }}</span></p>
                                                 </div>
                                             </div>
@@ -207,13 +209,27 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                     $optimize = '<span class="optimize_btn" onclick="RouteOptimization('.$routeperams.')">Optimize</span>';
                                     $params = "'".$distance_matrix[$agent['id']]['tasks']."','".json_encode($distance_matrix[$agent['id']]['distance'])."','yes',".$agent['id'].",'".$date."'";
                                     
-                                    //$turnbyturn = '<span class="navigation_btn optimize_btn" onclick="NavigatePath('.$routeperams.')">Export</span>';
-                                    $turnbyturn = "";
+                                    $turnbyturn = '<span class="navigation_btn optimize_btn" onclick="NavigatePath('.$routeperams.')">Export</span>';
+                                    //$turnbyturn = "";
                                 }else{
                                     $optimize="";
                                     $params = "";
                                     $turnbyturn = "";
                                 }
+
+                                //for exporting path
+                                if(count($agent['order'])==1)
+                                {
+                                    if($agent['is_available']==1)
+                                    {
+                                        $pdfperams = "'".$agent['order'][0]['task'][0]['id']."','','',".$agent['id'].",'".$date."'";
+                                        $turnbyturn = '<span class="navigation_btn optimize_btn" onclick="NavigatePath('.$pdfperams.')">Export</span>';
+                                    }else{
+                                        $pdfperams = "";
+                                        $turnbyturn = "";
+                                    }
+                                }
+                                
                                 
                                 ?>
                             
@@ -319,6 +335,11 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                 @endforeach
             </div>
         </div>
+
+        <form id="pdfgenerate" method="post" enctype="multipart/form-data" action="{{ route('download.pdf') }}">
+            @csrf
+            <input id="pdfvalue" type="hidden" name="pdfdata">            
+        </form>
 
     </div>
     
@@ -1240,6 +1261,7 @@ function RouteOptimization(taskids,distancematrix,optimize,agentid,date) {
 
 
 
+
 function reInitMap(allroutes) {
     
     const haightAshbury = {
@@ -1445,8 +1467,9 @@ function NavigatePath(taskids,distancematrix,optimize,agentid,date) {
                     // var blob = new Blob([response], {type: 'application/pdf'})
                     // var url = URL.createObjectURL(blob);
                     // location.assign(url);
-
-
+                    $('#pdfvalue').val(response);
+                    $("#pdfgenerate").submit();
+                    
                     $('.pageloader').css('display','none');                    
                 }else{                    
                     alert(response);

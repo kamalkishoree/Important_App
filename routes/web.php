@@ -100,6 +100,7 @@ Route::domain('{domain}')->middleware(['subdomain'])->group(function() {
 				Route::post('optimize-route','DashBoardController@optimizeRoute');
 				Route::post('arrange-route','DashBoardController@arrangeRoute');
 				Route::post('export-path','DashBoardController@ExportPdfPath');
+				Route::post('generate-pdf','DashBoardController@generatePdf')->name('download.pdf');
 
 				Route::post('tasks/list/{id}','TaskController@tasklist')->name('task.list');
 				Route::post('search/customer', 'TaskController@search')->name('search');

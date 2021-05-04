@@ -11,7 +11,7 @@
             <ul>
                 <?php 
                     foreach ($route as $singleroute) { ?>
-                        <li>{!! $singleroute['turn'] !!} Distance : {{$singleroute['distance']}}  Time : {{$singleroute['duration']}}</li>
+                        <li>{!! $singleroute->turn !!} Distance : {{$singleroute->distance}}  Time : {{$singleroute->duration}}</li>
                     <?php }
                 
                 ?>

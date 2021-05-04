@@ -12,7 +12,7 @@ use App\Model\Client;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-//use PDF;
+// use PDF;
 
 class DashBoardController extends Controller
 {
@@ -323,6 +323,8 @@ class DashBoardController extends Controller
 
             }
         }
+        // echo "<pre>";
+        // print_r($teamdata); die;
 
         return view('dashboard')->with(['teams' => $teamdata, 'newmarker' => $newmarker, 'unassigned' => $unassigned, 'agents' => $agents,'date'=> $date,'preference' =>$preference, 'routedata' => $uniquedrivers,'distance_matrix' => $distancematrix, 'unassigned_orders' => $unassigned_orders,'unassigned_distance' => $un_total_distance]);
     }
@@ -987,10 +989,6 @@ class DashBoardController extends Controller
 
         }
 
-        //echo "<pre>";
-        // print_r($origin);
-        // print_r($destination);
-        // print_r($waypoints); die;
         $routedetail = $this->GetRouteDirection($origin,$destination,$waypoints);
         
         $p['route']=$routedetail;
@@ -999,6 +997,19 @@ class DashBoardController extends Controller
 
         // return $pdf_doc->download('routedetail.pdf');
         // return true;
+       // return view('pdf',$p);
+        //return $p;
+        echo json_encode($p);
+    }
+
+    public function generatePdf(Request $request)
+    {   
+        
+        $result = json_decode($request->pdfdata);        
+        $p['route'] = $result->route;
+        $p['path'] = $result->path;        
+        // $pdf_doc = PDF::loadView('pdf',$p);
+        // return $pdf_doc->download('routedetail.pdf');
         return view('pdf',$p);
     }
 
