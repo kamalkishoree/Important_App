@@ -956,6 +956,7 @@ class DashBoardController extends Controller
         $destination = [];
         $waypoints = [];
         $location = [];
+        $agent_name = "";
         if($agentid != 0)
         {
             $singleagentdetail = Agent::where('id',$agentid)->with('agentlog')->first();
@@ -964,6 +965,7 @@ class DashBoardController extends Controller
                 $origin['lat'] = $singleagentdetail->agentlog->lat;
                 $origin['long'] = $singleagentdetail->agentlog->long;
             }
+            $agent_name = $singleagentdetail->name;
         }
 
         $totallocations = count($taskids);
@@ -993,6 +995,8 @@ class DashBoardController extends Controller
         
         $p['route']=$routedetail;
         $p['path'] = $location;
+        $p['date'] = $request->date;
+        $p['agent_name'] = $agent_name;
         // $pdf_doc = PDF::loadView('pdf',$p);
 
         // return $pdf_doc->download('routedetail.pdf');
@@ -1007,7 +1011,9 @@ class DashBoardController extends Controller
         
         $result = json_decode($request->pdfdata);        
         $p['route'] = $result->route;
-        $p['path'] = $result->path;        
+        $p['path'] = $result->path;   
+        $p['date'] = $result->date;
+        $p['agent_name'] = $result->agent_name;     
         // $pdf_doc = PDF::loadView('pdf',$p);
         // return $pdf_doc->download('routedetail.pdf');
         return view('pdf',$p);

@@ -11,16 +11,56 @@
         <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700;800&display=swap"
             rel="stylesheet">
         <link rel="stylesheet" href="{{ asset('tracking/css/bootstrap.css') }}">
-        <link rel="stylesheet" href="{{ asset('tracking/css/style.css') }}">
+        
         <link rel="stylesheet" href="{{ asset('tracking/css/responsive.css') }}">
         <title>Royo Generate Path</title>
 
     </head>
 
     <body>
+        <style>
+
+                #generatyepdf{
+                    max-width: 600px;
+                   
+                }
+        </style>
         <section class="location_wrapper">
+            @php
+                    // $urlImg = URL::to('/').'images/users/user-1.jpg';
+              
+                  if(isset(Auth::user()->logo)){
+                    $urlImg = Storage::disk('s3')->url(Auth::user()->logo);
+                  }
+                  $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fit/300/100/sm/0/plain/';
+                  $image = $imgproxyurl.$urlImg;                  
+
+            @endphp
+            
+            <div class="logo-box">      
+                <span class="logo-lg">
+                    <img src="{{$image}}" alt="" height="50" style="padding-top: 4px;">
+                </span>
+            </div>
+            
             <div id="generatyepdf">
-                <div class="pdf-path"> <span>Desired Path : </span> {{ implode(' --> ',$path) }}</div>
+                <?php
+                    if($agent_name=="")
+                    {
+                        $pathtitle = "Route for ".$date;
+                    }else{
+                        $pathtitle = "Route for ".ucfirst($agent_name)." for ".$date;
+                    }
+                    ?>
+                <div class="pdf-path"> <span>{{ $pathtitle }} : </span>
+                    <ul class="pdf-path-address">
+                        <?php
+                            for ($i=0; $i < count($path); $i++) { ?>
+                                <li>{{ $path[$i] }}</li>
+                            <?php }
+                        ?>
+                    </ul>
+                </div>
                 <ul class="list-group">
                     <?php 
                         foreach ($route as $singleroute) { ?>

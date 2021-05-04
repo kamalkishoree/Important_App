@@ -1456,7 +1456,7 @@ function NavigatePath(taskids,distancematrix,optimize,agentid,date) {
             headers: {
                 'X-CSRF-Token': '{{ csrf_token() }}',
             },
-            data: {'taskids':taskids,'agentid':agentid},
+            data: {'taskids':taskids,'agentid':agentid,'date':date},
 
             success: function(response) {
                 if(response!="Try again later")
