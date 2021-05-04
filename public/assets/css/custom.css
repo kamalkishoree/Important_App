@@ -1170,6 +1170,6 @@ background-color: #F5F5F5;
 
 #scrollbar::-webkit-scrollbar-thumb
 {
-background-color: #000000;
+    background-color: rgb(0 0 0 / 10%);
 }
 
