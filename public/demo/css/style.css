@@ -334,14 +334,14 @@ header .navbar-light .navbar-nav .nav-link {
 
 .left-sidebar .optimize_btn {
   position: absolute;
-  right: 50px;
+  right: 30px;
   top: 9px;
   background: #6658dd;
   display: inline-block;
   padding: 4px 5px;
   border-radius: 5px;
   color: #fff;
-  font-size: 12px;
+  font-size: 10px;
   transition: all 0.5s;
   font-weight: 700;
 }
