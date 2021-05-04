@@ -23,7 +23,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
     </div>   
     
 
-    <div class="col-md-4 col-xl-3 left-sidebar pt-3">  
+    <div id="scrollbar" class="col-md-4 col-xl-3 left-sidebar pt-3">  
         <div class="side_head d-flex justify-content-between align-items-center mb-2">
             <i class="mdi mdi-sync mr-1" onclick="reloadData()" aria-hidden="true"></i> 
             <span class="allAccordian"><span class="" onclick="openAllAccordian()">Open All</span></span>

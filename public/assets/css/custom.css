@@ -1122,3 +1122,54 @@ body[data-sidebar-size=condensed] .left-side-menu #sidebar-menu>ul>li:hover>a {
 .left-sidebar .navigation_btn.optimize_btn {
     right: 120px;
 }
+
+
+.left-sidebar #accordion .card-header:hover, .left-sidebar #accordion .card-header:focus,.left-sidebar #accordion .card-header:visited {
+    background: #FFF;
+    }
+    
+    .left-sidebar #accordion .card-header {
+    transition: all 0.5s;
+    margin-left: 0 !important;
+    }
+    
+    .left-sidebar {
+    padding: 16px 10px 16px 0 !important;
+    }
+    
+    
+    
+    .dragable_tasks {
+    border: 1px solid #c0c2c49c;
+    margin: 0 0 5px;
+    }
+    
+    .assigned-block {
+    background-color: #FFFFFF;
+    }
+    
+    #accordion .card-body .assigned-block h5 {
+    font-weight: 900;
+    }
+    
+    body {
+    background: #FFF;
+    }
+
+    #scrollbar::-webkit-scrollbar-track
+{
+-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+background-color: #F5F5F5;
+}
+
+#scrollbar::-webkit-scrollbar
+{
+width: 6px;
+background-color: #F5F5F5;
+}
+
+#scrollbar::-webkit-scrollbar-thumb
+{
+background-color: #000000;
+}
+
