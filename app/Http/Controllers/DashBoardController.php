@@ -977,7 +977,7 @@ class DashBoardController extends Controller
             {
                 $destination['lat'] = $Taskdetail->location->latitude;
                 $destination['long'] = $Taskdetail->location->longitude;
-            }elseif(!empty($origin) && $i == 0)
+            }elseif(empty($origin) && $i == 0)
             {
                 $origin['lat'] = $Taskdetail->location->latitude;
                 $origin['long'] = $Taskdetail->location->longitude;
