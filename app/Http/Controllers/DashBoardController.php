@@ -12,6 +12,7 @@ use App\Model\Client;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 // use PDF;
 
 class DashBoardController extends Controller
@@ -1008,15 +1009,21 @@ class DashBoardController extends Controller
 
     public function generatePdf(Request $request)
     {   
-        
+        if(isset(Auth::user()->logo)){
+        $urlImg = Storage::disk('s3')->url(Auth::user()->logo);
+        }
+        $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fit/300/100/sm/0/plain/';
+        $image = $imgproxyurl.$urlImg; 
+
         $result = json_decode($request->pdfdata);        
         $p['route'] = $result->route;
         $p['path'] = $result->path;   
         $p['date'] = $result->date;
-        $p['agent_name'] = $result->agent_name;     
+        $p['agent_name'] = $result->agent_name;    
+        $p['logo'] =  $image;
         // $pdf_doc = PDF::loadView('pdf',$p);
         // return $pdf_doc->download('routedetail.pdf');
-        return view('pdf',$p);
+         return view('pdf',$p);
     }
 
     public function GetRouteDirection($origin,$destination,$midpoints)

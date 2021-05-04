@@ -164,7 +164,6 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                     
                    
                     <div class="card-header" id="heading-1">
-                       
                             <a role="button" data-toggle="collapse" href="#collapse-{{ $item['id'] }}"
                                 aria-expanded="false" aria-controls="collapse-{{ $item['id'] }}">
                                 <div class="newcheckit">
@@ -178,9 +177,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                         </div>
                                     </div>
                                 </div>
-
                             </a>
-
                     </div>
 
                     <div id="collapse-{{ $item['id'] }}" class="collapse" data-parent="#accordion"
