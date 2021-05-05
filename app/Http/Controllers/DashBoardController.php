@@ -253,7 +253,7 @@ class DashBoardController extends Controller
                             
                         }
                         $gettotal_distance = $this->getTotalDistance($tasklistids,$driverlocation);
-                        $teamdata[$k1]['agents'][$k2]['total_distance']  = $gettotal_distance['total_distance_km'];
+                        $teamdata[$k1]['agents'][$k2]['total_distance']  = $gettotal_distance['total_distance_miles'];
                     }
                     //for distance calculating end
 
@@ -319,7 +319,7 @@ class DashBoardController extends Controller
 
                 $gettotal_un_distance = $this->getTotalDistance($unassigned_taskids);
 
-                $un_total_distance = $gettotal_un_distance['total_distance_km'];
+                $un_total_distance = $gettotal_un_distance['total_distance_miles'];
 
 
             }
@@ -722,7 +722,7 @@ class DashBoardController extends Controller
                 }
             }
             $gettotal_distance = $this->getTotalDistance($taskids,$driverlocation);
-            $totaldistance  = $gettotal_distance['total_distance_km'];
+            $totaldistance  = $gettotal_distance['total_distance_miles'];
 
             $output = array();
             $output['tasklist'] = $agent;
@@ -886,7 +886,7 @@ class DashBoardController extends Controller
         }
 
         $gettotal_distance = $this->getTotalDistance($taskids,$driverlocation);
-        $distance  = $gettotal_distance['total_distance_km'];
+        $distance  = $gettotal_distance['total_distance_miles'];
         $output = array();
         $output['allroutedata'] = $alldrivers;    
         $output['total_distance'] = $distance;        
@@ -937,9 +937,11 @@ class DashBoardController extends Controller
             }
         }
         $distance_in_km = number_format($totaldistance/1000,2);
+        $distance_in_miles = number_format($totaldistance/1609.344,2);
         $output['total_distance'] = $totaldistance;
         $output['distance'] = $distancearray;
         $output['total_distance_km'] = $distance_in_km . 'km';
+        $output['total_distance_miles'] = $distance_in_miles . 'miles';
         //print_r($output);
         return $output;
         
