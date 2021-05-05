@@ -40,7 +40,7 @@ use Carbon\Carbon;
                                             <li class="d-inline-block mr-2">
                                                 <input type="radio" id="teacher" name="status" onclick="handleClick(this);"
                                                     value="unassigned" {{ $status == 'unassigned' ? 'checked' : '' }}>
-                                                <label for="teacher">Pending Allocation<span
+                                                <label for="teacher">Pending Assignment<span
                                                         class="showspan">{{ ' (' . $panding_count . ')' }}</span></label>
                                             </li>
                                             <li class="d-inline-block mr-2">

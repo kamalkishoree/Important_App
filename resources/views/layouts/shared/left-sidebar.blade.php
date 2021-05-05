@@ -51,7 +51,7 @@
                 <li>   
                     <a href="{{route('tasks.index')}}">
                         <i data-feather="package"></i>
-                        <span> Tasks </span>
+                        <span> Routes </span>
                     </a>
                 </li>    
                 

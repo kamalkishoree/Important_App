@@ -85,7 +85,7 @@
 
             <li class="d-lg-inline-block" >
                 <a class="nav-link" href="#"> 
-                    <button type="button" class="btn btn-blue waves-effect waves-light addTaskModalHeader" data-toggle="modal" data-target="" data-backdrop="static" title="Add Task" data-keyboard="false"><span><i class="mdi mdi-plus-circle mr-1"></i> Add Task</span></button>
+                    <button type="button" class="btn btn-blue waves-effect waves-light addTaskModalHeader" data-toggle="modal" data-target="" data-backdrop="static" title="Add Route" data-keyboard="false"><span><i class="mdi mdi-plus-circle mr-1"></i> Add Route</span></button>
                 </a>
             </li>
 
