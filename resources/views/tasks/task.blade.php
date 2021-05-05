@@ -1,4 +1,4 @@
-@extends('layouts.vertical', ['title' => 'Task'])
+@extends('layouts.vertical', ['title' => 'Route'])
 
 @section('css')
 @endsection
