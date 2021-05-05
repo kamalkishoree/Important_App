@@ -1173,3 +1173,6 @@ background-color: #F5F5F5;
     background-color: rgb(0 0 0 / 10%);
 }
 
+#add-customer-modal .modal-dialog.modal-lg,#edit-customer-modal .modal-dialog.modal-lg {
+    max-width: 1040px;
+}
