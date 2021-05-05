@@ -69,11 +69,11 @@
                                         <div class="form-ul" style="width: 60px;">
                                             <div class="inner-div"> <a href="#" userId="{{$customer->id}}" class="action-icon editIcon"> <i class="mdi mdi-square-edit-outline"></i></a></div>
                                             <div class="inner-div">
-                                                <form method="POST" action="{{route('customer.destroy', $customer->id)}}">
+                                                <form id="customerdelete{{$customer->id}}" method="POST" action="{{route('customer.destroy', $customer->id)}}">
                                                     @csrf
                                                     @method('DELETE')
                                                     <div class="form-group">
-                                                        <button type="submit" class="btn btn-primary-outline action-icon"> <i class="mdi mdi-delete"></i></button>
+                                                        <button type="button" class="btn btn-primary-outline action-icon"> <i class="mdi mdi-delete" customerid="{{$customer->id}}"></i></button>
 
                                                     </div>
                                                 </form>

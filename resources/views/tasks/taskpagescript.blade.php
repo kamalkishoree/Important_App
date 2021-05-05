@@ -344,5 +344,15 @@
             $('[data-toggle="tooltip"]').tooltip()
         });
 
+        $('.mdi-delete').click(function(){
+            
+            var r = confirm("Are you sure?");
+            if (r == true) {
+               var taskid = $(this).attr('taskid');
+               $('form#taskdelete'+taskid).submit();
+
+            }
+        });
+
 </script>
 

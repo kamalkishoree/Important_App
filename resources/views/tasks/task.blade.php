@@ -184,14 +184,14 @@ use Carbon\Carbon;
                                                                     class="mdi mdi-square-edit-outline"></i></a></div>
                                                     </div>
                                                     <div class="inner-div">
-                                                        <form method="POST"
+                                                        <form id="taskdelete{{$task->id}}" method="POST"
                                                             action="{{ route('tasks.destroy', $task->id) }}">
                                                             @csrf
                                                             @method('DELETE')
                                                             <div class="form-group">
-                                                                <button type="submit"
+                                                                <button type="button"
                                                                     class="btn btn-primary-outline action-icon"> <i
-                                                                        class="mdi mdi-delete"></i></button>
+                                                                        class="mdi mdi-delete" taskid="{{$task->id}}"></i></button>
 
                                                             </div>
                                                         </form>
@@ -227,4 +227,7 @@ use Carbon\Carbon;
     <script src="{{asset('assets/libs/bootstrap-select/bootstrap-select.min.js')}}"></script>
     {{-- <script src="{{ asset('assets/libs/datatables/datatables.min.js') }}"></script> --}}
     @include('tasks.taskpagescript')
+
+
+    
 @endsection

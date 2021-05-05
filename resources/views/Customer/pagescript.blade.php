@@ -348,4 +348,14 @@
 
     }
 
+    $('.mdi-delete').click(function(){
+            
+            var r = confirm("Are you sure?");
+            if (r == true) {
+               var customerid = $(this).attr('customerid');
+               $('form#customerdelete'+customerid).submit();
+
+            }
+        });
+
 </script>
