@@ -67,20 +67,16 @@ use Carbon\Carbon;
                     <div class="row searchshow">
                         <div class="col-md-8">
                             <div class="form-group" id="nameInput">
-
                                 <input type="text" id='search' class="form-control" name="search"
                                     placeholder="search Customer" value="{{ isset($task->customer->name)?$task->customer->name:'' }}">
                                 <input type="hidden" id='cusid' name="ids" value="{{ isset($task->customer->id)?$task->customer->id:'' }}" readonly>
-
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group" id="AddressInput">
                                 <a href="#" class="add-sub-task-btn">New Customer</a>
-
                             </div>
                         </div>
-
                     </div>
 
                     <div class="newcus shows">

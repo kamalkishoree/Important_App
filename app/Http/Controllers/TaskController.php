@@ -71,6 +71,16 @@ class TaskController extends Controller
     {   
         $loc_id = $cus_id = $send_loc_id = $newlat = $newlong = 0;
 
+        $iinputs = $request->toArray();
+        $old_address_ids = array();
+        foreach($iinputs as $key => $value)
+        {
+            if(substr_count($key,"old_address_id") == 1)
+            {
+                $old_address_ids[] = $key;
+            }
+        }
+
         $images = [];
         $last = '';
         $customer = [];
@@ -201,8 +211,9 @@ class TaskController extends Controller
                 if ($key == 0) {
                     $loc_id = $request->old_address_id;
                     $send_loc_id = $loc_id;
-                } else {
-                    $loc_id = $request->input('old_address_id' . $key);
+                } else {                    
+                    $loc_id = $request->input($old_address_ids[$key]);
+                    //$loc_id = $request->input('old_address_id' . $key);
                     $send_loc_id = $loc_id;
                 }
             }
@@ -1727,9 +1738,18 @@ class TaskController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request,$domain = '',$id)
-    {  
-        // echo "<pre>";
-        // print_r($request->toArray()); die;
+    {          
+        $iinputs = $request->toArray();
+        $old_address_ids = array();
+        foreach($iinputs as $key => $value)
+        {
+            if(substr_count($key,"old_address_id") == 1)
+            {
+                $old_address_ids[] = $key;
+            }
+        }
+        // print_r($addresss);
+        // die;
 
         $task_id = Order::find($id);
         $validator = $this->validator($request->all())->validate();
@@ -1847,7 +1867,8 @@ class TaskController extends Controller
                 if ($key == 0) {
                     $loc_id = $request->old_address_id;
                 } else {
-                    $loc_id = $request->input('old_address_id' . $key);
+                    $loc_id = $request->input($old_address_ids[$key]);
+                    //$loc_id = $request->input('old_address_id' . $key);
                 }
 
                 $location = Location::where('id', $loc_id)->first();

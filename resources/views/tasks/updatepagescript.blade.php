@@ -1,6 +1,7 @@
 <script>
     var autocomplete = {};
     var countEdit = parseInt('{{$task->task->count()}}');
+    var totalcountEdit = countEdit;
     var autocompletesWraps = [];
  editCount = 0;
 $(document).ready(function(){
@@ -87,7 +88,8 @@ $(document).ready(function(){
         //     // secondDivContent.innerHTML = firstDivContent.innerHTML;
 
         // });
-        var a = 0;
+        //var a = 0;
+        var a = totalcountEdit-1;
         var post_count = 1;
         $('#adds a').click(function() {
             countEdit = countEdit + 1;
@@ -144,9 +146,11 @@ $(document).ready(function(){
                     $.each(inputs, function(index, elem){
                         var jElem = $(elem); // jQuery element
                         var name = jElem.prop('name');
+                       // alert(name);
                         // remove the number
                         name = name.replace(/\d+/g, '');
                         name += a;
+                       // alert(name);
                         jElem.prop('name', name);
                         count0++;
                     });
