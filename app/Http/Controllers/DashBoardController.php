@@ -324,10 +324,14 @@ class DashBoardController extends Controller
 
             }
         }
+
+        $client = ClientPreference::where('id',1)->first(); 
+        $googleapikey = $client->map_key_1;
+       
         // echo "<pre>";
         // print_r($teamdata); die;
 
-        return view('dashboard')->with(['teams' => $teamdata, 'newmarker' => $newmarker, 'unassigned' => $unassigned, 'agents' => $agents,'date'=> $date,'preference' =>$preference, 'routedata' => $uniquedrivers,'distance_matrix' => $distancematrix, 'unassigned_orders' => $unassigned_orders,'unassigned_distance' => $un_total_distance]);
+        return view('dashboard')->with(['teams' => $teamdata, 'newmarker' => $newmarker, 'unassigned' => $unassigned, 'agents' => $agents,'date'=> $date,'preference' =>$preference, 'routedata' => $uniquedrivers,'distance_matrix' => $distancematrix, 'unassigned_orders' => $unassigned_orders,'unassigned_distance' => $un_total_distance,'map_key'=>$googleapikey]);
     }
 
     public function distanceMatrix($pointarray,$taskids)
@@ -507,6 +511,407 @@ class DashBoardController extends Controller
     }
 
     public function optimizeRoute(Request $request)
+    {
+        $driver_start_time = $request->driver_start_time;
+        $task_duration = $request->task_duration;
+        $brake_start_time = $request->brake_start_time;
+        $brake_end_time = $request->brake_end_time;
+        $driver_start_location = $request->driver_start_location;
+        $driver_latitude = $request->latitude;
+        $driver_longitude = $request->longitude;
+        $taskids =  $request->route_taskids; 
+        $agentid = $request->route_agentid; 
+        $distancematrix = $request->distance_matrix;
+        $distancematrixarray = json_decode($distancematrix);
+        
+
+        if($driver_start_location=='current')
+        {
+            if($agentid != 0)
+            {
+                $singleagentdetail = Agent::where('id',$agentid)->with('agentlog')->first();
+                if($singleagentdetail->is_available == 1)
+                {
+                    $driver_lat = $singleagentdetail->agentlog->lat;
+                    $driver_long = $singleagentdetail->agentlog->long;
+                }else{
+                    $driver_lat = $distancematrixarray[0][0];
+                    $driver_long = $distancematrixarray[0][1];
+                }
+            }else{
+                $driver_lat = $distancematrixarray[0][0];
+                $driver_long = $distancematrixarray[0][1];
+            }
+
+        }else{            
+            if($driver_latitude==0 || $driver_longitude==0)
+            {
+                $driver_lat = $distancematrixarray[0][0];
+                $driver_long = $distancematrixarray[0][1];
+            }else{
+                $driver_lat = $driver_latitude;
+                $driver_long = $driver_longitude;
+            }
+        }
+
+        // $driver_start_time = "09:00";
+        // $task_duration = "10";
+        // $brake_start_time = "10:00";
+        // $brake_end_time = "10:30";
+        // $driver_lat = "30.7169858";
+        // $driver_long = "76.81667628";
+        
+        $auth = Client::where('code', Auth::user()->code)->with(['getAllocation', 'getPreference'])->first();
+        $startdate = date("Y-m-d 00:00:00", strtotime($request->route_date));
+        $enddate = date("Y-m-d 23:59:59", strtotime($request->route_date));
+        $startdate = Carbon::parse($startdate . $auth->timezone ?? 'UTC')->tz('UTC');
+        $enddate = Carbon::parse($enddate . $auth->timezone ?? 'UTC')->tz('UTC');
+
+        //$distance_matrix = json_decode($request->distance); 
+        $points = json_decode($request->distance_matrix);         
+        $distance_matrix = $this->distanceMatrix($points,$taskids);
+        $payload = json_encode(array("data" => $distance_matrix));
+        
+        //api for getting optimize path
+        $url = "https://optimizeroute.royodispatch.com/optimize";
+        $ch = curl_init ($url);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $result = curl_exec($ch);
+        curl_close($ch);
+        if($result)
+        {
+            $taskids = explode(',',$taskids);
+            $newtaskidorder = [];
+            $newroute = json_decode($result);
+            $routecount = count($newroute->data)-1;
+            for ($i=1; $i < $routecount; $i++) {  
+                $taskorder = [
+                    'task_order'        => $i        
+                ];  
+                $index =  $newroute->data[$i]-1;             
+                Task::where('id',$taskids[$index])->update($taskorder);
+                $newtaskidorder[] = $taskids[$index];
+            }
+
+            $orderdetail = Task::where('id',$taskids[0])->with('order')->first();
+            $orderdate =  date("Y-m-d", strtotime($orderdetail->order->order_time));            
+            
+            if($agentid!=0)
+            {
+                // $agent = Agent::where('id',$agentid)->with(['order' => function ($o) use ($orderdate) {
+                //     $o->whereDate('order_time', $orderdate)->with('customer')->with('task.location');
+                // }])->with('agentlog')->first();
+
+                $agent = Agent::where('id',$agentid)->with(['order' => function ($o) use ($startdate,$enddate) {
+                    $o->where('order_time', '>=', $startdate)->where('order_time', '<=', $enddate)->with('customer')->with('task.location');
+                }])->with('agentlog')->first();
+
+                
+
+                $agent = $agent->toArray();            
+
+                if(count($agent['order'])>0)
+                { 
+                    $agent['order'] = $this->splitOrder($agent['order']);                    
+                }
+
+                $p=0;
+                // echo "<pre>";
+                // print_r($agent['order']); die; 
+                $driverstarttime = strtotime($driver_start_time);
+                $braketimestart = strtotime($brake_start_time);
+                $braketimeend = strtotime($brake_end_time);
+                $taskdurationtime = strtotime($task_duration);
+                $tasktime = 0;
+                foreach($agent['order'] as $singleorder)
+                {   
+                    //brake time functionality
+                    if($p>0)
+                    {
+                        $lat1 = $agent['order'][$p-1]['task'][0]['location']['latitude'];
+                        $long1 = $agent['order'][$p-1]['task'][0]['location']['longitude'];
+                        $lat2 = $agent['order'][$p]['task'][0]['location']['latitude'];
+                        $long2 = $agent['order'][$p]['task'][0]['location']['longitude'];
+                        $between_time = $this->GetTotalTime($lat1,$long1,$lat2,$long2);
+                        $between_time = round($between_time['total_time']/60);
+                        $lasttasktime = $tasktime + $taskdurationtime;
+                        if($between_time==0)
+                        {
+                            $tasktime = $lasttasktime;
+                            if(($tasktime > $braketimestart) && ($tasktime < $braketimeend))
+                            {
+                                $tasktime = $lasttasktime;
+                            }
+                        }else{
+                            $between_time_min = "+".$between_time ." minutes";
+                            $tasktime = strtotime($between_time_min, $lasttasktime);
+                            if(($tasktime > $braketimestart) && ($tasktime < $braketimeend))
+                            {
+                                $tasktime = strtotime($between_time_min, $braketimeend);
+                            }
+                        }
+                        
+
+                    }else{
+                        $lat1 = $driver_lat;
+                        $long1 = $driver_long;
+                        $lat2 = $agent['order'][$p]['task'][0]['location']['latitude'];
+                        $long2 = $agent['order'][$p]['task'][0]['location']['longitude'];
+                        $between_time = $this->GetTotalTime($lat1,$long1,$lat2,$long2);
+                        $between_time = round($between_time['total_time']/60);
+                        if($between_time == 0)
+                        {
+                            
+                            $tasktime = $driverstarttime;
+                            if($tasktime > $braketimestart)
+                            {
+                                $tasktime = $braketimeend;
+                            }
+
+                        }else{
+                            $between_time_min = "+".$between_time." minutes";
+                            $tasktime = strtotime($between_time_min, $driverstarttime);
+                            if($tasktime > $braketimestart)
+                            {
+                                $tasktime = strtotime($between_time_min, $braketimeend);
+                            }
+                        }
+                        
+                        
+                    }
+                    
+                    // $agent['order'][$p]['task'][0]['task_time'] = date("h:i a", strtotime($singleorder['task'][0]['created_at']));
+                    $agent['order'][$p]['task'][0]['task_time'] = date("h:i a", $tasktime);                    
+                    $p++;
+                }
+            }else{      //case of unassigned tasks with no driver
+                $agent = array(
+                    'id' => 0,
+                    'name' => ''
+
+                );
+
+                // $un_order  = Order::whereDate('order_time', $orderdate)->where('auto_alloction','u')->with(['customer', 'task.location'])->get();
+                $un_order  = Order::where('order_time', '>=', $startdate)->where('order_time', '<=', $enddate)->where('auto_alloction','u')->with(['customer', 'task.location'])->get();
+                           
+                $unassigned_tasks = $this->splitOrder($un_order->toarray());
+                $p=0;
+                $driverstarttime = strtotime($driver_start_time);
+                $braketimestart = strtotime($brake_start_time);
+                $braketimeend = strtotime($brake_end_time);
+                $taskdurationtime = strtotime($task_duration);
+                $tasktime = 0;
+                foreach( $unassigned_tasks as $singleorder)
+                {    
+                    //brake time functionality
+                    if($p>0)
+                    {
+                        $lat1 = $unassigned_tasks[$p-1]['task'][0]['location']['latitude'];
+                        $long1 = $unassigned_tasks[$p-1]['task'][0]['location']['longitude'];
+                        $lat2 = $unassigned_tasks[$p]['task'][0]['location']['latitude'];
+                        $long2 = $unassigned_tasks[$p]['task'][0]['location']['longitude'];
+                        $between_time = $this->GetTotalTime($lat1,$long1,$lat2,$long2);
+                        $between_time = round($between_time['total_time']/60);
+                        $between_time_min = "+".$between_time ." minutes";
+                        $lasttasktime = $tasktime + $taskdurationtime;
+                        if($between_time==0)
+                        {
+                            $tasktime = $lasttasktime;
+                            if(($tasktime > $braketimestart) && ($tasktime < $braketimeend))
+                            {
+                                $tasktime = $braketimeend;
+                            }
+                        }else{
+                            $tasktime = strtotime($between_time_min, $lasttasktime);
+                            if(($tasktime > $braketimestart) && ($tasktime < $braketimeend))
+                            {
+                                $tasktime = strtotime($between_time_min, $braketimeend);
+                            }
+                        }
+
+                        
+
+                    }else{
+                        $lat1 = $driver_lat;
+                        $long1 = $driver_long;
+                        $lat2 = $unassigned_tasks[$p]['task'][0]['location']['latitude'];
+                        $long2 = $unassigned_tasks[$p]['task'][0]['location']['longitude'];
+                        $between_time = $this->GetTotalTime($lat1,$long1,$lat2,$long2);
+                        $between_time = round($between_time['total_time']/60);
+                        $between_time_min = "+".$between_time." minutes";
+                        if($between_time==0)
+                        {
+                            $tasktime = $driverstarttime;
+                            if($tasktime > $braketimestart)
+                            {
+                                $tasktime = $braketimeend;
+                            }
+                        }else{
+                            $tasktime = strtotime($between_time_min, $driverstarttime);
+                            if($tasktime > $braketimestart)
+                            {
+                                $tasktime = strtotime($between_time_min, $braketimeend);
+                            }
+                        }                       
+                        
+                    }                    
+                    
+                    $unassigned_tasks[$p]['task'][0]['task_time'] = date("h:i a", $tasktime);                                        
+                    // $unassigned_tasks[$p]['task'][0]['task_time'] = date("h:i a", strtotime($singleorder['task'][0]['created_at']));
+                    $p++;
+                }
+                $agent['order'] = $unassigned_tasks;
+            }           
+            
+            //getting all routes
+            // $allTasks = Order::whereDate('order_time', $orderdate)->with(['customer', 'task.location', 'agent.team'])->get();
+            $allTasks = Order::where('order_time', '>=', $startdate)->where('order_time', '<=', $enddate)->with(['customer', 'task.location', 'agent.team'])->get();
+            $allmarker = [];
+            foreach ($allTasks as $key => $tasks) {
+                $append = [];
+                foreach ($tasks->task as $task) {
+                    if ($task->task_type_id == 1) {
+                        $name = 'Pickup';
+                    } elseif ($task->task_type_id == 2) {
+                        $name = 'DropOff';
+                    } else {
+                        $name = 'Appointment';
+                    }
+                    $append['task_type']             = $name;
+                    $append['task_id']               = $task->id;
+                    $append['latitude']              = floatval($task->location->latitude);
+                    $append['longitude']             = floatval($task->location->longitude);
+                    $append['address']               = $task->location->address;
+                    $append['task_type_id']          = $task->task_type_id;
+                    $append['task_status']           = (int)$task->task_status;
+                    $append['team_id']               = isset($tasks->driver_id) ? $tasks->agent->team_id : 0;
+                    $append['driver_name']           = isset($tasks->driver_id) ? $tasks->agent->name : '';
+                    $append['driver_id']             = isset($tasks->driver_id) ? $tasks->driver_id : '';
+                    $append['customer_name']         = isset($tasks->customer->name)? $tasks->customer->name:'';
+                    $append['customer_phone_number'] = isset($tasks->customer->phone_number)?$tasks->customer->phone_number:'';
+                    $append['task_order']            = isset($task->task_order)?$task->task_order:0;
+                    array_push($allmarker, $append);
+                }
+            }
+
+            $allagents = Agent::with('agentlog')->get()->toArray();
+            $alldrivers = array();       
+            $j = 0;
+            foreach ($allagents as $singleagent) {
+                if(is_array($singleagent['agentlog']))
+                {
+                    $alltaskarray = array();                
+                    foreach($allmarker as $singlemark)
+                    {
+                        if($singlemark['driver_id'] == $singleagent['agentlog']['agent_id'])
+                        {
+                            $alltaskarray[] = $singlemark;                            
+                        }
+                    }
+                    if(!empty($alltaskarray))
+                    {
+                        usort($alltaskarray, function($a, $b) {
+                            return $a['task_order'] <=> $b['task_order'];
+                        });
+                        if($request->route_date != date('Y-m-d'))
+                        {
+                            $singleagent['agentlog']['lat'] = $alltaskarray[0]['latitude'];
+                            $singleagent['agentlog']['long'] = $alltaskarray[0]['longitude'];
+                        }
+                        $alldrivers[$j]['driver_detail'] = $singleagent['agentlog'];
+                        $alldrivers[$j]['task_details'] = $alltaskarray;
+                        $j++;                    
+                    }                    
+                }                
+            }   
+            
+            //unassigned_orders 
+            $unassigned_orders = array();
+            // $un_order  = Order::whereDate('order_time', $orderdate)->where('auto_alloction','u')->with(['customer', 'task.location'])->get(); 
+            $un_order  = Order::where('order_time', '>=', $startdate)->where('order_time', '<=', $enddate)->where('auto_alloction','u')->with(['customer', 'task.location'])->get();        
+            
+            if(count($un_order)>=1)
+            {
+                $unassigned_orders = $this->splitOrder($un_order->toarray());
+                if(count($unassigned_orders)>1)
+                {   
+                    $un_route = array();
+                    foreach($unassigned_orders as $singleua)
+                    {    
+                        //for drawing route
+                        $s_task = $singleua['task'][0];
+                        if ($s_task['task_type_id'] == 1) {
+                            $nname = 'Pickup';
+                        } elseif ($s_task['task_type_id'] == 2) {
+                            $nname = 'DropOff';
+                        } else {
+                            $nname = 'Appointment';
+                        }
+                        $aappend = array();
+                        $aappend['task_type']             = $nname;
+                        $aappend['task_id']               =  $s_task['id'];
+                        $aappend['latitude']              =  $s_task['location']['latitude'];
+                        $aappend['longitude']             = $s_task['location']['longitude'];
+                        $aappend['address']               = $s_task['location']['address'];
+                        $aappend['task_type_id']          = $s_task['task_type_id'];
+                        $aappend['task_status']           = $s_task['task_status'];
+                        $aappend['team_id']               = 0;
+                        $aappend['driver_name']           = '';
+                        $aappend['driver_id']             = 0;
+                        $aappend['customer_name']         = $singleua['customer']['name'];
+                        $aappend['customer_phone_number'] = $singleua['customer']['phone_number'];
+                        $aappend['task_order']            = $singleua['task_order'];
+                        $un_route[] = $aappend;
+                    }                   
+
+                    $first_un_loc = array('lat'=>floatval($unassigned_orders[0]['task'][0]['location']['latitude']),'long'=>floatval($unassigned_orders[0]['task'][0]['location']['longitude']));                
+                    $final_un_route['driver_detail'] = $first_un_loc;
+                    $final_un_route['task_details'] = $un_route;
+                    $alldrivers[] = $final_un_route;
+
+                }
+            }
+
+            //calculate distance
+            //$newtaskidorder $agentid
+            $driverlocation = [];
+            if($agentid != 0)
+            {
+                $singleagentdetail = Agent::where('id',$agentid)->with('agentlog')->first();
+                if($singleagentdetail->is_available == 1)
+                {
+                    $driverlocation['lat'] = $singleagentdetail->agentlog->lat;
+                    $driverlocation['long'] = $singleagentdetail->agentlog->long;
+                }
+            }
+            $gettotal_distance = $this->getTotalDistance($taskids,$driverlocation);
+            $totaldistance  = $gettotal_distance['total_distance_miles'];
+
+            $output = array();
+            $output['tasklist'] = $agent;
+            //$output['routedata'] = $routedata;
+            $output['allroutedata'] = $alldrivers;
+            $output['total_distance'] = $totaldistance;
+            $output['taskids'] = $taskids;
+            $output['agentid'] = $agentid;
+            $output['distance_matrix'] = $distancematrix;
+            $output['date'] = $request->route_date;
+
+
+            
+
+                        
+            echo json_encode($output);   
+            
+        }else{
+            echo "Try again later";
+        }
+    }
+
+
+    public function optimizeRouteOld(Request $request)
     {
         $taskids =  $request->taskids; 
         $agentid = $request->agentid; 
@@ -735,6 +1140,8 @@ class DashBoardController extends Controller
             echo "Try again later";
         }
     }
+
+
 
     public function arrangeRoute(Request $request)
     {        
@@ -1079,6 +1486,30 @@ class DashBoardController extends Controller
       
         
 
+    }
+
+    public function GetTotalTime($lat1,$long1,$lat2,$long2)
+    {          
+        $client = ClientPreference::where('id',1)->first();        
+        $ch = curl_init();
+        $headers = array('Accept: application/json',
+                   'Content-Type: application/json',
+                   );                   
+        $url =  'https://maps.googleapis.com/maps/api/directions/json?origin='.$lat1.','.$long1.'&destination='.$lat2.','.$long2.'&key='.$client->map_key_1;
+        //$url = 'https://maps.googleapis.com/maps/api/directions/json?key=AIzaSyB85kLYYOmuAhBUPd7odVmL6gnQsSGWU-4&origin=30.74105170,76.77901500&destination=30.63651440,76.81098250&waypoints=via:30.72980500,76.76936410|via:30.66334430,76.85663490';
+        curl_setopt($ch, CURLOPT_URL,$url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        $response = curl_exec($ch);
+        $result = json_decode($response);
+        curl_close($ch); // Close the connection
+                
+        $routes = $result->routes[0]->legs[0]->steps;
+        $time = $result->routes[0]->legs[0]->duration->value;
+
+        $output = array();
+        $output['total_time'] = $time;        
+        return $output;
     }
 
     

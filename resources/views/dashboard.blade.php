@@ -562,6 +562,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
 </div>
 
 @endsection
+@include('modals.optimize-route')
 
 <?php   // for setting default location on map
     $agentslocations = array();
@@ -1130,8 +1131,171 @@ $(".datetime").on('change', function postinput(){
 //             });
 //          }
 
-
 function RouteOptimization(taskids,distancematrix,optimize,agentid,date) {
+    $('#routeTaskIds').val(taskids);
+    $('#routeMatrix').val(distancematrix);
+    $('#routeOptimize').val(optimize);
+    $('#routeAgentid').val(agentid);
+    $('#routeDate').val(date);
+    $("input[name='driver_start_location'][value='current']").prop("checked",true);
+    $('#addressBlock').css('display','none');
+    $('#optimize-route-modal').modal('show');
+}
+
+
+$('.submitoptimizeForm').click(function(){
+    
+        
+    var driverStartTime = $('.driverStartTime').val();
+    var driverTaskDuration = $('.driverTaskDuration').val();
+    var driverBrakeStartTime = $('.driverBrakeStartTime').val();
+    var driverBrakeEndTime = $('.driverBrakeEndTime').val();
+    var err = 0;
+    if(driverStartTime=='')
+    {
+        $('#DriverStartTime span').css('display','block');
+        err = 1;
+    }
+    if(driverTaskDuration=='')
+    {
+        $('#DriverTaskDuration span').css('display','block');
+        err = 1;
+    }
+    if(driverBrakeStartTime=='')
+    {
+        $('#DriverBrakeStartTime span').css('display','block');
+        err = 1;
+    }
+    if(driverBrakeEndTime=='')
+    {
+        $('#DriverBrakeEndTime span').css('display','block');
+        err = 1;
+    }
+    // alert(err);
+    if(err == 0)
+    {
+        $('.routetext').text('Optimizing Route'); 
+        $('#optimize-route-modal').modal('hide');
+        $('.pageloader').css('display','block');
+        var formdata =$('form#optimizerouteform').serialize();
+        $.ajax({
+                type: 'POST',
+                
+                url: '{{url("/optimize-route")}}',
+                headers: {
+                    'X-CSRF-Token': '{{ csrf_token() }}',
+                },
+                // data: {'taskids':taskids,'distance':distancematrix,'agentid':agentid,'date':date},
+                data : formdata,
+
+                success: function(response) {
+                    
+                    if(response!="Try again later")
+                    {
+                        var data = $.parseJSON(response);
+                    // alert(data);
+                        var tasklist = data.tasklist;
+                        var taskorders = tasklist.order;
+                        var agentid = data.agentid;
+                        var taskids = data.taskids;
+                        var distancematrix = data.distance_matrix;
+                        var date = data.date;                    
+                        //alert(data.total_distance);
+                        $('.totdis'+agentid).html(data.total_distance);
+                        //$('#collapse'+agentid).html('');
+                        $('#handle-dragula-left'+agentid).html('');
+                        //alert( taskorders.length);
+                        for (var i = 0; i < taskorders.length; i++) {
+                            var object = taskorders[i];
+                            var task_id =  object['task'][0]['id'];
+                            var location_address =  object['task'][0]['location']['address'];
+                            var shortname =  object['task'][0]['location']['short_name'];
+                            var tasktime = object['task'][0]['task_time'];
+                            //alert(tasktime);
+                            
+                            var taskstatus = object['task'][0]['task_status'];
+                            var tasktypeid = object['task'][0]['task_type_id'];
+                            var classname = "";
+                            var classtext = "";
+                            var tasktype = "";
+                            var pickupclass = "";
+                            
+                            if(taskstatus==0)
+                            {
+                                classtext = "Unassigned";
+                                classname = "assign_";
+                            }else if(taskstatus==1)
+                            {
+                                classtext = "Assigned";
+                                classname = "assign_";
+                            }else if(taskstatus==2)
+                            {
+                                classtext = "Started";
+                                classname = "yellow_";
+                            }else if(taskstatus==3)
+                            {
+                                classtext = "Arrived";
+                                classname = "light_green";
+                            }else if(taskstatus==4)
+                            {
+                                classtext = "Completed";
+                                classname = "green_";
+                            }else{
+                                classtext = "Failed";
+                                classname = "red_";
+                            }
+
+                            if(tasktypeid==1)
+                            {
+                                tasktype = "Pickup";
+                                pickupclass = "yellow_";
+                            }else if(tasktypeid==2)
+                            {
+                                tasktype = "Dropoff";
+                                pickupclass = "green_";
+                            }else{
+                                tasktype = "Appointment";
+                                pickupclass = "assign_";
+                            }                        
+                            var sidebarhtml   = '<div class="card-body ui-sortable-handle" task_id="'+task_id+'"><div class="p-2 assigned-block"><div><div class="row no-gutters align-items-center"><div class="col-9 d-flex"><h5 class="d-inline-flex align-items-center justify-content-between"><i class="fas fa-bars"></i><span>'+tasktime+'</span></h5><h6 class="d-inline"><img class="vt-top" src="{{ asset("demo/images/ic_location_blue_1.png") }}">'+location_address+'<span class="d-block">'+shortname+'</span></h6></div><div class="col-3"><button class="assigned-btn float-right mb-2 '+pickupclass+'">'+tasktype+'</button><button class="assigned-btn float-right '+classname+'">'+classtext+'</button></div></div></div></div></div>';
+                            //$('#collapse'+agentid).append(sidebarhtml);
+                            $('#handle-dragula-left'+agentid).append(sidebarhtml);
+                        }
+
+                        // -------- for route show ------------------
+                        reInitMap(data.allroutedata);    
+
+                        var params = "'"+taskids+"','"+distancematrix+"','',"+agentid;
+                        var funperams = '<span class="optimize_btn" onclick="RouteOptimization('+params+')">Optimize</span>';                    
+                        $('.optimizebtn'+agentid).html(funperams);
+
+                        // ----- route show end-----------
+
+                        $('#optimizerouteform').trigger("reset");
+
+                        $('.pageloader').css('display','none');
+                        //location.reload();
+                    }else{                    
+                        alert(response);
+                        $('.pageloader').css('display','none');
+                    }
+                },
+                error: function(response) {
+                    
+                }
+            });
+    }
+
+    
+
+
+});
+
+
+
+
+
+function RouteOptimizationOld(taskids,distancematrix,optimize,agentid,date) {
     $('.routetext').text('Optimizing Route');    
     $('.pageloader').css('display','block');
     if(optimize=="yes")
@@ -1481,7 +1645,14 @@ function NavigatePath(taskids,distancematrix,optimize,agentid,date) {
     
 }
 
-
+$('input[type=radio][name=driver_start_location]').change(function() {
+    if (this.value == 'current') {
+        $('#addressBlock').css('display','none');
+    }
+    else if (this.value == 'select') {
+        $('#addressBlock').css('display','block');
+    }
+});
 </script>
 
 
