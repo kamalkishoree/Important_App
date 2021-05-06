@@ -134,7 +134,7 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content" style="">
             <div class="modal-header align-items-center">
-                <h4 class="page-title m-0">Add Task</h4>
+                <h4 class="page-title m-0">Add Route</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
             </div>
             <form id="taskFormHeader" method="post" enctype="multipart/form-data" action="{{ route('tasks.store') }}">

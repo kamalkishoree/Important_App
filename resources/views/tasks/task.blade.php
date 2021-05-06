@@ -13,7 +13,7 @@ use Carbon\Carbon;
         <div class="row">
             <div class="col-12">
                 <div class="page-title-box">
-                    <h4 class="page-title">{{ auth()->user()->getPreference->agent_name ?? 'Tasks' }}</h4>
+                    <h4 class="page-title">{{ auth()->user()->getPreference->agent_name ?? 'Routes' }}</h4>
                 </div>
             </div>
         </div>
@@ -91,9 +91,9 @@ use Carbon\Carbon;
                                         {{-- <th>Create Time</th> --}}
                                         <th>Due Time</th>
                                         {{-- <th>Tasks</th> --}}
-                                        <th>Tasks</th>
+                                        <th>Routes</th>
                                         <th>Tracking Url</th>
-                                        <th>Task Proofs</th>
+                                        <th>Route Proofs</th>
                                         <th>Pricing</th>
                                         <th style="width: 85px;">Action</th>
                                     </tr>

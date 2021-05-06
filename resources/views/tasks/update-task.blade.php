@@ -1,4 +1,4 @@
-@extends('layouts.vertical', ['title' => 'Tasks'])
+@extends('layouts.vertical', ['title' => 'Routes'])
 @section('css')
 
 @endsection
@@ -12,7 +12,7 @@ use Carbon\Carbon;
         <div class="row">
             <div class="col-md-12">
                 <div class="page-title-box">
-                    <h4 class="page-title">Edit Task</h4>
+                    <h4 class="page-title">Edit Route</h4>
                 </div>
             </div>
         </div>

@@ -157,7 +157,7 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="page-title-box">
-                    <h4 class="page-title">Add Task</h4>
+                    <h4 class="page-title">Add Route</h4>
                 </div>
             </div>
         </div>
