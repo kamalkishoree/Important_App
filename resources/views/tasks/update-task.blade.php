@@ -251,7 +251,24 @@ use Carbon\Carbon;
                                                         alt="">
                                                 </div>
                                                 @if(isset($task->customer->location))
-                                                @foreach ($task->customer->location as $key => $items)
+                                                <?php
+                                                $locationarray1 = [];
+                                                $locationarray2 = [];
+                                                foreach ($task->customer->location as $singlelocation) {
+                                                    if($singlelocation->id == $item->location_id)
+                                                    {
+                                                        $locationarray1[] = $singlelocation;
+                                                    }else{
+                                                        $locationarray2[] = $singlelocation;
+                                                    }
+                                                }
+                                                $finallocationarray = array_merge($locationarray1,$locationarray2);
+                                               
+
+
+
+                                                ?>
+                                                @foreach ($finallocationarray as $key => $items)
 
                                                     <div class="append">
                                                         <div class="custom-control custom-radio"><input type="radio"
