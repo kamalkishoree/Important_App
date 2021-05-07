@@ -234,6 +234,15 @@ use Carbon\Carbon;
                                                             </div>
                                                         </div> 
                                                     </div>
+                                                    <div class="col-md-6">
+                                                        <span>Due After</span>
+                                                        {!! Form::time('due_after[]', $item->due_after, ['class' => 'form-control due_after', 'placeholder' => 'Due After']) !!}
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <span>Due Before</span>
+                                                        {!! Form::time('due_before[]', $item->due_before, ['class' => 'form-control due_before','placeholder' => 'Due Before']) !!}
+                                                    </div>
+
                                                 </div>
                                                 <span class="invalid-feedback" role="alert">
                                                     <strong></strong>
