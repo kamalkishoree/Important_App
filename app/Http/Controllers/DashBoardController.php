@@ -681,6 +681,13 @@ class DashBoardController extends Controller
                         
                         
                     }
+                    $creatdtime = $agent['order'][$p]['task'][0]['created_at'];
+                    $tskid = $agent['order'][$p]['task'][0]['id'];
+                    $updatetasktime = [
+                        'created_at'                => date('Y-m-d', strtotime($creatdtime)).' '.date('H:i:s', $tasktime),
+                    ];
+
+                    $orders = Task::where('id', $tskid)->update($updatetasktime);
                     
                     // $agent['order'][$p]['task'][0]['task_time'] = date("h:i a", strtotime($singleorder['task'][0]['created_at']));
                     $agent['order'][$p]['task'][0]['task_time'] = date("h:i a", $tasktime);                    
@@ -756,7 +763,15 @@ class DashBoardController extends Controller
                             }
                         }                       
                         
-                    }                    
+                    } 
+                    
+                    $creatdtime = $unassigned_tasks[$p]['task'][0]['created_at'];
+                    $tskid = $unassigned_tasks[$p]['task'][0]['id'];
+                    $updatetasktime = [
+                        'created_at'                => date('Y-m-d', strtotime($creatdtime)).' '.date('H:i:s', $tasktime),
+                    ];
+
+                    $orders = Task::where('id', $tskid)->update($updatetasktime);
                     
                     $unassigned_tasks[$p]['task'][0]['task_time'] = date("h:i a", $tasktime);                                        
                     // $unassigned_tasks[$p]['task'][0]['task_time'] = date("h:i a", strtotime($singleorder['task'][0]['created_at']));
