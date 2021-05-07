@@ -39,28 +39,29 @@
                                     </div>
                                     <div class="col-lg-6 col-sm-6 mb-lg-0 mb-3">
                                         <div class="form-group" id="DriverBrakeStartTime">
-                                            {!! Form::label('title', 'Driver brake Start time',['class' => 'control-label']) !!}
+                                            {!! Form::label('title', 'Driver Break Start time',['class' => 'control-label']) !!}
                                             {!! Form::time('brake_start_time', null, ['class' => 'form-control driverBrakeStartTime']) !!}
                                             <span class="invalid-feedback" role="alert">
-                                                <strong>Please enter the driver brake start time</strong>
+                                                <strong>Please enter the driver break start time</strong>
                                             </span>
                                         </div> 
                                     </div>
                                     <div class="col-lg-6 col-sm-6 mb-lg-0 mb-3">
                                         <div class="form-group" id="DriverBrakeEndTime">
-                                            {!! Form::label('title', 'Driver brake End time',['class' => 'control-label']) !!}
+                                            {!! Form::label('title', 'Driver Break End time',['class' => 'control-label']) !!}
                                             {!! Form::time('brake_end_time', null, ['class' => 'form-control driverBrakeEndTime']) !!}
                                             <span class="invalid-feedback" role="alert">
-                                                <strong>Please enter the driver brake end time</strong>
+                                                <strong>Please enter the driver break end time</strong>
                                             </span>
                                         </div> 
                                     </div>
 
-                                    <div class="col-lg-6 col-sm-6 mb-lg-0 mb-3">
+                                    <div class="col-12 mb-lg-0 mb-3">
                                         <div class="form-group" id="">
-                                            {!! Form::label('title', 'Driver Start Location',['class' => 'control-label']) !!}
-                                            <input type="radio" name="driver_start_location" value="current" checked> Current location
-                                            <input type="radio" name="driver_start_location" value="select"> Select Location 
+                                            {!! Form::label('title', 'Driver Start Location',['class' => 'control-label d-block']) !!}
+                                            
+                                            <input class="align-middle" type="radio" name="driver_start_location" value="current" checked> <span class="align-middle">Current location</span>
+                                            <input class="align-middle ml-2" type="radio" name="driver_start_location" value="select"> <span class="align-middle">Select Location</span> 
                                             
                                         </div> 
                                     </div>
@@ -93,7 +94,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-blue waves-effect waves-light" onclick="cancleForm()">Cancel</button>
+                    {{-- <button type="button" class="btn btn-blue waves-effect waves-light" onclick="cancleForm()">Cancel</button> --}}
                     <button type="button" class="btn btn-blue waves-effect waves-light submitoptimizeForm">Submit</button>
                 </div>
             </form>

@@ -88,6 +88,8 @@ class CustomerController extends Controller
                         'customer_id' => $customer->id,
                         'phone_number' => $request->address_phone_number[$key],
                         'email' => $request->address_email[$key],
+                        'due_after' => $request->due_after[$key],
+                        'due_before' => $request->due_before[$key],
                     ];
                     $Loction = Location::create($datas);
                 }
@@ -170,6 +172,8 @@ class CustomerController extends Controller
                             $location->longitude = $request->longitude[$key];
                             $location->phone_number = $request->address_phone_number[$key];
                             $location->email = $request->address_email[$key];
+                            $location->due_after = $request->due_after[$key];
+                            $location->due_before = $request->due_before[$key];
 
                             $location->save();
                         }
@@ -184,6 +188,9 @@ class CustomerController extends Controller
                             'customer_id' => $customer->id,
                             'phone_number' => $request->address_phone_number[$key],
                             'email' => $request->address_email[$key],
+                            'due_after' => $request->due_after[$key],
+                            'due_before' => $request->due_before[$key],
+                            
 
                         ];
                         $Loction = Location::create($datas);

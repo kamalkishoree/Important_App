@@ -98,7 +98,27 @@
                                                 </span>
                                                 <button type="button" class="btn btn-primary-outline action-icon" onclick="deleteAddress('',1)"> <i class="mdi mdi-delete"></i></button>
                                             </div>
-                                        </div>    
+                                        </div>  
+
+                                        <div class="col-sm-6 mb-lg-0 mb-3">
+
+                                            <div class="form-group">
+                                                <label for="">Due After</label>
+                                                <input type="time" id="add1-due_after" name="due_after[]" class="form-control" placeholder="Due After">
+                                                <span class="invalid-feedback" role="alert">
+                                                    <strong></strong>
+                                                </span>
+                                            </div>    
+                                        </div>
+                                        <div class="col-sm-6 mb-lg-0 mb-3">
+                                            <div class="form-group">
+                                                <label for="">Due Before</label>
+                                                <input type="time" id="add1-due_before" name="due_before[]" class="form-control" placeholder="Due Before">
+                                                <span class="invalid-feedback" role="alert">
+                                                    <strong></strong>
+                                                </span>
+                                            </div>    
+                                        </div>
 
 
                                     </div>

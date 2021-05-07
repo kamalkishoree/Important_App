@@ -1176,3 +1176,7 @@ background-color: #F5F5F5;
 #add-customer-modal .modal-dialog.modal-lg,#edit-customer-modal .modal-dialog.modal-lg {
     max-width: 1040px;
 }
+
+#optimize-route-modal .modal-dialog.modal-lg{
+    max-width: 400px;
+}
