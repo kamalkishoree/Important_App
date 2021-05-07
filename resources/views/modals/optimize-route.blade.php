@@ -86,12 +86,14 @@
                                 <input type="hidden" name="route_optimize" id="routeOptimize">
                                 <input type="hidden" name="route_agentid" id="routeAgentid">
                                 <input type="hidden" name="route_date" id="routeDate">
+                                <input type="hidden" name="optimize_type" id="optimizeType">
 
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
+                    <button type="button" class="btn btn-blue waves-effect waves-light" onclick="cancleForm()">Cancel</button>
                     <button type="button" class="btn btn-blue waves-effect waves-light submitoptimizeForm">Submit</button>
                 </div>
             </form>

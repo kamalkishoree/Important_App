@@ -1137,10 +1137,12 @@ function RouteOptimization(taskids,distancematrix,optimize,agentid,date) {
     $('#routeOptimize').val(optimize);
     $('#routeAgentid').val(agentid);
     $('#routeDate').val(date);
+    $('#optimizeType').val('optimize');
     $("input[name='driver_start_location'][value='current']").prop("checked",true);
     $('#addressBlock').css('display','none');
     $('#optimize-route-modal').modal('show');
 }
+
 
 
 $('.submitoptimizeForm').click(function(){
@@ -1150,6 +1152,7 @@ $('.submitoptimizeForm').click(function(){
     var driverTaskDuration = $('.driverTaskDuration').val();
     var driverBrakeStartTime = $('.driverBrakeStartTime').val();
     var driverBrakeEndTime = $('.driverBrakeEndTime').val();
+    var sortingtype = $('#optimizeType').val();
     var err = 0;
     if(driverStartTime=='')
     {
@@ -1174,14 +1177,21 @@ $('.submitoptimizeForm').click(function(){
     // alert(err);
     if(err == 0)
     {
+
         $('.routetext').text('Optimizing Route'); 
         $('#optimize-route-modal').modal('hide');
         $('.pageloader').css('display','block');
         var formdata =$('form#optimizerouteform').serialize();
+        if(sortingtype=='optimize')
+        {
+            var formurl = '{{url("/optimize-route")}}';
+        }else{
+            var formurl = '{{url("/optimize-arrange-route")}}';
+        }
         $.ajax({
                 type: 'POST',
                 
-                url: '{{url("/optimize-route")}}',
+                url: formurl,
                 headers: {
                     'X-CSRF-Token': '{{ csrf_token() }}',
                 },
@@ -1191,9 +1201,10 @@ $('.submitoptimizeForm').click(function(){
                 success: function(response) {
                     
                     if(response!="Try again later")
-                    {
+                    {                        
                         var data = $.parseJSON(response);
                     // alert(data);
+                        
                         var tasklist = data.tasklist;
                         var taskorders = tasklist.order;
                         var agentid = data.agentid;
@@ -1262,14 +1273,17 @@ $('.submitoptimizeForm').click(function(){
                             $('#handle-dragula-left'+agentid).append(sidebarhtml);
                         }
 
-                        // -------- for route show ------------------
-                        reInitMap(data.allroutedata);    
+                        if(sortingtype=='optimize')
+                        {
+                            // -------- for route show ------------------
+                            reInitMap(data.allroutedata);
+                            var params = "'"+taskids+"','"+distancematrix+"','',"+agentid;
+                            var funperams = '<span class="optimize_btn" onclick="RouteOptimization('+params+')">Optimize</span>';                    
+                            $('.optimizebtn'+agentid).html(funperams);
 
-                        var params = "'"+taskids+"','"+distancematrix+"','',"+agentid;
-                        var funperams = '<span class="optimize_btn" onclick="RouteOptimization('+params+')">Optimize</span>';                    
-                        $('.optimizebtn'+agentid).html(funperams);
-
-                        // ----- route show end-----------
+                            // ----- route show end-----------
+                        }
+                        
 
                         $('#optimizerouteform').trigger("reset");
 
@@ -1286,14 +1300,13 @@ $('.submitoptimizeForm').click(function(){
             });
     }
 
-    
-
-
 });
 
-
-
-
+function cancleForm()
+{
+    $('#optimizerouteform').trigger("reset");
+    $('#optimize-route-modal').modal('hide');
+}
 
 function RouteOptimizationOld(taskids,distancematrix,optimize,agentid,date) {
     $('.routetext').text('Optimizing Route');    
@@ -1565,7 +1578,17 @@ $(".dragable_tasks").sortable({
                 $('.totdis'+agentid).html(data.total_distance); 
                 var funperams = '<span class="optimize_btn" onclick="RouteOptimization('+params+')">Optimize</span>';
                 $('.optimizebtn'+agentid).html(funperams);
-                $('.pageloader').css('display','none');                
+                $('.pageloader').css('display','none');
+
+                $('#routeTaskIds').val(taskorder);
+                $('#routeMatrix').val('');
+                $('#routeOptimize').val('');
+                $('#routeAgentid').val(agentid);
+                $('#routeDate').val(date);
+                $('#optimizeType').val('dragdrop');
+                $("input[name='driver_start_location'][value='current']").prop("checked",true);
+                $('#addressBlock').css('display','none');
+                $('#optimize-route-modal').modal('show');
             },
             error: function(response) {
                 alert('There is some issue. Try again later');

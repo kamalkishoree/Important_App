@@ -99,6 +99,7 @@ Route::domain('{domain}')->middleware(['subdomain'])->group(function() {
 
 				Route::post('optimize-route','DashBoardController@optimizeRoute');
 				Route::post('arrange-route','DashBoardController@arrangeRoute');
+				Route::post('optimize-arrange-route','DashBoardController@optimizeArrangeRoute');
 				Route::post('export-path','DashBoardController@ExportPdfPath');
 				Route::post('generate-pdf','DashBoardController@generatePdf')->name('download.pdf');
 
