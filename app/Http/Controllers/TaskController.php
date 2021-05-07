@@ -199,8 +199,8 @@ class TaskController extends Controller
                     'post_code'   => $request->post_code[$key],
                     'email'         => $request->address_email[$key],
                     'phone_number'   => $request->address_phone_number[$key],
-                    'due_after'      => $request->due_after[$key],
-                    'due_before'    => $request->due_before[$key],
+                    // 'due_after'      => $request->due_after[$key],
+                    // 'due_before'    => $request->due_before[$key],
                     'customer_id' => $cus_id,
                 ];
                 $Loction = Location::create($loc);
@@ -231,8 +231,8 @@ class TaskController extends Controller
                     'post_code'   => $location->post_code,
                     'email'         => $location->address_email,
                     'phone_number'   => $location->address_phone_number,
-                    'due_after'      => $location->due_after,
-                    'due_before'    => $location->due_before,
+                    // 'due_after'      => $location->due_after,
+                    // 'due_before'    => $location->due_before,
                     'customer_id' => $cus_id,
                 ];
                 $location = Location::create($newloc);
@@ -1865,8 +1865,8 @@ class TaskController extends Controller
                     'longitude'  => $request->longitude[$key],
                     'email'  => $request->address_email[$key],
                     'phone_number'  => $request->address_phone_number[$key],
-                    'due_after'  => $request->due_after[$key],
-                    'due_before'  => $request->due_before[$key],
+                    // 'due_after'  => $request->due_after[$key],
+                    // 'due_before'  => $request->due_before[$key],
                     'customer_id' => $cus_id,
                 ];
                 $Loction = Location::create($loc);
@@ -1890,8 +1890,8 @@ class TaskController extends Controller
                         'post_code'   => $location->post_code,
                         'email'         => $location->address_email,
                         'phone_number'   => $location->address_phone_number,
-                        'due_after'      => $location->due_after,
-                        'due_before'    => $location->due_before,
+                        // 'due_after'      => $location->due_after,
+                        // 'due_before'    => $location->due_before,
                         'customer_id' => $cus_id,
                     ];
                     $location = Location::create($newloc);

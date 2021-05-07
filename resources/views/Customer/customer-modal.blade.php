@@ -100,7 +100,7 @@
                                             </div>
                                         </div>  
 
-                                        <div class="col-sm-6 mb-lg-0 mb-3">
+                                        {{-- <div class="col-sm-6 mb-lg-0 mb-3">
 
                                             <div class="form-group">
                                                 <label for="">Due After</label>
@@ -118,7 +118,7 @@
                                                     <strong></strong>
                                                 </span>
                                             </div>    
-                                        </div>
+                                        </div> --}}
 
 
                                     </div>

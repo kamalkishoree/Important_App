@@ -87,7 +87,7 @@
                 <button type="button" class="btn btn-primary-outline action-icon" onclick="deleteAddress({{$loc->id}},{{$i}})"> <i class="mdi mdi-delete"></i></button>
             </div>
         </div>
-        <div class="col-sm-6 mb-lg-0 mb-3">            
+        {{-- <div class="col-sm-6 mb-lg-0 mb-3">            
             <div class="form-group">
                 <label for="">Due After</label>
                 <input type="time" id="edit{{$i}}-due_after" name="due_after[]" class="form-control" placeholder="Due After" value="{{$loc->due_after}}">
@@ -104,7 +104,7 @@
                     <strong></strong>
                 </span>
             </div>
-        </div>
+        </div> --}}
 
     </div>
     <?php $i++; ?>
