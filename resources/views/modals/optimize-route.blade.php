@@ -31,7 +31,7 @@
                                     <div class="col-lg-6 col-sm-6 mb-lg-0 mb-3">
                                         <div class="form-group" id="DriverTaskDuration">
                                             {!! Form::label('title', 'Task Duration(in min)',['class' => 'control-label']) !!}
-                                            {!! Form::text('task_duration', 10, ['class' => 'form-control driverTaskDuration onlynumber']) !!}
+                                            {!! Form::text('task_duration', 20, ['class' => 'form-control driverTaskDuration onlynumber']) !!}
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>Please enter the task duration</strong>
                                             </span>
