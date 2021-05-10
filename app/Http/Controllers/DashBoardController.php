@@ -548,7 +548,11 @@ class DashBoardController extends Controller
             $startingtasklocation = Task::where('id',$request->task_start_location)->with('location')->first();
             $driver_lat = $startingtasklocation->location->latitude;
             $driver_long = $startingtasklocation->location->longitude;
-
+            if($driver_lat==0 || $driver_long==0)
+            {
+                $driver_lat = $distancematrixarray[0][0];
+                $driver_long = $distancematrixarray[0][1];
+            }
         }else{            
             if($driver_latitude==0 || $driver_longitude==0)
             {
@@ -1367,6 +1371,11 @@ class DashBoardController extends Controller
             $startingtasklocation = Task::where('id',$request->task_start_location)->with('location')->first();
             $driver_lat = $startingtasklocation->location->latitude;
             $driver_long = $startingtasklocation->location->longitude;
+            if($driver_lat==0 || $driver_long==0)
+            {
+                $driver_lat = $firsttaskdetail->location->latitude;
+                $driver_long = $firsttaskdetail->location->longitude;
+            }
 
         }else{            
             if($driver_latitude==0 || $driver_longitude==0)

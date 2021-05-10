@@ -1320,7 +1320,7 @@ $('.submitoptimizeForm').click(function(){
                         {
                             // -------- for route show ------------------
                             reInitMap(data.allroutedata);
-                            var params = "'"+taskids+"','"+distancematrix+"','',"+agentid;
+                            var params = "'"+taskids+"','"+distancematrix+"','',"+agentid+",'"+date+"'";
                             var funperams = '<span class="optimize_btn" onclick="RouteOptimization('+params+')">Optimize</span>';                    
                             $('.optimizebtn'+agentid).html(funperams);
 
