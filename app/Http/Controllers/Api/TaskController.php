@@ -180,11 +180,11 @@ class TaskController extends BaseController
 
         }
 
-        if($task_type == 'failed'){
+        // if($task_type == 'failed'){
 
-            $task = Task::where('order_id', $orderId->order_id)->update(['task_status' => $request->task_status,'note' => $note ,'proof_image' => $proof_image,'proof_signature' => $proof_signature]);
+        //     $task = Task::where('order_id', $orderId->order_id)->update(['task_status' => $request->task_status,'note' => $note ,'proof_image' => $proof_image,'proof_signature' => $proof_signature]);            
             
-        }
+        // }
 
         $task = Task::where('id', $request->task_id)->update(['task_status' => $request->task_status,'note' => $note ,'proof_image' => $proof_image,'proof_signature' => $proof_signature]);
 
