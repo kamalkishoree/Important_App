@@ -578,7 +578,9 @@ class DashBoardController extends Controller
         $enddate = Carbon::parse($enddate . $auth->timezone ?? 'UTC')->tz('UTC');
 
         //$distance_matrix = json_decode($request->distance); 
-        $points = json_decode($request->distance_matrix);         
+        //$points = json_decode($request->distance_matrix);
+        $points = $distancematrixarray;      
+
         $distance_matrix = $this->distanceMatrix($points,$taskids);
         $payload = json_encode(array("data" => $distance_matrix));
         
