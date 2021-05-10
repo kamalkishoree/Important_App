@@ -359,7 +359,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                             <div class="task-block pl-2 pr-2">
                                 <div class="row">
                                     <div class="col-md-6 col-6">
-                                        <span>Tasks</span>
+                                        <span>Routes</span>
                                     </div>
                                     <div class="col-md-6 col-6 text-right">
                                         <a href=""><span>All</span></a>
@@ -411,13 +411,13 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                     <div class="dropdown d-inline-block brdr-1">
                         <button class="dropdown-toggle" type="button" id="dropdownMenuButton"
                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <img class="mr-1" src="{{ asset('demo/images/ic_time.png') }}">Tasks
+                            <img class="mr-1" src="{{ asset('demo/images/ic_time.png') }}">Routes
                         </button>
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                             <div class="task-block pl-2 pr-2">
                                 <div class="row">
                                     <div class="col-md-6 col-6">
-                                        <span>Task Status </span>
+                                        <span>Route Status </span>
                                     </div>
                                     <div class="col-md-6 col-6 text-right">
                                         <a href=""><span></span></a>
