@@ -348,7 +348,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
             <div class="contant">
                 <div class="bottom-content">
                     <input type="text"  id="basic-datepicker" class="brdr-1 datetime" value="{{date($preference->date_format, strtotime($date))}}" data-date-format="{{$preference->date_format}}">
-                    <div class="dropdown d-inline-block brdr-1">
+                    {{-- <div class="dropdown d-inline-block brdr-1">
                         <button class="dropdown-toggle" type="button" id="dropdownMenuButton"
                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <img class="mr-1"
@@ -407,8 +407,8 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                 @endforeach
                             </div>
                         </div>
-                    </div>
-                    <div class="dropdown d-inline-block brdr-1">
+                    </div> --}}
+                    {{-- <div class="dropdown d-inline-block brdr-1">
                         <button class="dropdown-toggle" type="button" id="dropdownMenuButton"
                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <img class="mr-1" src="{{ asset('demo/images/ic_time.png') }}">Routes
@@ -499,7 +499,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div> --}}
                     <div class="dropdown d-inline-block">
                         <button class="dropdown-toggle" type="button" id="dropdownMenuButton"
                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
