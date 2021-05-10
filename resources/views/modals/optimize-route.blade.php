@@ -21,7 +21,7 @@
                                     <div class="col-lg-6 col-sm-6 mb-lg-0 mb-3">
                                         <div class="form-group" id="DriverStartTime">
                                             {!! Form::label('title', 'Driver starts Day at',['class' => 'control-label']) !!}
-                                            {!! Form::time('driver_start_time', null, ['class' => 'form-control driverStartTime']) !!}
+                                            {!! Form::time('driver_start_time', '09:00', ['class' => 'form-control driverStartTime']) !!}
                                             
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>Please enter the driver start time</strong>
@@ -31,7 +31,7 @@
                                     <div class="col-lg-6 col-sm-6 mb-lg-0 mb-3">
                                         <div class="form-group" id="DriverTaskDuration">
                                             {!! Form::label('title', 'Task Duration(in min)',['class' => 'control-label']) !!}
-                                            {!! Form::text('task_duration', null, ['class' => 'form-control driverTaskDuration onlynumber']) !!}
+                                            {!! Form::text('task_duration', 10, ['class' => 'form-control driverTaskDuration onlynumber']) !!}
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>Please enter the task duration</strong>
                                             </span>
@@ -40,7 +40,7 @@
                                     <div class="col-lg-6 col-sm-6 mb-lg-0 mb-3">
                                         <div class="form-group" id="DriverBrakeStartTime">
                                             {!! Form::label('title', 'Driver Break Start time',['class' => 'control-label']) !!}
-                                            {!! Form::time('brake_start_time', null, ['class' => 'form-control driverBrakeStartTime']) !!}
+                                            {!! Form::time('brake_start_time', '13:00', ['class' => 'form-control driverBrakeStartTime']) !!}
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>Please enter the driver break start time</strong>
                                             </span>
@@ -49,7 +49,7 @@
                                     <div class="col-lg-6 col-sm-6 mb-lg-0 mb-3">
                                         <div class="form-group" id="DriverBrakeEndTime">
                                             {!! Form::label('title', 'Driver Break End time',['class' => 'control-label']) !!}
-                                            {!! Form::time('brake_end_time', null, ['class' => 'form-control driverBrakeEndTime']) !!}
+                                            {!! Form::time('brake_end_time', '14:00', ['class' => 'form-control driverBrakeEndTime']) !!}
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>Please enter the driver break end time</strong>
                                             </span>
@@ -62,6 +62,7 @@
                                             
                                             <input class="align-middle" type="radio" name="driver_start_location" value="current" checked> <span class="align-middle">Current location</span>
                                             <input class="align-middle ml-2" type="radio" name="driver_start_location" value="select"> <span class="align-middle">Select Location</span> 
+                                            <input class="align-middle ml-2" type="radio" name="driver_start_location" value="task_location"> <span class="align-middle">Select Task</span> 
                                             
                                         </div> 
                                     </div>
@@ -77,6 +78,14 @@
                                             <input type="hidden" name="latitude" id="opt-route-latitude" value="0" class="" />
                                             <input type="hidden" name="longitude" id="opt-route--longitude" value="0" class="" />
                                             
+                                        </div>
+
+                                    </div>
+
+                                    <div class="col-lg-12 col-sm-6 mb-lg-0 mb-3" id="addressTaskBlock" style="display: none;">
+                                        <div class="form-group input-group mb-1" >
+                                            <select class="form-control" name="task_start_location" id="selectedtasklocations">                                                
+                                            </select>
                                         </div>
 
                                     </div>

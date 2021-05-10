@@ -1140,7 +1140,50 @@ function RouteOptimization(taskids,distancematrix,optimize,agentid,date) {
     $('#optimizeType').val('optimize');
     $("input[name='driver_start_location'][value='current']").prop("checked",true);
     $('#addressBlock').css('display','none');
-    $('#optimize-route-modal').modal('show');
+    $('#addressTaskBlock').css('display','none');
+    $('#selectedtasklocations').html(''); 
+    $.ajax({
+            type: 'POST',            
+            url: '{{url("/get-tasks")}}',
+            headers: {
+                'X-CSRF-Token': '{{ csrf_token() }}',
+            },
+            data: {'taskids':taskids},
+
+            success: function(response) {
+                
+                var data = $.parseJSON(response);    
+                               
+                for (var i = 0; i < data.length; i++) {
+                    var object = data[i];
+                    var task_id =  object['id'];
+                    var tasktypeid = object['task_type_id'];
+                    if(tasktypeid==1)
+                    {
+                        tasktype = "Pickup";
+                    }else if(tasktypeid==2)
+                    {
+                        tasktype = "Dropoff";
+                    }else{
+                        tasktype = "Appointment";
+                    } 
+
+                    var location_address =  object['location']['address'];
+                    var shortname =  object['location']['short_name'];
+
+                                        
+                    var option   = '<option value="'+task_id+'">'+tasktype+' - '+shortname+' - '+location_address+'</option>';
+                    //$('#collapse'+agentid).append(sidebarhtml);
+                    $('#selectedtasklocations').append(option);
+                }
+            },
+            error: function(response) {
+                // alert('There is some issue. Try again later');
+                // $('.pageloader').css('display','none');
+            }
+        });
+
+        $('#optimize-route-modal').modal('show');
 }
 
 
@@ -1588,6 +1631,7 @@ $(".dragable_tasks").sortable({
                 $('#optimizeType').val('dragdrop');
                 $("input[name='driver_start_location'][value='current']").prop("checked",true);
                 $('#addressBlock').css('display','none');
+                $('#addressTaskBlock').css('display','none');
                 $('#optimize-route-modal').modal('show');
             },
             error: function(response) {
@@ -1671,9 +1715,15 @@ function NavigatePath(taskids,distancematrix,optimize,agentid,date) {
 $('input[type=radio][name=driver_start_location]').change(function() {
     if (this.value == 'current') {
         $('#addressBlock').css('display','none');
+        $('#addressTaskBlock').css('display','none');
     }
     else if (this.value == 'select') {
         $('#addressBlock').css('display','block');
+        $('#addressTaskBlock').css('display','none');
+    }
+    else if(this.value == 'task_location') {
+        $('#addressTaskBlock').css('display','block');
+        $('#addressBlock').css('display','none');
     }
 });
 </script>

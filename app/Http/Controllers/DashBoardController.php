@@ -544,6 +544,11 @@ class DashBoardController extends Controller
                 $driver_long = $distancematrixarray[0][1];
             }
 
+        }elseif($driver_start_location=='task_location'){
+            $startingtasklocation = Task::where('id',$request->task_start_location)->with('location')->first();
+            $driver_lat = $startingtasklocation->location->latitude;
+            $driver_long = $startingtasklocation->location->longitude;
+
         }else{            
             if($driver_latitude==0 || $driver_longitude==0)
             {
@@ -554,6 +559,10 @@ class DashBoardController extends Controller
                 $driver_long = $driver_longitude;
             }
         }
+        //arranging starting location in distance matrix
+        $distancematrixarray[0][0] = $driver_lat;
+        $distancematrixarray[0][1] = $driver_long;        
+
 
         // $driver_start_time = "09:00";
         // $task_duration = "10";
@@ -1352,6 +1361,11 @@ class DashBoardController extends Controller
                 $driver_long = $firsttaskdetail->location->longitude;
             }
 
+        }elseif($driver_start_location=='task_location'){
+            $startingtasklocation = Task::where('id',$request->task_start_location)->with('location')->first();
+            $driver_lat = $startingtasklocation->location->latitude;
+            $driver_long = $startingtasklocation->location->longitude;
+
         }else{            
             if($driver_latitude==0 || $driver_longitude==0)
             {
@@ -1747,6 +1761,26 @@ class DashBoardController extends Controller
         $output = array();
         $output['total_time'] = $time;        
         return $output;
+    }
+
+    public function getTaskDetails(Request $request)
+    {
+        $taskids = explode(',',$request->taskids);
+        $taskids = array_filter($taskids);
+
+        $taskdetails = [];
+        $html = "";
+        for($i=0;$i<count($taskids);$i++)
+        {
+            $singletaskdetail = Task::where('id',$taskids[$i])->with('location')->first();
+            $taskdetails[] = $singletaskdetail->toArray();
+            // $html .= '<option value="">'.$singletaskdetail->task_type_id.'</option>';
+        }
+        echo json_encode($taskdetails);
+        // echo "<pre>";
+        // print_r($taskdetails);
+
+          
     }
 
     
