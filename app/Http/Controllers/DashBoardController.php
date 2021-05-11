@@ -705,10 +705,17 @@ class DashBoardController extends Controller
                         
                         
                     }
-                    $creatdtime = $agent['order'][$p]['task'][0]['created_at'];
+                   // $creatdtime = $agent['order'][$p]['task'][0]['created_at'];
+                    $assignedtime = $agent['order'][$p]['task'][0]['assigned_time'];
                     $tskid = $agent['order'][$p]['task'][0]['id'];
+
+                    //$settime = date('Y-m-d', strtotime($assignedtime)).' '.date('H:i:s', $tasktime);
+                    $settime = date('Y-m-d', strtotime($request->route_date)).' '.date('H:i:s', $tasktime);
+                    $assignedtime = Carbon::parse($settime . $auth->timezone ?? 'UTC')->tz('UTC');
+
                     $updatetasktime = [
-                        'created_at'                => date('Y-m-d', strtotime($creatdtime)).' '.date('H:i:s', $tasktime),
+                        // 'assigned_time'                => date('Y-m-d', strtotime($assignedtime)).' '.date('H:i:s', $tasktime),
+                        'assigned_time'                => $assignedtime,
                     ];
 
                     $orders = Task::where('id', $tskid)->update($updatetasktime);
@@ -789,11 +796,19 @@ class DashBoardController extends Controller
                         
                     } 
                     
-                    $creatdtime = $unassigned_tasks[$p]['task'][0]['created_at'];
+                    // $creatdtime = $unassigned_tasks[$p]['task'][0]['created_at'];
+                    $assignedtime = $unassigned_tasks[$p]['task'][0]['assigned_time'];
                     $tskid = $unassigned_tasks[$p]['task'][0]['id'];
+
+                    //$settime = date('Y-m-d', strtotime($assignedtime)).' '.date('H:i:s', $tasktime);
+                    $settime = date('Y-m-d', strtotime($request->route_date)).' '.date('H:i:s', $tasktime);
+                    $assignedtime = Carbon::parse($settime . $auth->timezone ?? 'UTC')->tz('UTC');
+
                     $updatetasktime = [
-                        'created_at'                => date('Y-m-d', strtotime($creatdtime)).' '.date('H:i:s', $tasktime),
+                        // 'assigned_time'                => date('Y-m-d', strtotime($assignedtime)).' '.date('H:i:s', $tasktime),
+                        'assigned_time'                => $assignedtime,
                     ];
+                   
 
                     $orders = Task::where('id', $tskid)->update($updatetasktime);
                     
@@ -1473,10 +1488,18 @@ class DashBoardController extends Controller
                         }
                     }
                 }
-                $creatdtime = $agent['order'][$p]['task'][0]['created_at'];
+                //$creatdtime = $agent['order'][$p]['task'][0]['created_at'];
+                $assignedtime = $agent['order'][$p]['task'][0]['assigned_time'];
+                
                 $tskid = $agent['order'][$p]['task'][0]['id'];
+                
+                //$settime = date('Y-m-d', strtotime($assignedtime)).' '.date('H:i:s', $tasktime);
+                $settime = date('Y-m-d', strtotime($request->route_date)).' '.date('H:i:s', $tasktime);
+                $assignedtime = Carbon::parse($settime . $auth->timezone ?? 'UTC')->tz('UTC');
+
                 $updatetasktime = [
-                    'created_at' => date('Y-m-d', strtotime($creatdtime)).' '.date('H:i:s', $tasktime),
+                    // 'assigned_time'                => date('Y-m-d', strtotime($assignedtime)).' '.date('H:i:s', $tasktime),
+                    'assigned_time'                => $assignedtime,
                 ];
 
                 $orders = Task::where('id', $tskid)->update($updatetasktime);
@@ -1548,10 +1571,17 @@ class DashBoardController extends Controller
                     
                 } 
                 
-                $creatdtime = $unassigned_tasks[$p]['task'][0]['created_at'];
+                //$creatdtime = $unassigned_tasks[$p]['task'][0]['created_at'];
+                $assignedtask = $unassigned_tasks[$p]['task'][0]['assigned_time'];                
                 $tskid = $unassigned_tasks[$p]['task'][0]['id'];
+                
+                //$settime = date('Y-m-d', strtotime($assignedtime)).' '.date('H:i:s', $tasktime);
+                $settime = date('Y-m-d', strtotime($request->route_date)).' '.date('H:i:s', $tasktime);
+                $assignedtime = Carbon::parse($settime . $auth->timezone ?? 'UTC')->tz('UTC');
+
                 $updatetasktime = [
-                    'created_at'                => date('Y-m-d', strtotime($creatdtime)).' '.date('H:i:s', $tasktime),
+                    // 'assigned_time'                => date('Y-m-d', strtotime($assignedtime)).' '.date('H:i:s', $tasktime),
+                    'assigned_time'                => $assignedtime,
                 ];
 
                 $orders = Task::where('id', $tskid)->update($updatetasktime);                

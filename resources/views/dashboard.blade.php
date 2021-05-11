@@ -5,6 +5,8 @@
 <link href="{{ asset('demo/css/style.css') }}" rel="stylesheet" type="text/css" />
 @endsection
 @php
+
+use Carbon\Carbon;
 $color = ['one','two','three','four','five','six','seven','eight'];
 $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain/';
 @endphp
@@ -131,7 +133,13 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                                             <div>
                                                                 <div class="row no-gutters align-items-center">
                                                                     <div class="col-9 d-flex">
-                                                                        <h5 class="d-inline-flex align-items-center justify-content-between"><i class="fas fa-bars"></i> <span>{{date('h:i a ', strtotime($tasks['created_at']))}}</span></h5>
+                                                                        @php
+                                                                            $timeformat = $preference->time_format == '24' ? 'H:i:s':'g:i a';
+                                                                            $order = Carbon::createFromFormat('Y-m-d H:i:s', $tasks['assigned_time'], 'UTC');
+                                                                            $order->setTimezone(isset(Auth::user()->timezone) ? Auth::user()->timezone : 'Asia/Kolkata');
+                                                                        @endphp             
+
+                                                                        <h5 class="d-inline-flex align-items-center justify-content-between"><i class="fas fa-bars"></i> <span>{{date(''.$timeformat.'', strtotime($order))}}</span></h5>
                                                                         <h6 class="d-inline"><img class="vt-top"
                                                                             src="{{ asset('demo/images/ic_location_blue_1.png') }}"> {{ isset($tasks['location']['address'])? $tasks['location']['address']:'' }} <span class="d-block">{{ isset($tasks['location']['short_name'])? $tasks['location']['short_name']:'' }}</span></h6>
                                                                     </div>
@@ -299,9 +307,16 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                                             @endphp
                                                             <div>
 
+                                                                @php
+                                                                            $timeformat = $preference->time_format == '24' ? 'H:i:s':'g:i a';
+                                                                            $order = Carbon::createFromFormat('Y-m-d H:i:s', $tasks['assigned_time'], 'UTC');
+                                                                            $order->setTimezone(isset(Auth::user()->timezone) ? Auth::user()->timezone : 'Asia/Kolkata');
+                                                                        @endphp       
+                                                                          
+
                                                                 <div class="row no-gutters align-items-center">
                                                                     <div class="col-9 d-flex">
-                                                                        <h5 class="d-inline-flex align-items-center justify-content-between"><i class="fas fa-bars"></i> <span>{{date('h:i a ', strtotime($tasks['created_at']))}}</span></h5>
+                                                                        <h5 class="d-inline-flex align-items-center justify-content-between"><i class="fas fa-bars"></i> <span>{{date(''.$timeformat.'', strtotime($order))}}</span></h5>
                                                                         <h6 class="d-inline"><img class="vt-top"
                                                                             src="{{ asset('demo/images/ic_location_blue_1.png') }}"> {{ isset($tasks['location']['address'])? $tasks['location']['address']:'' }} <span class="d-block">{{ isset($tasks['location']['short_name'])? $tasks['location']['short_name']:'' }}</span></h6>
                                                                         
@@ -1632,6 +1647,48 @@ $(".dragable_tasks").sortable({
                 $("input[name='driver_start_location'][value='current']").prop("checked",true);
                 $('#addressBlock').css('display','none');
                 $('#addressTaskBlock').css('display','none');
+                $('#selectedtasklocations').html(''); 
+                $.ajax({
+                    type: 'POST',            
+                    url: '{{url("/get-tasks")}}',
+                    headers: {
+                        'X-CSRF-Token': '{{ csrf_token() }}',
+                    },
+                    data: {'taskids':taskorder},
+
+                    success: function(response) {
+                        
+                        var data = $.parseJSON(response);    
+                                    
+                        for (var i = 0; i < data.length; i++) {
+                            var object = data[i];
+                            var task_id =  object['id'];
+                            var tasktypeid = object['task_type_id'];
+                            if(tasktypeid==1)
+                            {
+                                tasktype = "Pickup";
+                            }else if(tasktypeid==2)
+                            {
+                                tasktype = "Dropoff";
+                            }else{
+                                tasktype = "Appointment";
+                            } 
+
+                            var location_address =  object['location']['address'];
+                            var shortname =  object['location']['short_name'];
+
+                                                
+                            var option   = '<option value="'+task_id+'">'+tasktype+' - '+shortname+' - '+location_address+'</option>';
+                            //$('#collapse'+agentid).append(sidebarhtml);
+                            $('#selectedtasklocations').append(option);
+                        }
+                    },
+                    error: function(response) {
+                        // alert('There is some issue. Try again later');
+                        // $('.pageloader').css('display','none');
+                    }
+                });
+
                 $('#optimize-route-modal').modal('show');
             },
             error: function(response) {

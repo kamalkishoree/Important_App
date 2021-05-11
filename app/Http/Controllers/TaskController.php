@@ -396,7 +396,7 @@ class TaskController extends Controller
                     
                    
                     //Order::where('id',$orders->id)->update(['order_time'=>$time]);
-                    Task::where('order_id',$orders->id)->update(['assigned_time'=>$time,'created_at' =>$time]);
+                    //Task::where('order_id',$orders->id)->update(['assigned_time'=>$time,'created_at' =>$time]);
                     
                     scheduleNotification::dispatch($schduledata)->delay(now()->addMinutes($finaldelay));
 
@@ -1908,7 +1908,8 @@ class TaskController extends Controller
                 'dependent_task_id'          => $dep_id,
                 'task_status'                => isset($agent_id) ? 1 : 0,
                 'barcode'                    => $request->barcode[$key],
-                'quantity'                   => $request->quantity[$key]
+                'quantity'                   => $request->quantity[$key],
+                'assigned_time'              => $notification_time,
             ];
             $task = Task::create($data);
             $dep_id = $task->id;
