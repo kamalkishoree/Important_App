@@ -362,6 +362,9 @@ class DashBoardController extends Controller
                     if($i==$k)
                     {
                         $matrixarray[$i][$k] = 0; 
+                    }elseif($i > $k)
+                    {
+                        $matrixarray[$i][$k] = $matrixarray[$k][$i];
                     }else{
                         $loc1 = $pointarray[$i][2];
                         $loc2 = $pointarray[$k][2];
@@ -586,7 +589,12 @@ class DashBoardController extends Controller
         $points = $distancematrixarray;      
 
         $distance_matrix = $this->distanceMatrix($points,$taskids);
+        // echo "<pre>";
+        // print_r($points);
+
         $payload = json_encode(array("data" => $distance_matrix));
+        // echo $payload;
+        // die;
         
         //api for getting optimize path
         $url = "https://optimizeroute.royodispatch.com/optimize";
