@@ -660,7 +660,12 @@ class DashBoardController extends Controller
                         $long2 = $agent['order'][$p]['task'][0]['location']['longitude'];
                         $between_time = $this->GetTotalTime($lat1,$long1,$lat2,$long2);
                         $between_time = round($between_time['total_time']/60);
-                        $lasttasktime = $tasktime + $taskdurationtime;
+                       // $lasttasktime = $tasktime + $taskdurationtime;
+
+                        $task_duration_time = "+".$task_duration ." minutes";
+                        $lasttasktime = strtotime($task_duration_time, $tasktime);
+
+
                         if($between_time==0)
                         {
                             $tasktime = $lasttasktime;
@@ -753,7 +758,9 @@ class DashBoardController extends Controller
                         $between_time = $this->GetTotalTime($lat1,$long1,$lat2,$long2);
                         $between_time = round($between_time['total_time']/60);
                         $between_time_min = "+".$between_time ." minutes";
-                        $lasttasktime = $tasktime + $taskdurationtime;
+                        //$lasttasktime = $tasktime + $taskdurationtime;
+                        $task_duration_time = "+".$task_duration ." minutes";
+                        $lasttasktime = strtotime($task_duration_time, $tasktime);
                         if($between_time==0)
                         {
                             $tasktime = $lasttasktime;
@@ -1446,7 +1453,9 @@ class DashBoardController extends Controller
                     $long2 = $agent['order'][$p]['task'][0]['location']['longitude'];
                     $between_time = $this->GetTotalTime($lat1,$long1,$lat2,$long2);
                     $between_time = round($between_time['total_time']/60);
-                    $lasttasktime = $tasktime + $taskdurationtime;
+                    //$lasttasktime = $tasktime + $taskdurationtime;
+                    $task_duration_time = "+".$task_duration ." minutes";
+                    $lasttasktime = strtotime($task_duration_time, $tasktime);
                     if($between_time==0)
                     {
                         $tasktime = $lasttasktime;
@@ -1531,7 +1540,9 @@ class DashBoardController extends Controller
                     $between_time = $this->GetTotalTime($lat1,$long1,$lat2,$long2);
                     $between_time = round($between_time['total_time']/60);
                     $between_time_min = "+".$between_time ." minutes";
-                    $lasttasktime = $tasktime + $taskdurationtime;
+                   // $lasttasktime = $tasktime + $taskdurationtime;
+                    $task_duration_time = "+".$task_duration ." minutes";
+                    $lasttasktime = strtotime($task_duration_time, $tasktime);
                     if($between_time==0)
                     {
                         $tasktime = $lasttasktime;
