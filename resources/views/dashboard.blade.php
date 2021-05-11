@@ -134,6 +134,10 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                                                 <div class="row no-gutters align-items-center">
                                                                     <div class="col-9 d-flex">
                                                                         @php
+                                                                        if($tasks['assigned_time']=="")
+                                                                        {
+                                                                            $tasks['assigned_time'] = date('Y-m-d H:i:s');
+                                                                        }
                                                                             $timeformat = $preference->time_format == '24' ? 'H:i:s':'g:i a';
                                                                             $order = Carbon::createFromFormat('Y-m-d H:i:s', $tasks['assigned_time'], 'UTC');
                                                                             $order->setTimezone(isset(Auth::user()->timezone) ? Auth::user()->timezone : 'Asia/Kolkata');
@@ -308,6 +312,10 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                                             <div>
 
                                                                 @php
+                                                                        if($tasks['assigned_time']=="")
+                                                                        {
+                                                                            $tasks['assigned_time'] = date('Y-m-d H:i:s');
+                                                                        }
                                                                             $timeformat = $preference->time_format == '24' ? 'H:i:s':'g:i a';
                                                                             $order = Carbon::createFromFormat('Y-m-d H:i:s', $tasks['assigned_time'], 'UTC');
                                                                             $order->setTimezone(isset(Auth::user()->timezone) ? Auth::user()->timezone : 'Asia/Kolkata');
