@@ -1180,3 +1180,13 @@ background-color: #F5F5F5;
 #optimize-route-modal .modal-dialog.modal-lg{
     max-width: 400px;
 }
+
+.logo-box {
+    width: 240px;
+    float: left;
+    transition: all 0.1s ease-out;
+    height: 70px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

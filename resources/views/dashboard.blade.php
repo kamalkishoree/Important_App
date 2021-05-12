@@ -777,6 +777,9 @@ for (let i = 0; i < olddata.length; i++) {
     //for agents
     for (let i = 0; i < allagent.length; i++) {
         checkdata = allagent[i];
+        //console.log(checkdata);
+        // alert($.inArray(checkdata['is_available'], agentval));
+        // alert($.inArray(2, agentval));
         //for agents
         if ($.inArray(checkdata['is_available'], agentval) != -1 || $.inArray(2, agentval) != -1) {
             
