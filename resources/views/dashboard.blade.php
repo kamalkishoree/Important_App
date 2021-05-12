@@ -577,6 +577,10 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                             </div>
                         </div>
                     </div>
+                    <div style="display:none">
+                        <input class="newchecks filtercheck teamchecks" cla type="checkbox" value="-1" name="teamchecks[]" checked>
+                        <input class="taskchecks filtercheck" type="checkbox" name="taskstatus[]" value="5" checked>
+                    </div>
                 </div>
             </div>
         </div>
