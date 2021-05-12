@@ -370,7 +370,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
             </div>
             <div class="contant">
                 <div class="bottom-content">
-                    <input type="text"  id="basic-datepicker" class="datetime" value="{{date($preference->date_format, strtotime($date))}}" data-date-format="{{$preference->date_format}}">
+                    <input type="text"  id="basic-datepicker" class="datetime brdr-1" value="{{date($preference->date_format, strtotime($date))}}" data-date-format="{{$preference->date_format}}">
                     {{-- <div class="dropdown d-inline-block brdr-1">
                         <button class="dropdown-toggle" type="button" id="dropdownMenuButton"
                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -523,7 +523,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                             </div>
                         </div>
                     </div> --}}
-                    {{-- <div class="dropdown d-inline-block">
+                    <div class="dropdown d-inline-block">
                         <button class="dropdown-toggle" type="button" id="dropdownMenuButton"
                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <img class="mr-1" src="{{ asset('demo/images/ic_time.png') }}">Drivers
@@ -576,7 +576,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
 
                             </div>
                         </div>
-                    </div> --}}
+                    </div>
                 </div>
             </div>
         </div>
@@ -623,6 +623,18 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-timeago/1.6.3/jquery.timeago.js"></script>
 <script>
 
+$('.teamchecks').on('change', function() {
+    $('.teamchecks').not(this).prop('checked', false);  
+});
+
+$('.taskchecks').on('change', function() {
+    $('.taskchecks').not(this).prop('checked', false);  
+});
+
+$('.agentcheck').on('change', function() {
+    $('.agentcheck').not(this).prop('checked', false);  
+});
+
 $(document).ready(function() {
 
 $('#wrapper').addClass('dshboard');
@@ -664,6 +676,7 @@ var imgproxyurl         = {!!json_encode($imgproxyurl)!!};
 
 //$('.newchecks').click(function() {
 $('.filtercheck').click(function() {    
+    $('.agentcheck').not(this).prop('checked', false);
 // for teams
 var val = [];
 $('.newchecks:checkbox:checked').each(function(i) {
@@ -682,6 +695,7 @@ $('.agentdisplay:checkbox:checked').each(function(i) {
     agentval[i] = parseInt($(this).val());
 });
 
+//  alert(agentval);
 
 setMapOnAll(null);
 //$(".taskchecks").prop('checked', false);
@@ -1724,20 +1738,6 @@ function closeAllAccordian() {
     $(".collapse").removeClass('show');    
     $(".allAccordian").html('<span class="" onclick="openAllAccordian()">Open All</span>');
 }
-
-
-$('.teamchecks').on('change', function() {
-    $('.teamchecks').not(this).prop('checked', false);  
-});
-
-$('.taskchecks').on('change', function() {
-    $('.taskchecks').not(this).prop('checked', false);  
-});
-
-$('.agentcheck').on('change', function() {
-    $('.agentcheck').not(this).prop('checked', false);  
-});
-
 
 function NavigatePath(taskids,distancematrix,optimize,agentid,date) {
     $('.routetext').text('Exporting Pdf');    
