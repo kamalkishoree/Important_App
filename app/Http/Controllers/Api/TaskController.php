@@ -103,6 +103,8 @@ class TaskController extends BaseController
         $inProgress     = $orderAll->where('task_status', 2);
         $lasttask       = count($orderAll->where('task_status', 4));
         $check          = $allCount - $lasttask;
+        $lastfailedtask       = count($orderAll->where('task_status', 5));
+        $checkfailed          = $allCount - $lastfailedtask;
 
         $sms_body       = '';
 
@@ -174,7 +176,14 @@ class TaskController extends BaseController
                 $Order  = Order::where('id',$orderId->order_id)->update(['status' => $task_type ]);
             }
 
+        } elseif ($request->task_status == 5) {
+           
+            if ($checkfailed == 1) {
+                $Order  = Order::where('id',$orderId->order_id)->update(['status' => $task_type ]);
+            }
+
         } else {
+
 
             $Order  = Order::where('id',$orderId->order_id)->update(['status' => $task_type, 'note' => $note]);
 
