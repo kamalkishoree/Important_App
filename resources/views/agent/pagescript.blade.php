@@ -31,23 +31,7 @@
             utilsScript: "{{ asset('telinput/js/utils.js') }}",
          }); 
         
-       /*window.intlTelInput(input, {
-        // allowDropdown: false,
-        // autoHideDialCode: false,
-        // autoPlaceholder: "off",
-        // dropdownContainer: document.body,
-        // excludeCountries: ["us"],
-        // formatOnDisplay: false,
-            hiddenInput: "full_number",
-        // initialCountry: "auto",
-        // localizedCountries: { 'de': 'Deutschland' },
-        // nationalMode: false,
-        // onlyCountries: ['us', 'gb', 'ch', 'ca', 'do'],
-        // placeholderNumberType: "MOBILE",
-        // preferredCountries: ['cn', 'jp'],
-        separateDialCode: true,
-        utilsScript: "{{ asset('telinput/js/utils.js') }}",
-        });*/
+       
     }
 
    

@@ -152,22 +152,13 @@
                                         <td>
                                             {{ $price->base_waiting }}
                                         </td>
-                                        <!-- <td>
-                                                        <span class="badge bg-soft-success text-success">Active</span>
-                                                    </td> -->
+                                        
 
                                         <td>
                                             <div class="form-ul" style="width: 60px;">
                                                 <div class="inner-div"> <a href="#" href1="{{ route('pricing-rules.edit', $price->id) }}" class="action-icon editIcon" priceId="{{$price->id}}"> <i class="mdi mdi-square-edit-outline"></i></a> 
                                                 </div>
                                                 <div class="inner-div">
-                                                    {{-- <form method="POST" action="{{ route('pricing-rules.destroy', $price->id) }}">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <div class="form-group">
-                                                            <button type="submit" class="btn btn-primary-outline action-icon"> <i class="mdi mdi-delete"></i></button>
-                                                        </div>
-                                                    </form> --}}
                                                 </div>
                                             </div>
                                         </td>
@@ -307,18 +298,12 @@
             },
             //init
             Nestable.prototype.init = function() {
-                // activate Nestable for list 1
-                // $('#nestable_list_1').nestable({
-                //     group: 1
-                // }).on('change', this.updateOutput);
-
-                // activate Nestable for list 2
+                
                 $('#nestable_list_2').nestable({
                     group: 1
                 }).on('change', this.updateOutput);
 
-                // output initial serialised data
-                // this.updateOutput($('#nestable_list_1').data('output', $('#nestable_list_1_output')));
+                // output initial serialised data                
                 this.updateOutput($('#nestable_list_2').data('output', data));
 
                 $('#nestable_list_menu').on('click', function(e) {

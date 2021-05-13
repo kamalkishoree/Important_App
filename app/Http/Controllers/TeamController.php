@@ -145,29 +145,7 @@ class TeamController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-   /* public function edit($id)
-    {
-        $team = Team::with(['manager', 'tags'])->where('id', $id)->first();
-        $agents = Agent::all();
-        $tags  = TagsForTeam::all();
-        $uptag   = [];
-        foreach ($tags as $key => $value) {
-            array_push($uptag,$value->name);
-        }
-        
-        $teamTagIds = [];
-        foreach ($team->tags as $tag) {
-            $teamTagIds[] = $tag->id;
-        }
-        return view('team.update-team')->with([
-            'team' => $team,
-            'tags' => $uptag,
-            'agents' => $agents,
-            'teamTagIds' => $teamTagIds,
-            'location_accuracy' => $this->location_accuracy,
-            'location_frequency' => $this->location_frequency
-        ]);
-    }*/
+  
 
     public function edit($domain = '',$id)
     {

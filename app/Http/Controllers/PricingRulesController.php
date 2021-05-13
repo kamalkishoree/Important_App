@@ -115,15 +115,7 @@ class PricingRulesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    /*public function edit($id)
-    {
-        $geos       = Geo::all()->pluck('name', 'id');
-        $teams      = Team::all()->pluck('name', 'id');
-        $team_tag   = TagsForTeam::all()->pluck('name', 'id');
-        $driver_tag = TagsForAgent::all()->pluck('name', 'id');
-        $pricing = PricingRule::where('id',$id)->first();
-        return view('pricing-rules.update-pricing',compact('geos','teams','team_tag','driver_tag','pricing'));
-    }*/
+    
 
     public function edit($domain = '',$id)
     {
@@ -147,24 +139,12 @@ class PricingRulesController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $domain = '',$id)
-    {
-        // $clientPre  = ClientPreference::where('id',1)->with('currency')->first();
-        // dd($clientPre);
-       //$validator = $this->validator($request->all())->validate();
+    {       
 
         $getAgent = PricingRule::find($id);
-        
-
-
         $data = [
             'name'                            => $request->name,
             'start_date_time'                 => $request->start_date_time,
-            // 'end_date_time'                   => $request->end_date_time,
-            // 'is_default'                      => $request->is_default,
-            // 'geo_id'                          => $request->geo_id,
-            // 'team_id'                         => $request->team_id,
-            // 'team_tag_id'                     => $request->team_tag_id,
-            // 'driver_tag_id'                   => $request->driver_tag_id,
             'base_price'                      => $request->base_price,
             'base_duration'                   => $request->base_duration,
             'base_distance'                   => $request->base_distance,

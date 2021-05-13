@@ -35,9 +35,6 @@ class AgentController extends Controller
         }
         $teams  = Team::where('client_id',auth()->user()->code)->orderBy('name')->get();
         $tags   = TagsForTeam::all();
-
-        
-        //dd($teams->toArray());
         return view('agent.index')->with(['agents' => $agents,'teams'=>$teams, 'tags' => $tags, 'showTag' => implode(',', $tag)]);
     }
 
@@ -146,22 +143,13 @@ class AgentController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    /*public function edit($id)
-    {
-        $agent = Agent::find($id);
-        $teams = Team::where('client_id',auth()->user()->id)->get();
-        return view('update-agent')->with([
-            'agent' => $agent,
-            'teams' => $teams
-        ]);
-    }*/
+  
 
     public function edit($domain = '',$id)
     {
         $agent = Agent::with(['tags'])->where('id', $id)->first();
         $teams = Team::where('client_id', auth()->user()->code)->get();
         $tags  = TagsForAgent::all();
-        //print_r($agent->toArray());
         $uptag   = [];
         foreach ($tags as $key => $value) {
             array_push($uptag,$value->name);

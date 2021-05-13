@@ -26,8 +26,6 @@ class AccountingController extends Controller
 
            $dateform = Carbon::parse($date_array[0])->startOfDay();
            $dateto   = Carbon::parse(isset($date_array[1]) ? $date_array[1]:$date_array[0])->endOfDay();
-            // $tasks = $tasks->where('status', $request->time);
-            // $check = $request->status;
         }else{
             $dateform = \Carbon\Carbon::today()->startOfDay();
             $dateto   = \Carbon\Carbon::today()->endOfDay();
@@ -57,10 +55,6 @@ class AccountingController extends Controller
         
         switch ($type) {
             case 1:
-
-               
-               
-
                     
                     $dates[]    = date("d M Y");
                     $serchdate  = date("Y-m-d");
@@ -71,14 +65,7 @@ class AccountingController extends Controller
                         $display        = date('d M Y', strtotime('-1 day', strtotime($serchdate)));
                         $check          = date('Y-m-d', strtotime('-1 day', strtotime($serchdate)));
                         $lastcount      = 0;
-                        $lastsum        = 0;
-
-                        // array_unshift($dates , $display);
-                        // array_unshift($countOrders , $lastcount);
-                        // array_unshift($sumOrders , $lastsum);
-                    
-                       // dd($dates);
-                       
+                        $lastsum        = 0;                      
                 
                 
                 break;
@@ -104,9 +91,7 @@ class AccountingController extends Controller
                         $display        = date('d M Y', strtotime('-1 day', strtotime($serchdate)));
                         $check          = date('Y-m-d', strtotime('-1 day', strtotime($serchdate)));
                         $lastcount      = Order::whereDate('order_time', $check)->count();
-                        $lastsum        = Order::whereDate('order_time', $check)->sum('order_cost');
-
-                        
+                        $lastsum        = Order::whereDate('order_time', $check)->sum('order_cost');                        
                         array_unshift($countOrders , $lastcount);
                         array_unshift($sumOrders , $lastsum);
                     }
@@ -140,15 +125,6 @@ class AccountingController extends Controller
                     
                 }
         }
-
-        
-
-        // //date('d-m-y:D', mktime(0,0,0,$m,($de-1),$y)); 
-        //  print_r($dates);
-        // // print_r($countOrders);
-        // // print_r($sumOrders);
-       
-        //  die();
        
         return view('accounting',compact('totalearning','totalagentearning','totalorders','totalagents','agents','customers','heatLatLog','countOrders','sumOrders','dates','type'));
     }

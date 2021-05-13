@@ -109,40 +109,10 @@
                                           </ul>
                                         </div>
                                     </div> 
-                                    {{-- <div class="col-sm-12">
-                                        <p class="text-muted mb-2">SELECT PREFERENCE</p>
-                                        <div class="radio radio-info form-check-inline">
-                                            <input type="radio" id="acknowledge1" value="acknowledge"
-                                                name="acknowledgement_type"
-                                                {{ isset($preference) && $preference->acknowledgement_type == 'acknowledge' ? 'checked' : '' }}>
-                                            <label for="acknowledge1"> Acknowledge </label>
-                                        </div>
-                                        <div class="radio form-check-inline">
-                                            <input type="radio" id="acknowledge2" value="acceptreject"
-                                                name="acknowledgement_type"
-                                                {{ isset($preference) && $preference->acknowledgement_type == 'acceptreject' ? 'checked' : '' }}>
-                                            <label for="acknowledge2"> Accept/Reject </label>
-                                        </div>
-                                        <div class="radio form-check-inline">
-                                            <input type="radio" id="acknowledge3" value="none" name="acknowledgement_type"
-                                                {{ isset($preference) && $preference->acknowledgement_type == 'none' ? 'checked' : '' }}>
-                                            <label for="acknowledge3"> None </label>
-                                        </div>
-                                        @if ($errors->has('acknowledgement_type'))
-                                            <span class="text-danger" role="alert">
-                                                <strong>{{ $errors->first('acknowledgement_type') }}</strong>
-                                            </span>
-                                        @endif
-                                    </div> --}}
+                                    
 
                                 </div>
-                                {{-- <div class="row mb-2">
-                                    <div class="col-md-2">
-                                        <div class="form-group mb-0 text-center">
-                                            <button class="btn btn-blue btn-block" type="submit"> Update </button>
-                                        </div>
-                                    </div>
-                                </div> --}}
+                                
                             </div>
                         </div>
                     </div>
@@ -198,10 +168,7 @@
                                         <option value="5" {{ isset($allocation) && $allocation->number_of_retries == 5 ? 'selected' : '' }}>5</option>
 
                                     </select>
-                                    {{-- <input type="text" name="number_of_retries" id="number_of_retries" placeholder="0"
-                                        class="form-control"
-                                        value="{{ isset($allocation) && $allocation->number_of_retries != null ? $allocation->number_of_retries : '' }}"
-                                        require> --}}
+                                    
                                 </div>
                                 @if ($errors->has('number_of_retries'))
                                     <span class="text-danger" role="alert">
@@ -353,34 +320,7 @@
                                 </div>
                             </div>
                             
-                            {{-- <div class="col-md-4 click five" id="redio5">
-                                <div class="border p-3 rounded book">
-                                    <div class="custom-control custom-radio">
-                                        <input type="radio" id="shippingMethodRadio5" name="auto_assign_logic"
-                                            class="custom-control-input custom-logic" value="nearest_available"
-                                            {{ isset($allocation) && $allocation->auto_assign_logic == 'nearest_available' ? 'checked' : '' }}>
-                                        <label class="custom-control-label font-16 font-weight-bold lab"
-                                            for="shippingMethodRadio5">Nearest Available</label>
-                                    </div>
-                                    <strong class="tagline nearest_available" id="redio5">Allocation request will send to
-                                        nearst
-                                        available</strong>
-                                </div>
-                            </div> --}}
-                            {{-- <div class="col-md-4 click five" id="redio6">
-                                <div class="border p-3 rounded book">
-                                    <div class="custom-control custom-radio">
-                                        <input type="radio" id="shippingMethodRadio6" name="auto_assign_logic"
-                                            class="custom-control-input custom-logic" value="first_in_first_out"
-                                            {{ isset($allocation) && $allocation->auto_assign_logic == 'first_in_first_out' ? 'checked' : '' }}>
-                                        <label class="custom-control-label font-16 font-weight-bold lab"
-                                            for="shippingMethodRadio6">First In, First Out</label>
-                                    </div>
-                                    <strong class="tagline first_in_first_out">Allocation request will send on the basic of
-                                        first in first
-                                        out</strong>
-                                </div>
-                            </div> --}}
+                            
                             @if ($errors->has('auto_assign_logic'))
                                 <span class="text-danger" role="alert">
                                     <strong>{{ $errors->first('auto_assign_logic') }}</strong>
@@ -444,12 +384,7 @@
     <script>
         $(document).ready(function() {
 
-            // jQuery(function() {
-            //     jQuery('#redio1').click();
-            // });
-
-
-
+            
             var sendtoall = "{{$preference->acknowledgement_type}}";
                 if(sendtoall == 'acknowledge'){
                     $('.sendtoall').hide();

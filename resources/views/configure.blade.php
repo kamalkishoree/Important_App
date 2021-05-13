@@ -67,32 +67,7 @@
                                 </div>
                             </div>
                         </div>
-                        {{-- <div class="row mb-2">
-                        <div class="col-md-6">
-                            <div class="form-group mb-3">
-                                <label for="map_key_1">API KEY</label>
-                                <input type="text" name="map_key_1" id="map_key_1" placeholder="kjadsasd66asdas"
-                                    class="form-control" value="{{ old('map_key_1', $preference->map_key_1 ?? '')}}">
-                                @if ($errors->has('map_key_1'))
-                                <span class="text-danger" role="alert">
-                                    <strong>{{ $errors->first('map_key_1') }}</strong>
-                                </span>
-                                @endif
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group mb-3">
-                                <label for="map_key_2">TRACKING LINK API KEY</label>
-                                <input type="text" name="map_key_2" id="map_key_2" placeholder="No key added.."
-                                    class="form-control" value="{{ old('map_key_2', $preference->map_key_2 ?? '')}}">
-                                @if ($errors->has('map_key_2'))
-                                <span class="text-danger" role="alert">
-                                    <strong>{{ $errors->first('map_key_2') }}</strong>
-                                </span>
-                                @endif
-                            </div>
-                        </div>
-                    </div> --}}
+                        
                         <div class="row mb-2">
                             <div class="col-12">
                                 <div class="form-group mb-0 text-center">

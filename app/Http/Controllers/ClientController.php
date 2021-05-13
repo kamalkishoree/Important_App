@@ -35,32 +35,7 @@ class ClientController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index()
-    {
-          
-        // $value = Cache::get('all_clients');
-        //  dd($value);    
-   
-        //    $redis    = Redis::connection();
-        //    $response = $redis->get('coolman');
-           
-        //    $response = json_decode($response);
-           
-        //    dd($response);
-        //Cache::forget('coolman');
-        //$value = Cache::get('bar');
-        //  dd($value);
-       
-        //     $client = Client::first();
-        //     Config::set("database.connections.mysql2", [
-        //         "driver" => "mysql",
-        //         "port" => '3306',
-        //         "host" => $client->database_path,
-        //         "database" => $client->database_name,
-        //         "username" => $client->database_username,
-        //         "password" => $client->database_password
-        //     ]);
-        //     DB::purge('mysql2');
-        //    $user =  DB::connection('mysql2')->table('users')->select('email')->first();
+    {  
 
         $clients = Client::where('is_deleted', 0)->orderBy('created_at', 'DESC')->paginate(10);
         return view('godpanel/client')->with(['clients' => $clients]);
@@ -99,15 +74,9 @@ class ClientController extends Controller
      */
     public function store(Request $request)
     {
-        //     $slug = Str::slug($request->name);
-
-        //    // $abc = str_slug();
-        //     dd($slug);
+       
         $validator = $this->validator($request->all())->validate();
-        // if ($validator->fails()) {
-        //     return redirect()->back()->withErrors($validator, 'add');
-        // }
-
+        
         $getFileName = NULL;
 
         // Handle File Upload
@@ -211,20 +180,6 @@ class ClientController extends Controller
     public function update(Request $request, $id)
     {
         
-        
-       
-        // $validator = Validator::make($request->all(), [
-        //     'name' => ['required', 'string', 'max:255'],
-        //     'email' => ['required', 'string', 'email', 'max:255','unique:clients,id,'. $id],
-        //     'phone_number' => ['required'],
-        //     'database_name' => ['required','unique:clients,id,'. $id],
-        //     'database_password' => ['required'],
-        // ]);
-        //     dd($validator->fails());
-        // if ($validator->fails()) {
-        //     return redirect()->back()->withErrors($validator, 'update');
-        // }
-        
         $getClient = Client::find($id);
         $getFileName = $getClient->logo;
         $removeDataFromRedis = Cache::forget($getClient->database_name);
@@ -258,7 +213,6 @@ class ClientController extends Controller
         
         $client = Client::where('id', $id)->update($data);
         $saveDataOnRedis = Cache::set($data['database_name'],$data);
-        //return redirect()->back()->with('success', 'Client Updated successfully!');
         return redirect()->route('client.index')->with('success', 'Client Updated successfully!');
     }
 

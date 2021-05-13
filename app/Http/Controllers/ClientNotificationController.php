@@ -24,10 +24,6 @@ class ClientNotificationController extends Controller
         $notification_types = NotificationType::with('notification_events')->get();
         $client_notifications = ClientNotification::where('client_id', 1)->get();
 
-        // echo "<pre>";
-        // print_r($notification_types->toArray()); 
-        // print_r($client_notifications->toArray());
-        // die;
         return view('notifications')->with([
             'client_notifications' => $client_notifications,
             'notification_types'   => $notification_types
@@ -196,10 +192,7 @@ class ClientNotificationController extends Controller
         foreach($get as $item){
             array_push($recipients,$item->agent->device_token);
         }
-        // if(isset($recipients)){
-        //     //dispatch(new SendPushNotifications($recipients));
-        //     $this->dispatchNow(new SendPushNotifications($recipients));
-        // }
+        
        
         if(isset($recipients)){
             fcm()

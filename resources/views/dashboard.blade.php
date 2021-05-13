@@ -595,17 +595,13 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
     $agentslocations = array();
     foreach ($agents as $singleagent) {
         if((!empty($singleagent['agentlog'])) && ($singleagent['agentlog']['lat']!=0) && ($singleagent['agentlog']['long']!=0))
-        {
-            // lat: allagent[0].agentlog && allagent[0].agentlog['lat']  != "0.00000000" ? parseFloat(allagent[0].agentlog['lat']): 30.7046,
+        {        
             $agentslocations[] = $singleagent['agentlog'];
         }        
     }
     $defaultmaplocation['lat'] = 30.7046;
     $defaultmaplocation['long'] = 76.7179;
     $agentslocations[] = $defaultmaplocation;
-    
-    //print_r($agentslocations);
-
 ?>
 
 
@@ -613,17 +609,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
 @section('script')
 
 
-{{-- <script src="{{asset('assets/libs/flatpickr/flatpickr.min.js')}}"></script>
-<script src="{{asset('assets/libs/bootstrap-colorpicker/bootstrap-colorpicker.min.js')}}"></script>
-<script src="{{asset('assets/libs/clockpicker/clockpicker.min.js')}}"></script>
-<script src="{{asset('assets/libs/bootstrap-datepicker/bootstrap-datepicker.min.js')}}"></script>
 
-<!-- Page js-->
-<script src="{{asset('assets/js/pages/form-pickers.init.js')}}"></script> --}}
-{{-- <script src="{{ asset('demo/js/propeller.min.js') }}"></script>
---}}
-{{-- <script src="{{asset('assets/libs/dragula/dragula.min.js')}}"></script>
-<script src="{{asset('assets/js/pages/dragula.init.js')}}"></script> --}}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-timeago/1.6.3/jquery.timeago.js"></script>
 <script>
 
@@ -659,9 +645,6 @@ let map;
 let markers = [];
 
 var url = window.location.origin;
-// $("#abc").click(function() {
-//     $(this).data('id');
-// });
 var olddata  = {!!json_encode($newmarker)!!};
 var allagent = {!!json_encode($agents)!!};
 
@@ -670,15 +653,9 @@ var defaultmaplocation = {!!json_encode($agentslocations)!!};
 var defaultlat = parseFloat(defaultmaplocation[0].lat);
 var defaultlong = parseFloat(defaultmaplocation[0].long);
 
-
-
 var imgproxyurl         = {!!json_encode($imgproxyurl)!!};
 
 
-// var teamdata = {!!json_encode($teams)!!};
-// var cars    = [0];
-
-//$('.newchecks').click(function() {
 $('.filtercheck').click(function() {    
     $('.agentcheck').not(this).prop('checked', false);
 // for teams
@@ -699,15 +676,9 @@ $('.agentdisplay:checkbox:checked').each(function(i) {
     agentval[i] = parseInt($(this).val());
 });
 
-//  alert(agentval);
 
 setMapOnAll(null);
-//$(".taskchecks").prop('checked', false);
-//$(".agentdisplay").prop('checked', false);
-//   if (!$(this).is(':checked')) {
-//    return confirm("Are you sure?");
-//   }
-//console.log(val);
+
 
 //main task markers
 for (let i = 0; i < olddata.length; i++) {
@@ -781,9 +752,6 @@ for (let i = 0; i < olddata.length; i++) {
     //for agents
     for (let i = 0; i < allagent.length; i++) {
         checkdata = allagent[i];
-        //console.log(checkdata);
-        // alert($.inArray(checkdata['is_available'], agentval));
-        // alert($.inArray(2, agentval));
         //for agents
         if ($.inArray(checkdata['is_available'], agentval) != -1 || $.inArray(2, agentval) != -1) {
             
@@ -817,16 +785,10 @@ $('.taskchecks:checkbox:checked').each(function(i) {
 setMapOnAll(null);
 $(".newchecks").prop('checked', false);
 $(".agentdisplay").prop('checked', false); 
-//$('.taskchecks:checkbox').removeAttr('checked');
-//   if (!$(this).is(':checked')) {
-//    return confirm("Are you sure?");
-//   }
+
 for (let i = 0; i < olddata.length; i++) {
     checkdata = olddata[i];
-   // console.log(checkdata);
-    //console.log(checkdata[5]);
-    // addMarker({ lat: checkdata[3], lng: checkdata[4] });
-    //alert(checkdata['task_status']);
+   
     if($.inArray(checkdata['task_status'], taskval) !== -1 || $.inArray(5, taskval) != -1) {
         
         var urlnewcreate = '';
@@ -859,7 +821,6 @@ for (let i = 0; i < olddata.length; i++) {
 });
 
 
-// $('.agentdisplay').click(function() {
 $('.agentdisplay_old').click(function() {
     var agentval = [];
     $('.agentdisplay:checkbox:checked').each(function(i) {
@@ -868,10 +829,6 @@ $('.agentdisplay_old').click(function() {
     setMapOnAll(null);
     $(".taskchecks").prop('checked', false);
     $(".newchecks").prop('checked', false);
-    //   if (!$(this).is(':checked')) {
-    //    return confirm("Are you sure?");
-    //   }
-    //console.log(agentval);
 
 
     for (let i = 0; i < allagent.length; i++) {
@@ -905,9 +862,7 @@ function initMap() {
 
     //console.log(allagent);
 
-    const haightAshbury = {
-        // lat: allagent[0].agentlog && allagent[0].agentlog['lat']  != "0.00000000" ? parseFloat(allagent[0].agentlog['lat']): 30.7046,
-        // lng: allagent[0].agentlog && allagent[0].agentlog['long'] != "0.00000000" ? parseFloat(allagent[0].agentlog['long']):76.7179
+    const haightAshbury = {        
 
         lat: allagent[0].agentlog && allagent[0].agentlog['lat']  != "0.00000000" ? parseFloat(allagent[0].agentlog['lat']): defaultlat,
         lng: allagent[0].agentlog && allagent[0].agentlog['long'] != "0.00000000" ? parseFloat(allagent[0].agentlog['long']):defaultlong
@@ -1050,22 +1005,8 @@ function calculateAndDisplayRoute(directionsService, directionsRenderer,map,allt
                 },
                 (response, status) => {
                     if (status === "OK" && response) {
-                        directionsRenderer.setDirections(response);
-
-                        
-                        // const route = response.routes[0];
-                        // const summaryPanel = document.getElementById("directions-panel"+m);
-                        // summaryPanel.innerHTML = "";
-
-                        // // For each route, display summary information.
-                        // for (let i = 0; i < route.legs.length; i++) {
-                        //     const routeSegment = i + 1;
-                        //     summaryPanel.innerHTML +=
-                        //         "<b>Route Segment: " + routeSegment + "</b><br>";
-                        //     summaryPanel.innerHTML += route.legs[i].start_address + " to ";
-                        //     summaryPanel.innerHTML += route.legs[i].end_address + "<br>";
-                        //     summaryPanel.innerHTML += route.legs[i].distance.text + "<br><br>";
-                        // }
+                        directionsRenderer.setDirections(response);                       
+                       
                     } else {
                         //window.alert("Directions request failed due to " + status);
                     }
@@ -1167,13 +1108,6 @@ $(".datetime").on('change', function postinput(){
 
 });
 
-// function makeMarker( position,icon,map) {
-//             new google.maps.Marker({
-//             position: position,
-//             map: map,
-//             icon: icon,
-//             });
-//          }
 
 function RouteOptimization(taskids,distancematrix,optimize,agentid,date) {
     $('#routeTaskIds').val(taskids);
@@ -1298,19 +1232,18 @@ $('.submitoptimizeForm').click(function(){
                         var taskids = data.taskids;
                         var distancematrix = data.distance_matrix;
                         var date = data.date;                    
-                        //alert(data.total_distance);
+                        
                         $('.totdis'+agentid).html(data.total_distance);
-                        //$('#collapse'+agentid).html('');
+                        
                         $('#handle-dragula-left'+agentid).html('');
-                        //alert( taskorders.length);
+                        
                         for (var i = 0; i < taskorders.length; i++) {
                             var object = taskorders[i];
                             var task_id =  object['task'][0]['id'];
                             var location_address =  object['task'][0]['location']['address'];
                             var shortname =  object['task'][0]['location']['short_name'];
                             var tasktime = object['task'][0]['task_time'];
-                            //alert(tasktime);
-                            
+                                                        
                             var taskstatus = object['task'][0]['task_status'];
                             var tasktypeid = object['task'][0]['task_type_id'];
                             var classname = "";
@@ -1356,7 +1289,7 @@ $('.submitoptimizeForm').click(function(){
                                 pickupclass = "assign_";
                             }                        
                             var sidebarhtml   = '<div class="card-body ui-sortable-handle" task_id="'+task_id+'"><div class="p-2 assigned-block"><div><div class="row no-gutters align-items-center"><div class="col-9 d-flex"><h5 class="d-inline-flex align-items-center justify-content-between"><i class="fas fa-bars"></i><span>'+tasktime+'</span></h5><h6 class="d-inline"><img class="vt-top" src="{{ asset("demo/images/ic_location_blue_1.png") }}">'+location_address+'<span class="d-block">'+shortname+'</span></h6></div><div class="col-3"><button class="assigned-btn float-right mb-2 '+pickupclass+'">'+tasktype+'</button><button class="assigned-btn float-right '+classname+'">'+classtext+'</button></div></div></div></div></div>';
-                            //$('#collapse'+agentid).append(sidebarhtml);
+                            
                             $('#handle-dragula-left'+agentid).append(sidebarhtml);
                         }
 
@@ -1413,21 +1346,16 @@ function RouteOptimizationOld(taskids,distancematrix,optimize,agentid,date) {
                 if(response!="Try again later")
                 {
                     var data = $.parseJSON(response);
-                // alert(data);
                     var tasklist = data.tasklist;
                     var taskorders = tasklist.order;
-                    //alert(data.total_distance);
                     $('.totdis'+agentid).html(data.total_distance);
-                    //$('#collapse'+agentid).html('');
                     $('#handle-dragula-left'+agentid).html('');
-                    //alert( taskorders.length);
                     for (var i = 0; i < taskorders.length; i++) {
                         var object = taskorders[i];
                         var task_id =  object['task'][0]['id'];
                         var location_address =  object['task'][0]['location']['address'];
                         var shortname =  object['task'][0]['location']['short_name'];
                         var tasktime = object['task'][0]['task_time'];
-                        //alert(tasktime);
                         
                         var taskstatus = object['task'][0]['task_status'];
                         var tasktypeid = object['task'][0]['task_type_id'];
@@ -1474,9 +1402,7 @@ function RouteOptimizationOld(taskids,distancematrix,optimize,agentid,date) {
                             pickupclass = "assign_";
                         }
 
-                        // var sidebarhtml   = '<div class="card-body"><div class="p-2 assigned-block"><div><div class="row no-gutters align-items-center"><div class="col-9 d-flex"><h5 class="d-inline">'+tasktime+'</h5><h6 class="d-inline"><img class="vt-top" src="{{ asset("demo/images/ic_location_blue_1.png") }}">'+location_address+'<span class="d-block">'+shortname+'</span></h6></div><div class="col-3"><button class="assigned-btn float-right mb-2 '+pickupclass+'">'+tasktype+'</button><button class="assigned-btn float-right '+classname+'">'+classtext+'</button></div></div></div></div></div>';
                         var sidebarhtml   = '<div class="card-body ui-sortable-handle" task_id="'+task_id+'"><div class="p-2 assigned-block"><div><div class="row no-gutters align-items-center"><div class="col-9 d-flex"><h5 class="d-inline-flex align-items-center justify-content-between"><i class="fas fa-bars"></i><span>'+tasktime+'</span></h5><h6 class="d-inline"><img class="vt-top" src="{{ asset("demo/images/ic_location_blue_1.png") }}">'+location_address+'<span class="d-block">'+shortname+'</span></h6></div><div class="col-3"><button class="assigned-btn float-right mb-2 '+pickupclass+'">'+tasktype+'</button><button class="assigned-btn float-right '+classname+'">'+classtext+'</button></div></div></div></div></div>';
-                        //$('#collapse'+agentid).append(sidebarhtml);
                         $('#handle-dragula-left'+agentid).append(sidebarhtml);
                     }
 
@@ -1486,25 +1412,10 @@ function RouteOptimizationOld(taskids,distancematrix,optimize,agentid,date) {
                     var params = "'"+taskids+"','"+distancematrix+"','',"+agentid;
                     var funperams = '<span class="optimize_btn" onclick="RouteOptimization('+params+')">Optimize</span>';                    
                     $('.optimizebtn'+agentid).html(funperams);
-                               
-
-                    // const directionsService = new google.maps.DirectionsService();
-                    // const directionsRenderer = new google.maps.DirectionsRenderer({suppressMarkers: true});
-                    // directionsRenderer.setOptions({
-                    //     polylineOptions: {
-                    //         strokeColor: 'black'                
-                    //     }
-                    // });
-                    // directionsRenderer.setMap(map);
-                    // var allroutes = data.routedata;            
-                    // var agnt_task = allroutes.task_details;
-                    // var agnt_locatn = allroutes.driver_detail;            
-                    // calculateAndDisplayRoute(directionsService, directionsRenderer,map,agnt_task,agnt_locatn);
 
                     // ----- route show end-----------
 
-                    $('.pageloader').css('display','none');
-                    //location.reload();
+                    $('.pageloader').css('display','none');                    
                 }else{                    
                     alert(response);
                     $('.pageloader').css('display','none');
@@ -1520,14 +1431,9 @@ function RouteOptimizationOld(taskids,distancematrix,optimize,agentid,date) {
     
 }
 
-
-
-
 function reInitMap(allroutes) {
     
     const haightAshbury = {
-        // lat: allagent[0].agentlog && allagent[0].agentlog['lat']  != "0.00000000" ? parseFloat(allagent[0].agentlog['lat']): 30.7046,
-        // lng: allagent[0].agentlog && allagent[0].agentlog['long'] != "0.00000000" ? parseFloat(allagent[0].agentlog['long']):76.7179
         lat: allagent[0].agentlog && allagent[0].agentlog['lat']  != "0.00000000" ? parseFloat(allagent[0].agentlog['lat']): defaultlat,
         lng: allagent[0].agentlog && allagent[0].agentlog['long'] != "0.00000000" ? parseFloat(allagent[0].agentlog['long']):defaultlong
     };
@@ -1551,7 +1457,7 @@ function reInitMap(allroutes) {
         
         ];
 
-    //var allroutes = {!! json_encode($routedata) !!};
+   
     $.each(allroutes, function(i, item) {
         const directionsService = new google.maps.DirectionsService();
         const directionsRenderer = new google.maps.DirectionsRenderer({suppressMarkers: true});
@@ -1707,8 +1613,7 @@ $(".dragable_tasks").sortable({
                             var shortname =  object['location']['short_name'];
 
                                                 
-                            var option   = '<option value="'+task_id+'">'+tasktype+' - '+shortname+' - '+location_address+'</option>';
-                            //$('#collapse'+agentid).append(sidebarhtml);
+                            var option   = '<option value="'+task_id+'">'+tasktype+' - '+shortname+' - '+location_address+'</option>';                            
                             $('#selectedtasklocations').append(option);
                         }
                     },
@@ -1760,13 +1665,7 @@ function NavigatePath(taskids,distancematrix,optimize,agentid,date) {
 
             success: function(response) {
                 if(response!="Try again later")
-                {   
-                    // var params = "'"+taskids+"','"+distancematrix+"','',"+agentid;
-                    // var funperams = '<span class="optimize_btn" onclick="RouteOptimization('+params+')">Optimize</span>';                    
-                    // $('.optimizebtn'+agentid).html(funperams);
-                    // var blob = new Blob([response], {type: 'application/pdf'})
-                    // var url = URL.createObjectURL(blob);
-                    // location.assign(url);
+                {                       
                     $('#pdfvalue').val(response);
                     $("#pdfgenerate").submit();
                     

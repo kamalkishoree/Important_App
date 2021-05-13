@@ -108,8 +108,7 @@ class AllocationController extends Controller
         $updatePreference = ClientPreference::updateOrCreate([
             'client_id' => $id
         ],$request->all());
-        return response()->json(true);
-    //    return redirect()->back()->with('success', 'Allocation updated successfully!');
+        return response()->json(true);    
     }
 
     /**

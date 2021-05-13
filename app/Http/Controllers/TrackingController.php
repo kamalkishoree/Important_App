@@ -25,19 +25,10 @@ class TrackingController extends Controller
 
                 $agent_location = DB::connection($respnse['database'])->table('agent_logs')->where('agent_id', $order->driver_id)->latest()->first();
 
-                // echo "<pre>";
-                // print_r($tasks);
-                // print_r($agent_location); die;
-
-
-
                 return view('tracking/tracking', compact('tasks', 'order','agent_location'));
             } else {
                 return view('tracking/order_not_found');
             }
-
-
-
             
         } else {
 
