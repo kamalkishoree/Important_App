@@ -63,31 +63,7 @@ $(document).ready(function(){
             
             $(this).closest(".copyin").remove();
         });
-        // $('#adds a').click(function() {
-        //     var regex = /^(.+?)(\d+)$/i;
-        //     var cloneIndex = $(".copyin").length;
-        //     var $div = $('div[id^="copyin1"]:first');
-        //     console.log($div);
-        //     $('#copyin1').clone().appendTo('.taskrepet')
-        //       .attr("id", "copyin" +  cloneIndex)
-        //       .find("*")
-        //       .each(function() {
-        //          var id = this.id || "";
-        //          var match = id.match(regex) || [];
-        //          if (match.length == 3) {
-        //             this.id = match[1] + (cloneIndex);
-        //         }
-        //       })
-        //       .on('click', '.onedelete', remove);
-        //     cloneIndex++;
-        //     // var button = $('.firstclone').clone();
-        //     // console.log()
-        //     //$('.taskrepet').html($button);
-        //     // var firstDivContent = document.getElementById('typeInputss');
-        //     // var secondDivContent = document.getElementById('mydiv2');
-        //     // secondDivContent.innerHTML = firstDivContent.innerHTML;
-
-        // });
+        
         //var a = 0;
         var a = totalcountEdit-1;
         var post_count = 1;

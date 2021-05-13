@@ -1,8 +1,4 @@
-<script>
-    // $('.onlynumber').keyup(function ()
-    //     {    
-    //     this.value = this.value.replace(/[^0-9\.]/g,'');
-    //     });
+<script>    
 
     $(document).ready(function() {
         $('#agents-datatable').DataTable();
@@ -29,11 +25,7 @@
                 status: status
             },
             success: function(data) {
-                console.log(data.task);
-                // console.log(data[0].task);
-                //abc = $('#removedata').html('');
-                //console.log(abc);
-                // $('#removedata').hide();
+                console.log(data.task);                
                 $('.repet').remove();
                 var taskname = '';
                 $.each(data.task, function(index, elem) {
@@ -119,11 +111,6 @@
                 $("#agent_commission_fixed").text(data.agent_commission_fixed);
                 $("#freelancer_commission_percentage").text(data.freelancer_commission_percentage);
                 $("#freelancer_commission_fixed").text(data.freelancer_commission_fixed);
-
-
-
-
-
                 $('#task-accounting-modal').modal('show');
 
             }

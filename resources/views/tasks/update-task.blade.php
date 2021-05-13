@@ -172,10 +172,10 @@ use Carbon\Carbon;
                                             <h4 class="header-title mb-2">Address</h4>
                                         </div>
                                         <div class="col-md-6">
-                                            {{-- <h4 class="header-title mb-2">Saved Addresses</h4> --}}
+                                            
                                         </div>
                                     </div>
-                                    {{-- <span class="span1 addspan">Please select a address or create new</span> --}}
+                                    
                                     <span class="span1 addspan"></span>
 
                                     <div class="row">
@@ -361,9 +361,7 @@ use Carbon\Carbon;
                                     <span><i class="fas fa-image mr-2"></i>Upload Image</span>
                                     <input id="file" type="file" name="file[]" multiple style="display: none" />
                                 </label>
-                                {{-- @php
-                                        dd($images);
-                                    @endphp --}}
+                                
                                 @if ($images[0] == '')
                                     <img class="showsimagegall" src="{{ url('assets/images/ic_image_placeholder.png') }}"
                                         alt="">
@@ -482,9 +480,6 @@ use Carbon\Carbon;
 
         {!! Form::close() !!}
 
-
-
-
     </div>
 
     <div id="show-map-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
@@ -518,13 +513,10 @@ use Carbon\Carbon;
     </div>
 @endsection
 
-
 @section('script')
     <script src="{{ asset('assets/libs/select2/select2.min.js') }}"></script>
     <script src="{{ asset('assets/js/pages/form-advanced2.init.js') }}"></script>
     <script src="{{ asset('assets/js/pages/form-advanced.init.js') }}"></script>
     @include('tasks.updatepagescript')
-    
-    
     
 @endsection

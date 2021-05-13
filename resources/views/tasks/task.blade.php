@@ -88,9 +88,7 @@ use Carbon\Carbon;
                                         <th>Customer</th>
                                         <th>Phone.No</th>
                                         <th>Driver</th>
-                                        {{-- <th>Create Time</th> --}}
                                         <th>Due Time</th>
-                                        {{-- <th>Tasks</th> --}}
                                         <th>Routes</th>
                                         <th>Tracking Url</th>
                                         <th>Route Proofs</th>
@@ -114,16 +112,6 @@ use Carbon\Carbon;
                                             <td>
                                                 {{ empty($task->agent) ? 'Unassigned' : $task->agent->name }}
                                             </td>
-                                            {{-- <td>
-                                                @php
-                                                    $create = Carbon::createFromFormat('Y-m-d H:i:s', $task->created_at, 'UTC');
-                                                    $create->setTimezone(isset(Auth::user()->timezone) ? Auth::user()->timezone : 'Asia/Kolkata');
-                                                    $timeformat = $preference->time_format == '24' ? 'H:i:s':'g:i a';
-                                                    
-                                                @endphp
-                                               {{date(''.$preference->date_format.' '.$timeformat.'', strtotime($create))}}
-
-                                            </td> --}}
                                             <td>
                                                 @php
                                                     $timeformat = $preference->time_format == '24' ? 'H:i:s':'g:i a';
@@ -133,10 +121,6 @@ use Carbon\Carbon;
                                                 {{date(''.$preference->date_format.' '.$timeformat.'', strtotime($order))}}
 
                                             </td>
-                                            {{-- <td>
-                                                <button class="showtasks" value="{{ $task->id }}"><i
-                                                        class="fe-eye"></i></button>
-                                            </td> --}}
                                             <td>
                                                 <?php
                                                  foreach ($task->task as $singletask) {
