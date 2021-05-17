@@ -92,6 +92,15 @@ $task_type_array = ['Pickup', 'Drop-Off', 'Appointment'];
         var alltask = {!! json_encode($tasks) !!};
         var agent_location = {!! json_encode($agent_location) !!};
         var url = window.location.origin;
+
+        if(alltask.length > 0){
+            var maplat  = parseFloat(alltask[0]['latitude']);
+            var maplong = parseFloat(alltask[0]['longitude']);
+        }else{
+            var maplat  = 30.7046;
+            var maplong = 76.7179;
+        }        
+        
         $(document).ready(function() {
 
             initMap();
@@ -116,8 +125,8 @@ $task_type_array = ['Pickup', 'Drop-Off', 'Appointment'];
             const map = new google.maps.Map(document.getElementById("map_canvas"), {
                 zoom: 6,
                 center: {
-                    lat: 41.85,
-                    lng: -87.65
+                    lat: maplat,
+                    lng: maplong
                 },
                 styles: themeType,
             });

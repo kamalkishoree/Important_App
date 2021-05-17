@@ -204,7 +204,7 @@
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-group" id="">
-                        {!! Form::label('title', 'Agent Commission Percentage',['class' => 'control-label']) !!}
+                        {!! Form::label('title', 'Employer Commission Percentage',['class' => 'control-label']) !!}
                         {!! Form::text('agent_commission_percentage', $pricing->agent_commission_percentage, ['class' => 'form-control','required' => 'required']) !!}
                         <span class="invalid-feedback" role="alert">
                             <strong></strong>
@@ -214,7 +214,7 @@
                 </div>
                 <div class="col-md-6">
                     <div class="form-group" id="">
-                        {!! Form::label('title', 'Agent Commission Fixed',['class' => 'control-label']) !!}
+                        {!! Form::label('title', 'Employer Commission Fixed',['class' => 'control-label']) !!}
                         {!! Form::text('agent_commission_fixed', $pricing->agent_commission_fixed, ['class' => 'form-control','required' => 'required']) !!}
                         <span class="invalid-feedback" role="alert">
                             <strong></strong>

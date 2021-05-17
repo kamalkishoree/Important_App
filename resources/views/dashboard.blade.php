@@ -32,41 +32,29 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
         </div>
         <div id="accordion" class="overflow-hidden">
             <div class="card no-border-radius">
-                
-                <?php
-                    //for ($u=0; $u < count($routedata) ; $u++) { ?>
-                        {{-- <span id="directions-panel<?php //echo $u?>"></span>
-                        <span id="waypoints<?=//$u?>"></span> --}}
-                    <?php //} ?>
-                    <div class="card-header" id="heading-1">
-
-                            <a role="button" data-toggle="collapse" href="#collapse-new"
-                                aria-expanded="false" aria-controls="collapse-new">
-                                <div class="newcheckit">
-                                    <div class="row d-flex align-items-center" class="mb-0">
-                                        <div class="col-md-4 col-lg-3 col-xl-2 col-2">
-                                            <span class="profile-circle">U</span>
-                                        </div>
-                                        <div class="col-md-8 col-lg-9 col-xl-10 col-10">
-                                            <h6 class="header-title">Unassigned</h6>
-                                            {{-- <p class="mb-0">{{isset($unassigned[0]['agent_count'])?$unassigned[0]['agent_count']:''}} Agents : <span>{{isset($unassigned[0]['offline_agents'])?$unassigned[0]['offline_agents']:''}} Offline ・ {{isset($unassigned[0]['online_agents'])?$unassigned[0]['online_agents']:''}} Online</span></p> --}}
-                                        </div>
-                                    </div>
+                <div class="card-header" id="heading-1">
+                    <a role="button" data-toggle="collapse" href="#collapse-new"
+                        aria-expanded="false" aria-controls="collapse-new">
+                        <div class="newcheckit">
+                            <div class="row d-flex align-items-center" class="mb-0">
+                                <div class="col-md-4 col-lg-3 col-xl-2 col-2">
+                                    <span class="profile-circle">U</span>
                                 </div>
-
-                            </a>
-
-                    </div>
+                                <div class="col-md-8 col-lg-9 col-xl-10 col-10">
+                                    <h6 class="header-title">Unassigned</h6>
+                                    {{-- <p class="mb-0">{{isset($unassigned[0]['agent_count'])?$unassigned[0]['agent_count']:''}} Agents : <span>{{isset($unassigned[0]['offline_agents'])?$unassigned[0]['offline_agents']:''}} Offline ・ {{isset($unassigned[0]['online_agents'])?$unassigned[0]['online_agents']:''}} Online</span></p> --}}
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
 
                     <div id="collapse-new" class="collapse" data-parent="#accordion"
                         aria-labelledby="heading-1">
                         <div class="card-body">
-
-
                             <div id="accordion-0">
                                 <div class="card no-border-radius">
                                     <div class="card-header ml-2" id="by0">
-
                                         <?php
 
                                         if(isset($distance_matrix[0]))

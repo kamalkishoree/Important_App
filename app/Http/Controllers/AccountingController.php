@@ -46,7 +46,7 @@ class AccountingController extends Controller
                               ->whereBetween('created_at', [$dateform,$dateto]);
                               })->get();
     
-        
+        //print_r($heatLatLog); die;
         if($request->has('type')){
             $type = $request->type;
         }else{

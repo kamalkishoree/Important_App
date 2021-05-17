@@ -139,7 +139,7 @@
         </div>
     </div>
     <div class="col-md-6">
-        <div class="form-group" id="make_modelInput">
+        <div class="form-group" id="make_modelInput1">
             <label for="make_model" class="control-label">UID</label>
             <input type="text" class="form-control" id="uid" placeholder="897abd" name="uid" value="{{ $agent->uid}}">
             <span class="invalid-feedback" role="alert">

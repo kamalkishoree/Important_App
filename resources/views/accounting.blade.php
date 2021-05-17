@@ -376,8 +376,10 @@
             var lat  = parseFloat(heatLatLog[0]['latitude']);
             var long = parseFloat(heatLatLog[0]['longitude']);
         }else{
-            var lat  = 37.775;
-            var long = -122.434;
+            // var lat  = 37.775;
+            // var long = -122.434;
+            var lat  = 30.7046;
+            var long = 76.7179;
         }
         function initMap() {
         map = new google.maps.Map(document.getElementById("map"), {
