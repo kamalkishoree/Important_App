@@ -28,7 +28,7 @@
                     <div class="row">
                         <div class="col-md-12">
                             <div class="form-group">
-                                <label for="field-1" class="control-label">Select Agent</label>
+                                <label for="field-1" class="control-label">Select {{Session::get('agent_name')}}</label>
                                 <select name="driver_id" id="selectAgent" class="selectpicker" required>
                                     <option hidden="true"></option>
                                     @foreach ($agents as $item)
