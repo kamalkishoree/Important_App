@@ -8,8 +8,12 @@
         <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
         <script src="{{asset('assets/js/vendor.min.js')}}"></script>
 </head>
+@php $theme = \App\Model\ClientPreference::where(['id' => 1])->first('theme');@endphp
+<?php $body = ((isset($theme) && $theme->theme == 'dark'))? "dark":"light";?>
 
-    <body @yield('body-extra')>
+
+
+    <body @yield('body-extra') class="{{$body}}">
         <!-- Begin page -->
         <div id="wrapper">
             @include('layouts.shared/topbar')
