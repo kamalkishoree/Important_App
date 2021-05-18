@@ -55,8 +55,9 @@
             </div>
             <!-- content -->
 
-
+            <?php if($title!="Dashboard"){ ?>
             @include('layouts.shared/footer')
+            <?php } ?>
 
         </div>
 
