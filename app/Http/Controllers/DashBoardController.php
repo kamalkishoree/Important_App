@@ -892,6 +892,8 @@ class DashBoardController extends Controller
             $output['agentid'] = $agentid;
             $output['distance_matrix'] = $distancematrix;
             $output['date'] = $request->route_date;
+            $output['driver_position'] = $driver_lat.' '.$driver_long;
+            $output['distancematrixjson'] = $payload;
             echo json_encode($output);   
             
         }else{
