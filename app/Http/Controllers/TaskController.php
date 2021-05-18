@@ -1657,14 +1657,12 @@ class TaskController extends Controller
                 'detail_id'           => '',
             ];
             //$recipients = [$oneagent->device_token];
-            $recipients = $oneagent->device_token;
-            
+            //$recipients = $oneagent->device_token;
 
+            $extraData = [];
+            //$this->sendsilentnotification($recipients);
 
-            // $extraData = [];
-            $this->sendsilentnotification($recipients);
-
-            //$this->dispatch(new RosterCreate($data, $extraData)); //this job is for create roster in main database for send the notification  in manual alloction       
+            $this->dispatch(new RosterCreate($notification_data, $extraData)); //this job is for create roster in main database for send the notification  in manual alloction       
         }
         
 
