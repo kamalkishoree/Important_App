@@ -664,8 +664,12 @@ body[data-sidebar-icon=twotones] #sidebar-menu > ul > li > a svg {
   display: none;
 }
 
+body .navbar-custom {
+  background-color: #fff;
+}
+
 .navbar-custom {
-  background-color: #38414a;
+  background-color: #fff;
   box-shadow: 0 0 35px 0 rgba(154, 161, 171, 0.15);
   padding: 0 10px 0 0;
   position: fixed;

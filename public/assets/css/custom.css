@@ -1072,10 +1072,6 @@ table.table tbody td:nth-child(2) img {
     color: #000;
 }
 
-.navbar-custom {
-    background: #FFF;
-}
-
 body[data-sidebar-size=condensed] .left-side-menu #sidebar-menu>ul>li:hover>a {
     color: #FFF;
     background-color: #6658DD;
