@@ -1645,6 +1645,8 @@ class TaskController extends Controller
             //$randem     = rand(11111111, 99999999);
             $oneagent = Agent::where('id', $agent_id)->first();
             $notification_data = [
+                'title'               => 'Update Order',
+                'body'                => 'Check All Details For This Request In App',
                 'order_id'            => $id,
                 'driver_id'           => $agent_id,
                 'notification_time'   => Carbon::now()->toDateTimeString(),
@@ -1655,33 +1657,8 @@ class TaskController extends Controller
                 'device_type'         => $oneagent->device_type,
                 'device_token'        => $oneagent->device_token,
                 'detail_id'           => '',
-            ];
-
-            $notification_data['title'] = 'Update Order';
-                $notification_data['body']  = 'Check All Details For This Request In App';
-                $new = [];
-                array_push($new,$notification_data['device_token']);
-            if(isset($new)){
-                fcm()
-                ->to($new) // $recipients must an array
-                ->priority('high')
-                ->timeToLive(0)
-                ->data($notification_data)
-                ->notification([
-                    'title' => 'Silent Notification',
-                    'body'  =>  'Check All Details For This Request In App',
-                    'sound' =>   '',
-                ])
-                ->send();
-            }
-            
-            //$recipients = [$oneagent->device_token];
-            //$recipients = $oneagent->device_token;
-
-            //$extraData = [];
-            //$this->sendsilentnotification($recipients);
-
-           // $this->dispatch(new RosterCreate($notification_data, $extraData)); //this job is for create roster in main database for send the notification  in manual alloction       
+            ];           
+            $this->sendsilentnotification($notification_data);           
         }
         
 
@@ -1689,20 +1666,20 @@ class TaskController extends Controller
         return redirect()->route('tasks.index')->with('success', 'Task Updated successfully!');
     }
 
-    public function sendsilentnotification($recipients)
+    public function sendsilentnotification($notification_data)
     {  
-        if(isset($recipients)){
+        $new = [];
+        array_push($new,$notification_data['device_token']);
+        if(isset($new)){
             fcm()
-            ->to($recipients) 
+            ->to($new) // $recipients must an array
             ->priority('high')
             ->timeToLive(0)
-            ->data([
-                'title' => 'Silent notification',
-                'body' => '',
-            ])
+            ->data($notification_data)
             ->notification([
-                'title' => '',
-                'body' => '',
+                'title' => 'Silent Notification',
+                'body'  =>  'Check All Details For This Request In App',
+                'sound' =>   '',
             ])
             ->send();
         }          
