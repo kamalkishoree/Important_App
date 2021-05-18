@@ -421,7 +421,7 @@
         $clone.removeClass('cloningDiv');
         $clone.removeClass('copyin1');
         $clone.addClass('copyin');
-        $clone.addClass('repeated-block');
+        $clone.addClass('repeated-block');       
         
         $clone.find('.cust_add_div').prop('id', 'addHeader' + countZ);
         $clone.find('.cust_add').prop('id', 'addHeader' + countZ +'-input');
@@ -497,6 +497,7 @@
           });
           
         $(document).find('#addSubFields').before($clone);
+        $('#addHeader'+countZ+' input[type="text"]').val('');
         autoWrap.indexOf('addHeader'+countZ) === -1 ? autoWrap.push('addHeader'+countZ) : console.log("exists");
           loadMapHeader(autoWrap);
     });
