@@ -1656,13 +1656,32 @@ class TaskController extends Controller
                 'device_token'        => $oneagent->device_token,
                 'detail_id'           => '',
             ];
+
+            $notification_data['title'] = 'Update Order';
+                $notification_data['body']  = 'Check All Details For This Request In App';
+                $new = [];
+                array_push($new,$notification_data['device_token']);
+            if(isset($new)){
+                fcm()
+                ->to($new) // $recipients must an array
+                ->priority('high')
+                ->timeToLive(0)
+                ->data($notification_data)
+                ->notification([
+                    'title' => 'Silent Notification',
+                    'body'  =>  'Check All Details For This Request In App',
+                    'sound' =>   '',
+                ])
+                ->send();
+            }
+            
             //$recipients = [$oneagent->device_token];
             //$recipients = $oneagent->device_token;
 
-            $extraData = [];
+            //$extraData = [];
             //$this->sendsilentnotification($recipients);
 
-            $this->dispatch(new RosterCreate($notification_data, $extraData)); //this job is for create roster in main database for send the notification  in manual alloction       
+           // $this->dispatch(new RosterCreate($notification_data, $extraData)); //this job is for create roster in main database for send the notification  in manual alloction       
         }
         
 
