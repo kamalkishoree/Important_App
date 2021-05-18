@@ -41,9 +41,6 @@ class CustomerController extends Controller
 
         $rules = [
             'name' => "required|string|max:50",
-            //'short_name'// => "required",
-            //'address' => "required",
-            //'post_code' => "required"
         ];
         if ($id != '') {
             $rules['email'] = 'required|email|unique:customers,email,' . $id;
@@ -151,9 +148,7 @@ class CustomerController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'phone_number' => $request->phone_number,
-        ];
-
-       
+        ];       
 
         $customer->update($data);
         if(isset($request->short_name))
@@ -229,11 +224,9 @@ class CustomerController extends Controller
     
     public function changeStatus(Request $request)
     {
-
         $customer = Customer::find($request->id);
         $customer->status = $request->status;
         $customer->save();
-
         return response()->json(['success' => 'Status change successfully.']);
     }
 

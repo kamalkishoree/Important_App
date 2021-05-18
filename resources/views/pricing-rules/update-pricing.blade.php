@@ -15,10 +15,7 @@
 <link href="{{asset('assets/libs/clockpicker/clockpicker.min.css')}}" rel="stylesheet" type="text/css" />
 <link href="{{asset('assets/libs/bootstrap-datepicker/bootstrap-datepicker.min.css')}}" rel="stylesheet"
     type="text/css" />
-
-
-
-
+    
 @endsection
 
 @section('content')

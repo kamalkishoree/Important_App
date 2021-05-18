@@ -247,9 +247,7 @@ class ClientController extends Controller
         
         $updatePreference = ClientPreference::updateOrCreate([
             'client_id' => $id
-        ], $request->all());
-
-        
+        ], $request->all());        
 
         if ($request->ajax()) {
             return response()->json([
@@ -274,7 +272,6 @@ class ClientController extends Controller
         $task_list   = TaskType::all();
         //print_r($task_list); die;
         $subClients  = SubClient::all();
-
         
         return view('customize')->with(['preference' => $preference, 'currencies' => $currencies,'cms'=>$cms,'task_proofs' => $task_proofs,'task_list' => $task_list]);
     }
@@ -309,9 +306,7 @@ class ClientController extends Controller
 
     public function taskProof(Request $request)
     {
-
         $requestAll = $request->all();
-
         for ($i=1; $i <= 3 ; $i++) { 
 
             $check = TaskProof::where('id',$i)->first();
@@ -322,21 +317,16 @@ class ClientController extends Controller
                 $update                     = new TaskProof;
             }
                 
-                $update->image              = isset($requestAll['image_'.$i])? 1 : 0 ;
-                $update->image_requried     = isset($request['image_requried_'.$i])? 1 : 0 ;
-                $update->signature          = isset($request['signature_'.$i])? 1 : 0 ;
-                $update->signature_requried = isset($request['signature_requried_'.$i])? 1 : 0 ;
-                $update->note               = isset($request['note_'.$i])? 1 : 0 ;
-                $update->note_requried      = isset($request['note_requried_'.$i])? 1 : 0 ;
-                $update->barcode            = isset($request['barcode_'.$i])? 1 : 0 ;
-                $update->barcode_requried   = isset($request['barcode_requried_'.$i])? 1 : 0 ;
-
-                $update->save();
-                
+            $update->image              = isset($requestAll['image_'.$i])? 1 : 0 ;
+            $update->image_requried     = isset($request['image_requried_'.$i])? 1 : 0 ;
+            $update->signature          = isset($request['signature_'.$i])? 1 : 0 ;
+            $update->signature_requried = isset($request['signature_requried_'.$i])? 1 : 0 ;
+            $update->note               = isset($request['note_'.$i])? 1 : 0 ;
+            $update->note_requried      = isset($request['note_requried_'.$i])? 1 : 0 ;
+            $update->barcode            = isset($request['barcode_'.$i])? 1 : 0 ;
+            $update->barcode_requried   = isset($request['barcode_requried_'.$i])? 1 : 0 ;
+            $update->save();                
         }
-
-       
-        
         
         return redirect()->route('preference.show')->with('success', 'Preference updated successfully!');
         
@@ -344,27 +334,25 @@ class ClientController extends Controller
 
     public function saveSmtp(Request $request)
     {
+        $check = SmtpDetail::where('id',1)->first();
 
-            $check = SmtpDetail::where('id',1)->first();
+        if(isset($check)){
+            $update                     = SmtpDetail::find(1);
+        }else{
+            $update                     = new SmtpDetail;
+        }
+            
+        $update->client_id          = Auth::user()->id;
+        $update->driver             = 'smtp';
+        $update->host               = $request->host;
+        $update->port               = $request->port;
+        $update->encryption         = $request->encryption;
+        $update->username           = $request->username;
+        $update->password           = $request->password;
+        $update->from_address       = $request->from_address;
 
-            if(isset($check)){
-                $update                     = SmtpDetail::find(1);
-            }else{
-                $update                     = new SmtpDetail;
-            }
-                
-                $update->client_id          = Auth::user()->id;
-                $update->driver             = 'smtp';
-                $update->host               = $request->host;
-                $update->port               = $request->port;
-                $update->encryption         = $request->encryption;
-                $update->username           = $request->username;
-                $update->password           = $request->password;
-                $update->from_address       = $request->from_address;
-
-                $update->save();
-
-                return redirect()->route('configure')->with('success', 'Configure updated successfully!');
+        $update->save();
+        return redirect()->route('configure')->with('success', 'Configure updated successfully!');
     }
     
 

@@ -54,7 +54,7 @@ class AccountingController extends Controller
         }
         
         switch ($type) {
-            case 1:
+            case 1:     // for today
                     
                     $dates[]    = date("d M Y");
                     $serchdate  = date("Y-m-d");
@@ -69,7 +69,7 @@ class AccountingController extends Controller
                 
                 
                 break;
-            case 2:
+            case 2:     // for weekly
                 
                 
                 $date = \Carbon\Carbon::today();
@@ -101,7 +101,7 @@ class AccountingController extends Controller
                 
             break;
             
-            default:
+            default:     // for monthly
 
                 for($i = 1; $i <=  date('t'); $i++)
                 {

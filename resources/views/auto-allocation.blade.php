@@ -17,8 +17,7 @@
         }
 
         .checkss {
-            margin-top: 20px;
-            
+            margin-top: 20px;           
 
         }
 
@@ -38,9 +37,6 @@
         .extra {
             display: none;
         }
-
-        
-       
 
     </style>
 @endsection
@@ -108,8 +104,7 @@
                                             </li>
                                           </ul>
                                         </div>
-                                    </div> 
-                                    
+                                    </div>                                    
 
                                 </div>
                                 
@@ -153,8 +148,6 @@
                                 @endif
                             </div>
                         </div>
-
-
 
                         <div class="row mb-2">
                             <div class="col-md-4">
@@ -200,7 +193,6 @@
                             </div>
                         </div>
 
-
                         <div class="row mb-2">
                             <div class="col-md-4">
                                 <div class="form-group mb-3">
@@ -218,7 +210,6 @@
                                         class="form-control"
                                         value="{{ isset($allocation) && $allocation->maximum_radius != null ? $allocation->maximum_radius : '' }}">
                                 </div>
-
                             </div>
 
                             <div class="col-md-4">
@@ -316,7 +307,6 @@
                                     </div>
                                 </div>
                                 <div class="abc">
-
                                 </div>
                             </div>
                             
@@ -365,26 +355,17 @@
                                 </div>
                             </div>
                         </div>
-
-
                     </div>
-
                 </form>
             </div>
         </div>
     </div>
 
-
-
-
-
 @endsection
 
 @section('script')
     <script>
-        $(document).ready(function() {
-
-            
+        $(document).ready(function() {            
             var sendtoall = "{{$preference->acknowledgement_type}}";
                 if(sendtoall == 'acknowledge'){
                     $('.sendtoall').hide();
@@ -401,32 +382,23 @@
                 });
             });
             $('.click').click(function() {
-
                 $(this).find('input[type="radio"]').prop('checked', true);
-
-
-
             });
 
             var simple = '{{ isset($allocation->auto_assign_logic) ? $allocation->auto_assign_logic :'' }}';
             if(simple === 'batch_wise'){
                 $('.extra').show();
-
             }
 
             $('.batch').click(function() {
-
                 $('.extra').show();
-
             });
+
             $('.five').click(function() {
-
                 $('.extra').hide();
-
             });
 
-            var CSRF_TOKEN = $("input[name=_token]").val();
-            
+            var CSRF_TOKEN = $("input[name=_token]").val();           
             
             $(document).on('click', '.autoredio', function () {
                 var value = $("input[name='acknowledgement_type']:checked").val();
@@ -444,7 +416,6 @@
                 }
             });
           });
-
 
         });
 

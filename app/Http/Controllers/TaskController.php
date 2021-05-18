@@ -61,7 +61,7 @@ class TaskController extends Controller
         return view('tasks/task')->with(['tasks' => $tasks, 'status' => $request->status, 'active_count' => $active, 'panding_count' => $pending, 'history_count' => $history, 'status' => $check,'preference' => $preference,'agents'=>$agents,'failed_count'=>$failed]);
     }
 
-    
+    // function for saving new order
     public function newtasks(Request $request)
     {   
         $loc_id = $cus_id = $send_loc_id = $newlat = $newlong = 0;
@@ -360,6 +360,7 @@ class TaskController extends Controller
         return true;
     }
 
+    //function for assigning driver to unassigned orders
     public function assignAgent(Request $request)
     {
         $order_update = Order::whereIn('id',$request->orders_id)->update(['driver_id'=>$request->agent_id,'status'=>'assigned']);
@@ -367,6 +368,7 @@ class TaskController extends Controller
         $this->MassAndEditNotification($request->orders_id[0],$request->agent_id);
     }
 
+    //function for updating date of orders
     public function assignDate(Request $request)
     {
         $auth = Client::where('code', Auth::user()->code)->with(['getAllocation', 'getPreference'])->first();        
@@ -375,6 +377,7 @@ class TaskController extends Controller
         $order_update = Order::whereIn('id',$request->orders_id)->update(['order_time'=>$notification_time]);
     }
 
+    //function for sending bulk notification 
     public function MassAndEditNotification($orders_id,$agent_id)
     {
         Log::info('mass and edit notification');
@@ -683,10 +686,7 @@ class TaskController extends Controller
                 $schduledata['finalLocation']     = $finalLocation;
                 $schduledata['taskcount']         = $taskcount;
                 $schduledata['allocation']        = $allocation;
-                $schduledata['database']          = $auth;
-
-                // Order::where('id',$orders->id)->update(['order_time'=>$time]);
-                // Task::where('order_id',$orders->id)->update(['assigned_time'=>$time,'created_at' =>$time]);
+                $schduledata['database']          = $auth;               
                 
                 scheduleNotification::dispatch($schduledata)->delay(now()->addMinutes($finaldelay));
                 return redirect()->route('tasks.index')->with('success', 'Task Added Successfully!');
@@ -938,7 +938,7 @@ class TaskController extends Controller
         }
     }
 
-    //this function for check time diffrence and give a time for notification send betwwen current time and task time
+    //this function for check time diffrence and give a time for notification send between current time and task time
 
     public function checkTimeDiffrence($notification_time, $beforetime)
     {
@@ -1494,8 +1494,6 @@ class TaskController extends Controller
                 $s3filePath = '/assets/' . $folder . '/' . $file_name;
                 $path = Storage::disk('s3')->put($s3filePath, $file, 'public');
                 array_push($images, $path);
-                // $can = Storage::disk('s3')->url('image.png');
-                // $last = str_replace('image.png', '', $can);
 
             }
             $last = implode(",", $images);
@@ -1660,12 +1658,10 @@ class TaskController extends Controller
             ];           
             $this->sendsilentnotification($notification_data);           
         }
-        
-
-
         return redirect()->route('tasks.index')->with('success', 'Task Updated successfully!');
     }
 
+    // this function for sending silent notification
     public function sendsilentnotification($notification_data)
     {  
         $new = [];
