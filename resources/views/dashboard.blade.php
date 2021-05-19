@@ -957,6 +957,7 @@ function RouteOptimization(taskids,distancematrix,optimize,agentid,date) {
     $('#addressBlock').css('display','none');
     $('#addressTaskBlock').css('display','none');
     $('#selectedtasklocations').html(''); 
+    $('.selecttask').css('display','');
     $.ajax({
             type: 'POST',            
             url: '{{url("/get-tasks")}}',
@@ -1420,45 +1421,46 @@ $(".dragable_tasks").sortable({
                 $('#addressBlock').css('display','none');
                 $('#addressTaskBlock').css('display','none');
                 $('#selectedtasklocations').html(''); 
-                $.ajax({
-                    type: 'POST',            
-                    url: '{{url("/get-tasks")}}',
-                    headers: {
-                        'X-CSRF-Token': '{{ csrf_token() }}',
-                    },
-                    data: {'taskids':taskorder},
+                $('.selecttask').css('display','none');
+                // $.ajax({
+                //     type: 'POST',            
+                //     url: '{{url("/get-tasks")}}',
+                //     headers: {
+                //         'X-CSRF-Token': '{{ csrf_token() }}',
+                //     },
+                //     data: {'taskids':taskorder},
 
-                    success: function(response) {
+                //     success: function(response) {
                         
-                        var data = $.parseJSON(response);    
+                //         var data = $.parseJSON(response);    
                                     
-                        for (var i = 0; i < data.length; i++) {
-                            var object = data[i];
-                            var task_id =  object['id'];
-                            var tasktypeid = object['task_type_id'];
-                            if(tasktypeid==1)
-                            {
-                                tasktype = "Pickup";
-                            }else if(tasktypeid==2)
-                            {
-                                tasktype = "Dropoff";
-                            }else{
-                                tasktype = "Appointment";
-                            } 
+                //         for (var i = 0; i < data.length; i++) {
+                //             var object = data[i];
+                //             var task_id =  object['id'];
+                //             var tasktypeid = object['task_type_id'];
+                //             if(tasktypeid==1)
+                //             {
+                //                 tasktype = "Pickup";
+                //             }else if(tasktypeid==2)
+                //             {
+                //                 tasktype = "Dropoff";
+                //             }else{
+                //                 tasktype = "Appointment";
+                //             } 
 
-                            var location_address =  object['location']['address'];
-                            var shortname =  object['location']['short_name'];
+                //             var location_address =  object['location']['address'];
+                //             var shortname =  object['location']['short_name'];
 
                                                 
-                            var option   = '<option value="'+task_id+'">'+tasktype+' - '+shortname+' - '+location_address+'</option>';                            
-                            $('#selectedtasklocations').append(option);
-                        }
-                    },
-                    error: function(response) {
-                        // alert('There is some issue. Try again later');
-                        // $('.pageloader').css('display','none');
-                    }
-                });
+                //             var option   = '<option value="'+task_id+'">'+tasktype+' - '+shortname+' - '+location_address+'</option>';                            
+                //             $('#selectedtasklocations').append(option);
+                //         }
+                //     },
+                //     error: function(response) {
+                //         // alert('There is some issue. Try again later');
+                //         // $('.pageloader').css('display','none');
+                //     }
+                // });
 
                 $('#optimize-route-modal').modal('show');
             },

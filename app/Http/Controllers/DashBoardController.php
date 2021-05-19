@@ -1548,7 +1548,11 @@ class DashBoardController extends Controller
             ->priority('high')
             ->timeToLive(0)
             ->data($notification_data)
-            
+            ->notification([
+                'title' => 'Your order is updated',
+                'body'  =>  '',
+                'sound' =>  '',
+            ])
             ->send();
         }          
     }

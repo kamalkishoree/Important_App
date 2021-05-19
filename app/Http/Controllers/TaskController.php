@@ -1673,8 +1673,8 @@ class TaskController extends Controller
             ->timeToLive(0)
             ->data($notification_data)
             ->notification([
-                'title' => 'Silent Notification',
-                'body'  =>  'Check All Details For This Request In App',
+                'title' => 'Your order is updated',
+                'body'  =>  '',
                 'sound' =>   '',
             ])
             ->send();
