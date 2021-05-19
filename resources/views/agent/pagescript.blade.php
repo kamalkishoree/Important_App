@@ -1,7 +1,6 @@
 <script type="text/javascript">
     var tagList = "{{$showTag}}";
-    tagList = tagList.split(',');
-    
+    tagList = tagList.split(',');    
 
     function makeTag(){
         $('.myTag1').tagsInput({
@@ -18,8 +17,6 @@
         $("#countryCode").val(mobile_number.getSelectedCountryData().dialCode);
     });
 
-
-
     function phoneInput() {
         console.log('phone working');
         var input = document.querySelector(".xyz");
@@ -29,12 +26,9 @@
             separateDialCode: true, 
             hiddenInput: "full_number",
             utilsScript: "{{ asset('telinput/js/utils.js') }}",
-         }); 
-        
+         });        
        
-    }
-
-   
+    }   
 
     $('.openModal').click(function(){
         $('#add-agent-modal').modal({
@@ -42,14 +36,11 @@
             keyboard: false
         });
         makeTag();
-        //$(''.xyz).intlTelInput()
-        
-        phoneInput();
-        
+        //$(''.xyz).intlTelInput()        
+        phoneInput();        
     });
 
-    $(document).ready(function() {
-       
+    $(document).ready(function() {       
         jQuery('#onfoot').click();
     });
 
@@ -199,14 +190,7 @@
 
     }
 
-    // $('#add-agent-modal #phone_number').focus(function() { 
-    //     $(this).css('color', '#6c757d');
-    // });
-
-   
-
-   
-
+    
     /* Get agent by ajax */
     $(".submitpayreceive").click(function (e) {  
         $.ajaxSetup({

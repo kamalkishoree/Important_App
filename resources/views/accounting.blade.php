@@ -263,15 +263,10 @@
                                         <span class="badge bg-soft-success text-success">{{$agent->type}}</span>
                                         @else
                                         <span class="badge bg-soft-danger text-danger">{{$agent->type}}</span>
-                                        @endif    
-                                        
+                                        @endif                                          
                                        
                                     </td>
 
-                                    {{-- <td>
-                                        <a href="javascript: void(0);" class="btn btn-xs btn-light"><i class="mdi mdi-plus"></i></a>
-                                        <a href="javascript: void(0);" class="btn btn-xs btn-danger"><i class="mdi mdi-minus"></i></a>
-                                    </td> --}}
                                 </tr>
                                 @endforeach
 
@@ -283,19 +278,7 @@
 
             <div class="col-xl-6">
                 <div class="card-box">
-                    {{-- <div class="dropdown float-right">
-                        <a href="#" class="dropdown-toggle arrow-none card-drop" data-toggle="dropdown" aria-expanded="false">
-                            <i class="mdi mdi-dots-vertical"></i>
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-right">
-                            
-                            <a href="javascript:void(0);" class="dropdown-item">Edit Report</a>
-                            
-                            <a href="javascript:void(0);" class="dropdown-item">Export Report</a>
-                            
-                            <a href="javascript:void(0);" class="dropdown-item">Action</a>
-                        </div>
-                    </div> --}}
+                    
 
                     <h4 class="header-title mb-3">Customers</h4>
 
@@ -438,18 +421,12 @@
             return data;
         }
 
-
-
-
-
-
         //chart code goes here
         var countOrders  = {!!json_encode($countOrders)!!};
         var sumOrders    = {!!json_encode($sumOrders)!!};
         var dates        = {!!json_encode($dates)!!};
 
-
-                var colors = ['#f1556c'];
+        var colors = ['#f1556c'];
         var dataColors = $("#total-revenue").data('colors');
         if (dataColors) {
             colors = dataColors.split(",");

@@ -13,8 +13,7 @@
 
                         <div class="col-md-12">
                             <div class="card-box">
-                                <h4 class="header-title mb-3"></h4>
-                                
+                                <h4 class="header-title mb-3"></h4>                              
                     
                                 <div class="row">
                                     <div class="col-md-6">
@@ -23,8 +22,7 @@
                                             {!! Form::text('name', null, ['class' => 'form-control','placeholder'=> 'Name','required' => 'required']) !!}
                                             <span class="invalid-feedback" role="alert">
                                                 <strong></strong>
-                                            </span>
-                    
+                                            </span>                    
                                         </div>
                                     </div>
                                     <div class="col-md-6">
@@ -35,8 +33,7 @@
                                                 <strong></strong>
                                             </span>
                                         </div>
-                                    </div>
-                    
+                                    </div>                    
                                 </div>
                     
                                 <div class="row">
@@ -56,11 +53,8 @@
                                                 <label class="custom-control-label" for="customSwitch1">Turn On For Default Alloction</label>
                                             </div>
                                         </div>
-                                    </div>
-                                   
+                                    </div>                                   
                                 </div>
-                    
-                                
 
                                 <div class="row temp">
                                     <div class="col-md-6">

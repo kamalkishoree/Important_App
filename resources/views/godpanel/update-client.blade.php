@@ -141,25 +141,8 @@
                                     </div>
                                 </div>
                                
-                            </div>
+                            </div>                            
                             
-                            {{-- <div class="row">
-                                
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="database_password" class="control-label">DATABASE PASSWORD</label>
-                                        <input type="text" class="form-control" name="database_password"
-                                            id="database_password"
-                                            value="{{ old('database_password', $client->database_password ?? '')}}"
-                                            placeholder="Enter database password">
-                                        @if($errors->has('database_password'))
-                                        <span class="text-danger" role="alert">
-                                            <strong>{{ $errors->first('database_password') }}</strong>
-                                        </span>
-                                        @endif
-                                    </div>
-                                </div>
-                            </div> --}}
 
                             <div class="row">
                                 

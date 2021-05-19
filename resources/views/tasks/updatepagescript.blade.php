@@ -119,6 +119,9 @@ $(document).ready(function(){
                     $clone.find('.cust1_longitude').prop('id', 'add' + countEdit +'-longitude');
                     // for each input change its name/id appending the num value
                     var count0 = 1;
+
+                    $('#add'+countEdit+' input[type="text"]').val('');
+
                     $.each(inputs, function(index, elem){
                         var jElem = $(elem); // jQuery element
                         var name = jElem.prop('name');

@@ -2,13 +2,10 @@
     <div class="col-sm-12">
         <div class="card-box">
             <div class="row">
-                <div class="col-md-12">
-                   
+                <div class="col-md-12">                  
                     
                     <div class="card-box">
                         <h4 class="header-title mb-3"></h4>
-                        
-            
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group" id="nameInput">
@@ -16,8 +13,7 @@
                                     {!! Form::text('name', null, ['class' => 'form-control','placeholder'=> 'Name','required' => 'required']) !!}
                                     <span class="invalid-feedback" role="alert">
                                         <strong></strong>
-                                    </span>
-            
+                                    </span>            
                                 </div>
                             </div>
                             <div class="col-md-6">
@@ -49,11 +45,8 @@
                                         <label class="custom-control-label" for="customSwitch1">Turn On For Default Alloction</label>
                                     </div>
                                 </div>
-                            </div>
-                           
+                            </div>                           
                         </div>
-            
-                        
 
                         <div class="row temp">
                             <div class="col-md-6">
@@ -74,9 +67,7 @@
                                     </span>
                                 </div>
                             </div>
-                        </div>
-
-                        
+                        </div>                       
 
                         <div class="row temp">
                             <div class="col-md-6">
@@ -97,7 +88,6 @@
                                     </span>
                                 </div>
                             </div>
-
                         </div>
 
                         <div class="row">
@@ -107,8 +97,7 @@
                                     {!! Form::text('base_price', null, ['class' => 'form-control','required' => 'required']) !!}
                                     <span class="invalid-feedback" role="alert">
                                         <strong></strong>
-                                    </span>
-            
+                                    </span>            
                                 </div>
                             </div>
                             <div class="col-md-6">
@@ -117,11 +106,9 @@
                                     {!! Form::text('base_duration', null, ['class' => 'form-control','required' => 'required']) !!}
                                     <span class="invalid-feedback" role="alert">
                                         <strong></strong>
-                                    </span>
-            
+                                    </span>            
                                 </div>
-                            </div>
-            
+                            </div>            
                         </div>
 
                         <div class="row">
@@ -131,8 +118,7 @@
                                     {!! Form::text('base_distance', null, ['class' => 'form-control','required' => 'required']) !!}
                                     <span class="invalid-feedback" role="alert">
                                         <strong></strong>
-                                    </span>
-            
+                                    </span>            
                                 </div>
                             </div>
                             <div class="col-md-6">
@@ -141,8 +127,7 @@
                                     {!! Form::text('base_waiting', null, ['class' => 'form-control','required' => 'required']) !!}
                                     <span class="invalid-feedback" role="alert">
                                         <strong></strong>
-                                    </span>
-            
+                                    </span>            
                                 </div>
                             </div>
             
@@ -155,8 +140,7 @@
                                     {!! Form::text('duration_price', null, ['class' => 'form-control','required' => 'required']) !!}
                                     <span class="invalid-feedback" role="alert">
                                         <strong></strong>
-                                    </span>
-            
+                                    </span>            
                                 </div>
                             </div>
                             <div class="col-md-6">
@@ -165,8 +149,7 @@
                                     {!! Form::text('waiting_price', null, ['class' => 'form-control','required' => 'required']) !!}
                                     <span class="invalid-feedback" role="alert">
                                         <strong></strong>
-                                    </span>
-            
+                                    </span>            
                                 </div>
                             </div>
             
@@ -179,8 +162,7 @@
                                     {!! Form::text('distance_fee', null, ['class' => 'form-control','required' => 'required']) !!}
                                     <span class="invalid-feedback" role="alert">
                                         <strong></strong>
-                                    </span>
-            
+                                    </span>            
                                 </div>
                             </div>
                             <div class="col-md-6">
@@ -189,8 +171,7 @@
                                     {!! Form::text('cancel_fee', null, ['class' => 'form-control','required' => 'required']) !!}
                                     <span class="invalid-feedback" role="alert">
                                         <strong></strong>
-                                    </span>
-            
+                                    </span>            
                                 </div>
                             </div>
             
@@ -203,8 +184,7 @@
                                     {!! Form::text('agent_commission_percentage', null, ['class' => 'form-control','required' => 'required']) !!}
                                     <span class="invalid-feedback" role="alert">
                                         <strong></strong>
-                                    </span>
-            
+                                    </span>            
                                 </div>
                             </div>
                             <div class="col-md-6">
@@ -213,11 +193,9 @@
                                     {!! Form::text('agent_commission_fixed', null, ['class' => 'form-control','required' => 'required']) !!}
                                     <span class="invalid-feedback" role="alert">
                                         <strong></strong>
-                                    </span>
-            
+                                    </span>            
                                 </div>
-                            </div>
-            
+                            </div>            
                         </div>
                         
                         <div class="row">
@@ -227,8 +205,7 @@
                                     {!! Form::text('freelancer_commission_percentage', null, ['class' => 'form-control']) !!}
                                     <span class="invalid-feedback" role="alert">
                                         <strong></strong>
-                                    </span>
-            
+                                    </span>            
                                 </div>
                             </div>
                             <div class="col-md-6">
@@ -237,23 +214,16 @@
                                     {!! Form::text('freelancer_commission_fixed', null, ['class' => 'form-control']) !!}
                                     <span class="invalid-feedback" role="alert">
                                         <strong></strong>
-                                    </span>
-            
+                                    </span>            
                                 </div>
                             </div>
                         </div>
-
                         
-            
-                        
-                        <div class="row">
-                            
+                        <div class="row">                            
                             <div class="col-md-12">
                                 <button type="submit" class="btn btn-blue waves-effect waves-light ">Submit</button>
                             </div>
                         </div>
-            
-            
             
                     </div>
                     {{-- Do not Remove this blow div --}}

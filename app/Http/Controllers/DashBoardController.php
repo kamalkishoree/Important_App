@@ -860,6 +860,29 @@ class DashBoardController extends Controller
             $gettotal_distance = $this->getTotalDistance($taskids,$driverlocation);
             $totaldistance  = $gettotal_distance['total_distance_miles'];
 
+            //sending silent notification
+            if($agentid!=0)
+            {
+                $allcation_type = 'silent';
+                //$randem     = rand(11111111, 99999999);
+                $oneagent = Agent::where('id', $agentid)->first();
+                $notification_data = [
+                    'title'               => 'Update Order',
+                    'body'                => 'Check All Details For This Request In App',
+                    'order_id'            => '',
+                    'driver_id'           => $agentid,
+                    'notification_time'   => Carbon::now()->toDateTimeString(),
+                    'type'                => $allcation_type,
+                    'client_code'         => '',
+                    'created_at'          => Carbon::now()->toDateTimeString(),
+                    'updated_at'          => Carbon::now()->toDateTimeString(),
+                    'device_type'         => $oneagent->device_type,
+                    'device_token'        => $oneagent->device_token,
+                    'detail_id'           => '',
+                ];           
+                $this->sendsilentnotification($notification_data);           
+            }
+
             $output = array();
             $output['tasklist'] = $agent;
             //$output['routedata'] = $routedata;
@@ -869,6 +892,8 @@ class DashBoardController extends Controller
             $output['agentid'] = $agentid;
             $output['distance_matrix'] = $distancematrix;
             $output['date'] = $request->route_date;
+            $output['driver_position'] = $driver_lat.' '.$driver_long;
+            $output['distancematrixjson'] = $payload;
             echo json_encode($output);   
             
         }else{
@@ -1026,6 +1051,29 @@ class DashBoardController extends Controller
 
         $gettotal_distance = $this->getTotalDistance($taskids,$driverlocation);
         $distance  = $gettotal_distance['total_distance_miles'];
+
+        if($agentid!=0)
+        {
+            $allcation_type = 'silent';
+            //$randem     = rand(11111111, 99999999);
+            $oneagent = Agent::where('id', $agentid)->first();
+            $notification_data = [
+                'title'               => 'Update Order',
+                'body'                => 'Check All Details For This Request In App',
+                'order_id'            => '',
+                'driver_id'           => $agentid,
+                'notification_time'   => Carbon::now()->toDateTimeString(),
+                'type'                => $allcation_type,
+                'client_code'         => '',
+                'created_at'          => Carbon::now()->toDateTimeString(),
+                'updated_at'          => Carbon::now()->toDateTimeString(),
+                'device_type'         => $oneagent->device_type,
+                'device_token'        => $oneagent->device_token,
+                'detail_id'           => '',
+            ];           
+            $this->sendsilentnotification($notification_data);           
+        }
+
         $output = array();
         $output['allroutedata'] = $alldrivers;    
         $output['total_distance'] = $distance;        
@@ -1488,6 +1536,25 @@ class DashBoardController extends Controller
         echo json_encode($taskdetails);
 
           
+    }
+
+    public function sendsilentnotification($notification_data)
+    {  
+        $new = [];
+        array_push($new,$notification_data['device_token']);
+        if(isset($new)){
+            fcm()
+            ->to($new) // $recipients must an array
+            ->priority('normal')
+            ->timeToLive(0)
+            ->data($notification_data)
+            ->notification([
+                'title' => 'Silent Notification',
+                'body'  =>  'Check All Details For This Request In App',
+                'sound' =>   '',
+            ])
+            ->send();
+        }          
     }
 
     

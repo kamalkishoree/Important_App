@@ -171,8 +171,7 @@ class ClientNotificationController extends Controller
     }
 
     public function setmessage(Request $request)
-    {
-        
+    {        
         $message = NotificationEvent::find($request->notification_event_id);
         $message->message = $request->message; 
         $message->save();
@@ -191,8 +190,7 @@ class ClientNotificationController extends Controller
         
         foreach($get as $item){
             array_push($recipients,$item->agent->device_token);
-        }
-        
+        }       
        
         if(isset($recipients)){
             fcm()

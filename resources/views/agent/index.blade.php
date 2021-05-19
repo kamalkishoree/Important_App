@@ -14,12 +14,7 @@
         .cursors {
             cursor:move;
             margin-right: 0rem !important;
-     }
-
-
-    
-   
-
+        }
     </style>
 @endsection
 @php
@@ -234,11 +229,6 @@
             stay.preventDefault(); 
     });
 
-    $(document).ready(function() {
-       
-        
-
-   });
-   
+    
 </script>
 @endsection
