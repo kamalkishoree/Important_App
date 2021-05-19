@@ -1,12 +1,12 @@
 <div id="add-agent-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title">Add {{ Session::get('agent_name') }}</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
             </div>
             <form id="submitAgent" enctype="multipart/form-data"  action="{{ url('agent/store') }}">
-                <div class="modal-body p-4">
+                <div class="modal-body px-3 py-0">
                 
                     @csrf
                     <input type="hidden" name="country_code" id="countryCode">
@@ -171,7 +171,7 @@
 </div>
 
 <div id="edit-agent-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display:none;">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title">Edit {{ Session::get('agent_name') }}</h4>
@@ -180,7 +180,7 @@
             <form id="UpdateAgent" method="post" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
-                <div class="modal-body p-4" id="editCardBox">
+                <div class="modal-body px-3" id="editCardBox">
                     
                 </div>
 

@@ -354,7 +354,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
     <div class="col-md-8 col-xl-9">
         <div class="map-wrapper">
             <div style="width: 100%">
-                <div id="map_canvas" style="width: 100%; height:calc(100vh - 130px);"></div>                
+                <div id="map_canvas" style="width: 100%; height:calc(100vh - 70px);"></div>                
             </div>
             <div class="contant">
                 <div class="bottom-content">

@@ -1,6 +1,6 @@
 <div id="add-customer-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
     aria-hidden="true" style="display: none;">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title">Add Customer</h4>
@@ -8,7 +8,7 @@
             </div>
             <form id="submitCustomer">
                 @csrf
-                <div class="modal-body p-4">
+                <div class="modal-body px-3 py-0">
                    
                     <div class="row">
                         <div class="col-md-12">

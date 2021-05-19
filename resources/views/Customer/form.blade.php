@@ -115,10 +115,7 @@
 </div>
 
 <div class="row">
-    <div class="col-md-4">
-
-    </div>
-    <div class="col-md-8" id="edit_add">
+    <div class="col-12 text-center" id="edit_add">
         <a href="#"  class="btn btn-success btn-rounded waves-effect waves-light editInput" >Add More Address</a>
     </div>
 </div>

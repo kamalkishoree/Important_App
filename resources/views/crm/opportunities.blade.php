@@ -263,7 +263,7 @@
                 <h4 class="modal-title" id="myCenterModalLabel">Add New Opportunities</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
             </div>
-            <div class="modal-body p-4">
+            <div class="modal-body px-3 py-0">
                 <form>
                     <div class="form-group">
                         <label for="name">Company Name</label>

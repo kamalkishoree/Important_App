@@ -123,11 +123,11 @@ exit;
             <input type="hidden" name="zoom_level" value="13" id="zoom_level" />
             <div class="row">
                 <div class="col-lg-5">
-                    <div class="card-box">
+                    <div class="card-box mb-0">
                         <h4 class="header-title mb-3">Add Geo Fence</h4>
-                        <div class="row mb-2">
+                        <div class="row">
                             <div class="col-md-12">
-                                <div class="form-group mb-3">
+                                <div class="form-group mb-0">
                                     <label for="name">Name</label>
                                     <input type="text" name="name" id="name" placeholder="ABC Deliveries"
                                         class="form-control">
@@ -139,18 +139,18 @@ exit;
                                 </div>
                             </div>
                         </div>
-                        <div class="row mb-2">
+                        <div class="row">
                             <div class="col-md-12">
-                                <div class="form-group mb-3">
+                                <div class="form-group mb-0">
                                     <label for="Description">Description (Optional)</label>
                                     <textarea class="form-control" id="Description" name="description"></textarea>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="row mb-2">
+                        <div class="row">
                             <div class="col-md-12">
-                                <div class="form-group mb-3">
+                                <div class="form-group">
                                     <label>Team</label> <br />
                                     <select id="selectize-select" name="team_id">
                                         <option value="0">All</option>
@@ -160,7 +160,7 @@ exit;
                                     </select>
 
                                 </div>
-                                <div class="form-group mb-3">
+                                <div class="form-group">
                                     <div class="row">
                                         <div class="col-md-6">
                                             <div class="custom-control custom-checkbox select_all" id="old_show">
@@ -230,7 +230,7 @@ exit;
                       </div>
                       
                     </div>
-                    <div class="" style="height:780px;">
+                    <div class="map-outer geo_main">
 
                         <div id="map-canvas"></div>
                     </div>

@@ -26,7 +26,7 @@
                         </div>
                         <form id="submitTeam" action="{{ route('team.store') }}" method="POST">
                             @csrf
-                            <div class="modal-body p-4">
+                            <div class="modal-body px-3 py-0">
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div class="form-group" id="nameInput">

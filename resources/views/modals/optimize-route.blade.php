@@ -1,6 +1,6 @@
 
 <div id="optimize-route-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title">Optimize Route</h4>
@@ -9,7 +9,7 @@
             <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&libraries=places&key={{$map_key}}"></script>
             <form id="optimizerouteform" action="" method="POST">
                 @csrf
-                <div class="modal-body py-0">
+                <div class="modal-body pb-0">
                     
                     <div class="row">                       
 

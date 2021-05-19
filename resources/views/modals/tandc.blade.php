@@ -2,13 +2,13 @@
     aria-hidden="true" style="display: none;">
     <form method="post" action="{{ route('cms.save',1) }}" id="tandc_form">
         @csrf
-     <div class="modal-dialog modal-lg">
+     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title">Terms and Conditions</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
             </div>
-            <div class="modal-body p-4">
+            <div class="modal-body px-3 py-0">
                 
                
                

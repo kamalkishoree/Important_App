@@ -9,8 +9,7 @@
         </div>
         <p class="text-muted text-center mt-2 mb-0">Profile Pic</p>
     </div>
-    <div class="col-md-2"></div>
-    <div class="col_md-6">
+    <div class="offset-md-2 col_md-6">
         <span>Live OTP</span>
         <h4>{{isset($otp)?$otp:'View OTP after Logging in the Driver App'}}</h4>
     </div>

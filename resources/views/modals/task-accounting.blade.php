@@ -1,12 +1,12 @@
 <div id="task-accounting-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
             </div>
             <form id="add_customer" action="" method="">
                 @csrf
-                <div class="modal-body p-4">
+                <div class="modal-body px-3 py-0">
                     
                     <div class="row">
 

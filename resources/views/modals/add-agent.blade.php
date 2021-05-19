@@ -1,5 +1,5 @@
  <div id="add-agent-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title">Add {{ Session::get('agent_name') }}</h4>
@@ -7,7 +7,7 @@
             </div>
             <form id="submitAgent" enctype="multipart/form-data">
                 @csrf
-                <div class="modal-body p-4">
+                <div class="modal-body px-3 py-0">
                     <div class="row mb-2">
                         <div class="col-md-4">
                             <div class="form-group" id="profile_pictureInput">

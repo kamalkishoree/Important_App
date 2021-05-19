@@ -49,7 +49,7 @@
                             enctype="multipart/form-data">
                             @endif
                             @csrf
-                            <div class="modal-body p-4">
+                            <div class="modal-body px-3 py-0">
                             <div class="row mb-2">
                                 <div class="col-md-4">
                                     <div class="form-group" id="profile_pictureInput">

@@ -31,7 +31,7 @@
     <!-- end page title -->
 
     <div class="row">
-        <div class="col-lg-6 col-md-4">
+        <div class="col-md-4">
             <form method="POST" action="{{route('preference', Auth::user()->code)}}">
                 @csrf
                 <div class="row">
@@ -71,7 +71,7 @@
                 </div>
             </form>
         </div>
-        <div class="col-lg-6 col-md-4">
+        <div class="col-md-4">
             <form method="POST" action="{{route('preference', Auth::user()->code)}}">
                 @csrf
                 <div class="row">
@@ -111,7 +111,31 @@
                 </div>
             </form>
         </div>
-        <div class="col-lg-6 col-md-4">
+        <div class="col-md-4">
+            <div class="card-box">
+                <h4 class="header-title">CMS</h4>
+                <p class="sub-header">
+                    View and update the date & time format.
+                </p>
+                <div class="row">
+                    <div class="login-forms">
+                        <ul class="list-inline d-flex mt-3">
+                            <li class="d-inline-block ml-2">
+                               
+                    
+                            <label for="acknowledge1"><a href="#" class="btn btn-blue btn-block" type="button" data-toggle="modal" data-target="#create-tandc-modal">Terms and Conditions</a></label>
+                            </li>
+                            <li class="d-inline-block ml-2">
+                                
+                            <label for="acknowledge2"><a href="#" class="btn btn-blue btn-block" type="button" data-toggle="modal" data-target="#create-pandp-modal">Privacy Policy</a></label>
+                            </li>
+                          </ul>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="col-md-6">
             <form method="POST" action="{{route('preference', Auth::user()->code)}}">
                 @csrf
                 <div class="row">
@@ -183,7 +207,7 @@
                 </div>
             </form>
         </div>
-        <div class="col-lg-6 col-md-4">
+        <div class="col-md-6">
             <form method="POST" action="{{route('preference',Auth::user()->code)}}">
                 @csrf
                 <div class="row">
@@ -193,7 +217,7 @@
                             <p class="sub-header">
                                 View and update the date & time format.
                             </p>
-                            <div class="row mb-2">
+                            <div class="row mb-5">
         
                                 <div class="col-md-6">
                                     <div class="form-group mb-3">
@@ -246,38 +270,11 @@
             </form>
         </div>
     </div>
-    
-        <div class="row">
-            <div class="col-xl-11 col-md-offset-1">
-                <div class="card-box">
-                    <h4 class="header-title">Cms</h4>
-                    <p class="sub-header">
-                        View and update the date & time format.
-                    </p>
-                    <div class="row">
-                        <div class="login-forms">
-                            <ul class="list-inline">
-                                <li class="d-inline-block ml-2">
-                                   
-                        
-                                <label for="acknowledge1"><a href="#" class="btn btn-blue btn-block" type="button" style="color: #ffffff;" data-toggle="modal" data-target="#create-tandc-modal">Terms and Conditions</a></label>
-                                </li>
-                                <li class="d-inline-block ml-2">
-                                    
-                                <label for="acknowledge2"><a href="#" class="btn btn-blue btn-block" type="button" style="color: #ffffff;" data-toggle="modal" data-target="#create-pandp-modal">Privacy Policy</a></label>
-                                </li>
-                              </ul>
-                            </div>
-                    </div>
-
-                </div>
-            </div>
-        </div>
 
         <form method="POST" action="{{route('task.proof')}}">
         @csrf
         <div class="row">
-            <div class="col-xl-11 col-md-offset-1">
+            <div class="col-xl-12">
                 <div class="card-box">
                     <h4 class="header-title mb-3">Task Completion Proofs</h4>
                     

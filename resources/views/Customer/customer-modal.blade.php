@@ -1,5 +1,5 @@
 <div id="add-customer-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title">Add Customer</h4>
@@ -7,7 +7,7 @@
             </div>
             <form id="add_customer" action="{{ route('customer.store') }}" method="POST">
                 @csrf
-                <div class="modal-body py-0">
+                <div class="modal-body pb-0">
                     
                     <div class="row">
 
@@ -155,7 +155,7 @@
 </div>
 
 <div id="edit-customer-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title">Edit Customer</h4>
@@ -165,7 +165,7 @@
             <form id="edit_customer" method="post" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
-                <div class="modal-body p-4" id="editCardBox">
+                <div class="modal-body px-3 py-0" id="editCardBox">
                     
                 </div>
 
@@ -186,7 +186,7 @@
                 <h4 class="modal-title">Select Location</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
             </div>
-            <div class="modal-body p-4">
+            <div class="modal-body px-3 py-0">
                 
                 <div class="row">
                     <form id="task_form" action="#" method="POST" style="width: 100%">

@@ -40,68 +40,70 @@
 
 
     <!-- end page title -->
-    <div class="row">
-        <div class="col-12 col-md-3">
-            <div class="card">
-                <div class="card-body">
+    <div class="geo_wrapper geo_main">
+        <div class="row">
+            <div class="col-12 col-md-3">
+                <div class="card">
+                    <div class="card-body p-0">
 
-                    <div class="row mb-2">
-                        
-                        <div class="col-sm-12 text-right">
-                            <a href="{{ route('geo-fence.index') }}"><button type="button" class="btn btn-blue waves-effect waves-light"><i class="mdi mdi-plus-circle mr-1"></i>Add Geo-fence</button></a>
+                        <div class="row mb-2">
+                            
+                            <div class="col-sm-12 text-right">
+                                <a href="{{ route('geo-fence.index') }}"><button type="button" class="btn btn-blue waves-effect waves-light"><i class="mdi mdi-plus-circle mr-1"></i>Add Geo-fence</button></a>
+                            </div>
+
                         </div>
 
-                    </div>
+                        <div class="table-responsive p-0">
+                            <table class="table table-centered table-nowrap table-striped" id="products-datatable">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th style="width: 85px;">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($geos as $geo)
+                                    <tr>
+                                        <td class="table-user">
+                                            <a href="javascript:void(0);"
+                                                class="text-body font-weight-semibold">{{$geo->name}}</a>
+                                        </td>
 
-                    <div class="table-responsive">
-                        <table class="table table-centered table-nowrap table-striped" id="products-datatable">
-                            <thead>
-                                <tr>
-                                    <th>Name</th>
-                                    <th style="width: 85px;">Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach($geos as $geo)
-                                <tr>
-                                    <td class="table-user">
-                                        <a href="javascript:void(0);"
-                                            class="text-body font-weight-semibold">{{$geo->name}}</a>
-                                    </td>
+                                        <td>
+                                            <a href="{{route('geo-fence.edit', $geo->id)}}" class="action-icon"> <i
+                                                    class="mdi mdi-square-edit-outline"></i></a>
+                                            <!-- <a href="{{route('geo-fence.destroy', $geo->id)}}" class="action-icon">
+                                                <i class="mdi mdi-delete"></i>
+                                            </a> -->
+                                            <form method="POST" action="{{route('geo-fence.destroy', $geo->id)}}" class="action-icon">
+                                                @csrf
+                                                @method('DELETE')
+                                                <div class="form-group">
+                                                    <button type="submit" class="btn btn-primary-outline action-icon"> <i
+                                                            class="mdi mdi-delete"></i></button>
 
-                                    <td>
-                                        <a href="{{route('geo-fence.edit', $geo->id)}}" class="action-icon"> <i
-                                                class="mdi mdi-square-edit-outline"></i></a>
-                                        <!-- <a href="{{route('geo-fence.destroy', $geo->id)}}" class="action-icon">
-                                            <i class="mdi mdi-delete"></i>
-                                        </a> -->
-                                        <form method="POST" action="{{route('geo-fence.destroy', $geo->id)}}" class="action-icon">
-                                            @csrf
-                                            @method('DELETE')
-                                            <div class="form-group">
-                                                <button type="submit" class="btn btn-primary-outline action-icon"> <i
-                                                        class="mdi mdi-delete"></i></button>
+                                                </div>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
 
-                                            </div>
-                                        </form>
-                                    </td>
-                                </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-
-                </div> <!-- end card-body-->
-            </div> <!-- end card-->
-        </div> <!-- end col -->
+                    </div> <!-- end card-body-->
+                </div> <!-- end card-->
+            </div> <!-- end col -->
 
 
-        <div class="col-12 col-md-9">
-            <div class="card-box p-0 m-0" style="height:650px;">
-                <div id="map-canvas"></div>
+            <div class="col-12 col-md-9">
+                <div class="card-box p-0 m-0">
+                    <div id="map-canvas"></div>
+                </div>
             </div>
-        </div>
 
+        </div>
     </div>
 
     @php

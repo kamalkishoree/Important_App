@@ -81,14 +81,14 @@
 
                 <!-- Add New Event MODAL -->
                 <div class="modal fade" id="event-modal" tabindex="-1">
-                    <div class="modal-dialog">
+                    <div class="modal-dialog modal-dialog-centered">
                         <div class="modal-content">
                             <div class="modal-header py-3 px-4 border-bottom-0 d-block">
                                 <button type="button" class="close" data-dismiss="modal"
                                     aria-hidden="true">&times;</button>
                                 <h5 class="modal-title" id="modal-title">Event</h5>
                             </div>
-                            <div class="modal-body p-4">
+                            <div class="modal-body px-3 py-0">
                                 <form class="needs-validation" name="event-form" id="form-event" novalidate>
                                     <div class="row">
                                         <div class="col-12">

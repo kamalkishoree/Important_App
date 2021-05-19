@@ -33,7 +33,7 @@
 
                         <!-- Standard modal content -->
                         <div id="standard-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="standard-modalLabel" aria-hidden="true">
-                            <div class="modal-dialog">
+                            <div class="modal-dialog modal-dialog-centered">
                                 <div class="modal-content">
                                     <div class="modal-header">
                                         <h4 class="modal-title" id="standard-modalLabel">Modal Heading</h4>
@@ -58,7 +58,7 @@
 
                         <!--  Modal content for the Large example -->
                         <div class="modal fade" id="bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-                            <div class="modal-dialog modal-lg">
+                            <div class="modal-dialog modal-dialog-centered modal-lg">
                                 <div class="modal-content">
                                     <div class="modal-header">
                                         <h4 class="modal-title" id="myLargeModalLabel">Large modal</h4>
@@ -191,7 +191,7 @@
 
                         <!-- Signup modal content -->
                         <div id="signup-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
-                            <div class="modal-dialog">
+                            <div class="modal-dialog modal-dialog-centered">
                                 <div class="modal-content">
 
                                     <div class="modal-body">
@@ -239,7 +239,7 @@
 
                         <!-- SignIn modal content -->
                         <div id="login-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
-                            <div class="modal-dialog">
+                            <div class="modal-dialog modal-dialog-centered">
                                 <div class="modal-content">
                                     <div class="modal-body">
                                         <div class="text-center mt-2 mb-4">
@@ -401,7 +401,7 @@
                         <div id="success-alert-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
                             <div class="modal-dialog modal-sm">
                                 <div class="modal-content modal-filled bg-success">
-                                    <div class="modal-body p-4">
+                                    <div class="modal-body px-3 py-0">
                                         <div class="text-center">
                                             <i class="dripicons-checkmark h1 text-white"></i>
                                             <h4 class="mt-2 text-white">Well Done!</h4>
@@ -417,7 +417,7 @@
                         <div id="info-alert-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
                             <div class="modal-dialog modal-sm">
                                 <div class="modal-content">
-                                    <div class="modal-body p-4">
+                                    <div class="modal-body px-3 py-0">
                                         <div class="text-center">
                                             <i class="dripicons-information h1 text-info"></i>
                                             <h4 class="mt-2">Heads up!</h4>
@@ -433,7 +433,7 @@
                         <div id="warning-alert-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
                             <div class="modal-dialog modal-sm">
                                 <div class="modal-content">
-                                    <div class="modal-body p-4">
+                                    <div class="modal-body px-3 py-0">
                                         <div class="text-center">
                                             <i class="dripicons-warning h1 text-warning"></i>
                                             <h4 class="mt-2">Incorrect Information</h4>
@@ -449,7 +449,7 @@
                         <div id="danger-alert-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
                             <div class="modal-dialog modal-sm">
                                 <div class="modal-content modal-filled bg-danger">
-                                    <div class="modal-body p-4">
+                                    <div class="modal-body px-3 py-0">
                                         <div class="text-center">
                                             <i class="dripicons-wrong h1 text-white"></i>
                                             <h4 class="mt-2 text-white">Oh snap!</h4>
@@ -486,7 +486,7 @@
         
                         <!-- Modal -->
                         <div id="multiple-one" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="multiple-oneModalLabel" aria-hidden="true">
-                            <div class="modal-dialog">
+                            <div class="modal-dialog modal-dialog-centered">
                                 <div class="modal-content">
                                     <div class="modal-header">
                                         <h4 class="modal-title" id="multiple-oneModalLabel">Modal Heading</h4>
@@ -505,7 +505,7 @@
 
                         <!-- Modal -->
                         <div id="multiple-two" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="multiple-twoModalLabel" aria-hidden="true">
-                            <div class="modal-dialog">
+                            <div class="modal-dialog modal-dialog-centered">
                                 <div class="modal-content">
                                     <div class="modal-header">
                                         <h4 class="modal-title" id="multiple-twoModalLabel">Modal Heading</h4>
@@ -543,13 +543,13 @@
                     <!-- sample modal content -->
 
                     <div id="con-close-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
-                        <div class="modal-dialog">
+                        <div class="modal-dialog modal-dialog-centered">
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <h4 class="modal-title">Modal Content is Responsive</h4>
                                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                                 </div>
-                                <div class="modal-body p-4">
+                                <div class="modal-body px-3 py-0">
                                     <div class="row">
                                         <div class="col-md-6">
                                             <div class="form-group">
@@ -610,7 +610,7 @@
                     </div><!-- /.modal -->
 
                     <div id="accordion-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
-                        <div class="modal-dialog">
+                        <div class="modal-dialog modal-dialog-centered">
                             <div class="modal-content p-0">
                                 <div id="accordion">
                                     <div class="card mb-0">

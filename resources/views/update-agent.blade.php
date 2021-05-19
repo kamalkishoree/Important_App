@@ -57,7 +57,7 @@
                                     enctype="multipart/form-data">
                         @endif
                         @csrf
-                        <div class="modal-body p-4">
+                        <div class="modal-body px-3 py-0">
                             <div class="col-sm-10">
                                 <div class="text-sm-left">
                                     @if (\Session::has('success'))

@@ -1,5 +1,5 @@
 <div id="add-team-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title">Add Team</h4>
@@ -7,7 +7,7 @@
             </div>
             <form id="submitTeam" action="{{ route('team.store') }}" method="POST">
                 @csrf
-                <div class="modal-body p-4">
+                <div class="modal-body px-3 py-0">
                     <div class="row">
                         <div class="col-md-12">
                             <div class="form-group" id="nameInput">
@@ -59,7 +59,7 @@
 </div>
 
 <div id="edit-team-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title">Edit Team</h4>
@@ -68,10 +68,10 @@
             <form id="UpdateTeam" method="post" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
-                <div class="modal-body p-4">
+                <div class="modal-body py-0">
                     <div class="row">
                         <div class="col-md-12">
-                            <div class="card-box" id="editCardBox">
+                            <div class="card-box p-0" id="editCardBox">
                             </div>
                         </div>
                     </div>

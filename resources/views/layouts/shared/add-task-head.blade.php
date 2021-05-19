@@ -131,7 +131,7 @@
   .pac-container, .pac-container .pac-item { z-index: 9999 !important; }
 </style>
 <div id="task-modal-header" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content" style="">
             <div class="modal-header align-items-center">
                 <h4 class="page-title m-0">Add Route</h4>
@@ -139,7 +139,7 @@
             </div>
             <form id="taskFormHeader" method="post" enctype="multipart/form-data" action="{{ route('tasks.store') }}">
                 @csrf
-                <div class="modal-body p-14 py-0" id="addCardBox">
+                <div class="modal-body p-14 pt-0" id="addCardBox">
                     
                 </div>
                 <div class="modal-footer justify-content-center">
@@ -158,7 +158,7 @@
                 <h4 class="modal-title">Select Location</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
             </div>
-            <div class="modal-body p-4">
+            <div class="modal-body px-3 py-0">
                 
                 <div class="row">
                     <form id="task_form_header" action="#" method="POST" style="width: 100%">
@@ -171,7 +171,7 @@
                     </form>
                 </div>
             </div>
-            <div class="modal-footer">
+            <div class="modal-footer border-0">
                 <button type="submit" class="btn btn-blue waves-effect waves-light selectMapOnHeader">Ok</button>
                 <!--<button type="Cancel" class="btn btn-blue waves-effect waves-light cancelMapLocation">cancel</button>-->
             </div>

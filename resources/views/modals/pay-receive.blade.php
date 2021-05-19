@@ -1,6 +1,6 @@
 <div id="pay-receive-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
     aria-hidden="true" style="display: none;">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title">Pay/Receive Money</h4>
@@ -24,7 +24,7 @@
                     </div>
                 </div>
                 
-                <div class="modal-body p-4">
+                <div class="modal-body px-3 py-0">
                     <div class="row">
                         <div class="col-md-12">
                             <div class="form-group">

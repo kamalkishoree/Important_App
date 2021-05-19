@@ -1,6 +1,6 @@
 <div id="add-client-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
     aria-hidden="true" style="display: none;">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title">Add Agent</h4>
@@ -8,7 +8,7 @@
             </div>
             <form id="StoreClient" method="post" action="{{url('client')}}" enctype="multipart/form-data">
                 @csrf
-                <div class="modal-body p-4">
+                <div class="modal-body px-3 py-0">
                     <div class="row mb-2">
                         <div class="col-md-4">
                             <input type="file" data-plugins="dropify" name="logo" />

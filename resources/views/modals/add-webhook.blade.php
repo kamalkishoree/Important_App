@@ -1,6 +1,6 @@
 <div id="add-webhook-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
     aria-hidden="true" style="display: none;">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title">Edit Message</h4>
@@ -9,7 +9,7 @@
             <form action="{{ route('set.message')}}" method="POST">
             @csrf
             <input type="hidden" name="notification_event_id" id="notification_event_id" value=""/>
-            <div class="modal-body py-0">
+            <div class="modal-body pb-0">
                 <div class="row">
                     <div class="col-md-8">
                         <h4 class="mt-0 mb-2">Message</h4>
@@ -29,7 +29,7 @@
                     </div>
                 </div>
             </div>
-            <div class="modal-footer">
+            <div class="modal-footer border-0">
                 <button type="submit" class="btn btn-blue waves-effect waves-light">Save</button>
             </div>
             </form>

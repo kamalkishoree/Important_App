@@ -491,7 +491,7 @@ use Carbon\Carbon;
                     <h4 class="modal-title">Select Location</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                 </div>
-                <div class="modal-body p-4">
+                <div class="modal-body px-3 py-0">
 
                     <div class="row">
                         <form id="task_form" action="#" method="POST" style="width: 100%">

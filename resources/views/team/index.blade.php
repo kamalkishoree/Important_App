@@ -24,84 +24,79 @@
     </div>
     <!-- end page title -->
     <div class="row">
-        <div class="col-12 col-md-8">
-            <div class="card">
-                <div class="card-body">
-                    <div class="row mb-2">
-                        <div class="col-sm-8">
-                            <div class="text-sm-left">
-                                @if (\Session::has('success'))
-                                    <div class="alert alert-success">
-                                        <span>{!! \Session::get('success') !!}</span>
-                                    </div>
-                                @endif
+        <div class="col-12">
+            <div class="row mb-2">
+                <div class="col-sm-8">
+                    <div class="text-sm-left">
+                        @if (\Session::has('success'))
+                            <div class="alert alert-success">
+                                <span>{!! \Session::get('success') !!}</span>
                             </div>
-                        </div>
-                        <div class="col-sm-4 text-right">
-                            <button type="button" class="btn btn-blue waves-effect waves-light openModal" data-toggle="modal"
-                                data-target="" data-backdrop="static" data-keyboard="false"><i class="mdi mdi-plus-circle mr-1"></i> Add Team</button>
-                        </div>
-
+                        @endif
                     </div>
+                </div>
+                <div class="col-sm-4 text-right">
+                    <button type="button" class="btn btn-blue waves-effect waves-light openModal" data-toggle="modal"
+                        data-target="" data-backdrop="static" data-keyboard="false"><i class="mdi mdi-plus-circle mr-1"></i> Add Team</button>
+                </div>
 
-                    <div class="table-responsive">
-                        <table class="table table-striped dt-responsive nowrap w-100" id="teams-datatable">
-                            <thead>
-                                <tr>
-                                    <th>Team Name</th>
-                                    <th>Location Accuracy</th>
-                                    <th>Location Frequency</th>
-                                    <th>Team Strength</th>
-                                    <th>Tags</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            @foreach ($teams as $team)
+            </div>
 
-                                <tr class="team-list-1 cursors" data-id="{{ $team->id }}">
-                                    <td class="table-user">
-                                        <a href="javascript:void(0);"
-                                            class="text-body font-weight-semibold">{{ $team->name }}</a>
-                                    </td>
-                                    <td>{{ $team->location_accuracy }}</td>
-                                    <td>{{ $team->location_frequency }}</td>
-                                    <td>{{$team->agents->count()}}</td>
-                                    <td>
-                                        @php
-                                             $tagname = [];
-                                        
-                                            foreach ($team->tags as $item){
-                                                array_push($tagname,$item->name);
-                                            }
-                                        @endphp
-                                        {{ $List = implode(' , ', $tagname) }}
-                                    </td>
-                                    <td>
-                                        <div class="form-ul" style="width: 60px;">
-                                            <div class="inner-div"> <a href="#" class="action-icon editIcon" teamId="{{$team->id}}"> <i class="mdi mdi-square-edit-outline"></i></a>
+            <div class="table-responsive">
+                <table class="table table-striped dt-responsive nowrap w-100" id="teams-datatable">
+                    <thead>
+                        <tr>
+                            <th>Team Name</th>
+                            <th>Location Accuracy</th>
+                            <th>Location Frequency</th>
+                            <th>Team Strength</th>
+                            <th>Tags</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    @foreach ($teams as $team)
+
+                        <tr class="team-list-1 cursors" data-id="{{ $team->id }}">
+                            <td class="table-user">
+                                <a href="javascript:void(0);"
+                                    class="text-body font-weight-semibold">{{ $team->name }}</a>
+                            </td>
+                            <td>{{ $team->location_accuracy }}</td>
+                            <td>{{ $team->location_frequency }}</td>
+                            <td>{{$team->agents->count()}}</td>
+                            <td>
+                                @php
+                                        $tagname = [];
+                                
+                                    foreach ($team->tags as $item){
+                                        array_push($tagname,$item->name);
+                                    }
+                                @endphp
+                                {{ $List = implode(' , ', $tagname) }}
+                            </td>
+                            <td>
+                                <div class="form-ul" style="width: 60px;">
+                                    <div class="inner-div"> <a href="#" class="action-icon editIcon" teamId="{{$team->id}}"> <i class="mdi mdi-square-edit-outline"></i></a>
+                                    </div>
+                                    <div class="inner-div">
+                                        <form method="POST" action="{{ route('team.destroy', $team->id) }}">
+                                            @csrf
+                                            @method('DELETE')
+                                            <div class="form-group">
+                                                <button type="submit" class="btn btn-primary-outline action-icon"> <i class="mdi mdi-delete"></i></button>
                                             </div>
-                                            <div class="inner-div">
-                                                <form method="POST" action="{{ route('team.destroy', $team->id) }}">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <div class="form-group">
-                                                        <button type="submit" class="btn btn-primary-outline action-icon"> <i class="mdi mdi-delete"></i></button>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </div>
+                                        </form>
+                                    </div>
+                                </div>
 
-                                    </td>
-                                </tr>
-               
-                            @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-
-                </div> <!-- end card-body-->
-            </div> <!-- end card-->
+                            </td>
+                        </tr>
+        
+                    @endforeach
+                    </tbody>
+                </table>
+            </div>
         </div> <!-- end col -->
 
         @foreach ($teams as $index => $team)

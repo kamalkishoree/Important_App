@@ -18,57 +18,110 @@
             </div>
         </div>
         <!-- end page title -->
-        <form method="POST" action="{{ route('preference', Auth::user()->code) }}">
-            @csrf
-            <div class="row">
-                <div class="col-xl-11 col-md-offset-1">
-                    <div class="card-box">
-                        <h4 class="header-title">Map Configuration</h4>
+
+        <div class="row">
+            <div class="col-md-6">
+                <form method="POST" action="{{ route('preference', Auth::user()->code) }}">
+                    @csrf
+                        <div class="card-box">
+                            <h4 class="header-title">Map Configuration</h4>
+                            <p class="sub-header">
+                                View and update your Map type and it's API key.
+                            </p>
+                            <div class="row mb-2">
+                                <div class="col-sm-8">
+                                    <div class="text-sm-left">
+                                        @if (\Session::has('success'))
+                                            <div class="alert alert-success">
+                                                <span>{!! \Session::get('success') !!}</span>
+                                            </div>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label for="currency">MAP TYPE</label>
+                                        <select class="form-control" id="map_type" name="map_type">
+                                            <option value="google_maps"
+                                                {{ isset($preference) && $preference->map_type == 'google_maps' ? 'selected' : '' }}>
+                                                Google Maps</option>
+                                        </select>
+                                        @if ($errors->has('map_type'))
+                                            <span class="text-danger" role="alert">
+                                                <strong>{{ $errors->first('map_type') }}</strong>
+                                            </span>
+                                        @endif
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label for="map_key_1">API Key</label>
+                                        <input type="password" name="map_key_1" id="map_key_1" placeholder="kjadsasd66asdas"
+                                            class="form-control" value="{{ old('map_key_1', $preference->map_key_1 ?? '') }}">
+                                        @if ($errors->has('map_key_1'))
+                                            <span class="text-danger" role="alert">
+                                                <strong>{{ $errors->first('map_key_1') }}</strong>
+                                            </span>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row mb-2">
+                                <div class="col-12">
+                                    <div class="form-group mb-0 text-center">
+                                        <button class="btn btn-blue btn-block" type="submit"> Update </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                </form>
+            </div>
+            <div class="col-md-6">
+                <form method="POST" action="{{ route('preference', Auth::user()->code) }}">
+                    @csrf
+                    <div class="card-box same-size">
+                        <h4 class="header-title">Personal Access Token</h4>
                         <p class="sub-header">
-                            View and update your Map type and it's API key.
+                            View and Generate API keys.
                         </p>
                         <div class="row mb-2">
-                            <div class="col-sm-8">
-                                <div class="text-sm-left">
-                                    @if (\Session::has('success'))
-                                        <div class="alert alert-success">
-                                            <span>{!! \Session::get('success') !!}</span>
-                                        </div>
-                                    @endif
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row mb-2">
+
                             <div class="col-md-6">
                                 <div class="form-group mb-3">
-                                    <label for="currency">MAP TYPE</label>
-                                    <select class="form-control" id="map_type" name="map_type">
-                                        <option value="google_maps"
-                                            {{ isset($preference) && $preference->map_type == 'google_maps' ? 'selected' : '' }}>
-                                            Google Maps</option>
-                                    </select>
-                                    @if ($errors->has('map_type'))
+                                    <label for="personal_access_token_v1">V1 API ACCESS TOKEN</label>
+                                    <input type="text" name="personal_access_token_v1" id="personal_access_token_v1"
+                                        placeholder="kjadsasd66asdas" class="form-control"
+                                        value="{{ old('personal_access_token_v1', $preference->personal_access_token_v1 ?? '') }}">
+                                    @if ($errors->has('personal_access_token_v1'))
                                         <span class="text-danger" role="alert">
-                                            <strong>{{ $errors->first('map_type') }}</strong>
+                                            <strong>{{ $errors->first('personal_access_token_v1') }}</strong>
                                         </span>
                                     @endif
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group mb-3">
-                                    <label for="map_key_1">API Key</label>
-                                    <input type="password" name="map_key_1" id="map_key_1" placeholder="kjadsasd66asdas"
-                                        class="form-control" value="{{ old('map_key_1', $preference->map_key_1 ?? '') }}">
-                                    @if ($errors->has('map_key_1'))
+                                    <label for="personal_access_token_v2" class="row">
+                                        <span class="col-md-6 col-6">V2 API KEYS</span>
+                                        <span class="text-right col-6 col-md-6"><a
+                                                href="javascript: genrateKeyAndToken();">Generate Key</a></span>
+                                    </label>
+                                    <input type="text" name="personal_access_token_v2" id="personal_access_token_v2"
+                                        placeholder="No API key found.." class="form-control"
+                                        value="{{ old('personal_access_token_v2', $preference->personal_access_token_v2 ?? '') }}">
+                                    @if ($errors->has('personal_access_token_v2'))
                                         <span class="text-danger" role="alert">
-                                            <strong>{{ $errors->first('map_key_1') }}</strong>
+                                            <strong>{{ $errors->first('personal_access_token_v2') }}</strong>
                                         </span>
                                     @endif
                                 </div>
                             </div>
                         </div>
-                        
-                        <div class="row mb-2">
+
+                        <div class="row mb-3">
                             <div class="col-12">
                                 <div class="form-group mb-0 text-center">
                                     <button class="btn btn-blue btn-block" type="submit"> Update </button>
@@ -76,14 +129,9 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </form>
             </div>
-        </form>
-
-
-        <div class="row">
-
-            <div class="col-xl-6">
+            <div class="col-md-6">
                 <form method="POST" action="{{ route('preference', Auth::user()->code) }}">
                     @csrf
                     <div class="card-box same-size">
@@ -172,71 +220,11 @@
                     </div>
                 </form>
             </div>
-
-
-
-            <div class="col-xl-5 ">
-                <form method="POST" action="{{ route('preference', Auth::user()->code) }}">
-                    @csrf
-                    <div class="card-box same-size">
-                        <h4 class="header-title">Personal Access Token</h4>
-                        <p class="sub-header">
-                            View and Generate API keys.
-                        </p>
-                        <div class="row mb-2">
-
-                            <div class="col-md-6">
-                                <div class="form-group mb-3">
-                                    <label for="personal_access_token_v1">V1 API ACCESS TOKEN</label>
-                                    <input type="text" name="personal_access_token_v1" id="personal_access_token_v1"
-                                        placeholder="kjadsasd66asdas" class="form-control"
-                                        value="{{ old('personal_access_token_v1', $preference->personal_access_token_v1 ?? '') }}">
-                                    @if ($errors->has('personal_access_token_v1'))
-                                        <span class="text-danger" role="alert">
-                                            <strong>{{ $errors->first('personal_access_token_v1') }}</strong>
-                                        </span>
-                                    @endif
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group mb-3">
-                                    <label for="personal_access_token_v2" class="row">
-                                        <span class="col-md-6 col-6">V2 API KEYS</span>
-                                        <span class="text-right col-6 col-md-6"><a
-                                                href="javascript: genrateKeyAndToken();">Generate Key</a></span>
-                                    </label>
-                                    <input type="text" name="personal_access_token_v2" id="personal_access_token_v2"
-                                        placeholder="No API key found.." class="form-control"
-                                        value="{{ old('personal_access_token_v2', $preference->personal_access_token_v2 ?? '') }}">
-                                    @if ($errors->has('personal_access_token_v2'))
-                                        <span class="text-danger" role="alert">
-                                            <strong>{{ $errors->first('personal_access_token_v2') }}</strong>
-                                        </span>
-                                    @endif
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row mb-2">
-                            <div class="col-12">
-                                <div class="form-group mb-0 text-center">
-                                    <button class="btn btn-blue btn-block" type="submit"> Update </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </form>
-            </div>
-
-        </div>
-
-        <div class="row">
-
-            <div class="col-xl-11">
+            <div class="col-md-6">
                 <form method="POST" action="{{ route('smtp') }}">
                     @csrf
                     <div class="card-box same-size">
-                        <h4 class="header-title">SMTP</h4>
+                        <h4 class="header-title mb-md-5">SMTP</h4>
                         <p class="sub-header">
                         </p>
                         <div class="row mb-2">
@@ -348,9 +336,7 @@
                     </div>
                 </form>
             </div>
-
         </div>
-
 
 
         <div style="display:none;">

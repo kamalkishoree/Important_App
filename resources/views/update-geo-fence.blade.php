@@ -102,114 +102,121 @@
             <input type="hidden" name="zoom_level" value="13" id="zoom_level" />
             <div class="row">
                 <div class="col-lg-5">
-                    <div class="card-box">
+                    <div class="card-box card_outer mb-0">
                         <h4 class="header-title mb-3">Add Geo Fence</h4>
-                        <div class="row mb-2">
-                            <div class="col-md-12">
-                                <div class="form-group mb-3">
-                                    <label for="name">Name</label>
-                                    <input type="text" name="name" id="name" value="{{ old('name', $geo->name ?? '') }}"
-                                        placeholder="ABC Deliveries" class="form-control">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row mb-2">
-                            <div class="col-md-12">
-                                <div class="form-group mb-3">
-                                    <label for="Description">Description (Optional)</label>
-                                    <textarea class="form-control" id="Description"
-                                        name="description">{{ old('description', $geo->description ?? '') }}</textarea>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row mb-2">
-                            <div class="col-md-12">
-                                <div class="form-group mb-3">
-                                    <label>Team</label> <br />
-                                    <select id="selectize-select" name="team_id">
-                                        <option value="0">All</option>
-                                        @foreach ($teams as $team)
-                                            <option value="{{ $team->id }}">{{ $team->name }}</option>
-                                        @endforeach
-                                    </select>
-
-                                </div>
-                                <div class="form-group mb-3">
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="custom-control custom-checkbox select_all" id="old_show">
-                                                <input type="checkbox" class="custom-control-input all" id="checkmeout0">
-                                                <label class="custom-control-label select_all" for="checkmeout0">Select All
-                                                    {{ Session::get('agent_name') ? Session::get('agent_name') : 'Agent' }}</label>
-                                            </div>
-                                            <div class="custom-control custom-checkbox show_alls" id="new_show">
-                                                <input type="checkbox" class="custom-control-input" id="show_all">
-                                                <label class="custom-control-label" for="show_all">Show All
-                                                    {{ Session::get('agent_name') ? Session::get('agent_name') : 'Agent' }}</label>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <input type="text" name="search" placeholder="Search"
-                                                class="form-control newsearch" id="search">
-                                        </div>
+                        <div class="top_items">
+                            <div class="row mb-2">
+                                <div class="col-md-12">
+                                    <div class="form-group mb-0">
+                                        <label for="name">Name</label>
+                                        <input type="text" name="name" id="name" value="{{ old('name', $geo->name ?? '') }}"
+                                            placeholder="ABC Deliveries" class="form-control">
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                            <div class="row mb-2">
+                                <div class="col-md-12">
+                                    <div class="form-group mb-0">
+                                        <label for="Description">Description (Optional)</label>
+                                        <textarea class="form-control" id="Description"
+                                            name="description">{{ old('description', $geo->description ?? '') }}</textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-md-12">
+                                    <div class="form-group mb-0">
+                                        <label>Team</label> <br />
+                                        <select id="selectize-select" name="team_id">
+                                            <option value="0">All</option>
+                                            @foreach ($teams as $team)
+                                                <option value="{{ $team->id }}">{{ $team->name }}</option>
+                                            @endforeach
+                                        </select>
 
-
-                        <div class="row mb-2 cornar">
-
-                            @foreach ($agents as $key => $agent)
-                                @php
-                                $val = '';
-                                foreach ($geo->agents as $item) {
-                                if($item->id == $agent->id){
-                                $val = 'checked';
-                                }
-
-                                }
-                                @endphp
-
-                                <div
-                                    class="col-md-6 boxes card-box agent_boxes team_{{ $agent->team_id ?? 0 }} agent_{{ $agent->id }} {{ $val == 'checked' ? 'selected' : '' }}">
-                                    <div class="custom-control custom-checkbox">
+                                    </div>
+                                    <div class="form-group mb-0 mt-2">
                                         <div class="row">
-                                            <div class="col-md-4">
-                                                <input type="checkbox"
-                                                    class="custom-control-input agent_checkbox team_checkbox_{{ $agent->team_id ?? 0 }}"
-                                                    id="{{ $agent->id }}" name="agents[]" value="{{ $agent->id }}"
-                                                    {{ $val == 'checked' ? 'checked' : '' }}>
-                                                <label class="custom-control-label new" for="{{ $agent->id }}"></label>
-                                                <img class="imageagent"
-                                                    src="{{$imgproxyurl.Storage::disk('s3')->url($agent->profile_picture)}}"
-                                                    alt="" style="border-radius:50%; ">
+                                            <div class="col-md-6">
+                                                <div class="custom-control custom-checkbox select_all" id="old_show">
+                                                    <input type="checkbox" class="custom-control-input all" id="checkmeout0">
+                                                    <label class="custom-control-label select_all" for="checkmeout0">Select All
+                                                        {{ Session::get('agent_name') ? Session::get('agent_name') : 'Agent' }}</label>
+                                                </div>
+                                                <div class="custom-control custom-checkbox show_alls" id="new_show">
+                                                    <input type="checkbox" class="custom-control-input" id="show_all">
+                                                    <label class="custom-control-label" for="show_all">Show All
+                                                        {{ Session::get('agent_name') ? Session::get('agent_name') : 'Agent' }}</label>
+                                                </div>
                                             </div>
-                                            <div class="col-md-8">
-                                                <span class="spans">{{ $agent->name }}</span><br>
-                                                <span>{{ isset($agent->team->name) ? $agent->team->name : 'No Team Alloted' }}</span>
+                                            <div class="col-md-6">
+                                                <input type="text" name="search" placeholder="Search"
+                                                    class="form-control newsearch" id="search">
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            @endforeach
+                            </div>
                         </div>
 
-                        <div class="row">
-                            <div class="col-md-6">
-                                <button type="button"
-                                    class="btn btn-block btn-outline-primary waves-effect waves-light">Cancel</button>
+                        <div class="geo_middle" id="scroll-bar">
+                            <div class="row mb-2 cornar">
+
+                                @foreach ($agents as $key => $agent)
+                                    @php
+                                    $val = '';
+                                    foreach ($geo->agents as $item) {
+                                    if($item->id == $agent->id){
+                                    $val = 'checked';
+                                    }
+
+                                    }
+                                    @endphp
+
+                                    <div
+                                        class="col-xl-12 agent_boxes team_{{ $agent->team_id ?? 0 }} agent_{{ $agent->id }} {{ $val == 'checked' ? 'selected' : '' }}">
+                                        <div class="boxes card-box mb-2">
+                                            <div class="custom-control custom-checkbox">
+                                                <div class="row">
+                                                    <div class="col-2">
+                                                        <input type="checkbox"
+                                                            class="custom-control-input agent_checkbox team_checkbox_{{ $agent->team_id ?? 0 }}"
+                                                            id="{{ $agent->id }}" name="agents[]" value="{{ $agent->id }}"
+                                                            {{ $val == 'checked' ? 'checked' : '' }}>
+                                                        <label class="custom-control-label new" for="{{ $agent->id }}"></label>
+                                                        <img class="imageagent"
+                                                            src="{{$imgproxyurl.Storage::disk('s3')->url($agent->profile_picture)}}"
+                                                            alt="" style="border-radius:50%; ">
+                                                    </div>
+                                                    <div class="col-10">
+                                                        <span class="spans">{{ $agent->name }}</span><br>
+                                                        <span>{{ isset($agent->team->name) ? $agent->team->name : 'No Team Alloted' }}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endforeach
                             </div>
-                            <div class="col-md-6">
-                                <button type="submit"
-                                    class="btn btn-block btn-primary waves-effect waves-light">Save</button>
+                        </div>
+
+                        <div class="geo_bottom_btns">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <button type="button"
+                                        class="btn btn-block btn-outline-primary waves-effect waves-light">Cancel</button>
+                                </div>
+                                <div class="col-md-6">
+                                    <button type="submit"
+                                        class="btn btn-block btn-primary waves-effect waves-light">Save</button>
+                                </div>
                             </div>
                         </div>
 
                     </div>
                 </div>
                 <div class="col-lg-7">
-                    <div class="card-box" style="height:770px;">
+                    <div class="card-box mb-0 map-outer">
                         <!-- <div id="gmaps-basic" class="gmaps"></div> -->
                         <div id="map-canvas"></div>
                     </div>

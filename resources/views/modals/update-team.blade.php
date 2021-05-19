@@ -1,6 +1,6 @@
 <div id="edit-team-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
     aria-hidden="true" style="display: none;">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title">Edit Team</h4>
@@ -9,7 +9,7 @@
             <form id="updateTeam" action="{{ route('team.store') }}" method="POST">
                 @csrf
                 @method('PUT')
-                <div class="modal-body p-4">
+                <div class="modal-body px-3 pb-0">
                     <div class="row">
                         <div class="col-md-12">
                             <div class="form-group" id="nameInput">

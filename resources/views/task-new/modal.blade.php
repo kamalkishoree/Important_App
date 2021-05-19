@@ -1,5 +1,5 @@
 <div id="add-task-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title">Add task</h4>
@@ -7,7 +7,7 @@
             </div>
             <form id="add_task" method="post" enctype="multipart/form-data">
                 @csrf
-                <div class="modal-body p-4" id="addCardBox">
+                <div class="modal-body px-3 py-0" id="addCardBox">
                     
                 </div>
 
@@ -18,7 +18,7 @@
             </form>
 
             <form id="add_task" action="{{ route('tasks.store') }}" method="POST">
-                <div class="modal-body p-4">
+                <div class="modal-body px-3 py-0">
                     
                 </div>
                 <div class="modal-footer">
@@ -30,7 +30,7 @@
 </div>
 
 <div id="edit-task-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title">Edit task</h4>
@@ -40,7 +40,7 @@
             <form id="edit_task" method="post" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
-                <div class="modal-body p-4" id="editCardBox">
+                <div class="modal-body px-3 py-0" id="editCardBox">
                     
                 </div>
 
@@ -61,7 +61,7 @@
                 <h4 class="modal-title">Select Location</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
             </div>
-            <div class="modal-body p-4">
+            <div class="modal-body px-3 py-0">
                 
                 <div class="row">
                     <form id="task_form" action="#" method="POST" style="width: 100%">
