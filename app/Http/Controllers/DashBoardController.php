@@ -1549,7 +1549,7 @@ class DashBoardController extends Controller
             ->timeToLive(0)
             ->data($notification_data)
             ->notification([
-                'title' => '',
+                'title' => 'Silent Notification',
                 'body'  =>  '',
                 'sound' =>   '',
             ])
