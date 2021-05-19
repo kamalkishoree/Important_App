@@ -46,7 +46,7 @@
                                 @endif
                             </div>
                         </div>
-                        <div class="col-sm-4 text-right">
+                        <div class="col-sm-4 text-right btn-auto">
                             <button type="button" class="btn btn-blue waves-effect waves-light openModal" data-toggle="modal" data-target="" data-backdrop="static" data-keyboard="false"><i class="mdi mdi-plus-circle mr-1"></i> Add {{ Session::get('agent_name') }}</button>
                             <button type="button" class="btn btn-success waves-effect waves-light saveaccounting" data-toggle="modal" data-target="#pay-receive-modal" data-backdrop="static" data-keyboard="false">Pay / Receive</button>
                         </div>

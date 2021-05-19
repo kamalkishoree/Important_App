@@ -135,7 +135,7 @@
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content" style="">
             <div class="modal-header align-items-center border-0 mb-md-0 mb-3">
-                <h4 class="page-title m-0">Add Route</h4>
+                <h4 class="page-title m-0">Route Pricing Popup</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
             </div>
             <form id="taskFormHeader" method="post" enctype="multipart/form-data" action="{{ route('tasks.store') }}">

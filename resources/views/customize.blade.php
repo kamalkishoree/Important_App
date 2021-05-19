@@ -77,19 +77,19 @@
                 <div class="row">
                     <div class="col-xl-12">
                         <div class="card-box">
-                            <h4 class="header-title">Address</h4>
+                            <h4 class="header-title">Saved Address selection</h4>
                             <p class="sub-header">
-                                Choose between all address and my address, for the platform.
+                                Manage how you want to show saved addresses while creating routes.
                             </p>
                             <div class="row mb-2">
                                 <div class="col-sm-12">
-                                    <div class="radio radio-info form-check-inline">
+                                    <div class="radio radio-info form-check-inline mb-2">
                                         <input type="radio" id="all_contact" value="1" name="allow_all_location" {{ (isset($preference) && $preference->allow_all_location ==1)? "checked" : "" }}>
-                                        <label for="all_contact"> All Addresses </label>
+                                        <label for="all_contact"> Shared saved addresses for all customers </label>
                                     </div>
                                     <div class="radio form-check-inline">
                                         <input type="radio" id="my_contact" value="0" name="allow_all_location" {{ (isset($preference) &&  $preference->allow_all_location ==0)? "checked" : "" }}>
-                                        <label for="my_contact"> My Addresses </label>
+                                        <label for="my_contact"> Saved addresses linked to each customer </label>
                                     </div>
                                     @if($errors->has('allow_all_location'))
                                     <span class="text-danger" role="alert">
@@ -115,7 +115,7 @@
             <div class="card-box">
                 <h4 class="header-title">CMS</h4>
                 <p class="sub-header">
-                    View and update the date & time format.
+                    View and update the Terms and Privacy content for the Agent App.
                 </p>
                 <div class="row">
                     <div class="login-forms">
@@ -141,9 +141,9 @@
                 <div class="row">
                     <div class="col-xl-12">
                         <div class="card-box">
-                            <h4 class="header-title">Nomenclature</h4>
+                            <h4 class="header-title">Nomenclature & Localisation</h4>
                             <p class="sub-header">
-                                Define and update the nomenclature
+                                View and update the naming, currency and distance units.
                             </p>
                             <div class="row mb-2">
                                 <div class="col-md-6">

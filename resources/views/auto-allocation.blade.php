@@ -133,7 +133,7 @@
                             </div>
                         </div>
 
-                        <div class="custom-switch redio-all mb-3">
+                        {{-- <div class="custom-switch redio-all mb-3">
                             <input type="checkbox" value="1" class="custom-control-input large-icon" id="self_assign"
                                 name="self_assign"
                                 {{ isset($allocation) && $allocation->self_assign == 1 ? 'checked' : '' }}>
@@ -147,9 +147,9 @@
                                     </span>
                                 @endif
                             </div>
-                        </div>
+                        </div> --}}
 
-                        <div class="row mb-2">
+                        <div class="row mb-2 mt-3">
                             <div class="col-md-4">
                                 <div class="form-group mb-3">
                                     <label for="number_of_retries">No. Of Retries</label>

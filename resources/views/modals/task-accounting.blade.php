@@ -2,6 +2,7 @@
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-header border-0">
+                <h4 class="header-title mb-0">Pay Details</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
             </div>
             <form id="add_customer" action="" method="">
@@ -12,7 +13,6 @@
 
                         <div class="col-md-12">
                             <div class="">
-                                <h4 class="header-title mb-3">Pay Details</h4>
 
                                 <div class="row">
                                     
@@ -128,13 +128,13 @@
                                 <div class="row">
                                     <div class="col-md-3">
                                         <div class="form-group pay-detail-box copyin1" id="">
-                                            {!! Form::label('title', 'Agent Commission %',['class' => 'control-label']) !!} <br>
+                                            {!! Form::label('title', 'Employee Commission %',['class' => 'control-label']) !!} <br>
                                             <span id="agent_commission_percentage"></span>
                                         </div>
                                     </div>
                                     <div class="col-md-3">
                                         <div class="form-group pay-detail-box copyin1" id=""> 
-                                            {!! Form::label('title', 'Agent Commission Fixed',['class' => 'control-label']) !!} <br>
+                                            {!! Form::label('title', 'Employee Commission Fixed',['class' => 'control-label']) !!} <br>
                                             <span id="agent_commission_fixed"></span>
                                         </div>
                                     </div>

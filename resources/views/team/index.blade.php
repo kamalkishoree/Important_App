@@ -24,7 +24,7 @@
     </div>
     <!-- end page title -->
     <div class="row">
-        <div class="col-12">
+        <div class="col-xl-8">
             <div class="row mb-2">
                 <div class="col-sm-8">
                     <div class="text-sm-left">

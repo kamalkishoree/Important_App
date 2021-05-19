@@ -20,7 +20,7 @@
         <!-- end page title -->
 
         <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-3">
                 <form method="POST" action="{{ route('preference', Auth::user()->code) }}">
                     @csrf
                         <div class="card-box">
@@ -40,7 +40,7 @@
                                 </div>
                             </div>
                             <div class="row mb-2">
-                                <div class="col-md-6">
+                                <div class="col-md-12">
                                     <div class="form-group mb-3">
                                         <label for="currency">MAP TYPE</label>
                                         <select class="form-control" id="map_type" name="map_type">
@@ -55,7 +55,7 @@
                                         @endif
                                     </div>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-12">
                                     <div class="form-group mb-3">
                                         <label for="map_key_1">API Key</label>
                                         <input type="password" name="map_key_1" id="map_key_1" placeholder="kjadsasd66asdas"
@@ -79,67 +79,14 @@
                         </div>
                 </form>
             </div>
-            <div class="col-md-6">
-                <form method="POST" action="{{ route('preference', Auth::user()->code) }}">
-                    @csrf
-                    <div class="card-box same-size">
-                        <h4 class="header-title">Personal Access Token</h4>
-                        <p class="sub-header">
-                            View and Generate API keys.
-                        </p>
-                        <div class="row mb-2">
-
-                            <div class="col-md-6">
-                                <div class="form-group mb-3">
-                                    <label for="personal_access_token_v1">V1 API ACCESS TOKEN</label>
-                                    <input type="text" name="personal_access_token_v1" id="personal_access_token_v1"
-                                        placeholder="kjadsasd66asdas" class="form-control"
-                                        value="{{ old('personal_access_token_v1', $preference->personal_access_token_v1 ?? '') }}">
-                                    @if ($errors->has('personal_access_token_v1'))
-                                        <span class="text-danger" role="alert">
-                                            <strong>{{ $errors->first('personal_access_token_v1') }}</strong>
-                                        </span>
-                                    @endif
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group mb-3">
-                                    <label for="personal_access_token_v2" class="row">
-                                        <span class="col-md-6 col-6">V2 API KEYS</span>
-                                        <span class="text-right col-6 col-md-6"><a
-                                                href="javascript: genrateKeyAndToken();">Generate Key</a></span>
-                                    </label>
-                                    <input type="text" name="personal_access_token_v2" id="personal_access_token_v2"
-                                        placeholder="No API key found.." class="form-control"
-                                        value="{{ old('personal_access_token_v2', $preference->personal_access_token_v2 ?? '') }}">
-                                    @if ($errors->has('personal_access_token_v2'))
-                                        <span class="text-danger" role="alert">
-                                            <strong>{{ $errors->first('personal_access_token_v2') }}</strong>
-                                        </span>
-                                    @endif
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row mb-3">
-                            <div class="col-12">
-                                <div class="form-group mb-0 text-center">
-                                    <button class="btn btn-blue btn-block" type="submit"> Update </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </form>
-            </div>
-            <div class="col-md-6">
+            
+            <div class="col-md-4">
                 <form method="POST" action="{{ route('preference', Auth::user()->code) }}">
                     @csrf
                     <div class="card-box same-size">
                         <h4 class="header-title">SMS</h4>
                         <p class="sub-header">
-                            Choose between multiple SMS gateways available for ready use or else configure ROYO dispatcher
-                            SMS
-                            service here
+                            View and update your SMS Gateway and it's API keys.
                         </p>
                         <div class="row mb-2">
 
@@ -220,13 +167,12 @@
                     </div>
                 </form>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-5">
                 <form method="POST" action="{{ route('smtp') }}">
                     @csrf
                     <div class="card-box same-size">
-                        <h4 class="header-title mb-md-5">SMTP</h4>
-                        <p class="sub-header">
-                        </p>
+                        <h4 class="header-title mb-md-1">Email (SMTP)</h4>
+                        <p class="sub-header">View and update your SMTP credentials.</p>
                         <div class="row mb-2">
 
                             <div class="col-md-4">
@@ -327,6 +273,58 @@
                             </div>
                         </div>
                         <div class="row mb-2">
+                            <div class="col-12">
+                                <div class="form-group mb-0 text-center">
+                                    <button class="btn btn-blue btn-block" type="submit"> Update </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="col-md-3">
+                <form method="POST" action="{{ route('preference', Auth::user()->code) }}">
+                    @csrf
+                    <div class="card-box same-size">
+                        <h4 class="header-title">Personal Access Token</h4>
+                        <p class="sub-header">
+                            View and Generate API keys.
+                        </p>
+                        <div class="row mb-2">
+
+                            <div class="col-12">
+                                <div class="form-group mb-3">
+                                    <label for="personal_access_token_v1">V1 API ACCESS TOKEN</label>
+                                    <input type="text" name="personal_access_token_v1" id="personal_access_token_v1"
+                                        placeholder="kjadsasd66asdas" class="form-control"
+                                        value="{{ old('personal_access_token_v1', $preference->personal_access_token_v1 ?? '') }}">
+                                    @if ($errors->has('personal_access_token_v1'))
+                                        <span class="text-danger" role="alert">
+                                            <strong>{{ $errors->first('personal_access_token_v1') }}</strong>
+                                        </span>
+                                    @endif
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group mb-3">
+                                    <label for="personal_access_token_v2" class="row">
+                                        <span class="col-md-6 col-6">V2 API KEYS</span>
+                                        <span class="text-right col-6 col-md-6"><a
+                                                href="javascript: genrateKeyAndToken();">Generate Key</a></span>
+                                    </label>
+                                    <input type="text" name="personal_access_token_v2" id="personal_access_token_v2"
+                                        placeholder="No API key found.." class="form-control"
+                                        value="{{ old('personal_access_token_v2', $preference->personal_access_token_v2 ?? '') }}">
+                                    @if ($errors->has('personal_access_token_v2'))
+                                        <span class="text-danger" role="alert">
+                                            <strong>{{ $errors->first('personal_access_token_v2') }}</strong>
+                                        </span>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
                             <div class="col-12">
                                 <div class="form-group mb-0 text-center">
                                     <button class="btn btn-blue btn-block" type="submit"> Update </button>

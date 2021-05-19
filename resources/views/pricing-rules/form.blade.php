@@ -3,8 +3,7 @@
     @csrf
     @method('PUT')
     
-        <div class="card-box">
-            <h4 class="header-title mb-3"></h4>
+        <div class="card-box p-0">
             <div class="row">
                 <div class="col-md-12">
                     <div class="form-group" id="nameInput">
@@ -93,7 +92,7 @@
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-group" id="">
-                        {!! Form::label('title', 'Employer Commission Percentage',['class' => 'control-label']) !!}
+                        {!! Form::label('title', 'Employee Commission Percentage',['class' => 'control-label']) !!}
                         {!! Form::text('agent_commission_percentage', $pricing->agent_commission_percentage, ['class' => 'form-control','required' => 'required']) !!}
                         <span class="invalid-feedback" role="alert">
                             <strong></strong>
@@ -102,7 +101,7 @@
                 </div>
                 <div class="col-md-6">
                     <div class="form-group" id="">
-                        {!! Form::label('title', 'Employer Commission Fixed',['class' => 'control-label']) !!}
+                        {!! Form::label('title', 'Employee Commission Fixed',['class' => 'control-label']) !!}
                         {!! Form::text('agent_commission_fixed', $pricing->agent_commission_fixed, ['class' => 'form-control','required' => 'required']) !!}
                         <span class="invalid-feedback" role="alert">
                             <strong></strong>
