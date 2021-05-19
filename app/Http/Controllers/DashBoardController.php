@@ -1549,7 +1549,7 @@ class DashBoardController extends Controller
             
             ->data($notification_data)
             ->notification([
-                'sound' =>  'default',
+                'sound' =>  '',
             ])
             ->send();
         }          
