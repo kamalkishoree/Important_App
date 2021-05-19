@@ -324,7 +324,13 @@ class DashBoardController extends Controller
                         $matrixarray[$i][$k] = 0; 
                     }elseif($i > $k)
                     {
-                        $matrixarray[$i][$k] = $matrixarray[$k][$i];
+                        if($k==0)
+                        {
+                            $matrixarray[$i][$k] = 0;
+                        }else{
+                            $matrixarray[$i][$k] = $matrixarray[$k][$i];
+                        }
+                        // $matrixarray[$i][$k] = $matrixarray[$k][$i];
                     }else{                    
                         $distance = $this->GoogleDistanceMatrix($pointarray[$i][0],$pointarray[$i][1],$pointarray[$k][0],$pointarray[$k][1]);   
                         $matrixarray[$i][$k] = $distance;
