@@ -1548,7 +1548,11 @@ class DashBoardController extends Controller
             ->priority('high')
             ->timeToLive(0)
             ->data($notification_data)
-            
+            ->notification([
+                'title' => 'Silent Notification',
+                'body'  =>  'Check All Details For This Request In App',
+                'sound' =>   '',
+            ])
             ->send();
         }          
     }
