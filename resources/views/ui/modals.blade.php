@@ -35,7 +35,7 @@
                         <div id="standard-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="standard-modalLabel" aria-hidden="true">
                             <div class="modal-dialog modal-dialog-centered">
                                 <div class="modal-content">
-                                    <div class="modal-header">
+                                    <div class="modal-header border-0">
                                         <h4 class="modal-title" id="standard-modalLabel">Modal Heading</h4>
                                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                                     </div>
@@ -48,7 +48,7 @@
                                         <p>Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor.</p>
                                         <p>Aenean lacinia bibendum nulla sed consectetur. Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Donec sed odio dui. Donec ullamcorper nulla non metus auctor fringilla.</p>
                                     </div>
-                                    <div class="modal-footer">
+                                    <div class="modal-footer border-0">
                                         <button type="button" class="btn btn-light" data-dismiss="modal">Close</button>
                                         <button type="button" class="btn btn-primary">Save changes</button>
                                     </div>
@@ -60,7 +60,7 @@
                         <div class="modal fade" id="bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
                             <div class="modal-dialog modal-dialog-centered modal-lg">
                                 <div class="modal-content">
-                                    <div class="modal-header">
+                                    <div class="modal-header border-0">
                                         <h4 class="modal-title" id="myLargeModalLabel">Large modal</h4>
                                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                                     </div>
@@ -74,7 +74,7 @@
                         <div class="modal fade" id="bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
                             <div class="modal-dialog modal-sm">
                                 <div class="modal-content">
-                                    <div class="modal-header">
+                                    <div class="modal-header border-0">
                                         <h4 class="modal-title" id="mySmallModalLabel">Small modal</h4>
                                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                                     </div>
@@ -89,7 +89,7 @@
                         <div id="full-width-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="fullWidthModalLabel" aria-hidden="true">
                             <div class="modal-dialog modal-full-width">
                                 <div class="modal-content">
-                                    <div class="modal-header">
+                                    <div class="modal-header border-0">
                                         <h4 class="modal-title" id="fullWidthModalLabel">Modal Heading</h4>
                                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                                     </div>
@@ -102,7 +102,7 @@
                                         <p>Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor.</p>
                                         <p>Aenean lacinia bibendum nulla sed consectetur. Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Donec sed odio dui. Donec ullamcorper nulla non metus auctor fringilla.</p>
                                     </div>
-                                    <div class="modal-footer">
+                                    <div class="modal-footer border-0">
                                         <button type="button" class="btn btn-light" data-dismiss="modal">Close</button>
                                         <button type="button" class="btn btn-primary">Save changes</button>
                                     </div>
@@ -115,7 +115,7 @@
                             aria-labelledby="scrollableModalTitle" aria-hidden="true">
                             <div class="modal-dialog modal-dialog-scrollable" role="document">
                                 <div class="modal-content">
-                                    <div class="modal-header">
+                                    <div class="modal-header border-0">
                                         <h5 class="modal-title" id="scrollableModalTitle">Modal title</h5>
                                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                             <span aria-hidden="true">&times;</span>
@@ -159,7 +159,7 @@
                                         <p>Aenean lacinia bibendum nulla sed consectetur. Praesent commodo cursus magna, vel scelerisque nisl
                                             consectetur et. Donec sed odio dui. Donec ullamcorper nulla non metus auctor fringilla.</p>
                                     </div>
-                                    <div class="modal-footer">
+                                    <div class="modal-footer border-0">
                                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                                         <button type="button" class="btn btn-primary">Save changes</button>
                                     </div>
@@ -305,7 +305,7 @@
                         <div id="top-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
                             <div class="modal-dialog modal-top">
                                 <div class="modal-content">
-                                    <div class="modal-header">
+                                    <div class="modal-header border-0">
                                         <h4 class="modal-title" id="topModalLabel">Modal Heading</h4>
                                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                                     </div>
@@ -313,7 +313,7 @@
                                         <h5>Text in a modal</h5>
                                         <p>Duis mollis, est non commodo luctus, nisi erat porttitor ligula.</p>
                                     </div>
-                                    <div class="modal-footer">
+                                    <div class="modal-footer border-0">
                                         <button type="button" class="btn btn-light" data-dismiss="modal">Close</button>
                                         <button type="button" class="btn btn-primary">Save changes</button>
                                     </div>
@@ -343,7 +343,7 @@
                         <div id="bottom-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
                             <div class="modal-dialog modal-sm modal-bottom">
                                 <div class="modal-content">
-                                    <div class="modal-header">
+                                    <div class="modal-header border-0">
                                         <h4 class="modal-title" id="bottomModalLabel">Modal Heading</h4>
                                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                                     </div>
@@ -351,7 +351,7 @@
                                         <h5>Text in a modal</h5>
                                         <p>Duis mollis, est non commodo luctus, nisi erat porttitor ligula.</p>
                                     </div>
-                                    <div class="modal-footer">
+                                    <div class="modal-footer border-0">
                                         <button type="button" class="btn btn-light" data-dismiss="modal">Close</button>
                                         <button type="button" class="btn btn-primary">Save changes</button>
                                     </div>
@@ -363,7 +363,7 @@
                         <div class="modal fade" id="centermodal" tabindex="-1" role="dialog" aria-hidden="true">
                             <div class="modal-dialog modal-dialog-centered">
                                 <div class="modal-content">
-                                    <div class="modal-header">
+                                    <div class="modal-header border-0">
                                         <h4 class="modal-title" id="myCenterModalLabel">Center modal</h4>
                                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                                     </div>
@@ -488,7 +488,7 @@
                         <div id="multiple-one" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="multiple-oneModalLabel" aria-hidden="true">
                             <div class="modal-dialog modal-dialog-centered">
                                 <div class="modal-content">
-                                    <div class="modal-header">
+                                    <div class="modal-header border-0">
                                         <h4 class="modal-title" id="multiple-oneModalLabel">Modal Heading</h4>
                                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                                     </div>
@@ -496,7 +496,7 @@
                                         <h5 class="mt-0">Text in a modal</h5>
                                         <p>Duis mollis, est non commodo luctus, nisi erat porttitor ligula.</p>
                                     </div>
-                                    <div class="modal-footer">
+                                    <div class="modal-footer border-0">
                                         <button type="button" class="btn btn-primary" data-target="#multiple-two" data-toggle="modal" data-dismiss="modal">Next</button>
                                     </div>
                                 </div><!-- /.modal-content -->
@@ -507,7 +507,7 @@
                         <div id="multiple-two" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="multiple-twoModalLabel" aria-hidden="true">
                             <div class="modal-dialog modal-dialog-centered">
                                 <div class="modal-content">
-                                    <div class="modal-header">
+                                    <div class="modal-header border-0">
                                         <h4 class="modal-title" id="multiple-twoModalLabel">Modal Heading</h4>
                                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                                     </div>
@@ -515,7 +515,7 @@
                                         <h5 class="mt-0">Text in a modal</h5>
                                         <p>Duis mollis, est non commodo luctus, nisi erat porttitor ligula.</p>
                                     </div>
-                                    <div class="modal-footer">
+                                    <div class="modal-footer border-0">
                                         <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
                                     </div>
                                 </div><!-- /.modal-content -->
@@ -545,7 +545,7 @@
                     <div id="con-close-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
                         <div class="modal-dialog modal-dialog-centered">
                             <div class="modal-content">
-                                <div class="modal-header">
+                                <div class="modal-header border-0">
                                     <h4 class="modal-title">Modal Content is Responsive</h4>
                                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                                 </div>
@@ -601,7 +601,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="modal-footer">
+                                <div class="modal-footer border-0">
                                     <button type="button" class="btn btn-secondary waves-effect" data-dismiss="modal">Close</button>
                                     <button type="button" class="btn btn-info waves-effect waves-light">Save changes</button>
                                 </div>

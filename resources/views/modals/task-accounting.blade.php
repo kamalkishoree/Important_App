@@ -1,7 +1,7 @@
 <div id="task-accounting-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
-            <div class="modal-header">
+            <div class="modal-header border-0">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
             </div>
             <form id="add_customer" action="" method="">
@@ -159,7 +159,7 @@
                         </div>
                     </div>
                 </div>
-                {{-- <div class="modal-footer">
+                {{-- <div class="modal-footer border-0">
                     <button type="submit" class="btn btn-blue waves-effect waves-light">Submit</button>
                 </div> --}}
             </form>

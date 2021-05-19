@@ -44,9 +44,9 @@
         <div class="row">
             <div class="col-12 col-md-3">
                 <div class="card">
-                    <div class="card-body p-0">
+                    <div class="card-body px-0 pb-0">
 
-                        <div class="row mb-2">
+                        <div class="row mb-2 pr-2">
                             
                             <div class="col-sm-12 text-right">
                                 <a href="{{ route('geo-fence.index') }}"><button type="button" class="btn btn-blue waves-effect waves-light"><i class="mdi mdi-plus-circle mr-1"></i>Add Geo-fence</button></a>

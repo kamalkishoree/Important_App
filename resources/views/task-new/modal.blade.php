@@ -1,7 +1,7 @@
 <div id="add-task-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
-            <div class="modal-header">
+            <div class="modal-header border-0">
                 <h4 class="modal-title">Add task</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
             </div>
@@ -11,7 +11,7 @@
                     
                 </div>
 
-                <div class="modal-footer">
+                <div class="modal-footer border-0">
                     <button type="button" class="btn btn-blue waves-effect waves-light submitEditForm">Submit</button>
                 </div>
                 
@@ -21,7 +21,7 @@
                 <div class="modal-body px-3 py-0">
                     
                 </div>
-                <div class="modal-footer">
+                <div class="modal-footer border-0">
                     <button type="submit" class="btn btn-blue waves-effect waves-light submittaskForm">Submit</button>
                 </div>
             </form>
@@ -32,7 +32,7 @@
 <div id="edit-task-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
-            <div class="modal-header">
+            <div class="modal-header border-0">
                 <h4 class="modal-title">Edit task</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
             </div>
@@ -44,7 +44,7 @@
                     
                 </div>
 
-                <div class="modal-footer">
+                <div class="modal-footer border-0">
                     <button type="button" class="btn btn-blue waves-effect waves-light submitEditForm">Submit</button>
                 </div>
                 
@@ -57,7 +57,7 @@
     <div class="modal-dialog modal-full-width">
         <div class="modal-content">
 
-            <div class="modal-header">
+            <div class="modal-header border-0">
                 <h4 class="modal-title">Select Location</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
             </div>
@@ -74,7 +74,7 @@
                     </form>
                 </div>
             </div>
-            <div class="modal-footer">
+            <div class="modal-footer border-0">
                 <button type="submit" class="btn btn-blue waves-effect waves-light selectMapLocation">Ok</button>
                 <!--<button type="Cancel" class="btn btn-blue waves-effect waves-light cancelMapLocation">cancel</button>-->
             </div>

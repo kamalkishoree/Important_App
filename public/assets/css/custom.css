@@ -111,9 +111,9 @@
     box-shadow: none !important;
 }
 
-.table-responsive {
+/* .table-responsive {
     padding: 15px;
-}
+} */
 
 .set-size {
     position: relative;
@@ -1076,8 +1076,14 @@ hr.new3 {
     height: 100%;
 }
 
-.btn.btn-blue.btn-block {
-    width: 200px;
+.btn.btn-blue.btn-block, .btn.btn-blue.waves-effect {
+    min-width: 170px;
+    max-width: 200px;
+}
+
+.navbar-custom .btn.btn-blue.waves-effect {
+    min-width: auto;
+    max-width: none;
 }
 
 table.table tbody td:nth-child(2) img {
@@ -1377,4 +1383,18 @@ body.dark .btn.btn-primary-outline.action-icon {
 
 #addCardBox .btn {
     border-radius: 0;
+}
+
+body.dark .tagsinput{
+    background-color: transparent;
+    border-color: rgb(247 184 75 / 82%);
+}
+
+.dark .login-form label{
+    background-color: transparent;
+    color: rgb(247 184 75 / 82%);
+}
+
+.dark .login-form input[type="radio"]:checked+label {
+    border-color: #d5a34c;
 }

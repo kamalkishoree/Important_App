@@ -25,7 +25,7 @@
                         </div>
                     </div>
                 </div>
-                {{-- <div class="modal-footer">
+                {{-- <div class="modal-footer border-0">
                     <button type="submit" class="btn btn-blue waves-effect waves-light">Submit</button>
                 </div> --}}
             </form>

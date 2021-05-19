@@ -20,7 +20,7 @@
             <div class="col-12">
                 <div class="card">
                     <div class="modal-content">
-                        <div class="modal-header">
+                        <div class="modal-header border-0">
                            
                             
                         </div>

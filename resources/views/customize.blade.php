@@ -119,7 +119,7 @@
                 </p>
                 <div class="row">
                     <div class="login-forms">
-                        <ul class="list-inline d-flex mt-3">
+                        <ul class="list-inline mb-0">
                             <li class="d-inline-block ml-2">
                                
                     
@@ -217,7 +217,7 @@
                             <p class="sub-header">
                                 View and update the date & time format.
                             </p>
-                            <div class="row mb-5">
+                            <div class="row mb-lg-5 mb-2">
         
                                 <div class="col-md-6">
                                     <div class="form-group mb-3">

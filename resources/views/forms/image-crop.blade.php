@@ -262,14 +262,14 @@
                                 <div class="modal fade docs-cropped" id="getCroppedCanvasModal" aria-hidden="true" aria-labelledby="getCroppedCanvasTitle" role="dialog" tabindex="-1">
                                     <div class="modal-dialog modal-dialog-centered">
                                         <div class="modal-content">
-                                            <div class="modal-header">
+                                            <div class="modal-header border-0">
                                                 <h5 class="modal-title" id="getCroppedCanvasTitle">Cropped</h5>
                                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                     <span aria-hidden="true">&times;</span>
                                                 </button>
                                             </div>
                                             <div class="modal-body text-center"></div>
-                                            <div class="modal-footer">
+                                            <div class="modal-footer border-0">
                                                 <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Close</button>
                                                 <a class="btn btn-outline-info" id="download" href="javascript:void(0);" download="cropped.jpg')}}">Download</a>
                                             </div>

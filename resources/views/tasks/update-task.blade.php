@@ -356,14 +356,14 @@ use Carbon\Carbon;
 
                         </div>
                         <div class="col-md-6 mb-3">
-                            <div class="form-group" id="colorInput">
+                            <div class="form-group text-center" id="colorInput">
                                 <label class="btn btn-info width-lg waves-effect waves-light newchnageimage upload-img-btn">
                                     <span><i class="fas fa-image mr-2"></i>Upload Image</span>
                                     <input id="file" type="file" name="file[]" multiple style="display: none" />
                                 </label>
                                 
                                 @if ($images[0] == '')
-                                    <img class="showsimagegall" src="{{ url('assets/images/ic_image_placeholder.png') }}"
+                                    <img class="showsimagegall d-block m-auto" src="{{ url('assets/images/ic_image_placeholder.png') }}"
                                         alt="">
                                 @endif
 
@@ -487,7 +487,7 @@ use Carbon\Carbon;
         <div class="modal-dialog modal-full-width">
             <div class="modal-content">
 
-                <div class="modal-header">
+                <div class="modal-header border-0">
                     <h4 class="modal-title">Select Location</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                 </div>
@@ -504,7 +504,7 @@ use Carbon\Carbon;
                         </form>
                     </div>
                 </div>
-                <div class="modal-footer">
+                <div class="modal-footer border-0">
                     <button type="submit" class="btn btn-blue waves-effect waves-light selectMapLocation">Ok</button>
                     <!--<button type="Cancel" class="btn btn-blue waves-effect waves-light cancelMapLocation">cancel</button>-->
                 </div>

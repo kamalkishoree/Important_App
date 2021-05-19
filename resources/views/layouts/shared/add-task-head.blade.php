@@ -34,6 +34,7 @@
 
         #typeInputss {
             overflow-y: auto;
+            overflow-x: hidden;
             height: 130px;
             /* display: flex;
             align-items: center;
@@ -133,7 +134,7 @@
 <div id="task-modal-header" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content" style="">
-            <div class="modal-header align-items-center">
+            <div class="modal-header align-items-center border-0 mb-md-0 mb-3">
                 <h4 class="page-title m-0">Add Route</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
             </div>
@@ -154,7 +155,7 @@
     <div class="modal-dialog modal-full-width">
         <div class="modal-content">
 
-            <div class="modal-header">
+            <div class="modal-header border-0">
                 <h4 class="modal-title">Select Location</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
             </div>

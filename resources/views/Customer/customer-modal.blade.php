@@ -1,13 +1,13 @@
 <div id="add-customer-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
-            <div class="modal-header">
+            <div class="modal-header border-0">
                 <h4 class="modal-title">Add Customer</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
             </div>
             <form id="add_customer" action="{{ route('customer.store') }}" method="POST">
                 @csrf
-                <div class="modal-body pb-0">
+                <div class="modal-body py-0">
                     
                     <div class="row">
 
@@ -146,7 +146,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer">
+                <div class="modal-footer border-0">
                     <button type="submit" class="btn btn-blue waves-effect waves-light submitCustomerForm">Submit</button>
                 </div>
             </form>
@@ -157,7 +157,7 @@
 <div id="edit-customer-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
-            <div class="modal-header">
+            <div class="modal-header border-0">
                 <h4 class="modal-title">Edit Customer</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
             </div>
@@ -169,7 +169,7 @@
                     
                 </div>
 
-                <div class="modal-footer">
+                <div class="modal-footer border-0">
                     <button type="button" class="btn btn-blue waves-effect waves-light submitEditForm">Submit</button>
                 </div>
                 
@@ -182,7 +182,7 @@
     <div class="modal-dialog modal-full-width">
         <div class="modal-content">
 
-            <div class="modal-header">
+            <div class="modal-header border-0">
                 <h4 class="modal-title">Select Location</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
             </div>
@@ -199,7 +199,7 @@
                     </form>
                 </div>
             </div>
-            <div class="modal-footer">
+            <div class="modal-footer border-0">
                 <button type="submit" class="btn btn-blue waves-effect waves-light selectMapLocation">Ok</button>
                 <!--<button type="Cancel" class="btn btn-blue waves-effect waves-light cancelMapLocation">cancel</button>-->
             </div>

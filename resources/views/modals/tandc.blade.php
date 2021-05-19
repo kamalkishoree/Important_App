@@ -4,7 +4,7 @@
         @csrf
      <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
-            <div class="modal-header">
+            <div class="modal-header border-0">
                 <h4 class="modal-title">Terms and Conditions</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
             </div>
@@ -23,7 +23,7 @@
 
                
             </div>
-            <div class="modal-footer">
+            <div class="modal-footer border-0">
                 <button type="submit" class="btn btn-info waves-effect waves-light">Save</button>
             </div>
         </div>
