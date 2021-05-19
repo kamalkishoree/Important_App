@@ -1549,9 +1549,9 @@ class DashBoardController extends Controller
             ->timeToLive(0)
             ->data($notification_data)
             ->notification([
-                'title' => 'Silent Notification',
+                'title' => 'Your order is updated',
                 'body'  =>  '',
-                'sound' =>   '',
+                'sound' =>  '',
             ])
             ->send();
         }          
