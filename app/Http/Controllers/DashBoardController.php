@@ -1545,11 +1545,28 @@ class DashBoardController extends Controller
         if(isset($new)){
             fcm()
             ->to($new) // $recipients must an array
-            
-            
             ->data($notification_data)
             ->notification([
                 'sound' =>  'default',
+            ])
+            ->send();
+        }          
+    }
+
+    public function sendsilentnotificationold($notification_data)
+    {  
+        $new = [];
+        array_push($new,$notification_data['device_token']);
+        if(isset($new)){
+            fcm()
+            ->to($new) // $recipients must an array
+            ->priority('high')
+            ->timeToLive(0)
+            ->data($notification_data)
+            ->notification([
+                'title' => 'Your order is updated',
+                'body'  =>  '',
+                'sound' =>  '',
             ])
             ->send();
         }          
