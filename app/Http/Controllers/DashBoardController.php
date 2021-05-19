@@ -1545,13 +1545,11 @@ class DashBoardController extends Controller
         if(isset($new)){
             fcm()
             ->to($new) // $recipients must an array
-            ->priority('high')
-            ->timeToLive(0)
+            
+            
             ->data($notification_data)
             ->notification([
-                'title' => 'Your order is updated',
-                'body'  =>  '',
-                'sound' =>  '',
+                'sound' =>  'default',
             ])
             ->send();
         }          
