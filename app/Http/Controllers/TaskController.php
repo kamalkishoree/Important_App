@@ -1673,7 +1673,7 @@ class TaskController extends Controller
             ->notification([
                 'sound' =>  'default',
             ])
-            ->send()
+            ->send();
         }          
     }
 
