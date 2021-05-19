@@ -1545,7 +1545,7 @@ class DashBoardController extends Controller
         if(isset($new)){
             fcm()
             ->to($new) // $recipients must an array
-            ->priority('high')
+            ->priority('normal')
             ->timeToLive(0)
             ->data($notification_data)
             ->notification([
