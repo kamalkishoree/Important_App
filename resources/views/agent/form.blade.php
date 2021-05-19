@@ -124,7 +124,7 @@
     </div>
 </div>
 
-<div class="row">
+<div class="row mt-3">
     <div class="col-md-6">
         <div class="form-group" id="make_modelInputEdit">
             <input type="hidden" id="agent_id" val_id="{{ $agent->id }}" url="{{route('agent.update', $agent->id)}}">
