@@ -28,7 +28,7 @@ class CustomDomain
       // $domain    = str_replace(array('http://', '.dispatcher.test/login'), '', $domain);
       $domain    = str_replace(array('http://', config('domainsetting.domain_set')), '', $domain);
       $subDomain = explode('.', $domain);
-      //dd($domain); 
+      //dd($domain); yo.com ,
       
       //$existRedis = Redis::get($domain);
         $existRedis = '';
