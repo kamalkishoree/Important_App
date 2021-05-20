@@ -8,6 +8,8 @@ use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Support\Facades\Auth;
+use Symfony\Component\Process\Process;
+use Symfony\Component\Process\Exception\ProcessFailedException;
 
 class LoginController extends Controller
 {
@@ -64,4 +66,19 @@ class LoginController extends Controller
         Auth::logout();
         return redirect()->route('get.god.login');
     }
+
+
+    public function verifyCustomDomain(Request $request)
+    {
+        $process = new Process('sh /var/app/Automation/script.sh',.$request->domain);
+        $process->run();
+        
+        // executes after the command finishes
+        if (!$process->isSuccessful()) {
+            throw new ProcessFailedException($process);
+        }
+        
+        echo $process->getOutput();
+    }
+    
 }

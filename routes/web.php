@@ -19,7 +19,13 @@ use Illuminate\Support\Facades\Redirect;
 
 Auth::routes();  
 
+
+
 Route::group(['prefix' => '/godpanel'], function () {
+
+	Route::get('verify-custom-domain','Godpanel\LoginController@verifyCustomDomain')->name('verifyCustomDomain');
+
+
 	Route::get('/', function(){
 		return view('godpanel/login');
 	});
