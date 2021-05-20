@@ -63,6 +63,12 @@
                         <span> Currency </span>
                     </a>
                 </li>
+                <li>
+                    <a href="{{route('god.logout')}}">
+                        <i data-feather="lock" class="icon-dual"></i>
+                        <span> Logout </span>
+                    </a>
+                </li>
             </ul>
                 
                 

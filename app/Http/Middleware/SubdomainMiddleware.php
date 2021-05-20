@@ -15,7 +15,7 @@ class SubdomainMiddleware
      * @return mixed
      */
     public function handle(Request $request, Closure $next)
-    {
+    {   
         \URL::defaults(['subdomain' => request('subdomain')]);
         \URL::defaults(['domain' => request('domain')]);
 

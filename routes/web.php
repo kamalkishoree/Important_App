@@ -25,12 +25,12 @@ Route::group(['prefix' => '/godpanel'], function () {
 	});
 	Route::get('/login', function(){
 		return view('godpanel/login');
-	});
+	})->name('get.god.login');
 	Route::post('login','Godpanel\LoginController@Login')->name('god.login');
 
 	Route::middleware('auth')->group(function () {
 	
-		Route::post('/logout', 'Godpanel\LoginController@logout')->name('god.logout');
+		Route::any('/logout', 'Godpanel\LoginController@logout')->name('god.logout');
 		Route::get('dashboard','Godpanel\DashBoardController@index')->name('god.dashboard');
 		Route::resource('client','ClientController');
 		Route::resource('language','Godpanel\LanguageController');
