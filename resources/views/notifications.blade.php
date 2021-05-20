@@ -21,7 +21,7 @@
                 <div class="card-box">
                     <h4 class="header-title">Notifications</h4>
                     <p class="sub-header">
-                        Send custom SMS's,emails and webhooks based on each trigger and customize the content by clicking on the pencil icon.         
+                        Send SMS's and emails based on each trigger and customize the content by clicking on the edit icon.
                     </p>
                     @foreach($notification_types as $key => $notification_type)
                     <div class="card-box">

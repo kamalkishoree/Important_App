@@ -62,7 +62,7 @@
                                             
                                             <input class="align-middle" type="radio" name="driver_start_location" value="current" checked> <span class="align-middle">Current location</span>
                                             <input class="align-middle ml-2" type="radio" name="driver_start_location" value="select"> <span class="align-middle">Select Location</span> 
-                                            <input class="align-middle ml-2" type="radio" name="driver_start_location" value="task_location"> <span class="align-middle">Select Task</span> 
+                                            <input class="align-middle ml-2 selecttask" type="radio" name="driver_start_location" value="task_location"> <span class="align-middle selecttask">Select Task</span> 
                                             
                                         </div> 
                                     </div>

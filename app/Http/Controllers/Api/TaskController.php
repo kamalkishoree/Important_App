@@ -43,8 +43,7 @@ class TaskController extends BaseController
 {
 
     public function updateTaskStatus(Request $request)
-    {
-       
+    {       
         $header = $request->header();
         $client_details = Client::where('database_name',$header['client'][0])->first();
         $proof_image = '';
@@ -92,8 +91,6 @@ class TaskController extends BaseController
         }else{
             $proof_signature = null;
         }
-
-
        
         $orderId        = Task::where('id', $request->task_id)->first(['order_id','task_type_id']);        
         $orderAll       = Task::where('order_id', $orderId->order_id)->get();
@@ -105,14 +102,9 @@ class TaskController extends BaseController
         $check          = $allCount - $lasttask;
         $lastfailedtask       = count($orderAll->where('task_status', 5));
         $checkfailed          = $allCount - $lastfailedtask;
-
         $sms_body       = '';
-
         $notification_type = NotificationType::with('notification_events.client_notification')->get();
-        //print_r($order_details->toArray()); die;
-       
         
-
         switch ( $orderId->task_type_id) {
             case 1:
                 
@@ -127,10 +119,8 @@ class TaskController extends BaseController
               $sms_settings = $notification_type[2];
                 break;
         }
-
        
         switch ($request->task_status) {
-
             case 2:
                  $task_type        = 'assigned';
                  $sms_final_status =  $sms_settings['notification_events'][0];
@@ -162,13 +152,12 @@ class TaskController extends BaseController
 
         }
 
-            
-            $send_sms_status   = isset($sms_final_status['client_notification']['request_recieved_sms'])? $sms_final_status['client_notification']['request_recieved_sms']:0;
-            $send_email_status = isset($sms_final_status['client_notification']['request_recieved_email'])? $sms_final_status['client_notification']['request_recieved_email']:0;
-            
-            //for recipient email and sms
-            $send_recipient_sms_status   = isset($sms_final_status['client_notification']['recipient_request_recieved_sms'])? $sms_final_status['client_notification']['recipient_request_recieved_sms']:0;
-            $send_recipient_email_status = isset($sms_final_status['client_notification']['recipient_request_received_email'])? $sms_final_status['client_notification']['recipient_request_received_email']:0;
+        $send_sms_status   = isset($sms_final_status['client_notification']['request_recieved_sms'])? $sms_final_status['client_notification']['request_recieved_sms']:0;
+        $send_email_status = isset($sms_final_status['client_notification']['request_recieved_email'])? $sms_final_status['client_notification']['request_recieved_email']:0;
+        
+        //for recipient email and sms
+        $send_recipient_sms_status   = isset($sms_final_status['client_notification']['recipient_request_recieved_sms'])? $sms_final_status['client_notification']['recipient_request_recieved_sms']:0;
+        $send_recipient_email_status = isset($sms_final_status['client_notification']['recipient_request_received_email'])? $sms_final_status['client_notification']['recipient_request_received_email']:0;
 
         if ($request->task_status == 4) {
            
@@ -184,7 +173,6 @@ class TaskController extends BaseController
 
         } else {
 
-
             $Order  = Order::where('id',$orderId->order_id)->update(['status' => $task_type, 'note' => $note]);
 
         }
@@ -197,8 +185,7 @@ class TaskController extends BaseController
 
         $task = Task::where('id', $request->task_id)->update(['task_status' => $request->task_status,'note' => $note ,'proof_image' => $proof_image,'proof_signature' => $proof_signature]);
 
-        $newDetails = Task::where('id', $request->task_id)->with(['location','tasktype','pricing','order.customer'])->first();
-       
+        $newDetails = Task::where('id', $request->task_id)->with(['location','tasktype','pricing','order.customer'])->first();       
 
         $sms_body = str_replace('"driver_name"',$order_details->agent->name, $sms_body);
         $sms_body = str_replace('"vehicle_model"', $order_details->agent->make_model, $sms_body);
@@ -220,8 +207,8 @@ class TaskController extends BaseController
                 $message = $twilio->messages
                        ->create($order_details->customer->phone_number,  //to number
                          [
-                                    "body" => $sms_body,
-                                    "from" => $client_prefrerence->sms_provider_number   //form_number
+                            "body" => $sms_body,
+                            "from" => $client_prefrerence->sms_provider_number   //form_number
                          ]
                        );
             } catch (\Exception $e) {
@@ -245,15 +232,12 @@ class TaskController extends BaseController
             } catch (\Exception $e) {
     
                 Log::info($e->getMessage());
-            }
-
-            
+            }            
 
         }
         $recipient_phone = isset($newDetails->location->phone_number)?$newDetails->location->phone_number:'';
         $recipient_email = isset($newDetails->location->email)?$newDetails->location->email:'';
         if($send_recipient_sms_status == 1 && $recipient_phone!='') {
-
             try {
                 $twilio = new TwilioClient($twilio_sid, $token);
     
@@ -289,12 +273,7 @@ class TaskController extends BaseController
                 Log::info($e->getMessage());
             }
 
-            
-
         }
-
-        
-
        
         return response()->json([
             'data' => $newDetails,
@@ -302,14 +281,9 @@ class TaskController extends BaseController
     }
 
     public function setMailDetail($client)
-    {
-       // print_r($client);
-        
+    {               
         $mail = SmtpDetail::where('client_id',$client->id)->first();
-        
-      
         if(isset($mail)){
-
             $config = array(
                 'driver'     => $mail->driver,
                 'host'       => $mail->host,
@@ -319,22 +293,19 @@ class TaskController extends BaseController
                 'password'   => $mail->password,
                 'sendmail'   => '/usr/sbin/sendmail -bs',
                 'pretend'    => false,
-            );
-           
+            );          
 
             Config::set('mail', $config);
 
             $app = App::getInstance();
             $app->register('Illuminate\Mail\MailServiceProvider');
-        }
-            
+        }            
 
             return;
     }
 
     public function TaskUpdateReject(Request $request)
-    {
-       
+    {       
         $percentage = 0;
         //die($request->order_id);
         $check = Order::where('id', $request->order_id)->first();
@@ -349,9 +320,6 @@ class TaskController extends BaseController
                 'message' => 'Task Accecpted Successfully',
             ], 200); 
         }  // need to we change
-
-        
-        
 
         if ($request->status == 1) {
                         $this->dispatchNow(new RosterDelete($request->order_id));
@@ -376,9 +344,7 @@ class TaskController extends BaseController
 
 
             Order::where('id', $request->order_id)->update(['driver_id' => $request->driver_id, 'status' => 'assigned','driver_cost'=> $percentage]);
-            Task::where('order_id',$request->order_id)->update(['task_status' => 1]);
-
-            
+            Task::where('order_id',$request->order_id)->update(['task_status' => 1]);            
             
             return response()->json([
                 'data' => 'Task Accecpted Successfully',
@@ -401,11 +367,8 @@ class TaskController extends BaseController
     }
 
     public function CreateTask(Request $request)
-    {
-       
-       
+    {  
         $loc_id = $cus_id = $send_loc_id = $newlat = $newlong = 0;
-
         $images = [];
         $last = '';
         $customer = [];
@@ -420,8 +383,6 @@ class TaskController extends BaseController
         $unique_order_id = substr(str_shuffle(str_repeat($pool, 5)), 0, 6);
 
         //save task images on s3 bucket
-
-
         if (isset($request->file) && count($request->file) > 0) {
             $folder = str_pad(Auth::user()->id, 8, '0', STR_PAD_LEFT);
             $folder = 'client_' . $folder;
@@ -545,8 +506,6 @@ class TaskController extends BaseController
             
         }
 
-
-
         //accounting for task duration distanse 
 
         $getdata = $this->GoogleDistanceMatrix($latitude,$longitude);
@@ -561,8 +520,7 @@ class TaskController extends BaseController
 
             $agent_details = Agent::where('id',$agent_id)->first();
                if($agent_details->type == 'Employee'){
-                   $percentage = $pricingRule->agent_commission_fixed + (($total / 100) * $pricingRule->agent_commission_percentage);
-   
+                   $percentage = $pricingRule->agent_commission_fixed + (($total / 100) * $pricingRule->agent_commission_percentage);   
                    
                }else{
                    $percentage = $pricingRule->freelancer_commission_percentage + (($total / 100) * $pricingRule->freelancer_commission_fixed);
@@ -577,16 +535,10 @@ class TaskController extends BaseController
            'actual_distance'    => $getdata['distance'],
            'order_cost'         => $total,
            'driver_cost'        => $percentage,
-
         ];
        
         Order::where('id',$orders->id)->update($updateorder);
-
-
-
-
-
-
+        
         if (isset($request->allocation_type) && $request->allocation_type === 'a') {
             // if (isset($request->team_tag)) {
             //     $orders->teamtags()->sync($request->team_tag);

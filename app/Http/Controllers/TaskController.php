@@ -1669,13 +1669,9 @@ class TaskController extends Controller
         if(isset($new)){
             fcm()
             ->to($new) // $recipients must an array
-            ->priority('high')
-            ->timeToLive(0)
             ->data($notification_data)
             ->notification([
-                'title' => 'Silent Notification',
-                'body'  =>  'Check All Details For This Request In App',
-                'sound' =>   '',
+                'sound' =>  'default',
             ])
             ->send();
         }          

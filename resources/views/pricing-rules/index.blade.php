@@ -57,7 +57,7 @@
     <!-- end page title -->
     <div class="row">
 
-        <div class="col-md-2 col-12">
+        {{-- <div class="col-md-2 col-12">
             <div class="card-box">
                 <div class="">
                     <div class="" id="nestable_list_1" style="display: none">
@@ -97,9 +97,9 @@
                 
 
             </div> <!-- end card-box -->
-        </div>
+        </div> --}}
         
-        <div class="col-md-10 col-12">
+        <div class="col-12">
             <div class="card">
                 <div class="card-body">
                     <div class="row mb-2">

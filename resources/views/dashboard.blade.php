@@ -13,8 +13,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
 @section('content')
 
 <!-- Bannar Section -->
-{{-- <section class="bannar header-setting"> --}}
-   
+{{-- <section class="bannar header-setting"> --}}   
 <div class="container-fluid p-0">
 <div class="row coolcheck no-gutters">
     <div class="pageloader" style="display: none;">
@@ -22,8 +21,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
             <h4 class="routetext"></h4>
             <div class="spinner-border avatar-lg text-primary m-2" role="status"></div>
         </div>
-    </div>   
-    
+    </div> 
 
     <div id="scrollbar" class="col-md-4 col-xl-3 left-sidebar pt-3">  
         <div class="side_head d-flex justify-content-between align-items-center mb-2">
@@ -41,120 +39,107 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                     <span class="profile-circle">U</span>
                                 </div>
                                 <div class="col-md-8 col-lg-9 col-xl-10 col-10">
-                                    <h6 class="header-title">Unassigned</h6>
-                                    {{-- <p class="mb-0">{{isset($unassigned[0]['agent_count'])?$unassigned[0]['agent_count']:''}} Agents : <span>{{isset($unassigned[0]['offline_agents'])?$unassigned[0]['offline_agents']:''}} Offline ・ {{isset($unassigned[0]['online_agents'])?$unassigned[0]['online_agents']:''}} Online</span></p> --}}
+                                    <h6 class="header-title">Unassigned</h6>                                    
                                 </div>
                             </div>
                         </div>
                     </a>
                 </div>
 
-                    <div id="collapse-new" class="collapse" data-parent="#accordion"
-                        aria-labelledby="heading-1">
-                        <div class="card-body">
-                            <div id="accordion-0">
-                                <div class="card no-border-radius">
-                                    <div class="card-header ml-2" id="by0">
-                                        <?php
-
-                                        if(isset($distance_matrix[0]))
-                                        {
-                                            if($unassigned_orders[0]['task_order']==0){
-                                                $opti0 = "yes";
-                                            }else{
-                                                $opti0 = "";
-                                            }                                       
-                                            
-                                            $routeperams0 = "'".$distance_matrix[0]['tasks']."','".json_encode($distance_matrix[0]['distance'])."','".$opti0."',0,'".$date."'";
-                                            
-                                            $optimize0 = '<span class="optimize_btn" onclick="RouteOptimization('.$routeperams0.')">Optimize</span>';
-                                            $params0 = "'".$distance_matrix[0]['tasks']."','".json_encode($distance_matrix[0]['distance'])."','yes',0,'".$date."'";
-                                            $turnbyturn0 = '<span class="navigation_btn optimize_btn" onclick="NavigatePath('.$routeperams0.')">Export</span>';
+                <div id="collapse-new" class="collapse" data-parent="#accordion"
+                    aria-labelledby="heading-1">
+                    <div class="card-body">
+                        <div id="accordion-0">
+                            <div class="card no-border-radius">
+                                <div class="card-header ml-2" id="by0">
+                                    <?php
+                                    if(isset($distance_matrix[0]))
+                                    {
+                                        if($unassigned_orders[0]['task_order']==0){
+                                            $opti0 = "yes";
                                         }else{
-                                            $optimize0="";
-                                            $params0 = "";
-                                            $turnbyturn0 = "";
-                                        }
-                                        ?>
-
-                                        <a class="profile-block collapsed" role="button" data-toggle="collapse" href="#collapse0" aria-expanded="false" aria-controls="collapse0">
-                                            <div class="row">
-                                                <div class="col-md-2 col-2">
-                                                    
-                                                    <span class="profile-circle">D</span>
-                                                </div>
-                                                <div class="col-md-10 col-10">                        
-                                                    <h6 class="mb-0 header-title scnd">Driver 1<div class="optimizebtn0">{!! $optimize0 !!} </div><div class="exportbtn0">{!! $turnbyturn0 !!} </div></h6>
-                                                    <p class="mb-0"> <span>{{ count($unassigned_orders) }} Tasks</span> {!! $unassigned_distance==''?'':' <i class="fas fa-route"></i> '!!}<span class="dist_sec totdis0">{{ $unassigned_distance }}</span></p>
-                                                </div>
+                                            $opti0 = "";
+                                        }                                                                                
+                                        $routeperams0 = "'".$distance_matrix[0]['tasks']."','".json_encode($distance_matrix[0]['distance'])."','".$opti0."',0,'".$date."'";
+                                        $optimize0 = '<span class="optimize_btn" onclick="RouteOptimization('.$routeperams0.')">Optimize</span>';
+                                        $params0 = "'".$distance_matrix[0]['tasks']."','".json_encode($distance_matrix[0]['distance'])."','yes',0,'".$date."'";
+                                        $turnbyturn0 = '<span class="navigation_btn optimize_btn" onclick="NavigatePath('.$routeperams0.')">Export</span>';
+                                    }else{
+                                        $optimize0="";
+                                        $params0 = "";
+                                        $turnbyturn0 = "";
+                                    }
+                                    ?>
+                                    <a class="profile-block collapsed" role="button" data-toggle="collapse" href="#collapse0" aria-expanded="false" aria-controls="collapse0">
+                                        <div class="row">
+                                            <div class="col-md-2 col-2">                                                
+                                                <span class="profile-circle">D</span>
                                             </div>
-                                        </a>
-                                    </div>
+                                            <div class="col-md-10 col-10">                        
+                                                <h6 class="mb-0 header-title scnd">Driver 1<div class="optimizebtn0">{!! $optimize0 !!} </div><div class="exportbtn0">{!! $turnbyturn0 !!} </div></h6>
+                                                <p class="mb-0"> <span>{{ count($unassigned_orders) }} Tasks</span> {!! $unassigned_distance==''?'':' <i class="fas fa-route"></i> '!!}<span class="dist_sec totdis0">{{ $unassigned_distance }}</span></p>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>                               
                                     
-                                        
-                                    <div id="collapse0" class="collapse" data-parent="#accordion-0" aria-labelledby="by0">
-                                        <div id="handle-dragula-left0" class="dragable_tasks" agentid="0"  params="{{ $params0 }}" date="{{ $date }}">            
-                                    
-                                            @foreach($unassigned_orders as $orders)
-                                                @foreach($orders['task'] as $tasks)
-                                                    <div class="card-body" task_id ="{{ $tasks['id'] }}">
-                                                        <div class="p-2 assigned-block">
+                                <div id="collapse0" class="collapse" data-parent="#accordion-0" aria-labelledby="by0">
+                                    <div id="handle-dragula-left0" class="dragable_tasks" agentid="0"  params="{{ $params0 }}" date="{{ $date }}">                                            
+                                        @foreach($unassigned_orders as $orders)
+                                            @foreach($orders['task'] as $tasks)
+                                                <div class="card-body" task_id ="{{ $tasks['id'] }}">
+                                                    <div class="p-2 assigned-block">
                                                         @php
-                                                                $st = "Unassigned";
-                                                                $color_class = "assign_";
-                                                               
-                            
-                                                                if($tasks['task_type_id']==1)
-                                                                {
-                                                                    $tasktype = "Pickup";
-                                                                    $pickup_class = "yellow_";
-                                                                }elseif($tasks['task_type_id']==2)
-                                                                {
-                                                                    $tasktype = "Dropoff";
-                                                                    $pickup_class = "green_";
-                                                                }else{
-                                                                    $tasktype = "Appointment";
-                                                                    $pickup_class = "assign_";
+                                                            $st = "Unassigned";
+                                                            $color_class = "assign_";
+                                                            if($tasks['task_type_id']==1)
+                                                            {
+                                                                $tasktype = "Pickup";
+                                                                $pickup_class = "yellow_";
+                                                            }elseif($tasks['task_type_id']==2)
+                                                            {
+                                                                $tasktype = "Dropoff";
+                                                                $pickup_class = "green_";
+                                                            }else{
+                                                                $tasktype = "Appointment";
+                                                                $pickup_class = "assign_";
                                                                 }
                                                         @endphp
-                                                        
-                                                            <div>
-                                                                <div class="row no-gutters align-items-center">
-                                                                    <div class="col-9 d-flex">
-                                                                        @php
-                                                                        if($tasks['assigned_time']=="")
-                                                                        {
-                                                                            $tasks['assigned_time'] = date('Y-m-d H:i:s');
-                                                                        }
-                                                                            $timeformat = $preference->time_format == '24' ? 'H:i:s':'g:i a';
-                                                                            $order = Carbon::createFromFormat('Y-m-d H:i:s', $tasks['assigned_time'], 'UTC');
-                                                                            $order->setTimezone(isset(Auth::user()->timezone) ? Auth::user()->timezone : 'Asia/Kolkata');
-                                                                        @endphp             
+                                                    
+                                                        <div>
+                                                            <div class="row no-gutters align-items-center">
+                                                                <div class="col-9 d-flex">
+                                                                    @php
+                                                                    if($tasks['assigned_time']=="")
+                                                                    {
+                                                                        $tasks['assigned_time'] = date('Y-m-d H:i:s');
+                                                                    }
+                                                                        $timeformat = $preference->time_format == '24' ? 'H:i:s':'g:i a';
+                                                                        $order = Carbon::createFromFormat('Y-m-d H:i:s', $tasks['assigned_time'], 'UTC');
+                                                                        $order->setTimezone(isset(Auth::user()->timezone) ? Auth::user()->timezone : 'Asia/Kolkata');
+                                                                    @endphp             
 
-                                                                        <h5 class="d-inline-flex align-items-center justify-content-between"><i class="fas fa-bars"></i> <span>{{date(''.$timeformat.'', strtotime($order))}}</span></h5>
-                                                                        <h6 class="d-inline"><img class="vt-top"
-                                                                            src="{{ asset('demo/images/ic_location_blue_1.png') }}"> {{ isset($tasks['location']['address'])? $tasks['location']['address']:'' }} <span class="d-block">{{ isset($tasks['location']['short_name'])? $tasks['location']['short_name']:'' }}</span></h6>
-                                                                    </div>
-                                                                    <div class="col-3">
-                                                                        <button class="assigned-btn float-right mb-2 {{$pickup_class}}">{{$tasktype}}</button>
-                                                                        <button class="assigned-btn float-right {{$color_class}}">{{$st}}</button>
-                                                                    </div>                        
+                                                                    <h5 class="d-inline-flex align-items-center justify-content-between"><i class="fas fa-bars"></i> <span>{{date(''.$timeformat.'', strtotime($order))}}</span></h5>
+                                                                    <h6 class="d-inline"><img class="vt-top"
+                                                                        src="{{ asset('demo/images/ic_location_blue_1.png') }}"> {{ isset($tasks['location']['address'])? $tasks['location']['address']:'' }} <span class="d-block">{{ isset($tasks['location']['short_name'])? $tasks['location']['short_name']:'' }}</span></h6>
                                                                 </div>
+                                                                <div class="col-3">
+                                                                    <button class="assigned-btn float-right mb-2 {{$pickup_class}}">{{$tasktype}}</button>
+                                                                    <button class="assigned-btn float-right {{$color_class}}">{{$st}}</button>
+                                                                </div>                        
                                                             </div>
                                                         </div>
-                                                    </div> 
-                                                @endforeach
-                            
+                                                    </div>
+                                                </div> 
                                             @endforeach
-                                        </div>
+                        
+                                        @endforeach
                                     </div>
                                 </div>
                             </div>
-
-
-
                         </div>
                     </div>
+                </div>
                 
             </div>
             <div class="card no-border-radius">
@@ -225,8 +210,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                         $pdfperams = "";
                                         $turnbyturn = "";
                                     }
-                                }
-                                
+                                }                               
                                 
                                 ?>
                             
@@ -441,12 +425,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
     $agentslocations[] = $defaultmaplocation;
 ?>
 
-
-
 @section('script')
-
-
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-timeago/1.6.3/jquery.timeago.js"></script>
 <script>
 
@@ -512,11 +491,7 @@ var agentval = [];
 $('.agentdisplay:checkbox:checked').each(function(i) {
     agentval[i] = parseInt($(this).val());
 });
-
-
 setMapOnAll(null);
-
-
 //main task markers
 for (let i = 0; i < olddata.length; i++) {
     checkdata = olddata[i];
@@ -556,7 +531,6 @@ for (let i = 0; i < olddata.length; i++) {
     }
 
     // for tasks
-
         if($.inArray(checkdata['task_status'], taskval) !== -1 || $.inArray(5, taskval) != -1) {
             
             var urlnewcreate = '';
@@ -616,7 +590,6 @@ $('.taskchecks_old').click(function() {
 var taskval = [];
 $('.taskchecks:checkbox:checked').each(function(i) {
     taskval[i] = parseInt($(this).val());
-
 });
 
 setMapOnAll(null);
@@ -639,24 +612,23 @@ for (let i = 0; i < olddata.length; i++) {
             urlnewcreate = 'faild';
         }
         
-            if(checkdata['task_type_id'] == 1){
-                urlnewcreate += '_P.png';
-            }else if(checkdata['task_type_id'] == 2){
-                urlnewcreate +='_D.png';
-            }else{
-                urlnewcreate +='_A.png';
-            }
-            
-            image = '{{ asset('assets/newicons/') }}'+'/'+urlnewcreate;
-            
-            send = null;
-            type = 1;
+        if(checkdata['task_type_id'] == 1){
+            urlnewcreate += '_P.png';
+        }else if(checkdata['task_type_id'] == 2){
+            urlnewcreate +='_D.png';
+        }else{
+            urlnewcreate +='_A.png';
+        }
+        
+        image = '{{ asset('assets/newicons/') }}'+'/'+urlnewcreate;
+        
+        send = null;
+        type = 1;
         addMarker({lat:parseFloat(checkdata['latitude']),lng:parseFloat(checkdata['longitude'])}, send,image,checkdata,type);
     }
 }
 
 });
-
 
 $('.agentdisplay_old').click(function() {
     var agentval = [];
@@ -667,12 +639,10 @@ $('.agentdisplay_old').click(function() {
     $(".taskchecks").prop('checked', false);
     $(".newchecks").prop('checked', false);
 
-
     for (let i = 0; i < allagent.length; i++) {
         checkdata = allagent[i];        
         // addMarker({ lat: checkdata[3], lng: checkdata[4] });
-        if ($.inArray(checkdata['is_available'], agentval) != -1 || $.inArray(2, agentval) != -1) {
-            
+        if ($.inArray(checkdata['is_available'], agentval) != -1 || $.inArray(2, agentval) != -1) {            
             if (checkdata['is_available'] == 1) {
                 images = url+'/demo/images/location.png';
             }else {
@@ -689,21 +659,13 @@ $('.agentdisplay_old').click(function() {
         addMarker({lat: parseFloat(checkdata.agentlog['lat']),lng:  parseFloat(checkdata.agentlog['long'])}, send, image,checkdata,type);
         }
     }
-
 });
 
-
-
-
 function initMap() {
-
     //console.log(allagent);
-
-    const haightAshbury = {        
-
+    const haightAshbury = {    
         lat: allagent[0].agentlog && allagent[0].agentlog['lat']  != "0.00000000" ? parseFloat(allagent[0].agentlog['lat']): defaultlat,
-        lng: allagent[0].agentlog && allagent[0].agentlog['long'] != "0.00000000" ? parseFloat(allagent[0].agentlog['long']):defaultlong
-        
+        lng: allagent[0].agentlog && allagent[0].agentlog['long'] != "0.00000000" ? parseFloat(allagent[0].agentlog['long']):defaultlong        
     };
 
     map = new google.maps.Map(document.getElementById("map_canvas"), {
@@ -712,7 +674,6 @@ function initMap() {
         mapTypeId: "roadmap",
         styles: themeType,
     });
-
     
     //new code for route
     var color = [
@@ -722,8 +683,7 @@ function initMap() {
         "purple",
         "skyblue",
         "yellow",
-        "orange",
-        
+        "orange",        
         ];
 
     var allroutes = {!! json_encode($routedata) !!};
@@ -735,8 +695,7 @@ function initMap() {
             var routecolor = color[i];
         }else{
             var routecolor = "pink";
-        }
-        
+        }        
         directionsRenderer.setOptions({
             polylineOptions: {
                 strokeColor: routecolor                
@@ -780,7 +739,6 @@ function initMap() {
             lng:  parseFloat(checkdata['longitude'])
         }, send, img,checkdata,type);
     }
-
     
     //agents markers
     for (let i = 0; i < allagent.length; i++) {
@@ -788,30 +746,29 @@ function initMap() {
             
             if(displayagent.agentlog != null && displayagent.agentlog['lat'] != "0.00000000" && displayagent.agentlog['long'] != "0.00000000" ){
                 console.log(displayagent.agentlog);
-                        if (displayagent['is_available'] == 1) {
-                            images = url+'/demo/images/location.png';
-                        }else {
-                            images = url+'/demo/images/location_grey.png';
-                        }
-                        var image = {
-                        url: images, // url
-                        scaledSize: new google.maps.Size(50, 50), // scaled size
-                        origin: new google.maps.Point(0,0), // origin
-                        anchor: new google.maps.Point(22,22) // anchor
-                        };
-                        send = null;
-                        type = 2;
+                    if (displayagent['is_available'] == 1) {
+                        images = url+'/demo/images/location.png';
+                    }else {
+                        images = url+'/demo/images/location_grey.png';
+                    }
+                    var image = {
+                    url: images, // url
+                    scaledSize: new google.maps.Size(50, 50), // scaled size
+                    origin: new google.maps.Point(0,0), // origin
+                    anchor: new google.maps.Point(22,22) // anchor
+                    };
+                    send = null;
+                    type = 2;
 
-                        addMarker({lat: parseFloat(displayagent.agentlog['lat']),
-                        lng:  parseFloat(displayagent.agentlog['long'])
-                        }, send, image,displayagent,type);
+                    addMarker({lat: parseFloat(displayagent.agentlog['lat']),
+                    lng:  parseFloat(displayagent.agentlog['long'])
+                    }, send, image,displayagent,type);
             }
                        
     }
 }
 
-
-
+// function for displaying route  on map
 function calculateAndDisplayRoute(directionsService, directionsRenderer,map,alltask,agent_location) {    
             const waypts = [];
             const checkboxArray = document.getElementById("waypoints");
@@ -827,9 +784,6 @@ function calculateAndDisplayRoute(directionsService, directionsRenderer,map,allt
 
                 }
                 var image = url+'/assets/newicons/'+alltask[i].task_type_id+'.png';
-
-                // makeMarker({lat: parseFloat(alltask[i].latitude),lng:  parseFloat(alltask[i]
-                //             .longitude)},image,map);
             }
 
             directionsService.route({
@@ -854,11 +808,8 @@ function calculateAndDisplayRoute(directionsService, directionsRenderer,map,allt
 
 // Adds a marker to the map and push to the array.
 function addMarker(location, lables, images,data,type) {
-
     var contentString = '';
-
     if(type == 1){
-
         contentString =
         '<div id="content">' +
         '<div id="siteNotice">' +
@@ -871,13 +822,10 @@ function addMarker(location, lables, images,data,type) {
         '<p><b>Customer: '+data['customer_name']+'</b>('+data['customer_phone_number']+') </p>' +
         "</div>" +
         "</div>";
-
     }else{
-
         img = data['image_url'];
         //console.log(img);
         contentString =
-
         '<div class="row no-gutters align-items-center">'+
             '<div class="col-sm-4">'+
                 '<div class="img_box mb-sm-0 mb-2"> <img src="https://imgproxy.royodispatch.com/insecure/fit/200/200/sm/0/plain/'+data["image_url"]+'"/></div> </div>'+
@@ -936,16 +884,12 @@ function deleteMarkers() {
 
 
 $(".datetime").on('change', function postinput(){
-
     var matchvalue = $(this).val(); // this.value
     newabc =  url+'?date='+matchvalue;
-
-
     window.location.href = newabc;
-
 });
 
-
+//function fot optimizing route
 function RouteOptimization(taskids,distancematrix,optimize,agentid,date) {
     $('#routeTaskIds').val(taskids);
     $('#routeMatrix').val(distancematrix);
@@ -957,6 +901,7 @@ function RouteOptimization(taskids,distancematrix,optimize,agentid,date) {
     $('#addressBlock').css('display','none');
     $('#addressTaskBlock').css('display','none');
     $('#selectedtasklocations').html(''); 
+    $('.selecttask').css('display','');
     $.ajax({
             type: 'POST',            
             url: '{{url("/get-tasks")}}',
@@ -1002,10 +947,8 @@ function RouteOptimization(taskids,distancematrix,optimize,agentid,date) {
 }
 
 
-
+// on submiting optimization popup 
 $('.submitoptimizeForm').click(function(){
-    
-        
     var driverStartTime = $('.driverStartTime').val();
     var driverTaskDuration = $('.driverTaskDuration').val();
     var driverBrakeStartTime = $('.driverBrakeStartTime').val();
@@ -1017,6 +960,7 @@ $('.submitoptimizeForm').click(function(){
         $('#DriverStartTime span').css('display','block');
         err = 1;
     }
+
     if(driverTaskDuration=='')
     {
         $('#DriverTaskDuration span').css('display','block');
@@ -1027,15 +971,15 @@ $('.submitoptimizeForm').click(function(){
         $('#DriverBrakeStartTime span').css('display','block');
         err = 1;
     }
+
     if(driverBrakeEndTime=='')
     {
         $('#DriverBrakeEndTime span').css('display','block');
         err = 1;
     }
-    // alert(err);
+
     if(err == 0)
     {
-
         $('.routetext').text('Optimizing Route'); 
         $('#optimize-route-modal').modal('hide');
         $('.pageloader').css('display','block');
@@ -1047,47 +991,36 @@ $('.submitoptimizeForm').click(function(){
             var formurl = '{{url("/optimize-arrange-route")}}';
         }
         $.ajax({
-                type: 'POST',
-                
+                type: 'POST',                
                 url: formurl,
                 headers: {
                     'X-CSRF-Token': '{{ csrf_token() }}',
                 },
-                // data: {'taskids':taskids,'distance':distancematrix,'agentid':agentid,'date':date},
                 data : formdata,
-
-                success: function(response) {
-                    
+                success: function(response) {                    
                     if(response!="Try again later")
                     {                        
-                        var data = $.parseJSON(response);
-                    // alert(data);
-                        
+                        var data = $.parseJSON(response);                        
                         var tasklist = data.tasklist;
                         var taskorders = tasklist.order;
                         var agentid = data.agentid;
                         var taskids = data.taskids;
                         var distancematrix = data.distance_matrix;
-                        var date = data.date;                    
-                        
-                        $('.totdis'+agentid).html(data.total_distance);
-                        
-                        $('#handle-dragula-left'+agentid).html('');
-                        
+                        var date = data.date; 
+                        $('.totdis'+agentid).html(data.total_distance);                        
+                        $('#handle-dragula-left'+agentid).html('');                        
                         for (var i = 0; i < taskorders.length; i++) {
                             var object = taskorders[i];
                             var task_id =  object['task'][0]['id'];
                             var location_address =  object['task'][0]['location']['address'];
                             var shortname =  object['task'][0]['location']['short_name'];
-                            var tasktime = object['task'][0]['task_time'];
-                                                        
+                            var tasktime = object['task'][0]['task_time'];                                                        
                             var taskstatus = object['task'][0]['task_status'];
                             var tasktypeid = object['task'][0]['task_type_id'];
                             var classname = "";
                             var classtext = "";
                             var tasktype = "";
-                            var pickupclass = "";
-                            
+                            var pickupclass = "";                            
                             if(taskstatus==0)
                             {
                                 classtext = "Unassigned";
@@ -1125,8 +1058,7 @@ $('.submitoptimizeForm').click(function(){
                                 tasktype = "Appointment";
                                 pickupclass = "assign_";
                             }                        
-                            var sidebarhtml   = '<div class="card-body ui-sortable-handle" task_id="'+task_id+'"><div class="p-2 assigned-block"><div><div class="row no-gutters align-items-center"><div class="col-9 d-flex"><h5 class="d-inline-flex align-items-center justify-content-between"><i class="fas fa-bars"></i><span>'+tasktime+'</span></h5><h6 class="d-inline"><img class="vt-top" src="{{ asset("demo/images/ic_location_blue_1.png") }}">'+location_address+'<span class="d-block">'+shortname+'</span></h6></div><div class="col-3"><button class="assigned-btn float-right mb-2 '+pickupclass+'">'+tasktype+'</button><button class="assigned-btn float-right '+classname+'">'+classtext+'</button></div></div></div></div></div>';
-                            
+                            var sidebarhtml   = '<div class="card-body ui-sortable-handle" task_id="'+task_id+'"><div class="p-2 assigned-block"><div><div class="row no-gutters align-items-center"><div class="col-9 d-flex"><h5 class="d-inline-flex align-items-center justify-content-between"><i class="fas fa-bars"></i><span>'+tasktime+'</span></h5><h6 class="d-inline"><img class="vt-top" src="{{ asset("demo/images/ic_location_blue_1.png") }}">'+location_address+'<span class="d-block">'+shortname+'</span></h6></div><div class="col-3"><button class="assigned-btn float-right mb-2 '+pickupclass+'">'+tasktype+'</button><button class="assigned-btn float-right '+classname+'">'+classtext+'</button></div></div></div></div></div>';                            
                             $('#handle-dragula-left'+agentid).append(sidebarhtml);
                         }
 
@@ -1139,11 +1071,9 @@ $('.submitoptimizeForm').click(function(){
                             $('.optimizebtn'+agentid).html(funperams);
 
                             // ----- route show end-----------
-                        }
-                        
+                        }                        
 
                         $('#optimizerouteform').trigger("reset");
-
                         $('.pageloader').css('display','none');
                         //location.reload();
                     }else{                    
@@ -1165,116 +1095,12 @@ function cancleForm()
     $('#optimize-route-modal').modal('hide');
 }
 
-function RouteOptimizationOld(taskids,distancematrix,optimize,agentid,date) {
-    $('.routetext').text('Optimizing Route');    
-    $('.pageloader').css('display','block');
-    if(optimize=="yes")
-    {
-        $.ajax({
-            type: 'POST',
-            
-            url: '{{url("/optimize-route")}}',
-            headers: {
-                'X-CSRF-Token': '{{ csrf_token() }}',
-            },
-            data: {'taskids':taskids,'distance':distancematrix,'agentid':agentid,'date':date},
-
-            success: function(response) {
-                if(response!="Try again later")
-                {
-                    var data = $.parseJSON(response);
-                    var tasklist = data.tasklist;
-                    var taskorders = tasklist.order;
-                    $('.totdis'+agentid).html(data.total_distance);
-                    $('#handle-dragula-left'+agentid).html('');
-                    for (var i = 0; i < taskorders.length; i++) {
-                        var object = taskorders[i];
-                        var task_id =  object['task'][0]['id'];
-                        var location_address =  object['task'][0]['location']['address'];
-                        var shortname =  object['task'][0]['location']['short_name'];
-                        var tasktime = object['task'][0]['task_time'];
-                        
-                        var taskstatus = object['task'][0]['task_status'];
-                        var tasktypeid = object['task'][0]['task_type_id'];
-                        var classname = "";
-                        var classtext = "";
-                        var tasktype = "";
-                        var pickupclass = "";
-                        
-                        if(taskstatus==0)
-                        {
-                            classtext = "Unassigned";
-                            classname = "assign_";
-                        }else if(taskstatus==1)
-                        {
-                            classtext = "Assigned";
-                            classname = "assign_";
-                        }else if(taskstatus==2)
-                        {
-                            classtext = "Started";
-                            classname = "yellow_";
-                        }else if(taskstatus==3)
-                        {
-                            classtext = "Arrived";
-                            classname = "light_green";
-                        }else if(taskstatus==4)
-                        {
-                            classtext = "Completed";
-                            classname = "green_";
-                        }else{
-                            classtext = "Failed";
-                            classname = "red_";
-                        }
-
-                        if(tasktypeid==1)
-                        {
-                            tasktype = "Pickup";
-                            pickupclass = "yellow_";
-                        }else if(tasktypeid==2)
-                        {
-                            tasktype = "Dropoff";
-                            pickupclass = "green_";
-                        }else{
-                            tasktype = "Appointment";
-                            pickupclass = "assign_";
-                        }
-
-                        var sidebarhtml   = '<div class="card-body ui-sortable-handle" task_id="'+task_id+'"><div class="p-2 assigned-block"><div><div class="row no-gutters align-items-center"><div class="col-9 d-flex"><h5 class="d-inline-flex align-items-center justify-content-between"><i class="fas fa-bars"></i><span>'+tasktime+'</span></h5><h6 class="d-inline"><img class="vt-top" src="{{ asset("demo/images/ic_location_blue_1.png") }}">'+location_address+'<span class="d-block">'+shortname+'</span></h6></div><div class="col-3"><button class="assigned-btn float-right mb-2 '+pickupclass+'">'+tasktype+'</button><button class="assigned-btn float-right '+classname+'">'+classtext+'</button></div></div></div></div></div>';
-                        $('#handle-dragula-left'+agentid).append(sidebarhtml);
-                    }
-
-                    // -------- for route show ------------------
-                    reInitMap(data.allroutedata);    
-
-                    var params = "'"+taskids+"','"+distancematrix+"','',"+agentid;
-                    var funperams = '<span class="optimize_btn" onclick="RouteOptimization('+params+')">Optimize</span>';                    
-                    $('.optimizebtn'+agentid).html(funperams);
-
-                    // ----- route show end-----------
-
-                    $('.pageloader').css('display','none');                    
-                }else{                    
-                    alert(response);
-                    $('.pageloader').css('display','none');
-                }
-            },
-            error: function(response) {
-                
-            }
-        });
-    }else{
-        $('.pageloader').css('display','none');
-    }
-    
-}
-
-function reInitMap(allroutes) {
-    
+// for reinitializing map in ajax response during drag drop and optimization
+function reInitMap(allroutes) {    
     const haightAshbury = {
         lat: allagent[0].agentlog && allagent[0].agentlog['lat']  != "0.00000000" ? parseFloat(allagent[0].agentlog['lat']): defaultlat,
         lng: allagent[0].agentlog && allagent[0].agentlog['long'] != "0.00000000" ? parseFloat(allagent[0].agentlog['long']):defaultlong
     };
-
     map = new google.maps.Map(document.getElementById("map_canvas"), {
         zoom: 12,
         center: haightAshbury,
@@ -1290,11 +1116,9 @@ function reInitMap(allroutes) {
         "purple",
         "skyblue",
         "yellow",
-        "orange",
-        
+        "orange",        
         ];
 
-   
     $.each(allroutes, function(i, item) {
         const directionsService = new google.maps.DirectionsService();
         const directionsRenderer = new google.maps.DirectionsRenderer({suppressMarkers: true});
@@ -1310,8 +1134,8 @@ function reInitMap(allroutes) {
                 strokeColor: routecolor                
             }
         });
-        directionsRenderer.setMap(map);
 
+        directionsRenderer.setMap(map);
         var al_task = allroutes[i].task_details;
         var agent_locatn = allroutes[i].driver_detail;
         calculateAndDisplayRoute(directionsService, directionsRenderer,map,al_task,agent_locatn);
@@ -1320,7 +1144,6 @@ function reInitMap(allroutes) {
     // Adds a marker at the center of the map.
     for (let i = 0; i < olddata.length; i++) {
         checkdata = olddata[i];
-
         var urlnewcreate = '';
         if(checkdata['task_status'] == 0){
             urlnewcreate = 'unassigned';
@@ -1420,45 +1243,46 @@ $(".dragable_tasks").sortable({
                 $('#addressBlock').css('display','none');
                 $('#addressTaskBlock').css('display','none');
                 $('#selectedtasklocations').html(''); 
-                $.ajax({
-                    type: 'POST',            
-                    url: '{{url("/get-tasks")}}',
-                    headers: {
-                        'X-CSRF-Token': '{{ csrf_token() }}',
-                    },
-                    data: {'taskids':taskorder},
+                $('.selecttask').css('display','none');
+                // $.ajax({
+                //     type: 'POST',            
+                //     url: '{{url("/get-tasks")}}',
+                //     headers: {
+                //         'X-CSRF-Token': '{{ csrf_token() }}',
+                //     },
+                //     data: {'taskids':taskorder},
 
-                    success: function(response) {
+                //     success: function(response) {
                         
-                        var data = $.parseJSON(response);    
+                //         var data = $.parseJSON(response);    
                                     
-                        for (var i = 0; i < data.length; i++) {
-                            var object = data[i];
-                            var task_id =  object['id'];
-                            var tasktypeid = object['task_type_id'];
-                            if(tasktypeid==1)
-                            {
-                                tasktype = "Pickup";
-                            }else if(tasktypeid==2)
-                            {
-                                tasktype = "Dropoff";
-                            }else{
-                                tasktype = "Appointment";
-                            } 
+                //         for (var i = 0; i < data.length; i++) {
+                //             var object = data[i];
+                //             var task_id =  object['id'];
+                //             var tasktypeid = object['task_type_id'];
+                //             if(tasktypeid==1)
+                //             {
+                //                 tasktype = "Pickup";
+                //             }else if(tasktypeid==2)
+                //             {
+                //                 tasktype = "Dropoff";
+                //             }else{
+                //                 tasktype = "Appointment";
+                //             } 
 
-                            var location_address =  object['location']['address'];
-                            var shortname =  object['location']['short_name'];
+                //             var location_address =  object['location']['address'];
+                //             var shortname =  object['location']['short_name'];
 
                                                 
-                            var option   = '<option value="'+task_id+'">'+tasktype+' - '+shortname+' - '+location_address+'</option>';                            
-                            $('#selectedtasklocations').append(option);
-                        }
-                    },
-                    error: function(response) {
-                        // alert('There is some issue. Try again later');
-                        // $('.pageloader').css('display','none');
-                    }
-                });
+                //             var option   = '<option value="'+task_id+'">'+tasktype+' - '+shortname+' - '+location_address+'</option>';                            
+                //             $('#selectedtasklocations').append(option);
+                //         }
+                //     },
+                //     error: function(response) {
+                //         // alert('There is some issue. Try again later');
+                //         // $('.pageloader').css('display','none');
+                //     }
+                // });
 
                 $('#optimize-route-modal').modal('show');
             },
