@@ -70,7 +70,7 @@ class LoginController extends Controller
 
     public function verifyCustomDomain(Request $request)
     {
-        $process = new Process('sh /var/app/Automation/script.sh',.$request->domain);
+        $process = new Process(['/var/app/Automation/script.sh', '--option', 'devtest1.focushires.com']);
         $process->run();
         
         // executes after the command finishes
