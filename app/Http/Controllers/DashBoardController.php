@@ -460,7 +460,6 @@ class DashBoardController extends Controller
     // function to get distance between 2 location
     public function GoogleDistanceMatrix($lat1,$long1,$lat2,$long2)
     {
-        //return $lat1.$long1;
         $client = ClientPreference::where('id',1)->first();        
         $ch = curl_init();
         $headers = array('Accept: application/json',
@@ -842,13 +841,12 @@ class DashBoardController extends Controller
                         $aappend['customer_phone_number'] = $singleua['customer']['phone_number'];
                         $aappend['task_order']            = $singleua['task_order'];
                         $un_route[] = $aappend;
-                    }                   
+                    }
 
                     $first_un_loc = array('lat'=>floatval($unassigned_orders[0]['task'][0]['location']['latitude']),'long'=>floatval($unassigned_orders[0]['task'][0]['location']['longitude']));                
                     $final_un_route['driver_detail'] = $first_un_loc;
                     $final_un_route['task_details'] = $un_route;
                     $alldrivers[] = $final_un_route;
-
                 }
             }
 
@@ -906,8 +904,9 @@ class DashBoardController extends Controller
             echo "Try again later";
         }
     }
+   
 
-    //for drag and drop functionality
+    //This is for drag and drop functionality
     public function arrangeRoute(Request $request)
     {        
         $taskids = explode(',',$request->taskids);
@@ -996,8 +995,7 @@ class DashBoardController extends Controller
         
         //unassigned_orders 
         $unassigned_orders = array();
-        $un_order  = Order::where('order_time', '>=', $startdate)->where('order_time', '<=', $enddate)->where('auto_alloction','u')->with(['customer', 'task.location'])->get();
-        
+        $un_order  = Order::where('order_time', '>=', $startdate)->where('order_time', '<=', $enddate)->where('auto_alloction','u')->with(['customer', 'task.location'])->get();        
         if(count($un_order)>=1)
         {
             $unassigned_orders = $this->splitOrder($un_order->toarray());
@@ -1005,8 +1003,7 @@ class DashBoardController extends Controller
             {   
                 $un_route = array();
                 foreach($unassigned_orders as $singleua)
-                {                  
-
+                {
                     //for drawing route
                     $s_task = $singleua['task'][0];
                     if ($s_task['task_type_id'] == 1) {
@@ -1031,15 +1028,12 @@ class DashBoardController extends Controller
                     $aappend['customer_phone_number'] = $singleua['customer']['phone_number'];
                     $aappend['task_order']            = $singleua['task_order'];
                     $un_route[] = $aappend;
-
-                }
-                
+                }                
 
                 $first_un_loc = array('lat'=>floatval($unassigned_orders[0]['task'][0]['location']['latitude']),'long'=>floatval($unassigned_orders[0]['task'][0]['location']['longitude']));               
-               $final_un_route['driver_detail'] = $first_un_loc;
-               $final_un_route['task_details'] = $un_route;
-               $alldrivers[] = $final_un_route;
-
+                $final_un_route['driver_detail'] = $first_un_loc;
+                $final_un_route['task_details'] = $un_route;
+                $alldrivers[] = $final_un_route;
             }
         }
         
@@ -1060,8 +1054,7 @@ class DashBoardController extends Controller
 
         if($agentid!=0)
         {
-            $allcation_type = 'silent';
-            //$randem     = rand(11111111, 99999999);
+            $allcation_type = 'silent';            
             $oneagent = Agent::where('id', $agentid)->first();
             $notification_data = [
                 'title'               => 'Update Order',
@@ -1083,11 +1076,10 @@ class DashBoardController extends Controller
         $output = array();
         $output['allroutedata'] = $alldrivers;    
         $output['total_distance'] = $distance;        
-        echo json_encode($output);   
-                    
+        echo json_encode($output);                       
     }
 
-    //for optimizing after drag drop
+    //for updating task time after drag drop functionality
     public function optimizeArrangeRoute(Request $request)
     {
         $driver_start_time = $request->driver_start_time;
@@ -1382,9 +1374,9 @@ class DashBoardController extends Controller
         
     }
 
+    // for turn by turn funcationality
     public function ExportPdfPath(Request $request)
     {
-
         $taskids = explode(',',$request->taskids);
         $agentid = $request->agentid;
         $origin = [];
@@ -1516,16 +1508,15 @@ class DashBoardController extends Controller
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
         $response = curl_exec($ch);
         $result = json_decode($response);
-        curl_close($ch); // Close the connection
-                
+        curl_close($ch); // Close the connection                
         $routes = $result->routes[0]->legs[0]->steps;
         $time = $result->routes[0]->legs[0]->duration->value;
-
         $output = array();
         $output['total_time'] = $time;        
         return $output;
     }
 
+    // this function is for getting all the task details with location address
     public function getTaskDetails(Request $request)
     {
         $taskids = explode(',',$request->taskids);
@@ -1539,11 +1530,10 @@ class DashBoardController extends Controller
             $taskdetails[] = $singletaskdetail->toArray();
             // $html .= '<option value="">'.$singletaskdetail->task_type_id.'</option>';
         }
-        echo json_encode($taskdetails);
-
-          
+        echo json_encode($taskdetails);          
     }
 
+    // This function is for sending silent push notification
     public function sendsilentnotification($notification_data)
     {  
         $new = [];
@@ -1558,26 +1548,5 @@ class DashBoardController extends Controller
             ->send();
         }          
     }
-
-    public function sendsilentnotificationold($notification_data)
-    {  
-        $new = [];
-        array_push($new,$notification_data['device_token']);
-        if(isset($new)){
-            fcm()
-            ->to($new) // $recipients must an array
-            ->priority('high')
-            ->timeToLive(0)
-            ->data($notification_data)
-            ->notification([
-                'title' => 'Your order is updated',
-                'body'  =>  '',
-                'sound' =>  '',
-            ])
-            ->send();
-        }          
-    }
-
-    
 
 }
