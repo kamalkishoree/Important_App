@@ -23,7 +23,7 @@ class DashBoardController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request)
-    {         
+    {      
         $auth = Client::where('code', Auth::user()->code)->with(['getAllocation', 'getPreference'])->first();  
         if (isset($request->date)) {
 
@@ -38,8 +38,8 @@ class DashBoardController extends Controller
         $enddate = date("Y-m-d 23:59:59", strtotime($date));
         
        
-        $startdate = Carbon::parse($startdate . $auth->timezone ?? 'UTC')->tz('UTC');
-        $enddate = Carbon::parse($enddate . $auth->timezone ?? 'UTC')->tz('UTC');
+        $startdate = Carbon::parse($startdate . @$auth->timezone ?? 'UTC')->tz('UTC');
+        $enddate = Carbon::parse($enddate . @$auth->timezone ?? 'UTC')->tz('UTC');
        
         //left side bar list for display all teams    
         

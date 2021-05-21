@@ -12,14 +12,14 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Validation\Validator;
-
+use DB;
 class LoginController extends Controller
 {
     use AuthenticatesUsers;
 
     public function ClientLogin(Request $request)
     {
-
+        
         $this->validate($request, [
             'email'           => 'required|max:255|email',
             'password'        => 'required',
