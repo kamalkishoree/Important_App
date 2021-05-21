@@ -60,8 +60,8 @@ class CustomDomain
       if($domain != env('Main_Domain')){
             if($client && $dbname != 'db_'.$client->database_name){
             $database_name = 'db_'.$client->database_name;
-            $database_host = !empty($client->database_host) ? $client->database_host : '127.0.0.1';
-            $database_port = !empty($client->database_port) ? $client->database_port : '3306';
+            $database_host = !empty($client->database_host) ? $client->database_host : env('DB_HOST');
+            $database_port = !empty($client->database_port) ? $client->database_port : env('DB_PORT');
             $default = [
                 'driver' => env('DB_CONNECTION','mysql'),
                 'host' => $database_host,
