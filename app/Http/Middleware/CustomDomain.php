@@ -57,42 +57,43 @@ class CustomDomain
       $redisData = $client;
      // echo '<pre>';print_r($redisData);
      $dbname = DB::connection()->getDatabaseName(); 
-      if($domain != env('Main_Domain')){
-            if($client && $dbname != 'db_'.$client->database_name){
-            $database_name = 'db_'.$client->database_name;
-            $database_host = !empty($client->database_host) ? $client->database_host : env('DB_HOST');
-            $database_port = !empty($client->database_port) ? $client->database_port : env('DB_PORT');
-            $database_username = !empty($client->database_username) ? $client->database_username : env('DB_USERNAME');
-            $database_password = !empty($client->database_password) ? $client->database_password : env('DB_PASSWORD');
-            $default = [
-                'driver' => env('DB_CONNECTION','mysql'),
-                'host' => $database_host,
-                'port' => $database_port,
-                'database' => $database_name,
-                'username' => $database_username,
-                'password' => $database_password,
-                'charset' => 'utf8mb4',
-                'collation' => 'utf8mb4_unicode_ci',
-                'prefix' => '',
-                'prefix_indexes' => true,
-                'strict' => false,
-                'engine' => null
-            ];
-            
-            Config::set("database.connections.$database_name", $default);
-            Config::set("client_id",1);
-            Config::set("client_connected",true);
-            Config::set("client_data",$client);
-            DB::setDefaultConnection($database_name);
-            DB::purge($database_name);
-            $dbname = DB::connection()->getDatabaseName(); 
-            
-          }
-        
-
-      }else{
-        return view('pages/404');
-      }
+     if($domain){
+            if($domain != env('Main_Domain')){
+                  if($client && $dbname != 'db_'.$client->database_name){
+                  $database_name = 'db_'.$client->database_name;
+                  $database_host = !empty($client->database_host) ? $client->database_host : env('DB_HOST');
+                  $database_port = !empty($client->database_port) ? $client->database_port : env('DB_PORT');
+                  $database_username = !empty($client->database_username) ? $client->database_username : env('DB_USERNAME');
+                  $database_password = !empty($client->database_password) ? $client->database_password : env('DB_PASSWORD');
+                  $default = [
+                      'driver' => env('DB_CONNECTION','mysql'),
+                      'host' => $database_host,
+                      'port' => $database_port,
+                      'database' => $database_name,
+                      'username' => $database_username,
+                      'password' => $database_password,
+                      'charset' => 'utf8mb4',
+                      'collation' => 'utf8mb4_unicode_ci',
+                      'prefix' => '',
+                      'prefix_indexes' => true,
+                      'strict' => false,
+                      'engine' => null
+                  ];
+                  
+                  Config::set("database.connections.$database_name", $default);
+                  Config::set("client_id",1);
+                  Config::set("client_connected",true);
+                  Config::set("client_data",$client);
+                  DB::setDefaultConnection($database_name);
+                  DB::purge($database_name);
+                  $dbname = DB::connection()->getDatabaseName(); 
+                }
+              }
+        }
+    else{
+          return view('pages/404');
+        }
+     
       
       return $next($request);
     }
