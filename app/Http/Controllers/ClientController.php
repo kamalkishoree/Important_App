@@ -234,7 +234,7 @@ class ClientController extends Controller
     public function storePreference(Request $request,$domain = '', $id)
     {
        
-        $client = Client::where('code', $id)->firstOrFail();
+        $client = Client::where('code', $id)->firstOrFail(); 
         //update the client custom_domain if value is set //
         if ($request->domain_name == 'custom_domain') {
             // check the availability of the domain //
@@ -244,6 +244,48 @@ class ClientController extends Controller
             }
             Client::where('id', $id)->update(['custom_domain' => $request->custom_domain_name]);
         }
+
+        
+
+        # if submit custom domain by client 
+        if ($request->custom_domain && $request->custom_domain != $client->custom_domain) {
+            $connectionToGod = $this->createConnectionToGodDb($id);
+            $exists = Client::where('code','<>', $id)->where('custom_domain', $request->custom_domain)->count();
+            if ($exists) {
+                // return response(array('status' => "error", 'statuscode' => 400, 'message' =>
+                //     $validator->getMessageBag()->first()), 400);
+                return redirect()->back()->withErrors(new \Illuminate\Support\MessageBag(['custom_domain' => 'Domain name "' . $request->custom_domain . '" is not available. Please select a different domain']));
+            }
+            else{
+                Client::where('code', $id)->update(['custom_domain' => $request->custom_domain]);
+                $custom_db_name = Client::where('code', $id)->first();
+                $connectionToLocal = $this->createConnectionToClientDb($custom_db_name->database_name);
+                Client::where('code', $id)->update(['custom_domain' => $request->custom_domain]);
+            }
+            
+            
+        }
+
+         # if submit sub_domain domain by client 
+         if ($request->sub_domain && $request->sub_domain != $client->sub_domain) {
+            $connectionToGod = $this->createConnectionToGodDb($id);
+            $exists = Client::where('code','<>', $id)->where('sub_domain', $request->sub_domain)->count();
+            if ($exists) {
+                // return response(array('status' => "error", 'statuscode' => 400, 'message' =>
+                //     $validator->getMessageBag()->first()), 400);
+                return redirect()->back()->withErrors(new \Illuminate\Support\MessageBag(['sub_domain' => 'Sub Domain name "' . $request->sub_domain . '" is not available. Please select a different domain']));
+            }
+            else{
+                Client::where('code', $id)->update(['sub_domain' => $request->sub_domain]);
+                $custom_db_name = Client::where('code', $id)->first();
+                $connectionToLocal = $this->createConnectionToClientDb($custom_db_name->database_name);
+                Client::where('code', $id)->update(['sub_domain' => $request->sub_domain]);
+            }
+            
+            
+        }
+
+
         
         $updatePreference = ClientPreference::updateOrCreate([
             'client_id' => $id
@@ -258,6 +300,55 @@ class ClientController extends Controller
         } else {
             return redirect()->back()->with('success', 'Preference updated successfully!');
         }
+    }
+
+    // ************* create connection with god panel database ******************************* /////////////////
+    public function createConnectionToGodDb($id){
+        $already_db = DB::connection()->getDatabaseName();
+        $god_db = env('DB_DATABASE');
+         $default = [
+                'driver' => env('DB_CONNECTION', 'mysql'),
+                'host' => env('DB_HOST'),
+                'port' => env('DB_PORT'),
+                'database' => $god_db,
+                'username' => env('DB_USERNAME'),
+                'password' => env('DB_PASSWORD'),
+                'charset' => 'utf8mb4',
+                'collation' => 'utf8mb4_unicode_ci',
+                'prefix' => '',
+                'prefix_indexes' => true,
+                'strict' => false,
+                'engine' => null
+            ];
+            Config::set("database.connections.$god_db", $default);
+            DB::setDefaultConnection($god_db);
+            DB::purge($god_db);
+
+            
+    }
+
+    // ************* create connection with existing db ******************************* /////////////////
+    public function createConnectionToClientDb($db_name){
+        $database_name = 'db_'.$db_name;
+        $default = [
+                'driver' => env('DB_CONNECTION', 'mysql'),
+                'host' => env('DB_HOST'),
+                'port' => env('DB_PORT'),
+                'database' => $database_name,
+                'username' => env('DB_USERNAME'),
+                'password' => env('DB_PASSWORD'),
+                'charset' => 'utf8mb4',
+                'collation' => 'utf8mb4_unicode_ci',
+                'prefix' => '',
+                'prefix_indexes' => true,
+                'strict' => false,
+                'engine' => null
+            ];
+            Config::set("database.connections.$database_name", $default);
+            DB::setDefaultConnection($database_name);
+            DB::purge($database_name);
+
+            
     }
 
     /**

@@ -34,11 +34,11 @@ use Log;
 use Config;
 use Closure;  
 use Mail;  
-use App;
+use App,DB;
 use Illuminate\Support\Str;
 
 use Twilio\Rest\Client as TwilioClient;
-
+use App\Http\Requests\CreateTaskRequest;
 class TaskController extends BaseController
 {
 
@@ -366,8 +366,11 @@ class TaskController extends BaseController
         }
     }
 
-    public function CreateTask(Request $request)
+    public function CreateTask(CreateTaskRequest $request)
     {  
+        try {
+        DB::beginTransaction();
+
         $loc_id = $cus_id = $send_loc_id = $newlat = $newlong = 0;
         $images = [];
         $last = '';
@@ -621,7 +624,7 @@ class TaskController extends BaseController
                      //Task::where('order_id',$orders->id)->update(['assigned_time'=>$time,'created_at' =>$time]);
                      
                      scheduleNotification::dispatch($schduledata)->delay(now()->addMinutes($finaldelay));
- 
+                     DB::commit();
                      return response()->json([
                         'message' => 'Task Added Successfully',
                         'task_id' => $orders->id,
@@ -657,14 +660,19 @@ class TaskController extends BaseController
             }
         }
 
-
+        DB::commit();
         return response()->json([
             'message' => 'Task Added Successfully',
             'task_id' => $orders->id,
             'status'  => $orders->status,
         ], 200);
 
-       
+        } catch (Exception $e) {
+            DB::rollback();
+            return response()->json([
+                'message' => $e->getMessage()
+            ], 400);
+        }
     }
 
 

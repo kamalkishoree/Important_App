@@ -1483,3 +1483,35 @@ body.dark .input-group-text {
 .dark .assigned-block h5 {
     color: #94a0ad;
 }
+
+
+.domain_name {
+    background: #fff;
+    background-color: #FFFFFF;
+    color: #1F2431;
+    font-size: 15px;
+    font-weight: bold;
+    letter-spacing: 0;
+    height: 37.39px;
+    line-height: 37px;
+    padding: 0 10px;
+    width: max-content;
+    border: 0;
+}
+
+.domain-outer #sub_domain {
+    border: 0;
+    border-left: 1px solid #ced4da;
+    border-right: 1px solid #ced4da;
+    border-radius: 0;
+}
+
+.domain-outer #custom_domain{
+    border: 0;
+    border-radius: 0;
+    border-left: 1px solid #ced4da;
+}
+
+.domain-outer {
+    border: 1px solid #ced4da;
+}

@@ -6,6 +6,9 @@
 // dd($preference);
 @endphp
 @section('content')
+<style>
+
+</style>
     <!-- Start Content-->
     <div class="container-fluid">
 
@@ -290,11 +293,15 @@
                         <p class="sub-header">
                             View and Generate API keys.
                         </p>
-                        <div class="row mb-2">
+                        <div class="row">
 
                             <div class="col-12">
                                 <div class="form-group mb-3">
+                                    <div class="domain-outer border-0 d-flex align-items-center justify-content-between">
                                     <label for="personal_access_token_v1">V1 API ACCESS TOKEN</label>
+                                    <span class="text-right col-6 col-md-6"><a href="javascript: genrateKeyAndToken();">Generate Key</a></span>
+                                    
+                                </div>
                                     <input type="text" name="personal_access_token_v1" id="personal_access_token_v1"
                                         placeholder="kjadsasd66asdas" class="form-control"
                                         value="{{ old('personal_access_token_v1', $preference->personal_access_token_v1 ?? '') }}">
@@ -305,26 +312,84 @@
                                     @endif
                                 </div>
                             </div>
+                           
+                        </div>
+
+                        <div class="row">
                             <div class="col-12">
-                                <div class="form-group mb-3">
-                                    <label for="personal_access_token_v2" class="row">
-                                        <span class="col-md-6 col-6">V2 API KEYS</span>
-                                        <span class="text-right col-6 col-md-6"><a
-                                                href="javascript: genrateKeyAndToken();">Generate Key</a></span>
-                                    </label>
-                                    <input type="text" name="personal_access_token_v2" id="personal_access_token_v2"
-                                        placeholder="No API key found.." class="form-control"
-                                        value="{{ old('personal_access_token_v2', $preference->personal_access_token_v2 ?? '') }}">
-                                    @if ($errors->has('personal_access_token_v2'))
-                                        <span class="text-danger" role="alert">
-                                            <strong>{{ $errors->first('personal_access_token_v2') }}</strong>
-                                        </span>
-                                    @endif
+                                <div class="form-group mb-0 text-center">
+                                    <button class="btn btn-blue btn-block" type="submit"> Update </button>
                                 </div>
                             </div>
                         </div>
-
+                    </div>
+                </form>
+            </div>
+            <div class="col-md-4">
+                <form method="POST" action="{{ route('preference', Auth::user()->code) }}">
+                    @csrf
+                    <div class="card-box same-size">
+                        <h4 class="header-title">Custom Domain</h4>
+                        <p class="sub-header">
+                            View and update your Domain Settings.
+                        </p>
                         <div class="row mb-3">
+                            <div class="col-12">
+                                    <label for="custom_domain">Custom Domain</label> *Make sure you already point to our ip from your domain.
+                                    <div class="domain-outer d-flex align-items-center">
+                                    <div class="domain_name">https://</div>
+                                    <input type="text" name="custom_domain" id="custom_domain"
+                                        placeholder="dummy.com" class="form-control"
+                                        value="{{ old('custom_domain', Auth::user()->custom_domain ?? '') }}">
+                                    @if ($errors->has('custom_domain'))
+                                        <span class="text-danger" role="alert">
+                                            <strong>{{ $errors->first('custom_domain') }}</strong>
+                                        </span>
+                                    @endif
+                            </div>  
+                            </div>  
+                        </div>
+                       
+                      
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="form-group mb-0 text-center">
+                                    <button class="btn btn-blue btn-block" type="submit"> Update </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+
+            <div class="col-md-4">
+                <form method="POST" action="{{ route('preference', Auth::user()->code) }}">
+                    @csrf
+                    <div class="card-box same-size">
+                        <h4 class="header-title">Sub Domain</h4>
+                        <p class="sub-header">
+                            View and update your Sub Domain Settings.
+                        </p>
+                        <div class="col-md-12">
+
+                                <div class="form-group mb-3">
+                                    <label for="sub_domain">Sub Domain</label>
+                                    <div class="domain-outer d-flex align-items-center">
+                                        <div class="domain_name">https://</div>
+                                        <input type="text" name="sub_domain" id="sub_domain"
+                                            placeholder="Sub Domain" class="form-control"
+                                            value="{{ old('sub_domain', Auth::user()->sub_domain ?? '') }}"><div class="domain_name">royodispatch.com</div>
+                                        @if ($errors->has('sub_domain'))
+                                            <span class="text-danger" role="alert">
+                                                <strong>{{ $errors->first('sub_domain') }}</strong>
+                                            </span>
+                                        @endif
+                                    </div>
+                                </div>
+                               
+                        </div>
+                        <div class="row">
                             <div class="col-12">
                                 <div class="form-group mb-0 text-center">
                                     <button class="btn btn-blue btn-block" type="submit"> Update </button>
