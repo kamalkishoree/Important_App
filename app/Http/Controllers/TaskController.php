@@ -63,7 +63,7 @@ class TaskController extends Controller
 
     // function for saving new order
     public function newtasks(Request $request)
-    {   
+    { 
         $loc_id = $cus_id = $send_loc_id = $newlat = $newlong = 0;
         $iinputs = $request->toArray();
         $old_address_ids = array();
@@ -299,20 +299,21 @@ class TaskController extends Controller
         // task schdule code is hare
 
         $allocation = AllocationRule::where('id', 1)->first();
-        if($request->task_type != 'now'){                
+        if($request->task_type != 'now'){        
             $auth = Client::where('code', Auth::user()->code)->with(['getAllocation', 'getPreference'])->first();        
-            $beforetime = (int)$auth->getAllocation->start_before_task_time;          
-            $to = new \DateTime("now", new \DateTimeZone(isset(Auth::user()->timezone)? Auth::user()->timezone : 'Asia/Kolkata') );
+            $beforetime = (int)$auth->getAllocation->start_before_task_time;    
+         //   $to = new \DateTime("now", new \DateTimeZone(isset(Auth::user()->timezone)? Auth::user()->timezone : 'Asia/Kolkata') );
+            $to = new \DateTime("now", new \DateTimeZone('UTC') );
             $sendTime = Carbon::now();        
             $to = Carbon::parse($to)->format('Y-m-d H:i:s');
             $from = Carbon::parse($notification_time)->format('Y-m-d H:i:s');        
             $datecheck = 0;
             $to_time = strtotime($to);
-            $from_time = strtotime($from);        
-            if($to_time >= $from_time) {
+            $from_time = strtotime($from);       
+            if($to_time >= $from_time) { 
                 return redirect()->route('tasks.index')->with('success', 'Task Added Successfully!');
             }
-
+            
             $diff_in_minutes = round(abs($to_time - $from_time) / 60);
 
             $schduledata = [];

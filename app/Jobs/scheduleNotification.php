@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Jobs;
 
 use App\Model\Agent;
@@ -18,7 +17,7 @@ use Config;
 use Illuminate\Support\Facades\DB;
 use App\Jobs\RosterCreate;
 use Illuminate\Support\Arr;
-
+ 
 class scheduleNotification implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
