@@ -51,11 +51,6 @@ exit;
             width: 67px;
         }
 
-        .boxes {
-            margin-bottom: 10px;
-            height: 100px;
-        }
-
         .new {
             vertical-align: initial !important;
             display: revert !important;
@@ -90,18 +85,23 @@ exit;
 @section('content')
     <div class="container-fluid">
 
-        <div class="row">
-            <div class="col-6">
+        <div class="row align-items-center">
+            <div class="col-5">
                 <div class="page-title-box">
                     <h4 class="page-title"> <a href="{{ route('geo.fence.list') }}">
                             <h4 class="page-title">Back</h4>
                         </a></h4>
                 </div>
             </div>
-            <div class="col-6">
-                <div class="page-title-box">
+            <div class="col-7">
+                <div class="input-group p-4">
 
-                </div>
+                    <input type="text" id="pac-input" class="form-control" placeholder="Search by name " aria-label="Recipient's username" aria-describedby="button-addon2">
+                    <div class="input-group-append">
+                      <button class="btn btn-info" type="button" id="refresh">Edit Mode</button>
+                    </div>
+                    
+                  </div>
             </div>
         </div>
 
@@ -117,120 +117,121 @@ exit;
             </div>
         </div>
 
-        <form id="geo_form" action="{{ route('geo-fence.store') }}" method="POST">
+        <form id="geo_form" class="add_new_geo" action="{{ route('geo-fence.store') }}" method="POST">
             @csrf
             <input type="hidden" name="latlongs" value="" id="latlongs" />
             <input type="hidden" name="zoom_level" value="13" id="zoom_level" />
             <div class="row">
                 <div class="col-lg-5">
-                    <div class="card-box mb-0">
+                    <div class="card-box card_outer mb-0">
                         <h4 class="header-title mb-3">Add Geo Fence</h4>
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="form-group mb-0">
-                                    <label for="name">Name</label>
-                                    <input type="text" name="name" id="name" placeholder="ABC Deliveries"
-                                        class="form-control">
-                                    @if ($errors->has('name'))
-                                        <span class="text-danger" role="alert">
-                                            <strong>{{ $errors->first('name') }}</strong>
-                                        </span>
-                                    @endif
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="form-group mb-0">
-                                    <label for="Description">Description (Optional)</label>
-                                    <textarea class="form-control" id="Description" name="description"></textarea>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <label>Team</label> <br />
-                                    <select id="selectize-select" name="team_id">
-                                        <option value="0">All</option>
-                                        @foreach ($teams as $team)
-                                            <option value="{{ $team->id }}">{{ $team->name }}</option>
-                                        @endforeach
-                                    </select>
-
-                                </div>
-                                <div class="form-group">
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="custom-control custom-checkbox select_all" id="old_show">
-                                                <input type="checkbox" class="custom-control-input all" id="checkmeout0">
-                                                <label class="custom-control-label select_all" for="checkmeout0">Select All
-                                                    {{ Session::get('agent_name') ? Session::get('agent_name') : 'Agent' }}</label>
-                                            </div>
-                                            <div class="custom-control custom-checkbox show_alls" id="new_show">
-                                                <input type="checkbox" class="custom-control-input" id="show_all">
-                                                <label class="custom-control-label" for="show_all">Show All
-                                                    {{ Session::get('agent_name') ? Session::get('agent_name') : 'Agent' }}</label>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <input type="text" name="search" placeholder="Search"
-                                                class="form-control newsearch" id="search">
-                                        </div>
+                        <div class="top_items">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group mb-0">
+                                        <label for="name">Name</label>
+                                        <input type="text" name="name" id="name" placeholder="ABC Deliveries"
+                                            class="form-control">
+                                        @if ($errors->has('name'))
+                                            <span class="text-danger" role="alert">
+                                                <strong>{{ $errors->first('name') }}</strong>
+                                            </span>
+                                        @endif
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group mb-0">
+                                        <label for="Description">Description (Optional)</label>
+                                        <textarea class="form-control" id="Description" name="description"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label>Team</label> <br />
+                                        <select id="selectize-select" name="team_id">
+                                            <option value="0">All</option>
+                                            @foreach ($teams as $team)
+                                                <option value="{{ $team->id }}">{{ $team->name }}</option>
+                                            @endforeach
+                                        </select>
 
-                        <div class="row mb-2 cornar">
-
-                            @foreach ($agents as $agent)
-                                <div
-                                    class="col-md-12 boxes card-box agent_boxes team_{{ $agent->team_id ?? 0 }} agent_{{ $agent->id }}">
-                                    <div class="custom-control custom-checkbox">
+                                    </div>
+                                    <div class="form-group">
                                         <div class="row">
-                                            <div class="col-md-2 col-3">
-                                                <input type="checkbox"
-                                                    class="custom-control-input agent_checkbox team_checkbox_{{ $agent->team_id ?? 0 }}"
-                                                    id="{{ $agent->id }}" name="agents[]" value="{{ $agent->id }}">
-                                                <label class="custom-control-label new" for="{{ $agent->id }}"></label>
-                                                <img class="imageagent"
-                                                    src="{{isset($agent->profile_picture) ? $imgproxyurl.Storage::disk('s3')->url($agent->profile_picture) : '' }}"
-                                                    alt="" style="border-radius:50%; ">
+                                            <div class="col-md-6">
+                                                <div class="custom-control custom-checkbox select_all" id="old_show">
+                                                    <input type="checkbox" class="custom-control-input all" id="checkmeout0">
+                                                    <label class="custom-control-label select_all" for="checkmeout0">Select All
+                                                        {{ Session::get('agent_name') ? Session::get('agent_name') : 'Agent' }}</label>
+                                                </div>
+                                                <div class="custom-control custom-checkbox show_alls" id="new_show">
+                                                    <input type="checkbox" class="custom-control-input" id="show_all">
+                                                    <label class="custom-control-label" for="show_all">Show All
+                                                        {{ Session::get('agent_name') ? Session::get('agent_name') : 'Agent' }}</label>
+                                                </div>
                                             </div>
-                                            <div class="col-md-10 col-9">
-                                                <span class="spans">{{ $agent->name }}</span><br>
-                                                <span>{{ isset($agent->team->name) ? $agent->team->name : 'No Team Alloted' }}</span>
+                                            <div class="col-md-6">
+                                                <input type="text" name="search" placeholder="Search"
+                                                    class="form-control newsearch" id="search">
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            @endforeach
+                            </div>
                         </div>
 
-                        <div class="row">
-                            <div class="col-md-6">
-                                <button type="button"
-                                    class="btn btn-block btn-outline-blue waves-effect waves-light">Cancel</button>
+
+                        <div class="geo_middle" id="scroll-bar">
+                            <div class="row mb-2 cornar">
+
+                                @foreach ($agents as $agent)
+                                    <div
+                                        class="col-xl-12 agent_boxes team_{{ $agent->team_id ?? 0 }} agent_{{ $agent->id }}">
+                                        <div class="boxes card-box mb-2">
+                                            <div class="custom-control custom-checkbox">
+                                                <div class="row">
+                                                    <div class="col-2">
+                                                        <input type="checkbox"
+                                                            class="custom-control-input agent_checkbox team_checkbox_{{ $agent->team_id ?? 0 }}"
+                                                            id="{{ $agent->id }}" name="agents[]" value="{{ $agent->id }}">
+                                                        <label class="custom-control-label new" for="{{ $agent->id }}"></label>
+                                                        <img class="imageagent"
+                                                            src="{{isset($agent->profile_picture) ? $imgproxyurl.Storage::disk('s3')->url($agent->profile_picture) : '' }}"
+                                                            alt="" style="border-radius:50%; ">
+                                                    </div>
+                                                    <div class="col-10">
+                                                        <span class="spans">{{ $agent->name }}</span><br>
+                                                        <span>{{ isset($agent->team->name) ? $agent->team->name : 'No Team Alloted' }}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endforeach
                             </div>
-                            <div class="col-md-6">
-                                <button type="submit" class="btn btn-block btn-blue waves-effect waves-light">Save</button>
+                        </div>
+
+                        <div class="geo_bottom_btns">
+                            <div class="row">
+                                <div class="col-md-6 mb-2 mb-md-0">
+                                    <button type="button"
+                                        class="btn btn-block btn-outline-blue waves-effect waves-light mb-0">Cancel</button>
+                                </div>
+                                <div class="col-md-6">
+                                    <button type="submit" class="btn btn-block btn-blue waves-effect waves-light">Save</button>
+                                </div>
                             </div>
                         </div>
 
                     </div>
                 </div>
                 <div class="col-lg-7">
-                    <div class="input-group mb-3">
-
-                      <input type="text" id="pac-input" class="form-control" placeholder="Search by name " aria-label="Recipient's username" aria-describedby="button-addon2">
-                      <div class="input-group-append">
-                        <button class="btn btn-info" type="button" id="refresh">Edit Mode</button>
-                      </div>
-                      
-                    </div>
-                    <div class="map-outer geo_main">
+                    
+                    <div class="card-box mb-0 map-outer">
 
                         <div id="map-canvas"></div>
                     </div>
