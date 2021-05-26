@@ -164,8 +164,13 @@
     #map-canvas {
         height: calc(100vh - 284px) !important;
     }
+    .add_new_geo #map-canvas {
+        height: calc(100vh - 310px) !important;
+    }
+    .add_new_geo .card_outer {
+        height: calc(100vh - 260px) !important;
+    }
 }
-
 
 @media (max-width:767px) {
     .btn.btn-blue.btn-block {
@@ -409,13 +414,16 @@
     }
 }
 
-
-
-
 @media (max-width: 991.98px) {
     .left-side-menu {
         display: none;
         z-index: 1000 !important;
+    }
+    .card_outer {
+        height: auto !important;
+    }
+    .geo_middle {
+        height: 300px !important;
     }
 }
 
@@ -1334,14 +1342,12 @@ body .tagsinput .tag {
     min-height: calc(100vh - 129px);
 }
 
-@media(min-width:1200px){
-    .geo_middle {
-        height: calc(100vh - 690px);
-        overflow-y: auto;
-        overflow-x: hidden;
-        margin: 0 0 20px;
-    }
-    
+
+.geo_middle {
+    height: calc(100vh - 400px);
+    overflow-y: auto;
+    overflow-x: hidden;
+    margin: 0 0 20px;
 }
 
 
@@ -1351,6 +1357,16 @@ body .tagsinput .tag {
     }
 }
 
+
+@media(min-width:1200px){
+    .geo_middle {
+        height: calc(100vh - 690px) !important;
+        overflow-y: auto;
+        overflow-x: hidden;
+        margin: 0 0 20px;
+    }
+    
+}
 
 /*
  *  Scroll Style
@@ -1514,4 +1530,11 @@ body.dark .input-group-text {
 
 .domain-outer {
     border: 1px solid #ced4da;
+}
+.geo_bottom_btns .btn.btn-blue.btn-block, .geo_bottom_btns .btn.btn-blue.waves-effect {
+    min-width: auto;
+    max-width: none;
+}
+.input-group .btn {
+    border-radius: 0;
 }

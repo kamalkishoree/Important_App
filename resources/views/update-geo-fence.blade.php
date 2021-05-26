@@ -103,7 +103,7 @@
             <div class="row">
                 <div class="col-lg-5">
                     <div class="card-box card_outer mb-0">
-                        <h4 class="header-title mb-3">Add Geo Fence</h4>
+                        <h4 class="header-title mb-3">Edit Geofence</h4>
                         <div class="top_items">
                             <div class="row mb-2">
                                 <div class="col-md-12">
@@ -202,9 +202,9 @@
 
                         <div class="geo_bottom_btns">
                             <div class="row">
-                                <div class="col-md-6">
+                                <div class="col-md-6 mb-2 mb-md-0">
                                     <button type="button"
-                                        class="btn btn-block btn-outline-primary waves-effect waves-light">Cancel</button>
+                                        class="btn btn-block btn-outline-primary waves-effect waves-light mb-0">Cancel</button>
                                 </div>
                                 <div class="col-md-6">
                                     <button type="submit"
