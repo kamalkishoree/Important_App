@@ -302,7 +302,8 @@ class TaskController extends Controller
         if($request->task_type != 'now'){                
             $auth = Client::where('code', Auth::user()->code)->with(['getAllocation', 'getPreference'])->first();        
             $beforetime = (int)$auth->getAllocation->start_before_task_time;          
-            $to = new \DateTime("now", new \DateTimeZone(isset(Auth::user()->timezone)? Auth::user()->timezone : 'Asia/Kolkata') );
+        //    $to = new \DateTime("now", new \DateTimeZone(isset(Auth::user()->timezone)? Auth::user()->timezone : 'Asia/Kolkata') );
+            $to = new \DateTime("now", new \DateTimeZone('UTC') );
             $sendTime = Carbon::now();        
             $to = Carbon::parse($to)->format('Y-m-d H:i:s');
             $from = Carbon::parse($notification_time)->format('Y-m-d H:i:s');        
