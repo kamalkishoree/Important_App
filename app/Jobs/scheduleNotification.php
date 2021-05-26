@@ -84,8 +84,7 @@ class scheduleNotification implements ShouldQueue
         
 
         $databaseName = 'db_'.$this->data['database']['database_name'];
-
-        switch ($this->data['allocation']['auto_assign_logic']) {
+          switch ($this->data['allocation']['auto_assign_logic']) {
             case 'one_by_one':
                 //this is called when allocation type is one by one
                 $this->OneByOne($this->data,$databaseName);
@@ -367,7 +366,8 @@ class scheduleNotification implements ShouldQueue
         ];
 
         $geo = $dataget['geo'];
-        if (!isset($geo)) {
+        
+        if (!isset($geo)) {print_r('inner_geo');
             $oneagent = DB::connection($databaseName)->table('agents')->where('id', $dataget['agent_id'])->first();
             $data = [
                 'order_id'            => $dataget['orders_id'],
@@ -386,7 +386,7 @@ class scheduleNotification implements ShouldQueue
             //$this->dispatch(new RosterCreate());
             
         } else {
-
+            print_r('outer_geo');
             $getgeo = DB::connection($databaseName)->table('driver_geos')
             ->select('driver_geos.driver_id as driId', 'agents.*', 'agent_logs.*', 'ord.num_order')
             ->join('agents','driver_geos.driver_id','agents.id')

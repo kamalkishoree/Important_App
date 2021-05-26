@@ -37,7 +37,7 @@ class SendPushNotifications implements ShouldQueue
     public function handle()
     {
         try {
-           
+           print_r('ok_notification');
             $schemaName = 'royodelivery_db';
             $default = [
                 'driver' => env('DB_CONNECTION', 'mysql'),
