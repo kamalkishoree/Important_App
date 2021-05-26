@@ -103,7 +103,7 @@
             <div class="row">
                 <div class="col-lg-5">
                     <div class="card-box card_outer mb-0">
-                        <h4 class="header-title mb-3">Add Geo Fence</h4>
+                        <h4 class="header-title mb-3">Edit Geofence</h4>
                         <div class="top_items">
                             <div class="row mb-2">
                                 <div class="col-md-12">
