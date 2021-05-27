@@ -109,6 +109,7 @@ class ProfileController extends Controller
             $getFileName = $path;
         }
 
+        //echo $request->timezone; die;
         $data = [
             'name' => $request->name,
             'email' => $request->email,

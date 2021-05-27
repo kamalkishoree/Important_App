@@ -130,7 +130,13 @@
                         <i data-feather="bell"></i>
                         <span> Notifications </span>
                     </a>
-                </li> 
+                </li>                
+                <li>
+                    <a href="{{route('subadmins.index')}}">
+                        <i data-feather="users"></i>
+                        <span> Managers </span>
+                    </a>
+                </li>
 
               {{-- <li>
                     <a href="#">

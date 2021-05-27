@@ -21,6 +21,10 @@ return [
         'driver' => 'eloquent',
         'model' => App\Model\Client::class,
     ],
+    'subadmins' => [
+        'driver' => 'eloquent',
+        'model' => App\Model\SubAdmin::class,
+    ],
 
     /*
     |--------------------------------------------------------------------------
@@ -56,6 +60,11 @@ return [
             'provider' => 'clients',
         ],
 
+        'subadmin' => [
+            'driver' => 'session',
+            'provider' => 'subadmins',
+        ],
+
     ],
 
     /*
@@ -87,6 +96,10 @@ return [
         'agents' => [
             'driver' => 'eloquent',
             'model' => App\Model\Agent::class,
+        ],
+        'subadmins' => [
+            'driver' => 'eloquent',
+            'model' => App\Model\SubAdmin::class,
         ],
 
     ],

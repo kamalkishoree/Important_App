@@ -6,7 +6,11 @@
         @include('layouts.shared.head-css')
     </head>
 
-    <body class="authentication-bg authentication-bg-pattern">
+    <body class="authentication-bg authentication-bg-pattern">        
+        @php
+         $subdomain = explode('.',$_SERVER['HTTP_HOST'])[0];           
+        @endphp
+        
 
         <div class="account-pages mt-5 mb-5">
             <div class="container">

@@ -27,6 +27,7 @@ class DatabaseDynamic
             
             $client = Auth::user();
            if($client){
+             //dd($client);
               $database_name = 'db_'.$client->database_name;
               $default = [
                   'driver' => env('DB_CONNECTION','mysql'),
