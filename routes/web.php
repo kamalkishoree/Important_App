@@ -46,7 +46,7 @@ Route::group(['prefix' => '/godpanel'], function () {
  });
 
 Route::domain('{domain}')->middleware(['subdomain'])->group(function() {
-	Route::group(['middleware' => ['domain']], function () {		
+	Route::group(['middleware' => ['domain','database']], function () {		
 
 		Route::get('/loginForm', function(){
 			return view('auth/login');
@@ -60,9 +60,7 @@ Route::domain('{domain}')->middleware(['subdomain'])->group(function() {
 		});
 		
 		Route::group(['middleware' => ['auth:client'], 'prefix' => '/'], function () {
-
-		Route::group(['middleware' => 'database'], function()
-			{
+				
 				Route::get('analytics','AccountingController@index')->name('accounting');
 				Route::get('profileImg', 'ProfileController@displayImage');		
 				Route::get('','DashBoardController@index')->name('index');
@@ -113,7 +111,7 @@ Route::domain('{domain}')->middleware(['subdomain'])->group(function() {
 
 				/* Store Client Information */
 				Route::post('submit_client', 'UserProfile@SaveRecord')->name('store_client');
-				Route::post('/logout', 'LoginController@logout')->name('client.logout');
+				Route::any('/logout', 'LoginController@logout')->name('client.logout');
 				/* Client Profile update */
 				//Route::get('client/edit/{id}','ClientProfileController@edit')->name('client.profile.edit');
 				Route::put('client/profile/{id}','ClientProfileController@update')->name('client.profile.update');
@@ -135,11 +133,9 @@ Route::domain('{domain}')->middleware(['subdomain'])->group(function() {
 
 			   Route::resource('subadmins','SubAdminController');
 
-			   //for testing
-			   //Route::get('testing','DashBoardController@ExportPdfPath');
-			   //Route::get('testing','DashBoardController@GetRouteDirection');			
+			  		
 
-			});
+			
 		});
 		
 	});

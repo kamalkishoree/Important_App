@@ -23,7 +23,8 @@ class CustomDomain
      */
     public function handle($request, Closure $next)
     {
-   
+    
+     
       $domain = $request->getHost();
       // $domain    = str_replace(array('http://', '.dispatcher.test/login'), '', $domain);
       $domain    = str_replace(array('http://', config('domainsetting.domain_set')), '', $domain);
@@ -56,6 +57,7 @@ class CustomDomain
 
       $redisData = $client;
      // echo '<pre>';print_r($redisData);
+    
      $dbname = DB::connection()->getDatabaseName(); 
      if($domain){
             if($domain != env('Main_Domain')){
@@ -81,14 +83,15 @@ class CustomDomain
                   ];
                   
                   Config::set("database.connections.$database_name", $default);
-                  Config::set("client_id",1);
-                  Config::set("client_connected",true);
-                  Config::set("client_data",$client);
+                 // Config::set("client_id",$client);
+                //  Config::set("client_connected",true);
+                //  Config::set("client_data",$client);
                   DB::setDefaultConnection($database_name);
                   DB::purge($database_name);
-                  $dbname = DB::connection()->getDatabaseName(); 
+                  $dbname = DB::connection()->getDatabaseName();
                 }
               }
+            
         }
     else{
           return view('pages/404');

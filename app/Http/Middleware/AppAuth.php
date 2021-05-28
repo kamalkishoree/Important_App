@@ -23,9 +23,8 @@ class AppAuth
     public function handle($request, Closure $next)
     {
         $header = $request->header();
-
         $token = $header['authorization'][0];
-
+        dd($token);
         if (!Token::check($token, 'codebrewInd'))
         {
             return response()->json(['error' => 'Invalid Token', 'message' => 'Session Expired'], 401);

@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use App\Model\Client;
-use App\Model\SubAdmin;
 // use Illuminate\Support\Facades\DB;
 // use Config;
 
@@ -28,16 +27,19 @@ class LoginController extends Controller
             'password'        => 'required',
         ]);        
         
-        // print_r(Auth::guard('subadmin')->attempt(['email' => $request->email, 'password' => $request->password], $request->get('remember'))); die;
-       
-
-        if (Auth::guard('client')->attempt(['email' => $request->email, 'password' => $request->password], $request->get('remember'))) {  
+        if (Auth::guard('client')->attempt(['email' => $request->email, 'password' => $request->password], $request->get('remember'))) { 
+            $client = Client::with(['getAllocation', 'getPreference'])->where('email', $request->email)->first(); 
+            if($client->is_blocked == 1 || $client->is_deleted == 1){
+                return redirect()->back()->with('Error', 'Your account has been blocked by admin. Please contact administration.');
+            }
+          
+            Auth::logout();
+           // Auth::guard('client')->logout();
+            Auth::login($client);
             return redirect()->route('index');
+            
         }
-        // if (Auth::guard('subadmin')->attempt(['email' => $request->email, 'password' => $request->password], $request->get('remember'))) { 
-        //     return redirect()->route('index');
-        // }
-
+       
         return redirect()->back()->with('Error', 'Invalid Credentials');    
         
         } catch (Exception $e) {
@@ -45,17 +47,12 @@ class LoginController extends Controller
         }
        
 
-        // if (Auth::guard('client')->attempt(['email' => $request->email, 'password' => $request->password], $request->get('remember'))) {
-            
-        //     return redirect()->route('index');
-        // }
-
-        // return redirect()->back()->with('Error', 'Invalid Credentials');
     }
 
     public function Logout()
     {
         Auth::logout();
+        Auth::guard('client')->logout();
         return redirect()->route('login');
     }
 
