@@ -28,13 +28,7 @@ class LoginController extends Controller
             'email'           => 'required|max:255|email',
             'password'        => 'required',
         ]);        
-        
-        // print_r(Auth::guard('subadmin')->attempt(['email' => $request->email, 'password' => $request->password], $request->get('remember'))); die;
-        // if (Auth::guard('subadmin')->attempt(['email' => $request->email, 'password' => $request->password], $request->get('remember'))) {                        
-        //      //dd(Auth::user());
-            
-        //     return redirect()->route('index');
-        // }
+                
 
         if (Auth::guard('client')->attempt(['email' => $request->email, 'password' => $request->password], $request->get('remember'))) {        
             //dd(Auth::user());
