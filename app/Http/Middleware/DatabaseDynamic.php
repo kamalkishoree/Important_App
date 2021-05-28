@@ -23,7 +23,7 @@ class DatabaseDynamic
     public function handle($request, Closure $next)
     {
     
-        if(Auth::check() && 1 == 2){ dd(Auth::user()->code);
+        if(Auth::check()){
           $client = Auth::user();
            if($client){
               $database_name = 'db_'.$client->database_name;
