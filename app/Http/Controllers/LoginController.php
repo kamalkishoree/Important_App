@@ -33,9 +33,9 @@ class LoginController extends Controller
                 return redirect()->back()->with('Error', 'Your account has been blocked by admin. Please contact administration.');
             }
           
-            Auth::logout();
+          //  Auth::logout();
            // Auth::guard('client')->logout();
-            Auth::login($client);
+          //  Auth::login($client);
             return redirect()->route('index');
             
         }
