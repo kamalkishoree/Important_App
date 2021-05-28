@@ -15,8 +15,7 @@ class AddSuperadminInClient extends Migration
     {
         Schema::table('clients', function (Blueprint $table) {
             $table->tinyInteger('is_superadmin')->default(1)->comment('1 for yes, 0 for no');
-            $table->tinyInteger('all_team_access')->default(1)->comment('1 for all/yes, 0 for no');            
-            $table->string('code', 10)->unique('false')->change();
+            $table->tinyInteger('all_team_access')->default(1)->comment('1 for all/yes, 0 for no');
         });
     }
 

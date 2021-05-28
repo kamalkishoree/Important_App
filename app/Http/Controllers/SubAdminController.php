@@ -79,12 +79,29 @@ class SubAdminController extends Controller
         $superadmin_data = Client::select('country_id','timezone','custom_domain','is_deleted','is_blocked','database_path','database_name','database_username','database_password','logo','company_name','company_address','code','sub_domain')        
         ->where('is_superadmin',1)
         ->first()->toArray();
+        $clientcode = $superadmin_data['code'];
+        $superadmin_data['code'] = "";
 
         $finaldata = array_merge($data,$superadmin_data);
+
+        //for removing client code unique index
+        //$getsubadmins = Client::where('is_superadmin',0)->count();        
+        // if($getsubadmins==0)
+        // {
+        //     $query = "ALTER TABLE clients DROP INDEX `clients_code_unique`";
+        //     DB::statement($query);
+        // }               
         
-        $subdmin = Client::create($finaldata);
+        $subdmin = Client::create($finaldata);        
         //$subdmin = SubAdmin::create($data);
         
+        //update client code
+        $codedata = [
+            'code' => $subdmin->id.'_'.$clientcode            
+        ];
+        
+        $clientcodeupdate = Client::where('id', $subdmin->id)->update($codedata);
+
         if($request->permissions)
         {
             $userpermissions = $request->permissions;
