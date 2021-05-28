@@ -58,8 +58,7 @@
                     <div class="table-responsive">
                         <table class="table table-striped dt-responsive nowrap w-100" id="">
                             <thead>
-                                <tr>
-                                    
+                                <tr>                                    
                                     <th>Name</th>
                                     <th>Email</th>
                                     <th>Phone</th>
@@ -85,7 +84,7 @@
                                     <td>
                                         <div class="form-ul" style="width: 60px;">
                                             <div class="inner-div"> <a href1="#" href="{{route('subadmins.edit', $singleuser->id)}}"  class="action-icon editIconBtn"> <i class="mdi mdi-square-edit-outline"></i></a></div>
-                                            <div class="inner-div">
+                                            {{-- <div class="inner-div">
                                                 <form method="POST" action="{{route('subadmins.destroy', $singleuser->id)}}">
                                                     @csrf
                                                     @method('DELETE')
@@ -94,11 +93,9 @@
 
                                                     </div>
                                                 </form>
-                                            </div>
-                                        </div>
-                                        
+                                            </div> --}}
+                                        </div>                                        
                                     </td>
-
                                 </tr>
                             @endforeach
                             </tbody>

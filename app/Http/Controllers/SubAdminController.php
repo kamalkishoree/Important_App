@@ -6,12 +6,15 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 use App\Model\SubAdmin;
+use App\Model\Client;
 use App\Model\Permissions;
 use App\Model\Team;
 use App\Model\SubAdminPermissions;
 use App\Model\SubAdminTeamPermissions;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
+use Crypt;
+use Illuminate\Support\Facades\DB;
 
 class SubAdminController extends Controller
 {
@@ -22,7 +25,8 @@ class SubAdminController extends Controller
      */
     public function index()
     {
-        $subadmins = SubAdmin::orderBy('id', 'DESC')->paginate(10);
+        //$subadmins = SubAdmin::orderBy('id', 'DESC')->paginate(10);
+        $subadmins = Client::where('is_superadmin',0)->orderBy('id', 'DESC')->paginate(10);
         return view('subadmin.index')->with(['subadmins' => $subadmins]);
     }
 
@@ -35,7 +39,7 @@ class SubAdminController extends Controller
     {
         $permissions = Permissions::all();
         $teams = Team::all();
-        return view('subadmin/form')->with(['permissions'=>$permissions,'teams'=>$teams]);;
+        return view('subadmin/form')->with(['permissions'=>$permissions,'teams'=>$teams]);
     }
 
     /**
@@ -45,7 +49,7 @@ class SubAdminController extends Controller
     {
         return Validator::make($data, [
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:sub_admin'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:clients'],
             'phone_number' => ['required'],
             'password' => ['required']
         ]);
@@ -65,13 +69,39 @@ class SubAdminController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            // 'confirm_password' => Crypt::encryptString($request->password),
+            'confirm_password' => Crypt::encryptString($request->password),
             'phone_number' => $request->phone_number,            
             'all_team_access'=> $request->all_team_access,
-            'status' => $request->status,            
+            'status' => $request->status,
+            'is_superadmin' => 0,            
         ];
-        $subdmin = SubAdmin::create($data);
-        //print_r($subdmin); die;
+
+        $superadmin_data = Client::select('country_id','timezone','custom_domain','is_deleted','is_blocked','database_path','database_name','database_username','database_password','logo','company_name','company_address','code','sub_domain')        
+        ->where('is_superadmin',1)
+        ->first()->toArray();
+        $clientcode = $superadmin_data['code'];
+        $superadmin_data['code'] = "";
+
+        $finaldata = array_merge($data,$superadmin_data);
+
+        //for removing client code unique index
+        //$getsubadmins = Client::where('is_superadmin',0)->count();        
+        // if($getsubadmins==0)
+        // {
+        //     $query = "ALTER TABLE clients DROP INDEX `clients_code_unique`";
+        //     DB::statement($query);
+        // }               
+        
+        $subdmin = Client::create($finaldata);        
+        //$subdmin = SubAdmin::create($data);
+        
+        //update client code
+        $codedata = [
+            'code' => $subdmin->id.'_'.$clientcode            
+        ];
+        
+        $clientcodeupdate = Client::where('id', $subdmin->id)->update($codedata);
+
         if($request->permissions)
         {
             $userpermissions = $request->permissions;
@@ -118,7 +148,8 @@ class SubAdminController extends Controller
      */
     public function edit($domain = '',$id)
     {        
-        $subadmin = SubAdmin::find($id);
+        // $subadmin = SubAdmin::find($id);
+        $subadmin = Client::find($id);
         $permissions = Permissions::all();
         $teams = Team::all();
         $user_permissions = SubAdminPermissions::where('sub_admin_id', $id)->get();
@@ -135,7 +166,7 @@ class SubAdminController extends Controller
         return Validator::make($data, [
 
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255',\Illuminate\Validation\Rule::unique('sub_admin')->ignore($id)],            
+            'email' => ['required', 'string', 'email', 'max:255',\Illuminate\Validation\Rule::unique('clients')->ignore($id)],            
             'phone_number' => ['required'],
         ]);
     }
@@ -156,7 +187,6 @@ class SubAdminController extends Controller
         $data = [
             'name' => $request->name,
             'email' => $request->email,
-            //'password' => $getSubadmin->password,
             'phone_number' => $request->phone_number,
             'all_team_access'=> $request->all_team_access,            
             'status' => $request->status,
@@ -165,9 +195,11 @@ class SubAdminController extends Controller
         if($request->password!="")
         {
             $data['password'] = Hash::make($request->password);
+            $data['confirm_password'] = Crypt::encryptString($request->password);
         }        
         
-        $client = SubAdmin::where('id', $id)->update($data);
+        // $client = SubAdmin::where('id', $id)->update($data);
+        $client = Client::where('id', $id)->update($data);
 
          //for updating permissions
         if($request->permissions)
@@ -206,9 +238,10 @@ class SubAdminController extends Controller
      */
     public function destroy($domain = '',$id)
     {
-        $getSubadmin = SubAdmin::where('id', $id)->delete();
-        $removepermissions = SubAdminPermissions::where('sub_admin_id', $id)->delete();
-        $removeteampermissions = SubAdminTeamPermissions::where('sub_admin_id', $id)->delete();
-        return redirect()->back()->with('success', 'Subadmin deleted successfully!');
+        // //$getSubadmin = SubAdmin::where('id', $id)->delete();
+        // $getSubadmin = Client::where('id', $id)->delete();
+        // $removepermissions = SubAdminPermissions::where('sub_admin_id', $id)->delete();
+        // $removeteampermissions = SubAdminTeamPermissions::where('sub_admin_id', $id)->delete();
+        // return redirect()->back()->with('success', 'Subadmin deleted successfully!');
     }
 }

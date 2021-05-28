@@ -20,7 +20,6 @@
                 @else
                 <h4 class="page-title">Create Manager</h4>
                 @endif
-
             </div>
         </div>
     </div>
@@ -132,10 +131,9 @@
                                         <label for="password" class="control-label">Status</label>
                                         <?php $status =  (isset($subadmin))?$subadmin->status:'';?>
                                         <select name="status" class="form-control">
-                                            <option value="2" <?=($status==2)?'selected':'';?>>Inactive</option>
+                                            <option value="3" <?=($status==3)?'selected':'';?>>Inactive</option>
                                             <option value="1" <?=($status==1)?'selected':'';?>>Active</option>
-                                        </select>
-                                        
+                                        </select>                                        
                                     </div>
                                 </div>
                             </div>
