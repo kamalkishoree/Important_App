@@ -79,17 +79,17 @@ class ProcessClientDatabase implements ShouldQueue
 
             Config::set("database.connections.$schemaName", $default);
             config(["database.connections.mysql.database" => $schemaName]);
-            Artisan::call('migrate', ['--database' => $schemaName]);
+            Artisan::call('migrate', ['--database' => $schemaName, '--force' => true]);
             Artisan::call('db:seed', ['--class' => 'DatabaseSeeder', '--database' => $schemaName]);
             DB::connection($schemaName)->table('clients')->insert($client);
             DB::connection($schemaName)->table('teams')->insert($teams);
             DB::connection($schemaName)->table('geos')->insert($geo);
             DB::connection($schemaName)->table('client_preferences')->insert($prefence);
             DB::connection($schemaName)->table('allocation_rules')->insert($auto);
-            Artisan::call('db:seed', ['--class' => 'CreateAgentSeeder', '--database' => $schemaName]);
-            Artisan::call('db:seed', ['--class' => 'CreateGeoSeeder', '--database' => $schemaName]);
-            Artisan::call('db:seed', ['--class' => 'createPricingRule', '--database' => $schemaName]);
-            Artisan::call('db:seed', ['--class' => 'createTaskProof', '--database' => $schemaName]);
+            Artisan::call('db:seed', ['--class' => 'CreateAgentSeeder', '--database' => $schemaName, '--force' => true]);
+            Artisan::call('db:seed', ['--class' => 'CreateGeoSeeder', '--database' => $schemaName, '--force' => true]);
+            Artisan::call('db:seed', ['--class' => 'createPricingRule', '--database' => $schemaName, '--force' => true]);
+            Artisan::call('db:seed', ['--class' => 'createTaskProof', '--database' => $schemaName, '--force' => true]);
             DB::disconnect($schemaName);
         } catch (Exception $ex) {
            return $ex->getMessage();
