@@ -22,11 +22,11 @@ class DatabaseDynamic
      */
     public function handle($request, Closure $next)
     {
-
+     
         if(Auth::check()){
-            
-            $client = Auth::user();
+          $client = Auth::user();
            if($client){
+             //dd($client);
               $database_name = 'db_'.$client->database_name;
               $default = [
                   'driver' => env('DB_CONNECTION','mysql'),

@@ -17,20 +17,25 @@ class ClientMiddleware
      * @return mixed
      */
     public function handle($request, Closure $next)
-    {
+    {  dd($request) ;
         switch ($guard) {
             case 'client' :
                 if (Auth::guard($guard)->check()) {
                     return redirect('/dashboard');
                 }
                 break;
+            case 'subadmin' :
+                    if (Auth::guard($guard)->check()) {
+                        return redirect('/dashboard');
+                    }
+                    break;    
             default:
                 if (Auth::guard($guard)->check()) {
                     return redirect()->route('home');
                 }
                 break;
         }
-     return $next($request);
+        return $next($request);
         return $next($request);
     }
 }

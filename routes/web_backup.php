@@ -19,24 +19,18 @@ use Illuminate\Support\Facades\Redirect;
 
 Auth::routes();  
 
-
-
 Route::group(['prefix' => '/godpanel'], function () {
-
-	Route::get('verify-custom-domain','Godpanel\LoginController@verifyCustomDomain')->name('verifyCustomDomain');
-
-
 	Route::get('/', function(){
 		return view('godpanel/login');
 	});
 	Route::get('/login', function(){
 		return view('godpanel/login');
-	})->name('get.god.login');
+	});
 	Route::post('login','Godpanel\LoginController@Login')->name('god.login');
 
 	Route::middleware('auth')->group(function () {
 	
-		Route::any('/logout', 'Godpanel\LoginController@logout')->name('god.logout');
+		Route::post('/logout', 'Godpanel\LoginController@logout')->name('god.logout');
 		Route::get('dashboard','Godpanel\DashBoardController@index')->name('god.dashboard');
 		Route::resource('client','ClientController');
 		Route::resource('language','Godpanel\LanguageController');
@@ -59,7 +53,7 @@ Route::domain('{domain}')->middleware(['subdomain'])->group(function() {
 			Route::get('/order/tracking/{clientcode}/{order_id}','TrackingController@OrderTracking')->name('order.tracking');
 		});
 		
-		Route::group(['middleware' => ['auth:client'], 'prefix' => '/'], function () {
+		Route::group(['middleware' => 'auth:client', 'prefix' => '/'], function () {
 
 		Route::group(['middleware' => 'database'], function()
 			{

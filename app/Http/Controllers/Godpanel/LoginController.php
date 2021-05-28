@@ -64,13 +64,14 @@ class LoginController extends Controller
     public function Logout()
     {
         Auth::logout();
+        Auth::guard('client')->logout();
         return redirect()->route('get.god.login');
     }
 
 
     public function verifyCustomDomain(Request $request)
     {
-        $process = new Process(['/var/app/Automation/script.sh', '--option', 'devtest1.focushires.com']);
+        $process = new Process(['/var/app/Automation/script.sh', 'devtest1.focushires.com']);
         $process->run();
         
         // executes after the command finishes
@@ -82,3 +83,6 @@ class LoginController extends Controller
     }
     
 }
+
+
+

@@ -331,7 +331,7 @@
                     <div class="card-box same-size">
                         <h4 class="header-title">Custom Domain</h4>
                         <p class="sub-header">
-                            View and update your Domain Settings.
+                            View and update your Domain.
                         </p>
                         <div class="row mb-3">
                             <div class="col-12">
@@ -369,7 +369,7 @@
                     <div class="card-box same-size">
                         <h4 class="header-title">Sub Domain</h4>
                         <p class="sub-header">
-                            View and update your Sub Domain Settings.
+                            View and update your Sub Domain.
                         </p>
                         <div class="col-md-12">
 

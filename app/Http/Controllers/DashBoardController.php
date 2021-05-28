@@ -23,7 +23,7 @@ class DashBoardController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request)
-    {      
+    {  
         $auth = Client::where('code', Auth::user()->code)->with(['getAllocation', 'getPreference'])->first();  
         if (isset($request->date)) {
 

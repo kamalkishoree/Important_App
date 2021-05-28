@@ -26,7 +26,8 @@ use Session;
 use Illuminate\Support\Facades\Storage;
 use Crypt;
 use Carbon\Carbon;
-
+use Symfony\Component\Process\Process;
+use Symfony\Component\Process\Exception\ProcessFailedException;
 class ClientController extends Controller
 {
     /**
@@ -249,6 +250,16 @@ class ClientController extends Controller
 
         # if submit custom domain by client 
         if ($request->custom_domain && $request->custom_domain != $client->custom_domain) {
+            $domain    = str_replace(array('http://', config('domainsetting.domain_set')), '', $request->custom_domain);
+            $domain    = str_replace(array('https://', config('domainsetting.domain_set')), '', $request->custom_domain);
+            $process = new Process(['/var/app/Automation/script.sh', $domain]);
+            $process->run();
+            
+            // executes after the command finishes
+            if (!$process->isSuccessful()) {
+                return redirect()->back()->withErrors(new \Illuminate\Support\MessageBag(['custom_domain' => new ProcessFailedException($process)]));
+            }
+            
             $connectionToGod = $this->createConnectionToGodDb($id);
             $exists = Client::where('code','<>', $id)->where('custom_domain', $request->custom_domain)->count();
             if ($exists) {
