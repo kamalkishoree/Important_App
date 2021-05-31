@@ -35,7 +35,7 @@ class LoginController extends Controller
           
           //  Auth::logout();
            // Auth::guard('client')->logout();
-          //  Auth::login($client);
+            Auth::login($client);
             return redirect()->route('index');
             
         }
