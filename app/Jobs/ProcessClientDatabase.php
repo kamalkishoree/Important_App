@@ -36,8 +36,7 @@ class ProcessClientDatabase implements ShouldQueue
      * @return void
      */
     public function handle()
-    {
-      
+    {      
 
         $client = Client::where('id', $this->client_id)->first(['name', 'email', 'password', 'phone_number', 'password', 'database_path', 'database_name', 'database_username', 'database_password', 'logo', 'company_name', 'company_address', 'custom_domain', 'status', 'code'])->toarray();
         
