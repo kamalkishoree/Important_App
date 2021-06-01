@@ -116,7 +116,9 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                                                     }
                                                                         $timeformat = $preference->time_format == '24' ? 'H:i:s':'g:i a';
                                                                         $order = Carbon::createFromFormat('Y-m-d H:i:s', $tasks['assigned_time'], 'UTC');
-                                                                        $order->setTimezone(isset(Auth::user()->timezone) ? Auth::user()->timezone : 'Asia/Kolkata');
+
+                                                                        //$order->setTimezone(isset(Auth::user()->timezone) ? Auth::user()->timezone : 'Asia/Kolkata');
+                                                                        $order->setTimezone($client_timezone);
                                                                     @endphp             
 
                                                                     <h5 class="d-inline-flex align-items-center justify-content-between"><i class="fas fa-bars"></i> <span>{{date(''.$timeformat.'', strtotime($order))}}</span></h5>
@@ -290,7 +292,9 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                                                         }
                                                                             $timeformat = $preference->time_format == '24' ? 'H:i:s':'g:i a';
                                                                             $order = Carbon::createFromFormat('Y-m-d H:i:s', $tasks['assigned_time'], 'UTC');
-                                                                            $order->setTimezone(isset(Auth::user()->timezone) ? Auth::user()->timezone : 'Asia/Kolkata');
+                                                                            
+                                                                            //$order->setTimezone(isset(Auth::user()->timezone) ? Auth::user()->timezone : 'Asia/Kolkata');
+                                                                            $order->setTimezone($client_timezone);
                                                                         @endphp       
                                                                           
 

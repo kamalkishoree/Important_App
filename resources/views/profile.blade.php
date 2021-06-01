@@ -249,7 +249,8 @@
                                     @endif
                                     <select class="form-control" id="timezone" name="timezone" value="{{ old('timezone', $client->timezone ?? '')}}" placeholder="Timezone">
                                         @foreach($tzlist as $tz)
-                                        <option value="{{ $tz }}" @if(Auth::user()->timezone == $tz) selected @endif>{{ $tz }}</option>
+                                        {{-- <option value="{{ $tz }}" @if(Auth::user()->timezone == $tz) selected @endif>{{ $tz }}</option> --}}
+                                        <option value="{{ $tz->id }}" @if(Auth::user()->timezone == $tz->id) selected @endif>{{ $tz->timezone.' ('.$tz->diff_from_gtm.')' }}</option>
                                         @endforeach
                                     </select>
                                     <span class="invalid-feedback" role="alert">

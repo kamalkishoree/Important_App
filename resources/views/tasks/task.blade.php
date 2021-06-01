@@ -115,7 +115,9 @@ use Carbon\Carbon;
                                                 @php
                                                     $timeformat = $preference->time_format == '24' ? 'H:i:s':'g:i a';
                                                     $order = Carbon::createFromFormat('Y-m-d H:i:s', $task->order_time, 'UTC');
-                                                    $order->setTimezone(isset(Auth::user()->timezone) ? Auth::user()->timezone : 'Asia/Kolkata');
+                                                    
+                                                    //$order->setTimezone(isset(Auth::user()->timezone) ? Auth::user()->timezone : 'Asia/Kolkata');
+                                                    $order->setTimezone($client_timezone);
                                                 @endphp
                                                 {{date(''.$preference->date_format.' '.$timeformat.'', strtotime($order))}}
 

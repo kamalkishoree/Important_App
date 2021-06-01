@@ -50,7 +50,8 @@ use Carbon\Carbon;
                         @php
                             
                             $order = Carbon::createFromFormat('Y-m-d H:i:s', $task->order_time, 'UTC');
-                            $order->setTimezone(isset(Auth::user()->timezone) ? Auth::user()->timezone : 'Asia/Kolkata');
+                            // $order->setTimezone(isset(Auth::user()->timezone) ? Auth::user()->timezone : 'Asia/Kolkata');
+                            $order->setTimezone($client_timezone);
                             $scheduletime = date('Y-m-d H:i:a', strtotime($order));
                         @endphp
                         

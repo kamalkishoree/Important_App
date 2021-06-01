@@ -9,6 +9,7 @@ use App\Model\Task;
 use App\Model\Team;
 use App\Model\LocationDistance;
 use App\Model\Client;
+use App\Model\Timezone;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -25,14 +26,15 @@ class DashBoardController extends Controller
     public function index(Request $request)
     {  
         $auth = Client::where('code', Auth::user()->code)->with(['getAllocation', 'getPreference'])->first();  
-        if (isset($request->date)) {
+        
+        //setting timezone from id
+        $tz = new Timezone();
+        $auth->timezone = $tz->timezone_name(Auth::user()->timezone);     
 
-              $date = Carbon::parse(strtotime($request->date))->format('Y-m-d');
-              
-        } else {
-            
-            $date = date('Y-m-d');
-            
+        if (isset($request->date)) {
+              $date = Carbon::parse(strtotime($request->date))->format('Y-m-d');              
+        } else {            
+            $date = date('Y-m-d');            
         } 
         $startdate = date("Y-m-d 00:00:00", strtotime($date));
         $enddate = date("Y-m-d 23:59:59", strtotime($date));
@@ -301,7 +303,7 @@ class DashBoardController extends Controller
 
         $client = ClientPreference::where('id',1)->first(); 
         $googleapikey = $client->map_key_1;
-        return view('dashboard')->with(['teams' => $teamdata, 'newmarker' => $newmarker, 'unassigned' => $unassigned, 'agents' => $agents,'date'=> $date,'preference' =>$preference, 'routedata' => $uniquedrivers,'distance_matrix' => $distancematrix, 'unassigned_orders' => $unassigned_orders,'unassigned_distance' => $un_total_distance,'map_key'=>$googleapikey]);
+        return view('dashboard')->with(['teams' => $teamdata, 'newmarker' => $newmarker, 'unassigned' => $unassigned, 'agents' => $agents,'date'=> $date,'preference' =>$preference, 'routedata' => $uniquedrivers,'distance_matrix' => $distancematrix, 'unassigned_orders' => $unassigned_orders,'unassigned_distance' => $un_total_distance,'map_key'=>$googleapikey,'client_timezone'=>$auth->timezone]);
     }
 
     //function to create distance matrix
@@ -540,6 +542,11 @@ class DashBoardController extends Controller
         $distancematrixarray[0][1] = $driver_long;      
         
         $auth = Client::where('code', Auth::user()->code)->with(['getAllocation', 'getPreference'])->first();
+        
+        //setting timezone from id
+        $tz = new Timezone();
+        $auth->timezone = $tz->timezone_name(Auth::user()->timezone);
+
         $startdate = date("Y-m-d 00:00:00", strtotime($request->route_date));
         $enddate = date("Y-m-d 23:59:59", strtotime($request->route_date));
         $startdate = Carbon::parse($startdate . $auth->timezone ?? 'UTC')->tz('UTC');
@@ -913,6 +920,11 @@ class DashBoardController extends Controller
         $taskids = array_filter($taskids);
 
         $auth = Client::where('code', Auth::user()->code)->with(['getAllocation', 'getPreference'])->first();
+
+        //setting timezone from id
+        $tz = new Timezone();
+        $auth->timezone = $tz->timezone_name(Auth::user()->timezone);
+
         $startdate = date("Y-m-d 00:00:00", strtotime($request->date));
         $enddate = date("Y-m-d 23:59:59", strtotime($request->date));
         $startdate = Carbon::parse($startdate . $auth->timezone ?? 'UTC')->tz('UTC');
@@ -1137,6 +1149,11 @@ class DashBoardController extends Controller
         }        
         
         $auth = Client::where('code', Auth::user()->code)->with(['getAllocation', 'getPreference'])->first();
+
+        //setting timezone from id
+        $tz = new Timezone();
+        $auth->timezone = $tz->timezone_name(Auth::user()->timezone);
+
         $startdate = date("Y-m-d 00:00:00", strtotime($request->route_date));
         $enddate = date("Y-m-d 23:59:59", strtotime($request->route_date));
         $startdate = Carbon::parse($startdate . $auth->timezone ?? 'UTC')->tz('UTC');

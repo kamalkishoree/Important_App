@@ -13,6 +13,7 @@ use App\Model\Order;
 use App\Model\Roster;
 use App\Model\Task;
 use App\Model\TaskReject;
+use App\Model\Timezone;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
@@ -564,24 +565,24 @@ class TaskController extends BaseController
          if($request->task_type != 'now'){
  
                  
-                  $auth = Client::where('database_name', $header['client'][0])->with(['getAllocation', 'getPreference'])->first();
-                  
+                $auth = Client::where('database_name', $header['client'][0])->with(['getAllocation', 'getPreference'])->first();
+                //setting timezone from id
+                $tz = new Timezone();
+                $auth->timezone = $tz->timezone_name(Auth::user()->timezone);
                  
-                  $beforetime = (int)$auth->getAllocation->start_before_task_time;  
+                $beforetime = (int)$auth->getAllocation->start_before_task_time;   
+                 
+                $to = new \DateTime("now", new \DateTimeZone(isset($auth->timezone)? $auth->timezone : 'Asia/Kolkata') );
  
+                $sendTime = Carbon::now();
                  
-                  $to = new \DateTime("now", new \DateTimeZone(isset($auth->timezone)? $auth->timezone : 'Asia/Kolkata') );
- 
-                  $sendTime = Carbon::now();
+                $to = Carbon::parse($to)->format('Y-m-d H:i:s');                
                  
-                  $to = Carbon::parse($to)->format('Y-m-d H:i:s');
-                
+                $from = Carbon::parse($notification_time)->format('Y-m-d H:i:s');
                  
-                 $from = Carbon::parse($notification_time)->format('Y-m-d H:i:s');
-                 
-                  $datecheck = 0;
-                  $to_time = strtotime($to);
-                  $from_time = strtotime($from);
+                $datecheck = 0;
+                $to_time = strtotime($to);
+                $from_time = strtotime($from);
                 
                   if($to_time >= $from_time) {
                     return response()->json([
