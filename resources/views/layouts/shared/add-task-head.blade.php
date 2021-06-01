@@ -216,7 +216,7 @@
 {{-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB85kLYYOmuAhBUPd7odVmL6gnQsSGWU-4&libraries=places"></script>  --}}
 <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
 <script defer
-        src="https://maps.googleapis.com/maps/api/js?key={{$key}}&libraries=places,drawing,visualization&v=weekly">
+        src="https://maps.googleapis.com/maps/api/js?key={{Auth::user()->getPreference->map_key_1??''}}&libraries=places,drawing,visualization&v=weekly">
         </script>
 <script src="{{ asset('assets/libs/selectize/selectize.min.js') }}"></script>
 <script src="{{ asset('assets/libs/multiselect/multiselect.min.js') }}"></script>
@@ -251,7 +251,7 @@
       
     });
     function gm_authFailure() {
-                
+                console.log('ok');
                 $('.excetion_keys').append('<span><i class="mdi mdi-block-helper mr-2"></i> <strong>Google Map</strong> key is not valid</span><br/>');
                 $('.displaySettingsError').show();
     };

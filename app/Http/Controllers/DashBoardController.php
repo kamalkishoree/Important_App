@@ -52,13 +52,13 @@ class DashBoardController extends Controller
                 }
             ]
             );
-            // if(Auth::user()->is_superadmin == 0 && Auth::user()->all_team_access == 0)
-            // {   
-            //    $teams = $teams->whereHas('permissionToManager', function  ($query) {
-            //                         $query->where('sub_admin_id',Auth::user()->id);
-            //                         });
+            if(Auth::user()->is_superadmin == 0 && Auth::user()->all_team_access == 0)
+            {   
+               $teams = $teams->whereHas('permissionToManager', function  ($query) {
+                                    $query->where('sub_admin_id',Auth::user()->id);
+                                    });
     
-            // }    
+            }   
             $teams = $teams->get(); 
                 
         foreach ($teams as $team) {
@@ -310,6 +310,7 @@ class DashBoardController extends Controller
         }
 
         $client = ClientPreference::where('id',1)->first(); 
+    
         $googleapikey = $client->map_key_1;
         return view('dashboard')->with(['teams' => $teamdata, 'newmarker' => $newmarker, 'unassigned' => $unassigned, 'agents' => $agents,'date'=> $date,'preference' =>$preference, 'routedata' => $uniquedrivers,'distance_matrix' => $distancematrix, 'unassigned_orders' => $unassigned_orders,'unassigned_distance' => $un_total_distance,'map_key'=>$googleapikey,'client_timezone'=>$auth->timezone]);
     }
