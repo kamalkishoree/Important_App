@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
-
+ 
 class VehicleTypeTableSeeder extends Seeder
 {
     /**

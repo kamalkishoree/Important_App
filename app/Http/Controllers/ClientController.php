@@ -62,7 +62,8 @@ class ClientController extends Controller
             'email' => ['required', 'string', 'email', 'max:255', 'unique:clients'],
             'phone_number' => ['required'],
             'password' => ['required'],
-            'database_name' => ['required','unique:clients'],
+            'database_name' => ['required','unique:clients,database_name'],
+            'custom_domain' => ['nullable','unique:clients,custom_domain'],
             //'logo' => ['required'],
         ]);
     }
@@ -99,17 +100,39 @@ class ClientController extends Controller
             'database_name' => $database_name,
             'company_name' => $request->company_name,
             'company_address'  => $request->company_address,
-            'database_username' => 'root',
-            'database_password' => 'codebrew',
+            'database_username' => env('DB_USERNAME'),
+            'database_password' => env('DB_PASSWORD'),
             'logo' => isset($getFileName) ? $getFileName : 'assets/Clientlogo/5ff41c4b5a9f0.png/KQb50SOKZckXbcmMBXgqz3pqfCZcOTpkpljs8sJq.png',
             'status'=> 1,
             'timezone' => $request->timezone ? $request->timezone : 'America/New_York',
-            'custom_domain'=> $request->custom_domain,
+            'custom_domain'=> $request->custom_domain??'',
             'sub_domain'   => $request->sub_domain
         ];
         $data['code'] = $this->randomString();
 
         $client = Client::create($data);
+
+        # if submit custom domain from god panel 
+        if ($request->custom_domain && $request->custom_domain != $client->custom_domain) {
+            //  $domain    = str_replace(array('http://', config('domainsetting.domain_set')), '', $request->custom_domain);
+           //   $domain    = str_replace(array('https://', config('domainsetting.domain_set')), '', $request->custom_domain);
+           //   $process = new Process(['/var/app/Automation/script.sh', $domain]);
+           //   $process->run();
+              
+              // executes after the command finishes
+          //    if (!$process->isSuccessful()) {
+          //        return redirect()->back()->withErrors(new \Illuminate\Support\MessageBag(['custom_domain' => new ProcessFailedException($process)]));
+          //    }
+             $exists = Client::where('id','!=', $client->id)->where('custom_domain', $request->custom_domain)->count();
+              if ($exists) {
+                   return redirect()->back()->withErrors(new \Illuminate\Support\MessageBag(['custom_domain' => 'Domain name "' . $request->custom_domain . '" is not available. Please select a different domain']));
+              }
+              else{
+                  Client::where('id', $client->id)->update(['custom_domain' => $request->custom_domain]);
+             }
+              
+              
+          }
 
          // $redis = Redis::connection();
 

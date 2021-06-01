@@ -19,10 +19,12 @@ class DatabaseSeeder extends Seeder
               VehicleTypeTableSeeder::class,
               TaskTypeTableSeeder::class,
               NotificationSeeder::class,
-              UsersTableDataSeeder::class,
+            //  UsersTableDataSeeder::class,
               PlanSeeder::class,
               PricePriority::class,
               CmsTableSeeder::class,
+              PermissionSeeder::class,
+              TimezoneSeeder::class,
               
              ]);
     }

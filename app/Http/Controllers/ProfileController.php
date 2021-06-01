@@ -4,7 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Model\Client;
 use Illuminate\Http\Request;
-use App\Model\Countries; 
+use App\Model\Countries;
+use App\Model\Timezone; 
 use \DateTimeZone;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
@@ -23,8 +24,8 @@ class ProfileController extends Controller
     {
         $client = Client::where('id',Auth::user()->id)->first();
         $countries = Countries::all();
-       
-        $tzlist = DateTimeZone::listIdentifiers(DateTimeZone::ALL);
+        //$tzlist = DateTimeZone::listIdentifiers(DateTimeZone::ALL);
+        $tzlist = Timezone::get();        
         return view('profile')->with(['client' => $client ,'countries'=> $countries,'tzlist'=>$tzlist ]);
     }
 
@@ -79,9 +80,7 @@ class ProfileController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request,$domain = '',$id)
-    {
-       
-       
+    {   
         $validator = Validator::make($request->all(), [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255'],
@@ -124,8 +123,7 @@ class ProfileController extends Controller
         $client = Client::where('code', $id)->where('id',Auth::user()->id)->update($data);
         $password = null;
         $this->dispatchNow(new UpdatePassword($password,$data));
-
-
+        
         return redirect()->back()->with('success', 'Profile Updated successfully!');
     }
 

@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use App\Model\{Agent, AllocationRule, Client, ClientPreference, DriverGeo, PricingRule, Roster, TaskProof};
 use App\Model\Geo;
 use App\Model\Order;
+use App\Model\Timezone;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
@@ -34,9 +35,10 @@ class TaskController extends Controller
      */
     public function index(Request $request)
     {
+        $tz = new Timezone();
+        $client_timezone = $tz->timezone_name(Auth::user()->timezone);
         
         /* Orter status will be done as per task completed. task assigned than assigned all task of order completed tha completed and so on*/
-
         $tasks = Order::orderBy('created_at', 'DESC')->with(['customer', 'location', 'taskFirst', 'agent', 'task.location']);
         $check = '';
         if ($request->has('status') && $request->status != 'all') 
@@ -58,7 +60,7 @@ class TaskController extends Controller
         $agentTag   = TagsForAgent::all();
         $preference  = ClientPreference::where('id',1)->first(['theme','date_format','time_format']);
         $agents      = Agent::all();
-        return view('tasks/task')->with(['tasks' => $tasks, 'status' => $request->status, 'active_count' => $active, 'panding_count' => $pending, 'history_count' => $history, 'status' => $check,'preference' => $preference,'agents'=>$agents,'failed_count'=>$failed]);
+        return view('tasks/task')->with(['tasks' => $tasks, 'status' => $request->status, 'active_count' => $active, 'panding_count' => $pending, 'history_count' => $history, 'status' => $check,'preference' => $preference,'agents'=>$agents,'failed_count'=>$failed,'client_timezone'=>$client_timezone]);
     }
 
     // function for saving new order
@@ -89,8 +91,11 @@ class TaskController extends Controller
         $unique_order_id = substr(str_shuffle(str_repeat($pool, 5)), 0, 6);
         $auth = Client::where('code', Auth::user()->code)->with(['getAllocation', 'getPreference'])->first();
 
-        //save task images on s3 bucket
+        //setting timezone from id
+        $tz = new Timezone();
+        $auth->timezone = $tz->timezone_name(Auth::user()->timezone);
 
+        //save task images on s3 bucket
         if (isset($request->file) && count($request->file) > 0) {
             $folder = str_pad(Auth::user()->id, 8, '0', STR_PAD_LEFT);
             $folder = 'client_' . $folder;
@@ -301,6 +306,11 @@ class TaskController extends Controller
         $allocation = AllocationRule::where('id', 1)->first();
         if($request->task_type != 'now'){
             $auth = Client::where('code', Auth::user()->code)->with(['getAllocation', 'getPreference'])->first();        
+
+            //setting timezone from id
+            $tz = new Timezone();
+            $auth->timezone = $tz->timezone_name(Auth::user()->timezone);
+
             $beforetime = (int)$auth->getAllocation->start_before_task_time;          
         //    $to = new \DateTime("now", new \DateTimeZone(isset(Auth::user()->timezone)? Auth::user()->timezone : 'Asia/Kolkata') );
             $to = new \DateTime("now", new \DateTimeZone('UTC') );
@@ -375,7 +385,11 @@ class TaskController extends Controller
     //function for updating date of orders
     public function assignDate(Request $request)
     {
-        $auth = Client::where('code', Auth::user()->code)->with(['getAllocation', 'getPreference'])->first();        
+        $auth = Client::where('code', Auth::user()->code)->with(['getAllocation', 'getPreference'])->first();  
+        //setting timezone from id
+        $tz = new Timezone();
+        $auth->timezone = $tz->timezone_name(Auth::user()->timezone);
+
         $notification_time = Carbon::parse($request->newdate . $auth->timezone ?? 'UTC')->tz('UTC');
 
         $order_update = Order::whereIn('id',$request->orders_id)->update(['order_time'=>$notification_time]);
@@ -478,8 +492,12 @@ class TaskController extends Controller
         $unique_order_id = substr(str_shuffle(str_repeat($pool, 5)), 0, 6);
         
         $auth = Client::where('code', Auth::user()->code)->with(['getAllocation', 'getPreference'])->first();
-        //save task images on s3 bucket
 
+        //setting timezone from id
+        $tz = new Timezone();
+        $auth->timezone = $tz->timezone_name(Auth::user()->timezone);
+
+        //save task images on s3 bucket
         if (isset($request->file) && count($request->file) > 0) {
             $folder = str_pad(Auth::user()->id, 8, '0', STR_PAD_LEFT);
             $folder = 'client_' . $folder;
@@ -660,9 +678,15 @@ class TaskController extends Controller
         // task schdule code is hare
         $allocation = AllocationRule::where('id', 1)->first();
         if($request->task_type != 'now')
-        {                
-            $beforetime = (int)$auth->getAllocation->start_before_task_time;                  
-            $to = new \DateTime("now", new \DateTimeZone(isset(Auth::user()->timezone)? Auth::user()->timezone : 'Asia/Kolkata') );
+        {     
+            //setting timezone from id
+            $tz = new Timezone();
+            $timezonee = $tz->timezone_name(Auth::user()->timezone);
+        
+        
+            $beforetime = (int)$auth->getAllocation->start_before_task_time;               
+            //$to = new \DateTime("now", new \DateTimeZone(isset(Auth::user()->timezone)? Auth::user()->timezone : 'Asia/Kolkata') );
+            $to = new \DateTime("now", new \DateTimeZone($timezonee) );
             $sendTime = Carbon::now();                
             $to = Carbon::parse($to)->format('Y-m-d H:i:s');
             $from = Carbon::parse($notification_time)->format('Y-m-d H:i:s');                
@@ -1423,6 +1447,10 @@ class TaskController extends Controller
     {        
         $savedrivertag   = [];
         $saveteamtag     = [];
+
+        $tz = new Timezone();
+        $client_timezone = $tz->timezone_name(Auth::user()->timezone);
+
         //=> function($o){$o->where('short_name','!=',null);}
         $task            = Order::where('id', $id)->with(['task','agent','customer.location'])->first();
         $fatchdrivertag  = TaskDriverTag::where('task_id', $id)->get('tag_id');
@@ -1456,7 +1484,7 @@ class TaskController extends Controller
             $cust_id = $task->customer_id;
             $all_locations = Location::where('customer_id','!=', $cust_id)->where('short_name','!=',null)->where('location_status',1)->get();
         } 
-        return view('tasks/update-task')->with(['task' => $task, 'teamTag' => $teamTag, 'agentTag' => $agentTag, 'agents' => $agents, 'images' => $array, 'savedrivertag' => $savedrivertag, 'saveteamtag' => $saveteamtag, 'main' => $lastbaseurl,'alllocations'=>$all_locations]);
+        return view('tasks/update-task')->with(['task' => $task, 'teamTag' => $teamTag, 'agentTag' => $agentTag, 'agents' => $agents, 'images' => $array, 'savedrivertag' => $savedrivertag, 'saveteamtag' => $saveteamtag, 'main' => $lastbaseurl,'alllocations'=>$all_locations,'client_timezone'=>$client_timezone]);
     }
 
     /**
@@ -1487,6 +1515,11 @@ class TaskController extends Controller
         $images = [];
         $last = '';
         $auth = Client::where('code', Auth::user()->code)->with(['getAllocation', 'getPreference'])->first();
+
+        //setting timezone from id
+        $tz = new Timezone();
+        $auth->timezone = $tz->timezone_name(Auth::user()->timezone);
+
         if (isset($request->file) && count($request->file) > 0) {
             $folder = str_pad(Auth::user()->id, 8, '0', STR_PAD_LEFT);
             $folder = 'client_' . $folder;
