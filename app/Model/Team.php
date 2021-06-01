@@ -34,4 +34,8 @@ class Team extends Model
     public function agents(){
         return $this->hasMany('App\Model\Agent');
     }
+
+    public function permissionToManager(){
+        return $this->hasMany('App\Model\SubAdminTeamPermissions');
+    }
 }

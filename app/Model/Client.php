@@ -47,4 +47,32 @@ class Client extends Authenticatable
     {
       return $this->hasOne('App\Model\AllocationRule','client_id','code');
     }
+
+
+    public function getCodeAttribute($value)
+    { 
+      if(!empty($this->attributes['id'])){
+        $value = str_replace($this->attributes['id']."_",'',$value);
+      }
+      return $value;
+    }
+
+
+     /**
+     * Get All permisions
+    */
+    public function getAllPermissions()
+    {
+      return $this->hasMany('App\Model\SubAdminPermissions','sub_admin_id','id');
+    }
+
+    /**
+     * Get All teams
+    */
+    public function getAllTeams()
+    {
+      return $this->hasMany('App\Model\SubAdminTeamPermissions','sub_admin_id','id');
+    }
+
+   
 }

@@ -23,20 +23,14 @@ class CustomDomain
      */
     public function handle($request, Closure $next)
     {
-    
-     
+     // if(!Auth::user()){
       $domain = $request->getHost();
-      // $domain    = str_replace(array('http://', '.dispatcher.test/login'), '', $domain);
       $domain    = str_replace(array('http://', config('domainsetting.domain_set')), '', $domain);
       $domain    = str_replace(array('https://', config('domainsetting.domain_set')), '', $domain);
       $subDomain = explode('.', $domain);
-      //dd($domain); yo.com ,
-      
-      //$existRedis = Redis::get($domain);
-        $existRedis = '';
-      //$callback = http://local.myorder.com/auth/facebook/callback
-
-      if(!$existRedis){
+     
+      $existRedis = '';
+     if(!$existRedis){
         
         $client = Client::select('*')
                     ->where(function($q) use($domain, $subDomain){
@@ -46,27 +40,22 @@ class CustomDomain
                     })
                     ->firstOrFail();
         
-         //Redis::set($domain, json_encode($client->toArray()), 'EX', 36000);
-
-         //$existRedis = Redis::get($domain);
-
+    
          $saveDataOnRedis = Cache::set('clientdetails',$client);
          
       }
       $callback = '';
 
       $redisData = $client;
-     // echo '<pre>';print_r($redisData);
-    
-     $dbname = DB::connection()->getDatabaseName(); 
+      $dbname = DB::connection()->getDatabaseName();
      if($domain){
             if($domain != env('Main_Domain')){
                   if($client && $dbname != 'db_'.$client->database_name){
                   $database_name = 'db_'.$client->database_name;
-                  $database_host = !empty($client->database_host) ? $client->database_host : env('DB_HOST');
-                  $database_port = !empty($client->database_port) ? $client->database_port : env('DB_PORT');
-                  $database_username = !empty($client->database_username) ? $client->database_username : env('DB_USERNAME');
-                  $database_password = !empty($client->database_password) ? $client->database_password : env('DB_PASSWORD');
+                  $database_host = !empty($client->database_host) ? $client->database_host : env('DB_HOST','127.0.0.1');
+                  $database_port = !empty($client->database_port) ? $client->database_port : env('DB_PORT','3306');
+                  $database_username = !empty($client->database_username) ? $client->database_username : env('DB_USERNAME','royodelivery_db');
+                  $database_password = !empty($client->database_password) ? $client->database_password : env('DB_PASSWORD','');
                   $default = [
                       'driver' => env('DB_CONNECTION','mysql'),
                       'host' => $database_host,
@@ -79,16 +68,21 @@ class CustomDomain
                       'prefix' => '',
                       'prefix_indexes' => true,
                       'strict' => false,
-                      'engine' => null
+                      'engine' => null,
+                      'options' => [],
                   ];
                   
-                  Config::set("database.connections.$database_name", $default);
-                 // Config::set("client_id",$client);
+                 // Config::set("database.connections.mysql", $default);
+                  \Config::set('database.connections.mysql.database',$database_name);      
+                  DB::purge('mysql');   
+                //  Config::set("client_id",$client);
                 //  Config::set("client_connected",true);
                 //  Config::set("client_data",$client);
-                  DB::setDefaultConnection($database_name);
-                  DB::purge($database_name);
-                  $dbname = DB::connection()->getDatabaseName();
+                //  DB::setDefaultConnection($database_name);
+               //   DB::purge('mysql');
+                  $dbname = DB::connection()->getDatabaseName(); 
+                
+                  
                 }
               }
             
@@ -97,7 +91,7 @@ class CustomDomain
           return view('pages/404');
         }
      
-      
+     // }
       return $next($request);
     }
 }

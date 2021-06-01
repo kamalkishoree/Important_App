@@ -36,4 +36,12 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function getCodeAttribute($value)
+    {
+    //   if(!empty($this->attributes['id'])){
+    //     $value = str_replace($this->attributes['id']."_", '','',$value);
+    //   }
+      return $value;
+    }
 }

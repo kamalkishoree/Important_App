@@ -20,7 +20,8 @@ class LoginController extends Controller
     use AuthenticatesUsers;
 
     public function ClientLogin(Request $request)
-    {
+    { 
+        
        try{
         $this->validate($request, [
             'email'           => 'required|max:255|email',
@@ -32,10 +33,8 @@ class LoginController extends Controller
             if($client->is_blocked == 1 || $client->is_deleted == 1){
                 return redirect()->back()->with('Error', 'Your account has been blocked by admin. Please contact administration.');
             }
-          
-          //  Auth::logout();
-           // Auth::guard('client')->logout();
-            Auth::login($client);
+            Auth::user();
+           
             return redirect()->route('index');
             
         }

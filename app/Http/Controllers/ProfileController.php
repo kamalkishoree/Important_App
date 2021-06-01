@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Hash;
 use App\Jobs\UpdatePassword;
 use Auth;
 use Illuminate\Support\Facades\Storage;
-
+use DB;
 class ProfileController extends Controller
 {
     /**
@@ -21,8 +21,7 @@ class ProfileController extends Controller
      */
     public function index()
     {
-
-        $client = Client::where('id',1)->first();
+        $client = Client::where('id',Auth::user()->id)->first();
         $countries = Countries::all();
        
         $tzlist = DateTimeZone::listIdentifiers(DateTimeZone::ALL);
@@ -82,7 +81,7 @@ class ProfileController extends Controller
     public function update(Request $request,$domain = '',$id)
     {
        
-        
+       
         $validator = Validator::make($request->all(), [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255'],
@@ -122,7 +121,7 @@ class ProfileController extends Controller
             'logo' => $getFileName,
         ];
 
-        $client = Client::where('code', $id)->update($data);
+        $client = Client::where('code', $id)->where('id',Auth::user()->id)->update($data);
         $password = null;
         $this->dispatchNow(new UpdatePassword($password,$data));
 

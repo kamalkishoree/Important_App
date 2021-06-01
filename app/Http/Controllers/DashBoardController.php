@@ -23,7 +23,7 @@ class DashBoardController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request)
-    { 
+    {  
         $auth = Client::where('code', Auth::user()->code)->with(['getAllocation', 'getPreference'])->first();  
         if (isset($request->date)) {
 
@@ -49,7 +49,15 @@ class DashBoardController extends Controller
                     $o->where('order_time', '>=', $startdate)->where('order_time', '<=', $enddate)->with('customer')->with('task.location');
                 }
             ]
-        )->get(); 
+            );
+            // if(Auth::user()->is_superadmin == 0 && Auth::user()->all_team_access == 0)
+            // {   
+            //    $teams = $teams->whereHas('permissionToManager', function  ($query) {
+            //                         $query->where('sub_admin_id',Auth::user()->id);
+            //                         });
+    
+            // }    
+            $teams = $teams->get(); 
                 
         foreach ($teams as $team) {
             $online  = 0;

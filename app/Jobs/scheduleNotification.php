@@ -34,7 +34,7 @@ class scheduleNotification implements ShouldQueue
         
         $databaseName = $this->data['database']['database_name'];
 
-            $schemaName = 'db_'.$databaseName;
+        $schemaName = 'db_'.$databaseName;
 
         
         $this->schemaName = $schemaName;
@@ -78,10 +78,11 @@ class scheduleNotification implements ShouldQueue
             
         //    DB::disconnect($schemaName);
         } catch (Exception $ex) {
-           return $ex->getMessage();
+            Log::info($ex->getMessage());
+          // return $ex->getMessage();
         }
 
-        
+        Log::info('database:'.$schemaName);
 
         $databaseName = 'db_'.$this->data['database']['database_name'];
           switch ($this->data['allocation']['auto_assign_logic']) {

@@ -250,17 +250,17 @@ class ClientController extends Controller
 
         # if submit custom domain by client 
         if ($request->custom_domain && $request->custom_domain != $client->custom_domain) {
-            $domain    = str_replace(array('http://', config('domainsetting.domain_set')), '', $request->custom_domain);
-            $domain    = str_replace(array('https://', config('domainsetting.domain_set')), '', $request->custom_domain);
-            $process = new Process(['/var/app/Automation/script.sh', $domain]);
-            $process->run();
+          //  $domain    = str_replace(array('http://', config('domainsetting.domain_set')), '', $request->custom_domain);
+         //   $domain    = str_replace(array('https://', config('domainsetting.domain_set')), '', $request->custom_domain);
+         //   $process = new Process(['/var/app/Automation/script.sh', $domain]);
+         //   $process->run();
             
             // executes after the command finishes
-            if (!$process->isSuccessful()) {
-                return redirect()->back()->withErrors(new \Illuminate\Support\MessageBag(['custom_domain' => new ProcessFailedException($process)]));
-            }
+        //    if (!$process->isSuccessful()) {
+        //        return redirect()->back()->withErrors(new \Illuminate\Support\MessageBag(['custom_domain' => new ProcessFailedException($process)]));
+        //    }
             
-            $connectionToGod = $this->createConnectionToGodDb($id);
+           // $connectionToGod = $this->createConnectionToGodDb($id);
             $exists = Client::where('code','<>', $id)->where('custom_domain', $request->custom_domain)->count();
             if ($exists) {
                 // return response(array('status' => "error", 'statuscode' => 400, 'message' =>
@@ -269,17 +269,17 @@ class ClientController extends Controller
             }
             else{
                 Client::where('code', $id)->update(['custom_domain' => $request->custom_domain]);
-                $custom_db_name = Client::where('code', $id)->first();
-                $connectionToLocal = $this->createConnectionToClientDb($custom_db_name->database_name);
-                Client::where('code', $id)->update(['custom_domain' => $request->custom_domain]);
+            //    $custom_db_name = Client::where('code', $id)->first();
+            //    $connectionToLocal = $this->createConnectionToClientDb($custom_db_name->database_name);
+            //    Client::update(['custom_domain' => $request->custom_domain]);
             }
             
             
         }
 
          # if submit sub_domain domain by client 
-         if ($request->sub_domain && $request->sub_domain != $client->sub_domain) {
-            $connectionToGod = $this->createConnectionToGodDb($id);
+         if ($request->sub_domain && ($request->sub_domain != $client->sub_domain)) {
+        //    $connectionToGod = $this->createConnectionToGodDb($id);
             $exists = Client::where('code','<>', $id)->where('sub_domain', $request->sub_domain)->count();
             if ($exists) {
                 // return response(array('status' => "error", 'statuscode' => 400, 'message' =>
@@ -288,9 +288,9 @@ class ClientController extends Controller
             }
             else{
                 Client::where('code', $id)->update(['sub_domain' => $request->sub_domain]);
-                $custom_db_name = Client::where('code', $id)->first();
-                $connectionToLocal = $this->createConnectionToClientDb($custom_db_name->database_name);
-                Client::where('code', $id)->update(['sub_domain' => $request->sub_domain]);
+            //    $custom_db_name = Client::where('code', $id)->first();
+            //    $connectionToLocal = $this->createConnectionToClientDb($custom_db_name->database_name);
+             //   Client::update(['sub_domain' => $request->sub_domain]);
             }
             
             

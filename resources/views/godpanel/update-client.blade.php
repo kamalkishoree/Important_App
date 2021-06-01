@@ -163,15 +163,19 @@
 
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="custom_domain" class="control-label">CUSTOM DOMAIN</label>
-                                        <input type="text" class="form-control" name="custom_domain" id="custom_domain"
-                                            value="{{ old('custom_domain', $client->custom_domain ?? '')}}"
-                                            placeholder="Enter custom domain">
-                                        @if($errors->has('custom_domain'))
-                                        <span class="text-danger" role="alert">
-                                            <strong>{{ $errors->first('custom_domain') }}</strong>
-                                        </span>
-                                        @endif
+                                        <label for="custom_domain" class="control-label">CUSTOM DOMAIN (*Make sure you already pointed to our ip ({{\env('IP')}}) from your domain.)</label>
+                                            
+                                            <div class="domain-outer d-flex align-items-center">
+                                                <div class="domain_name">https://</div>
+                                                <input type="text" name="custom_domain" id="custom_domain" placeholder="dummy.com" class="form-control" value="{{ old('custom_domain', $client->custom_domain ?? '')}}">
+                                            </div>
+                                            
+
+                                            @if($errors->has('custom_domain'))
+                                            <span class="text-danger" role="alert">
+                                                <strong>{{ $errors->first('custom_domain') }}</strong>
+                                            </span>
+                                            @endif
                                     </div>
                                 </div>
                             </div>
@@ -180,9 +184,13 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="sub_domain" class="control-label">SUB DOMAIN</label>
-                                        <input type="text" class="form-control" name="sub_domain" id="sub_domain"
-                                            value="{{ old('sub_domain', $client->sub_domain ?? '')}}"
-                                            placeholder="Enter Sub domain">
+                                            <div class="domain-outer d-flex align-items-center">
+                                                <div class="domain_name">https://</div>
+                                                <input type="text" name="sub_domain" id="sub_domain" placeholder="Enter Sub domain" class="form-control" value="{{ old('sub_domain', $client->sub_domain ?? '')}}"><div class="domain_name">{{\env('SUBDOMAIN')}}</div>
+                                            </div>
+                                            
+
+
                                         @if($errors->has('sub_domain'))
                                         <span class="text-danger" role="alert">
                                             <strong>{{ $errors->first('sub_domain') }}</strong>

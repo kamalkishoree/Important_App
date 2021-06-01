@@ -26,7 +26,7 @@ class SubAdminController extends Controller
     public function index()
     {
         //$subadmins = SubAdmin::orderBy('id', 'DESC')->paginate(10);
-        $subadmins = Client::where('is_superadmin',0)->orderBy('id', 'DESC')->paginate(10);
+        $subadmins = Client::where('is_superadmin',0)->where('id','!=',Auth::user()->id)->orderBy('id', 'DESC')->paginate(10);
         return view('subadmin.index')->with(['subadmins' => $subadmins]);
     }
 

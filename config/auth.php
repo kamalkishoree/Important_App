@@ -17,11 +17,7 @@ return [
         'guard' => 'web',
         'passwords' => 'users',
     ],
-    'clients' => [
-        'driver' => 'eloquent',
-        'model' => App\Model\Client::class,
-    ],
-
+   
     /*
     |--------------------------------------------------------------------------
     | Authentication Guards

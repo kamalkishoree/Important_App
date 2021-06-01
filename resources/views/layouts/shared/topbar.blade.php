@@ -82,13 +82,26 @@
                     </form>
                 </div>
             </li>
+                    <?php 
+                        $allowed = [];
+                        if(Auth::user()->is_superadmin == 0){
+                           // if(Session::get('usertype') == 'manager'){
+                                foreach (Auth::user()->getAllPermissions as $key => $value) {
+                                    array_push($allowed,$value->permission->name);
+                                 }
+                           // }
+                        }else{
+                            array_push($allowed,'99999');
+                        }
+                        ?>
 
+@if(in_array('Add Route',$allowed) || Auth::user()->is_superadmin == 1)           
             <li class="d-lg-inline-block" >
                 <a class="nav-link" href="#"> 
                     <button type="button" class="btn btn-blue waves-effect waves-light addTaskModalHeader" data-toggle="modal" data-target="" data-backdrop="static" title="Add Route" data-keyboard="false"><span><i class="mdi mdi-plus-circle mr-1"></i> Add Route</span></button>
                 </a>
             </li>
-
+@endif
             <li class="dropdown d-none d-lg-inline-block">
                 <a class="nav-link dropdown-toggle arrow-none waves-effect waves-light" data-toggle="fullscreen"
                     href="#">

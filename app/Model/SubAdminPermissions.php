@@ -8,4 +8,8 @@ class SubAdminPermissions extends Model
 {
     protected $fillable = ['sub_admin_id','permission_id'];
 
+
+    public function permission(){
+        return $this->belongsTo('App\Model\Permissions', 'permission_id', 'id');
+    }
 }

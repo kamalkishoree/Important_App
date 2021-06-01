@@ -10,7 +10,8 @@ use App\Model\TeamTag;
 use App\Model\Tag;
 use App\Model\TagsForTeam;
 use App\Model\Manager;
-
+use App\Model\SubAdminTeamPermissions;
+use Auth;
 class TeamController extends Controller
 {
     protected $location_accuracy = [
@@ -33,9 +34,17 @@ class TeamController extends Controller
     public function index()
     {
         $agents = Agent::with(['team.manager'])->orderBy('created_at', 'DESC')->paginate(10);
-
+        
         $managers = Manager::where('client_id', auth()->user()->code)->orderBy('name')->get();
-        $teams  = Team::with(['manager', 'tags', 'agents'])->where('client_id', auth()->user()->code)->orderBy('created_at', 'DESC')->paginate(10);
+        $teams  = Team::with(['manager', 'tags', 'agents'])->where('client_id', auth()->user()->code);
+        if(Auth::user()->is_superadmin == 0 && Auth::user()->all_team_access == 0)
+        {   
+           $teams = $teams->whereHas('permissionToManager', function  ($query) {
+                                $query->where('sub_admin_id',Auth::user()->id);
+                                });
+
+        }
+        $teams = $teams->orderBy('created_at', 'DESC')->with('permissionToManager')->paginate(10);
 
         $tags   = TagsForTeam::all();
 
@@ -109,6 +118,7 @@ class TeamController extends Controller
             }
         }
         $data = [
+            'manager_id'          => Auth::id(),
             'name'          => $request->name,
             'client_id'     => auth()->user()->code,
             'location_accuracy' => $request->location_accuracy,

@@ -12,4 +12,6 @@ class ClientPreference extends Model
     public function currency(){
         return $this->hasOne('App\Model\Currency','id','currency_id');
     }
+
+    
 }

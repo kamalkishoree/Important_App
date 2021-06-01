@@ -22,8 +22,9 @@ class DatabaseDynamic
      */
     public function handle($request, Closure $next)
     {
-    
-        if(Auth::check()){
+      
+        if(Auth::check() && 1 == 2){
+         
           $client = Auth::user();
            if($client){
               $database_name = 'db_'.$client->database_name;
@@ -42,9 +43,9 @@ class DatabaseDynamic
                   'engine' => null
               ];
               Config::set("database.connections.$database_name", $default);
-           //   Config::set("client_id",$client);
-          //    Config::set("client_connected",true);
-          //    Config::set("client_data",$client);
+              Config::set("client_id",$client);
+              Config::set("client_connected",true);
+              Config::set("client_data",$client);
               DB::setDefaultConnection($database_name);
               DB::purge($database_name);
 

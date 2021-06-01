@@ -299,7 +299,7 @@ class TaskController extends Controller
         // task schdule code is hare
 
         $allocation = AllocationRule::where('id', 1)->first();
-        if($request->task_type != 'now'){ 
+        if($request->task_type != 'now'){
             $auth = Client::where('code', Auth::user()->code)->with(['getAllocation', 'getPreference'])->first();        
             $beforetime = (int)$auth->getAllocation->start_before_task_time;          
         //    $to = new \DateTime("now", new \DateTimeZone(isset(Auth::user()->timezone)? Auth::user()->timezone : 'Asia/Kolkata') );
@@ -342,7 +342,7 @@ class TaskController extends Controller
         
         //this is roster create accounding to the allocation methed
        
-        if ($request->allocation_type === 'a' || $request->allocation_type === 'm') {            
+        if ($request->allocation_type === 'a' || $request->allocation_type === 'm') {         
             switch ($allocation->auto_assign_logic) {
                 case 'one_by_one':
                     //this is called when allocation type is one by one

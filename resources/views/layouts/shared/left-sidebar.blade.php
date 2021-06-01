@@ -27,117 +27,164 @@
                 </div>
             </div>
             <p class="text-muted">Admin Head</p>
-        </div>
+        </div> 
 
+                        <?php 
+                        $allowed = [];
+                        if(Auth::user()->is_superadmin == 0){
+                           // if(Session::get('usertype') == 'manager'){
+                                foreach (Auth::user()->getAllPermissions as $key => $value) {
+                                    array_push($allowed,$value->permission->name);
+                                 }
+                           // }
+                        }else{
+                            array_push($allowed,'99999');
+                        }
+                        ?>
+     
         <!--- Sidemenu -->
         <div id="sidebar-menu">
 
             <ul id="side-menu">
 
                 <li class="menu-title mt-2">Home</li>
-
+                @if(in_array('Dashboard',$allowed) || Auth::user()->is_superadmin == 1) 
                 <li>
                     <a href="{{route('index')}}">
                         <i data-feather="airplay"></i>
                         <span> Dashboard </span>
                     </a>
                 </li> 
+                @endif
+
+                @if(in_array('Customers',$allowed) || Auth::user()->is_superadmin == 1)
                 <li>   
                     <a href="{{route('customer.index')}}">
                         <i class="fe-user-plus"></i>
                         <span> Customers </span>
                     </a>
                 </li>
+                @endif
+
+                @if(in_array('Routes',$allowed) || Auth::user()->is_superadmin == 1)
                 <li>   
                     <a href="{{route('tasks.index')}}">
                         <i data-feather="package"></i>
                         <span> Routes </span>
                     </a>
                 </li>    
-                
+                @endif
 
 
                 
 
                 <li class="menu-title mt-2">Settings</li>
 
-
+                @if(in_array('Profile',$allowed) || Auth::user()->is_superadmin == 1)
                 <li>
                     <a href="{{route('profile.index')}}">
                         <i data-feather="user"></i>
                         <span> Profile </span>
                     </a>
                 </li>
-                
+                @endif
+
+                @if(in_array('Customize',$allowed) || Auth::user()->is_superadmin == 1)
                 <li>
                     <a href="{{route('preference.show')}}">
                         <i class="fe-settings"></i>
                         <span> Customize </span>
                     </a>
                 </li>
+                @endif
+
+                @if(in_array('Teams',$allowed) || Auth::user()->is_superadmin == 1)
                 <li>
                     <a href="{{route('team.index')}}">
                         <i data-feather="users"></i>
                         <span> Teams </span>
                     </a>
                 </li>
+                @endif
+
+                @if(in_array('Agents',$allowed) || Auth::user()->is_superadmin == 1)
                 <li>
                     <a href="{{route('agent.index')}}">
                         <i class="fe-user-check"></i>
                         <span> {{ Session::get('agent_name') ? Session::get('agent_name') : 'Agent' }}</span>
                     </a>
                 </li>
+                @endif
 
+                @if(in_array('Geo Fence',$allowed) || Auth::user()->is_superadmin == 1)
                 <li>
                     <a href="{{route('geo.fence.list')}}">
                         <i class="fe-map"></i>
                         <span> Geo Fence </span>
                     </a>
                 </li>
-                
+                @endif
+
+
+                @if(in_array('Auto Allocation',$allowed) || Auth::user()->is_superadmin == 1)
                 <li>
                     <a href="{{route('auto-allocation.index')}}">
                         <i data-feather="git-branch"></i>
                         <span> Auto Allocation </span>
                     </a>
                 </li>
+                @endif
+
+                @if(in_array('Pricing Rules',$allowed) || Auth::user()->is_superadmin == 1)
                 <li>
                     <a href="{{route('pricing-rules.index')}}">
                         <i class="fe-dollar-sign"></i>
                         <span>Pricing Rules</span>
                     </a>
                 </li>
+                @endif
+
+                @if(in_array('Configure',$allowed) || Auth::user()->is_superadmin == 1)
                 <li>
                     <a href="{{route('configure')}}">
                         <i data-feather="tool"></i>
                         <span> Configure </span>
                     </a>
                 </li>
+                @endif
                 <!-- <li>
                     <a href="{{route('plan-billing.index')}}">
                         <i data-feather="dollar-sign"></i>
                         <span> Plans & Billings </span>
                     </a>
                 </li> -->
+
+                @if(in_array('Analytics',$allowed) || Auth::user()->is_superadmin == 1)
                 <li>
                     <a href="{{route('accounting')}}">
                         <i class="fe-trending-up"></i>
                         <span> Analytics </span>
                     </a>
                 </li>
+                @endif
+
+                @if(in_array('Notifications',$allowed) || Auth::user()->is_superadmin == 1)
                  <li>
                     <a href="{{route('notifications.index')}}">
                         <i data-feather="bell"></i>
                         <span> Notifications </span>
                     </a>
-                </li>                
+                </li>  
+                @endif
+                
+                @if(in_array('ACL',$allowed) || Auth::user()->is_superadmin == 1)
                 <li>
                     <a href="{{route('subadmins.index')}}">
                         <i data-feather="users"></i>
                         <span> Managers </span>
                     </a>
                 </li>
-
+                @endif
               {{-- <li>
                     <a href="#">
                         <i data-feather="package"></i>

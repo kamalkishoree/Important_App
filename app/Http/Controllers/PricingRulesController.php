@@ -45,7 +45,7 @@ class PricingRulesController extends Controller
         $team_tag   = TagsForTeam::all()->pluck('name', 'id');
         $driver_tag = TagsForAgent::all()->pluck('name', 'id');
         $clientPre  = ClientPreference::where('id',1)->with('currency')->first();
-        dd($clientPre);
+       
         return view('pricing-rules.add-pricing', compact('geos','teams','team_tag','driver_tag'));
     }
 

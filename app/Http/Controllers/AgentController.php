@@ -24,7 +24,7 @@ class AgentController extends Controller
      */
     public function index()
     {
-       
+          
         $agents = Agent::orderBy('id', 'DESC')->paginate(10);
        
 
@@ -33,7 +33,17 @@ class AgentController extends Controller
         foreach ($tags as $key => $value) {
             array_push($tag,$value->name);
         }
-        $teams  = Team::where('client_id',auth()->user()->code)->orderBy('name')->get();
+        $teams  = Team::where('client_id',auth()->user()->code)->orderBy('name');
+        if(Auth::user()->is_superadmin == 0 && Auth::user()->all_team_access == 0)
+        {   
+           $teams = $teams->whereHas('permissionToManager', function  ($query) {
+                                $query->where('sub_admin_id',Auth::user()->id);
+                                });
+
+        }
+        
+        $teams = $teams->get();
+        
         $tags   = TagsForTeam::all();
         return view('agent.index')->with(['agents' => $agents,'teams'=>$teams, 'tags' => $tags, 'showTag' => implode(',', $tag)]);
     }
