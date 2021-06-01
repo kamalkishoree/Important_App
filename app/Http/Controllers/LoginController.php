@@ -31,10 +31,13 @@ class LoginController extends Controller
         if (Auth::guard('client')->attempt(['email' => $request->email, 'password' => $request->password], $request->get('remember'))) { 
             $client = Client::with(['getAllocation', 'getPreference'])->where('email', $request->email)->first(); 
             if($client->is_blocked == 1 || $client->is_deleted == 1){
+                Auth::logout();
                 return redirect()->back()->with('Error', 'Your account has been blocked by admin. Please contact administration.');
             }
-            Auth::user();
-           
+            if($client->status == 3){
+                Auth::logout();
+                return redirect()->back()->with('Error', 'Your account in In-Active. Please contact administration.');
+            }
             return redirect()->route('index');
             
         }
