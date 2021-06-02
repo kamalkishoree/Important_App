@@ -287,7 +287,7 @@ class ClientController extends Controller
             
              # executes after the command finishes
            if (!$process->isSuccessful()) {
-               return redirect()->back()->withErrors(new \Illuminate\Support\MessageBag(['custom_domain' => new ProcessFailedException($process)]));
+               return redirect()->back()->withErrors(new \Illuminate\Support\MessageBag(['custom_domain' => $process]));
            }
             
            $connectionToGod = $this->createConnectionToGodDb($id);
