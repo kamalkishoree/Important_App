@@ -285,13 +285,10 @@ class ClientController extends Controller
           // $process = new Process(['/var/app/Automation/script.sh', $domain]);
           $my_url =   $request->custom_domain;
           $process = shell_exec("/var/app/Automation/script.sh '".$my_url."' ");
-          
-         //  $process = shell_exec('env -i /var/app/Automation/script.sh' , $domain);
-         //  $process->run();
-            dd($process);
+        
              # executes after the command finishes
-           if (!$process->isSuccessful()) {
-               return redirect()->back()->withErrors(new \Illuminate\Support\MessageBag(['custom_domain' => $process]));
+           if ($process == null) {
+               return redirect()->back()->withErrors(new \Illuminate\Support\MessageBag(['custom_domain' => 'Error in point domain.']));
            }
             
            $connectionToGod = $this->createConnectionToGodDb($id);
