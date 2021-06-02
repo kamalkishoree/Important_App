@@ -41,7 +41,8 @@ class ActivityController extends BaseController
     {
         $header = $request->header();
         $client_code = Client::where('database_name',$header['client'][0])->first();
-        $client_code->timezone = Timezone::timezone_name($client_code->timezone);
+        $tz = new Timezone();
+        $client_code->timezone = $tz->timezone_name($client_code->timezone);
         $start     = Carbon::now($client_code->timezone ?? 'UTC')->startOfDay();
         $end       = Carbon::now($client_code->timezone ?? 'UTC')->endOfDay();
         $utc_start = Carbon::parse($start . $client_code->timezone ?? 'UTC')->tz('UTC');
@@ -156,7 +157,8 @@ class ActivityController extends BaseController
 
         $header = $request->header();
         $client_code = Client::where('database_name',$header['client'][0])->first();
-       
+        $tz = new Timezone();
+        $client_code->timezone = $tz->timezone_name($client_code->timezone);
         $start     = Carbon::now($client_code->timezone ?? 'UTC')->startOfDay();
         $end       = Carbon::now($client_code->timezone ?? 'UTC')->endOfDay();
         $utc_start = Carbon::parse($start . $client_code->timezone ?? 'UTC')->tz('UTC');
