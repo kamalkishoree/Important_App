@@ -20,7 +20,16 @@ class GeoFenceController extends Controller
      */
     public function index()
     {
-        $teams = Team::with(['agents'])->where('client_id', auth()->user()->code)->orderBy('name')->get();
+        $teams = Team::with(['agents'])->where('client_id', auth()->user()->code)->orderBy('name');
+        if(Auth::user()->is_superadmin == 0 && Auth::user()->all_team_access == 0)
+        {   
+           $teams = $teams->whereHas('permissionToManager', function  ($query) {
+                                $query->where('sub_admin_id',Auth::user()->id);
+                                });
+
+        }  
+
+        $teams = $teams->get();
 
         $agents = Agent::all();
 

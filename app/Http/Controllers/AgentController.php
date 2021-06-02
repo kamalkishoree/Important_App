@@ -25,7 +25,15 @@ class AgentController extends Controller
     public function index()
     {
           
-        $agents = Agent::orderBy('id', 'DESC')->paginate(10);
+        $agents = Agent::orderBy('id', 'DESC');
+        if(Auth::user()->is_superadmin == 0 && Auth::user()->all_team_access == 0)
+        {   
+           $agents = $agents->whereHas('team.permissionToManager', function  ($query) {
+                                $query->where('sub_admin_id',Auth::user()->id);
+                                });
+
+        } 
+        $agents = $agents->paginate(10);
        
 
         $tags  = TagsForAgent::all();
@@ -158,7 +166,16 @@ class AgentController extends Controller
     public function edit($domain = '',$id)
     {
         $agent = Agent::with(['tags'])->where('id', $id)->first();
-        $teams = Team::where('client_id', auth()->user()->code)->get();
+        $teams = Team::where('client_id', auth()->user()->code); 
+        if(Auth::user()->is_superadmin == 0 && Auth::user()->all_team_access == 0)
+        {   
+           $teams = $teams->whereHas('permissionToManager', function  ($query) {
+                                $query->where('sub_admin_id',Auth::user()->id);
+                                });
+
+        } 
+        $teams = $teams->get();
+
         $tags  = TagsForAgent::all();
         $uptag   = [];
         foreach ($tags as $key => $value) {

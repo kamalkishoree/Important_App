@@ -37,7 +37,6 @@ class ClientController extends Controller
      */
     public function index()
     {  
-
         $clients = Client::where('is_deleted', 0)->orderBy('created_at', 'DESC')->paginate(10);
         return view('godpanel/client')->with(['clients' => $clients]);
     }
@@ -76,7 +75,8 @@ class ClientController extends Controller
      */
     public function store(Request $request)
     {
-       
+        DB::beginTransaction();
+        try {
         $validator = $this->validator($request->all())->validate();
         
         $getFileName = NULL;
@@ -114,15 +114,15 @@ class ClientController extends Controller
 
         # if submit custom domain from god panel 
         if ($request->custom_domain && $request->custom_domain != $client->custom_domain) {
-            //  $domain    = str_replace(array('http://', config('domainsetting.domain_set')), '', $request->custom_domain);
-           //   $domain    = str_replace(array('https://', config('domainsetting.domain_set')), '', $request->custom_domain);
-           //   $process = new Process(['/var/app/Automation/script.sh', $domain]);
-           //   $process->run();
+             $domain    = str_replace(array('http://', config('domainsetting.domain_set')), '', $request->custom_domain);
+             $domain    = str_replace(array('https://', config('domainsetting.domain_set')), '', $request->custom_domain);
+             $process = new Process(['/var/app/Automation/script.sh', $domain]);
+             $process->run();
               
-              // executes after the command finishes
-          //    if (!$process->isSuccessful()) {
-          //        return redirect()->back()->withErrors(new \Illuminate\Support\MessageBag(['custom_domain' => new ProcessFailedException($process)]));
-          //    }
+              #  executes after the command finishes
+             if (!$process->isSuccessful()) {
+                 return redirect()->back()->withErrors(new \Illuminate\Support\MessageBag(['custom_domain' => new ProcessFailedException($process)]));
+             }
              $exists = Client::where('id','!=', $client->id)->where('custom_domain', $request->custom_domain)->count();
               if ($exists) {
                    return redirect()->back()->withErrors(new \Illuminate\Support\MessageBag(['custom_domain' => 'Domain name "' . $request->custom_domain . '" is not available. Please select a different domain']));
@@ -141,7 +141,14 @@ class ClientController extends Controller
         Cache::set($database_name, $data);
 
         $this->dispatchNow(new ProcessClientDataBase($client->id));
+        DB::commit();
+       
         return redirect()->route('client.index')->with('success', 'Client Added successfully!');
+            // all good
+        } catch (\Exception $e) {
+            DB::rollback();
+            return redirect()->route('client.index')->with('error', $e->getMessage());
+        }
         
     }
 
@@ -273,28 +280,28 @@ class ClientController extends Controller
 
         # if submit custom domain by client 
         if ($request->custom_domain && $request->custom_domain != $client->custom_domain) {
-          //  $domain    = str_replace(array('http://', config('domainsetting.domain_set')), '', $request->custom_domain);
-         //   $domain    = str_replace(array('https://', config('domainsetting.domain_set')), '', $request->custom_domain);
-         //   $process = new Process(['/var/app/Automation/script.sh', $domain]);
-         //   $process->run();
+           $domain    = str_replace(array('http://', config('domainsetting.domain_set')), '', $request->custom_domain);
+           $domain    = str_replace(array('https://', config('domainsetting.domain_set')), '', $request->custom_domain);
+           $process = new Process(['/var/app/Automation/script.sh', $domain]);
+           $process->run();
             
-            // executes after the command finishes
-        //    if (!$process->isSuccessful()) {
-        //        return redirect()->back()->withErrors(new \Illuminate\Support\MessageBag(['custom_domain' => new ProcessFailedException($process)]));
-        //    }
+             # executes after the command finishes
+           if (!$process->isSuccessful()) {
+               return redirect()->back()->withErrors(new \Illuminate\Support\MessageBag(['custom_domain' => new ProcessFailedException($process)]));
+           }
             
-           // $connectionToGod = $this->createConnectionToGodDb($id);
+           $connectionToGod = $this->createConnectionToGodDb($id);
             $exists = Client::where('code','<>', $id)->where('custom_domain', $request->custom_domain)->count();
             if ($exists) {
-                // return response(array('status' => "error", 'statuscode' => 400, 'message' =>
-                //     $validator->getMessageBag()->first()), 400);
                 return redirect()->back()->withErrors(new \Illuminate\Support\MessageBag(['custom_domain' => 'Domain name "' . $request->custom_domain . '" is not available. Please select a different domain']));
             }
             else{
                 Client::where('code', $id)->update(['custom_domain' => $request->custom_domain]);
-            //    $custom_db_name = Client::where('code', $id)->first();
-            //    $connectionToLocal = $this->createConnectionToClientDb($custom_db_name->database_name);
-            //    Client::update(['custom_domain' => $request->custom_domain]);
+               $custom_db_name = Client::where('code', $id)->first();
+               $connectionToLocal = $this->createConnectionToClientDb($custom_db_name->database_name);
+               $dbname = DB::connection()->getDatabaseName();
+               if($dbname != env('DB_DATABASE'))
+               Client::update(['custom_domain' => $request->custom_domain]);
             }
             
             
@@ -302,18 +309,20 @@ class ClientController extends Controller
 
          # if submit sub_domain domain by client 
          if ($request->sub_domain && ($request->sub_domain != $client->sub_domain)) {
-        //    $connectionToGod = $this->createConnectionToGodDb($id);
+            $connectionToGod = $this->createConnectionToGodDb($id);
             $exists = Client::where('code','<>', $id)->where('sub_domain', $request->sub_domain)->count();
             if ($exists) {
-                // return response(array('status' => "error", 'statuscode' => 400, 'message' =>
-                //     $validator->getMessageBag()->first()), 400);
-                return redirect()->back()->withErrors(new \Illuminate\Support\MessageBag(['sub_domain' => 'Sub Domain name "' . $request->sub_domain . '" is not available. Please select a different domain']));
+                 return redirect()->back()->withErrors(new \Illuminate\Support\MessageBag(['sub_domain' => 'Sub Domain name "' . $request->sub_domain . '" is not available. Please select a different domain']));
             }
             else{
-                Client::where('code', $id)->update(['sub_domain' => $request->sub_domain]);
-            //    $custom_db_name = Client::where('code', $id)->first();
-            //    $connectionToLocal = $this->createConnectionToClientDb($custom_db_name->database_name);
-             //   Client::update(['sub_domain' => $request->sub_domain]);
+               Client::where('code', $id)->update(['sub_domain' => $request->sub_domain]);
+               $custom_db_name = Client::where('code', $id)->first();
+               $connectionToLocal = $this->createConnectionToClientDb($custom_db_name->database_name);
+               $dbname = DB::connection()->getDatabaseName();
+               if($dbname != env('DB_DATABASE'))
+               Client::query()->update(['sub_domain' => $request->sub_domain]);
+               $new_domain_link = "http://".$request->sub_domain."".env('SUBDOMAIN','.royodispatch.com');
+               return redirect()->to($new_domain_link);
             }
             
             
@@ -381,8 +390,6 @@ class ClientController extends Controller
             Config::set("database.connections.$database_name", $default);
             DB::setDefaultConnection($database_name);
             DB::purge($database_name);
-
-            
     }
 
     /**
