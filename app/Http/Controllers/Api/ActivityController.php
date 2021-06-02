@@ -6,7 +6,7 @@ use App\Http\Controllers\Api\BaseController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
-use App\Model\{User, Agent, AgentLog, AllocationRule, Client, ClientPreference, Cms, Order, Task, TaskProof};
+use App\Model\{User, Agent, AgentLog, AllocationRule, Client, ClientPreference, Cms, Order, Task, TaskProof,Timezone};
 use Validation;
 use DB;
 use Illuminate\Support\Facades\Storage;
@@ -41,7 +41,7 @@ class ActivityController extends BaseController
     {
         $header = $request->header();
         $client_code = Client::where('database_name',$header['client'][0])->first();
-       
+        $client_code->timezone = Timezone::timezone_name($client_code->timezone);
         $start     = Carbon::now($client_code->timezone ?? 'UTC')->startOfDay();
         $end       = Carbon::now($client_code->timezone ?? 'UTC')->endOfDay();
         $utc_start = Carbon::parse($start . $client_code->timezone ?? 'UTC')->tz('UTC');
