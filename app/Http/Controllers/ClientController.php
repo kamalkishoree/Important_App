@@ -303,7 +303,8 @@ class ClientController extends Controller
                $connectionToLocal = $this->createConnectionToClientDb($custom_db_name->database_name);
                $dbname = DB::connection()->getDatabaseName();
                if($dbname != env('DB_DATABASE'))
-               Client::update(['custom_domain' => $request->custom_domain]);
+               Client::where('id','!=',0)->update(['custom_domain' => $request->custom_domain]);
+               return redirect()->to($request->custom_domain);
             }
             
             
@@ -322,7 +323,7 @@ class ClientController extends Controller
                $connectionToLocal = $this->createConnectionToClientDb($custom_db_name->database_name);
                $dbname = DB::connection()->getDatabaseName();
                if($dbname != env('DB_DATABASE'))
-               Client::query()->update(['sub_domain' => $request->sub_domain]);
+               Client::where('id','!=',0)->update(['sub_domain' => $request->sub_domain]);
                $new_domain_link = "http://".$request->sub_domain."".env('SUBDOMAIN','.royodispatch.com');
                return redirect()->to($new_domain_link);
             }
