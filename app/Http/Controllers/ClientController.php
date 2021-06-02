@@ -298,13 +298,14 @@ class ClientController extends Controller
                 return redirect()->back()->withErrors(new \Illuminate\Support\MessageBag(['custom_domain' => 'Domain name "' . $request->custom_domain . '" is not available. Please select a different domain']));
             }
             else{
-                Client::where('code', $id)->update(['custom_domain' => $request->custom_domain]);
+               Client::where('code', $id)->update(['custom_domain' => $request->custom_domain]);
                $custom_db_name = Client::where('code', $id)->first();
                $connectionToLocal = $this->createConnectionToClientDb($custom_db_name->database_name);
                $dbname = DB::connection()->getDatabaseName();
                if($dbname != env('DB_DATABASE'))
                Client::where('id','!=',0)->update(['custom_domain' => $request->custom_domain]);
-               return redirect()->to($request->custom_domain);
+               $new_domain_link = "http://".$request->custom_domain;
+               return redirect()->to($new_domain_link);
             }
             
             
