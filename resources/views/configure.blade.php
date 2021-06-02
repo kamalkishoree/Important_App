@@ -335,7 +335,7 @@
                         </p>
                         <div class="row mb-3">
                             <div class="col-12">
-                                    <label for="custom_domain">Custom Domain</label> *Make sure you already pointed to our ip ({{\env('IP')}}) from your domain.
+                                    <label for="custom_domain">Custom Domain</label> *Make sure you already pointed to IP ({{\env('IP')}}) from your domain.
                                     <div class="domain-outer d-flex align-items-center">
                                     <div class="domain_name">https://</div>
                                     <input type="text" name="custom_domain" id="custom_domain"

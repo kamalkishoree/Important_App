@@ -63,6 +63,7 @@ class ClientController extends Controller
             'password' => ['required'],
             'database_name' => ['required','unique:clients,database_name'],
             'custom_domain' => ['nullable','unique:clients,custom_domain'],
+            'sub_domain' => ['required','unique:clients,sub_domain'],
             //'logo' => ['required'],
         ]);
     }
@@ -114,15 +115,17 @@ class ClientController extends Controller
 
         # if submit custom domain from god panel 
         if ($request->custom_domain && $request->custom_domain != $client->custom_domain) {
-             $domain    = str_replace(array('http://', config('domainsetting.domain_set')), '', $request->custom_domain);
-             $domain    = str_replace(array('https://', config('domainsetting.domain_set')), '', $request->custom_domain);
-             $process = new Process(['/var/app/Automation/script.sh', $domain]);
-             $process->run();
+
+             try {
+                $domain    = str_replace(array('http://', config('domainsetting.domain_set')), '', $request->custom_domain);
+                $domain    = str_replace(array('https://', config('domainsetting.domain_set')), '', $request->custom_domain);
+                // $process = new Process(['/var/app/Automation/script.sh', $domain]);
+                $my_url =   $request->custom_domain;
+                $process = shell_exec("/var/app/Automation/script.sh '".$my_url."' ");
+            }catch(Exception $e) {
+              return redirect()->back()->withErrors(new \Illuminate\Support\MessageBag(['custom_domain' => $e->getMessage()]));
               
-              #  executes after the command finishes
-             if (!$process->isSuccessful()) {
-                 return redirect()->back()->withErrors(new \Illuminate\Support\MessageBag(['custom_domain' => new ProcessFailedException($process)]));
-             }
+            }
              $exists = Client::where('id','!=', $client->id)->where('custom_domain', $request->custom_domain)->count();
               if ($exists) {
                    return redirect()->back()->withErrors(new \Illuminate\Support\MessageBag(['custom_domain' => 'Domain name "' . $request->custom_domain . '" is not available. Please select a different domain']));
