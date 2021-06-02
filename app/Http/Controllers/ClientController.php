@@ -283,7 +283,10 @@ class ClientController extends Controller
            $domain    = str_replace(array('http://', config('domainsetting.domain_set')), '', $request->custom_domain);
            $domain    = str_replace(array('https://', config('domainsetting.domain_set')), '', $request->custom_domain);
           // $process = new Process(['/var/app/Automation/script.sh', $domain]);
-           $process = shell_exec('env -i /var/app/Automation/script.sh' , $domain);
+          $my_url =   $request->custom_domain;
+          $process = shell_exec("/var/app/Automation/script.sh '".$my_url."' ");
+          
+         //  $process = shell_exec('env -i /var/app/Automation/script.sh' , $domain);
          //  $process->run();
             dd($process);
              # executes after the command finishes
