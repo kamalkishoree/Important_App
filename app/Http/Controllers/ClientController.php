@@ -280,16 +280,17 @@ class ClientController extends Controller
 
         # if submit custom domain by client 
         if ($request->custom_domain && $request->custom_domain != $client->custom_domain) {
-           $domain    = str_replace(array('http://', config('domainsetting.domain_set')), '', $request->custom_domain);
-           $domain    = str_replace(array('https://', config('domainsetting.domain_set')), '', $request->custom_domain);
-          // $process = new Process(['/var/app/Automation/script.sh', $domain]);
-          $my_url =   $request->custom_domain;
-          $process = shell_exec("/var/app/Automation/script.sh '".$my_url."' ");
-        
-             # executes after the command finishes
-           if ($process == null) {
-               return redirect()->back()->withErrors(new \Illuminate\Support\MessageBag(['custom_domain' => 'Error in point domain.']));
-           }
+          try {
+              $domain    = str_replace(array('http://', config('domainsetting.domain_set')), '', $request->custom_domain);
+              $domain    = str_replace(array('https://', config('domainsetting.domain_set')), '', $request->custom_domain);
+              // $process = new Process(['/var/app/Automation/script.sh', $domain]);
+              $my_url =   $request->custom_domain;
+              $process = shell_exec("/var/app/Automation/script.sh '".$my_url."' ");
+          }catch(Exception $e) {
+            return redirect()->back()->withErrors(new \Illuminate\Support\MessageBag(['custom_domain' => $e->getMessage()]));
+            
+          }
+          
             
            $connectionToGod = $this->createConnectionToGodDb($id);
             $exists = Client::where('code','<>', $id)->where('custom_domain', $request->custom_domain)->count();
