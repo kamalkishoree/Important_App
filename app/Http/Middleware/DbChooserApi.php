@@ -51,7 +51,7 @@ class DbChooserApi
             ];
             Config::set("database.connections.$database_name", $default);
             Config::set("client_connected", true);
-            Config::set("client_data", $client);
+          //  Config::set("client_data", $client);
             DB::setDefaultConnection($database_name);
             DB::purge($database_name);
             //DB::reconnect($database_name);
