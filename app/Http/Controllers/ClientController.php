@@ -307,8 +307,8 @@ class ClientController extends Controller
                $dbname = DB::connection()->getDatabaseName();
                if($dbname != env('DB_DATABASE'))
                Client::where('id','!=',0)->update(['custom_domain' => $request->custom_domain]);
-               $new_domain_link = "http://".$request->custom_domain;
-               return redirect()->to($new_domain_link);
+              // $new_domain_link = "http://".$request->custom_domain;
+              // return redirect()->to($new_domain_link);
             }
             
             
