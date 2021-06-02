@@ -595,6 +595,13 @@
                 return false;
             }
         }
+
+        if (!$("input[name='old_address_id']:checked").val()) {
+                err = 1;
+                $(".addspan").show();
+                return false;
+        }
+
        //return false;
         var selectedVal = "";
         var selected = $("#typeInputss input[type='radio']:checked");

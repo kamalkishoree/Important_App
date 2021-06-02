@@ -35,7 +35,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot(Request $request)
     {   
         $this->connectDynamicDb($request);
-        if(config('app.env') === 'production') {
+        if(config('app.env') != 'local') {
             \URL::forceScheme('https');
         }
         Builder::defaultStringLength(191);
