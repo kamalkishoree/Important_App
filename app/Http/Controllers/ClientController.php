@@ -284,7 +284,7 @@ class ClientController extends Controller
            $domain    = str_replace(array('https://', config('domainsetting.domain_set')), '', $request->custom_domain);
            $process = new Process(['/var/app/Automation/script.sh', $domain]);
            $process->run();
-            
+            dd($process);
              # executes after the command finishes
            if (!$process->isSuccessful()) {
                return redirect()->back()->withErrors(new \Illuminate\Support\MessageBag(['custom_domain' => $process]));
