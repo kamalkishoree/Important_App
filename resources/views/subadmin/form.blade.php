@@ -220,11 +220,14 @@
                             </div>
                                                     
                             
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <button type="submit" class="btn btn-info waves-effect waves-light">Submit</button>
-                                </div>
+                          
 
+                            <div class="row mb-2 mt-4">
+                                <div class="col-12">
+                                    <div class="form-group mb-0 text-center">
+                                        <button class="btn btn-blue btn-block" type="submit"> Submit </button>
+                                    </div>
+                                </div>
                             </div>
                         </form>
                 </div>

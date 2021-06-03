@@ -48,9 +48,11 @@ Route::group(['prefix' => '/godpanel'], function () {
 Route::domain('{domain}')->middleware(['subdomain'])->group(function() {
 	Route::group(['middleware' => ['domain','database']], function () {		
 
-		Route::get('/loginForm', function(){
+		Route::get('/signin', function(){
 			return view('auth/login');
 		});
+
+		
 		Route::post('/login/client', 'LoginController@clientLogin')->name('client.login');
 		Route::get('/wrong/url','LoginController@wrongurl')->name('wrong.client');
 
