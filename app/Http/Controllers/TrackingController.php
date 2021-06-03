@@ -69,7 +69,7 @@ class TrackingController extends Controller
 
                 if (isset($check_alredy->id)) {
 
-                    return response()->json(['status' => true, 'message' => 'Feedback is alredy submitted']);
+                    return response()->json(['status' => true, 'message' => 'Feedback has been already submitted.']);
                 } else {
 
                     $data = [
