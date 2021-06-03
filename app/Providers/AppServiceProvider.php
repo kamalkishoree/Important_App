@@ -56,7 +56,7 @@ class AppServiceProvider extends ServiceProvider
     }
 
     public function connectDynamicDb($request)
-    {dd('ok');
+    {
         $domain = $request->getHost();
         $domain    = str_replace(array('http://', config('domainsetting.domain_set')), '', $domain);
         $domain    = str_replace(array('https://', config('domainsetting.domain_set')), '', $domain);
