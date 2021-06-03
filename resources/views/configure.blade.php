@@ -21,7 +21,11 @@
             </div>
         </div>
         <!-- end page title -->
-
+        @if (\Session::has('success'))
+        <div class="alert alert-success">
+            <span>{!! \Session::get('success') !!}</span>
+        </div>
+    @endif
         <div class="row">
             <div class="col-md-3">
                 <form method="POST" action="{{ route('preference', Auth::user()->code) }}">
@@ -34,11 +38,7 @@
                             <div class="row mb-2">
                                 <div class="col-sm-8">
                                     <div class="text-sm-left">
-                                        @if (\Session::has('success'))
-                                            <div class="alert alert-success">
-                                                <span>{!! \Session::get('success') !!}</span>
-                                            </div>
-                                        @endif
+                                        
                                     </div>
                                 </div>
                             </div>
