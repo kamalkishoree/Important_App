@@ -34,12 +34,7 @@ class DbChooserApi
             $database_name =  'db_'.$header['client'][0];
         }
 
-        $client_details = Client::where('database_name',$header['client'][0])->first();
-        if($client_details->custom_domain && !empty($client_details->custom_domain))
-        $client_url = "http://".$client_details->custom_domain;
-        else
-        $client_url = "http://".$client_details->sub_domain.\env('SUBDOMAIN');
-
+       
      
 
         if (isset($database_name)) {
