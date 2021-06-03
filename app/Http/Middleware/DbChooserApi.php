@@ -40,7 +40,9 @@ class DbChooserApi
         else
         $client_url = "http://".$client_details->sub_domain.\env('SUBDOMAIN');
 
-        URL::defaults(['locale' => $client_url]);
+        \URL::defaults(['domain' => $client_url]);
+
+       
 
         if (isset($database_name)) {
             $default = [
