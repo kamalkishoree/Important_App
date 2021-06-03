@@ -9,7 +9,6 @@ use Request;
 use Config;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\URL;
-use App\Model\Client;
 class DbChooserApi
 {
     /**
