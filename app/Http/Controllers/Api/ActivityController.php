@@ -79,7 +79,7 @@ class ActivityController extends BaseController
             
             
         }
-        dd(url('/task'));
+        
    
         return response()->json([
             'data' => $tasks,
