@@ -131,7 +131,7 @@ class TaskController extends BaseController
                  $sms_final_status =  $sms_settings['notification_events'][0];
                 // $sms_body         = 'Driver '.$order_details->agent->name.' in our '.$order_details->agent->make_model.' with license plate '.$order_details->agent->plate_number.' is heading to your location. You can track them here.'.url('/order/tracking/'.$client_details->code.'/'.$order_details->unique_id.'');
                  $sms_body         = $sms_settings['notification_events'][0]['message'];
-                 $link             =  url('/order/tracking/'.$client_details->code.'/'.$order_details->unique_id.'');
+                 $link             =  $client_url.'/order/tracking/'.$client_details->code.'/'.$order_details->unique_id;
                 break;
             case 3:
                  $task_type        = 'assigned';
@@ -145,7 +145,7 @@ class TaskController extends BaseController
                 $sms_final_status  =   $sms_settings['notification_events'][2];
                // $sms_body          = 'Thank you, your order has been delivered successfully by driver '.$order_details->agent->name.'. You can rate them here .'.url('/order/feedback/'.$client_details->code.'/'.$order_details->unique_id.'');
                 $sms_body         = $sms_settings['notification_events'][2]['message'];
-                $link              =  url('/order/feedback/'.$client_details->code.'/'.$order_details->unique_id.'');
+                $link              =  $client_url.'/order/feedback/'.$client_details->code.'/'.$order_details->unique_id;
                 break;
             case 5:
                 $task_type         = 'failed';

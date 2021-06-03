@@ -33,7 +33,7 @@ class AppServiceProvider extends ServiceProvider
      * @return void
      */
     public function boot(Request $request)
-    {   
+    {  
         $this->connectDynamicDb($request);
         if(config('app.env') != 'local') {
             \URL::forceScheme('https');
