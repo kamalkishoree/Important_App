@@ -173,7 +173,7 @@
                             '<label class="mb-3">Image</label>'+
                             '<div class="status-wrap-block">'+
                                 '<div class="image-wrap-sign">'+
-                                    '<img src="https://imgproxy.royodispatch.com/insecure/fit/400/400/sm/0/plain/https://royodelivery-assets.s3.us-west-2.amazonaws.com/'+ elem.proof_image +'" alt="">'+
+                                    '<a data-fancybox="images" href="https://royodelivery-assets.s3.us-west-2.amazonaws.com/'+ elem.proof_image +'"><img src="https://imgproxy.royodispatch.com/insecure/fit/400/400/sm/0/plain/https://royodelivery-assets.s3.us-west-2.amazonaws.com/'+ elem.proof_image +'" alt=""></a>'+
                                 '</div>'+
                             '</div>'+
                         '</div>' ;
@@ -184,7 +184,7 @@
                                       '<label class="mb-3">Signature</label>'+
                                        '<div class="status-wrap-block">'+
                                         '<div class="image-wrap-sign">'+
-                                      '<img src="https://imgproxy.royodispatch.com/insecure/fit/200/200/sm/0/plain/https://royodelivery-assets.s3.us-west-2.amazonaws.com/'+ elem.proof_signature +'" alt="">'+
+                                      '<a data-fancybox="images" href="https://royodelivery-assets.s3.us-west-2.amazonaws.com/'+ elem.proof_signature +'"><img src="https://imgproxy.royodispatch.com/insecure/fit/200/200/sm/0/plain/https://royodelivery-assets.s3.us-west-2.amazonaws.com/'+ elem.proof_signature +'" alt=""></a>'+
                                       '</div>'+
                                       '</div>'+
                                       '</div>';

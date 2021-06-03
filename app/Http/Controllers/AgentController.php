@@ -75,10 +75,10 @@ class AgentController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'type' => ['required'],
             'vehicle_type_id' => ['required'],
-            'make_model' => ['required'],
-            'plate_number' => ['required'],
+            //'make_model' => ['required'],
+            //'plate_number' => ['required'],
             'phone_number' => ['required'],
-            'color' => ['required'],
+            //'color' => ['required'],
             'profile_picture' => ['mimes:jpeg,png,jpg,gif,svg|max:2048'],
         ]);
     }
@@ -209,10 +209,10 @@ class AgentController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'type' => ['required'],
             'vehicle_type_id' => ['required'],
-            'make_model' => ['required'],
-            'plate_number' => ['required'],
+            //'make_model' => ['required'],
+            //'plate_number' => ['required'],
             'phone_number' => ['required'],
-            'color' => ['required'],
+            //'color' => ['required'],
             'profile_picture' => ['mimes:jpeg,png,jpg,gif,svg|max:2048'],
         ]);
     }

@@ -19,7 +19,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use App\Jobs\RosterCreate;
-use App\Models\RosterDeatil;
+use App\Models\RosterDetail;
 use Illuminate\Support\Arr;
 use App\Jobs\scheduleNotification;
 Use Log;

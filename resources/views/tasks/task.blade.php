@@ -5,6 +5,15 @@
 @php
 use Carbon\Carbon;
 @endphp
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+<style>
+    #agents-datatable th, #agents-datatable td{
+        padding: 0.85rem;
+    }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
 @section('content')
     <!-- Start Content-->
     <div class="container-fluid">
@@ -13,7 +22,7 @@ use Carbon\Carbon;
         <div class="row">
             <div class="col-12">
                 <div class="page-title-box">
-                    <h4 class="page-title">{{ auth()->user()->getPreference->agent_name ?? 'Routes' }}</h4>
+                    <h4 class="page-title">Routes</h4>
                 </div>
             </div>
         </div>
