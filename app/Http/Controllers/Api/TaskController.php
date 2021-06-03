@@ -59,7 +59,7 @@ class TaskController extends BaseController
         $client_url = "http://".$client_details->custom_domain;
         else
         $client_url = "http://".$client_details->sub_domain.\env('SUBDOMAIN');
-        dd(url());
+        
         //set dynamic smtp for email send
        $this->setMailDetail($client_details);
 
