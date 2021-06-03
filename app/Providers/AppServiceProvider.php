@@ -57,7 +57,7 @@ class AppServiceProvider extends ServiceProvider
 
     public function connectDynamicDb($request)
     {   
-        if (Request::is('api*')){
+        if (\Request::is('api*')){
 
         }else{
             $domain = $request->getHost();
