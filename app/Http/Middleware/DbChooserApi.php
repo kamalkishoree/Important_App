@@ -8,7 +8,8 @@ use Illuminate\Support\Facades\Cache;
 use Request;
 use Config;
 use Illuminate\Support\Facades\DB;
-
+use Illuminate\Support\Facades\URL;
+use App\Model\Client;
 class DbChooserApi
 {
     /**
@@ -33,6 +34,14 @@ class DbChooserApi
         if (array_key_exists("client", $header)){
             $database_name =  'db_'.$header['client'][0];
         }
+
+        $client_details = Client::where('database_name',$header['client'][0])->first();
+        if($client_details->custom_domain && !empty($client_details->custom_domain))
+        $client_url = "http://".$client_details->custom_domain;
+        else
+        $client_url = "http://".$client_details->sub_domain.\env('SUBDOMAIN');
+
+        URL::defaults(['locale' => $client_url]);
 
         if (isset($database_name)) {
             $default = [

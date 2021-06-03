@@ -12,6 +12,7 @@ use DB;
 use Illuminate\Support\Facades\Storage;
 use App\Model\Roster;
 use Config;
+use Illuminate\Support\Facades\URL;
 
 class ActivityController extends BaseController
 {
@@ -78,8 +79,7 @@ class ActivityController extends BaseController
             
             
         }
-        dd(url('/task'));
-   
+       
         return response()->json([
             'data' => $tasks,
         ],200);
