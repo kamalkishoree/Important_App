@@ -14,15 +14,25 @@
     <div class="row">
         <div class="col-12">
             <div class="page-title-box">
-                <h4 class="page-title">Create Client</h4>
+                <h4 class="page-title">{{ (isset($client))?"Update":"Create"}} Client</h4>
             </div>
         </div>
     </div>
+    
     <!-- end page title -->
     <div class="row">
         <div class="col-12">
             <div class="card">
                 <div class="card-body">
+                    <div class="col-sm-12">
+                        <div class="text-sm-left">
+                            @if (\Session::has('error'))
+                            <div class="alert alert-danger">
+                                <span>{!! \Session::get('error') !!}</span>
+                            </div>
+                            @endif
+                        </div>
+                    </div>
                     @if(isset($client))
                     <form id="UpdateClient" method="post" action="{{route('client.update', $client->id)}}"
                         enctype="multipart/form-data">
@@ -186,7 +196,7 @@
                                         <label for="sub_domain" class="control-label">SUB DOMAIN</label>
                                             <div class="domain-outer d-flex align-items-center">
                                                 <div class="domain_name">https://</div>
-                                                <input type="text" name="sub_domain" id="sub_domain" placeholder="Enter Sub domain" class="form-control" value="{{ old('sub_domain', $client->sub_domain ?? '')}}"><div class="domain_name">{{\env('SUBDOMAIN')}}</div>
+                                                <input type="text" name="sub_domain" pattern="[a-z]+" id="sub_domain" placeholder="Enter Sub domain" class="form-control" value="{{ old('sub_domain', $client->sub_domain ?? '')}}"><div class="domain_name">{{\env('SUBDOMAIN')}}</div>
                                             </div>
                                             
 
