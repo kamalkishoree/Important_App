@@ -72,7 +72,7 @@ class AppServiceProvider extends ServiceProvider
                           ->where(function($q) use($domain, $subDomain){
                                     $q->where('custom_domain', $domain)
                                       ->orWhere('sub_domain', $subDomain[0]);
-                          })
+                          })->where('is_deleted',0)->where('is_blocked',0)
                           ->first();
     
              
@@ -81,7 +81,7 @@ class AppServiceProvider extends ServiceProvider
       
             $redisData = $client;
             $dbname = DB::connection()->getDatabaseName();
-           
+          
            if($domain){
                   if($domain != env('Main_Domain')){
                         if($client && $dbname != 'db_'.$client->database_name){

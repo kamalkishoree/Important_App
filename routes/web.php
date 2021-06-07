@@ -38,7 +38,7 @@ Route::group(['prefix' => '/godpanel','middleware' => 'CheckGodPanel'], function
 	
 		Route::any('/logout', 'Godpanel\LoginController@logout')->name('god.logout');
 		Route::get('dashboard','Godpanel\DashBoardController@index')->name('god.dashboard');
-		Route::resource('client','ClientController');
+		Route::resource('client','Godpanel\ClientController');
 		Route::resource('language','Godpanel\LanguageController');
 		Route::resource('currency','Godpanel\CurrencyController');
 	});	
@@ -73,7 +73,6 @@ Route::domain('{domain}')->middleware(['subdomain'])->group(function() {
 				Route::get('configure', 'ClientController@ShowConfiguration')->name('configure');
 				Route::post('smtp/save','ClientController@saveSmtp')->name('smtp');
 				Route::get('options', 'ClientController@ShowOptions')->name('options');
-				// Route::resource('client','ClientController');
 				Route::resource('agent', 'AgentController');
 				Route::post('pay/receive','AgentController@payreceive')->name('pay.receive');
 				Route::get('agent/paydetails/{id}','AgentController@agentPayDetails')->name('agent.paydetails');
@@ -115,7 +114,6 @@ Route::domain('{domain}')->middleware(['subdomain'])->group(function() {
 				Route::post('submit_client', 'UserProfile@SaveRecord')->name('store_client');
 				Route::any('/logout', 'LoginController@logout')->name('client.logout');
 				/* Client Profile update */
-				//Route::get('client/edit/{id}','ClientProfileController@edit')->name('client.profile.edit');
 				Route::put('client/profile/{id}','ClientProfileController@update')->name('client.profile.update');
 				Route::post('client/password/update','ClientProfileController@changePassword')->name('client.password.update');
 				Route::get('/newdemo', function(){
@@ -123,17 +121,11 @@ Route::domain('{domain}')->middleware(['subdomain'])->group(function() {
 				});				
 				
 				Route::resource('subclient','SubClientController');
-
 				Route::post('assign/agent','TaskController@assignAgent')->name('assign.agent');
 				Route::post('assign/date','TaskController@assignDate')->name('assign.date');
-
-				// Route::get('/order/tracking/{clientcode}/{order_id}','TrackingController@OrderTracking')->name('order.tracking');
-
-               Route::get('/order/feedback/{clientcode}/{order_id}','TrackingController@OrderFeedback')->name('order.feedback');
-
-               Route::post('/feedback/save','TrackingController@SaveFeedback')->name('feedbackSave');
-
-			   Route::resource('subadmins','SubAdminController');
+			    Route::get('/order/feedback/{clientcode}/{order_id}','TrackingController@OrderFeedback')->name('order.feedback');
+				Route::post('/feedback/save','TrackingController@SaveFeedback')->name('feedbackSave');
+				Route::resource('subadmins','SubAdminController');
 
 			  		
 
@@ -144,12 +136,6 @@ Route::domain('{domain}')->middleware(['subdomain'])->group(function() {
 });
 
 
-
-   
-
-// Route::post('/login/client', 'LoginController@clientLogin')->name('client.login');
-// Route::get('/wrong/url','LoginController@wrongurl')->name('wrong.client');
-
 //feedback & tracking
 
 Route::group(['middleware' => 'auth', 'prefix' => '/'], function () {
@@ -158,5 +144,3 @@ Route::group(['middleware' => 'auth', 'prefix' => '/'], function () {
     Route::get('{any}', 'RoutingController@root')->name('any');
 });
 
-// landing
-// Route::get('', 'RoutingController@index')->name('index');

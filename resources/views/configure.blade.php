@@ -341,12 +341,12 @@
                                     <input type="text" name="custom_domain" id="custom_domain"
                                         placeholder="dummy.com" class="form-control"
                                         value="{{ old('custom_domain', Auth::user()->custom_domain ?? '') }}">
+                                    </div>  
                                     @if ($errors->has('custom_domain'))
-                                        <span class="text-danger" role="alert">
-                                            <strong>{{ $errors->first('custom_domain') }}</strong>
-                                        </span>
+                                    <span class="text-danger" role="alert">
+                                        <strong>{{ $errors->first('custom_domain') }}</strong>
+                                    </span>
                                     @endif
-                            </div>  
                             </div>  
                         </div>
                        
@@ -380,12 +380,12 @@
                                         <input type="text" name="sub_domain" id="sub_domain"
                                             placeholder="Sub Domain" class="form-control"
                                             value="{{ old('sub_domain', Auth::user()->sub_domain ?? '') }}"><div class="domain_name">{{\env('SUBDOMAIN')}}</div>
-                                        @if ($errors->has('sub_domain'))
-                                            <span class="text-danger" role="alert">
-                                                <strong>{{ $errors->first('sub_domain') }}</strong>
-                                            </span>
-                                        @endif
                                     </div>
+                                    @if($errors->has('sub_domain'))
+                                    <span class="text-danger" role="alert">
+                                        <strong>{{ $errors->first('sub_domain') }}</strong>
+                                    </span>
+                                @endif
                                 </div>
                                
                         </div>

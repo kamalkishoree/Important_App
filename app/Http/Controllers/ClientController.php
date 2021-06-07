@@ -79,7 +79,7 @@ class ClientController extends Controller
         DB::beginTransaction();
         try {
         $validator = $this->validator($request->all())->validate();
-    
+            
         
         $getFileName = NULL;
 
@@ -197,12 +197,7 @@ class ClientController extends Controller
     protected function updateValidator(array $data,$id)
     {
         return Validator::make($data, [
-         //   'name' => ['required', 'string', 'max:255'],
-         //   'email' => ['required', 'string', 'email', 'max:255',\Illuminate\Validation\Rule::unique('clients')->ignore($id)],
-        //    'phone_number' => ['required'],
-        //    'database_name' => ['required'],
-            //'database_password' => ['required'],
-            'sub_domain' => ['required','min:4',\Illuminate\Validation\Rule::unique('clients')->ignore($id)],
+           'sub_domain' => ['required','min:4',\Illuminate\Validation\Rule::unique('clients')->ignore($id)],
         ]);
     }
 
@@ -236,20 +231,8 @@ class ClientController extends Controller
         }
         
         $data = [
-        //    'name' => $request->name,
-        //    'email' => $request->email,
-        //    'password' => $getClient->password,
-        //    'phone_number' => $request->phone_number,
-        //    'database_path' => $request->database_path,
-              'database_name' => $getClient['database_name'],
-        //    'database_username' => $request->database_username,
-        //    'database_password' => $request->database_password,
-       //     'company_name' => $request->company_name,
-       //     'company_address' => $request->company_address,
-            'custom_domain' => $request->custom_domain,
-      //      'country_id' => $request->country ? $request->country : NULL,
-      //      'timezone' => $request->timezone ? $request->timezone : 'America/New_York',
-      //      'logo' => $getFileName,
+               'database_name' => $getClient['database_name'],
+             'custom_domain' => $request->custom_domain,
             'sub_domain'   => $request->sub_domain
         ];
         
@@ -339,24 +322,11 @@ class ClientController extends Controller
     {
        
         $client = Client::where('code', $id)->firstOrFail(); 
-        //update the client custom_domain if value is set //
-        if ($request->domain_name == 'custom_domain') {
-            // check the availability of the domain //
-            $exists = Client::where('code', '<>', $id)->where('custom_domain', $request->custom_domain_name)->count();
-            if ($exists) {
-                return redirect()->back()->withErrors(new \Illuminate\Support\MessageBag(['domain_name' => 'Domain name "' . $request->custom_domain_name . '" is not available. Please select a different domain']));
-            }
-            Client::where('id', $id)->update(['custom_domain' => $request->custom_domain_name]);
-        }
-
-        
-
         # if submit custom domain by client 
         if ($request->custom_domain && $request->custom_domain != $client->custom_domain) {
           try {
               $domain    = str_replace(array('http://', config('domainsetting.domain_set')), '', $request->custom_domain);
               $domain    = str_replace(array('https://', config('domainsetting.domain_set')), '', $request->custom_domain);
-              // $process = new Process(['/var/app/Automation/script.sh', $domain]);
               $my_url =   $request->custom_domain;
               $process = shell_exec("/var/app/Automation/script.sh '".$my_url."' ");
           }catch(Exception $e) {
@@ -365,7 +335,7 @@ class ClientController extends Controller
           }
           
             
-           $connectionToGod = $this->createConnectionToGodDb($id);
+            $connectionToGod = $this->createConnectionToGodDb($id);
             $exists = Client::where('code','<>', $id)->where('custom_domain', $request->custom_domain)->count();
             if ($exists) {
                 return redirect()->back()->withErrors(new \Illuminate\Support\MessageBag(['custom_domain' => 'Domain name "' . $request->custom_domain . '" is not available. Please select a different domain']));
@@ -377,8 +347,7 @@ class ClientController extends Controller
                $dbname = DB::connection()->getDatabaseName();
                if($dbname != env('DB_DATABASE'))
                Client::where('id','!=',0)->update(['custom_domain' => $request->custom_domain]);
-              // $new_domain_link = "http://".$request->custom_domain;
-              // return redirect()->to($new_domain_link);
+              
             }
             
             
@@ -386,27 +355,24 @@ class ClientController extends Controller
 
          # if submit sub_domain domain by client 
          if ($request->sub_domain && ($request->sub_domain != $client->sub_domain)) {
-            $connectionToGod = $this->createConnectionToGodDb($id);
-            $exists = Client::where('code','<>', $id)->where('sub_domain', $request->sub_domain)->count();
-            if ($exists) {
-                 return redirect()->back()->withErrors(new \Illuminate\Support\MessageBag(['sub_domain' => 'Sub Domain name "' . $request->sub_domain . '" is not available. Please select a different domain']));
-            }
-            else{
-               Client::where('code', $id)->update(['sub_domain' => $request->sub_domain]);
-               $custom_db_name = Client::where('code', $id)->first();
-               $connectionToLocal = $this->createConnectionToClientDb($custom_db_name->database_name);
-               $dbname = DB::connection()->getDatabaseName();
-               if($dbname != env('DB_DATABASE'))
-               Client::where('id','!=',0)->update(['sub_domain' => $request->sub_domain]);
-               $new_domain_link = "http://".$request->sub_domain."".env('SUBDOMAIN','.royodispatch.com');
-               return redirect()->to($new_domain_link);
-            }
-            
-            
-        }
+                $validator = Validator::make($request->all(), [
+                    'sub_domain' => 'required|min:4',
+                ]);
+                if ($validator->fails()) {
+                    return redirect()->back()->withErrors($validator);
+                }
+                $update_sub_domain = $this->updateSubDomainFromClient($request,$id);
+                if($update_sub_domain == true)
+                {
+                    $new_domain_link = "http://".$request->sub_domain."".env('SUBDOMAIN','.royodispatch.com');
+                    return redirect()->to($new_domain_link);
+                }
+                else{
+                    return redirect()->back()->withErrors(new \Illuminate\Support\MessageBag(['sub_domain' => 'Sub Domain name "' . $request->sub_domain . '" is not available. Please select a different domain']));
+                }
+                  
+           }
 
-
-        
         $updatePreference = ClientPreference::updateOrCreate([
             'client_id' => $id
         ], $request->all());        
@@ -421,6 +387,29 @@ class ClientController extends Controller
             return redirect()->back()->with('success', 'Preference updated successfully!');
         }
     }
+
+
+     // ************* update Sub Domain From Client ******************************* /////////////////
+     public function updateSubDomainFromClient($request,$id){
+       $connectionToGod = $this->createConnectionToGodDb($id);
+        $exists = Client::where('code','<>', $id)->where('sub_domain', $request->sub_domain)->count();
+        if ($exists || $request->sub_domain == 'api' ||  $request->sub_domain == 'god'  ||  $request->sub_domain == 'godpanel'  ||  $request->sub_domain == 'admin') {
+            return false;
+        }
+        else{
+           Client::where('code', $id)->update(['sub_domain' => $request->sub_domain]);
+           $custom_db_name = Client::where('code', $id)->first();
+           $connectionToLocal = $this->createConnectionToClientDb($custom_db_name->database_name);
+           $dbname = DB::connection()->getDatabaseName();
+           if($dbname != env('DB_DATABASE'))
+           Client::where('id','!=',0)->update(['sub_domain' => $request->sub_domain]);
+           return true;
+           
+           
+        }
+        
+     }
+
 
     // ************* create connection with god panel database ******************************* /////////////////
     public function createConnectionToGodDb($id){
