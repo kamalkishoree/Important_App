@@ -21,7 +21,7 @@ Auth::routes();
 
 
 
-Route::group(['prefix' => '/godpanel'], function () {
+Route::group(['prefix' => '/godpanel','middleware' => 'CheckGodPanel'], function () {
 
 	Route::get('verify-custom-domain','Godpanel\LoginController@verifyCustomDomain')->name('verifyCustomDomain');
 
@@ -50,7 +50,7 @@ Route::domain('{domain}')->middleware(['subdomain'])->group(function() {
 
 		Route::get('/signin', function(){
 			return view('auth/login');
-		});
+		})->name('client-login');
 
 		
 		Route::post('/login/client', 'LoginController@clientLogin')->name('client.login');
