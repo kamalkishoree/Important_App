@@ -377,7 +377,7 @@ class TaskController extends Controller
     //function for assigning driver to unassigned orders
     public function assignAgent(Request $request)
     {
-        $order_update = Order::whereIn('id',$request->orders_id)->update(['driver_id'=>$request->agent_id,'status'=>'assigned']);
+        $order_update = Order::whereIn('id',$request->orders_id)->update(['driver_id'=>$request->agent_id,'status'=>'assigned','auto_alloction'=>'m']);
         $task         = Task::whereIn('order_id',$request->orders_id)->update(['task_status'=>1]);
         $this->MassAndEditNotification($request->orders_id[0],$request->agent_id);
     }
