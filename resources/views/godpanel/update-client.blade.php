@@ -128,7 +128,7 @@
                                             placeholder="Please Enter One String Example:-'mydatabase' " readonly>
                                         @else
                                         <input type="text" class="form-control" name="database_name" id="database_name"
-                                            value=""
+                                            value="{{ old('database_name', $client->database_name ?? '')}}"
                                             placeholder="Please Enter One String Example:-'mydatabase'" required>
                                         @endif
                                         @if($errors->has('database_name'))
