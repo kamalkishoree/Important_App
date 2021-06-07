@@ -122,12 +122,12 @@ class ClientController extends Controller
                 $my_url =   $request->custom_domain;
                 $process = shell_exec("/var/app/Automation/script.sh '".$my_url."' ");
             }catch(Exception $e) {
-              return redirect()->back()->withErrors(new \Illuminate\Support\MessageBag(['custom_domain' => $e->getMessage()]));
+              return redirect()->back()->withInput()->withErrors(new \Illuminate\Support\MessageBag(['custom_domain' => $e->getMessage()]));
               
             }
              $exists = Client::where('id','!=', $client->id)->where('custom_domain', $request->custom_domain)->count();
               if ($exists) {
-                   return redirect()->back()->withErrors(new \Illuminate\Support\MessageBag(['custom_domain' => 'Domain name "' . $request->custom_domain . '" is not available. Please select a different domain']));
+                   return redirect()->back()->withInput()->withErrors(new \Illuminate\Support\MessageBag(['custom_domain' => 'Domain name "' . $request->custom_domain . '" is not available. Please select a different domain']));
               }
               else{
                   Client::where('id', $client->id)->update(['custom_domain' => $request->custom_domain]);
@@ -136,7 +136,7 @@ class ClientController extends Controller
               
           }
           if ($request->sub_domain == 'api' ||  $request->sub_domain == 'god'  ||  $request->sub_domain == 'godpanel'  ||  $request->sub_domain == 'admin') {
-            return redirect()->back()->withErrors(new \Illuminate\Support\MessageBag(['sub_domain' => 'Sub Domain name "' . $request->sub_domain . '" is not available. Please select a different sub domain']));
+            return redirect()->back()->withInput()->withErrors(new \Illuminate\Support\MessageBag(['sub_domain' => 'Sub Domain name "' . $request->sub_domain . '" is not available. Please select a different sub domain']));
             } 
 
          // $redis = Redis::connection();
@@ -243,7 +243,7 @@ class ClientController extends Controller
         $insetinCiientDb = $this->connectionToClientDB($getClient,$request);
         if($insetinCiientDb != 1)
         {
-            return redirect()->back()->with('error', $insetinCiientDb);
+            return redirect()->back()->withInput()->with('error', $insetinCiientDb);
         }
 
         DB::commit();

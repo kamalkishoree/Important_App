@@ -330,7 +330,7 @@ class ClientController extends Controller
               $my_url =   $request->custom_domain;
               $process = shell_exec("/var/app/Automation/script.sh '".$my_url."' ");
           }catch(Exception $e) {
-            return redirect()->back()->withErrors(new \Illuminate\Support\MessageBag(['custom_domain' => $e->getMessage()]));
+            return redirect()->back()->withInput()->withErrors(new \Illuminate\Support\MessageBag(['custom_domain' => $e->getMessage()]));
             
           }
           
@@ -338,7 +338,7 @@ class ClientController extends Controller
             $connectionToGod = $this->createConnectionToGodDb($id);
             $exists = Client::where('code','<>', $id)->where('custom_domain', $request->custom_domain)->count();
             if ($exists) {
-                return redirect()->back()->withErrors(new \Illuminate\Support\MessageBag(['custom_domain' => 'Domain name "' . $request->custom_domain . '" is not available. Please select a different domain']));
+                return redirect()->back()->withInput()->withErrors(new \Illuminate\Support\MessageBag(['custom_domain' => 'Domain name "' . $request->custom_domain . '" is not available. Please select a different domain']));
             }
             else{
                Client::where('code', $id)->update(['custom_domain' => $request->custom_domain]);
@@ -359,7 +359,7 @@ class ClientController extends Controller
                     'sub_domain' => 'required|min:4',
                 ]);
                 if ($validator->fails()) {
-                    return redirect()->back()->withErrors($validator);
+                    return redirect()->back()->withInput()->withErrors($validator);
                 }
                 $update_sub_domain = $this->updateSubDomainFromClient($request,$id);
                 if($update_sub_domain == true)
@@ -368,7 +368,7 @@ class ClientController extends Controller
                     return redirect()->to($new_domain_link);
                 }
                 else{
-                    return redirect()->back()->withErrors(new \Illuminate\Support\MessageBag(['sub_domain' => 'Sub Domain name "' . $request->sub_domain . '" is not available. Please select a different domain']));
+                    return redirect()->back()->withInput()->withErrors(new \Illuminate\Support\MessageBag(['sub_domain' => 'Sub Domain name "' . $request->sub_domain . '" is not available. Please select a different domain']));
                 }
                   
            }
