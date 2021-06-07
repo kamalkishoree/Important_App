@@ -14,7 +14,7 @@
     <div class="row">
         <div class="col-12">
             <div class="page-title-box">
-                <h4 class="page-title">Create Client</h4>
+                <h4 class="page-title">@if(isset($client)) Update @else Create @endif Client @if(isset($client))  : {{$client->name??''}}  @endif</h4>
             </div>
         </div>
     </div>
@@ -32,6 +32,8 @@
                             enctype="multipart/form-data">
                             @endif
                             @csrf
+                            @if(empty($client))
+                           
                             <div class="row mb-2">
                                 <div class="col-md-4">
                                     <input type="file" data-plugins="dropify" name="logo"
@@ -39,7 +41,6 @@
                                     <p class="text-muted text-center mt-2 mb-0">Upload Logo</p>
                                 </div>
                             </div>
-
                             <div class=" row">
                                 <div class="col-md-6">
                                     <div class="form-group">
@@ -67,7 +68,7 @@
                                     </div>
                                 </div>
                             </div>
-
+                           
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
@@ -143,9 +144,9 @@
                                
                             </div>                            
                             
-
+                            @endif
                             <div class="row">
-                                
+                                @if(empty($client))
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="company_address" class="control-label">COMPANY ADDRESS</label>
@@ -160,7 +161,7 @@
                                         @endif
                                     </div>
                                 </div>
-
+                                @endif
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="custom_domain" class="control-label">CUSTOM DOMAIN (*Make sure you already pointed to our ip ({{\env('IP')}}) from your domain.)</label>

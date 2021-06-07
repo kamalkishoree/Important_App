@@ -213,7 +213,8 @@ class ClientController extends Controller
      */
     public function update(Request $request, $id)
     {
-        
+        DB::beginTransaction();
+        try {
         $getClient = Client::find($id);
         $getFileName = $getClient->logo;
         $removeDataFromRedis = Cache::forget($getClient->database_name);
@@ -228,26 +229,88 @@ class ClientController extends Controller
         }
         
         $data = [
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => $getClient->password,
-            'phone_number' => $request->phone_number,
-            'database_path' => $request->database_path,
-            'database_name' => $request->database_name,
-            'database_username' => $request->database_username,
-            'database_password' => $request->database_password,
-            'company_name' => $request->company_name,
-            'company_address' => $request->company_address,
+        //    'name' => $request->name,
+        //    'email' => $request->email,
+        //    'password' => $getClient->password,
+        //    'phone_number' => $request->phone_number,
+        //    'database_path' => $request->database_path,
+              'database_name' => $getClient['database_name'],
+        //    'database_username' => $request->database_username,
+        //    'database_password' => $request->database_password,
+       //     'company_name' => $request->company_name,
+       //     'company_address' => $request->company_address,
             'custom_domain' => $request->custom_domain,
-            'country_id' => $request->country ? $request->country : NULL,
-            'timezone' => $request->timezone ? $request->timezone : 'America/New_York',
-            'logo' => $getFileName,
+      //      'country_id' => $request->country ? $request->country : NULL,
+      //      'timezone' => $request->timezone ? $request->timezone : 'America/New_York',
+      //      'logo' => $getFileName,
             'sub_domain'   => $request->sub_domain
         ];
         
         $client = Client::where('id', $id)->update($data);
         $saveDataOnRedis = Cache::set($data['database_name'],$data);
+        $insetinCiientDb = $this->connectionToClientDB($getClient,$request);
+        
+        DB::commit();
+       
         return redirect()->route('client.index')->with('success', 'Client Updated successfully!');
+            // all good
+        } catch (\Exception $e) {
+            DB::rollback();
+            return redirect()->route('client.index')->with('error', $e->getMessage());
+        }
+        
+    }
+
+    public function connectionToClientDB($getClient,$request)
+    {   
+        try {
+
+         # if submit custom domain from god panel 
+         if ($request->custom_domain && $request->custom_domain != $getClient->custom_domain) {
+
+            try {
+               $domain    = str_replace(array('http://', config('domainsetting.domain_set')), '', $request->custom_domain);
+               $domain    = str_replace(array('https://', config('domainsetting.domain_set')), '', $request->custom_domain);
+               // $process = new Process(['/var/app/Automation/script.sh', $domain]);
+               $my_url =   $request->custom_domain;
+               $process = shell_exec("/var/app/Automation/script.sh '".$my_url."' ");
+           }catch(Exception $e) {
+             return redirect()->back()->withErrors(new \Illuminate\Support\MessageBag(['custom_domain' => $e->getMessage()]));
+             
+           }
+            $exists = Client::where('id','!=', $getClient->id)->where('custom_domain', $request->custom_domain)->count();
+             if ($exists) {
+                  return redirect()->back()->withErrors(new \Illuminate\Support\MessageBag(['custom_domain' => 'Domain name "' . $request->custom_domain . '" is not available. Please select a different domain']));
+             }
+             else{
+                 Client::where('id', $getClient->id)->update(['custom_domain' => $request->custom_domain]);
+            }
+             
+             
+         }    
+
+        $schemaName = 'db_' . $getClient['database_name'];
+        $default = [
+            'driver' => env('DB_CONNECTION', 'mysql'),
+            'host' => env('DB_HOST'),
+            'port' => env('DB_PORT'),
+            'database' => $schemaName,
+            'username' => env('DB_USERNAME'),
+            'password' => env('DB_PASSWORD'),
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'strict' => false,
+            'engine' => null
+        ];
+        Config::set("database.connections.$schemaName", $default);
+        config(["database.connections.mysql.database" => $schemaName]);
+        DB::connection($schemaName)->table('clients')->update(['custom_domain' => $request->custom_domain,'sub_domain'   => $request->sub_domain]);
+        DB::disconnect($schemaName);
+        } catch (Exception $ex) {
+            return $ex->getMessage();
+        }
     }
 
     /**
