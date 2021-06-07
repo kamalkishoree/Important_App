@@ -75,11 +75,10 @@ class ClientController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {
+    {   
+        $validator = $this->validator($request->all())->validate();
         DB::beginTransaction();
         try {
-        $validator = $this->validator($request->all())->validate();
-            
         
         $getFileName = NULL;
 
