@@ -55,7 +55,7 @@ class ClientController extends Controller
      * Validation method for clients data 
      */
     protected function validator(array $data)
-    {
+    {        
         return Validator::make($data, [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:clients'],
@@ -63,7 +63,7 @@ class ClientController extends Controller
             'password' => ['required'],
             'database_name' => ['required','unique:clients,database_name'],
             'custom_domain' => ['nullable','unique:clients,custom_domain'],
-            'sub_domain' => ['required','unique:clients,sub_domain'],
+            'sub_domain' => ['required','min:4','unique:clients,sub_domain'],
             //'logo' => ['required'],
         ]);
     }
@@ -79,6 +79,7 @@ class ClientController extends Controller
         DB::beginTransaction();
         try {
         $validator = $this->validator($request->all())->validate();
+    
         
         $getFileName = NULL;
 
@@ -193,14 +194,15 @@ class ClientController extends Controller
     /**
      * Validation method for clients Update 
      */
-    protected function updateValidator(array $data)
+    protected function updateValidator(array $data,$id)
     {
         return Validator::make($data, [
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255'],
-            'phone_number' => ['required'],
-            'database_name' => ['required'],
-            'database_password' => ['required'],
+         //   'name' => ['required', 'string', 'max:255'],
+         //   'email' => ['required', 'string', 'email', 'max:255',\Illuminate\Validation\Rule::unique('clients')->ignore($id)],
+        //    'phone_number' => ['required'],
+        //    'database_name' => ['required'],
+            //'database_password' => ['required'],
+            'sub_domain' => ['required','min:4',\Illuminate\Validation\Rule::unique('clients')->ignore($id)],
         ]);
     }
 
@@ -212,9 +214,14 @@ class ClientController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
-    {
+    {   
+        $validator = $this->updateValidator($request->all(),$id)->validate();   
         DB::beginTransaction();
         try {
+          
+        
+        //dd($validator);   
+            
         $getClient = Client::find($id);
         $getFileName = $getClient->logo;
         $removeDataFromRedis = Cache::forget($getClient->database_name);

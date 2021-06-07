@@ -359,7 +359,7 @@
     function searchRes(){
 
         $("#task-modal-header #searchCust").autocomplete({
-            source: function(request, response) {
+            source: function(request, response) {                
                 // Fetch data
                 $.ajax({
                     url: "{{route('search')}}",
@@ -398,7 +398,7 @@
               },
               success: function(data) {
                   var array = data;
-                  
+                  $('.withradio .append').remove();
                   jQuery.each(array, function(i, val) {
                       $(".withradio").append(
                           '<div class="append"><div class="custom-control custom-radio count"><input type="radio" id="' +
@@ -595,8 +595,9 @@
                 return false;
             }
         }
-
-        if (!$("input[name='old_address_id']:checked").val()) {
+        var s_name = $("input[name='short_name[]']").val();
+        var s_address = $("input[name='address[]']").val();
+        if ((!$("input[name='old_address_id']:checked").val()) && (s_name=="" || s_address=="") ) {
                 err = 1;
                 $(".addspan").show();
                 return false;

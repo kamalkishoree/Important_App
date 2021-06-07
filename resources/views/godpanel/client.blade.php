@@ -81,11 +81,11 @@
                                         <div class="form-ul" style="width: 60px;">
                                             <div class="inner-div"> <a href1="#" href="{{route('client.edit', $client->id)}}"  class="action-icon editIconBtn"> <i class="mdi mdi-square-edit-outline"></i></a></div>
                                             <div class="inner-div">
-                                                <form method="POST" action="{{route('client.destroy', $client->id)}}">
+                                                <form id="clientdelete{{$client->id}}" method="POST" action="{{route('client.destroy', $client->id)}}">
                                                     @csrf
                                                     @method('DELETE')
                                                     <div class="form-group">
-                                                        <button type="submit" class="btn btn-primary-outline action-icon"> <i class="mdi mdi-delete"></i></button>
+                                                        <button type="button" class="btn btn-primary-outline action-icon"> <i class="mdi mdi-delete" clientid="{{ $client->id }}"></i></button>
 
                                                     </div>
                                                 </form>
@@ -116,6 +116,18 @@
 <script src="{{asset('assets/libs/dropify/dropify.min.js')}}"></script>
 <!-- Page js-->
 <script src="{{asset('assets/js/pages/form-fileuploads.init.js')}}"></script>
+
+<script>
+    $('.mdi-delete').click(function(){
+            
+            var r = confirm("Are you sure?");
+            if (r == true) {
+               var clientid = $(this).attr('clientid');
+               $('form#clientdelete'+clientid).submit();
+
+            }
+        });
+    </script>
 
 <!-- @parent
 
