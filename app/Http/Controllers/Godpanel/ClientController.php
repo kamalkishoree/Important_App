@@ -312,7 +312,7 @@ class ClientController extends Controller
      */
     public function destroy($id)
     {
-        $getClient = Client::where('id', $id)->update(['is_deleted' => 1]);
+        $getClient = Client::where('id', $id)->update(['is_deleted' => 1,'custom_domain' => null,'sub_domain' => null]);
         return redirect()->back()->with('success', 'Client deleted successfully!');
     }
 
