@@ -14,7 +14,7 @@ use Config;
 use Session;
 use Cache;
 use DB;
-use Auth;
+use Auth,URL;
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -58,7 +58,8 @@ class AppServiceProvider extends ServiceProvider
     public function connectDynamicDb($request)
     {   
         
-        if (\Request::is('api*')){
+        if (strpos(URL::current(), '/api/') !== false){
+
 
         }else{
             $domain = $request->getHost();
@@ -83,7 +84,7 @@ class AppServiceProvider extends ServiceProvider
             $dbname = DB::connection()->getDatabaseName();
           
            if($domain){
-                  if($domain != env('Main_Domain')){
+                  if($domain != env('Main_Domain') || $domain != env('Main_Domain')){
                         if($client && $dbname != 'db_'.$client->database_name){
                             $saveDataOnRedis = Cache::set('clientdetails',$client);
                         $database_name = 'db_'.$client->database_name;
