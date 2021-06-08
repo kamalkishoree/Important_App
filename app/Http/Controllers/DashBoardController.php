@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Model\Agent;
+use App\Model\AgentLog;
 use App\Model\ClientPreference;
 use App\Model\Order;
 use App\Model\Task;
@@ -1026,6 +1027,7 @@ class DashBoardController extends Controller
         $output = array();
         $output['allroutedata'] = $alldrivers;
         $output['total_distance'] = $distance;
+        $output['current_location'] = Task::where('id', $taskids[0])->whereHas('order.agent.agentlog')->count();
         echo json_encode($output);
     }
 
@@ -1046,7 +1048,7 @@ class DashBoardController extends Controller
         $taskids = explode(',', $request->route_taskids);
         $taskids = array_filter($taskids);
         $firsttaskdetail = Task::where('id', $taskids[0])->with('location')->first();
-        
+       
         if ($driver_start_location=='current') {
             if ($agentid != 0) {
                 $singleagentdetail = Agent::where('id', $agentid)->with('agentlog')->first();
@@ -1247,6 +1249,7 @@ class DashBoardController extends Controller
         $output['agentid'] = $agentid;
         $output['distance_matrix'] = $distancematrix;
         $output['date'] = $request->route_date;
+        $output['current_location'] = Task::where('id', $taskids[0])->whereHas('order.agent.agentlog')->count();
         echo json_encode($output);
     }
 
@@ -1433,6 +1436,10 @@ class DashBoardController extends Controller
 
         $taskdetails = [];
         $html = "";
+       
+
+        $taskdetails['current_location'] = Task::where('id', $taskids[0])->whereHas('order.agent.agentlog')->count();
+
         for ($i=0;$i<count($taskids);$i++) {
             $singletaskdetail = Task::where('id', $taskids[$i])->with('location')->first();
             $taskdetails[] = $singletaskdetail->toArray();

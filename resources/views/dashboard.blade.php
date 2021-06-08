@@ -917,7 +917,12 @@ function RouteOptimization(taskids,distancematrix,optimize,agentid,date) {
             success: function(response) {
                 
                 var data = $.parseJSON(response);    
-                               
+                if(data.current_location == 0)
+                {    $('input[type=radio][name=driver_start_location]').prop('checked', false);
+                    $("input[type=radio][name=driver_start_location][value='current']").remove();
+                    $("#radio-current-location-span").remove();
+                    $("input[type=radio][name=driver_start_location][value='select']").click();
+                }
                 for (var i = 0; i < data.length; i++) {
                     var object = data[i];
                     var task_id =  object['id'];
@@ -1220,7 +1225,7 @@ $(".dragable_tasks").sortable({
         jQuery("#"+divid+" .card-body.ui-sortable-handle").each(function (index, element) {
             taskorder = taskorder + $(this).attr('task_id') + ",";
         });
-
+        $('input[type=radio][name=driver_start_location]').prop('checked', false);
         $.ajax({
             type: 'POST',            
             url: '{{url("/arrange-route")}}',
@@ -1287,7 +1292,12 @@ $(".dragable_tasks").sortable({
                 //         // $('.pageloader').css('display','none');
                 //     }
                 // });
-
+                if(data.current_location == 0)
+                {
+                    $("input[type=radio][name=driver_start_location][value='current']").remove();
+                    $("#radio-current-location-span").remove();
+                    $("input[type=radio][name=driver_start_location][value='select']").click();
+                }
                 $('#optimize-route-modal').modal('show');
             },
             error: function(response) {
