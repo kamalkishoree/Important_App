@@ -153,6 +153,19 @@ class DashBoardController extends Controller
         $uniquedrivers = array();
         $j = 0;
         foreach ($agents as $singleagent) {
+            if(empty($singleagent['agentlog'])){
+                $singleagent['agentlog']['id'] = null;
+                $singleagent['agentlog']['agent_id'] = $singleagent['id'];
+                $singleagent['agentlog']['current_task_id'] = null;
+                $singleagent['agentlog']['lat'] = null;
+                $singleagent['agentlog']['long'] = null;
+                $singleagent['agentlog']['battery_level'] = null;
+                $singleagent['agentlog']['os_version'] = null;
+                $singleagent['agentlog']['app_version'] = null;
+                $singleagent['agentlog']['current_speed'] = null;
+                $singleagent['agentlog']['on_route '] = null;
+                $singleagent['agentlog']['app_version'] = null;
+            }
             if (is_array($singleagent['agentlog'])) {
                 $taskarray = array();
                 foreach ($newmarker as $singlemark) {
@@ -172,6 +185,8 @@ class DashBoardController extends Controller
                     $uniquedrivers[$j]['task_details'] = $taskarray;
                     $j++;
                 }
+            }else{
+
             }
         }
         
@@ -201,7 +216,7 @@ class DashBoardController extends Controller
         }
 
         $teamdata = $teams->toArray();
-        
+      
         foreach ($teamdata as $k1=>$singleteam) {
             foreach ($singleteam['agents'] as $k2=>$singleagent) {
                 $teamdata[$k1]['agents'][$k2]['taskids']  = [];
@@ -216,10 +231,10 @@ class DashBoardController extends Controller
                         }
                         $teamdata[$k1]['agents'][$k2]['taskids'] = $tasklistids;
                         $driverlocation = [];
-                        if ($singleagent['is_available']==1) {
+                        if ($singleagent['is_available']==1 || $singleagent['is_available']==0) {
                             $singleagentdetail = Agent::where('id', $singleagent['id'])->with('agentlog')->first();
-                            $driverlocation['lat'] = $singleagentdetail->agentlog->lat;
-                            $driverlocation['long'] = $singleagentdetail->agentlog->long;
+                            $driverlocation['lat'] = $singleagentdetail->agentlog->lat??$singleagentdetail->order[0]['task'][0]['location']['latitude']??'0.000';
+                            $driverlocation['long'] = $singleagentdetail->agentlog->long??$singleagentdetail->order[0]['task'][0]['location']['longitude']??'0.000';
                         }
                         $gettotal_distance = $this->getTotalDistance($tasklistids, $driverlocation);
                         $teamdata[$k1]['agents'][$k2]['total_distance']  = $gettotal_distance['total_distance_miles'];
@@ -288,6 +303,7 @@ class DashBoardController extends Controller
         $client = ClientPreference::where('id', 1)->first();
    
         $googleapikey = $client->map_key_1??'';
+       
         return view('dashboard')->with(['teams' => $teamdata, 'newmarker' => $newmarker, 'unassigned' => $unassigned, 'agents' => $agents,'date'=> $date,'preference' =>$preference, 'routedata' => $uniquedrivers,'distance_matrix' => $distancematrix, 'unassigned_orders' => $unassigned_orders,'unassigned_distance' => $un_total_distance,'map_key'=>$googleapikey,'client_timezone'=>$auth->timezone]);
     }
 
@@ -477,8 +493,8 @@ class DashBoardController extends Controller
             if ($agentid != 0) {
                 $singleagentdetail = Agent::where('id', $agentid)->with('agentlog')->first();
                 if ($singleagentdetail->is_available == 1) {
-                    $driver_lat = $singleagentdetail->agentlog->lat;
-                    $driver_long = $singleagentdetail->agentlog->long;
+                    $driver_lat = $singleagentdetail->agentlog->lat??'';
+                    $driver_long = $singleagentdetail->agentlog->long??'';
                 } else {
                     $driver_lat = $distancematrixarray[0][0];
                     $driver_long = $distancematrixarray[0][1];
@@ -800,8 +816,8 @@ class DashBoardController extends Controller
             if ($agentid != 0) {
                 $singleagentdetail = Agent::where('id', $agentid)->with('agentlog')->first();
                 if ($singleagentdetail->is_available == 1) {
-                    $driverlocation['lat'] = $singleagentdetail->agentlog->lat;
-                    $driverlocation['long'] = $singleagentdetail->agentlog->long;
+                    $driverlocation['lat'] = $singleagentdetail->agentlog->lat??'';
+                    $driverlocation['long'] = $singleagentdetail->agentlog->long??'';
                 }
             }
             $gettotal_distance = $this->getTotalDistance($taskids, $driverlocation);

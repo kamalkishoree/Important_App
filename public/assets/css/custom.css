@@ -865,22 +865,26 @@ hr.new3 {
 
 
 .red_ {
-    background-color: hsl(357deg 100% 50% / 50%);
+    background-color: hsl(357deg 100% 50% / 50%) !important;
     color: #fff;
 }
 
 .yellow_ {
-    background-color: rgb(204 136 153 / 60%);
+    background-color: rgb(204 136 153 / 60%) !important;
     color: #fff;
 }
 
 .green_ {
-    background-color: rgb(64 179 35 / 50%);
+    background-color: rgb(64 179 35 / 50%) !important;
+    color: #fff;
+}
+.assign_ {
+    background-color: rgba(233, 130, 27, 0.5) !important;
     color: #fff;
 }
 
 .light_green {
-    background-color: rgb(235 183 133 / 65%);
+    background-color: rgb(235 183 133 / 65%) !important;
     color: #fff;
 }
 

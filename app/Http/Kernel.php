@@ -71,7 +71,8 @@ class Kernel extends HttpKernel
         'AppAuth'    =>\App\Http\Middleware\AppAuth::class,
         'domain'     =>\App\Http\Middleware\CustomDomain::class,
         'subdomain'  => \App\Http\Middleware\SubdomainMiddleware::class,
-        'CheckGodPanel'  => \App\Http\Middleware\CheckGodPanel::class
+        'CheckGodPanel'  => \App\Http\Middleware\CheckGodPanel::class,
+        'CheckManagerPermission' => \App\Http\Middleware\CheckManagerPermission::class
         
     ];
 }
