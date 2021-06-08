@@ -16,11 +16,10 @@ class ShortcodeController extends BaseController
     /**
      * Get Company ShortCode
      *
-     
+
      */
     public function validateCompany(Request $request)
     {
-        
         $client = Client::where('is_deleted', 0)->where('code', $request->shortCode)->first(['id', 'name', 'database_name', 'timezone', 'custom_domain', 'logo', 'company_name', 'company_address', 'is_blocked']);
 
         
@@ -29,8 +28,6 @@ class ShortcodeController extends BaseController
                 'error' => 'Company not found',
                 'message' => 'Invalid short code. Please enter a valid short code.'], 404);
         }
-        //print_r($client);die;
-
         if ($client->is_blocked == 1) {
             return response()->json([
                 'error' => 'Blocked Company',
@@ -39,8 +36,7 @@ class ShortcodeController extends BaseController
         
         $img = env('APP_URL').'/assets/images/default_image.png';
 
-        if (file_exists( public_path().'/assets/images/'.$client->logo)) {
-
+        if (file_exists(public_path().'/assets/images/'.$client->logo)) {
             $img = public_path().'/assets/images/'.$client->logo;
         }
         $client->logo = \Storage::disk("s3")->url($client->logo);
@@ -49,19 +45,4 @@ class ShortcodeController extends BaseController
             'data' => $client,
         ]);
     }
-
-    /*public function getCode(Request $request)
-    {
-        $user = Client::select('id', 'company_name', 'database_name')
-                    ->where('is_deleted', 0)->where('is_blocked', 0)->get();
-
-        if($user){
-            return response()->json([
-                'data' => $user,
-            ]);
-        }else{
-            
-        }
-    }*/
-  
 }

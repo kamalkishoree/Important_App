@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Model\Client;
 use Illuminate\Http\Request;
 use App\Model\Countries;
-use App\Model\Timezone; 
+use App\Model\Timezone;
 use \DateTimeZone;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
@@ -13,6 +13,7 @@ use App\Jobs\UpdatePassword;
 use Auth;
 use Illuminate\Support\Facades\Storage;
 use DB;
+
 class ProfileController extends Controller
 {
     /**
@@ -22,10 +23,10 @@ class ProfileController extends Controller
      */
     public function index()
     {
-        $client = Client::where('id',Auth::user()->id)->first();
+        $client = Client::where('id', Auth::user()->id)->first();
         $countries = Countries::all();
         //$tzlist = DateTimeZone::listIdentifiers(DateTimeZone::ALL);
-        $tzlist = Timezone::get();        
+        $tzlist = Timezone::get();
         return view('profile')->with(['client' => $client ,'countries'=> $countries,'tzlist'=>$tzlist ]);
     }
 
@@ -79,8 +80,8 @@ class ProfileController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request,$domain = '',$id)
-    {   
+    public function update(Request $request, $domain = '', $id)
+    {
         $validator = Validator::make($request->all(), [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255'],
@@ -103,7 +104,7 @@ class ProfileController extends Controller
             $s3filePath = '/assets/Clientlogo';
             //$file_name = uniqid() .'.'.  $file->getClientOriginalExtension();
             //$s3filePath = '/assets/Clientlogo/' . $file_name;
-            $path = Storage::disk('s3')->put($s3filePath, $file,'public');
+            $path = Storage::disk('s3')->put($s3filePath, $file, 'public');
             $getFileName = $path;
         }
 
@@ -115,14 +116,14 @@ class ProfileController extends Controller
             'company_name' => $request->company_name,
             'company_address' => $request->company_address,
             'custom_domain' => $request->custom_domain,
-            'country_id' => $request->country ? $request->country : NULL,
-            'timezone' => $request->timezone ? $request->timezone : NULL,
+            'country_id' => $request->country ? $request->country : null,
+            'timezone' => $request->timezone ? $request->timezone : null,
             'logo' => $getFileName,
         ];
 
-        $client = Client::where('code', $id)->where('id',Auth::user()->id)->update($data);
+        $client = Client::where('code', $id)->where('id', Auth::user()->id)->update($data);
         $password = null;
-        $this->dispatchNow(new UpdatePassword($password,$data));
+        $this->dispatchNow(new UpdatePassword($password, $data));
         
         return redirect()->back()->with('success', 'Profile Updated successfully!');
     }
@@ -137,8 +138,4 @@ class ProfileController extends Controller
     {
         //
     }
-
-    
-
-    
 }

@@ -24,7 +24,7 @@ class PricingRulesController extends Controller
     public function index()
     {
         $pricing = PricingRule::orderBy('created_at', 'DESC')->paginate(10);
-        $priority = PricePriority::where('id',1)->first();
+        $priority = PricePriority::where('id', 1)->first();
 
         $geos       = Geo::all()->pluck('name', 'id');
         $teams      = Team::all()->pluck('name', 'id');
@@ -44,9 +44,9 @@ class PricingRulesController extends Controller
         $teams      = Team::all()->pluck('name', 'id');
         $team_tag   = TagsForTeam::all()->pluck('name', 'id');
         $driver_tag = TagsForAgent::all()->pluck('name', 'id');
-        $clientPre  = ClientPreference::where('id',1)->with('currency')->first();
+        $clientPre  = ClientPreference::where('id', 1)->with('currency')->first();
        
-        return view('pricing-rules.add-pricing', compact('geos','teams','team_tag','driver_tag'));
+        return view('pricing-rules.add-pricing', compact('geos', 'teams', 'team_tag', 'driver_tag'));
     }
 
 
@@ -65,7 +65,7 @@ class PricingRulesController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request,$domain = '')
+    public function store(Request $request, $domain = '')
     {
         //$validator = $this->validator($request->all())->validate();
        
@@ -104,7 +104,7 @@ class PricingRulesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($domain = '',$id)
+    public function show($domain = '', $id)
     {
         //
     }
@@ -117,15 +117,14 @@ class PricingRulesController extends Controller
      */
     
 
-    public function edit($domain = '',$id)
+    public function edit($domain = '', $id)
     {
-        $pricing = PricingRule::where('id',$id)->first();
-        //dd($pricing->toArray());
+        $pricing = PricingRule::where('id', $id)->first();
         $geos       = Geo::all()->pluck('name', 'id');
         $teams      = Team::all()->pluck('name', 'id');
         $team_tag   = TagsForTeam::all()->pluck('name', 'id');
         $driver_tag = TagsForAgent::all()->pluck('name', 'id');
-        $clientPre  = ClientPreference::where('id',1)->with('currency')->first();
+        $clientPre  = ClientPreference::where('id', 1)->with('currency')->first();
         $returnHTML = view('pricing-rules.form')->with(['pricing' => $pricing, 'geos' => $geos, 'teams' => $teams, 'team_tag' => $team_tag, 'driver_tag' => $driver_tag,'client_pre'=> $clientPre])->render();
 
         return response()->json(array('success' => true, 'html'=>$returnHTML));
@@ -138,9 +137,8 @@ class PricingRulesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $domain = '',$id)
-    {       
-
+    public function update(Request $request, $domain = '', $id)
+    {
         $getAgent = PricingRule::find($id);
         $data = [
             'name'                            => $request->name,
@@ -169,9 +167,9 @@ class PricingRulesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($domain = '',$id)
+    public function destroy($domain = '', $id)
     {
-        PricingRule::where('id',$id)->delete();
+        PricingRule::where('id', $id)->delete();
         return redirect()->back()->with('success', 'Task deleted successfully!');
     }
 }

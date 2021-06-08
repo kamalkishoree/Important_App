@@ -28,6 +28,7 @@ use Crypt;
 use Carbon\Carbon;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessFailedException;
+
 class ClientController extends Controller
 {
     /**
@@ -36,7 +37,7 @@ class ClientController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index()
-    {  
+    {
         $clients = Client::where('is_deleted', 0)->orderBy('created_at', 'DESC')->paginate(10);
         return view('godpanel/client')->with(['clients' => $clients]);
     }
@@ -52,10 +53,10 @@ class ClientController extends Controller
     }
 
     /**
-     * Validation method for clients data 
+     * Validation method for clients data
      */
     protected function validator(array $data)
-    {        
+    {
         return Validator::make($data, [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:clients'],
@@ -75,24 +76,23 @@ class ClientController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {   
+    {
         $validator = $this->validator($request->all())->validate();
         DB::beginTransaction();
         try {
-        
-        $getFileName = NULL;
+            $getFileName = null;
 
-        // Handle File Upload
-        if ($request->hasFile('logo')) {
-            $file = $request->file('logo');
-            $file_name = uniqid() .'.'.  $file->getClientOriginalExtension();
-            $s3filePath = '/assets/Clientlogo/' . $file_name;
-            $path = Storage::disk('s3')->put($s3filePath, $file,'public');
-            $getFileName = $path;
-        }
+            // Handle File Upload
+            if ($request->hasFile('logo')) {
+                $file = $request->file('logo');
+                $file_name = uniqid() .'.'.  $file->getClientOriginalExtension();
+                $s3filePath = '/assets/Clientlogo/' . $file_name;
+                $path = Storage::disk('s3')->put($s3filePath, $file, 'public');
+                $getFileName = $path;
+            }
 
-        $database_name = preg_replace('/\s+/', '', $request->database_name);
-        $data = [
+            $database_name = preg_replace('/\s+/', '', $request->database_name);
+            $data = [
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
@@ -109,63 +109,53 @@ class ClientController extends Controller
             'custom_domain'=> $request->custom_domain??'',
             'sub_domain'   => $request->sub_domain
         ];
-        $data['code'] = $this->randomString();
+            $data['code'] = $this->randomString();
 
-        $client = Client::create($data);
+            $client = Client::create($data);
 
-        # if submit custom domain from god panel 
-        if ($request->custom_domain && $request->custom_domain != $client->custom_domain) {
-
-             try {
-                $domain    = str_replace(array('http://', config('domainsetting.domain_set')), '', $request->custom_domain);
-                $domain    = str_replace(array('https://', config('domainsetting.domain_set')), '', $request->custom_domain);
-                $my_url =   $request->custom_domain;
-                $process = shell_exec("/var/app/Automation/script.sh '".$my_url."' ");
-            }catch(Exception $e) {
-              return redirect()->back()->withInput()->withErrors(new \Illuminate\Support\MessageBag(['custom_domain' => $e->getMessage()]));
-              
+            # if submit custom domain from god panel
+            if ($request->custom_domain && $request->custom_domain != $client->custom_domain) {
+                try {
+                    $domain    = str_replace(array('http://', config('domainsetting.domain_set')), '', $request->custom_domain);
+                    $domain    = str_replace(array('https://', config('domainsetting.domain_set')), '', $request->custom_domain);
+                    $my_url =   $request->custom_domain;
+                    $process = shell_exec("/var/app/Automation/script.sh '".$my_url."' ");
+                } catch (Exception $e) {
+                    return redirect()->back()->withInput()->withErrors(new \Illuminate\Support\MessageBag(['custom_domain' => $e->getMessage()]));
+                }
+                $exists = Client::where('id', '!=', $client->id)->where('custom_domain', $request->custom_domain)->count();
+                if ($exists) {
+                    return redirect()->back()->withInput()->withErrors(new \Illuminate\Support\MessageBag(['custom_domain' => 'Domain name "' . $request->custom_domain . '" is not available. Please select a different domain']));
+                } else {
+                    Client::where('id', $client->id)->update(['custom_domain' => $request->custom_domain]);
+                }
             }
-             $exists = Client::where('id','!=', $client->id)->where('custom_domain', $request->custom_domain)->count();
-              if ($exists) {
-                   return redirect()->back()->withInput()->withErrors(new \Illuminate\Support\MessageBag(['custom_domain' => 'Domain name "' . $request->custom_domain . '" is not available. Please select a different domain']));
-              }
-              else{
-                  Client::where('id', $client->id)->update(['custom_domain' => $request->custom_domain]);
-             }
-              
-              
-          }
-          if ($request->sub_domain == 'api' ||  $request->sub_domain == 'god'  ||  $request->sub_domain == 'godpanel'  ||  $request->sub_domain == 'admin') {
-            return redirect()->back()->withInput()->withErrors(new \Illuminate\Support\MessageBag(['sub_domain' => 'Sub Domain name "' . $request->sub_domain . '" is not available. Please select a different sub domain']));
-            } 
+            if ($request->sub_domain == 'api' ||  $request->sub_domain == 'god'  ||  $request->sub_domain == 'godpanel'  ||  $request->sub_domain == 'admin') {
+                return redirect()->back()->withInput()->withErrors(new \Illuminate\Support\MessageBag(['sub_domain' => 'Sub Domain name "' . $request->sub_domain . '" is not available. Please select a different sub domain']));
+            }
 
-         // $redis = Redis::connection();
+            Cache::set($database_name, $data);
 
-         // $redis->set($database_name, json_encode($data));
-         //$minutes = 600;
-        Cache::set($database_name, $data);
-
-        $this->dispatchNow(new ProcessClientDataBase($client->id));
-        DB::commit();
+            $this->dispatchNow(new ProcessClientDataBase($client->id));
+            DB::commit();
        
-        return redirect()->route('client.index')->with('success', 'Client Added successfully!');
+            return redirect()->route('client.index')->with('success', 'Client Added successfully!');
             // all good
         } catch (\Exception $e) {
             DB::rollback();
             return redirect()->route('client.index')->with('error', $e->getMessage());
         }
-        
     }
 
-    private function randomString(){
+    private function randomString()
+    {
         $random_string = substr(md5(microtime()), 0, 6);
         // after creating, check if string is already used
 
-        while(Client::where('code', $random_string )->exists()){
+        while (Client::where('code', $random_string)->exists()) {
             $random_string = substr(md5(microtime()), 0, 6);
         }
         return $random_string;
-
     }
 
     /**
@@ -193,9 +183,9 @@ class ClientController extends Controller
     }
 
     /**
-     * Validation method for clients Update 
+     * Validation method for clients Update
      */
-    protected function updateValidator(array $data,$id)
+    protected function updateValidator(array $data, $id)
     {
         return Validator::make($data, [
            'sub_domain' => ['required','min:4',\Illuminate\Validation\Rule::unique('clients')->ignore($id)],
@@ -211,76 +201,67 @@ class ClientController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
-    {   
-        $validator = $this->updateValidator($request->all(),$id)->validate();   
+    {
+        $validator = $this->updateValidator($request->all(), $id)->validate();
         DB::beginTransaction();
         try {
-          
-        
-        //dd($validator);   
-            
-        $getClient = Client::find($id);
-        $getFileName = $getClient->logo;
-        $removeDataFromRedis = Cache::forget($getClient->database_name);
+            $getClient = Client::find($id);
+            $getFileName = $getClient->logo;
+            $removeDataFromRedis = Cache::forget($getClient->database_name);
 
-        // Handle File Upload
-        if ($request->hasFile('logo')) {
-            $file = $request->file('logo');
-            $file_name = uniqid() .'.'.  $file->getClientOriginalExtension();
-            $s3filePath = '/assets/Clientlogo/' . $file_name;
-            $path = Storage::disk('s3')->put($s3filePath, $file,'public');
-            $getFileName = $path;
-        }
+            // Handle File Upload
+            if ($request->hasFile('logo')) {
+                $file = $request->file('logo');
+                $file_name = uniqid() .'.'.  $file->getClientOriginalExtension();
+                $s3filePath = '/assets/Clientlogo/' . $file_name;
+                $path = Storage::disk('s3')->put($s3filePath, $file, 'public');
+                $getFileName = $path;
+            }
         
-        $data = [
-               'database_name' => $getClient['database_name'],
-             'custom_domain' => $request->custom_domain,
+            $data = [
+            'database_name' => $getClient['database_name'],
+            'custom_domain' => $request->custom_domain,
             'sub_domain'   => $request->sub_domain
         ];
         
-        $client = Client::where('id', $id)->update($data);
-        $saveDataOnRedis = Cache::set($data['database_name'],$data);
-        $insetinCiientDb = $this->connectionToClientDB($getClient,$request);
-        if($insetinCiientDb != 1)
-        {
-            return redirect()->back()->withInput()->with('error', $insetinCiientDb);
-        }
+            $client = Client::where('id', $id)->update($data);
+            $saveDataOnRedis = Cache::set($data['database_name'], $data);
+            $insetinCiientDb = $this->connectionToClientDB($getClient, $request);
+            if ($insetinCiientDb != 1) {
+                return redirect()->back()->withInput()->with('error', $insetinCiientDb);
+            }
 
-        DB::commit();
+            DB::commit();
        
-        return redirect()->route('client.index')->with('success', 'Client Updated successfully!');
+            return redirect()->route('client.index')->with('success', 'Client Updated successfully!');
             // all good
         } catch (\Exception $e) {
             DB::rollback();
             return redirect()->back()->with('error', $e->getMessage());
         }
-        
     }
 
-    public function connectionToClientDB($getClient,$request)
-    {   
+    public function connectionToClientDB($getClient, $request)
+    {
         try {
 
-         # if submit custom domain from god panel 
-         if ($request->custom_domain && $request->custom_domain != $getClient->custom_domain) {
-             
-
-            try {
-               $domain    = str_replace(array('http://', config('domainsetting.domain_set')), '', $request->custom_domain);
-               $domain    = str_replace(array('https://', config('domainsetting.domain_set')), '', $request->custom_domain);
-               $my_url =   $request->custom_domain;
-               $process = shell_exec("/var/app/Automation/script.sh '".$my_url."' ");
-            }catch(Exception $e) {
-             return $e->getMessage();
+         # if submit custom domain from god panel
+            if ($request->custom_domain && $request->custom_domain != $getClient->custom_domain) {
+                try {
+                    $domain    = str_replace(array('http://', config('domainsetting.domain_set')), '', $request->custom_domain);
+                    $domain    = str_replace(array('https://', config('domainsetting.domain_set')), '', $request->custom_domain);
+                    $my_url =   $request->custom_domain;
+                    $process = shell_exec("/var/app/Automation/script.sh '".$my_url."' ");
+                } catch (Exception $e) {
+                    return $e->getMessage();
+                }
             }
-             
-        } 
-        if ($request->sub_domain == 'api' ||  $request->sub_domain == 'god'  ||  $request->sub_domain == 'godpanel'  ||  $request->sub_domain == 'admin') {
-            return 'Sub Domain name "' . $request->sub_domain . '" is not available. Please select a different sub domain';
-        }   
+            if ($request->sub_domain == 'api' ||  $request->sub_domain == 'god'  ||  $request->sub_domain == 'godpanel'  ||  $request->sub_domain == 'admin') {
+                return 'Sub Domain name "' . $request->sub_domain . '" is not available. Please select a different sub domain';
+            }
 
-        $schemaName = 'db_' . $getClient['database_name'];
-        $default = [
+            $schemaName = 'db_' . $getClient['database_name'];
+            $default = [
             'driver' => env('DB_CONNECTION', 'mysql'),
             'host' => env('DB_HOST'),
             'port' => env('DB_PORT'),
@@ -294,11 +275,11 @@ class ClientController extends Controller
             'strict' => false,
             'engine' => null
         ];
-        Config::set("database.connections.$schemaName", $default);
-        config(["database.connections.mysql.database" => $schemaName]);
-        DB::connection($schemaName)->table('clients')->update(['custom_domain' => $request->custom_domain,'sub_domain'   => $request->sub_domain]);
-        DB::disconnect($schemaName);
-        return 1;
+            Config::set("database.connections.$schemaName", $default);
+            config(["database.connections.mysql.database" => $schemaName]);
+            DB::connection($schemaName)->table('clients')->update(['custom_domain' => $request->custom_domain,'sub_domain'   => $request->sub_domain]);
+            DB::disconnect($schemaName);
+            return 1;
         } catch (Exception $ex) {
             return $ex->getMessage();
         }
@@ -315,7 +296,4 @@ class ClientController extends Controller
         $getClient = Client::where('id', $id)->update(['is_deleted' => 1,'custom_domain' => null,'sub_domain' => null]);
         return redirect()->back()->with('success', 'Client deleted successfully!');
     }
-
-    
-
 }

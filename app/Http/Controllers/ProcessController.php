@@ -10,8 +10,7 @@ class ProcessController extends Controller
 {
     public function Task()
     {
-        
-        $client = Client::where('status',1)->get();
+        $client = Client::where('status', 1)->get();
         
         foreach ($client as $value) {
             $process = new Process(['php artisan newchanges:run' , $value->database_name]);
@@ -21,15 +20,13 @@ class ProcessController extends Controller
             $processes[] = $process;
             while (count($processes)) {
                 foreach ($processes as $i => $runningProcess) {
-                  // specific process is finished, so we remove it
-                  if (! $runningProcess->isRunning()) {
-                    unset($processes[$i]);
-                  }
-                  sleep(1);
+                    // specific process is finished, so we remove it
+                    if (! $runningProcess->isRunning()) {
+                        unset($processes[$i]);
+                    }
+                    sleep(1);
                 }
-              }
-            
+            }
         }
-        
     }
 }

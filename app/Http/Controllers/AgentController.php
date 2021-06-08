@@ -24,30 +24,25 @@ class AgentController extends Controller
      */
     public function index()
     {
-          
         $agents = Agent::orderBy('id', 'DESC');
-        if(Auth::user()->is_superadmin == 0 && Auth::user()->all_team_access == 0)
-        {   
-           $agents = $agents->whereHas('team.permissionToManager', function  ($query) {
-                                $query->where('sub_admin_id',Auth::user()->id);
-                                });
-
-        } 
+        if (Auth::user()->is_superadmin == 0 && Auth::user()->all_team_access == 0) {
+            $agents = $agents->whereHas('team.permissionToManager', function ($query) {
+                $query->where('sub_admin_id', Auth::user()->id);
+            });
+        }
         $agents = $agents->paginate(10);
        
 
         $tags  = TagsForAgent::all();
         $tag   = [];
         foreach ($tags as $key => $value) {
-            array_push($tag,$value->name);
+            array_push($tag, $value->name);
         }
-        $teams  = Team::where('client_id',auth()->user()->code)->orderBy('name');
-        if(Auth::user()->is_superadmin == 0 && Auth::user()->all_team_access == 0)
-        {   
-           $teams = $teams->whereHas('permissionToManager', function  ($query) {
-                                $query->where('sub_admin_id',Auth::user()->id);
-                                });
-
+        $teams  = Team::where('client_id', auth()->user()->code)->orderBy('name');
+        if (Auth::user()->is_superadmin == 0 && Auth::user()->all_team_access == 0) {
+            $teams = $teams->whereHas('permissionToManager', function ($query) {
+                $query->where('sub_admin_id', Auth::user()->id);
+            });
         }
         
         $teams = $teams->get();
@@ -67,7 +62,7 @@ class AgentController extends Controller
     }
 
     /**
-     * Validation method for agents data 
+     * Validation method for agents data
     */
     protected function validator(array $data)
     {
@@ -90,18 +85,17 @@ class AgentController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request,$domain = '')
+    public function store(Request $request, $domain = '')
     {
-       
         $validator = $this->validator($request->all())->validate();
-        $getFileName = NULL;
+        $getFileName = null;
 
         $newtag = explode(",", $request->tags);
         $tag_id = [];
         foreach ($newtag as $key => $value) {
-            if(!empty($value)){
+            if (!empty($value)) {
                 $check = TagsForAgent::firstOrCreate(['name' => $value]);
-                array_push($tag_id,$check->id);
+                array_push($tag_id, $check->id);
             }
         }
 
@@ -112,7 +106,7 @@ class AgentController extends Controller
             $file = $request->file('profile_picture');
             $file_name = uniqid() .'.'.  $file->getClientOriginalExtension();
             $s3filePath = '/assets/'.$folder.'/agents' . $file_name;
-            $path = Storage::disk('s3')->put($s3filePath, $file,'public');
+            $path = Storage::disk('s3')->put($s3filePath, $file, 'public');
             $getFileName = $path;
         }
            
@@ -128,14 +122,14 @@ class AgentController extends Controller
             'plate_number' => $request->plate_number,
             'phone_number' => '+'.$request->country_code.$request->phone_number,
             'color' => $request->color,
-            'profile_picture' => $getFileName != Null ? $getFileName : 'assets/client_00000051/agents5fedb209f1eea.jpeg/Ec9WxFN1qAgIGdU2lCcatJN5F8UuFMyQvvb4Byar.jpg',
+            'profile_picture' => $getFileName != null ? $getFileName : 'assets/client_00000051/agents5fedb209f1eea.jpeg/Ec9WxFN1qAgIGdU2lCcatJN5F8UuFMyQvvb4Byar.jpg',
             'uid' => $request->uid
         ];
 
         $agent = Agent::create($data);
         $agent->tags()->sync($tag_id);
 
-        if($agent->wasRecentlyCreated){
+        if ($agent->wasRecentlyCreated) {
             return response()->json([
                 'status'=>'success',
                 'message' => 'Agent created Successfully!',
@@ -150,7 +144,7 @@ class AgentController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($domain = '',$id)
+    public function show($domain = '', $id)
     {
         //
     }
@@ -163,23 +157,21 @@ class AgentController extends Controller
      */
   
 
-    public function edit($domain = '',$id)
+    public function edit($domain = '', $id)
     {
         $agent = Agent::with(['tags'])->where('id', $id)->first();
-        $teams = Team::where('client_id', auth()->user()->code); 
-        if(Auth::user()->is_superadmin == 0 && Auth::user()->all_team_access == 0)
-        {   
-           $teams = $teams->whereHas('permissionToManager', function  ($query) {
-                                $query->where('sub_admin_id',Auth::user()->id);
-                                });
-
-        } 
+        $teams = Team::where('client_id', auth()->user()->code);
+        if (Auth::user()->is_superadmin == 0 && Auth::user()->all_team_access == 0) {
+            $teams = $teams->whereHas('permissionToManager', function ($query) {
+                $query->where('sub_admin_id', Auth::user()->id);
+            });
+        }
         $teams = $teams->get();
 
         $tags  = TagsForAgent::all();
         $uptag   = [];
         foreach ($tags as $key => $value) {
-            array_push($uptag,$value->name);
+            array_push($uptag, $value->name);
         }
 
         $tagIds = [];
@@ -188,10 +180,10 @@ class AgentController extends Controller
         }
         $date = Date('Y-m-d H:i:s');
         
-        $otp = Otp::where('phone',$agent->phone_number)->where('valid_till','>=',$date)->first();
-        if(isset($otp)){
+        $otp = Otp::where('phone', $agent->phone_number)->where('valid_till', '>=', $date)->first();
+        if (isset($otp)) {
             $send_otp = $otp->opt;
-        }else{
+        } else {
             $send_otp = 'View OTP after Logging in the Driver App';
         }
         
@@ -201,7 +193,7 @@ class AgentController extends Controller
     }
 
     /**
-     * Validation method for agent Update 
+     * Validation method for agent Update
     */
     protected function updateValidator(array $data)
     {
@@ -224,7 +216,7 @@ class AgentController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $domain = '',$id)
+    public function update(Request $request, $domain = '', $id)
     {
         $validator = $this->updateValidator($request->all())->validate();
         
@@ -236,10 +228,9 @@ class AgentController extends Controller
         $tag_id = [];
 
         foreach ($newtag as $key => $value) {
-
-            if(!empty($value)){
+            if (!empty($value)) {
                 $check = TagsForAgent::firstOrCreate(['name' => $value]);
-                array_push($tag_id,$check->id);
+                array_push($tag_id, $check->id);
             }
         }
 
@@ -250,11 +241,11 @@ class AgentController extends Controller
             $file = $request->file('profile_picture');
             $file_name = uniqid() .'.'.  $file->getClientOriginalExtension();
             $s3filePath = '/assets/'.$folder.'/agents' . $file_name;
-            $path = Storage::disk('s3')->put($s3filePath, $file,'public');
+            $path = Storage::disk('s3')->put($s3filePath, $file, 'public');
             $getFileName = $path;
         }
 
-        foreach ($request->only('name' ,'type' ,'vehicle_type_id' ,'make_model' ,'plate_number' ,'phone_number' ,'color','uid') as $key => $value) {
+        foreach ($request->only('name', 'type', 'vehicle_type_id', 'make_model', 'plate_number', 'phone_number', 'color', 'uid') as $key => $value) {
             $agent->{$key} = $value;
         }
         $agent->team_id         = $request->team_id;
@@ -263,14 +254,13 @@ class AgentController extends Controller
 
         $agent->tags()->sync($tag_id);
         
-        if($agent){
+        if ($agent) {
             return response()->json([
                 'status'=>'success',
                 'message' => 'Agent updated Successfully!',
                 'data' => $agent
             ]);
         }
-        
     }
 
     /**
@@ -279,16 +269,15 @@ class AgentController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($domain = '',$id)
+    public function destroy($domain = '', $id)
     {
-        DriverGeo::where('driver_id',$id)->delete();  // i have to fix it latter
-        Agent::where('id',$id)->delete();
+        DriverGeo::where('driver_id', $id)->delete();  // i have to fix it latter
+        Agent::where('id', $id)->delete();
         return redirect()->back()->with('success', 'Agent deleted successfully!');
     }
 
-    public function payreceive(Request $request,$domain = '')
+    public function payreceive(Request $request, $domain = '')
     {
-        
         $data = [
             'driver_id' => $request->driver_id,
             'dr' => $request->payment_type == 1 ? $request->amount:null,
@@ -300,24 +289,22 @@ class AgentController extends Controller
         return response()->json(true);
     }
 
-    public function agentPayDetails($domain = '',$id)
+    public function agentPayDetails($domain = '', $id)
     {
-        
-       $data = [];
-       $agent = Agent::where('id',$id)->first();
-       if(isset($agent)){
-        $cash  = $agent->order->sum('cash_to_be_collected');
-        $order = $agent->order->sum('order_cost');
-       }else{
-        $cash  = 0;
-        $order = 0;
-       }
+        $data = [];
+        $agent = Agent::where('id', $id)->first();
+        if (isset($agent)) {
+            $cash  = $agent->order->sum('cash_to_be_collected');
+            $order = $agent->order->sum('order_cost');
+        } else {
+            $cash  = 0;
+            $order = 0;
+        }
       
-       $data['cash_to_be_collected'] = $cash;
-       $data['order_cost']           = $order;
+        $data['cash_to_be_collected'] = $cash;
+        $data['order_cost']           = $order;
        
       
-       return response()->json($data);
-
+        return response()->json($data);
     }
 }

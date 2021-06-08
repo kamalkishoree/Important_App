@@ -12,18 +12,14 @@ use Crypt;
 
 class ClientProfileController extends Controller
 {
-
     public function edit($id)
-    { 
-
+    {
         $client = Client::find($id);
         return view('godpanel/update-client')->with('client', $client);
     }
 
     public function update(Request $request, $id)
     {
-
-        
     }
 
     public function changePassword(Request $request)
@@ -49,7 +45,7 @@ class ClientProfileController extends Controller
             $password['password']         = Hash::make($request->password);
             $password['confirm_password'] = Crypt::encryptString($request->password);
             $client = 'empty';
-            $this->dispatchNow(new UpdatePassword($password,$client));
+            $this->dispatchNow(new UpdatePassword($password, $client));
             $request->session()->flash('success', 'Password changed');
             return redirect()->back()->with('success', 'Password Changed successfully!');
         } else {

@@ -15,7 +15,7 @@ class PlanBillingController extends Controller
     public function index()
     {
         $plan = Plan::all();
-        return view('plan-billing')->with('plan',$plan);
+        return view('plan-billing')->with('plan', $plan);
     }
 
     /**

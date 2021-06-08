@@ -21,13 +21,11 @@ class GeoFenceController extends Controller
     public function index()
     {
         $teams = Team::with(['agents'])->where('client_id', auth()->user()->code)->orderBy('name');
-        if(Auth::user()->is_superadmin == 0 && Auth::user()->all_team_access == 0)
-        {   
-           $teams = $teams->whereHas('permissionToManager', function  ($query) {
-                                $query->where('sub_admin_id',Auth::user()->id);
-                                });
-
-        }  
+        if (Auth::user()->is_superadmin == 0 && Auth::user()->all_team_access == 0) {
+            $teams = $teams->whereHas('permissionToManager', function ($query) {
+                $query->where('sub_admin_id', Auth::user()->id);
+            });
+        }
 
         $teams = $teams->get();
 
@@ -56,14 +54,14 @@ class GeoFenceController extends Controller
         }
 
          
-         if(isset($geos)){
+        if (isset($geos)) {
             $codinates = $geos->geo_coordinates[0];
-         }else{
+        } else {
             $codinates[] = [
                 'lat' => 33.5362475,
                 'lng' => -111.9267386
             ];
-         }
+        }
 
         return view('geo-fence')->with([
             'teams' =>  $teams,
@@ -109,7 +107,7 @@ class GeoFenceController extends Controller
     }
 
     /**
-     * Validation method for geo-fence data 
+     * Validation method for geo-fence data
      */
     protected function validator(array $data)
     {
@@ -125,9 +123,8 @@ class GeoFenceController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request,$domain = '')
+    public function store(Request $request, $domain = '')
     {
-        
         $validator = $this->validator($request->all())->validate();
         
         $data = [
@@ -168,7 +165,7 @@ class GeoFenceController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($domain = '',$id)
+    public function edit($domain = '', $id)
     {
         $geo = Geo::with(['agents'])->where('id', $id)->first();
         $teams = Team::with(['agents'])->where('client_id', auth()->user()->code)->orderBy('name')->get();
@@ -196,23 +193,24 @@ class GeoFenceController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $domain = '',$id)
+    public function update(Request $request, $domain = '', $id)
     {
         $validator = $this->updateValidator($request->all())->validate();
         
         $geo = Geo::find($id);
 
-        if(isset($request->latlongs))
-        $data = [
+        if (isset($request->latlongs)) {
+            $data = [
             'name'          => $request->name,
             'description'   => $request->description,
             'geo_array'     => $request->latlongs,
         ];
-        else
-        $data = [
+        } else {
+            $data = [
             'name'          => $request->name,
             'description'   => $request->description,
         ];
+        }
 
         $updated = Geo::where('id', $id)->update($data);
 
@@ -227,18 +225,17 @@ class GeoFenceController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($domain = '',$id)
+    public function destroy($domain = '', $id)
     {
         Geo::where('id', $id)->where('client_id', auth()->user()->code)->delete();
         return redirect()->back()->with('success', 'Deleted successfully!');
     }
-    public function dummy(Request $request,$domain = '')
+    public function dummy(Request $request, $domain = '')
     {
         return response()->json([
             'status'=>'success',
             'message' => 'Successfully!',
             'newchange' => $request->value
         ]);
-        
     }
 }

@@ -14,7 +14,7 @@ use Config;
 use Session;
 use Cache;
 use DB;
-use Auth,URL;
+use Auth,URL,Route;
 class AppServiceProvider extends ServiceProvider
 {
     /**

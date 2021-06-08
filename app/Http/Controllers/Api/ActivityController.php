@@ -6,7 +6,17 @@ use App\Http\Controllers\Api\BaseController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
-use App\Model\{User, Agent, AgentLog, AllocationRule, Client, ClientPreference, Cms, Order, Task, TaskProof,Timezone};
+use App\Model\User;
+use App\Model\Agent;
+use App\Model\AgentLog;
+use App\Model\AllocationRule;
+use App\Model\Client;
+use App\Model\ClientPreference;
+use App\Model\Cms;
+use App\Model\Order;
+use App\Model\Task;
+use App\Model\TaskProof;
+use App\Model\Timezone;
 use Validation;
 use DB;
 use Illuminate\Support\Facades\Storage;
@@ -17,13 +27,13 @@ use Illuminate\Support\Facades\URL;
 class ActivityController extends BaseController
 {
 
-	/**
+    /**
      * update driver availability status if 0 than 1 if 1 than 0
 
      */
     public function updateDriverStatus(Request $request)
     {
-        $agent = Agent::findOrFail(Auth::user()->id); 
+        $agent = Agent::findOrFail(Auth::user()->id);
         $agent->is_available = ($agent->is_available == 1) ? 0 : 1;
         $agent->update();
 
@@ -31,7 +41,6 @@ class ActivityController extends BaseController
             'message' => 'Status updated Successfully',
             'data' => array('is_available' => $agent->is_available)
         ]);
-            
     }
 
     /**
@@ -41,7 +50,7 @@ class ActivityController extends BaseController
     public function tasks(Request $request)
     {
         $header = $request->header();
-        $client_code = Client::where('database_name',$header['client'][0])->first();
+        $client_code = Client::where('database_name', $header['client'][0])->first();
         $tz = new Timezone();
         $client_code->timezone = $tz->timezone_name($client_code->timezone);
         $start     = Carbon::now($client_code->timezone ?? 'UTC')->startOfDay();
@@ -51,41 +60,35 @@ class ActivityController extends BaseController
         
         $id     = Auth::user()->id;
 
-        $all    = $request->all; 
+        $all    = $request->all;
         $tasks   = [];
         
-        if($all == 1){
-            $orders = Order::where('driver_id',$id)->where('status','assigned')->orderBy('order_time')->pluck('id')->toArray();
-            
-        }else{
-            $orders = Order::where('driver_id',$id)->where('order_time','>=',$utc_start)->where('order_time','<=',$utc_end)->where('status','assigned')->orderBy('order_time')->pluck('id')->toArray();
+        if ($all == 1) {
+            $orders = Order::where('driver_id', $id)->where('status', 'assigned')->orderBy('order_time')->pluck('id')->toArray();
+        } else {
+            $orders = Order::where('driver_id', $id)->where('order_time', '>=', $utc_start)->where('order_time', '<=', $utc_end)->where('status', 'assigned')->orderBy('order_time')->pluck('id')->toArray();
         }
        
 
         if (count($orders) > 0) {
-            $tasks = Task::whereIn('order_id',$orders)->where('task_status','!=',4)->Where('task_status','!=',5)->with(['location','tasktype','order.customer'])->orderBy('order_id', 'DESC')
+            $tasks = Task::whereIn('order_id', $orders)->where('task_status', '!=', 4)->Where('task_status', '!=', 5)->with(['location','tasktype','order.customer'])->orderBy('order_id', 'DESC')
             ->get();
-            if(count($tasks) > 0)
-            {
+            if (count($tasks) > 0) {
                 //sort according to task_order
-                $tasks = $tasks->toArray();            
-                if($tasks[0]['task_order'] !=0)
-                {                
-                    usort($tasks, function($a, $b) {
+                $tasks = $tasks->toArray();
+                if ($tasks[0]['task_order'] !=0) {
+                    usort($tasks, function ($a, $b) {
                         return $a['task_order'] <=> $b['task_order'];
                     });
                 }
             }
-            
-            
         }
         
    
         return response()->json([
             'data' => $tasks,
-        ],200);
-        
-    } 
+        ], 200);
+    }
 
     /**
      * Login user and create token
@@ -94,37 +97,33 @@ class ActivityController extends BaseController
      */
     public function profile(Request $request)
     {
-       
-       $agent = Agent::where('id',Auth::user()->id)->first();
+        $agent = Agent::where('id', Auth::user()->id)->first();
 
-       return response()->json([
+        return response()->json([
         'data' => $agent,
-       ],200);
-
+       ], 200);
     }
 
 
     public function updateProfile(Request $request)
     {
-        $saved = Agent::where('id',Auth::user()->id)->first();
+        $saved = Agent::where('id', Auth::user()->id)->first();
         
         $header = $request->header();
-        $client_code = Client::where('database_name',$header['client'][0])->first('code');
+        $client_code = Client::where('database_name', $header['client'][0])->first('code');
         $getFileName = '';
         // Handle File Upload
-        if(isset($request->profile_picture)){
-
+        if (isset($request->profile_picture)) {
             if ($request->hasFile('profile_picture')) {
                 $folder = str_pad($client_code->code, 8, '0', STR_PAD_LEFT);
                 $folder = 'client_'.$folder;
                 $file = $request->file('profile_picture');
                 $file_name = uniqid() .'.'.  $file->getClientOriginalExtension();
                 $s3filePath = '/assets/'.$folder.'/agents' . $file_name;
-                $path = Storage::disk('s3')->put($s3filePath, $file,'public');
+                $path = Storage::disk('s3')->put($s3filePath, $file, 'public');
                 $getFileName = $path;
             }
-
-        }else{
+        } else {
             $getFileName = $saved->profile_picture;
         }
         
@@ -138,26 +137,23 @@ class ActivityController extends BaseController
         $agent->phone_number     = isset($request->phone_number)?$request->phone_number:$saved->phone_number;
         $agent->color            = isset($request->color)?$request->color:$saved->color;
 
-        if($agent->save()){
+        if ($agent->save()) {
             return response()->json([
                 'message' => 'Profile Updated Successfully',
-            ],200);
+            ], 200);
         } else {
             return response()->json([
                 'message' => 'Sorry Something Went Wrong',
-            ],404);
+            ], 404);
         }
-
-
     }
 
 
 
     public function agentLog(Request $request)
     {
-
         $header = $request->header();
-        $client_code = Client::where('database_name',$header['client'][0])->first();
+        $client_code = Client::where('database_name', $header['client'][0])->first();
         $tz = new Timezone();
         $client_code->timezone = $tz->timezone_name($client_code->timezone);
         $start     = Carbon::now($client_code->timezone ?? 'UTC')->startOfDay();
@@ -166,7 +162,7 @@ class ActivityController extends BaseController
         $utc_end   = Carbon::parse($end . $client_code->timezone ?? 'UTC')->tz('UTC');
         
         $tasks   = [];
-        $agent = AgentLog::where('agent_id',Auth::user()->id)->first();
+        $agent = AgentLog::where('agent_id', Auth::user()->id)->first();
         
         $data =  [
             'agent_id'          => Auth::user()->id,
@@ -180,10 +176,8 @@ class ActivityController extends BaseController
             'device_type'       => $request->device_type
         ];
 
-        if($request->lat=="" || $request->lat==0 || $request->lat== '0.00000000')
-        {
-
-        }else{
+        if ($request->lat=="" || $request->lat==0 || $request->lat== '0.00000000') {
+        } else {
             AgentLog::create($data);
         }
 
@@ -191,36 +185,33 @@ class ActivityController extends BaseController
         
 
         $id    = Auth::user()->id;
-        $all   = $request->all; 
+        $all   = $request->all;
 
-        if($all == 1){
-            $orders = Order::where('driver_id',$id)->where('status','assigned')->orderBy('order_time')->pluck('id')->toArray();
-            
-        }else{
-            $orders = Order::where('driver_id',$id)->where('order_time','>=',$utc_start)->where('order_time','<=',$utc_end)->where('status','assigned')->orderBy('order_time')->pluck('id')->toArray();
+        if ($all == 1) {
+            $orders = Order::where('driver_id', $id)->where('status', 'assigned')->orderBy('order_time')->pluck('id')->toArray();
+        } else {
+            $orders = Order::where('driver_id', $id)->where('order_time', '>=', $utc_start)->where('order_time', '<=', $utc_end)->where('status', 'assigned')->orderBy('order_time')->pluck('id')->toArray();
         }
         
        
         if (count($orders) > 0) {
-            $tasks = Task::whereIn('order_id',$orders)->where('task_status','!=',4)->Where('task_status','!=',5)->with(['location','tasktype','order.customer'])->orderBy('order_id', 'DESC')
+            $tasks = Task::whereIn('order_id', $orders)->where('task_status', '!=', 4)->Where('task_status', '!=', 5)->with(['location','tasktype','order.customer'])->orderBy('order_id', 'DESC')
             ->get();
-            if(count($tasks) > 0)
-            {
-                    //sort according to task_order
-                    $tasks = $tasks->toArray();            
-                    if($tasks[0]['task_order'] !=0)
-                    {                
-                        usort($tasks, function($a, $b) {
-                            return $a['task_order'] <=> $b['task_order'];
-                        });
-                    }
-            }            
+            if (count($tasks) > 0) {
+                //sort according to task_order
+                $tasks = $tasks->toArray();
+                if ($tasks[0]['task_order'] !=0) {
+                    usort($tasks, function ($a, $b) {
+                        return $a['task_order'] <=> $b['task_order'];
+                    });
+                }
+            }
         }
         
-        $agents     = Agent::where('id',$id)->with('team')->first();
+        $agents     = Agent::where('id', $id)->with('team')->first();
         $taskProof = TaskProof::all();
 
-        $prefer    = ClientPreference::select('theme', 'distance_unit', 'currency_id', 'language_id', 'agent_name', 'date_format', 'time_format', 'map_type','map_key_1')->first();
+        $prefer    = ClientPreference::select('theme', 'distance_unit', 'currency_id', 'language_id', 'agent_name', 'date_format', 'time_format', 'map_type', 'map_key_1')->first();
         $allcation = AllocationRule::first('request_expiry');
 
         $prefer['alert_dismiss_time'] = (int)$allcation->request_expiry;
@@ -231,17 +222,16 @@ class ActivityController extends BaseController
 
         return response()->json([
             'data' => $datas,
-        ],200);
+        ], 200);
     }
 
     public function cmsData(Request $request)
     {
-       
-        $data = Cms::where('id',$request->cms_id)->first();
+        $data = Cms::where('id', $request->cms_id)->first();
 
         return response()->json([
             'data' => $data,
-           ],200);
+           ], 200);
     }
 
 
@@ -249,19 +239,16 @@ class ActivityController extends BaseController
     {
         $id    = Auth::user()->id;
        
-        $orders = Order::where('driver_id',$id)->pluck('id')->toArray();
+        $orders = Order::where('driver_id', $id)->pluck('id')->toArray();
         if (isset($orders)) {
-            $tasks = Task::whereIn('order_id',$orders)->whereIn('task_status',[4,5])->with(['location','tasktype','order.customer'])->orderBy('order_id','DESC')
+            $tasks = Task::whereIn('order_id', $orders)->whereIn('task_status', [4,5])->with(['location','tasktype','order.customer'])->orderBy('order_id', 'DESC')
              ->get(['id','order_id','dependent_task_id','task_type_id','location_id','appointment_duration','task_status','allocation_type','created_at','barcode']);
-        }else{
+        } else {
             $task = [];
         }
 
         return response()->json([
             'data' => $tasks,
-        ],200);
-            
+        ], 200);
     }
-    
-  
 }

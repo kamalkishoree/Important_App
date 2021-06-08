@@ -11,7 +11,7 @@ class UserProfile extends Controller
 {
 
     /**
-     * Validation method for clients data 
+     * Validation method for clients data
     */
     protected function validator(array $data)
     {
@@ -24,8 +24,8 @@ class UserProfile extends Controller
     /**
      * Store data in clients table
     */
-    public function SaveRecord(Request $request){
-        
+    public function SaveRecord(Request $request)
+    {
         $this->validator($request->all())->validate();
         $data = [
             'name' => $request->name,

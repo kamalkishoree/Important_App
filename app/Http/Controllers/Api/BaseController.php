@@ -11,7 +11,6 @@ class BaseController extends Controller
 
 	protected function sendSms($recipients, $message)
 	{
-		//echo $recipients;die;
 	    $sid = getenv("TWILIO_SID");
 	    $token = getenv("TWILIO_AUTH_TOKEN");
 	    $twilio_number = getenv("TWILIO_NUMBER");
