@@ -19,7 +19,7 @@ use Illuminate\Support\Facades\Route;
 /*Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });*/
-
+Route::post('get-delivery-fee', 'Api\TaskController@getDeliveryFee');
 Route::post('shortCode', 'Api\ShortcodeController@validateCompany');
 Route::get('cmscontent','Api\ActivityController@cmsData');
 
@@ -40,7 +40,7 @@ Route::group([
         Route::post('login', 'Api\AuthController@login');
         Route::post('signup', 'Api\AuthController@signup');
         Route::get('cmscontent','Api\ActivityController@cmsData');
-        Route::post('get-delivery-fee', 'Api\TaskController@getDeliveryFee');
+       
     });
 
 });

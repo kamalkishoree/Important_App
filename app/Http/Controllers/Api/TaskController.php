@@ -1376,30 +1376,103 @@ class TaskController extends BaseController
 
 
     /******************    ---- get delivery fees (Need to pass all latitude / longitude of pickup & drop ) -----   ******************/
-    public function getDeliveryFee(GetDeliveryFee $request){
+    public function getDeliveryFee(Request $request){
         $latitude  = [];
         $longitude = [];
-
-        
-        foreach ($request->locations as $key => $value) {
-            if(empty($value['latitude']) || empty($value['longitude']))
-            return response()->json(['message' => 'Pickup and Dropoff location required.',], 404);
-            array_push($latitude, $value['latitude']??0.0000);
-            array_push($longitude, $value['longitude']??0.0000);
+        $client = Client::where('is_deleted', 0)->where('code', $request->shortCode)->first(['id', 'name', 'database_name', 'timezone', 'custom_domain', 'logo', 'company_name', 'company_address', 'is_blocked']);
+        if (!$client) {
+            return response()->json([
+                'error' => 'Company not found',
+                'message' => 'Invalid short code. Please enter a valid short code.'], 404);
         }
+        if ($client->is_blocked == 1) {
+            return response()->json([
+                'error' => 'Blocked Company',
+                'message' => 'Company has been blocked. Please contact administration.'], 404);
+        }
+        $total = 0.00;
+        $connect = $this->connectToSpecificdatabase($client);
+        if($connect == true)
+        $total = $this->connectToSpecificdatabase($request,$database_name);
         
-        //get pricing rule  for save with every order
-        $pricingRule = PricingRule::where('id', 1)->first();
-        $getdata = $this->GoogleDistanceMatrix($latitude, $longitude);
-        $paid_duration = $getdata['duration'] - $pricingRule->base_duration;
-        $paid_distance = $getdata['distance'] - $pricingRule->base_distance;
-        $paid_duration = $paid_duration < 0 ? 0 : $paid_duration;
-        $paid_distance = $paid_distance < 0 ? 0 : $paid_distance;
-        $total         = $pricingRule->base_price + ($paid_distance * $pricingRule->distance_fee) + ($paid_duration * $pricingRule->duration_price);
+
         return response()->json([
             'total' => $total,
             'message' => 'success'
         ], 200);
-        
     }
+
+
+    # connect to specific database 
+    public function connectToSpecificdatabase(Request $client)
+    {    
+        $database_name =  'db_'.$client['database_name'];
+        if (isset($database_name)) {
+              $database_host = !empty($client->database_host) ? $client->database_host : env('DB_HOST','127.0.0.1');
+                  $database_port = !empty($client->database_port) ? $client->database_port : env('DB_PORT','3306');
+                  $database_username = !empty($client->database_username) ? $client->database_username : env('DB_USERNAME','royodelivery_db');
+                  $database_password = !empty($client->database_password) ? $client->database_password : env('DB_PASSWORD','');
+            $default = [
+                'driver' => env('DB_CONNECTION', 'mysql'),
+                'host' => $database_host,
+                'port' => $database_port,
+                'database' => $database_name,
+                'username' => $database_username,
+                'password' => $database_password,
+                'charset' => 'utf8mb4',
+                'collation' => 'utf8mb4_unicode_ci',
+                'prefix' => '',
+                'prefix_indexes' => true,
+                'strict' => false,
+                'engine' => null
+            ];
+            Config::set("database.connections.$database_name", $default);
+            Config::set("client_connected", true);
+          //  Config::set("client_data", $client);
+            DB::setDefaultConnection($database_name);
+            DB::purge($database_name);
+            //DB::reconnect($database_name);
+
+            $client = Client::where('is_deleted', 0)->where('code', $request->shortCode)->with('getPreference')
+            ->first();
+            return true;
+           
+        }
+        return false;
+    }
+
+
+    # get delivery fees 
+    public function getDeliveryfeeFromSpecificClient(GetDeliveryFee $request){
+
+        $client = Client::where('is_deleted', 0)->where('code', $request->shortCode)
+        ->whereHas('getPreference',function($q)use($request){
+            $q->where('personal_access_token_v1',$request->personal_access_token_v1);
+        })->first(['id', 'name', 'database_name', 'timezone', 'custom_domain', 'logo', 'company_name', 'company_address', 'is_blocked']);
+        if($client){
+            foreach ($request->locations as $key => $value) {
+                if(empty($value['latitude']) || empty($value['longitude']))
+                return response()->json(['message' => 'Pickup and Dropoff location required.',], 404);
+                array_push($latitude, $value['latitude']??0.0000);
+                array_push($longitude, $value['longitude']??0.0000);
+            }
+            
+            //get pricing rule  for save with every order
+            $pricingRule = PricingRule::where('id', 1)->first();
+            $getdata = $this->GoogleDistanceMatrix($latitude, $longitude);
+            $paid_duration = $getdata['duration'] - $pricingRule->base_duration;
+            $paid_distance = $getdata['distance'] - $pricingRule->base_distance;
+            $paid_duration = $paid_duration < 0 ? 0 : $paid_duration;
+            $paid_distance = $paid_distance < 0 ? 0 : $paid_distance;
+            $total         = $pricingRule->base_price + ($paid_distance * $pricingRule->distance_fee) + ($paid_duration * $pricingRule->duration_price);
+    
+            
+            return $total; 
+        }
+        else{
+            return false;
+        }
+       
+    }
+    
 }
