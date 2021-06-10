@@ -1433,8 +1433,7 @@ class TaskController extends BaseController
             DB::purge($database_name);
             //DB::reconnect($database_name);
 
-            $client = Client::where('is_deleted', 0)->where('code', $request->shortCode)->with('getPreference')
-            ->first();
+           
             return true;
            
         }
