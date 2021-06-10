@@ -28,24 +28,26 @@ class ConnectDbFromOrder
         $database_name = $database = 'royodelivery_db';
 
         $header = $request->header();
-        if (array_key_exists("shortCode", $header)){
-            $shortCode =  $header['shortCode'][0];
+        
+        if (array_key_exists("shortcode", $header)){
+            $shortcode =  $header['shortcode'][0];
         }
-        if (array_key_exists("personal_access_token_v1", $header)){
-            $personal_access_token_v1 =  $header['personal_access_token_v1'][0];
+        if (array_key_exists("personaltoken", $header)){
+            $personaltoken =  $header['personaltoken'][0];
         }
+       
         //$client = Cache::get($database);
 
-        $client = Client::where('is_deleted', 0)->where('code', $shortCode)->first(['id', 'name', 'database_name', 'timezone', 'custom_domain', 'logo', 'company_name', 'company_address', 'is_blocked']);
+        $client = Client::where('is_deleted', 0)->where('code', $shortcode)->first(['id', 'name', 'database_name', 'timezone', 'custom_domain', 'logo', 'company_name', 'company_address', 'is_blocked']);
         if (!$client) {
             return response()->json([
-                'error' => 'Company not found',
-                'message' => 'Invalid short code. Please enter a valid short code.'], 404);
+                'status' => 400,
+                'message' => 'Invalid short code. Please enter a valid short code.']);
         }
         if ($client->is_blocked == 1) {
             return response()->json([
-                'error' => 'Blocked Company',
-                'message' => 'Company has been blocked. Please contact administration.'], 404);
+                'status' => 400,
+                'message' => 'Company has been blocked. Please contact administration.']);
         }
 
       
@@ -76,12 +78,17 @@ class ConnectDbFromOrder
             DB::purge($database_name);
             //DB::reconnect($database_name);
 
-            $client_toke = Client::where('is_deleted', 0)->where('code', $shortCode)
-            ->whereHas('getPreference',function($q)use($personal_access_token_v1){
-                $q->where('personal_access_token_v1',$personal_access_token_v1);
+            $client_toke = Client::where('is_deleted', 0)->where('code',$shortcode)
+            ->whereHas('getPreference',function($q)use($personaltoken){
+                $q->where('personal_access_token_v1',$personaltoken);
             })->first(['id', 'name', 'database_name', 'timezone', 'custom_domain', 'logo', 'company_name', 'company_address', 'is_blocked']);
             if($client_toke)
             return $next($request);
+            else{
+                return response()->json([
+                    'status' => 400,
+                    'message' => 'Invalid Royo Dispatcher API key']);
+            }
         }
         abort(404);
     }
