@@ -1393,7 +1393,7 @@ class TaskController extends BaseController
         $total = 0.00;
         $connect = $this->connectToSpecificdatabase($client);
         if($connect == true)
-        $total = $this->connectToSpecificdatabase($request,$database_name);
+        $total = $this->getDeliveryfeeFromSpecificClient($request);
         
 
         return response()->json([
@@ -1404,7 +1404,7 @@ class TaskController extends BaseController
 
 
     # connect to specific database 
-    public function connectToSpecificdatabase(Request $client)
+    public function connectToSpecificdatabase($client)
     {    
         $database_name =  'db_'.$client['database_name'];
         if (isset($database_name)) {
