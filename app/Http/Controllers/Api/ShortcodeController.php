@@ -19,17 +19,10 @@ class ShortcodeController extends BaseController
 
      */
     public function validateCompany(Request $request)
-    {   
-        if(isset($request->personal_access_token_v1) && !empty($request->personal_access_token_v1))
-        $client = Client::where('is_deleted', 0)->where('code', $request->shortCode)
-        ->whereHas('getPreference',function($q)use($request){
-            $q->where('personal_access_token_v1',$request->personal_access_token_v1);
-        })->first(['id', 'name', 'database_name', 'timezone', 'custom_domain', 'logo', 'company_name', 'company_address', 'is_blocked']);
-        else
+    {
         $client = Client::where('is_deleted', 0)->where('code', $request->shortCode)->first(['id', 'name', 'database_name', 'timezone', 'custom_domain', 'logo', 'company_name', 'company_address', 'is_blocked']);
-       
-        
 
+        
         if (!$client) {
             return response()->json([
                 'error' => 'Company not found',

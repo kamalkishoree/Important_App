@@ -25,6 +25,7 @@ class GetDeliveryFee extends FormRequest
     public function rules()
     {
         return [
+            'personal_access_token_v1' => 'required|exists:client_preferences,personal_access_token_v1',
             'locations.*.latitude' => ['required'],
             'locations.*.longitude' => ['required'],
             ];
@@ -35,7 +36,7 @@ class GetDeliveryFee extends FormRequest
         return [
             'locations.*.latitude.required' => 'Pickup and Dropoff location required.',
             'locations.*.longitude.required' => 'Pickup and Dropoff location required.',
-            //'locations.required' => 'Pickup and Dropoff location required.',
+            'personal_access_token_v1' => 'Invalid Royo Dispatcher API key',
             
             
         ];
