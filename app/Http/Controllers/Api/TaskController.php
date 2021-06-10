@@ -40,7 +40,7 @@ use Illuminate\Support\Str;
 
 use Twilio\Rest\Client as TwilioClient;
 use App\Http\Requests\CreateTaskRequest;
-
+use App\Http\Requests\GetDeliveryFee;
 class TaskController extends BaseController
 {
     public function updateTaskStatus(Request $request)
@@ -1372,5 +1372,34 @@ class TaskController extends BaseController
             'task_id' => $status->id,
             'status'  => $status->status,
         ], 200);
+    }
+
+
+    /******************    ---- get delivery fees (Need to pass all latitude / longitude of pickup & drop ) -----   ******************/
+    public function getDeliveryFee(GetDeliveryFee $request){
+        $latitude  = [];
+        $longitude = [];
+
+        
+        foreach ($request->locations as $key => $value) {
+            if(empty($value['latitude']) || empty($value['longitude']))
+            return response()->json(['message' => 'Pickup and Dropoff location required.',], 404);
+            array_push($latitude, $value['latitude']??0.0000);
+            array_push($longitude, $value['longitude']??0.0000);
+        }
+        
+        //get pricing rule  for save with every order
+        $pricingRule = PricingRule::where('id', 1)->first();
+        $getdata = $this->GoogleDistanceMatrix($latitude, $longitude);
+        $paid_duration = $getdata['duration'] - $pricingRule->base_duration;
+        $paid_distance = $getdata['distance'] - $pricingRule->base_distance;
+        $paid_duration = $paid_duration < 0 ? 0 : $paid_duration;
+        $paid_distance = $paid_distance < 0 ? 0 : $paid_distance;
+        $total         = $pricingRule->base_price + ($paid_distance * $pricingRule->distance_fee) + ($paid_duration * $pricingRule->duration_price);
+        return response()->json([
+            'total' => $total,
+            'message' => 'success'
+        ], 200);
+        
     }
 }

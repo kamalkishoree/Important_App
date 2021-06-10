@@ -40,7 +40,7 @@ Route::group([
         Route::post('login', 'Api\AuthController@login');
         Route::post('signup', 'Api\AuthController@signup');
         Route::get('cmscontent','Api\ActivityController@cmsData');
-        
+        Route::post('get-delivery-fee', 'Api\TaskController@getDeliveryFee');
     });
 
 });
