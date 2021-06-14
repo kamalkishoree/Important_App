@@ -343,8 +343,18 @@ class TaskController extends BaseController
     }
 
     public function CreateTask(CreateTaskRequest $request)
-    {
+    {  
         try {
+            if(isset($header['client'][0]))
+            {
+
+            }
+            else{
+               $client =  Client::with(['getAllocation', 'getPreference'])->first();
+               $header['client'][0] = $client->database_name;
+            }
+            
+
             DB::beginTransaction();
 
             $loc_id = $cus_id = $send_loc_id = $newlat = $newlong = 0;
