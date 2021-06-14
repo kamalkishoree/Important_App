@@ -58,19 +58,48 @@ class ClientController extends Controller
                 $domain    = str_replace(array('https://', config('domainsetting.domain_set')), '', $request->custom_domain);
                 $my_url =   $request->custom_domain;
                 
-                $postdata =  ['domain' => $my_url];
-                $client = new \GuzzleHttp\Client(['headers' => ['client' => 'newclient1',
-                'content-type' => ' multipart/form-data']
-                    ]);
+                // $postdata =  ['domain' => $my_url];
+                // $client = new \GuzzleHttp\Client(['headers' => ['client' => 'newclient1',
+                // 'content-type' => ' multipart/form-data']
+                //     ]);
 
-                $client = new \GuzzleHttp\Client(['headers' => ['content-type' => 'application/json']]);                                
+                // $client = new \GuzzleHttp\Client(['headers' => ['content-type' => 'application/json']]);                                
                             
-                $url = \env('ShellNodeApi','localhost:3000/add_subdomain');                      
-                $res = $client->post($url,
-                                ['form_params' => (
-                                    $postdata
-                                )]
-                );
+                // $url = \env('ShellNodeApi','localhost:3000/add_subdomain');                      
+                // $res = $client->post($url,
+                //                 ['form_params' => (
+                //                     $postdata
+                //                 )]
+                // );
+
+                $data1 = [
+                    'domain' => $my_url
+                ];
+                
+                $curl = curl_init();
+                
+                curl_setopt_array($curl, array(
+                    CURLOPT_URL => "localhost:3000/add_subdomain",
+                    CURLOPT_RETURNTRANSFER => true,
+                    CURLOPT_ENCODING => "",
+                    CURLOPT_MAXREDIRS => 10,
+                    CURLOPT_TIMEOUT => 30000,
+                    CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                    CURLOPT_CUSTOMREQUEST => "POST",
+                    CURLOPT_POSTFIELDS => json_encode($data2),
+                    CURLOPT_HTTPHEADER => array(
+                       "content-type: application/json",
+                    ),
+                ));
+                
+                $response = curl_exec($curl);
+                $err = curl_error($curl);
+                
+                curl_close($curl);
+                if ($err) {
+                    return redirect()->back()->withInput()->withErrors(new \Illuminate\Support\MessageBag(['custom_domain' => $err]));
+                }
+
                // $process = shell_exec("/var/app/Automation/script.sh '".$my_url."' ");
             } catch (Exception $e) {
                 return redirect()->back()->withInput()->withErrors(new \Illuminate\Support\MessageBag(['custom_domain' => $e->getMessage()]));
