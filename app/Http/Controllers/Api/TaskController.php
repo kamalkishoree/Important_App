@@ -534,7 +534,10 @@ class TaskController extends BaseController
             $allocation = AllocationRule::where('id', 1)->first();
 
             if ($request->task_type != 'now') {
+                if($header['client'][0])
                 $auth = Client::where('database_name', $header['client'][0])->with(['getAllocation', 'getPreference'])->first();
+                else
+                $auth = Client::with(['getAllocation', 'getPreference'])->first();
                 //setting timezone from id
                 $tz = new Timezone();
                 $auth->timezone = $tz->timezone_name(Auth::user()->timezone);
