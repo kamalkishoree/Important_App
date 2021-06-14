@@ -119,7 +119,33 @@ class ClientController extends Controller
                     $domain    = str_replace(array('http://', config('domainsetting.domain_set')), '', $request->custom_domain);
                     $domain    = str_replace(array('https://', config('domainsetting.domain_set')), '', $request->custom_domain);
                     $my_url =   $request->custom_domain;
-                    $process = shell_exec("/var/app/Automation/script.sh '".$my_url."' ");
+                    $data1 = [
+                        'domain' => $my_url
+                    ];
+                    
+                    $curl = curl_init();
+                    
+                    curl_setopt_array($curl, array(
+                        CURLOPT_URL => "localhost:3000/add_subdomain",
+                        CURLOPT_RETURNTRANSFER => true,
+                        CURLOPT_ENCODING => "",
+                        CURLOPT_MAXREDIRS => 10,
+                        CURLOPT_TIMEOUT => 30000,
+                        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                        CURLOPT_CUSTOMREQUEST => "POST",
+                        CURLOPT_POSTFIELDS => json_encode($data1),
+                        CURLOPT_HTTPHEADER => array(
+                           "content-type: application/json",
+                        ),
+                    ));
+                    
+                    $response = curl_exec($curl);
+                    $err = curl_error($curl);
+                    
+                    curl_close($curl);
+                    if ($err) {
+                        return redirect()->back()->withInput()->withErrors(new \Illuminate\Support\MessageBag(['custom_domain' => $err]));
+                    }
                 } catch (Exception $e) {
                     return redirect()->back()->withInput()->withErrors(new \Illuminate\Support\MessageBag(['custom_domain' => $e->getMessage()]));
                 }
@@ -251,7 +277,33 @@ class ClientController extends Controller
                     $domain    = str_replace(array('http://', config('domainsetting.domain_set')), '', $request->custom_domain);
                     $domain    = str_replace(array('https://', config('domainsetting.domain_set')), '', $request->custom_domain);
                     $my_url =   $request->custom_domain;
-                    $process = shell_exec("/var/app/Automation/script.sh '".$my_url."' ");
+                    $data1 = [
+                        'domain' => $my_url
+                    ];
+                    
+                    $curl = curl_init();
+                    
+                    curl_setopt_array($curl, array(
+                        CURLOPT_URL => "localhost:3000/add_subdomain",
+                        CURLOPT_RETURNTRANSFER => true,
+                        CURLOPT_ENCODING => "",
+                        CURLOPT_MAXREDIRS => 10,
+                        CURLOPT_TIMEOUT => 30000,
+                        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                        CURLOPT_CUSTOMREQUEST => "POST",
+                        CURLOPT_POSTFIELDS => json_encode($data1),
+                        CURLOPT_HTTPHEADER => array(
+                           "content-type: application/json",
+                        ),
+                    ));
+                    
+                    $response = curl_exec($curl);
+                    $err = curl_error($curl);
+                    
+                    curl_close($curl);
+                    if ($err) {
+                        return redirect()->back()->withInput()->withErrors(new \Illuminate\Support\MessageBag(['custom_domain' => $err]));
+                    }
                 } catch (Exception $e) {
                     return $e->getMessage();
                 }

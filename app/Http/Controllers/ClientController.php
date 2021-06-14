@@ -58,20 +58,6 @@ class ClientController extends Controller
                 $domain    = str_replace(array('https://', config('domainsetting.domain_set')), '', $request->custom_domain);
                 $my_url =   $request->custom_domain;
                 
-                // $postdata =  ['domain' => $my_url];
-                // $client = new \GuzzleHttp\Client(['headers' => ['client' => 'newclient1',
-                // 'content-type' => ' multipart/form-data']
-                //     ]);
-
-                // $client = new \GuzzleHttp\Client(['headers' => ['content-type' => 'application/json']]);                                
-                            
-                // $url = \env('ShellNodeApi','localhost:3000/add_subdomain');                      
-                // $res = $client->post($url,
-                //                 ['form_params' => (
-                //                     $postdata
-                //                 )]
-                // );
-
                 $data1 = [
                     'domain' => $my_url
                 ];
