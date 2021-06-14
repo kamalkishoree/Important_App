@@ -534,7 +534,7 @@ class TaskController extends BaseController
             $allocation = AllocationRule::where('id', 1)->first();
 
             if ($request->task_type != 'now') {
-                if($header['client'][0])
+                if(isset($header['client'][0]))
                 $auth = Client::where('database_name', $header['client'][0])->with(['getAllocation', 'getPreference'])->first();
                 else
                 $auth = Client::with(['getAllocation', 'getPreference'])->first();
