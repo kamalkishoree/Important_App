@@ -555,8 +555,8 @@ class TaskController extends BaseController
                 $datecheck = 0;
                 $to_time = strtotime($to);
                 $from_time = strtotime($from);
-                
                 if ($to_time >= $from_time) {
+                    DB::commit();
                     return response()->json([
                         'message' => 'Task Added Successfully',
                         'task_id' => $orders->id,

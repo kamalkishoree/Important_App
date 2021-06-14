@@ -56,7 +56,7 @@ class ConnectDbFromOrder
             $database_host = !empty($client->database_host) ? $client->database_host : env('DB_HOST','127.0.0.1');
             $database_port = !empty($client->database_port) ? $client->database_port : env('DB_PORT','3306');
             $database_username = !empty($client->database_username) ? $client->database_username : env('DB_USERNAME','cbladmin');
-            $database_password = !empty($client->database_password) ? $client->database_password : env('DB_PASSWORD','7KZfyvwe8y4ZrRv');
+            $database_password = !empty($client->database_password) ? $client->database_password : env('DB_PASSWORD','');
             $default = [
                 'driver' => env('DB_CONNECTION', 'mysql'),
                 'host' => env('DB_HOST'),
