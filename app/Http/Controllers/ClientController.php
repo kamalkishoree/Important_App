@@ -86,7 +86,7 @@ class ClientController extends Controller
                     CURLOPT_TIMEOUT => 30000,
                     CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
                     CURLOPT_CUSTOMREQUEST => "POST",
-                    CURLOPT_POSTFIELDS => json_encode($data2),
+                    CURLOPT_POSTFIELDS => json_encode($data1),
                     CURLOPT_HTTPHEADER => array(
                        "content-type: application/json",
                     ),
