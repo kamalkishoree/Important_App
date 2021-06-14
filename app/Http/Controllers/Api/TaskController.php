@@ -540,7 +540,7 @@ class TaskController extends BaseController
                 $auth = Client::with(['getAllocation', 'getPreference'])->first();
                 //setting timezone from id
                 $tz = new Timezone();
-                $auth->timezone = $tz->timezone_name(Auth::user()->timezone);
+                $auth->timezone = $tz->timezone_name($auth->timezone);
                  
                 $beforetime = (int)$auth->getAllocation->start_before_task_time;
                  
