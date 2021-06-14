@@ -28,7 +28,6 @@ use Crypt;
 use Carbon\Carbon;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessFailedException;
-
 class ClientController extends Controller
 {
    
@@ -58,7 +57,21 @@ class ClientController extends Controller
                 $domain    = str_replace(array('http://', config('domainsetting.domain_set')), '', $request->custom_domain);
                 $domain    = str_replace(array('https://', config('domainsetting.domain_set')), '', $request->custom_domain);
                 $my_url =   $request->custom_domain;
-                $process = shell_exec("/var/app/Automation/script.sh '".$my_url."' ");
+                
+                $postdata =  ['domain' => $my_url];
+                $client = new \GuzzleHttp\Client(['headers' => ['client' => 'newclient1',
+                'content-type' => ' multipart/form-data']
+                    ]);
+
+                $client = new \GuzzleHttp\Client(['headers' => ['content-type' => 'application/json']]);                                
+                            
+                $url = \env('ShellNodeApi',localhost:3000/add_subdomain);                      
+                $res = $client->post($url,
+                                ['form_params' => (
+                                    $postdata
+                                )]
+                );
+               // $process = shell_exec("/var/app/Automation/script.sh '".$my_url."' ");
             } catch (Exception $e) {
                 return redirect()->back()->withInput()->withErrors(new \Illuminate\Support\MessageBag(['custom_domain' => $e->getMessage()]));
             }
