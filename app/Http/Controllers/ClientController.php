@@ -65,7 +65,7 @@ class ClientController extends Controller
 
                 $client = new \GuzzleHttp\Client(['headers' => ['content-type' => 'application/json']]);                                
                             
-                $url = \env('ShellNodeApi',localhost:3000/add_subdomain);                      
+                $url = \env('ShellNodeApi','localhost:3000/add_subdomain');                      
                 $res = $client->post($url,
                                 ['form_params' => (
                                     $postdata
