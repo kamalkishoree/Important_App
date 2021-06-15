@@ -345,6 +345,7 @@ class TaskController extends BaseController
     public function CreateTask(CreateTaskRequest $request)
     {  
         try {
+            $header = $request->header();
             if(isset($header['client'][0]))
             {
 
@@ -353,7 +354,7 @@ class TaskController extends BaseController
                $client =  Client::with(['getAllocation', 'getPreference'])->first();
                $header['client'][0] = "db_".$client->database_name;
             }
-            
+           
 
             DB::beginTransaction();
 
