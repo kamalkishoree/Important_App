@@ -538,7 +538,7 @@ class TaskController extends BaseController
                 $agent_id = null;
             }
 
-            $header = $request->header();
+           
 
             // task schdule code is hare
 
