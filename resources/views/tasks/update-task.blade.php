@@ -346,8 +346,9 @@ use Carbon\Carbon;
                                 'Recipient Phone']) !!}
                                 {!! Form::hidden('Recipient_email', null, ['class' => 'form-control rec', 'placeholder' =>
                                 'Recipient Email']) !!}
-                                {!! Form::textarea('task_description', null, ['class' => 'form-control', 'placeholder' =>
-                                'Task Description', 'rows' => 2, 'cols' => 40]) !!}
+                                {{-- {!! Form::textarea('task_description', null, ['class' => 'form-control', 'placeholder' =>
+                                'Task Description', 'rows' => 2, 'cols' => 40]) !!} --}}
+                                <textarea class='form-control' placeholder='Task Description' rows='2' cols='40' name="task_description">{{$task->task_description}}</textarea>
                                 {!! Form::hidden('net_quantity', null, ['class' => 'form-control rec mt-1', 'placeholder' =>
                                 'Net Quantity']) !!}
                                 <span class="invalid-feedback" role="alert">

@@ -28,6 +28,7 @@
         "predis/predis": "^1.1",
         "pusher/pusher-php-server": "~3.0",
         "r0bdiablo/laravel5-phumbor": "^1.0",
+        "rap2hpoutre/laravel-log-viewer": "^1.7",
         "rinvex/countries": "^6.1",
         "sarav/laravel-multiauth": "dev-master",
         "twilio/sdk": "^6.13"
