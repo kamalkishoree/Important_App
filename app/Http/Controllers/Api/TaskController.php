@@ -105,6 +105,10 @@ class TaskController extends BaseController
         $checkfailed          = $allCount - $lastfailedtask;
         $sms_body       = '';
         $notification_type = NotificationType::with('notification_events.client_notification')->get();
+        $details = json_decode($order_details->task_description);
+        if($details && $details->order_id){
+            $call_web_hook = $this->updateStatusDataToOrder($details);
+        }
         
         switch ($orderId->task_type_id) {
             case 1:
@@ -255,11 +259,19 @@ class TaskController extends BaseController
                 Log::info($e->getMessage());
             }
         }
+
+       
        
         return response()->json([
             'data' => $newDetails,
         ]);
     }
+    /////////////////// **********************   update status in order panel also **********************************  ///////////////////////
+    public function updateStatusDataToOrder($details){
+        //print_r($details);
+        //die;
+    }
+
 
     public function setMailDetail($client)
     {
@@ -343,8 +355,19 @@ class TaskController extends BaseController
     }
 
     public function CreateTask(CreateTaskRequest $request)
-    {
+    {  
         try {
+            $header = $request->header();
+            if(isset($header['client'][0]))
+            {
+
+            }
+            else{
+               $client =  Client::with(['getAllocation', 'getPreference'])->first();
+               $header['client'][0] = "db_".$client->database_name;
+            }
+           
+
             DB::beginTransaction();
 
             $loc_id = $cus_id = $send_loc_id = $newlat = $newlong = 0;
@@ -527,17 +550,20 @@ class TaskController extends BaseController
                 $agent_id = null;
             }
 
-            $header = $request->header();
+           
 
             // task schdule code is hare
 
             $allocation = AllocationRule::where('id', 1)->first();
 
             if ($request->task_type != 'now') {
+                if(isset($header['client'][0]))
                 $auth = Client::where('database_name', $header['client'][0])->with(['getAllocation', 'getPreference'])->first();
+                else
+                $auth = Client::with(['getAllocation', 'getPreference'])->first();
                 //setting timezone from id
                 $tz = new Timezone();
-                $auth->timezone = $tz->timezone_name(Auth::user()->timezone);
+                $auth->timezone = $tz->timezone_name($auth->timezone);
                  
                 $beforetime = (int)$auth->getAllocation->start_before_task_time;
                  
@@ -552,8 +578,8 @@ class TaskController extends BaseController
                 $datecheck = 0;
                 $to_time = strtotime($to);
                 $from_time = strtotime($from);
-                
                 if ($to_time >= $from_time) {
+                    DB::commit();
                     return response()->json([
                         'message' => 'Task Added Successfully',
                         'task_id' => $orders->id,

@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Route;
     return $request->user();
 });*/
 
+
 Route::post('get-delivery-fee', 'Api\TaskController@getDeliveryFee')->middleware('ConnectDbFromOrder');
 Route::post('task/create', 'Api\TaskController@CreateTask')->middleware('ConnectDbFromOrder');
 
