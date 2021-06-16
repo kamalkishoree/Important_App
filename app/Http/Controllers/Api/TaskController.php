@@ -105,6 +105,10 @@ class TaskController extends BaseController
         $checkfailed          = $allCount - $lastfailedtask;
         $sms_body       = '';
         $notification_type = NotificationType::with('notification_events.client_notification')->get();
+        $details = json_decode($order_details->task_description);
+        if($details && $details->order_id){
+            $call_web_hook = $this->updateStatusDataToOrder($details);
+        }
         
         switch ($orderId->task_type_id) {
             case 1:
@@ -255,11 +259,19 @@ class TaskController extends BaseController
                 Log::info($e->getMessage());
             }
         }
+
+       
        
         return response()->json([
             'data' => $newDetails,
         ]);
     }
+    /////////////////// **********************   update status in order panel also **********************************  ///////////////////////
+    public function updateStatusDataToOrder($details){
+        //print_r($details);
+        //die;
+    }
+
 
     public function setMailDetail($client)
     {
