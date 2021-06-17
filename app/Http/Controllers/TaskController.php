@@ -1670,8 +1670,37 @@ class TaskController extends Controller
                 'detail_id'           => '',
             ];
             $this->sendsilentnotification($notification_data);
+            if($orders && $orders->call_back_url){
+                $call_web_hook = $this->updateStatusDataToOrder($orders,2);  # call web hook when order completed
+            }
+            
         }
+         
         return redirect()->route('tasks.index')->with('success', 'Task Updated successfully!');
+    }
+
+    /////////////////// **********************   update status in order panel also **********************************  ///////////////////////
+    public function updateStatusDataToOrder($order_details,$dispatcher_status_option_id){
+        try {  
+                
+                $client = new GClient(['content-type' => 'application/json']);                               
+                $url = $order_details->call_back_url;                      
+                $res = $client->get($url.'?dispatcher_status_option_id='.$dispatcher_status_option_id);
+                $response = json_decode($res->getBody(), true);
+                if($response){
+                    Log::info($response);
+                }
+               
+                
+        }    
+        catch(\Exception $e)
+        {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ]);
+                    
+        }
     }
 
     // this function for sending silent notification
