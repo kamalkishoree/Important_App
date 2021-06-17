@@ -917,16 +917,20 @@ function RouteOptimization(taskids,distancematrix,optimize,agentid,date) {
             success: function(response) {
                 
                 var data = $.parseJSON(response);    
-                if(data.current_location == 0)
-                {    $('input[type=radio][name=driver_start_location]').prop('checked', false);
-                    $("input[type=radio][name=driver_start_location][value='current']").remove();
-                    $("#radio-current-location-span").remove();
-                    $("input[type=radio][name=driver_start_location][value='select']").click();
-                }
+                
                 for (var i = 0; i < data.length; i++) {
                     var object = data[i];
                     var task_id =  object['id'];
                     var tasktypeid = object['task_type_id'];
+                    var current_location = object['current_location'];
+                    if(current_location == 0)
+                    {   
+                        $('input[type=radio][name=driver_start_location]').prop('checked', false);
+                        $("input[type=radio][name=driver_start_location][value='current']").remove();
+                        $("#radio-current-location-span").remove();
+                        $("input[type=radio][name=driver_start_location][value='select']").click();
+                    }
+
                     if(tasktypeid==1)
                     {
                         tasktype = "Pickup";

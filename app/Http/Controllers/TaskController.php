@@ -1723,12 +1723,12 @@ class TaskController extends Controller
             $id = $request->id;
             $address_preference  = ClientPreference::where('id', 1)->first(['allow_all_location']);
             if ($address_preference->allow_all_location==1) {   // show all address
-                $myloctions = Location::where('customer_id', $id)->where('short_name', '!=', null)->where('location_status', 1)->get();
-                $allloctions = Location::where('customer_id', '!=', $id)->where('short_name', '!=', null)->where('location_status', 1)->get();
+                $myloctions = Location::where('customer_id', $id)->where('short_name', '!=', null)->where('location_status', 1)->orderBy('short_name','asc')->orderBy('address','asc')->get();
+                $allloctions = Location::where('customer_id', '!=', $id)->where('short_name', '!=', null)->where('location_status', 1)->orderBy('short_name','asc')->orderBy('address','asc')->get();
                 $loction = array_merge($myloctions->toArray(), $allloctions->toArray());
                 return response()->json($loction);
             } else {
-                $loction = Location::where('customer_id', $id)->where('short_name', '!=', null)->where('location_status', 1)->get();
+                $loction = Location::where('customer_id', $id)->where('short_name', '!=', null)->where('location_status', 1)->orderBy('short_name','asc')->orderBy('address','asc')->get();
                 return response()->json($loction);
             }
         }
