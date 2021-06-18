@@ -1670,6 +1670,7 @@ class TaskController extends Controller
                 'detail_id'           => '',
             ];
             $this->sendsilentnotification($notification_data);
+            $orders = Order::where('id', $id)->first();
             if($orders && $orders->call_back_url){
                 $call_web_hook = $this->updateStatusDataToOrder($orders,2);  # call web hook when order completed
             }
