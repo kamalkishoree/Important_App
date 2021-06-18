@@ -1438,10 +1438,11 @@ class DashBoardController extends Controller
         $html = "";
        
 
-        $taskdetails['current_location'] = Task::where('id', $taskids[0])->whereHas('order.agent.agentlog')->count();
+     //   $taskdetails['current_location'] = Task::where('id', $taskids[0])->whereHas('order.agent.agentlog')->count();
 
         for ($i=0;$i<count($taskids);$i++) {
             $singletaskdetail = Task::where('id', $taskids[$i])->with('location')->first();
+            $singletaskdetail['current_location'] = Task::where('id', $taskids[0])->whereHas('order.agent.agentlog')->count();
             $taskdetails[] = $singletaskdetail->toArray();
             // $html .= '<option value="">'.$singletaskdetail->task_type_id.'</option>';
         }

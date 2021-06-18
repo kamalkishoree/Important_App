@@ -41,7 +41,7 @@ class TaskController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request)
-    {
+    {   
         $tz = new Timezone();
         $client_timezone = $tz->timezone_name(Auth::user()->timezone);
         
@@ -1670,8 +1670,40 @@ class TaskController extends Controller
                 'detail_id'           => '',
             ];
             $this->sendsilentnotification($notification_data);
+            $orders = Order::where('id', $id)->first();
+            if($orders && $orders->call_back_url){
+                $call_web_hook = $this->updateStatusDataToOrder($orders,2);  # call web hook when order completed
+            }
+            
         }
+         
         return redirect()->route('tasks.index')->with('success', 'Task Updated successfully!');
+    }
+
+    /////////////////// **********************   update status in order panel also **********************************  ///////////////////////
+    public function updateStatusDataToOrder($order_details,$dispatcher_status_option_id){
+        try {  
+                $code =  Client::select('id','code')->first();
+                $dispatch_traking_url = route('order.tracking',[$code->code,$order_details->unique_id]);
+                $client = new GClient(['content-type' => 'application/json']);                               
+                $url = $order_details->call_back_url;  
+                $dispatch_traking_url = $dispatch_traking_url??'';                     
+                $res = $client->get($url.'?dispatcher_status_option_id='.$dispatcher_status_option_id.'&dispatch_traking_url='.$dispatch_traking_url);
+                $response = json_decode($res->getBody(), true);
+                if($response){
+                    Log::info($response);
+                }
+               
+                
+        }    
+        catch(\Exception $e)
+        {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ]);
+                    
+        }
     }
 
     // this function for sending silent notification
@@ -1723,12 +1755,12 @@ class TaskController extends Controller
             $id = $request->id;
             $address_preference  = ClientPreference::where('id', 1)->first(['allow_all_location']);
             if ($address_preference->allow_all_location==1) {   // show all address
-                $myloctions = Location::where('customer_id', $id)->where('short_name', '!=', null)->where('location_status', 1)->get();
-                $allloctions = Location::where('customer_id', '!=', $id)->where('short_name', '!=', null)->where('location_status', 1)->get();
+                $myloctions = Location::where('customer_id', $id)->where('short_name', '!=', null)->where('location_status', 1)->orderBy('short_name','asc')->orderBy('address','asc')->get();
+                $allloctions = Location::where('customer_id', '!=', $id)->where('short_name', '!=', null)->where('location_status', 1)->orderBy('short_name','asc')->orderBy('address','asc')->get();
                 $loction = array_merge($myloctions->toArray(), $allloctions->toArray());
                 return response()->json($loction);
             } else {
-                $loction = Location::where('customer_id', $id)->where('short_name', '!=', null)->where('location_status', 1)->get();
+                $loction = Location::where('customer_id', $id)->where('short_name', '!=', null)->where('location_status', 1)->orderBy('short_name','asc')->orderBy('address','asc')->get();
                 return response()->json($loction);
             }
         }

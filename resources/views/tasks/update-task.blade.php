@@ -384,7 +384,17 @@ use Carbon\Carbon;
                         </div>
                     </div>
 
-
+                    @if($task->call_back_url)
+                    <h4 class="header-title mb-3">Call Back Url</h4>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <div class="form-group" id="make_modelInput">
+                                {!! Form::text('call_back_url', null, ['class' => 'form-control rec', 'placeholder' =>
+                                'Call Back Url','readonly']) !!}
+                            </div>
+                        </div>
+                    </div>
+                    @endif
 
                     <h4 class="header-title mb-3">Allocation</h4>
                     <div class="row my-3" id="rediodiv">
@@ -409,10 +419,12 @@ use Carbon\Carbon;
                                             {{ $task->auto_alloction == 'm' ? 'checked' : '' }}>
                                         <label class="custom-control-label" for="customRadio33">Manual</label>
                                     </li>
+                                    
                                 </ul>
                             </div>
                         </div>
                         <div class="col-md-4">
+                            <h4 class="header-title">Cash to be collected</h4>
                             <input class="form-control" type="text" placeholder="Cash to be collected"
                                 name="cash_to_be_collected"
                                 value="{{ isset($task->cash_to_be_collected) ? $task->cash_to_be_collected : '' }}">

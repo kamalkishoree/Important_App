@@ -39,6 +39,7 @@ use DB;
 use Illuminate\Support\Str;
 
 use Twilio\Rest\Client as TwilioClient;
+use GuzzleHttp\Client as GClient;
 use App\Http\Requests\CreateTaskRequest;
 use App\Http\Requests\GetDeliveryFee;
 class TaskController extends BaseController
@@ -105,10 +106,7 @@ class TaskController extends BaseController
         $checkfailed          = $allCount - $lastfailedtask;
         $sms_body       = '';
         $notification_type = NotificationType::with('notification_events.client_notification')->get();
-        $details = json_decode($order_details->task_description);
-        if($details && $details->order_id){
-            $call_web_hook = $this->updateStatusDataToOrder($details);
-        }
+        
         
         switch ($orderId->task_type_id) {
             case 1:
@@ -166,7 +164,11 @@ class TaskController extends BaseController
 
         if ($request->task_status == 4) {
             if ($check == 1) {
-                $Order  = Order::where('id', $orderId->order_id)->update(['status' => $task_type ]);
+                $Order  = Order::where('id', $orderId->order_id)->update(['status' => $task_type]);
+
+                if($order_details && $order_details->call_back_url){
+                    $call_web_hook = $this->updateStatusDataToOrder($order_details,5);  # call web hook when order completed
+                }
             }
         } elseif ($request->task_status == 5) {
             if ($checkfailed == 1) {
@@ -174,9 +176,13 @@ class TaskController extends BaseController
             }
         } else {
             $Order  = Order::where('id', $orderId->order_id)->update(['status' => $task_type, 'note' => $note]);
+            if($order_details && $order_details->call_back_url){
+                $call_web_hook = $this->updateStatusDataToOrder($order_details,$request->task_status);  # call web hook when order update
+            }
+            
         }
 
-      
+
         $task = Task::where('id', $request->task_id)->update(['task_status' => $request->task_status,'note' => $note ,'proof_image' => $proof_image,'proof_signature' => $proof_signature]);
 
         $newDetails = Task::where('id', $request->task_id)->with(['location','tasktype','pricing','order.customer'])->first();
@@ -267,9 +273,27 @@ class TaskController extends BaseController
         ]);
     }
     /////////////////// **********************   update status in order panel also **********************************  ///////////////////////
-    public function updateStatusDataToOrder($details){
-        //print_r($details);
-        //die;
+    public function updateStatusDataToOrder($order_details,$dispatcher_status_option_id){
+        try {  
+                
+                $client = new GClient(['content-type' => 'application/json']);                               
+                $url = $order_details->call_back_url;                      
+                $res = $client->get($url.'?dispatcher_status_option_id='.$dispatcher_status_option_id);
+                $response = json_decode($res->getBody(), true);
+                if($response){
+                    Log::info($response);
+                }
+               
+                
+        }    
+        catch(\Exception $e)
+        {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ]);
+                    
+        }
     }
 
 
@@ -454,7 +478,8 @@ class TaskController extends BaseController
             'agent_commission_fixed'          => $pricingRule->agent_commission_fixed,
             'freelancer_commission_percentage'=> $pricingRule->freelancer_commission_percentage,
             'freelancer_commission_fixed'     => $pricingRule->freelancer_commission_fixed,
-            'unique_id'                       => $unique_order_id
+            'unique_id'                       => $unique_order_id,
+            'call_back_url'                   => $request->call_back_url??null
         ];
 
             $orders = Order::create($order);
