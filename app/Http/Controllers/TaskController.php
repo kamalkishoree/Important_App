@@ -41,7 +41,7 @@ class TaskController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request)
-    {
+    {   
         $tz = new Timezone();
         $client_timezone = $tz->timezone_name(Auth::user()->timezone);
         
@@ -1682,10 +1682,12 @@ class TaskController extends Controller
     /////////////////// **********************   update status in order panel also **********************************  ///////////////////////
     public function updateStatusDataToOrder($order_details,$dispatcher_status_option_id){
         try {  
-                
+                $code =  Client::select('id','code')->first();
+                $dispatch_traking_url = route('order.tracking',[$code->code,$order_details->unique_id]);
                 $client = new GClient(['content-type' => 'application/json']);                               
-                $url = $order_details->call_back_url;                      
-                $res = $client->get($url.'?dispatcher_status_option_id='.$dispatcher_status_option_id);
+                $url = $order_details->call_back_url;  
+                $dispatch_traking_url = $dispatch_traking_url??'';                     
+                $res = $client->get($url.'?dispatcher_status_option_id='.$dispatcher_status_option_id.'&dispatch_traking_url='.$dispatch_traking_url);
                 $response = json_decode($res->getBody(), true);
                 if($response){
                     Log::info($response);
