@@ -170,7 +170,10 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                     <div id="collapse-{{ $item['id'] }}" class="collapse" data-parent="#accordion"
                         aria-labelledby="heading-1">
                         <div class="card-body">
-
+                            <?php 
+                               
+                            ?>
+                           
                             <?php //echo "<pre>";
                                // print_r($item['agents']); die;?>
                             @foreach ($item['agents'] as $agent)
@@ -186,7 +189,17 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                     }else{
                                         $opti = "";
                                     }
-                                
+
+                                            $all_path = [];
+                                            foreach ($agent['order'] as $orders) {
+                                                foreach ($orders['task'] as $tasks){
+                                                    array_push($all_path,$tasks['location']['address']);
+                                                }
+                                            }
+                                        
+                                    
+                                    $all_path = implode("/",$all_path);
+                                    $full_map_url = "https://www.google.com/maps/dir/".$all_path;
                                     //print_r($distance_matrix[$agent['id']]); 
                                     $routeperams = "'".$distance_matrix[$agent['id']]['tasks']."','".json_encode($distance_matrix[$agent['id']]['distance'])."','".$opti."',".$agent['id'].",'".$date."'";
                                     
@@ -194,6 +207,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                     $params = "'".$distance_matrix[$agent['id']]['tasks']."','".json_encode($distance_matrix[$agent['id']]['distance'])."','yes',".$agent['id'].",'".$date."'";
                                     
                                     $turnbyturn = '<span class="navigation_btn optimize_btn" onclick="NavigatePath('.$routeperams.')">Export</span>';
+                                   // $turnbyturn = '<a class="navigation_btn optimize_btn"  href='.$full_map_url.')">Exportx</a>';
                                     //$turnbyturn = "";
                                 }else{
                                     $optimize="";

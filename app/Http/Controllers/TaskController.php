@@ -1691,7 +1691,7 @@ class TaskController extends Controller
                 $res = $client->get($url.'?dispatcher_status_option_id='.$dispatcher_status_option_id.'&dispatch_traking_url='.$dispatch_traking_url);
                 $response = json_decode($res->getBody(), true);
                 if($response){
-                    Log::info($response);
+                   // Log::info($response);
                 }
                
                 
