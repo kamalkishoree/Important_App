@@ -38,6 +38,7 @@ class RosterCreate implements ShouldQueue
     public function handle()
     {
         Log::info('mesooooo');
+        Log::info(env('DB_HOST'));
         try {
            
             $schemaName = 'royodelivery_db';
@@ -58,12 +59,16 @@ class RosterCreate implements ShouldQueue
 
             // config(["database.connections.mysql.database" => null]);
 
-
+            Log::info('mesooooo1');
 
             Config::set("database.connections.$schemaName", $default);
+            Log::info('mesooooo2');
             config(["database.connections.mysql.database" => $schemaName]);
+            Log::info($schemaName);
             DB::connection($schemaName)->table('rosters')->insert($this->data);
+            Log::info('mesooooo4');
             DB::connection($schemaName)->table('roster_details')->insert($this->extraData);
+            Log::info('mesooooo5');
             DB::disconnect($schemaName);
             //Roster::insert($this->data);
             Log::info($this->data);

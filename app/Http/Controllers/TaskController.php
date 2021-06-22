@@ -1047,8 +1047,8 @@ class TaskController extends Controller
                         'client_code'         => Auth::user()->code,
                         'created_at'          => Carbon::now()->toDateTimeString(),
                         'updated_at'          => Carbon::now()->toDateTimeString(),
-                        'device_type'         => $geoitem->agent->device_type,
-                        'device_token'        => $geoitem->agent->device_token,
+                        'device_type'         => $geoitem->agent->device_type??null,
+                        'device_token'        => $geoitem->agent->device_token??null,
                         'detail_id'           => $randem,
                      ];
                     array_push($data, $datas);

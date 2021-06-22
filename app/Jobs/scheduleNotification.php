@@ -387,7 +387,7 @@ class scheduleNotification implements ShouldQueue
             //$this->dispatch(new RosterCreate());
             
         } else {
-            print_r('outer_geo');
+            //print_r('outer_geo');
             $getgeo = DB::connection($databaseName)->table('driver_geos')
             ->select('driver_geos.driver_id as driId', 'agents.*', 'agent_logs.*', 'ord.num_order')
             ->join('agents','driver_geos.driver_id','agents.id')
