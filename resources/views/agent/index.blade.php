@@ -66,8 +66,8 @@
                                     <th>Vehicle</th>
                                     <th>Cash Collected</th>
                                     <th>Order Earning</th>
-                                    <th>Total Received</th>
-                                    <th>Total Pay</th>
+                                    <th>Total Paid to Driver</th>
+                                    <th>Total Receive from Driver</th>
                                     <th>Final Balance</th>
                                    
                                     <th>Action</th>
