@@ -82,7 +82,7 @@ class scheduleNotification implements ShouldQueue
           // return $ex->getMessage();
         }
 
-        Log::info('database:'.$schemaName);
+    //    Log::info('database:'.$schemaName);
 
         $databaseName = 'db_'.$this->data['database']['database_name'];
           switch ($this->data['allocation']['auto_assign_logic']) {

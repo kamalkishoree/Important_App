@@ -32,7 +32,7 @@ class SendPushNotification
      */
     public function handle(PushNotification $event)
     {
-        Log::info('message');
+    //    Log::info('message');
         
         $date =  Carbon::now()->toDateTimeString();
         
@@ -70,7 +70,7 @@ class SendPushNotification
 
     public function getData()
     {
-        Log::info('getData');
+    //    Log::info('getData');
         
         $schemaName       = 'royodelivery_db';
         $date             =  Carbon::now()->toDateTimeString();
@@ -96,7 +96,7 @@ class SendPushNotification
     public function sendnotification($recipients)
     {
 
-        Log::info('sendnotification');
+    //    Log::info('sendnotification');
         
         $array = json_decode(json_encode($recipients), true);
        
@@ -129,7 +129,7 @@ class SendPushNotification
 
     public function extraTime($schemaName)
     {
-        Log::info('extraTime');
+    //    Log::info('extraTime');
 
         $check = DB::connection($schemaName)->table('rosters')->get();
 

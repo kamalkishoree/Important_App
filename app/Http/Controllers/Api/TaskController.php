@@ -281,7 +281,7 @@ class TaskController extends BaseController
                 $res = $client->get($url.'?dispatcher_status_option_id='.$dispatcher_status_option_id);
                 $response = json_decode($res->getBody(), true);
                 if($response){
-                    Log::info($response);
+                //    Log::info($response);
                 }
                
                 
