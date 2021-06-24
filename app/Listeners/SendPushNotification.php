@@ -95,8 +95,9 @@ class SendPushNotification
 
     public function sendnotification($recipients)
     {
-
-    //    Log::info('sendnotification');
+        try {
+           
+        Log::info('sendnotificationlistener');
         
         $array = json_decode(json_encode($recipients), true);
        
@@ -106,6 +107,7 @@ class SendPushNotification
                 $item['body']  = 'Check All Details For This Request In App';
                 $new = [];
                 array_push($new,$item['device_token']);
+              
             if(isset($new)){
                 fcm()
                 ->to($new) // $recipients must an array
@@ -123,7 +125,10 @@ class SendPushNotification
 
            sleep(5);
         $this->getData();
-       
+        } catch (Exception $ex) {
+            Log::info($ex->getMessage());
+            
+        }
        
     }
 

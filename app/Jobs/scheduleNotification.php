@@ -324,12 +324,12 @@ class scheduleNotification implements ShouldQueue
 
     public function SendToAll($dataget,$databaseName)
     {
-       // Log::info($dataget);
+        Log::info('SendToAll');
         $allcation_type    = 'AR';
         $date = \Carbon\Carbon::today()->toDateString();
         //$auth              = Client::where('code', $dataget['database']['code'])->with(['getAllocation', 'getPreference'])->first();
         
-
+        Log::info($date);
         
 
         $expriedate        = (int)$dataget['database']['getAllocation']['request_expiry'];
@@ -368,7 +368,7 @@ class scheduleNotification implements ShouldQueue
 
         $geo = $dataget['geo'];
         
-        if (!isset($geo)) {
+        if (!isset($geo)) {Log::info('geo');Log::info($dataget['agent_id']);
             $oneagent = DB::connection($databaseName)->table('agents')->where('id', $dataget['agent_id'])->first();
             $data = [
                 'order_id'            => $dataget['orders_id'],
@@ -386,7 +386,7 @@ class scheduleNotification implements ShouldQueue
             RosterCreate::dispatch($data, $extraData);
             //$this->dispatch(new RosterCreate());
             
-        } else {
+        } else {Log::info('outer_geo');
             //print_r('outer_geo');
             $getgeo = DB::connection($databaseName)->table('driver_geos')
             ->select('driver_geos.driver_id as driId', 'agents.*', 'agent_logs.*', 'ord.num_order')

@@ -77,7 +77,7 @@ class RosterCreate implements ShouldQueue
                 'type'  => 'extra',
                 'status'=> 10
             ]);
-            
+            dd('okk');
         } catch (Exception $ex) {
            return $ex->getMessage();
         }

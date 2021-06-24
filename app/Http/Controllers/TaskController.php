@@ -141,7 +141,6 @@ class TaskController extends Controller
         
         $settime = ($request->task_type=="schedule") ? $request->schedule_time : Carbon::now()->toDateTimeString();
         $notification_time = ($request->task_type=="schedule")? Carbon::parse($settime . $auth->timezone ?? 'UTC')->tz('UTC') : Carbon::now()->toDateTimeString();
-        
         $agent_id          = $request->allocation_type === 'm' ? $request->agent : null;
 
         $order = [
@@ -302,7 +301,7 @@ class TaskController extends Controller
             $geo = $this->createRoster($send_loc_id);
             $agent_id = null;
         }
-
+       
         // task schdule code is hare
 
         $allocation = AllocationRule::where('id', 1)->first();
@@ -314,7 +313,7 @@ class TaskController extends Controller
             $auth->timezone = $tz->timezone_name(Auth::user()->timezone);
 
             $beforetime = (int)$auth->getAllocation->start_before_task_time;
-            //    $to = new \DateTime("now", new \DateTimeZone(isset(Auth::user()->timezone)? Auth::user()->timezone : 'Asia/Kolkata') );
+      //    $to = new \DateTime("now", new \DateTimeZone(isset(Auth::user()->timezone)? Auth::user()->timezone : 'Asia/Kolkata') );
             $to = new \DateTime("now", new \DateTimeZone('UTC'));
             $sendTime = Carbon::now();
             $to = Carbon::parse($to)->format('Y-m-d H:i:s');
@@ -335,7 +334,7 @@ class TaskController extends Controller
                 $time = Carbon::parse($sendTime)
                 ->addMinutes($finaldelay)
                 ->format('Y-m-d H:i:s');
-                
+               
                 $schduledata['geo']               = $geo;
                 //$schduledata['notification_time'] = $time;
                 $schduledata['notification_time'] = $notification_time;
@@ -1013,8 +1012,8 @@ class TaskController extends Controller
             'created_at'               => Carbon::now()->toDateTimeString(),
             'updated_at'               => Carbon::now()->toDateTimeString(),
         ];
-        
-        if (!isset($geo)) {
+       
+        if (!isset($geo)) { 
             $oneagent = Agent::where('id', $agent_id)->first();
             $data = [
                 'order_id'            => $orders_id,
@@ -1029,14 +1028,14 @@ class TaskController extends Controller
                 'detail_id'           => $randem,
             ];
             $this->dispatch(new RosterCreate($data, $extraData));
-        } else {
+        } else {  
             $getgeo = DriverGeo::where('geo_id', $geo)->with([
                 'agent'=> function ($o) use ($cash_at_hand, $date) {
                     $o->where('cash_at_hand', '<', $cash_at_hand)->orderBy('id', 'DESC')->with(['logs','order'=> function ($f) use ($date) {
                         $f->whereDate('order_time', $date)->with('task');
                     }]);
                 }])->get();
-
+                
             for ($i = 1; $i <= $try; $i++) {
                 foreach ($getgeo as $key =>  $geoitem) {
                     $datas = [
