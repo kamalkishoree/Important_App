@@ -399,7 +399,7 @@ class TaskController extends Controller
     //function for sending bulk notification
     public function MassAndEditNotification($orders_id, $agent_id)
     {
-        Log::info('mass and edit notification');
+       // Log::info('mass and edit notification');
         $order_details = Order::where('id', $orders_id)->with(['customer','agent', 'task.location'])->first();
         $auth = Client::where('code', Auth::user()->code)->with(['getAllocation', 'getPreference'])->first();
         $notification_time = $order_details->order_time;

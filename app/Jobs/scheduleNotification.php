@@ -368,7 +368,7 @@ class scheduleNotification implements ShouldQueue
 
         $geo = $dataget['geo'];
         
-        if (!isset($geo)) {print_r('inner_geo');
+        if (!isset($geo)) {
             $oneagent = DB::connection($databaseName)->table('agents')->where('id', $dataget['agent_id'])->first();
             $data = [
                 'order_id'            => $dataget['orders_id'],

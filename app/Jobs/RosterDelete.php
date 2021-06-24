@@ -53,7 +53,7 @@ class RosterDelete implements ShouldQueue
 
             // config(["database.connections.mysql.database" => null]);
 
-            Log::info($this->order_id);
+        //    Log::info($this->order_id);
 
             Config::set("database.connections.$schemaName", $default);
             config(["database.connections.mysql.database" => $schemaName]);
