@@ -1013,7 +1013,7 @@ class TaskController extends Controller
             'updated_at'               => Carbon::now()->toDateTimeString(),
         ];
        
-        if (!isset($geo)) { 
+        if (!isset($geo)) { Log::info('innergeo');
             $oneagent = Agent::where('id', $agent_id)->first();
             $data = [
                 'order_id'            => $orders_id,
@@ -1028,14 +1028,14 @@ class TaskController extends Controller
                 'detail_id'           => $randem,
             ];
             $this->dispatch(new RosterCreate($data, $extraData));
-        } else {  
+        } else {  Log::info('outergeo');
             $getgeo = DriverGeo::where('geo_id', $geo)->with([
                 'agent'=> function ($o) use ($cash_at_hand, $date) {
                     $o->where('cash_at_hand', '<', $cash_at_hand)->orderBy('id', 'DESC')->with(['logs','order'=> function ($f) use ($date) {
                         $f->whereDate('order_time', $date)->with('task');
                     }]);
                 }])->get();
-                
+                Log::info($getgeo->toArray());
             for ($i = 1; $i <= $try; $i++) {
                 foreach ($getgeo as $key =>  $geoitem) {
                     $datas = [
