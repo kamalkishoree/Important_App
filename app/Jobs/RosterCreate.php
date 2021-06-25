@@ -81,4 +81,10 @@ class RosterCreate implements ShouldQueue
         }
        
     }
+
+    public function failed(\Throwable $exception)
+    {
+        // Log failure
+        Log::info($exception->getMessage());
+    }
 }
