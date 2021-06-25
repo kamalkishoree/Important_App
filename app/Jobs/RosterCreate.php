@@ -39,7 +39,7 @@ class RosterCreate implements ShouldQueue
     {
     
         try {
-            Log::info(env('DB_PORT'));
+         
             $schemaName = 'royodelivery_db';
             $default = [
                 'driver' => env('DB_CONNECTION', 'mysql'),
@@ -75,7 +75,7 @@ class RosterCreate implements ShouldQueue
                 'type'  => 'extra',
                 'status'=> 10
             ]);
-           
+            Log::info('create roster');
         } catch (Exception $ex) {
            return $ex->getMessage();
         }

@@ -386,7 +386,7 @@ class scheduleNotification implements ShouldQueue
             RosterCreate::dispatch($data, $extraData);
             //$this->dispatch(new RosterCreate());
             
-        } else {Log::info('outer_geo');
+        } else {
             //print_r('outer_geo');
             $getgeo = DB::connection($databaseName)->table('driver_geos')
             ->select('driver_geos.driver_id as driId', 'agents.*', 'agent_logs.*', 'ord.num_order')
@@ -398,7 +398,7 @@ class scheduleNotification implements ShouldQueue
             })
             ->groupBy('agent_logs.agent_id')
             ->get();
-           
+            Log::info($getgeo);
 
             for ($i = 1; $i <= $try; $i++) {
                 foreach ($getgeo as $key =>  $geoitem) {

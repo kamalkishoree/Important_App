@@ -1318,6 +1318,7 @@ class DashBoardController extends Controller
 
         $totallocations = count($taskids);
         $w=0;
+        $taskids = Task::whereIn('id',$taskids)->orderBy('task_order','asc')->pluck('id');
         for ($i=0;$i<$totallocations;$i++) {
             $Taskdetail = Task::where('id', $taskids[$i])->with('location')->first();
             $location[] = $Taskdetail->location->address;
