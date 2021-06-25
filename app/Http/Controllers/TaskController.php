@@ -1035,9 +1035,9 @@ class TaskController extends Controller
                         $f->whereDate('order_time', $date)->with('task');
                     }]);
                 }])->get();
-                Log::info($getgeo->toArray());
+               
             for ($i = 1; $i <= $try; $i++) {
-                foreach ($getgeo as $key =>  $geoitem) {
+                foreach ($getgeo as $key =>  $geoitem) {  Log::info($geoitem);
                     $datas = [
                         'order_id'            => $orders_id,
                         'driver_id'           => $geoitem->driver_id,
