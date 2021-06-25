@@ -759,6 +759,11 @@ class TaskController extends Controller
         if (empty($localities)) {
             return false;
         }
+        
+        $vendors = Geo::whereRaw("ST_Contains(POLYGON, ST_GEOMFROMTEXT('POINT(".$latitude_y." ".$longitude_x.")'))");
+            
+        
+
 
         foreach ($localities as $k => $locality) {
             $all_points = $locality->geo_array;

@@ -19,6 +19,17 @@ Route::get('dispatch-logs', '\Rap2hpoutre\LaravelLogViewer\LogViewerController@i
 
 Auth::routes();  
 
+Route::get('check-redis-jobs', function(){
+	$connection = null;
+	$default = 'default';
+
+//For the delayed jobs
+var_dump( \Queue::getRedis()->connection($connection)->zrange('queues:'.$default.':delayed' ,0, -1) );
+
+//For the reserved jobs
+var_dump( \Queue::getRedis()->connection($connection)->zrange('queues:'.$default.':reserved' ,0, -1) );
+});
+
 
 
 Route::group(['prefix' => '/godpanel','middleware' => 'CheckGodPanel'], function () {
