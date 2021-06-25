@@ -37,10 +37,9 @@ class RosterCreate implements ShouldQueue
      */
     public function handle()
     {
-     //   Log::info('mesooooo');
-        Log::info(env('DB_HOST'));
+    
         try {
-           
+            Log::info(env('DB_PORT'));
             $schemaName = 'royodelivery_db';
             $default = [
                 'driver' => env('DB_CONNECTION', 'mysql'),
@@ -59,8 +58,7 @@ class RosterCreate implements ShouldQueue
 
             // config(["database.connections.mysql.database" => null]);
 
-            Log::info('mesooooo1');
-
+         
             Config::set("database.connections.$schemaName", $default);
         //    Log::info('mesooooo2');
             config(["database.connections.mysql.database" => $schemaName]);
