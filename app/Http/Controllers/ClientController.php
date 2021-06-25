@@ -127,7 +127,10 @@ class ClientController extends Controller
         $updatePreference = ClientPreference::updateOrCreate([
             'client_id' => $id
         ], $request->all());
-
+      
+        if(isset($request->agent_name) && !empty($request->agent_name))
+        session()->put('agent_name', $request->agent_name);
+       
         if ($request->ajax()) {
             return response()->json([
                 'status' => 'success',
