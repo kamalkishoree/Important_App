@@ -1028,7 +1028,7 @@ class TaskController extends Controller
                 'detail_id'           => $randem,
             ];
             $this->dispatch(new RosterCreate($data, $extraData));
-        } else {  Log::info('outergeo');
+        } else {  Log::info('outergeo');Log::info($geo); Log::info($geo); Log::info($cash_at_hand); Log::info($date);
             $getgeo = DriverGeo::where('geo_id', $geo)->with([
                 'agent'=> function ($o) use ($cash_at_hand, $date) {
                     $o->where('cash_at_hand', '<', $cash_at_hand)->orderBy('id', 'DESC')->with(['logs','order'=> function ($f) use ($date) {
