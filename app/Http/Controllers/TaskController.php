@@ -1055,6 +1055,8 @@ class TaskController extends Controller
                         Order::where('id', $orders_id)->update(['driver_id'=>$geoitem->driver_id]);
                         break;
                     }
+
+                    Log::info($i);
                 }
                 $time = Carbon::parse($time)
                         ->addSeconds($expriedate + 10)
