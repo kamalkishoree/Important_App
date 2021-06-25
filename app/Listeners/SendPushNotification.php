@@ -100,7 +100,7 @@ class SendPushNotification
         Log::info('sendnotificationlistener');
         
         $array = json_decode(json_encode($recipients), true);
-       
+        Log::info($array);
     
         foreach($array as $item){
                 $item['title'] = 'Pickup Request';
