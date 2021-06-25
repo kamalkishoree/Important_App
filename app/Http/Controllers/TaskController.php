@@ -1051,7 +1051,7 @@ class TaskController extends Controller
                         'detail_id'           => $randem,
                      ];
                     array_push($data, $datas);
-                    if ($allcation_type == 'N' && 'ACK') {
+                    if ($allcation_type == 'N' && 'ACK') {Log::info('break');
                         Order::where('id', $orders_id)->update(['driver_id'=>$geoitem->driver_id]);
                         break;
                     }
@@ -1059,7 +1059,7 @@ class TaskController extends Controller
                 $time = Carbon::parse($time)
                         ->addSeconds($expriedate + 10)
                         ->format('Y-m-d H:i:s');
-                if ($allcation_type == 'N' && 'ACK') {
+                if ($allcation_type == 'N' && 'ACK') {Log::info('break2');
                     break;
                 }
             }
