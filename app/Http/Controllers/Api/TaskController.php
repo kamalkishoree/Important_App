@@ -28,7 +28,7 @@ use App\Model\DriverGeo;
 use App\Model\NotificationEvent;
 use App\Model\NotificationType;
 use App\Model\SmtpDetail;
-use App\Model\PricingRule;
+use App\Model\{PricingRule,TagsForAgent};
 use Illuminate\Support\Arr;
 use Log;
 use Config;
@@ -1457,8 +1457,7 @@ class TaskController extends BaseController
 
      /******************    ---- get agents tags -----   ******************/
      public function getAgentTags(Request $request){
-       
-
+      
         $tags = TagsForAgent::get()->toArray();
         return response()->json([
             'tags' => $tags,
