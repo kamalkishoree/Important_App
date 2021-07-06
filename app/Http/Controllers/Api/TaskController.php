@@ -1458,7 +1458,7 @@ class TaskController extends BaseController
      /******************    ---- get agents tags -----   ******************/
      public function getAgentTags(Request $request){
       
-        $tags = TagsForAgent::get()->toArray();
+        $tags = TagsForAgent::get();
         return response()->json([
             'tags' => $tags,
             'message' => 'success'
