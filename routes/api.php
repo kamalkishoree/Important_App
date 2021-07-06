@@ -23,6 +23,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('get-delivery-fee', 'Api\TaskController@getDeliveryFee')->middleware('ConnectDbFromOrder');
 Route::post('task/create', 'Api\TaskController@CreateTask')->middleware('ConnectDbFromOrder');
+Route::post('get-agent-tags', 'Api\TaskController@getAgentTags')->middleware('ConnectDbFromOrder');
+
 
 Route::post('shortCode', 'Api\ShortcodeController@validateCompany');
 Route::get('cmscontent','Api\ActivityController@cmsData');
