@@ -490,11 +490,11 @@ class TaskController extends BaseController
                 $taskcount++;
                 if (isset($value)) {
                     $loc = [
-                    'latitude'    => $value['latitude'],
-                    'longitude'   => $value['longitude'],
-                    'short_name'  => $value['short_name'],
-                    'address'     => $value['address'],
-                    'post_code'   => $value['post_code'],
+                    'latitude'    => $value['latitude']??0.00,
+                    'longitude'   => $value['longitude']??0.00,
+                    'short_name'  => $value['short_name']??null,
+                    'address'     => $value['address']??null,
+                    'post_code'   => $value['post_code']??null,
                     'customer_id' => $cus_id,
                 ];
                     $Loction = Location::create($loc);
