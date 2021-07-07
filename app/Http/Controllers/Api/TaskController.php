@@ -522,7 +522,7 @@ class TaskController extends BaseController
                 'task_status'                => $agent_id != null ? 1 : 0,
                 'allocation_type'            => $request->allocation_type,
                 'assigned_time'              => $notification_time,
-                'barcode'                    => $value['barcode']
+                'barcode'                    => $value['barcode']??null,
             ];
 
                 $task = Task::create($data);
