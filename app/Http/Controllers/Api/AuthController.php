@@ -18,6 +18,7 @@ use App\Model\{TaskProof,TagsForTeam,SubAdminTeamPermissions,SubAdminPermissions
 use Validation;
 use DB;
 use JWT\Token;
+use Hash;
 use Twilio\Rest\Client as TwilioClient;
 use Faker\Generator as Faker;
 class AuthController extends BaseController
