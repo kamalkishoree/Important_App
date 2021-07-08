@@ -59,6 +59,9 @@ Route::domain('{domain}')->middleware(['subdomain'])->group(function() {
 			return view('auth/login');
 		})->name('client-login');
 
+	
+		Route::get('get-order-session','LoginController@getOrderSession')->name('get-order-session');
+
 		
 		Route::post('/login/client', 'LoginController@clientLogin')->name('client.login');
 		Route::get('/wrong/url','LoginController@wrongurl')->name('wrong.client');

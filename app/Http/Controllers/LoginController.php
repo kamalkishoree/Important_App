@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Validation\Validator;
-use DB;
+use DB,Session;
 
 class LoginController extends Controller
 {
@@ -55,4 +55,17 @@ class LoginController extends Controller
         return redirect()->route('wrong.client');
         ;
     }
+
+
+
+    
+
+    public function getOrderSession(Request $request){
+      
+        dd(Session::get('order-vendor-session'));
+
+    }
+
+    
+   
 }

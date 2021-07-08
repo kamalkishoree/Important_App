@@ -72,5 +72,5 @@ Route::group([
   ], function() {
       Route::post('task/create', 'Api\TaskController@CreateTask');
       Route::get('task/currentstatus', 'Api\TaskController@currentstatus');                              
-      
+      Route::post('update-create-vendor-order', 'Api\TaskController@updateCreateVendorOrder');
 });

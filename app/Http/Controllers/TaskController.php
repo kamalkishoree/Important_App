@@ -1782,4 +1782,7 @@ class TaskController extends Controller
         $task['distance_type'] = $client->distance_unit == 'metric' ? 'Km':'Mile';
         return response()->json($task);
     }
+
+
+    
 }

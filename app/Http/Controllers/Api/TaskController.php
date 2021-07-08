@@ -35,7 +35,7 @@ use Config;
 use Closure;
 use Mail;
 use App;
-use DB;
+use DB,Session;
 use Illuminate\Support\Str;
 
 use Twilio\Rest\Client as TwilioClient;
@@ -1447,8 +1447,12 @@ class TaskController extends BaseController
         $paid_duration = $paid_duration < 0 ? 0 : $paid_duration;
         $paid_distance = $paid_distance < 0 ? 0 : $paid_distance;
         $total         = $pricingRule->base_price + ($paid_distance * $pricingRule->distance_fee) + ($paid_duration * $pricingRule->duration_price);
+
+        $client = ClientPreference::take(1)->with('currency')->first();
+        $currency = $client->currency??'';
         return response()->json([
             'total' => $total,
+            'currency' => $currency,
             'message' => 'success'
         ], 200);
         
@@ -1465,6 +1469,16 @@ class TaskController extends BaseController
         ], 200);
         
     }
+
+
+     /******************    ---- update Create Vendor Order -----   ******************/
+     public function updateCreateVendorOrder(Request $request){
+      
+        $dispatcher = Session::put('order-vendor-session','123444');
+
+    }
+
+  
 
     
 }
