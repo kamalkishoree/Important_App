@@ -1474,7 +1474,7 @@ class TaskController extends BaseController
      /******************    ---- update Create Vendor Order -----   ******************/
      public function updateCreateVendorOrder(Request $request){
       
-        $dispatcher = Session::put('order-vendor-session','123444');
+        $dispatcher = Session::put('order-vendor-session',$request->token);
 
     }
 
