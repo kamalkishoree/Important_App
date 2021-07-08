@@ -237,7 +237,7 @@ class AuthController extends BaseController
 
 
                 $team = $this->createTeamFromManager($request,$clientcode);
-                $request->team_permissions = [$team->id]
+                $request->team_permissions = [$team->id];
                 if ($request->team_permissions) {
                     $teampermissions = $request->team_permissions;
                     $addteampermission = [];
