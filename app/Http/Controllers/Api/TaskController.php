@@ -1472,19 +1472,5 @@ class TaskController extends BaseController
     }
 
 
-     /******************    ---- update Create Vendor Order -----   ******************/
-     public function updateCreateVendorOrder(Request $request){
-        $tags = TagsForAgent::get();
-        return response()->json([
-            'tags' => $tags,
-            'message' => 'success',
-            'status' => 200
-        ], 200);
-        
-
-    }
-
-  
-
     
 }

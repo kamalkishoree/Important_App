@@ -19,7 +19,7 @@ use Validation;
 use DB;
 use JWT\Token;
 use Twilio\Rest\Client as TwilioClient;
-
+use Faker\Generator as Faker;
 class AuthController extends BaseController
 {
 
@@ -169,4 +169,133 @@ class AuthController extends BaseController
             'message' => 'Successfully logged out'
         ]);
     }
+
+
+
+    
+     /******************    ---- update Create Vendor Order -----   ******************/
+     public function updateCreateVendorOrder(Request $request){
+        $tags = TagsForAgent::get();
+
+        $update_create = $this->updateCreateManagerOrder($request);
+        return response()->json([
+            'tags' => $tags,
+            'message' => 'success',
+            'status' => 200
+        ], 200);
+        
+
+    }
+
+
+   
+    public function updateCreateManagerOrder($request)
+    {   
+        DB::beginTransaction();
+        try {
+            if(isset($request->email))
+            $already_exists = Client::where('email',$request->email)->first();
+
+            if(empty($already_exists)){
+                $data = [
+                    'name' => $request->name,
+                    'email' => $request->email,
+                    'password' => Hash::make($request->password),
+                    'confirm_password' => Crypt::encryptString($request->password),
+                    'phone_number' => $request->phone_number,
+                    'all_team_access'=> 0,
+                    'status' => 1,
+                    'is_superadmin' => 0,
+                ];
+
+                $superadmin_data = Client::select('country_id', 'timezone', 'custom_domain', 'is_deleted', 'is_blocked', 'database_path', 'database_name', 'database_username', 'database_password', 'logo', 'company_name', 'company_address', 'code', 'sub_domain')
+                ->where('is_superadmin', 1)
+                ->first()->toArray();
+                $clientcode = $superadmin_data['code'];
+                $superadmin_data['code'] = "";
+
+                $finaldata = array_merge($data, $superadmin_data);
+                            
+                $subdmin = Client::create($finaldata);
+                
+                //update client code
+                $codedata = [
+                    'code' => $subdmin->id.'_'.$clientcode
+                ];
+                
+                $clientcodeupdate = Client::where('id', $subdmin->id)->update($codedata);
+                $request->permissions = [1,3,8,9,11];
+                if ($request->permissions) {
+                    $userpermissions = $request->permissions;
+                    $addpermission = [];
+                    $removepermissions = SubAdminPermissions::where('sub_admin_id', $subdmin->id)->delete();
+                    for ($i=0;$i<count($userpermissions);$i++) {
+                        $addpermission[] =  array('sub_admin_id' => $subdmin->id,'permission_id' => $userpermissions[$i]);
+                    }
+                    SubAdminPermissions::insert($addpermission);
+                }
+
+
+                $team = $this->createTeamFromManager($request,$clientcode);
+                $request->team_permissions = [$team->id]
+                if ($request->team_permissions) {
+                    $teampermissions = $request->team_permissions;
+                    $addteampermission = [];
+                    $removeteampermissions = SubAdminTeamPermissions::where('sub_admin_id', $subdmin->id)->delete();
+                    for ($i=0;$i<count($teampermissions);$i++) {
+                        $addteampermission[] =  array('sub_admin_id' => $subdmin->id,'team_id' => $teampermissions[$i]);
+                    }
+                    SubAdminTeamPermissions::insert($addteampermission);
+                }
+            }
+            else{
+                $url = 'http://sales.dispatcher.com/team';
+            }
+            $url = 'http://sales.dispatcher.com/team';
+            DB::commit();
+            return response()->json([
+                        'url' => $url,
+                        'message' => 'success'
+                    ], 200);
+        }
+        catch(\Exception $e){
+        DB::rollback();
+        return response()->json([
+            'status' => 'error',
+            'message' => $e->getMessage()
+        ]);
+       
+        }
+    }
+
+
+    public function createTeamFromManager($request,$clientcode)
+    {
+        $request->tags = [$request->team_tag]
+        $newtag = explode(",", $request->tags);
+        $tag_id = [];
+        foreach ($newtag as $key => $value) {
+            if (!empty($value)) {
+                $check = TagsForTeam::firstOrCreate(['name' => $value]);
+                array_push($tag_id, $check->id);
+            }
+        }
+        $data = [
+            'manager_id'          => $request->vendor_id,
+            'name'          => $request->name." Team",
+            'client_id'     => $clientcode,
+            'location_accuracy' => $request->location_accuracy??1,
+            'location_frequency' => $request->location_frequency??1
+        ];
+
+        $team = Team::create($data);
+        $team->tags()->sync($tag_id);
+
+        if ($team->wasRecentlyCreated) {
+            return $team;
+        }
+    }
+
+  
+
 }
