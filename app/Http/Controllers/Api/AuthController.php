@@ -271,7 +271,7 @@ class AuthController extends BaseController
 
     public function createTeamFromManager($request,$clientcode)
     {
-        $request->tags = [$request->team_tag]
+        $request->tags = [$request->team_tag];
         $newtag = explode(",", $request->tags);
         $tag_id = [];
         foreach ($newtag as $key => $value) {
