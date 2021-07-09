@@ -109,6 +109,7 @@ class AppServiceProvider extends ServiceProvider
                             //\Config::set('database.connections.mysql.database',$database_name);
                             DB::purge('mysql');
                             $dbname = DB::connection()->getDatabaseName();
+                            
                         }
                     }
                 }

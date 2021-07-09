@@ -42,6 +42,7 @@ class ClientMigrateDataBase extends Command
      */
     public function handle(){
         $clients = Client::get();
+        dd(DB::connection()->getDatabaseName());
         foreach ($clients as $key => $client) {
             $database_name = 'db_' . $client->database_name;
             $this->info("migrate database start: {$database_name}!");
