@@ -9,7 +9,7 @@ use Exception;
 use Illuminate\Support\Facades\Cache;
 use DB;
 use Illuminate\Console\Command;
-
+use Request;
 class ClientMigrateDataBase extends Command
 {
     /**
@@ -43,7 +43,7 @@ class ClientMigrateDataBase extends Command
     public function handle(){
         $clients = Client::get();
         
-        $domain = $request->getHost();
+        $domain = Request::getHost();
             $domain    = str_replace(array('http://', config('domainsetting.domain_set')), '', $domain);
             $domain    = str_replace(array('https://', config('domainsetting.domain_set')), '', $domain);
             $subDomain = explode('.', $domain);
