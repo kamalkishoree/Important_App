@@ -60,7 +60,7 @@ Route::domain('{domain}')->middleware(['subdomain'])->group(function() {
 		})->name('client-login');
 
 	
-		Route::get('get-order-session','LoginController@getOrderSession')->name('get.order.session');
+		Route::get('get-order-session','LoginController@getOrderSession')->name('setorders');
 
 		
 		Route::post('/login/client', 'LoginController@clientLogin')->name('client.login');

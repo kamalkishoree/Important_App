@@ -38,6 +38,7 @@ class AppServiceProvider extends ServiceProvider
         if(config('app.env') != 'local') {
             \URL::forceScheme('https');
         }
+       
         Builder::defaultStringLength(191);
         
         View::composer('modals.add-agent', function($view)
