@@ -188,13 +188,13 @@ class AuthController extends BaseController
 
    
     public function updateCreateManagerOrder($request)
-    {   
+    {  
         DB::beginTransaction();
         try {
             if(isset($request->email))
-            $already_exists = Client::where('email',$request->email)->first();
+            $subdmin = Client::where('email',$request->email)->first();
 
-            if(empty($already_exists)){
+            if(empty($subdmin)){
                 $data = [
                     'name' => $request->name,
                     'email' => $request->email,
@@ -204,6 +204,7 @@ class AuthController extends BaseController
                     'all_team_access'=> 0,
                     'status' => 1,
                     'is_superadmin' => 0,
+                    'public_login_session' => $request->public_login_session
                 ];
 
                 $superadmin_data = Client::select('country_id', 'timezone', 'custom_domain', 'is_deleted', 'is_blocked', 'database_path', 'database_name', 'database_username', 'database_password', 'logo', 'company_name', 'company_address', 'code', 'sub_domain')
@@ -247,9 +248,11 @@ class AuthController extends BaseController
                 }
             }
             else{
-                $url = 'http://sales.dispatcher.com/team';
             }
-            $url = 'http://sales.dispatcher.com/team';
+
+            $update_token = Client::where('id',$subdmin->id)->update('public_login_session',$request->public_session)
+            
+            $url = {{ route('get-order-session') }};
             DB::commit();
             return response()->json([
                         'url' => $url,
