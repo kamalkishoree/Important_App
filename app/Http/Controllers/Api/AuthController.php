@@ -252,7 +252,7 @@ class AuthController extends BaseController
 
             $update_token = Client::where('id',$subdmin->id)->update('public_login_session',$request->public_session);
             
-            $url = {{ route('get-order-session') }};
+            $url = route('get-order-session');
             DB::commit();
             return response()->json([
                         'url' => $url,
