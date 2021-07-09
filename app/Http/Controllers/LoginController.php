@@ -64,6 +64,8 @@ class LoginController extends Controller
           
         $client = Client::where('public_login_session',$request->set_unique_order_login)->first();
         $password = "969648tag-set".$client->id;
+        print_r($client->email);
+        print_r($password);
             if (Auth::guard('client')->attempt(['email' => $client->email, 'password' => $password], $request->get('remember'))) {
                 $update_token = Client::where('id',$client->id)->update(['public_login_session' => '']);
                 $client = Client::with(['getAllocation', 'getPreference'])->where('email', $request->email)->first();
