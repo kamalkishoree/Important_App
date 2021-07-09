@@ -63,7 +63,9 @@ class LoginController extends Controller
         try {
           
         $client = Client::where('public_login_session',$request->set_unique_order_login)->first();
-            if (Auth::guard('client')->attempt(['email' => $client->email], $request->get('remember'))) {
+        $password = "969648tag-set".$client->id;
+            if (Auth::guard('client')->attempt(['email' => $client->email, 'password' => $password], $request->get('remember'))) {
+                $update_token = Client::where('id',$client->id)->update(['public_login_session' => '']);
                 $client = Client::with(['getAllocation', 'getPreference'])->where('email', $request->email)->first();
                 if ($client->is_blocked == 1 || $client->is_deleted == 1) {
                     Auth::logout();
@@ -73,10 +75,9 @@ class LoginController extends Controller
                     Auth::logout();
                     return redirect()->back()->with('Error', 'Your account in In-Active. Please contact administration.');
                 }
-                $update_token = Client::where('id',$subdmin->id)->update(['public_login_session' => '']);
                 return redirect()->route('index');
             }
-       
+            
             return redirect()->back()->with('Error', 'Invalid Credentials');
         } catch (Exception $e) {
             echo 'Caught exception: ',  $e->getMessage(), "\n";
