@@ -234,7 +234,7 @@ class AuthController extends BaseController
                 }
 
 
-                $team = $this->createTeamFromManager($request,$clientcode);
+                $team = $this->createTeamFromManager($request,$clientcode,$subdmin->id);
                 $request->team_permissions = [$team->id];
                 if ($request->team_permissions) {
                     $teampermissions = $request->team_permissions;
@@ -267,7 +267,7 @@ class AuthController extends BaseController
     }
 
 
-    public function createTeamFromManager($request,$clientcode)
+    public function createTeamFromManager($request,$clientcode,$manager_id)
     {
         $value = $request->team_tag;
         $tag_id = [];
@@ -277,7 +277,7 @@ class AuthController extends BaseController
             }
         
         $data = [
-            'manager_id'          => $request->vendor_id,
+            'manager_id'          => $manager_id,
             'name'          => $request->name." Team",
             'client_id'     => $clientcode,
             'location_accuracy' => $request->location_accuracy??1,
