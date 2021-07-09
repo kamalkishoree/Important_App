@@ -193,13 +193,13 @@ class AuthController extends BaseController
         try {
             if(isset($request->email))
             $subdmin = Client::where('email',$request->email)->first();
-            $request->password = "969648tag-set".$request->vendor_id;
+            $password = "969648tag-set".$request->vendor_id;
             if(empty($subdmin)){
                 $data = [
                     'name' => $request->name,
                     'email' => $request->email,
-                    'password' => Hash::make($request->password),
-                    'confirm_password' => Crypt::encryptString($request->password),
+                    'password' => Hash::make($password),
+                    'confirm_password' => Crypt::encryptString($password),
                     'phone_number' => $request->phone_number,
                     'all_team_access'=> 0,
                     'status' => 1,
