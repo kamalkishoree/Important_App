@@ -78,7 +78,7 @@ class LoginController extends Controller
                 return redirect()->route('index');
             }
             
-            return redirect()->back()->with('Error', 'Invalid Credentials');
+            echo 'Caught exception: Error';
         } catch (Exception $e) {
             echo 'Caught exception: ',  $e->getMessage(), "\n";
         }
