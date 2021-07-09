@@ -180,11 +180,7 @@ class AuthController extends BaseController
         $tags = TagsForAgent::get();
 
         $update_create = $this->updateCreateManagerOrder($request);
-        return response()->json([
-            'tags' => $tags,
-            'message' => 'success',
-            'status' => 200
-        ], 200);
+        return $update_create;
         
 
     }
