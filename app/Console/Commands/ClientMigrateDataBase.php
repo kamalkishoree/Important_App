@@ -42,13 +42,7 @@ class ClientMigrateDataBase extends Command
      */
     public function handle(){
         $clients = Client::get();
-        
-        $domain = Request::getHost();
-            $domain    = str_replace(array('http://', config('domainsetting.domain_set')), '', $domain);
-            $domain    = str_replace(array('https://', config('domainsetting.domain_set')), '', $domain);
-            $subDomain = explode('.', $domain);
-            dd($domain);
-        foreach ($clients as $key => $client) {
+         foreach ($clients as $key => $client) {
             $database_name = 'db_' . $client->database_name;
             $this->info("migrate database start: {$database_name}!");
             $query = "SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME =  ?";
