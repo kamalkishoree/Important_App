@@ -53,7 +53,6 @@ class LoginController extends Controller
     public function wrongurl()
     {
         return redirect()->route('wrong.client');
-        ;
     }
 
 
@@ -62,8 +61,6 @@ class LoginController extends Controller
 
     public function getOrderSession(Request $request){
       
-        dd(Session::get('order-vendor-session'));
-
     }
 
     
