@@ -62,8 +62,8 @@ class LoginController extends Controller
     public function getOrderSession(Request $request){
         try {
           
-        
-            if (Auth::guard('client')->attempt(['email' => $request->email, 'password' => $request->password], $request->get('remember'))) {
+        $client = Client::where('public_login_session',$request->set_unique_order_login)->first();
+            if (Auth::guard('client')->attempt(['email' => $client->email], $request->get('remember'))) {
                 $client = Client::with(['getAllocation', 'getPreference'])->where('email', $request->email)->first();
                 if ($client->is_blocked == 1 || $client->is_deleted == 1) {
                     Auth::logout();
@@ -73,6 +73,7 @@ class LoginController extends Controller
                     Auth::logout();
                     return redirect()->back()->with('Error', 'Your account in In-Active. Please contact administration.');
                 }
+                $update_token = Client::where('id',$subdmin->id)->update(['public_login_session' => '']);
                 return redirect()->route('index');
             }
        
