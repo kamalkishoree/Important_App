@@ -60,7 +60,26 @@ class LoginController extends Controller
     
 
     public function getOrderSession(Request $request){
-      
+        try {
+          
+        
+            if (Auth::guard('client')->attempt(['email' => $request->email, 'password' => $request->password], $request->get('remember'))) {
+                $client = Client::with(['getAllocation', 'getPreference'])->where('email', $request->email)->first();
+                if ($client->is_blocked == 1 || $client->is_deleted == 1) {
+                    Auth::logout();
+                    return redirect()->back()->with('Error', 'Your account has been blocked by admin. Please contact administration.');
+                }
+                if ($client->status == 3) {
+                    Auth::logout();
+                    return redirect()->back()->with('Error', 'Your account in In-Active. Please contact administration.');
+                }
+                return redirect()->route('index');
+            }
+       
+            return redirect()->back()->with('Error', 'Invalid Credentials');
+        } catch (Exception $e) {
+            echo 'Caught exception: ',  $e->getMessage(), "\n";
+        }
     }
 
     
