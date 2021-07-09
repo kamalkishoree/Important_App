@@ -14,7 +14,7 @@ use App\Model\Client;
 use App\Model\ClientPreference;
 use App\Model\BlockedToken;
 use App\Model\Otp;
-use App\Model\{TaskProof,TagsForTeam,SubAdminTeamPermissions,SubAdminPermissions,TagsForAgent};
+use App\Model\{TaskProof,TagsForTeam,SubAdminTeamPermissions,SubAdminPermissions,TagsForAgent,Team};
 use Validation;
 use DB;
 use JWT\Token;
