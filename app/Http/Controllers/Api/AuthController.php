@@ -269,15 +269,13 @@ class AuthController extends BaseController
 
     public function createTeamFromManager($request,$clientcode)
     {
-        $request->tags = [$request->team_tag];
-        $newtag = explode(",", $request->tags);
+        $value = $request->team_tag;
         $tag_id = [];
-        foreach ($newtag as $key => $value) {
-            if (!empty($value)) {
+        if (!empty($value)) {
                 $check = TagsForTeam::firstOrCreate(['name' => $value]);
                 array_push($tag_id, $check->id);
             }
-        }
+        
         $data = [
             'manager_id'          => $request->vendor_id,
             'name'          => $request->name." Team",
