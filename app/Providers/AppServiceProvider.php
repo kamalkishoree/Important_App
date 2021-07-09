@@ -62,7 +62,6 @@ class AppServiceProvider extends ServiceProvider
 
 
         }else{
-           
             $domain = $request->getHost();
             $domain    = str_replace(array('http://', config('domainsetting.domain_set')), '', $domain);
             $domain    = str_replace(array('https://', config('domainsetting.domain_set')), '', $domain);
@@ -109,7 +108,6 @@ class AppServiceProvider extends ServiceProvider
                             //\Config::set('database.connections.mysql.database',$database_name);
                             DB::purge('mysql');
                             $dbname = DB::connection()->getDatabaseName();
-                            
                         }
                     }
                 }
