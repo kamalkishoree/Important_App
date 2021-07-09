@@ -198,7 +198,7 @@ class AuthController extends BaseController
                 $data = [
                     'name' => $request->name,
                     'email' => $request->email,
-                    'password' => Hash::make($password),
+                    'password' =>  Hash::make($password),
                     'confirm_password' => Crypt::encryptString($password),
                     'phone_number' => $request->phone_number,
                     'all_team_access'=> 0,
@@ -250,7 +250,7 @@ class AuthController extends BaseController
             else{
             }
 
-            $update_token = Client::where('id',$subdmin->id)->update(['password' => $password ,'public_login_session' => $request->public_session]);
+            $update_token = Client::where('id',$subdmin->id)->update(['password' => Hash::make($password) ,'public_login_session' => $request->public_session]);
             
             $url = url('get-order-session');
             DB::commit();
