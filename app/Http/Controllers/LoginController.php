@@ -64,25 +64,25 @@ class LoginController extends Controller
           
         $client = Client::where('public_login_session',$request->set_unique_order_login)->first();
         $password = $request->set_unique_order_login;
-        print_r($client->email);
-        print_r($password);
+       
             if (Auth::guard('client')->attempt(['email' => $client->email, 'password' => $password], $request->get('remember'))) {
                 $update_token = Client::where('id',$client->id)->update(['public_login_session' => '']);
-                $client = Client::with(['getAllocation', 'getPreference'])->where('email', $request->email)->first();
-                if ($client->is_blocked == 1 || $client->is_deleted == 1) {
+                $clientset = Client::with(['getAllocation', 'getPreference'])->where('email', $client->email)->first();
+                if ($clientset->is_blocked == 1 || $clientset->is_deleted == 1) {
                     Auth::logout();
                     return redirect()->back()->with('Error', 'Your account has been blocked by admin. Please contact administration.');
                 }
-                if ($client->status == 3) {
+                if ($clientset->status == 3) {
                     Auth::logout();
                     return redirect()->back()->with('Error', 'Your account in In-Active. Please contact administration.');
                 }
                 return redirect()->route('index');
             }
             
-            echo 'Caught exception: Error';
+            return redirect()->back()->with('Error', 'Invalid Credentials');
         } catch (Exception $e) {
-            echo 'Caught exception: ',  $e->getMessage(), "\n";
+            return redirect()->back()->with('Error', $e->getMessage());
+           
         }
     }
 
