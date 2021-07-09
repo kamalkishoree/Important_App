@@ -255,6 +255,7 @@ class AuthController extends BaseController
             $url = url('get-order-session');
             DB::commit();
             return response()->json([
+                        'status' => 200,
                         'url' => $url,
                         'message' => 'success'
                     ], 200);
@@ -262,7 +263,7 @@ class AuthController extends BaseController
         catch(\Exception $e){
         DB::rollback();
         return response()->json([
-            'status' => 'error',
+            'status' => 400,
             'message' => $e->getMessage()
         ]);
        
