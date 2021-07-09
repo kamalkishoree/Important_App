@@ -193,7 +193,7 @@ class AuthController extends BaseController
         try {
             if(isset($request->email))
             $subdmin = Client::where('email',$request->email)->first();
-            $password = "969648tag-set".$request->vendor_id;
+            $password = $request->public_session;
             if(empty($subdmin)){
                 $data = [
                     'name' => $request->name,
@@ -249,8 +249,8 @@ class AuthController extends BaseController
             }
             else{
             }
-
-            $update_token = Client::where('id',$subdmin->id)->update(['password' => Hash::make($password) ,'public_login_session' => $request->public_session]);
+          
+            $update_token = Client::where('id',$subdmin->id)->update(['password' => Hash::make($request->public_session) ,'public_login_session' => $request->public_session]);
             
             $url = url('get-order-session');
             DB::commit();

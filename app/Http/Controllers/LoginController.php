@@ -63,7 +63,7 @@ class LoginController extends Controller
         try {
           
         $client = Client::where('public_login_session',$request->set_unique_order_login)->first();
-        $password = "969648tag-set".$client->id;
+        $password = $request->set_unique_order_login;
         print_r($client->email);
         print_r($password);
             if (Auth::guard('client')->attempt(['email' => $client->email, 'password' => $password], $request->get('remember'))) {
