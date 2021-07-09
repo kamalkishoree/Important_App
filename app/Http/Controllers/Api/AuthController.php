@@ -193,7 +193,7 @@ class AuthController extends BaseController
         try {
             if(isset($request->email))
             $subdmin = Client::where('email',$request->email)->first();
-
+            $request->password = "969648tag-set".$request->vendor_id;
             if(empty($subdmin)){
                 $data = [
                     'name' => $request->name,
