@@ -28,7 +28,7 @@ use App\Model\DriverGeo;
 use App\Model\NotificationEvent;
 use App\Model\NotificationType;
 use App\Model\SmtpDetail;
-use App\Model\{PricingRule,TagsForAgent};
+use App\Model\{PricingRule,TagsForAgent,TagsForTeam};
 use Illuminate\Support\Arr;
 use Log;
 use Config;
@@ -567,8 +567,16 @@ class TaskController extends BaseController
             //     $orders->drivertags()->sync($request->agent_tag);
             // }
             }
-            if (isset($request->team_tag)) {
-                $orders->teamtags()->sync($request->team_tag);
+            if (isset($request->order_team_tag)) {
+
+                $value = $request->order_team_tag;
+                $tag_id = [];
+                if (!empty($value)) {
+                        $check = TagsForTeam::firstOrCreate(['name' => $value]);
+                        array_push($tag_id, $check->id);
+                    }
+
+                $orders->teamtags()->sync($tag_id);
             }
             $geo = null;
             if ($request->allocation_type === 'a') {
