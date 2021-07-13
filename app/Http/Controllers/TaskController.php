@@ -190,7 +190,8 @@ class TaskController extends Controller
             'agent_commission_fixed'          => $pricingRule->agent_commission_fixed,
             'freelancer_commission_percentage'=> $pricingRule->freelancer_commission_percentage,
             'freelancer_commission_fixed'     => $pricingRule->freelancer_commission_fixed,
-            'unique_id'                       => $unique_order_id
+            'unique_id'                       => $unique_order_id,
+            'call_back_url'                   => $request->call_back_url??null
         ];
         
         $orders = Order::create($order);

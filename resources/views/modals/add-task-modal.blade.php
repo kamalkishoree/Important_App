@@ -243,7 +243,17 @@
                     </div>
 
                 </div>
-            </div>
+            </div> 
+
+            <h4 class="header-title mb-3">Call Back Url</h4>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <div class="form-group" id="make_modelInput">
+                                {!! Form::text('call_back_url', null, ['class' => 'form-control rec', 'placeholder' =>
+                                'Call Back Url']) !!}
+                            </div>
+                        </div>
+                    </div>
 
             <h4 class="header-title mb-2">Allocation</h4>
             <div class="row" id="rediodiv">
