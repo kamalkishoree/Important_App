@@ -9,4 +9,7 @@ class TagsForTeam extends Model
     protected $fillable = [
         'name'
     ];
+
+
+    
 }

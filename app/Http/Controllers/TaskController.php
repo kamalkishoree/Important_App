@@ -21,6 +21,7 @@ use App\Model\TaskProof;
 use App\Model\Geo;
 use App\Model\Order;
 use App\Model\Timezone;
+use App\Model\{Team,TeamTag};
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
@@ -55,12 +56,34 @@ class TaskController extends Controller
             $tasks = $tasks->where('status', 'unassigned');
             $check = 'unassigned';
         }
-        $all      =  Order::where('status', '!=', null)->get();
+
+        $all      =  Order::where('status', '!=', null);
+        if (Auth::user()->is_superadmin == 0 && Auth::user()->all_team_access == 0) {      # get all  tasks according to assign teams 
+
+            $team_tags  = TeamTag::whereHas('team.permissionToManager', function ($query) {
+                    $query->where('sub_admin_id', Auth::user()->id);
+                })->pluck('tag_id');
+
+                $tasks = $tasks->whereHas('allteamtags', function ($query)use($team_tags) {
+                    $query->whereIn('tag_id', $team_tags);
+                });
+
+
+                $all = $all->whereHas('allteamtags', function ($query)use($team_tags) {
+                    $query->whereIn('tag_id', $team_tags);
+                });
+                
+           
+
+        }  
+
+
+        $all = $all->get();
         $active   =  count($all->where('status', 'assigned'));
         $pending  =  count($all->where('status', 'unassigned'));
         $history  =  count($all->where('status', 'completed'));
         $failed   =  count($all->where('status', 'failed'));
-        $tasks    =  $tasks->paginate(10);
+        $tasks    =  $tasks->paginate(10); 
         $pricingRule = PricingRule::select('id', 'name')->get();
         $teamTag    = TagsForTeam::all();
         $agentTag   = TagsForAgent::all();

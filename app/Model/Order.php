@@ -48,6 +48,10 @@ class Order extends Model
     }
 
 
+    public function allteamtags(){
+        return $this->hasMany('App\Model\TaskTeamTag','task_id','id');
+    }
+
 
     
 }
