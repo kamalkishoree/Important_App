@@ -281,7 +281,7 @@ class AuthController extends BaseController
             }
         
         $data = [
-            'manager_id'          => $manager_id,
+            'manager_id'    => $manager_id,
             'name'          => $request->name." Team",
             'client_id'     => $clientcode,
             'location_accuracy' => $request->location_accuracy??1,

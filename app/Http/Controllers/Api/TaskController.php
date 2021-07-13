@@ -567,7 +567,9 @@ class TaskController extends BaseController
             //     $orders->drivertags()->sync($request->agent_tag);
             // }
             }
-        
+            if (isset($request->team_tag)) {
+                $orders->teamtags()->sync($request->team_tag);
+            }
             $geo = null;
             if ($request->allocation_type === 'a') {
                 $geo = $this->createRoster($send_loc_id);
