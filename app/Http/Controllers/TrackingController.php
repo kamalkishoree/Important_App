@@ -119,4 +119,46 @@ class TrackingController extends Controller
             return  $respnse = ['status' => 'failed'];
         }
     }
+
+
+    public function OrderTrackingDetail($domain = '', $user, $id)
+    {
+        $respnse = $this->connection($user);
+
+        if ($respnse['status'] == 'connected') {
+            $order   = DB::connection($respnse['database'])->table('orders')->where('unique_id', $id)->leftJoin('agents', 'orders.driver_id', '=', 'agents.id')
+                ->select('orders.*', 'agents.name', 'agents.profile_picture', 'agents.phone_number')->first();
+            if (isset($order->id)) {
+                $tasks = DB::connection($respnse['database'])->table('tasks')->where('order_id', $order->id)->leftJoin('locations', 'tasks.location_id', '=', 'locations.id')
+                    ->select('tasks.*', 'locations.latitude', 'locations.longitude', 'locations.short_name', 'locations.address')->orderBy('task_order')->get();
+                $orderc = DB::connection($respnse['database'])->table('orders')->where('id', $order->id)->where('status','completed')->count();
+                if($orderc == 0)
+                $agent_location = DB::connection($respnse['database'])->table('agent_logs')->where('agent_id', $order->driver_id)->latest()->first();
+                else{
+                    $agent_location = [];
+                    $lastElement = $tasks->last();
+                    $agent_location['lat']  = $lastElement->latitude;
+                    $agent_location['lng']  = $lastElement->longitude;
+                }
+                
+                return response()->json([
+                    'message' => 'Successfully',
+                    'tasks' => $tasks,
+                    'order'  => $order,
+                    'agent_location'  => $agent_location,
+                ], 200);
+
+                return view('tracking/tracking', compact('tasks', 'order', 'agent_location'));
+            } else {
+
+                return response()->json([
+                    'message' => 'Error'], 400);
+                return view('tracking/order_not_found');
+            }
+        } else {
+            return response()->json([
+                'message' => 'Error'], 400);
+            return view('tracking/order_not_found');
+        }
+    }
 }

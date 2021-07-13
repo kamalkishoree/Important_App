@@ -69,6 +69,7 @@ Route::domain('{domain}')->middleware(['subdomain'])->group(function() {
 		Route::group(['middleware' => 'database'], function()
 		{
 			Route::get('/order/tracking/{clientcode}/{order_id}','TrackingController@OrderTracking')->name('order.tracking');
+			Route::get('/order-details/tracking/{clientcode}/{order_id}','TrackingController@OrderTrackingDetail')->name('order.tracking.detail');
 		});
 		
 		Route::group(['middleware' => ['auth:client'], 'prefix' => '/'], function () {
