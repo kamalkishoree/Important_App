@@ -212,6 +212,14 @@ class GeoFenceController extends Controller
         $validator = $this->updateValidator($request->all())->validate();
         
         $geo = Geo::find($id);
+        
+        if(Auth::user()->is_superadmin == 0)
+        {
+            $request->name = $geo->name;
+            $request->description = $geo->description;
+            $request->latlongs = $geo->geo_array;
+        }
+        
 
         if (isset($request->latlongs)) {
             $data = [

@@ -109,8 +109,8 @@
                                 <div class="col-md-12">
                                     <div class="form-group mb-0">
                                         <label for="name">Name</label>
-                                        <input type="text" name="name" id="name" value="{{ old('name', $geo->name ?? '') }}"
-                                            placeholder="ABC Deliveries" class="form-control">
+                                        <input type="text"  id="name" value="{{ old('name', $geo->name ?? '') }}"
+                                            placeholder="ABC Deliveries" class="form-control" @if(Auth::user()->is_superadmin == 1) name="name" @else  readonly @endif>
                                     </div>
                                 </div>
                             </div>
@@ -119,7 +119,7 @@
                                     <div class="form-group mb-0">
                                         <label for="Description">Description (Optional)</label>
                                         <textarea class="form-control" id="Description"
-                                            name="description">{{ old('description', $geo->description ?? '') }}</textarea>
+                                        @if(Auth::user()->is_superadmin == 1) name="description" @else  readonly @endif >{{ old('description', $geo->description ?? '') }}</textarea>
                                     </div>
                                 </div>
                             </div>
@@ -127,7 +127,7 @@
                                 <div class="col-md-12">
                                     <div class="form-group mb-0">
                                         <label>Team</label> <br />
-                                        <select id="selectize-select" name="team_id">
+                                        <select id="selectize-select" @if(Auth::user()->is_superadmin == 1) name="team_id" @else  disabled @endif>
                                             <option value="0">All</option>
                                             @foreach ($teams as $team)
                                                 <option value="{{ $team->id }}">{{ $team->name }}</option>
@@ -258,6 +258,12 @@
         //         $('.displaySettingsError').show();
         // };
         var map; // Global declaration of the map
+        var is_superadmin = "{{Auth::user()->is_superadmin}}";
+        if(is_superadmin == 1)
+        map_editable = true;
+        else
+        map_editable = false;
+
         function initialize() {
             var zoomLevel = '{{ $geo->zoom_level }}';
             var coordinate = '{{ $geo->geo_array }}';
@@ -306,8 +312,8 @@
             map = new google.maps.Map(document.getElementById("map-canvas"), myOptions);
             myPolygon = new google.maps.Polygon({
                 paths: triangleCoords,
-                draggable: true, // turn off if it gets annoying
-                editable: true,
+                draggable: map_editable, // turn off if it gets annoying
+                editable: map_editable,
                 strokeColor: '#bb3733',
                 //strokeOpacity: 0.8,
                 //strokeWeight: 2,

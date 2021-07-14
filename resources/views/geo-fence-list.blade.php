@@ -47,11 +47,11 @@
                     <div class="card-body px-0 pb-0">
 
                         <div class="row mb-2 pr-2">
-                            
+                            @if (Auth::user()->is_superadmin == 1) 
                             <div class="col-sm-12 text-right">
                                 <a href="{{ route('geo-fence.index') }}"><button type="button" class="btn btn-blue waves-effect waves-light"><i class="mdi mdi-plus-circle mr-1"></i>Add Geo-fence</button></a>
                             </div>
-
+                            @endif
                         </div>
 
                         <div class="table-responsive p-0">
@@ -71,12 +71,11 @@
                                         </td>
 
                                         <td>
+                                            
                                             <a href="{{route('geo-fence.edit', $geo->id)}}" class="action-icon"> <i
                                                     class="mdi mdi-square-edit-outline"></i></a>
-                                            <!-- <a href="{{route('geo-fence.destroy', $geo->id)}}" class="action-icon">
-                                                <i class="mdi mdi-delete"></i>
-                                            </a> -->
-                                            <form method="POST" action="{{route('geo-fence.destroy', $geo->id)}}" class="action-icon">
+                                                    @if (Auth::user()->is_superadmin == 1)
+                                           <form method="POST" action="{{route('geo-fence.destroy', $geo->id)}}" class="action-icon">
                                                 @csrf
                                                 @method('DELETE')
                                                 <div class="form-group">
@@ -85,6 +84,7 @@
 
                                                 </div>
                                             </form>
+                                            @endif
                                         </td>
                                     </tr>
                                     @endforeach
