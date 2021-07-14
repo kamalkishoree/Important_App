@@ -12,6 +12,7 @@ use App\Model\TagsForTeam;
 use App\Model\Team;
 use App\Model\TeamTag;
 use Illuminate\Http\Request;
+use Auth;
 use Illuminate\Support\Facades\Validator;
 
 class PricingRulesController extends Controller
@@ -27,8 +28,23 @@ class PricingRulesController extends Controller
         $priority = PricePriority::where('id', 1)->first();
 
         $geos       = Geo::all()->pluck('name', 'id');
-        $teams      = Team::all()->pluck('name', 'id');
-        $team_tag   = TagsForTeam::all()->pluck('name', 'id');
+
+        $teams      = Team::OrderBy('id','asc');
+        
+        if (Auth::user()->is_superadmin == 0 && Auth::user()->all_team_access == 0) {
+            $teams = $teams->whereHas('permissionToManager', function ($query) {
+                $query->where('sub_admin_id', Auth::user()->id);
+            });
+        }
+        $teams      = $teams->get()->pluck('name', 'id');
+        $team_tag   = TagsForTeam::OrderBy('id','asc');
+        if (Auth::user()->is_superadmin == 0 && Auth::user()->all_team_access == 0) {
+            $team_tag = $team_tag->whereHas('assignTeams.team.permissionToManager', function ($query) {
+                $query->where('sub_admin_id', Auth::user()->id);
+            });
+        }
+        
+        $team_tag = $team_tag->get()->pluck('name', 'id');
         $driver_tag = TagsForAgent::all()->pluck('name', 'id');
         return view('pricing-rules.index')->with(['pricing' => $pricing, 'priority'=>$priority, 'geos' => $geos, 'teams' => $teams, 'team_tag' => $team_tag, 'driver_tag' => $driver_tag]);
     }
@@ -71,8 +87,8 @@ class PricingRulesController extends Controller
        
         $data = [
             'name'                            => $request->name,
-            'start_date_time'                 => $request->start_date_time,
-            'end_date_time'                   => $request->end_date_time,
+            'start_date_time'                 => $request->start_date_time??date("Y-m-d H:i:s"),
+            'end_date_time'                   => $request->end_date_time??date("Y-m-d H:i:s", strtotime('+15 years')),
             'is_default'                      => $request->is_default,
             'geo_id'                          => $request->geo_id,
             'team_id'                         => $request->team_id,

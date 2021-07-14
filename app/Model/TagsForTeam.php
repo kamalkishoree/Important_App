@@ -11,5 +11,9 @@ class TagsForTeam extends Model
     ];
 
 
+    public function assignTeams(){
+        return $this->hasMany('App\Model\TeamTag','tag_id','id');
+    }    
+
     
 }
