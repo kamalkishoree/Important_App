@@ -104,7 +104,7 @@
                                     <div class="col-md-6">
                                         <div class="form-group" id="">
                                             {!! Form::label('title', 'Base Price',['class' => 'control-label']) !!}
-                                            {!! Form::text('base_price', null, ['class' => 'form-control','required' => 'required']) !!}
+                                            {!! Form::text('base_price', 10, ['class' => 'form-control','required' => 'required']) !!}
                                             <span class="invalid-feedback" role="alert">
                                                 <strong></strong>
                                             </span>
@@ -114,7 +114,7 @@
                                     <div class="col-md-6">
                                         <div class="form-group" id="">
                                             {!! Form::label('title', 'Base Duration',['class' => 'control-label']) !!}
-                                            {!! Form::text('base_duration', null, ['class' => 'form-control','required' => 'required']) !!}
+                                            {!! Form::text('base_duration', 1, ['class' => 'form-control','required' => 'required']) !!}
                                             <span class="invalid-feedback" role="alert">
                                                 <strong></strong>
                                             </span>
@@ -127,7 +127,7 @@
                                     <div class="col-md-6">
                                         <div class="form-group" id="">
                                             {!! Form::label('title', 'Base Distance',['class' => 'control-label']) !!}
-                                            {!! Form::text('base_distance', null, ['class' => 'form-control','required' => 'required']) !!}
+                                            {!! Form::text('base_distance', 1, ['class' => 'form-control','required' => 'required']) !!}
                                             <span class="invalid-feedback" role="alert">
                                                 <strong></strong>
                                             </span>
@@ -137,7 +137,7 @@
                                     <div class="col-md-6">
                                         <div class="form-group" id="">
                                             {!! Form::label('title', 'Base Waiting',['class' => 'control-label']) !!}
-                                            {!! Form::text('base_waiting', null, ['class' => 'form-control','required' => 'required']) !!}
+                                            {!! Form::text('base_waiting', 1, ['class' => 'form-control','required' => 'required']) !!}
                                             <span class="invalid-feedback" role="alert">
                                                 <strong></strong>
                                             </span>
@@ -149,7 +149,7 @@
                                     <div class="col-md-6">
                                         <div class="form-group" id="">
                                             {!! Form::label('title', 'Duration Price(per minute)',['class' => 'control-label']) !!}
-                                            {!! Form::text('duration_price', null, ['class' => 'form-control','required' => 'required']) !!}
+                                            {!! Form::text('duration_price', 1, ['class' => 'form-control','required' => 'required']) !!}
                                             <span class="invalid-feedback" role="alert">
                                                 <strong></strong>
                                             </span>
@@ -159,7 +159,7 @@
                                     <div class="col-md-6">
                                         <div class="form-group" id="">
                                             {!! Form::label('title', 'Waiting Price',['class' => 'control-label']) !!}
-                                            {!! Form::text('waiting_price', null, ['class' => 'form-control','required' => 'required']) !!}
+                                            {!! Form::text('waiting_price', 1, ['class' => 'form-control','required' => 'required']) !!}
                                             <span class="invalid-feedback" role="alert">
                                                 <strong></strong>
                                             </span>
@@ -171,7 +171,7 @@
                                     <div class="col-md-6">
                                         <div class="form-group" id="">
                                             {!! Form::label('title', 'Distance Fee',['class' => 'control-label']) !!}
-                                            {!! Form::text('distance_fee', null, ['class' => 'form-control','required' => 'required']) !!}
+                                            {!! Form::text('distance_fee', 1, ['class' => 'form-control','required' => 'required']) !!}
                                             <span class="invalid-feedback" role="alert">
                                                 <strong></strong>
                                             </span>
@@ -181,7 +181,7 @@
                                     <div class="col-md-6">
                                         <div class="form-group" id="">
                                             {!! Form::label('title', 'Cancel Fee',['class' => 'control-label']) !!}
-                                            {!! Form::text('cancel_fee', null, ['class' => 'form-control','required' => 'required']) !!}
+                                            {!! Form::text('cancel_fee', 1, ['class' => 'form-control','required' => 'required']) !!}
                                             <span class="invalid-feedback" role="alert">
                                                 <strong></strong>
                                             </span>
