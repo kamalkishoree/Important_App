@@ -259,12 +259,14 @@
                                 </div>
                             </div>
                         </div>
+                        @if (Auth::user()->is_superadmin == 1)
                         <div class="row">
                             <div class="col-md-12">
                                 <button type="submit" class="btn btn-blue waves-effect waves-light">Update</button>
                             </div>
 
                         </div>
+                        @endif
                     </form>
                 </div>
             </div>

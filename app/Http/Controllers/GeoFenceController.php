@@ -28,8 +28,15 @@ class GeoFenceController extends Controller
         }
 
         $teams = $teams->get();
-
-        $agents = Agent::all();
+       
+        $agents = Agent::with('team');
+        if (Auth::user()->is_superadmin == 0 && Auth::user()->all_team_access == 0) {
+            $agents = $agents->whereHas('team.permissionToManager', function ($query) {
+                $query->where('sub_admin_id', Auth::user()->id);
+            });
+        }
+        
+        $agents = $agents->get();
 
         $geos = Geo::where('client_id', auth()->user()->code)->orderBy('created_at', 'DESC')->first();
 
@@ -169,7 +176,14 @@ class GeoFenceController extends Controller
     {
         $geo = Geo::with(['agents'])->where('id', $id)->first();
         $teams = Team::with(['agents'])->where('client_id', auth()->user()->code)->orderBy('name')->get();
-        $agents = Agent::all();
+        $agents = Agent::with('team');
+        if (Auth::user()->is_superadmin == 0 && Auth::user()->all_team_access == 0) {
+            $agents = $agents->whereHas('team.permissionToManager', function ($query) {
+                $query->where('sub_admin_id', Auth::user()->id);
+            });
+        }
+        
+        $agents = $agents->get();
 
         return view('update-geo-fence')->with([
             'geo' => $geo,
