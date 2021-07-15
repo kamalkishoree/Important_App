@@ -245,12 +245,12 @@
                 </div>
             </div> 
 
-            <h4 class="header-title mb-3">Call Back Url</h4>
+            <h4 class="header-title mb-3">Call Back URL</h4>
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <div class="form-group" id="make_modelInput">
                                 {!! Form::text('call_back_url', null, ['class' => 'form-control rec', 'placeholder' =>
-                                'Call Back Url']) !!}
+                                'Call Back URL']) !!}
                             </div>
                         </div>
                     </div>

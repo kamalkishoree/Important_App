@@ -155,11 +155,23 @@
                                         
 
                                         <td>
-                                            <div class="form-ul" style="width: 60px;">
+                                            @if($price->is_default == 0 || Auth::user()->is_superadmin == 1)
+                                                <div class="form-ul" style="width: 60px;">
                                                 <div class="inner-div"> <a href="#" href1="{{ route('pricing-rules.edit', $price->id) }}" class="action-icon editIcon" priceId="{{$price->id}}"> <i class="mdi mdi-square-edit-outline"></i></a> 
                                                 </div>
+                                            @endif    
+                                                @if($price->is_default == 0)
                                                 <div class="inner-div">
-                                                </div>
+                                                    <form method="POST" action="{{route('pricing-rules.destroy', $price->id)}}">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <div class="form-group">
+                                                            <button type="submit" class="btn btn-primary-outline action-icon" onclick="return confirm('Are you sure ?');"> <i class="mdi mdi-delete"></i></button>
+    
+                                                        </div>
+                                                    </form>
+                                                    </div>
+                                                @endif
                                             </div>
                                         </td>
                                     </tr>

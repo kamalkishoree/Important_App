@@ -24,7 +24,15 @@ class PricingRulesController extends Controller
      */
     public function index()
     {
-        $pricing = PricingRule::orderBy('created_at', 'DESC')->paginate(10);
+        $pricing = PricingRule::orderBy('created_at', 'DESC')->where('is_default',1);
+        if (Auth::user()->is_superadmin == 0 && Auth::user()->all_team_access == 0) {
+            $pricing = $pricing->orWhereHas('team.permissionToManager', function ($query) {
+                $query->where('sub_admin_id', Auth::user()->id);
+            });
+        }
+        
+        $pricing = $pricing->get();
+
         $priority = PricePriority::where('id', 1)->first();
 
         $geos       = Geo::all()->pluck('name', 'id');
@@ -185,7 +193,14 @@ class PricingRulesController extends Controller
      */
     public function destroy($domain = '', $id)
     {
-        PricingRule::where('id', $id)->delete();
+        $del_price_rule = PricingRule::where('id', $id);
+        if (Auth::user()->is_superadmin == 0 && Auth::user()->all_team_access == 0) {
+            $del_price_rule = $del_price_rule->orWhereHas('team.permissionToManager', function ($query) {
+                $query->where('sub_admin_id', Auth::user()->id);
+            });
+        }
+        $del_price_rule = $del_price_rule->delete();
+
         return redirect()->back()->with('success', 'Task deleted successfully!');
     }
 }
