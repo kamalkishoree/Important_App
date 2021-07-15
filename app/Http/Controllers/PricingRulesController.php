@@ -24,9 +24,9 @@ class PricingRulesController extends Controller
      */
     public function index()
     {
-        $pricing = PricingRule::orderBy('created_at', 'DESC')->where('id',1);
+        $pricing = PricingRule::orderBy('created_at', 'DESC');
         if (Auth::user()->is_superadmin == 0 && Auth::user()->all_team_access == 0) {
-            $pricing = $pricing->orWhereHas('team.permissionToManager', function ($query) {
+            $pricing = $pricing->whereHas('team.permissionToManager', function ($query) {
                 $query->where('sub_admin_id', Auth::user()->id);
             });
         }
