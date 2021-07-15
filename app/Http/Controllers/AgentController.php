@@ -280,8 +280,8 @@ class AgentController extends Controller
     {
         $data = [
             'driver_id' => $request->driver_id,
-            'dr' => $request->payment_type == 1 ? $request->amount:null,
-            'cr' => $request->payment_type == 2 ? $request->amount:null,
+            'cr' => $request->payment_type == 1 ? $request->amount:null,
+            'dr' => $request->payment_type == 2 ? $request->amount:null,
         ];
         
         $agent = AgentPayment::create($data);
