@@ -295,14 +295,23 @@ class AgentController extends Controller
         $agent = Agent::where('id', $id)->first();
         if (isset($agent)) {
             $cash  = $agent->order->sum('cash_to_be_collected');
+            $driver_cost  = $agent->order->sum('driver_cost');
             $order = $agent->order->sum('order_cost');
+            $credit = $agent->agentPayment->sum('cr');
+            $debit = $agent->agentPayment->sum('dr');
         } else {
             $cash  = 0;
             $order = 0;
+            $driver_cost = 0;
+            $credit = 0;
+            $debit = 0;
         }
       
         $data['cash_to_be_collected'] = $cash;
         $data['order_cost']           = $order;
+        $data['driver_cost']           = $driver_cost;
+        $data['credit']           = $credit;
+        $data['debit']           = $debit;
        
       
         return response()->json($data);

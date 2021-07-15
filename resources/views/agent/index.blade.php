@@ -186,11 +186,15 @@
                 success: function (data) {
                     console.log(data);
                     var order = round(data.order_cost,2);
+                    var driver_cost = round(data.driver_cost,2);
+                    var credit = round(data.credit,2);
+                    var debit = round(data.debit,2);
                     var cash  = round(data.cash_to_be_collected,2);
-                    var final = round(cash - order,2) 
-                    $("#order_earning").text(order);
+                    var final = round(cash - driver_cost,2);
+                    var new_final = round((debit - credit) - (cash - driver_cost),2);
+                    $("#order_earning").text(driver_cost);
                     $("#cash_collected").text(cash);
-                    $("#final_balance").text(final);
+                    $("#final_balance").text(new_final);
                 },
         });
         
