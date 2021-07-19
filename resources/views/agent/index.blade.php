@@ -228,6 +228,7 @@
                 data: formdata, 
                 success: function (data) {
                     $("#pay-receive-modal .close").click();
+                    location.reload();
                 },
             });
             stay.preventDefault(); 

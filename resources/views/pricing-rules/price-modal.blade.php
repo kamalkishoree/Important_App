@@ -89,7 +89,7 @@
 
                                 <div class="row temp">
                                    
-                                    {{-- <div class="col-md-6">
+                                    <div class="col-md-6">
                                         <div class="form-group" id="typeInput">
                                             {!! Form::label('title', 'Select Driver Tag',['class' => 'control-label']) !!}
                                             {!! Form::select('driver_tag_id',$driver_tag,null,['class' => 'selectpicker']) !!}
@@ -97,7 +97,7 @@
                                                 <strong></strong>
                                             </span>
                                         </div>
-                                    </div> --}}
+                                    </div>
                                 </div>
 
                                 <div class="row">

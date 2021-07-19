@@ -95,7 +95,7 @@ class TaskController extends BaseController
             $proof_signature = null;
         }
        
-        $orderId        = Task::where('id', $request->task_id)->first(['order_id','task_type_id']);
+        $orderId        = Task::where('id', $request->task_id)->first();
         $orderAll       = Task::where('order_id', $orderId->order_id)->get();
         $order_details  = Order::where('id', $orderId->order_id)->with(['agent','customer'])->first();
         $allCount       = Count($orderAll);
