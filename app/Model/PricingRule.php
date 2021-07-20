@@ -14,4 +14,8 @@ class PricingRule extends Model
         return $this->belongsTo('App\Model\Team');
     }
 
+    public function tagsForAgent(){
+        return $this->belongsTo('App\Model\TagsForAgent','driver_tag_id','id');
+    }
+
 }
