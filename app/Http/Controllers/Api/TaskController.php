@@ -1452,13 +1452,13 @@ class TaskController extends BaseController
         
         //get pricing rule  for save with every order
         if(isset($request->agent_tag) && !empty($request->agent_tag))
-        $pricingRule = PricingRule::whereHas('tagsForAgent',function($q)use($request){
+        $pricingRule = PricingRule::orderBy('id', 'desc')->whereHas('tagsForAgent',function($q)use($request){
             $q->where('name',$request->agent_tag);
         })->first();
         
         if(empty($pricingRule))
-        $pricingRule = PricingRule::orderBy('id', 'asc')->first();
-        
+        $pricingRule = PricingRule::orderBy('id', 'desc')->first();
+
         $getdata = $this->GoogleDistanceMatrix($latitude, $longitude);
         $paid_duration = $getdata['duration'] - $pricingRule->base_duration;
         $paid_distance = $getdata['distance'] - $pricingRule->base_distance;
@@ -1484,7 +1484,7 @@ class TaskController extends BaseController
         $user = Client::where('email',$request->email_set)->first();
        
 
-        $tags = TagsForAgent::OrderBy('id','asc');
+        $tags = TagsForAgent::OrderBy('id','desc');
         if (isset($user) && $user->is_superadmin == 0 && $user->all_team_access == 0) {
             $tags = $tags->whereHas('assignTags.agent.team.permissionToManager', function ($query) use($user){
                 $query->where('sub_admin_id', $user->id);
