@@ -575,9 +575,22 @@ class TaskController extends BaseController
                         $check = TagsForTeam::firstOrCreate(['name' => $value]);
                         array_push($tag_id, $check->id);
                     }
-
+                if(!empty($tag_id))    
                 $orders->teamtags()->sync($tag_id);
             }
+
+            if (isset($request->order_agent_tag)) { 
+
+                $value = $request->order_agent_tag;
+                $tag_id = [];
+                if (!empty($value)) {
+                        $check = TagsForAgent::firstOrCreate(['name' => $value]);
+                        array_push($tag_id, $check->id);
+                    }
+                if(!empty($tag_id))
+                $orders->drivertags()->sync($tag_id);
+            }
+
             $geo = null;
             if ($request->allocation_type === 'a') {
                 $geo = $this->createRoster($send_loc_id);
