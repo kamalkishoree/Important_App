@@ -584,7 +584,6 @@ class TaskController extends BaseController
                         $check = TagsForTeam::firstOrCreate(['name' => $value]);
                         array_push($tag_id, $check->id);
                     }
-                if(!empty($tag_id))    
                 $orders->teamtags()->sync($tag_id);
             }
 
@@ -596,8 +595,7 @@ class TaskController extends BaseController
                         $check = TagsForAgent::firstOrCreate(['name' => $value]);
                         array_push($tag_id, $check->id);
                     }
-                if(!empty($tag_id))
-                $orders->drivertags()->sync($tag_id);
+               $orders->drivertags()->sync($tag_id);
             }
 
             $geo = null;
