@@ -1479,7 +1479,7 @@ class TaskController extends BaseController
 
         $tags = TagsForAgent::OrderBy('id','asc');
         if (isset($user) && $user->is_superadmin == 0 && $user->all_team_access == 0) {
-            $driver_tag = $driver_tag->whereHas('assignTags.agent.team.permissionToManager', function ($query) use($user){
+            $tags = $tags->whereHas('assignTags.agent.team.permissionToManager', function ($query) use($user){
                 $query->where('sub_admin_id', $user->id);
             });
         }
