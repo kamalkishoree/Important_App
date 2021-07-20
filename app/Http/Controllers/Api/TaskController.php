@@ -1472,8 +1472,20 @@ class TaskController extends BaseController
 
      /******************    ---- get agents tags -----   ******************/
      public function getAgentTags(Request $request){
-      
-        $tags = TagsForAgent::get();
+        $email_set = $request->email_set??'';
+        if(!empty($email_set))
+        $user = Client::where('email',$request->email_set)->first();
+       
+
+        $tags = TagsForAgent::OrderBy('id','asc');
+        if (isset($user) && $user->is_superadmin == 0 && $user->all_team_access == 0) {
+            $driver_tag = $driver_tag->whereHas('assignTags.agent.team.permissionToManager', function ($query) use($user){
+                $query->where('sub_admin_id', $user->id);
+            });
+        }
+        
+        $tags = $tags->get();
+
         return response()->json([
             'tags' => $tags,
             'message' => 'success'
