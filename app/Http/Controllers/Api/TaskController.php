@@ -403,6 +403,7 @@ class TaskController extends BaseController
             $latitude  = [];
             $longitude = [];
             $percentage = 0;
+            $pricingRule = '';
 
             $pool = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
@@ -446,7 +447,15 @@ class TaskController extends BaseController
 
 
             //get pricing rule  for save with every order
-            $pricingRule = PricingRule::where('id', 1)->first();
+            if(isset($request->order_agent_tag) && !empty($request->order_agent_tag))
+            $pricingRule = PricingRule::orderBy('id', 'desc')->whereHas('tagsForAgent',function($q)use($request){
+                $q->where('name',$request->order_agent_tag);
+            })->first();
+            
+            if(empty($pricingRule))
+            $pricingRule = PricingRule::orderBy('id', 'desc')->first();
+
+          
 
             //here order save code is started
   
