@@ -66,7 +66,7 @@ class AgentController extends Controller
     */
     protected function validator(array $data)
     {
-        return Validator::make($data, [
+          $validator = Validator::make($data, [
             'name' => ['required', 'string', 'max:255'],
             'type' => ['required'],
             'vehicle_type_id' => ['required'],
@@ -76,6 +76,9 @@ class AgentController extends Controller
             //'color' => ['required'],
             'profile_picture' => ['mimes:jpeg,png,jpg,gif,svg|max:2048'],
         ]);
+
+        
+        return  $validator;
     }
 
 
@@ -89,6 +92,20 @@ class AgentController extends Controller
     {
         $validator = $this->validator($request->all())->validate();
         $getFileName = null;
+        $full_number = '+'.$request->country_code.$request->phone_number;
+        if(isset($full_number) && !empty($full_number)){
+            $already = Agent::where('phone_number',$full_number)->count();
+            if($already > 0){
+                return response()->json([
+                    'status'=>'error',
+                    'message' => 'The Phone number is already exist!',
+                    'data' => []
+                ]);
+            }
+            
+        }
+      
+       
 
         $newtag = explode(",", $request->tags);
         $tag_id = [];
@@ -221,6 +238,17 @@ class AgentController extends Controller
         $validator = $this->updateValidator($request->all())->validate();
         
         $agent = Agent::findOrFail($id);
+        if(isset($request->phone_number) && !empty($request->phone_number)){
+            $already = Agent::where('phone_number',$request->phone_number)->where('id','!=',$id)->count();
+            if($already > 0){
+                return response()->json([
+                    'status'=>'error',
+                    'message' => 'The Phone number is already exist!',
+                    'data' => []
+                ]);
+            }
+            
+        }
         $getFileName = $agent->profile_picture;
 
         $newtag = explode(",", $request->tags);
