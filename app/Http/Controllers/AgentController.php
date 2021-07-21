@@ -14,7 +14,7 @@ use App\Model\TagsForAgent;
 use App\Model\TagsForTeam;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
-
+use Illuminate\Validation\Rule;
 class AgentController extends Controller
 {
     /**
@@ -65,20 +65,27 @@ class AgentController extends Controller
      * Validation method for agents data
     */
     protected function validator(array $data)
-    {
-          $validator = Validator::make($data, [
+    {     
+          $full_number = '';
+          if(isset($data['country_code']) && !empty($data['country_code']) && isset($data['phone_number']) && !empty($data['phone_number']))
+          $full_number = '+'.$data['country_code'].$data['phone_number'];
+
+          $data['phone_number'] = '+'.$data['country_code'].$data['phone_number'];
+          return Validator::make($data, [
             'name' => ['required', 'string', 'max:255'],
             'type' => ['required'],
             'vehicle_type_id' => ['required'],
             //'make_model' => ['required'],
             //'plate_number' => ['required'],
-            'phone_number' => ['required'],
+            'phone_number' =>  ['required', 'min:9','max:15',Rule::unique('agents')->where(function ($query) use ($full_number) {
+                return $query->where('phone_number', $full_number);
+            })],
             //'color' => ['required'],
             'profile_picture' => ['mimes:jpeg,png,jpg,gif,svg|max:2048'],
         ]);
 
         
-        return  $validator;
+       
     }
 
 
@@ -92,18 +99,18 @@ class AgentController extends Controller
     {
         $validator = $this->validator($request->all())->validate();
         $getFileName = null;
-        $full_number = '+'.$request->country_code.$request->phone_number;
-        if(isset($full_number) && !empty($full_number)){
-            $already = Agent::where('phone_number',$full_number)->count();
-            if($already > 0){
-                return response()->json([
-                    'status'=>'error',
-                    'message' => 'The Phone number is already exist!',
-                    'data' => []
-                ]);
-            }
+        // $full_number = '+'.$request->country_code.$request->phone_number;
+        // if(isset($full_number) && !empty($full_number)){
+        //     $already = Agent::where('phone_number',$full_number)->count();
+        //     if($already > 0){
+        //         return response()->json([
+        //             'status'=>'error',
+        //             'message' => 'The Phone number is already exist!',
+        //             'data' => []
+        //         ]);
+        //     }
             
-        }
+        // }
       
        
 
@@ -212,15 +219,19 @@ class AgentController extends Controller
     /**
      * Validation method for agent Update
     */
-    protected function updateValidator(array $data)
-    {
+    protected function updateValidator(array $data,$id)
+    {    $full_number = '';
+        $full_number = $data['phone_number'];
+       
         return Validator::make($data, [
             'name' => ['required', 'string', 'max:255'],
             'type' => ['required'],
             'vehicle_type_id' => ['required'],
             //'make_model' => ['required'],
             //'plate_number' => ['required'],
-            'phone_number' => ['required'],
+            'phone_number' => ['required', 'min:9','max:15',Rule::unique('agents')->where(function ($query) use ($full_number,$id) {
+                return $query->where('phone_number', $full_number)->where('id','!=',$id);
+            })],
             //'color' => ['required'],
             'profile_picture' => ['mimes:jpeg,png,jpg,gif,svg|max:2048'],
         ]);
@@ -235,20 +246,20 @@ class AgentController extends Controller
      */
     public function update(Request $request, $domain = '', $id)
     {
-        $validator = $this->updateValidator($request->all())->validate();
+        $validator = $this->updateValidator($request->all(),$id)->validate();
         
-        $agent = Agent::findOrFail($id);
-        if(isset($request->phone_number) && !empty($request->phone_number)){
-            $already = Agent::where('phone_number',$request->phone_number)->where('id','!=',$id)->count();
-            if($already > 0){
-                return response()->json([
-                    'status'=>'error',
-                    'message' => 'The Phone number is already exist!',
-                    'data' => []
-                ]);
-            }
+        // $agent = Agent::findOrFail($id);
+        // if(isset($request->phone_number) && !empty($request->phone_number)){
+        //     $already = Agent::where('phone_number',$request->phone_number)->where('id','!=',$id)->count();
+        //     if($already > 0){
+        //         return response()->json([
+        //             'status'=>'error',
+        //             'message' => 'The Phone number is already exist!',
+        //             'data' => []
+        //         ]);
+        //     }
             
-        }
+        // }
         $getFileName = $agent->profile_picture;
 
         $newtag = explode(",", $request->tags);
