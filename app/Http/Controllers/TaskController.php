@@ -476,12 +476,46 @@ class TaskController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function create()
-    {
-        $teamTag     = TagsForTeam::all();
-        $agentTag    = TagsForAgent::all();
-        $pricingRule = PricingRule::select('id', 'name')->get();
+    {   
+        $teamTag   = TagsForTeam::OrderBy('id','asc');
+        if (Auth::user()->is_superadmin == 0 && Auth::user()->all_team_access == 0) {
+            $teamTag = $teamTag->whereHas('assignTeams.team.permissionToManager', function ($query) {
+                $query->where('sub_admin_id', Auth::user()->id);
+            });
+        } 
+        $team_tag = $team_tag->get();
+
+
+        $agentTag = TagsForAgent::OrderBy('id','asc');
+        if (Auth::user()->is_superadmin == 0 && Auth::user()->all_team_access == 0) {
+            $agentTag = $agentTag->whereHas('assignTags.agent.team.permissionToManager', function ($query) {
+                $query->where('sub_admin_id', Auth::user()->id);
+            });
+        }
+        $agentTag = $agentTag->get();
+
+
+        $pricingRule = PricingRule::select('id', 'name');
+        if (Auth::user()->is_superadmin == 0 && Auth::user()->all_team_access == 0) {
+            $pricingRule = $pricingRule->whereHas('team.permissionToManager', function ($query) {
+                $query->where('sub_admin_id', Auth::user()->id);
+            });
+        }
+        
+        $pricingRule = $pricingRule->get();
+
+        
         $allcation   = AllocationRule::where('id', 1)->first();
-        $agents      = Agent::orderBy('created_at', 'DESC')->get();
+
+       $agents = Agent::orderBy('id', 'DESC');
+        if (Auth::user()->is_superadmin == 0 && Auth::user()->all_team_access == 0) {
+            $agents = $agents->whereHas('team.permissionToManager', function ($query) {
+                $query->where('sub_admin_id', Auth::user()->id);
+            });
+        }
+        $agents = $agents->get();
+
+       
         $task_proofs = TaskProof::all();
         $returnHTML = view('modals/add-task-modal')->with(['teamTag' => $teamTag, 'agentTag' => $agentTag, 'agents' => $agents, 'pricingRule' => $pricingRule, 'allcation' => $allcation ,'task_proofs' => $task_proofs ])->render();
         return response()->json(array('success' => true, 'html' => $returnHTML));
@@ -1480,9 +1514,33 @@ class TaskController extends Controller
         $can = Storage::disk('s3')->url('image.png');
         $lastbaseurl = str_replace('image.png', '', $can);
 
-        $teamTag        = TagsForTeam::all();
-        $agentTag       = TagsForAgent::all();
-        $agents         = Agent::orderBy('created_at', 'DESC')->get();
+        $teamTag   = TagsForTeam::OrderBy('id','asc');
+        if (Auth::user()->is_superadmin == 0 && Auth::user()->all_team_access == 0) {
+            $teamTag = $teamTag->whereHas('assignTeams.team.permissionToManager', function ($query) {
+                $query->where('sub_admin_id', Auth::user()->id);
+            });
+        } 
+        $team_tag = $team_tag->get();
+
+
+        $agentTag = TagsForAgent::OrderBy('id','asc');
+        if (Auth::user()->is_superadmin == 0 && Auth::user()->all_team_access == 0) {
+            $agentTag = $agentTag->whereHas('assignTags.agent.team.permissionToManager', function ($query) {
+                $query->where('sub_admin_id', Auth::user()->id);
+            });
+        }
+        $agentTag = $agentTag->get();
+
+
+      
+       $agents = Agent::orderBy('id', 'DESC');
+        if (Auth::user()->is_superadmin == 0 && Auth::user()->all_team_access == 0) {
+            $agents = $agents->whereHas('team.permissionToManager', function ($query) {
+                $query->where('sub_admin_id', Auth::user()->id);
+            });
+        }
+        $agents = $agents->get();
+
 
         if (isset($task->images_array)) {
             $array = explode(",", $task->images_array);

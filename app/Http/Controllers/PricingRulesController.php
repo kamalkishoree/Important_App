@@ -50,7 +50,7 @@ class PricingRulesController extends Controller
             $team_tag = $team_tag->whereHas('assignTeams.team.permissionToManager', function ($query) {
                 $query->where('sub_admin_id', Auth::user()->id);
             });
-        }
+        } 
         
         $team_tag = $team_tag->get()->pluck('name', 'id');
         $driver_tag = TagsForAgent::OrderBy('id','asc');
