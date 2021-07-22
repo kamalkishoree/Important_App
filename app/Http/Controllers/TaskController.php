@@ -84,11 +84,47 @@ class TaskController extends Controller
         $history  =  count($all->where('status', 'completed'));
         $failed   =  count($all->where('status', 'failed'));
         $tasks    =  $tasks->paginate(10); 
-        $pricingRule = PricingRule::select('id', 'name')->get();
-        $teamTag    = TagsForTeam::all();
-        $agentTag   = TagsForAgent::all();
         $preference  = ClientPreference::where('id', 1)->first(['theme','date_format','time_format']);
-        $agents      = Agent::all();
+       
+        $teamTag   = TagsForTeam::OrderBy('id','asc');
+        if (Auth::user()->is_superadmin == 0 && Auth::user()->all_team_access == 0) {
+            $teamTag = $teamTag->whereHas('assignTeams.team.permissionToManager', function ($query) {
+                $query->where('sub_admin_id', Auth::user()->id);
+            });
+        } 
+        $teamTag = $teamTag->get();
+
+
+        $agentTag = TagsForAgent::OrderBy('id','asc');
+        if (Auth::user()->is_superadmin == 0 && Auth::user()->all_team_access == 0) {
+            $agentTag = $agentTag->whereHas('assignTags.agent.team.permissionToManager', function ($query) {
+                $query->where('sub_admin_id', Auth::user()->id);
+            });
+        }
+        $agentTag = $agentTag->get();
+
+
+        $pricingRule = PricingRule::select('id', 'name');
+        if (Auth::user()->is_superadmin == 0 && Auth::user()->all_team_access == 0) {
+            $pricingRule = $pricingRule->whereHas('team.permissionToManager', function ($query) {
+                $query->where('sub_admin_id', Auth::user()->id);
+            });
+        }
+        
+        $pricingRule = $pricingRule->get();
+
+        
+        $allcation   = AllocationRule::where('id', 1)->first();
+
+       $agents = Agent::orderBy('id', 'DESC');
+        if (Auth::user()->is_superadmin == 0 && Auth::user()->all_team_access == 0) {
+            $agents = $agents->whereHas('team.permissionToManager', function ($query) {
+                $query->where('sub_admin_id', Auth::user()->id);
+            });
+        }
+        $agents = $agents->get();
+
+
         return view('tasks/task')->with(['tasks' => $tasks, 'status' => $request->status, 'active_count' => $active, 'panding_count' => $pending, 'history_count' => $history, 'status' => $check,'preference' => $preference,'agents'=>$agents,'failed_count'=>$failed,'client_timezone'=>$client_timezone]);
     }
 
@@ -483,7 +519,7 @@ class TaskController extends Controller
                 $query->where('sub_admin_id', Auth::user()->id);
             });
         } 
-        $team_tag = $team_tag->get();
+        $teamTag = $teamTag->get();
 
 
         $agentTag = TagsForAgent::OrderBy('id','asc');
