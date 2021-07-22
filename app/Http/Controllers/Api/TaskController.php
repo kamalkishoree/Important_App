@@ -201,9 +201,10 @@ class TaskController extends BaseController
 
         if ($send_sms_status == 1) {
             try {
-                $twilio = new TwilioClient($twilio_sid, $token);
+                if(isset($order_details->customer->phone_number) && strlen($order_details->customer->phone_number) > 8){
+                    $twilio = new TwilioClient($twilio_sid, $token);
     
-                $message = $twilio->messages
+                    $message = $twilio->messages
                        ->create(
                            $order_details->customer->phone_number,  //to number
                          [
@@ -211,6 +212,8 @@ class TaskController extends BaseController
                             "from" => $client_prefrerence->sms_provider_number   //form_number
                          ]
                        );
+                }
+                
             } catch (\Exception $e) {
                 Log::info($e->getMessage());
             }
@@ -234,16 +237,19 @@ class TaskController extends BaseController
         $recipient_email = isset($newDetails->location->email)?$newDetails->location->email:'';
         if ($send_recipient_sms_status == 1 && $recipient_phone!='') {
             try {
-                $twilio = new TwilioClient($twilio_sid, $token);
+                if (isset($recipient_phone) && strlen($recipient_phone) > 8) {
+                    $twilio = new TwilioClient($twilio_sid, $token);
     
-                $message = $twilio->messages
-                       ->create(
-                           $recipient_phone,  //to number
-                         [
-                                    "body" => $sms_body,
-                                    "from" => $client_prefrerence->sms_provider_number   //form_number
-                         ]
-                       );
+                    $message = $twilio->messages
+                           ->create(
+                               $recipient_phone,  //to number
+                             [
+                                        "body" => $sms_body,
+                                        "from" => $client_prefrerence->sms_provider_number   //form_number
+                             ]
+                           );
+                }
+               
             } catch (\Exception $e) {
                 Log::info($e->getMessage());
             }
