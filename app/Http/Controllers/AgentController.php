@@ -248,7 +248,7 @@ class AgentController extends Controller
     {
         $validator = $this->updateValidator($request->all(),$id)->validate();
         
-        // $agent = Agent::findOrFail($id);
+         $agent = Agent::findOrFail($id);
         // if(isset($request->phone_number) && !empty($request->phone_number)){
         //     $already = Agent::where('phone_number',$request->phone_number)->where('id','!=',$id)->count();
         //     if($already > 0){
