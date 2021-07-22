@@ -1520,7 +1520,7 @@ class TaskController extends Controller
                 $query->where('sub_admin_id', Auth::user()->id);
             });
         } 
-        $team_tag = $team_tag->get();
+        $teamTag = $teamTag->get();
 
 
         $agentTag = TagsForAgent::OrderBy('id','asc');
