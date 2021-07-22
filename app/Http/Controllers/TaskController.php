@@ -1765,12 +1765,13 @@ class TaskController extends Controller
             if (isset($request->agent_tag)) {
                 $task_id->drivertags()->sync($request->agent_tag);
             }
-        } else {
-            $teamTag = [];
-            $drivertag = [];
-            $task_id->teamtags()->sync($teamTag);
-            $task_id->drivertags()->sync($drivertag);
         }
+        // else {
+        //     $teamTag = [];
+        //     $drivertag = [];
+        //     $task_id->teamtags()->sync($teamTag);
+        //     $task_id->drivertags()->sync($drivertag);
+        // }
 
         //sending silent push notification
         if ($agent_id!="") {
