@@ -208,9 +208,8 @@ class GeoFenceController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $domain = '', $id)
-    {
+    { 
         $validator = $this->updateValidator($request->all())->validate();
-        
         $geo = Geo::find($id);
         
         if(Auth::user()->is_superadmin == 0)
@@ -235,7 +234,7 @@ class GeoFenceController extends Controller
         }
 
         $updated = Geo::where('id', $id)->update($data);
-
+       
         $geo->agents()->sync($request->agents);
 
         return redirect()->back()->with('success', 'Updated successfully!');

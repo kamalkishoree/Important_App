@@ -110,7 +110,7 @@
                                     <div class="form-group mb-0">
                                         <label for="name">Name</label>
                                         <input type="text"  id="name" value="{{ old('name', $geo->name ?? '') }}"
-                                            placeholder="ABC Deliveries" class="form-control" @if(Auth::user()->is_superadmin == 1) name="name" @else  readonly @endif>
+                                            placeholder="ABC Deliveries" class="form-control" name="name" @if(Auth::user()->is_superadmin == 0) readonly @endif>
                                     </div>
                                 </div>
                             </div>
