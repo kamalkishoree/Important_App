@@ -680,7 +680,7 @@ class TaskController extends BaseController
                     DB::commit();
 
                     $code =  Client::select('id','code')->first();
-                    $dispatch_traking_url = route('order.tracking',[$code->code,$order_details->unique_id]);
+                    $dispatch_traking_url = route('order.tracking',[$code->code,$orders->unique_id]);
 
                     return response()->json([
                         'message' => 'Task Added Successfully',
