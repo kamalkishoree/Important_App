@@ -402,7 +402,7 @@ class TaskController extends BaseController
 
             $auth =  Client::with(['getAllocation', 'getPreference'])->first();
            
-              
+            return $auth;
 
             $loc_id = $cus_id = $send_loc_id = $newlat = $newlong = 0;
             $images = [];
