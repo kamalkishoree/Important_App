@@ -502,8 +502,16 @@ class TaskController extends BaseController
         ];
 
             $orders = Order::create($order);
-            return $orders;
-            $dispatch_traking_url = route('order.tracking',[$auth->code,$orders->unique_id]);
+           
+
+            if ($auth->custom_domain && !empty($auth->custom_domain)) {
+                $client_url = "http://".$auth->custom_domain;
+            } else {
+                $client_url = "http://".$auth->sub_domain.\env('SUBDOMAIN');
+            }
+            $dispatch_traking_url = $client_url.'/order/tracking/'.$auth->code.'/'.$orders->unique_id;
+
+            return $dispatch_traking_url;
             $dep_id = null;
        
             foreach ($request->task as $key => $value) {
