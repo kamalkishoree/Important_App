@@ -400,6 +400,10 @@ class TaskController extends BaseController
 
             DB::beginTransaction();
 
+            $auth =  Client::with(['getAllocation', 'getPreference'])->first();
+           
+              
+
             $loc_id = $cus_id = $send_loc_id = $newlat = $newlong = 0;
             $images = [];
             $last = '';
@@ -498,9 +502,7 @@ class TaskController extends BaseController
         ];
 
             $orders = Order::create($order);
-            $code =  Client::select('id','code')->first();
-            $dispatch_traking_url = route('order.tracking',[$code->code,$orders->unique_id]);
-
+            $dispatch_traking_url = route('order.tracking',[$auth->code,$orders->unique_id]);
             $dep_id = null;
        
             foreach ($request->task as $key => $value) {
@@ -626,6 +628,9 @@ class TaskController extends BaseController
                 $auth = Client::with(['getAllocation', 'getPreference'])->first();
                 //setting timezone from id
                 
+                $dispatch_traking_url = route('order.tracking',[$auth->code,$orders->unique_id]);
+    
+
                 $tz = new Timezone();
                 $auth->timezone = $tz->timezone_name($auth->timezone);
                  
@@ -715,7 +720,7 @@ class TaskController extends BaseController
                     $this->batchWise($geo, $notification_time, $agent_id, $orders->id, $customer, $finalLocation, $taskcount, $header, $allocation);
             }
             }
-
+            $dispatch_traking_url = route('order.tracking',[$auth->code,$orders->unique_id]);
             DB::commit();
             return response()->json([
             'message' => 'Task Added Successfully',
