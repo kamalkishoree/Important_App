@@ -637,7 +637,7 @@ class TaskController extends BaseController
                 $auth = Client::with(['getAllocation', 'getPreference'])->first();
                 //setting timezone from id
                 
-                $dispatch_traking_url = route('order.tracking',[$auth->code,$orders->unique_id]);
+                $dispatch_traking_url = $client_url.'/order/tracking/'.$auth->code.'/'.$orders->unique_id;
     
 
                 $tz = new Timezone();
