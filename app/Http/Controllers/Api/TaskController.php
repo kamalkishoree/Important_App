@@ -498,6 +498,8 @@ class TaskController extends BaseController
         ];
 
             $orders = Order::create($order);
+            $code =  Client::select('id','code')->first();
+            $dispatch_traking_url = route('order.tracking',[$code->code,$orders->unique_id]);
 
             $dep_id = null;
        
@@ -679,9 +681,7 @@ class TaskController extends BaseController
                     scheduleNotification::dispatch($schduledata)->delay(now()->addMinutes($finaldelay));
                     DB::commit();
 
-                    $code =  Client::select('id','code')->first();
-                    $dispatch_traking_url = route('order.tracking',[$code->code,$orders->unique_id]);
-
+                   
                     return response()->json([
                         'message' => 'Task Added Successfully',
                         'task_id' => $orders->id,
@@ -720,6 +720,7 @@ class TaskController extends BaseController
             'message' => 'Task Added Successfully',
             'task_id' => $orders->id,
             'status'  => $orders->status,
+            'dispatch_traking_url'  => $dispatch_traking_url??''
         ], 200);
         } catch (Exception $e) {
             DB::rollback();
