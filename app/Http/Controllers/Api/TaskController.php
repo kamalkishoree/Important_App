@@ -648,6 +648,7 @@ class TaskController extends BaseController
                         'message' => 'Task Added Successfully',
                         'task_id' => $orders->id,
                         'status'  => $orders->status,
+                        'dispatch_traking_url'  => $dispatch_traking_url??''
                     ], 200);
                 }
  
