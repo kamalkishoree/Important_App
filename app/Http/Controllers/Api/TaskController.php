@@ -729,7 +729,8 @@ class TaskController extends BaseController
                     $this->batchWise($geo, $notification_time, $agent_id, $orders->id, $customer, $finalLocation, $taskcount, $header, $allocation);
             }
             }
-            $dispatch_traking_url = route('order.tracking',[$auth->code,$orders->unique_id]);
+            $dispatch_traking_url = $client_url.'/order/tracking/'.$auth->code.'/'.$orders->unique_id;
+
             DB::commit();
             return response()->json([
             'message' => 'Task Added Successfully',
