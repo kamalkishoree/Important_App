@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Config;
-
+use Storage;
 class TrackingController extends Controller
 {
     public function OrderTracking($domain = '', $user, $id)
@@ -140,11 +140,12 @@ class TrackingController extends Controller
                     $agent_location['lat']  = $lastElement->latitude;
                     $agent_location['lng']  = $lastElement->longitude;
                 }
-                
+                $img = 'https://imgproxy.royodispatch.com/insecure/fit/300/100/sm/0/plain/' . Storage::disk('s3')->url($order->profile_picture ?? 'assets/client_00000051/agents605b6deb82d1b.png/XY5GF0B3rXvZlucZMiRQjGBQaWSFhcaIpIM5Jzlv.jpg');
                 return response()->json([
                     'message' => 'Successfully',
                     'tasks' => $tasks,
                     'order'  => $order,
+                    'agent_image' => $img, 
                     'agent_location'  => $agent_location,
                 ], 200);
 
