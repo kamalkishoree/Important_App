@@ -402,7 +402,7 @@ class TaskController extends BaseController
 
             $auth =  Client::with(['getAllocation', 'getPreference'])->first();
            
-            return $auth;
+           
 
             $loc_id = $cus_id = $send_loc_id = $newlat = $newlong = 0;
             $images = [];
@@ -502,6 +502,7 @@ class TaskController extends BaseController
         ];
 
             $orders = Order::create($order);
+            return $orders;
             $dispatch_traking_url = route('order.tracking',[$auth->code,$orders->unique_id]);
             $dep_id = null;
        
