@@ -57,9 +57,9 @@ class TaskController extends BaseController
             $note = '';
         }
         if ($client_details->custom_domain && !empty($client_details->custom_domain)) {
-            $client_url = "http://".$client_details->custom_domain;
+            $client_url = "https://".$client_details->custom_domain;
         } else {
-            $client_url = "http://".$client_details->sub_domain.\env('SUBDOMAIN');
+            $client_url = "https://".$client_details->sub_domain.\env('SUBDOMAIN');
         }
         
         //set dynamic smtp for email send
@@ -505,13 +505,13 @@ class TaskController extends BaseController
            
 
             if ($auth->custom_domain && !empty($auth->custom_domain)) {
-                $client_url = "http://".$auth->custom_domain;
+                $client_url = "https://".$auth->custom_domain;
             } else {
-                $client_url = "http://".$auth->sub_domain.\env('SUBDOMAIN');
+                $client_url = "https://".$auth->sub_domain.\env('SUBDOMAIN');
             }
             $dispatch_traking_url = $client_url.'/order/tracking/'.$auth->code.'/'.$orders->unique_id;
 
-            return $dispatch_traking_url;
+            return $client_url;
             $dep_id = null;
        
             foreach ($request->task as $key => $value) {
