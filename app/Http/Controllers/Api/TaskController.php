@@ -678,10 +678,15 @@ class TaskController extends BaseController
                      
                     scheduleNotification::dispatch($schduledata)->delay(now()->addMinutes($finaldelay));
                     DB::commit();
+
+                    $code =  Client::select('id','code')->first();
+                    $dispatch_traking_url = route('order.tracking',[$code->code,$order_details->unique_id]);
+
                     return response()->json([
                         'message' => 'Task Added Successfully',
                         'task_id' => $orders->id,
                         'status'  => $orders->status,
+                        'dispatch_traking_url'  => $dispatch_traking_url??''
                     ], 200);
                 }
             }
