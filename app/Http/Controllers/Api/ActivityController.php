@@ -64,9 +64,9 @@ class ActivityController extends BaseController
         $tasks   = [];
         
         if ($all == 1) {
-            $orders = Order::where('driver_id', $id)->where('status', 'assigned')->orderBy('order_time')->pluck('id')->toArray();
+            $orders = Order::where('driver_id', $id)->where('status', 'assigned')->orderBy('order_time')->orderBy('id','asc')->pluck('id')->toArray();
         } else {
-            $orders = Order::where('driver_id', $id)->where('order_time', '>=', $utc_start)->where('order_time', '<=', $utc_end)->where('status', 'assigned')->orderBy('order_time')->pluck('id')->toArray();
+            $orders = Order::where('driver_id', $id)->where('order_time', '>=', $utc_start)->where('order_time', '<=', $utc_end)->where('status', 'assigned')->orderBy('order_time')->orderBy('id','asc')->pluck('id')->toArray();
         }
        
 
