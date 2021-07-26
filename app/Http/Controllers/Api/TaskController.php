@@ -404,8 +404,11 @@ class TaskController extends BaseController
 
             $auth =  Client::with(['getAllocation', 'getPreference'])->first();
             $tz = new Timezone();
+
+            if(isset($request->order_time_zone) && !empty($request->order_time_zone))
+            $auth->timezone = $request->order_time_zone;
+            else
             $auth->timezone = $tz->timezone_name($auth->timezone);
-           
 
             $loc_id = $cus_id = $send_loc_id = $newlat = $newlong = 0;
             $images = [];
