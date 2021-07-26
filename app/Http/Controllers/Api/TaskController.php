@@ -397,6 +397,8 @@ class TaskController extends BaseController
                $header['client'][0] = $client->database_name;
             }
            
+            if($request->task_type == 'later')
+            $request->task_type = 'schedule';
 
             DB::beginTransaction();
 
