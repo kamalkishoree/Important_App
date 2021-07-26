@@ -403,7 +403,8 @@ class TaskController extends BaseController
             DB::beginTransaction();
 
             $auth =  Client::with(['getAllocation', 'getPreference'])->first();
-           
+            $tz = new Timezone();
+            $auth->timezone = $tz->timezone_name($auth->timezone);
            
 
             $loc_id = $cus_id = $send_loc_id = $newlat = $newlong = 0;
@@ -471,8 +472,8 @@ class TaskController extends BaseController
 
             //here order save code is started
             $settime = ($request->task_type=="schedule") ? $request->schedule_time : Carbon::now()->toDateTimeString();
-          //  $notification_time = ($request->task_type=="schedule")? Carbon::parse($settime . $auth->timezone ?? 'UTC')->tz('UTC') : Carbon::now()->toDateTimeString();
-            $notification_time = isset($request->schedule_time) ? $request->schedule_time : Carbon::now()->toDateTimeString();
+            $notification_time = ($request->task_type=="schedule")? Carbon::parse($settime . $auth->timezone ?? 'UTC')->tz('UTC') : Carbon::now()->toDateTimeString();
+         //   $notification_time = isset($request->schedule_time) ? $request->schedule_time : Carbon::now()->toDateTimeString();
   
             $agent_id          = $request->allocation_type === 'm' ? $request->agent : null;
 

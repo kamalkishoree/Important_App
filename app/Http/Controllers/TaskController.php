@@ -130,7 +130,7 @@ class TaskController extends Controller
 
     // function for saving new order
     public function newtasks(Request $request)
-    {
+    { 
         $loc_id = $cus_id = $send_loc_id = $newlat = $newlong = 0;
         $iinputs = $request->toArray();
         $old_address_ids = array();
