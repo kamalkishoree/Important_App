@@ -127,11 +127,18 @@
                                 <div class="col-md-12">
                                     <div class="form-group mb-0">
                                         <label>Team</label> <br />
-                                        <select id="selectize-select" @if(Auth::user()->is_superadmin == 1) name="team_id" @else  disabled @endif>
-                                            <option value="0">All</option>
+                                        <select id="selectize-select" name="team_id">
+                                            @if(count($teams) == 1)
                                             @foreach ($teams as $team)
                                                 <option value="{{ $team->id }}">{{ $team->name }}</option>
                                             @endforeach
+                                            @else
+                                            <option value="0">All</option>
+                                            @foreach ($teams as $team)
+                                            <option value="{{ $team->id }}">{{ $team->name }}</option>
+                                            @endforeach
+                                            @endif
+                                            
                                         </select>
 
                                     </div>

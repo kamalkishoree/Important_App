@@ -175,7 +175,17 @@ class GeoFenceController extends Controller
     public function edit($domain = '', $id)
     {
         $geo = Geo::with(['agents'])->where('id', $id)->first();
-        $teams = Team::with(['agents'])->where('client_id', auth()->user()->code)->orderBy('name')->get();
+        $teams = Team::with(['agents'])->where('client_id', auth()->user()->code)->orderBy('name');
+        if (Auth::user()->is_superadmin == 0 && Auth::user()->all_team_access == 0) {
+            $teams = $teams->whereHas('permissionToManager', function ($query) {
+                $query->where('sub_admin_id', Auth::user()->id);
+            });
+        }
+        
+        $teams = $teams->get();
+
+
+
         $agents = Agent::with('team');
         if (Auth::user()->is_superadmin == 0 && Auth::user()->all_team_access == 0) {
             $agents = $agents->whereHas('team.permissionToManager', function ($query) {
@@ -211,7 +221,6 @@ class GeoFenceController extends Controller
     { 
         $validator = $this->updateValidator($request->all())->validate();
         $geo = Geo::find($id);
-        
         if(Auth::user()->is_superadmin == 0)
         {
             $request->name = $geo->name;
@@ -235,7 +244,29 @@ class GeoFenceController extends Controller
 
         $updated = Geo::where('id', $id)->update($data);
        
-        $geo->agents()->sync($request->agents);
+        if(Auth::user()->is_superadmin == 0){
+           $agents = Agent::with('team');
+                if (Auth::user()->is_superadmin == 0 && Auth::user()->all_team_access == 0) {
+                    $agents = $agents->whereHas('team.permissionToManager', function ($query) {
+                        $query->where('sub_admin_id', Auth::user()->id);
+                    });
+                }
+        
+                $agents = $agents->pluck('id');
+                
+                DriverGeo::whereIn('driver_id',$agents)->where('geo_id',$id)->delete();
+                if(isset($request->agents) && !empty($request->agents)){
+                    foreach($request->agents as $key => $driver_id)
+                DriverGeo::updateOrCreate(['geo_id' => $id,'driver_id' => $driver_id],['team_id' => $request->team_id]);
+                }
+                
+            
+        }else{
+            $geo->agents()->sync($request->agents);
+        }
+       
+
+        
 
         return redirect()->back()->with('success', 'Updated successfully!');
     }
