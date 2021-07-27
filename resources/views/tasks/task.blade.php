@@ -131,6 +131,7 @@ use Carbon\Carbon;
                                                     $timeformat = $preference->time_format == '24' ? 'H:i:s':'g:i a';
                                                     $order = Carbon::createFromFormat('Y-m-d H:i:s', $task->order_time, 'UTC');
                                                     $order->setTimezone($client_timezone);
+                                                    $preference->date_format = $preference->date_format ?? 'm/d/Y';
                                                 @endphp
                                                 {{date(''.$preference->date_format.' '.$timeformat.'', strtotime($order))}}
 
