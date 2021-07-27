@@ -651,18 +651,14 @@ class TaskController extends BaseController
                 $auth->timezone = $tz->timezone_name($auth->timezone);
                  
                 $beforetime = (int)$auth->getAllocation->start_before_task_time;
-                 
-                $to = new \DateTime("now", new \DateTimeZone(isset($auth->timezone)? $auth->timezone : 'Asia/Kolkata'));
- 
-                $sendTime = Carbon::now();
-                 
-                $to = Carbon::parse($to)->format('Y-m-d H:i:s');
-                 
-                $from = Carbon::parse($notification_time)->format('Y-m-d H:i:s');
-                 
-                $datecheck = 0;
-                $to_time = strtotime($to);
-                $from_time = strtotime($from);
+                //    $to = new \DateTime("now", new \DateTimeZone(isset(Auth::user()->timezone)? Auth::user()->timezone : 'Asia/Kolkata') );
+                      $to = new \DateTime("now", new \DateTimeZone('UTC'));
+                      $sendTime = Carbon::now();
+                      $to = Carbon::parse($to)->format('Y-m-d H:i:s');
+                      $from = Carbon::parse($notification_time)->format('Y-m-d H:i:s');
+                      $datecheck = 0;
+                      $to_time = strtotime($to);
+                      $from_time = strtotime($from);
                 if ($to_time >= $from_time) {
                     DB::commit();
                     return response()->json([
@@ -681,13 +677,14 @@ class TaskController extends BaseController
  
                 if ($diff_in_minutes > $beforetime) {
                     $finaldelay = (int)$diff_in_minutes - $beforetime;
- 
+               
                     $time = Carbon::parse($sendTime)
-                     ->addMinutes($finaldelay)
-                     ->format('Y-m-d H:i:s');
- 
+                    ->addMinutes($finaldelay)
+                    ->format('Y-m-d H:i:s');
+                   
                     $schduledata['geo']               = $geo;
-                    $schduledata['notification_time'] = $time;
+                    //$schduledata['notification_time'] = $time;
+                    $schduledata['notification_time'] = $notification_time;
                     $schduledata['agent_id']          = $agent_id;
                     $schduledata['orders_id']         = $orders->id;
                     $schduledata['customer']          = $customer;
