@@ -190,7 +190,7 @@ class ActivityController extends BaseController
         if ($all == 1) {
             $orders = Order::where('driver_id', $id)->where('status', 'assigned')->orderBy('order_time')->pluck('id')->toArray();
         } else {
-            $orders = Order::where('driver_id', $id)->whereBetween('order_time',[$utc_start, $utc_end00])->where('status', 'assigned')->orderBy('order_time')->pluck('id')->toArray();
+            $orders = Order::where('driver_id', $id)->whereBetween('order_time',[$utc_start, $utc_end])->where('status', 'assigned')->orderBy('order_time')->pluck('id')->toArray();
         }
        
 
