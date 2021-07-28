@@ -194,9 +194,8 @@ class ActivityController extends BaseController
         }
        
 
-        if (count($orders) > 0) { 
-            $tasks = Task::whereIn('order_id', $orders)->where('task_status', '!=', 4)->Where('task_status', '!=', 5)->with(['location','tasktype','order.customer'])->orderByRaw("FIELD(order_id , $orders) DESC")->orderBy('id', 'ASC')
-            ->get(); 
+        if (count($orders) > 0) {
+            $tasks = Task::whereIn('order_id', $orders)->where('task_status', '!=', 4)->Where('task_status', '!=', 5)->with(['location','tasktype','order.customer'])->orderBy('order_id', 'desc')->orderBy('id', 'ASC')->get(); 
                   if (count($tasks) > 0) {
                 //sort according to task_order
                 $tasks = $tasks->toArray();
