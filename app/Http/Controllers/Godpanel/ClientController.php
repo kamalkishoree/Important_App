@@ -65,7 +65,7 @@ class ClientController extends Controller
             'database_name' => ['required','unique:clients,database_name'],
             'custom_domain' => ['nullable','unique:clients,custom_domain'],
             'sub_domain' => ['required','min:4','unique:clients,sub_domain'],
-            //'logo' => ['required'],
+            'logo' => ['image'],
         ]);
     }
 
