@@ -87,7 +87,7 @@ class ConnectDbFromOrder
             else{
                 return response()->json([
                     'status' => 400,
-                    'message' => 'Invalid Royo Dispatcher API key']);
+                    'message' => 'Invalid Royo Dispatcher API Values']);
             }
         }
         abort(404);

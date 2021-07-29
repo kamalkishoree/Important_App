@@ -1557,6 +1557,6 @@ class TaskController extends BaseController
     public function checkDispatcherKeys(Request $request){
         return response()->json([
         'status' => 200,
-        'message' => 'Valid Royo Dispatcher API key']);
+        'message' => 'Valid Royo Dispatcher API keys']);
     }
 }

@@ -64,14 +64,14 @@ class ActivityController extends BaseController
         $tasks   = [];
         
         if ($all == 1) {
-            $orders = Order::where('driver_id', $id)->where('status', 'assigned')->orderBy('order_time')->orderBy('id','asc')->pluck('id')->toArray();
+            $orders = Order::where('driver_id', $id)->where('status', 'assigned')->orderBy("order_time","ASC")->orderBy("id","asc")->pluck('id')->toArray();
         } else {
-            $orders = Order::where('driver_id', $id)->where('order_time', '>=', $utc_start)->where('order_time', '<=', $utc_end)->where('status', 'assigned')->orderBy('order_time')->orderBy('id','asc')->pluck('id')->toArray();
+            $orders = Order::where('driver_id', $id)->where('order_time', '>=', $utc_start)->where('order_time', '<=', $utc_end)->where('status', 'assigned')->orderBy("order_time","ASC")->orderBy("id","ASC")->pluck('id')->toArray();
         }
        
 
         if (count($orders) > 0) {
-            $tasks = Task::whereIn('order_id', $orders)->where('task_status', '!=', 4)->Where('task_status', '!=', 5)->with(['location','tasktype','order.customer'])->orderBy('order_id', 'DESC')
+            $tasks = Task::whereIn('order_id', $orders)->where('task_status', '!=', 4)->Where('task_status', '!=', 5)->with(['location','tasktype','order.customer'])->orderBy("order_id", "DESC")
             ->get();
             if (count($tasks) > 0) {
                 //sort according to task_order
