@@ -177,11 +177,11 @@ class TaskController extends BaseController
         } else {
             $Order  = Order::where('id', $orderId->order_id)->update(['status' => $task_type, 'note' => $note]);
             if($order_details && $order_details->call_back_url){
-                if($request->task_status == 2)
-                $stat = 3;
+                if($request->task_status == 2 || $request->task_status == 3)
+                $stat = $request->task_status + 1;
                 else
                 $stat = $request->task_status;
-                
+
                 $call_web_hook = $this->updateStatusDataToOrder($order_details,$stat);  # call web hook when order update
             }
             
