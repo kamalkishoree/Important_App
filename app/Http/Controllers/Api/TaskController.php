@@ -1523,6 +1523,8 @@ class TaskController extends BaseController
         return response()->json([
             'total' => $total,
             'currency' => $currency,
+            'paid_distance' => $paid_distance,
+            'paid_duration' => $paid_duration,
             'message' => 'success'
         ], 200);
         
