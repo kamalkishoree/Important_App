@@ -330,7 +330,7 @@ class TaskController extends BaseController
     public function TaskUpdateReject(Request $request)
     {
         $percentage = 0;
-        $check = Order::where('id', $request->order_id)->first();
+        $check = Order::where('id', $request->order_id)->with(['agent','customer'])->first();
         if (!isset($check)) {
             return response()->json([
                 'message' => 'Order Not Found With This Id',
@@ -338,6 +338,7 @@ class TaskController extends BaseController
         }
         
         if (isset($check) && $check->driver_id != null) {
+            $call_web_hook = $this->updateStatusDataToOrder($check,2);  # task accepted
             return response()->json([
                 'message' => 'Task Accecpted Successfully',
             ], 200);
@@ -364,7 +365,7 @@ class TaskController extends BaseController
 
             Order::where('id', $request->order_id)->update(['driver_id' => $request->driver_id, 'status' => 'assigned','driver_cost'=> $percentage]);
             Task::where('order_id', $request->order_id)->update(['task_status' => 1]);
-            
+            $call_web_hook = $this->updateStatusDataToOrder($check,2);  # task accepted
             return response()->json([
                 'data' => 'Task Accecpted Successfully',
             ], 200);
