@@ -1509,7 +1509,7 @@ class TaskController extends BaseController
         })->first();
         
         if(empty($pricingRule))
-        $pricingRule = PricingRule::orderBy('id', 'desc')->first();
+        $pricingRule = PricingRule::orderBy('is_default', 'desc')->orderBy('is_default', 'asc')->first();
 
         $getdata = $this->GoogleDistanceMatrix($latitude, $longitude);
         $paid_duration = $getdata['duration'] - $pricingRule->base_duration;
