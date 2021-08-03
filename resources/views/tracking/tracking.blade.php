@@ -84,7 +84,7 @@ $task_type_array = ['Pickup', 'Drop-Off', 'Appointment'];
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="{{ asset('tracking/js/jquery-min.js') }}"></script>
     <script defer
-        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB85kLYYOmuAhBUPd7odVmL6gnQsSGWU-4&libraries=places,drawing,visualization&v=weekly">
+        src="https://maps.googleapis.com/maps/api/js?key={{$mapkey}}&libraries=places,drawing,visualization&v=weekly">
     </script>
     <script src="{{ asset('tracking/js/common.js') }}"></script>
     <script src="{{ asset('tracking/js/bootstrap.min.js') }}"></script>

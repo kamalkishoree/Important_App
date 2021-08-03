@@ -29,9 +29,11 @@ class TrackingController extends Controller
                     $agent_location['lat']  = $lastElement->latitude;
                     $agent_location['lng']  = $lastElement->longitude;
                 }
+                $map_key = DB::connection($respnse['database'])->table('client_preferences')->select('map_key_1')->latest()->first();
                 
+                $mapkey = $map_key->map_key_1 ?? '';
 
-                return view('tracking/tracking', compact('tasks', 'order', 'agent_location'));
+                return view('tracking/tracking', compact('tasks', 'order', 'agent_location','mapkey'));
             } else {
                 return view('tracking/order_not_found');
             }
