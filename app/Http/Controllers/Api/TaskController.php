@@ -286,10 +286,17 @@ class TaskController extends BaseController
     /////////////////// **********************   update status in order panel also **********************************  ///////////////////////
     public function updateStatusDataToOrder($order_details,$dispatcher_status_option_id){
         try {  
-                
+            $auth =  Client::with(['getAllocation', 'getPreference'])->first();
+            if ($auth->custom_domain && !empty($auth->custom_domain)) {
+                $client_url = "https://".$auth->custom_domain;
+            } else {
+                $client_url = "https://".$auth->sub_domain.\env('SUBDOMAIN');
+            }
+            $dispatch_traking_url = $client_url.'/order/tracking/'.$auth->code.'/'.$orders->unique_id;
+
                 $client = new GClient(['content-type' => 'application/json']);                               
                 $url = $order_details->call_back_url;                      
-                $res = $client->get($url.'?dispatcher_status_option_id='.$dispatcher_status_option_id);
+                $res = $client->get($url.'?dispatcher_status_option_id='.$dispatcher_status_option_id.'&dispatch_traking_url='.$dispatch_traking_url);
                 $response = json_decode($res->getBody(), true);
                 if($response){
                 //    Log::info($response);
