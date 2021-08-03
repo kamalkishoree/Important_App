@@ -292,7 +292,7 @@ class TaskController extends BaseController
             } else {
                 $client_url = "https://".$auth->sub_domain.\env('SUBDOMAIN');
             }
-            $dispatch_traking_url = $client_url.'/order/tracking/'.$auth->code.'/'.$orders->unique_id;
+            $dispatch_traking_url = $client_url.'/order/tracking/'.$auth->code.'/'.$order_details->unique_id;
 
                 $client = new GClient(['content-type' => 'application/json']);                               
                 $url = $order_details->call_back_url;                      
