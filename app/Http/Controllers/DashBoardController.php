@@ -32,7 +32,7 @@ class DashBoardController extends Controller
         //setting timezone from id
         $tz = new Timezone();
         $auth->timezone = $tz->timezone_name(Auth::user()->timezone);
-
+        
         if (isset($request->date)) {
             $date = Carbon::parse(strtotime($request->date))->format('Y-m-d');
         } else {

@@ -345,7 +345,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
             </div>
             <div class="contant">
                 <div class="bottom-content">
-                    <input type="text"  id="basic-datepicker" class="datetime brdr-1" value="{{date($preference->date_format??'', strtotime($date))}}" data-date-format="{{$preference->date_format??''}}">
+                    <input type="text"  id="basic-datepicker" class="datetime brdr-1" value="{{date('Y-m-d', strtotime($date))}}" data-date-format="Y-m-d">
                     
                     <div class="dropdown d-inline-block">
                         <button class="dropdown-toggle" type="button" id="dropdownMenuButton"
