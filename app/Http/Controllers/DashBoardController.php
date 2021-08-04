@@ -1399,9 +1399,9 @@ class DashBoardController extends Controller
         if (isset($routes)) {
             $j=0;
             foreach ($routes as $singlestep) {
-                $output[$j]['distance'] = $singlestep->distance->text;
-                $output[$j]['duration'] = $singlestep->duration->text;
-                $output[$j]['turn'] = $singlestep->html_instructions;
+                $output[$j]['distance'] = $singlestep->distance->text??'';
+                $output[$j]['duration'] = $singlestep->duration->text??'';
+                $output[$j]['turn'] = $singlestep->html_instructions??'';
                 $j++;
             }
         }
