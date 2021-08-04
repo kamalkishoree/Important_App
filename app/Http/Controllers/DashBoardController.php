@@ -1394,7 +1394,7 @@ class DashBoardController extends Controller
         $result = json_decode($response);
         curl_close($ch); // Close the connection
         
-        $routes = $result->routes[0]->legs[0]->steps;
+        $routes = $result->routes[0]->legs[0]->steps??'';
         $output = array();
         if (isset($routes)) {
             $j=0;
