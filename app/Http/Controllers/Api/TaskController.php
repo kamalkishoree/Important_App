@@ -28,7 +28,7 @@ use App\Model\DriverGeo;
 use App\Model\NotificationEvent;
 use App\Model\NotificationType;
 use App\Model\SmtpDetail;
-use App\Model\{PricingRule,TagsForAgent,TagsForTeam};
+use App\Model\{PricingRule,TagsForAgent,TagsForTeam,Team};
 use Illuminate\Support\Arr;
 use Log;
 use Config;
@@ -1582,7 +1582,7 @@ class TaskController extends BaseController
 
      /******************    ---- get all teams  -----   ******************/
      public function getAllTeams(Request $request){
-       $teams = Teams::OrderBy('id','desc')->get();
+       $teams = Team::OrderBy('id','desc')->get();
 
         return response()->json([
             'teams' => $teams,
