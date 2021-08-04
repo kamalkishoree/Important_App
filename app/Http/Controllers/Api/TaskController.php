@@ -1578,4 +1578,17 @@ class TaskController extends BaseController
         'status' => 200,
         'message' => 'Valid Royo Dispatcher API keys']);
     }
+
+
+     /******************    ---- get all teams  -----   ******************/
+     public function getAllTeams(Request $request){
+       $teams = Teams::OrderBy('id','desc')->get();
+
+        return response()->json([
+            'teams' => $teams,
+            'message' => 'success'
+        ], 200);
+        
+    }
+    
 }
