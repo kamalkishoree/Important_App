@@ -15,7 +15,7 @@
     <link rel="stylesheet" href="{{ asset('tracking/css/bootstrap.css') }}">
     <link rel="stylesheet" href="{{ asset('tracking/css/style.css') }}">
     <link rel="stylesheet" href="{{ asset('tracking/css/responsive.css') }}">
-    <title>Royo Order Tracking</title>
+    <title> Order Tracking</title>
 </head>
 @php
 $task_type_array = ['Pickup', 'Drop-Off', 'Appointment'];

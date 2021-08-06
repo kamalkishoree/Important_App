@@ -25,8 +25,9 @@
                                                 $image = Cache::get('clientdetails');
                                                 
                                                 $pic = $image->logo;
+                                                $name = $image->name;
                                             }else {
-
+                                                $name = "Royo";
                                                 $pic = 'assets/Clientlogo/l8DdubW92ccY2n4xKriEUU7cKthSXrjgrJIZ6rvs.png';
                                             }
                                         @endphp
@@ -121,7 +122,7 @@
 
         <footer class="footer footer-alt">
             <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
-            <script>document.write(new Date().getFullYear())</script> &copy; All rights reserved by <a href="https://royoapps.com/" class="text-white-50">Royo Apps</a> 
+            <script>document.write(new Date().getFullYear())</script> &copy; All rights reserved by <a href="https://royoapps.com/" class="text-white-50">{{$name??Royo}} Apps</a> 
         </footer>
 
         @include('layouts.shared.footer-script')
