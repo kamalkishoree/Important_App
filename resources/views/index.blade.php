@@ -1,11 +1,12 @@
 @php
     $image = Cache::get('clientdetails');
+    $image->name = 'Royo';
 @endphp
 <!DOCTYPE html>
 <html lang="en">
     <head>
         <meta charset="utf-8" />
-        <title>{{$image->name??'Royo'}} Dispatch</title>
+        <title>Royo Dispatch</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta content="Powered by {{$image->name??'Royo'}} Dispatch. Fleet Management and Last Mile Delivery solution." name="description" />
 <meta content="{{$image->name??'Royo'}} Apps" name="author" />

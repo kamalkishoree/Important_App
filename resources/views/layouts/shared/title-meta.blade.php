@@ -1,5 +1,6 @@
 @php
     $image = Cache::get('clientdetails');
+    $image->name = 'Royo';
 @endphp
 <meta charset="utf-8" />
 <title>{{$title ?? ' '}} | {{$image->name??'Royo'}}</title>
