@@ -1,6 +1,6 @@
 @php
-    $image = Cache::get('clientdetails');
-    $image->name = 'Royo';
+    $image = App\Model\Client::first();
+   // $image->name = 'Royo';
 @endphp
 <!-- Footer Start -->
 <footer class="footer">

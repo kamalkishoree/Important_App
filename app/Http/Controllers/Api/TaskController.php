@@ -1391,45 +1391,49 @@ class TaskController extends BaseController
         $lastarray     = [];
         $extraarray    = [];
         foreach ($getgeo as $item) {
-            $latitudeTo  = $item['agent']['logs']['lat'];
-            $longitudeTo = $item['agent']['logs']['long'];
+            $latitudeTo  = $item['agent']['logs']['lat']??null;
+            $longitudeTo = $item['agent']['logs']['long']??null;
             
-            if (isset($latitudeFrom) && isset($latitudeFrom) && isset($latitudeTo) && isset($longitudeTo)) {
-                $latFrom = deg2rad($latitudeFrom);
-                $lonFrom = deg2rad($longitudeFrom);
-                $latTo   = deg2rad($latitudeTo);
-                $lonTo   = deg2rad($longitudeTo);
-          
-                $latDelta = $latTo - $latFrom;
-                $lonDelta = $lonTo - $lonFrom;
-          
-                $angle = 2 * asin(sqrt(pow(sin($latDelta / 2), 2) +
-                cos($latFrom) * cos($latTo) * pow(sin($lonDelta / 2), 2)));
-             
-                $final = round($angle * $earthRadius);
-                $count = isset($item['agent']['order']) ? count($item['agent']['order']):0;
-                if ($unit == 'metric') {
-                    if ($final <= $max_redius && $max_task > $count) {
-                        $data = [
-                            'driver_id'    =>  $item['agent']['logs']['agent_id'],
-                            'device_type'  =>  $item['agent']['device_type'],
-                            'device_token' =>  $item['agent']['device_token'],
-                            'distance'     =>  $final
-                        ];
-                        array_push($extraarray, $data);
-                    }
-                } else {
-                    if ($final <= $max_redius && $max_task > $count) {
-                        $data = [
-                            'driver_id'    =>  $item['agent']['logs']['agent_id'],
-                            'devide_type'  =>  $item['agent']['device_type'],
-                            'device_token' =>  $item['agent']['device_token'],
-                            'distance'     =>  round($final * 0.6214)
-                        ];
-                        array_push($extraarray, $data);
+            if(!empty($latitudeTo) && !empty($longitudeTo))
+            {
+                if (isset($latitudeFrom) && isset($latitudeFrom) && isset($latitudeTo) && isset($longitudeTo)) {
+                    $latFrom = deg2rad($latitudeFrom);
+                    $lonFrom = deg2rad($longitudeFrom);
+                    $latTo   = deg2rad($latitudeTo);
+                    $lonTo   = deg2rad($longitudeTo);
+              
+                    $latDelta = $latTo - $latFrom;
+                    $lonDelta = $lonTo - $lonFrom;
+              
+                    $angle = 2 * asin(sqrt(pow(sin($latDelta / 2), 2) +
+                    cos($latFrom) * cos($latTo) * pow(sin($lonDelta / 2), 2)));
+                 
+                    $final = round($angle * $earthRadius);
+                    $count = isset($item['agent']['order']) ? count($item['agent']['order']):0;
+                    if ($unit == 'metric') {
+                        if ($final <= $max_redius && $max_task > $count) {
+                            $data = [
+                                'driver_id'    =>  $item['agent']['logs']['agent_id'],
+                                'device_type'  =>  $item['agent']['device_type'],
+                                'device_token' =>  $item['agent']['device_token'],
+                                'distance'     =>  $final
+                            ];
+                            array_push($extraarray, $data);
+                        }
+                    } else {
+                        if ($final <= $max_redius && $max_task > $count) {
+                            $data = [
+                                'driver_id'    =>  $item['agent']['logs']['agent_id'],
+                                'devide_type'  =>  $item['agent']['device_type'],
+                                'device_token' =>  $item['agent']['device_token'],
+                                'distance'     =>  round($final * 0.6214)
+                            ];
+                            array_push($extraarray, $data);
+                        }
                     }
                 }
             }
+            
         }
           
         $allsort = array_values(Arr::sort($extraarray, function ($value) {
