@@ -17,6 +17,10 @@ use Illuminate\Support\Facades\Redirect;
 */
 Route::get('dispatch-logs', '\Rap2hpoutre\LaravelLogViewer\LogViewerController@index');
 
+Route::get('/howto/signup', function(){
+	return view('How-to-SignUp-in-Royo-Dispatcher');
+});
+
 Auth::routes();  
 
 Route::get('check-redis-jobs', function(){
@@ -59,9 +63,7 @@ Route::domain('{domain}')->middleware(['subdomain'])->group(function() {
 			return view('auth/login');
 		})->name('client-login');
 
-		Route::get('/howto/signup', function(){
-			return view('How-to-SignUp-in-Royo-Dispatcher');
-		});
+		
 	
 		Route::get('get-order-session','LoginController@getOrderSession')->name('setorders');
 
