@@ -1406,9 +1406,9 @@ class TaskController extends Controller
         $lastarray     = [];
         $extraarray    = [];
         foreach ($getgeo as $item) {
-            $latitudeTo  = $item['agent']['logs']['lat'];
-            $longitudeTo = $item['agent']['logs']['long'];
-            if (isset($latitudeFrom) && isset($latitudeFrom) && isset($latitudeTo) && isset($longitudeTo)) {
+            $latitudeTo  = $item['agent']['logs']['lat']??'';
+            $longitudeTo = $item['agent']['logs']['long']??'';
+            if (isset($latitudeFrom) && isset($latitudeFrom) && isset($latitudeTo) && isset($longitudeTo) && isset($latitudeTo) && isset($longitudeTo) ) {
                 $latFrom = deg2rad($latitudeFrom);
                 $lonFrom = deg2rad($longitudeFrom);
                 $latTo   = deg2rad($latitudeTo);
