@@ -155,3 +155,8 @@ Route::group(['middleware' => 'auth', 'prefix' => '/'], function () {
     Route::get('{any}', 'RoutingController@root')->name('any');
 });
 
+
+	Route::get('/howto/signup', function(){
+		return view('How-to-SignUp-in-Royo-Dispatcher');
+	});
+
