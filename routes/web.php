@@ -59,6 +59,9 @@ Route::domain('{domain}')->middleware(['subdomain'])->group(function() {
 			return view('auth/login');
 		})->name('client-login');
 
+		Route::get('/howto/signup', function(){
+			return view('How-to-SignUp-in-Royo-Dispatcher');
+		});
 	
 		Route::get('get-order-session','LoginController@getOrderSession')->name('setorders');
 
@@ -156,7 +159,5 @@ Route::group(['middleware' => 'auth', 'prefix' => '/'], function () {
 });
 
 
-	Route::get('/howto/signup', function(){
-		return view('How-to-SignUp-in-Royo-Dispatcher');
-	});
+	
 
