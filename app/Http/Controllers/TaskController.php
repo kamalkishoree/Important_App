@@ -1408,7 +1408,7 @@ class TaskController extends Controller
         foreach ($getgeo as $item) {
             $latitudeTo  = $item['agent']['logs']['lat']??'';
             $longitudeTo = $item['agent']['logs']['long']??'';
-            if (isset($latitudeFrom) && isset($latitudeFrom) && isset($latitudeTo) && isset($longitudeTo) && isset($latitudeTo) && isset($longitudeTo) ) {
+            if (!empty($latitudeFrom) && !empty($latitudeFrom) && !empty($latitudeTo) && !empty($longitudeTo) && !empty($latitudeTo) && !empty($longitudeTo)) {
                 $latFrom = deg2rad($latitudeFrom);
                 $lonFrom = deg2rad($longitudeFrom);
                 $latTo   = deg2rad($latitudeTo);
