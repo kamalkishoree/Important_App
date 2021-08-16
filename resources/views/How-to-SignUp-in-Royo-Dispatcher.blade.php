@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html dir="ltr" lang="en-US">
     <body class="community-enabled">
         <h1> Download, Install and Sign in to the  Dispatcher App</h1>
