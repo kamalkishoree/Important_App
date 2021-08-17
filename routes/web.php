@@ -68,6 +68,12 @@ Route::domain('{domain}')->middleware(['subdomain'])->group(function() {
 		Route::get('get-order-session','LoginController@getOrderSession')->name('setorders');
 
 		
+		});
+
+		Route::get('/demo/page', function(){
+			return view('demo');
+		});
+
 		Route::post('/login/client', 'LoginController@clientLogin')->name('client.login');
 		Route::get('/wrong/url','LoginController@wrongurl')->name('wrong.client');
 
@@ -144,12 +150,25 @@ Route::domain('{domain}')->middleware(['subdomain'])->group(function() {
 				Route::resource('subadmins','SubAdminController');
 
 			  		
+				// Route::get('/order/tracking/{clientcode}/{order_id}','TrackingController@OrderTracking')->name('order.tracking');
+
+               Route::get('/order/feedback/{clientcode}/{order_id}','TrackingController@OrderFeedback')->name('order.feedback');
+
+               Route::post('/feedback/save','TrackingController@SaveFeedback')->name('feedbackSave');
+
+			   //for testing
+			   //Route::get('testing','DashBoardController@ExportPdfPath');
+			   //Route::get('testing','DashBoardController@GetRouteDirection');
+
+				
+			   Route::get('demo/page', 'GeoFenceController@newDemo')->name('new.demo');
+
 
 			
 		});
 		
 	});
-});
+
 
 
 //feedback & tracking

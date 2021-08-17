@@ -185,6 +185,15 @@
                     </a>
                 </li>
                 @endif
+                </li> 
+
+                <li>
+                    <a href="{{route('new.demo')}}">
+                        <i data-feather="bell"></i>
+                        <span> Demo </span>
+                    </a>
+                </li> 
+
               {{-- <li>
                     <a href="#">
                         <i data-feather="package"></i>

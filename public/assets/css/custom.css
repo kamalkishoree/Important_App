@@ -137,314 +137,6 @@
     margin: auto;
 }
 
-/* zz */
-
-@media(min-width:1921px) {
-    .assigned-block .assigned-btn {
-        margin-left: 5px;
-        display: block;
-        float: none !important;
-        margin-left: auto;
-    }
-    
-    
-    
-}
-
-@media(min-width:1800px) {
-    .cornar .agent_boxes {
-        flex: 0 0 50%;
-        max-width: 50%;
-    }
-    
-}
-
-
-@media(min-width:1600px){
-    #map-canvas {
-        height: calc(100vh - 284px) !important;
-    }
-    .add_new_geo #map-canvas {
-        height: calc(100vh - 310px) !important;
-    }
-    .add_new_geo .card_outer {
-        height: calc(100vh - 260px) !important;
-    }
-}
-
-@media (max-width:767px) {
-    .btn.btn-blue.btn-block {
-        width: 100%;
-    }
-
-    #add-customer-modal .modal-header {
-        padding-bottom: 0px !important;
-    }
-
-    .repeated-block #task_type {
-        width: 85%;
-    }
-
-    .repeated-block .span1.onedelete {
-        position: absolute;
-        right: 18px;
-        top: -55px;
-    }
-
-    #typeInputss {
-        height: 92px !important;
-    }
-
-    .showsimage {
-        margin-left: 0px !important;
-    }
-
-    #task-modal-header .modal-header button {
-        position: absolute;
-        right: 22px;
-        z-index: 55;
-    }
-
-    #task-modal-header .modal-header {
-        padding-bottom: 0px !important;
-    }
-
-    #addCardBox {
-        padding-top: 0px !important;
-    }
-
-    .dataTables_paginate ul {
-        margin-bottom: 25px !important;
-    }
-
-    .small-mt-0 {
-        margin-top: 0px !important;
-    }
-
-    .card-body .table-responsive {
-        padding: 0px !important;
-    }
-
-    .rounded.book strong {
-        display: block;
-        margin-bottom: 15px;
-    }
-
-    #geo_form button {
-        margin-bottom: 8px;
-    }
-
-    #submitpayreceive .card-box {
-        padding: 8px;
-    }
-
-    #submitTeam .modal-body.p-4 {
-        padding-bottom: 0 !important;
-    }
-
-    #submitTeam .addTeamForm {
-        width: 100%;
-    }
-
-    #adds {
-        margin-bottom: 15px !important;
-    }
-
-    #add_customer .card-box {
-        padding-top: 0px !important;
-    }
-
-    #adds a {
-        width: 100%;
-        border-radius: 4px;
-    }
-
-    #add_customer .pl-4.pr-4.pt-4 {
-        padding: 0px !important;
-    }
-
-    #colorInput label {
-        float: left;
-    }
-
-    #show-map-modal .btn.btn-blue.waves-effect.waves-light.selectMapLocation,
-    #submitAgent .btn.btn-blue.waves-effect.waves-light,
-    #submitpayreceive .btn.btn-blue.waves-effect.waves-light {
-        width: 100%;
-    }
-
-    #add_customer .btn.btn-blue.waves-effect.waves-light.submitCustomerForm {
-        width: 100%;
-    }
-
-    #UpdateClient .btn.btn-blue.waves-effect.waves-light {
-        width: 100%;
-    }
-
-    #UpdateClient h1 {
-        font-size: 38px !important;
-    }
-
-    li.paginate_button.previous,
-    li.paginate_button.next {
-        display: inline-block;
-        font-size: 1rem !important;
-    }
-
-    #taskFormHeader .modal-footer {
-        padding-top: 0px !important;
-    }
-
-    #taskFormHeader .submitTaskHeader {
-        width: 100%;
-    }
-
-    #task_form_header #googleMapHeader {
-        min-width: 100% !important;
-    }
-
-    #taskFormHeader .modal-body {
-        padding-bottom: 0px !important;
-    }
-
-    #agents-datatable_wrapper label {
-        width: 100%;
-    }
-
-    #submitAgent .form-check-inline {
-        margin-bottom: 12px;
-    }
-
-    .modal-body.p-4 {
-        padding: 15px !important;
-    }
-
-    #task_form #googleMap {
-        min-width: 100% !important;
-    }
-
-    #add_customer .modal-body.p-4 {
-        padding: 0px !important;
-    }
-
-    #add_customer .card-box {
-        box-shadow: none !important;
-    }
-
-    #pricing-datatable_length label,
-    #pricing-datatable_filter label {
-        width: 100%;
-    }
-
-    #addCardBox .datenow input {
-        margin-bottom: 8px;
-    }
-
-    .card-body {
-        padding: 1.5rem 1rem;
-    }
-
-    .card-box {
-        padding: 1.5rem 1rem;
-    }
-
-    .map-wrapper {
-        margin-top: 25px;
-    }
-
-    .bottom-content {
-        width: 95%;
-        background: transparent !important;
-        box-shadow: none !important;
-    }
-
-    .bottom-content .datetime {
-        background: #fff;
-        padding: 9px;
-        border-radius: 4px;
-        width: 49%;
-        margin-bottom: 5px;
-    }
-
-    .bottom-content .dropdown.d-inline-block {
-        padding: 8px;
-        border-radius: 4px;
-        width: 49%;
-        background: #fff;
-        margin-bottom: 5px;
-    }
-
-    #addCardBox .card-box {
-        padding: 8px;
-    }
-
-    .map-wrapper .contant .bottom-content {
-        bottom: 0px;
-    }
-
-    .login-form label {
-        font-size: 10px !important;
-    }
-
-    .login-form {
-        text-align: left;
-    }
-
-    .map-wrapper .contant {
-        left: 0;
-        width: 80%;
-        height: 100px;
-        padding: 0px;
-        display: inline-block;
-        bottom: 10px;
-    }
-
-    .newchnageimage,
-    .showsimagegall {
-        margin-left: 0px !important;
-        margin-top: 0px !important;
-    }
-
-    #colorInput {
-        text-align: center;
-    }
-
-    .modal-footer .btn.btn-blue {
-        width: 100%;
-    }
-}
-
-@media (max-width: 991.98px) {
-    .left-side-menu {
-        display: none;
-        z-index: 1000 !important;
-    }
-    .card_outer {
-        height: auto !important;
-    }
-    .geo_middle {
-        height: 300px !important;
-    }
-}
-
-.lite-box-brdr {
-    border: 1px solid #ececec;
-}
-
-@media (min-width: 576px) {
-    /* #task-modal-header .modal-dialog {
-  max-width: 1000px!important;
-  margin: 1.75rem auto;
-} */
-}
-
-@media (min-width: 768px) and (max-width: 1023px) {
-    .map-wrapper .contant {
-        width: 90%;
-        height: 100px;
-        padding: 10px;
-    }
-}
 
 /* .modal{
 overflow:scroll !important;
@@ -986,7 +678,7 @@ hr.new3 {
     color: rgb(233, 130, 27);
 }
 
-#agents-datatable span {
+.address_box span {
     display: inline-block;
     padding: 4px 5px;
     border-radius: 5px;
@@ -997,7 +689,7 @@ hr.new3 {
     margin: 0 0 10px;
 }
 
-#agents-datatable span.short_name {
+.address_box span.short_name {
     color: #6658dd;
     text-transform: capitalize;
     margin: 0 5px;
@@ -1541,4 +1233,366 @@ body.dark .input-group-text {
 }
 .input-group .btn {
     border-radius: 0;
+}
+.td-middle-align tr td {
+    vertical-align: middle;
+}
+
+.site_link {
+    border: 0.5px solid rgb(0 0 0 / 17%);
+    padding: 5px 10px;
+border-radius: 8px;
+}
+.site_link a span {
+    font-size: 16px;
+    /* font-weight: bold; */
+    color: #000;
+}
+.site_link .fa.fa-clone {
+    font-weight: 400;
+    margin: 4px 0 0 10px;
+    color:#2391fb;
+}
+.navbar-custom .topnav-menu .nav-link {
+    color: #000;
+    font-weight: 700;
+    text-transform: capitalize;
+}
+.dropdown-toggle::after {
+    content: none !important;
+}
+.notification-list .profile-dropdown .notify-item {
+    padding: 0 20px;
+}
+.notification-list .noti-title,.dropdown-divider{
+    display: none;
+}
+.site_link label{
+    cursor: pointer;
+}
+
+.short_name {
+    color: #6658dd;
+    text-transform: capitalize;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.pic-left {
+    flex: 0 0 50px;
+    max-width: 50px;
+}
+
+
+/* zz */
+
+@media(min-width:1921px) {
+    .assigned-block .assigned-btn {
+        margin-left: 5px;
+        display: block;
+        float: none !important;
+        margin-left: auto;
+    }
+    
+    
+    
+}
+
+@media(min-width:1800px) {
+    .cornar .agent_boxes {
+        flex: 0 0 50%;
+        max-width: 50%;
+    }
+    
+}
+
+
+@media(min-width:1600px){
+    #map-canvas {
+        height: calc(100vh - 284px) !important;
+    }
+    .add_new_geo #map-canvas {
+        height: calc(100vh - 310px) !important;
+    }
+    .add_new_geo .card_outer {
+        height: calc(100vh - 260px) !important;
+    }
+    .pic-left {
+        flex: 0 0 48px;
+        max-width: 48px;
+    }
+}
+
+@media (max-width:767px) {
+    .btn.btn-blue.btn-block {
+        width: 100%;
+    }
+
+    #add-customer-modal .modal-header {
+        padding-bottom: 0px !important;
+    }
+
+    .repeated-block #task_type {
+        width: 85%;
+    }
+
+    .repeated-block .span1.onedelete {
+        position: absolute;
+        right: 18px;
+        top: -55px;
+    }
+
+    #typeInputss {
+        height: 92px !important;
+    }
+
+    .showsimage {
+        margin-left: 0px !important;
+    }
+
+    #task-modal-header .modal-header button {
+        position: absolute;
+        right: 22px;
+        z-index: 55;
+    }
+
+    #task-modal-header .modal-header {
+        padding-bottom: 0px !important;
+    }
+
+    #addCardBox {
+        padding-top: 0px !important;
+    }
+
+    .dataTables_paginate ul {
+        margin-bottom: 25px !important;
+    }
+
+    .small-mt-0 {
+        margin-top: 0px !important;
+    }
+
+    .card-body .table-responsive {
+        padding: 0px !important;
+    }
+
+    .rounded.book strong {
+        display: block;
+        margin-bottom: 15px;
+    }
+
+    #geo_form button {
+        margin-bottom: 8px;
+    }
+
+    #submitpayreceive .card-box {
+        padding: 8px;
+    }
+
+    #submitTeam .modal-body.p-4 {
+        padding-bottom: 0 !important;
+    }
+
+    #submitTeam .addTeamForm {
+        width: 100%;
+    }
+
+    #adds {
+        margin-bottom: 15px !important;
+    }
+
+    #add_customer .card-box {
+        padding-top: 0px !important;
+    }
+
+    #adds a {
+        width: 100%;
+        border-radius: 4px;
+    }
+
+    #add_customer .pl-4.pr-4.pt-4 {
+        padding: 0px !important;
+    }
+
+    #colorInput label {
+        float: left;
+    }
+
+    #show-map-modal .btn.btn-blue.waves-effect.waves-light.selectMapLocation,
+    #submitAgent .btn.btn-blue.waves-effect.waves-light,
+    #submitpayreceive .btn.btn-blue.waves-effect.waves-light {
+        width: 100%;
+    }
+
+    #add_customer .btn.btn-blue.waves-effect.waves-light.submitCustomerForm {
+        width: 100%;
+    }
+
+    #UpdateClient .btn.btn-blue.waves-effect.waves-light {
+        width: 100%;
+    }
+
+    #UpdateClient h1 {
+        font-size: 38px !important;
+    }
+
+    li.paginate_button.previous,
+    li.paginate_button.next {
+        display: inline-block;
+        font-size: 1rem !important;
+    }
+
+    #taskFormHeader .modal-footer {
+        padding-top: 0px !important;
+    }
+
+    #taskFormHeader .submitTaskHeader {
+        width: 100%;
+    }
+
+    #task_form_header #googleMapHeader {
+        min-width: 100% !important;
+    }
+
+    #taskFormHeader .modal-body {
+        padding-bottom: 0px !important;
+    }
+
+    #agents-datatable_wrapper label {
+        width: 100%;
+    }
+
+    #submitAgent .form-check-inline {
+        margin-bottom: 12px;
+    }
+
+    .modal-body.p-4 {
+        padding: 15px !important;
+    }
+
+    #task_form #googleMap {
+        min-width: 100% !important;
+    }
+
+    #add_customer .modal-body.p-4 {
+        padding: 0px !important;
+    }
+
+    #add_customer .card-box {
+        box-shadow: none !important;
+    }
+
+    #pricing-datatable_length label,
+    #pricing-datatable_filter label {
+        width: 100%;
+    }
+
+    #addCardBox .datenow input {
+        margin-bottom: 8px;
+    }
+
+    .card-body {
+        padding: 1.5rem 1rem;
+    }
+
+    .card-box {
+        padding: 1.5rem 1rem;
+    }
+
+    .map-wrapper {
+        margin-top: 25px;
+    }
+
+    .bottom-content {
+        width: 95%;
+        background: transparent !important;
+        box-shadow: none !important;
+    }
+
+    .bottom-content .datetime {
+        background: #fff;
+        padding: 9px;
+        border-radius: 4px;
+        width: 49%;
+        margin-bottom: 5px;
+    }
+
+    .bottom-content .dropdown.d-inline-block {
+        padding: 8px;
+        border-radius: 4px;
+        width: 49%;
+        background: #fff;
+        margin-bottom: 5px;
+    }
+
+    #addCardBox .card-box {
+        padding: 8px;
+    }
+
+    .map-wrapper .contant .bottom-content {
+        bottom: 0px;
+    }
+
+    .login-form label {
+        font-size: 10px !important;
+    }
+
+    .login-form {
+        text-align: left;
+    }
+
+    .map-wrapper .contant {
+        left: 0;
+        width: 80%;
+        height: 100px;
+        padding: 0px;
+        display: inline-block;
+        bottom: 10px;
+    }
+
+    .newchnageimage,
+    .showsimagegall {
+        margin-left: 0px !important;
+        margin-top: 0px !important;
+    }
+
+    #colorInput {
+        text-align: center;
+    }
+
+    .modal-footer .btn.btn-blue {
+        width: 100%;
+    }
+}
+
+@media (max-width: 991.98px) {
+    .left-side-menu {
+        display: none;
+        z-index: 1000 !important;
+    }
+    .card_outer {
+        height: auto !important;
+    }
+    .geo_middle {
+        height: 300px !important;
+    }
+}
+
+.lite-box-brdr {
+    border: 1px solid #ececec;
+}
+
+@media (min-width: 576px) {
+    /* #task-modal-header .modal-dialog {
+  max-width: 1000px!important;
+  margin: 1.75rem auto;
+} */
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+    .map-wrapper .contant {
+        width: 90%;
+        height: 100px;
+        padding: 10px;
+    }
 }
