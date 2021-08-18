@@ -26,7 +26,7 @@ class Order extends Model
     }
 
     public function agent(){
-        return $this->belongsTo('App\Model\Agent', 'driver_id', 'id')->select('id', 'team_id', 'name', 'type', 'phone_number','make_model','plate_number');;
+        return $this->belongsTo('App\Model\Agent', 'driver_id', 'id')->select('id', 'team_id', 'name', 'type', 'phone_number','make_model', 'plate_number', 'profile_picture', 'vehicle_type_id');
         
     }
 
@@ -47,9 +47,16 @@ class Order extends Model
       return $this->task()->where('pricing_rule_id', 1);
     }
 
-
     public function allteamtags(){
         return $this->hasMany('App\Model\TaskTeamTag','task_id','id');
+    }
+
+    public function task_rejects(){
+        return $this->hasMany('App\Model\TaskReject','order_id','id');
+    }
+
+    public function first_task_order_by_date(){
+        return $this->hasOne('');
     }
 
 

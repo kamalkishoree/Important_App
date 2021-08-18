@@ -183,6 +183,13 @@ use Carbon\Carbon;
                                                                     class="mdi mdi-square-edit-outline"></i></a></div>
                                                     </div>
                                                     <div class="inner-div">
+                                                        <div class="set-size">
+                                                            <a href1="#" href="{{ route('tasks.show', $task->id) }}" class="action-icon editIconBtn" title="Route Detail">
+                                                                <i class="fe-eye"></i>
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                    <div class="inner-div">
                                                         <form id="taskdelete{{$task->id}}" method="POST"
                                                             action="{{ route('tasks.destroy', $task->id) }}">
                                                             @csrf

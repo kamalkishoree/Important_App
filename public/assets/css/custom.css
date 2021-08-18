@@ -1241,18 +1241,40 @@ body.dark .input-group-text {
 .site_link {
     border: 0.5px solid rgb(0 0 0 / 17%);
     padding: 5px 10px;
-border-radius: 8px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.site_link a {
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding-right: 20px;
 }
 .site_link a span {
     font-size: 16px;
     /* font-weight: bold; */
     color: #000;
 }
+
 .site_link .fa.fa-clone {
     font-weight: 400;
     margin: 4px 0 0 10px;
     color:#2391fb;
 }
+span.copied_txt {
+    position: absolute;
+    bottom: -30px;
+    right: 0;
+    background: rgb(85 164 255 / 50%);
+    color: #ffff;
+    padding: 0 10px;
+    border-radius: 50px;
+    line-height: 24px;
+    font-size: 14px;
+    }
 .navbar-custom .topnav-menu .nav-link {
     color: #000;
     font-weight: 700;

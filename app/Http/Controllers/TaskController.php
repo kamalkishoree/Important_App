@@ -21,6 +21,7 @@ use App\Model\TaskProof;
 use App\Model\Geo;
 use App\Model\Order;
 use App\Model\Timezone;
+use App\Model\AgentLog;
 use App\Model\{Team,TeamTag};
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
@@ -1513,9 +1514,36 @@ class TaskController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($domain = '', $id)
     {
-        //
+        $preference  = ClientPreference::where('id', 1)->first(['theme', 'date_format', 'time_format']);
+        $tz = new Timezone();
+        $client_timezone = $tz->timezone_name(Auth::user()->timezone);
+        $task = Order::with(['customer', 'location', 'taskFirst', 'agent', 'task.location', 'task_rejects.agent'])->find($id);
+        $driver_location_logs = [];
+        if (!empty($task->driver_id)) {
+            $firstTask = $task->task()->first();
+            $lastTask = $task->task()->orderBy('id', 'DESC')->first();
+            if ($task->status == 'completed') {
+                if ($firstTask->id != $lastTask->id) {
+                    $order_start_time = $firstTask->assigned_time;
+                    $order_end_time = $lastTask->updated_at;
+                } else {
+                    $order_start_time = $firstTask->assigned_time;
+                    $order_end_time = $firstTask->updated_at;
+                }
+            } else {
+                $order_start_time = $firstTask->assigned_time;
+                $order_end_time = date('Y-m-d H:i:s');
+            }
+            $driver_location_log_obj = AgentLog::select('id','lat','long')->where(['agent_id' => $task->driver_id])->whereBetween('created_at',[$order_start_time, $order_end_time])->take(20)->get();
+            if(!empty($driver_location_log_obj)){
+                foreach($driver_location_log_obj as $log_key => $log){
+                    $driver_location_logs[] = array((double)$log->lat, (double)$log->long, $log_key+1);
+                }
+            }
+        }
+        return view('tasks/show')->with(['task' => $task, 'client_timezone' => $client_timezone, 'preference' => $preference, 'driver_location_logs' => $driver_location_logs]);
     }
 
     /**
