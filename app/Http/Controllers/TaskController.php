@@ -406,6 +406,7 @@ class TaskController extends Controller
                 $schduledata['taskcount']         = $taskcount;
                 $schduledata['allocation']        = $allocation;
                 $schduledata['database']          = $auth;
+                $schduledata['cash_to_be_collected']         = $orders->cash_to_be_collected;
                 scheduleNotification::dispatch($schduledata)->delay(now()->addMinutes($finaldelay));
                 return true;
             }
@@ -806,7 +807,7 @@ class TaskController extends Controller
                 $schduledata['taskcount']         = $taskcount;
                 $schduledata['allocation']        = $allocation;
                 $schduledata['database']          = $auth;
-                
+                $schduledata['cash_to_be_collected']         = $orders->cash_to_be_collected;
                 scheduleNotification::dispatch($schduledata)->delay(now()->addMinutes($finaldelay));
                 return redirect()->route('tasks.index')->with('success', 'Task Added Successfully!');
             }
