@@ -107,9 +107,11 @@ class SendPushNotification
                 $item['body']  = 'Check All Details For This Request In App';
                 $new = [];
                 array_push($new,$item['device_token']);
-              
+
+                Log::info($new);
+
             if(isset($new)){
-                fcm()
+                $fcm_store = fcm()
                 ->to($new) // $recipients must an array
                 ->priority('high')
                 ->timeToLive(0)
@@ -120,6 +122,8 @@ class SendPushNotification
                     'sound' =>   'notification.mp3',
                 ])
                 ->send();
+                Log::info('fcm status');
+                Log::info($fcm_store);
             }
         }
 
