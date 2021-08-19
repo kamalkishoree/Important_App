@@ -147,7 +147,8 @@ class AgentController extends Controller
             'phone_number' => '+'.$request->country_code.$request->phone_number,
             'color' => $request->color,
             'profile_picture' => $getFileName != null ? $getFileName : 'assets/client_00000051/agents5fedb209f1eea.jpeg/Ec9WxFN1qAgIGdU2lCcatJN5F8UuFMyQvvb4Byar.jpg',
-            'uid' => $request->uid
+            'uid' => $request->uid,
+            'is_approved' => 1
         ];
 
         $agent = Agent::create($data);

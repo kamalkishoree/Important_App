@@ -22,6 +22,9 @@ use Crypt;
 use Illuminate\Support\Facades\Hash;
 use Twilio\Rest\Client as TwilioClient;
 use Faker\Generator as Faker;
+use Illuminate\Support\Facades\Storage;
+use Validator;
+
 class AuthController extends BaseController
 {
 
@@ -47,6 +50,9 @@ class AuthController extends BaseController
         if (!$agent) {
             return response()->json([
                 'message' => 'User not found'], 404);
+        }
+        if($agent->is_approved == 0){
+            return response()->json(['message' => 'Your account not approved yet. Please contact administration'], 422);
         }
         Otp::where('phone', $request->phone_number)->delete();
         $otp = new Otp();
@@ -296,6 +302,62 @@ class AuthController extends BaseController
         }
     }
 
+    public function signup(Request $request)
+    {
+
+        $validator = Validator::make($request->all(), [
+            'name' => 'required',
+            'phone_number' => 'required|min:9',
+            'type' => 'required',
+            'vehicle_type_id' => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['message' => $validator->errors()->first()], 422);
+        }
+
+        $agent = Agent::where('phone_number', $request->phone_number)->first();
+
+        if (!empty($agent)) {
+            return response()->json(['message' => 'User already register. Please login'], 422);
+        }
+
+        // Handle File Upload
+        if ($request->hasFile('profile_picture')) {
+            $header = $request->header();
+            $shortcode = "";
+            if (array_key_exists("shortcode", $header)) {
+                $shortcode =  $header['shortcode'][0];
+            }
+            $folder = str_pad($shortcode, 8, '0', STR_PAD_LEFT);
+            $folder = 'client_' . $folder;
+            $file = $request->file('profile_picture');
+            $file_name = uniqid() . '.' .  $file->getClientOriginalExtension();
+            $s3filePath = '/assets/' . $folder . '/agents' . $file_name;
+            $path = Storage::disk('s3')->put($s3filePath, $file, 'public');
+            $getFileName = $path;
+        }
+
+        $data = [
+            'name' => $request->name,
+            'team_id' => $request->team_id ?? null,
+            'type' => $request->type,
+            'vehicle_type_id' => $request->vehicle_type_id,
+            'make_model' => $request->make_model ?? "",
+            'plate_number' => $request->plate_number ?? "",
+            'phone_number' => $request->phone_number,
+            'color' => $request->color ?? "",
+            'profile_picture' => (!empty($getFileName)) ? $getFileName : 'assets/client_00000051/agents5fedb209f1eea.jpeg/Ec9WxFN1qAgIGdU2lCcatJN5F8UuFMyQvvb4Byar.jpg',
+            'uid' => $request->uid ?? "",
+            'is_approved' => 0
+        ];
+
+        $agent = Agent::create($data);
+
+        if ($agent->wasRecentlyCreated) {
+            return response()->json(['status' => 200, 'message' => 'Your account created successfully. Please login'], 200);
+        }
+    }
   
 
 }
