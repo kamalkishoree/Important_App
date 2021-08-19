@@ -226,7 +226,7 @@
                                     @endif
                                     <select class="form-control" id="country" name="country" value="{{ old('country', $client->id ?? '')}}" placeholder="Country">
                                         @foreach($countries as $code=>$country)
-                                        <option value="{{ $country->id }}" @if(Auth::user()->country == $country->name) selected @endif>{{ $country->name }}</option>
+                                        <option value="{{ $country->id }}" @if(Auth::user()->country_id == $country->id) selected @endif>{{ $country->name }}</option>
                                         @endforeach
                                     </select>
                                     <span class="invalid-feedback" role="alert">
