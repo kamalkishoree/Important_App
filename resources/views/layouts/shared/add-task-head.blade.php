@@ -599,7 +599,7 @@
         }
         var s_name = $("input[name='short_name[]']").val();
         var s_address = $("input[name='address[]']").val();
-        if ((!$("input[name='old_address_id']:checked").val()) && (s_name=="" || s_address=="") ) {
+        if ((!$("input[name='old_address_id']:checked").val()) && (s_address=="") ) {
                 err = 1;
                 $(".addspan").show();
                 return false;
