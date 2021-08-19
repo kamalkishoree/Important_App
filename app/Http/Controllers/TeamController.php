@@ -12,6 +12,7 @@ use App\Model\TagsForTeam;
 use App\Model\Manager;
 use App\Model\SubAdminTeamPermissions;
 use Auth;
+use Exception;
 
 class TeamController extends Controller
 {
@@ -230,10 +231,14 @@ class TeamController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($domain = '', $id)
     {
-        Team::where('id', $id)->delete();
-        return redirect()->back()->with('success', 'Team deleted successfully!');
+        try {
+            Team::where('id', $id)->delete();
+            return redirect()->back()->with('success', 'Team deleted successfully!');
+        } catch (Exception $e) {
+            return redirect()->back()->with('error', $e->getMessage());
+        }
     }
 
     public function removeTeamAgent(Request $request, $team_id, $agent_id)
