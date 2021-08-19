@@ -12,13 +12,13 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
         padding: 0px;
         position: unset;
     }
+
     #agent_route_order_track {
         height: 400px;
         width: 100%;
         margin: 0px;
         padding: 0px
     }
-
 </style>
 @endsection
 
@@ -127,7 +127,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                 </div>
             </div>
 
-            <div class="card-box">
+            <div class="card-box rejection-box style-4">
                 <h4 class="header-title mb-2">Rejections</h4>
                 @if(!empty($task->task_rejects) && count($task->task_rejects) > 0)
                 @php
@@ -145,17 +145,11 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                         <img src="{{ !empty($task_reject->agent->profile_picture) ? $imgproxyurl.Storage::disk('s3')->url($task_reject->agent->profile_picture) : URL::to('/assets/images/user_dummy.jpg') }}" alt="contact-img" title="contact-img" class="rounded-circle avatar-sm">
                     </div>
                     <div class="col-10 pl-1">
-                        <h5 class="m-0 font-weight-normal">{{ (isset($task_reject->agent->name))?$task_reject->agent->name:'' }}</h5>
+                        <h5 class="mb-1  mt-0 font-weight-normal">{{ (isset($task_reject->agent->name))?$task_reject->agent->name:'' }}</h5>
+                        <p class="mb-0">{{date(''.$preference->date_format.' '.$timeformat.'', strtotime($rejection_time))}}</p>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-12">
-                        <div class="form-group">
-                            <label class="mb-0">Date &amp; Time</label>
-                            <p>{{date(''.$preference->date_format.' '.$timeformat.'', strtotime($rejection_time))}}</p>
-                        </div>
-                    </div>
-                </div>
+
                 @endforeach
                 @else
                 No rejection found
@@ -166,6 +160,9 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
         <div class="col-xl-7">
             <div class="card-box">
                 <h4 class="header-title mb-2">Task List</h4>
+                @php
+                $tasksLocations = [];
+                @endphp
                 @foreach ($task->task as $singletask)
                 @php
                 if($singletask->task_type_id==1)
@@ -180,6 +177,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                 $tasktype = "Appointment";
                 $pickup_class = "assign_";
                 }
+                $tasksLocations[] = ['task_type' => $tasktype, 'latitude' => isset($singletask->location->latitude) ? floatval($singletask->location->latitude):0.00, 'longitude' => isset($singletask->location->longitude) ? floatval($singletask->location->longitude): 0.00, 'address' => isset($singletask->location->address) ? $singletask->location->address : '', 'task_type_id' => $singletask->task_type_id, 'customer_name' => isset($task->customer->name)?$task->customer->name:'', 'customer_phone_number' => isset($task->customer->phone_number)?$task->customer->phone_number:'', 'task_status' => (int)$singletask->task_status];
                 @endphp
                 <div class="address_box mb-1">
                     <span class="{{ $pickup_class }} mb-0"> {{ $tasktype }}</span>
@@ -188,10 +186,11 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                 </div>
                 @endforeach
             </div>
+
             @if(!empty($task->agent))
             <div class="card-box p-2">
-                <!-- <div id="agent_route_order_track"></div> -->
-                <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d27442.65334027974!2d76.82252954940223!3d30.709075056260815!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2sin!4v1629116296414!5m2!1sen!2sin" width="100%" height="400" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+                <div id="agent_route_order_track"></div>
+                <!-- <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d27442.65334027974!2d76.82252954940223!3d30.709075056260815!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2sin!4v1629116296414!5m2!1sen!2sin" width="100%" height="400" style="border:0;" allowfullscreen="" loading="lazy"></iframe> -->
             </div>
             @endif
         </div>
@@ -353,7 +352,6 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
 @endsection
 
 @section('script')
-<script src="https://maps.googleapis.com/maps/api/js?key={{Auth::user()->getPreference->map_key_1??''}}"></script>
 <script>
     $(document).on('click', '.copy_link', function() {
         var $temp = $("<input>");
@@ -368,29 +366,22 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
     })
 </script>
 <script>
-    var geocoder;
     var map;
     var directionsDisplay;
     var directionsService = new google.maps.DirectionsService();
-    // var locations = [
-    //     [-33.80010128657071, 151.28747820854187, 2],
-    //     [-33.890542, 151.274856, 4],
-    //     [-33.923036, 151.259052, 5],
-    //     [-33.950198, 151.259302, 1],
-    //     [-34.028249, 151.157507, 3]
-    // ];
     var locations = JSON.parse('{{ json_encode($driver_location_logs) }}');
+    var tasksLocationsjson = {!! json_encode($tasksLocations) !!};
+
     function initialize() {
-        directionsDisplay = new google.maps.DirectionsRenderer({suppressMarkers: true});
-
-
+        directionsDisplay = new google.maps.DirectionsRenderer({
+            suppressMarkers: true
+        });
         var map = new google.maps.Map(document.getElementById('agent_route_order_track'), {
             zoom: 10,
             mapTypeId: google.maps.MapTypeId.ROADMAP
         });
         directionsDisplay.setMap(map);
         // var infowindow = new google.maps.InfoWindow();
-
         var marker, i;
         var request = {
             travelMode: google.maps.TravelMode.DRIVING
@@ -423,7 +414,68 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                 directionsDisplay.setDirections(result);
             }
         });
+
+        for (let i = 0; i < tasksLocationsjson.length; i++) {
+
+            checkdata = tasksLocationsjson[i];
+            var info = []
+            var urlnewcreate = '';
+            if (checkdata['task_status'] == 0) {
+                urlnewcreate = 'unassigned';
+            } else if (checkdata['task_status'] == 1 || checkdata['task_status'] == 2) {
+                urlnewcreate = 'assigned';
+            } else if (checkdata['task_status'] == 3) {
+                urlnewcreate = 'complete';
+            } else {
+                urlnewcreate = 'faild';
+            }
+
+            if (checkdata['task_type_id'] == 1) {
+                urlnewcreate += '_P.png';
+            } else if (checkdata['task_type_id'] == 2) {
+                urlnewcreate += '_D.png';
+            } else {
+                urlnewcreate += '_A.png';
+            }
+
+            image = "{{ asset('assets/newicons/') }}" + "/" + urlnewcreate;
+
+            send = null;
+            type = 1;
+
+            var contentString =
+                '<div id="content">' +
+                '<div id="siteNotice">' +
+                "</div>" +
+                '<h6 id="firstHeading" class="firstHeading">' + checkdata['task_type'] + '</h6>' +
+                '<div id="bodyContent">' +
+                "<p><b>Address :- </b> " + checkdata['address'] + " " +
+                ".</p>" +
+                '<p><b>Customer: ' + checkdata['customer_name'] + '</b>(' + checkdata['customer_phone_number'] + ') </p>' +
+                "</div>" +
+                "</div>";
+
+            const marker1 = new google.maps.Marker({
+                position: {
+                    lat: parseFloat(checkdata['latitude']),
+                    lng: parseFloat(checkdata['longitude'])
+                },
+                map: map,
+                icon: image,
+                animation: google.maps.Animation.DROP,
+            });
+
+            const infowindow = new google.maps.InfoWindow({
+                content: contentString,
+                minWidth: 250,
+                minheight: 250,
+            });
+            google.maps.event.addListener(marker1, "click", () => {
+                infowindow.open(map, marker1);
+            });
+        }
     }
+
     google.maps.event.addDomListener(window, "load", initialize);
 </script>
 @endsection

@@ -215,9 +215,11 @@
 {{-- <script src='https://cdn.rawgit.com/pguso/jquery-plugin-circliful/master/js/jquery.circliful.min.js'></script> --}}
 {{-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB85kLYYOmuAhBUPd7odVmL6gnQsSGWU-4&libraries=places"></script>  --}}
 <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
-<script defer
-        src="https://maps.googleapis.com/maps/api/js?key={{Auth::user()->getPreference->map_key_1??''}}&libraries=places,drawing,visualization&v=weekly">
-        </script>
+@if(\Route::current()->getName() == "tasks.show")
+<script src="https://maps.googleapis.com/maps/api/js?key={{Auth::user()->getPreference->map_key_1??''}}&libraries=places,drawing,visualization&v=weekly"></script>
+@else
+<script defer src="https://maps.googleapis.com/maps/api/js?key={{Auth::user()->getPreference->map_key_1??''}}&libraries=places,drawing,visualization&v=weekly"></script>
+@endif
 <script src="{{ asset('assets/libs/selectize/selectize.min.js') }}"></script>
 <script src="{{ asset('assets/libs/multiselect/multiselect.min.js') }}"></script>
 <script src="{{ asset('assets/libs/bootstrap-select/bootstrap-select.min.js') }}"></script>
