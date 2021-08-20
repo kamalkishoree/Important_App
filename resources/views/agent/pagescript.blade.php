@@ -1,18 +1,18 @@
 <script type="text/javascript">
     var tagList = "{{$showTag}}";
-    tagList = tagList.split(',');    
+    tagList = tagList.split(',');
 
-    function makeTag(){
+    function makeTag() {
         $('.myTag1').tagsInput({
             'autocomplete': {
                 source: tagList
-            } 
+            }
         });
     }
     var mobile_number = '';
 
-   // $('#add-agent-modal .xyz').val(mobile_number.getSelectedCountryData().dialCode); 
-   $('#add-agent-modal .xyz').change(function() { 
+    // $('#add-agent-modal .xyz').val(mobile_number.getSelectedCountryData().dialCode); 
+    $('#add-agent-modal .xyz').change(function() {
         var phonevalue = $('.xyz').val();
         $("#countryCode").val(mobile_number.getSelectedCountryData().dialCode);
     });
@@ -21,34 +21,34 @@
         console.log('phone working');
         var input = document.querySelector(".xyz");
 
-        var mobile_number_input = document.querySelector(".xyz"); 
-        mobile_number = window.intlTelInput(mobile_number_input, { 
-            separateDialCode: true, 
+        var mobile_number_input = document.querySelector(".xyz");
+        mobile_number = window.intlTelInput(mobile_number_input, {
+            separateDialCode: true,
             hiddenInput: "full_number",
             utilsScript: "{{ asset('telinput/js/utils.js') }}",
-         });        
-       
-    }   
+        });
 
-    $('.openModal').click(function(){
+    }
+
+    $('.openModal').click(function() {
         $('#add-agent-modal').modal({
             backdrop: 'static',
             keyboard: false
         });
         makeTag();
         //$(''.xyz).intlTelInput()        
-        phoneInput();        
+        phoneInput();
     });
 
-    $(document).ready(function() {       
+    $(document).ready(function() {
         jQuery('#onfoot').click();
     });
 
     $(document).on('click', '.click', function() { //alert('a');
         var radi = $(this).find('input[type="radio"]');
         radi.prop('checked', true);
-        var check = radi.val(); 
-        var act = radi.attr('act'); 
+        var check = radi.val();
+        var act = radi.attr('act');
         switch (check) {
             case "1":
                 $("#foot_" + act).attr("src", "{{ asset('assets/icons/walk_blue.png') }}");
@@ -89,14 +89,14 @@
     });
 
     /* Get agent by ajax */
-    $(".editIcon").click(function (e) {  
+    $(".editIcon").click(function(e) {
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
             }
         });
         e.preventDefault();
-       
+
         var uid = $(this).attr('agentId');
 
         $.ajax({
@@ -104,7 +104,7 @@
             url: "<?php echo url('agent'); ?>" + '/' + uid + '/edit',
             data: '',
             dataType: 'json',
-            success: function (data) {
+            success: function(data) {
                 $('#edit-agent-modal #editCardBox').html(data.html);
                 $('#edit-agent-modal').modal({
                     backdrop: 'static',
@@ -113,13 +113,13 @@
                 makeTag();
                 phoneInput();
                 //$('.dropify').dropify();
-                var imgs =  $('#profilePic').attr('showImg');
+                var imgs = $('#profilePic').attr('showImg');
 
                 $('#profilePic').attr("data-default-file", imgs);
                 $('#profilePic').dropify();
                 $('').dropify();
             },
-            error: function (data) {
+            error: function(data) {
                 console.log('data2');
             }
         });
@@ -127,12 +127,12 @@
 
     /* add Team using ajax*/
     // $("#add-agent-modal #submitAgent").submit(function(e) {
-            
+
     // });
     $("#submitAgent").submit(function(e) {
         e.preventDefault();
-    // $(document).on('click', '.submitAgentForm', function() { 
-        var form =  document.getElementById('submitAgent');
+        // $(document).on('click', '.submitAgentForm', function() { 
+        var form = document.getElementById('submitAgent');
         var formData = new FormData(form);
         var urls = "{{URL::route('agent.store')}}";
         saveTeam(urls, formData, inp = '', modal = 'add-agent-modal');
@@ -140,18 +140,18 @@
 
     /* edit Team using ajax*/
     $("#edit-agent-modal #UpdateAgent").submit(function(e) {
-            e.preventDefault();
+        e.preventDefault();
     });
 
     $(document).on('click', '.submitEditForm', function() {
-        var form =  document.getElementById('UpdateAgent');
+        var form = document.getElementById('UpdateAgent');
         var formData = new FormData(form);
-        var urls =  document.getElementById('agent_id').getAttribute('url');
+        var urls = document.getElementById('agent_id').getAttribute('url');
         saveTeam(urls, formData, inp = 'Edit', modal = 'edit-agent-modal');
         console.log(urls);
     });
 
-    function saveTeam(urls, formData, inp = '', modal = ''){
+    function saveTeam(urls, formData, inp = '', modal = '') {
 
         $.ajax({
             method: 'post',
@@ -165,7 +165,7 @@
             success: function(response) {
                 if (response.status == 'success') {
                     $("#" + modal + " .close").click();
-                    location.reload(); 
+                    location.reload();
                 } else {
                     $(".show_all_error.invalid-feedback").show();
                     $(".show_all_error.invalid-feedback").text(response.message);
@@ -190,23 +190,23 @@
 
     }
 
-    
+
     /* Get agent by ajax */
-    $(".submitpayreceive").click(function (e) {  
+    $(".submitpayreceive").click(function(e) {
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
             }
         });
         e.preventDefault();
-       
+
 
         $.ajax({
             type: "post",
             url: "",
             data: '',
             dataType: 'json',
-            success: function (data) {
+            success: function(data) {
                 $('#edit-agent-modal #editCardBox').html(data.html);
                 $('#edit-agent-modal').modal({
                     backdrop: 'static',
@@ -214,28 +214,36 @@
                 });
                 makeTag();
                 //$('.dropify').dropify();
-                var imgs =  $('#profilePic').attr('showImg');
+                var imgs = $('#profilePic').attr('showImg');
 
                 $('#profilePic').attr("data-default-file", imgs);
                 $('#profilePic').dropify();
                 $('').dropify();
             },
-            error: function (data) {
+            error: function(data) {
                 console.log('data2');
             }
         });
     });
 
+    $('.agent_approval_switch').on('change',function() {
+        var is_approved = $(this).prop('checked') == true ? 1 : 0;
+        var agent_id = $(this).data('id');
 
-    
-
-
-
-    
-   
-    
-
-    
-   
-
+        $.ajax({
+            type: "Post",
+            dataType: "json",
+            url: "{{ route('agent/approval_status')}}",
+            data: {
+                "_token": "{{ csrf_token() }}",
+                'is_approved': is_approved,
+                'id': agent_id
+            },
+            success: function(data) {
+                if(data.status == 1){
+                    $.NotificationApp.send("",data.message,"top-right","#5ba035","success"); 
+                }
+            }
+        });
+    })
 </script>

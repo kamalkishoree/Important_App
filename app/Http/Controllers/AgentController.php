@@ -15,6 +15,7 @@ use App\Model\TagsForTeam;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
+use Exception;
 class AgentController extends Controller
 {
     /**
@@ -356,4 +357,19 @@ class AgentController extends Controller
       
         return response()->json($data);
     }
+
+    /* Change Agent approval status */
+
+    public function approval_status(Request $request)
+    {
+        try {
+            $agent_approval = Agent::find($request->id);
+            $agent_approval->is_approved = $request->is_approved;
+            $agent_approval->save();
+            return response()->json(['status' => 1, 'message' => 'Status change successfully.']);
+        } catch (Exception $e) {
+            return response()->json(['status' => 0, 'message' => $e->getMessage()]);
+        }
+    }
+
 }

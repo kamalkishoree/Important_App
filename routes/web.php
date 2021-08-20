@@ -98,6 +98,7 @@ Route::domain('{domain}')->middleware(['subdomain'])->group(function() {
 				Route::resource('agent', 'AgentController');
 				Route::post('pay/receive','AgentController@payreceive')->name('pay.receive');
 				Route::get('agent/paydetails/{id}','AgentController@agentPayDetails')->name('agent.paydetails');
+				Route::post('agent/approval_status', 'AgentController@approval_status')->name('agent/approval_status');
 				Route::resource('customer', 'CustomerController');
 				Route::get('changeStatus', 'CustomerController@changeStatus');
 				Route::resource('tag', 'TagController');

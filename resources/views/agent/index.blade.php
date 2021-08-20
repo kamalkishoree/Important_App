@@ -69,7 +69,7 @@
                                     <th>Total Paid to Driver</th>
                                     <th>Total Receive from Driver</th>
                                     <th>Final Balance</th>
-                                   
+                                    <th>Is Approved?</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -121,6 +121,12 @@
                                         {{ ($pay - $receive) - ($cash - $orders) }}
                                     </td>
                                     
+                                    <td>
+                                        <div class="custom-control custom-switch">
+                                            <input type="checkbox" class="custom-control-input agent_approval_switch" id="customSwitch_{{$agent->id}}" data-id="{{$agent->id}}" {{isset($agent->is_approved) && $agent->is_approved == 1 ? 'checked':''}}>
+                                            <label class="custom-control-label" for="customSwitch_{{$agent->id}}"></label>
+                                        </div>
+                                    </td>
                                     
                                     <td>
                                         <div class="form-ul" style="width: 60px;">
@@ -131,12 +137,10 @@
                                                     @method('DELETE')
                                                     <div class="form-group">
                                                         <button type="submit" class="btn btn-primary-outline action-icon"> <i class="mdi mdi-delete"></i></button>
-
                                                     </div>
                                                 </form>
                                             </div>
                                         </div>
-
                                     </td>
 
                                 </tr>
