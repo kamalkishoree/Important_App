@@ -325,7 +325,7 @@
                     </div>
                 </form>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <form method="POST" action="{{ route('preference', Auth::user()->code) }}">
                     @csrf
                     <div class="card-box same-size">
@@ -363,7 +363,7 @@
             </div>
 
 
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <form method="POST" action="{{ route('preference', Auth::user()->code) }}">
                     @csrf
                     <div class="card-box same-size">
@@ -389,6 +389,45 @@
                                 </div>
                                
                         </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="form-group mb-0 text-center">
+                                    <button class="btn btn-blue btn-block" type="submit"> Update </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="col-md-3">
+                <form method="POST" action="{{ route('preference', Auth::user()->code) }}">
+                    @csrf
+                    <div class="card-box same-size">
+                        <h4 class="header-title">FCM Server Key</h4>
+                        <p class="sub-header">
+                            View and Update FCM key.
+                        </p>
+                        <div class="row">
+
+                            <div class="col-12">
+                                <div class="form-group mb-3">
+                                    <div class="domain-outer border-0 d-flex align-items-center justify-content-between">
+                                    <label for="personal_access_token_v1">FCM Key</label>
+                                </div>
+                                    <input type="text" name="fcm_server_key" id="fcm_server_key"
+                                        placeholder="kjadsasd66asdas" class="form-control"
+                                        value="{{ old('fcm_server_key', $preference->fcm_server_key ?? '') }}">
+                                    @if ($errors->has('fcm_server_key'))
+                                        <span class="text-danger" role="alert">
+                                            <strong>{{ $errors->first('fcm_server_key') }}</strong>
+                                        </span>
+                                    @endif
+                                </div>
+                            </div>
+                           
+                        </div>
+
                         <div class="row">
                             <div class="col-12">
                                 <div class="form-group mb-0 text-center">
