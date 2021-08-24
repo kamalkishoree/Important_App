@@ -15,6 +15,7 @@ use App\Model\TagsForTeam;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
+use Exception;
 class AgentController extends Controller
 {
     /**
@@ -147,7 +148,8 @@ class AgentController extends Controller
             'phone_number' => '+'.$request->country_code.$request->phone_number,
             'color' => $request->color,
             'profile_picture' => $getFileName != null ? $getFileName : 'assets/client_00000051/agents5fedb209f1eea.jpeg/Ec9WxFN1qAgIGdU2lCcatJN5F8UuFMyQvvb4Byar.jpg',
-            'uid' => $request->uid
+            'uid' => $request->uid,
+            'is_approved' => 1
         ];
 
         $agent = Agent::create($data);
@@ -355,4 +357,19 @@ class AgentController extends Controller
       
         return response()->json($data);
     }
+
+    /* Change Agent approval status */
+
+    public function approval_status(Request $request)
+    {
+        try {
+            $agent_approval = Agent::find($request->id);
+            $agent_approval->is_approved = $request->is_approved;
+            $agent_approval->save();
+            return response()->json(['status' => 1, 'message' => 'Status change successfully.']);
+        } catch (Exception $e) {
+            return response()->json(['status' => 0, 'message' => $e->getMessage()]);
+        }
+    }
+
 }

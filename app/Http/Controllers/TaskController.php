@@ -1930,6 +1930,5 @@ class TaskController extends Controller
         return response()->json($task);
     }
 
-
     
 }
