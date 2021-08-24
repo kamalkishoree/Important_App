@@ -15,6 +15,7 @@ use Session;
 use Cache;
 use DB;
 use Auth,URL,Route;
+use Log;
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -42,6 +43,7 @@ class AppServiceProvider extends ServiceProvider
         if(!empty($clientDetails)){
             $preference  = ClientPreference::where('client_id', $clientDetails->code)->first();
             config(['laravel-fcm.server_key' => $preference->fcm_server_key??""]);
+            Log::info(config('laravel-fcm.server_key'));
         }
 
         Builder::defaultStringLength(191);
