@@ -38,7 +38,12 @@ class AppServiceProvider extends ServiceProvider
         if(config('app.env') != 'local') {
             \URL::forceScheme('https');
         }
-       
+        $clientDetails = Cache::get('clientdetails');
+        if(!empty($clientDetails)){
+            $preference  = ClientPreference::where('client_id', $clientDetails->code)->first();
+            config(['laravel-fcm.server_key' => $preference->fcm_server_key]);
+        }
+
         Builder::defaultStringLength(191);
         
         View::composer('modals.add-agent', function($view)
