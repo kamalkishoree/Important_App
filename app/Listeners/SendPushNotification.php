@@ -110,21 +110,29 @@ class SendPushNotification
                 array_push($new,$item['device_token']);
 
                 Log::info($new);
-
+            
             if(isset($new)){
-                $fcm_store = fcm()
-                ->to($new) // $recipients must an array
-                ->priority('high')
-                ->timeToLive(0)
-                ->data($item)
-                ->notification([
-                    'title' => 'Pickup Request',
-                    'body'  =>  'Check All Details For This Request In App',
-                    'sound' =>   'notification.mp3',
-                ])
-                ->send();
-                Log::info('fcm status');
-                Log::info($fcm_store);
+                try{
+                    $fcm_store = fcm()
+                    ->to($new) // $recipients must an array
+                    ->priority('high')
+                    ->timeToLive(0)
+                    ->data($item)
+                    ->notification([
+                        'title' => 'Pickup Request',
+                        'body'  =>  'Check All Details For This Request In App',
+                        'sound' =>   'notification.mp3',
+                    ])
+                    ->send();
+                    Log::info('fcm statusss');
+                
+                }
+                catch(Exception $e){
+                    Log::info($e->getMessage());
+                }
+               
+                
+                
             }
         }
 

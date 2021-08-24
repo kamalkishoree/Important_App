@@ -16,6 +16,7 @@ use Cache;
 use DB;
 use Auth,URL,Route;
 use Log;
+use Schema;
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -40,11 +41,15 @@ class AppServiceProvider extends ServiceProvider
             \URL::forceScheme('https');
         }
         $clientDetails = Cache::get('clientdetails');
-        if(!empty($clientDetails)){
-            $preference  = ClientPreference::where('client_id', $clientDetails->code)->first();
-            config(['laravel-fcm.server_key' => $preference->fcm_server_key??""]);
-        }
+        if(!empty($clientDetails) && !empty($clientDetails->code)){
+            if (Schema::hasColumn('client_id', 'client_preferences')){
+                $preference  = ClientPreference::where('client_id', $clientDetails->code)->first();  dd($preference );
+                config(['laravel-fcm.server_key' => $preference->fcm_server_key??""]);
+              }
 
+            
+        }
+       
         Builder::defaultStringLength(191);
         
         View::composer('modals.add-agent', function($view)

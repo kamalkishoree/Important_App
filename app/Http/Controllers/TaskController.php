@@ -1154,7 +1154,7 @@ class TaskController extends Controller
                         break;
                     }
 
-                    Log::info($i);
+                    Log::info($geoitem->agent->device_token);
                 }
                 $time = Carbon::parse($time)
                         ->addSeconds($expriedate + 10)
