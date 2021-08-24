@@ -41,7 +41,7 @@ class AppServiceProvider extends ServiceProvider
         $clientDetails = Cache::get('clientdetails');
         if(!empty($clientDetails)){
             $preference  = ClientPreference::where('client_id', $clientDetails->code)->first();
-            config(['laravel-fcm.server_key' => $preference->fcm_server_key]);
+            config(['laravel-fcm.server_key' => $preference->fcm_server_key??""]);
         }
 
         Builder::defaultStringLength(191);
