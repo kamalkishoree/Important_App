@@ -1536,7 +1536,7 @@ class TaskController extends Controller
                 $order_start_time = $firstTask->assigned_time;
                 $order_end_time = date('Y-m-d H:i:s');
             }
-            $driver_location_log_obj = AgentLog::select('id','lat','long')->where(['agent_id' => $task->driver_id])->whereBetween('created_at',[$order_start_time, $order_end_time])->take(50)->get();
+            $driver_location_log_obj = AgentLog::select('id','lat','long')->where(['agent_id' => $task->driver_id])->whereBetween('created_at',[$order_start_time, $order_end_time])->take(20)->get();
             if(!empty($driver_location_log_obj)){
                 foreach($driver_location_log_obj as $log_key => $log){
                     $driver_location_logs[] = array((double)$log->lat, (double)$log->long, $log_key+1);
