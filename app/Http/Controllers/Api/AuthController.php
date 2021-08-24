@@ -105,7 +105,7 @@ class AuthController extends BaseController
         $date = Date('Y-m-d H:i:s');
 
         if (!$otp) {
-            return response()->json(['message' => 'Please enter a valid opt'], 422);
+            return response()->json(['message' => 'Please enter a valid otp'], 422);
         }
        
 
