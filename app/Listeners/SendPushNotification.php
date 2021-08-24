@@ -103,37 +103,39 @@ class SendPushNotification
         $array = json_decode(json_encode($recipients), true);
         
     
-        foreach($array as $item){Log::info($item['device_token']);
+        foreach($array as $item){
+
+            if(isset($item['device_token']) && !empty($item['device_token'])){
+               
                 $item['title'] = 'Pickup Request';
                 $item['body']  = 'Check All Details For This Request In App';
                 $new = [];
                 array_push($new,$item['device_token']);
 
-                Log::info($new);
-            
-            if(isset($new)){
-                try{
-                    $fcm_store = fcm()
-                    ->to($new) // $recipients must an array
-                    ->priority('high')
-                    ->timeToLive(0)
-                    ->data($item)
-                    ->notification([
-                        'title' => 'Pickup Request',
-                        'body'  =>  'Check All Details For This Request In App',
-                        'sound' =>   'notification.mp3',
-                    ])
-                    ->send();
-                    Log::info('fcm statusss');
+                if(isset($new)){
+                    try{
+                        $fcm_store = fcm()
+                        ->to($new) // $recipients must an array
+                        ->priority('high')
+                        ->timeToLive(0)
+                        ->data($item)
+                        ->notification([
+                            'title' => 'Pickup Request',
+                            'body'  =>  'Check All Details For This Request In App',
+                            'sound' =>   'notification.mp3',
+                        ])
+                        ->send();
+                        Log::info('fcm statusss');
+                    
+                    }
+                    catch(Exception $e){
+                        Log::info($e->getMessage());
+                    }
                 
                 }
-                catch(Exception $e){
-                    Log::info($e->getMessage());
-                }
-               
-                
-                
             }
+            
+            
         }
 
            sleep(5);
