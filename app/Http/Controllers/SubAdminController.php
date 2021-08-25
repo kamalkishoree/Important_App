@@ -69,6 +69,7 @@ class SubAdminController extends Controller
             'password' => Hash::make($request->password),
             'confirm_password' => Crypt::encryptString($request->password),
             'phone_number' => $request->phone_number,
+            'dial_code' => $request->dialCode??null,
             'all_team_access'=> $request->all_team_access,
             'status' => $request->status,
             'is_superadmin' => 0,
@@ -169,6 +170,7 @@ class SubAdminController extends Controller
             'email' => $request->email,
             'phone_number' => $request->phone_number,
             'all_team_access'=> $request->all_team_access,
+            'dial_code' => $request->dialCode??null,
             'status' => $request->status,
             
         ];
