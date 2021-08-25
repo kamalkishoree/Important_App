@@ -1088,6 +1088,7 @@ class TaskController extends Controller
         $max_task          = $auth->getAllocation->maximum_batch_size;
         $time              = $this->checkTimeDiffrence($notification_time, $beforetime);
         $randem            = rand(11111111, 99999999);
+        $order_details = Order::find($orders_id);
         $data = [];
 
         if ($type == 'acceptreject') {
@@ -1124,6 +1125,7 @@ class TaskController extends Controller
                 'device_type'         => $oneagent->device_type,
                 'device_token'        => $oneagent->device_token,
                 'detail_id'           => $randem,
+                'cash_to_be_collected' => $order_details->cash_to_be_collected??null,
             ];
             $this->dispatch(new RosterCreate($data, $extraData));
         } else {  Log::info('outergeo');
@@ -1147,6 +1149,7 @@ class TaskController extends Controller
                         'device_type'         => $geoitem->agent->device_type??null,
                         'device_token'        => $geoitem->agent->device_token??null,
                         'detail_id'           => $randem,
+                        'cash_to_be_collected' => $order_details->cash_to_be_collected??null,
                      ];
                     array_push($data, $datas);
                     if ($allcation_type == 'N' && 'ACK') {Log::info('break');
@@ -1183,6 +1186,7 @@ class TaskController extends Controller
         $max_task          = $auth->getAllocation->maximum_batch_size;
         $time              = $this->checkTimeDiffrence($notification_time, $beforetime);
         $randem            = rand(11111111, 99999999);
+        $order_details = Order::find($orders_id);
         $data = [];
 
         if ($type == 'acceptreject') {
@@ -1219,6 +1223,7 @@ class TaskController extends Controller
                 'device_type'         => $oneagent->device_type,
                 'device_token'        => $oneagent->device_token,
                 'detail_id'           => $randem,
+                'cash_to_be_collected' => $order_details->cash_to_be_collected??null,
             ];
             $this->dispatch(new RosterCreate($data, $extraData));
         } else {
@@ -1250,6 +1255,7 @@ class TaskController extends Controller
                         'device_type'         => $geoitem['device_type'],
                         'device_token'        => $geoitem['device_token'],
                         'detail_id'           => $randem,
+                        'cash_to_be_collected' => $order_details->cash_to_be_collected??null,
                     ];
                     $counter++;
                     if ($counter == $maxsize) {
@@ -1292,6 +1298,7 @@ class TaskController extends Controller
         $max_task          = $auth->getAllocation->maximum_batch_size;
         $time              = $this->checkTimeDiffrence($notification_time, $beforetime);
         $randem            = rand(11111111, 99999999);
+        $order_details = Order::find($orders_id);
         $data = [];
 
         if ($type == 'acceptreject') {
@@ -1328,6 +1335,7 @@ class TaskController extends Controller
                 'device_type'         => $oneagent->device_type,
                 'device_token'        => $oneagent->device_token,
                 'detail_id'           => $randem,
+                'cash_to_be_collected' => $order_details->cash_to_be_collected??null,
             ];
             $this->dispatch(new RosterCreate($data, $extraData));
         } else {
@@ -1355,6 +1363,7 @@ class TaskController extends Controller
                         'device_type'         => $geoitem['device_type'],
                         'device_token'        => $geoitem['device_token'],
                         'detail_id'           => $randem,
+                        'cash_to_be_collected' => $order_details->cash_to_be_collected??null,
                     ];
                     $time = Carbon::parse($time)
                     ->addSeconds($expriedate)
