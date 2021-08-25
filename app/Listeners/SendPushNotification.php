@@ -79,6 +79,7 @@ class SendPushNotification
         $newget           = $get->pluck('id');
         DB::connection($schemaName)->table('rosters')->where('status',10)->delete();
         if(count($get) > 0){
+            Log::info($get);
             //DB::connection($schemaName)->table('rosters')->whereIn('id',$newget)->update(['status'=>1]);
             DB::connection($schemaName)->table('rosters')->whereIn('id',$newget)->delete();
             
@@ -102,29 +103,39 @@ class SendPushNotification
         $array = json_decode(json_encode($recipients), true);
         
     
-        foreach($array as $item){Log::info($item['device_token']);
+        foreach($array as $item){
+
+            if(isset($item['device_token']) && !empty($item['device_token'])){
+               
                 $item['title'] = 'Pickup Request';
                 $item['body']  = 'Check All Details For This Request In App';
                 $new = [];
                 array_push($new,$item['device_token']);
 
-                Log::info($new);
-
-            if(isset($new)){
-                $fcm_store = fcm()
-                ->to($new) // $recipients must an array
-                ->priority('high')
-                ->timeToLive(0)
-                ->data($item)
-                ->notification([
-                    'title' => 'Pickup Request',
-                    'body'  =>  'Check All Details For This Request In App',
-                    'sound' =>   'notification.mp3',
-                ])
-                ->send();
-                Log::info('fcm status');
-                Log::info($fcm_store);
+                if(isset($new)){
+                    try{
+                        $fcm_store = fcm()
+                        ->to($new) // $recipients must an array
+                        ->priority('high')
+                        ->timeToLive(0)
+                        ->data($item)
+                        ->notification([
+                            'title' => 'Pickup Request',
+                            'body'  =>  'Check All Details For This Request In App',
+                            'sound' =>   'notification.mp3',
+                        ])
+                        ->send();
+                        Log::info($fcm_store);
+                    
+                    }
+                    catch(Exception $e){
+                        Log::info($e->getMessage());
+                    }
+                
+                }
             }
+            
+            
         }
 
            sleep(5);
