@@ -125,7 +125,7 @@ class SendPushNotification
                             'sound' =>   'notification.mp3',
                         ])
                         ->send();
-                        Log::info('fcm statusss');
+                        Log::info($fcm_store);
                     
                     }
                     catch(Exception $e){
