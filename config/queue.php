@@ -46,7 +46,7 @@ return [
             'driver' => 'beanstalkd',
             'host' => 'localhost',
             'queue' => 'default',
-            'retry_after' => 1800,
+            'retry_after' => 9000,
             'block_for' => 0,
         ],
 
@@ -64,7 +64,7 @@ return [
             'driver' => 'redis',
             'connection' => 'default',
             'queue' => env('REDIS_QUEUE', 'default'),
-            'retry_after' => 1800,
+            'retry_after' => 9000,
             'block_for' => null,
             'timeout' => 180
         ],
