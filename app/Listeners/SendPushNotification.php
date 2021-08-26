@@ -130,6 +130,7 @@ class SendPushNotification
                         ])
                         ->send();
                         Log::info($fcm_store);
+                        Log::info($item);
                     
                     }
                     catch(Exception $e){
