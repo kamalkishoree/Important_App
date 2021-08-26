@@ -28,10 +28,15 @@ Route::get('check-redis-jobs', function(){
 	$default = 'default';
 
 //For the delayed jobs
-var_dump( \Queue::getRedis()->connection($connection)->zrange('queues:'.$default.':delayed' ,0, -1) );
-
+print_r("For the delayed jobs");
+print_r("<pre>");
+print_r( \Queue::getRedis()->connection($connection)->zrange('queues:'.$default.':delayed' ,0, -1) );
+print_r("</pre>");
 //For the reserved jobs
+print_r("For the reserved jobs");
+print_r("<pre>");
 var_dump( \Queue::getRedis()->connection($connection)->zrange('queues:'.$default.':reserved' ,0, -1) );
+print_r("</pre>");
 });
 
 
