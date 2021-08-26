@@ -78,6 +78,9 @@ class SendPushNotification
      //   Log::info($schemaName);
         $get              =  DB::connection($schemaName)->table('rosters')->where('notification_time', '<=', $date)->where('status',0)->leftJoin('roster_details', 'rosters.detail_id', '=', 'roster_details.unique_id')->select('rosters.*', 'roster_details.customer_name', 'roster_details.customer_phone_number',
         'roster_details.short_name','roster_details.address','roster_details.lat','roster_details.long','roster_details.task_count')->get();
+        Log::info('start_data');
+        Log::info($get);
+        Log::info('end_start_data');
         $newget           = $get->pluck('id');
 
      ///   Log::info($newget);
