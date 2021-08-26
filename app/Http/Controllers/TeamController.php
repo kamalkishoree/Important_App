@@ -248,4 +248,5 @@ class TeamController extends Controller
         ]);
         return redirect()->back()->with('success', 'Agent removed successfully!');
     }
+    
 }
