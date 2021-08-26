@@ -147,7 +147,7 @@ class SendPushNotification
             
         }
 
-           sleep(15);
+        sleep(5);
         $this->getData();
         } catch (Exception $ex) {
             Log::info($ex->getMessage());
@@ -163,7 +163,7 @@ class SendPushNotification
         $check = DB::connection($schemaName)->table('rosters')->get();
 
         if(count($check) > 0){
-            sleep(15);
+            sleep(5);
             $this->getData();
         }else{
             return;
