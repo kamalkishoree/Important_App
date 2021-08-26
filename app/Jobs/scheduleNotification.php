@@ -332,7 +332,7 @@ class scheduleNotification implements ShouldQueue
         $date = \Carbon\Carbon::today()->toDateString();
         //$auth              = Client::where('code', $dataget['database']['code'])->with(['getAllocation', 'getPreference'])->first();
         
-        Log::info($date);
+      //  Log::info($date);
         
 
         $expriedate        = (int)$dataget['database']['getAllocation']['request_expiry'];
