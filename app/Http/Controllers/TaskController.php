@@ -359,7 +359,7 @@ class TaskController extends Controller
 
         $geo = null;
         if ($request->allocation_type === 'a') {
-            Log::info($send_loc_id);
+         //   Log::info($send_loc_id);
             $geo = $this->createRoster($send_loc_id);
             $agent_id = null;
         }
@@ -422,7 +422,7 @@ class TaskController extends Controller
                     break;
                 case 'send_to_all':
                     //this is called when allocation type is send to all
-                    Log::info($allocation->auto_assign_logic);
+                //    Log::info($allocation->auto_assign_logic);
                     $this->SendToAll($geo, $notification_time, $agent_id, $orders->id, $customer, $finalLocation, $taskcount, $allocation);
                     break;
                 case 'round_robin':
@@ -1100,7 +1100,7 @@ class TaskController extends Controller
         } else {
             $allcation_type = 'N';
         }
-        Log::info($allcation_type);
+       // Log::info($allcation_type);
         $extraData = [
             'customer_name'            => $customer->name,
             'customer_phone_number'    => $customer->phone_number,

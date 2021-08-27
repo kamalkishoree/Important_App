@@ -9,6 +9,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Artisan;
 use Config;
 Use Log;
 
@@ -39,7 +40,6 @@ class RosterCreate implements ShouldQueue
     {
     
         try {
-         
             $schemaName = 'royodelivery_db';
             $default = [
                 'driver' => env('DB_CONNECTION', 'mysql'),
@@ -86,7 +86,13 @@ class RosterCreate implements ShouldQueue
     public function failed(\Throwable $exception)
     {
         // Log failure
+        
+        
         Log::info('error roster');
         Log::info($exception->getMessage());
+        Artisan::call('queue:restart');
+
+
+
     }
 }
