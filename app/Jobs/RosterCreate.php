@@ -86,12 +86,12 @@ class RosterCreate implements ShouldQueue
     public function failed(\Throwable $exception)
     {
         // Log failure
-        
+        Artisan::call('queue:work');
+
         
         Log::info('error roster');
         Log::info($exception->getMessage());
-        Artisan::call('queue:restart');
-
+       
 
 
     }
