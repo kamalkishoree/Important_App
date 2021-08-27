@@ -20,6 +20,8 @@ Route::get('dispatch-logs', '\Rap2hpoutre\LaravelLogViewer\LogViewerController@i
 Route::get('/howto/signup', function(){
 	return view('How-to-SignUp-in-Royo-Dispatcher');
 });
+Route::get('terms_n_condition', 'CMSScreenController@terms_n_condition');
+Route::get('privacy_policy', 'CMSScreenController@privacy_policy');
 
 Auth::routes();  
 
