@@ -326,8 +326,9 @@ class AuthController extends BaseController
         if ($request->hasFile('profile_picture')) {
             $header = $request->header();
             $shortcode = "";
-            if (array_key_exists("shortcode", $header)) {
-                $shortcode =  $header['shortcode'][0];
+            $clientDetail = Client::first();
+            if (!empty($clientDetail)) {
+                $shortcode =  $clientDetail->code;
             }
             $folder = str_pad($shortcode, 8, '0', STR_PAD_LEFT);
             $folder = 'client_' . $folder;
