@@ -11,6 +11,8 @@ use App\Model\Roster;
 use App\Model\Client;
 use Config;
 use Illuminate\Support\Facades\DB;
+use Exception;
+use Kawankoding\Fcm\Fcm;
 
 class SendPushNotification
 {
@@ -116,9 +118,15 @@ class SendPushNotification
                 $new = [];
                 array_push($new,$item['device_token']);
 
+                $clientRecord = Client::where('code', $item['client_code'])->first();
+                $this->seperate_connection('db_'.$clientRecord->database_name);
+                $client_preferences = DB::connection('db_'.$clientRecord->database_name)->table('client_preferences')->where('client_id', $item['client_code'])->first();
+
                 if(isset($new)){
                     try{
-                        $fcm_store = fcm()
+                        $fcm_server_key = $client_preferences->fcm_server_key??config('laravel-fcm.server_key');
+                        $fcmObj = new Fcm($fcm_server_key);
+                        $fcm_store = $fcmObj
                         ->to($new) // $recipients must an array
                         ->priority('high')
                         ->timeToLive(0)
@@ -165,4 +173,24 @@ class SendPushNotification
             return;
         }
     }
+
+    public function seperate_connection($schemaName){
+        $default = [
+            'driver' => env('DB_CONNECTION', 'mysql'),
+            'host' => env('DB_HOST'),
+            'port' => env('DB_PORT'),
+            'database' => $schemaName,
+            'username' => env('DB_USERNAME'),
+            'password' => env('DB_PASSWORD'),
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'strict' => false,
+            'engine' => null
+        ];
+
+        Config::set("database.connections.$schemaName", $default);
+    }
+
 }
