@@ -96,6 +96,7 @@ class SendPushNotifications implements ShouldQueue
                 if(isset($item->device_token))
                 array_push($recipients,$item->device_token);
             }
+            Log::info('App\Jobs\SendPushNotifications');
             $this->sendnotification($recipients);
             sleep(5);
         }

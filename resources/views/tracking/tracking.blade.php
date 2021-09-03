@@ -88,7 +88,9 @@ $task_type_array = ['Pickup', 'Drop-Off', 'Appointment'];
     </script>
     <script src="{{ asset('tracking/js/common.js') }}"></script>
     <script src="{{ asset('tracking/js/bootstrap.min.js') }}"></script>
+    
     <script>
+        var map = '';
         var alltask = {!! json_encode($tasks) !!};
         var agent_location = {!! json_encode($agent_location) !!};
         var url = window.location.origin;
@@ -122,7 +124,7 @@ $task_type_array = ['Pickup', 'Drop-Off', 'Appointment'];
         function initMap() {
             const directionsService = new google.maps.DirectionsService();
             const directionsRenderer = new google.maps.DirectionsRenderer({suppressMarkers: true});
-            const map = new google.maps.Map(document.getElementById("map_canvas"), {
+             map = new google.maps.Map(document.getElementById("map_canvas"), {
                 zoom: 6,
                 center: {
                     lat: maplat,
@@ -215,6 +217,33 @@ $task_type_array = ['Pickup', 'Drop-Off', 'Appointment'];
             icon: icon,
             });
          }
+
+
+
+
+
+         // traking hit api again and agian 
+         var dispatch_traking_url   = window.location.href; 
+         setInterval(function(){
+            var new_dispatch_traking_url = dispatch_traking_url.replace('/order/','/order-details/');
+                    getDriverDetails(new_dispatch_traking_url)
+                },4000);
+
+       
+            function getDriverDetails(new_dispatch_traking_url) {
+                $.ajax({
+                    type:"GET",
+                    dataType: "json",
+                    url: new_dispatch_traking_url,
+                    success: function( response ) {
+                        var agent_location_live = response.agent_location;
+                        if(agent_location_live != null){
+                            addMarker(agent_location_live,map);
+                        }
+                    }
+                });
+            }         
+
 
 
     </script>
