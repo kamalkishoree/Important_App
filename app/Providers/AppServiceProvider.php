@@ -44,7 +44,9 @@ class AppServiceProvider extends ServiceProvider
         if (!empty($clientDetails) && !empty($clientDetails->code)) {
             if (Schema::hasColumn('client_id', 'client_preferences')) {
                 $preference  = ClientPreference::where('client_id', $clientDetails->code)->first();
-                config(['laravel-fcm.server_key' => $preference->fcm_server_key ?? ""]);
+                if (!empty($preference->fcm_server_key)) {
+                    config(['laravel-fcm.server_key' => $preference->fcm_server_key ?? ""]);
+                }
             }
         }
        
