@@ -74,5 +74,14 @@ class Client extends Authenticatable
       return $this->hasMany('App\Model\SubAdminTeamPermissions','sub_admin_id','id');
     }
 
+
+    /**
+     * Get Clientpreference
+    */
+    public function getCountry()
+    {
+      return $this->hasOne('App\Model\Countries','country_id','code');
+    }
+
    
 }
