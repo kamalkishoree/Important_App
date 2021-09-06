@@ -78,9 +78,9 @@ class Client extends Authenticatable
     /**
      * Get Clientpreference
     */
-    public function getCountry()
+    public function getCountrySet()
     {
-      return $this->hasOne('App\Model\Countries','id','country_id');
+      return $this->belongsTo('App\Model\Countries','country_id','id');
     }
 
    
