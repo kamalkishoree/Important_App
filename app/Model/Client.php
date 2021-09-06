@@ -80,7 +80,7 @@ class Client extends Authenticatable
     */
     public function getCountry()
     {
-      return $this->hasOne('App\Model\Countries','country_id','id');
+      return $this->hasOne('App\Model\Countries','id','country_id');
     }
 
    
