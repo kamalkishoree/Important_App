@@ -64,6 +64,7 @@ class DriverRegistrationController extends Controller
                     'agent_id' => $value[$keys[1]],
                     'file_name' => $value[$keys[2]],
                 ];
+                $agent_docs = AgentDocs::create($files[$key]);
             } else {
                 // print_r($value[$keys[2]]->getClientOriginalName());
                 // dd();
@@ -73,7 +74,7 @@ class DriverRegistrationController extends Controller
                 }
                 $folder = str_pad($shortcode, 8, '0', STR_PAD_LEFT);
                 $folder = 'client_' . $folder;
-                $file = $value[$keys[2]];
+                $file = json_decode($value[$keys[2]]);
                 if ($file != null) {
                     $file_name = uniqid() . '.' .  $file->getClientOriginalExtension();
                     $s3filePath = '/assets/' . $folder . '/agents' . $file_name;
@@ -84,9 +85,10 @@ class DriverRegistrationController extends Controller
                         'agent_id' => $value[$keys[1]],
                         'file_name' =>  $path,
                     ];
+                    $agent_docs = AgentDocs::create($files[$key]);
                 }
+               
             }
-            $agent_docs = AgentDocs::create($files[$key]);
         }
         $agent = Agent::create($data);
         if ($agent->wasRecentlyCreated && $agent_docs->wasRecentlyCreated) {
