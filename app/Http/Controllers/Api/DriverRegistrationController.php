@@ -53,44 +53,47 @@ class DriverRegistrationController extends Controller
             'uid' => $request->uid,
             'is_approved' => 1,
         ];
-        // print_r($request->extra_keys);
-        // dd();
-        // foreach ($request->extra_keys as $key => $value) {
-        //     $keys = array_keys($value);
-        //     $size = sizeof($value);
-        //     if ($value[$keys[0]] == "text") {
-        //         $files[$key] = [
-        //             'file_type' => $value[$keys[0]],
-        //             'agent_id' => $value[$keys[1]],
-        //             'file_name' => $value[$keys[2]],
-        //         ];
-        //         $agent_docs = AgentDocs::create($files[$key]);
-        //     } else {
-        //         // print_r($value[$keys[2]]->getClientOriginalName());
-        //         // dd();
-        //         $header = $request->header();
-        //         if (array_key_exists("shortcode", $header)) {
-        //             $shortcode =  $header['shortcode'][0];
-        //         }
-        //         $folder = str_pad($shortcode, 8, '0', STR_PAD_LEFT);
-        //         $folder = 'client_' . $folder;
-        //         if (array_key_exists(2, $keys)) {
-        //             $file = $value[$keys[2]];
-        //             $file_name = uniqid() . '.' . $file->getClientOriginalExtension();
-        //             $s3filePath = '/assets/' . $folder . '/agents' . $file_name;
-        //             $path = Storage::disk('s3')->put($s3filePath, $file, 'public');
-        //             $getFileName = $path;
-        //             $files[$key] = [
-        //                 'file_type' => $value[$keys[0]],
-        //                 'agent_id' => $value[$keys[1]],
-        //                 'file_name' =>  $path,
-        //             ];
-        //             $agent_docs = AgentDocs::create($files[$key]);
-        //         }
-        //     }
-        // }
+        // print_r($request->file('extra_keys'));
+        //     dd();
+        foreach ($request->extra_keys as $key => $value) {
+            $keys = array_keys($value);
+            if ($value[$keys[0]] == "text") {
+                $files[$key] = [
+                    'file_type' => $value[$keys[0]],
+                    'agent_id' => $value[$keys[1]],
+                    'file_name' => $value[$keys[2]],
+                ];
+                $agent_docs = AgentDocs::create($files[$key]);
+            } else {
+                // print_r($value[$keys[2]]->getClientOriginalName());
+                // dd();
+                $header = $request->header();
+                if (array_key_exists("shortcode", $header)) {
+                    $shortcode =  $header['shortcode'][0];
+                }
+                $folder = str_pad($shortcode, 8, '0', STR_PAD_LEFT);
+                $folder = 'client_' . $folder;
+                $files[$key] = [
+                    'file_type' => $value[$keys[0]],
+                    'agent_id' => $value[$keys[1]],
+                ];
+                if (array_key_exists(2, $keys)) {
+                    if ($request->hasFile($value[$keys[2]])) {
+                        $file = $request->file($value[$keys[2]]);
+                        $file_name = uniqid() . '.' . $file->getClientOriginalExtension();
+                        $s3filePath = '/assets/' . $folder . '/agents' . $file_name;
+                        $path = Storage::disk('s3')->put($s3filePath, $file, 'public');
+                        $getFileName = $path;
+                        $files[$key] = [
+                            'file_name' =>  $path,
+                        ];
+                    }
+                }
+                $agent_docs = AgentDocs::create($files[$key]);
+            }
+        }
         $agent = Agent::create($data);
-        if ($agent->wasRecentlyCreated /*&& $agent_docs->wasRecentlyCreated*/) {
+        if ($agent->wasRecentlyCreated && $agent_docs->wasRecentlyCreated) {
             return response()->json([
                 'status' => 'success',
                 'message' => 'Agent created Successfully!',
