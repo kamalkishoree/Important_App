@@ -74,8 +74,8 @@ class DriverRegistrationController extends Controller
                 }
                 $folder = str_pad($shortcode, 8, '0', STR_PAD_LEFT);
                 $folder = 'client_' . $folder;
-                $file = json_decode($value[$keys[2]]);
-                if ($file != null) {
+                if (array_key_exists(2,$keys)) {
+                    $file = $value[$keys[2]];
                     $file_name = uniqid() . '.' .  $file->getClientOriginalExtension();
                     $s3filePath = '/assets/' . $folder . '/agents' . $file_name;
                     $path = Storage::disk('s3')->put($s3filePath, $file, 'public');
@@ -87,7 +87,6 @@ class DriverRegistrationController extends Controller
                     ];
                     $agent_docs = AgentDocs::create($files[$key]);
                 }
-               
             }
         }
         $agent = Agent::create($data);
