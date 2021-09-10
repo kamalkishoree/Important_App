@@ -15,8 +15,9 @@ class AgentDocs extends Model
 
 
     protected $fillable = ['agent_id','file_name','file_type'];
+    protected $appends = ['image_url'];
    
-    public function getfileNameAttribute($value){
+    public function getImageUrlAttribute(){
         $secret = '';
         $server = 'http://192.168.100.211:8888';
         //$new    = \Thumbor\Url\Builder::construct($server, $secret, 'http://images.example.com/llamas.jpg')->fitIn(90,50);
