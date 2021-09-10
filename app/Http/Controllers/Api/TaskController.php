@@ -1594,5 +1594,32 @@ class TaskController extends BaseController
         ], 200);
         
     }
+    /******************    ---- Save feedback on order  -----   ******************/
+    public function SaveFeedbackOnOrder(Request $request, $domain = '')
+    {
+        
+            $order   = Order::where('id', $request->order_id)->first();
+
+            if (isset($order->id)) {
+                $check_alredy  = DB::table('order_ratings')->where('order_id', $order->id)->first();
+
+                if (isset($check_alredy->id)) {
+                    return response()->json(['status' => true, 'message' => 'Feedback has been already submitted.']);
+                } else {
+                    $data = [
+                        'order_id'    => $order->id,
+                        'rating'      => $request->rating,
+                        'review'      => $request->review,
+                    ];
+
+                    DB::table('order_ratings')->insert($data);
+
+                    return response()->json(['status' => true, 'message' => 'Your feedback is submitted']);
+                }
+            } else {
+                return response()->json(['status' => true, 'message' => 'Order Not Found']);
+            }
+        
+    }
     
 }
