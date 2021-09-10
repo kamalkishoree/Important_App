@@ -119,9 +119,9 @@
                             <span class="span1 delbtnhead" id="spancheck"><img style="filter: grayscale(.5);" src="{{asset('assets/images/ic_delete.png')}}"  alt=""></span>
                         </div>
                     </div>
-                    <input type="hidden" id="check-pickup-barcode" value="{{$task_proofs[0]->barcode_requried}}">
-                    <input type="hidden" id="check-drop-barcode" value="{{$task_proofs[1]->barcode_requried}}">
-                    <input type="hidden" id="check-appointment-barcode" value="{{$task_proofs[2]->barcode_requried}}">
+                    <input type="hidden" id="check-pickup-barcode" value="{{ (!empty($task_proofs[0]->barcode_requried) ? $task_proofs[0]->barcode_requried : 0)}}">
+                    <input type="hidden" id="check-drop-barcode" value="{{ (!empty($task_proofs[1]->barcode_requried) ? $task_proofs[1]->barcode_requried : 0)}}">
+                    <input type="hidden" id="check-appointment-barcode" value="{{ (!empty($task_proofs[2]->barcode_requried) ? $task_proofs[2]->barcode_requried : 0)}}">
                     <div class="row">
                         <div class="col-md-6">
                             <h4 class="header-title mb-2">Address</h4>
