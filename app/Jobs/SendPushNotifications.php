@@ -105,7 +105,7 @@ class SendPushNotifications implements ShouldQueue
 
     public function sendnotification($recipients)
     {
-        
+        Log::info('This is a test of FCM');
         //Log::info($recipients);
         if(isset($recipients)){
             fcm()
