@@ -244,7 +244,7 @@ $task_type_array = ['Pickup', 'Drop-Off', 'Appointment'];
                     success: function( response ) {
                         var agent_location_live = response.agent_location;
                         if(agent_location_live != null){
-                           calculateAndDisplayRoute(directionsService, directionsRenderer,map,agent_location_live);
+                          // calculateAndDisplayRoute(directionsService, directionsRenderer,map,agent_location_live);
                            addMarker(agent_location_live,map);
                         }
                     }
