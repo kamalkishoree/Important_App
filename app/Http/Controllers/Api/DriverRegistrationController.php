@@ -53,8 +53,7 @@ class DriverRegistrationController extends Controller
             'uid' => $request->uid,
             'is_approved' => 1,
         ];
-        // print_r($request->file('extra_keys'));
-        //     dd();
+
         foreach ($request->extra_keys as $key => $value) {
             $keys = array_keys($value);
             if ($value[$keys[0]] == "text") {
@@ -78,8 +77,8 @@ class DriverRegistrationController extends Controller
                     'agent_id' => $value[$keys[1]],
                 ];
                 if (array_key_exists(2, $keys)) {
-                    if ($request->hasFile($value[$keys[2]])) {
-                        $file = $request->file($value[$keys[2]]);
+                  //  if ($request->hasFile($value[$keys[2]])) {
+                        $file = $value[$keys[2]];
                         $file_name = uniqid() . '.' . $file->getClientOriginalExtension();
                         $s3filePath = '/assets/' . $folder . '/agents' . $file_name;
                         $path = Storage::disk('s3')->put($s3filePath, $file, 'public');
@@ -88,16 +87,17 @@ class DriverRegistrationController extends Controller
                             'file_name' =>  $path,
                         ];
                     }
-                }
+            //    }
                 $agent_docs = AgentDocs::create($files[$key]);
             }
         }
+
         $agent = Agent::create($data);
         if ($agent->wasRecentlyCreated && $agent_docs->wasRecentlyCreated) {
             return response()->json([
                 'status' => 'success',
                 'message' => 'Agent created Successfully!',
-                'data' => $agent
+                'data' => $agent, $agent_docs
             ]);
         }
     }
