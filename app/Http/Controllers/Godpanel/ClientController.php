@@ -64,7 +64,7 @@ class ClientController extends Controller
             'password' => ['required'],
             'database_name' => ['required','unique:clients,database_name'],
             'custom_domain' => ['nullable','unique:clients,custom_domain'],
-            'sub_domain' => ['required','min:4','unique:clients,sub_domain'],
+            'sub_domain' => ['required','min:3','unique:clients,sub_domain'],
             'logo' => ['image'],
         ]);
     }
@@ -214,7 +214,7 @@ class ClientController extends Controller
     protected function updateValidator(array $data, $id)
     {
         return Validator::make($data, [
-           'sub_domain' => ['required','min:4',\Illuminate\Validation\Rule::unique('clients')->ignore($id)],
+           'sub_domain' => ['required','min:3',\Illuminate\Validation\Rule::unique('clients')->ignore($id)],
            'custom_domain' => ['nullable',\Illuminate\Validation\Rule::unique('clients')->ignore($id)],
         ]);
     }
