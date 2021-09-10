@@ -273,6 +273,7 @@
     var longitude = [];
 
     $(".addTaskModalHeader").click(function (e) {
+
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
@@ -307,6 +308,10 @@
                 $(".searchspan").hide();
                 $(".appoint").hide();
                 $(".datenow").hide();
+
+                $(".pickup-barcode-error").hide();
+                $(".drop-barcode-error").hide();
+                $(".appointment-barcode-error").hide();
                 $("#AddressInput a").click(function() {
                     $(".shows").show();
                     $(".append").hide();
@@ -424,7 +429,7 @@
         $clone.removeClass('cloningDiv');
         $clone.removeClass('copyin1');
         $clone.addClass('copyin');
-        $clone.addClass('repeated-block');       
+        $clone.addClass('repeated-block check-validation');       
         
         $clone.find('.cust_add_div').prop('id', 'addHeader' + countZ);
         $clone.find('.cust_add').prop('id', 'addHeader' + countZ +'-input');
@@ -604,6 +609,29 @@
                 $(".addspan").show();
                 return false;
         }
+
+        $(".selecttype").each(function(){
+            var taskselect              = $(this).val();
+            var checkPickupBarcode      = $('#check-pickup-barcode').val();
+            var checkDropBarcode        = $('#check-drop-barcode').val();
+            var checkAppointmentBarcode = $('#check-appointment-barcode').val();
+            var barcode                 = $(this).closest('.check-validation').find('.barcode').val();
+            if(taskselect == 1 && checkPickupBarcode == 1 && barcode == ''){
+                $(this).closest('.check-validation').find('.pickup-barcode-error').show();
+                return false;
+            }else if(taskselect == 2 && checkDropBarcode == 1 && barcode == ''){
+                $(this).closest('.check-validation').find('.drop-barcode-error').show();
+                return false;
+            }else if(taskselect == 3 && checkAppointmentBarcode == 1 && barcode == ''){
+                $(this).closest('.check-validation').find('.appointment-barcode-error').show();
+                return false;
+            }else{
+                $(this).closest('.check-validation').find('.pickup-barcode-error').hide();
+                $(this).closest('.check-validation').find('.drop-barcode-error').hide();
+                $(this).closest('.check-validation').find('.appointment-barcode-error').hide();
+                return true;
+            }
+        });
 
        //return false;
         var selectedVal = "";
