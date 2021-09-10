@@ -11,9 +11,6 @@ class AgentDocs extends Model
 {
     //
 
-    protected $table = 'agent_docs';
-
-
     protected $fillable = ['agent_id','file_name','file_type'];
     protected $appends = ['image_url'];
    

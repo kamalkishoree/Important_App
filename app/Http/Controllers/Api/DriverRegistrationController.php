@@ -53,7 +53,7 @@ class DriverRegistrationController extends Controller
             'uid' => $request->uid,
             'is_approved' => 1,
         ];
-        foreach ($request->extra_keys as $key => $value) {
+        foreach (json_decode($request->extra_keys) as $key => $value) {
             $keys = array_keys($value);
             if ($value[$keys[0]] == "text") {
                 $files[$key] = [
