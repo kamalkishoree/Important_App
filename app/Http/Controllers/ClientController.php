@@ -110,7 +110,7 @@ class ClientController extends Controller
         # if submit sub_domain domain by client
         if ($request->sub_domain && ($request->sub_domain != $client->sub_domain)) {
             $validator = Validator::make($request->all(), [
-                    'sub_domain' => 'required|min:4',
+                    'sub_domain' => 'required|min:3',
                 ]);
             if ($validator->fails()) {
                 return redirect()->back()->withInput()->withErrors($validator);
