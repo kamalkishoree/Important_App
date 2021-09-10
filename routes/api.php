@@ -23,6 +23,7 @@ use Illuminate\Support\Facades\Route;
 Route::post('check-dispatcher-keys', 'Api\TaskController@checkDispatcherKeys')->middleware('ConnectDbFromOrder');
 Route::post('get-delivery-fee', 'Api\TaskController@getDeliveryFee')->middleware('ConnectDbFromOrder');
 Route::post('task/create', 'Api\TaskController@CreateTask')->middleware('ConnectDbFromOrder');
+Route::post('agent/create', 'Api\DriverRegistrationController@storeAgent')->middleware('ConnectDbFromOrder');
 Route::get('get-agent-tags', 'Api\TaskController@getAgentTags')->middleware('ConnectDbFromOrder');
 Route::get('get-all-teams', 'Api\TaskController@getAllTeams')->middleware('ConnectDbFromOrder');
 Route::post('update-create-vendor-order', 'Api\AuthController@updateCreateVendorOrder')->middleware('ConnectDbFromOrder');

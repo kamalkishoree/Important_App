@@ -249,7 +249,20 @@ $task_type_array = ['Pickup', 'Drop-Off', 'Appointment'];
                         }
                     }
                 });
-            }         
+            }
+            
+            
+            // Use the DOM setInterval() function to change the offset of the symbol
+// at fixed intervals.
+function animateCircle(line) {
+  let count = 0;
+  window.setInterval(() => {
+    count = (count + 1) % 200;
+    const icons = line.get("icons");
+    icons[0].offset = count / 2 + "%";
+    line.set("icons", icons);
+  }, 20);
+}
 
 
 

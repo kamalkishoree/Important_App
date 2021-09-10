@@ -68,13 +68,8 @@ Route::domain('{domain}')->middleware(['subdomain'])->group(function() {
 
 		Route::get('/signin', function(){
 			return view('auth/login');
-		})->name('client-login');
-
-		
-	
-		Route::get('get-order-session','LoginController@getOrderSession')->name('setorders');
-
-		
+		})->name('client-login');	
+		Route::get('get-order-session','LoginController@getOrderSession')->name('setorders');		
 		});
 
 		Route::get('/demo/page', function(){
@@ -83,7 +78,6 @@ Route::domain('{domain}')->middleware(['subdomain'])->group(function() {
 
 		Route::post('/login/client', 'LoginController@clientLogin')->name('client.login');
 		Route::get('/wrong/url','LoginController@wrongurl')->name('wrong.client');
-
 		Route::group(['middleware' => 'database'], function()
 		{
 			Route::get('/order/tracking/{clientcode}/{order_id}','TrackingController@OrderTracking')->name('order.tracking');
