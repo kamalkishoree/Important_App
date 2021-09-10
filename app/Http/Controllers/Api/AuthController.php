@@ -24,6 +24,7 @@ use Twilio\Rest\Client as TwilioClient;
 use Faker\Generator as Faker;
 use Illuminate\Support\Facades\Storage;
 use Validator;
+use Config;
 
 class AuthController extends BaseController
 {
@@ -155,6 +156,29 @@ class AuthController extends BaseController
         $agent['task_proof']       = $taskProof;
         //$data['token_type'] = 'Bearer';
         $agent['access_token'] = $token;
+
+        
+        $schemaName = 'royodelivery_db';
+        $default = [
+            'driver' => env('DB_CONNECTION', 'mysql'),
+            'host' => env('DB_HOST'),
+            'port' => env('DB_PORT'),
+            'database' => $schemaName,
+            'username' => env('DB_USERNAME'),
+            'password' => env('DB_PASSWORD'),
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'strict' => false,
+            'engine' => null
+        ];
+        Config::set("database.connections.$schemaName", $default);
+        config(["database.connections.mysql.database" => $schemaName]);
+        DB::connection($schemaName)->table('rosters')->where(['driver_id'=>Auth::user()->id,'device_type'=>Auth::user()->device_type])->update(['device_token'=>$token]);
+        DB::disconnect($schemaName);
+
+
         return response()->json([
             'data' => $agent,
         ]);
@@ -172,7 +196,29 @@ class AuthController extends BaseController
         $blockToken->token = $header['authorization'][0];
         $blockToken->expired = '1';
         $blockToken->save();
+        
+        $schemaName = 'royodelivery_db';
+        $default = [
+            'driver' => env('DB_CONNECTION', 'mysql'),
+            'host' => env('DB_HOST'),
+            'port' => env('DB_PORT'),
+            'database' => $schemaName,
+            'username' => env('DB_USERNAME'),
+            'password' => env('DB_PASSWORD'),
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'strict' => false,
+            'engine' => null
+        ];
+        Config::set("database.connections.$schemaName", $default);
+        config(["database.connections.mysql.database" => $schemaName]);
+        DB::connection($schemaName)->table('rosters')->where(['driver_id'=>Auth::user()->id,'device_type'=>Auth::user()->device_type])->update(['device_token'=>'']);
+        DB::disconnect($schemaName);
+              
         Agent::where('id', Auth::user()->id)->update(['device_token'=>null,'device_type'=>null]);
+
         return response()->json([
             'message' => 'Successfully logged out'
         ]);
