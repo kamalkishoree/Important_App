@@ -61,8 +61,7 @@ class ActivityController extends BaseController
         $id     = Auth::user()->id;
 
         $all    = $request->all;
-        $tasks        = [];
-        $finalTasks   = [];
+        $tasks   = [];
         
         if ($all == 1) {
             $orders = Order::where('driver_id', $id)->where('status', 'assigned')->orderBy("order_time","ASC")->orderBy("id","ASC")->pluck('id')->toArray();
@@ -72,7 +71,8 @@ class ActivityController extends BaseController
        
 
         if (count($orders) > 0) {
-            $tasks = Task::whereIn('order_id', $orders)->where('task_status', '!=', 4)->Where('task_status', '!=', 5)->with(['location','tasktype','order.customer'])->orderBy("order_id", "DESC")->orderBy("id","ASC")->get();
+            $tasks = Task::whereIn('order_id', $orders)->where('task_status', '!=', 4)->Where('task_status', '!=', 5)->with(['location','tasktype','order.customer'])->orderBy("order_id", "DESC")->orderBy("id","ASC")
+            ->get();
             if (count($tasks) > 0) {
                 //sort according to task_order
                 $tasks = $tasks->toArray();
@@ -81,21 +81,12 @@ class ActivityController extends BaseController
                         return $a['task_order'] <=> $b['task_order'];
                     });
                 }
-
-                foreach($tasks as $task){
-                    $tz              = new Timezone();
-                    $client_timezone = $tz->timezone_name(Auth::user()->timezone);
-                    $order           = Carbon::createFromFormat('Y-m-d H:i:s', $task['assigned_time'], 'UTC');
-                    $order->setTimezone($client_timezone);
-                    $scheduletime = date('Y-m-d H:i:a', strtotime($order));
-                    $task['assigned_time'] = $scheduletime;
-                    $finalTasks[] = $task;
-                }
             }
         }
         
+   
         return response()->json([
-            'data' => $finalTasks,
+            'data' => $tasks,
         ], 200);
     }
 
