@@ -75,7 +75,6 @@ class DriverRegistrationController extends Controller
                     'file_type' => $request->filedata[$key]['file_type'],
                     'agent_id' => $request->filedata[$key]['id'],
                     'file_name' => $request->filedata[$key]['contents'],
-
                 ];
             }
             $key++;
