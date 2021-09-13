@@ -33,9 +33,12 @@ class ActivityController extends BaseController
      */
     public function updateDriverStatus(Request $request)
     {
-        $agent = Agent::findOrFail(Auth::user()->id);
+        $agent               = Agent::findOrFail(Auth::user()->id);
         $agent->is_available = ($agent->is_available == 1) ? 0 : 1;
-        // if driver is offline so not send push notification
+        $agent->device_token = ((!empty($request->device_token) && $agent->is_available == 1) ? $request->device_token : '');
+        $agent->update();
+
+        // if driver is offline so do not send push notification-------------start--code---
         $schemaName = 'royodelivery_db';
         $default = [
             'driver' => env('DB_CONNECTION', 'mysql'),
@@ -54,12 +57,12 @@ class ActivityController extends BaseController
         Config::set("database.connections.$schemaName", $default);
         config(["database.connections.mysql.database" => $schemaName]);
         if($agent->is_available == 1){
-            DB::connection($schemaName)->table('rosters')->where(['driver_id'=>Auth::user()->id,'device_type'=>Auth::user()->device_type])->update(['device_token'=>Auth::user()->access_token]);
+            DB::connection($schemaName)->table('rosters')->where(['driver_id'=>Auth::user()->id,'device_type'=>Auth::user()->device_type])->update(['device_token'=>$request->device_token]);
         }else{
             DB::connection($schemaName)->table('rosters')->where(['driver_id'=>Auth::user()->id,'device_type'=>Auth::user()->device_type])->update(['device_token'=>'']);
         }
         DB::disconnect($schemaName);
-        $agent->update();
+        // if driver is offline so do not send push notification---------------end--code---
 
         return response()->json([
             'message' => 'Status updated Successfully',
