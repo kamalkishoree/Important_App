@@ -116,11 +116,21 @@ class SendPushNotifications implements ShouldQueue
                 'title' => 'Test FCM',
                 'body' => 'This is a test of FCM',
             ])
-            ->notification([
-                'title' => 'Test FCM',
-                'body' => 'This is a test of FCM',
-            ])
             ->send();
+
+            // fcm()
+            // ->to($this->recipients) // $recipients must an array
+            // ->priority('high')
+            // ->timeToLive(0)
+            // ->data([
+            //     'title' => 'Test FCM',
+            //     'body' => 'This is a test of FCM',
+            // ])
+            // ->notification([
+            //     'title' => 'Test FCM',
+            //     'body' => 'This is a test of FCM',
+            // ])
+            // ->send();
         }
         
         //Log::info('sendinglog');
