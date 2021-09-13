@@ -55,8 +55,8 @@ class DriverRegistrationController extends Controller
                 'is_approved' => 1,
             ];
         
-        var_dump(count($request->files->all()));
-        $count = count($request->files->all());
+        //var_dump(count($request->filedata->all()));
+        $count = count($request->filedata->all());
         $key = 0;
         $files = [];
         while ($count--) {
@@ -121,7 +121,7 @@ class DriverRegistrationController extends Controller
         //     }
         // }
         $agent = Agent::create($data);
-        if ($agent->wasRecentlyCreated && $agent_docs->wasRecentlyCreated) {
+        if ($agent->wasRecentlyCreated) {
             return response()->json([
                 'status' => 'success',
                 'message' => 'Agent created Successfully!',
