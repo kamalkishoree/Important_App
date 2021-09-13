@@ -90,7 +90,7 @@
             
 
             <div class="taskrepet newAddHead" id="newadd">
-                <div class="copyin1 cloningDiv" id="copyin1">
+                <div class="copyin1 cloningDiv check-validation" id="copyin1">
                   <div class="requried allset">
                     <div class="row firstclone1">
                         
@@ -119,6 +119,9 @@
                             <span class="span1 delbtnhead" id="spancheck"><img style="filter: grayscale(.5);" src="{{asset('assets/images/ic_delete.png')}}"  alt=""></span>
                         </div>
                     </div>
+                    <input type="hidden" id="check-pickup-barcode" value="{{$task_proofs[0]->barcode_requried}}">
+                    <input type="hidden" id="check-drop-barcode" value="{{$task_proofs[1]->barcode_requried}}">
+                    <input type="hidden" id="check-appointment-barcode" value="{{$task_proofs[2]->barcode_requried}}">
                     <div class="row">
                         <div class="col-md-6">
                             <h4 class="header-title mb-2">Address</h4>
@@ -159,12 +162,16 @@
                                     </div>
                                     <div class="col-md-6">
                                         <div class="row no-gutters">
+                                        
                                             <div class="col-6 pr-1">
                                                 {!! Form::text('barcode[]', null, ['class' => 'form-control barcode','placeholder' => 'Task Barcode']) !!}  
                                             </div>
                                             <div class="col-6 pl-1">
                                                 {!! Form::text('quantity[]', null, ['class' => 'form-control quantity onlynumber','placeholder' => 'Quantity']) !!}
                                             </div>
+                                            <span class="span1 pickup-barcode-error">Task Barcode is required for pickup</span>
+                                            <span class="span1 drop-barcode-error">Task Barcode is required for drop</span>
+                                            <span class="span1 appointment-barcode-error">Task Barcode is required for appointment</span>
                                          </div>   
                                     </div>
                                     {{-- <div class="col-md-6">
