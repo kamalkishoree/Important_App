@@ -42,7 +42,7 @@
                                 <input class="form-control" placeholder="Select date" id="sort-date-agent" name="sort_date_agent" value="{{!empty($calenderSelectedDate) ? $calenderSelectedDate : ''}}" type="text" autocomplete="off">
                             </div>
                             <a href="javascript:void(0);" class="btn btn-blue" id="sort-agent">Go</a>
-                            <a href="javascript:void(0);" class="btn btn-success ml-2" id="sort-agent-all">ALL</a>
+                            <a href="javascript:void(0);" class="btn btn-success ml-2" id="sort-agent-all">Clear</a>
                         </div>
                         <div class="col-sm-4">
                             <div class="text-sm-left">
@@ -189,6 +189,7 @@
     $('#sort-agent-all').on('click',function (e) {
         var uri = window.location.href.toString();
         if (uri.indexOf("?") > 0) {
+            $('#sort-date-agent').val('');
             var clean_uri = uri.substring(0, uri.indexOf("?"));
             window.history.replaceState(null, null, clean_uri);
             location.reload();
