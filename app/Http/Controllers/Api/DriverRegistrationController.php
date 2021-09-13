@@ -42,15 +42,15 @@ class DriverRegistrationController extends Controller
             $getFileName = $path;
         }
         $data = [
-            'name' => json_decode($request->postdata['name']),
-            'type' =>  json_decode($request->postdata['type']),
-            'vehicle_type_id' =>  json_decode($request->postdata['vehicle_type_id']),
-            'make_model' =>  json_decode($request->postdata['make_model']),
-            'plate_number' =>  json_decode($request->postdata['plate_number']),
-            'phone_number' => '+' . $request->country_code .  json_decode($request->postdata['phone_number']),
-            'color' =>  json_decode($request->postdata['color']),
+            'name' => $request->name,
+            'type' => $request->type,
+            'vehicle_type_id' => $request->vehicle_type_id,
+            'make_model' => $request->make_model,
+            'plate_number' => $request->plate_number,
+            'phone_number' => '+' . $request->country_code . $request->phone_number,
+            'color' => $request->color,
             'profile_picture' => $getFileName != null ? $getFileName : 'assets/client_00000051/agents5fedb209f1eea.jpeg/Ec9WxFN1qAgIGdU2lCcatJN5F8UuFMyQvvb4Byar.jpg',
-            'uid' =>  json_decode($request->postdata['uid']),
+            'uid' => $request->uid,
             'is_approved' => 1,
         ];
         var_dump(count($request->files->all()));
