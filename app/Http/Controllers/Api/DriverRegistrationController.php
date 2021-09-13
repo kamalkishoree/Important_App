@@ -42,21 +42,21 @@ class DriverRegistrationController extends Controller
             $getFileName = $path;
         }
         $data = [
-            'name' => $request->postdata['name'],
-            'type' => $request->postdata['type'],
-            'vehicle_type_id' => $request->postdata['vehicle_type_id'],
-            'make_model' => $request->postdata['make_model'],
-            'plate_number' => $request->postdata['plate_number'],
-            'phone_number' => '+' . $request->country_code . $request->postdata['phone_number'],
-            'color' => $request->postdata['color'],
+            'name' => json_decode($request->postdata['name']),
+            'type' =>  json_decode($request->postdata['type']),
+            'vehicle_type_id' =>  json_decode($request->postdata['vehicle_type_id']),
+            'make_model' =>  json_decode($request->postdata['make_model']),
+            'plate_number' =>  json_decode($request->postdata['plate_number']),
+            'phone_number' => '+' . $request->country_code .  json_decode($request->postdata['phone_number']),
+            'color' =>  json_decode($request->postdata['color']),
             'profile_picture' => $getFileName != null ? $getFileName : 'assets/client_00000051/agents5fedb209f1eea.jpeg/Ec9WxFN1qAgIGdU2lCcatJN5F8UuFMyQvvb4Byar.jpg',
-            'uid' => $request->postdata['uid'],
+            'uid' =>  json_decode($request->postdata['uid']),
             'is_approved' => 1,
         ];
         var_dump(count($request->files->all()));
         $count = count($request->files->all());
         $key = 0;
-        $files=[];
+        $files = [];
         while ($count--) {
 
             if ($request->hasFile('uploaded_file')) {
@@ -80,7 +80,7 @@ class DriverRegistrationController extends Controller
             $key++;
             $agent_docs = AgentDocs::create($files[$key]);
         }
-       
+
         // foreach ($request->extra_keys as $key => $value) {
         //     $keys = array_keys($value);
         //     if ($value[$keys[0]] == "text") {
