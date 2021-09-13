@@ -41,18 +41,20 @@ class DriverRegistrationController extends Controller
             $path = Storage::disk('s3')->put($s3filePath, $file, 'public');
             $getFileName = $path;
         }
-        $data = [
-            'name' => json_decode($request->form_data['contents'])->name,
-            'type' => json_decode($request->form_data['contents'])->type,
-            'vehicle_type_id' => json_decode($request->form_data['contents'])->vehicle_type_id,
-            'make_model' => json_decode($request->form_data['contents'])->make_model,
-            'plate_number' => json_decode($request->form_data['contents'])->plate_number,
-            'phone_number' => '+' . $request->country_code . json_decode($request->form_data['contents'])->phone_number,
-            'color' => json_decode($request->form_data['contents'])->color,
-            'profile_picture' => $getFileName != null ? $getFileName : 'assets/client_00000051/agents5fedb209f1eea.jpeg/Ec9WxFN1qAgIGdU2lCcatJN5F8UuFMyQvvb4Byar.jpg',
-            'uid' => json_decode($request->form_data['contents'])->uid,
-            'is_approved' => 1,
-        ];
+        if ($request->form_data['contents'] != null) {
+            $data = [
+                'name' => $request->form_data['contents']->name,
+                'type' => $request->form_data['contents']->type,
+                'vehicle_type_id' => $request->form_data['contents']->vehicle_type_id,
+                'make_model' => $request->form_data['contents']->make_model,
+                'plate_number' => $request->form_data['contents']->plate_number,
+                'phone_number' => '+' . $request->country_code . $request->form_data['contents']->phone_number,
+                'color' => $request->form_data['contents']->color,
+                'profile_picture' => $getFileName != null ? $getFileName : 'assets/client_00000051/agents5fedb209f1eea.jpeg/Ec9WxFN1qAgIGdU2lCcatJN5F8UuFMyQvvb4Byar.jpg',
+                'uid' => $request->form_data['contents']->uid,
+                'is_approved' => 1,
+            ];
+        }
         var_dump(count($request->files->all()));
         $count = count($request->files->all());
         $key = 0;
