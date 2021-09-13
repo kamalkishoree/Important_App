@@ -1595,7 +1595,7 @@ class TaskController extends BaseController
         
     }
     /******************    ---- Save feedback on order  -----   ******************/
-    public function SaveFeedbackOnOrder(Request $request, $domain = '')
+    public function SaveFeedbackOnOrder(Request $request)
     {
         
             $order   = Order::where('id', $request->order_id)->first();
