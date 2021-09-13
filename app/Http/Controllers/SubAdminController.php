@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 use Crypt;
 use Illuminate\Support\Facades\DB;
+use App\Model\Countries;
 
 class SubAdminController extends Controller
 {
@@ -35,9 +36,15 @@ class SubAdminController extends Controller
      */
     public function create()
     {
+        $getAdminCurrentCountry = Countries::where('id', '=', Auth::user()->country_id)->get()->first();
+        if(!empty($getAdminCurrentCountry)){
+            $countryCode = $getAdminCurrentCountry->code;
+        }else{
+            $countryCode = '';
+        }
         $permissions = Permissions::all();
         $teams = Team::all();
-        return view('subadmin/form')->with(['permissions'=>$permissions,'teams'=>$teams]);
+        return view('subadmin/form')->with(['permissions'=>$permissions,'teams'=>$teams, 'selectedCountryCode' => $countryCode]);
     }
 
     /**

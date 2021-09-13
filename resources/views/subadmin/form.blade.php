@@ -88,12 +88,10 @@
                                             <input type="tel" name="phone_number" class="form-control xyz" value="{{old('full_number','+'.$subadmin->dial_code.$subadmin->phone_number)}}"id="phone_number" placeholder="9876543210" maxlength="14">
                                             <input type="hidden" id="countryData" name="countryData" value="us">
                                             <input type="hidden" id="dialCode" name="dialCode" value="{{ old('dialCode', $subadmin->dial_code)}}">
-                                        
                                             @else
                                             <input type="tel" name="phone_number" class="form-control xyz" value="{{old('full_number')}}"id="phone_number" placeholder="9876543210" maxlength="14">
                                             <input type="hidden" id="countryData" name="countryData" value="us">
                                             <input type="hidden" id="dialCode" name="dialCode" value="{{ old('dialCode')}}">
-                                        
                                             @endif
                                          </div>
                                         <span class="invalid-feedback" role="alert">
@@ -280,7 +278,7 @@
 
 
 <script>
-
+// var code = ;
 //for handling team access permission
 $('#team_access').on('change', function() {
         var value = this.value;
@@ -299,17 +297,20 @@ $('#team_access').on('change', function() {
         var phonevalue = $('.xyz').val();
         $("#countryCode").val(mobile_number.getSelectedCountryData().dialCode);
     });
+    
     phoneInput();
     function phoneInput() {
         var input = document.querySelector(".xyz");
-
         var mobile_number_input = document.querySelector(".xyz");
         mobile_number = window.intlTelInput(mobile_number_input, {
             separateDialCode: true,
             hiddenInput: "full_number",
             utilsScript: "{{ asset('telinput/js/utils.js') }}",
         });
-
+        window.intlTelInput(mobile_number_input, {
+            initialCountry: '{{$selectedCountryCode}}'
+        });
+        
     }
 
     $(document).delegate('.iti__country', 'click', function() {
