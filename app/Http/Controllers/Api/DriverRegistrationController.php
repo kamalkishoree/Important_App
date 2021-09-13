@@ -56,7 +56,7 @@ class DriverRegistrationController extends Controller
             ];
         
         //var_dump(count($request->filedata->all()));
-        $count = count($request->filedata->all());
+        $count = count($_FILES);
         $key = 0;
         $files = [];
         while ($count--) {
