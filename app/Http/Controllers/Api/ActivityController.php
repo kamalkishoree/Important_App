@@ -261,11 +261,14 @@ class ActivityController extends BaseController
     }
 
 
-    public function taskHistory()
+    public function taskHistory(Request $request)
     {
         $id    = Auth::user()->id;
-       
-        $orders = Order::where('driver_id', $id)->pluck('id')->toArray();
+        if(!empty($request->from_date) && !empty($request->to_date)){
+            $orders = Order::where('driver_id', $id)->whereBetween('order_time', [$request->from_date." 00:00:00",$request->to_date." 23:59:59"])->pluck('id')->toArray();
+        }else{
+            $orders = Order::where('driver_id', $id)->pluck('id')->toArray();
+        }
         if (isset($orders)) {
             $tasks = Task::whereIn('order_id', $orders)->whereIn('task_status', [4,5])->with(['location','tasktype','order.customer'])->orderBy('order_id', 'DESC')
              ->get(['id','order_id','dependent_task_id','task_type_id','location_id','appointment_duration','task_status','allocation_type','created_at','barcode']);
