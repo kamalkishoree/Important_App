@@ -41,7 +41,7 @@ class DriverRegistrationController extends Controller
             $path = Storage::disk('s3')->put($s3filePath, $file, 'public');
             $getFileName = $path;
         }
-        if ($request->form_data['contents'] != null) {
+        if ($request->form_data != null) {
             $data = [
                 'name' => $request->form_data['contents']->name,
                 'type' => $request->form_data['contents']->type,
