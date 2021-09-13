@@ -41,7 +41,7 @@ class DriverRegistrationController extends Controller
             $path = Storage::disk('s3')->put($s3filePath, $file, 'public');
             $getFileName = $path;
         }
-        if ($request->form_data != null) {
+       
             $data = [
                 'name' => $request->name,
                 'type' => $request->type,
@@ -54,7 +54,7 @@ class DriverRegistrationController extends Controller
                 'uid' => $request->uid,
                 'is_approved' => 1,
             ];
-        }
+        
         var_dump(count($request->files->all()));
         $count = count($request->files->all());
         $key = 0;
