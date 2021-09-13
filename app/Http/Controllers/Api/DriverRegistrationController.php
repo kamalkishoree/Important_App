@@ -43,15 +43,15 @@ class DriverRegistrationController extends Controller
         }
         if ($request->form_data != null) {
             $data = [
-                'name' => $request->form_data['contents']->name,
-                'type' => $request->form_data['contents']->type,
-                'vehicle_type_id' => $request->form_data['contents']->vehicle_type_id,
-                'make_model' => $request->form_data['contents']->make_model,
-                'plate_number' => $request->form_data['contents']->plate_number,
-                'phone_number' => '+' . $request->country_code . $request->form_data['contents']->phone_number,
-                'color' => $request->form_data['contents']->color,
+                'name' => $request->name,
+                'type' => $request->type,
+                'vehicle_type_id' => $request->vehicle_type_id,
+                'make_model' => $request->make_model,
+                'plate_number' => $request->plate_number,
+                'phone_number' => '+' . $request->country_code . $request->phone_number,
+                'color' => $request->color,
                 'profile_picture' => $getFileName != null ? $getFileName : 'assets/client_00000051/agents5fedb209f1eea.jpeg/Ec9WxFN1qAgIGdU2lCcatJN5F8UuFMyQvvb4Byar.jpg',
-                'uid' => $request->form_data['contents']->uid,
+                'uid' => $request->uid,
                 'is_approved' => 1,
             ];
         }
