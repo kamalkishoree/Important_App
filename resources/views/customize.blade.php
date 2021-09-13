@@ -381,7 +381,7 @@
 
                                         <td>
                                             <div class="custom-control custom-switch">
-                                                <input type="checkbox" class="custom-control-input event_type" id="customSwitch_{{$key.''.$counter.'8'}}" name="barcode_requried_{{$key+1}}" {{isset($taskproof->barcode_requried) && $taskproof->barcode_requried == 1 ? 'checked':''}}>
+                                                <input type="checkbox" class="custom-control-input event_type barcode-requried-check" id="customSwitch_{{$key.''.$counter.'8'}}" name="barcode_requried_{{$key+1}}" {{isset($taskproof->barcode_requried) && $taskproof->barcode_requried == 1 ? 'checked':''}}>
                                                 <label class="custom-control-label" for="customSwitch_{{$key.''.$counter.'8'}}"></label>
                                             </div>
                                         </td>
