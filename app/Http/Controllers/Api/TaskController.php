@@ -1597,7 +1597,8 @@ class TaskController extends BaseController
     /******************    ---- Save feedback on order  -----   ******************/
     public function SaveFeedbackOnOrder(Request $request)
     {
-        
+            Log::info($request->order_id);
+            Log::info(ClientPreference::first());
             $order   = Order::where('id', $request->order_id)->first();
 
             if (isset($order->id)) {
