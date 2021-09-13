@@ -23,9 +23,12 @@ class AgentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         $agents = Agent::orderBy('id', 'DESC');
+        if(!empty($request->date)){
+            $agents->whereBetween('created_at', [$request->date." 00:00:00",$request->date." 23:59:59"]);
+        }
         if (Auth::user()->is_superadmin == 0 && Auth::user()->all_team_access == 0) {
             $agents = $agents->whereHas('team.permissionToManager', function ($query) {
                 $query->where('sub_admin_id', Auth::user()->id);
@@ -46,10 +49,10 @@ class AgentController extends Controller
             });
         }
         
-        $teams = $teams->get();
-        
-        $tags   = TagsForTeam::all();
-        return view('agent.index')->with(['agents' => $agents,'teams'=>$teams, 'tags' => $tags, 'showTag' => implode(',', $tag)]);
+        $teams        = $teams->get();
+        $selectedDate = !empty($request->date) ? $request->date : '';
+        $tags         = TagsForTeam::all();
+        return view('agent.index')->with(['agents' => $agents,'teams'=>$teams, 'tags' => $tags, 'calenderSelectedDate'=>$selectedDate, 'showTag' => implode(',', $tag)]);
     }
 
     /**

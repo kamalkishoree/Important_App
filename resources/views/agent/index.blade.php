@@ -37,10 +37,17 @@
             <div class="card">
                 <div class="card-body">
                     <div class="row mb-2">
-                        <div class="col-sm-8">
+                        <div class="col-sm-4 text-left btn-auto d-flex align-items justify-content">
+                            <div class="form-group mb-0 mr-2">
+                                <input class="form-control" placeholder="Select date" id="sort-date-agent" name="sort_date_agent" value="{{!empty($calenderSelectedDate) ? $calenderSelectedDate : ''}}" type="text" autocomplete="off">
+                            </div>
+                            <a href="javascript:void(0);" class="btn btn-blue" id="sort-agent">Go</a>
+                            <a href="javascript:void(0);" class="btn btn-success ml-2" id="sort-agent-all">ALL</a>
+                        </div>
+                        <div class="col-sm-4">
                             <div class="text-sm-left">
                                 @if (\Session::has('success'))
-                                    <div class="alert alert-success">
+                                    <div class="alert alert-success"> 
                                         <span>{!! \Session::get('success') !!}</span>
                                     </div>
                                 @endif
@@ -177,7 +184,24 @@
 @include('agent.pagescript')
 <script>
 
+    $('#sort-date-agent').flatpickr();
 
+    $('#sort-agent-all').on('click',function (e) {
+        var uri = window.location.href.toString();
+        if (uri.indexOf("?") > 0) {
+            var clean_uri = uri.substring(0, uri.indexOf("?"));
+            window.history.replaceState(null, null, clean_uri);
+            location.reload();
+        }
+    });
+    $('#sort-agent').on('click',function (e) {
+        var sortDateAgent = $('#sort-date-agent').val();
+        if(sortDateAgent != ''){
+            var perm = "?date=" + sortDateAgent;
+            window.history.replaceState(null, null, perm);
+            location.reload();
+        }
+    });
 
     $('#selectAgent').on('change',function (e) {
         
