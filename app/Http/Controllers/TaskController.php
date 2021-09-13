@@ -1877,9 +1877,9 @@ class TaskController extends Controller
             fcm()
             ->to($new) // $recipients must an array
             ->data($notification_data)
-            // ->notification([
-            //     'sound' =>  'default',
-            // ])
+            ->notification([
+                'sound' =>  'default',
+            ])
             ->send();
 
             Log::info('sendsilentnotification');
