@@ -53,43 +53,72 @@ class DriverRegistrationController extends Controller
             'uid' => $request->uid,
             'is_approved' => 1,
         ];
-        foreach ($request->extra_keys as $key => $value) {
-            $keys = array_keys($value);
-            if ($value[$keys[0]] == "text") {
+        var_dump(count($request->files->all()));
+        $count = count($request->files->all());
+        $key = 0;
+        $files=[];
+        while ($count--) {
+
+            if ($request->hasFile('uploaded_file')) {
+                $file = $request->file($request->filedata[$key]['contents']);
+                $file_name = uniqid() . '.' . $file->getClientOriginalExtension();
+                $s3filePath = '/assets/' . $folder . '/agents' . $file_name;
+                $path = Storage::disk('s3')->put($s3filePath, $file, 'public');
                 $files[$key] = [
-                    'file_type' => $value[$keys[0]],
-                    'agent_id' => $value[$keys[1]],
-                    'file_name' => $value[$keys[2]],
+                    'file_type' => $request->filedata[$key]['file_type'],
+                    'agent_id' => $request->filedata[$key]['id'],
+                    'file_name' => $path,
+
                 ];
-                $agent_docs = AgentDocs::create($files[$key]);
             } else {
-                // print_r($value[$keys[2]]->getClientOriginalName());
-                // dd();
-                $header = $request->header();
-                if (array_key_exists("shortcode", $header)) {
-                    $shortcode =  $header['shortcode'][0];
-                }
-                $folder = str_pad($shortcode, 8, '0', STR_PAD_LEFT);
-                $folder = 'client_' . $folder;
                 $files[$key] = [
-                    'file_type' => $value[$keys[0]],
-                    'agent_id' => $value[$keys[1]],
+                    'file_type' => $request->filedata[$key]['file_type'],
+                    'agent_id' => $request->filedata[$key]['id'],
+                    'file_name' => $request->filedata[$key]['contents'],
+
                 ];
-                if (array_key_exists(2, $keys)) {
-                    if ($request->hasFile($value[$keys[2]])) {
-                        $file = $request->file($value[$keys[2]]);
-                        $file_name = uniqid() . '.' . $file->getClientOriginalExtension();
-                        $s3filePath = '/assets/' . $folder . '/agents' . $file_name;
-                        $path = Storage::disk('s3')->put($s3filePath, $file, 'public');
-                        $getFileName = $path;
-                        $files[$key] = [
-                            'file_name' =>  $path,
-                        ];
-                    }
-                }
-                $agent_docs = AgentDocs::create($files[$key]);
             }
+            $key++;
+            $agent_docs = AgentDocs::create($files[$key]);
         }
+       
+        // foreach ($request->extra_keys as $key => $value) {
+        //     $keys = array_keys($value);
+        //     if ($value[$keys[0]] == "text") {
+        //         $files[$key] = [
+        //             'file_type' => $value[$keys[0]],
+        //             'agent_id' => $value[$keys[1]],
+        //             'file_name' => $value[$keys[2]],
+        //         ];
+        //         $agent_docs = AgentDocs::create($files[$key]);
+        //     } else {
+        //         // print_r($value[$keys[2]]->getClientOriginalName());
+        //         // dd();
+        //         $header = $request->header();
+        //         if (array_key_exists("shortcode", $header)) {
+        //             $shortcode =  $header['shortcode'][0];
+        //         }
+        //         $folder = str_pad($shortcode, 8, '0', STR_PAD_LEFT);
+        //         $folder = 'client_' . $folder;
+        //         $files[$key] = [
+        //             'file_type' => $value[$keys[0]],
+        //             'agent_id' => $value[$keys[1]],
+        //         ];
+        //         if (array_key_exists(2, $keys)) {
+        //             if ($request->hasFile($value[$keys[2]])) {
+        //                 $file = $request->file($value[$keys[2]]);
+        //                 $file_name = uniqid() . '.' . $file->getClientOriginalExtension();
+        //                 $s3filePath = '/assets/' . $folder . '/agents' . $file_name;
+        //                 $path = Storage::disk('s3')->put($s3filePath, $file, 'public');
+        //                 $getFileName = $path;
+        //                 $files[$key] = [
+        //                     'file_name' =>  $path,
+        //                 ];
+        //             }
+        //         }
+        //         $agent_docs = AgentDocs::create($files[$key]);
+        //     }
+        // }
         $agent = Agent::create($data);
         if ($agent->wasRecentlyCreated && $agent_docs->wasRecentlyCreated) {
             return response()->json([
