@@ -42,18 +42,18 @@ class DriverRegistrationController extends Controller
             $getFileName = $path;
         }
         $data = [
-            'name' => $request->name,
-            'type' => $request->type,
-            'vehicle_type_id' => $request->vehicle_type_id,
-            'make_model' => $request->make_model,
-            'plate_number' => $request->plate_number,
-            'phone_number' => '+' . $request->country_code . $request->phone_number,
-            'color' => $request->color,
+            'name' => $request->data['name'],
+            'type' => $request->data['type'],
+            'vehicle_type_id' => $request->data['vehicle_type_id'],
+            'make_model' => $request->data['make_model'],
+            'plate_number' => $request->data['plate_number'],
+            'phone_number' => '+' . $request->country_code . $request->data['phone_number'],
+            'color' => $request->data['color'],
             'profile_picture' => $getFileName != null ? $getFileName : 'assets/client_00000051/agents5fedb209f1eea.jpeg/Ec9WxFN1qAgIGdU2lCcatJN5F8UuFMyQvvb4Byar.jpg',
-            'uid' => $request->uid,
+            'uid' => $request->data['uid'],
             'is_approved' => 1,
         ];
-        foreach (json_decode($request->extra_keys) as $key => $value) {
+        foreach ($request->data['extra_keys'] as $key => $value) {
             $keys = array_keys($value);
             if ($value[$keys[0]] == "text") {
                 $files[$key] = [
