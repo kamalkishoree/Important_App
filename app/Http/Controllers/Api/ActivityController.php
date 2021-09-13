@@ -269,12 +269,19 @@ class ActivityController extends BaseController
         if (isset($orders)) {
             $tasks = Task::whereIn('order_id', $orders)->whereIn('task_status', [4,5])->with(['location','tasktype','order.customer'])->orderBy('order_id', 'DESC')
              ->get(['id','order_id','dependent_task_id','task_type_id','location_id','appointment_duration','task_status','allocation_type','created_at','barcode']);
+
+            $totalCashCollected = 0;
+            foreach($tasks as $task){
+                if(!empty($task->order->cash_to_be_collected)){
+                    $totalCashCollected += $task->order->cash_to_be_collected;
+                }
+            }
         } else {
             $task = [];
         }
 
         return response()->json([
-            'data' => $tasks,
+            'data' => array('tasks' =>$tasks, 'totalCashCollected'=>$totalCashCollected),
         ], 200);
     }
 }
