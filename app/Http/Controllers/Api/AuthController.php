@@ -175,7 +175,7 @@ class AuthController extends BaseController
         ];
         Config::set("database.connections.$schemaName", $default);
         config(["database.connections.mysql.database" => $schemaName]);
-        DB::connection($schemaName)->table('rosters')->where(['driver_id'=>Auth::user()->id,'device_type'=>Auth::user()->device_type])->update(['device_token'=>$token]);
+        DB::connection($schemaName)->table('rosters')->where('created_at', '<', date('Y-m-d H:i:s'))->where(['driver_id'=>Auth::user()->id,'device_type'=>Auth::user()->device_type])->delete();
         DB::disconnect($schemaName);
 
 
@@ -214,7 +214,7 @@ class AuthController extends BaseController
         ];
         Config::set("database.connections.$schemaName", $default);
         config(["database.connections.mysql.database" => $schemaName]);
-        DB::connection($schemaName)->table('rosters')->where(['driver_id'=>Auth::user()->id,'device_type'=>Auth::user()->device_type])->update(['device_token'=>'']);
+        DB::connection($schemaName)->table('rosters')->where(['driver_id'=>Auth::user()->id,'device_type'=>Auth::user()->device_type])->delete();
         DB::disconnect($schemaName);
               
         Agent::where('id', Auth::user()->id)->update(['device_token'=>null,'device_type'=>null]);
