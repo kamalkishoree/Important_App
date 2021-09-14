@@ -305,15 +305,9 @@ $('#team_access').on('change', function() {
         mobile_number = window.intlTelInput(mobile_number_input, {
             separateDialCode: true,
             hiddenInput: "full_number",
-            utilsScript: "{{ asset('telinput/js/utils.js') }}",
-        });
-
-        $('.iti__selected-flag').hide();
-        window.intlTelInput(mobile_number_input, {
             initialCountry: '{{$selectedCountryCode}}',
-            separateDialCode: true,
-        });
-        
+            utilsScript: "{{ asset('telinput/js/utils.js') }}",
+        });        
     }
 
     $(document).delegate('.iti__country', 'click', function() {
