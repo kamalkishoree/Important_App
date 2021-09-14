@@ -28,6 +28,12 @@
             utilsScript: "{{ asset('telinput/js/utils.js') }}",
         });
 
+        $('.iti__selected-flag').hide();
+        window.intlTelInput(mobile_number_input, {
+            initialCountry: '{{$selectedCountryCode}}',
+            separateDialCode: true,
+        });
+
     }
 
     $('.openModal').click(function() {
@@ -36,7 +42,7 @@
             keyboard: false
         });
         makeTag();
-        //$(''.xyz).intlTelInput()        
+             
         phoneInput();
     });
 
