@@ -56,43 +56,38 @@ class DriverRegistrationController extends Controller
             'is_approved' => 1,
         ];
         $count = count(collect($request->uploaded_file));
-        $key = 0;
         $files = [];
-        while ($count--) {
+        foreach ($request->uploaded_file as $key => $f) {
             if ($request->hasFile('uploaded_file')) {
                 $file = $request->file('uploaded_file');
-                foreach ($file as $f) {
-                    $header = $request->header();
-                    if (array_key_exists("shortcode", $header)) {
-                        $shortcode =  $header['shortcode'][0];
-                    }
-                    $keys = array_keys($f);
-                    $folder = str_pad($shortcode, 8, '0', STR_PAD_LEFT);
-                    $folder = 'client_' . $folder;
-                    $file_name = uniqid() . '.' . $f->getClientOriginalExtension();
-                    $s3filePath = '/assets/' . $folder . '/agents/' . $file_name;
-                    $path = Storage::disk('s3')->put($s3filePath, $f, 'public');
-                    $files[$key] = [
-                        'file_type' => $f[$keys[0]],
-                        'agent_id' => $f[$keys[1]],
-                        'file_name' => $path,
-
-                    ];
+                $header = $request->header();
+                if (array_key_exists("shortcode", $header)) {
+                    $shortcode =  $header['shortcode'][0];
                 }
+                $keys = array_keys($f);
+                $folder = str_pad($shortcode, 8, '0', STR_PAD_LEFT);
+                $folder = 'client_' . $folder;
+                $file_name = uniqid() . '.' . $f->getClientOriginalExtension();
+                $s3filePath = '/assets/' . $folder . '/agents/' . $file_name;
+                $path = Storage::disk('s3')->put($s3filePath, $f, 'public');
+                $files[$key] = [
+                    'file_type' => $f[$keys[0]],
+                    'agent_id' => $f[$keys[1]],
+                    'file_name' => $path,
+
+                ];
             } else {
                 $file = $request->uploaded_file;
-                foreach ($file as $f) {
-                    $keys = array_keys($f);
-                    $files[$key] = [
-                        'file_type' => $f[$keys[0]],
-                        'agent_id' => $f[$keys[1]],
-                        'file_name' => $f[$keys[2]],
-                    ];
-                }
+
+                $keys = array_keys($f);
+                $files[$key] = [
+                    'file_type' => $f[$keys[0]],
+                    'agent_id' => $f[$keys[1]],
+                    'file_name' => $f[$keys[2]],
+                ];
             }
 
             $agent_docs = AgentDocs::create($files[$key]);
-            $key++;
         }
 
         // foreach ($request->extra_keys as $key => $value) {
