@@ -16,6 +16,7 @@ class DriverRegistrationController extends Controller
     //
     public function storeAgent(Request $request)
     {
+        
         //$validator = Validator::make($request->all());
         $getFileName = null;
         // $newtag = explode(",", $request->tags);
@@ -61,22 +62,22 @@ class DriverRegistrationController extends Controller
         $files = [];
         while ($count--) {
 
-            if ($request->hasFile('uploaded_file')) {
-                $file = $request->file($request->filedata[$key]['contents']);
+            if ($request->hasFile($request->uploaded_file[$key]['contents'])) {
+                $file = $request->file($request->uploaded_file[$key]['contents']);
                 $file_name = uniqid() . '.' . $file->getClientOriginalExtension();
                 $s3filePath = '/assets/' . $folder . '/agents' . $file_name;
                 $path = Storage::disk('s3')->put($s3filePath, $file, 'public');
                 $files[$key] = [
-                    'file_type' => $request->filedata[$key]['file_type'],
-                    'agent_id' => $request->filedata[$key]['id'],
+                    'file_type' => $request->uploaded_file[$key]['file_type'],
+                    'agent_id' => $request->uploaded_file[$key]['id'],
                     'file_name' => $path,
 
                 ];
             } else {
                 $files[$key] = [
-                    'file_type' => $request->filedata[$key]['file_type'],
-                    'agent_id' => $request->filedata[$key]['id'],
-                    'file_name' => $request->filedata[$key]['contents'],
+                    'file_type' => $request->uploaded_file[$key]['file_type'],
+                    'agent_id' => $request->uploaded_file[$key]['id'],
+                    'file_name' => $request->uploaded_file[$key]['contents'],
                 ];
             }
             $key++;
