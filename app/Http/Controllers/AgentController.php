@@ -16,6 +16,8 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 use Exception;
+use App\Model\Countries;
+
 class AgentController extends Controller
 {
     /**
@@ -52,7 +54,15 @@ class AgentController extends Controller
         $teams        = $teams->get();
         $selectedDate = !empty($request->date) ? $request->date : '';
         $tags         = TagsForTeam::all();
-        return view('agent.index')->with(['agents' => $agents,'teams'=>$teams, 'tags' => $tags, 'calenderSelectedDate'=>$selectedDate, 'showTag' => implode(',', $tag)]);
+
+        $getAdminCurrentCountry = Countries::where('id', '=', Auth::user()->country_id)->get()->first();
+        if(!empty($getAdminCurrentCountry)){
+            $countryCode = $getAdminCurrentCountry->code;
+        }else{
+            $countryCode = '';
+        }
+
+        return view('agent.index')->with(['agents' => $agents,'teams'=>$teams, 'tags' => $tags, 'selectedCountryCode' => $countryCode, 'calenderSelectedDate'=>$selectedDate, 'showTag' => implode(',', $tag)]);
     }
 
     /**
