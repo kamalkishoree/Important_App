@@ -60,19 +60,18 @@ class DriverRegistrationController extends Controller
         $files = [];
         while ($count--) {
             if ($request->hasFile('uploaded_file')) {
-              
-                foreach ($request->uploaded_file as $file) {
-                    $file = $request->file('uploaded_file');
+                $file = $request->file('uploaded_file');
+                foreach ($file as $f) {
                     $header = $request->header();
                     if (array_key_exists("shortcode", $header)) {
                         $shortcode =  $header['shortcode'][0];
                     }
                     $folder = str_pad($shortcode, 8, '0', STR_PAD_LEFT);
                     $folder = 'client_' . $folder;
-                    $file_name = uniqid() . '.' . $file->getClientOriginalExtension();
+                    $file_name = uniqid() . '.' . $f->getClientOriginalExtension();
                     $s3filePath = '/assets/' . $folder . '/agents/' . $file_name;
-                    $path = Storage::disk('s3')->put($s3filePath, $file, 'public');
-                    $f=array($file);
+                    $path = Storage::disk('s3')->put($s3filePath, $f, 'public');
+                    $f=array($f);
                     $files[$key] = [
                         'file_type' => $f['file_type'],
                         'agent_id' => $f['id'],
