@@ -73,8 +73,8 @@ class DriverRegistrationController extends Controller
                     $path = Storage::disk('s3')->put($s3filePath, $f, 'public');
                     $f=array($f);
                     $files[$key] = [
-                        'file_type' => $f['file_type'],
-                        'agent_id' => $f['id'],
+                        'file_type' => $f[0],
+                        'agent_id' => $f[1],
                         'file_name' => $path,
 
                     ];
