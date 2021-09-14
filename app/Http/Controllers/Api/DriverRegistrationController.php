@@ -57,9 +57,10 @@ class DriverRegistrationController extends Controller
             ];
         
         //var_dump(count($request->filedata->all()));
-    
+        $count = count(collect($request->uploaded_file));
+        $key = 0;
         $files = [];
-        foreach ($request->uploaded_file as $key=>$value) {
+        while ($count--) {
 
             if ($request->hasFile($request->uploaded_file[$key]['contents'])) {
                 $file = $request->file($request->uploaded_file[$key]['contents']);
@@ -79,7 +80,7 @@ class DriverRegistrationController extends Controller
                     'file_name' => $request->uploaded_file[$key]['contents'],
                 ];
             }
-         
+            $key++;
             $agent_docs = AgentDocs::create($files[$key]);
         }
 
