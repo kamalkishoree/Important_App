@@ -64,7 +64,7 @@ class DriverRegistrationController extends Controller
                 if (array_key_exists("shortcode", $header)) {
                     $shortcode =  $header['shortcode'][0];
                 }
-                $keys = array_keys($f);
+                $keys = array_keys(array($f));
                 $folder = str_pad($shortcode, 8, '0', STR_PAD_LEFT);
                 $folder = 'client_' . $folder;
                 $file_name = uniqid() . '.' . $f->getClientOriginalExtension();
@@ -77,9 +77,8 @@ class DriverRegistrationController extends Controller
 
                 ];
             } else {
+                $keys = array_keys(array($f));
                 $file = $request->uploaded_file;
-
-                $keys = array_keys($f);
                 $files[$key] = [
                     'file_type' => $f[$keys[0]],
                     'agent_id' => $f[$keys[1]],
