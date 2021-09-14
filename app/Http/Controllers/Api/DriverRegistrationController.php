@@ -61,7 +61,7 @@ class DriverRegistrationController extends Controller
         while ($count--) {
 
             if ($request->hasFile('uploaded_file')) {
-                $file = $request->file($request->uploaded_file[$key]['contents']);
+                $file = $request->file('uploaded_file');
                 $file_name = uniqid() . '.' . $file->getClientOriginalExtension();
                 $s3filePath = '/assets/' . $folder . '/agents' . $file_name;
                 $path = Storage::disk('s3')->put($s3filePath, $file, 'public');
