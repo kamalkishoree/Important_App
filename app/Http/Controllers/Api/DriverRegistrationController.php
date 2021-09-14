@@ -16,7 +16,7 @@ class DriverRegistrationController extends Controller
     //
     public function storeAgent(Request $request)
     {
-        
+
         //$validator = Validator::make($request->all());
         $getFileName = null;
         // $newtag = explode(",", $request->tags);
@@ -42,20 +42,20 @@ class DriverRegistrationController extends Controller
             $path = Storage::disk('s3')->put($s3filePath, $file, 'public');
             $getFileName = $path;
         }
-       
-            $data = [
-                'name' => $request->name,
-                'type' => $request->type,
-                'vehicle_type_id' => $request->vehicle_type_id,
-                'make_model' => $request->make_model,
-                'plate_number' => $request->plate_number,
-                'phone_number' => '+' . $request->country_code . $request->phone_number,
-                'color' => $request->color,
-                'profile_picture' => $getFileName != null ? $getFileName : 'assets/client_00000051/agents5fedb209f1eea.jpeg/Ec9WxFN1qAgIGdU2lCcatJN5F8UuFMyQvvb4Byar.jpg',
-                'uid' => $request->uid,
-                'is_approved' => 1,
-            ];
-        
+
+        $data = [
+            'name' => $request->name,
+            'type' => $request->type,
+            'vehicle_type_id' => $request->vehicle_type_id,
+            'make_model' => $request->make_model,
+            'plate_number' => $request->plate_number,
+            'phone_number' => '+' . $request->country_code . $request->phone_number,
+            'color' => $request->color,
+            'profile_picture' => $getFileName != null ? $getFileName : 'assets/client_00000051/agents5fedb209f1eea.jpeg/Ec9WxFN1qAgIGdU2lCcatJN5F8UuFMyQvvb4Byar.jpg',
+            'uid' => $request->uid,
+            'is_approved' => 1,
+        ];
+
         //var_dump(count($request->filedata->all()));
         $count = count(collect($request->uploaded_file));
         $key = 0;
@@ -80,8 +80,9 @@ class DriverRegistrationController extends Controller
                     'file_name' => $request->uploaded_file[$key]['contents'],
                 ];
             }
-            $key++;
+
             $agent_docs = AgentDocs::create($files[$key]);
+            $key++;
         }
 
         // foreach ($request->extra_keys as $key => $value) {
