@@ -34,8 +34,6 @@ class DriverRegistrationController extends Controller
             }
             $folder = str_pad($shortcode, 8, '0', STR_PAD_LEFT);
             $folder = 'client_' . $folder;
-            $folder = str_pad($shortcode, 8, '0', STR_PAD_LEFT);
-            $folder = 'client_' . $folder;
             $file = $request->file('upload_photo');
             $file_name = uniqid() . '.' .  $file->getClientOriginalExtension();
             $s3filePath = '/assets/' . $folder . '/agents' . $file_name;
