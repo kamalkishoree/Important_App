@@ -42,7 +42,6 @@ class DriverRegistrationController extends Controller
             $path = Storage::disk('s3')->put($s3filePath, $file, 'public');
             $getFileName = $path;
         }
-
         $data = [
             'name' => $request->name,
             'type' => $request->type,
@@ -75,7 +74,6 @@ class DriverRegistrationController extends Controller
                         'file_type' => $f->file_type,
                         'agent_id' => $f->id,
                         'file_name' => $path,
-
                     ];
                 }
             } else {
@@ -85,7 +83,6 @@ class DriverRegistrationController extends Controller
                     'file_name' => $request->uploaded_file[$key]->contents,
                 ];
             }
-
             $agent_docs = AgentDocs::create($files[$key]);
             $key++;
         }
