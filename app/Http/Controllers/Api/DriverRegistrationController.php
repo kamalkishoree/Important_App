@@ -55,8 +55,6 @@ class DriverRegistrationController extends Controller
             'uid' => $request->uid,
             'is_approved' => 1,
         ];
-
-        //var_dump(count($request->filedata->all()));
         $count = count(collect($request->uploaded_file));
         $key = 0;
         $files = [];
@@ -110,7 +108,7 @@ class DriverRegistrationController extends Controller
         //         if (array_key_exists(2, $keys)) {
         //             if ($request->hasFile($value[$keys[2]])) {
         //                 $file = $request->file($value[$keys[2]]);
-        //                 $file_name = uniqid() . '.' . $file->getClientOriginalExtension();
+        //                 $file_name = uniqid() . '.' . $file->geGtClientOriginalExtension();
         //                 $s3filePath = '/assets/' . $folder . '/agents' . $file_name;
         //                 $path = Storage::disk('s3')->put($s3filePath, $file, 'public');
         //                 $getFileName = $path;
