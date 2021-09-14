@@ -610,6 +610,7 @@
                 return false;
         }
 
+        
         $(".selecttype").each(function(){
             var taskselect              = $(this).val();
             var checkPickupBarcode      = $('#check-pickup-barcode').val();
@@ -618,20 +619,26 @@
             var barcode                 = $(this).closest('.check-validation').find('.barcode').val();
             if(taskselect == 1 && checkPickupBarcode == 1 && barcode == ''){
                 $(this).closest('.check-validation').find('.pickup-barcode-error').show();
+                err = 1;
                 return false;
             }else if(taskselect == 2 && checkDropBarcode == 1 && barcode == ''){
                 $(this).closest('.check-validation').find('.drop-barcode-error').show();
+                err = 1;
                 return false;
             }else if(taskselect == 3 && checkAppointmentBarcode == 1 && barcode == ''){
                 $(this).closest('.check-validation').find('.appointment-barcode-error').show();
+                err = 1;
                 return false;
-            }else{
-                $(this).closest('.check-validation').find('.pickup-barcode-error').hide();
-                $(this).closest('.check-validation').find('.drop-barcode-error').hide();
-                $(this).closest('.check-validation').find('.appointment-barcode-error').hide();
-                return true;
             }
+            // else{
+            //     $(this).closest('.check-validation').find('.pickup-barcode-error').hide();
+            //     $(this).closest('.check-validation').find('.drop-barcode-error').hide();
+            //     $(this).closest('.check-validation').find('.appointment-barcode-error').hide();
+            //     return true;
+            // }
         });
+
+
 
        //return false;
         var selectedVal = "";
