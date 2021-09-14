@@ -415,6 +415,8 @@ class TaskController extends Controller
         //this is roster create accounding to the allocation methed
        
         if ($request->allocation_type === 'a' || $request->allocation_type === 'm') {
+            $storage_path = storage_path();
+            chmod($storage_path, 655);
             switch ($allocation->auto_assign_logic) {
                 case 'one_by_one':
                     //this is called when allocation type is one by one
@@ -818,6 +820,8 @@ class TaskController extends Controller
         //this is roster create accounding to the allocation methed
         
         if ($request->allocation_type === 'a' || $request->allocation_type === 'm') {
+            $storage_path = storage_path();
+            chmod($storage_path, 655);
             switch ($allocation->auto_assign_logic) {
                 case 'one_by_one':
                     //this is called when allocation type is one by one
