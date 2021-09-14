@@ -71,7 +71,7 @@ class DriverRegistrationController extends Controller
                     $file_name = uniqid() . '.' . $f->getClientOriginalExtension();
                     $s3filePath = '/assets/' . $folder . '/agents/' . $file_name;
                     $path = Storage::disk('s3')->put($s3filePath, $f, 'public');
-                    //$f=array($f);
+                    $f=array($f);
                     $files[$key] = [
                         'file_type' => $f['file_type'],
                         'agent_id' => $f['id'],
@@ -81,7 +81,7 @@ class DriverRegistrationController extends Controller
             } else {
                 $file = $request->uploaded_file;
                 foreach ($file as $f) {
-                    //$f=array($f);
+                    $f=array($f);
                     $files[$key] = [
                         'file_type' => $f['file_type'],
                         'agent_id' => $f['id'],
