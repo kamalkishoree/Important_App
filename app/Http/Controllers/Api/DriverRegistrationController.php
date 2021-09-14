@@ -65,6 +65,7 @@ class DriverRegistrationController extends Controller
                     $shortcode =  $header['shortcode'][0];
                 }
                 $keys = array_keys(array($f));
+                dd($keys);
                 $folder = str_pad($shortcode, 8, '0', STR_PAD_LEFT);
                 $folder = 'client_' . $folder;
                 $file_name = uniqid() . '.' . $f->getClientOriginalExtension();
