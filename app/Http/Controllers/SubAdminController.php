@@ -146,8 +146,16 @@ class SubAdminController extends Controller
         $teams = Team::all();
         $user_permissions = SubAdminPermissions::where('sub_admin_id', $id)->get();
         $team_permissions = SubAdminTeamPermissions::where('sub_admin_id', $id)->get();
+
+        $getAdminCurrentCountry = Countries::where('id', '=', Auth::user()->country_id)->get()->first();
+        if(!empty($getAdminCurrentCountry)){
+            $countryCode = $getAdminCurrentCountry->code;
+        }else{
+            $countryCode = '';
+        }
         
-        return view('subadmin/form')->with(['subadmin'=> $subadmin,'permissions'=>$permissions,'user_permissions'=>$user_permissions,'teams'=>$teams,'team_permissions'=>$team_permissions]);
+        
+        return view('subadmin/form')->with(['subadmin'=> $subadmin,'permissions'=>$permissions, 'selectedCountryCode' => $countryCode, 'user_permissions'=>$user_permissions,'teams'=>$teams,'team_permissions'=>$team_permissions]);
     }
 
     protected function updateValidator(array $data, $id)

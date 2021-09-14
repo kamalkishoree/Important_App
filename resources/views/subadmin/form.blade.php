@@ -307,8 +307,11 @@ $('#team_access').on('change', function() {
             hiddenInput: "full_number",
             utilsScript: "{{ asset('telinput/js/utils.js') }}",
         });
+
+        $('.iti__selected-flag').hide();
         window.intlTelInput(mobile_number_input, {
-            initialCountry: '{{$selectedCountryCode}}'
+            initialCountry: '{{$selectedCountryCode}}',
+            separateDialCode: true,
         });
         
     }
