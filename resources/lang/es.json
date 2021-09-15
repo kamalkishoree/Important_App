@@ -1,0 +1,34 @@
+{
+   "Dashboard":" Panel",
+   "User":"Usuario",
+   "My Account":"Mi cuenta",
+   "Logout":"Cerrar sesión",
+   "Admin Head":"Jefe de administración",
+   "Home":"Hogar",
+   "Customers":"Clientes",
+   "Routes":"Rutas",
+   "Settings":"Ajustes",
+   "Profile":"Perfil",
+   "Customize":"Personalizar",
+   "Teams":"Equipos",
+   "Agent":"Agente",
+   "Geo Fence":"Valla geo",
+   "Auto Allocation":"Asignación automática",
+   "Pricing Rules":"Reglas de precios",
+   "Configure":"Configurar",
+   "Analytics":"Analítica",
+   "Notifications":"Notificaciones",
+   "Managers":"Gerentes",
+   "Search":"Buscar",
+   "Recipient's username":"Nombre de usuario del destinatario",
+   "Add Route":"Agregar ruta",
+   "Welcome":"Bienvenido",
+   "Royo":"Royo",
+   "Powered by":"Energizado por",
+   "Dispatch. Fleet Management and Last Mile Delivery solution.":"Envío. Solución de gestión de flotas y entrega de última milla.",
+   "Apps":"Aplicaciones"
+  
+
+
+   
+}

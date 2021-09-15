@@ -74,6 +74,7 @@ class Kernel extends HttpKernel
         'CheckGodPanel'  => \App\Http\Middleware\CheckGodPanel::class,
         'CheckManagerPermission' => \App\Http\Middleware\CheckManagerPermission::class,
         'ConnectDbFromOrder' => \App\Http\Middleware\ConnectDbFromOrder::class,
+        'switchLanguage'  => \App\Http\Middleware\CheckLocale::class,
         
     ];
 }
