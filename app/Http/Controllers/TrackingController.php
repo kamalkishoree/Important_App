@@ -126,9 +126,10 @@ class TrackingController extends Controller
     public function OrderTrackingDetail($domain = '', $user, $id)
     {
         $respnse = $this->connection($user);
-
+        $total_order_by_agent = 0;
+        $avgrating = 0;
         if ($respnse['status'] == 'connected') {
-            $order   = DB::connection($respnse['database'])->table('orders')->where('unique_id', $id)->leftJoin('agents', 'orders.driver_id', '=', 'agents.id')
+            $order = DB::connection($respnse['database'])->table('orders')->where('unique_id', $id)->leftJoin('agents', 'orders.driver_id', '=', 'agents.id')
                 ->select('orders.*', 'agents.name', 'agents.profile_picture', 'agents.phone_number')->first();
             if (isset($order->id)) {
                 $tasks = DB::connection($respnse['database'])->table('tasks')->where('order_id', $order->id)->leftJoin('locations', 'tasks.location_id', '=', 'locations.id')
@@ -142,6 +143,14 @@ class TrackingController extends Controller
                     $agent_location['lat']  = $lastElement->latitude;
                     $agent_location['lng']  = $lastElement->longitude;
                 }
+
+                if($order->driver_id > 0){
+                    $total_orders = DB::connection($respnse['database'])->table('orders')->where('driver_id',$order->driver_id)->pluck('id');
+                    $total_order_by_agent = count($total_orders);
+                    $avgrating = DB::connection($respnse['database'])->table('order_ratings')->whereIn('order_id',$total_orders)->sum('rating');
+                    $avgrating = $avgrating/$avgrating;
+                }
+
                 $img = 'https://imgproxy.royodispatch.com/insecure/fit/300/100/sm/0/plain/' . Storage::disk('s3')->url($order->profile_picture ?? 'assets/client_00000051/agents605b6deb82d1b.png/XY5GF0B3rXvZlucZMiRQjGBQaWSFhcaIpIM5Jzlv.jpg');
                 return response()->json([
                     'message' => 'Successfully',
@@ -149,6 +158,8 @@ class TrackingController extends Controller
                     'order'  => $order,
                     'agent_image' => $img, 
                     'agent_location'  => $agent_location,
+                    'total_order_by_agent'  => $total_order_by_agent,
+                    'avgrating'  => $avgrating,
                 ], 200);
 
                 return view('tracking/tracking', compact('tasks', 'order', 'agent_location'));
