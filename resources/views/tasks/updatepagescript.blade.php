@@ -23,6 +23,9 @@ $(document).ready(function(){
         $(".appoint").hide();
         $(".datenow").hide();
         $(".oldhide").hide();
+        $(".pickup-barcode-error").hide();
+        $(".drop-barcode-error").hide();
+        $(".appointment-barcode-error").hide();
         $("#AddressInput a").click(function() {
             $(".shows").show();
             $(".append").hide();
@@ -87,7 +90,7 @@ $(document).ready(function(){
             // {
                     var newids = null;
                     
-                    var $div = $('div[class^="copyin"]:last');
+                    var $div = $('div[class^="copyin check-validation"]:last');
                     var newcheck = $div.find('.redio');
                     $.each(newcheck, function(index, elem){
                         var jElem = $(elem); // jQuery element
@@ -106,8 +109,8 @@ $(document).ready(function(){
                     });
                    // console.log(newcheck);
                     var num = parseInt( $div.prop("id").match(/\d+/g), 10 ) +1;
-                    var $clone = $div.clone().prop('class', 'copyin')
-                    $clone.insertAfter('[class^="copyin"]:last');
+                    var $clone = $div.clone().prop('class', 'copyin check-validation')
+                    $clone.insertAfter('[class^="copyin check-validation"]:last');
                     // get all the inputs inside the clone
                     var inputs = $clone.find('.redio');
 
@@ -214,6 +217,61 @@ $(document).ready(function(){
             
         });
 
+        $(document).on("click", ".submitUpdateTaskHeader", function(e) {
+            e.preventDefault();
+            var err = 0;
+            $(".selecttype").each(function(){
+                var taskselect              = $(this).val();
+                var checkPickupBarcode      = $('#check-pickup-barcode').val();
+                var checkDropBarcode        = $('#check-drop-barcode').val();
+                var checkAppointmentBarcode = $('#check-appointment-barcode').val();
+                var barcode                 = $(this).closest('.check-validation').find('.barcode').val();
+                if(taskselect == 1 && checkPickupBarcode == 1 && barcode == ''){
+                    $(this).closest('.check-validation').find('.pickup-barcode-error').show();
+                    err = 1;
+                    return false;
+                }else if(taskselect == 2 && checkDropBarcode == 1 && barcode == ''){
+                    $(this).closest('.check-validation').find('.drop-barcode-error').show();
+                    err = 1;
+                    return false;
+                }else if(taskselect == 3 && checkAppointmentBarcode == 1 && barcode == ''){
+                    $(this).closest('.check-validation').find('.appointment-barcode-error').show();
+                    err = 1;
+                    return false;
+                }
+            });
+
+            if(err == 1){
+                return false;
+            }else{
+                $(".pickup-barcode-error").hide();
+                $(".drop-barcode-error").hide();
+                $(".appointment-barcode-error").hide();
+                var id       = $("#order-id").val();
+                var formData = new FormData(document.querySelector("#taskFormHeader"));
+                updateTaskSubmit(formData, 'POST', '/updatetasks/tasks/'+id);
+            }
+        });
+
+        function updateTaskSubmit(data, method, url) {
+            $.ajax({
+                method: method,
+                headers: {
+                    Accept: "application/json"
+                },
+                url: url,
+                data: data,
+                contentType: false,
+                processData: false,
+                success: function(response) {
+                    window.location.href = '/tasks';             
+                },
+                error: function(response) {
+                    
+                }
+            });
+        }
+
         //$("#myselect").val();
         $(document).on('change', ".selecttype", function() {
         
@@ -317,6 +375,74 @@ $(document).ready(function(){
             }
         });
 
+        $(document).on('click', '#clear-address', function(){
+            $(this).closest('.check-validation').find("input:checked").prop('checked', false);
+            $(this).closest('.check-validation').find("input[name='short_name[]']").val('');
+            $(this).closest('.check-validation').find("input[name='address_email[]']").val('');
+            $(this).closest('.check-validation').find("input[name='address[]']").val('');
+            $(this).closest('.check-validation').find("input[name='address_phone_number[]']").val('');
+            $(this).closest('.check-validation').find("input[name='post_code[]']").val('');
+            $(this).closest('.check-validation').find("input[name='latitude[]']").val('');
+            $(this).closest('.check-validation').find("input[name='longitude[]']").val('');
+        });
+        
+        $('input[type="radio"]').each(function(){
+            if($(this).is(':checked')) {
+                var shortName   = $(this).data("srtadd");
+                if(shortName != undefined){
+                    var address     = $(this).data("adr");
+                    var latitude    = $(this).data("lat");
+                    var longitude   = $(this).data("long");
+                    var postCode    = $(this).data("pstcd");
+                    var email       = $(this).data("emil");
+                    var phoneNumber = $(this).data("ph");
+                    $(this).closest('.check-validation').find("input[name='short_name[]']").val(shortName);
+                    $(this).closest('.check-validation').find("input[name='address_email[]']").val(email);
+                    $(this).closest('.check-validation').find("input[name='address[]']").val(address);
+                    $(this).closest('.check-validation').find("input[name='address_phone_number[]']").val(phoneNumber);
+                    $(this).closest('.check-validation').find("input[name='post_code[]']").val(postCode);
+                    $(this).closest('.check-validation').find("input[name='latitude[]']").val(latitude);
+                    $(this).closest('.check-validation').find("input[name='longitude[]']").val(longitude);
+                }
+            }
+        });
+
+        if ($("input[name='old_address_id']").is(":checked")) {
+            var shortName   = $('input[name="old_address_id"]:checked').data("srtadd");
+            // alert(shortName);
+            var address     = $('input[name="old_address_id"]:checked').data("adr");
+            var latitude    = $('input[name="old_address_id"]:checked').data("lat");
+            var longitude   = $('input[name="old_address_id"]:checked').data("long");
+            var postCode    = $('input[name="old_address_id"]:checked').data("pstcd");
+            var email       = $('input[name="old_address_id"]:checked').data("emil");
+            var phoneNumber = $('input[name="old_address_id"]:checked').data("ph");
+
+            $('input[name="old_address_id"]:checked').closest('.check-validation').find("input[name='short_name[]']").val(shortName);
+            $('input[name="old_address_id"]:checked').closest('.check-validation').find("input[name='address_email[]']").val(email);
+            $('input[name="old_address_id"]:checked').closest('.check-validation').find("input[name='address[]']").val(address);
+            $('input[name="old_address_id"]:checked').closest('.check-validation').find("input[name='address_phone_number[]']").val(phoneNumber);
+            $('input[name="old_address_id"]:checked').closest('.check-validation').find("input[name='post_code[]']").val(postCode);
+            $('input[name="old_address_id"]:checked').closest('.check-validation').find("input[name='latitude[]']").val(latitude);
+            $('input[name="old_address_id"]:checked').closest('.check-validation').find("input[name='longitude[]']").val(longitude);
+        }
+        $(document).on('click', '.old-select-address', function(){
+            var shortName   = $(this).data("srtadd");
+            var address     = $(this).data("adr");
+            var latitude    = $(this).data("lat");
+            var longitude   = $(this).data("long");
+            var postCode    = $(this).data("pstcd");
+            var email       = $(this).data("emil");
+            var phoneNumber = $(this).data("ph");
+
+            $(this).closest('.check-validation').find("input[name='short_name[]']").val(shortName);
+            $(this).closest('.check-validation').find("input[name='address_email[]']").val(email);
+            $(this).closest('.check-validation').find("input[name='address[]']").val(address);
+            $(this).closest('.check-validation').find("input[name='address_phone_number[]']").val(phoneNumber);
+            $(this).closest('.check-validation').find("input[name='post_code[]']").val(postCode);
+            $(this).closest('.check-validation').find("input[name='latitude[]']").val(latitude);
+            $(this).closest('.check-validation').find("input[name='longitude[]']").val(longitude);
+        });
+
         function add_event(ids) {
 
             $.ajax({
@@ -331,13 +457,9 @@ $(document).ready(function(){
                     var array = data;
                     jQuery.each(array, function(i, val) {
                         $(".withradio").append(
-                            '<div class="append"><div class="custom-control custom-radio count"><input type="radio" id="' +
-                            val.id + '" name="old_address_id" value="' + val
-                            .id +
-                            '" class="custom-control-input redio callradio"><label class="custom-control-label" for="' +
-                            val.id + '"><span class="spanbold">' + val.short_name +
-                            '</span>-' + val.address +
-                            '</label></div></div>');
+                          '<div class="append"><div class="custom-control custom-radio count"><input type="radio" id="' + val.id + '" name="old_address_id" value="' + val.id + '" class="custom-control-input redio old-select-address callradio" data-srtadd="'+ val.short_name +'" data-adr="'+ val.address +'" data-lat="'+ val.latitude +'" data-long="'+ val.longitude +'" data-pstcd="'+ val.post_code +'" data-emil="'+ val.email +'" data-ph="'+ val.phone_number +'"><label class="custom-control-label" for="' + val.id + '"><span class="spanbold">' + val.short_name +
+                          '</span>-' + val.address +
+                          '</label></div></div>');
                     });
 
                 }
