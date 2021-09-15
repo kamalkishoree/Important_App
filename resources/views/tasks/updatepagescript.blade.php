@@ -407,7 +407,7 @@ $(document).ready(function(){
         
         $('input[type="radio"]').each(function(){
             if($(this).is(':checked')) {
-                var shortName   = $(this).data("srtadd");
+                var shortName = $(this).data("srtadd");
                 if(shortName != undefined){
                     var address     = $(this).data("adr");
                     var latitude    = $(this).data("lat");
@@ -426,24 +426,6 @@ $(document).ready(function(){
             }
         });
 
-        if ($("input[name='old_address_id']").is(":checked")) {
-            var shortName   = $('input[name="old_address_id"]:checked').data("srtadd");
-            // alert(shortName);
-            var address     = $('input[name="old_address_id"]:checked').data("adr");
-            var latitude    = $('input[name="old_address_id"]:checked').data("lat");
-            var longitude   = $('input[name="old_address_id"]:checked').data("long");
-            var postCode    = $('input[name="old_address_id"]:checked').data("pstcd");
-            var email       = $('input[name="old_address_id"]:checked').data("emil");
-            var phoneNumber = $('input[name="old_address_id"]:checked').data("ph");
-
-            $('input[name="old_address_id"]:checked').closest('.check-validation').find("input[name='short_name[]']").val(shortName);
-            $('input[name="old_address_id"]:checked').closest('.check-validation').find("input[name='address_email[]']").val(email);
-            $('input[name="old_address_id"]:checked').closest('.check-validation').find("input[name='address[]']").val(address);
-            $('input[name="old_address_id"]:checked').closest('.check-validation').find("input[name='address_phone_number[]']").val(phoneNumber);
-            $('input[name="old_address_id"]:checked').closest('.check-validation').find("input[name='post_code[]']").val(postCode);
-            $('input[name="old_address_id"]:checked').closest('.check-validation').find("input[name='latitude[]']").val(latitude);
-            $('input[name="old_address_id"]:checked').closest('.check-validation').find("input[name='longitude[]']").val(longitude);
-        }
         $(document).on('click', '.old-select-address', function(){
             var shortName   = $(this).data("srtadd");
             var address     = $(this).data("adr");
@@ -575,7 +557,8 @@ function loadMap(autocompletesWraps){
         google.maps.event.addListener(autocomplete[name], 'place_changed', function() {
             
             var place = autocomplete[name].getPlace();
-
+            
+            console.log('autocomplete[name]', autocomplete[name]);
             geocoder.geocode({'placeId': place.place_id}, function (results, status) {
                 
                 if (status === google.maps.GeocoderStatus.OK) {
