@@ -1114,7 +1114,8 @@ class TaskController extends Controller
             'updated_at'               => Carbon::now()->toDateTimeString(),
         ];
        
-        if (!isset($geo)) { Log::info('innergeo');
+        if (!isset($geo)) { 
+            Log::info('innergeoty');
             $oneagent = Agent::where('id', $agent_id)->first();
             $data = [
                 'order_id'            => $orders_id,
@@ -1130,7 +1131,8 @@ class TaskController extends Controller
                 'cash_to_be_collected' => $order_details->cash_to_be_collected??null,
             ];
             $this->dispatch(new RosterCreate($data, $extraData));
-        } else {  Log::info('outergeo');
+        } else {  
+            Log::info('outergeouu');
             $getgeo = DriverGeo::where('geo_id', $geo)->with([
                 'agent'=> function ($o) use ($cash_at_hand, $date) {
                     $o->where('cash_at_hand', '<', $cash_at_hand)->orderBy('id', 'DESC')->with(['logs','order'=> function ($f) use ($date) {
@@ -1168,6 +1170,9 @@ class TaskController extends Controller
                     break;
                 }
             }
+            Log::info('test1');
+            Log::info($data);
+            Log::info('test2');
             $this->dispatch(new RosterCreate($data, $extraData));
         }
     }
@@ -1629,7 +1634,8 @@ class TaskController extends Controller
             $cust_id = $task->customer_id;
             $all_locations = Location::where('customer_id', '!=', $cust_id)->where('short_name', '!=', null)->where('location_status', 1)->get();
         }
-        return view('tasks/update-task')->with(['task' => $task, 'teamTag' => $teamTag, 'agentTag' => $agentTag, 'agents' => $agents, 'images' => $array, 'savedrivertag' => $savedrivertag, 'saveteamtag' => $saveteamtag, 'main' => $lastbaseurl,'alllocations'=>$all_locations,'client_timezone'=>$client_timezone]);
+        $task_proofs = TaskProof::all();
+        return view('tasks/update-task')->with(['task' => $task, 'task_proofs' => $task_proofs, 'teamTag' => $teamTag, 'agentTag' => $agentTag, 'agents' => $agents, 'images' => $array, 'savedrivertag' => $savedrivertag, 'saveteamtag' => $saveteamtag, 'main' => $lastbaseurl,'alllocations'=>$all_locations,'client_timezone'=>$client_timezone]);
     }
 
     /**
