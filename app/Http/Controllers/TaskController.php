@@ -1170,7 +1170,9 @@ class TaskController extends Controller
                     break;
                 }
             }
-            Log::info('test'.$data);
+            Log::info('test1');
+            Log::info($data);
+            Log::info('test2');
             $this->dispatch(new RosterCreate($data, $extraData));
         }
     }
