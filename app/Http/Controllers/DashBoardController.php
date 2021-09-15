@@ -15,7 +15,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
-
+use App\Model\Countries;
 // use PDF;
 
 class DashBoardController extends Controller
@@ -305,7 +305,14 @@ class DashBoardController extends Controller
    
         $googleapikey = $client->map_key_1??'';
        
-        return view('dashboard')->with(['teams' => $teamdata, 'newmarker' => $newmarker, 'unassigned' => $unassigned, 'agents' => $agents,'date'=> $date,'preference' =>$preference, 'routedata' => $uniquedrivers,'distance_matrix' => $distancematrix, 'unassigned_orders' => $unassigned_orders,'unassigned_distance' => $un_total_distance,'map_key'=>$googleapikey,'client_timezone'=>$auth->timezone]);
+        $getAdminCurrentCountry = Countries::where('id', '=', Auth::user()->country_id)->get()->first();
+        if(!empty($getAdminCurrentCountry)){
+            $countryCode = $getAdminCurrentCountry->name;
+        }else{
+            $countryCode = '';
+        }
+
+        return view('dashboard')->with(['teams' => $teamdata, 'selectedCountryCode' => $countryCode, 'newmarker' => $newmarker, 'unassigned' => $unassigned, 'agents' => $agents,'date'=> $date,'preference' =>$preference, 'routedata' => $uniquedrivers,'distance_matrix' => $distancematrix, 'unassigned_orders' => $unassigned_orders,'unassigned_distance' => $un_total_distance,'map_key'=>$googleapikey,'client_timezone'=>$auth->timezone]);
     }
 
     //function to create distance matrix
