@@ -63,7 +63,7 @@ class RosterCreate implements ShouldQueue
         //    Log::info('mesooooo2');
             config(["database.connections.mysql.database" => $schemaName]);
          //   Log::info($schemaName);
-            DB::connection($schemaName)->table('rosters')->insert($this->data);
+            $rosters = DB::connection($schemaName)->table('rosters')->insert($this->data);
         //    Log::info('mesooooo4');
             DB::connection($schemaName)->table('roster_details')->insert($this->extraData);
         //    Log::info('mesooooo5');
@@ -75,7 +75,8 @@ class RosterCreate implements ShouldQueue
                 'type'  => 'extra',
                 'status'=> 10
             ]);
-            Log::info('create roster');
+
+            Log::info($rosters);
         } catch (Exception $ex) {
             Log::info($exception->getMessage());
            return $ex->getMessage();

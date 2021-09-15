@@ -88,7 +88,10 @@
                </div>
             </div>
             
-
+            <input type="hidden" id="check-pickup-barcode" value="{{ (!empty($task_proofs[0]->barcode_requried) ? $task_proofs[0]->barcode_requried : 0)}}">
+            <input type="hidden" id="check-drop-barcode" value="{{ (!empty($task_proofs[1]->barcode_requried) ? $task_proofs[1]->barcode_requried : 0)}}">
+            <input type="hidden" id="check-appointment-barcode" value="{{ (!empty($task_proofs[2]->barcode_requried) ? $task_proofs[2]->barcode_requried : 0)}}">
+            
             <div class="taskrepet newAddHead" id="newadd">
                 <div class="copyin1 cloningDiv check-validation" id="copyin1">
                   <div class="requried allset">
@@ -119,12 +122,10 @@
                             <span class="span1 delbtnhead" id="spancheck"><img style="filter: grayscale(.5);" src="{{asset('assets/images/ic_delete.png')}}"  alt=""></span>
                         </div>
                     </div>
-                    <input type="hidden" id="check-pickup-barcode" value="{{ (!empty($task_proofs[0]->barcode_requried) ? $task_proofs[0]->barcode_requried : 0)}}">
-                    <input type="hidden" id="check-drop-barcode" value="{{ (!empty($task_proofs[1]->barcode_requried) ? $task_proofs[1]->barcode_requried : 0)}}">
-                    <input type="hidden" id="check-appointment-barcode" value="{{ (!empty($task_proofs[2]->barcode_requried) ? $task_proofs[2]->barcode_requried : 0)}}">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <h4 class="header-title mb-2">Address</h4>
+                    <div class="row mb-3">
+                        <div class="col-md-6 d-flex align-items-center">
+                            <h4 class="header-title mb-0">Address</h4>
+                            <a href="javascript:void(0);" id="clear-address" class="btn btn-info clear-btn ml-3">Clear</a>
                         </div>
                         <div class="col-md-6">
                             {{-- <h4 class="header-title mb-2">Saved Addresses</h4> --}}

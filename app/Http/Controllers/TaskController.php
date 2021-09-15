@@ -1629,7 +1629,8 @@ class TaskController extends Controller
             $cust_id = $task->customer_id;
             $all_locations = Location::where('customer_id', '!=', $cust_id)->where('short_name', '!=', null)->where('location_status', 1)->get();
         }
-        return view('tasks/update-task')->with(['task' => $task, 'teamTag' => $teamTag, 'agentTag' => $agentTag, 'agents' => $agents, 'images' => $array, 'savedrivertag' => $savedrivertag, 'saveteamtag' => $saveteamtag, 'main' => $lastbaseurl,'alllocations'=>$all_locations,'client_timezone'=>$client_timezone]);
+        $task_proofs = TaskProof::all();
+        return view('tasks/update-task')->with(['task' => $task, 'task_proofs' => $task_proofs, 'teamTag' => $teamTag, 'agentTag' => $agentTag, 'agents' => $agents, 'images' => $array, 'savedrivertag' => $savedrivertag, 'saveteamtag' => $saveteamtag, 'main' => $lastbaseurl,'alllocations'=>$all_locations,'client_timezone'=>$client_timezone]);
     }
 
     /**
