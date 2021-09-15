@@ -220,6 +220,25 @@ $(document).ready(function(){
         $(document).on("click", ".submitUpdateTaskHeader", function(e) {
             e.preventDefault();
             var err = 0;
+            
+            $("input[name='short_name[]']").each(function(){
+                var shortName = $(this).val();
+                if(shortName == ''){
+                    err = 1;
+                    $(this).closest('.check-validation').find('.addspan').show();
+                    return false;
+                }
+            });
+            
+            $("input[name='address[]']").each(function(){
+                var address = $(this).val();
+                if(address == ''){
+                    err = 1;
+                    $(this).closest('.check-validation').find('.addspan').show();
+                    return false;
+                }
+            });
+
             $(".selecttype").each(function(){
                 var taskselect              = $(this).val();
                 var checkPickupBarcode      = $('#check-pickup-barcode').val();
@@ -243,7 +262,7 @@ $(document).ready(function(){
 
             if(err == 1){
                 return false;
-            }else{
+            }else if(err == 0){
                 $(".pickup-barcode-error").hide();
                 $(".drop-barcode-error").hide();
                 $(".appointment-barcode-error").hide();

@@ -171,16 +171,17 @@ use Carbon\Carbon;
 
                                     </div>
 
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <h4 class="header-title mb-2">Address</h4>
+                                    <div class="row mb-3">
+                                        <div class="col-md-6 d-flex align-items-center">
+                                            <h4 class="header-title mb-0">Address</h4>
+                                            <a href="javascript:void(0);" id="clear-address" class="btn btn-info clear-btn ml-3">Clear</a>
                                         </div>
                                         <div class="col-md-6">
                                             
                                         </div>
                                     </div>
                                     
-                                    <span class="span1 addspan"></span>
+                                    <span class="span1 addspan">Please select a address or create new</span>
 
                                     <div class="row">
 
