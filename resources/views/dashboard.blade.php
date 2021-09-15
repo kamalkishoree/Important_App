@@ -447,12 +447,6 @@ $(document).ready(function() {
 
 $('#wrapper').addClass('dshboard');
 
-var defaultSetlat = $('#default-setlat').val();
-var defaultSetlong = $('#default-setlong').val();
-
-console.log('defaultSetlat', defaultSetlat);
-
-codeAddress();
 initMap();
 $('#shortclick').trigger('click');
 $(".timeago").timeago();
@@ -679,15 +673,15 @@ function initMap() {
     var address = '{{$selectedCountryCode}}';
     geocoder.geocode( { 'address' : address }, function( results, status ) {
         if (status === google.maps.GeocoderStatus.OK) {
-    const haightAshbury = {    
-                lat: results[0].geometry.location.lat(),
-                lng: results[0].geometry.location.lng()     
-    };
-    map = new google.maps.Map(document.getElementById("map_canvas"), {
-        zoom: 12,
-        center: haightAshbury,
-        mapTypeId: "roadmap",
-        styles: themeType,
+            const haightAshbury = {    
+                        lat: results[0].geometry.location.lat(),
+                        lng: results[0].geometry.location.lng()     
+            };
+            map = new google.maps.Map(document.getElementById("map_canvas"), {
+                zoom: 12,
+                center: haightAshbury,
+                mapTypeId: "roadmap",
+                styles: themeType,
             });
         }
     });
@@ -784,21 +778,7 @@ function initMap() {
                        
     }
 }
-function codeAddress() {
-    const geocoder = new google.maps.Geocoder; 
-    //In this case it gets the address from an element on the page, but obviously you  could just pass it to the method instead
-    var address = '{{$selectedCountryCode}}';
-    // var place = address.getPlace();
-    console.log('address', address);
-    geocoder.geocode( { 'address' : address }, function( results, status ) {
-        if (status === google.maps.GeocoderStatus.OK) {
-            const lat = results[0].geometry.location.lat();
-            const lng = results[0].geometry.location.lng();
-            $('#default-setlat').val(lat);
-            $('#default-setlong').val(lng);
-        }
-    } );
-}
+ 
 // function for displaying route  on map
 function calculateAndDisplayRoute(directionsService, directionsRenderer,map,alltask,agent_location) {    
             const waypts = [];
