@@ -22,7 +22,6 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
             <div class="spinner-border avatar-lg text-primary m-2" role="status"></div>
         </div>
     </div> 
-
     <div id="scrollbar" class="col-md-4 col-xl-3 left-sidebar pt-3">  
         <div class="side_head d-flex justify-content-between align-items-center mb-2">
             <i class="mdi mdi-sync mr-1" onclick="reloadData()" aria-hidden="true"></i> 
@@ -447,6 +446,13 @@ $('.agentcheck').on('change', function() {
 $(document).ready(function() {
 
 $('#wrapper').addClass('dshboard');
+
+var defaultSetlat = $('#default-setlat').val();
+var defaultSetlong = $('#default-setlong').val();
+
+console.log('defaultSetlat', defaultSetlat);
+
+codeAddress();
 initMap();
 $('#shortclick').trigger('click');
 $(".timeago").timeago();
@@ -665,17 +671,25 @@ $('.agentdisplay_old').click(function() {
 });
 
 function initMap() {
-    //console.log(allagent);
+    // const haightAshbury = {    
+    //     lat: allagent[0].agentlog && allagent[0].agentlog['lat']  != "0.00000000" ? parseFloat(allagent[0].agentlog['lat']): defaultlat,
+    //     lng: allagent[0].agentlog && allagent[0].agentlog['long'] != "0.00000000" ? parseFloat(allagent[0].agentlog['long']):defaultlong        
+    // };
+    const geocoder = new google.maps.Geocoder;
+    var address = '{{$selectedCountryCode}}';
+    geocoder.geocode( { 'address' : address }, function( results, status ) {
+        if (status === google.maps.GeocoderStatus.OK) {
     const haightAshbury = {    
-        lat: allagent[0].agentlog && allagent[0].agentlog['lat']  != "0.00000000" ? parseFloat(allagent[0].agentlog['lat']): defaultlat,
-        lng: allagent[0].agentlog && allagent[0].agentlog['long'] != "0.00000000" ? parseFloat(allagent[0].agentlog['long']):defaultlong        
+                lat: results[0].geometry.location.lat(),
+                lng: results[0].geometry.location.lng()     
     };
-
     map = new google.maps.Map(document.getElementById("map_canvas"), {
         zoom: 12,
         center: haightAshbury,
         mapTypeId: "roadmap",
         styles: themeType,
+            });
+        }
     });
     
     //new code for route
@@ -748,7 +762,7 @@ function initMap() {
             displayagent = allagent[i];
             
             if(displayagent.agentlog != null && displayagent.agentlog['lat'] != "0.00000000" && displayagent.agentlog['long'] != "0.00000000" ){
-                console.log(displayagent.agentlog);
+                // console.log(displayagent.agentlog);
                     if (displayagent['is_available'] == 1) {
                         images = url+'/demo/images/location.png';
                     }else {
@@ -770,7 +784,21 @@ function initMap() {
                        
     }
 }
-
+function codeAddress() {
+    const geocoder = new google.maps.Geocoder; 
+    //In this case it gets the address from an element on the page, but obviously you  could just pass it to the method instead
+    var address = '{{$selectedCountryCode}}';
+    // var place = address.getPlace();
+    console.log('address', address);
+    geocoder.geocode( { 'address' : address }, function( results, status ) {
+        if (status === google.maps.GeocoderStatus.OK) {
+            const lat = results[0].geometry.location.lat();
+            const lng = results[0].geometry.location.lng();
+            $('#default-setlat').val(lat);
+            $('#default-setlong').val(lng);
+        }
+    } );
+}
 // function for displaying route  on map
 function calculateAndDisplayRoute(directionsService, directionsRenderer,map,alltask,agent_location) {    
             const waypts = [];
@@ -778,7 +806,7 @@ function calculateAndDisplayRoute(directionsService, directionsRenderer,map,allt
 
             for (let i = 0; i < alltask.length; i++) {
                 if (i != alltask.length - 1 && alltask[i].task_status != 4 && alltask[i].task_status != 5 ) {
-                   console.log(alltask[i]);
+                //    console.log(alltask[i]);
                     waypts.push({
                         location: new google.maps.LatLng(parseFloat(alltask[i].latitude), parseFloat(alltask[i]
                             .longitude)),
@@ -1190,7 +1218,7 @@ function reInitMap(allroutes) {
             displayagent = allagent[i];
             
             if(displayagent.agentlog != null && displayagent.agentlog['lat'] != "0.00000000" && displayagent.agentlog['long'] != "0.00000000" ){
-                console.log(displayagent.agentlog);
+                // console.log(displayagent.agentlog);
                         if (displayagent['is_available'] == 1) {
                             images = url+'/demo/images/location.png';
                         }else {
