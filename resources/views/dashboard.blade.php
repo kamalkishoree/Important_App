@@ -665,25 +665,33 @@ $('.agentdisplay_old').click(function() {
 });
 
 function initMap() {
-    // const haightAshbury = {    
-    //     lat: allagent[0].agentlog && allagent[0].agentlog['lat']  != "0.00000000" ? parseFloat(allagent[0].agentlog['lat']): defaultlat,
-    //     lng: allagent[0].agentlog && allagent[0].agentlog['long'] != "0.00000000" ? parseFloat(allagent[0].agentlog['long']):defaultlong        
-    // };
-    const geocoder = new google.maps.Geocoder;
-    var address = '{{$selectedCountryCode}}';
-    geocoder.geocode( { 'address' : address }, function( results, status ) {
-        if (status === google.maps.GeocoderStatus.OK) {
-            const haightAshbury = {    
-                        lat: results[0].geometry.location.lat(),
-                        lng: results[0].geometry.location.lng()     
-            };
-            map = new google.maps.Map(document.getElementById("map_canvas"), {
-                zoom: 12,
-                center: haightAshbury,
-                mapTypeId: "roadmap",
-                styles: themeType,
-            });
-        }
+    const haightAshbury = {    
+        lat: allagent[0].agentlog && allagent[0].agentlog['lat']  != "0.00000000" ? parseFloat(allagent[0].agentlog['lat']): defaultlat,
+        lng: allagent[0].agentlog && allagent[0].agentlog['long'] != "0.00000000" ? parseFloat(allagent[0].agentlog['long']):defaultlong        
+    };
+    
+    // const geocoder = new google.maps.Geocoder;
+    // var address = '{{$selectedCountryCode}}';
+    // geocoder.geocode( { 'address' : address }, function( results, status ) {
+    //     if (status === google.maps.GeocoderStatus.OK) {
+    //         const haightAshbury = {    
+    //                     lat: results[0].geometry.location.lat(),
+    //                     lng: results[0].geometry.location.lng()     
+    //         };
+    //         map = new google.maps.Map(document.getElementById("map_canvas"), {
+    //             zoom: 12,
+    //             center: haightAshbury,
+    //             mapTypeId: "roadmap",
+    //             styles: themeType,
+    //         });
+    //     }
+    // });
+
+    map = new google.maps.Map(document.getElementById("map_canvas"), {
+        zoom: 12,
+        center: haightAshbury,
+        mapTypeId: "roadmap",
+        styles: themeType,
     });
     
     //new code for route
