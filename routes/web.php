@@ -133,6 +133,7 @@ Route::domain('{domain}')->middleware(['subdomain'])->group(function() {
 				Route::resource('tasks','TaskController');
 
 				Route::post('newtasks','TaskController@newtasks');
+				Route::any('updatetasks/tasks/{id}','TaskController@update');
 
 				Route::post('optimize-route','DashBoardController@optimizeRoute');
 				Route::post('arrange-route','DashBoardController@arrangeRoute');

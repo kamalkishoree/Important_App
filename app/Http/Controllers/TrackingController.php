@@ -148,6 +148,7 @@ class TrackingController extends Controller
                     $total_orders = DB::connection($respnse['database'])->table('orders')->where('driver_id',$order->driver_id)->pluck('id');
                     $total_order_by_agent = count($total_orders);
                     $avgrating = DB::connection($respnse['database'])->table('order_ratings')->whereIn('order_id',$total_orders)->sum('rating');
+                    if($avgrating != 0)
                     $avgrating = $avgrating/$avgrating;
                 }
 
