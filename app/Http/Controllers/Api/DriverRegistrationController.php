@@ -55,12 +55,12 @@ class DriverRegistrationController extends Controller
             'uid' => $request->uid,
             'is_approved' => 1,
         ];
-        $count = count(collect($request->uploaded_file));
+        $count = count($request->uploaded_file);
         $key = 0;
         $files = [];
         while ($count--) {
             if ($request->hasFile('uploaded_file')) {
-                $file = $request->file('uploaded_file');
+                $file = $request->uploaded_file;
                 foreach ($file as $f) {
                     $header = $request->header();
                     if (array_key_exists("shortcode", $header)) {
