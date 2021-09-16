@@ -313,7 +313,7 @@ class DashBoardController extends Controller
             $defaultCountryLatitude  = '';
             $defaultCountryLongitude  = '';
         }
-        $agents = array();
+        // $agents = array();
         return view('dashboard')->with(['teams' => $teamdata, 'defaultCountryLongitude' => $defaultCountryLongitude, 'defaultCountryLatitude' => $defaultCountryLatitude, 'newmarker' => $newmarker, 'unassigned' => $unassigned, 'agents' => $agents,'date'=> $date,'preference' =>$preference, 'routedata' => $uniquedrivers,'distance_matrix' => $distancematrix, 'unassigned_orders' => $unassigned_orders,'unassigned_distance' => $un_total_distance,'map_key'=>$googleapikey,'client_timezone'=>$auth->timezone]);
     }
 
