@@ -14,7 +14,9 @@ use Config;
 use Session;
 use Cache;
 use DB;
-use Auth;
+use Auth,URL,Route;
+use Log;
+use Schema;
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -33,11 +35,21 @@ class AppServiceProvider extends ServiceProvider
      * @return void
      */
     public function boot(Request $request)
-    {   
+    {  
         $this->connectDynamicDb($request);
         if(config('app.env') != 'local') {
             \URL::forceScheme('https');
         }
+        $clientDetails = Cache::get('clientdetails');
+        if (!empty($clientDetails) && !empty($clientDetails->code)) {
+            if (Schema::hasColumn('client_id', 'client_preferences')) {
+                $preference  = ClientPreference::where('client_id', $clientDetails->code)->first();
+                if (!empty($preference->fcm_server_key)) {
+                    config(['laravel-fcm.server_key' => $preference->fcm_server_key ?? ""]);
+                }
+            }
+        }
+       
         Builder::defaultStringLength(191);
         
         View::composer('modals.add-agent', function($view)
@@ -56,59 +68,63 @@ class AppServiceProvider extends ServiceProvider
     }
 
     public function connectDynamicDb($request)
-    {
-        $domain = $request->getHost();
-        $domain    = str_replace(array('http://', config('domainsetting.domain_set')), '', $domain);
-        $domain    = str_replace(array('https://', config('domainsetting.domain_set')), '', $domain);
-        $subDomain = explode('.', $domain);
-       
-        $existRedis = '';
-       if(!$existRedis){
-         $client = Client::select('*')
-                      ->where(function($q) use($domain, $subDomain){
-                                $q->where('custom_domain', $domain)
-                                  ->orWhere('sub_domain', $subDomain[0]);
-                      })
-                      ->first();
+    {   
+        
+        if (strpos(URL::current(), '/api/') !== false){
 
-         
-        }
-        $callback = '';
-  
-        $redisData = $client;
-        $dbname = DB::connection()->getDatabaseName();
-       
-       if($domain){
-              if($domain != env('Main_Domain')){
-                    if($client && $dbname != 'db_'.$client->database_name){
-                        $saveDataOnRedis = Cache::set('clientdetails',$client);
-                    $database_name = 'db_'.$client->database_name;
-                    $database_host = !empty($client->database_host) ? $client->database_host : env('DB_HOST','127.0.0.1');
-                    $database_port = !empty($client->database_port) ? $client->database_port : env('DB_PORT','3306');
-                    $database_username = !empty($client->database_username) ? $client->database_username : env('DB_USERNAME','royodelivery_db');
-                    $database_password = !empty($client->database_password) ? $client->database_password : env('DB_PASSWORD','');
-                    $default = [
-                        'driver' => env('DB_CONNECTION','mysql'),
-                        'host' => $database_host,
-                        'port' => $database_port,
-                        'database' => $database_name,
-                        'username' => $database_username,
-                        'password' => $database_password,
-                        'charset' => 'utf8mb4',
-                        'collation' => 'utf8mb4_unicode_ci',
-                        'prefix' => '',
-                        'prefix_indexes' => true,
-                        'strict' => false,
-                        'engine' => null
-                    ];
-                    \Config::set('database.connections.mysql',$default); 
-                    //\Config::set('database.connections.mysql.database',$database_name); 
-                     DB::purge('mysql');   
-                    $dbname = DB::connection()->getDatabaseName(); 
-                  
-                    
-                  }
+
+        }else{
+            $domain = $request->getHost();
+            $domain    = str_replace(array('http://', config('domainsetting.domain_set')), '', $domain);
+            $domain    = str_replace(array('https://', config('domainsetting.domain_set')), '', $domain);
+            $subDomain = explode('.', $domain);
+            if ($domain != env('Main_Domain')) {
+                $existRedis = '';
+                if (!$existRedis) {
+                    $client = Client::select('*')
+                          ->where(function ($q) use ($domain, $subDomain) {
+                              $q->where('custom_domain', $domain)
+                                      ->orWhere('sub_domain', $subDomain[0]);
+                          })->where('is_deleted', 0)->where('is_blocked', 0)
+                          ->first();
                 }
+                $callback = '';
+      
+                $redisData = $client;
+                $dbname = DB::connection()->getDatabaseName();
+          
+                if ($domain) {
+                    if ($domain != env('Main_Domain')) {
+                        if ($client && $dbname != 'db_'.$client->database_name) {
+                            $saveDataOnRedis = Cache::set('clientdetails', $client);
+                            $database_name = 'db_'.$client->database_name;
+                            $database_host = !empty($client->database_host) ? $client->database_host : env('DB_HOST', '127.0.0.1');
+                            $database_port = !empty($client->database_port) ? $client->database_port : env('DB_PORT', '3306');
+                            $database_username = !empty($client->database_username) ? $client->database_username : env('DB_USERNAME', 'royodelivery_db');
+                            $database_password = !empty($client->database_password) ? $client->database_password : env('DB_PASSWORD', '');
+                            $default = [
+                            'driver' => env('DB_CONNECTION', 'mysql'),
+                            'host' => $database_host,
+                            'port' => $database_port,
+                            'database' => $database_name,
+                            'username' => $database_username,
+                            'password' => $database_password,
+                            'charset' => 'utf8mb4',
+                            'collation' => 'utf8mb4_unicode_ci',
+                            'prefix' => '',
+                            'prefix_indexes' => true,
+                            'strict' => false,
+                            'engine' => null
+                        ];
+                            \Config::set('database.connections.mysql', $default);
+                            //\Config::set('database.connections.mysql.database',$database_name);
+                            DB::purge('mysql');
+                            $dbname = DB::connection()->getDatabaseName();
+                        }
+                    }
+                }
+            }
         }
+       
     }
 }

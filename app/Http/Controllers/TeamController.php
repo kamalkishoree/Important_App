@@ -12,6 +12,8 @@ use App\Model\TagsForTeam;
 use App\Model\Manager;
 use App\Model\SubAdminTeamPermissions;
 use Auth;
+use Exception;
+
 class TeamController extends Controller
 {
     protected $location_accuracy = [
@@ -37,12 +39,10 @@ class TeamController extends Controller
         
         $managers = Manager::where('client_id', auth()->user()->code)->orderBy('name')->get();
         $teams  = Team::with(['manager', 'tags', 'agents'])->where('client_id', auth()->user()->code);
-        if(Auth::user()->is_superadmin == 0 && Auth::user()->all_team_access == 0)
-        {   
-           $teams = $teams->whereHas('permissionToManager', function  ($query) {
-                                $query->where('sub_admin_id',Auth::user()->id);
-                                });
-
+        if (Auth::user()->is_superadmin == 0 && Auth::user()->all_team_access == 0) {
+            $teams = $teams->whereHas('permissionToManager', function ($query) {
+                $query->where('sub_admin_id', Auth::user()->id);
+            });
         }
         $teams = $teams->orderBy('created_at', 'DESC')->with('permissionToManager')->paginate(10);
 
@@ -50,7 +50,7 @@ class TeamController extends Controller
 
         $showTag = array();
         foreach ($tags as $key => $value) {
-            if(!empty($value->name)){
+            if (!empty($value->name)) {
                 $showTag[] = $value->name;
             }
         }
@@ -76,7 +76,7 @@ class TeamController extends Controller
         $tags  = TagsForTeam::all();
         $tag   = [];
         foreach ($tags as $key => $value) {
-            array_push($tag,$value->name);
+            array_push($tag, $value->name);
         }
 
         return view('team.add-team')->with([
@@ -88,7 +88,7 @@ class TeamController extends Controller
     }
 
     /**
-     * Validation method for teams data 
+     * Validation method for teams data
      */
     protected function validator(array $data)
     {
@@ -105,16 +105,15 @@ class TeamController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request,$domain = '')
+    public function store(Request $request, $domain = '')
     {
         $validator = $this->validator($request->all())->validate();
         $newtag = explode(",", $request->tags);
         $tag_id = [];
         foreach ($newtag as $key => $value) {
-
-            if(!empty($value)){
+            if (!empty($value)) {
                 $check = TagsForTeam::firstOrCreate(['name' => $value]);
-                array_push($tag_id,$check->id);
+                array_push($tag_id, $check->id);
             }
         }
         $data = [
@@ -128,14 +127,13 @@ class TeamController extends Controller
         $team = Team::create($data);
         $team->tags()->sync($tag_id);
 
-        if($team->wasRecentlyCreated){
+        if ($team->wasRecentlyCreated) {
             return response()->json([
                 'status'=>'success',
                 'message' => 'Team created Successfully!',
                 'data' => $team
             ]);
         }
-
     }
 
     /**
@@ -157,14 +155,14 @@ class TeamController extends Controller
      */
   
 
-    public function edit($domain = '',$id)
+    public function edit($domain = '', $id)
     {
         $team = Team::with(['tags'])->where('id', $id)->first();
         $agents = Agent::all();
         $tags  = TagsForTeam::all();
         $uptag   = [];
         foreach ($tags as $key => $value) {
-            array_push($uptag,$value->name);
+            array_push($uptag, $value->name);
         }
         
         $teamTagIds = [];
@@ -176,7 +174,7 @@ class TeamController extends Controller
     }
 
     /**
-     * Validation method for team Update 
+     * Validation method for team Update
      */
     protected function updateValidator(array $data)
     {
@@ -194,7 +192,7 @@ class TeamController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request,$domain = '', $id)
+    public function update(Request $request, $domain = '', $id)
     {
         $validator = $this->updateValidator($request->all())->validate();
 
@@ -204,10 +202,9 @@ class TeamController extends Controller
 
         $tag_id = [];
         foreach ($newtag as $key => $value) {
-
-            if(!empty($value)){
+            if (!empty($value)) {
                 $check = TagsForTeam::firstOrCreate(['name' => $value]);
-                array_push($tag_id,$check->id);
+                array_push($tag_id, $check->id);
             }
         }
 
@@ -219,7 +216,7 @@ class TeamController extends Controller
         $getTeam->tags()->sync($tag_id);
         $team = Team::where('id', $id)->update($data);
 
-        if($team){
+        if ($team) {
             return response()->json([
                 'status'=>'success',
                 'message' => 'Team updated Successfully!',
@@ -234,10 +231,14 @@ class TeamController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($domain = '', $id)
     {
-        Team::where('id', $id)->delete();
-        return redirect()->back()->with('success', 'Team deleted successfully!');
+        try {
+            Team::where('id', $id)->delete();
+            return redirect()->back()->with('success', 'Team deleted successfully!');
+        } catch (Exception $e) {
+            return redirect()->back()->with('error', $e->getMessage());
+        }
     }
 
     public function removeTeamAgent(Request $request, $team_id, $agent_id)
@@ -247,4 +248,5 @@ class TeamController extends Controller
         ]);
         return redirect()->back()->with('success', 'Agent removed successfully!');
     }
+    
 }

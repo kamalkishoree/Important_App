@@ -97,7 +97,7 @@ class ClientNotificationController extends Controller
     }
 
     /**
-     * Validation method for clients Update 
+     * Validation method for clients Update
      */
     protected function updateClientEventValidator(array $data)
     {
@@ -108,7 +108,7 @@ class ClientNotificationController extends Controller
         ]);
     }
 
-    public function updateClientNotificationEvent(Request $request,$domain = '')
+    public function updateClientNotificationEvent(Request $request, $domain = '')
     {
         $validator = $this->updateClientEventValidator($request->all())->validate();
 
@@ -155,7 +155,6 @@ class ClientNotificationController extends Controller
 
     public function setWebhookUrl(Request $request)
     {
-
         $validator = $this->updateWebhookValidator($request->all())->validate();
 
         $update = [
@@ -171,9 +170,9 @@ class ClientNotificationController extends Controller
     }
 
     public function setmessage(Request $request)
-    {        
+    {
         $message = NotificationEvent::find($request->notification_event_id);
-        $message->message = $request->message; 
+        $message->message = $request->message;
         $message->save();
 
         return redirect()->back();
@@ -188,11 +187,11 @@ class ClientNotificationController extends Controller
         $date =  Carbon::now()->toDateTimeString();
         $get = Roster::where('notification_time', '<=', $date)->with('agent')->get();
         
-        foreach($get as $item){
-            array_push($recipients,$item->agent->device_token);
-        }       
+        foreach ($get as $item) {
+            array_push($recipients, $item->agent->device_token);
+        }
        
-        if(isset($recipients)){
+        if (isset($recipients)) {
             fcm()
             ->to($recipients) // $recipients must an array
             ->priority('high')
@@ -207,8 +206,5 @@ class ClientNotificationController extends Controller
             ])
             ->send();
         }
-        
     }
-
-
 }

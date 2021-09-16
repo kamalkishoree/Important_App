@@ -1,0 +1,1 @@
+{{ (!empty($cms[1]->content))?$cms[1]->content:"" }}

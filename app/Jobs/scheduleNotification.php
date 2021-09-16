@@ -82,7 +82,7 @@ class scheduleNotification implements ShouldQueue
           // return $ex->getMessage();
         }
 
-        Log::info('database:'.$schemaName);
+    //    Log::info('database:'.$schemaName);
 
         $databaseName = 'db_'.$this->data['database']['database_name'];
           switch ($this->data['allocation']['auto_assign_logic']) {
@@ -175,6 +175,7 @@ class scheduleNotification implements ShouldQueue
                 'device_type'         => $oneagent->device_type,
                 'device_token'        => $oneagent->device_token,
                 'detail_id'           => $randem,
+                'cash_to_be_collected'=> $dataget['cash_to_be_collected']??''
             ];
             DB::disconnect('db_'.$dataget['database']['code']);
             RosterCreate::dispatch($data, $extraData);
@@ -256,6 +257,7 @@ class scheduleNotification implements ShouldQueue
                             'device_type'         => $geoitem->device_type,
                             'device_token'        => $geoitem->device_token,
                             'detail_id'           => $randem,
+                            'cash_to_be_collected' => $dataget['cash_to_be_collected']??''
 
                         ];
                         if (count($dummyentry) < 1) {
@@ -289,6 +291,7 @@ class scheduleNotification implements ShouldQueue
                         'device_type'         => $rem['device_type'],
                         'device_token'        => $rem['device_token'],
                         'detail_id'           => $randem,
+                        'cash_to_be_collected' => $dataget['cash_to_be_collected']??''
                     ];
 
                         $time = Carbon::parse($time)
@@ -324,12 +327,12 @@ class scheduleNotification implements ShouldQueue
 
     public function SendToAll($dataget,$databaseName)
     {
-       // Log::info($dataget);
+        Log::info('SendToAll');
         $allcation_type    = 'AR';
         $date = \Carbon\Carbon::today()->toDateString();
         //$auth              = Client::where('code', $dataget['database']['code'])->with(['getAllocation', 'getPreference'])->first();
         
-
+      //  Log::info($date);
         
 
         $expriedate        = (int)$dataget['database']['getAllocation']['request_expiry'];
@@ -368,7 +371,7 @@ class scheduleNotification implements ShouldQueue
 
         $geo = $dataget['geo'];
         
-        if (!isset($geo)) {print_r('inner_geo');
+        if (!isset($geo)) {Log::info('geo');Log::info($dataget['agent_id']);
             $oneagent = DB::connection($databaseName)->table('agents')->where('id', $dataget['agent_id'])->first();
             $data = [
                 'order_id'            => $dataget['orders_id'],
@@ -381,13 +384,14 @@ class scheduleNotification implements ShouldQueue
                 'device_type'         => $oneagent->device_type,
                 'device_token'        => $oneagent->device_token,
                 'detail_id'           => $randem,
+                'cash_to_be_collected'=> $dataget['cash_to_be_collected']??''
             ];
            //DB::disconnect('db_'.$dataget['database']['code']);
             RosterCreate::dispatch($data, $extraData);
             //$this->dispatch(new RosterCreate());
             
         } else {
-            print_r('outer_geo');
+            //print_r('outer_geo');
             $getgeo = DB::connection($databaseName)->table('driver_geos')
             ->select('driver_geos.driver_id as driId', 'agents.*', 'agent_logs.*', 'ord.num_order')
             ->join('agents','driver_geos.driver_id','agents.id')
@@ -398,7 +402,7 @@ class scheduleNotification implements ShouldQueue
             })
             ->groupBy('agent_logs.agent_id')
             ->get();
-           
+            Log::info($getgeo);
 
             for ($i = 1; $i <= $try; $i++) {
                 foreach ($getgeo as $key =>  $geoitem) {
@@ -414,6 +418,7 @@ class scheduleNotification implements ShouldQueue
                         'device_type'         => $geoitem->device_type,
                         'device_token'        => $geoitem->device_token,
                         'detail_id'           => $randem,
+                        'cash_to_be_collected'=> $dataget['cash_to_be_collected']??''
 
                      ];
                     array_push($data, $datas);
@@ -497,6 +502,7 @@ class scheduleNotification implements ShouldQueue
                 'device_type'         => $oneagent->device_type,
                 'device_token'        => $oneagent->device_token,
                 'detail_id'           => $randem,
+                'cash_to_be_collected'=> $dataget['cash_to_be_collected']??''
             ];
             DB::disconnect('db_'.$dataget['database']['code']);
             RosterCreate::dispatch($data, $extraData);
@@ -532,6 +538,7 @@ class scheduleNotification implements ShouldQueue
                         'device_type'         => $geoitem->device_type,
                         'device_token'        => $geoitem->device_token,
                         'detail_id'           => $randem,
+                        'cash_to_be_collected'=> $dataget['cash_to_be_collected']??''
                     ];
                    
                     $time = Carbon::parse($time)
@@ -656,6 +663,7 @@ class scheduleNotification implements ShouldQueue
                 'device_type'         => $oneagent->device_type,
                 'device_token'        => $oneagent->device_token,
                 'detail_id'           => $randem,
+                'cash_to_be_collected'=> $dataget['cash_to_be_collected']??''
             ];
             DB::disconnect('db_'.$dataget['database']['code']);
             RosterCreate::dispatch($data, $extraData);
@@ -694,6 +702,7 @@ class scheduleNotification implements ShouldQueue
                         'device_type'         => $geoitem['device_type'],
                         'device_token'        => $geoitem['device_token'],
                         'detail_id'           => $randem,
+                        'cash_to_be_collected'=> $dataget['cash_to_be_collected']??''
                     ];
                     $counter++;
                     if($counter == $maxsize){

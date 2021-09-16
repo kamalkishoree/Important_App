@@ -12,6 +12,7 @@ use App\Model\TagsForTeam;
 use App\Model\Team;
 use App\Model\TeamTag;
 use Illuminate\Http\Request;
+use Auth;
 use Illuminate\Support\Facades\Validator;
 
 class PricingRulesController extends Controller
@@ -23,13 +24,43 @@ class PricingRulesController extends Controller
      */
     public function index()
     {
-        $pricing = PricingRule::orderBy('created_at', 'DESC')->paginate(10);
-        $priority = PricePriority::where('id',1)->first();
+        $pricing = PricingRule::orderBy('created_at', 'DESC');
+        if (Auth::user()->is_superadmin == 0 && Auth::user()->all_team_access == 0) {
+            $pricing = $pricing->whereHas('team.permissionToManager', function ($query) {
+                $query->where('sub_admin_id', Auth::user()->id);
+            });
+        }
+        
+        $pricing = $pricing->get();
+
+        $priority = PricePriority::where('id', 1)->first();
 
         $geos       = Geo::all()->pluck('name', 'id');
-        $teams      = Team::all()->pluck('name', 'id');
-        $team_tag   = TagsForTeam::all()->pluck('name', 'id');
-        $driver_tag = TagsForAgent::all()->pluck('name', 'id');
+
+        $teams      = Team::OrderBy('id','asc');
+        
+        if (Auth::user()->is_superadmin == 0 && Auth::user()->all_team_access == 0) {
+            $teams = $teams->whereHas('permissionToManager', function ($query) {
+                $query->where('sub_admin_id', Auth::user()->id);
+            });
+        }
+        $teams      = $teams->get()->pluck('name', 'id');
+        $team_tag   = TagsForTeam::OrderBy('id','asc');
+        if (Auth::user()->is_superadmin == 0 && Auth::user()->all_team_access == 0) {
+            $team_tag = $team_tag->whereHas('assignTeams.team.permissionToManager', function ($query) {
+                $query->where('sub_admin_id', Auth::user()->id);
+            });
+        } 
+        
+        $team_tag = $team_tag->get()->pluck('name', 'id');
+        $driver_tag = TagsForAgent::OrderBy('id','asc');
+        if (Auth::user()->is_superadmin == 0 && Auth::user()->all_team_access == 0) {
+            $driver_tag = $driver_tag->whereHas('assignTags.agent.team.permissionToManager', function ($query) {
+                $query->where('sub_admin_id', Auth::user()->id);
+            });
+        }
+        
+        $driver_tag = $driver_tag->get()->pluck('name', 'id');
         return view('pricing-rules.index')->with(['pricing' => $pricing, 'priority'=>$priority, 'geos' => $geos, 'teams' => $teams, 'team_tag' => $team_tag, 'driver_tag' => $driver_tag]);
     }
 
@@ -44,9 +75,9 @@ class PricingRulesController extends Controller
         $teams      = Team::all()->pluck('name', 'id');
         $team_tag   = TagsForTeam::all()->pluck('name', 'id');
         $driver_tag = TagsForAgent::all()->pluck('name', 'id');
-        $clientPre  = ClientPreference::where('id',1)->with('currency')->first();
+        $clientPre  = ClientPreference::where('id', 1)->with('currency')->first();
        
-        return view('pricing-rules.add-pricing', compact('geos','teams','team_tag','driver_tag'));
+        return view('pricing-rules.add-pricing', compact('geos', 'teams', 'team_tag', 'driver_tag'));
     }
 
 
@@ -65,14 +96,14 @@ class PricingRulesController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request,$domain = '')
+    public function store(Request $request, $domain = '')
     {
         //$validator = $this->validator($request->all())->validate();
        
         $data = [
             'name'                            => $request->name,
-            'start_date_time'                 => $request->start_date_time,
-            'end_date_time'                   => $request->end_date_time,
+            'start_date_time'                 => $request->start_date_time??date("Y-m-d H:i:s"),
+            'end_date_time'                   => $request->end_date_time??date("Y-m-d H:i:s", strtotime('+15 years')),
             'is_default'                      => $request->is_default,
             'geo_id'                          => $request->geo_id,
             'team_id'                         => $request->team_id,
@@ -104,7 +135,7 @@ class PricingRulesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($domain = '',$id)
+    public function show($domain = '', $id)
     {
         //
     }
@@ -117,15 +148,14 @@ class PricingRulesController extends Controller
      */
     
 
-    public function edit($domain = '',$id)
+    public function edit($domain = '', $id)
     {
-        $pricing = PricingRule::where('id',$id)->first();
-        //dd($pricing->toArray());
+        $pricing = PricingRule::where('id', $id)->first();
         $geos       = Geo::all()->pluck('name', 'id');
         $teams      = Team::all()->pluck('name', 'id');
         $team_tag   = TagsForTeam::all()->pluck('name', 'id');
         $driver_tag = TagsForAgent::all()->pluck('name', 'id');
-        $clientPre  = ClientPreference::where('id',1)->with('currency')->first();
+        $clientPre  = ClientPreference::where('id', 1)->with('currency')->first();
         $returnHTML = view('pricing-rules.form')->with(['pricing' => $pricing, 'geos' => $geos, 'teams' => $teams, 'team_tag' => $team_tag, 'driver_tag' => $driver_tag,'client_pre'=> $clientPre])->render();
 
         return response()->json(array('success' => true, 'html'=>$returnHTML));
@@ -138,9 +168,8 @@ class PricingRulesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $domain = '',$id)
-    {       
-
+    public function update(Request $request, $domain = '', $id)
+    {
         $getAgent = PricingRule::find($id);
         $data = [
             'name'                            => $request->name,
@@ -169,9 +198,16 @@ class PricingRulesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($domain = '',$id)
+    public function destroy($domain = '', $id)
     {
-        PricingRule::where('id',$id)->delete();
+        $del_price_rule = PricingRule::where('id', $id);
+        if (Auth::user()->is_superadmin == 0 && Auth::user()->all_team_access == 0) {
+            $del_price_rule = $del_price_rule->orWhereHas('team.permissionToManager', function ($query) {
+                $query->where('sub_admin_id', Auth::user()->id);
+            });
+        }
+        $del_price_rule = $del_price_rule->delete();
+
         return redirect()->back()->with('success', 'Task deleted successfully!');
     }
 }

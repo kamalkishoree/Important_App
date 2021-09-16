@@ -18,11 +18,10 @@ class AllocationController extends Controller
      */
     public function index()
     {
-        
-        
-        $preference = ClientPreference::where('client_id',Auth::user()->code)->first();
+        $preference = ClientPreference::where('client_id', Auth::user()->code)->first();
 
-        $allocation = AllocationRule::where('client_id',Auth::user()->code)->first();;
+        $allocation = AllocationRule::where('client_id', Auth::user()->code)->first();
+        ;
       
         
         return view('auto-allocation')->with([
@@ -89,26 +88,23 @@ class AllocationController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request,$domain = '', $id)
-    { 
-        
+    public function update(Request $request, $domain = '', $id)
+    {
         $validator = $this->updateValidator($request->all())->validate();
         $request['manual_allocation'] = $request->manual_allocation ?? 'n';
         $updatePreference = AllocationRule::updateOrCreate([
             'client_id' => $id
-        ],$request->all());
+        ], $request->all());
         
-       return redirect()->back()->with('success', 'Allocation updated successfully!');
+        return redirect()->back()->with('success', 'Allocation updated successfully!');
     }
 
-    public function updateAllocation(Request $request,$domain = '',$id)
-    { 
-        
-        
+    public function updateAllocation(Request $request, $domain = '', $id)
+    {
         $updatePreference = ClientPreference::updateOrCreate([
             'client_id' => $id
-        ],$request->all());
-        return response()->json(true);    
+        ], $request->all());
+        return response()->json(true);
     }
 
     /**

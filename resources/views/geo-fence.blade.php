@@ -153,7 +153,9 @@ exit;
                                     <div class="form-group">
                                         <label>Team</label> <br />
                                         <select id="selectize-select" name="team_id">
+                                            @if(Auth::user()->is_superadmin == 1 || Auth::user()->all_team_access == 1)
                                             <option value="0">All</option>
+                                            @endif
                                             @foreach ($teams as $team)
                                                 <option value="{{ $team->id }}">{{ $team->name }}</option>
                                             @endforeach

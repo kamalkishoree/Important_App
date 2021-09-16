@@ -15,7 +15,7 @@
     <link rel="stylesheet" href="{{ asset('tracking/css/bootstrap.css') }}">
     <link rel="stylesheet" href="{{ asset('tracking/css/style.css') }}">
     <link rel="stylesheet" href="{{ asset('tracking/css/responsive.css') }}">
-    <title>Royo Order Tracking</title>
+    <title> Order Tracking</title>
 </head>
 @php
 $task_type_array = ['Pickup', 'Drop-Off', 'Appointment'];
@@ -84,14 +84,19 @@ $task_type_array = ['Pickup', 'Drop-Off', 'Appointment'];
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="{{ asset('tracking/js/jquery-min.js') }}"></script>
     <script defer
-        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB85kLYYOmuAhBUPd7odVmL6gnQsSGWU-4&libraries=places,drawing,visualization&v=weekly">
+        src="https://maps.googleapis.com/maps/api/js?key={{$mapkey}}&libraries=places,drawing,visualization&v=weekly">
     </script>
     <script src="{{ asset('tracking/js/common.js') }}"></script>
     <script src="{{ asset('tracking/js/bootstrap.min.js') }}"></script>
+    
     <script>
+        var map = '';
         var alltask = {!! json_encode($tasks) !!};
         var agent_location = {!! json_encode($agent_location) !!};
         var url = window.location.origin;
+        var marker = '';
+        var directionsService = '';
+        var directionsRenderer='';
 
         if(alltask.length > 0){
             var maplat  = parseFloat(alltask[0]['latitude']);
@@ -120,9 +125,9 @@ $task_type_array = ['Pickup', 'Drop-Off', 'Appointment'];
 
 
         function initMap() {
-            const directionsService = new google.maps.DirectionsService();
-            const directionsRenderer = new google.maps.DirectionsRenderer({suppressMarkers: true});
-            const map = new google.maps.Map(document.getElementById("map_canvas"), {
+             directionsService = new google.maps.DirectionsService();
+             directionsRenderer = new google.maps.DirectionsRenderer({suppressMarkers: true});
+             map = new google.maps.Map(document.getElementById("map_canvas"), {
                 zoom: 6,
                 center: {
                     lat: maplat,
@@ -131,18 +136,18 @@ $task_type_array = ['Pickup', 'Drop-Off', 'Appointment'];
                 styles: themeType,
             });
             directionsRenderer.setMap(map);
-            calculateAndDisplayRoute(directionsService, directionsRenderer,map);
+            calculateAndDisplayRoute(directionsService, directionsRenderer,map,agent_location);
 
             addMarker(agent_location,map);
         }
 
-        function calculateAndDisplayRoute(directionsService, directionsRenderer,map) {
+        function calculateAndDisplayRoute(directionsService, directionsRenderer,map,agent_location) {
             const waypts = [];
             const checkboxArray = document.getElementById("waypoints");
 
             for (let i = 0; i < alltask.length; i++) {
                 if (i != alltask.length - 1 && alltask[i].task_status != 4 && alltask[i].task_status != 5 ) {
-                   console.log(alltask[i]);
+                 
                     waypts.push({
                         location: new google.maps.LatLng(parseFloat(alltask[i].latitude), parseFloat(alltask[i]
                             .longitude)),
@@ -190,16 +195,19 @@ $task_type_array = ['Pickup', 'Drop-Off', 'Appointment'];
 
         // Adds a marker to the map.
         function addMarker(agent_location,map) {
+       
          // Add the marker at the clicked location, and add the next-available label
          // from the array of alphabetical characters.
-
          var image = {
          url: '{{asset("demo/images/location.png")}}', // url
          scaledSize: new google.maps.Size(50, 50), // scaled size
          origin: new google.maps.Point(0,0), // origin
          anchor: new google.maps.Point(22,22) // anchor
         }; 
-         new google.maps.Marker({
+        if (marker && marker.setMap) {
+        marker.setMap(null);
+        }
+        marker = new google.maps.Marker({
             position: {lat: parseFloat(agent_location.lat),lng:  parseFloat(agent_location.long)},
             label: null,
             icon: image,
@@ -207,7 +215,7 @@ $task_type_array = ['Pickup', 'Drop-Off', 'Appointment'];
             
          });
          }
-
+         
          function makeMarker( position,icon,map) {
             new google.maps.Marker({
             position: position,
@@ -215,6 +223,47 @@ $task_type_array = ['Pickup', 'Drop-Off', 'Appointment'];
             icon: icon,
             });
          }
+
+
+
+
+
+         // traking hit api again and agian 
+         var dispatch_traking_url   = window.location.href; 
+         setInterval(function(){
+            var new_dispatch_traking_url = dispatch_traking_url.replace('/order/','/order-details/');
+                    getDriverDetails(new_dispatch_traking_url)
+                },4000);
+
+       
+            function getDriverDetails(new_dispatch_traking_url) {
+                $.ajax({
+                    type:"GET",
+                    dataType: "json",
+                    url: new_dispatch_traking_url,
+                    success: function( response ) {
+                        var agent_location_live = response.agent_location;
+                        if(agent_location_live != null){
+                          // calculateAndDisplayRoute(directionsService, directionsRenderer,map,agent_location_live);
+                           addMarker(agent_location_live,map);
+                        }
+                    }
+                });
+            }
+            
+            
+            // Use the DOM setInterval() function to change the offset of the symbol
+// at fixed intervals.
+function animateCircle(line) {
+  let count = 0;
+  window.setInterval(() => {
+    count = (count + 1) % 200;
+    const icons = line.get("icons");
+    icons[0].offset = count / 2 + "%";
+    line.set("icons", icons);
+  }, 20);
+}
+
 
 
     </script>

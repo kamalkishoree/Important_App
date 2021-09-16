@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Cache;
 use Request;
 use Config;
 use Illuminate\Support\Facades\DB;
-
+use Illuminate\Support\Facades\URL;
 class DbChooserApi
 {
     /**
@@ -34,6 +34,9 @@ class DbChooserApi
             $database_name =  'db_'.$header['client'][0];
         }
 
+       
+     
+
         if (isset($database_name)) {
             $default = [
                 'driver' => env('DB_CONNECTION', 'mysql'),
@@ -51,7 +54,7 @@ class DbChooserApi
             ];
             Config::set("database.connections.$database_name", $default);
             Config::set("client_connected", true);
-            Config::set("client_data", $client);
+          //  Config::set("client_data", $client);
             DB::setDefaultConnection($database_name);
             DB::purge($database_name);
             //DB::reconnect($database_name);
@@ -61,4 +64,5 @@ class DbChooserApi
         abort(404);
     }
 }
+
 

@@ -4,6 +4,7 @@
 @section('css')
 <link href="{{asset('assets/libs/dropzone/dropzone.min.css')}}" rel="stylesheet" type="text/css" />
 <link href="{{asset('assets/libs/dropify/dropify.min.css')}}" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" href="{{ asset('telinput/css/intlTelInput.css') }}" type="text/css">
 @endsection
 
 @section('content')
@@ -77,7 +78,29 @@
 
                             <div class="row">
                                 <div class="col-md-6">
-                                    <div class="form-group">
+
+                                    <input type="hidden" name="country_code" id="countryCode">
+
+                                    <div class="form-group" id="phone_numberInput">
+                                        <label for="phone_number" class="control-label">CONTACT NUMBER</label>
+                                        <div class="input-group">
+                                            @if(isset($subadmin) && !empty($subadmin))
+                                            <input type="tel" name="phone_number" class="form-control xyz" value="{{old('full_number','+'.$subadmin->dial_code.$subadmin->phone_number)}}"id="phone_number" placeholder="9876543210" maxlength="14">
+                                            <input type="hidden" id="countryData" name="countryData" value="us">
+                                            <input type="hidden" id="dialCode" name="dialCode" value="{{ old('dialCode', $subadmin->dial_code)}}">
+                                            @else
+                                            <input type="tel" name="phone_number" class="form-control xyz" value="{{old('full_number')}}"id="phone_number" placeholder="9876543210" maxlength="14">
+                                            <input type="hidden" id="countryData" name="countryData" value="us">
+                                            <input type="hidden" id="dialCode" name="dialCode" value="{{ old('dialCode')}}">
+                                            @endif
+                                         </div>
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong></strong>
+                                        </span>
+                                    </div>
+
+
+                                    {{-- <div class="form-group">
                                         <label for="phone_number" class="control-label">CONTACT NUMBER</label>
                                         <div class="input-group">
                                             <div class="input-group-prepend">
@@ -93,7 +116,9 @@
                                             <strong>{{ $errors->first('phone_number') }}</strong>
                                         </span>
                                         @endif
-                                    </div>
+                                    </div> --}}
+
+                                    
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
@@ -220,11 +245,14 @@
                             </div>
                                                     
                             
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <button type="submit" class="btn btn-info waves-effect waves-light">Submit</button>
-                                </div>
+                          
 
+                            <div class="row mb-2 mt-4">
+                                <div class="col-12">
+                                    <div class="form-group mb-0 text-center">
+                                        <button class="btn btn-blue btn-block" type="submit"> Submit </button>
+                                    </div>
+                                </div>
                             </div>
                         </form>
                 </div>
@@ -250,7 +278,7 @@
 
 
 <script>
-
+// var code = ;
 //for handling team access permission
 $('#team_access').on('change', function() {
         var value = this.value;
@@ -264,6 +292,30 @@ $('#team_access').on('change', function() {
         }
     });
 
+
+    $('.xyz').change(function() {
+        var phonevalue = $('.xyz').val();
+        $("#countryCode").val(mobile_number.getSelectedCountryData().dialCode);
+    });
+    
+    phoneInput();
+    function phoneInput() {
+        var input = document.querySelector(".xyz");
+        var mobile_number_input = document.querySelector(".xyz");
+        mobile_number = window.intlTelInput(mobile_number_input, {
+            separateDialCode: true,
+            hiddenInput: "full_number",
+            initialCountry: '{{$selectedCountryCode}}',
+            utilsScript: "{{ asset('telinput/js/utils.js') }}",
+        });        
+    }
+
+    $(document).delegate('.iti__country', 'click', function() {
+        var code = $(this).attr('data-country-code');
+        $('#countryData').val(code);
+        var dial_code = $(this).attr('data-dial-code');
+        $('#dialCode').val(dial_code);
+    });
     
 </script>
 @endsection

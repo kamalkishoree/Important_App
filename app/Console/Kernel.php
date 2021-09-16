@@ -31,6 +31,7 @@ class Kernel extends ConsoleKernel
     {
         
         //    $schedule->command('push:send')->everyMinute();
+      //  $schedule->command('queue:restart')->everyMinute()
     }
 
     /**

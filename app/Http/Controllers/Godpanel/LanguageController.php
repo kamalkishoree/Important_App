@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\Godpanel;
+
 use App\Http\Controllers\Controller;
 use App\Model\Language;
 use Illuminate\Http\Request;
@@ -15,7 +16,6 @@ class LanguageController extends Controller
      */
     public function index()
     {
-        
         $language = Language::orderBy('created_at', 'DESC')->paginate(10);
         return view('godpanel/language')->with(['language' => $language]);
     }

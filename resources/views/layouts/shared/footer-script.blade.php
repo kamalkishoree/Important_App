@@ -77,5 +77,6 @@ $('.showpassword').click(function(){
 <!-- App js -->
 
 <script src="{{asset('assets/js/app.min.js')}}"></script>
-
+<script src="{{asset('assets/libs/jquery-toast-plugin/jquery-toast-plugin.min.js')}}"></script>
+<script src="{{asset('assets/js/pages/toastr.init.js')}}"></script>
 @yield('script-bottom')

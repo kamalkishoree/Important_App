@@ -20,9 +20,23 @@ class GeoFenceController extends Controller
      */
     public function index()
     {
-        $teams = Team::with(['agents'])->where('client_id', auth()->user()->code)->orderBy('name')->get();
+        $teams = Team::with(['agents'])->where('client_id', auth()->user()->code)->orderBy('name');
+        if (Auth::user()->is_superadmin == 0 && Auth::user()->all_team_access == 0) {
+            $teams = $teams->whereHas('permissionToManager', function ($query) {
+                $query->where('sub_admin_id', Auth::user()->id);
+            });
+        }
 
-        $agents = Agent::all();
+        $teams = $teams->get();
+       
+        $agents = Agent::with('team');
+        if (Auth::user()->is_superadmin == 0 && Auth::user()->all_team_access == 0) {
+            $agents = $agents->whereHas('team.permissionToManager', function ($query) {
+                $query->where('sub_admin_id', Auth::user()->id);
+            });
+        }
+        
+        $agents = $agents->get();
 
         $geos = Geo::where('client_id', auth()->user()->code)->orderBy('created_at', 'DESC')->first();
 
@@ -47,14 +61,14 @@ class GeoFenceController extends Controller
         }
 
          
-         if(isset($geos)){
+        if (isset($geos)) {
             $codinates = $geos->geo_coordinates[0];
-         }else{
+        } else {
             $codinates[] = [
                 'lat' => 33.5362475,
                 'lng' => -111.9267386
             ];
-         }
+        }
 
         return view('geo-fence')->with([
             'teams' =>  $teams,
@@ -100,7 +114,7 @@ class GeoFenceController extends Controller
     }
 
     /**
-     * Validation method for geo-fence data 
+     * Validation method for geo-fence data
      */
     protected function validator(array $data)
     {
@@ -116,9 +130,8 @@ class GeoFenceController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request,$domain = '')
+    public function store(Request $request, $domain = '')
     {
-        
         $validator = $this->validator($request->all())->validate();
         
         $data = [
@@ -159,11 +172,28 @@ class GeoFenceController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($domain = '',$id)
+    public function edit($domain = '', $id)
     {
         $geo = Geo::with(['agents'])->where('id', $id)->first();
-        $teams = Team::with(['agents'])->where('client_id', auth()->user()->code)->orderBy('name')->get();
-        $agents = Agent::all();
+        $teams = Team::with(['agents'])->where('client_id', auth()->user()->code)->orderBy('name');
+        if (Auth::user()->is_superadmin == 0 && Auth::user()->all_team_access == 0) {
+            $teams = $teams->whereHas('permissionToManager', function ($query) {
+                $query->where('sub_admin_id', Auth::user()->id);
+            });
+        }
+        
+        $teams = $teams->get();
+
+
+
+        $agents = Agent::with('team');
+        if (Auth::user()->is_superadmin == 0 && Auth::user()->all_team_access == 0) {
+            $agents = $agents->whereHas('team.permissionToManager', function ($query) {
+                $query->where('sub_admin_id', Auth::user()->id);
+            });
+        }
+        
+        $agents = $agents->get();
 
         return view('update-geo-fence')->with([
             'geo' => $geo,
@@ -187,27 +217,56 @@ class GeoFenceController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $domain = '',$id)
-    {
+    public function update(Request $request, $domain = '', $id)
+    { 
         $validator = $this->updateValidator($request->all())->validate();
-        
         $geo = Geo::find($id);
+        if(Auth::user()->is_superadmin == 0)
+        {
+            $request->name = $geo->name;
+            $request->description = $geo->description;
+            $request->latlongs = $geo->geo_array;
+        }
+        
 
-        if(isset($request->latlongs))
-        $data = [
+        if (isset($request->latlongs)) {
+            $data = [
             'name'          => $request->name,
             'description'   => $request->description,
             'geo_array'     => $request->latlongs,
         ];
-        else
-        $data = [
+        } else {
+            $data = [
             'name'          => $request->name,
             'description'   => $request->description,
         ];
+        }
 
         $updated = Geo::where('id', $id)->update($data);
+       
+        if(Auth::user()->is_superadmin == 0){
+           $agents = Agent::with('team');
+                if (Auth::user()->is_superadmin == 0 && Auth::user()->all_team_access == 0) {
+                    $agents = $agents->whereHas('team.permissionToManager', function ($query) {
+                        $query->where('sub_admin_id', Auth::user()->id);
+                    });
+                }
+        
+                $agents = $agents->pluck('id');
+                
+                DriverGeo::whereIn('driver_id',$agents)->where('geo_id',$id)->delete();
+                if(isset($request->agents) && !empty($request->agents)){
+                    foreach($request->agents as $key => $driver_id)
+                DriverGeo::updateOrCreate(['geo_id' => $id,'driver_id' => $driver_id],['team_id' => $request->team_id]);
+                }
+                
+            
+        }else{
+            $geo->agents()->sync($request->agents);
+        }
+       
 
-        $geo->agents()->sync($request->agents);
+        
 
         return redirect()->back()->with('success', 'Updated successfully!');
     }
@@ -218,18 +277,46 @@ class GeoFenceController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($domain = '',$id)
+    public function destroy($domain = '', $id)
     {
         Geo::where('id', $id)->where('client_id', auth()->user()->code)->delete();
         return redirect()->back()->with('success', 'Deleted successfully!');
     }
-    public function dummy(Request $request,$domain = '')
+    public function dummy(Request $request, $domain = '')
     {
         return response()->json([
             'status'=>'success',
             'message' => 'Successfully!',
             'newchange' => $request->value
         ]);
-        
     }
+
+
+
+
+    public function newDemo()
+    {
+        $all_coordinates = [];
+        $geos = Geo::where('client_id', auth()->user()->code)->orderBy('created_at', 'DESC')->get();
+        foreach ($geos as $k => $v) {
+            $all_coordinates[] = [
+                'name' => 'abc',
+                'coordinates' => $v->geo_coordinates
+            ];
+        }
+
+        $center = [
+            'lat' => 30.0612323,
+            'lng' => 76.1239239
+        ];
+
+        if (!empty($all_coordinates)) {
+            $center['lat'] = $all_coordinates[0]['coordinates'][0]['lat'];
+            $center['lng'] = $all_coordinates[0]['coordinates'][0]['lng'];
+        }
+
+        return view('new-demo-page')->with(['geos' => $geos, 'all_coordinates' => $all_coordinates, 'center' => $center]);
+    }
+
+    
 }

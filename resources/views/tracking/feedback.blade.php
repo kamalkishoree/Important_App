@@ -13,7 +13,7 @@
    <link rel="stylesheet" href="{{asset('tracking/css/bootstrap.css')}}">
    <link rel="stylesheet" href="{{asset('tracking/css/style.css')}}">
    <link rel="stylesheet" href="{{asset('tracking/css/responsive.css')}}">
-   <title>Royo Order Feedback</title>
+   <title> Order Feedback</title>
 </head>
 
 <body>

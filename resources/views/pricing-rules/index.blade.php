@@ -113,7 +113,7 @@
                             </div>
                         </div>
                         <div class="col-sm-4 text-right">
-                            {{-- <button type="button" class="btn btn-blue waves-effect waves-light openModal" data-toggle="modal" data-target="" data-backdrop="static" data-keyboard="false"><i class="mdi mdi-plus-circle mr-1"></i> Add Pricing Rules</button> --}}
+                            <button type="button" class="btn btn-blue waves-effect waves-light openModal" data-toggle="modal" data-target="" data-backdrop="static" data-keyboard="false"><i class="mdi mdi-plus-circle mr-1"></i> Add Pricing Rules</button>
 
                             <!--<a href="{{ route('pricing-rules.create') }}"
                                 class="btn btn-blue waves-effect waves-light"><i class="mdi mdi-plus-circle mr-1"></i>
@@ -155,11 +155,23 @@
                                         
 
                                         <td>
-                                            <div class="form-ul" style="width: 60px;">
+                                            @if($price->is_default == 0 || Auth::user()->is_superadmin == 1)
+                                                <div class="form-ul" style="width: 60px;">
                                                 <div class="inner-div"> <a href="#" href1="{{ route('pricing-rules.edit', $price->id) }}" class="action-icon editIcon" priceId="{{$price->id}}"> <i class="mdi mdi-square-edit-outline"></i></a> 
                                                 </div>
+                                            @endif    
+                                                @if($price->is_default == 0)
                                                 <div class="inner-div">
-                                                </div>
+                                                    <form method="POST" action="{{route('pricing-rules.destroy', $price->id)}}">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <div class="form-group">
+                                                            <button type="submit" class="btn btn-primary-outline action-icon" onclick="return confirm('Are you sure ?');"> <i class="mdi mdi-delete"></i></button>
+    
+                                                        </div>
+                                                    </form>
+                                                    </div>
+                                                @endif
                                             </div>
                                         </td>
                                     </tr>

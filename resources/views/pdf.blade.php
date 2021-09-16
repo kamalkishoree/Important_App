@@ -76,8 +76,8 @@
                     <?php 
                         foreach ($route as $singleroute) { ?>
                             <p>{!! $singleroute->turn !!}</p>
-                            <p><b>Distance :</b> <span>{{$singleroute->distance}}</span> </p>
-                            <p><b>Time :</b> <span>{{$singleroute->duration}}</span> </p>                            
+                            {{-- <p><b>Distance :</b> <span>{{$singleroute->distance}}</span> </p> --}}
+                            {{-- <p><b>Time :</b> <span>{{$singleroute->duration}}</span> </p>                             --}}
                         <?php }                   
                     ?>
                 </div>            

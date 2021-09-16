@@ -19,14 +19,12 @@ class AccountingController extends Controller
      */
     public function index(Request $request)
     {
-       
         if ($request->has('date')) {
+            $date_array =  (explode(" to ", $request->date));
 
-           $date_array =  (explode(" to ",$request->date));
-
-           $dateform = Carbon::parse($date_array[0])->startOfDay();
-           $dateto   = Carbon::parse(isset($date_array[1]) ? $date_array[1]:$date_array[0])->endOfDay();
-        }else{
+            $dateform = Carbon::parse($date_array[0])->startOfDay();
+            $dateto   = Carbon::parse(isset($date_array[1]) ? $date_array[1]:$date_array[0])->endOfDay();
+        } else {
             $dateform = \Carbon\Carbon::today()->startOfDay();
             $dateto   = \Carbon\Carbon::today()->endOfDay();
         }
@@ -38,18 +36,18 @@ class AccountingController extends Controller
         $totalorders        = Order::whereBetween('order_time', [$dateform,$dateto])->count();
         $totalagents        = Agent::count();
 
-        $agents             = Agent::orderBy('cash_at_hand','DESC')->limit(5)->get();
-        $customers          = Customer::withCount('orders')->orderBy('orders_count','DESC')->limit(5)->get();
-        $heatLatLog         = Location::whereIn('id', function($query) use($dateform,$dateto){
-                              $query->select('location_id')
+        $agents             = Agent::orderBy('cash_at_hand', 'DESC')->limit(5)->get();
+        $customers          = Customer::withCount('orders')->orderBy('orders_count', 'DESC')->limit(5)->get();
+        $heatLatLog         = Location::whereIn('id', function ($query) use ($dateform, $dateto) {
+            $query->select('location_id')
                               ->from(with(new Task)->getTable())
                               ->whereBetween('created_at', [$dateform,$dateto]);
-                              })->get();
+        })->get();
     
         //print_r($heatLatLog); die;
-        if($request->has('type')){
+        if ($request->has('type')) {
             $type = $request->type;
-        }else{
+        } else {
             $type = 3;
         }
         
@@ -65,7 +63,7 @@ class AccountingController extends Controller
                         $display        = date('d M Y', strtotime('-1 day', strtotime($serchdate)));
                         $check          = date('Y-m-d', strtotime('-1 day', strtotime($serchdate)));
                         $lastcount      = 0;
-                        $lastsum        = 0;                      
+                        $lastsum        = 0;
                 
                 
                 break;
@@ -79,23 +77,21 @@ class AccountingController extends Controller
                 $year = date('o', $ts);
                 $week = date('W', $ts);
                 
-                for($i = 1; $i <= 7; $i++) {
-
+                for ($i = 1; $i <= 7; $i++) {
                     $ts = strtotime($year.'W'.$week.$i);
                     $dates[]    = date("d M Y", $ts);
                     $serchdate  = date("Y-m-d", $ts);
                     $countOrders[]  = Order::whereDate('order_time', $serchdate)->count();
                     $sumOrders[]    = Order::whereDate('order_time', $serchdate)->sum('order_cost');
 
-                    if($i == 1){
+                    if ($i == 1) {
                         $display        = date('d M Y', strtotime('-1 day', strtotime($serchdate)));
                         $check          = date('Y-m-d', strtotime('-1 day', strtotime($serchdate)));
                         $lastcount      = Order::whereDate('order_time', $check)->count();
-                        $lastsum        = Order::whereDate('order_time', $check)->sum('order_cost');                        
-                        array_unshift($countOrders , $lastcount);
-                        array_unshift($sumOrders , $lastsum);
+                        $lastsum        = Order::whereDate('order_time', $check)->sum('order_cost');
+                        array_unshift($countOrders, $lastcount);
+                        array_unshift($sumOrders, $lastsum);
                     }
-                    
                 }
 
                 
@@ -103,8 +99,7 @@ class AccountingController extends Controller
             
             default:     // for monthly
 
-                for($i = 1; $i <=  date('t'); $i++)
-                {
+                for ($i = 1; $i <=  date('t'); $i++) {
                     $counter++;
                     // add the date to the dates array
                     $dates[]        = str_pad($i, 2, '0', STR_PAD_LEFT) . " " . date('M') . " " . date('Y');
@@ -112,21 +107,20 @@ class AccountingController extends Controller
                     $countOrders[]  = Order::whereDate('order_time', $serchdate)->count();
                     $sumOrders[]    = Order::whereDate('order_time', $serchdate)->sum('order_cost');
             
-                    if($i == 1){
+                    if ($i == 1) {
                         $display        = date('d M Y', strtotime('-1 day', strtotime($serchdate)));
                         $check          = date('Y-m-d', strtotime('-1 day', strtotime($serchdate)));
                         $lastcount      = Order::whereDate('order_time', $check)->count();
                         $lastsum        = Order::whereDate('order_time', $check)->sum('order_cost');
 
                        
-                        array_unshift($countOrders , $lastcount);
-                        array_unshift($sumOrders , $lastsum);
+                        array_unshift($countOrders, $lastcount);
+                        array_unshift($sumOrders, $lastsum);
                     }
-                    
                 }
         }
        
-        return view('accounting',compact('totalearning','totalagentearning','totalorders','totalagents','agents','customers','heatLatLog','countOrders','sumOrders','dates','type'));
+        return view('accounting', compact('totalearning', 'totalagentearning', 'totalorders', 'totalagents', 'agents', 'customers', 'heatLatLog', 'countOrders', 'sumOrders', 'dates', 'type'));
     }
 
     /**
@@ -147,7 +141,6 @@ class AccountingController extends Controller
      */
     public function store(Request $request)
     {
-       
     }
 
     /**

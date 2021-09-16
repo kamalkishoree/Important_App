@@ -12,7 +12,7 @@ class Client extends Authenticatable
     use Notifiable;
     protected $guard = 'client';
     protected $fillable = [
-        'name', 'email', 'password', 'phone_number', 'password', 'database_path', 'database_name', 'database_username', 'database_password', 'logo', 'company_name', 'company_address', 'custom_domain','sub_domain','status','code','confirm_password','is_superadmin','all_team_access','country_id','timezone'
+        'name', 'email', 'password', 'phone_number','dial_code', 'password', 'database_path', 'database_name', 'database_username', 'database_password', 'logo', 'company_name', 'company_address', 'custom_domain','sub_domain','status','code','confirm_password','is_superadmin','all_team_access','country_id','timezone','public_login_session'
     ];
 
     /**
@@ -72,6 +72,15 @@ class Client extends Authenticatable
     public function getAllTeams()
     {
       return $this->hasMany('App\Model\SubAdminTeamPermissions','sub_admin_id','id');
+    }
+
+
+    /**
+     * Get Clientpreference
+    */
+    public function getCountrySet()
+    {
+      return $this->belongsTo('App\Model\Countries','country_id','id');
     }
 
    

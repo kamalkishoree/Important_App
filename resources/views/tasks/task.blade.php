@@ -8,8 +8,8 @@ use Carbon\Carbon;
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
 <style>
-    #agents-datatable th, #agents-datatable td{
-        padding: 0.85rem;
+   #agents-datatable th, #agents-datatable td{
+    padding: 0.85rem;
     }
     #wrapper {
         overflow: auto !important;
@@ -130,9 +130,8 @@ use Carbon\Carbon;
                                                 @php
                                                     $timeformat = $preference->time_format == '24' ? 'H:i:s':'g:i a';
                                                     $order = Carbon::createFromFormat('Y-m-d H:i:s', $task->order_time, 'UTC');
-                                                    
-                                                    //$order->setTimezone(isset(Auth::user()->timezone) ? Auth::user()->timezone : 'Asia/Kolkata');
                                                     $order->setTimezone($client_timezone);
+                                                    $preference->date_format = $preference->date_format ?? 'm/d/Y';
                                                 @endphp
                                                 {{date(''.$preference->date_format.' '.$timeformat.'', strtotime($order))}}
 
@@ -182,6 +181,13 @@ use Carbon\Carbon;
                                                                 href="{{ route('tasks.edit', $task->id) }}"
                                                                 class="action-icon editIconBtn"> <i
                                                                     class="mdi mdi-square-edit-outline"></i></a></div>
+                                                    </div>
+                                                    <div class="inner-div">
+                                                        <div class="set-size">
+                                                            <a href1="#" href="{{ route('tasks.show', $task->id) }}" class="action-icon editIconBtn" title="Route Detail">
+                                                                <i class="fe-eye"></i>
+                                                            </a>
+                                                        </div>
                                                     </div>
                                                     <div class="inner-div">
                                                         <form id="taskdelete{{$task->id}}" method="POST"

@@ -5,6 +5,7 @@
                 <h4 class="modal-title">Add {{ Session::get('agent_name') }}</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
             </div>
+           
             <form id="submitAgent" enctype="multipart/form-data"  action="{{ url('agent/store') }}">
                 <div class="modal-body px-3 py-0">
                 
@@ -21,7 +22,7 @@
                             <p class="text-muted text-center mt-2 mb-0">Profile Pic</p>
                         </div>
                     </div>
-
+                    <span class="show_all_error invalid-feedback"></span>
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group" id="nameInput">
@@ -180,7 +181,7 @@
             <form id="UpdateAgent" method="post" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
-                <div class="modal-body px-3" id="editCardBox">
+                 <div class="modal-body px-3" id="editCardBox">
                     
                 </div>
 

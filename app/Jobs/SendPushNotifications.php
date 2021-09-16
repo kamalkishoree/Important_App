@@ -37,7 +37,7 @@ class SendPushNotifications implements ShouldQueue
     public function handle()
     {
         try {
-           print_r('ok_notification');
+        //   print_r('ok_notification');
             $schemaName = 'royodelivery_db';
             $default = [
                 'driver' => env('DB_CONNECTION', 'mysql'),
@@ -96,6 +96,7 @@ class SendPushNotifications implements ShouldQueue
                 if(isset($item->device_token))
                 array_push($recipients,$item->device_token);
             }
+            Log::info('App\Jobs\SendPushNotifications');
             $this->sendnotification($recipients);
             sleep(5);
         }
@@ -124,5 +125,11 @@ class SendPushNotifications implements ShouldQueue
         
         //Log::info('sendinglog');
         
+    }
+
+    public function failed(\Throwable $exception)
+    {
+        // Log failure
+        Log::info($exception);
     }
 }

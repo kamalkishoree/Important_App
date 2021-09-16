@@ -15,17 +15,35 @@ use Illuminate\Support\Facades\Redirect;
 | contains the "web" middleware group. Now create something great!
 |
 */
+Route::get('dispatch-logs', '\Rap2hpoutre\LaravelLogViewer\LogViewerController@index');
 
+Route::get('/howto/signup', function(){
+	return view('How-to-SignUp-in-Royo-Dispatcher');
+});
+Route::get('terms_n_condition', 'CMSScreenController@terms_n_condition');
+Route::get('privacy_policy', 'CMSScreenController@privacy_policy');
 
 Auth::routes();  
 
+Route::get('check-redis-jobs', function(){
+	$connection = null;
+	$default = 'default';
+
+//For the delayed jobs
+print_r("For the delayed jobs");
+print_r("<pre>");
+print_r( \Queue::getRedis()->connection($connection)->zrange('queues:'.$default.':delayed' ,0, -1) );
+print_r("</pre>");
+//For the reserved jobs
+print_r("For the reserved jobs");
+print_r("<pre>");
+var_dump( \Queue::getRedis()->connection($connection)->zrange('queues:'.$default.':reserved' ,0, -1) );
+print_r("</pre>");
+});
 
 
-Route::group(['prefix' => '/godpanel'], function () {
 
-	Route::get('verify-custom-domain','Godpanel\LoginController@verifyCustomDomain')->name('verifyCustomDomain');
-
-
+Route::group(['prefix' => '/godpanel','middleware' => 'CheckGodPanel'], function () {
 	Route::get('/', function(){
 		return view('godpanel/login');
 	});
@@ -38,7 +56,7 @@ Route::group(['prefix' => '/godpanel'], function () {
 	
 		Route::any('/logout', 'Godpanel\LoginController@logout')->name('god.logout');
 		Route::get('dashboard','Godpanel\DashBoardController@index')->name('god.dashboard');
-		Route::resource('client','ClientController');
+		Route::resource('client','Godpanel\ClientController');
 		Route::resource('language','Godpanel\LanguageController');
 		Route::resource('currency','Godpanel\CurrencyController');
 	});	
@@ -48,15 +66,22 @@ Route::group(['prefix' => '/godpanel'], function () {
 Route::domain('{domain}')->middleware(['subdomain'])->group(function() {
 	Route::group(['middleware' => ['domain','database']], function () {		
 
-		Route::get('/loginForm', function(){
+		Route::get('/signin', function(){
 			return view('auth/login');
+		})->name('client-login');	
+		Route::get('get-order-session','LoginController@getOrderSession')->name('setorders');		
 		});
+
+		Route::get('/demo/page', function(){
+			return view('demo');
+		});
+
 		Route::post('/login/client', 'LoginController@clientLogin')->name('client.login');
 		Route::get('/wrong/url','LoginController@wrongurl')->name('wrong.client');
-
 		Route::group(['middleware' => 'database'], function()
 		{
 			Route::get('/order/tracking/{clientcode}/{order_id}','TrackingController@OrderTracking')->name('order.tracking');
+			Route::get('/order-details/tracking/{clientcode}/{order_id}','TrackingController@OrderTrackingDetail')->name('order.tracking.detail');
 		});
 		
 		Route::group(['middleware' => ['auth:client'], 'prefix' => '/'], function () {
@@ -71,10 +96,10 @@ Route::domain('{domain}')->middleware(['subdomain'])->group(function() {
 				Route::get('configure', 'ClientController@ShowConfiguration')->name('configure');
 				Route::post('smtp/save','ClientController@saveSmtp')->name('smtp');
 				Route::get('options', 'ClientController@ShowOptions')->name('options');
-				// Route::resource('client','ClientController');
 				Route::resource('agent', 'AgentController');
 				Route::post('pay/receive','AgentController@payreceive')->name('pay.receive');
 				Route::get('agent/paydetails/{id}','AgentController@agentPayDetails')->name('agent.paydetails');
+				Route::post('agent/approval_status', 'AgentController@approval_status')->name('agent/approval_status');
 				Route::resource('customer', 'CustomerController');
 				Route::get('changeStatus', 'CustomerController@changeStatus');
 				Route::resource('tag', 'TagController');
@@ -97,6 +122,7 @@ Route::domain('{domain}')->middleware(['subdomain'])->group(function() {
 				Route::resource('tasks','TaskController');
 
 				Route::post('newtasks','TaskController@newtasks');
+				Route::any('updatetasks/tasks/{id}','TaskController@update');
 
 				Route::post('optimize-route','DashBoardController@optimizeRoute');
 				Route::post('arrange-route','DashBoardController@arrangeRoute');
@@ -113,7 +139,6 @@ Route::domain('{domain}')->middleware(['subdomain'])->group(function() {
 				Route::post('submit_client', 'UserProfile@SaveRecord')->name('store_client');
 				Route::any('/logout', 'LoginController@logout')->name('client.logout');
 				/* Client Profile update */
-				//Route::get('client/edit/{id}','ClientProfileController@edit')->name('client.profile.edit');
 				Route::put('client/profile/{id}','ClientProfileController@update')->name('client.profile.update');
 				Route::post('client/password/update','ClientProfileController@changePassword')->name('client.password.update');
 				Route::get('/newdemo', function(){
@@ -121,32 +146,33 @@ Route::domain('{domain}')->middleware(['subdomain'])->group(function() {
 				});				
 				
 				Route::resource('subclient','SubClientController');
-
 				Route::post('assign/agent','TaskController@assignAgent')->name('assign.agent');
 				Route::post('assign/date','TaskController@assignDate')->name('assign.date');
+			    Route::get('/order/feedback/{clientcode}/{order_id}','TrackingController@OrderFeedback')->name('order.feedback');
+				Route::post('/feedback/save','TrackingController@SaveFeedback')->name('feedbackSave');
+				Route::resource('subadmins','SubAdminController');
 
+			  		
 				// Route::get('/order/tracking/{clientcode}/{order_id}','TrackingController@OrderTracking')->name('order.tracking');
 
                Route::get('/order/feedback/{clientcode}/{order_id}','TrackingController@OrderFeedback')->name('order.feedback');
 
                Route::post('/feedback/save','TrackingController@SaveFeedback')->name('feedbackSave');
 
-			   Route::resource('subadmins','SubAdminController');
+			   //for testing
+			   //Route::get('testing','DashBoardController@ExportPdfPath');
+			   //Route::get('testing','DashBoardController@GetRouteDirection');
 
-			  		
+				
+			   Route::get('demo/page', 'GeoFenceController@newDemo')->name('new.demo');
+
 
 			
 		});
 		
 	});
-});
 
 
-
-   
-
-// Route::post('/login/client', 'LoginController@clientLogin')->name('client.login');
-// Route::get('/wrong/url','LoginController@wrongurl')->name('wrong.client');
 
 //feedback & tracking
 
@@ -156,5 +182,6 @@ Route::group(['middleware' => 'auth', 'prefix' => '/'], function () {
     Route::get('{any}', 'RoutingController@root')->name('any');
 });
 
-// landing
-// Route::get('', 'RoutingController@index')->name('index');
+
+	
+

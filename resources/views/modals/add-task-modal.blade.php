@@ -88,9 +88,12 @@
                </div>
             </div>
             
-
+            <input type="hidden" id="check-pickup-barcode" value="{{ (!empty($task_proofs[0]->barcode_requried) ? $task_proofs[0]->barcode_requried : 0)}}">
+            <input type="hidden" id="check-drop-barcode" value="{{ (!empty($task_proofs[1]->barcode_requried) ? $task_proofs[1]->barcode_requried : 0)}}">
+            <input type="hidden" id="check-appointment-barcode" value="{{ (!empty($task_proofs[2]->barcode_requried) ? $task_proofs[2]->barcode_requried : 0)}}">
+            
             <div class="taskrepet newAddHead" id="newadd">
-                <div class="copyin1 cloningDiv" id="copyin1">
+                <div class="copyin1 cloningDiv check-validation" id="copyin1">
                   <div class="requried allset">
                     <div class="row firstclone1">
                         
@@ -119,9 +122,10 @@
                             <span class="span1 delbtnhead" id="spancheck"><img style="filter: grayscale(.5);" src="{{asset('assets/images/ic_delete.png')}}"  alt=""></span>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <h4 class="header-title mb-2">Address</h4>
+                    <div class="row mb-3">
+                        <div class="col-md-6 d-flex align-items-center">
+                            <h4 class="header-title mb-0">Address</h4>
+                            <a href="javascript:void(0);" id="clear-address" class="btn btn-info clear-btn ml-3">Clear</a>
                         </div>
                         <div class="col-md-6">
                             {{-- <h4 class="header-title mb-2">Saved Addresses</h4> --}}
@@ -159,12 +163,16 @@
                                     </div>
                                     <div class="col-md-6">
                                         <div class="row no-gutters">
+                                        
                                             <div class="col-6 pr-1">
                                                 {!! Form::text('barcode[]', null, ['class' => 'form-control barcode','placeholder' => 'Task Barcode']) !!}  
                                             </div>
                                             <div class="col-6 pl-1">
                                                 {!! Form::text('quantity[]', null, ['class' => 'form-control quantity onlynumber','placeholder' => 'Quantity']) !!}
                                             </div>
+                                            <span class="span1 pickup-barcode-error">Task Barcode is required for pickup</span>
+                                            <span class="span1 drop-barcode-error">Task Barcode is required for drop</span>
+                                            <span class="span1 appointment-barcode-error">Task Barcode is required for appointment</span>
                                          </div>   
                                     </div>
                                     {{-- <div class="col-md-6">
@@ -243,7 +251,17 @@
                     </div>
 
                 </div>
-            </div>
+            </div> 
+
+            <h4 class="header-title mb-3">Call Back URL</h4>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <div class="form-group" id="make_modelInput">
+                                {!! Form::text('call_back_url', null, ['class' => 'form-control rec', 'placeholder' =>
+                                'Call Back URL']) !!}
+                            </div>
+                        </div>
+                    </div>
 
             <h4 class="header-title mb-2">Allocation</h4>
             <div class="row" id="rediodiv">

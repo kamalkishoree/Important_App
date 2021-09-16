@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Model\Tag;
 use App\Model\TagsForAgent;
 use App\Model\TagsForTeam;
+
 class TagController extends Controller
 {
     /**
@@ -38,15 +39,13 @@ class TagController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {   
+    {
         $model = '\App\Model\Tag';
-        if($request->type == 'team'){
+        if ($request->type == 'team') {
             $model = "\App\Model\TagsForTeam";
-        }
-        elseif ($request->type == 'agent') {
+        } elseif ($request->type == 'agent') {
             $model = "\App\Model\TagsForAgent";
-        }
-        else{
+        } else {
             $model = '\App\Model\Tag';
         }
         $data = [
@@ -77,13 +76,11 @@ class TagController extends Controller
     public function edit($id, $type)
     {
         $model = '\App\Model\Tag';
-        if($type == 'team'){
+        if ($type == 'team') {
             $model = "\App\Model\TagsForTeam";
-        }
-        elseif ($type == 'agent') {
+        } elseif ($type == 'agent') {
             $model = "\App\Model\TagsForAgent";
-        }
-        else{
+        } else {
             $model = '\App\Model\Tag';
         }
         $tag = $model::find($id);
@@ -100,13 +97,11 @@ class TagController extends Controller
     public function update(Request $request, $id)
     {
         $model = '\App\Model\Tag';
-        if($request->type == 'team'){
+        if ($request->type == 'team') {
             $model = "\App\Model\TagsForTeam";
-        }
-        elseif ($request->type == 'agent') {
+        } elseif ($request->type == 'agent') {
             $model = "\App\Model\TagsForAgent";
-        }
-        else{
+        } else {
             $model = '\App\Model\Tag';
         }
         $data = [
@@ -126,13 +121,11 @@ class TagController extends Controller
     public function destroy($id, $type)
     {
         $model = '\App\Model\Tag';
-        if($type == 'team'){
+        if ($type == 'team') {
             $model = "\App\Model\TagsForTeam";
-        }
-        elseif ($type == 'agent') {
+        } elseif ($type == 'agent') {
             $model = "\App\Model\TagsForAgent";
-        }
-        else{
+        } else {
             $model = '\App\Model\Tag';
         }
 

@@ -17,9 +17,9 @@ use Carbon\Carbon;
             </div>
         </div>
         <!-- start page title -->
-
+        <input type="hidden" id="order-id" value="{{ $task->id }}">
         <!-- end page title -->
-        {!! Form::model($task, ['route' => ['tasks.update', $task->id], 'enctype' => 'multipart/form-data']) !!}
+        {!! Form::model($task, ['route' => ['tasks.update', $task->id], 'enctype' => 'multipart/form-data', 'id'=>'taskFormHeader']) !!}
         {{ method_field('PATCH') }}
         @csrf
         <div class="row">
@@ -47,6 +47,9 @@ use Carbon\Carbon;
                                 </ul>
                             </div>
                         </div>
+                        <input type="hidden" id="check-pickup-barcode" value="{{ (!empty($task_proofs[0]->barcode_requried) ? $task_proofs[0]->barcode_requried : 0)}}">
+                        <input type="hidden" id="check-drop-barcode" value="{{ (!empty($task_proofs[1]->barcode_requried) ? $task_proofs[1]->barcode_requried : 0)}}">
+                        <input type="hidden" id="check-appointment-barcode" value="{{ (!empty($task_proofs[2]->barcode_requried) ? $task_proofs[2]->barcode_requried : 0)}}">
                         @php
                             
                             $order = Carbon::createFromFormat('Y-m-d H:i:s', $task->order_time, 'UTC');
@@ -128,7 +131,7 @@ use Carbon\Carbon;
                                 $maincount = 0;
                                 $newcount++;
                             @endphp
-                            <div class="copyin{{ $keys == 0 ? '1' : '' }}" id="copyin1">
+                            <div class="copyin check-validation" id="copyin1">
                                 <div class="requried allset">
                                     <div class="row firstclone1">
 
@@ -168,16 +171,17 @@ use Carbon\Carbon;
 
                                     </div>
 
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <h4 class="header-title mb-2">Address</h4>
+                                    <div class="row mb-3">
+                                        <div class="col-md-6 d-flex align-items-center">
+                                            <h4 class="header-title mb-0">Address</h4>
+                                            <a href="javascript:void(0);" id="clear-address" class="btn btn-info clear-btn ml-3">Clear</a>
                                         </div>
                                         <div class="col-md-6">
                                             
                                         </div>
                                     </div>
                                     
-                                    <span class="span1 addspan"></span>
+                                    <span class="span1 addspan">Please select a address or create new</span>
 
                                     <div class="row">
 
@@ -233,6 +237,9 @@ use Carbon\Carbon;
                                                             <div class="col-6 pl-1">
                                                                 {!! Form::text('quantity[]', $item->quantity, ['class' => 'form-control quantity onlynumber','placeholder' => 'Quantity']) !!}
                                                             </div>
+                                                            <span class="span1 pickup-barcode-error" style="display:none;">Task Barcode is required for pickup</span>
+                                                            <span class="span1 drop-barcode-error" style="display:none;">Task Barcode is required for drop</span>
+                                                            <span class="span1 appointment-barcode-error" style="display:none;">Task Barcode is required for appointment</span>
                                                         </div> 
                                                     </div>
                                                     {{-- <div class="col-md-6">
@@ -285,8 +292,16 @@ use Carbon\Carbon;
                                                                 id="{{ $keys }}{{ $items->id }}{{ 12 }}"
                                                                 name="old_address_id{{ $keys != 0 ? $keys : '' }}"
                                                                 value="{{ $items->id }}"
+                                                                data-srtadd="{{ $items->short_name }}" 
+                                                                data-adr="{{ $items->address }}" 
+                                                                data-lat="{{ $items->latitude }}" 
+                                                                data-long="{{ $items->longitude }}" 
+                                                                data-pstcd="{{ $items->post_code }}" 
+                                                                data-emil="{{ $items->email }}" 
+                                                                data-ph="{{ $items->phone_number }}"
                                                                 {{ $item->location_id == $items->id ? 'checked' : '' }}
-                                                                class="custom-control-input redio"><label
+                                                                class="custom-control-input redio old-select-address">
+                                                                <label
                                                                 class="custom-control-label"
                                                                 for="{{ $keys }}{{ $items->id }}{{ 12 }}"><span
                                                                     class="spanbold">{{ $items->short_name }}</span>-{{ $items->address }}</label>
@@ -346,8 +361,9 @@ use Carbon\Carbon;
                                 'Recipient Phone']) !!}
                                 {!! Form::hidden('Recipient_email', null, ['class' => 'form-control rec', 'placeholder' =>
                                 'Recipient Email']) !!}
-                                {!! Form::textarea('task_description', null, ['class' => 'form-control', 'placeholder' =>
-                                'Task Description', 'rows' => 2, 'cols' => 40]) !!}
+                                {{-- {!! Form::textarea('task_description', null, ['class' => 'form-control', 'placeholder' =>
+                                'Task Description', 'rows' => 2, 'cols' => 40]) !!} --}}
+                                <textarea class='form-control' placeholder='Task Description' rows='2' cols='40' name="task_description">{{$task->task_description}}</textarea>
                                 {!! Form::hidden('net_quantity', null, ['class' => 'form-control rec mt-1', 'placeholder' =>
                                 'Net Quantity']) !!}
                                 <span class="invalid-feedback" role="alert">
@@ -383,7 +399,17 @@ use Carbon\Carbon;
                         </div>
                     </div>
 
-
+                    @if($task->call_back_url)
+                    <h4 class="header-title mb-3">Call Back URL</h4>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <div class="form-group" id="make_modelInput">
+                                {!! Form::text('call_back_url', null, ['class' => 'form-control rec', 'placeholder' =>
+                                'Call Back URL','readonly']) !!}
+                            </div>
+                        </div>
+                    </div>
+                    @endif
 
                     <h4 class="header-title mb-3">Allocation</h4>
                     <div class="row my-3" id="rediodiv">
@@ -408,10 +434,12 @@ use Carbon\Carbon;
                                             {{ $task->auto_alloction == 'm' ? 'checked' : '' }}>
                                         <label class="custom-control-label" for="customRadio33">Manual</label>
                                     </li>
+                                    
                                 </ul>
                             </div>
                         </div>
                         <div class="col-md-4">
+                            <h4 class="header-title">Cash to be collected</h4>
                             <input class="form-control" type="text" placeholder="Cash to be collected"
                                 name="cash_to_be_collected"
                                 value="{{ isset($task->cash_to_be_collected) ? $task->cash_to_be_collected : '' }}">
@@ -469,8 +497,7 @@ use Carbon\Carbon;
                     <div class="row">
 
                         <div class="col-md-12">
-                            <button type="submit"
-                                class="btn btn-block btn-lg btn-blue waves-effect waves-light">Submit</button>
+                            <button type="submit" class="btn btn-block btn-lg btn-blue waves-effect waves-light submitUpdateTaskHeader">Submit</button>
                         </div>
                     </div>
 

@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\Godpanel;
+
 use App\Http\Controllers\Controller;
 use App\Model\Currency;
 use Illuminate\Http\Request;
@@ -14,7 +15,6 @@ class CurrencyController extends Controller
      */
     public function index()
     {
-        
         $currency = Currency::orderBy('created_at', 'DESC')->paginate(10);
         return view('godpanel/currency')->with(['currency' => $currency]);
     }

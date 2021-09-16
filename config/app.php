@@ -150,7 +150,7 @@ return [
         Illuminate\Filesystem\FilesystemServiceProvider::class,
         Illuminate\Foundation\Providers\FoundationServiceProvider::class,
         Illuminate\Hashing\HashServiceProvider::class,
-        // Illuminate\Mail\MailServiceProvider::class,
+        Illuminate\Mail\MailServiceProvider::class,
         Illuminate\Notifications\NotificationServiceProvider::class,
         Illuminate\Pagination\PaginationServiceProvider::class,
         Illuminate\Pipeline\PipelineServiceProvider::class,
@@ -179,6 +179,8 @@ return [
         Intervention\Image\ImageServiceProvider::class,
         Kawankoding\Fcm\FcmServiceProvider::class,
         // Barryvdh\DomPDF\ServiceProvider::class,
+
+        Rap2hpoutre\LaravelLogViewer\LaravelLogViewerServiceProvider::class,
 
     ],
 

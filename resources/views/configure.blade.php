@@ -21,7 +21,11 @@
             </div>
         </div>
         <!-- end page title -->
-
+        @if (\Session::has('success'))
+        <div class="alert alert-success">
+            <span>{!! \Session::get('success') !!}</span>
+        </div>
+    @endif
         <div class="row">
             <div class="col-md-3">
                 <form method="POST" action="{{ route('preference', Auth::user()->code) }}">
@@ -34,11 +38,7 @@
                             <div class="row mb-2">
                                 <div class="col-sm-8">
                                     <div class="text-sm-left">
-                                        @if (\Session::has('success'))
-                                            <div class="alert alert-success">
-                                                <span>{!! \Session::get('success') !!}</span>
-                                            </div>
-                                        @endif
+                                        
                                     </div>
                                 </div>
                             </div>
@@ -325,7 +325,7 @@
                     </div>
                 </form>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <form method="POST" action="{{ route('preference', Auth::user()->code) }}">
                     @csrf
                     <div class="card-box same-size">
@@ -335,18 +335,18 @@
                         </p>
                         <div class="row mb-3">
                             <div class="col-12">
-                                    <label for="custom_domain">Custom Domain</label> *Make sure you already pointed to our ip ({{\env('IP')}}) from your domain.
+                                    <label for="custom_domain">Custom Domain</label> *Make sure you already pointed to IP ({{\env('IP')}}) from your domain.
                                     <div class="domain-outer d-flex align-items-center">
                                     <div class="domain_name">https://</div>
                                     <input type="text" name="custom_domain" id="custom_domain"
                                         placeholder="dummy.com" class="form-control"
                                         value="{{ old('custom_domain', Auth::user()->custom_domain ?? '') }}">
+                                    </div>  
                                     @if ($errors->has('custom_domain'))
-                                        <span class="text-danger" role="alert">
-                                            <strong>{{ $errors->first('custom_domain') }}</strong>
-                                        </span>
+                                    <span class="text-danger" role="alert">
+                                        <strong>{{ $errors->first('custom_domain') }}</strong>
+                                    </span>
                                     @endif
-                            </div>  
                             </div>  
                         </div>
                        
@@ -363,7 +363,7 @@
             </div>
 
 
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <form method="POST" action="{{ route('preference', Auth::user()->code) }}">
                     @csrf
                     <div class="card-box same-size">
@@ -380,15 +380,54 @@
                                         <input type="text" name="sub_domain" id="sub_domain"
                                             placeholder="Sub Domain" class="form-control"
                                             value="{{ old('sub_domain', Auth::user()->sub_domain ?? '') }}"><div class="domain_name">{{\env('SUBDOMAIN')}}</div>
-                                        @if ($errors->has('sub_domain'))
-                                            <span class="text-danger" role="alert">
-                                                <strong>{{ $errors->first('sub_domain') }}</strong>
-                                            </span>
-                                        @endif
                                     </div>
+                                    @if($errors->has('sub_domain'))
+                                    <span class="text-danger" role="alert">
+                                        <strong>{{ $errors->first('sub_domain') }}</strong>
+                                    </span>
+                                @endif
                                 </div>
                                
                         </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="form-group mb-0 text-center">
+                                    <button class="btn btn-blue btn-block" type="submit"> Update </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="col-md-3">
+                <form method="POST" action="{{ route('preference', Auth::user()->code) }}">
+                    @csrf
+                    <div class="card-box same-size">
+                        <h4 class="header-title">FCM Server Key</h4>
+                        <p class="sub-header">
+                            View and Update FCM key.
+                        </p>
+                        <div class="row">
+
+                            <div class="col-12">
+                                <div class="form-group mb-3">
+                                    <div class="domain-outer border-0 d-flex align-items-center justify-content-between">
+                                    <label for="personal_access_token_v1">FCM Key</label>
+                                </div>
+                                    <input type="text" name="fcm_server_key" id="fcm_server_key"
+                                        placeholder="kjadsasd66asdas" class="form-control"
+                                        value="{{ old('fcm_server_key', $preference->fcm_server_key ?? '') }}">
+                                    @if ($errors->has('fcm_server_key'))
+                                        <span class="text-danger" role="alert">
+                                            <strong>{{ $errors->first('fcm_server_key') }}</strong>
+                                        </span>
+                                    @endif
+                                </div>
+                            </div>
+                           
+                        </div>
+
                         <div class="row">
                             <div class="col-12">
                                 <div class="form-group mb-0 text-center">

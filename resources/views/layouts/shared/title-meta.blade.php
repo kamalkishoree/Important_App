@@ -1,8 +1,12 @@
+@php
+    $image = Cache::get('clientdetails');
+    $image->name = 'Royo';
+@endphp
 <meta charset="utf-8" />
-<title>{{$title ?? ' '}} | Royo</title>
+<title>{{$title ?? ' '}} | {{$image->name??'Royo'}}</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta content="A fully featured admin theme which can be used to build CRM, CMS, etc." name="description" />
-<meta content="Coderthemes" name="author" />
+<meta content="Powered by  {{$image->name??'Royo'}} Dispatch. Fleet Management and Last Mile Delivery solution." name="description" />
+<meta content=" {{$image->name??'Royo'}} Apps" name="author" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <!-- App favicon -->
 <link rel="shortcut icon" href="{{asset('assets/images/favicon.ico')}}">

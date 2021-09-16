@@ -135,7 +135,7 @@
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content" style="">
             <div class="modal-header align-items-center border-0 mb-md-0 mb-3">
-                <h4 class="page-title m-0">Route Pricing</h4>
+                <h4 class="page-title m-0">Route</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
             </div>
             <form id="taskFormHeader" method="post" enctype="multipart/form-data" action="{{ route('tasks.store') }}">
@@ -215,9 +215,11 @@
 {{-- <script src='https://cdn.rawgit.com/pguso/jquery-plugin-circliful/master/js/jquery.circliful.min.js'></script> --}}
 {{-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB85kLYYOmuAhBUPd7odVmL6gnQsSGWU-4&libraries=places"></script>  --}}
 <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
-<script defer
-        src="https://maps.googleapis.com/maps/api/js?key={{Auth::user()->getPreference->map_key_1??''}}&libraries=places,drawing,visualization&v=weekly">
-        </script>
+@if(\Route::current()->getName() == "tasks.show")
+<script src="https://maps.googleapis.com/maps/api/js?key={{Auth::user()->getPreference->map_key_1??''}}&libraries=places,drawing,visualization&v=weekly"></script>
+@else
+<script defer src="https://maps.googleapis.com/maps/api/js?key={{Auth::user()->getPreference->map_key_1??''}}&libraries=places,drawing,visualization&v=weekly"></script>
+@endif
 <script src="{{ asset('assets/libs/selectize/selectize.min.js') }}"></script>
 <script src="{{ asset('assets/libs/multiselect/multiselect.min.js') }}"></script>
 <script src="{{ asset('assets/libs/bootstrap-select/bootstrap-select.min.js') }}"></script>
@@ -271,6 +273,7 @@
     var longitude = [];
 
     $(".addTaskModalHeader").click(function (e) {
+
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
@@ -305,6 +308,10 @@
                 $(".searchspan").hide();
                 $(".appoint").hide();
                 $(".datenow").hide();
+
+                $(".pickup-barcode-error").hide();
+                $(".drop-barcode-error").hide();
+                $(".appointment-barcode-error").hide();
                 $("#AddressInput a").click(function() {
                     $(".shows").show();
                     $(".append").hide();
@@ -401,11 +408,7 @@
                   $('.withradio .append').remove();
                   jQuery.each(array, function(i, val) {
                       $(".withradio").append(
-                          '<div class="append"><div class="custom-control custom-radio count"><input type="radio" id="' +
-                          val.id + '" name="old_address_id" value="' + val
-                          .id +
-                          '" class="custom-control-input redio callradio"><label class="custom-control-label" for="' +
-                          val.id + '"><span class="spanbold">' + val.short_name +
+                          '<div class="append"><div class="custom-control custom-radio count"><input type="radio" id="' + val.id + '" name="old_address_id" value="' + val.id + '" class="custom-control-input redio old-select-address callradio" data-srtadd="'+ val.short_name +'" data-adr="'+ val.address +'" data-lat="'+ val.latitude +'" data-long="'+ val.longitude +'" data-pstcd="'+ val.post_code +'" data-emil="'+ val.email +'" data-ph="'+ val.phone_number +'"><label class="custom-control-label" for="' + val.id + '"><span class="spanbold">' + val.short_name +
                           '</span>-' + val.address +
                           '</label></div></div>');
                   });
@@ -422,7 +425,7 @@
         $clone.removeClass('cloningDiv');
         $clone.removeClass('copyin1');
         $clone.addClass('copyin');
-        $clone.addClass('repeated-block');       
+        $clone.addClass('repeated-block check-validation');       
         
         $clone.find('.cust_add_div').prop('id', 'addHeader' + countZ);
         $clone.find('.cust_add').prop('id', 'addHeader' + countZ +'-input');
@@ -570,10 +573,37 @@
                 }
         });
 
+    $(document).on('click', '#clear-address', function(){
+        $(this).closest('.check-validation').find("input:checked").prop('checked', false);
+        $(this).closest('.check-validation').find("input[name='short_name[]']").val('');
+        $(this).closest('.check-validation').find("input[name='address_email[]']").val('');
+        $(this).closest('.check-validation').find("input[name='address[]']").val('');
+        $(this).closest('.check-validation').find("input[name='address_phone_number[]']").val('');
+        $(this).closest('.check-validation').find("input[name='post_code[]']").val('');
+        $(this).closest('.check-validation').find("input[name='latitude[]']").val('');
+        $(this).closest('.check-validation').find("input[name='longitude[]']").val('');
+    });
+    
+    $(document).on('click', '.old-select-address', function(){
+        var shortName   = $(this).data("srtadd");
+        var address     = $(this).data("adr");
+        var latitude    = $(this).data("lat");
+        var longitude   = $(this).data("long");
+        var postCode    = $(this).data("pstcd");
+        var email       = $(this).data("emil");
+        var phoneNumber = $(this).data("ph");
+
+        $(this).closest('.check-validation').find("input[name='short_name[]']").val(shortName);
+        $(this).closest('.check-validation').find("input[name='address_email[]']").val(email);
+        $(this).closest('.check-validation').find("input[name='address[]']").val(address);
+        $(this).closest('.check-validation').find("input[name='address_phone_number[]']").val(phoneNumber);
+        $(this).closest('.check-validation').find("input[name='post_code[]']").val(postCode);
+        $(this).closest('.check-validation').find("input[name='latitude[]']").val(latitude);
+        $(this).closest('.check-validation').find("input[name='longitude[]']").val(longitude);
+    });
     $(document).on("click", ".submitTaskHeader", function(e) {
-      e.preventDefault();
-    //$("#taskFormHeader").bind("submit", function() { 
-      var err = 0;
+        e.preventDefault();    
+        var err = 0;
         $(".addspan").hide();
         $(".tagspan").hide();
         $(".tagspan2").hide();
@@ -597,11 +627,41 @@
         }
         var s_name = $("input[name='short_name[]']").val();
         var s_address = $("input[name='address[]']").val();
-        if ((!$("input[name='old_address_id']:checked").val()) && (s_name=="" || s_address=="") ) {
+        if ((!$("input[name='old_address_id']:checked").val()) && (s_address=="") ) {
                 err = 1;
                 $(".addspan").show();
                 return false;
         }
+
+        
+        $(".selecttype").each(function(){
+            var taskselect              = $(this).val();
+            var checkPickupBarcode      = $('#check-pickup-barcode').val();
+            var checkDropBarcode        = $('#check-drop-barcode').val();
+            var checkAppointmentBarcode = $('#check-appointment-barcode').val();
+            var barcode                 = $(this).closest('.check-validation').find('.barcode').val();
+            if(taskselect == 1 && checkPickupBarcode == 1 && barcode == ''){
+                $(this).closest('.check-validation').find('.pickup-barcode-error').show();
+                err = 1;
+                return false;
+            }else if(taskselect == 2 && checkDropBarcode == 1 && barcode == ''){
+                $(this).closest('.check-validation').find('.drop-barcode-error').show();
+                err = 1;
+                return false;
+            }else if(taskselect == 3 && checkAppointmentBarcode == 1 && barcode == ''){
+                $(this).closest('.check-validation').find('.appointment-barcode-error').show();
+                err = 1;
+                return false;
+            }
+            // else{
+            //     $(this).closest('.check-validation').find('.pickup-barcode-error').hide();
+            //     $(this).closest('.check-validation').find('.drop-barcode-error').hide();
+            //     $(this).closest('.check-validation').find('.appointment-barcode-error').hide();
+            //     return true;
+            // }
+        });
+
+
 
        //return false;
         var selectedVal = "";

@@ -16,8 +16,7 @@ class DashBoardController extends Controller
     public function index()
     {
         return redirect()->route('client.index');
-        //return view('godpanel/dashboard');
-        
+       
     }
 
     /**

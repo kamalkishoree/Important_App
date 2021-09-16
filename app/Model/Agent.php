@@ -15,7 +15,7 @@ class Agent extends Authenticatable
 	use Notifiable;
 
     protected $fillable = [
-        'team_id', 'name', 'profile_picture', 'type', 'vehicle_type_id', 'make_model', 'plate_number', 'phone_number', 'color', 'is_activated', 'is_available','cash_at_hand','uid'
+        'team_id', 'name', 'profile_picture', 'type', 'vehicle_type_id', 'make_model', 'plate_number', 'phone_number', 'color', 'is_activated', 'is_available','cash_at_hand','uid', 'is_approved'
     ];
 
     protected $appends = ['image_url'];
@@ -70,6 +70,10 @@ class Agent extends Authenticatable
 
     public function tags(){
         return $this->belongsToMany('App\Model\TagsForAgent', 'agents_tags','agent_id','tag_id');
+    }
+
+    public function agentfirstlog(){
+        return $this->hasOne('App\Model\AgentLog','agent_id', 'id');
     }
 
 }

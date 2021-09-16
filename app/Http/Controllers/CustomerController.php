@@ -34,11 +34,10 @@ class CustomerController extends Controller
     }
 
     /**
-     * Validation method for customer 
+     * Validation method for customer
      */
     private function validationRules($id = '')
     {
-
         $rules = [
             'name' => "required|string|max:50",
         ];
@@ -72,8 +71,7 @@ class CustomerController extends Controller
 
         
         $customer = Customer::create($data);
-        if(isset($request->short_name))
-        {
+        if (isset($request->short_name)) {
             foreach ($request->short_name as $key => $value) {
                 if (isset($value) && $value != null) {
                     $datas = [
@@ -91,7 +89,7 @@ class CustomerController extends Controller
                     $Loction = Location::create($datas);
                 }
             }
-        }        
+        }
 
         if ($customer->wasRecentlyCreated) {
             return response()->json([
@@ -100,7 +98,6 @@ class CustomerController extends Controller
                 'data' => $customer
             ]);
         }
-
     }
 
     /**
@@ -120,12 +117,9 @@ class CustomerController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($domain = '',$id)
+    public function edit($domain = '', $id)
     {
-       
         $customer = Customer::where('id', $id)->with('location')->first();
-        // echo "<pre>";
-        // print_r($customer->toArray()); die;
         $returnHTML = view('Customer.form')->with('customer', $customer)->render();
 
         return response()->json(array('success' => true, 'html' => $returnHTML, 'addFieldsCount' => $customer->location->count()));
@@ -138,7 +132,7 @@ class CustomerController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request,$domain = '', $id)
+    public function update(Request $request, $domain = '', $id)
     {
         $rule = $this->validationRules($id);
         $customer = Customer::find($id);
@@ -148,15 +142,12 @@ class CustomerController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'phone_number' => $request->phone_number,
-        ];       
+        ];
 
         $customer->update($data);
-        if(isset($request->short_name))
-        {
+        if (isset($request->short_name)) {
             foreach ($request->short_name as $key => $value) {
-
                 if (isset($value) && $value != null) {
-
                     if (is_array($request->location_id) && array_key_exists($key, $request->location_id)) {
                         $location = Location::find($request->location_id[$key]);
                         if ($location) {
@@ -173,7 +164,6 @@ class CustomerController extends Controller
                             $location->save();
                         }
                     } else {
-
                         $datas = [
                             'short_name' => $value,
                             'address'    => (!empty($request->address[$key])) ? $request->address[$key] : 'unnamed',
@@ -202,8 +192,6 @@ class CustomerController extends Controller
                 'data' => $customer
             ]);
         }
-
-
     }
 
     /**
@@ -212,7 +200,7 @@ class CustomerController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($domain = '',$id)
+    public function destroy($domain = '', $id)
     {
         Customer::where('id', $id)->delete();
 
@@ -231,14 +219,14 @@ class CustomerController extends Controller
     }
 
     public function changeLocation(Request $request)
-    {        
+    {
         $locationid = $request->locationid;
         $location = Location::find($request->locationid);
         if ($location) {
             $location->location_status = 0;
             $location->save();
             echo "removed";
-        }else{
+        } else {
             echo "failed";
         }
     }

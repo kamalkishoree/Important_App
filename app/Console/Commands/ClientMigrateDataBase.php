@@ -7,9 +7,9 @@ use Config;
 use App\Model\Client;
 use Exception;
 use Illuminate\Support\Facades\Cache;
-
+use DB;
 use Illuminate\Console\Command;
-
+use Request;
 class ClientMigrateDataBase extends Command
 {
     /**
@@ -31,51 +31,45 @@ class ClientMigrateDataBase extends Command
      *
      * @return void
      */
-    public function __construct()
-    {
+    public function __construct(){
         parent::__construct();
     }
 
     /**
      * Execute the console command.
      *
-     * @return mixed
+     * @return int
      */
-    public function handle()
-    {
-       
-
-        $clients = Client::where('status', 1)->get();
-        //$clients = Client::all();
-        foreach ($clients as $key => $client) {
-
-
-            // \DB::table('clients')
-            //     ->where('id', $client->id)
-            //     ->update(['status' => 1]);
-
+    public function handle(){
+        $clients = Client::get();
+         foreach ($clients as $key => $client) {
             $database_name = 'db_' . $client->database_name;
-            $default = [
-                'driver' => env('DB_CONNECTION', 'mysql'),
-                'host' => env('DB_HOST'),
-                'port' => env('DB_PORT'),
-                'database' => $database_name,
-                'username' => env('DB_USERNAME'),
-                'password' => env('DB_PASSWORD'),
-                'charset' => 'utf8mb4',
-                'collation' => 'utf8mb4_unicode_ci',
-                'prefix' => '',
-                'prefix_indexes' => true,
-                'strict' => false,
-                'engine' => null
-            ];
-
-
-
-            Config::set("database.connections.$database_name", $default);
-            Artisan::call('migrate', ['--database' => $database_name]);
-            // Artisan::call('db:seed', ['--database' => $database_name]);
-            \DB::disconnect($database_name);
+            $this->info("migrate database start: {$database_name}!");
+            $query = "SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME =  ?";
+            $db = DB::select($query, [$database_name]);
+            if ($db) {
+                $default = [
+                    'prefix' => '',
+                    'engine' => null,
+                    'strict' => false,
+                    'charset' => 'utf8mb4',
+                    'host' => env('DB_HOST'),
+                    'port' => env('DB_PORT'),
+                    'prefix_indexes' => true,
+                    'database' => $database_name,
+                    'username' => env('DB_USERNAME'),
+                    'password' => env('DB_PASSWORD'),
+                    'collation' => 'utf8mb4_unicode_ci',
+                    'driver' => env('DB_CONNECTION', 'mysql'),
+                ];
+                Config::set("database.connections.$database_name", $default);
+                Artisan::call('migrate', ['--database' => $database_name]);
+                DB::disconnect($database_name);
+                $this->info("migrate database end: {$database_name}!");
+            }else{
+                DB::disconnect($database_name);
+                $this->info("migrate database end: {$database_name}!");
+            }
         }
     }
 }

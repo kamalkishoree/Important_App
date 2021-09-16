@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+
 class RoutingController extends Controller
 {
 
@@ -20,7 +21,6 @@ class RoutingController extends Controller
      */
     public function index()
     {
-       
         return view('index');
     }
 
@@ -30,9 +30,10 @@ class RoutingController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function root($first)
-    {   
-        if ($first != 'assets')
+    {
+        if ($first != 'assets') {
             return view($first);
+        }
         return view('index');
     }
 
@@ -40,9 +41,10 @@ class RoutingController extends Controller
      * second level route
      */
     public function secondLevel($first, $second)
-    {        
-        if ($first != 'assets')
+    {
+        if ($first != 'assets') {
             return view($first.'.'.$second);
+        }
         return view('index');
     }
 
@@ -51,8 +53,9 @@ class RoutingController extends Controller
      */
     public function thirdLevel($first, $second, $third)
     {
-        if ($first != 'assets')
+        if ($first != 'assets') {
             return view($first.'.'.$second.'.'.$third);
+        }
         return view('index');
     }
 }

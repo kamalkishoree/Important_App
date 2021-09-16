@@ -9,6 +9,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Artisan;
 use Config;
 Use Log;
 
@@ -37,9 +38,8 @@ class RosterCreate implements ShouldQueue
      */
     public function handle()
     {
-        Log::info('mesooooo');
+    
         try {
-           
             $schemaName = 'royodelivery_db';
             $default = [
                 'driver' => env('DB_CONNECTION', 'mysql'),
@@ -58,24 +58,40 @@ class RosterCreate implements ShouldQueue
 
             // config(["database.connections.mysql.database" => null]);
 
-
-
+         
             Config::set("database.connections.$schemaName", $default);
+        //    Log::info('mesooooo2');
             config(["database.connections.mysql.database" => $schemaName]);
+         //   Log::info($schemaName);
             DB::connection($schemaName)->table('rosters')->insert($this->data);
+        //    Log::info('mesooooo4');
             DB::connection($schemaName)->table('roster_details')->insert($this->extraData);
+        //    Log::info('mesooooo5');
             DB::disconnect($schemaName);
             //Roster::insert($this->data);
-            Log::info($this->data);
-            Log::info($this->extraData);
+        //    Log::info($this->data);
+        //    Log::info($this->extraData);
             Roster::create([
                 'type'  => 'extra',
                 'status'=> 10
             ]);
-            
+            Log::info('create roster');
         } catch (Exception $ex) {
+            Log::info($exception->getMessage());
            return $ex->getMessage();
         }
        
+    }
+
+    public function failed(\Throwable $exception)
+    {
+        // Log failure
+        
+        
+        Log::info('error roster');
+        Log::info($exception->getMessage());
+       
+
+
     }
 }

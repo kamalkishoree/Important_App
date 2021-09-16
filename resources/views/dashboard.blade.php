@@ -22,7 +22,6 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
             <div class="spinner-border avatar-lg text-primary m-2" role="status"></div>
         </div>
     </div> 
-
     <div id="scrollbar" class="col-md-4 col-xl-3 left-sidebar pt-3">  
         <div class="side_head d-flex justify-content-between align-items-center mb-2">
             <i class="mdi mdi-sync mr-1" onclick="reloadData()" aria-hidden="true"></i> 
@@ -170,7 +169,6 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                     <div id="collapse-{{ $item['id'] }}" class="collapse" data-parent="#accordion"
                         aria-labelledby="heading-1">
                         <div class="card-body">
-
                             <?php //echo "<pre>";
                                // print_r($item['agents']); die;?>
                             @foreach ($item['agents'] as $agent)
@@ -186,7 +184,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                     }else{
                                         $opti = "";
                                     }
-                                
+
                                     //print_r($distance_matrix[$agent['id']]); 
                                     $routeperams = "'".$distance_matrix[$agent['id']]['tasks']."','".json_encode($distance_matrix[$agent['id']]['distance'])."','".$opti."',".$agent['id'].",'".$date."'";
                                     
@@ -194,7 +192,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                     $params = "'".$distance_matrix[$agent['id']]['tasks']."','".json_encode($distance_matrix[$agent['id']]['distance'])."','yes',".$agent['id'].",'".$date."'";
                                     
                                     $turnbyturn = '<span class="navigation_btn optimize_btn" onclick="NavigatePath('.$routeperams.')">Export</span>';
-                                    //$turnbyturn = "";
+                                   //$turnbyturn = "";
                                 }else{
                                     $optimize="";
                                     $params = "";
@@ -346,7 +344,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
             </div>
             <div class="contant">
                 <div class="bottom-content">
-                    <input type="text"  id="basic-datepicker" class="datetime brdr-1" value="{{date($preference->date_format??'', strtotime($date))}}" data-date-format="{{$preference->date_format??''}}">
+                    <input type="text"  id="basic-datepicker" class="datetime brdr-1" value="{{date('Y-m-d', strtotime($date))}}" data-date-format="Y-m-d">
                     
                     <div class="dropdown d-inline-block">
                         <button class="dropdown-toggle" type="button" id="dropdownMenuButton"
@@ -448,6 +446,7 @@ $('.agentcheck').on('change', function() {
 $(document).ready(function() {
 
 $('#wrapper').addClass('dshboard');
+
 initMap();
 $('#shortclick').trigger('click');
 $(".timeago").timeago();
@@ -666,11 +665,27 @@ $('.agentdisplay_old').click(function() {
 });
 
 function initMap() {
-    //console.log(allagent);
     const haightAshbury = {    
         lat: allagent[0].agentlog && allagent[0].agentlog['lat']  != "0.00000000" ? parseFloat(allagent[0].agentlog['lat']): defaultlat,
         lng: allagent[0].agentlog && allagent[0].agentlog['long'] != "0.00000000" ? parseFloat(allagent[0].agentlog['long']):defaultlong        
     };
+    
+    // const geocoder = new google.maps.Geocoder;
+    // var address = '{{$selectedCountryCode}}';
+    // geocoder.geocode( { 'address' : address }, function( results, status ) {
+    //     if (status === google.maps.GeocoderStatus.OK) {
+    //         const haightAshbury = {    
+    //                     lat: results[0].geometry.location.lat(),
+    //                     lng: results[0].geometry.location.lng()     
+    //         };
+    //         map = new google.maps.Map(document.getElementById("map_canvas"), {
+    //             zoom: 12,
+    //             center: haightAshbury,
+    //             mapTypeId: "roadmap",
+    //             styles: themeType,
+    //         });
+    //     }
+    // });
 
     map = new google.maps.Map(document.getElementById("map_canvas"), {
         zoom: 12,
@@ -749,7 +764,7 @@ function initMap() {
             displayagent = allagent[i];
             
             if(displayagent.agentlog != null && displayagent.agentlog['lat'] != "0.00000000" && displayagent.agentlog['long'] != "0.00000000" ){
-                console.log(displayagent.agentlog);
+                // console.log(displayagent.agentlog);
                     if (displayagent['is_available'] == 1) {
                         images = url+'/demo/images/location.png';
                     }else {
@@ -771,7 +786,7 @@ function initMap() {
                        
     }
 }
-
+ 
 // function for displaying route  on map
 function calculateAndDisplayRoute(directionsService, directionsRenderer,map,alltask,agent_location) {    
             const waypts = [];
@@ -779,7 +794,7 @@ function calculateAndDisplayRoute(directionsService, directionsRenderer,map,allt
 
             for (let i = 0; i < alltask.length; i++) {
                 if (i != alltask.length - 1 && alltask[i].task_status != 4 && alltask[i].task_status != 5 ) {
-                   console.log(alltask[i]);
+                //    console.log(alltask[i]);
                     waypts.push({
                         location: new google.maps.LatLng(parseFloat(alltask[i].latitude), parseFloat(alltask[i]
                             .longitude)),
@@ -917,11 +932,20 @@ function RouteOptimization(taskids,distancematrix,optimize,agentid,date) {
             success: function(response) {
                 
                 var data = $.parseJSON(response);    
-                               
+                
                 for (var i = 0; i < data.length; i++) {
                     var object = data[i];
                     var task_id =  object['id'];
                     var tasktypeid = object['task_type_id'];
+                    var current_location = object['current_location'];
+                    if(current_location == 0)
+                    {   
+                        $('input[type=radio][name=driver_start_location]').prop('checked', false);
+                        $("input[type=radio][name=driver_start_location][value='current']").remove();
+                        $("#radio-current-location-span").remove();
+                        $("input[type=radio][name=driver_start_location][value='select']").click();
+                    }
+
                     if(tasktypeid==1)
                     {
                         tasktype = "Pickup";
@@ -1182,7 +1206,7 @@ function reInitMap(allroutes) {
             displayagent = allagent[i];
             
             if(displayagent.agentlog != null && displayagent.agentlog['lat'] != "0.00000000" && displayagent.agentlog['long'] != "0.00000000" ){
-                console.log(displayagent.agentlog);
+                // console.log(displayagent.agentlog);
                         if (displayagent['is_available'] == 1) {
                             images = url+'/demo/images/location.png';
                         }else {
@@ -1220,7 +1244,7 @@ $(".dragable_tasks").sortable({
         jQuery("#"+divid+" .card-body.ui-sortable-handle").each(function (index, element) {
             taskorder = taskorder + $(this).attr('task_id') + ",";
         });
-
+        $('input[type=radio][name=driver_start_location]').prop('checked', false);
         $.ajax({
             type: 'POST',            
             url: '{{url("/arrange-route")}}',
@@ -1287,7 +1311,12 @@ $(".dragable_tasks").sortable({
                 //         // $('.pageloader').css('display','none');
                 //     }
                 // });
-
+                if(data.current_location == 0)
+                {
+                    $("input[type=radio][name=driver_start_location][value='current']").remove();
+                    $("#radio-current-location-span").remove();
+                    $("input[type=radio][name=driver_start_location][value='select']").click();
+                }
                 $('#optimize-route-modal').modal('show');
             },
             error: function(response) {

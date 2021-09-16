@@ -55,7 +55,6 @@ class LoginController extends Controller
             $details = Auth::guard()->user();
             $user = $details['original'];
             return redirect()->route('god.dashboard');
-    
         } else {
             return redirect()->back()->with('Error', 'Invalid Credentials');
         }
@@ -64,25 +63,6 @@ class LoginController extends Controller
     public function Logout()
     {
         Auth::logout();
-        Auth::guard('client')->logout();
         return redirect()->route('get.god.login');
     }
-
-
-    public function verifyCustomDomain(Request $request)
-    {
-        $process = new Process(['/var/app/Automation/script.sh', 'devtest1.focushires.com']);
-        $process->run();
-        
-        // executes after the command finishes
-        if (!$process->isSuccessful()) {
-            throw new ProcessFailedException($process);
-        }
-        
-        echo $process->getOutput();
-    }
-    
 }
-
-
-

@@ -37,10 +37,17 @@
             <div class="card">
                 <div class="card-body">
                     <div class="row mb-2">
-                        <div class="col-sm-8">
+                        <div class="col-sm-4 text-left btn-auto d-flex align-items justify-content">
+                            <div class="form-group mb-0 mr-2">
+                                <input class="form-control" placeholder="Select date" id="sort-date-agent" name="sort_date_agent" value="{{!empty($calenderSelectedDate) ? $calenderSelectedDate : ''}}" type="text" autocomplete="off">
+                            </div>
+                            <a href="javascript:void(0);" class="btn btn-blue" id="sort-agent">Go</a>
+                            <a href="javascript:void(0);" class="btn btn-success ml-2" id="sort-agent-all">Clear</a>
+                        </div>
+                        <div class="col-sm-4">
                             <div class="text-sm-left">
                                 @if (\Session::has('success'))
-                                    <div class="alert alert-success">
+                                    <div class="alert alert-success"> 
                                         <span>{!! \Session::get('success') !!}</span>
                                     </div>
                                 @endif
@@ -66,10 +73,10 @@
                                     <th>Vehicle</th>
                                     <th>Cash Collected</th>
                                     <th>Order Earning</th>
-                                    <th>Total Received</th>
-                                    <th>Total Pay</th>
+                                    <th>Total Paid to Driver</th>
+                                    <th>Total Receive from Driver</th>
                                     <th>Final Balance</th>
-                                   
+                                    <th>Is Approved?</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -121,6 +128,12 @@
                                         {{ ($pay - $receive) - ($cash - $orders) }}
                                     </td>
                                     
+                                    <td>
+                                        <div class="custom-control custom-switch">
+                                            <input type="checkbox" class="custom-control-input agent_approval_switch" id="customSwitch_{{$agent->id}}" data-id="{{$agent->id}}" {{isset($agent->is_approved) && $agent->is_approved == 1 ? 'checked':''}}>
+                                            <label class="custom-control-label" for="customSwitch_{{$agent->id}}"></label>
+                                        </div>
+                                    </td>
                                     
                                     <td>
                                         <div class="form-ul" style="width: 60px;">
@@ -131,12 +144,10 @@
                                                     @method('DELETE')
                                                     <div class="form-group">
                                                         <button type="submit" class="btn btn-primary-outline action-icon"> <i class="mdi mdi-delete"></i></button>
-
                                                     </div>
                                                 </form>
                                             </div>
                                         </div>
-
                                     </td>
 
                                 </tr>
@@ -173,7 +184,25 @@
 @include('agent.pagescript')
 <script>
 
+    $('#sort-date-agent').flatpickr();
 
+    $('#sort-agent-all').on('click',function (e) {
+        var uri = window.location.href.toString();
+        if (uri.indexOf("?") > 0) {
+            $('#sort-date-agent').val('');
+            var clean_uri = uri.substring(0, uri.indexOf("?"));
+            window.history.replaceState(null, null, clean_uri);
+            location.reload();
+        }
+    });
+    $('#sort-agent').on('click',function (e) {
+        var sortDateAgent = $('#sort-date-agent').val();
+        if(sortDateAgent != ''){
+            var perm = "?date=" + sortDateAgent;
+            window.history.replaceState(null, null, perm);
+            location.reload();
+        }
+    });
 
     $('#selectAgent').on('change',function (e) {
         
@@ -186,11 +215,15 @@
                 success: function (data) {
                     console.log(data);
                     var order = round(data.order_cost,2);
+                    var driver_cost = round(data.driver_cost,2);
+                    var credit = round(data.credit,2);
+                    var debit = round(data.debit,2);
                     var cash  = round(data.cash_to_be_collected,2);
-                    var final = round(cash - order,2) 
-                    $("#order_earning").text(order);
+                    var final = round(cash - driver_cost,2);
+                    var new_final = round((debit - credit) - (cash - driver_cost),2);
+                    $("#order_earning").text(driver_cost);
                     $("#cash_collected").text(cash);
-                    $("#final_balance").text(final);
+                    $("#final_balance").text(new_final);
                 },
         });
         
@@ -224,6 +257,7 @@
                 data: formdata, 
                 success: function (data) {
                     $("#pay-receive-modal .close").click();
+                    location.reload();
                 },
             });
             stay.preventDefault(); 

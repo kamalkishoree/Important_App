@@ -10,6 +10,6 @@ class SubAdminPermissions extends Model
 
 
     public function permission(){
-        return $this->belongsTo('App\Model\Permissions', 'permission_id', 'id');
+        return $this->belongsTo('App\Model\Permissions', 'permission_id', 'id')->select('*','name as name_code');
     }
 }
