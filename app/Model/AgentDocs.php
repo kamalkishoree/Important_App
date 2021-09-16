@@ -11,7 +11,7 @@ class AgentDocs extends Model
 {
     //
 
-    protected $fillable = ['agent_id','file_name','file_type'];
+    protected $fillable = ['agent_id','file_name','file_type','label_name'];
     protected $appends = ['image_url'];
    
     public function getImageUrlAttribute(){
