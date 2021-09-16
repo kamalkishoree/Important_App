@@ -14,7 +14,7 @@ class CountriesWithLatLongTableSeeder extends Seeder
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         DB::table('countries')->truncate();
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-
+  
         \DB::statement("INSERT INTO `countries` (`id`, `code`, `name`, `nicename`, `iso3`, `numcode`, `phonecode`, `created_at`, `updated_at`, `latitude`, `longitude`) VALUES
         (1, 'AF', 'AFGHANISTAN', 'Afghanistan', 'AFG', 4, 93, NULL, '2021-09-16 02:13:24', '33.93911', '67.709953'),
         (2, 'AL', 'ALBANIA', 'Albania', 'ALB', 8, 355, NULL, '2021-09-16 02:13:25', '41.153332', '20.168331'),
