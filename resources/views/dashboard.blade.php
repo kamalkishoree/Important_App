@@ -671,7 +671,7 @@ function initMap() {
     };
     
     // const geocoder = new google.maps.Geocoder;
-    // var address = '';
+    // var address = '{{$selectedCountryCode}}';
     // geocoder.geocode( { 'address' : address }, function( results, status ) {
     //     if (status === google.maps.GeocoderStatus.OK) {
     //         const haightAshbury = {    
