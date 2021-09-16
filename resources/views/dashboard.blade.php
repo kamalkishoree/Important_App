@@ -422,8 +422,10 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
             $agentslocations[] = $singleagent['agentlog'];
         }        
     }
-    $defaultmaplocation['lat'] = 30.7046;
-    $defaultmaplocation['long'] = 76.7179;
+    // $defaultmaplocation['lat'] = 30.7046;
+    // $defaultmaplocation['long'] = 76.7179;
+    $defaultmaplocation['lat'] = $defaultCountryLatitude;
+    $defaultmaplocation['long'] = $defaultCountryLongitude;
     $agentslocations[] = $defaultmaplocation;
 ?>
 
