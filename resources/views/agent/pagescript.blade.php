@@ -37,7 +37,7 @@
             keyboard: false
         });
         makeTag();
-             
+
         phoneInput();
     });
 
@@ -118,6 +118,47 @@
 
                 $('#profilePic').attr("data-default-file", imgs);
                 $('#profilePic').dropify();
+                $('').dropify();
+            },
+            error: function(data) {
+                console.log('data2');
+            }
+        });
+    });
+
+    $(".viewIcon").click(function(e) {
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
+            }
+        });
+        e.preventDefault();
+
+        var uid = $(this).attr('agentId');
+
+        $.ajax({
+            type: "get",
+            url: "<?php echo url('agent'); ?>" + '/' + uid + '/show',
+            data: '',
+            dataType: 'json',
+            success: function(data) {
+                $('#view-agent-modal #viewCardBox').html(data.html);
+                $('#view-agent-modal').modal({
+                    backdrop: 'static',
+                    keyboard: false
+                });
+                makeTag();
+                phoneInput();
+                //$('.dropify').dropify();
+                var imgs = $('#profilePic').attr('showImg');
+
+                $('#profilePic').attr("data-default-file", imgs);
+                $('#profilePic').dropify();
+                $('').dropify();
+                var imgs = $('#file').attr('showImg');
+
+                $('#file').attr("data-default-file", imgs);
+                $('#file').dropify();
                 $('').dropify();
             },
             error: function(data) {
@@ -227,7 +268,7 @@
         });
     });
 
-    $('.agent_approval_switch').on('change',function() {
+    $('.agent_approval_switch').on('change', function() {
         var is_approved = $(this).prop('checked') == true ? 1 : 0;
         var agent_id = $(this).data('id');
 
@@ -241,8 +282,8 @@
                 'id': agent_id
             },
             success: function(data) {
-                if(data.status == 1){
-                    $.NotificationApp.send("",data.message,"top-right","#5ba035","success"); 
+                if (data.status == 1) {
+                    $.NotificationApp.send("", data.message, "top-right", "#5ba035", "success");
                 }
             }
         });
