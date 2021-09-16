@@ -307,7 +307,7 @@ class DashBoardController extends Controller
        
         $getAdminCurrentCountry = Countries::where('id', '=', Auth::user()->country_id)->get()->first();
         if(!empty($getAdminCurrentCountry)){
-            $countryCode = $getAdminCurrentCountry->name;
+            $countryCode  = $getAdminCurrentCountry->name;
         }else{
             $countryCode = '';
         }
