@@ -416,12 +416,15 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
 
 <?php   // for setting default location on map
     $agentslocations = array();
-    foreach ($agents as $singleagent) {
-        if((!empty($singleagent['agentlog'])) && ($singleagent['agentlog']['lat']!=0) && ($singleagent['agentlog']['long']!=0))
-        {        
-            $agentslocations[] = $singleagent['agentlog'];
-        }        
+    if(!empty($agents)){
+        foreach ($agents as $singleagent) {
+            if((!empty($singleagent['agentlog'])) && ($singleagent['agentlog']['lat']!=0) && ($singleagent['agentlog']['long']!=0))
+            {        
+                $agentslocations[] = $singleagent['agentlog'];
+            }        
+        }
     }
+    
     // $defaultmaplocation['lat'] = 30.7046;
     // $defaultmaplocation['long'] = 76.7179;
     $defaultmaplocation['lat'] = $defaultCountryLatitude;
@@ -668,8 +671,8 @@ $('.agentdisplay_old').click(function() {
 
 function initMap() {
     const haightAshbury = {    
-        lat: allagent[0].agentlog && allagent[0].agentlog['lat']  != "0.00000000" ? parseFloat(allagent[0].agentlog['lat']): defaultlat,
-        lng: allagent[0].agentlog && allagent[0].agentlog['long'] != "0.00000000" ? parseFloat(allagent[0].agentlog['long']):defaultlong        
+        lat: allagent.length != 0 && allagent[0].agentlog && allagent[0].agentlog['lat']  != "0.00000000" ? parseFloat(allagent[0].agentlog['lat']): defaultlat,
+        lng: allagent.length != 0 && allagent[0].agentlog && allagent[0].agentlog['long'] != "0.00000000" ? parseFloat(allagent[0].agentlog['long']):defaultlong        
     };
     
     // const geocoder = new google.maps.Geocoder;
