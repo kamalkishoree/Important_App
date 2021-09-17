@@ -111,84 +111,10 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
 <script src="{{ asset('telinput/js/intlTelInput.js') }}"></script>
 <link rel="stylesheet" href="{{ asset('assets/css/jquery.tagsinput-revisited.css') }}" />>
 
-@include('agent.pagescript')
+
 <script>
 
-    initDataTable();
-    function initDataTable() {
-        $('#agent-listing').DataTable({
-            "dom": '<"toolbar">Bfrtip',
-            "scrollX": true,
-            "destroy": true,
-            "processing": true,
-            "serverSide": true,
-            "responsive": true,
-            "iDisplayLength": 50,
-            language: {
-                        search: "",
-                        paginate: { previous: "<i class='mdi mdi-chevron-left'>", next: "<i class='mdi mdi-chevron-right'>" },
-                        searchPlaceholder: "Search Agent"
-            },
-            drawCallback: function () {
-                $(".dataTables_paginate > .pagination").addClass("pagination-rounded");
-            },
-            buttons: [{   
-                className:'btn btn-success waves-effect waves-light',
-                text: '<span class="btn-label"><i class="mdi mdi-export-variant"></i></span>Export CSV',
-                action: function ( e, dt, node, config ) {
-                    window.location.href = "{{ route('agents.export') }}";
-                }
-            }],
-            ajax: {
-                url: "{{url('agent/filter')}}",
-                data: function (d) {
-                    d.search = $('input[type="search"]').val();
-                    d.date_filter = $('#sort-date-agent').val();
-                    d.imgproxyurl = '{{$imgproxyurl}}';
-                }
-            },
-            columns: [
-                {data: 'uid', name: 'uid', orderable: true, searchable: false},
-                {data: 'profile_picture', name: 'profile_picture', orderable: true, searchable: false, "mRender": function ( data, type, full ) {
-                    return '<img alt="'+full.id+'" src="'+full.profile_picture+'" width="40">';
-                }},
-                {data: 'name', name: 'name', orderable: true, searchable: false, "mRender": function ( data, type, full ) {
-                    return '<a href="javascript:void(0);" class="text-body font-weight-semibold">'+full.name+'</a>';
-                }},
-                {data: 'phone_number', name: 'phone_number', orderable: true, searchable: false},
-                {data: 'type', name: 'type', orderable: true, searchable: false},
-                {data: 'team', name: 'team', orderable: true, searchable: false},
-                {data: 'vehicle_type_id', name: 'vehicle_type_id', orderable: true, searchable: false, "mRender": function ( data, type, full ) {
-                    return '<img alt="" style="width: 80px;" src="'+full.vehicle_type_id+'">';
-                }},
-                {data: 'cash_to_be_collected', name: 'cash_to_be_collected', orderable: false, searchable: false},
-                {data: 'driver_cost', name: 'driver_cost', orderable: false, searchable: false},
-                {data: 'cr', name: 'cr', orderable: false, searchable: false},
-                {data: 'dr', name: 'dr', orderable: false, searchable: false},
-                {data: 'pay_to_driver', name: 'pay_to_driver', orderable: false, searchable: false},
-                {data: 'is_approved', name: 'is_approved', orderable: false, searchable: false, "mRender": function ( data, type, full ) {
-                    var check = (full.is_approved == 1)? 'checked' : '';
-                    return '<div class="custom-control custom-switch"><input type="checkbox" class="custom-control-input agent_approval_switch" '+check+' id="customSwitch_'+full.id+'" data-id="'+full.id+'"><label class="custom-control-label" for="customSwitch_'+full.id+'"></label></div>';
-                }},
-                {data: 'action', name: 'action', orderable: false, searchable: false},
-                
-            ]
-        });         
-              
-    }
-
-
-    $("#sort-date-agent").flatpickr({ 
-        mode: "range",
-        onClose: function(selectedDates, dateStr, instance) {
-            initDataTable();
-        }
-    });
-
-    $('#sort-agent-clear').on('click', function(e) {
-        $('#sort-date-agent').val('');
-        initDataTable();
-    });
+    
     // $('#sort-agent').on('click', function(e) {
     //     var sortDateAgent = $('#sort-date-agent').val();
     //     if (sortDateAgent != '') {
@@ -198,63 +124,64 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
     //     }
     // });
 
-    // $('#selectAgent').on('change', function(e) {
+    $('#selectAgent').on('change', function(e) {
 
-    //     var optionSelected = $("option:selected", this);
-    //     var valueSelected = this.value;
-    //     $.ajax({
-    //         type: 'get',
-    //         url: "{{ url('/agent/paydetails') }}/" + valueSelected,
-    //         data: '',
-    //         success: function(data) {
-    //             console.log(data);
-    //             var order = round(data.order_cost, 2);
-    //             var driver_cost = round(data.driver_cost, 2);
-    //             var credit = round(data.credit, 2);
-    //             var debit = round(data.debit, 2);
-    //             var cash = round(data.cash_to_be_collected, 2);
-    //             var final = round(cash - driver_cost, 2);
-    //             var new_final = round((debit - credit) - (cash - driver_cost), 2);
-    //             $("#order_earning").text(driver_cost);
-    //             $("#cash_collected").text(cash);
-    //             $("#final_balance").text(new_final);
-    //         },
-    //     });
+        var optionSelected = $("option:selected", this);
+        var valueSelected = this.value;
+        $.ajax({
+            type: 'get',
+            url: "{{ url('/agent/paydetails') }}/" + valueSelected,
+            data: '',
+            success: function(data) {
+                console.log(data);
+                var order = round(data.order_cost, 2);
+                var driver_cost = round(data.driver_cost, 2);
+                var credit = round(data.credit, 2);
+                var debit = round(data.debit, 2);
+                var cash = round(data.cash_to_be_collected, 2);
+                var final = round(cash - driver_cost, 2);
+                var new_final = round((debit - credit) - (cash - driver_cost), 2);
+                $("#order_earning").text(driver_cost);
+                $("#cash_collected").text(cash);
+                $("#final_balance").text(new_final);
+            },
+        });
 
-    // });
+    });
 
-    // function round(value, exp) {
-    //     if (typeof exp === 'undefined' || +exp === 0)
-    //         return Math.round(value);
+    function round(value, exp) {
+        if (typeof exp === 'undefined' || +exp === 0)
+            return Math.round(value);
 
-    //     value = +value;
-    //     exp = +exp;
+        value = +value;
+        exp = +exp;
 
-    //     if (isNaN(value) || !(typeof exp === 'number' && exp % 1 === 0))
-    //         return NaN;
+        if (isNaN(value) || !(typeof exp === 'number' && exp % 1 === 0))
+            return NaN;
 
-    //     // Shift
-    //     value = value.toString().split('e');
-    //     value = Math.round(+(value[0] + 'e' + (value[1] ? (+value[1] + exp) : exp)));
+        // Shift
+        value = value.toString().split('e');
+        value = Math.round(+(value[0] + 'e' + (value[1] ? (+value[1] + exp) : exp)));
 
-    //     // Shift back
-    //     value = value.toString().split('e');
-    //     return +(value[0] + 'e' + (value[1] ? (+value[1] - exp) : -exp));
-    // }
+        // Shift back
+        value = value.toString().split('e');
+        return +(value[0] + 'e' + (value[1] ? (+value[1] - exp) : -exp));
+    }
 
-    // $("#submitpayreceive").submit(function(stay) {
+    $("#submitpayreceive").submit(function(stay) {
 
-    //     var formdata = $(this).serialize();
-    //     $.ajax({
-    //         type: 'POST',
-    //         url: "{{ route('pay.receive') }}",
-    //         data: formdata,
-    //         success: function(data) {
-    //             $("#pay-receive-modal .close").click();
-    //             location.reload();
-    //         },
-    //     });
-    //     stay.preventDefault();
-    // });
+        var formdata = $(this).serialize();
+        $.ajax({
+            type: 'POST',
+            url: "{{ route('pay.receive') }}",
+            data: formdata,
+            success: function(data) {
+                $("#pay-receive-modal .close").click();
+                location.reload();
+            },
+        });
+        stay.preventDefault();
+    });
 </script>
+@include('agent.pagescript')
 @endsection

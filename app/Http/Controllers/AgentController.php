@@ -128,6 +128,7 @@ class AgentController extends Controller
                                     <div class="inner-div" style="margin-top: 3px;"> <a href="'.route('agent.edit', $agents->id).'" class="action-icon editIcon" agentId="'.$agents->id.'"> <i class="mdi mdi-square-edit-outline"></i></a></div>
                                     <div class="inner-div">
                                         <form method="POST" action="'.route('agent.destroy', $agents->id).'">
+                                            <input type="hidden" name="_token" value="'.csrf_token().'" />
                                             <input type="hidden" name="_method" value="DELETE">
                                             <div class="form-group">
                                                 <button type="submit" class="btn btn-primary-outline action-icon"> <i class="mdi mdi-delete"></i></button>
