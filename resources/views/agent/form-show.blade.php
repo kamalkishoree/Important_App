@@ -163,39 +163,44 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
             </span>
         </div>
     </div>
-    <div class="form-row">
-    <label for="" class="control-label"></label> 
+    <div class="row">
+        <label for="" class="control-label"></label>
 
         @foreach($agent_docs as $agent_doc)
         <div class="col-md-6">
 
             @if(strtolower($agent_doc->file_type) == 'text')
-           <label for="" class="control-label">{{$agent_doc->file_name}}</label>
             <div class="form-group">
+                <label for="" class="control-label">{{$agent_doc->file_name}}</label>
+
                 <input type="text" class="form-control" id="" name="file" placeholder="Enter Text" value="{{ old('name', $agent_doc->file_name ?? '') }}">
             </div>
             @elseif(strtolower($agent_doc->file_type) == 'pdf')
-            <label for="" class="control-label">{{$agent_doc->label_name}}</label>
-            <div class="file file--upload">
-                <label for="">
-                    <span class="update_pic pdf-icon">
-                        <a href="{{Storage::disk('s3')->url($agent_doc->file_name)}}" target="_blank"><img showImg="{{ isset($agent_doc->file_name) ? Storage::disk('s3')->url($agent_doc->file_name) : '' }}" id="file"></a>
-                    </span>
+            <div class="form-group">
+                <label for="" class="control-label">{{$agent_doc->label_name}}</label>
+                <div class="file file--upload">
+                    <label for="">
+                        <span class="update_pic pdf-icon">
+                            <a href="{{Storage::disk('s3')->url($agent_doc->file_name)}}" target="_blank"><img showImg="{{ isset($agent_doc->file_name) ? Storage::disk('s3')->url($agent_doc->file_name) : '' }}" id="file"></a>
+                        </span>
 
-                </label>
-                <div class="invalid-feedback" id=""><strong></strong></div>
+                    </label>
+                    <div class="invalid-feedback" id=""><strong></strong></div>
+                </div>
             </div>
             @else
-            <label for="" class="control-label">{{$agent_doc->label_name}}</label>
-            <div class="file file--upload">
+            <div class="form-group">
+                <label for="" class="control-label">{{$agent_doc->label_name}}</label>
+                <div class="file file--upload">
 
-                <a href="{{Storage::disk('s3')->url($agent_doc->file_name)}}" target="_blank"><img src="{{isset($agent_doc->file_name) ? $imgproxyurl.Storage::disk('s3')->url($agent_doc->file_name) : Phumbor::url(URL::to('/asset/images/no-image.png')) }}"></a>
-                <!-- @if(strtolower($agent_doc->file_type) == 'image')
+                    <a href="{{Storage::disk('s3')->url($agent_doc->file_name)}}" target="_blank"><img src="{{isset($agent_doc->file_name) ? $imgproxyurl.Storage::disk('s3')->url($agent_doc->file_name) : Phumbor::url(URL::to('/asset/images/no-image.png')) }}" style="width:240px;height:120px;"></a>
+                    <!-- @if(strtolower($agent_doc->file_type) == 'image')
                 <input id="" type="file" name="file" v accept="image/*" data-rel="">
                 @elseif(strtolower($agent_doc->file_type) == 'pdf')
                 <input id="" type="file" name="file" accept=".pdf" data-rel="">
                 @endif -->
-                <div class="invalid-feedback" id=""><strong></strong></div>
+                    <div class="invalid-feedback" id=""><strong></strong></div>
+                </div>
             </div>
             @endif
         </div>
