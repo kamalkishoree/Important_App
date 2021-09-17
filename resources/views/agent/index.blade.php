@@ -14,6 +14,9 @@
         cursor: move;
         margin-right: 0rem !important;
     }
+    .table th:last-child,.table td:nth-last-child(2), .table td:last-child {
+        display: table-cell !important;
+    }
 </style>
 @endsection
 @php
@@ -21,7 +24,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
 @endphp
 @section('content')
 <div class="container-fluid">
-
+@csrf
     <!-- start page title -->
     <div class="row">
         <div class="col-12">
@@ -40,8 +43,8 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                             <div class="form-group mb-0 mr-2">
                                 <input class="form-control" placeholder="Select date" id="sort-date-agent" name="sort_date_agent" value="{{!empty($calenderSelectedDate) ? $calenderSelectedDate : ''}}" type="text" autocomplete="off">
                             </div>
-                            <a href="javascript:void(0);" class="btn btn-blue" id="sort-agent">Go</a>
-                            <a href="javascript:void(0);" class="btn btn-success ml-2" id="sort-agent-all">Clear</a>
+                            <!-- <a href="javascript:void(0);" class="btn btn-blue" id="sort-agent">Go</a> -->
+                            <a href="javascript:void(0);" class="btn btn-success ml-2" id="sort-agent-clear">Clear</a>
                         </div>
                         <div class="col-sm-4">
                             <div class="text-sm-left">
@@ -60,7 +63,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                     </div>
 
                     <div class="table-responsive">
-                        <table class="table table-striped dt-responsive nowrap w-100" id="">
+                        <table class="table table-striped dt-responsive nowrap w-100 all" id="agent-listing">
                             <thead>
                                 <tr>
                                     <th>Uid</th>
@@ -80,83 +83,11 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($agents as $agent)
-                                <tr>
-                                    <td>
-                                        {{ $agent->uid }}
-                                    </td>
-
-                                    <td><img alt="{{$agent->id}}" src="{{isset($agent->profile_picture) ? $imgproxyurl.Storage::disk('s3')->url($agent->profile_picture) : Phumbor::url(URL::to('/asset/images/no-image.png')) }}" width="40"></td>
-                                    <td class="table-user">
-                                        <a href="javascript:void(0);" class="text-body font-weight-semibold">{{ $agent->name }}</a>
-                                    </td>
-                                    <td>
-                                        {{ $agent->phone_number }}
-                                    </td>
-                                    <td>
-                                        {{ $agent->type }}
-                                    </td>
-                                    <td>
-                                        @if (isset($agent->team->name))
-                                        {{ $agent->team->name }}
-                                        @else
-                                        {{ 'Team Not Alloted' }}
-                                        @endif
-
-                                    </td>
-                                    <td><img alt="" style="width: 80px;" src="{{ asset('assets/icons/extra/'. $agent->vehicle_type_id.'.png') }}"></td>
-                                    <!-- <td><span class="badge bg-soft-success text-success">Active</span></td> -->
-                                    <td>
-                                        {{ $cash = $agent->order->sum('cash_to_be_collected') }}
-                                    </td>
-
-                                    <td>
-                                        {{ $orders = $agent->order->sum('driver_cost') }}
-                                    </td>
-
-                                    <td>
-                                        {{ $receive = $agent->agentPayment->sum('cr') }}
-                                    </td>
-
-                                    <td>
-                                        {{ $pay = $agent->agentPayment->sum('dr') }}
-                                    </td>
-
-                                    <td>
-                                        {{ ($pay - $receive) - ($cash - $orders) }}
-                                    </td>
-
-                                    <td>
-                                        <div class="custom-control custom-switch">
-                                            <input type="checkbox" class="custom-control-input agent_approval_switch" id="customSwitch_{{$agent->id}}" data-id="{{$agent->id}}" {{isset($agent->is_approved) && $agent->is_approved == 1 ? 'checked':''}}>
-                                            <label class="custom-control-label" for="customSwitch_{{$agent->id}}"></label>
-                                        </div>
-                                    </td>
-
-                                    <td>
-                                        <div class="form-ul" style="width: 60px;">
-                                            <div class="inner-div" style="margin-top: 3px;"> <a href="{{ route('agent.show', $agent->id) }}" class="action-icon viewIcon" agentId="{{$agent->id}}"> <i class="fa fa-eye"></i></a></div>
-                                            <div class="inner-div" style="margin-top: 3px;"> <a href="{{ route('agent.edit', $agent->id) }}" class="action-icon editIcon" agentId="{{$agent->id}}"> <i class="mdi mdi-square-edit-outline"></i></a></div>
-                                            <div class="inner-div">
-                                                <form method="POST" action="{{ route('agent.destroy', $agent->id) }}">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <div class="form-group">
-                                                        <button type="submit" class="btn btn-primary-outline action-icon"> <i class="mdi mdi-delete"></i></button>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </td>
-
-                                </tr>
-                                @endforeach
+                               
                             </tbody>
                         </table>
                     </div>
-                    <div class="pagination pagination-rounded justify-content-end mb-0">
-                        {{ $agents->links() }}
-                    </div>
+                    
                 </div> <!-- end card-body-->
             </div> <!-- end card-->
         </div> <!-- end col -->
@@ -175,90 +106,155 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
 <script src="{{ asset('assets/libs/dropzone/dropzone.min.js') }}"></script>
 <script src="{{ asset('assets/libs/dropify/dropify.min.js') }}"></script>
 <script src="{{ asset('assets/js/pages/form-fileuploads.init.js') }}"></script>
-{{-- <script src="{{ asset('assets/libs/datatables/datatables.min.js') }}"></script> --}}
+<script src="{{ asset('assets/libs/datatables/datatables.min.js') }}"></script>
 <script src="{{ asset('assets/js/jquery.tagsinput-revisited.js') }}"></script>
 <script src="{{ asset('telinput/js/intlTelInput.js') }}"></script>
 <link rel="stylesheet" href="{{ asset('assets/css/jquery.tagsinput-revisited.css') }}" />>
 
 @include('agent.pagescript')
 <script>
-    $('#sort-date-agent').flatpickr();
 
-    $('#sort-agent-all').on('click', function(e) {
-        var uri = window.location.href.toString();
-        if (uri.indexOf("?") > 0) {
-            $('#sort-date-agent').val('');
-            var clean_uri = uri.substring(0, uri.indexOf("?"));
-            window.history.replaceState(null, null, clean_uri);
-            location.reload();
-        }
-    });
-    $('#sort-agent').on('click', function(e) {
-        var sortDateAgent = $('#sort-date-agent').val();
-        if (sortDateAgent != '') {
-            var perm = "?date=" + sortDateAgent;
-            window.history.replaceState(null, null, perm);
-            location.reload();
-        }
-    });
-
-    $('#selectAgent').on('change', function(e) {
-
-        var optionSelected = $("option:selected", this);
-        var valueSelected = this.value;
-        $.ajax({
-            type: 'get',
-            url: "{{ url('/agent/paydetails') }}/" + valueSelected,
-            data: '',
-            success: function(data) {
-                console.log(data);
-                var order = round(data.order_cost, 2);
-                var driver_cost = round(data.driver_cost, 2);
-                var credit = round(data.credit, 2);
-                var debit = round(data.debit, 2);
-                var cash = round(data.cash_to_be_collected, 2);
-                var final = round(cash - driver_cost, 2);
-                var new_final = round((debit - credit) - (cash - driver_cost), 2);
-                $("#order_earning").text(driver_cost);
-                $("#cash_collected").text(cash);
-                $("#final_balance").text(new_final);
+    initDataTable();
+    function initDataTable() {
+        $('#agent-listing').DataTable({
+            "dom": '<"toolbar">Bfrtip',
+            "scrollX": true,
+            "destroy": true,
+            "processing": true,
+            "serverSide": true,
+            "responsive": true,
+            "iDisplayLength": 50,
+            language: {
+                        search: "",
+                        paginate: { previous: "<i class='mdi mdi-chevron-left'>", next: "<i class='mdi mdi-chevron-right'>" },
+                        searchPlaceholder: "Search Agent"
             },
-        });
-
-    });
-
-    function round(value, exp) {
-        if (typeof exp === 'undefined' || +exp === 0)
-            return Math.round(value);
-
-        value = +value;
-        exp = +exp;
-
-        if (isNaN(value) || !(typeof exp === 'number' && exp % 1 === 0))
-            return NaN;
-
-        // Shift
-        value = value.toString().split('e');
-        value = Math.round(+(value[0] + 'e' + (value[1] ? (+value[1] + exp) : exp)));
-
-        // Shift back
-        value = value.toString().split('e');
-        return +(value[0] + 'e' + (value[1] ? (+value[1] - exp) : -exp));
+            drawCallback: function () {
+                $(".dataTables_paginate > .pagination").addClass("pagination-rounded");
+            },
+            buttons: [{   
+                className:'btn btn-success waves-effect waves-light',
+                text: '<span class="btn-label"><i class="mdi mdi-export-variant"></i></span>Export CSV',
+                action: function ( e, dt, node, config ) {
+                    window.location.href = "{{ route('agents.export') }}";
+                }
+            }],
+            ajax: {
+                url: "{{url('agent/filter')}}",
+                data: function (d) {
+                    d.search = $('input[type="search"]').val();
+                    d.date_filter = $('#sort-date-agent').val();
+                    d.imgproxyurl = '{{$imgproxyurl}}';
+                }
+            },
+            columns: [
+                {data: 'uid', name: 'uid', orderable: true, searchable: false},
+                {data: 'profile_picture', name: 'profile_picture', orderable: true, searchable: false, "mRender": function ( data, type, full ) {
+                    return '<img alt="'+full.id+'" src="'+full.profile_picture+'" width="40">';
+                }},
+                {data: 'name', name: 'name', orderable: true, searchable: false, "mRender": function ( data, type, full ) {
+                    return '<a href="javascript:void(0);" class="text-body font-weight-semibold">'+full.name+'</a>';
+                }},
+                {data: 'phone_number', name: 'phone_number', orderable: true, searchable: false},
+                {data: 'type', name: 'type', orderable: true, searchable: false},
+                {data: 'team', name: 'team', orderable: true, searchable: false},
+                {data: 'vehicle_type_id', name: 'vehicle_type_id', orderable: true, searchable: false, "mRender": function ( data, type, full ) {
+                    return '<img alt="" style="width: 80px;" src="'+full.vehicle_type_id+'">';
+                }},
+                {data: 'cash_to_be_collected', name: 'cash_to_be_collected', orderable: false, searchable: false},
+                {data: 'driver_cost', name: 'driver_cost', orderable: false, searchable: false},
+                {data: 'cr', name: 'cr', orderable: false, searchable: false},
+                {data: 'dr', name: 'dr', orderable: false, searchable: false},
+                {data: 'pay_to_driver', name: 'pay_to_driver', orderable: false, searchable: false},
+                {data: 'is_approved', name: 'is_approved', orderable: false, searchable: false, "mRender": function ( data, type, full ) {
+                    var check = (full.is_approved == 1)? 'checked' : '';
+                    return '<div class="custom-control custom-switch"><input type="checkbox" class="custom-control-input agent_approval_switch" '+check+' id="customSwitch_'+full.id+'" data-id="'+full.id+'"><label class="custom-control-label" for="customSwitch_'+full.id+'"></label></div>';
+                }},
+                {data: 'action', name: 'action', orderable: false, searchable: false},
+                
+            ]
+        });         
+              
     }
 
-    $("#submitpayreceive").submit(function(stay) {
 
-        var formdata = $(this).serialize();
-        $.ajax({
-            type: 'POST',
-            url: "{{ route('pay.receive') }}",
-            data: formdata,
-            success: function(data) {
-                $("#pay-receive-modal .close").click();
-                location.reload();
-            },
-        });
-        stay.preventDefault();
+    $("#sort-date-agent").flatpickr({ 
+        mode: "range",
+        onClose: function(selectedDates, dateStr, instance) {
+            initDataTable();
+        }
     });
+
+    $('#sort-agent-clear').on('click', function(e) {
+        $('#sort-date-agent').val('');
+        initDataTable();
+    });
+    // $('#sort-agent').on('click', function(e) {
+    //     var sortDateAgent = $('#sort-date-agent').val();
+    //     if (sortDateAgent != '') {
+    //         var perm = "?date=" + sortDateAgent;
+    //         window.history.replaceState(null, null, perm);
+    //         location.reload();
+    //     }
+    // });
+
+    // $('#selectAgent').on('change', function(e) {
+
+    //     var optionSelected = $("option:selected", this);
+    //     var valueSelected = this.value;
+    //     $.ajax({
+    //         type: 'get',
+    //         url: "{{ url('/agent/paydetails') }}/" + valueSelected,
+    //         data: '',
+    //         success: function(data) {
+    //             console.log(data);
+    //             var order = round(data.order_cost, 2);
+    //             var driver_cost = round(data.driver_cost, 2);
+    //             var credit = round(data.credit, 2);
+    //             var debit = round(data.debit, 2);
+    //             var cash = round(data.cash_to_be_collected, 2);
+    //             var final = round(cash - driver_cost, 2);
+    //             var new_final = round((debit - credit) - (cash - driver_cost), 2);
+    //             $("#order_earning").text(driver_cost);
+    //             $("#cash_collected").text(cash);
+    //             $("#final_balance").text(new_final);
+    //         },
+    //     });
+
+    // });
+
+    // function round(value, exp) {
+    //     if (typeof exp === 'undefined' || +exp === 0)
+    //         return Math.round(value);
+
+    //     value = +value;
+    //     exp = +exp;
+
+    //     if (isNaN(value) || !(typeof exp === 'number' && exp % 1 === 0))
+    //         return NaN;
+
+    //     // Shift
+    //     value = value.toString().split('e');
+    //     value = Math.round(+(value[0] + 'e' + (value[1] ? (+value[1] + exp) : exp)));
+
+    //     // Shift back
+    //     value = value.toString().split('e');
+    //     return +(value[0] + 'e' + (value[1] ? (+value[1] - exp) : -exp));
+    // }
+
+    // $("#submitpayreceive").submit(function(stay) {
+
+    //     var formdata = $(this).serialize();
+    //     $.ajax({
+    //         type: 'POST',
+    //         url: "{{ route('pay.receive') }}",
+    //         data: formdata,
+    //         success: function(data) {
+    //             $("#pay-receive-modal .close").click();
+    //             location.reload();
+    //         },
+    //     });
+    //     stay.preventDefault();
+    // });
 </script>
 @endsection

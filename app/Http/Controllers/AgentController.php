@@ -18,6 +18,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 use Exception;
 use App\Model\Countries;
+use DataTables;
+use Illuminate\Support\Str;
 
 class AgentController extends Controller
 {
@@ -29,15 +31,15 @@ class AgentController extends Controller
     public function index(Request $request)
     {
         $agents = Agent::orderBy('id', 'DESC');
-        if (!empty($request->date)) {
-            $agents->whereBetween('created_at', [$request->date . " 00:00:00", $request->date . " 23:59:59"]);
-        }
+        // if (!empty($request->date)) {
+        //     $agents->whereBetween('created_at', [$request->date . " 00:00:00", $request->date . " 23:59:59"]);
+        // }
         if (Auth::user()->is_superadmin == 0 && Auth::user()->all_team_access == 0) {
             $agents = $agents->whereHas('team.permissionToManager', function ($query) {
                 $query->where('sub_admin_id', Auth::user()->id);
             });
         }
-        $agents = $agents->paginate(10);
+        $agents = $agents->get();
 
 
         $tags  = TagsForAgent::all();
@@ -64,6 +66,101 @@ class AgentController extends Controller
         }
 
         return view('agent.index')->with(['agents' => $agents, 'teams' => $teams, 'tags' => $tags, 'selectedCountryCode' => $countryCode, 'calenderSelectedDate' => $selectedDate, 'showTag' => implode(',', $tag)]);
+    }
+
+    public function agentFilter(Request $request){
+        try {
+            $agents = Agent::orderBy('id', 'DESC');
+            if (!empty($request->get('date_filter'))) {
+                $dateFilter = explode('to', $request->get('date_filter'));
+                if(count($dateFilter) > 1){
+                    $agents->whereBetween('created_at', [trim($dateFilter[0]) . " 00:00:00", trim($dateFilter[1]) . " 23:59:59"]);
+                }else{
+                    $agents->whereBetween('created_at', [trim($dateFilter[0]) . " 00:00:00", trim($dateFilter[0]) . " 23:59:59"]);
+                }
+            }
+            if (Auth::user()->is_superadmin == 0 && Auth::user()->all_team_access == 0) {
+                $agents = $agents->whereHas('team.permissionToManager', function ($query) {
+                    $query->where('sub_admin_id', Auth::user()->id);
+                });
+            }
+
+            $agents = $agents->orderBy('id', 'desc')->get();
+            return Datatables::of($agents)
+                ->editColumn('profile_picture', function ($agents) use ($request) {
+                    $src = (isset($agents->profile_picture) ? $request->imgproxyurl.Storage::disk('s3')->url($agents->profile_picture) : Phumbor::url(URL::to('/asset/images/no-image.png')));
+                    return $src;
+                })
+                ->editColumn('team', function ($agents) use ($request) {
+                    $team = (isset($agents->team->name) ? $agents->team->name : 'Team Not Alloted');
+                    return $team;
+                })
+                ->editColumn('vehicle_type_id', function ($agents) use ($request) {
+                    $src = asset('assets/icons/extra/'. $agents->vehicle_type_id .'.png');
+                    return $src;
+                })
+                ->editColumn('cash_to_be_collected', function ($agents) use ($request) {
+                    $cash = $agents->order->sum('cash_to_be_collected');
+                    return $cash;
+                })
+                ->editColumn('driver_cost', function ($agents) use ($request) {
+                    $orders = $agents->order->sum('driver_cost');
+                    return $orders;
+                })
+                ->editColumn('cr', function ($agents) use ($request) {
+                    $receive = $agents->agentPayment->sum('cr');
+                    return $receive;
+                })
+                ->editColumn('dr', function ($agents) use ($request) {
+                    $pay = $agents->agentPayment->sum('dr');
+                    return $pay;
+                })
+                ->editColumn('pay_to_driver', function ($agents) use ($request) {
+                    $cash = $agents->order->sum('cash_to_be_collected');
+                    $orders = $agents->order->sum('driver_cost');
+                    $receive = $agents->agentPayment->sum('cr');
+                    $pay = $agents->agentPayment->sum('dr');
+                    return ($pay - $receive) - ($cash - $orders);
+                })
+                ->editColumn('action', function ($agents) use ($request) {
+                    $action = '<div class="form-ul" style="width: 60px;">
+                                    <div class="inner-div" style="margin-top: 3px;"> <a href="'.route('agent.show', $agents->id).'" class="action-icon viewIcon" agentId="'.$agents->id.'"> <i class="fa fa-eye"></i></a></div>
+                                    <div class="inner-div" style="margin-top: 3px;"> <a href="'.route('agent.edit', $agents->id).'" class="action-icon editIcon" agentId="'.$agents->id.'"> <i class="mdi mdi-square-edit-outline"></i></a></div>
+                                    <div class="inner-div">
+                                        <form method="POST" action="'.route('agent.destroy', $agents->id).'">
+                                            <input type="hidden" name="_method" value="DELETE">
+                                            <div class="form-group">
+                                                <button type="submit" class="btn btn-primary-outline action-icon"> <i class="mdi mdi-delete"></i></button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>';
+                    return $action;
+                })
+                ->filter(function ($instance) use ($request) {
+                    if (!empty($request->get('search'))) {
+                        $instance->collection = $instance->collection->filter(function ($row) use ($request){
+                            if (Str::contains(Str::lower($row['phone_number']), Str::lower($request->get('search')))){
+                                return true;
+                            }else if (Str::contains(Str::lower($row['name']), Str::lower($request->get('search')))) {
+                                return true;
+                            }else if (Str::contains(Str::lower($row['type']), Str::lower($request->get('search')))) {
+                                return true;
+                            }else if (Str::contains(Str::lower($row['team']), Str::lower($request->get('search')))) {
+                                return true;
+                            }
+                            return false;
+                        });
+                    }
+                })
+                ->make(true);
+        } catch (Exception $e) {
+            
+        }
+    }
+
+    public function export() {
+        return Excel::download(new AgentsExport, 'agents.xlsx');
     }
 
     /**
@@ -205,21 +302,23 @@ class AgentController extends Controller
         }
 
         $tagIds = [];
-        foreach ($agent->tags as $tag) {
-            $tagIds[] = $tag->name;
+        $returnHTML = '';
+        if(!empty($agent)){
+            foreach ($agent->tags as $tag) {
+                $tagIds[] = $tag->name;
+            }
+            $date = Date('Y-m-d H:i:s');
+    
+            $otp = Otp::where('phone', $agent->phone_number)->where('valid_till', '>=', $date)->first();
+            if (isset($otp)) {
+                $send_otp = $otp->opt;
+            }else{
+                $send_otp = 'View OTP after Logging in the Driver App';
+            }
+            $agents_docs=AgentDocs::where('agent_id',$id)->get();
+    
+            $returnHTML = view('agent.form-show')->with(['agent' => $agent, 'teams' => $teams, 'tags' => $uptag, 'agent_docs' => $agents_docs, 'tagIds' => $tagIds, 'otp' => $send_otp])->render();
         }
-        $date = Date('Y-m-d H:i:s');
-
-        $otp = Otp::where('phone', $agent->phone_number)->where('valid_till', '>=', $date)->first();
-        if (isset($otp)) {
-            $send_otp = $otp->opt;
-        } else {
-            $send_otp = 'View OTP after Logging in the Driver App';
-        }
-        $agents_docs=AgentDocs::where('agent_id',$id)->get();
-
-        $returnHTML = view('agent.form-show')->with(['agent' => $agent, 'teams' => $teams, 'tags' => $uptag, 'agent_docs' => $agents_docs, 'tagIds' => $tagIds, 'otp' => $send_otp])->render();
-
         return response()->json(array('success' => true, 'html' => $returnHTML));
     }
 
