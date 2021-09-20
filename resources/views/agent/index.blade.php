@@ -17,6 +17,9 @@
     .table th:last-child,.table td:nth-last-child(2), .table td:last-child {
         display: table-cell !important;
     }
+    .dataTable th {
+        cursor: pointer;
+    }
 </style>
 @endsection
 @php
