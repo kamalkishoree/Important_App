@@ -21,7 +21,7 @@
     <div class="row">
         <div class="col-12">
             <div class="page-title-box">
-                <h4 class="page-title">Geo-fences</h4>
+                <h4 class="page-title">{{__("Geo-fences")}}</h4>
             </div>
         </div>
     </div>
@@ -49,7 +49,7 @@
                         <div class="row mb-2 pr-2">
                             @if (Auth::user()->is_superadmin == 1) 
                             <div class="col-sm-12 text-right">
-                                <a href="{{ route('geo-fence.index') }}"><button type="button" class="btn btn-blue waves-effect waves-light"><i class="mdi mdi-plus-circle mr-1"></i>Add Geo-fence</button></a>
+                                <a href="{{ route('geo-fence.index') }}"><button type="button" class="btn btn-blue waves-effect waves-light"><i class="mdi mdi-plus-circle mr-1"></i>{{__("Add Geo-fence")}}</button></a>
                             </div>
                             @endif
                         </div>
@@ -58,8 +58,8 @@
                             <table class="table table-centered table-nowrap table-striped" id="products-datatable">
                                 <thead>
                                     <tr>
-                                        <th>Name</th>
-                                        <th style="width: 85px;">Action</th>
+                                        <th>{{__("Name")}}</th>
+                                        <th style="width: 85px;">{{__("Action")}}</th>
                                     </tr>
                                 </thead>
                                 <tbody>

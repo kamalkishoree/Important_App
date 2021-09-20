@@ -9,24 +9,24 @@
                 class="rounded-circle avatar-md">
             <div class="dropdown">
                 <a href="javascript: void(0);" class="text-dark dropdown-toggle h5 mt-2 mb-1 d-block"
-                    data-toggle="dropdown">User</a>
+                    data-toggle="dropdown">{{__('User')}}</a>
                 <div class="dropdown-menu user-pro-dropdown">
 
                     <!-- item-->
                     <a href="javascript:void(0);" class="dropdown-item notify-item">
                         <i class="fe-user mr-1"></i>
-                        <span>My Account</span>
+                        <span>{{__('My Account')}}</span>
                     </a>
 
                     <!-- item-->
                     <a href="javascript:void(0);" class="dropdown-item notify-item">
                         <i class="fe-log-out mr-1"></i>
-                        <span>Logout</span>
+                        <span>{{__('Logout')}}</span>
                     </a>
 
                 </div>
             </div>
-            <p class="text-muted">Admin Head</p>
+            <p class="text-muted">{{__('Admin Head')}}</p>
         </div> 
 
                         <?php 
@@ -47,12 +47,12 @@
 
             <ul id="side-menu">
 
-                <li class="menu-title mt-2">Home</li>
+                <li class="menu-title mt-2">{{__('Home')}}</li>
                 @if(in_array('Dashboard',$allowed) || Auth::user()->is_superadmin == 1) 
                 <li>
                     <a href="{{route('index')}}">
                         <i data-feather="airplay"></i>
-                        <span> Dashboard </span>
+                        <span> {{__('Dashboard')}} </span>
                     </a>
                 </li> 
                 @endif
@@ -61,7 +61,7 @@
                 <li>   
                     <a href="{{route('customer.index')}}">
                         <i class="fe-user-plus"></i>
-                        <span> Customers </span>
+                        <span> {{__('Customers')}} </span>
                     </a>
                 </li>
                 @endif
@@ -70,7 +70,7 @@
                 <li>   
                     <a href="{{route('tasks.index')}}">
                         <i data-feather="package"></i>
-                        <span> Routes </span>
+                        <span> {{__('Routes')}} </span>
                     </a>
                 </li>    
                 @endif
@@ -78,13 +78,13 @@
 
                 
 
-                <li class="menu-title mt-2">Settings</li>
+                <li class="menu-title mt-2">{{__('Settings')}}</li>
 
                 @if(in_array('Profile',$allowed) || Auth::user()->is_superadmin == 1)
                 <li>
                     <a href="{{route('profile.index')}}">
                         <i data-feather="user"></i>
-                        <span> Profile </span>
+                        <span> {{__('Profile')}} </span>
                     </a>
                 </li>
                 @endif
@@ -93,7 +93,7 @@
                 <li>
                     <a href="{{route('preference.show')}}">
                         <i class="fe-settings"></i>
-                        <span> Customize </span>
+                        <span> {{__('Customize')}} </span>
                     </a>
                 </li>
                 @endif
@@ -102,7 +102,7 @@
                 <li>
                     <a href="{{route('team.index')}}">
                         <i data-feather="users"></i>
-                        <span> Teams </span>
+                        <span> {{__('Teams')}} </span>
                     </a>
                 </li>
                 @endif
@@ -111,7 +111,7 @@
                 <li>
                     <a href="{{route('agent.index')}}">
                         <i class="fe-user-check"></i>
-                        <span> {{ Session::get('agent_name') ? Session::get('agent_name') : 'Agent' }}</span>
+                        <span> {{ Session::get('agent_name') ? Session::get('agent_name') : __('Agent') }}</span>
                     </a>
                 </li>
                 @endif
@@ -120,7 +120,7 @@
                 <li>
                     <a href="{{route('geo.fence.list')}}">
                         <i class="fe-map"></i>
-                        <span> Geo Fence </span>
+                        <span> {{__('Geo Fence')}} </span>
                     </a>
                 </li>
                 @endif
@@ -130,7 +130,7 @@
                 <li>
                     <a href="{{route('auto-allocation.index')}}">
                         <i data-feather="git-branch"></i>
-                        <span> Auto Allocation </span>
+                        <span> {{__('Auto Allocation')}} </span>
                     </a>
                 </li>
                 @endif
@@ -139,7 +139,7 @@
                 <li>
                     <a href="{{route('pricing-rules.index')}}">
                         <i class="fe-dollar-sign"></i>
-                        <span>Pricing Rules</span>
+                        <span>{{__('Pricing Rules')}}</span>
                     </a>
                 </li>
                 @endif
@@ -148,7 +148,7 @@
                 <li>
                     <a href="{{route('configure')}}">
                         <i data-feather="tool"></i>
-                        <span> Configure </span>
+                        <span> {{__('Configure')}} </span>
                     </a>
                 </li>
                 @endif
@@ -163,7 +163,7 @@
                 <li>
                     <a href="{{route('accounting')}}">
                         <i class="fe-trending-up"></i>
-                        <span> Analytics </span>
+                        <span> {{__('Analytics')}} </span>
                     </a>
                 </li>
                 @endif
@@ -172,7 +172,7 @@
                  <li>
                     <a href="{{route('notifications.index')}}">
                         <i data-feather="bell"></i>
-                        <span> Notifications </span>
+                        <span> {{__('Notifications')}} </span>
                     </a>
                 </li>  
                 @endif
@@ -181,7 +181,7 @@
                 <li>
                     <a href="{{route('subadmins.index')}}">
                         <i data-feather="users"></i>
-                        <span> Managers </span>
+                        <span> {{__('Managers')}} </span>
                     </a>
                 </li>
                 @endif

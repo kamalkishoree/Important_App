@@ -85,7 +85,7 @@
         <div class="row">
             
             <div class="col-md-12">
-                <h3 class="page-title">Analytics</h3>
+                <h3 class="page-title">{{__("Analytics")}}</h3>
             </div>
             
             <div class="col-md-6 col-xl-3">
@@ -99,7 +99,7 @@
                         <div class="col-6">
                             <div class="text-right">
                                 <h3 class="text-dark mt-1"><span data-plugin="counterup">{{$totalearning}}</span></h3>
-                                <p class="text-muted mb-1 text-truncate">Platform Earning</p>
+                                <p class="text-muted mb-1 text-truncate">{{__("Platform Earning")}}</p>
                             </div>
                         </div>
                     </div> 
@@ -116,7 +116,7 @@
                         <div class="col-6">
                             <div class="text-right">
                                 <h3 class="text-dark mt-1"><span data-plugin="counterup">{{$totalagentearning}}</span></h3>
-                                <p class="text-muted mb-1 text-truncate">Agents's Earning</p>
+                                <p class="text-muted mb-1 text-truncate">{{__("Agents's Earning")}}</p>
                             </div>
                         </div>
                     </div> 
@@ -134,7 +134,7 @@
                         <div class="col-6">
                             <div class="text-right">
                                 <h3 class="text-dark mt-1"><span data-plugin="counterup">{{$totalorders}}</span></h3>
-                                <p class="text-muted mb-1 text-truncate">Orders</p>
+                                <p class="text-muted mb-1 text-truncate">{{__("Orders")}}</p>
                             </div>
                         </div>
                     </div> 
@@ -153,7 +153,7 @@
                         <div class="col-6">
                             <div class="text-right">
                                 <h3 class="text-dark mt-1"><span data-plugin="counterup">{{$totalagents}}</span></h3>
-                                <p class="text-muted mb-1 text-truncate">Agents</p>
+                                <p class="text-muted mb-1 text-truncate">{{__("Agents")}}</p>
                             </div>
                         </div>
                     </div> 
@@ -175,18 +175,18 @@
                 <div class="card-box pb-2">
                     <div class="row d-flex align-items-center">
                         <div class="col-md-6">
-                            <h4 class="header-title mb-3">Analytics</h4>
+                            <h4 class="header-title mb-3">{{__("Analytics")}}</h4>
                         </div>
                         <div class="col-md-6 text-right">
                             <form class="" name="chatreset" id="chatreset" method="get" action="{{route('accounting')}}">
                                 <div class="float-right d-none d-md-inline-block">
                                     <div class="stv-radio-buttons-wrapper">
                                         <input type="radio" class="stv-radio-button" name="type" onclick="handleChat(this);" value="1" id="button1" {{isset($type) && $type == 1 ? 'checked':''}}/>
-                                        <label for="button1">Today</label>
+                                        <label for="button1">{{__("Today")}}</label>
                                         <input type="radio" class="stv-radio-button" name="type" onclick="handleChat(this);" value="2" id="button2" {{isset($type) && $type == 2 ? 'checked':''}}/>
-                                        <label for="button2">Weekly</label>
+                                        <label for="button2">{{__("Weekly")}}</label>
                                         <input type="radio" class="stv-radio-button" name="type" onclick="handleChat(this);" value="3" id="button3" {{$type == 3 ? 'checked':''}}/>
-                                        <label for="button3">Monthly</label>
+                                        <label for="button3">{{__("Monthly")}}</label>
                                     </div>
                                 </div>
                             </form>
@@ -223,18 +223,18 @@
                         </div>
                     </div> --}}
 
-                    <h4 class="header-title mb-3">Agents</h4>
+                    <h4 class="header-title mb-3">{{__("Agents")}}</h4>
 
                     <div class="table-responsive">
                         <table class="table table-borderless table-hover table-nowrap table-centered m-0">
 
                             <thead class="thead-light">
                                 <tr>
-                                    <th colspan="2">Profile</th>
+                                    <th colspan="2">{{__("Profile")}}</th>
                                     
-                                    <th>Cash at hand</th>
-                                    <th>Phone Number</th>
-                                    <th>Type</th>
+                                    <th>{{__("Cash at hand")}}</th>
+                                    <th>{{__("Phone Number")}}</th>
+                                    <th>{{__("Type")}}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -246,7 +246,7 @@
 
                                     <td>
                                         <h5 class="m-0 font-weight-normal">{{$agent->name}}</h5>
-                                        <p class="mb-0 text-muted"><small>Member Since {{ \Carbon\Carbon::parse($agent->created_at)->format('Y')}}</small></p>
+                                        <p class="mb-0 text-muted"><small>{{__("Member Since")}} {{ \Carbon\Carbon::parse($agent->created_at)->format('Y')}}</small></p>
                                     </td>
 
                                     
@@ -280,17 +280,17 @@
                 <div class="card-box">
                     
 
-                    <h4 class="header-title mb-3">Customers</h4>
+                    <h4 class="header-title mb-3">{{__("Customers")}}</h4>
 
                     <div class="table-responsive">
                         <table class="table table-borderless table-hover table-nowrap table-centered m-0">
 
                             <thead class="thead-light">
                                 <tr>
-                                    <th >Name</th>
-                                    <th>Total Spent</th>
-                                    <th>Phone Number</th>
-                                    <th>Total Orders</th>
+                                    <th >{{__("Name")}}</th>
+                                    <th>{{__("Total Spent")}}</th>
+                                    <th>{{__("Phone Number")}}</th>
+                                    <th>{{__("Total Orders")}}</th>
                                     
                                 </tr>
                             </thead>
@@ -299,7 +299,7 @@
                                   <tr>
                                     <td>
                                         <h5 class="m-0 font-weight-normal">{{$customer->name}}</h5>
-                                        <p class="mb-0 text-muted"><small>Member Since {{ \Carbon\Carbon::parse($agent->created_at)->format('Y')}}</small></p>
+                                        <p class="mb-0 text-muted"><small>{{__("Member Since")}} {{ \Carbon\Carbon::parse($agent->created_at)->format('Y')}}</small></p>
                                     </td>
 
                                     <td>

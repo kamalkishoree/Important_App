@@ -1,4 +1,66 @@
 <script type="text/javascript">
+$( document ).ready(function() {
+    initDataTable();
+    
+    function initDataTable() {
+        $('#agent-listing').DataTable({
+            "dom": '<"toolbar">Bfrtip',
+            "scrollX": true,
+            "destroy": true,
+            "serverSide": true,
+            "responsive": true,
+            "iDisplayLength": 50,
+            language: {
+                        search: "",
+                        paginate: { previous: "<i class='mdi mdi-chevron-left'>", next: "<i class='mdi mdi-chevron-right'>" },
+                        searchPlaceholder: "Search Agent"
+            },
+            drawCallback: function () {
+                $(".dataTables_paginate > .pagination").addClass("pagination-rounded");
+            },
+            buttons: [{   
+                className:'btn btn-success waves-effect waves-light',
+                text: '<span class="btn-label"><i class="mdi mdi-export-variant"></i></span>Export CSV',
+                action: function ( e, dt, node, config ) {
+                    window.location.href = "{{ route('agents.export') }}";
+                }
+            }],
+            ajax: {
+                url: "{{url('agent/filter')}}",
+                data: function (d) {
+                    d.search = $('input[type="search"]').val();
+                    d.imgproxyurl = '{{$imgproxyurl}}';
+                }
+            },
+            columns: [
+                {data: 'uid', name: 'uid', orderable: true, searchable: false},
+                {data: 'profile_picture', name: 'profile_picture', orderable: true, searchable: false, "mRender": function ( data, type, full ) {
+                    return '<img alt="'+full.id+'" src="'+full.profile_picture+'" width="40">';
+                }},
+                {data: 'name', name: 'name', orderable: true, searchable: false, "mRender": function ( data, type, full ) {
+                    return '<a href="javascript:void(0);" class="text-body font-weight-semibold">'+full.name+'</a>';
+                }},
+                {data: 'phone_number', name: 'phone_number', orderable: true, searchable: false},
+                {data: 'type', name: 'type', orderable: true, searchable: false},
+                {data: 'team', name: 'team', orderable: true, searchable: false},
+                {data: 'vehicle_type_id', name: 'vehicle_type_id', orderable: true, searchable: false, "mRender": function ( data, type, full ) {
+                    return '<img alt="" style="width: 80px;" src="'+full.vehicle_type_id+'">';
+                }},
+                {data: 'cash_to_be_collected', name: 'cash_to_be_collected', orderable: false, searchable: false},
+                {data: 'driver_cost', name: 'driver_cost', orderable: false, searchable: false},
+                {data: 'cr', name: 'cr', orderable: false, searchable: false},
+                {data: 'dr', name: 'dr', orderable: false, searchable: false},
+                {data: 'pay_to_driver', name: 'pay_to_driver', orderable: false, searchable: false},
+                {data: 'is_approved', name: 'is_approved', orderable: false, searchable: false, "mRender": function ( data, type, full ) {
+                    var check = (full.is_approved == 1)? 'checked' : '';
+                    return '<div class="custom-control custom-switch"><input type="checkbox" class="custom-control-input agent_approval_switch" '+check+' id="customSwitch_'+full.id+'" data-id="'+full.id+'"><label class="custom-control-label" for="customSwitch_'+full.id+'"></label></div>';
+                }},
+                {data: 'action', name: 'action', orderable: false, searchable: false},
+            ]
+        });         
+              
+    }
+
     var tagList = "{{$showTag}}";
     tagList = tagList.split(',');
 
@@ -12,7 +74,7 @@
     var mobile_number = '';
 
     // $('#add-agent-modal .xyz').val(mobile_number.getSelectedCountryData().dialCode); 
-    $('#add-agent-modal .xyz').change(function() {
+    $(document).on("change","#add-agent-modal .xyz",function(e){
         var phonevalue = $('.xyz').val();
         $("#countryCode").val(mobile_number.getSelectedCountryData().dialCode);
     });
@@ -31,7 +93,7 @@
 
     }
 
-    $('.openModal').click(function() {
+    $(document).on("click",".openModal",function(e){
         $('#add-agent-modal').modal({
             backdrop: 'static',
             keyboard: false
@@ -41,9 +103,7 @@
         phoneInput();
     });
 
-    $(document).ready(function() {
-        jQuery('#onfoot').click();
-    });
+    jQuery('#onfoot').click();
 
     $(document).on('click', '.click', function() { //alert('a');
         var radi = $(this).find('input[type="radio"]');
@@ -90,7 +150,8 @@
     });
 
     /* Get agent by ajax */
-    $(".editIcon").click(function(e) {
+    $(document).on("click",".editIcon",function(e){
+        e.preventDefault();
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
@@ -126,7 +187,7 @@
         });
     });
 
-    $(".viewIcon").click(function(e) {
+    $(document).on("click",".viewIcon",function(e){
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
@@ -171,7 +232,7 @@
     // $("#add-agent-modal #submitAgent").submit(function(e) {
 
     // });
-    $("#submitAgent").submit(function(e) {
+    $(document).on("submit","#submitAgent",function(e){
         e.preventDefault();
         // $(document).on('click', '.submitAgentForm', function() { 
         var form = document.getElementById('submitAgent');
@@ -181,9 +242,10 @@
     });
 
     /* edit Team using ajax*/
-    $("#edit-agent-modal #UpdateAgent").submit(function(e) {
+    $(document).on("submit","#edit-agent-modal #UpdateAgent",function(e){
         e.preventDefault();
     });
+
 
     $(document).on('click', '.submitEditForm', function() {
         var form = document.getElementById('UpdateAgent');
@@ -234,7 +296,7 @@
 
 
     /* Get agent by ajax */
-    $(".submitpayreceive").click(function(e) {
+    $(document).on("click",".submitpayreceive",function(e){
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
@@ -268,7 +330,7 @@
         });
     });
 
-    $('.agent_approval_switch').on('change', function() {
+    $(document).on("change",".agent_approval_switch",function(e){
         var is_approved = $(this).prop('checked') == true ? 1 : 0;
         var agent_id = $(this).data('id');
 
@@ -287,5 +349,6 @@
                 }
             }
         });
-    })
+    });
+});
 </script>

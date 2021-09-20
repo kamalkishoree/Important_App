@@ -153,7 +153,7 @@
     }
 
     $('.mdi-delete').click(function() {
-        var r = confirm("Are you sure?");
+        var r = confirm("{{__('Are you sure?')}}");
         if (r == true) {
             var teamid = $(this).data('teamid');
             $('form#teamdelete' + teamid).submit();

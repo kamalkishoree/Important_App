@@ -87,14 +87,53 @@
     });
 
     $(document).ready(function() {
-        $('#pricing-datatable').DataTable();
+        $('#pricing-datatable').DataTable({
+            "dom": '<"toolbar">Bfrtip',
+            "scrollX": true,
+            "destroy": true,
+            // "processing": true,
+            "serverSide": true,
+            "responsive": true,
+            "iDisplayLength": 10,
+            language: {
+                        search: "",
+                        paginate: { previous: "<i class='mdi mdi-chevron-left'>", next: "<i class='mdi mdi-chevron-right'>" },
+                        searchPlaceholder: "Search Customers"
+            },
+            drawCallback: function () {
+                $(".dataTables_paginate > .pagination").addClass("pagination-rounded");
+            },
+            buttons: [{  
+                className:'btn btn-success waves-effect waves-light',
+                text: '<span class="btn-label"><i class="mdi mdi-export-variant"></i></span>Export CSV',
+                action: function ( e, dt, node, config ) {
+                    window.location.href = "{{ route('customer.export') }}";
+                }
+            }],
+            ajax: {
+                url: "{{url('customer/filter')}}",
+                data: function (d) {
+                    d.search = $('input[type="search"]').val();
+                    d.imgproxyurl = '{{$imgproxyurl}}';
+                }
+            },
+            columns: [
+                {data: 'name', name: 'name', orderable: true, searchable: false},
+                {data: 'email', name: 'email', orderable: true, searchable: false},
+                {data: 'phone_number', name: 'phone_number', orderable: true, searchable: false},
+                {data: 'status', name: 'status', orderable: false, searchable: false, "mRender": function ( data, type, full ) {
+                    var check = (full.status == 'Active')? 'checked' : '';
+                    return '<div class="custom-control custom-switch "><input type="checkbox" class="custom-control-input" id="customSwitch1" '+check+' name="is_default" value="y" data-id="'+full.id+'"><label class="custom-control-label" for="customSwitch1"></label></div>';
+                }},
+                {data: 'action', name: 'action', orderable: true, searchable: false}
+            ]
+            });
         loadMap(autocompletesWraps);
-
     });
 
     //change status on a customer
     $(function() {
-        $('.custom-control-input').change(function() {
+        $(document).on('change', '.custom-control-input', function() {
             var status = $(this).prop('checked') == true ? "Active" : 'In-Active';
             var user_id = $(this).data('id');
 
@@ -118,15 +157,20 @@
     $(document).on('click', '.addField', function() {
         count = count + 1;
         var delbtn = "'',"+count;
+        var shortnameplaceholder = "{{__('Short Name')}}";
+        var Addressplaceholder = "{{__('Address')}}";
+        var emailplaceholder = "{{__('Email')}}";
+        var phoneplaceholder = "{{__('Phone Number')}}";
+        var postcodeplaceholder = "{{__('Post Code')}}";
         $(document).find('#address-map-container').before('<div class="row address addressrow'+ count +'" id="add' + count +
-            '"><div class="col-lg-2 col-md-3 mb-lg-0 mb-3"><div class="form-group" id=""><input type="text"  class="form-control" placeholder="Short Name" name="short_name[]"></div></div><div class="col-lg-4 col-md-3 mb-lg-0 mb-3"><div class="form-group input-group" id=""><input type="text" id="add' +
+            '"><div class="col-lg-2 col-md-3 mb-lg-0 mb-3"><div class="form-group" id=""><input type="text"  class="form-control" placeholder="'+shortnameplaceholder+'" name="short_name[]"></div></div><div class="col-lg-4 col-md-3 mb-lg-0 mb-3"><div class="form-group input-group" id=""><input type="text" id="add' +
             count +
-            '-input" name="address[]" class="autocomplete form-control" placeholder="Address"><div class="input-group-append"><button class="btn btn-xs btn-dark waves-effect waves-light showMap" type="button" num="add' +
+            '-input" name="address[]" class="autocomplete form-control" placeholder="'+Addressplaceholder+'"><div class="input-group-append"><button class="btn btn-xs btn-dark waves-effect waves-light showMap" type="button" num="add' +
             count +
             '"> <i class="mdi mdi-map-marker-radius"></i></button></div><input type="hidden" name="latitude[]" id="add' +
             count + '-latitude" value="0" /><input type="hidden" name="longitude[]" id="add' + count +
-            '-longitude" value="0" /></div></div><div class="col-lg-2 col-md-3 mb-lg-0 mb-3"><div class="form-group"><input type="text" id="add'+ count +'-email" name="address_email[]" class="form-control" placeholder="Email" value=""><span class="invalid-feedback" role="alert"><strong></strong></span></div></div><div class="col-lg-2 col-md-3 mb-lg-0 mb-3"><div class="form-group"><input type="text" id="add'+ count +'-phone_number" name="address_phone_number[]" class="form-control" placeholder="Phone Number" value=""><span class="invalid-feedback" role="alert"><strong></strong></span></div></div><div class="col-lg-2 col-md-3 mb-lg-0 mb-3"><div class="form-group d-flex align-items-center" id=""><input type="text" id="add' +
-            count + '-postcode" class="form-control" placeholder="Post Code" name="post_code[]"><button type="button" class="btn btn-primary-outline action-icon" onclick="deleteAddress('+delbtn+')"> <i class="mdi mdi-delete"></i></button></div></div></div>'
+            '-longitude" value="0" /></div></div><div class="col-lg-2 col-md-3 mb-lg-0 mb-3"><div class="form-group"><input type="text" id="add'+ count +'-email" name="address_email[]" class="form-control" placeholder="'+emailplaceholder+'" value=""><span class="invalid-feedback" role="alert"><strong></strong></span></div></div><div class="col-lg-2 col-md-3 mb-lg-0 mb-3"><div class="form-group"><input type="text" id="add'+ count +'-phone_number" name="address_phone_number[]" class="form-control" placeholder="'+phoneplaceholder+'" value=""><span class="invalid-feedback" role="alert"><strong></strong></span></div></div><div class="col-lg-2 col-md-3 mb-lg-0 mb-3"><div class="form-group d-flex align-items-center" id=""><input type="text" id="add' +
+            count + '-postcode" class="form-control" placeholder="'+postcodeplaceholder+'" name="post_code[]"><button type="button" class="btn btn-primary-outline action-icon" onclick="deleteAddress('+delbtn+')"> <i class="mdi mdi-delete"></i></button></div></div></div>'
             );
 
         autocompletesWraps.indexOf('add' + count) === -1 ? autocompletesWraps.push('add' + count) :
@@ -184,8 +228,7 @@
     }
 
     //edit customer
-    $(".editIcon").click(function(e) {
-
+    $(document).on('click', '.editIcon', function(e) {
 
         $.ajaxSetup({
             headers: {
@@ -229,16 +272,21 @@
     $(document).on('click', '.editInput', function() {
         editCount = editCount + 1;
         var delbtn = "'',"+editCount;
+        var shortnameplaceholder = "{{__('Short Name')}}";
+        var Addressplaceholder = "{{__('Address')}}";
+        var emailplaceholder = "{{__('Email')}}";
+        var phoneplaceholder = "{{__('Phone Number')}}";
+        var postcodeplaceholder = "{{__('Post Code')}}";
         $(document).find('#editAddress-map-container').before('<div class="row address addEditAddress addressrow'+ editCount +'" id="edit' + editCount +
-            '"><div class="col-lg-2 col-md-3 mb-lg-0 mb-3"><div class="form-group" id=""><input type="text"  class="form-control" placeholder="Short Name" name="short_name[]"></div></div><div class="col-lg-4 col-md-3 mb-lg-0 mb-3"><div class="form-group input-group" id=""><input type="text" id="edit' +
+            '"><div class="col-lg-2 col-md-3 mb-lg-0 mb-3"><div class="form-group" id=""><input type="text"  class="form-control" placeholder="'+shortnameplaceholder+'" name="short_name[]"></div></div><div class="col-lg-4 col-md-3 mb-lg-0 mb-3"><div class="form-group input-group" id=""><input type="text" id="edit' +
             editCount +
-            '-input" name="address[]" class="autocomplete form-control" placeholder="Address"><div class="input-group-append"><button class="btn btn-xs btn-dark waves-effect waves-light showMap" type="button" num="edit' +
+            '-input" name="address[]" class="autocomplete form-control" placeholder="'+Addressplaceholder+'"><div class="input-group-append"><button class="btn btn-xs btn-dark waves-effect waves-light showMap" type="button" num="edit' +
             editCount +
             '"> <i class="mdi mdi-map-marker-radius"></i></button></div><input type="hidden" name="latitude[]" id="edit' +
             editCount + '-latitude" value="0" /><input type="hidden" name="longitude[]" id="edit' +
             editCount +
-            '-longitude" value="0" /></div></div><div class="col-lg-2 col-md-3 mb-lg-0 mb-3"><div class="form-group"><input type="text" id="edit'+ editCount +'-email" name="address_email[]" class="form-control" placeholder="Email" value=""><span class="invalid-feedback" role="alert"><strong></strong></span></div></div><div class="col-lg-2 col-md-3 mb-lg-0 mb-3"><div class="form-group"><input type="text" id="edit'+ editCount +'-phone_number" name="address_phone_number[]" class="form-control" placeholder="Phone Number" value=""><span class="invalid-feedback" role="alert"><strong></strong></span></div></div><div class="col-lg-2 col-md-3 mb-lg-0 mb-3"><div class="form-group delete_btn d-flex align-items-center" id=""><input type="text" id="edit' +
-                editCount + '-postcode" class="form-control" placeholder="Post Code" name="post_code[]"><button type="button" class="btn btn-primary-outline action-icon" onclick="deleteAddress('+delbtn+')"> <i class="mdi mdi-delete"></i></button></div></div></div>'
+            '-longitude" value="0" /></div></div><div class="col-lg-2 col-md-3 mb-lg-0 mb-3"><div class="form-group"><input type="text" id="edit'+ editCount +'-email" name="address_email[]" class="form-control" placeholder="'+emailplaceholder+'" value=""><span class="invalid-feedback" role="alert"><strong></strong></span></div></div><div class="col-lg-2 col-md-3 mb-lg-0 mb-3"><div class="form-group"><input type="text" id="edit'+ editCount +'-phone_number" name="address_phone_number[]" class="form-control" placeholder="'+phoneplaceholder+'" value=""><span class="invalid-feedback" role="alert"><strong></strong></span></div></div><div class="col-lg-2 col-md-3 mb-lg-0 mb-3"><div class="form-group delete_btn d-flex align-items-center" id=""><input type="text" id="edit' +
+                editCount + '-postcode" class="form-control" placeholder="'+postcodeplaceholder+'" name="post_code[]"><button type="button" class="btn btn-primary-outline action-icon" onclick="deleteAddress('+delbtn+')"> <i class="mdi mdi-delete"></i></button></div></div></div>'
 
             );
 

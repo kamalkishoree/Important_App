@@ -25,7 +25,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
     <div id="scrollbar" class="col-md-4 col-xl-3 left-sidebar pt-3">  
         <div class="side_head d-flex justify-content-between align-items-center mb-2">
             <i class="mdi mdi-sync mr-1" onclick="reloadData()" aria-hidden="true"></i> 
-            <span class="allAccordian"><span class="" onclick="openAllAccordian()">Open All</span></span>
+            <span class="allAccordian"><span class="" onclick="openAllAccordian()">{{__('Open All')}}</span></span>
         </div>
         <div id="accordion" class="overflow-hidden">
             <div class="card no-border-radius">
@@ -38,7 +38,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                     <span class="profile-circle">U</span>
                                 </div>
                                 <div class="col-md-8 col-lg-9 col-xl-10 col-10">
-                                    <h6 class="header-title">Unassigned</h6>                                    
+                                    <h6 class="header-title">{{__('Unassigned')}}</h6>                                    
                                 </div>
                             </div>
                         </div>
@@ -159,7 +159,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                         </div>
                                         <div class="col-md-9 col-xl-10 col-10">
                                             <h6 class="header-title">{{ ucfirst($item['name']) }}</h6>
-                                            <p class="mb-0">{{count($item['agents'])}} Agents : <span>{{$item['online_agents']}} Online ・ {{$item['offline_agents']}} Offline</span></p>
+                                            <p class="mb-0">{{count($item['agents'])}} {{__('Agents')}} : <span>{{$item['online_agents']}} {{__('Online')}} ・ {{$item['offline_agents']}} {{__('Offline')}}</span></p>
                                         </div>
                                     </div>
                                 </div>
@@ -229,7 +229,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                                         </div>
                                                         <div class="col-md-10 col-10">
                                                             <h6 class="mb-0 header-title scnd">{{ ucfirst($agent['name']) }} <div class="optimizebtn{{ $agent['id'] }}">{!! $optimize !!}</div><div class="exportbtn{{ $agent['id'] }}">{!! $turnbyturn !!} </div></h6>
-                                                            <p class="mb-0">{{count($agent['order'])>0?'Busy  ':'Free  '}}<span>{{$agent['agent_task_count']}} Tasks</span> {!!$agent['total_distance']==''?'':' <i class="fas fa-route"></i>'!!}<span class="dist_sec totdis{{ $agent['id'] }}">{{ $agent['total_distance'] }}</span></p>
+                                                            <p class="mb-0">{{count($agent['order'])>0?'Busy  ':'Free  '}}<span>{{$agent['agent_task_count']}} {{__('Tasks')}}</span> {!!$agent['total_distance']==''?'':' <i class="fas fa-route"></i>'!!}<span class="dist_sec totdis{{ $agent['id'] }}">{{ $agent['total_distance'] }}</span></p>
                                                         </div>
                                                     </div>
                                                 </a>
@@ -349,13 +349,13 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                     <div class="dropdown d-inline-block">
                         <button class="dropdown-toggle" type="button" id="dropdownMenuButton"
                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <img class="mr-1" src="{{ asset('demo/images/ic_time.png') }}">Drivers
+                            <img class="mr-1" src="{{ asset('demo/images/ic_time.png') }}">{{__('Drivers')}}
                         </button>
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                             <div class="task-block pl-2 pr-2">
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <span>Drivers</span>
+                                        <span>{{__('Drivers')}}</span>
                                     </div>
                                     <div class="col-md-6 text-right">
                                         <a href=""><span></span></a>
@@ -365,7 +365,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
 
                                 <div class="row mt-2">
                                     <div class="col-md-8">
-                                        <h6>All Drivers</h6>
+                                        <h6>{{__('All Drivers')}}</h6>
                                     </div>
                                     <div class="col-md-4 text-right">
                                         <label class="">
@@ -376,7 +376,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                 </div>
                                 <div class="row mt-2">
                                     <div class="col-md-8">
-                                        <h6><span class="circle lia-castro mr-2"></span>Online</h6>
+                                        <h6><span class="circle lia-castro mr-2"></span>{{__('Online')}}</h6>
                                     </div>
                                     <div class="col-md-4 text-right">
                                         <label class="">
@@ -387,7 +387,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                 </div>
                                 <div class="row mt-2">
                                     <div class="col-md-8">
-                                        <h6><span class="circle mr-2"></span>Offline</h6>
+                                        <h6><span class="circle mr-2"></span>{{__('Offline')}}</h6>
                                     </div>
                                     <div class="col-md-4 text-right">
                                         <label class="">

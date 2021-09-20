@@ -1,4 +1,9 @@
 @yield('css')
+
+
+
+
+
 <link rel="shortcut icon" href="{{asset('assets/images/favicon.ico')}}">
 @php $theme = \App\Model\ClientPreference::where(['id' => 1])->first('theme');@endphp
 
@@ -130,3 +135,10 @@
 <link href="{{ asset('assets/libs/dropify/dropify.min.css') }}" rel="stylesheet" type="text/css" />
 <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
 <link rel="stylesheet" href="{{ asset('assets/libs/jquery-toast-plugin/jquery-toast-plugin.min.css')}}">
+
+
+@if(session()->has('applocale'))
+    @if(session()->get('applocale') == "ar")
+        <link href="{{ asset('ar.css') }}" rel="stylesheet">
+    @endif
+@endif
