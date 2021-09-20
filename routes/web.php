@@ -22,7 +22,7 @@ Route::get('/switch/language',function(Request $request){
    if($request->lang){
 	   session()->put("applocale",$request->lang);
    }
-   return redirect('/');
+   return redirect()->back();
 });
 
 Route::group(['middleware' => 'switchLanguage'], function () {
@@ -177,8 +177,6 @@ Route::domain('{domain}')->middleware(['subdomain'])->group(function() {
 				
 			   Route::get('demo/page', 'GeoFenceController@newDemo')->name('new.demo');
 
-
-			
 		});
 		
 	});

@@ -3,7 +3,7 @@
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-header border-0">
-                <h4 class="modal-title">Optimize Route</h4>
+                <h4 class="modal-title">{{__('Optimize Route')}}</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
             </div>
             <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&libraries=places&key={{$map_key}}"></script>
@@ -20,29 +20,29 @@
 
                                     <div class="col-lg-6 col-sm-6 mb-lg-0 mb-3">
                                         <div class="form-group" id="DriverStartTime">
-                                            {!! Form::label('title', 'Driver starts Day at',['class' => 'control-label']) !!}
+                                            {!! Form::label('title', __('Driver starts Day at'),['class' => 'control-label']) !!}
                                             {!! Form::time('driver_start_time', '09:00', ['class' => 'form-control driverStartTime']) !!}
                                             
                                             <span class="invalid-feedback" role="alert">
-                                                <strong>Please enter the driver start time</strong>
+                                                <strong>{{__('Please enter the driver start time')}}</strong>
                                             </span>
                                         </div>
                                     </div>
                                     <div class="col-lg-6 col-sm-6 mb-lg-0 mb-3">
                                         <div class="form-group" id="DriverTaskDuration">
-                                            {!! Form::label('title', 'Task Duration(in min)',['class' => 'control-label']) !!}
+                                            {!! Form::label('title', __('Task Duration(in min)'),['class' => 'control-label']) !!}
                                             {!! Form::text('task_duration', 20, ['class' => 'form-control driverTaskDuration onlynumber']) !!}
                                             <span class="invalid-feedback" role="alert">
-                                                <strong>Please enter the task duration</strong>
+                                                <strong>__{{('Please enter the task duration')}}</strong>
                                             </span>
                                         </div>
                                     </div>
                                     <div class="col-lg-6 col-sm-6 mb-lg-0 mb-3">
                                         <div class="form-group" id="DriverBrakeStartTime">
-                                            {!! Form::label('title', 'Driver Break Start time',['class' => 'control-label']) !!}
+                                            {!! Form::label('title', __('Driver Break Start time'),['class' => 'control-label']) !!}
                                             {!! Form::time('brake_start_time', '13:00', ['class' => 'form-control driverBrakeStartTime']) !!}
                                             <span class="invalid-feedback" role="alert">
-                                                <strong>Please enter the driver break start time</strong>
+                                                <strong>{{__('Please enter the driver break start time')}}</strong>
                                             </span>
                                         </div> 
                                     </div>
@@ -58,11 +58,11 @@
 
                                     <div class="col-12 mb-lg-0 mb-3">
                                         <div class="form-group" id="">
-                                            {!! Form::label('title', 'Driver Start Location',['class' => 'control-label d-block']) !!}
+                                            {!! Form::label('title', __('Driver Start Location'),['class' => 'control-label d-block']) !!}
                                             
-                                            <input class="align-middle ml-2" type="radio" name="driver_start_location" value="select"> <span class="align-middle">Select Location</span> 
-                                            <input class="align-middle" type="radio" name="driver_start_location" value="current"> <span class="align-middle" id="radio-current-location-span">Current location</span>
-                                            <input class="align-middle ml-2 selecttask" type="radio" name="driver_start_location" value="task_location"> <span class="align-middle selecttask">Select Task</span> 
+                                            <input class="align-middle ml-2" type="radio" name="driver_start_location" value="select"> <span class="align-middle">{{__('Select Location')}}</span> 
+                                            <input class="align-middle" type="radio" name="driver_start_location" value="current"> <span class="align-middle" id="radio-current-location-span">{{__('Current location')}}</span>
+                                            <input class="align-middle ml-2 selecttask" type="radio" name="driver_start_location" value="task_location"> <span class="align-middle selecttask">{{__('Select Task')}}</span> 
                                             
                                         </div> 
                                     </div>
@@ -71,7 +71,7 @@
                                         <div class="form-group input-group mb-1" >
                                             
 
-                                            <input type="text" id="searchTextField" name="address" class="form-control address cust_add autocomplete" placeholder="Address">
+                                            <input type="text" id="searchTextField" name="address" class="form-control address cust_add autocomplete" placeholder="{{__('Address')}}">
                                             <div class="input-group-append">
                                                 <button class="btn btn-xs btn-dark waves-effect waves-light showMap" type="button" num="add1"> <i class="mdi mdi-map-marker-radius"></i></button>
                                             </div>
@@ -104,7 +104,7 @@
                 </div>
                 <div class="modal-footer border-0">
                     {{-- <button type="button" class="btn btn-blue waves-effect waves-light" onclick="cancleForm()">Cancel</button> --}}
-                    <button type="button" class="btn btn-blue waves-effect waves-light submitoptimizeForm">Submit</button>
+                    <button type="button" class="btn btn-blue waves-effect waves-light submitoptimizeForm">{{__('Submit')}}</button>
                 </div>
             </form>
         </div>

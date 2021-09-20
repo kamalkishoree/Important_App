@@ -98,7 +98,7 @@
         @if(in_array('Add Route',$allowed) || Auth::user()->is_superadmin == 1)           
             <li class="d-lg-inline-block" >
                 <a class="nav-link" href="#"> 
-                    <button type="button" class="btn btn-blue waves-effect waves-light addTaskModalHeader" data-toggle="modal" data-target="" data-backdrop="static" title="{{__('Add Route')}}" data-keyboard="false"><span><i class="mdi mdi-plus-circle mr-1"></i> {{__('Add Route')}}</span></button>
+                    <button type="button" class="btn btn-blue waves-effect waves-light addTaskModalHeader klklkl" data-toggle="modal" data-target="" data-backdrop="static" title="{{__('Add Route')}}" data-keyboard="false"><span><i class="mdi mdi-plus-circle mr-1"></i> {{__('Add Route')}}</span></button>
                 </a>
             </li>
         @endif
@@ -113,7 +113,7 @@
 
             {{-- Languages --}}
             {{-- @php print_r(Session::all()); @endphp --}}
-            <li class="dropdown d-none d-xl-block">
+            <li class="dropdown d-xl-block">
                 <a class="nav-link dropdown-toggle waves-effect waves-light" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
                     Language 
                     {{session()->get('applocale')}}

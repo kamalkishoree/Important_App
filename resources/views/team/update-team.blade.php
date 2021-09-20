@@ -20,6 +20,7 @@ if (isset($tagname)) {
     $List = implode(' , ', $tagname);
 }
 
+
 @endphp
 @section('content')
     <!-- Start Content-->
@@ -28,7 +29,7 @@ if (isset($tagname)) {
         <div class="row">
             <div class="col-12">
                 <div class="page-title-box">
-                    <h4 class="page-title">Team</h4>
+                    <h4 class="page-title">{{__("Team")}}</h4>
                 </div>
             </div>
         </div>
@@ -50,7 +51,7 @@ if (isset($tagname)) {
                         <div class=" row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="name" class="control-label">NAME</label>
+                                    <label for="name" class="control-label">{{__("NAME")}}</label>
                                     <input type="text" class="form-control" name="name" id="name"
                                         value="{{ old('name', $team->name ?? '') }}" placeholder="John Doe">
                                     @if ($errors->has('name'))
@@ -63,7 +64,7 @@ if (isset($tagname)) {
 
                             <div class="col-md-6">
                                 <div class="form-group" id="manager_idInput">
-                                    <label for="team-manager">Manager</label>
+                                    <label for="team-manager">{{__("Manager")}}</label>
                                     <select class="form-control" id="team-manager" name="manager_id">
                                         @foreach ($agents as $agent)
                                             <option value="{{ $agent->id }}" @if ($agent->id == $team->manager_id) selected
@@ -77,7 +78,7 @@ if (isset($tagname)) {
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group" id="location_accuracyInput">
-                                    <label for="location_accuracy" class="control-label">Location Accuracy</label>
+                                    <label for="location_accuracy" class="control-label">{{__("Location Accuracy")}}</label>
                                     <select class="form-control" id="location_accuracy" name="location_accuracy">
                                         @foreach ($location_accuracy as $k => $la)
                                             <option value="{{ $k }}" @if ($team->location_accuracy == $k) selected
@@ -93,7 +94,7 @@ if (isset($tagname)) {
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group" id="location_frequencyInput">
-                                    <label for="location_frequency" class="control-label">Location Frequency</label>
+                                    <label for="location_frequency" class="control-label">{{__("Location Frequency")}}</label>
                                     <select class="form-control" id="location_frequency" name="location_frequency">
                                         @foreach ($location_frequency as $k => $lf)
                                             <option value="{{ $k }}" @if ($team->location_frequency == $k) selected
@@ -112,7 +113,7 @@ if (isset($tagname)) {
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group mb-0">
-                                    <label class="control-label">Tags</label>
+                                    <label class="control-label">{{__("Tags")}}</label>
                                 <input id="form-tags-4" name="tags" type="text" value="{{isset($List) ? $List: ''}}">
                                 </div>
                             </div>
@@ -124,7 +125,7 @@ if (isset($tagname)) {
 
                         <div class="row">
                             <div class="col-md-12 sub">
-                                <button type="submit" class="btn btn-info waves-effect waves-light">Submit</button>
+                                <button type="submit" class="btn btn-info waves-effect waves-light">{{__("Submit")}}</button>
                             </div>
 
                         </div>

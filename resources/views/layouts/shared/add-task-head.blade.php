@@ -135,7 +135,7 @@
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content" style="">
             <div class="modal-header align-items-center border-0 mb-md-0 mb-3">
-                <h4 class="page-title m-0">Route</h4>
+                <h4 class="page-title m-0">{{__("Route")}}</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
             </div>
             <form id="taskFormHeader" method="post" enctype="multipart/form-data" action="{{ route('tasks.store') }}">
@@ -144,7 +144,7 @@
                     
                 </div>
                 <div class="modal-footer justify-content-center">
-                    <button type="submit" class="btn btn-blue waves-effect waves-light submitTaskHeader">Submit</button>
+                    <button type="submit" class="btn btn-blue waves-effect waves-light submitTaskHeader">{{__("Submit")}}</button>
                 </div>
             </form>   
         </div>
@@ -156,7 +156,7 @@
         <div class="modal-content">
 
             <div class="modal-header border-0">
-                <h4 class="modal-title">Select Location</h4>
+                <h4 class="modal-title">{{__("Select Location")}}</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
             </div>
             <div class="modal-body px-3 py-0">
@@ -173,7 +173,7 @@
                 </div>
             </div>
             <div class="modal-footer border-0">
-                <button type="submit" class="btn btn-blue waves-effect waves-light selectMapOnHeader">Ok</button>
+                <button type="submit" class="btn btn-blue waves-effect waves-light selectMapOnHeader">{{__("Ok")}}</button>
                 <!--<button type="Cancel" class="btn btn-blue waves-effect waves-light cancelMapLocation">cancel</button>-->
             </div>
         </div>
@@ -198,7 +198,7 @@
             </div> --}}
 
 <div class="row address" id="addHeader0" style="display: none;">
-    <input type="text" id="addHeader0-input" name="address" class="autocomplete form-control addHeader0-input" placeholder="Address">
+    <input type="text" id="addHeader0-input" name="address" class="autocomplete form-control addHeader0-input" placeholder={{__("Address")}}>
     <input type="hidden" name="latitude[]" id="addHeader0-latitude" value="0" class="cust_latitude" />
     <input type="hidden" name="longitude[]" id="addHeader0-longitude" value="0" class="cust_longitude" />
 </div>

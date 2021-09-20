@@ -1,7 +1,7 @@
 <div class=" row">
     <div class="col-md-12">
         <div class="form-group" id="nameInputEdit">
-            <label for="name" class="control-label">NAME</label>
+            <label for="name" class="control-label">{{__("NAME")}}</label>
             <input type="text" class="form-control" name="name" id="name" value="{{ old('name', $team->name ?? '') }}" placeholder="John Doe">
             <span class="invalid-feedback" role="alert">
                 <strong></strong>
@@ -23,7 +23,7 @@
 
     <div class="col-md-6">
         <div class="form-group" id="location_accuracyInputEdit">
-            <label for="location_accuracy" class="control-label">Location Accuracy</label>
+            <label for="location_accuracy" class="control-label">{{__("Location Accuracy")}}</label>
             <input type="hidden" id="team_id" val_id="{{ $team->id }}" url="{{route('team.update', $team->id)}}">
             <select class="form-control" id="location_accuracy" name="location_accuracy">
                 @foreach ($location_accuracy as $k => $la)
@@ -40,7 +40,7 @@
     </div>
     <div class="col-md-6">
         <div class="form-group" id="location_frequencyInputEdit">
-            <label for="location_frequency" class="control-label">Location Frequency</label>
+            <label for="location_frequency" class="control-label">{{__("Location Frequency")}}</label>
             <select class="form-control" id="location_frequency" name="location_frequency">
                 @foreach ($location_frequency as $k => $lf)
                     <option value="{{ $k }}" @if ($team->location_frequency == $k) selected
@@ -56,7 +56,7 @@
     </div>
     <div class="col-md-12">
         <div class="form-group mb-0">
-            <label class="control-label">Tags</label>
+            <label class="control-label">{{__("Tags")}}</label>
         <input id="form-tags-4" name="tags" type="text" value="{{isset($teamTagIds) ? implode(',', $teamTagIds) : ''}}" class="myTag1">
         </div>
     </div>

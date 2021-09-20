@@ -4,6 +4,11 @@
     <!-- Plugins css -->
     <link href="{{asset('assets/libs/flatpickr/flatpickr.min.css')}}" rel="stylesheet" type="text/css" />
     <link href="{{asset('assets/libs/selectize/selectize.min.css')}}" rel="stylesheet" type="text/css" />
+
+
+    <link href="{{asset('ar.css')}}" rel="stylesheet" type="text/css" />
+
+
 @endsection
 
 @section('content')
@@ -41,7 +46,7 @@
          
 
         <div class="row">
-            
+ 
             <div class="col-md-12">
                 <h3 class="page-title">Tasks</h3>
             </div>
