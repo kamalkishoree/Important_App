@@ -113,7 +113,7 @@
 
             {{-- Languages --}}
             {{-- @php print_r(Session::all()); @endphp --}}
-            <li class="dropdown d-xl-block">
+            {{-- <li class="dropdown d-xl-block">
                 <a class="nav-link dropdown-toggle waves-effect waves-light" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
                     Language 
                     {{session()->get('applocale')}}
@@ -123,12 +123,11 @@
                     <a href="/switch/language?lang=en" class="dropdown-item" langid="1">English</a>
                     <a href="/switch/language?lang=es" class="dropdown-item" langid="1">Spanish</a>
                     <a href="/switch/language?lang=ar" class="dropdown-item" langid="1">Arabic</a>
-                    <a href="/switch/language?lang=fr" class="dropdown-item" langid="1">French</a>
-                    {{-- <a href="/switch/language?lang=de" class="customerLang" langid="1">Germany</a> --}}
+                    <a href="/switch/language?lang=fr" class="dropdown-item" langid="1">French</a>                   
                     
                     <div class="dropdown-divider"></div>
                 </div>
-            </li>
+            </li> --}}
 
             <li class="dropdown d-none d-lg-inline-block">
                 <a class="nav-link dropdown-toggle arrow-none waves-effect waves-light" data-toggle="fullscreen"

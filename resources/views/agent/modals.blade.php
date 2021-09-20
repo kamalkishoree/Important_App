@@ -5,10 +5,10 @@
                 <h4 class="modal-title">{{__("Add")}} {{ Session::get('agent_name') }}</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
             </div>
-           
-            <form id="submitAgent" enctype="multipart/form-data"  action="{{ url('agent/store') }}">
+
+            <form id="submitAgent" enctype="multipart/form-data" action="{{ url('agent/store') }}">
                 <div class="modal-body px-3 py-0">
-                
+
                     @csrf
                     <input type="hidden" name="country_code" id="countryCode">
                     <div class="row mb-2">
@@ -46,7 +46,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group" id="typeInput">
@@ -81,7 +81,7 @@
                                 <p class="text-muted mt-3 mb-2">{{__("TRANSPORT TYPE")}}</p>
                                 <div class="radio radio-blue form-check-inline click cursors">
                                     <input type="radio" id="onfoot" value="1" name="vehicle_type_id" act="add" checked>
-                                    <img id="foot_add" src="{{asset('assets/icons/walk.png')}}"> 
+                                    <img id="foot_add" src="{{asset('assets/icons/walk.png')}}">
                                 </div>
 
                                 <div class="radio radio-primery form-check-inline click cursors">
@@ -160,14 +160,14 @@
 
                         </div>
                     </div>
-                
+
                 </div>
                 <div class="modal-footer border-0">
                     <button type="submit" class="btn btn-blue waves-effect waves-light submitAgentForm">{{__("Submit")}}</button>
                 </div>
             </form>
         </div>
-        
+
     </div>
 </div>
 
@@ -181,16 +181,36 @@
             <form id="UpdateAgent" method="post" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
-                 <div class="modal-body px-3" id="editCardBox">
-                    
+                <div class="modal-body px-3" id="editCardBox">
+
                 </div>
 
                 <div class="modal-footer border-0">
                     <button type="submit" class="btn btn-blue waves-effect waves-light submitEditForm">{{__("Submit")}}</button>
                 </div>
-                
-            
+
+
         </div>
     </div>
 </div>
 </form>
+
+<div id="view-agent-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display:none;">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header border-0">
+                <h4 class="modal-title">View {{ Session::get('agent_name') }}</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            </div>
+         
+                <div class="modal-body px-3" id="viewCardBox">
+
+                </div>
+
+             
+
+        </div>
+    </div>
+</div>
+
+
