@@ -1,3 +1,6 @@
+.navbar-custom{
+    padding: 0 10px;
+    }
 .table-responsive::-webkit-scrollbar {
     width: 6px !important;
     height: 6px;
