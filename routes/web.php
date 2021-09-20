@@ -107,8 +107,9 @@ Route::domain('{domain}')->middleware(['subdomain'])->group(function() {
 		
 		Route::group(['middleware' => ['auth:client'], 'prefix' => '/'], function () {
 				Route::get('agent/filter', 'AgentController@agentFilter');
-				Route::get('agent/export', 'AgentController@agentFilter')->name('agents.export');
+				Route::get('agent/export', 'AgentController@export')->name('agents.export');
 				Route::get('customer/filter', 'CustomerController@customerFilter');
+				Route::get('customer/export', 'CustomerController@customersExport')->name('customer.export');
 				Route::get('analytics','AccountingController@index')->name('accounting');
 				Route::get('profileImg', 'ProfileController@displayImage');		
 				Route::get('','DashBoardController@index')->name('index');

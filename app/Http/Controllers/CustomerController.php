@@ -9,7 +9,9 @@ use App\Model\TagCustomer;
 use App\Model\Location;
 use DataTables;
 use Illuminate\Support\Str;
-
+use Maatwebsite\Excel\HeadingRowImport;
+use App\Exports\CustomerExport;
+use Excel;
 class CustomerController extends Controller
 {
     /**
@@ -56,6 +58,34 @@ class CustomerController extends Controller
                     }
                 })
                 ->make(true);
+    }
+
+    public function customersExport(){
+        $header = [
+            [
+             'Sr. No.',
+             'Name',
+             'Email',
+             'Phone Number',
+             'Status'
+            ]
+          ];
+          $data = array();
+          $customers = Customer::orderBy('created_at', 'DESC')->get();
+          if(!empty($customers)){
+            $i = 1;
+            foreach ($customers as $key => $value) {
+              $ndata = [];
+              $ndata[] = $i;
+              $ndata[] = $value->name;
+              $ndata[] = $value->email;
+              $ndata[] = $value->phone_number;
+              $ndata[] = $value->status;
+              $data[] = $ndata;
+              $i++;
+            }
+          }
+        return Excel::download(new CustomerExport($data, $header), "customers.xlsx");
     }
 
     /**

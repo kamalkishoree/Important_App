@@ -107,7 +107,7 @@
                 className:'btn btn-success waves-effect waves-light',
                 text: '<span class="btn-label"><i class="mdi mdi-export-variant"></i></span>Export CSV',
                 action: function ( e, dt, node, config ) {
-                    // window.location.href = "{{ route('agents.export') }}";
+                    window.location.href = "{{ route('customer.export') }}";
                 }
             }],
             ajax: {
@@ -133,7 +133,7 @@
 
     //change status on a customer
     $(function() {
-        $('.custom-control-input').change(function() {
+        $(document).on('change', '.custom-control-input', function() {
             var status = $(this).prop('checked') == true ? "Active" : 'In-Active';
             var user_id = $(this).data('id');
 

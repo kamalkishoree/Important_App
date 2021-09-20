@@ -20,7 +20,8 @@ use Exception;
 use App\Model\Countries;
 use DataTables;
 use Illuminate\Support\Str;
-
+use Excel;
+use App\Exports\AgentsExport;
 class AgentController extends Controller
 {
     /**
