@@ -10,7 +10,6 @@
     <link rel="stylesheet" href="{{ asset('telinput/css/intlTelInput.css') }}" type="text/css">
     <link rel="stylesheet" href="{{ asset('telinput/css/demo.css') }}" type="text/css">
     <style>
-
         .cursors {
             cursor:move;
             margin-right: 0rem !important;
@@ -27,7 +26,7 @@
     <div class="row">
         <div class="col-12">
             <div class="page-title-box">
-                <h4 class="page-title">Managers</h4>
+                <h4 class="page-title">{{__("Managers")}}</h4>
             </div>
         </div>
     </div>
@@ -48,8 +47,7 @@
                         </div>
                         <div class="col-sm-4 text-right btn-auto">
                             <a class="btn btn-blue waves-effect waves-light text-sm-right"
-                                href="{{route('subadmins.create')}}"><i class="mdi mdi-plus-circle mr-1"></i> Add
-                                Manager</a>
+                                href="{{route('subadmins.create')}}"><i class="mdi mdi-plus-circle mr-1"></i> {{__("Add Manager")}}</a>
                             {{-- <button type="button" class="btn btn-blue waves-effect waves-light openModal" data-toggle="modal" data-target="" data-backdrop="static" data-keyboard="false"><i class="mdi mdi-plus-circle mr-1"></i> Add Sub Admin</button> --}}
                         </div>
 
@@ -59,11 +57,11 @@
                         <table class="table table-striped dt-responsive nowrap w-100" id="">
                             <thead>
                                 <tr>                                    
-                                    <th>Name</th>
-                                    <th>Email</th>
-                                    <th>Phone</th>
-                                    <th>Status</th> 
-                                    <th>Action</th>
+                                    <th>{{__("Name")}}</th>
+                                    <th>{{__('Email')}}</th>
+                                    <th>{{__("Phone")}}</th>
+                                    <th>{{__("Status")}}</th> 
+                                    <th>{{__("Action")}}</th>
                                 </tr>
                             </thead>
                             <tbody>

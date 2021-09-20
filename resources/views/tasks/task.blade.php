@@ -28,7 +28,7 @@ use Carbon\Carbon;
         <div class="row">
             <div class="col-12">
                 <div class="page-title-box">
-                    <h4 class="page-title">Routes</h4>
+                    <h4 class="page-title">{{__("Routes")}}</h4>
                 </div>
             </div>
         </div>
@@ -55,13 +55,13 @@ use Carbon\Carbon;
                                             <li class="d-inline-block mr-2">
                                                 <input type="radio" id="teacher" name="status" onclick="handleClick(this);"
                                                     value="unassigned" {{ $status == 'unassigned' ? 'checked' : '' }}>
-                                                <label for="teacher">Pending Assignment<span
+                                                <label for="teacher">{{__("Pending Assignment")}}<span
                                                         class="showspan">{{ ' (' . $panding_count . ')' }}</span></label>
                                             </li>
                                             <li class="d-inline-block mr-2">
                                                 <input type="radio" id="student" onclick="handleClick(this);" name="status"
                                                     value="assigned" {{ $status == 'assigned' ? 'checked' : '' }}>
-                                                <label for="student">Active<span
+                                                <label for="student">{{__("Active")}}<span
                                                         class="showspan">{{ ' (' . $active_count . ')' }}</span></label>
                                             </li>
 
@@ -69,14 +69,14 @@ use Carbon\Carbon;
                                             <li class="d-inline-block mr-2">
                                                 <input type="radio" id="parent" name="status" onclick="handleClick(this);"
                                                     value="completed" {{ $status == 'completed' ? 'checked' : '' }}>
-                                                <label for="parent">History<span
+                                                <label for="parent">{{__("History")}}<span
                                                         class="showspan">{{ ' (' . $history_count . ')' }}</span></label>
                                             </li>
 
                                             <li class="d-inline-block mr-2">
                                                 <input type="radio" id="failed" name="status" onclick="handleClick(this);"
                                                     value="failed" {{ $status == 'failed' ? 'checked' : '' }}>
-                                                <label for="failed">Failed<span
+                                                <label for="failed">{{__("Failed")}}<span
                                                         class="showspan">{{ ' (' . $failed_count . ')' }}</span></label>
                                             </li>
 
@@ -86,8 +86,8 @@ use Carbon\Carbon;
                             </div>
                             <!-- @if (isset($status) && $status == 'unassigned' && $panding_count != 0 ) -->
                                 <div class="col-sm-4 text-right assign-toggle assign-show ">
-                                    <button type="button" class="btn btn-info assign_agent" data-toggle="modal" data-target="#add-assgin-agent-model" data-backdrop="static" data-keyboard="false">Assign</button> 
-                                    <button type="button" class="btn btn-info assign_date" data-toggle="modal" data-target="#add-assgin-date-model" data-backdrop="static" data-keyboard="false">Change Date/Time</button> 
+                                    <button type="button" class="btn btn-info assign_agent" data-toggle="modal" data-target="#add-assgin-agent-model" data-backdrop="static" data-keyboard="false">{{__("Assign")}}</button> 
+                                    <button type="button" class="btn btn-info assign_date" data-toggle="modal" data-target="#add-assgin-date-model" data-backdrop="static" data-keyboard="false">{{__("Change Date")}}/{{__("Time")}}</button> 
                                 </div>
                             <!-- @endif -->
                         </div>
@@ -99,15 +99,15 @@ use Carbon\Carbon;
                                         @if (!isset($status) || $status == 'unassigned')
                                         <th><input type="checkbox" class="all-driver_check" name="all_driver_id" id="all-driver_check"></th>
                                         @endif
-                                        <th>Customer</th>
-                                        <th>Phone.No</th>
-                                        <th>Driver</th>
-                                        <th>Due Time</th>
-                                        <th>Routes</th>
-                                        <th>Tracking Url</th>
-                                        <th>Route Proofs</th>
-                                        <th>Pricing</th>
-                                        <th style="width: 85px;">Action</th>
+                                        <th>{{__("Customer")}}</th>
+                                        <th>{{__("Phone.No")}}</th>
+                                        <th>{{__("Driver")}}</th>
+                                        <th>{{__("Due Time")}}</th>
+                                        <th>{{__("Routes")}}</th>
+                                        <th>{{__("Tracking Url")}}</th>
+                                        <th>{{__("Route Proofs")}}</th>
+                                        <th>{{__("Pricing")}}</th>
+                                        <th style="width: 85px;">{{__("Action")}}</th>
                                     </tr>
                                 </thead>
                                 <tbody>

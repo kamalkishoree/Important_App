@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Http\Request;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,7 +16,27 @@ use Illuminate\Support\Facades\Redirect;
 | contains the "web" middleware group. Now create something great!
 |
 */
+
+//switch language route
+Route::get('/switch/language',function(Request $request){		
+   if($request->lang){
+	   session()->put("applocale",$request->lang);
+   }
+   return redirect()->back();
+});
+
+Route::group(['middleware' => 'switchLanguage'], function () {
+$imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain/';
 Route::get('dispatch-logs', '\Rap2hpoutre\LaravelLogViewer\LogViewerController@index');
+Route::get('show/{agent_doc}', function ($agent_doc) {
+    $filename = $agent_doc->file_name;
+    $path = storage_path($filename);
+
+    return Response::make($imgproxyurl.Storage::disk('s3')->url( $filename ) , 200, [
+        'Content-Type' => 'application/pdf',
+        'Content-Disposition' => 'inline; filename="' . $filename . '"'
+    ]);
+});
 
 Route::get('/howto/signup', function(){
 	return view('How-to-SignUp-in-Royo-Dispatcher');
@@ -97,6 +118,7 @@ Route::domain('{domain}')->middleware(['subdomain'])->group(function() {
 				Route::post('smtp/save','ClientController@saveSmtp')->name('smtp');
 				Route::get('options', 'ClientController@ShowOptions')->name('options');
 				Route::resource('agent', 'AgentController');
+				Route::get('agent/{id}/show', 'AgentController@show')->name('agent.show');
 				Route::post('pay/receive','AgentController@payreceive')->name('pay.receive');
 				Route::get('agent/paydetails/{id}','AgentController@agentPayDetails')->name('agent.paydetails');
 				Route::post('agent/approval_status', 'AgentController@approval_status')->name('agent/approval_status');
@@ -166,8 +188,6 @@ Route::domain('{domain}')->middleware(['subdomain'])->group(function() {
 				
 			   Route::get('demo/page', 'GeoFenceController@newDemo')->name('new.demo');
 
-
-			
 		});
 		
 	});
@@ -183,5 +203,16 @@ Route::group(['middleware' => 'auth', 'prefix' => '/'], function () {
 });
 
 
+
 	
 
+
+
+
+	
+	
+	});
+	
+	
+	
+	
