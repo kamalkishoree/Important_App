@@ -322,7 +322,33 @@
    "vehicle_model":"طراز_المركبة",
    "plate_number":"رقم لوحة",
    "tracking_link":"رابط_التتبع",
-   "feedback_url":"عنوان url للتعليقات"
+   "feedback_url":"عنوان url للتعليقات",
+   "Edit Route":"تحرير المسار",
+   "Pickup Task":"مهمة الالتقاط",
+   "Drop Off Task":"مهمة الانسحاب",
+   "Appointment":"ميعاد",
+   "Address Short Name":"الاسم المختصر للعنوان",
+   "PostCode":"الرمز البريدي",
+   "Recipient Phone":"هاتف المستلم",
+   "Recipient Email":"البريد الإلكتروني المستلم",
+   "Net Quantity":"صافي الكمية",
+   "Unassigned":"غير معين",
+   "Manual":"كتيب",
+   "PostsCode":"المشاركات",
+   "contact-img":"صورة الاتصال",
+   "Track Url":"تتبع عنوان Url",
+   "Copied":"نسخ",
+   "Rejections":"الرفض",
+   "No rejection found":"لم يتم العثور على الرفض",
+   "Task List":"قائمة المهام",
+   "Are you sure?":"هل أنت متأكد ؟",
+   "Pickup":"يلتقط",
+   "Drop":"قطرة",
+   "John Doe":"فلان الفلاني",   
+   "View OTP after Logging in the Driver App":"اعرض OTP بعد تسجيل الدخول في تطبيق Driver",
+   "Base Duration (In Minutes)":"المدة الأساسية (بالدقائق)",
+   "Edit":"يحرر"
+
 }
 
 
