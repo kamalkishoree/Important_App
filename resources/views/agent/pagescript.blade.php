@@ -7,7 +7,6 @@ $( document ).ready(function() {
             "dom": '<"toolbar">Bfrtip',
             "scrollX": true,
             "destroy": true,
-            "processing": true,
             "serverSide": true,
             "responsive": true,
             "iDisplayLength": 50,
@@ -30,7 +29,6 @@ $( document ).ready(function() {
                 url: "{{url('agent/filter')}}",
                 data: function (d) {
                     d.search = $('input[type="search"]').val();
-                    d.date_filter = $('#sort-date-agent').val();
                     d.imgproxyurl = '{{$imgproxyurl}}';
                 }
             },
@@ -62,19 +60,6 @@ $( document ).ready(function() {
         });         
               
     }
-
-
-    $("#sort-date-agent").flatpickr({ 
-        mode: "range",
-        onClose: function(selectedDates, dateStr, instance) {
-            initDataTable();
-        }
-    });
-
-    $(document).on("click","#sort-agent-clear",function(e){
-        $('#sort-date-agent').val('');
-        initDataTable();
-    });
 
     var tagList = "{{$showTag}}";
     tagList = tagList.split(',');

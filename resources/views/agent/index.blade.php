@@ -14,11 +14,8 @@
         cursor: move;
         margin-right: 0rem !important;
     }
-    .table th:last-child,.table td:nth-last-child(2), .table td:last-child {
+    .table th,.table td, .table td {
         display: table-cell !important;
-    }
-    .dataTable th {
-        cursor: pointer;
     }
 </style>
 @endsection
@@ -42,14 +39,8 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
             <div class="card">
                 <div class="card-body">
                     <div class="row mb-2">
-                        <div class="col-sm-4 text-left btn-auto d-flex align-items justify-content">
-                            <div class="form-group mb-0 mr-2">
-                                <input class="form-control" placeholder="Select date" id="sort-date-agent" name="sort_date_agent" value="{{!empty($calenderSelectedDate) ? $calenderSelectedDate : ''}}" type="text" autocomplete="off">
-                            </div>
-                            <!-- <a href="javascript:void(0);" class="btn btn-blue" id="sort-agent">Go</a> -->
-                            <a href="javascript:void(0);" class="btn btn-success ml-2" id="sort-agent-clear">Clear</a>
-                        </div>
-                        <div class="col-sm-4">
+                        
+                        <div class="col-sm-8">
                             <div class="text-sm-left">
                                 @if (\Session::has('success'))
                                 <div class="alert alert-success">
@@ -103,8 +94,8 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
 
 @section('script')
 
-<script src="{{ asset('assets/js/jquery-ui.min.js') }}" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
-<link rel="stylesheet" href="{{ asset('assets/css/jquery-ui.css') }}">
+<!-- <script src="{{ asset('assets/js/jquery-ui.min.js') }}" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="{{ asset('assets/css/jquery-ui.css') }}"> -->
 <script src="{{ asset('assets/js/storeAgent.js') }}"></script>
 <script src="{{ asset('assets/libs/dropzone/dropzone.min.js') }}"></script>
 <script src="{{ asset('assets/libs/dropify/dropify.min.js') }}"></script>
@@ -116,16 +107,6 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
 
 
 <script>
-
-    
-    // $('#sort-agent').on('click', function(e) {
-    //     var sortDateAgent = $('#sort-date-agent').val();
-    //     if (sortDateAgent != '') {
-    //         var perm = "?date=" + sortDateAgent;
-    //         window.history.replaceState(null, null, perm);
-    //         location.reload();
-    //     }
-    // });
 
     $('#selectAgent').on('change', function(e) {
 
