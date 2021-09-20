@@ -2,7 +2,7 @@
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-header border-0">
-                <h4 class="modal-title">Add Customer</h4>
+                <h4 class="modal-title">{{__("Add Customer")}}</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
             </div>
             <form id="add_customer" action="{{ route('customer.store') }}" method="POST">
@@ -20,7 +20,7 @@
 
                                     <div class="col-lg-4 col-sm-6 mb-lg-0 mb-3">
                                         <div class="form-group" id="nameInput">
-                                            {!! Form::label('title', 'Name',['class' => 'control-label']) !!}
+                                            {!! Form::label('title', __('Name'),['class' => 'control-label']) !!}
                                             {!! Form::text('name', null, ['class' => 'form-control']) !!}
                                             
                                             <span class="invalid-feedback" role="alert">
@@ -30,7 +30,7 @@
                                     </div>
                                     <div class="col-lg-4 col-sm-6 mb-lg-0 mb-3">
                                         <div class="form-group" id="emailInput">
-                                            {!! Form::label('title', 'Email',['class' => 'control-label']) !!}
+                                            {!! Form::label('title', __('Email'),['class' => 'control-label']) !!}
                                             {!! Form::email('email', null, ['class' => 'form-control']) !!}
                                             <span class="invalid-feedback" role="alert">
                                                 <strong></strong>
@@ -39,7 +39,7 @@
                                     </div>
                                     <div class="col-lg-4 col-sm-6 mb-lg-0 mb-3">
                                         <div class="form-group" id="phone_numberInput">
-                                            {!! Form::label('title', 'Phone Number',['class' => 'control-label']) !!}
+                                            {!! Form::label('title', __('Phone Number'),['class' => 'control-label']) !!}
                                             {!! Form::text('phone_number', null, ['class' => 'form-control']) !!}
                                             <span class="invalid-feedback" role="alert">
                                                 <strong></strong>
@@ -50,12 +50,12 @@
 
                                 
                                 <div class="addapp"> 
-                                    {!! Form::label('title', 'Address',['class' => 'control-label']) !!} 
+                                    {!! Form::label('title', __('Address'),['class' => 'control-label']) !!} 
                                     <div class="row address addressrow1" id="add1">
 
                                         <div class="col-lg-2 col-md-3 mb-lg-0 mb-3">
                                             <div class="form-group" id="short_nameInput"> 
-                                                <input type="text" name="short_name[]" class="form-control" placeholder="Short Name">
+                                                <input type="text" name="short_name[]" class="form-control" placeholder={{__("Short Name")}}>
                                                 <span class="invalid-feedback" role="alert">
                                                     <strong></strong>
                                                 </span>
@@ -63,7 +63,7 @@
                                         </div>
                                         <div class="col-lg-4 col-md-3 mb-lg-0 mb-3">
                                             <div class="form-group input-group" id="addressInput">
-                                                <input type="text" id="add1-input" name="address[]" class="form-control" placeholder="Address">
+                                                <input type="text" id="add1-input" name="address[]" class="form-control" placeholder={{__("Address")}}>
                                                 <div class="input-group-append">
                                                     <button class="btn btn-xs btn-dark waves-effect waves-light showMap" type="button" num="add1"> <i class="mdi mdi-map-marker-radius"></i></button>
                                                 </div>
@@ -76,7 +76,7 @@
                                         </div>
                                         <div class="col-lg-2 col-md-3 mb-lg-0 mb-3">
                                             <div class="form-group">
-                                                <input type="text" id="add1-email" name="address_email[]" class="form-control" placeholder="Email">
+                                                <input type="text" id="add1-email" name="address_email[]" class="form-control" placeholder={{__("Email")}}>
                                                 <span class="invalid-feedback" role="alert">
                                                     <strong></strong>
                                                 </span>
@@ -84,7 +84,7 @@
                                         </div> 
                                         <div class="col-lg-2 col-md-3 mb-lg-0 mb-3">
                                             <div class="form-group">
-                                                <input type="text" id="add1-phone_number" name="address_phone_number[]" class="form-control" placeholder="Phone Number">
+                                                <input type="text" id="add1-phone_number" name="address_phone_number[]" class="form-control" placeholder={{__("Phone Number")}}>
                                                 <span class="invalid-feedback" role="alert">
                                                     <strong></strong>
                                                 </span>
@@ -92,7 +92,7 @@
                                         </div>
                                         <div class="col-lg-2 col-md-3 mb-lg-0 mb-3">
                                             <div class="form-group d-flex align-items-center" id="post_codeInput">
-                                                <input type="text" name="post_code[]" class="form-control" placeholder="Post Code" id="add1-postcode">
+                                                <input type="text" name="post_code[]" class="form-control" placeholder={{__("Post Code")}} id="add1-postcode">
                                                 <span class="invalid-feedback" role="alert">
                                                     <strong></strong>
                                                 </span>
@@ -129,7 +129,7 @@
                                 
                                 <div class="row">
                                     <div class="col-md-12 text-center" id="adds">
-                                        <a href="#"  class="btn btn-success btn-rounded waves-effect waves-light addField" >Add More Address</a>
+                                        <a href="#"  class="btn btn-success btn-rounded waves-effect waves-light addField" >{{__("Add More Address")}}</a>
                                     </div>
                                 </div>
 
@@ -147,7 +147,7 @@
                     </div>
                 </div>
                 <div class="modal-footer border-0">
-                    <button type="submit" class="btn btn-blue waves-effect waves-light submitCustomerForm">Submit</button>
+                    <button type="submit" class="btn btn-blue waves-effect waves-light submitCustomerForm">{{__("Submit")}}</button>
                 </div>
             </form>
         </div>
@@ -158,7 +158,7 @@
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-header border-0">
-                <h4 class="modal-title">Edit Customer</h4>
+                <h4 class="modal-title">{{__("Edit Customer")}}</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
             </div>
 
@@ -170,7 +170,7 @@
                 </div>
 
                 <div class="modal-footer border-0">
-                    <button type="button" class="btn btn-blue waves-effect waves-light submitEditForm">Submit</button>
+                    <button type="button" class="btn btn-blue waves-effect waves-light submitEditForm">{{__("Submit")}}</button>
                 </div>
                 
             </form>
@@ -183,7 +183,7 @@
         <div class="modal-content">
 
             <div class="modal-header border-0">
-                <h4 class="modal-title">Select Location</h4>
+                <h4 class="modal-title">{{__("Select Location")}}</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
             </div>
             <div class="modal-body px-3 py-0">
@@ -200,7 +200,7 @@
                 </div>
             </div>
             <div class="modal-footer border-0">
-                <button type="submit" class="btn btn-blue waves-effect waves-light selectMapLocation">Ok</button>
+                <button type="submit" class="btn btn-blue waves-effect waves-light selectMapLocation">{{__("Ok")}}</button>
                 <!--<button type="Cancel" class="btn btn-blue waves-effect waves-light cancelMapLocation">cancel</button>-->
             </div>
         </div>

@@ -17,9 +17,9 @@
         <div class="col-12">
             <div class="page-title-box">
                 @if(isset($subadmin))
-                <h4 class="page-title">Update Manager</h4>
+                <h4 class="page-title">{{__("Update Manager")}}</h4>
                 @else
-                <h4 class="page-title">Create Manager</h4>
+                <h4 class="page-title">{{__("Create Manager")}}</h4>
                 @endif
             </div>
         </div>
@@ -49,7 +49,7 @@
                             <div class=" row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="name" class="control-label">NAME</label>
+                                        <label for="name" class="control-label">{{__('NAME')}}</label>
                                         <input type="text" class="form-control" name="name" id="name"
                                             value="{{ old('name', $subadmin->name ?? '')}}" placeholder="John Doe" required>
                                         @if($errors->has('name'))
@@ -61,12 +61,12 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="email" class="control-label">EMAIL</label>
+                                        <label for="email" class="control-label">{{__("EMAIL")}}</label>
                                         {{-- <input type="email" class="form-control" id="email" name="email"
                                             value="{{ old('email', $subadmin->email ?? '')}}" <?=(isset($subadmin))?"readonly":"";?>
                                             placeholder="Enter email address" required> --}}
                                         <input type="email" class="form-control" id="email" name="email"
-                                            value="{{ old('email', $subadmin->email ?? '')}}" placeholder="Enter email address" required>
+                                            value="{{ old('email', $subadmin->email ?? '')}}" placeholder={{__("Enter email address")}} required>
                                         @if($errors->has('email'))
                                         <span class="text-danger" role="alert">
                                             <strong>{{ $errors->first('email') }}</strong>
@@ -82,7 +82,7 @@
                                     <input type="hidden" name="country_code" id="countryCode">
 
                                     <div class="form-group" id="phone_numberInput">
-                                        <label for="phone_number" class="control-label">CONTACT NUMBER</label>
+                                        <label for="phone_number" class="control-label">{{__("CONTACT NUMBER")}}</label>
                                         <div class="input-group">
                                             @if(isset($subadmin) && !empty($subadmin))
                                             <input type="tel" name="phone_number" class="form-control xyz" value="{{old('full_number','+'.$subadmin->dial_code.$subadmin->phone_number)}}"id="phone_number" placeholder="9876543210" maxlength="14">
@@ -122,14 +122,14 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="password" class="control-label">PASSWORD</label>
+                                        <label for="password" class="control-label">{{__("PASSWORD")}}</label>
                                         @if(isset($subadmin))
                                         {{-- <input type="text" class="form-control" id="password" name="password"
                                             value="{{ old('password', isset($subadmin->confirm_password)?Crypt::decryptString($subadmin->confirm_password) :'********')}}"
                                             placeholder="Enter password"> --}}
-                                        <input type="password" class="form-control" id="password" name="password" value="" placeholder="Enter new password(if you want to update)">    
+                                        <input type="password" class="form-control" id="password" name="password" value="" placeholder={{__("Enter new password(if you want to update)")}}>    
                                         @else
-                                        <input type="password" class="form-control" id="password" name="password" value="" placeholder="Enter password" required>
+                                        <input type="password" class="form-control" id="password" name="password" value="" placeholder={{__("Enter password")}} required>
                                         @endif
                                         @if($errors->has('password'))
                                         <span class="text-danger" role="alert">
@@ -141,11 +141,11 @@
 
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="team_access" class="control-label">Team Access</label>
+                                        <label for="team_access" class="control-label">{{__("Team Access")}}</label>
                                         <?php $teamaccess =  (isset($subadmin))?$subadmin->all_team_access:'';?>
                                         <select name="all_team_access" class="form-control" id="team_access">
-                                            <option value="0" <?=($teamaccess==0)?'selected':'';?>>Selected Teams</option>
-                                            <option value="1" <?=($teamaccess==1)?'selected':'';?>>All Teams</option>
+                                            <option value="0" <?=($teamaccess==0)?'selected':'';?>>{{__("Selected Teams")}}</option>
+                                            <option value="1" <?=($teamaccess==1)?'selected':'';?>>{{__("All Teams")}}</option>
                                         </select>
                                         
                                     </div>
@@ -153,11 +153,11 @@
 
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="password" class="control-label">Status</label>
+                                        <label for="password" class="control-label">{{__("Status")}}</label>
                                         <?php $status =  (isset($subadmin))?$subadmin->status:'';?>
                                         <select name="status" class="form-control">
-                                            <option value="3" <?=($status==3)?'selected':'';?>>Inactive</option>
-                                            <option value="1" <?=($status==1)?'selected':'';?>>Active</option>
+                                            <option value="3" <?=($status==3)?'selected':'';?>>{{__("Inactive")}}</option>
+                                            <option value="1" <?=($status==1)?'selected':'';?>>{{__("Active")}}</option>
                                         </select>                                        
                                     </div>
                                 </div>
@@ -177,8 +177,8 @@
         
                                         <thead class="thead-light">
                                             <tr>
-                                                <th>Permission Name</th>
-                                                <th>Status</th>
+                                                <th>{{__("Permission Name")}}</th>
+                                                <th>{{__('Status')}}</th>
                                             </tr>
                                             
                                         </thead>
@@ -218,8 +218,8 @@
         
                                         <thead class="thead-light">
                                             <tr>
-                                                <th>Team Name</th>
-                                                <th>Status</th>
+                                                <th>{{__("Team Name")}}</th>
+                                                <th>{{__("Status")}}</th>
                                             </tr>
                                             
                                         </thead>
@@ -250,7 +250,7 @@
                             <div class="row mb-2 mt-4">
                                 <div class="col-12">
                                     <div class="form-group mb-0 text-center">
-                                        <button class="btn btn-blue btn-block" type="submit"> Submit </button>
+                                        <button class="btn btn-blue btn-block" type="submit"> {{__("Submit")}} </button>
                                     </div>
                                 </div>
                             </div>

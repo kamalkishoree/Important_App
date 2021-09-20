@@ -6,7 +6,7 @@
             <div class="row d-flex align-items-center" id="dateredio">
 
                 <div class="col-sm-2">
-                    <h4 class="header-title mb-3">Customer</h4>
+                    <h4 class="header-title mb-3">{{__("Customer")}}</h4>
                 </div>
                 <div class="col-sm-5 text-right">
                     <div class="login-form">
@@ -14,36 +14,36 @@
                             <li class="d-inline-block mr-2">
                                 <input type="radio" class="custom-control-input check" id="tasknow"
                                 name="task_type" value="now" checked>
-                                <label class="custom-control-label" for="tasknow">Now</label>
+                                <label class="custom-control-label" for="tasknow">{{__("Now")}}</label>
                             </li>
                             <li class="d-inline-block">
                                 <input type="radio" class="custom-control-input check" id="taskschedule"
                                 name="task_type" value="schedule" >
-                                <label class="custom-control-label" for="taskschedule">Schedule</label>
+                                <label class="custom-control-label" for="taskschedule">{{__("Schedule")}}</label>
                             </li>
                         </ul>
                     </div>
                 </div>
                 <div class="col-sm-5 datenow">
                     <input type="text"  name="schedule_time"
-                        class="form-control opendatepicker upside datetime-datepicker" placeholder="Date Time">
+                        class="form-control opendatepicker upside datetime-datepicker" placeholder={{__("Date Time")}}>
                         <button type="button" class="cstmbtn check_btn btn btn-info"><i class="fa fa-check" aria-hidden="true"></i></button>
                 </div>
             </div>
 
-            <span class="span1 searchspan">Please search a customer or add a customer</span>
+            <span class="span1 searchspan">{{__("Please search a customer or add a customer")}}</span>
             <div class="row searchshow">
                 <div class="col-md-8">
                     <div class="form-group" id="nameInputHeader">
 
-                        {!! Form::text('search', null, ['class' => 'form-control', 'placeholder' => 'Search Customer', 'id' => 'searchCust']) !!}
+                        {!! Form::text('search', null, ['class' => 'form-control', 'placeholder' => __('Search Customer'), 'id' => 'searchCust']) !!}
                         <input type="hidden" id='cusid' name="ids" readonly>
 
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="form-group" id="AddressInput">
-                        <a href="#" class="add-sub-task-btn">New Customer</a>
+                        <a href="#" class="add-sub-task-btn">{{__("New Customer")}}</a>
                     </div>
                 </div>
 
@@ -52,7 +52,7 @@
                 <div class="row no-gutters row-spacing">
                     <div class="col-md-3">
                         <div class="form-group" id="">
-                            {!! Form::text('name', null, ['class' => 'form-control', 'placeholder' => 'Name','id'=>'name_new']) !!}
+                            {!! Form::text('name', null, ['class' => 'form-control', 'placeholder' => __('Name'),'id'=>'name_new']) !!}
                             <span class="invalid-feedback" role="alert">
                                 <strong></strong>
                             </span>
@@ -61,7 +61,7 @@
                     </div>
                     <div class="col-md-4">
                         <div class="form-group" id="">
-                            {!! Form::text('email', null, ['class' => 'form-control', 'placeholder' => 'Email','id'=>'email_new']) !!}
+                            {!! Form::text('email', null, ['class' => 'form-control', 'placeholder' => __('Email'),'id'=>'email_new']) !!}
                             <span class="invalid-feedback" role="alert">
                                 <strong></strong>
                             </span>
@@ -70,7 +70,7 @@
                     </div>
                     <div class="col-md-3">
                         <div class="form-group" id="">
-                            {!! Form::text('phone_number', null, ['class' => 'form-control', 'placeholder' => 'Phone Number','id'=> 'phone_new'
+                            {!! Form::text('phone_number', null, ['class' => 'form-control', 'placeholder' => __('Phone Number'),'id'=> 'phone_new'
                             ]) !!}
                             <span class="invalid-feedback" role="alert">
                                 <strong></strong>
@@ -80,7 +80,7 @@
                     </div>
                     <div class="col-md-2">
                         <div class="form-group" id="Inputsearch">
-                            <a href="#" class="add-sub-task-btn">Previous</a>
+                            <a href="#" class="add-sub-task-btn">{{__("Previous")}}</a>
 
                         </div>
 
@@ -100,9 +100,9 @@
                         <div class="col-md-6">
                             <div class="form-group mb-3">
                                 <select class="form-control selecttype mt-1 taskselect" id="task_type"  name="task_type_id[]" required>
-                                    <option value="1">Pickup Task</option>
-                                    <option value="2">Drop Off Task</option>
-                                    <option value="3">Appointment</option>
+                                    <option value="1">{{__("Pickup Task")}}</option>
+                                    <option value="2">{{__("Drop Off Task")}}</option>
+                                    <option value="3">{{__("Appointment")}}</option>
 
                                 </select>
                             </div>
@@ -110,7 +110,7 @@
                         <div class="col-md-5">
                             <div class="form-group appoint mt-1">
                                 {!! Form::text('appointment_date[]', null, ['class' => 'form-control
-                                appointment_date', 'placeholder' => 'Duration (In Min)']) !!}
+                                appointment_date', 'placeholder' => __('Duration (In Min)')]) !!}
                                 <span class="invalid-feedback" role="alert">
                                     <strong></strong>
                                 </span>
@@ -124,15 +124,15 @@
                     </div>
                     <div class="row mb-3">
                         <div class="col-md-6 d-flex align-items-center">
-                            <h4 class="header-title mb-0">Address</h4>
-                            <a href="javascript:void(0);" id="clear-address" class="btn btn-info clear-btn ml-3">Clear</a>
+                            <h4 class="header-title mb-0">{{__("Address")}}</h4>
+                            <a href="javascript:void(0);" id="clear-address" class="btn btn-info clear-btn ml-3">{{__("Clear")}}</a>
                         </div>
                         <div class="col-md-6">
                             {{-- <h4 class="header-title mb-2">Saved Addresses</h4> --}}
                         </div>
                     </div>
                     
-                    <span class="span1 addspan">Please select a address or create new</span>
+                    <span class="span1 addspan">{{__("Please select a address or create new")}}</span>
 
                     <div class="row cust_add_div" id="addHeader1">
                         <div class="col-lg-8">
@@ -140,39 +140,39 @@
                                 
                                 <div class="row">
                                     <div class="col-md-6">
-                                        {!! Form::text('short_name[]', null, ['class' => 'form-control address', 'placeholder' => 'Short Name']) !!}
+                                        {!! Form::text('short_name[]', null, ['class' => 'form-control address', 'placeholder' => __('Short Name')]) !!}
                                     </div>
                                     <div class="col-md-6">
-                                        {!! Form::text('address_email[]', null, ['class' => 'form-control address address_email','placeholder' => 'Email','id'=>'addHeader1-address_email']) !!}
+                                        {!! Form::text('address_email[]', null, ['class' => 'form-control address address_email','placeholder' => __('Email'),'id'=>'addHeader1-address_email']) !!}
                                     </div>
                                     <div class="col-md-6">
                                         <div class="input-group mb-1">
-                                            <input type="text" id="addHeader1-input" name="address[]" class="form-control address cust_add" placeholder="Location">
+                                            <input type="text" id="addHeader1-input" name="address[]" class="form-control address cust_add" placeholder={{__("Location")}}>
                                             <div class="input-group-append">
                                                 <button class="btn btn-xs btn-dark waves-effect waves-light showMapHeader cust_btn" type="button" num="addHeader1"> <i class="mdi mdi-map-marker-radius"></i></button>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
-                                        {!! Form::text('address_phone_number[]', null, ['class' => 'form-control address address_phone_number','placeholder' => 'Phone Number','id'=>'addHeader1-address_phone_number']) !!}
+                                        {!! Form::text('address_phone_number[]', null, ['class' => 'form-control address address_phone_number','placeholder' => __('Phone Number'),'id'=>'addHeader1-address_phone_number']) !!}
                                     </div>
                                     <div class="col-md-6">
                                         <input type="hidden" name="latitude[]" id="addHeader1-latitude" value="0" class="cust_latitude" />
                                         <input type="hidden" name="longitude[]" id="addHeader1-longitude" value="0" class="cust_longitude" />
-                                        {!! Form::text('post_code[]', null, ['class' => 'form-control address postcode','placeholder' => 'Post Code','id'=>'addHeader1-postcode']) !!}
+                                        {!! Form::text('post_code[]', null, ['class' => 'form-control address postcode','placeholder' => __('Post Code'),'id'=>'addHeader1-postcode']) !!}
                                     </div>
                                     <div class="col-md-6">
                                         <div class="row no-gutters">
                                         
                                             <div class="col-6 pr-1">
-                                                {!! Form::text('barcode[]', null, ['class' => 'form-control barcode','placeholder' => 'Task Barcode']) !!}  
+                                                {!! Form::text('barcode[]', null, ['class' => 'form-control barcode','placeholder' => __('Task Barcode')]) !!}  
                                             </div>
                                             <div class="col-6 pl-1">
-                                                {!! Form::text('quantity[]', null, ['class' => 'form-control quantity onlynumber','placeholder' => 'Quantity']) !!}
+                                                {!! Form::text('quantity[]', null, ['class' => 'form-control quantity onlynumber','placeholder' => __('Quantity')]) !!}
                                             </div>
-                                            <span class="span1 pickup-barcode-error">Task Barcode is required for pickup</span>
-                                            <span class="span1 drop-barcode-error">Task Barcode is required for drop</span>
-                                            <span class="span1 appointment-barcode-error">Task Barcode is required for appointment</span>
+                                            <span class="span1 pickup-barcode-error">{{__("Task Barcode is required for pickup")}}</span>
+                                            <span class="span1 drop-barcode-error">{{__("Task Barcode is required for drop")}}</span>
+                                            <span class="span1 appointment-barcode-error">{{ __("Task Barcode is required for appointment")}}</span>
                                          </div>   
                                     </div>
                                     {{-- <div class="col-md-6">
@@ -207,24 +207,23 @@
               </div>
             <div class="row">
                 <div class="col-md-12" id="adds">
-                    <a href="#" class="add-sub-task-btn waves-effect waves-light subTaskHeader">Add Sub
-                        Task</a>
+                    <a href="#" class="add-sub-task-btn waves-effect waves-light subTaskHeader">{{__("Add Sub Task")}}</a>
                 </div>
             </div>
 
             <!-- end row -->
 
             <!-- container -->
-            <h4 class="header-title mb-2">Meta Data</h4>
+            <h4 class="header-title mb-2">{{__("Meta Data")}}</h4>
             <div class="row">
                 <div class="col-md-6 mb-3">
                     <div class="form-group" id="make_modelInput">
                         {!! Form::hidden('recipient_phone', null, ['class' => 'form-control rec', 'placeholder' =>
-                        'Recipient Phone', 'required' => 'required']) !!}
+                        __('Recipient Phone'), 'required' => 'required']) !!}
                         {!! Form::hidden('recipient_email', null, ['class' => 'form-control rec', 'placeholder'
-                        => 'Recipient Email', 'required' => 'required']) !!}
+                        => __('Recipient Email'), 'required' => 'required']) !!}
                             {!! Form::textarea('task_description', null, ['class' => 'form-control',
-                            'placeholder' => 'Task Description', 'rows' => 2, 'cols' => 40]) !!}
+                            'placeholder' => __('Task Description'), 'rows' => 2, 'cols' => 40]) !!}
                             <span class="invalid-feedback" role="alert">
                                 <strong></strong>
                             </span>
@@ -239,7 +238,7 @@
                    
                     <div class="form-group text-center" id="colorInput">
                         <label class="btn btn-info width-lg waves-effect waves-light newchnageimage upload-img-btn">
-                            <span><i class="fas fa-image mr-2"></i>Upload Image</span>
+                            <span><i class="fas fa-image mr-2"></i>{{__("Upload Image")}}</span>
                             <input id="file" type="file" name="file[]" multiple style="display: none"/>
                         </label>
                         <div>
@@ -253,17 +252,16 @@
                 </div>
             </div> 
 
-            <h4 class="header-title mb-3">Call Back URL</h4>
+            <h4 class="header-title mb-3">{{__("Call Back URL")}}</h4>
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <div class="form-group" id="make_modelInput">
-                                {!! Form::text('call_back_url', null, ['class' => 'form-control rec', 'placeholder' =>
-                                'Call Back URL']) !!}
+                                {!! Form::text('call_back_url', null, ['class' => 'form-control rec', 'placeholder' => __('Call Back URL')]) !!}
                             </div>
                         </div>
                     </div>
 
-            <h4 class="header-title mb-2">Allocation</h4>
+            <h4 class="header-title mb-2">{{__("Allocation")}}</h4>
             <div class="row" id="rediodiv">
                 <div class="col-md-8">
                     <div class="login-form">
@@ -271,34 +269,34 @@
                             <li class="d-inline-block mr-2">
                                 <input type="radio" class="custom-control-input check assignRadio" id="customRadio"
                                 name="allocation_type" value="u" {{$allcation->manual_allocation == 0 ?'checked':''}}>
-                            <label class="custom-control-label" for="customRadio">Unassigned</label>
+                            <label class="custom-control-label" for="customRadio">{{__("Unassigned")}}</label>
                             </li>
                             <li class="d-inline-block mr-2">
                                 <input type="radio" class="custom-control-input check assignRadio" id="customRadio22"
                                 name="allocation_type" value="a" {{$allcation->manual_allocation == 1 ?'checked':''}}>
-                            <label class="custom-control-label" for="customRadio22">Auto Allocation</label>
+                            <label class="custom-control-label" for="customRadio22">{{__("Auto Allocation")}}</label>
                             </li>
                             <li class="d-inline-block">
                                 <input type="radio" class="custom-control-input check assignRadio" id="customRadio33"
                                 name="allocation_type" value="m">
-                            <label class="custom-control-label" for="customRadio33">Manual</label>
+                            <label class="custom-control-label" for="customRadio33">{{__("Manual")}}</label>
                             </li>
                          </ul>
                         </div>
                 </div>
                 <div class="col-md-4">
-                    <input class="form-control" type="text" placeholder="Cash to be collected" name="cash_to_be_collected">
+                    <input class="form-control" type="text" placeholder={{__("Cash to be collected")}} name="cash_to_be_collected">
                 </div>
               
             </div>
-            <span class="span1 tagspan">Please select atlest one tag for driver and agent</span>
+            <span class="span1 tagspan">{{__("Please select atlest one tag for driver and agent")}}</span>
             <div class="tags {{ $allcation->manual_allocation == 0 ? "hidealloction":""}}">
                 <div class="row ">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label>Team Tag</label>
-                            <select name="team_tag[]" id="selectize-optgroups" class="selectizeInput" multiple placeholder="Select tag...">
-                                <option value="">Select Tag...</option>
+                            <label>{{__("Team Tag")}}</label>
+                            <select name="team_tag[]" id="selectize-optgroups" class="selectizeInput" multiple placeholder={{__("Select tag...")}}>
+                                <option value="">{{__("Select Tag...")}}</option>
                                 @foreach ($teamTag as $item)
                                     <option value="{{ $item->id }}">{{ $item->name }}</option>
                                 @endforeach
@@ -310,9 +308,9 @@
 
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label>Driver Tag</label>
-                            <select name="agent_tag[]" id="selectize-optgroup" class="selectizeInput" multiple placeholder="Select tag...">
-                                <option value="">Select Tag...</option>
+                            <label>{{__("Driver Tag")}}</label>
+                            <select name="agent_tag[]" id="selectize-optgroup" class="selectizeInput" multiple placeholder={{__("Select tag...")}}>
+                                <option value="">{{__("Select Tag...")}}</option>
                                 @foreach ($agentTag as $item)
                                     <option value="{{ $item->id }}">{{ $item->name }}</option>
                                 @endforeach
@@ -325,7 +323,7 @@
             <div class="row drivers hidealloction">
                 <div class="col-md-12">
                     <div class="form-group mb-3">
-                        <label>Drivers</label>
+                        <label>{{__("Drivers")}}</label>
                         <select class="form-control" name="agent" id="driverselect">
                             @foreach ($agents as $item)
                                 <option value="{{ $item->id }}">{{ $item->name }}</option>

@@ -3,7 +3,7 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header border-0">
-                <h4 class="modal-title">Pay/Receive Money</h4>
+                <h4 class="modal-title">{{__("Pay")}}/{{__("Receive Money")}}</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
             </div>
             <form id="submitpayreceive" enctype="">
@@ -13,11 +13,11 @@
                         <ul class="list-inline">
                         <li class="d-inline-block mr-2">
                             <input type="radio" id="teacher" name="payment_type"  value="1" checked>
-                            <label for="teacher"><span class="showspan">Pay</span></label>
+                            <label for="teacher"><span class="showspan">{{__("Pay")}}</span></label>
                             </li>
                         <li class="d-inline-block mr-2">
                             <input type="radio" id="student"  name="payment_type" value="2">
-                            <label for="student"><span class="showspan">Receive</span></label>
+                            <label for="student"><span class="showspan">{{__("Receive")}}</span></label>
                         </li>
                         
                         </ul>
@@ -28,7 +28,7 @@
                     <div class="row">
                         <div class="col-md-12">
                             <div class="form-group">
-                                <label for="field-1" class="control-label">Select {{Session::get('agent_name')}}</label>
+                                <label for="field-1" class="control-label">{{__("Select")}} {{Session::get('agent_name')}}</label>
                                 <select name="driver_id" id="selectAgent" class="selectpicker" required>
                                     <option hidden="true"></option>
                                     @foreach ($agents as $item)
@@ -40,7 +40,7 @@
                         </div>
                         <div class="col-md-12">
                             <div class="form-group">
-                                <label for="field-2" class="control-label">Amount</label>
+                                <label for="field-2" class="control-label">{{__("Amount")}}</label>
                                 <input name="amount" type="text" class="form-control" id="field-2"
                                     placeholder="3000" required>
                             </div>
@@ -68,7 +68,7 @@
                     </div>
                 </div>
                 <div class="modal-footer border-0">
-                    <button type="submit" class="btn btn-blue waves-effect waves-light">Add</button>
+                    <button type="submit" class="btn btn-blue waves-effect waves-light">{{__("Add")}}</button>
                 </div>
             </form>    
         </div>

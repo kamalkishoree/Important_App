@@ -13,7 +13,7 @@
     <div class="row">
         <div class="col-12">
             <div class="page-title-box">
-                <h4 class="page-title">Customize</h4>
+                <h4 class="page-title">{{__("Customize")}}</h4>
             </div>
         </div>
     </div>
@@ -29,7 +29,7 @@
         </div>
     </div>
     <!-- end page title -->
-
+f
     <div class="row">
         <div class="col-md-4">
             <form method="POST" action="{{route('preference', Auth::user()->code)}}">
@@ -37,19 +37,19 @@
                 <div class="row">
                     <div class="col-xl-12">
                         <div class="card-box">
-                            <h4 class="header-title">Theme</h4>
+                            <h4 class="header-title">{{__("Theme")}}</h4>
                             <p class="sub-header">
-                                Choose between light and dark theme, for the platform.
+                                {{__("Choose between light and dark theme, for the platform.")}}
                             </p>
                             <div class="row mb-2">
                                 <div class="col-sm-12">
                                     <div class="radio radio-info form-check-inline">
                                         <input type="radio" id="light_theme" value="light" name="theme" {{ (isset($preference) && $preference->theme =="light")? "checked" : "" }}>
-                                        <label for="light_theme"> Light theme </label>
+                                        <label for="light_theme"> {{__("Light theme")}} </label>
                                     </div>
                                     <div class="radio form-check-inline">
                                         <input type="radio" id="dark_theme" value="dark" name="theme" {{ (isset($preference) &&  $preference->theme =="dark")? "checked" : "" }}>
-                                        <label for="dark_theme"> Dark theme </label>
+                                        <label for="dark_theme"> {{__("Dark theme")}} </label>
                                     </div>
                                     @if($errors->has('theme'))
                                     <span class="text-danger" role="alert">
@@ -61,7 +61,7 @@
                             <div class="row mb-2">
                                 <div class="col-md-2">
                                     <div class="form-group mb-0 text-center">
-                                        <button class="btn btn-blue btn-block" type="submit"> Update </button>
+                                        <button class="btn btn-blue btn-block" type="submit"> {{__("Update")}} </button>
                                     </div>
                                 </div>
                             </div>
@@ -77,19 +77,19 @@
                 <div class="row">
                     <div class="col-xl-12">
                         <div class="card-box">
-                            <h4 class="header-title">Saved Address selection</h4>
+                            <h4 class="header-title">{{__("Saved Address selection")}}</h4>
                             <p class="sub-header">
-                                Manage how you want to show saved addresses while creating routes.
+                               {{__("Manage how you want to show saved addresses while creating routes.")}}
                             </p>
                             <div class="row mb-2">
                                 <div class="col-sm-12">
                                     <div class="radio radio-info form-check-inline mb-2">
                                         <input type="radio" id="all_contact" value="1" name="allow_all_location" {{ (isset($preference) && $preference->allow_all_location ==1)? "checked" : "" }}>
-                                        <label for="all_contact"> Shared saved addresses for all customers </label>
+                                        <label for="all_contact"> {{__("Shared saved addresses for all customers")}} </label>
                                     </div>
                                     <div class="radio form-check-inline">
                                         <input type="radio" id="my_contact" value="0" name="allow_all_location" {{ (isset($preference) &&  $preference->allow_all_location ==0)? "checked" : "" }}>
-                                        <label for="my_contact"> Saved addresses linked to each customer </label>
+                                        <label for="my_contact"> {{__("Saved addresses linked to each customer")}} </label>
                                     </div>
                                     @if($errors->has('allow_all_location'))
                                     <span class="text-danger" role="alert">
@@ -101,7 +101,7 @@
                             <div class="row mb-2">
                                 <div class="col-md-2">
                                     <div class="form-group mb-0 text-center">
-                                        <button class="btn btn-blue btn-block" type="submit"> Update </button>
+                                        <button class="btn btn-blue btn-block" type="submit"> {{__("Update")}} </button>
                                     </div>
                                 </div>
                             </div>
@@ -113,9 +113,9 @@
         </div>
         <div class="col-md-4">
             <div class="card-box">
-                <h4 class="header-title">CMS</h4>
+                <h4 class="header-title">{{__('CMS')}}</h4>
                 <p class="sub-header">
-                    View and update the Terms and Privacy content for the Agent App.
+                    {{__("View and update the Terms and Privacy content for the Agent App.")}}
                 </p>
                 <div class="row">
                     <div class="login-forms">
@@ -123,11 +123,11 @@
                             <li class="d-inline-block ml-2">
                                
                     
-                            <label for="acknowledge1"><a href="#" class="btn btn-blue btn-block" type="button" data-toggle="modal" data-target="#create-tandc-modal">Terms and Conditions</a></label>
+                            <label for="acknowledge1"><a href="#" class="btn btn-blue btn-block" type="button" data-toggle="modal" data-target="#create-tandc-modal">{{__("Terms and Conditions")}}</a></label>
                             </li>
                             <li class="d-inline-block ml-2">
                                 
-                            <label for="acknowledge2"><a href="#" class="btn btn-blue btn-block" type="button" data-toggle="modal" data-target="#create-pandp-modal">Privacy Policy</a></label>
+                            <label for="acknowledge2"><a href="#" class="btn btn-blue btn-block" type="button" data-toggle="modal" data-target="#create-pandp-modal">{{__('Privacy Policy')}}</a></label>
                             </li>
                           </ul>
                     </div>
@@ -141,15 +141,14 @@
                 <div class="row">
                     <div class="col-xl-12">
                         <div class="card-box">
-                            <h4 class="header-title">Nomenclature & Localisation</h4>
+                            <h4 class="header-title">{{__("Nomenclature & Localisation")}}</h4>
                             <p class="sub-header">
-                                View and update the naming, currency and distance units.
-                            </p>
+                                {{__("View and update the naming, currency and distance units.")}}                            </p>
                             <div class="row mb-2">
                                 <div class="col-md-6">
                                     <div class="form-group mb-3">
-                                        <label for="agent_type">AGENT NAME</label>
-                                        <input type="text" name="agent_name" id="agent_type" placeholder="e.g Driver" class="form-control" value="{{ old('agent_type', $preference->agent_name ?? '')}}">
+                                        <label for="agent_type">{{__("AGENT NAME")}}</label>
+                                        <input type="text" name="agent_name" id="agent_type" placeholder="e.g {{ __('Driver')}}" class="form-control" value="{{ old('agent_type', $preference->agent_name ?? '')}}">
                                         @if($errors->has('agent_name'))
                                         <span class="text-danger" role="alert">
                                             <strong>{{ $errors->first('agent_name') }}</strong>
@@ -159,7 +158,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group mb-3">
-                                        <label for="currency">CURRENCY</label>
+                                        <label for="currency">{{__("CURRENCY")}}</label>
                                         <select class="form-control" id="currency" name="currency_id">
                                             @foreach($currencies as $currency)
                                             <option value="{{ $currency->id }}" {{ ($preference && $preference->currency_id == $currency->id)? "selected" : "" }}>{{ $currency->iso_code }} - {{ $currency->symbol }}
@@ -181,11 +180,11 @@
                                     <div class="col-sm-12">
                                         <div class="radio radio-info form-check-inline">
                                             <input type="radio" id="metric" value="metric" name="distance_unit" {{ ($preference && $preference->distance_unit =="metric")? "checked" : "" }}>
-                                            <label for="metric"> Metric</label>
+                                            <label for="metric"> {{__("Metric")}}</label>
                                         </div>
                                         <div class="radio form-check-inline">
                                             <input type="radio" id="imperial" value="imperial" name="distance_unit" {{ ($preference && $preference->distance_unit =="imperial")? "checked" : "" }}>
-                                            <label for="imperial"> Imperial</label>
+                                            <label for="imperial"> {{__("Imperial")}}</label>
                                         </div>
                                         @if($errors->has('distance_unit'))
                                         <span class="text-danger" role="alert">
@@ -198,7 +197,7 @@
                             <div class="row mb-2">
                                 <div class="col-md-2">
                                     <div class="form-group mb-0 text-center">
-                                        <button class="btn btn-blue btn-block" type="submit"> Update </button>
+                                        <button class="btn btn-blue btn-block" type="submit"> {{__("Update")}} </button>
                                     </div>
                                 </div>
                             </div>
@@ -213,15 +212,15 @@
                 <div class="row">
                     <div class="col-xl-12">
                         <div class="card-box">
-                            <h4 class="header-title">Date & Time</h4>
+                            <h4 class="header-title">{{__("Date & Time")}}</h4>
                             <p class="sub-header">
-                                View and update the date & time format.
+                                {{__("View and update the date & time format.")}}
                             </p>
                             <div class="row mb-lg-5 mb-2">
         
                                 <div class="col-md-6">
                                     <div class="form-group mb-3">
-                                        <label for="date_format">DATE FORMAT</label>
+                                        <label for="date_format">{{__("DATE FORMAT")}}</label>
                                         <select class="form-control" id="date_format" name="date_format">
                                             <option value="m/d/Y" {{ ($preference && $preference->date_format =="m/d/Y")? "selected" : "" }}>
                                                 MM/DD/YYYY</option>
@@ -241,11 +240,11 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group mb-3">
-                                        <label for="time_format">TIME FORMAT</label>
+                                        <label for="time_format">{{__("TIME FORMAT")}}</label>
                                         <select class="form-control" id="time_format" name="time_format">
-                                            <option value="12" {{ ($preference && $preference->time_format =="12")? "selected" : "" }}>12 hours
+                                            <option value="12" {{ ($preference && $preference->time_format =="12")? "selected" : "" }}>12 {{__("hours")}}
                                             </option>
-                                            <option value="24" {{ ($preference && $preference->time_format =="24")? "selected" : "" }}>24 hours
+                                            <option value="24" {{ ($preference && $preference->time_format =="24")? "selected" : "" }}>24 {{__("hours")}}
                                             </option>
                                         </select>
                                         @if($errors->has('time_format'))
@@ -260,7 +259,7 @@
                             <div class="row mb-2">
                                 <div class="col-md-2">
                                     <div class="form-group mb-0 text-center">
-                                        <button class="btn btn-blue btn-block" type="submit"> Update </button>
+                                        <button class="btn btn-blue btn-block" type="submit"> {{__("Update")}} </button>
                                     </div>
                                 </div>
                             </div>
@@ -276,7 +275,7 @@
         <div class="row">
             <div class="col-xl-12">
                 <div class="card-box">
-                    <h4 class="header-title mb-3">Task Completion Proofs</h4>
+                    <h4 class="header-title mb-3">{{__("Task Completion Proofs")}}</h4>
                     
                     <div>
                         {{-- @php 
@@ -284,16 +283,16 @@
                             print_r($task_list); @endphp --}}
                         @foreach ($task_proofs as $key => $taskproof)
                         @php $counter = 1; @endphp
-                        <h5 class="header-title mb-3">{{$task_list[$key]->name}}</h5>
+                        <h5 class="header-title mb-3">{{__($task_list[$key]->name)}}</h5>
                          
                         <div class="table-responsive table_spacing">
                             <table class="table table-borderless table-nowrap table-hover table-centered m-0">
 
                                 <thead class="thead-light">
                                     <tr>
-                                        <th>Type</th>
-                                        <th>Enable</th>
-                                        <th>Required</th>
+                                        <th>{{__("Type")}}</th>
+                                        <th>{{__("Enable")}}</th>
+                                        <th>{{__("Required")}}</th>
                                         
                                     </tr>
                                 </thead>
@@ -302,7 +301,7 @@
 
                                     <tr>
                                         <td>
-                                            <h5 class="m-0 font-weight-normal">Image</h5>
+                                            <h5 class="m-0 font-weight-normal">{{__("Image")}}</h5>
                                         </td>
 
                                         <td>
@@ -324,7 +323,7 @@
 
                                     <tr>
                                         <td>
-                                            <h5 class="m-0 font-weight-normal">Signature</h5>
+                                            <h5 class="m-0 font-weight-normal">{{__("Signature")}}</h5>
                                         </td>
 
                                         <td>
@@ -346,7 +345,7 @@
                                     
                                     <tr>
                                         <td>
-                                            <h5 class="m-0 font-weight-normal">Notes</h5>
+                                            <h5 class="m-0 font-weight-normal">{{__('Notes')}}</h5>
                                         </td>
 
                                         <td>
@@ -369,7 +368,7 @@
 
                                     <tr>
                                         <td>
-                                            <h5 class="m-0 font-weight-normal">Barcode</h5>
+                                            <h5 class="m-0 font-weight-normal">{{__("Barcode")}}</h5>
                                         </td>
 
                                         <td>
@@ -582,7 +581,7 @@
                     <div class="row mb-2 mt-2">
                         <div class="col-md-2">
                             <div class="form-group mb-0 text-center">
-                                <button class="btn btn-blue btn-block" type="submit"> Update </button>
+                                <button class="btn btn-blue btn-block" type="submit"> {{__("Update")}} </button>
                             </div>
                         </div>
                     </div>

@@ -16,7 +16,7 @@
     <div class="row">
         <div class="col-12">
             <div class="page-title-box">
-                <h4 class="page-title">Profile</h4>
+                <h4 class="page-title">{{__("Profile")}}</h4>
             </div>
         </div>
     </div>
@@ -120,9 +120,9 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="header-title">Organization details</h4>
+                    <h4 class="header-title">{{__("Organization details")}}</h4>
                     <p class="sub-header">
-                        View and edit your organization's profile details.
+                        {{__("View and edit your organization's profile details.")}}
                     </p>
                     <form id="UpdateClient" method="post" action="{{route('profile.update',Auth::user()->code)}}" enctype="multipart/form-data">
                         @method('PUT')
@@ -130,11 +130,11 @@
                         <div class="row mb-2 d-flex align-items-center">
                             <div class="col-md-3 upload_box">
                                 <input type="file" data-plugins="dropify" name="logo" data-default-file="{{isset(Auth::user()->logo) ? Storage::disk('s3')->url(Auth::user()->logo) : ''}}" />
-                                <p class="text-muted text-center mt-2 mb-0">Upload Logo </p>
+                                <p class="text-muted text-center mt-2 mb-0">{{__("Upload Logo")}} </p>
                             </div>
                             <div class="col-md-3"></div>
                             <div class="col-md-3 mb-4">
-                                <label class="control-label">Short Code</label><br/>
+                                <label class="control-label">{{__("Short Code")}}</label><br/>
                                 <h1 class="control-label" style="font-size: 4rem;">{{Auth::user()->code}}</h1>
                                 
                             </div>
@@ -152,7 +152,7 @@
                         <div class=" row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="name" class="control-label">NAME</label>
+                                    <label for="name" class="control-label">{{__("NAME")}}</label>
                                     <input type="text" class="form-control" name="name" id="name" value="{{ old('name', Auth::user()->name ?? '')}}" placeholder="John Doe">
                                     @if($errors->has('name'))
                                     <span class="text-danger" role="alert">
@@ -163,8 +163,8 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="email" class="control-label">EMAIL</label>
-                                    <input type="email" class="form-control" id="email" name="email" value="{{ old('email', Auth::user()->email ?? '')}}" placeholder="Enter email address">
+                                    <label for="email" class="control-label">{{__("EMAIL")}}</label>
+                                    <input type="email" class="form-control" id="email" name="email" value="{{ old('email', Auth::user()->email ?? '')}}" placeholder={{__("Enter email address")}}>
                                     @if($errors->has('email'))
                                     <span class="text-danger" role="alert">
                                         <strong>{{ $errors->first('email') }}</strong>
@@ -177,7 +177,7 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="phone_number" class="control-label">CONTACT NUMBER</label>
+                                    <label for="phone_number" class="control-label">{{__("CONTACT NUMBER")}}</label>
                                     <div class="input-group">
                                         <input type="text" class="form-control" name="phone_number" id="phone_number" value="{{ old('phone_number', Auth::user()->phone_number ?? '')}}">
                                     </div>
@@ -190,8 +190,8 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="company_address" class="control-label">COMPANY ADDRESS</label>
-                                    <input type="text" class="form-control" id="company_address" name="company_address" value="{{ old('company_address', Auth::user()->company_address ?? '')}}" placeholder="Enter company address">
+                                    <label for="company_address" class="control-label">{{__("COMPANY ADDRESS")}}</label>
+                                    <input type="text" class="form-control" id="company_address" name="company_address" value="{{ old('company_address', Auth::user()->company_address ?? '')}}" placeholder={{__("Enter company address")}}>
                                     @if($errors->has('company_address'))
                                     <span class="text-danger" role="alert">
                                         <strong>{{ $errors->first('company_address') }}</strong>
@@ -206,7 +206,7 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="company_name" class="control-label">COMPANY NAME</label>
+                                    <label for="company_name" class="control-label">{{__("COMPANY NAME")}}</label>
                                     <input type="text" class="form-control" name="company_name" id="company_name" value="{{ old('company_name', Auth::user()->company_name ?? '')}}" placeholder="Enter company name">
                                     @if($errors->has('company_name'))
                                     <span class="text-danger" role="alert">
@@ -218,13 +218,13 @@
 
                             <div class="col-md-6">
                                 <div class="form-group mb-3" id="countryInput">
-                                    <label for="country">COUNTRY</label>
+                                    <label for="country">{{__("COUNTRY")}}</label>
                                     @if($errors->has('country'))
                                     <span class="text-danger" role="alert">
                                         <strong>{{ $errors->first('country') }}</strong>
                                     </span>
                                     @endif
-                                    <select class="form-control" id="country" name="country" value="{{ old('country', $client->id ?? '')}}" placeholder="Country">
+                                    <select class="form-control" id="country" name="country" value="{{ old('country', $client->id ?? '')}}" placeholder={{__("Country")}}>
                                         @foreach($countries as $code=>$country)
                                         <option value="{{ $country->id }}" @if(Auth::user()->country_id == $country->id) selected @endif>{{ $country->name }}</option>
                                         @endforeach
@@ -241,13 +241,13 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group mb-3" id="timezoneInput">
-                                    <label for="timezone">TIMEZONE</label>
+                                    <label for="timezone">{{__("TIMEZONE")}}</label>
                                     @if($errors->has('timezone'))
                                     <span class="text-danger" role="alert">
                                         <strong>{{ $errors->first('timezone') }}</strong>
                                     </span>
                                     @endif
-                                    <select class="form-control" id="timezone" name="timezone" value="{{ old('timezone', $client->timezone ?? '')}}" placeholder="Timezone">
+                                    <select class="form-control" id="timezone" name="timezone" value="{{ old('timezone', $client->timezone ?? '')}}" placeholder={{__("Timezone")}}>
                                         @foreach($tzlist as $tz)
                                         {{-- <option value="{{ $tz }}" @if(Auth::user()->timezone == $tz) selected @endif>{{ $tz }}</option> --}}
                                         <option value="{{ $tz->id }}" @if(Auth::user()->timezone == $tz->id) selected @endif>{{ $tz->timezone.' ('.$tz->diff_from_gtm.')' }}</option>
@@ -262,7 +262,7 @@
                         @if (Auth::user()->is_superadmin == 1)
                         <div class="row">
                             <div class="col-md-12">
-                                <button type="submit" class="btn btn-blue waves-effect waves-light">Update</button>
+                                <button type="submit" class="btn btn-blue waves-effect waves-light">{{__("Update")}}</button>
                             </div>
 
                         </div>
@@ -279,16 +279,16 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="card-box">
-                    <h4 class="header-title">Change Password</h4>
+                    <h4 class="header-title">{{__("Change Password")}}</h4>
                     <p class="sub-header">
                         {{-- <code>Organization details</code>/Change Password. --}}
                     </p>
                     <div class="row mb-2">
                         <div class="col-md-6">
                             <div class="form-group mb-3">
-                                <label for="old_password">Old Password</label>
+                                <label for="old_password">{{__("Old Password")}}</label>
                                 <div class="input-group input-group-merge ">
-                                    <input class="form-control " name="old_password" type="password" required="" id="old_password" placeholder="Enter your old password">
+                                    <input class="form-control " name="old_password" type="password" required="" id="old_password" placeholder={{__("Enter your old password")}}>
                                     <div class="input-group-append" data-password="false">
                                         <div class="input-group-text">
                                             <span class="password-eye"></span>
@@ -307,9 +307,9 @@
                     <div class="row mb-2">
                         <div class="col-md-6">
                             <div class="form-group mb-3">
-                                <label for="password">New Password</label>
+                                <label for="password">{{__("New Password")}}</label>
                                 <div class="input-group input-group-merge ">
-                                    <input class="form-control " name="password" type="password" required="" id="password" placeholder="Enter your password">
+                                    <input class="form-control " name="password" type="password" required="" id="password" placeholder={{__("Enter your password")}}>
                                     <div class="input-group-append" data-password="false">
                                         <div class="input-group-text">
                                             <span class="password-eye"></span>
@@ -329,9 +329,9 @@
                     <div class="row mb-2">
                         <div class="col-md-6">
                             <div class="form-group mb-3">
-                                <label for="confirm_password">Confirm Password</label>
+                                <label for="confirm_password">{{__("Confirm Password")}}</label>
                                 <div class="input-group input-group-merge ">
-                                    <input class="form-control " name="password_confirmation" type="password" required="" id="confirm_password" placeholder="Enter your confirm password">
+                                    <input class="form-control " name="password_confirmation" type="password" required="" id="confirm_password" placeholder={{__("Enter your confirm password")}}>
                                     <div class="input-group-append" data-password="false">
                                         <div class="input-group-text">
                                             <span class="password-eye"></span>
@@ -350,7 +350,7 @@
                     <div class="row mb-2">
                         <div class="col-md-2">
                             <div class="form-group mb-0 text-center">
-                                <button class="btn btn-blue btn-block" type="submit"> Update </button>
+                                <button class="btn btn-blue btn-block" type="submit"> {{__("Update")}} </button>
                             </div>
                         </div>
                     </div>

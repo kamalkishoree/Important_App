@@ -13,7 +13,7 @@
 
 
 
-    <body @yield('body-extra') class="{{$body}}">
+    <body @yield('body-extra') class="{{$body}}" @if( session()->get('applocale')=="ar") dir="rtl" @endif>
         <!-- Begin page -->
         <div id="wrapper">
             @include('layouts.shared/topbar')

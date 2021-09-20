@@ -11,7 +11,7 @@
         <div class="row">
             <div class="col-12">
                 <div class="page-title-box">
-                    <h4 class="page-title">Notifications</h4>
+                    <h4 class="page-title">{{__("Notifications")}}</h4>
                 </div>
             </div>
         </div>     
@@ -19,9 +19,9 @@
         <div class="row">
             <div class="col-xl-12">
                 <div class="card-box">
-                    <h4 class="header-title">Notifications</h4>
+                    <h4 class="header-title">{{__("Notifications")}}</h4>
                     <p class="sub-header">
-                        Send SMS's and emails based on each trigger and customize the content by clicking on the edit icon.
+                        {{__("Send SMS's and emails based on each trigger and customize the content by clicking on the edit icon.")}}
                     </p>
                     @foreach($notification_types as $key => $notification_type)
                     <div class="card-box">
@@ -36,10 +36,10 @@
 
                         <div class="row no-wrap">
                             <div class="offset-3 col-3 text-center">
-                                <h4 class="header-title pl-3">Customer</h4>
+                                <h4 class="header-title pl-3">{{__("Customer")}}</h4>
                             </div>
                             <div class="offset-1 col-5">
-                                <h4 class="header-title pl-4">Recipient</h4>
+                                <h4 class="header-title pl-4">{{__("Recipient")}}</h4>
                             </div>
                         </div>
                         
@@ -48,11 +48,11 @@
 
                                 <thead class="thead-light">
                                     <tr>
-                                        <th>Events</th>
-                                        <th>SMS</th>
-                                        <th>EMAIL</th>
-                                        <th>SMS</th>
-                                        <th>EMAIL</th>
+                                        <th>{{__("Events")}}</th>
+                                        <th>{{__("SMS")}}</th>
+                                        <th>{{__("EMAIL")}}</th>
+                                        <th>{{__("SMS")}}</th>
+                                        <th>{{__("EMAIL")}}</th>
                                         <!--<th>WEBHOOK</th>
                                          <th>WEBHOOK URL</th>  -->
                                         <th></th>

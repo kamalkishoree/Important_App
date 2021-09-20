@@ -16,7 +16,7 @@
     <div class="row">
         <div class="col-12">
             <div class="page-title-box">
-                <h4 class="page-title">Team</h4>
+                <h4 class="page-title">{{__("Team")}}</h4>
             </div>
         </div>
     </div>
@@ -39,7 +39,7 @@
                     </div>
                 </div>
                 <div class="col-sm-4 text-right">
-                    <button type="button" class="btn btn-blue waves-effect waves-light openModal" data-toggle="modal" data-target="" data-backdrop="static" data-keyboard="false"><i class="mdi mdi-plus-circle mr-1"></i> Add Team</button>
+                    <button type="button" class="btn btn-blue waves-effect waves-light openModal" data-toggle="modal" data-target="" data-backdrop="static" data-keyboard="false"><i class="mdi mdi-plus-circle mr-1"></i> {{__("Add Team")}}</button>
                 </div>
 
             </div>
@@ -48,12 +48,12 @@
                 <table class="table table-striped dt-responsive nowrap w-100" id="teams-datatable">
                     <thead>
                         <tr>
-                            <th>Team Name</th>
-                            <th>Location Accuracy</th>
-                            <th>Location Frequency</th>
-                            <th>Team Strength</th>
-                            <th>Tags</th>
-                            <th>Action</th>
+                            <th>{{__("Team Name")}}</th>
+                            <th>{{__("Location Accuracy")}}</th>
+                            <th>{{__("Location Frequency")}}</th>
+                            <th>{{__("Team Strength")}}</th>
+                            <th>{{__("Tags")}}</th>
+                            <th>{{__("Action")}}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -108,11 +108,11 @@
                     </a>
                     <div class="dropdown-menu dropdown-menu-right">
 
-                        <a href="javascript:void(0);" class="dropdown-item">Edit Report</a>
+                        <a href="javascript:void(0);" class="dropdown-item">{{__("Edit Report")}}</a>
 
-                        <a href="javascript:void(0);" class="dropdown-item">Export Report</a>
+                        <a href="javascript:void(0);" class="dropdown-item">{{__("Export Report")}}</a>
 
-                        <a href="javascript:void(0);" class="dropdown-item">Action</a>
+                        <a href="javascript:void(0);" class="dropdown-item">{{__("Action")}}</a>
                     </div>
                 </div>
 
@@ -123,8 +123,8 @@
 
                         <thead class="thead-light">
                             <tr>
-                                <th>Name</th>
-                                <th>Action</th>
+                                <th>{{__("Name")}}</th>
+                                <th>{{__("Action")}}</th>
                             </tr>
                         </thead>
                         <tbody>

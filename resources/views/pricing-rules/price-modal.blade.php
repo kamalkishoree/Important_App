@@ -2,7 +2,7 @@
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-header border-0">
-                <h4 class="modal-title">Add Pricing Rule</h4>
+                <h4 class="modal-title">{{__("Add Pricing Rule")}}</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
             </div>
             <form id="add_customer" action="{{ route('pricing-rules.store') }}" method="POST">
@@ -18,8 +18,8 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group" id="nameInput">
-                                            {!! Form::label('title', 'Name',['class' => 'control-label']) !!}
-                                            {!! Form::text('name', null, ['class' => 'form-control','placeholder'=> 'Name','required' => 'required']) !!}
+                                            {!! Form::label('title', __('Name'),['class' => 'control-label']) !!}
+                                            {!! Form::text('name', null, ['class' => 'form-control','placeholder'=> __('Name'),'required' => 'required']) !!}
                                             <span class="invalid-feedback" role="alert">
                                                 <strong></strong>
                                             </span>                    
@@ -36,7 +36,7 @@
                                     </div>                     --}}
                                     <div class="col-md-6">
                                         <div class="form-group" id="typeInput">
-                                            {!! Form::label('title', 'Select Geo Fence',['class' => 'control-label']) !!}
+                                            {!! Form::label('title', __('Select Geo Fence'),['class' => 'control-label']) !!}
                                             {!! Form::select('geo_id',$geos,null,['class' => 'selectpicker',]) !!}
                                             <span class="invalid-feedback" role="alert">
                                                 <strong></strong>
@@ -69,7 +69,7 @@
                                     
                                     <div class="col-md-6">
                                         <div class="form-group" id="typeInput">
-                                            {!! Form::label('title', 'Select Team',['class' => 'control-label']) !!}
+                                            {!! Form::label('title', __('Select Team'),['class' => 'control-label']) !!}
                                             {!! Form::select('team_id',$teams,null,['class' => 'selectpicker']) !!}
                                             <span class="invalid-feedback" role="alert">
                                                 <strong></strong>
@@ -78,7 +78,7 @@
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group" id="typeInput">
-                                            {!! Form::label('title', 'Select Team Tag',['class' => 'control-label']) !!}
+                                            {!! Form::label('title', __('Select Team Tag'),['class' => 'control-label']) !!}
                                             {!! Form::select('team_tag_id',$team_tag,null,['class' => 'selectpicker']) !!}
                                             <span class="invalid-feedback" role="alert">
                                                 <strong></strong>
@@ -91,7 +91,7 @@
                                    
                                     <div class="col-md-6">
                                         <div class="form-group" id="typeInput">
-                                            {!! Form::label('title', 'Select Driver Tag',['class' => 'control-label']) !!}
+                                            {!! Form::label('title', __('Select Driver Tag'),['class' => 'control-label']) !!}
                                             {!! Form::select('driver_tag_id',$driver_tag,null,['class' => 'selectpicker']) !!}
                                             <span class="invalid-feedback" role="alert">
                                                 <strong></strong>
@@ -103,7 +103,8 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group" id="">
-                                            {!! Form::label('title', 'Base Price',['class' => 'control-label']) !!}
+
+                                            {!! Form::label('title', __('Base Price'),['class' => 'control-label']) !!}
                                             {!! Form::text('base_price', 10, ['class' => 'form-control','required' => 'required']) !!}
                                             <span class="invalid-feedback" role="alert">
                                                 <strong></strong>
@@ -113,7 +114,7 @@
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group" id="">
-                                            {!! Form::label('title', 'Base Duration',['class' => 'control-label']) !!}
+                                            {!! Form::label('title', __('Base Duration'),['class' => 'control-label']) !!}
                                             {!! Form::text('base_duration', 1, ['class' => 'form-control','required' => 'required']) !!}
                                             <span class="invalid-feedback" role="alert">
                                                 <strong></strong>
@@ -126,7 +127,7 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group" id="">
-                                            {!! Form::label('title', 'Base Distance',['class' => 'control-label']) !!}
+                                            {!! Form::label('title', __('Base Distance'),['class' => 'control-label']) !!}
                                             {!! Form::text('base_distance', 1, ['class' => 'form-control','required' => 'required']) !!}
                                             <span class="invalid-feedback" role="alert">
                                                 <strong></strong>
@@ -136,7 +137,7 @@
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group" id="">
-                                            {!! Form::label('title', 'Base Waiting',['class' => 'control-label']) !!}
+                                            {!! Form::label('title', __('Base Waiting'),['class' => 'control-label']) !!}
                                             {!! Form::text('base_waiting', 1, ['class' => 'form-control','required' => 'required']) !!}
                                             <span class="invalid-feedback" role="alert">
                                                 <strong></strong>
@@ -148,7 +149,7 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group" id="">
-                                            {!! Form::label('title', 'Duration Price(per minute)',['class' => 'control-label']) !!}
+                                            {!! Form::label('title', __('Duration Price(per minute)'),['class' => 'control-label']) !!}
                                             {!! Form::text('duration_price', 1, ['class' => 'form-control','required' => 'required']) !!}
                                             <span class="invalid-feedback" role="alert">
                                                 <strong></strong>
@@ -158,7 +159,7 @@
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group" id="">
-                                            {!! Form::label('title', 'Waiting Price',['class' => 'control-label']) !!}
+                                            {!! Form::label('title', __('Waiting Price'),['class' => 'control-label']) !!}
                                             {!! Form::text('waiting_price', 1, ['class' => 'form-control','required' => 'required']) !!}
                                             <span class="invalid-feedback" role="alert">
                                                 <strong></strong>
@@ -170,7 +171,7 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group" id="">
-                                            {!! Form::label('title', 'Distance Fee',['class' => 'control-label']) !!}
+                                            {!! Form::label('title', __('Distance Fee'),['class' => 'control-label']) !!}
                                             {!! Form::text('distance_fee', 1, ['class' => 'form-control','required' => 'required']) !!}
                                             <span class="invalid-feedback" role="alert">
                                                 <strong></strong>
@@ -180,7 +181,7 @@
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group" id="">
-                                            {!! Form::label('title', 'Cancel Fee',['class' => 'control-label']) !!}
+                                            {!! Form::label('title', __('Cancel Fee'),['class' => 'control-label']) !!}
                                             {!! Form::text('cancel_fee', 1, ['class' => 'form-control','required' => 'required']) !!}
                                             <span class="invalid-feedback" role="alert">
                                                 <strong></strong>
@@ -193,7 +194,7 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group" id="">
-                                            {!! Form::label('title', 'Employee Commission Percentage',['class' => 'control-label']) !!}
+                                            {!! Form::label('title', __('Employee Commission Percentage'),['class' => 'control-label']) !!}
                                             {!! Form::text('agent_commission_percentage', null, ['class' => 'form-control','required' => 'required']) !!}
                                             <span class="invalid-feedback" role="alert">
                                                 <strong></strong>
@@ -203,7 +204,7 @@
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group" id="">
-                                            {!! Form::label('title', 'Employee Commission Fixed',['class' => 'control-label']) !!}
+                                            {!! Form::label('title', __('Employee Commission Fixed'),['class' => 'control-label']) !!}
                                             {!! Form::text('agent_commission_fixed', null, ['class' => 'form-control','required' => 'required']) !!}
                                             <span class="invalid-feedback" role="alert">
                                                 <strong></strong>
@@ -216,7 +217,7 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group" id="">
-                                            {!! Form::label('title', 'Freelancer Commission Percentage',['class' => 'control-label']) !!}
+                                            {!! Form::label('title', __('Freelancer Commission Percentage'),['class' => 'control-label']) !!}
                                             {!! Form::text('freelancer_commission_percentage', null, ['class' => 'form-control']) !!}
                                             <span class="invalid-feedback" role="alert">
                                                 <strong></strong>
@@ -226,7 +227,7 @@
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group" id="">
-                                            {!! Form::label('title', 'Freelancer Commission Fixed',['class' => 'control-label']) !!}
+                                            {!! Form::label('title', __('Freelancer Commission Fixed'),['class' => 'control-label']) !!}
                                             {!! Form::text('freelancer_commission_fixed', null, ['class' => 'form-control']) !!}
                                             <span class="invalid-feedback" role="alert">
                                                 <strong></strong>
@@ -243,7 +244,7 @@
                     </div>
                 </div>
                 <div class="modal-footer border-0">
-                    <button type="submit" class="btn btn-blue waves-effect waves-light">Submit</button>
+                    <button type="submit" class="btn btn-blue waves-effect waves-light">{{__("Submit")}}</button>
                 </div>
             </form>
         </div>
@@ -254,7 +255,7 @@
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-header border-0">
-                <h4 class="modal-title">Pricing Edit</h4>
+                <h4 class="modal-title">{{__("Pricing Edit")}}</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
             </div>
             
@@ -266,7 +267,7 @@
                 </div>
             </div>
             <div class="modal-footer border-0">
-                <button type="submit" class="btn btn-blue waves-effect waves-light submitEditForm">Submit</button>
+                <button type="submit" class="btn btn-blue waves-effect waves-light submitEditForm">{{__("Submit")}}</button>
             </div>
           
         </div>
