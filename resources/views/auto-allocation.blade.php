@@ -49,7 +49,7 @@
         <div class="row">
             <div class="col-12">
                 <div class="page-title-box">
-                    <h4 class="page-title">Auto Allocation</h4>
+                    <h4 class="page-title">{{__("Auto Allocation")}}</h4>
                 </div>
             </div>
         </div>
@@ -72,11 +72,9 @@
                     <div class="row">
                         <div class="col-xl-12">
                             <div class="card-box">
-                                <h4 class="header-title">Acknowledgement Type</h4>
+                                <h4 class="header-title">{{__("Acknowledgement Type")}}</h4>
                                 <p class="sub-header">
-                                    Agent can either acknowledge the receipt of the task or accept/decline a Task based on
-                                    your
-                                    selection below.
+                                    {{__("Agent can either acknowledge the receipt of the task or accept/decline a Task based on your selection below.")}}
                                 </p>
                                 {{-- @php
                                 dd($preference->);
@@ -89,18 +87,18 @@
                                                 <input type="radio" id="acknowledge1" class="autoredio" value="acknowledge"
                                                 name="acknowledgement_type"
                                                 {{ isset($preference) && $preference->acknowledgement_type == 'acknowledge' ? 'checked' : '' }}>
-                                            <label for="acknowledge1"> Acknowledge </label>
+                                            <label for="acknowledge1"> {{__("Acknowledge")}} </label>
                                             </li>
                                             <li class="d-inline-block mr-2">
                                                 <input type="radio" id="acknowledge2" class="autoredio" value="acceptreject"
                                                 name="acknowledgement_type"
                                                 {{ isset($preference) && $preference->acknowledgement_type == 'acceptreject' ? 'checked' : '' }}>
-                                            <label for="acknowledge2"> Accept/Reject </label>
+                                            <label for="acknowledge2"> {{__("Accept")}}/{{__("Reject")}} </label>
                                             </li>
                                             <li class="d-inline-block">
                                                 <input type="radio" id="acknowledge3" class="autoredio" value="none" name="acknowledgement_type"
                                                 {{ isset($preference) && $preference->acknowledgement_type == 'none' ? 'checked' : '' }}>
-                                            <label for="acknowledge3"> None </label>
+                                            <label for="acknowledge3"> {{__("None")}} </label>
                                             </li>
                                           </ul>
                                         </div>
@@ -116,12 +114,12 @@
                     @csrf
                     @method('PUT')
                     <div class="card-box">
-                        <h4 class="header-title">Auto Allocation</h4>
+                        <h4 class="header-title">{{__("Auto Allocation")}}</h4>
                         <div class="custom-switch redio-all">
                             <input type="checkbox" value="1" class="custom-control-input large-icon" id="manual_allocation"
                                 name="manual_allocation"
                                 {{ isset($allocation) && $allocation->manual_allocation == 1 ? 'checked' : '' }}>
-                            <label class="custom-control-label checkss" for="manual_allocation">Enable this option to automatically assign Task to your agent.</label>
+                            <label class="custom-control-label checkss" for="manual_allocation">{{__("Enable this option to automatically assign Task to your agent.")}}</label>
 
                             <div class="col-sm-4 text-right">
 
@@ -152,7 +150,7 @@
                         <div class="row mb-2 mt-3">
                             <div class="col-md-4">
                                 <div class="form-group mb-3">
-                                    <label for="number_of_retries">No. Of Retries</label>
+                                    <label for="number_of_retries">{{ __("No. Of Retries")}}</label>
                                     <select name="number_of_retries" id="number_of_retries" class="form-control">
                                         <option value="1" {{ isset($allocation) && $allocation->number_of_retries == 1 ? 'selected' : '' }}>1</option>
                                         <option value="2" {{ isset($allocation) && $allocation->number_of_retries == 2 ? 'selected' : '' }}>2</option>
@@ -171,7 +169,7 @@
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group mb-3">
-                                    <label for="start_before_task_time">Start Allocation Before (In Min)</label>
+                                    <label for="start_before_task_time">{{__("Start Allocation Before")}} ({{__("In Min")}})</label>
                                     <input type="text" name="start_before_task_time" id="start_before_task_time"
                                         placeholder="5" class="form-control"
                                         value="{{ isset($allocation) && $allocation->start_before_task_time != null ? $allocation->start_before_task_time : '' }}">
@@ -179,7 +177,7 @@
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group mb-3">
-                                    <label for="request_expiry">Request Expires (In Sec)</label>
+                                    <label for="request_expiry">{{__("Request Expires")}} ({{__("In Sec")}})</label>
                                     <input type="text" name="request_expiry" id="request_expiry" placeholder="30"
                                         class="form-control"
                                         value="{{ isset($allocation) && $allocation->request_expiry != null ? $allocation->request_expiry : '' }}"
@@ -196,7 +194,7 @@
                         <div class="row mb-2">
                             <div class="col-md-4">
                                 <div class="form-group mb-3">
-                                    <label for="task_priority">Maximum Task Per Person</label>
+                                    <label for="task_priority">{{__("Maximum Task Per Person")}}</label>
                                     <input type="text" name="maximum_task_per_person" id="request_expiry" placeholder="10"
                                         class="form-control"
                                         value="{{ isset($allocation) && $allocation->maximum_task_per_person != null ? $allocation->maximum_task_per_person : '' }}"
@@ -205,7 +203,7 @@
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group mb-3">
-                                    <label for="maximum_radius">Maximum Radius {{$preference->distance_unit  == "metric" ? '(In Km)':'(In Mile)'}}</label>
+                                    <label for="maximum_radius">{{__("Maximum Radius")}} {{$preference->distance_unit  == "metric" ? '(In Km)':'(In Mile)'}}</label>
                                     <input type="text" name="maximum_radius" id="maximum_radius" placeholder="30"
                                         class="form-control"
                                         value="{{ isset($allocation) && $allocation->maximum_radius != null ? $allocation->maximum_radius : '' }}">
@@ -214,7 +212,7 @@
 
                             <div class="col-md-4">
                                 <div class="form-group mb-3">
-                                    <label for="maximum_radius">Maximum Cash At Hand Per Person</label>
+                                    <label for="maximum_radius">{{__("Maximum Cash At Hand Per Person")}}</label>
                                     <input type="text" name="maximum_cash_at_hand_per_person" id="maximum_radius" placeholder="3000"
                                         class="form-control"
                                         value="{{ isset($allocation) && $allocation->maximum_cash_at_hand_per_person != null ? $allocation->maximum_cash_at_hand_per_person : '' }}">
@@ -224,7 +222,7 @@
                             
                         </div>
 
-                        <h4 class="header-title">Select a method to allocate task</h4>
+                        <h4 class="header-title">{{__("Select a method to allocate task")}}</h4>
 
                         <div class="row mb-2 mt-2" id="rediodivs">
                             <div class="col-md-6 click first_click five" id="redio1">
@@ -237,9 +235,9 @@
                                                 class="custom-control-input custom-logic" value="one_by_one"
                                                 {{ isset($allocation) && $allocation->auto_assign_logic == 'one_by_one' ? 'checked' : '' }}>
                                             <label class="custom-control-label font-16 font-weight-bold lab"
-                                                for="shippingMethodRadio1">One By One</label>
+                                                for="shippingMethodRadio1">{{__("One By One")}}</label>
                                         </div>
-                                        <strong class="tagline one_by_one" style="">Allocation will done one by one</strong>
+                                        <strong class="tagline one_by_one" style="">{{__("Allocation will done one by one")}}</strong>
                                     </div>
                                     <div class="col-md-4 icon-part">
                                     <img class="img-fluid" src="{{asset('assets/icons/onebyone.png')}}"  alt="">
@@ -256,9 +254,9 @@
                                                 class="custom-control-input custom-logic" value="send_to_all"
                                                 {{ isset($allocation) && $allocation->auto_assign_logic == 'send_to_all' ? 'checked' : '' }}>
                                             <label class="custom-control-label font-16 font-weight-bold lab"
-                                                for="shippingMethodRadio2">Send to all</label>
+                                                for="shippingMethodRadio2">{{__("Send to all")}}</label>
                                         </div>
-                                        <strong class="tagline send_to_all">Allocation request will send to all</strong>
+                                        <strong class="tagline send_to_all">{{__("Allocation request will send to all")}}</strong>
                                     </div>
                                     <div class="col-md-4 icon-part">
                                         <img class="img-fluid" src="{{asset('assets/icons/sendtoall.png')}}"  alt="">
@@ -276,9 +274,9 @@
                                                 class="custom-control-input custom-logic" value="batch_wise"
                                                 {{ isset($allocation) && $allocation->auto_assign_logic == 'batch_wise' ? 'checked' : '' }}>
                                             <label class="custom-control-label font-16 font-weight-bold lab"
-                                                for="shippingMethodRadio3">Batch Wise</label>
+                                                for="shippingMethodRadio3">{{__("Batch Wise")}}</label>
                                         </div>
-                                        <strong class="tagline batch_wise">Allocation request will done batch wise</strong>
+                                        <strong class="tagline batch_wise">{{__("Allocation request will done batch wise")}}</strong>
                                     </div>
                                     <div class="col-md-4 icon-part">
                                         <img class="img-fluid" src="{{asset('assets/icons/batch.png')}}"  alt="">
@@ -296,10 +294,9 @@
                                                 class="custom-control-input custom-logic" value="round_robin"
                                                 {{ isset($allocation) && $allocation->auto_assign_logic == 'round_robin' ? 'checked' : '' }}>
                                             <label class="custom-control-label font-16 font-weight-bold lab"
-                                                for="shippingMethodRadio4">Round Robin</label>
+                                                for="shippingMethodRadio4">{{__("Round Robin")}}</label>
                                         </div>
-                                        <strong class="tagline round_robin">Allocation request will done in round robin
-                                            format</strong>
+                                        <strong class="tagline round_robin">{{__("Allocation request will done in round robin format")}}</strong>
                                     </div>
                                     <div class="col-md-4 icon-part">
                                         <img class="img-fluid" src="{{asset('assets/icons/roundrobin.png')}}"  alt="">
@@ -323,7 +320,7 @@
                             <div class="row mb-2">
                                 <div class="col-md-4">
                                     <div class="form-group mb-3">
-                                        <label for="start_radius">Start Radius</label>
+                                        <label for="start_radius">{{__("Start Radius")}}</label>
                                         <input type="text" name="start_radius" id="start_radius" placeholder="0"
                                             class="form-control"
                                             value="{{ isset($allocation) && $allocation->start_radius != null ? $allocation->start_radius : '' }}">
@@ -331,7 +328,7 @@
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group mb-3">
-                                        <label for="increment_radius">Increment Radius</label>
+                                        <label for="increment_radius">{{__("Increment Radius")}}</label>
                                         <input type="text" name="increment_radius" id="increment_radius" placeholder="5"
                                             class="form-control"
                                             value="{{ isset($allocation) && $allocation->increment_radius != null ? $allocation->increment_radius : '' }}">
@@ -339,7 +336,7 @@
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group mb-3">
-                                        <label for="maximum_batch_size">Maximum Batch Size</label>
+                                        <label for="maximum_batch_size">{{__("Maximum Batch Size")}}</label>
                                         <input type="text" name="maximum_batch_size" id="maximum_batch_size"
                                             placeholder="10" class="form-control"
                                             value="{{ isset($allocation) && $allocation->maximum_batch_size != null ? $allocation->maximum_batch_size : '' }}">
@@ -351,7 +348,7 @@
                         <div class="row mb-2">
                             <div class="col-12">
                                 <div class="form-group mb-0 text-center">
-                                    <button class="btn btn-blue btn-block" type="submit"> Update </button>
+                                    <button class="btn btn-blue btn-block" type="submit"> {{__("Update")}} </button>
                                 </div>
                             </div>
                         </div>

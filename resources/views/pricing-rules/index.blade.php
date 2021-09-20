@@ -50,7 +50,7 @@
     <div class="row">
         <div class="col-12">
             <div class="page-title-box">
-                <h4 class="page-title">Pricing Rules</h4>
+                <h4 class="page-title">{{__("Pricing Rules")}}</h4>
             </div>
         </div>
     </div>
@@ -113,7 +113,7 @@
                             </div>
                         </div>
                         <div class="col-sm-4 text-right">
-                            <button type="button" class="btn btn-blue waves-effect waves-light openModal" data-toggle="modal" data-target="" data-backdrop="static" data-keyboard="false"><i class="mdi mdi-plus-circle mr-1"></i> Add Pricing Rules</button>
+                            <button type="button" class="btn btn-blue waves-effect waves-light openModal" data-toggle="modal" data-target="" data-backdrop="static" data-keyboard="false"><i class="mdi mdi-plus-circle mr-1"></i> {{__("Add Pricing Rules")}}</button>
 
                             <!--<a href="{{ route('pricing-rules.create') }}"
                                 class="btn btn-blue waves-effect waves-light"><i class="mdi mdi-plus-circle mr-1"></i>
@@ -126,12 +126,12 @@
                         <table class="table table-striped dt-responsive nowrap w-100" id="pricing-datatable">
                             <thead>
                                 <tr>
-                                    <th>Name</th>
-                                    <th>Base Price</th>
-                                    <th>Base Duration</th>
-                                    <th>Base Distance</th>
-                                    <th>Base Waiting</th>
-                                    <th style="width: 85px;">Action</th>
+                                    <th>{{__("Name")}}</th>
+                                    <th>{{__("Base Price")}}</th>
+                                    <th>{{__("Base Duration")}}</th>
+                                    <th>{{__("Base Distance")}}</th>
+                                    <th>{{__("Base Waiting")}}</th>
+                                    <th style="width: 85px;">{{__("Action")}}</th>
                                 </tr>
                             </thead>
                             <tbody>

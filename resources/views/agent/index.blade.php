@@ -40,8 +40,8 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                             <div class="form-group mb-0 mr-2">
                                 <input class="form-control" placeholder="Select date" id="sort-date-agent" name="sort_date_agent" value="{{!empty($calenderSelectedDate) ? $calenderSelectedDate : ''}}" type="text" autocomplete="off">
                             </div>
-                            <a href="javascript:void(0);" class="btn btn-blue" id="sort-agent">Go</a>
-                            <a href="javascript:void(0);" class="btn btn-success ml-2" id="sort-agent-all">Clear</a>
+                            <a href="javascript:void(0);" class="btn btn-blue" id="sort-agent">{{__("Go")}}</a>
+                            <a href="javascript:void(0);" class="btn btn-success ml-2" id="sort-agent-all">{{__("Clear")}}</a>
                         </div>
                         <div class="col-sm-4">
                             <div class="text-sm-left">
@@ -53,8 +53,8 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                             </div>
                         </div>
                         <div class="col-sm-4 text-right btn-auto">
-                            <button type="button" class="btn btn-blue waves-effect waves-light openModal" data-toggle="modal" data-target="" data-backdrop="static" data-keyboard="false"><i class="mdi mdi-plus-circle mr-1"></i> Add {{ Session::get('agent_name') }}</button>
-                            <button type="button" class="btn btn-success waves-effect waves-light saveaccounting" data-toggle="modal" data-target="#pay-receive-modal" data-backdrop="static" data-keyboard="false">Pay / Receive</button>
+                            <button type="button" class="btn btn-blue waves-effect waves-light openModal" data-toggle="modal" data-target="" data-backdrop="static" data-keyboard="false"><i class="mdi mdi-plus-circle mr-1"></i> {{__("Add")}} {{ Session::get('agent_name') }}</button>
+                            <button type="button" class="btn btn-success waves-effect waves-light saveaccounting" data-toggle="modal" data-target="#pay-receive-modal" data-backdrop="static" data-keyboard="false">{{__("Pay")}} / {{__("Receive")}}</button>
                         </div>
 
                     </div>
@@ -63,20 +63,20 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                         <table class="table table-striped dt-responsive nowrap w-100" id="">
                             <thead>
                                 <tr>
-                                    <th>Uid</th>
-                                    <th>Profile</th>
-                                    <th>Name</th>
-                                    <th>Phone</th>
-                                    <th>Type</th>
-                                    <th>Team</th>
-                                    <th>Vehicle</th>
-                                    <th>Cash Collected</th>
-                                    <th>Order Earning</th>
-                                    <th>Total Paid to Driver</th>
-                                    <th>Total Receive from Driver</th>
-                                    <th>Final Balance</th>
-                                    <th>Is Approved?</th>
-                                    <th>Action</th>
+                                    <th>{{__("Uid")}}</th>
+                                    <th>{{__("Profile")}}</th>
+                                    <th>{{__("Name")}}</th>
+                                    <th>{{__("Phone")}}</th>
+                                    <th>{{__("Type")}}</th>
+                                    <th>{{__("Team")}}</th>
+                                    <th>{{__("Vehicle")}}</th>
+                                    <th>{{__("Cash Collected")}}</th>
+                                    <th>{{__("Order Earning")}}</th>
+                                    <th>{{__("Total Paid to Driver")}}</th>
+                                    <th>{{__("Total Receive from Driver")}}</th>
+                                    <th>{{__("Final Balance")}}</th>
+                                    <th>{{__("Is Approved?")}}</th>
+                                    <th>{{__("Action")}}</th>
                                 </tr>
                             </thead>
                             <tbody>

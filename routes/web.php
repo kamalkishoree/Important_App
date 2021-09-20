@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Http\Request;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,6 +16,16 @@ use Illuminate\Support\Facades\Redirect;
 | contains the "web" middleware group. Now create something great!
 |
 */
+
+//switch language route
+Route::get('/switch/language',function(Request $request){		
+   if($request->lang){
+	   session()->put("applocale",$request->lang);
+   }
+   return redirect()->back();
+});
+
+Route::group(['middleware' => 'switchLanguage'], function () {
 $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain/';
 Route::get('dispatch-logs', '\Rap2hpoutre\LaravelLogViewer\LogViewerController@index');
 Route::get('show/{agent_doc}', function ($agent_doc) {
@@ -177,8 +188,6 @@ Route::domain('{domain}')->middleware(['subdomain'])->group(function() {
 				
 			   Route::get('demo/page', 'GeoFenceController@newDemo')->name('new.demo');
 
-
-			
 		});
 		
 	});
@@ -194,5 +203,16 @@ Route::group(['middleware' => 'auth', 'prefix' => '/'], function () {
 });
 
 
+
 	
 
+
+
+
+	
+	
+	});
+	
+	
+	
+	

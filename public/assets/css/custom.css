@@ -1,3 +1,6 @@
+.navbar-custom{
+    padding: 0 10px;
+    }
 .table-responsive::-webkit-scrollbar {
     width: 6px !important;
     height: 6px;
@@ -1329,6 +1332,7 @@ span.copied_txt {
     flex: 0 0 50px;
     max-width: 50px;
 }
+
 
 
 /* zz */

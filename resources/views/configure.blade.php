@@ -16,7 +16,7 @@
         <div class="row">
             <div class="col-12">
                 <div class="page-title-box">
-                    <h4 class="page-title">Configure</h4>
+                    <h4 class="page-title">{{__("Configure")}}</h4>
                 </div>
             </div>
         </div>
@@ -31,9 +31,9 @@
                 <form method="POST" action="{{ route('preference', Auth::user()->code) }}">
                     @csrf
                         <div class="card-box">
-                            <h4 class="header-title">Map Configuration</h4>
+                            <h4 class="header-title">{{__("Map Configuration")}}</h4>
                             <p class="sub-header">
-                                View and update your Map type and it's API key.
+                                {{__("View and update your Map type and it's API key.")}}
                             </p>
                             <div class="row mb-2">
                                 <div class="col-sm-8">
@@ -45,7 +45,7 @@
                             <div class="row mb-2">
                                 <div class="col-md-12">
                                     <div class="form-group mb-3">
-                                        <label for="currency">MAP TYPE</label>
+                                        <label for="currency">{{__("MAP TYPE")}}</label>
                                         <select class="form-control" id="map_type" name="map_type">
                                             <option value="google_maps"
                                                 {{ isset($preference) && $preference->map_type == 'google_maps' ? 'selected' : '' }}>
@@ -60,7 +60,7 @@
                                 </div>
                                 <div class="col-md-12">
                                     <div class="form-group mb-3">
-                                        <label for="map_key_1">API Key</label>
+                                        <label for="map_key_1">{{__("API Key")}}</label>
                                         <input type="password" name="map_key_1" id="map_key_1" placeholder="kjadsasd66asdas"
                                             class="form-control" value="{{ old('map_key_1', $preference->map_key_1 ?? '') }}">
                                         @if ($errors->has('map_key_1'))
@@ -75,7 +75,7 @@
                             <div class="row mb-2">
                                 <div class="col-12">
                                     <div class="form-group mb-0 text-center">
-                                        <button class="btn btn-blue btn-block" type="submit"> Update </button>
+                                        <button class="btn btn-blue btn-block" type="submit"> {{__("Update")}} </button>
                                     </div>
                                 </div>
                             </div>
@@ -87,15 +87,15 @@
                 <form method="POST" action="{{ route('preference', Auth::user()->code) }}">
                     @csrf
                     <div class="card-box same-size">
-                        <h4 class="header-title">SMS</h4>
+                        <h4 class="header-title">{{__("SMS")}}</h4>
                         <p class="sub-header">
-                            View and update your SMS Gateway and it's API keys.
+                            {{__("View and update your SMS Gateway and it's API keys.")}}
                         </p>
                         <div class="row mb-2">
 
                             <div class="col-md-6">
                                 <div class="form-group mb-3">
-                                    <label for="sms_provider">CURRENT SELECTION</label>
+                                    <label for="sms_provider">{{__("CURRENT SELECTION")}}</label>
                                     <select class="form-control" id="sms_provider" name="sms_provider">
                                         <option value="Twilio"
                                             {{ isset($preference) && $preference->sms_provider == 'Twilio' ? 'selected' : '' }}>
@@ -111,7 +111,7 @@
 
                             <div class="col-md-6">
                                 <div class="form-group mb-3">
-                                    <label for="sms_provider_number">Number</label>
+                                    <label for="sms_provider_number">{{__("Number")}}</label>
                                     <input type="text" name="sms_provider_number" id="sms_provider_number"
                                         placeholder="+17290876681" class="form-control"
                                         value="{{ old('sms_provider_number', $preference->sms_provider_number ?? '') }}">
@@ -134,9 +134,9 @@
 
                             <div class="col-md-6">
                                 <div class="form-group mb-3">
-                                    <label for="sms_provider_key_1">Account SID</label>
+                                    <label for="sms_provider_key_1">{{__("Account SID")}}</label>
                                     <input type="text" name="sms_provider_key_1" id="sms_provider_key_1"
-                                        placeholder="Account Sid" class="form-control"
+                                        placeholder={{__("Account Sid")}} class="form-control"
                                         value="{{ old('sms_provider_key_1', $preference->sms_provider_key_1 ?? '') }}">
                                     @if ($errors->has('sms_provider_key_1'))
                                         <span class="text-danger" role="alert">
@@ -148,9 +148,9 @@
 
                             <div class="col-md-6">
                                 <div class="form-group mb-3">
-                                    <label for="sms_provider_key_2">Auth Token</label>
+                                    <label for="sms_provider_key_2">{{__("Auth Token")}}</label>
                                     <input type="password" name="sms_provider_key_2" id="sms_provider_key_2"
-                                        placeholder="Auth Token" class="form-control"
+                                        placeholder={{__("Auth Token")}} class="form-control"
                                         value="{{ old('sms_provider_key_2', $preference->sms_provider_key_2 ?? '') }}">
                                     @if ($errors->has('sms_provider_key_2'))
                                         <span class="text-danger" role="alert">
@@ -163,7 +163,7 @@
                         <div class="row mb-2">
                             <div class="col-12">
                                 <div class="form-group mb-0 text-center">
-                                    <button class="btn btn-blue btn-block" type="submit"> Update </button>
+                                    <button class="btn btn-blue btn-block" type="submit"> {{__("Update")}} </button>
                                 </div>
                             </div>
                         </div>
@@ -174,13 +174,13 @@
                 <form method="POST" action="{{ route('smtp') }}">
                     @csrf
                     <div class="card-box same-size">
-                        <h4 class="header-title mb-md-1">Email (SMTP)</h4>
-                        <p class="sub-header">View and update your SMTP credentials.</p>
+                        <h4 class="header-title mb-md-1">{{__("Email")}} (SMTP)</h4>
+                        <p class="sub-header">{{__("View and update your SMTP credentials.")}}</p>
                         <div class="row mb-2">
 
                             <div class="col-md-4">
                                 <div class="form-group mb-3">
-                                    <label for="host">Host</label>
+                                    <label for="host">{{__("Host")}}</label>
                                     <input type="text" name="host" id="host"
                                         placeholder="smtp.mailgun.org" class="form-control"
                                         value="{{ old('host', $smtp_details->host ?? '') }}" required>
@@ -194,7 +194,7 @@
 
                             <div class="col-md-4">
                                 <div class="form-group mb-3">
-                                    <label for="port">Port</label>
+                                    <label for="port">{{__("Port")}}</label>
                                     <input type="text" name="port" id="port"
                                         placeholder="587" class="form-control"
                                         value="{{ old('port', $smtp_details->port ?? '') }}" required>
@@ -209,7 +209,7 @@
 
                             <div class="col-md-4">
                                 <div class="form-group mb-3">
-                                    <label for="encryption">Encryption</label>
+                                    <label for="encryption">{{__("Encryption")}}</label>
                                     <select class="form-control" id="encryption" name="encryption">
                                         <option value="tls">
                                             tls</option>
@@ -236,7 +236,7 @@
 
                             <div class="col-md-4">
                                 <div class="form-group mb-3">
-                                    <label for="username">User-Name</label>
+                                    <label for="username">{{__("User-Name")}}</label>
                                     <input type="text" name="username" id="username"
                                         placeholder="user@gmail.com" class="form-control"
                                         value="{{ old('username', $smtp_details->username ?? '') }}" required>
@@ -250,7 +250,7 @@
 
                             <div class="col-md-4">
                                 <div class="form-group mb-3">
-                                    <label for="password">Password</label>
+                                    <label for="password">{{__("Password")}}</label>
                                     <input type="password" name="password" id="password"
                                         placeholder="********" class="form-control"
                                         value="{{ old('password', $smtp_details->password ?? '') }}" required>
@@ -263,7 +263,7 @@
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group mb-3">
-                                    <label for="from_address">Form Address</label>
+                                    <label for="from_address">{{__("Form Address")}}</label>
                                     <input type="text" name="from_address" id="from_address"
                                         placeholder="user@gmail.com" class="form-control"
                                         value="{{ old('from_address', $smtp_details->from_address ?? '') }}" required>
@@ -278,7 +278,7 @@
                         <div class="row mb-2">
                             <div class="col-12">
                                 <div class="form-group mb-0 text-center">
-                                    <button class="btn btn-blue btn-block" type="submit"> Update </button>
+                                    <button class="btn btn-blue btn-block" type="submit"> {{__("Update")}} </button>
                                 </div>
                             </div>
                         </div>
@@ -289,17 +289,17 @@
                 <form method="POST" action="{{ route('preference', Auth::user()->code) }}">
                     @csrf
                     <div class="card-box same-size">
-                        <h4 class="header-title">Personal Access Token</h4>
+                        <h4 class="header-title">{{__("Personal Access Token")}}</h4>
                         <p class="sub-header">
-                            View and Generate API keys.
+                            {{__("View and Generate API keys.")}}
                         </p>
                         <div class="row">
 
                             <div class="col-12">
                                 <div class="form-group mb-3">
                                     <div class="domain-outer border-0 d-flex align-items-center justify-content-between">
-                                    <label for="personal_access_token_v1">V1 API ACCESS TOKEN</label>
-                                    <span class="text-right col-6 col-md-6"><a href="javascript: genrateKeyAndToken();">Generate Key</a></span>
+                                    <label for="personal_access_token_v1">V1 {{__(" API ACCESS TOKEN")}}</label>
+                                    <span class="text-right col-6 col-md-6"><a href="javascript: genrateKeyAndToken();">{{__("Generate Key")}}</a></span>
                                     
                                 </div>
                                     <input type="text" name="personal_access_token_v1" id="personal_access_token_v1"
@@ -318,7 +318,7 @@
                         <div class="row">
                             <div class="col-12">
                                 <div class="form-group mb-0 text-center">
-                                    <button class="btn btn-blue btn-block" type="submit"> Update </button>
+                                    <button class="btn btn-blue btn-block" type="submit"> {{__("Update")}} </button>
                                 </div>
                             </div>
                         </div>
@@ -329,13 +329,13 @@
                 <form method="POST" action="{{ route('preference', Auth::user()->code) }}">
                     @csrf
                     <div class="card-box same-size">
-                        <h4 class="header-title">Custom Domain</h4>
+                        <h4 class="header-title">{{__("Custom Domain")}}</h4>
                         <p class="sub-header">
-                            View and update your Domain.
+                            {{__("View and update your Domain.")}}
                         </p>
                         <div class="row mb-3">
                             <div class="col-12">
-                                    <label for="custom_domain">Custom Domain</label> *Make sure you already pointed to IP ({{\env('IP')}}) from your domain.
+                                    <label for="custom_domain">{{__("Custom Domain")}}</label> *{{__("Make sure you already pointed to IP")}} ({{\env('IP')}}) {{__("from your domain.")}}
                                     <div class="domain-outer d-flex align-items-center">
                                     <div class="domain_name">https://</div>
                                     <input type="text" name="custom_domain" id="custom_domain"
@@ -354,7 +354,7 @@
                         <div class="row">
                             <div class="col-12">
                                 <div class="form-group mb-0 text-center">
-                                    <button class="btn btn-blue btn-block" type="submit"> Update </button>
+                                    <button class="btn btn-blue btn-block" type="submit"> {{__("Update")}} </button>
                                 </div>
                             </div>
                         </div>
@@ -367,14 +367,14 @@
                 <form method="POST" action="{{ route('preference', Auth::user()->code) }}">
                     @csrf
                     <div class="card-box same-size">
-                        <h4 class="header-title">Sub Domain</h4>
+                        <h4 class="header-title">{{__("Sub Domain")}}</h4>
                         <p class="sub-header">
-                            View and update your Sub Domain.
+                            {{__("View and update your Sub Domain.")}}
                         </p>
                         <div class="col-md-12">
 
                                 <div class="form-group mb-3">
-                                    <label for="sub_domain">Sub Domain</label>
+                                    <label for="sub_domain">{{__("Sub Domain")}}</label>
                                     <div class="domain-outer d-flex align-items-center">
                                         <div class="domain_name">https://</div>
                                         <input type="text" name="sub_domain" id="sub_domain"
@@ -392,7 +392,7 @@
                         <div class="row">
                             <div class="col-12">
                                 <div class="form-group mb-0 text-center">
-                                    <button class="btn btn-blue btn-block" type="submit"> Update </button>
+                                    <button class="btn btn-blue btn-block" type="submit"> {{__("Update")}} </button>
                                 </div>
                             </div>
                         </div>
@@ -404,16 +404,16 @@
                 <form method="POST" action="{{ route('preference', Auth::user()->code) }}">
                     @csrf
                     <div class="card-box same-size">
-                        <h4 class="header-title">FCM Server Key</h4>
+                        <h4 class="header-title">{{__("FCM Server Key")}}</h4>
                         <p class="sub-header">
-                            View and Update FCM key.
+                            {{__("View and Update FCM key.")}}
                         </p>
                         <div class="row">
 
                             <div class="col-12">
                                 <div class="form-group mb-3">
                                     <div class="domain-outer border-0 d-flex align-items-center justify-content-between">
-                                    <label for="personal_access_token_v1">FCM Key</label>
+                                    <label for="personal_access_token_v1">{{__("FCM Key")}}</label>
                                 </div>
                                     <input type="text" name="fcm_server_key" id="fcm_server_key"
                                         placeholder="kjadsasd66asdas" class="form-control"
@@ -431,7 +431,7 @@
                         <div class="row">
                             <div class="col-12">
                                 <div class="form-group mb-0 text-center">
-                                    <button class="btn btn-blue btn-block" type="submit"> Update </button>
+                                    <button class="btn btn-blue btn-block" type="submit"> {{__("Update")}} </button>
                                 </div>
                             </div>
                         </div>
@@ -447,26 +447,23 @@
                 <div class="row">
                     <div class="col-xl-11 col-md-offset-1">
                         <div class="card-box">
-                            <h4 class="header-title">Email</h4>
+                            <h4 class="header-title">{{__("Email")}}</h4>
                             <p class="sub-header">
-                                Choose Email paid plan to whitelable "From email address" and "Sender Name" in the Email
-                                sent
-                                out
-                                from your account.
+                                {{__("Choose Email paid plan to whitelable 'From email address' and 'Sender Name' in the Email sent out from your account.")}}
                             </p>
                             <div class="row mb-0">
 
                                 <div class="col-md-6">
                                     <div class="form-group mb-3">
-                                        <label for="email_plan">CURRENT SELECTION</label>
+                                        <label for="email_plan">{{__('CURRENT SELECTION')}}</label>
                                         <select class="form-control" id="email_plan" name="email_plan">
-                                            <option>Select Plan</option>
+                                            <option>{{__('Select Plan')}}</option>
                                             <option value="free"
                                                 {{ isset($preference) && $preference->email_plan == 'free' ? 'selected' : '' }}>
-                                                Free</option>
+                                                {{__('Free')}}</option>
                                             <option value="paid"
                                                 {{ isset($preference) && $preference->email_plan == 'paid' ? 'selected' : '' }}>
-                                                Paid</option>
+                                                {{__('Paid')}}</option>
                                         </select>
                                         @if ($errors->has('email_plan'))
                                             <span class="text-danger" role="alert">
@@ -480,7 +477,7 @@
                             <div class="row mb-2">
                                 <div class="col-md-12">
                                     <div class="form-group mb-3">
-                                        <label for="sms_service_api_key">PREVIEW</label>
+                                        <label for="sms_service_api_key">{{__('PREVIEW')}}</label>
                                         <div class="card">
                                             <div class="card-body">
 
@@ -492,7 +489,7 @@
                                                     johndoe@gmail.com</p>
 
                                                 <p class="mt-3 text-center">
-                                                    Your message hore here..
+                                                    {{__('Your message here')}}..
                                                 </p>
                                             </div>
                                         </div>
@@ -503,7 +500,7 @@
                             <div class="row mb-2">
                                 <div class="col-md-2">
                                     <div class="form-group mb-0 text-center">
-                                        <button class="btn btn-blue btn-block" type="submit"> Update </button>
+                                        <button class="btn btn-blue btn-block" type="submit"> {{__('Update')}} </button>
                                     </div>
                                 </div>
                             </div>

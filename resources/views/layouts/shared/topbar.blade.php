@@ -78,7 +78,7 @@
                 </a>
                 <div class="dropdown-menu dropdown-lg dropdown-menu-right p-0">
                     <form class="p-3">
-                        <input type="text" class="form-control" placeholder="Search ..." aria-label="Recipient's username">
+                        <input type="text" class="form-control" placeholder="{{__('Search')}} ..." aria-label="{{__("Recipient's username")}}">
                     </form>
                 </div>
             </li>
@@ -95,13 +95,40 @@
                         }
                         ?>
 
-@if(in_array('Add Route',$allowed) || Auth::user()->is_superadmin == 1)           
+        @if(in_array('Add Route',$allowed) || Auth::user()->is_superadmin == 1)           
             <li class="d-lg-inline-block" >
                 <a class="nav-link" href="#"> 
-                    <button type="button" class="btn btn-blue waves-effect waves-light addTaskModalHeader" data-toggle="modal" data-target="" data-backdrop="static" title="Add Route" data-keyboard="false"><span><i class="mdi mdi-plus-circle mr-1"></i> Add Route</span></button>
+                    <button type="button" class="btn btn-blue waves-effect waves-light addTaskModalHeader klklkl" data-toggle="modal" data-target="" data-backdrop="static" title="{{__('Add Route')}}" data-keyboard="false"><span><i class="mdi mdi-plus-circle mr-1"></i> {{__('Add Route')}}</span></button>
                 </a>
             </li>
-@endif
+        @endif
+
+            @php
+            $applocale = 'en';
+            if(session()->has('applocale')){               
+                $applocale = session()->get('applocale');
+            }
+            @endphp
+
+
+            {{-- Languages --}}
+            {{-- @php print_r(Session::all()); @endphp --}}
+            {{-- <li class="dropdown d-xl-block">
+                <a class="nav-link dropdown-toggle waves-effect waves-light" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
+                    Language 
+                    {{session()->get('applocale')}}
+                    <i class="mdi mdi-chevron-down"></i> 
+                </a>
+                <div class="dropdown-menu">                    
+                    <a href="/switch/language?lang=en" class="dropdown-item" langid="1">English</a>
+                    <a href="/switch/language?lang=es" class="dropdown-item" langid="1">Spanish</a>
+                    <a href="/switch/language?lang=ar" class="dropdown-item" langid="1">Arabic</a>
+                    <a href="/switch/language?lang=fr" class="dropdown-item" langid="1">French</a>                   
+                    
+                    <div class="dropdown-divider"></div>
+                </div>
+            </li> --}}
+
             <li class="dropdown d-none d-lg-inline-block">
                 <a class="nav-link dropdown-toggle arrow-none waves-effect waves-light" data-toggle="fullscreen"
                     href="#">
@@ -299,13 +326,13 @@
                 <div class="dropdown-menu dropdown-menu-right profile-dropdown ">
 
                     <div class="dropdown-header noti-title">
-                        <h6 class="text-overflow m-0">Welcome !</h6>
+                        <h6 class="text-overflow m-0">{{__('Welcome')}} !</h6>
                     </div>
 
 
                     <a href="{{ route('profile.index') }}" class="dropdown-item notify-item">
                         <i class="fe-user"></i>
-                        <span>My Account</span>
+                        <span>{{__('My Account')}}</span>
                     </a>
 
 
@@ -325,7 +352,7 @@
                     <a class="dropdown-item notify-item" href="{{ route('client.logout') }}" onclick="event.preventDefault();
                                     document.getElementById('logout-form').submit();">
                         <i class="fe-log-out"></i>
-                        <span>Logout</span>
+                        <span>{{__('Logout')}}</span>
 
                     </a>
 

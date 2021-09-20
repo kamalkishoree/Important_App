@@ -89,7 +89,7 @@ exit;
             <div class="col-5">
                 <div class="page-title-box">
                     <h4 class="page-title"> <a href="{{ route('geo.fence.list') }}">
-                            <h4 class="page-title">Back</h4>
+                            <h4 class="page-title">{{__("Back")}}</h4>
                         </a></h4>
                 </div>
             </div>
@@ -98,7 +98,7 @@ exit;
 
                     <input type="text" id="pac-input" class="form-control" placeholder="Search by name " aria-label="Recipient's username" aria-describedby="button-addon2">
                     <div class="input-group-append">
-                      <button class="btn btn-info" type="button" id="refresh">Edit Mode</button>
+                      <button class="btn btn-info" type="button" id="refresh">{{__("Edit Mode")}}</button>
                     </div>
                     
                   </div>
@@ -124,12 +124,12 @@ exit;
             <div class="row">
                 <div class="col-lg-5">
                     <div class="card-box card_outer mb-0">
-                        <h4 class="header-title mb-3">Add Geofence</h4>
+                        <h4 class="header-title mb-3">{{__("Add Geofence")}}</h4>
                         <div class="top_items">
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="form-group mb-0">
-                                        <label for="name">Name</label>
+                                        <label for="name">{{__("Name")}}</label>
                                         <input type="text" name="name" id="name" placeholder="ABC Deliveries"
                                             class="form-control">
                                         @if ($errors->has('name'))
@@ -143,7 +143,7 @@ exit;
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="form-group mb-0">
-                                        <label for="Description">Description (Optional)</label>
+                                        <label for="Description">{{__("Description (Optional)")}}</label>
                                         <textarea class="form-control" id="Description" name="description"></textarea>
                                     </div>
                                 </div>
@@ -151,10 +151,10 @@ exit;
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <label>Team</label> <br />
+                                        <label>{{__("Team")}}</label> <br />
                                         <select id="selectize-select" name="team_id">
                                             @if(Auth::user()->is_superadmin == 1 || Auth::user()->all_team_access == 1)
-                                            <option value="0">All</option>
+                                            <option value="0">{{__("All")}}</option>
                                             @endif
                                             @foreach ($teams as $team)
                                                 <option value="{{ $team->id }}">{{ $team->name }}</option>
@@ -167,17 +167,17 @@ exit;
                                             <div class="col-md-6">
                                                 <div class="custom-control custom-checkbox select_all" id="old_show">
                                                     <input type="checkbox" class="custom-control-input all" id="checkmeout0">
-                                                    <label class="custom-control-label select_all" for="checkmeout0">Select All
+                                                    <label class="custom-control-label select_all" for="checkmeout0">{{__("Select All")}}
                                                         {{ Session::get('agent_name') ? Session::get('agent_name') : 'Agent' }}</label>
                                                 </div>
                                                 <div class="custom-control custom-checkbox show_alls" id="new_show">
                                                     <input type="checkbox" class="custom-control-input" id="show_all">
-                                                    <label class="custom-control-label" for="show_all">Show All
+                                                    <label class="custom-control-label" for="show_all">{{__("Show All")}}
                                                         {{ Session::get('agent_name') ? Session::get('agent_name') : 'Agent' }}</label>
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
-                                                <input type="text" name="search" placeholder="Search"
+                                                <input type="text" name="search" placeholder={{__("Search")}}
                                                     class="form-control newsearch" id="search">
                                             </div>
                                         </div>
@@ -221,10 +221,10 @@ exit;
                             <div class="row">
                                 <div class="col-md-6 mb-2 mb-md-0">
                                     <button type="button"
-                                        class="btn btn-block btn-outline-blue waves-effect waves-light mb-0">Cancel</button>
+                                        class="btn btn-block btn-outline-blue waves-effect waves-light mb-0">{{__("Cancel")}}</button>
                                 </div>
                                 <div class="col-md-6">
-                                    <button type="submit" class="btn btn-block btn-blue waves-effect waves-light">Save</button>
+                                    <button type="submit" class="btn btn-block btn-blue waves-effect waves-light">{{__("Save")}}</button>
                                 </div>
                             </div>
                         </div>
