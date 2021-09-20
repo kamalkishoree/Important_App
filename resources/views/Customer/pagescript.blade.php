@@ -123,7 +123,7 @@
                 {data: 'phone_number', name: 'phone_number', orderable: true, searchable: false},
                 {data: 'status', name: 'status', orderable: false, searchable: false, "mRender": function ( data, type, full ) {
                     var check = (full.status == 'Active')? 'checked' : '';
-                    return '<div class="custom-control custom-switch"><input type="checkbox" class="custom-control-input" id="customSwitch1" '+check+' name="is_default" value="y" data-id="'+full.id+'"><label class="custom-control-label" for="customSwitch1"></label></div>';
+                    return '<div class="custom-control custom-switch "><input type="checkbox" class="custom-control-input" id="customSwitch1" '+check+' name="is_default" value="y" data-id="'+full.id+'"><label class="custom-control-label" for="customSwitch1"></label></div>';
                 }},
                 {data: 'action', name: 'action', orderable: true, searchable: false}
             ]
