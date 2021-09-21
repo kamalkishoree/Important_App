@@ -4,6 +4,7 @@
 @endsection
 @php
 use Carbon\Carbon;
+$imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain/';
 @endphp
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
@@ -91,9 +92,9 @@ use Carbon\Carbon;
                                 </div>
                             <!-- @endif -->
                         </div>
-
+                        <input type="hidden" id="routes-listing-status" value="unassigned">
                         <div class="table-responsive">
-                            <table class="table table-striped dt-responsive nowrap w-100" id="agents-datatable">
+                            <table class="table table-striped dt-responsive nowrap w-100 agents-datatable" id="agents-datatable">
                                 <thead>
                                     <tr>
                                         @if (!isset($status) || $status == 'unassigned')
@@ -111,108 +112,10 @@ use Carbon\Carbon;
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($tasks as $task)
-                                        <tr>
-                                            @if (isset($status) && $status == 'unassigned')
-                                            <td><input type="checkbox" class="single_driver_check" name="driver_id[]" id="single_driver" value="{{$task->id}}"></td>
-                                            @endif
-                                            
-                                            <td>
-                                                {{ (isset($task->customer->name))?$task->customer->name:'' }}
-                                            </td>
-                                            <td>
-                                                {{ (isset($task->customer->phone_number))?$task->customer->phone_number:'' }}
-                                            </td>
-                                            <td>
-                                                {{ empty($task->agent) ? 'Unassigned' : $task->agent->name }}
-                                            </td>
-                                            <td>
-                                                @php
-                                                    $timeformat = $preference->time_format == '24' ? 'H:i:s':'g:i a';
-                                                    $order = Carbon::createFromFormat('Y-m-d H:i:s', $task->order_time, 'UTC');
-                                                    $order->setTimezone($client_timezone);
-                                                    $preference->date_format = $preference->date_format ?? 'm/d/Y';
-                                                @endphp
-                                                {{date(''.$preference->date_format.' '.$timeformat.'', strtotime($order))}}
-
-                                            </td>
-                                            <td>
-                                                <?php
-                                                 foreach ($task->task as $singletask) {
-                                                     
-                                                    if($singletask->task_type_id==1)
-                                                    {
-                                                        $tasktype = "Pickup";
-                                                        $pickup_class = "yellow_";
-                                                    }elseif($singletask->task_type_id==2)
-                                                    {
-                                                        $tasktype = "Dropoff";
-                                                        $pickup_class = "green_";
-                                                    }else{
-                                                        $tasktype = "Appointment";
-                                                        $pickup_class = "assign_";
-                                                    }
-                                                    
-                                                    ?>
-                                                    <div class="address_box">
-                                                        <span class="{{ $pickup_class }}"> {{ $tasktype }}</span> <span class="short_name">{{ (isset($singletask->location->short_name))?$singletask->location->short_name:'' }}</span> <label data-toggle="tooltip" data-placement="bottom" title="{{ (isset($singletask->location->address))?$singletask->location->address:'' }}">{{ (isset($singletask->location->address))?$singletask->location->address:'' }}</label>
-                                                    </div>
-                                                     
-                                                <?php } ?>
-                                                
-
-                                            </td>
-                                            <td>
-                                                <a onclick="window.open(this.href,'_blank');return false;" href="{{url('/order/tracking/'.Auth::user()->code.'/'.$task->unique_id.'')}}">Track</a>
-                                            </td>
-                                            <td>
-                                                <button class="showTaskProofs btn btn-primary-outline action-icon"
-                                                    value="{{ $task->id }}"><i class="fe-layers"></i></button>
-                                            </td>
-                                            <td>
-                                                <button class="showaccounting btn btn-primary-outline action-icon setcolor"
-                                                    value="{{ $task->id }}">{{ $task->order_cost }}</button>
-                                            </td>
-                                           
-                                            <td>
-                                                <div class="form-ul" style="width: 60px;">
-                                                    <div class="inner-div">
-                                                        <div class="set-size"> <a href1="#"
-                                                                href="{{ route('tasks.edit', $task->id) }}"
-                                                                class="action-icon editIconBtn"> <i
-                                                                    class="mdi mdi-square-edit-outline"></i></a></div>
-                                                    </div>
-                                                    <div class="inner-div">
-                                                        <div class="set-size">
-                                                            <a href1="#" href="{{ route('tasks.show', $task->id) }}" class="action-icon editIconBtn" title="Route Detail">
-                                                                <i class="fe-eye"></i>
-                                                            </a>
-                                                        </div>
-                                                    </div>
-                                                    <div class="inner-div">
-                                                        <form id="taskdelete{{$task->id}}" method="POST"
-                                                            action="{{ route('tasks.destroy', $task->id) }}">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <div class="form-group">
-                                                                <button type="button"
-                                                                    class="btn btn-primary-outline action-icon"> <i
-                                                                        class="mdi mdi-delete" taskid="{{$task->id}}"></i></button>
-
-                                                            </div>
-                                                        </form>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    @endforeach
+                                    
                                 </tbody>
                             </table>
                         </div>
-                        <div class="pagination pagination-rounded justify-content-end mb-0">
-                            {{ $tasks->appends(['status'=>$status])->links() }}
-                        </div>
-
                     </div> <!-- end card-body-->
                 </div> <!-- end card-->
             </div> <!-- end col -->
@@ -231,7 +134,7 @@ use Carbon\Carbon;
 @section('script')
     <script src="{{asset('assets/libs/select2/select2.min.js')}}"></script>
     <script src="{{asset('assets/libs/bootstrap-select/bootstrap-select.min.js')}}"></script>
-    {{-- <script src="{{ asset('assets/libs/datatables/datatables.min.js') }}"></script> --}}
+    <script src="{{ asset('assets/libs/datatables/datatables.min.js') }}"></script>
     @include('tasks.taskpagescript')
 
 

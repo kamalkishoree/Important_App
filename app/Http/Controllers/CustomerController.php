@@ -23,6 +23,7 @@ class CustomerController extends Controller
     {
         return view('Customer.customer');
     }
+    
     public function customerFilter(Request $request)
     {
         $customers = Customer::orderBy('created_at', 'DESC')->get();

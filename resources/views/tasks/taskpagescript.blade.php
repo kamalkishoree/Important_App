@@ -1,12 +1,118 @@
 <script>    
 
     $(document).ready(function() {
-        $('#agents-datatable').DataTable();
+        var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+        hash = hashes[0].split('=');
+        if(hash[0] == 'status'){
+            $('#routes-listing-status').val(hash[1]);
+        }else{
+            $('#routes-listing-status').val('unassigned');
+        }
         
+        initializeRouteListing();
+        function initializeRouteListing(){
+            
+            $('.agents-datatable').DataTable({
+                "dom": '<"toolbar">Bfrtip',
+                "scrollX": true,
+                "destroy": true,
+                // "processing": true,
+                "serverSide": true,
+                "responsive": true,
+                "iDisplayLength": 10,
+                "paging": true,
+                "lengthChange" : true,
+                "searching": true,
+                "ordering": true,
+                "lengthMenu": [[13, 25, 50, -1], [13, 25, 50, "All"]],
+                language: {
+                            search: "",
+                            paginate: { previous: "<i class='mdi mdi-chevron-left'>", next: "<i class='mdi mdi-chevron-right'>" },
+                            searchPlaceholder: "Search Routes"
+                },
+                drawCallback: function () {
+                    $(".dataTables_paginate > .pagination").addClass("pagination-rounded");
+                },
+                buttons: [{  
+                    className:'btn btn-success waves-effect waves-light',
+                    text: '<span class="btn-label"><i class="mdi mdi-export-variant"></i></span>Export CSV',
+                    action: function ( e, dt, node, config ) {
+                        window.location.href = "{{ route('task.export') }}";
+                    }
+                }],
+                ajax: {
+                    url: "{{url('task/filter')}}",
+                    // "dataSrc": "",
+                    data: function (d) {
+                        d.search = $('input[type="search"]').val();
+                        d.routesListingType = $('#routes-listing-status').val();
+                        d.imgproxyurl = '{{$imgproxyurl}}';
+                    }
+                },
+                columns: dataTableColumn()
+            });
+        }
+
+        function dataTableColumn(){
+            var routesListing = $('#routes-listing-status').val();
+            if(routesListing == 'unassigned'){
+                return [
+                    {data: 'id', name: 'id', orderable: false, searchable: false, "mRender": function ( data, type, full ) {
+                        return '<input type="checkbox" class="single_driver_check" name="driver_id[]" id="single_driver" value="'+full.id+'">';
+                    }},
+                    {data: 'customer_name', name: 'customer_name', orderable: true, searchable: false},
+                    {data: 'phone_number', name: 'phone_number', orderable: true, searchable: false},
+                    {data: 'agent_name', name: 'agent_name', orderable: true, searchable: false},
+                    {data: 'order_time', name: 'order_time', orderable: true, searchable: false},
+                    {data: 'short_name', name: 'short_name', orderable: false, searchable: false, "mRender": function ( data, type, full ) {
+                        var shortName = JSON.parse(full.short_name.replace(/&quot;/g,'"'));
+                        return '<div class="address_box"><span class="'+shortName.pickupClass+'">'+shortName.taskType+'</span> <span class="short_name">'+shortName.shortName+'</span> <label data-toggle="tooltip" data-placement="bottom" title="'+shortName.address+'">'+shortName.address+'</label></div>';
+                    }},
+                    {data: 'track_url', name: 'track_url', orderable: false, searchable: false, "mRender": function ( data, type, full ) {
+                        var trackUrl = full.track_url;
+                        return '<a onclick="window.open(this.href,"_blank");return false;" href="'+trackUrl+'">Track</a>';
+                    }},
+                    {data: 'track_url', name: 'track_url', orderable: false, searchable: false, "mRender": function ( data, type, full ) {
+                        return '<button class="showTaskProofs btn btn-primary-outline action-icon" value="'+full.id+'"><i class="fe-layers"></i></button>';
+                    }},
+                    {data: 'track_url', name: 'track_url', orderable: false, searchable: false, "mRender": function ( data, type, full ) {
+                        return '<button class="showaccounting btn btn-primary-outline action-icon setcolor" value="'+full.id+'">'+full.order_cost+'</button>';
+                    }},                
+                    {data: 'action', name: 'action', orderable: true, searchable: false}
+                ];
+            }else{
+                return [
+                    {data: 'customer_name', name: 'customer_name', orderable: true, searchable: false},
+                    {data: 'phone_number', name: 'phone_number', orderable: true, searchable: false},
+                    {data: 'agent_name', name: 'agent_name', orderable: true, searchable: false},
+                    {data: 'order_time', name: 'order_time', orderable: true, searchable: false},
+                    {data: 'short_name', name: 'short_name', orderable: false, searchable: false, "mRender": function ( data, type, full ) {
+                        var shortName = JSON.parse(full.short_name.replace(/&quot;/g,'"'));
+                        return '<div class="address_box"><span class="'+shortName.pickupClass+'">'+shortName.taskType+'</span> <span class="short_name">'+shortName.shortName+'</span> <label data-toggle="tooltip" data-placement="bottom" title="'+shortName.address+'">'+shortName.address+'</label></div>';
+                    }},
+                    {data: 'track_url', name: 'track_url', orderable: false, searchable: false, "mRender": function ( data, type, full ) {
+                        var trackUrl = full.track_url;
+                        return '<a onclick="window.open(this.href,"_blank");return false;" href="'+trackUrl+'">Track</a>';
+                    }},
+                    {data: 'track_url', name: 'track_url', orderable: false, searchable: false, "mRender": function ( data, type, full ) {
+                        return '<button class="showTaskProofs btn btn-primary-outline action-icon" value="'+full.id+'"><i class="fe-layers"></i></button>';
+                    }},
+                    {data: 'track_url', name: 'track_url', orderable: false, searchable: false, "mRender": function ( data, type, full ) {
+                        return '<button class="showaccounting btn btn-primary-outline action-icon setcolor" value="'+full.id+'">'+full.order_cost+'</button>';
+                    }},                
+                    {data: 'action', name: 'action', orderable: true, searchable: false}
+                ]
+            }
+        }
+        
+
     });
 
     function handleClick(myRadio) {
-        $('#getTask').submit();
+        // var routesListingType = $(myRadio).attr('value');
+        // $('#routes-listing-status').val(routesListingType);  
+        // initializeRouteListing();
+        $('#getTask').submit();             
     }
 
     //this is for task detail pop-up
@@ -261,7 +367,7 @@
             }
         });
 
-        $(".single_driver_check").change(function() {
+        $(document).on('change', '.single_driver_check', function() {
             if ($('input:checkbox.single_driver_check:checked').length > 0)
             {
                 $(".assign-toggle").removeClass("assign-show");
