@@ -78,26 +78,26 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
         <div class="form-group" id="vehicle_type_idInputEdit">
             <p class="text-muted mt-3 mb-2">TRANSPORT TYPE</p>
             <div class="radio radio-blue form-check-inline click cursors">
-                <input type="radio" id="onfoot" value="1" act="edit" name="vehicle_type_id"  @if ($agent->vehicle_type_id == '1') checked @else disabled
+                <input type="radio" id="onfoot" value="1" act="edit" name="vehicle_type_id"  readonly="readonly" @if ($agent->vehicle_type_id == '1') checked @else disabled='disabled'
                 @endif >
                 <img id="foot_edit" src="{{ $agent->vehicle_type_id == '1' ? asset('assets/icons/walk_blue.png') : asset('assets/icons/walk.png') }}">
             </div>
             <div class="radio radio-primery form-check-inline click cursors">
-                <input type="radio" id="bycycle" value="2" name="vehicle_type_id" act="edit"  @if ($agent->vehicle_type_id == '2')
-                checked @else disabled @endif  >
+                <input type="radio" id="bycycle" value="2" name="vehicle_type_id" act="edit"  readonly="readonly" @if ($agent->vehicle_type_id == '2')
+                checked @else disabled='disabled' @endif  >
                 <img id="cycle_edit" src="{{ $agent->vehicle_type_id == '2' ? asset('assets/icons/cycle_blue.png') : asset('assets/icons/cycle.png') }}">
             </div>
             <div class="radio radio-info form-check-inline click cursors">
-                <input type="radio" id="motorbike" value="3" name="vehicle_type_id" act="edit"  @if ($agent->vehicle_type_id == '3') checked @else disabled @endif>
+                <input type="radio" id="motorbike" value="3" name="vehicle_type_id" act="edit" readonly="readonly" @if ($agent->vehicle_type_id == '3') checked @else disabled='disabled' @endif>
                 <img id="bike_edit" src="{{ $agent->vehicle_type_id == '3' ? asset('assets/icons/bike_blue.png') : asset('assets/icons/bike.png') }}">
             </div>
             <div class="radio radio-danger form-check-inline click cursors">
-                <input type="radio" id="car" value="4" name="vehicle_type_id" act="edit"  @if ($agent->vehicle_type_id == '4') checked @else disabled
+                <input type="radio" id="car" value="4" name="vehicle_type_id" act="edit"   readonly="readonly" @if ($agent->vehicle_type_id == '4') checked @else disabled='disabled'
                 @endif>
                 <img id="cars_edit" src="{{ $agent->vehicle_type_id == '4' ? asset('assets/icons/car_blue.png') : asset('assets/icons/car.png') }}">
             </div>
             <div class="radio radio-warning form-check-inline click cursors">
-                <input type="radio" id="truck" value="5" name="vehicle_type_id" act="edit"  @if ($agent->vehicle_type_id == '5') checked @else disabled  @endif>
+                <input type="radio" id="truck" value="5" name="vehicle_type_id" act="edit" readonly="readonly" @if ($agent->vehicle_type_id == '5') checked @else disabled='disabled'  @endif>
                 <img id="trucks_edit" src="{{ $agent->vehicle_type_id == '5' ? asset('assets/icons/truck_blue.png') : asset('assets/icons/truck.png') }}">
             </div>
             <span class="invalid-feedback" role="alert">
