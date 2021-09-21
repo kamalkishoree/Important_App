@@ -110,6 +110,8 @@ Route::domain('{domain}')->middleware(['subdomain'])->group(function() {
 				Route::get('agent/export', 'AgentController@export')->name('agents.export');
 				Route::get('customer/filter', 'CustomerController@customerFilter');
 				Route::get('customer/export', 'CustomerController@customersExport')->name('customer.export');
+				Route::get('task/export', 'TaskController@tasksExport')->name('task.export');
+				Route::get('task/filter', 'TaskController@taskFilter');
 				Route::get('analytics','AccountingController@index')->name('accounting');
 				Route::get('profileImg', 'ProfileController@displayImage');		
 				Route::get('','DashBoardController@index')->name('index');
