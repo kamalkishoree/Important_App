@@ -120,7 +120,7 @@
 <script>
     $('.mdi-delete').click(function(){
             
-            var r = confirm("Are you sure?");
+            var r = confirm("{{__('Are you sure?')}}");
             if (r == true) {
                var clientid = $(this).attr('clientid');
                $('form#clientdelete'+clientid).submit();

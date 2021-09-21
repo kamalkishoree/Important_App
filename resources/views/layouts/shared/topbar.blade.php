@@ -113,7 +113,7 @@
 
             {{-- Languages --}}
             {{-- @php print_r(Session::all()); @endphp --}}
-            {{-- <li class="dropdown d-xl-block">
+            <li class="dropdown d-xl-block">
                 <a class="nav-link dropdown-toggle waves-effect waves-light" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
                     Language 
                     {{session()->get('applocale')}}
@@ -127,7 +127,7 @@
                     
                     <div class="dropdown-divider"></div>
                 </div>
-            </li> --}}
+            </li>
 
             <li class="dropdown d-none d-lg-inline-block">
                 <a class="nav-link dropdown-toggle arrow-none waves-effect waves-light" data-toggle="fullscreen"

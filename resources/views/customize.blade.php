@@ -113,7 +113,7 @@ f
         </div>
         <div class="col-md-4">
             <div class="card-box">
-                <h4 class="header-title">CMS</h4>
+                <h4 class="header-title">{{__('CMS')}}</h4>
                 <p class="sub-header">
                     {{__("View and update the Terms and Privacy content for the Agent App.")}}
                 </p>
@@ -283,7 +283,7 @@ f
                             print_r($task_list); @endphp --}}
                         @foreach ($task_proofs as $key => $taskproof)
                         @php $counter = 1; @endphp
-                        <h5 class="header-title mb-3">{{$task_list[$key]->name}}</h5>
+                        <h5 class="header-title mb-3">{{__($task_list[$key]->name)}}</h5>
                          
                         <div class="table-responsive table_spacing">
                             <table class="table table-borderless table-nowrap table-hover table-centered m-0">

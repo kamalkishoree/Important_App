@@ -1,4 +1,4 @@
-@extends('layouts.vertical', ['title' => 'Routes'])
+@extends('layouts.vertical', ['title' => __('Routes')])
 @section('css')
 
 @endsection
@@ -12,7 +12,7 @@ use Carbon\Carbon;
         <div class="row">
             <div class="col-md-12">
                 <div class="page-title-box">
-                    <h4 class="page-title">Edit Route</h4>
+                    <h4 class="page-title">{{__('Edit Route')}}</h4>
                 </div>
             </div>
         </div>
@@ -29,7 +29,7 @@ use Carbon\Carbon;
                     @csrf
                     <div class="row d-flex align-items-center" id="dateredio">
                         <div class="col-md-3">
-                            <h4 class="header-title mb-3">Customer</h4>
+                            <h4 class="header-title mb-3">{{__('Customer')}}</h4>
                         </div>
                         <div class="col-md-5 text-right">
                             <div class="login-form">
@@ -37,12 +37,12 @@ use Carbon\Carbon;
                                     <li class="d-inline-block mr-2">
                                         <input type="radio" class="custom-control-input check" id="tasknow" name="task_type"
                                             value="now">
-                                        <label class="custom-control-label" for="tasknow">Now</label>
+                                        <label class="custom-control-label" for="tasknow">{{__('Now')}}</label>
                                     </li>
                                     <li class="d-inline-block">
                                         <input type="radio" class="custom-control-input check" id="taskschedule"
                                             name="task_type" value="schedule" checked>
-                                        <label class="custom-control-label" for="taskschedule">Schedule</label>
+                                        <label class="custom-control-label" for="taskschedule">{{__('Schedule')}}</label>
                                     </li>
                                 </ul>
                             </div>
@@ -60,7 +60,7 @@ use Carbon\Carbon;
                         
                         <div class="col-md-4 datenow">
                             <input type="text" id='datetime-datepicker' name="schedule_time" class="form-control upside opendatepicker"
-                                placeholder="Date Time" value="{{ $scheduletime }}">
+                                placeholder="{{__('Date Time')}}" value="{{ $scheduletime }}">
                             <button type="button" class="cstmbtn check_btn btn btn-info"><i class="fa fa-check" aria-hidden="true"></i></button>
                         </div>
 
@@ -72,13 +72,13 @@ use Carbon\Carbon;
                         <div class="col-md-8">
                             <div class="form-group" id="nameInput">
                                 <input type="text" id='search' class="form-control" name="search"
-                                    placeholder="search Customer" value="{{ isset($task->customer->name)?$task->customer->name:'' }}">
+                                    placeholder="{{__('Search Customer')}}" value="{{ isset($task->customer->name)?$task->customer->name:'' }}">
                                 <input type="hidden" id='cusid' name="ids" value="{{ isset($task->customer->id)?$task->customer->id:'' }}" readonly>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group" id="AddressInput">
-                                <a href="#" class="add-sub-task-btn">New Customer</a>
+                                <a href="#" class="add-sub-task-btn">{{__('New Customer')}}</a>
                             </div>
                         </div>
                     </div>
@@ -87,7 +87,7 @@ use Carbon\Carbon;
                         <div class="row ">
                             <div class="col-md-3">
                                 <div class="form-group" id="">
-                                    {!! Form::text('name', null, ['class' => 'form-control', 'placeholder' => 'Name']) !!}
+                                    {!! Form::text('name', null, ['class' => 'form-control', 'placeholder' => __('Name')]) !!}
                                     <span class="invalid-feedback" role="alert">
                                         <strong></strong>
                                     </span>
@@ -96,7 +96,7 @@ use Carbon\Carbon;
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group" id="">
-                                    {!! Form::text('email', null, ['class' => 'form-control', 'placeholder' => 'Email']) !!}
+                                    {!! Form::text('email', null, ['class' => 'form-control', 'placeholder' => __('Email')]) !!}
                                     <span class="invalid-feedback" role="alert">
                                         <strong></strong>
                                     </span>
@@ -105,8 +105,7 @@ use Carbon\Carbon;
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group" id="">
-                                    {!! Form::text('phone_number', null, ['class' => 'form-control', 'placeholder' => 'Phone
-                                    Number']) !!}
+                                    {!! Form::text('phone_number', null, ['class' => 'form-control', 'placeholder' => __('Phone Number')]) !!}
                                     <span class="invalid-feedback" role="alert">
                                         <strong></strong>
                                     </span>
@@ -115,7 +114,7 @@ use Carbon\Carbon;
                             </div>
                             <div class="col-md-2">
                                 <div class="form-group" id="Inputsearch">
-                                    <a href="#" class="add-sub-task-btn">Previous</a>
+                                    <a href="#" class="add-sub-task-btn">{{__('Previous')}}</a>
 
                                 </div>
 
@@ -140,11 +139,9 @@ use Carbon\Carbon;
                                                 <select class="form-control selecttype mt-1 taskselect" id="task_type"
                                                     name="task_type_id[]" required>
                                                     <option value="1" {{ $item->task_type_id == 1 ? 'selected' : '' }}>
-                                                        Pickup Task</option>
-                                                    <option value="2" {{ $item->task_type_id == 2 ? 'selected' : '' }}>Drop
-                                                        Off Task</option>
-                                                    <option value="3" {{ $item->task_type_id == 3 ? 'selected' : '' }}>
-                                                        Appointment</option>
+                                                        {{__('Pickup Task')}}</option>
+                                                    <option value="2" {{ $item->task_type_id == 2 ? 'selected' : '' }}>{{__('Drop Off Task')}}</option>
+                                                    <option value="3" {{ $item->task_type_id == 3 ? 'selected' : '' }}>{{__('Appointment')}}</option>
 
                                                 </select>
                                             </div>
@@ -152,7 +149,7 @@ use Carbon\Carbon;
                                         <div class="col-md-5">
                                             <div class="form-group {{ $item->task_type_id == 3 ? 'newclass' : 'appoint' }}" style="display: none;">
                                                 <input type="text" class="form-control appointment_date"
-                                                    name="appointment_date[]" placeholder="Duration (In Min)"
+                                                    name="appointment_date[]" placeholder="{{__('Duration (In Min)')}}"
                                                     value="{{ $item->allocation_type }}">
                                                 <span class="invalid-feedback" role="alert">
                                                     <strong></strong>
@@ -173,15 +170,15 @@ use Carbon\Carbon;
 
                                     <div class="row mb-3">
                                         <div class="col-md-6 d-flex align-items-center">
-                                            <h4 class="header-title mb-0">Address</h4>
-                                            <a href="javascript:void(0);" id="clear-address" class="btn btn-info clear-btn ml-3">Clear</a>
+                                            <h4 class="header-title mb-0">{{__('Address')}}</h4>
+                                            <a href="javascript:void(0);" id="clear-address" class="btn btn-info clear-btn ml-3">{{__('Clear')}}</a>
                                         </div>
                                         <div class="col-md-6">
                                             
                                         </div>
                                     </div>
                                     
-                                    <span class="span1 addspan">Please select a address or create new</span>
+                                    <span class="span1 addspan">{{__('Please select a address or create new')}}</span>
 
                                     <div class="row">
 
@@ -191,17 +188,17 @@ use Carbon\Carbon;
                                                 <div class="row no-gutters row-spacing">
                                                     <div class="col-md-6">
                                                         {!! Form::text('short_name[]', null, ['class' => 'form-control address',
-                                                         'placeholder' => 'Address Short Name']) !!}
+                                                         'placeholder' => __('Address Short Name')]) !!}
                                                     </div>
                                                     <div class="col-md-6">
                                                         <input type="text" name="address_email[]"
                                                 id="add{{ $newcount }}-address_email" class="form-control address address_email"
-                                                placeholder="Email" />
+                                                placeholder="{{__('Email')}}" />
                                                     </div>
                                                     <div class="col-md-6">
                                                         <div class="form-group input-group address" id="addressInput">
                                                             <input type="text" id="add{{ $newcount }}-input" name="address[]"
-                                                                class="form-control cust1_add" placeholder="Address">
+                                                                class="form-control cust1_add" placeholder="{{__('Address')}}">
                                                             <div class="input-group-append">
                                                                 <button
                                                                     class="btn btn-xs btn-dark waves-effect waves-light showMapTask cust1_btn"
@@ -222,24 +219,24 @@ use Carbon\Carbon;
                                                     <div class="col-md-6">
                                                         <input type="text" name="address_phone_number[]"
                                                         id="add{{ $newcount }}-address_phone_number" class="form-control address address_phone_number"
-                                                        placeholder="Phone Number" />
+                                                        placeholder="{{__('Phone Number')}}" />
                                                     </div>
                                                     <div class="col-md-6">
                                                         <input type="text" name="post_code[]"
                                                         id="add{{ $newcount }}-postcode" class="form-control address postcode"
-                                                        placeholder="PostsCode" />
+                                                        placeholder="{{__('PostsCode')}}" />
                                                     </div>
                                                     <div class="col-md-6">
                                                         <div class="row no-gutters">
                                                             <div class="col-6 pr-1">
-                                                                {!! Form::text('barcode[]', $item->barcode, ['class' => 'form-control barcode','placeholder' => 'Task Barcode']) !!}  
+                                                                {!! Form::text('barcode[]', $item->barcode, ['class' => 'form-control barcode','placeholder' => __('Task Barcode')]) !!}  
                                                             </div>
                                                             <div class="col-6 pl-1">
-                                                                {!! Form::text('quantity[]', $item->quantity, ['class' => 'form-control quantity onlynumber','placeholder' => 'Quantity']) !!}
+                                                                {!! Form::text('quantity[]', $item->quantity, ['class' => 'form-control quantity onlynumber','placeholder' => __('Quantity')]) !!}
                                                             </div>
-                                                            <span class="span1 pickup-barcode-error" style="display:none;">Task Barcode is required for pickup</span>
-                                                            <span class="span1 drop-barcode-error" style="display:none;">Task Barcode is required for drop</span>
-                                                            <span class="span1 appointment-barcode-error" style="display:none;">Task Barcode is required for appointment</span>
+                                                            <span class="span1 pickup-barcode-error" style="display:none;">{{__('Task Barcode is required for pickup')}}</span>
+                                                            <span class="span1 drop-barcode-error" style="display:none;">{{__('Task Barcode is required for drop')}}</span>
+                                                            <span class="span1 appointment-barcode-error" style="display:none;">{{__('Task Barcode is required for appointment')}}</span>
                                                         </div> 
                                                     </div>
                                                     {{-- <div class="col-md-6">
@@ -346,26 +343,26 @@ use Carbon\Carbon;
                     </div>
                     <div class="row">
                         <div class="col-md-12" id="adds">
-                            <a href="#" class="add-sub-task-btn waves-effect waves-light subTask">Add Sub Task</a>
+                            <a href="#" class="add-sub-task-btn waves-effect waves-light subTask">{{__('Add Sub Task')}}</a>
                         </div>
                     </div>
 
                     <!-- end row -->
 
                     <!-- container -->
-                    <h4 class="header-title mb-3">Meta Data</h4>
+                    <h4 class="header-title mb-3">{{__('Meta Data')}}</h4>
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <div class="form-group" id="make_modelInput">
                                 {!! Form::hidden('recipient_phone', null, ['class' => 'form-control rec', 'placeholder' =>
-                                'Recipient Phone']) !!}
+                                __('Recipient Phone')]) !!}
                                 {!! Form::hidden('Recipient_email', null, ['class' => 'form-control rec', 'placeholder' =>
-                                'Recipient Email']) !!}
+                                __('Recipient Email')]) !!}
                                 {{-- {!! Form::textarea('task_description', null, ['class' => 'form-control', 'placeholder' =>
                                 'Task Description', 'rows' => 2, 'cols' => 40]) !!} --}}
-                                <textarea class='form-control' placeholder='Task Description' rows='2' cols='40' name="task_description">{{$task->task_description}}</textarea>
+                                <textarea class='form-control' placeholder="{{__('Task Description')}}" rows='2' cols='40' name="task_description">{{$task->task_description}}</textarea>
                                 {!! Form::hidden('net_quantity', null, ['class' => 'form-control rec mt-1', 'placeholder' =>
-                                'Net Quantity']) !!}
+                                __('Net Quantity')]) !!}
                                 <span class="invalid-feedback" role="alert">
                                     <strong></strong>
                                 </span>
@@ -375,7 +372,7 @@ use Carbon\Carbon;
                         <div class="col-md-6 mb-3">
                             <div class="form-group text-center" id="colorInput">
                                 <label class="btn btn-info width-lg waves-effect waves-light newchnageimage upload-img-btn">
-                                    <span><i class="fas fa-image mr-2"></i>Upload Image</span>
+                                    <span><i class="fas fa-image mr-2"></i>{{__('Upload Image')}}</span>
                                     <input id="file" type="file" name="file[]" multiple style="display: none" />
                                 </label>
                                 
@@ -400,18 +397,18 @@ use Carbon\Carbon;
                     </div>
 
                     @if($task->call_back_url)
-                    <h4 class="header-title mb-3">Call Back URL</h4>
+                    <h4 class="header-title mb-3">{{__('Call Back URL')}}</h4>
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <div class="form-group" id="make_modelInput">
                                 {!! Form::text('call_back_url', null, ['class' => 'form-control rec', 'placeholder' =>
-                                'Call Back URL','readonly']) !!}
+                                __('Call Back URL'),'readonly']) !!}
                             </div>
                         </div>
                     </div>
                     @endif
 
-                    <h4 class="header-title mb-3">Allocation</h4>
+                    <h4 class="header-title mb-3">{{__('Allocation')}}</h4>
                     <div class="row my-3" id="rediodiv">
                         <div class="col-md-8">
                             <div class="login-form">
@@ -420,27 +417,27 @@ use Carbon\Carbon;
                                         <input type="radio" class="custom-control-input check assignRadio" id="customRadio"
                                             name="allocation_type" value="u"
                                             {{ $task->auto_alloction == 'u' ? 'checked' : '' }}>
-                                        <label class="custom-control-label" for="customRadio">Unassigned</label>
+                                        <label class="custom-control-label" for="customRadio">{{__('Unassigned')}}</label>
                                     </li>
                                     <li class="d-inline-block mr-2">
                                         <input type="radio" class="custom-control-input check assignRadio"
                                             id="customRadio22" name="allocation_type" value="a"
                                             {{ $task->auto_alloction == 'a' ? 'checked' : '' }}>
-                                        <label class="custom-control-label" for="customRadio22">Auto Allocation</label>
+                                        <label class="custom-control-label" for="customRadio22">{{__('Auto Allocation')}}</label>
                                     </li>
                                     <li class="d-inline-block">
                                         <input type="radio" class="custom-control-input check assignRadio"
                                             id="customRadio33" name="allocation_type" value="m"
                                             {{ $task->auto_alloction == 'm' ? 'checked' : '' }}>
-                                        <label class="custom-control-label" for="customRadio33">Manual</label>
+                                        <label class="custom-control-label" for="customRadio33">{{__('Manual')}}</label>
                                     </li>
                                     
                                 </ul>
                             </div>
                         </div>
                         <div class="col-md-4">
-                            <h4 class="header-title">Cash to be collected</h4>
-                            <input class="form-control" type="text" placeholder="Cash to be collected"
+                            <h4 class="header-title">{{__('Cash to be collected')}}</h4>
+                            <input class="form-control" type="text" placeholder="{{__('Cash to be collected')}}"
                                 name="cash_to_be_collected"
                                 value="{{ isset($task->cash_to_be_collected) ? $task->cash_to_be_collected : '' }}">
                         </div>
@@ -451,9 +448,9 @@ use Carbon\Carbon;
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group mb-3">
-                                    <label>Team Tag</label>
+                                    <label>{{__('Team Tag')}}</label>
                                     <select name="team_tag[]" id="selectize-optgroups" multiple placeholder="Select tag...">
-                                        <option value="">Select Tag...</option>
+                                        <option value="">{{__('Select Tag...')}}</option>
                                         @foreach ($teamTag as $item)
                                             <option value="{{ $item->id }}"
                                                 {{ in_array($item->id, $saveteamtag) ? 'selected' : '' }}>{{ $item->name }}
@@ -466,9 +463,9 @@ use Carbon\Carbon;
 
                             <div class="col-md-6">
                                 <div class="form-group mb-3">
-                                    <label>Driver Tag</label>
+                                    <label>{{__('Driver Tag')}}</label>
                                     <select name="agent_tag[]" id="selectize-optgroup" multiple placeholder="Select tag...">
-                                        <option value="">Select Tag...</option>
+                                        <option value="">{{__('Select Tag...')}}</option>
                                         @foreach ($agentTag as $item)
                                             <option value="{{ $item->id }}"
                                                 {{ in_array($item->id, $savedrivertag) ? 'selected' : '' }}>
@@ -482,7 +479,7 @@ use Carbon\Carbon;
                     <div class="row drivers">
                         <div class="col-md-12">
                             <div class="form-group mb-3">
-                                <label>Drivers</label>
+                                <label>{{__('Drivers')}}</label>
                                 <select class="form-control" name="agent" id="location_accuracy">
                                     @foreach ($agents as $item)
                                         <option value="{{ $item->id }}"
@@ -497,7 +494,7 @@ use Carbon\Carbon;
                     <div class="row">
 
                         <div class="col-md-12">
-                            <button type="submit" class="btn btn-block btn-lg btn-blue waves-effect waves-light submitUpdateTaskHeader">Submit</button>
+                            <button type="submit" class="btn btn-block btn-lg btn-blue waves-effect waves-light submitUpdateTaskHeader">{{__('Submit')}}</button>
                         </div>
                     </div>
 
@@ -516,7 +513,7 @@ use Carbon\Carbon;
             <div class="modal-content">
 
                 <div class="modal-header border-0">
-                    <h4 class="modal-title">Select Location</h4>
+                    <h4 class="modal-title">{{__('Select Location')}}</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                 </div>
                 <div class="modal-body px-3 py-0">
@@ -533,7 +530,7 @@ use Carbon\Carbon;
                     </div>
                 </div>
                 <div class="modal-footer border-0">
-                    <button type="submit" class="btn btn-blue waves-effect waves-light selectMapLocation">Ok</button>
+                    <button type="submit" class="btn btn-blue waves-effect waves-light selectMapLocation">{{__('Ok')}}</button>
                     <!--<button type="Cancel" class="btn btn-blue waves-effect waves-light cancelMapLocation">cancel</button>-->
                 </div>
             </div>

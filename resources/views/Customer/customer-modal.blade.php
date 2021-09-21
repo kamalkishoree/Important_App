@@ -20,7 +20,7 @@
 
                                     <div class="col-lg-4 col-sm-6 mb-lg-0 mb-3">
                                         <div class="form-group" id="nameInput">
-                                            {!! Form::label('title', 'Name',['class' => 'control-label']) !!}
+                                            {!! Form::label('title', __('Name'),['class' => 'control-label']) !!}
                                             {!! Form::text('name', null, ['class' => 'form-control']) !!}
                                             
                                             <span class="invalid-feedback" role="alert">
@@ -30,7 +30,7 @@
                                     </div>
                                     <div class="col-lg-4 col-sm-6 mb-lg-0 mb-3">
                                         <div class="form-group" id="emailInput">
-                                            {!! Form::label('title', 'Email',['class' => 'control-label']) !!}
+                                            {!! Form::label('title', __('Email'),['class' => 'control-label']) !!}
                                             {!! Form::email('email', null, ['class' => 'form-control']) !!}
                                             <span class="invalid-feedback" role="alert">
                                                 <strong></strong>
@@ -39,7 +39,7 @@
                                     </div>
                                     <div class="col-lg-4 col-sm-6 mb-lg-0 mb-3">
                                         <div class="form-group" id="phone_numberInput">
-                                            {!! Form::label('title', 'Phone Number',['class' => 'control-label']) !!}
+                                            {!! Form::label('title', __('Phone Number'),['class' => 'control-label']) !!}
                                             {!! Form::text('phone_number', null, ['class' => 'form-control']) !!}
                                             <span class="invalid-feedback" role="alert">
                                                 <strong></strong>
@@ -50,7 +50,7 @@
 
                                 
                                 <div class="addapp"> 
-                                    {!! Form::label('title', 'Address',['class' => 'control-label']) !!} 
+                                    {!! Form::label('title', __('Address'),['class' => 'control-label']) !!} 
                                     <div class="row address addressrow1" id="add1">
 
                                         <div class="col-lg-2 col-md-3 mb-lg-0 mb-3">

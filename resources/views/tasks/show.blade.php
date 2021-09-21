@@ -1,4 +1,4 @@
-@extends('layouts.vertical', ['title' => 'Route'])
+@extends('layouts.vertical', ['title' => __('Route')])
 
 @section('css')
 @php
@@ -31,7 +31,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
     <div class="row">
         <div class="col-12">
             <div class="page-title-box">
-                <h4 class="page-title">Route #{{$task->id}}</h4>
+                <h4 class="page-title">{{__('Route')}} #{{$task->id}}</h4>
             </div>
         </div>
     </div>
@@ -39,7 +39,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
     <div class="row">
         <div class="col-xl-2 col-sm-6">
             <div class="card-box">
-                <h4 class="header-title mb-2">Customer</h4>
+                <h4 class="header-title mb-2">{{__('Customer')}}</h4>
                 <div class="row">
                     <div class="col-12">
                         <div class="form-group">
@@ -59,7 +59,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                 </div>
             </div>
             <div class="card-box">
-                <h4 class="header-title mb-2">Driver</h4>
+                <h4 class="header-title mb-2">{{__('Driver')}}</h4>
                 @if(empty($task->agent))
                 Unassigned
                 @else
@@ -67,7 +67,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                     <div class="col-xl-12">
                         <div class="row align-items-center mb-3">
                             <div class="col-3 pr-0 pic-left">
-                                <img src="{{ !empty($task->agent->profile_picture) ? $imgproxyurl.Storage::disk('s3')->url($task->agent->profile_picture) : URL::to('/assets/images/user_dummy.jpg') }}" alt="contact-img" title="contact-img" class="rounded-circle avatar-sm">
+                                <img src="{{ !empty($task->agent->profile_picture) ? $imgproxyurl.Storage::disk('s3')->url($task->agent->profile_picture) : URL::to('/assets/images/user_dummy.jpg') }}" alt="{{__('contact-img')}}" title="{{__('contact-img')}}" class="rounded-circle avatar-sm">
                             </div>
                             <div class="col-9 pl-1">
                                 <h5 class="m-0 font-weight-normal">{{ (isset($task->agent->name))?$task->agent->name:'' }}</h5>
@@ -116,19 +116,19 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
 
         <div class="col-xl-3 col-sm-6">
             <div class="card-box">
-                <h4 class="header-title mb-2">Track Url</h4>
+                <h4 class="header-title mb-2">{{__('Track Url')}}</h4>
                 <div class="site_link position-relative">
                     <a href="{{url('/order/tracking/'.Auth::user()->code.'/'.$task->unique_id.'')}}" target="_blank"><span id="pwd_spn" class="password-span">{{url('/order/tracking/'.Auth::user()->code.'/'.$task->unique_id.'')}}</span></a>
                     <label class="copy_link float-right" id="cp_btn" title="copy">
                         <!-- <i class="far fa-copy"></i> -->
                         <img src="{{ URL::to('/assets/icons/domain_copy_icon.svg') }}" alt="">
-                        <span class="copied_txt" id="show_copy_msg_on_click_copy" style="display:none;">Copied</span>
+                        <span class="copied_txt" id="show_copy_msg_on_click_copy" style="display:none;">{{__('Copied')}}</span>
                     </label>
                 </div>
             </div>
 
             <div class="card-box rejection-box style-4">
-                <h4 class="header-title mb-2">Rejections</h4>
+                <h4 class="header-title mb-2">{{__('Rejections')}}</h4>
                 @if(!empty($task->task_rejects) && count($task->task_rejects) > 0)
                 @php
                 $timeformat = $preference->time_format == '24' ? 'H:i:s':'g:i a';
@@ -142,7 +142,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                 @endphp
                 <div class="row align-items-center mb-2">
                     <div class="col-2 pr-0 pic-left">
-                        <img src="{{ !empty($task_reject->agent->profile_picture) ? $imgproxyurl.Storage::disk('s3')->url($task_reject->agent->profile_picture) : URL::to('/assets/images/user_dummy.jpg') }}" alt="contact-img" title="contact-img" class="rounded-circle avatar-sm">
+                        <img src="{{ !empty($task_reject->agent->profile_picture) ? $imgproxyurl.Storage::disk('s3')->url($task_reject->agent->profile_picture) : URL::to('/assets/images/user_dummy.jpg') }}" alt="{{__('contact-img')}}" title="{{__('contact-img')}}" class="rounded-circle avatar-sm">
                     </div>
                     <div class="col-10 pl-1">
                         <h5 class="mb-1  mt-0 font-weight-normal">{{ (isset($task_reject->agent->name))?$task_reject->agent->name:'' }}</h5>
@@ -152,14 +152,14 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
 
                 @endforeach
                 @else
-                No rejection found
+                {{__('No rejection found')}}
                 @endif
             </div>
         </div>
 
         <div class="col-xl-7">
             <div class="card-box">
-                <h4 class="header-title mb-2">Task List</h4>
+                <h4 class="header-title mb-2">{{__('Task List')}}</h4>
                 @php
                 $tasksLocations = [];
                 @endphp

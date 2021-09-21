@@ -333,7 +333,7 @@
 
         $('.mdi-delete').click(function(){
             
-            var r = confirm("Are you sure?");
+            var r = confirm("{{__('Are you sure?')}}");
             if (r == true) {
                var taskid = $(this).attr('taskid');
                $('form#taskdelete'+taskid).submit();
