@@ -35,7 +35,7 @@
   }
   
 .icon-ic_lang:before {
-    font-size: 30px;
+    font-size: 20px;
     vertical-align: middle;
     margin-right: 5px;
 }
@@ -863,7 +863,7 @@ table.table tbody td:nth-child(2) img {
 }
 
 .light .navbar-custom .topnav-menu .nav-link {
-    color: #000;
+    color: #696969;
 }
 
 .light .navbar-custom .button-menu-mobile {
