@@ -32,9 +32,7 @@
         "rap2hpoutre/laravel-log-viewer": "^1.7",
         "rinvex/countries": "^6.1",
         "sarav/laravel-multiauth": "dev-master",
-        "twilio/sdk": "^6.13",
-        "yajra/laravel-datatables-oracle": "^9.18",
-        "maatwebsite/excel": "^3.1"
+        "twilio/sdk": "^6.13"
     },
     "require-dev": {
         "facade/ignition": "^2.0",
