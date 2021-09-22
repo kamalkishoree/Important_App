@@ -396,7 +396,7 @@
 
     }
 
-    $('.mdi-delete').click(function(){
+    $(document).on('click', '.mdi-delete', function(e) {
             
             var r = confirm("Are you sure?");
             if (r == true) {
