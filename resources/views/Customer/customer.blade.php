@@ -27,7 +27,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
         <div class="col-12">
             <div class="card widget-inline">
                 <div class="card-body">
-                    <div class="row">
+                    <div class="row justify-content-center">
                         <div class="col-sm-6 col-md-3 mb-3 mb-md-0">
                             <div class="text-center">
                                 <h3>
