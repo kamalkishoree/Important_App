@@ -115,7 +115,8 @@
             {{-- @php print_r(Session::all()); @endphp --}}
             <li class="dropdown d-xl-block">
                 <a class="nav-link dropdown-toggle waves-effect waves-light" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
-                    Language 
+                    <i class="icon-ic_lang"></i>
+                    <span> Language </span>
                     {{session()->get('applocale')}}
                     <i class="mdi mdi-chevron-down"></i> 
                 </a>
