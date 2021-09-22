@@ -98,8 +98,123 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                     <div class="row align-items-center">
                         <div class="col-8">
                             <div class="text-end">
-                                <p class="text-muted mb-1 text-truncate">Active Teams</p>
-                                <h3 class="text-dark mt-1 mb-0"><span data-plugin="counterup" id="total_rejected_order">{{$teamsCount}}</span></h3>
+                                <p class="text-muted mb-1 text-truncate">Active Agents</p>
+                                <h3 class="text-dark mt-1 mb-0"><span data-plugin="counterup" id="total_rejected_order">{{$agentActive}}</span></h3>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="avatar-lg rounded-circle ml-auto">
+                                <i class="fe-eye font-22 avatar-title"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col col-md-4 col-lg-3 col-xl">
+            <div class="widget-rounded-circle card">
+                <div class="card-body p-2">
+                    <div class="row align-items-center">
+                        <div class="col-8">
+                            <div class="text-end">
+                                <p class="text-muted mb-1 text-truncate">In-Active Agents</p>
+                                <h3 class="text-dark mt-1 mb-0"><span data-plugin="counterup" id="total_rejected_order">{{$agentInActive}}</span></h3>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="avatar-lg rounded-circle ml-auto">
+                                <i class="fe-eye font-22 avatar-title"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row custom-cols">
+        <div class="col col-md-4 col-lg-3 col-xl">
+            <div class="widget-rounded-circle card">
+                <div class="card-body p-2">
+                    <div class="row align-items-center">
+                        <div class="col-8">
+                            <div class="text-end">
+                                <p class="text-muted mb-1 text-truncate">Is-Available Agents</p>
+                                <h3 class="text-dark mt-1 mb-0"><span data-plugin="counterup" id="total_rejected_order">{{$agentIsAvailable}}</span></h3>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="avatar-lg rounded-circle ml-auto">
+                                <i class="fe-eye font-22 avatar-title"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col col-md-4 col-lg-3 col-xl">
+            <div class="widget-rounded-circle card">
+                <div class="card-body p-2">
+                    <div class="row align-items-center">
+                        <div class="col-8">
+                            <div class="text-end">
+                                <p class="text-muted mb-1 text-truncate">Not-Available Agents</p>
+                                <h3 class="text-dark mt-1 mb-0"><span data-plugin="counterup" id="total_rejected_order">{{$agentNotAvailable}}</span></h3>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="avatar-lg rounded-circle ml-auto">
+                                <i class="fe-eye font-22 avatar-title"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col col-md-4 col-lg-3 col-xl">
+            <div class="widget-rounded-circle card">
+                <div class="card-body p-2">
+                    <div class="row align-items-center">
+                        <div class="col-8">
+                            <div class="text-end">
+                                <p class="text-muted mb-1 text-truncate">Is-Approved Agents</p>
+                                <h3 class="text-dark mt-1 mb-0"><span data-plugin="counterup" id="total_rejected_order">{{$agentIsApproved}}</span></h3>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="avatar-lg rounded-circle ml-auto">
+                                <i class="fe-eye font-22 avatar-title"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col col-md-4 col-lg-3 col-xl">
+            <div class="widget-rounded-circle card">
+                <div class="card-body p-2">
+                    <div class="row align-items-center">
+                        <div class="col-8">
+                            <div class="text-end">
+                                <p class="text-muted mb-1 text-truncate">Not-Approved Agents</p>
+                                <h3 class="text-dark mt-1 mb-0"><span data-plugin="counterup" id="total_rejected_order">{{$agentNotApproved}}</span></h3>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="avatar-lg rounded-circle ml-auto">
+                                <i class="fe-eye font-22 avatar-title"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col col-md-4 col-lg-3 col-xl">
+            <div class="widget-rounded-circle card">
+                <div class="card-body p-2">
+                    <div class="row align-items-center">
+                        <div class="col-8">
+                            <div class="text-end">
+                                
                             </div>
                         </div>
                         <div class="col-4">

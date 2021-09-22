@@ -66,12 +66,17 @@ class AgentController extends Controller
             $countryCode = '';
         }
 
-        $employeesCount  = count($agents->where('type', 'Employee'));
-        $freelancerCount = count($agents->where('type', 'Freelancer'));
-        $agentsCount     = count($agents);
-        $teamsCount      = count($teams);
+        $agentsCount       = count($agents);
+        $employeesCount    = count($agents->where('type', 'Employee'));
+        $freelancerCount   = count($agents->where('type', 'Freelancer'));
+        $agentActive       = count($agents->where('is_activated', 1));
+        $agentInActive     = count($agents->where('is_activated', 0));
+        $agentIsAvailable  = count($agents->where('is_available', 1));
+        $agentNotAvailable = count($agents->where('is_available', 0));
+        $agentIsApproved   = count($agents->where('is_approved', 1));
+        $agentNotApproved  = count($agents->where('is_approved', 0));
 
-        return view('agent.index')->with(['agents' => $agents, 'agentsCount'=>$agentsCount, 'employeesCount'=>$employeesCount, 'teamsCount'=>$teamsCount, 'freelancerCount'=>$freelancerCount, 'teams' => $teams, 'tags' => $tags, 'selectedCountryCode' => $countryCode, 'calenderSelectedDate' => $selectedDate, 'showTag' => implode(',', $tag)]);
+        return view('agent.index')->with(['agents' => $agents, 'agentIsAvailable'=>$agentIsAvailable, 'agentNotAvailable'=>$agentNotAvailable, 'agentIsApproved'=>$agentIsApproved, 'agentNotApproved'=>$agentNotApproved, 'agentsCount'=>$agentsCount, 'employeesCount'=>$employeesCount, 'agentActive'=>$agentActive, 'agentInActive'=>$agentInActive, 'freelancerCount'=>$freelancerCount, 'teams' => $teams, 'tags' => $tags, 'selectedCountryCode' => $countryCode, 'calenderSelectedDate' => $selectedDate, 'showTag' => implode(',', $tag)]);
     }
 
     public function agentFilter(Request $request){
