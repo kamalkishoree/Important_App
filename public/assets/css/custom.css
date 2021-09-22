@@ -114,6 +114,10 @@
     box-shadow: none !important;
 }
 
+.custom-cols .card {
+    -webkit-box-shadow: 0 16px 32px 0 rgb(0 0 0 / 5%) !important;
+    box-shadow: 0 16px 32px 0 rgb(0 0 0 / 5%) !important;
+}
 /* .table-responsive {
     padding: 15px;
 } */

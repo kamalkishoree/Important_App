@@ -101,8 +101,12 @@ class TaskController extends Controller
             });
         }
         $agents = $agents->get();
+
+        $employees      = Customer::orderby('name', 'asc')->where('status','Active')->select('id', 'name')->get();
+        $employeesCount = count($employees);
+        $agentsCount    = count($agents);
         
-        return view('tasks/task')->with([ 'status' => $request->status, 'active_count' => $active, 'panding_count' => $pending, 'history_count' => $history, 'status' => $check,'preference' => $preference,'agents'=>$agents,'failed_count'=>$failed,'client_timezone'=>$client_timezone]);
+        return view('tasks/task')->with([ 'status' => $request->status, 'agentsCount'=>$agentsCount, 'employeesCount'=>$employeesCount, 'active_count' => $active, 'panding_count' => $pending, 'history_count' => $history, 'status' => $check,'preference' => $preference,'agents'=>$agents,'failed_count'=>$failed,'client_timezone'=>$client_timezone]);
     }
 
     public function taskFilter(Request $request)

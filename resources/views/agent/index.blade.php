@@ -33,6 +33,85 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
             </div>
         </div>
     </div>
+    <div class="row custom-cols">
+            <div class="col col-md-4 col-lg-3 col-xl">
+                <div class="widget-rounded-circle card">
+                    <div class="card-body p-2">
+                        <div class="row align-items-center">
+                            <div class="col-8">
+                                <div class="text-end">
+                                    <p class="text-muted mb-1 text-truncate">{{__("Active") . ' Agents'}}</p>
+                                    <h3 class="text-dark mt-1 mb-0"><span data-plugin="counterup" id="total_rejected_order">{{$agentsCount}}</span></h3>
+                                </div>
+                            </div>
+                            <div class="col-4 text-md-right">
+                                <div class="avatar-lg rounded-circle ml-auto">
+                                    <i class="fe-heart font-22 avatar-title"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col col-md-4 col-lg-3 col-xl">
+                <div class="widget-rounded-circle card">
+                    <div class="card-body p-2">
+                        <div class="row align-items-center">
+                        <div class="col-8">
+                                <div class="text-end">
+                                    <p class="text-muted mb-1 text-truncate">Freelancer</p>
+                                    <h3 class="text-dark mt-1 mb-0"><span data-plugin="counterup" id="total_active_order">{{$freelancerCount}}</span></h3>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="avatar-lg rounded-circle ml-auto">
+                                    <i class="fe-shopping-cart font-22 avatar-title"></i>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col col-md-4 col-lg-3 col-xl">
+                <div class="widget-rounded-circle card">
+                    <div class="card-body p-2">
+                        <div class="row align-items-center">
+                            <div class="col-8">
+                                <div class="text-end">
+                                    <p class="text-muted mb-1 text-truncate">Employees</p>
+                                    <h3 class="text-dark mt-1 mb-0"><span data-plugin="counterup" id="total_delivered_order">{{$employeesCount}}</span></h3>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="avatar-lg rounded-circle ml-auto">
+                                    <i class="fe-bar-chart-line font-22 avatar-title"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col col-md-4 col-lg-3 col-xl">
+                <div class="widget-rounded-circle card">
+                    <div class="card-body p-2">
+                        <div class="row align-items-center">
+                            <div class="col-8">
+                                <div class="text-end">
+                                    <p class="text-muted mb-1 text-truncate">Active Teams</p>
+                                    <h3 class="text-dark mt-1 mb-0"><span data-plugin="counterup" id="total_rejected_order">{{$teamsCount}}</span></h3>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="avatar-lg rounded-circle ml-auto">
+                                    <i class="fe-eye font-22 avatar-title"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     <!-- end page title -->
     <div class="row">
         <div class="col-12">
