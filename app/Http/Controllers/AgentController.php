@@ -66,7 +66,12 @@ class AgentController extends Controller
             $countryCode = '';
         }
 
-        return view('agent.index')->with(['agents' => $agents, 'teams' => $teams, 'tags' => $tags, 'selectedCountryCode' => $countryCode, 'calenderSelectedDate' => $selectedDate, 'showTag' => implode(',', $tag)]);
+        $employeesCount  = count($agents->where('type', 'Employee'));
+        $freelancerCount = count($agents->where('type', 'Freelancer'));
+        $agentsCount     = count($agents);
+        $teamsCount      = count($teams);
+
+        return view('agent.index')->with(['agents' => $agents, 'agentsCount'=>$agentsCount, 'employeesCount'=>$employeesCount, 'teamsCount'=>$teamsCount, 'freelancerCount'=>$freelancerCount, 'teams' => $teams, 'tags' => $tags, 'selectedCountryCode' => $countryCode, 'calenderSelectedDate' => $selectedDate, 'showTag' => implode(',', $tag)]);
     }
 
     public function agentFilter(Request $request){
