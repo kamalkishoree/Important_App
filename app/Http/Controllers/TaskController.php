@@ -51,40 +51,20 @@ class TaskController extends Controller
         $tz = new Timezone();
         $client_timezone = $tz->timezone_name(Auth::user()->timezone);
         
-        /* Orter status will be done as per task completed. task assigned than assigned all task of order completed tha completed and so on*/
-        $tasks = Order::orderBy('created_at', 'DESC')->with(['customer', 'location', 'taskFirst', 'agent', 'task.location']);
         $check = '';
         if ($request->has('status') && $request->status != 'all') {
-            $tasks = $tasks->where('status', $request->status);
             $check = $request->status;
         } else {
-            $tasks = $tasks->where('status', 'unassigned');
             $check = 'unassigned';
         }
 
         $all =  Order::where('status', '!=', null);
-        if (Auth::user()->is_superadmin == 0 && Auth::user()->all_team_access == 0) {      # get all  tasks according to assign teams 
-
-            $team_tags  = TeamTag::whereHas('team.permissionToManager', function ($query) {
-                    $query->where('sub_admin_id', Auth::user()->id);
-                })->pluck('tag_id');
-
-                $tasks = $tasks->whereHas('allteamtags', function ($query)use($team_tags) {
-                    $query->whereIn('tag_id', $team_tags);
-                });
-
-
-                $all = $all->whereHas('allteamtags', function ($query)use($team_tags) {
-                    $query->whereIn('tag_id', $team_tags);
-                });
-        }  
 
         $all = $all->get();
         $active   =  count($all->where('status', 'assigned'));
         $pending  =  count($all->where('status', 'unassigned'));
         $history  =  count($all->where('status', 'completed'));
         $failed   =  count($all->where('status', 'failed'));
-        $tasks    =  $tasks->paginate(10); 
         $preference  = ClientPreference::where('id', 1)->first(['theme','date_format','time_format']);
        
         $teamTag   = TagsForTeam::OrderBy('id','asc');
