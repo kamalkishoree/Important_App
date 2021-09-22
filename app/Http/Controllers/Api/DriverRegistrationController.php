@@ -64,7 +64,7 @@ class DriverRegistrationController extends Controller
                 }
                 $folder = str_pad($shortcode, 8, '0', STR_PAD_LEFT);
                 $folder = 'client_' . $folder;
-                $path=[];
+                $path = [];
                 if (gettype($f) != "string") {
                     $file_name = uniqid() . '.' . $f->getClientOriginalExtension();
                     $s3filePath = '/assets/' . $folder . '/agents' . $file_name;
@@ -81,7 +81,8 @@ class DriverRegistrationController extends Controller
                         'label_name' => $o->filename1
                     ];
                 }
-                $agent_docs = AgentDocs::create($files[$key]);
+                if (isset($key))
+                    $agent_docs = AgentDocs::create($files[$key]);
 
 
                 // 
