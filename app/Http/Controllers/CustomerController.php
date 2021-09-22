@@ -21,7 +21,11 @@ class CustomerController extends Controller
      */
     public function index()
     {
-        return view('Customer.customer');
+        $customers         = Customer::orderBy('created_at', 'DESC')->get();
+        $inActiveCustomers = count($customers->where('status', 'In-Active'));
+        $activeCustomers   = count($customers->where('status', 'Active'));
+        $customersCount    = count($customers);
+        return view('Customer.customer')->with(['customersCount'=>$customersCount, 'activeCustomers'=>$activeCustomers, 'inActiveCustomers'=>$inActiveCustomers]);
     }
     
     public function customerFilter(Request $request)
