@@ -64,11 +64,13 @@ class DriverRegistrationController extends Controller
                 }
                 $folder = str_pad($shortcode, 8, '0', STR_PAD_LEFT);
                 $folder = 'client_' . $folder;
-                if ($f != null) {
+                $path=[];
+                if (gettype($f) != "string") {
                     $file_name = uniqid() . '.' . $f->getClientOriginalExtension();
                     $s3filePath = '/assets/' . $folder . '/agents' . $file_name;
                     $path = Storage::disk('s3')->put($s3filePath, $f, 'public');
                 }
+
                 //$f=array($f);
                 // return response()->json(['other'=>json_decode($request->other)]);
                 foreach (json_decode($request->other) as $k => $o) {
