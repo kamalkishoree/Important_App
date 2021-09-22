@@ -26,13 +26,15 @@
         "laravelcollective/html": "^6.2",
         "lcobucci/jwt": "3.3.3",
         "league/flysystem-aws-s3-v3": "~1.0",
+        "maatwebsite/excel": "^3.1",
         "predis/predis": "^1.1",
         "pusher/pusher-php-server": "~3.0",
         "r0bdiablo/laravel5-phumbor": "^1.0",
         "rap2hpoutre/laravel-log-viewer": "^1.7",
         "rinvex/countries": "^6.1",
         "sarav/laravel-multiauth": "dev-master",
-        "twilio/sdk": "^6.13"
+        "twilio/sdk": "^6.13",
+        "yajra/laravel-datatables-oracle": "~9.0"
     },
     "require-dev": {
         "facade/ignition": "^2.0",
