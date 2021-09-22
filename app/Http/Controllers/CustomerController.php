@@ -25,7 +25,7 @@ class CustomerController extends Controller
         $inActiveCustomers = count($customers->where('status', 'In-Active'));
         $activeCustomers   = count($customers->where('status', 'Active'));
         $customersCount    = count($customers);
-        return view('Customer.customer')->with(['customersCount' => $customersCount, 'activeCustomers'=>$activeCustomers, 'inActiveCustomers'=>$inActiveCustomers]);
+        return view('Customer.customer')->with(['customersCount'=>$customersCount, 'activeCustomers'=>$activeCustomers, 'inActiveCustomers'=>$inActiveCustomers]);
     }
     
     public function customerFilter(Request $request)
