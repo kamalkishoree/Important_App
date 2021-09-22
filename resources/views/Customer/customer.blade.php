@@ -1,8 +1,15 @@
 @extends('layouts.vertical', ['title' => 'Customers'])
 
 @section('css')
+<style>
+    .table th,.table td, .table td {
+        display: table-cell !important;
+    }
+</style>
 @endsection
-
+@php
+$imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain/';
+@endphp
 @section('content')
 <!-- Start Content-->
 <div class="container-fluid">
@@ -12,6 +19,44 @@
         <div class="col-12">
             <div class="page-title-box">
                 <h4 class="page-title page-title1">{{ __("Customers") }}</h4>
+            </div>
+        </div>
+    </div>
+  
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card widget-inline">
+                <div class="card-body">
+                    <div class="row justify-content-center">
+                        <div class="col-sm-6 col-md-3 mb-3 mb-md-0">
+                            <div class="text-center">
+                                <h3>
+                                    <i class="mdi mdi-storefront text-primary mdi-24px"></i>
+                                    <span data-plugin="counterup" id="total_earnings_by_vendors">{{$customersCount}}</span>
+                                </h3>
+                                <p class="text-muted font-15 mb-0">{{ 'Total '. __("Customers") }}</p>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-md-3 mb-3 mb-md-0">
+                            <div class="text-center">
+                                <h3>
+                                    <i class="mdi mdi-store-24-hour text-primary mdi-24px"></i>
+                                    <span data-plugin="counterup" id="total_order_count">{{$activeCustomers}}</span>
+                                </h3>
+                                <p class="text-muted font-15 mb-0">Active</p>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-md-3 mb-3 mb-md-0">
+                            <div class="text-center">
+                                <h3>
+                                    <i class="fas fa-money-check-alt text-primary"></i>
+                                    <span data-plugin="counterup" id="total_cash_to_collected">{{$inActiveCustomers}}</span>
+                                </h3>
+                                <p class="text-muted font-15 mb-0">In-Active</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -47,50 +92,11 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach($customers as $customer)
-                                <tr>
-                                    <td>
-                                        {{$customer->name}}
-                                    </td>
-                                    <td>
-                                        {{$customer->email}}
-                                    </td>
-                                    <td>
-                                        {{$customer->phone_number}}
-                                    </td>
-                                    <td>
-                                    <div class="custom-control custom-switch">
-                                        <input data-id="{{$customer->id}}" type="checkbox" class="custom-control-input" id="customSwitch1" name="is_default" value="y" {{ $customer->status == 'Active' ? 'checked' : ''}} >
-                                        <label class="custom-control-label" for="customSwitch1"></label>
-                                    </div>
-                                    </td>
-
-                                    <td>
-                                        <div class="form-ul" style="width: 60px;">
-                                            <div class="inner-div"> <a href="#" userId="{{$customer->id}}" class="action-icon editIcon"> <i class="mdi mdi-square-edit-outline"></i></a></div>
-                                            <div class="inner-div">
-                                                <form id="customerdelete{{$customer->id}}" method="POST" action="{{route('customer.destroy', $customer->id)}}">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <div class="form-group">
-                                                        <button type="button" class="btn btn-primary-outline action-icon"> <i class="mdi mdi-delete" customerid="{{$customer->id}}"></i></button>
-
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                                @endforeach
+                                
                             </tbody>
                         </table>
                     </div>
-                    <div class="pagination pagination-rounded justify-content-end mb-0">
-                        {{ $customers->links() }}
-                    </div>
-                    <div class="row address" id="add0" style="display: none;">
-                        <input type="text" id="add0-input" name="test" class="autocomplete form-control add0-input" placeholder="Address">
-                    </div>
+                    
                 </div> <!-- end card-body-->
             </div> <!-- end card-->
         </div> <!-- end col -->
@@ -103,7 +109,7 @@
 
 @section('script')
     <script src="{{asset('assets/js/storeAgent.js')}}"></script>
-    {{-- <script src="{{asset('assets/libs/datatables/datatables.min.js')}}"></script> --}}
+    <script src="{{ asset('assets/libs/datatables/datatables.min.js') }}"></script>
 @include('Customer.pagescript')  
 
 @endsection

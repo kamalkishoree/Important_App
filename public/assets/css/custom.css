@@ -1,9 +1,55 @@
+@font-face {
+    font-family: 'icomoon';
+    src:  url('../fonts/icomoon.eot?nwuri5');
+    src:  url('../fonts/icomoon.eot?nwuri5#iefix') format('embedded-opentype'),
+      url('../fonts/icomoon.ttf?nwuri5') format('truetype'),
+      url('../fonts/icomoon.woff?nwuri5') format('woff'),
+      url('../fonts/icomoon.svg?nwuri5#icomoon') format('svg');
+    font-weight: normal;
+    font-style: normal;
+    font-display: block;
+  }
+  
+  [class^="icon-"], [class*=" icon-"] {
+    /* use !important to prevent issues with browser extensions that change fonts */
+    font-family: 'icomoon' !important;
+    speak: never;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+  
+    /* Better Font Rendering =========== */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  
+  .icon-ic_currency:before {
+    content: "\e900";
+    color: #6658dd;
+  }
+  .icon-ic_lang:before {
+    content: "\e901";
+    color: #6658dd;
+  }
+  
+.icon-ic_lang:before {
+    font-size: 30px;
+    vertical-align: middle;
+    margin-right: 5px;
+}
+
 .navbar-custom{
     padding: 0 10px;
     }
 .table-responsive::-webkit-scrollbar {
     width: 6px !important;
     height: 6px;
+}
+
+body .navbar-custom .topnav-menu .nav-link {
+    font-weight: 400;
 }
 
 .table-responsive::-webkit-scrollbar-track {
@@ -112,6 +158,15 @@
 .card {
     -webkit-box-shadow: none !important;
     box-shadow: none !important;
+}
+
+.card.widget-inline .card-body {
+    -webkit-box-shadow: 0 16px 32px 0 rgb(0 0 0 / 5%) !important;
+    box-shadow: 0 16px 32px 0 rgb(0 0 0 / 5%) !important;
+}
+
+.dataTables_scrollHead thead th {
+    cursor: pointer;
 }
 
 /* .table-responsive {

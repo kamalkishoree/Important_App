@@ -307,12 +307,13 @@ class DashBoardController extends Controller
        
         $getAdminCurrentCountry = Countries::where('id', '=', Auth::user()->country_id)->get()->first();
         if(!empty($getAdminCurrentCountry)){
-            $countryCode = $getAdminCurrentCountry->name;
+            $defaultCountryLatitude  = $getAdminCurrentCountry->latitude;
+            $defaultCountryLongitude  = $getAdminCurrentCountry->longitude;
         }else{
-            $countryCode = '';
+            $defaultCountryLatitude  = '';
+            $defaultCountryLongitude  = '';
         }
-
-        return view('dashboard')->with(['teams' => $teamdata, 'selectedCountryCode' => $countryCode, 'newmarker' => $newmarker, 'unassigned' => $unassigned, 'agents' => $agents,'date'=> $date,'preference' =>$preference, 'routedata' => $uniquedrivers,'distance_matrix' => $distancematrix, 'unassigned_orders' => $unassigned_orders,'unassigned_distance' => $un_total_distance,'map_key'=>$googleapikey,'client_timezone'=>$auth->timezone]);
+        return view('dashboard')->with(['teams' => $teamdata, 'defaultCountryLongitude' => $defaultCountryLongitude, 'defaultCountryLatitude' => $defaultCountryLatitude, 'newmarker' => $newmarker, 'unassigned' => $unassigned, 'agents' => $agents,'date'=> $date,'preference' =>$preference, 'routedata' => $uniquedrivers,'distance_matrix' => $distancematrix, 'unassigned_orders' => $unassigned_orders,'unassigned_distance' => $un_total_distance,'map_key'=>$googleapikey,'client_timezone'=>$auth->timezone]);
     }
 
     //function to create distance matrix

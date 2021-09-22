@@ -14,6 +14,9 @@
         cursor: move;
         margin-right: 0rem !important;
     }
+    .table th,.table td, .table td {
+        display: table-cell !important;
+    }
 </style>
 @endsection
 @php
@@ -21,7 +24,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
 @endphp
 @section('content')
 <div class="container-fluid">
-
+@csrf
     <!-- start page title -->
     <div class="row">
         <div class="col-12">
@@ -30,20 +33,70 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
             </div>
         </div>
     </div>
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card widget-inline">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-sm-6 col-md mb-3 mb-md-0">
+                            <div class="text-center">
+                                <h3>
+                                    <i class="mdi mdi-storefront text-primary mdi-24px"></i>
+                                    <span data-plugin="counterup" id="total_earnings_by_vendors">{{$agentsCount}}</span>
+                                </h3>
+                                <p class="text-muted font-15 mb-0">Total Agents</p>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-md mb-3 mb-md-0">
+                            <div class="text-center">
+                                <h3>
+                                    <i class="fa fa-user-circle text-primary"></i>
+                                    <span data-plugin="counterup" id="total_order_count">{{$freelancerCount}}</span>
+                                </h3>
+                                <p class="text-muted font-15 mb-0">Freelancer</p>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-md mb-3 mb-md-0">
+                            <div class="text-center">
+                                <h3>
+                                    <i class="fas fa-user text-primary"></i>
+                                    <span data-plugin="counterup" id="total_cash_to_collected">{{$employeesCount}}</span>
+                                </h3>
+                                <p class="text-muted font-15 mb-0">Employees</p>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-md mb-3 mb-md-0">
+                            <div class="text-center">
+                                <h3>
+                                    <i class="fa fa-address-card text-primary"></i>
+                                    <span data-plugin="counterup" id="total_delivery_fees">{{$agentIsApproved}}</span>
+                                </h3>
+                                <p class="text-muted font-15 mb-0">Approved Agents</p>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-md mb-3 mb-md-0">
+                            <div class="text-center">
+                                <h3>
+                                    <i class="fa fa-user-times text-primary"></i>
+                                    <span data-plugin="counterup" id="total_delivery_fees">{{$agentNotApproved}}</span>
+                                </h3>
+                                <p class="text-muted font-15 mb-0">Unapproved Agents</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
     <!-- end page title -->
     <div class="row">
         <div class="col-12">
             <div class="card">
                 <div class="card-body">
                     <div class="row mb-2">
-                        <div class="col-sm-4 text-left btn-auto d-flex align-items justify-content">
-                            <div class="form-group mb-0 mr-2">
-                                <input class="form-control" placeholder="Select date" id="sort-date-agent" name="sort_date_agent" value="{{!empty($calenderSelectedDate) ? $calenderSelectedDate : ''}}" type="text" autocomplete="off">
-                            </div>
-                            <a href="javascript:void(0);" class="btn btn-blue" id="sort-agent">{{__("Go")}}</a>
-                            <a href="javascript:void(0);" class="btn btn-success ml-2" id="sort-agent-all">{{__("Clear")}}</a>
-                        </div>
-                        <div class="col-sm-4">
+                        
+                        <div class="col-sm-8">
                             <div class="text-sm-left">
                                 @if (\Session::has('success'))
                                 <div class="alert alert-success">
@@ -60,7 +113,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                     </div>
 
                     <div class="table-responsive">
-                        <table class="table table-striped dt-responsive nowrap w-100" id="">
+                        <table class="table table-striped dt-responsive nowrap w-100 all" id="agent-listing">
                             <thead>
                                 <tr>
                                     <th>{{__("Uid")}}</th>
@@ -80,83 +133,11 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($agents as $agent)
-                                <tr>
-                                    <td>
-                                        {{ $agent->uid }}
-                                    </td>
-
-                                    <td><img alt="{{$agent->id}}" src="{{isset($agent->profile_picture) ? $imgproxyurl.Storage::disk('s3')->url($agent->profile_picture) : Phumbor::url(URL::to('/asset/images/no-image.png')) }}" width="40"></td>
-                                    <td class="table-user">
-                                        <a href="javascript:void(0);" class="text-body font-weight-semibold">{{ $agent->name }}</a>
-                                    </td>
-                                    <td>
-                                        {{ $agent->phone_number }}
-                                    </td>
-                                    <td>
-                                        {{ $agent->type }}
-                                    </td>
-                                    <td>
-                                        @if (isset($agent->team->name))
-                                        {{ $agent->team->name }}
-                                        @else
-                                        {{ 'Team Not Alloted' }}
-                                        @endif
-
-                                    </td>
-                                    <td><img alt="" style="width: 80px;" src="{{ asset('assets/icons/extra/'. $agent->vehicle_type_id.'.png') }}"></td>
-                                    <!-- <td><span class="badge bg-soft-success text-success">Active</span></td> -->
-                                    <td>
-                                        {{ $cash = $agent->order->sum('cash_to_be_collected') }}
-                                    </td>
-
-                                    <td>
-                                        {{ $orders = $agent->order->sum('driver_cost') }}
-                                    </td>
-
-                                    <td>
-                                        {{ $receive = $agent->agentPayment->sum('cr') }}
-                                    </td>
-
-                                    <td>
-                                        {{ $pay = $agent->agentPayment->sum('dr') }}
-                                    </td>
-
-                                    <td>
-                                        {{ ($pay - $receive) - ($cash - $orders) }}
-                                    </td>
-
-                                    <td>
-                                        <div class="custom-control custom-switch">
-                                            <input type="checkbox" class="custom-control-input agent_approval_switch" id="customSwitch_{{$agent->id}}" data-id="{{$agent->id}}" {{isset($agent->is_approved) && $agent->is_approved == 1 ? 'checked':''}}>
-                                            <label class="custom-control-label" for="customSwitch_{{$agent->id}}"></label>
-                                        </div>
-                                    </td>
-
-                                    <td>
-                                        <div class="form-ul" style="width: 60px;">
-                                            <div class="inner-div" style="margin-top: 3px;"> <a href="{{ route('agent.show', $agent->id) }}" class="action-icon viewIcon" agentId="{{$agent->id}}"> <i class="fa fa-eye"></i></a></div>
-                                            <div class="inner-div" style="margin-top: 3px;"> <a href="{{ route('agent.edit', $agent->id) }}" class="action-icon editIcon" agentId="{{$agent->id}}"> <i class="mdi mdi-square-edit-outline"></i></a></div>
-                                            <div class="inner-div">
-                                                <form method="POST" action="{{ route('agent.destroy', $agent->id) }}">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <div class="form-group">
-                                                        <button type="submit" class="btn btn-primary-outline action-icon"> <i class="mdi mdi-delete"></i></button>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </td>
-
-                                </tr>
-                                @endforeach
+                               
                             </tbody>
                         </table>
                     </div>
-                    <div class="pagination pagination-rounded justify-content-end mb-0">
-                        {{ $agents->links() }}
-                    </div>
+                    
                 </div> <!-- end card-body-->
             </div> <!-- end card-->
         </div> <!-- end col -->
@@ -169,38 +150,19 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
 
 @section('script')
 
-<script src="{{ asset('assets/js/jquery-ui.min.js') }}" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
-<link rel="stylesheet" href="{{ asset('assets/css/jquery-ui.css') }}">
+<!-- <script src="{{ asset('assets/js/jquery-ui.min.js') }}" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="{{ asset('assets/css/jquery-ui.css') }}"> -->
 <script src="{{ asset('assets/js/storeAgent.js') }}"></script>
 <script src="{{ asset('assets/libs/dropzone/dropzone.min.js') }}"></script>
 <script src="{{ asset('assets/libs/dropify/dropify.min.js') }}"></script>
 <script src="{{ asset('assets/js/pages/form-fileuploads.init.js') }}"></script>
-{{-- <script src="{{ asset('assets/libs/datatables/datatables.min.js') }}"></script> --}}
+<script src="{{ asset('assets/libs/datatables/datatables.min.js') }}"></script>
 <script src="{{ asset('assets/js/jquery.tagsinput-revisited.js') }}"></script>
 <script src="{{ asset('telinput/js/intlTelInput.js') }}"></script>
 <link rel="stylesheet" href="{{ asset('assets/css/jquery.tagsinput-revisited.css') }}" />>
 
-@include('agent.pagescript')
-<script>
-    $('#sort-date-agent').flatpickr();
 
-    $('#sort-agent-all').on('click', function(e) {
-        var uri = window.location.href.toString();
-        if (uri.indexOf("?") > 0) {
-            $('#sort-date-agent').val('');
-            var clean_uri = uri.substring(0, uri.indexOf("?"));
-            window.history.replaceState(null, null, clean_uri);
-            location.reload();
-        }
-    });
-    $('#sort-agent').on('click', function(e) {
-        var sortDateAgent = $('#sort-date-agent').val();
-        if (sortDateAgent != '') {
-            var perm = "?date=" + sortDateAgent;
-            window.history.replaceState(null, null, perm);
-            location.reload();
-        }
-    });
+<script>
 
     $('#selectAgent').on('change', function(e) {
 
@@ -261,4 +223,5 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
         stay.preventDefault();
     });
 </script>
+@include('agent.pagescript')
 @endsection

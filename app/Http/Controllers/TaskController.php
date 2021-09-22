@@ -32,7 +32,11 @@ use App\Models\RosterDetail;
 use Illuminate\Support\Arr;
 use App\Jobs\scheduleNotification;
 use Log;
-
+use DataTables;
+use Illuminate\Support\Str;
+use Maatwebsite\Excel\HeadingRowImport;
+use App\Exports\RoutesExport;
+use Excel;
 use GuzzleHttp\Client as Gclient;
 
 class TaskController extends Controller
@@ -47,44 +51,20 @@ class TaskController extends Controller
         $tz = new Timezone();
         $client_timezone = $tz->timezone_name(Auth::user()->timezone);
         
-        /* Orter status will be done as per task completed. task assigned than assigned all task of order completed tha completed and so on*/
-        $tasks = Order::orderBy('created_at', 'DESC')->with(['customer', 'location', 'taskFirst', 'agent', 'task.location']);
         $check = '';
         if ($request->has('status') && $request->status != 'all') {
-            $tasks = $tasks->where('status', $request->status);
             $check = $request->status;
         } else {
-            $tasks = $tasks->where('status', 'unassigned');
             $check = 'unassigned';
         }
 
-        $all      =  Order::where('status', '!=', null);
-        if (Auth::user()->is_superadmin == 0 && Auth::user()->all_team_access == 0) {      # get all  tasks according to assign teams 
-
-            $team_tags  = TeamTag::whereHas('team.permissionToManager', function ($query) {
-                    $query->where('sub_admin_id', Auth::user()->id);
-                })->pluck('tag_id');
-
-                $tasks = $tasks->whereHas('allteamtags', function ($query)use($team_tags) {
-                    $query->whereIn('tag_id', $team_tags);
-                });
-
-
-                $all = $all->whereHas('allteamtags', function ($query)use($team_tags) {
-                    $query->whereIn('tag_id', $team_tags);
-                });
-                
-           
-
-        }  
-
+        $all =  Order::where('status', '!=', null);
 
         $all = $all->get();
         $active   =  count($all->where('status', 'assigned'));
         $pending  =  count($all->where('status', 'unassigned'));
         $history  =  count($all->where('status', 'completed'));
         $failed   =  count($all->where('status', 'failed'));
-        $tasks    =  $tasks->paginate(10); 
         $preference  = ClientPreference::where('id', 1)->first(['theme','date_format','time_format']);
        
         $teamTag   = TagsForTeam::OrderBy('id','asc');
@@ -95,7 +75,6 @@ class TaskController extends Controller
         } 
         $teamTag = $teamTag->get();
 
-
         $agentTag = TagsForAgent::OrderBy('id','asc');
         if (Auth::user()->is_superadmin == 0 && Auth::user()->all_team_access == 0) {
             $agentTag = $agentTag->whereHas('assignTags.agent.team.permissionToManager', function ($query) {
@@ -103,7 +82,6 @@ class TaskController extends Controller
             });
         }
         $agentTag = $agentTag->get();
-
 
         $pricingRule = PricingRule::select('id', 'name');
         if (Auth::user()->is_superadmin == 0 && Auth::user()->all_team_access == 0) {
@@ -113,7 +91,6 @@ class TaskController extends Controller
         }
         
         $pricingRule = $pricingRule->get();
-
         
         $allcation   = AllocationRule::where('id', 1)->first();
 
@@ -125,8 +102,213 @@ class TaskController extends Controller
         }
         $agents = $agents->get();
 
+        $employees      = Customer::orderby('name', 'asc')->where('status','Active')->select('id', 'name')->get();
+        $employeesCount = count($employees);
+        $agentsCount    = count($agents);
+        
+        return view('tasks/task')->with([ 'status' => $request->status, 'agentsCount'=>$agentsCount, 'employeesCount'=>$employeesCount, 'active_count' => $active, 'panding_count' => $pending, 'history_count' => $history, 'status' => $check,'preference' => $preference,'agents'=>$agents,'failed_count'=>$failed,'client_timezone'=>$client_timezone]);
+    }
 
-        return view('tasks/task')->with(['tasks' => $tasks, 'status' => $request->status, 'active_count' => $active, 'panding_count' => $pending, 'history_count' => $history, 'status' => $check,'preference' => $preference,'agents'=>$agents,'failed_count'=>$failed,'client_timezone'=>$client_timezone]);
+    public function taskFilter(Request $request)
+    {
+        $orders = Order::orderBy('created_at', 'DESC')->with(['customer', 'location', 'taskFirst', 'agent', 'task.location']);
+        if (Auth::user()->is_superadmin == 0 && Auth::user()->all_team_access == 0) {      # get all  tasks according to assign teams 
+                $team_tags  = TeamTag::whereHas('team.permissionToManager', function ($query) {
+                    $query->where('sub_admin_id', Auth::user()->id);
+                })->pluck('tag_id');
+
+                $orders = $orders->whereHas('allteamtags', function ($query)use($team_tags) {
+                    $query->whereIn('tag_id', $team_tags);
+                });
+        }
+        $orders = $orders->where('status', $request->routesListingType)->where('status', '!=', null)->get();
+        return Datatables::of($orders)
+                ->editColumn('customer_name', function ($orders) use ($request) {
+                    $customerName = !empty($orders->customer->name)? $orders->customer->name : '';
+                    return $customerName;
+                })
+                ->editColumn('phone_number', function ($orders) use ($request) {
+                    $phoneNumber = !empty($orders->customer->phone_number)? $orders->customer->phone_number : '';
+                    return $phoneNumber;
+                })
+                ->editColumn('agent_name', function ($orders) use ($request) {
+                    $agentName = !empty($orders->agent->name)? $orders->agent->name : '';
+                    return $agentName;
+                })
+                ->editColumn('order_time', function ($orders) use ($request) {
+                    $tz              = new Timezone();
+                    $client_timezone = $tz->timezone_name(Auth::user()->timezone);
+                    $preference      = ClientPreference::where('id', 1)->first(['theme','date_format','time_format']);
+                    $timeformat      = $preference->time_format == '24' ? 'H:i:s':'g:i a';
+                    $order           = Carbon::createFromFormat('Y-m-d H:i:s', $orders->order_time, 'UTC');
+                    $order->setTimezone($client_timezone);
+                    $preference->date_format = $preference->date_format ?? 'm/d/Y';
+                    return date(''.$preference->date_format.' '.$timeformat.'', strtotime($order));
+                })
+                ->editColumn('short_name', function ($orders) use ($request) {
+                    foreach($orders->task as $task){
+                        if($task->task_type_id == 1){
+                            $taskType    = "Pickup";
+                            $pickupClass = "yellow_";
+                        }else if($task->task_type_id == 2){
+                            $taskType    = "Dropoff";
+                            $pickupClass = "green_";
+                        }else{
+                            $taskType    = "Appointment";
+                            $pickupClass = "assign_";
+                        }
+                        
+                        $shortName = (!empty($task->location->short_name)? $task->location->short_name:'');
+                        $address   = (!empty($task->location->address)? $task->location->address:'');
+                        return json_encode(array('taskType'=>$taskType, 'pickupClass'=>$pickupClass, 'shortName'=>$shortName, 'address'=>$address), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_UNESCAPED_UNICODE);
+                        
+                    }
+                })
+                ->editColumn('track_url', function ($orders) use ($request) {
+                    $trackUrl = url('/order/tracking/'.Auth::user()->code.'/'.$orders->unique_id.'');
+                    return $trackUrl;
+                })
+                ->editColumn('action', function ($orders) use ($request) {
+                    $action = '<div class="form-ul" style="width: 60px;">
+                                    <div class="inner-div">
+                                        <div class="set-size"> <a href1="#"
+                                                href="'.route('tasks.edit', $orders->id).'"
+                                                class="action-icon editIconBtn"> <i
+                                                    class="mdi mdi-square-edit-outline"></i></a></div>
+                                    </div>
+                                    <div class="inner-div">
+                                        <div class="set-size">
+                                            <a href1="#" href="'.route('tasks.show', $orders->id).'" class="action-icon editIconBtn" title="Route Detail">
+                                                <i class="fe-eye"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="inner-div">
+                                        <form id="taskdelete'.$orders->id.'" method="POST" action="'.route('tasks.destroy', $orders->id).'">
+                                            <input type="hidden" name="_token" value="'.csrf_token().'" />
+                                            <input type="hidden" name="_method" value="DELETE">
+                                            <div class="form-group">
+                                                <button type="button"
+                                                    class="btn btn-primary-outline action-icon"> <i
+                                                        class="mdi mdi-delete" taskid="'.$orders->id.'"></i></button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>';
+                    return $action;
+                })
+                ->filter(function ($instance) use ($request) {
+                    if (!empty($request->get('search'))) {
+                        $instance->collection = $instance->collection->filter(function ($row) use ($request){
+                            if (Str::contains(Str::lower($row['customer']['name']), Str::lower($request->search))){
+                                return true;
+                            }else if (Str::contains(Str::lower($row['customer']['phone_number']), Str::lower($request->search))) {
+                                return true;
+                            }
+                            return false;
+                        });
+                    }
+                })
+                ->make(true);
+    }
+
+    public function tasksExport(Request $request){
+        $header = [
+                [
+                    'Sr. No.',
+                    'Customer',
+                    'Phone.No',
+                    'Driver',
+                    'Due Time',
+                    'Routes',
+                    'Status',
+                    'Cash To Be Collected',
+                    'Base Price',
+                    'Base Duration',
+                    'Base Distance',
+                    'Base Waiting',
+                    'Duration Price',
+                    'Waiting Price',
+                    'Distance Fee',
+                    'Cancel Fee',
+                    'Agent Commission Percentage',
+                    'Agent Commission Fixed',
+                    'Freelancer Commission Percentage',
+                    'Freelancer Commission Fixed',
+                    'Driver Cost',
+                    'Pricing'
+                ]
+            ];
+        $data = array();
+        $orders = Order::orderBy('created_at', 'DESC')->with(['customer', 'location', 'taskFirst', 'agent', 'task.location']);
+        if (Auth::user()->is_superadmin == 0 && Auth::user()->all_team_access == 0) {      # get all  tasks according to assign teams 
+                $team_tags  = TeamTag::whereHas('team.permissionToManager', function ($query) {
+                    $query->where('sub_admin_id', Auth::user()->id);
+                })->pluck('tag_id');
+
+                $orders = $orders->whereHas('allteamtags', function ($query)use($team_tags) {
+                    $query->whereIn('tag_id', $team_tags);
+                });
+        }
+        $orders = $orders->where('status', '!=', null)->get();
+        if(!empty($orders)){
+            $tz              = new Timezone();
+            $client_timezone = $tz->timezone_name(Auth::user()->timezone);
+            $preference      = ClientPreference::where('id', 1)->first(['theme','date_format','time_format']);
+            $timeformat      = $preference->time_format == '24' ? 'H:i:s':'g:i a';
+            
+            $i = 1;
+            foreach ($orders as $key => $value) {
+                $ndata = [];
+                $ndata[] = $i;
+                $ndata[] = (isset($value->customer->name))?$value->customer->name:'';
+                $ndata[] = (isset($value->customer->phone_number))?$value->customer->phone_number:'';
+                $ndata[] = empty($value->agent) ? 'Unassigned' : $value->agent->name;
+                
+                $order = Carbon::createFromFormat('Y-m-d H:i:s', $value->order_time, 'UTC');
+                $order->setTimezone($client_timezone);
+                $preference->date_format = $preference->date_format ?? 'm/d/Y';
+                $ndata[] = date(''.$preference->date_format.' '.$timeformat.'', strtotime($order));
+
+                    foreach ($value->task as $singletask) {
+                        if($singletask->task_type_id==1)
+                        {
+                            $tasktype = "Pickup";
+                            $pickup_class = "yellow_";
+                        }elseif($singletask->task_type_id==2)
+                        {
+                            $tasktype = "Dropoff";
+                            $pickup_class = "green_";
+                        }else{
+                            $tasktype = "Appointment";
+                            $pickup_class = "assign_";
+                        }
+                        $shortName = (isset($singletask->location->short_name))?$singletask->location->short_name.', ':'';
+                        $address   = (isset($singletask->location->address))?$singletask->location->address:'';
+                    }
+                $ndata[] = $tasktype.', '.$shortName.$address;
+            //     $ndata[] = '0';
+                $ndata[] = $value->status;
+                $ndata[] = $value->cash_to_be_collected;
+                $ndata[] = $value->base_price;
+                $ndata[] = $value->base_duration;
+                $ndata[] = $value->base_distance;
+                $ndata[] = $value->base_waiting;
+                $ndata[] = $value->duration_price;
+                $ndata[] = $value->waiting_price;
+                $ndata[] = $value->distance_fee;
+                $ndata[] = $value->cancel_fee;
+                $ndata[] = $value->agent_commission_percentage;
+                $ndata[] = $value->agent_commission_fixed;
+                $ndata[] = $value->freelancer_commission_percentage;
+                $ndata[] = $value->freelancer_commission_fixed;
+                $ndata[] = $value->driver_cost;
+                $ndata[] = $value->order_cost;
+                $data[]  = $ndata;
+                $i++;
+            }
+        }
+        return Excel::download(new RoutesExport($data, $header), "task.xlsx");
     }
 
     // function for saving new order

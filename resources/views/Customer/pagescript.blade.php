@@ -87,14 +87,53 @@
     });
 
     $(document).ready(function() {
-        $('#pricing-datatable').DataTable();
+        $('#pricing-datatable').DataTable({
+            "dom": '<"toolbar">Bfrtip',
+            "scrollX": true,
+            "destroy": true,
+            // "processing": true,
+            "serverSide": true,
+            "responsive": true,
+            "iDisplayLength": 10,
+            language: {
+                        search: "",
+                        paginate: { previous: "<i class='mdi mdi-chevron-left'>", next: "<i class='mdi mdi-chevron-right'>" },
+                        searchPlaceholder: "Search Customers"
+            },
+            drawCallback: function () {
+                $(".dataTables_paginate > .pagination").addClass("pagination-rounded");
+            },
+            buttons: [{  
+                className:'btn btn-success waves-effect waves-light',
+                text: '<span class="btn-label"><i class="mdi mdi-export-variant"></i></span>Export CSV',
+                action: function ( e, dt, node, config ) {
+                    window.location.href = "{{ route('customer.export') }}";
+                }
+            }],
+            ajax: {
+                url: "{{url('customer/filter')}}",
+                data: function (d) {
+                    d.search = $('input[type="search"]').val();
+                    d.imgproxyurl = '{{$imgproxyurl}}';
+                }
+            },
+            columns: [
+                {data: 'name', name: 'name', orderable: true, searchable: false},
+                {data: 'email', name: 'email', orderable: true, searchable: false},
+                {data: 'phone_number', name: 'phone_number', orderable: true, searchable: false},
+                {data: 'status', name: 'status', orderable: false, searchable: false, "mRender": function ( data, type, full ) {
+                    var check = (full.status == 'Active')? 'checked' : '';
+                    return '<div class="custom-control custom-switch "><input type="checkbox" class="custom-control-input" id="customSwitch1" '+check+' name="is_default" value="y" data-id="'+full.id+'"><label class="custom-control-label" for="customSwitch1"></label></div>';
+                }},
+                {data: 'action', name: 'action', orderable: true, searchable: false}
+            ]
+            });
         loadMap(autocompletesWraps);
-
     });
 
     //change status on a customer
     $(function() {
-        $('.custom-control-input').change(function() {
+        $(document).on('change', '.custom-control-input', function() {
             var status = $(this).prop('checked') == true ? "Active" : 'In-Active';
             var user_id = $(this).data('id');
 
@@ -189,8 +228,7 @@
     }
 
     //edit customer
-    $(".editIcon").click(function(e) {
-
+    $(document).on('click', '.editIcon', function(e) {
 
         $.ajaxSetup({
             headers: {
@@ -358,7 +396,7 @@
 
     }
 
-    $('.mdi-delete').click(function(){
+    $(document).on('click', '.mdi-delete', function(e) {
             
             var r = confirm("Are you sure?");
             if (r == true) {

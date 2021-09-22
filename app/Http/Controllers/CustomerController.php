@@ -7,7 +7,11 @@ use Illuminate\Support\Facades\Validator;
 use App\Model\Customer;
 use App\Model\TagCustomer;
 use App\Model\Location;
-
+use DataTables;
+use Illuminate\Support\Str;
+use Maatwebsite\Excel\HeadingRowImport;
+use App\Exports\CustomerExport;
+use Excel;
 class CustomerController extends Controller
 {
     /**
@@ -17,9 +21,76 @@ class CustomerController extends Controller
      */
     public function index()
     {
-        $customer = Customer::orderBy('created_at', 'DESC')->paginate(10);
-        
-        return view('Customer.customer')->with(['customers' => $customer]);
+        $customers         = Customer::orderBy('created_at', 'DESC')->get();
+        $inActiveCustomers = count($customers->where('status', 'In-Active'));
+        $activeCustomers   = count($customers->where('status', 'Active'));
+        $customersCount    = count($customers);
+        return view('Customer.customer')->with(['customersCount'=>$customersCount, 'activeCustomers'=>$activeCustomers, 'inActiveCustomers'=>$inActiveCustomers]);
+    }
+    
+    public function customerFilter(Request $request)
+    {
+        $customers = Customer::orderBy('created_at', 'DESC')->get();
+        return Datatables::of($customers)
+                ->editColumn('action', function ($customers) use ($request) {
+                    $action = '<div class="form-ul" style="width: 60px;">
+                                <div class="inner-div"> <a href="javascript:void(0)" userId="'.$customers->id.'" class="action-icon editIcon"> <i class="mdi mdi-square-edit-outline"></i></a></div>
+                                <div class="inner-div">
+                                    <form id="customerdelete'.$customers->id.'" method="POST" action="'.route('customer.destroy', $customers->id).'">
+                                        <input type="hidden" name="_token" value="'.csrf_token().'" />
+                                        <input type="hidden" name="_method" value="DELETE">
+                                        <div class="form-group">
+                                            <button type="button" class="btn btn-primary-outline action-icon"> <i class="mdi mdi-delete" customerid="'.$customers->id.'"></i></button>
+
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>';
+                    return $action;
+                })
+                ->filter(function ($instance) use ($request) {
+                    if (!empty($request->get('search'))) {
+                        $instance->collection = $instance->collection->filter(function ($row) use ($request){
+                            if (Str::contains(Str::lower($row['name']), Str::lower($request->get('search')))){
+                                return true;
+                            }else if (Str::contains(Str::lower($row['email']), Str::lower($request->get('search')))) {
+                                return true;
+                            }else if (Str::contains(Str::lower($row['phone_number']), Str::lower($request->get('search')))) {
+                                return true;
+                            }
+                            return false;
+                        });
+                    }
+                })
+                ->make(true);
+    }
+
+    public function customersExport(){
+        $header = [
+            [
+             'Sr. No.',
+             'Name',
+             'Email',
+             'Phone Number',
+             'Status'
+            ]
+          ];
+          $data = array();
+          $customers = Customer::orderBy('created_at', 'DESC')->get();
+          if(!empty($customers)){
+            $i = 1;
+            foreach ($customers as $key => $value) {
+              $ndata = [];
+              $ndata[] = $i;
+              $ndata[] = $value->name;
+              $ndata[] = $value->email;
+              $ndata[] = $value->phone_number;
+              $ndata[] = $value->status;
+              $data[] = $ndata;
+              $i++;
+            }
+          }
+        return Excel::download(new CustomerExport($data, $header), "customers.xlsx");
     }
 
     /**
