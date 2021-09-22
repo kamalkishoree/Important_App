@@ -33,97 +33,54 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
             </div>
         </div>
     </div>
-    <div class="row custom-cols">
-        <div class="col col-md-4 col-lg-3 col-xl">
-            <div class="widget-rounded-circle card">
-                <div class="card-body p-2">
-                    <div class="row align-items-center">
-                        <div class="col-8">
-                            <div class="text-end">
-                                <p class="text-muted mb-1 text-truncate">{{__("Active") . ' Agents'}}</p>
-                                <h3 class="text-dark mt-1 mb-0"><span data-plugin="counterup" id="total_rejected_order">{{$agentsCount}}</span></h3>
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card widget-inline">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-sm-6 col-md mb-3 mb-md-0">
+                            <div class="text-center">
+                                <h3>
+                                    <i class="mdi mdi-storefront text-primary mdi-24px"></i>
+                                    <span data-plugin="counterup" id="total_earnings_by_vendors">{{$agentsCount}}</span>
+                                </h3>
+                                <p class="text-muted font-15 mb-0">Total Agents</p>
                             </div>
                         </div>
-                        <div class="col-4 text-md-right">
-                            <div class="avatar-lg rounded-circle ml-auto">
-                                <i class="fe-heart font-22 avatar-title"></i>
+                        <div class="col-sm-6 col-md mb-3 mb-md-0">
+                            <div class="text-center">
+                                <h3>
+                                    <i class="fa fa-user-circle text-primary"></i>
+                                    <span data-plugin="counterup" id="total_order_count">{{$freelancerCount}}</span>
+                                </h3>
+                                <p class="text-muted font-15 mb-0">Freelancer</p>
                             </div>
                         </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col col-md-4 col-lg-3 col-xl">
-            <div class="widget-rounded-circle card">
-                <div class="card-body p-2">
-                    <div class="row align-items-center">
-                    <div class="col-8">
-                            <div class="text-end">
-                                <p class="text-muted mb-1 text-truncate">Freelancer</p>
-                                <h3 class="text-dark mt-1 mb-0"><span data-plugin="counterup" id="total_active_order">{{$freelancerCount}}</span></h3>
+                        <div class="col-sm-6 col-md mb-3 mb-md-0">
+                            <div class="text-center">
+                                <h3>
+                                    <i class="fas fa-user text-primary"></i>
+                                    <span data-plugin="counterup" id="total_cash_to_collected">{{$employeesCount}}</span>
+                                </h3>
+                                <p class="text-muted font-15 mb-0">Employees</p>
                             </div>
                         </div>
-                        <div class="col-4">
-                            <div class="avatar-lg rounded-circle ml-auto">
-                                <i class="fe-shopping-cart font-22 avatar-title"></i>
-
+                        <div class="col-sm-6 col-md mb-3 mb-md-0">
+                            <div class="text-center">
+                                <h3>
+                                    <i class="fa fa-address-card text-primary"></i>
+                                    <span data-plugin="counterup" id="total_delivery_fees">{{$agentIsApproved}}</span>
+                                </h3>
+                                <p class="text-muted font-15 mb-0">Approved Agents</p>
                             </div>
                         </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col col-md-4 col-lg-3 col-xl">
-            <div class="widget-rounded-circle card">
-                <div class="card-body p-2">
-                    <div class="row align-items-center">
-                        <div class="col-8">
-                            <div class="text-end">
-                                <p class="text-muted mb-1 text-truncate">Employees</p>
-                                <h3 class="text-dark mt-1 mb-0"><span data-plugin="counterup" id="total_delivered_order">{{$employeesCount}}</span></h3>
-                            </div>
-                        </div>
-                        <div class="col-4">
-                            <div class="avatar-lg rounded-circle ml-auto">
-                                <i class="fe-bar-chart-line font-22 avatar-title"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col col-md-4 col-lg-3 col-xl">
-            <div class="widget-rounded-circle card">
-                <div class="card-body p-2">
-                    <div class="row align-items-center">
-                        <div class="col-8">
-                            <div class="text-end">
-                                <p class="text-muted mb-1 text-truncate">Active Agents</p>
-                                <h3 class="text-dark mt-1 mb-0"><span data-plugin="counterup" id="total_rejected_order">{{$agentActive}}</span></h3>
-                            </div>
-                        </div>
-                        <div class="col-4">
-                            <div class="avatar-lg rounded-circle ml-auto">
-                                <i class="fe-eye font-22 avatar-title"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col col-md-4 col-lg-3 col-xl">
-            <div class="widget-rounded-circle card">
-                <div class="card-body p-2">
-                    <div class="row align-items-center">
-                        <div class="col-8">
-                            <div class="text-end">
-                                <p class="text-muted mb-1 text-truncate">In-Active Agents</p>
-                                <h3 class="text-dark mt-1 mb-0"><span data-plugin="counterup" id="total_rejected_order">{{$agentInActive}}</span></h3>
-                            </div>
-                        </div>
-                        <div class="col-4">
-                            <div class="avatar-lg rounded-circle ml-auto">
-                                <i class="fe-eye font-22 avatar-title"></i>
+                        <div class="col-sm-6 col-md mb-3 mb-md-0">
+                            <div class="text-center">
+                                <h3>
+                                    <i class="fa fa-user-times text-primary"></i>
+                                    <span data-plugin="counterup" id="total_delivery_fees">{{$agentNotApproved}}</span>
+                                </h3>
+                                <p class="text-muted font-15 mb-0">Unapproved Agents</p>
                             </div>
                         </div>
                     </div>
@@ -131,102 +88,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
             </div>
         </div>
     </div>
-    <div class="row custom-cols">
-        <div class="col col-md-4 col-lg-3 col-xl">
-            <div class="widget-rounded-circle card">
-                <div class="card-body p-2">
-                    <div class="row align-items-center">
-                        <div class="col-8">
-                            <div class="text-end">
-                                <p class="text-muted mb-1 text-truncate">Is-Available Agents</p>
-                                <h3 class="text-dark mt-1 mb-0"><span data-plugin="counterup" id="total_rejected_order">{{$agentIsAvailable}}</span></h3>
-                            </div>
-                        </div>
-                        <div class="col-4">
-                            <div class="avatar-lg rounded-circle ml-auto">
-                                <i class="fe-eye font-22 avatar-title"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col col-md-4 col-lg-3 col-xl">
-            <div class="widget-rounded-circle card">
-                <div class="card-body p-2">
-                    <div class="row align-items-center">
-                        <div class="col-8">
-                            <div class="text-end">
-                                <p class="text-muted mb-1 text-truncate">Not-Available Agents</p>
-                                <h3 class="text-dark mt-1 mb-0"><span data-plugin="counterup" id="total_rejected_order">{{$agentNotAvailable}}</span></h3>
-                            </div>
-                        </div>
-                        <div class="col-4">
-                            <div class="avatar-lg rounded-circle ml-auto">
-                                <i class="fe-eye font-22 avatar-title"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col col-md-4 col-lg-3 col-xl">
-            <div class="widget-rounded-circle card">
-                <div class="card-body p-2">
-                    <div class="row align-items-center">
-                        <div class="col-8">
-                            <div class="text-end">
-                                <p class="text-muted mb-1 text-truncate">Is-Approved Agents</p>
-                                <h3 class="text-dark mt-1 mb-0"><span data-plugin="counterup" id="total_rejected_order">{{$agentIsApproved}}</span></h3>
-                            </div>
-                        </div>
-                        <div class="col-4">
-                            <div class="avatar-lg rounded-circle ml-auto">
-                                <i class="fe-eye font-22 avatar-title"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col col-md-4 col-lg-3 col-xl">
-            <div class="widget-rounded-circle card">
-                <div class="card-body p-2">
-                    <div class="row align-items-center">
-                        <div class="col-8">
-                            <div class="text-end">
-                                <p class="text-muted mb-1 text-truncate">Not-Approved Agents</p>
-                                <h3 class="text-dark mt-1 mb-0"><span data-plugin="counterup" id="total_rejected_order">{{$agentNotApproved}}</span></h3>
-                            </div>
-                        </div>
-                        <div class="col-4">
-                            <div class="avatar-lg rounded-circle ml-auto">
-                                <i class="fe-eye font-22 avatar-title"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col col-md-4 col-lg-3 col-xl">
-            <div class="widget-rounded-circle card">
-                <div class="card-body p-2">
-                    <div class="row align-items-center">
-                        <div class="col-8">
-                            <div class="text-end">
-                                
-                            </div>
-                        </div>
-                        <div class="col-4">
-                            <div class="avatar-lg rounded-circle ml-auto">
-                                <i class="fe-eye font-22 avatar-title"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+    
     <!-- end page title -->
     <div class="row">
         <div class="col-12">

@@ -34,78 +34,45 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
             </div>
         </div>
 
-        <div class="row custom-cols">
-            <div class="col col-md-4 col-lg-3 col-xl">
-                <div class="widget-rounded-circle card">
-                    <div class="card-body p-2">
-                        <div class="row align-items-center">
-                            <div class="col-8">
-                                <div class="text-end">
-                                    <p class="text-muted mb-1 text-truncate">{{__("Pending Assignment")}}</p>
-                                    <h3 class="text-dark mt-1 mb-0"><span class="counter" data-plugin="counterup" id="total_pending_order">{{ $panding_count }}</span></h3>
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card widget-inline">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-sm-6 col-md-3 mb-3 mb-md-0">
+                                <div class="text-center">
+                                    <h3>
+                                        <i class="mdi mdi-storefront text-primary mdi-24px"></i>
+                                        <span data-plugin="counterup" id="total_earnings_by_vendors">{{ $panding_count }}</span>
+                                    </h3>
+                                    <p class="text-muted font-15 mb-0">{{__("Pending Assignment")}}</p>
                                 </div>
                             </div>
-                            <div class="col-4 text-md-right">
-                                <div class="avatar-lg rounded-circle ml-auto">
-                                    <i class="fe-heart font-22 avatar-title"></i>
+                            <div class="col-sm-6 col-md-3 mb-3 mb-md-0">
+                                <div class="text-center">
+                                    <h3>
+                                        <i class="mdi mdi-store-24-hour text-primary mdi-24px"></i>
+                                        <span data-plugin="counterup" id="total_order_count">{{$active_count}}</span>
+                                    </h3>
+                                    <p class="text-muted font-15 mb-0">{{__("Active") . ' Orders'}}</p>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col col-md-4 col-lg-3 col-xl">
-                <div class="widget-rounded-circle card">
-                    <div class="card-body p-2">
-                        <div class="row align-items-center">
-                        <div class="col-8">
-                                <div class="text-end">
-                                    <p class="text-muted mb-1 text-truncate">{{__("Active") . ' Orders'}}</p>
-                                    <h3 class="text-dark mt-1 mb-0"><span data-plugin="counterup" id="total_active_order">{{$active_count}}</span></h3>
+                            <div class="col-sm-6 col-md-3 mb-3 mb-md-0">
+                                <div class="text-center">
+                                    <h3>
+                                        <i class="fas fa-money-check-alt text-primary"></i>
+                                        <span data-plugin="counterup" id="total_cash_to_collected">{{$employeesCount}}</span>
+                                    </h3>
+                                    <p class="text-muted font-15 mb-0">{{__("Active") . ' Customer'}}</p>
                                 </div>
                             </div>
-                            <div class="col-4">
-                                <div class="avatar-lg rounded-circle ml-auto">
-                                    <i class="fe-shopping-cart font-22 avatar-title"></i>
-
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col col-md-4 col-lg-3 col-xl">
-                <div class="widget-rounded-circle card">
-                    <div class="card-body p-2">
-                        <div class="row align-items-center">
-                            <div class="col-8">
-                                <div class="text-end">
-                                    <p class="text-muted mb-1 text-truncate">{{__("Active") . ' Customer'}}</p>
-                                    <h3 class="text-dark mt-1 mb-0"><span data-plugin="counterup" id="total_delivered_order">{{$employeesCount}}</span></h3>
-                                </div>
-                            </div>
-                            <div class="col-4">
-                                <div class="avatar-lg rounded-circle ml-auto">
-                                    <i class="fe-bar-chart-line font-22 avatar-title"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col col-md-4 col-lg-3 col-xl">
-                <div class="widget-rounded-circle card">
-                    <div class="card-body p-2">
-                        <div class="row align-items-center">
-                            <div class="col-8">
-                                <div class="text-end">
-                                    <p class="text-muted mb-1 text-truncate">{{__("Active") . ' Agents'}}</p>
-                                    <h3 class="text-dark mt-1 mb-0"><span data-plugin="counterup" id="total_rejected_order">{{$agentsCount}}</span></h3>
-                                </div>
-                            </div>
-                            <div class="col-4">
-                                <div class="avatar-lg rounded-circle ml-auto">
-                                    <i class="fe-eye font-22 avatar-title"></i>
+                            <div class="col-sm-6 col-md-3 mb-3 mb-md-0">
+                                <div class="text-center">
+                                    <h3>
+                                        <i class="fas fa-money-check-alt text-primary"></i>
+                                        <span data-plugin="counterup" id="total_delivery_fees">{{$agentsCount}}</span>
+                                    </h3>
+                                    <p class="text-muted font-15 mb-0">{{__("Active") . ' Agents'}}</p>
                                 </div>
                             </div>
                         </div>
