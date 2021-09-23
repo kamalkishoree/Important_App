@@ -66,7 +66,8 @@ class ActivityController extends BaseController
 
         return response()->json([
             'message' => 'Status updated Successfully',
-            'data' => array('is_available' => $agent->is_available)
+            'data' => array('is_available' => $agent->is_available),
+            'status' => 200
         ]);
     }
 
@@ -114,6 +115,8 @@ class ActivityController extends BaseController
    
         return response()->json([
             'data' => $tasks,
+            'status' => 200,
+            'message' => 'success'
         ], 200);
     }
 
@@ -248,6 +251,8 @@ class ActivityController extends BaseController
 
         return response()->json([
             'data' => $datas,
+            'status' => 200,
+            'message' => 'success'
         ], 200);
     }
 
@@ -285,6 +290,8 @@ class ActivityController extends BaseController
 
         return response()->json([
             'data' => array('tasks' =>$tasks, 'totalCashCollected'=>$totalCashCollected),
+            'status' => 200,
+            'message' => 'success'
         ], 200);
     }
 }
