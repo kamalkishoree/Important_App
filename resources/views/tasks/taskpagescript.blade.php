@@ -16,7 +16,6 @@
                 "dom": '<"toolbar">Bfrtip',
                 "scrollX": true,
                 "destroy": true,
-                "bAutoWidth": false,
                 // "processing": true,
                 "serverSide": true,
                 "responsive": true,
@@ -25,10 +24,7 @@
                 "lengthChange" : true,
                 "searching": true,
                 "ordering": true,
-                "sScrollX": "50%",
-                "sScrollXInner": "100%",
-                "bScrollCollapse": true,
-                fixedColumns: true,
+                "lengthMenu": [[13, 25, 50, -1], [13, 25, 50, "All"]],
                 language: {
                             search: "",
                             paginate: { previous: "<i class='mdi mdi-chevron-left'>", next: "<i class='mdi mdi-chevron-right'>" },
@@ -72,7 +68,7 @@
                         var shortName = JSON.parse(full.short_name.replace(/&quot;/g,'"'));
                         var routes = '';
                         $.each(shortName, function(index, elem) {
-                            routes += '<div class="address_box"><span class="'+elem.pickupClass+'">'+elem.taskType+'</span> <span class="short_name">'+elem.shortName+'</span> <label class="address_box_lable" data-toggle="tooltip" data-placement="bottom" title="'+elem.address+'">'+elem.address+'</label></div>';
+                            routes += '<div class="address_box"><span class="'+elem.pickupClass+'">'+elem.taskType+'</span> <span class="short_name">'+elem.shortName+'</span> <label data-toggle="tooltip" data-placement="bottom" title="'+elem.address+'">'+elem.address+'</label></div>';
                         });
                         return routes;
                     }},
