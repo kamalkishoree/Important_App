@@ -32,7 +32,7 @@
                     // { "width": "100px", "targets": 2 },
                     // { "width": "70px", "targets": 3 },
                     // { "width": "70px", "targets": 4 },
-                    { "width": "486.094px", "targets": 6 }
+                    { "width": "70px", "targets": 6 }
                 ],
                 fixedColumns: true,
                 language: {
