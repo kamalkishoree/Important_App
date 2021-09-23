@@ -24,7 +24,6 @@
                 "lengthChange" : true,
                 "searching": true,
                 "ordering": true,
-                "lengthMenu": [[13, 25, 50, -1], [13, 25, 50, "All"]],
                 language: {
                             search: "",
                             paginate: { previous: "<i class='mdi mdi-chevron-left'>", next: "<i class='mdi mdi-chevron-right'>" },
@@ -52,6 +51,9 @@
                 columns: dataTableColumn()
             });
         }
+
+        // $('.agents-datatable th').css("display", "block");
+        // $('.agents-datatable td').css("display", "block");
 
         function dataTableColumn(){
             var routesListing = $('#routes-listing-status').val();
@@ -125,6 +127,10 @@
 
     //this is for task detail pop-up
 
+    // $(document).on('click', '.paginate_button a', function() {
+    //     // $('.agents-datatable th').css("display", "block");
+    //     $('.agents-datatable td').css("display", "block");
+    // });
     $(document).on('click', '.showtasks', function() {
         var CSRF_TOKEN = $("input[name=_token]").val();
         var tour_id = $(this).val();
