@@ -25,7 +25,9 @@
                 "lengthChange" : true,
                 "searching": true,
                 "ordering": true,
-                "sScrollXInner": "110%",
+                "sScrollX": "50%",
+                "sScrollXInner": "100%",
+                "bScrollCollapse": true
                 fixedColumns: true,
                 language: {
                             search: "",
