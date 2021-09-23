@@ -27,7 +27,7 @@
                 "ordering": true,
                 "sScrollX": "50%",
                 "sScrollXInner": "100%",
-                "bScrollCollapse": true
+                "bScrollCollapse": true,
                 fixedColumns: true,
                 language: {
                             search: "",
