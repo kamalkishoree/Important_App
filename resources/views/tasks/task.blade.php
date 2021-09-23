@@ -13,7 +13,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
     padding: 0.85rem !important;
     }
     .address_box_lable {
-        width: 486.094px !important;
+        width: 60% !important;
     }
     #wrapper {
         overflow: auto !important;

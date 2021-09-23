@@ -26,14 +26,14 @@
                 "searching": true,
                 "ordering": true,
                 // "lengthMenu": [[13, 25, 50, -1], [13, 25, 50, "All"]],
-                "columnDefs": [
-                    // { "width": "10px", "targets": 0 },
-                    // { "width": "40px", "targets": 1 },
-                    // { "width": "100px", "targets": 2 },
-                    // { "width": "70px", "targets": 3 },
-                    // { "width": "70px", "targets": 4 },
-                    { "width": "486.094px", "targets": 6 }
-                ],
+                // "columnDefs": [
+                //     // { "width": "10px", "targets": 0 },
+                //     // { "width": "40px", "targets": 1 },
+                //     // { "width": "100px", "targets": 2 },
+                //     // { "width": "70px", "targets": 3 },
+                //     // { "width": "70px", "targets": 4 },
+                //     { "width": "486.094px", "targets": 6 }
+                // ],
                 language: {
                             search: "",
                             paginate: { previous: "<i class='mdi mdi-chevron-left'>", next: "<i class='mdi mdi-chevron-right'>" },
