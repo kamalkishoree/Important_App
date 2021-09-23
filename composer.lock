@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b17dd5f8864b1539fe9a7a32c97a8c6e",
+    "content-hash": "242493d5f108dedb9311c0c6733b5ef3",
     "packages": [
         {
             "name": "99designs/phumbor",
@@ -11223,5 +11223,5 @@
         "php": "^7.2||^8.0"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.1.0"
+    "plugin-api-version": "2.0.0"
 }
