@@ -66,7 +66,11 @@
                     {data: 'order_time', name: 'order_time', orderable: true, searchable: false},
                     {data: 'short_name', name: 'short_name', orderable: false, searchable: false, "mRender": function ( data, type, full ) {
                         var shortName = JSON.parse(full.short_name.replace(/&quot;/g,'"'));
-                        return '<div class="address_box"><span class="'+shortName.pickupClass+'">'+shortName.taskType+'</span> <span class="short_name">'+shortName.shortName+'</span> <label data-toggle="tooltip" data-placement="bottom" title="'+shortName.address+'">'+shortName.address+'</label></div>';
+                        var routes = '';
+                        $.each(shortName, function(index, elem) {
+                            routes += '<div class="address_box"><span class="'+elem.pickupClass+'">'+elem.taskType+'</span> <span class="short_name">'+elem.shortName+'</span> <label data-toggle="tooltip" data-placement="bottom" title="'+elem.address+'">'+elem.address+'</label></div>';
+                        });
+                        return routes;
                     }},
                     {data: 'track_url', name: 'track_url', orderable: false, searchable: false, "mRender": function ( data, type, full ) {
                         var trackUrl = full.track_url;
@@ -75,7 +79,7 @@
                     {data: 'track_url', name: 'track_url', orderable: false, searchable: false, "mRender": function ( data, type, full ) {
                         return '<button class="showTaskProofs btn btn-primary-outline action-icon" value="'+full.id+'"><i class="fe-layers"></i></button>';
                     }},
-                    {data: 'track_url', name: 'track_url', orderable: false, searchable: false, "mRender": function ( data, type, full ) {
+                    {data: 'order_cost', name: 'order_cost', orderable: false, searchable: false, "mRender": function ( data, type, full ) {
                         return '<button class="showaccounting btn btn-primary-outline action-icon setcolor" value="'+full.id+'">'+full.order_cost+'</button>';
                     }},                
                     {data: 'action', name: 'action', orderable: true, searchable: false}
@@ -88,7 +92,11 @@
                     {data: 'order_time', name: 'order_time', orderable: true, searchable: false},
                     {data: 'short_name', name: 'short_name', orderable: false, searchable: false, "mRender": function ( data, type, full ) {
                         var shortName = JSON.parse(full.short_name.replace(/&quot;/g,'"'));
-                        return '<div class="address_box"><span class="'+shortName.pickupClass+'">'+shortName.taskType+'</span> <span class="short_name">'+shortName.shortName+'</span> <label data-toggle="tooltip" data-placement="bottom" title="'+shortName.address+'">'+shortName.address+'</label></div>';
+                        var routes = '';
+                        $.each(shortName, function(index, elem) {
+                            routes += '<div class="address_box"><span class="'+elem.pickupClass+'">'+elem.taskType+'</span> <span class="short_name">'+elem.shortName+'</span> <label data-toggle="tooltip" data-placement="bottom" title="'+elem.address+'">'+elem.address+'</label></div>';
+                        });
+                        return routes;
                     }},
                     {data: 'track_url', name: 'track_url', orderable: false, searchable: false, "mRender": function ( data, type, full ) {
                         var trackUrl = full.track_url;
@@ -97,7 +105,7 @@
                     {data: 'track_url', name: 'track_url', orderable: false, searchable: false, "mRender": function ( data, type, full ) {
                         return '<button class="showTaskProofs btn btn-primary-outline action-icon" value="'+full.id+'"><i class="fe-layers"></i></button>';
                     }},
-                    {data: 'track_url', name: 'track_url', orderable: false, searchable: false, "mRender": function ( data, type, full ) {
+                    {data: 'order_cost', name: 'order_cost', orderable: false, searchable: false, "mRender": function ( data, type, full ) {
                         return '<button class="showaccounting btn btn-primary-outline action-icon setcolor" value="'+full.id+'">'+full.order_cost+'</button>';
                     }},                
                     {data: 'action', name: 'action', orderable: true, searchable: false}
