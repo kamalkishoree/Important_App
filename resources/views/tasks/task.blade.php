@@ -18,6 +18,36 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
     .footer{
         z-index: 3;
     }
+    #agents-datatable_processing {
+        position: absolute !important;
+        background: transparent !important;
+        top: 60%;
+        transform: translateY(-50%) !important;
+        left: 0;
+        right: 0;
+        z-index: 1;
+    }
+    .dt-buttons.btn-group.flex-wrap {
+        float: right;
+        margin: 5px 0 10px 15px;
+    }
+    div#agents-datatable_filter {
+        padding-top: 5px;
+    }
+    .dataTables_filter label {
+        width: 25%;
+    }
+    .dataTables_filter label .form-control {
+        height: 37px;
+        font-size: 16px;
+    }
+    .dt-buttons .btn.btn-secondary,.dt-buttons .btn.btn-secondary:focus,.dt-buttons .btn.btn-secondary:active {
+        border-radius: 5px;
+        background: #6658ddd6 !important;
+    }
+    .btn-label,.btn-label:focus,.btn-label:active {
+        background-color: rgb(102 88 221) !important;
+    }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
@@ -80,7 +110,8 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                 </div>
             </div>
         </div>
-
+    
+        
         <!-- end page title -->
         <div class="row">
             <div class="col-12">
