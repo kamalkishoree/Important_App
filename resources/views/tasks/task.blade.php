@@ -9,7 +9,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
 <style>
-   #agents-datatable th, #agents-datatable td{
+   .agents-datatable th, .agents-datatable td{
     padding: 0.85rem !important;
     }
     #wrapper {
