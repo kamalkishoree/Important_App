@@ -16,7 +16,6 @@
                 "dom": '<"toolbar">Bfrtip',
                 "scrollX": true,
                 "destroy": true,
-                "bAutoWidth": false,
                 // "processing": true,
                 "serverSide": true,
                 "responsive": true,
@@ -25,10 +24,6 @@
                 "lengthChange" : true,
                 "searching": true,
                 "ordering": true,
-                "sScrollX": "50%",
-                "sScrollXInner": "100%",
-                "bScrollCollapse": true,
-                fixedColumns: true,
                 language: {
                             search: "",
                             paginate: { previous: "<i class='mdi mdi-chevron-left'>", next: "<i class='mdi mdi-chevron-right'>" },
@@ -57,6 +52,9 @@
             });
         }
 
+        // $('.agents-datatable th').css("display", "block");
+        // $('.agents-datatable td').css("display", "block");
+
         function dataTableColumn(){
             var routesListing = $('#routes-listing-status').val();
             if(routesListing == 'unassigned'){
@@ -72,7 +70,7 @@
                         var shortName = JSON.parse(full.short_name.replace(/&quot;/g,'"'));
                         var routes = '';
                         $.each(shortName, function(index, elem) {
-                            routes += '<div class="address_box"><span class="'+elem.pickupClass+'">'+elem.taskType+'</span> <span class="short_name">'+elem.shortName+'</span> <label class="address_box_lable" data-toggle="tooltip" data-placement="bottom" title="'+elem.address+'">'+elem.address+'</label></div>';
+                            routes += '<div class="address_box"><span class="'+elem.pickupClass+'">'+elem.taskType+'</span> <span class="short_name">'+elem.shortName+'</span> <label data-toggle="tooltip" data-placement="bottom" title="'+elem.address+'">'+elem.address+'</label></div>';
                         });
                         return routes;
                     }},
@@ -129,6 +127,10 @@
 
     //this is for task detail pop-up
 
+    // $(document).on('click', '.paginate_button a', function() {
+    //     // $('.agents-datatable th').css("display", "block");
+    //     $('.agents-datatable td').css("display", "block");
+    // });
     $(document).on('click', '.showtasks', function() {
         var CSRF_TOKEN = $("input[name=_token]").val();
         var tour_id = $(this).val();

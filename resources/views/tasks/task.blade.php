@@ -10,11 +10,12 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
 <style>
    .agents-datatable th, .agents-datatable td{
-    padding: 0.85rem !important;
+        padding: 0.70rem;
     }
-    /* .address_box_lable {
-        width: 60% !important;
-    } */
+    
+    .agents-datatable tbody td:last-child,.dataTables_scrollHead thead th:last-child {
+    display: table-cell !important;
+}
     #wrapper {
         overflow: auto !important;
     }
@@ -145,7 +146,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                         </div>
                         <input type="hidden" id="routes-listing-status" value="unassigned">
                         <div class="table-responsive">
-                            <table class="table table-striped dt-responsive nowrap w-100 agents-datatable display nowrap" id="agents-datatable">
+                            <table class="table table-striped dt-responsive nowrap agents-datatable" id="agents-datatable">
                                 <thead>
                                     <tr>
                                         @if (!isset($status) || $status == 'unassigned')
