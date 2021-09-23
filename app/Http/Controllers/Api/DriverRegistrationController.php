@@ -9,22 +9,28 @@ use App\Model\TagsForAgent;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
-use Validator;
+use Illuminate\Support\Facades\Validator;
 
 class DriverRegistrationController extends Controller
 {
     //
     public function storeAgent(Request $request)
     {
-        try {
-            $validator = Validator::make($request->all(), [
+        $validator = Validator::make($request->all(), [
 
-                'phone_number' => 'required|unique',
-                'name' => 'required',
-                'plate_number' => 'required',
-                'color' => 'required',
-                'uid' => 'required'
-            ]);
+            'phone_number' => 'required||unique:agents',
+            'name' => 'required',
+            'plate_number' => 'required',
+            'color' => 'required',
+            'uid' => 'required'
+        ]);
+        if ($validator->fails()) {
+            foreach ($validator->errors()->toArray() as $error_key => $error_value) {
+                return response()->json(['status' => 0, "message" => $error_value[0]]);
+            }
+        }
+        try {
+          
             $getFileName = null;
             // $newtag = explode(",", $request->tags);
             // $tag_id = [];
@@ -55,7 +61,7 @@ class DriverRegistrationController extends Controller
                 'vehicle_type_id' => $request->vehicle_type_id,
                 'make_model' => $request->make_model,
                 'plate_number' => $request->plate_number,
-                'phone_number' => '+' . $request->country_code . $request->phone_number,
+                'phone_number' =>  $request->country_code . $request->phone_number,
                 'color' => $request->color,
                 'profile_picture' => $getFileName != null ? $getFileName : 'assets/client_00000051/agents5fedb209f1eea.jpeg/Ec9WxFN1qAgIGdU2lCcatJN5F8UuFMyQvvb4Byar.jpg',
                 'uid' => $request->uid,
