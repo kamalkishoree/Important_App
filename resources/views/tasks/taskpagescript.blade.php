@@ -16,6 +16,7 @@
                 "dom": '<"toolbar">Bfrtip',
                 "scrollX": true,
                 "destroy": true,
+                "bAutoWidth": false,
                 // "processing": true,
                 "serverSide": true,
                 "responsive": true,
@@ -24,7 +25,7 @@
                 "lengthChange" : true,
                 "searching": true,
                 "ordering": true,
-                "lengthMenu": [[13, 25, 50, -1], [13, 25, 50, "All"]],
+                // "lengthMenu": [[13, 25, 50, -1], [13, 25, 50, "All"]],
                 language: {
                             search: "",
                             paginate: { previous: "<i class='mdi mdi-chevron-left'>", next: "<i class='mdi mdi-chevron-right'>" },
