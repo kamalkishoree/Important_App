@@ -78,13 +78,13 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
         <div class="form-group" id="vehicle_type_idInputEdit">
             <p class="text-muted mt-3 mb-2">{{__('TRANSPORT TYPE')}}</p>
             <div class="radio radio-blue form-check-inline click cursors">
-                <input type="radio" id="onfoot" value="1" act="edit" name="vehicle_type_id"  readonly="readonly" @if ($agent->vehicle_type_id == '1') checked @else disabled='disabled'
+                <input type="radio" id="onfoot" value="1" act="edit" name="vehicle_type_id" readonly="readonly" @if ($agent->vehicle_type_id == '1') checked @else disabled='disabled'
                 @endif >
                 <img id="foot_edit" src="{{ $agent->vehicle_type_id == '1' ? asset('assets/icons/walk_blue.png') : asset('assets/icons/walk.png') }}">
             </div>
             <div class="radio radio-primery form-check-inline click cursors">
-                <input type="radio" id="bycycle" value="2" name="vehicle_type_id" act="edit"  readonly="readonly" @if ($agent->vehicle_type_id == '2')
-                checked @else disabled='disabled' @endif  >
+                <input type="radio" id="bycycle" value="2" name="vehicle_type_id" act="edit" readonly="readonly" @if ($agent->vehicle_type_id == '2')
+                checked @else disabled='disabled' @endif >
                 <img id="cycle_edit" src="{{ $agent->vehicle_type_id == '2' ? asset('assets/icons/cycle_blue.png') : asset('assets/icons/cycle.png') }}">
             </div>
             <div class="radio radio-info form-check-inline click cursors">
@@ -92,12 +92,12 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                 <img id="bike_edit" src="{{ $agent->vehicle_type_id == '3' ? asset('assets/icons/bike_blue.png') : asset('assets/icons/bike.png') }}">
             </div>
             <div class="radio radio-danger form-check-inline click cursors">
-                <input type="radio" id="car" value="4" name="vehicle_type_id" act="edit"   readonly="readonly" @if ($agent->vehicle_type_id == '4') checked @else disabled='disabled'
+                <input type="radio" id="car" value="4" name="vehicle_type_id" act="edit" readonly="readonly" @if ($agent->vehicle_type_id == '4') checked @else disabled='disabled'
                 @endif>
                 <img id="cars_edit" src="{{ $agent->vehicle_type_id == '4' ? asset('assets/icons/car_blue.png') : asset('assets/icons/car.png') }}">
             </div>
             <div class="radio radio-warning form-check-inline click cursors">
-                <input type="radio" id="truck" value="5" name="vehicle_type_id" act="edit" readonly="readonly" @if ($agent->vehicle_type_id == '5') checked @else disabled='disabled'  @endif>
+                <input type="radio" id="truck" value="5" name="vehicle_type_id" act="edit" readonly="readonly" @if ($agent->vehicle_type_id == '5') checked @else disabled='disabled' @endif>
                 <img id="trucks_edit" src="{{ $agent->vehicle_type_id == '5' ? asset('assets/icons/truck_blue.png') : asset('assets/icons/truck.png') }}">
             </div>
             <span class="invalid-feedback" role="alert">
@@ -108,10 +108,14 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
 </div>
 <div class="row">
     <div class="col-md-12">
-        <div class="form-group mb-0">
-            <label class="control-label">{{__('Tags')}}</label>
-            <input id="form-tags-4" name="tags" type="text" value="{{isset($tagIds) ? implode(',', $tagIds) : ''}}" class="myTag1" readonly>
+        <div class="form-group" id="nameInputEdit">
+            <label for="name" class="control-label">{{__('Tags')}}</label>
+            <input type="text" class="form-control" id="tags" placeholder="" name="tags" value="{{isset($tagIds) ? implode(',', $tagIds) : ''}}" readonly>
+            <span class="invalid-feedback" role="alert">
+                <strong></strong>
+            </span>
         </div>
+       
     </div>
 </div>
 <div class="row mt-3">
