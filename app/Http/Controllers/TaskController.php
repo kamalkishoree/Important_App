@@ -122,6 +122,7 @@ class TaskController extends Controller
                 });
         }
         $orders = $orders->where('status', $request->routesListingType)->where('status', '!=', null)->get();
+
         return Datatables::of($orders)
                 ->editColumn('customer_name', function ($orders) use ($request) {
                     $customerName = !empty($orders->customer->name)? $orders->customer->name : '';
@@ -146,6 +147,7 @@ class TaskController extends Controller
                     return date(''.$preference->date_format.' '.$timeformat.'', strtotime($order));
                 })
                 ->editColumn('short_name', function ($orders) use ($request) {
+                    $routes = array();
                     foreach($orders->task as $task){
                         if($task->task_type_id == 1){
                             $taskType    = "Pickup";
@@ -160,9 +162,9 @@ class TaskController extends Controller
                         
                         $shortName = (!empty($task->location->short_name)? $task->location->short_name:'');
                         $address   = (!empty($task->location->address)? $task->location->address:'');
-                        return json_encode(array('taskType'=>$taskType, 'pickupClass'=>$pickupClass, 'shortName'=>$shortName, 'address'=>$address), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_UNESCAPED_UNICODE);
-                        
+                        $routes[]  = array('taskType'=>$taskType, 'pickupClass'=>$pickupClass, 'shortName'=>$shortName, 'address'=>$address);
                     }
+                    return json_encode($routes, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_UNESCAPED_UNICODE);
                 })
                 ->editColumn('track_url', function ($orders) use ($request) {
                     $trackUrl = url('/order/tracking/'.Auth::user()->code.'/'.$orders->unique_id.'');
