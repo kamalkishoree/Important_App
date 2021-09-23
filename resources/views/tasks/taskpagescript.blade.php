@@ -49,11 +49,7 @@
                         d.imgproxyurl = '{{$imgproxyurl}}';
                     }
                 },
-                columns: dataTableColumn(),
-                "columnDefs": [{
-                    "targets": -1,
-                    "visible": false,
-                }],
+                columns: dataTableColumn()
             });
         }
 
