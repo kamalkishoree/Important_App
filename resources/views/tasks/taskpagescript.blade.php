@@ -16,7 +16,7 @@
                 "dom": '<"toolbar">Bfrtip',
                 "scrollX": true,
                 "destroy": true,
-                // "processing": true,
+                "processing": true,
                 "serverSide": true,
                 "responsive": true,
                 "iDisplayLength": 10,
@@ -24,10 +24,13 @@
                 "lengthChange" : true,
                 "searching": true,
                 "ordering": true,
+                // "deferLoading": 57,
                 language: {
                             search: "",
                             paginate: { previous: "<i class='mdi mdi-chevron-left'>", next: "<i class='mdi mdi-chevron-right'>" },
-                            searchPlaceholder: "Search Routes"
+                            searchPlaceholder: "Search Routes",
+                            'loadingRecords': '&nbsp;',
+                            'sProcessing': '<div class="spinner" style="top: 90% !important;"></div>'
                 },
                 drawCallback: function () {
                     $(".dataTables_paginate > .pagination").addClass("pagination-rounded");

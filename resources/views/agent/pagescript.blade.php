@@ -9,11 +9,14 @@ $( document ).ready(function() {
             "destroy": true,
             "serverSide": true,
             "responsive": true,
+            "processing": true,
             "iDisplayLength": 10,
             language: {
                         search: "",
                         paginate: { previous: "<i class='mdi mdi-chevron-left'>", next: "<i class='mdi mdi-chevron-right'>" },
-                        searchPlaceholder: "Search Agent"
+                        searchPlaceholder: "Search Agent",
+                        'loadingRecords': '&nbsp;',
+                        'processing': '<div class="spinner"></div>'
             },
             drawCallback: function () {
                 $(".dataTables_paginate > .pagination").addClass("pagination-rounded");
