@@ -14,7 +14,6 @@
             
             $('.agents-datatable').DataTable({
                 "dom": '<"toolbar">Bfrtip',
-                "scrollX": true,
                 "destroy": true,
                 "processing": true,
                 "serverSide": true,
@@ -24,7 +23,6 @@
                 "lengthChange" : true,
                 "searching": true,
                 "ordering": true,
-                // "deferLoading": 57,
                 language: {
                             search: "",
                             paginate: { previous: "<i class='mdi mdi-chevron-left'>", next: "<i class='mdi mdi-chevron-right'>" },
@@ -54,9 +52,6 @@
                 columns: dataTableColumn()
             });
         }
-
-        // $('.agents-datatable th').css("display", "block");
-        // $('.agents-datatable td').css("display", "block");
 
         function dataTableColumn(){
             var routesListing = $('#routes-listing-status').val();
