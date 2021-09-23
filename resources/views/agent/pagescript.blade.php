@@ -9,7 +9,7 @@ $( document ).ready(function() {
             "destroy": true,
             "serverSide": true,
             "responsive": true,
-            "iDisplayLength": 50,
+            "iDisplayLength": 10,
             language: {
                         search: "",
                         paginate: { previous: "<i class='mdi mdi-chevron-left'>", next: "<i class='mdi mdi-chevron-right'>" },
