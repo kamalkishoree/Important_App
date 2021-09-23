@@ -281,6 +281,8 @@ class TaskController extends BaseController
        
         return response()->json([
             'data' => $newDetails,
+            'status' => 200,
+            'message' => 'success'
         ]);
     }
     /////////////////// **********************   update status in order panel also **********************************  ///////////////////////
@@ -397,6 +399,8 @@ class TaskController extends BaseController
 
             return response()->json([
                 'data' => 'Task Rejected Successfully',
+                'status' => 200,
+                'message' => 'success'
             ], 200);
         }
     }
