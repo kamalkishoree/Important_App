@@ -9,11 +9,14 @@ $( document ).ready(function() {
             "destroy": true,
             "serverSide": true,
             "responsive": true,
-            "iDisplayLength": 50,
+            "processing": true,
+            "iDisplayLength": 10,
             language: {
                         search: "",
                         paginate: { previous: "<i class='mdi mdi-chevron-left'>", next: "<i class='mdi mdi-chevron-right'>" },
-                        searchPlaceholder: "Search Agent"
+                        searchPlaceholder: "Search Agent",
+                        'loadingRecords': '&nbsp;',
+                        'processing': '<div class="spinner"></div>'
             },
             drawCallback: function () {
                 $(".dataTables_paginate > .pagination").addClass("pagination-rounded");
@@ -46,14 +49,18 @@ $( document ).ready(function() {
                 {data: 'vehicle_type_id', name: 'vehicle_type_id', orderable: true, searchable: false, "mRender": function ( data, type, full ) {
                     return '<img alt="" style="width: 80px;" src="'+full.vehicle_type_id+'">';
                 }},
-                {data: 'cash_to_be_collected', name: 'cash_to_be_collected', orderable: false, searchable: false},
-                {data: 'driver_cost', name: 'driver_cost', orderable: false, searchable: false},
-                {data: 'cr', name: 'cr', orderable: false, searchable: false},
-                {data: 'dr', name: 'dr', orderable: false, searchable: false},
-                {data: 'pay_to_driver', name: 'pay_to_driver', orderable: false, searchable: false},
+                {data: 'cash_to_be_collected', name: 'cash_to_be_collected', orderable: true, searchable: false},
+                {data: 'driver_cost', name: 'driver_cost', orderable: true, searchable: false},
+                {data: 'cr', name: 'cr', orderable: true, searchable: false},
+                {data: 'dr', name: 'dr', orderable: true, searchable: false},
+                {data: 'pay_to_driver', name: 'pay_to_driver', orderable: true, searchable: false},
                 {data: 'is_approved', name: 'is_approved', orderable: false, searchable: false, "mRender": function ( data, type, full ) {
                     var check = (full.is_approved == 1)? 'checked' : '';
                     return '<div class="custom-control custom-switch"><input type="checkbox" class="custom-control-input agent_approval_switch" '+check+' id="customSwitch_'+full.id+'" data-id="'+full.id+'"><label class="custom-control-label" for="customSwitch_'+full.id+'"></label></div>';
+                }},
+                {data: 'is_available', name: 'is_available', orderable: false, searchable: false, "mRender": function ( data, type, full ) {
+                    return (full.is_available == 1)? 'Active' : 'InActive';
+                    // return '<div class="custom-control custom-switch"><input type="checkbox" class="custom-control-input agent_approval_switch" '+check+' id="customSwitch_'+full.id+'" data-id="'+full.id+'"><label class="custom-control-label" for="customSwitch_'+full.id+'"></label></div>';
                 }},
                 {data: 'action', name: 'action', orderable: false, searchable: false},
             ]

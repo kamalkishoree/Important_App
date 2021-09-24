@@ -14,9 +14,9 @@
             
             $('.agents-datatable').DataTable({
                 "dom": '<"toolbar">Bfrtip',
-                "scrollX": true,
                 "destroy": true,
-                // "processing": true,
+                "scrollX": true,
+                "processing": true,
                 "serverSide": true,
                 "responsive": true,
                 "iDisplayLength": 10,
@@ -24,11 +24,12 @@
                 "lengthChange" : true,
                 "searching": true,
                 "ordering": true,
-                "lengthMenu": [[13, 25, 50, -1], [13, 25, 50, "All"]],
                 language: {
                             search: "",
                             paginate: { previous: "<i class='mdi mdi-chevron-left'>", next: "<i class='mdi mdi-chevron-right'>" },
-                            searchPlaceholder: "Search Routes"
+                            searchPlaceholder: "Search Routes",
+                            'loadingRecords': '&nbsp;',
+                            'sProcessing': '<div class="spinner" style="top: 90% !important;"></div>'
                 },
                 drawCallback: function () {
                     $(".dataTables_paginate > .pagination").addClass("pagination-rounded");
@@ -49,10 +50,10 @@
                         d.imgproxyurl = '{{$imgproxyurl}}';
                     }
                 },
-                columns: dataTableColumn()
+                columns: dataTableColumn(),
             });
         }
-
+        
         function dataTableColumn(){
             var routesListing = $('#routes-listing-status').val();
             if(routesListing == 'unassigned'){
@@ -66,7 +67,11 @@
                     {data: 'order_time', name: 'order_time', orderable: true, searchable: false},
                     {data: 'short_name', name: 'short_name', orderable: false, searchable: false, "mRender": function ( data, type, full ) {
                         var shortName = JSON.parse(full.short_name.replace(/&quot;/g,'"'));
-                        return '<div class="address_box"><span class="'+shortName.pickupClass+'">'+shortName.taskType+'</span> <span class="short_name">'+shortName.shortName+'</span> <label data-toggle="tooltip" data-placement="bottom" title="'+shortName.address+'">'+shortName.address+'</label></div>';
+                        var routes = '';
+                        $.each(shortName, function(index, elem) {
+                            routes += '<div class="address_box"><span class="'+elem.pickupClass+'">'+elem.taskType+'</span> <span class="short_name">'+elem.shortName+'</span> <label class="datatable-cust-routes" data-toggle="tooltip" data-placement="bottom" title="'+elem.toolTipAddress+'">'+elem.address+'</label></div>';
+                        });
+                        return routes;
                     }},
                     {data: 'track_url', name: 'track_url', orderable: false, searchable: false, "mRender": function ( data, type, full ) {
                         var trackUrl = full.track_url;
@@ -75,7 +80,7 @@
                     {data: 'track_url', name: 'track_url', orderable: false, searchable: false, "mRender": function ( data, type, full ) {
                         return '<button class="showTaskProofs btn btn-primary-outline action-icon" value="'+full.id+'"><i class="fe-layers"></i></button>';
                     }},
-                    {data: 'track_url', name: 'track_url', orderable: false, searchable: false, "mRender": function ( data, type, full ) {
+                    {data: 'order_cost', name: 'order_cost', orderable: false, searchable: false, "mRender": function ( data, type, full ) {
                         return '<button class="showaccounting btn btn-primary-outline action-icon setcolor" value="'+full.id+'">'+full.order_cost+'</button>';
                     }},                
                     {data: 'action', name: 'action', orderable: true, searchable: false}
@@ -88,7 +93,11 @@
                     {data: 'order_time', name: 'order_time', orderable: true, searchable: false},
                     {data: 'short_name', name: 'short_name', orderable: false, searchable: false, "mRender": function ( data, type, full ) {
                         var shortName = JSON.parse(full.short_name.replace(/&quot;/g,'"'));
-                        return '<div class="address_box"><span class="'+shortName.pickupClass+'">'+shortName.taskType+'</span> <span class="short_name">'+shortName.shortName+'</span> <label data-toggle="tooltip" data-placement="bottom" title="'+shortName.address+'">'+shortName.address+'</label></div>';
+                        var routes = '';
+                        $.each(shortName, function(index, elem) {
+                            routes += '<div class="address_box"><span class="'+elem.pickupClass+'">'+elem.taskType+'</span> <span class="short_name">'+elem.shortName+'</span> <label data-toggle="tooltip" data-placement="bottom" title="'+elem.toolTipAddress+'">'+elem.address+'</label></div>';
+                        });
+                        return routes; 
                     }},
                     {data: 'track_url', name: 'track_url', orderable: false, searchable: false, "mRender": function ( data, type, full ) {
                         var trackUrl = full.track_url;
@@ -97,7 +106,7 @@
                     {data: 'track_url', name: 'track_url', orderable: false, searchable: false, "mRender": function ( data, type, full ) {
                         return '<button class="showTaskProofs btn btn-primary-outline action-icon" value="'+full.id+'"><i class="fe-layers"></i></button>';
                     }},
-                    {data: 'track_url', name: 'track_url', orderable: false, searchable: false, "mRender": function ( data, type, full ) {
+                    {data: 'order_cost', name: 'order_cost', orderable: false, searchable: false, "mRender": function ( data, type, full ) {
                         return '<button class="showaccounting btn btn-primary-outline action-icon setcolor" value="'+full.id+'">'+full.order_cost+'</button>';
                     }},                
                     {data: 'action', name: 'action', orderable: true, searchable: false}
@@ -109,14 +118,10 @@
     });
 
     function handleClick(myRadio) {
-        // var routesListingType = $(myRadio).attr('value');
-        // $('#routes-listing-status').val(routesListingType);  
-        // initializeRouteListing();
         $('#getTask').submit();             
     }
 
     //this is for task detail pop-up
-
     $(document).on('click', '.showtasks', function() {
         var CSRF_TOKEN = $("input[name=_token]").val();
         var tour_id = $(this).val();

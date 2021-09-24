@@ -88,6 +88,8 @@ class AuthController extends BaseController
 
         return response()->json([
             'data' => $data,
+            'status' => 200,
+            'message' => 'success'
         ]);
     }
 
@@ -181,6 +183,8 @@ class AuthController extends BaseController
 
         return response()->json([
             'data' => $agent,
+            'status' => 200,
+            'message' => 'success'
         ]);
     }
   

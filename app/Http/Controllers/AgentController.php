@@ -119,26 +119,27 @@ class AgentController extends Controller
                 })
                 ->editColumn('cash_to_be_collected', function ($agents) use ($request) {
                     $cash = $agents->order->sum('cash_to_be_collected');
-                    return $cash;
+                    return number_format((float)$cash, 2, '.', '');
                 })
                 ->editColumn('driver_cost', function ($agents) use ($request) {
                     $orders = $agents->order->sum('driver_cost');
-                    return $orders;
+                    return number_format((float)$orders, 2, '.', '');
                 })
                 ->editColumn('cr', function ($agents) use ($request) {
                     $receive = $agents->agentPayment->sum('cr');
-                    return $receive;
+                    return number_format((float)$receive, 2, '.', '');
                 })
                 ->editColumn('dr', function ($agents) use ($request) {
                     $pay = $agents->agentPayment->sum('dr');
-                    return $pay;
+                    return number_format((float)$pay, 2, '.', '');
                 })
                 ->editColumn('pay_to_driver', function ($agents) use ($request) {
-                    $cash = $agents->order->sum('cash_to_be_collected');
-                    $orders = $agents->order->sum('driver_cost');
-                    $receive = $agents->agentPayment->sum('cr');
-                    $pay = $agents->agentPayment->sum('dr');
-                    return ($pay - $receive) - ($cash - $orders);
+                    $cash        = $agents->order->sum('cash_to_be_collected');
+                    $orders      = $agents->order->sum('driver_cost');
+                    $receive     = $agents->agentPayment->sum('cr');
+                    $pay         = $agents->agentPayment->sum('dr');
+                    $payToDriver = ($pay - $receive) - ($cash - $orders);
+                    return number_format((float)$payToDriver, 2, '.', '');
                 })
                 ->editColumn('action', function ($agents) use ($request) {
                     $action = '<div class="form-ul" style="width: 60px;">
@@ -158,14 +159,14 @@ class AgentController extends Controller
                 })
                 ->filter(function ($instance) use ($request) {
                     if (!empty($request->get('search'))) {
-                        $instance->collection = $instance->collection->filter(function ($row) use ($request) {
-                            if (Str::contains(Str::lower($row['phone_number']), Str::lower($request->get('search')))) {
+                        $instance->collection = $instance->collection->filter(function ($row) use ($request){
+                            if (!empty($row['phone_number']) && Str::contains(Str::lower($row['phone_number']), Str::lower($request->get('search')))){
                                 return true;
-                            } else if (Str::contains(Str::lower($row['name']), Str::lower($request->get('search')))) {
+                            }else if (!empty($row['name']) && Str::contains(Str::lower($row['name']), Str::lower($request->get('search')))) {
                                 return true;
-                            } else if (Str::contains(Str::lower($row['type']), Str::lower($request->get('search')))) {
+                            }else if (!empty($row['type']) && Str::contains(Str::lower($row['type']), Str::lower($request->get('search')))) {
                                 return true;
-                            } else if (Str::contains(Str::lower($row['team']), Str::lower($request->get('search')))) {
+                            }else if (!empty($row['team']) && Str::contains(Str::lower($row['team']), Str::lower($request->get('search')))) {
                                 return true;
                             }
                             return false;

@@ -91,14 +91,16 @@
             "dom": '<"toolbar">Bfrtip',
             "scrollX": true,
             "destroy": true,
-            // "processing": true,
+            "processing": true,
             "serverSide": true,
             "responsive": true,
             "iDisplayLength": 10,
             language: {
                         search: "",
                         paginate: { previous: "<i class='mdi mdi-chevron-left'>", next: "<i class='mdi mdi-chevron-right'>" },
-                        searchPlaceholder: "Search Customers"
+                        searchPlaceholder: "Search Customers",
+                        'loadingRecords': '&nbsp;',
+                        'processing': '<div class="spinner"></div>'
             },
             drawCallback: function () {
                 $(".dataTables_paginate > .pagination").addClass("pagination-rounded");

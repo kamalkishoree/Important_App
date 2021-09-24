@@ -122,6 +122,8 @@ class TaskController extends Controller
                 });
         }
         $orders = $orders->where('status', $request->routesListingType)->where('status', '!=', null)->get();
+
+        // print_r($orders);die;
         return Datatables::of($orders)
                 ->editColumn('customer_name', function ($orders) use ($request) {
                     $customerName = !empty($orders->customer->name)? $orders->customer->name : '';
@@ -132,7 +134,8 @@ class TaskController extends Controller
                     return $phoneNumber;
                 })
                 ->editColumn('agent_name', function ($orders) use ($request) {
-                    $agentName = !empty($orders->agent->name)? $orders->agent->name : '';
+                    $checkActive = (!empty($orders->agent->name) && $orders->agent->is_available == 1) ? ' (Active)' : ' (InActive)';
+                    $agentName   = !empty($orders->agent->name)? $orders->agent->name.$checkActive : '';
                     return $agentName;
                 })
                 ->editColumn('order_time', function ($orders) use ($request) {
@@ -146,6 +149,7 @@ class TaskController extends Controller
                     return date(''.$preference->date_format.' '.$timeformat.'', strtotime($order));
                 })
                 ->editColumn('short_name', function ($orders) use ($request) {
+                    $routes = array();
                     foreach($orders->task as $task){
                         if($task->task_type_id == 1){
                             $taskType    = "Pickup";
@@ -158,11 +162,20 @@ class TaskController extends Controller
                             $pickupClass = "assign_";
                         }
                         
-                        $shortName = (!empty($task->location->short_name)? $task->location->short_name:'');
-                        $address   = (!empty($task->location->address)? $task->location->address:'');
-                        return json_encode(array('taskType'=>$taskType, 'pickupClass'=>$pickupClass, 'shortName'=>$shortName, 'address'=>$address), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_UNESCAPED_UNICODE);
-                        
+                        $shortName  = (!empty($task->location->short_name)? $task->location->short_name:'');
+                        $address    = (!empty($task->location->address)? $task->location->address:'');
+
+                        $addressArr   = explode(' ',trim($address));
+                        $finalAddress = (!empty($addressArr[0])) ? $addressArr[0] : '';
+                        $finalAddress = (!empty($addressArr[1])) ? $addressArr[0].' '.$addressArr[1] : $finalAddress.'...';
+                        $finalAddress = (!empty($addressArr[2])) ? $addressArr[0].' '.$addressArr[1].' '.$addressArr[2] : $finalAddress.'...';
+                        $finalAddress = (!empty($addressArr[3])) ? $addressArr[0].' '.$addressArr[1].' '.$addressArr[2].' '.$addressArr[3] : $finalAddress.'...';
+                        $finalAddress = (!empty($addressArr[4])) ? $addressArr[0].' '.$addressArr[1].' '.$addressArr[2].' '.$addressArr[3].' '.$addressArr[4] : $finalAddress.'...';
+                        $finalAddress = (!empty($addressArr[5])) ? $addressArr[0].' '.$addressArr[1].' '.$addressArr[2].' '.$addressArr[3].' '.$addressArr[4].' '.$addressArr[5] : $finalAddress.'...';
+                        $finalAddress = (!empty($addressArr[6])) ? $addressArr[0].' '.$addressArr[1].' '.$addressArr[2].' '.$addressArr[3].' '.$addressArr[4].' '.$addressArr[5].'...' : $finalAddress;
+                        $routes[]     = array('taskType'=>$taskType, 'pickupClass'=>$pickupClass, 'shortName'=>$shortName, 'toolTipAddress'=>$address, 'address'=> $finalAddress);
                     }
+                    return json_encode($routes, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_UNESCAPED_UNICODE);
                 })
                 ->editColumn('track_url', function ($orders) use ($request) {
                     $trackUrl = url('/order/tracking/'.Auth::user()->code.'/'.$orders->unique_id.'');
@@ -200,9 +213,9 @@ class TaskController extends Controller
                 ->filter(function ($instance) use ($request) {
                     if (!empty($request->get('search'))) {
                         $instance->collection = $instance->collection->filter(function ($row) use ($request){
-                            if (Str::contains(Str::lower($row['customer']['name']), Str::lower($request->search))){
+                            if(!empty($row['customer']['name']) && Str::contains(Str::lower($row['customer']['name']), Str::lower($request->search))){
                                 return true;
-                            }else if (Str::contains(Str::lower($row['customer']['phone_number']), Str::lower($request->search))) {
+                            }else if (!empty($row['customer']['phone_number']) && Str::contains(Str::lower($row['customer']['phone_number']), Str::lower($request->search))) {
                                 return true;
                             }
                             return false;

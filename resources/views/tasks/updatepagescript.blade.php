@@ -221,14 +221,14 @@ $(document).ready(function(){
             e.preventDefault();
             var err = 0;
             
-            $("input[name='short_name[]']").each(function(){
-                var shortName = $(this).val();
-                if(shortName == ''){
-                    err = 1;
-                    $(this).closest('.check-validation').find('.addspan').show();
-                    return false;
-                }
-            });
+            // $("input[name='short_name[]']").each(function(){
+            //     var shortName = $(this).val();
+            //     if(shortName == ''){
+            //         err = 1;
+            //         $(this).closest('.check-validation').find('.addspan').show();
+            //         return false;
+            //     }
+            // });
             
             $("input[name='address[]']").each(function(){
                 var address = $(this).val();
@@ -239,26 +239,26 @@ $(document).ready(function(){
                 }
             });
 
-            $(".selecttype").each(function(){
-                var taskselect              = $(this).val();
-                var checkPickupBarcode      = $('#check-pickup-barcode').val();
-                var checkDropBarcode        = $('#check-drop-barcode').val();
-                var checkAppointmentBarcode = $('#check-appointment-barcode').val();
-                var barcode                 = $(this).closest('.check-validation').find('.barcode').val();
-                if(taskselect == 1 && checkPickupBarcode == 1 && barcode == ''){
-                    $(this).closest('.check-validation').find('.pickup-barcode-error').show();
-                    err = 1;
-                    return false;
-                }else if(taskselect == 2 && checkDropBarcode == 1 && barcode == ''){
-                    $(this).closest('.check-validation').find('.drop-barcode-error').show();
-                    err = 1;
-                    return false;
-                }else if(taskselect == 3 && checkAppointmentBarcode == 1 && barcode == ''){
-                    $(this).closest('.check-validation').find('.appointment-barcode-error').show();
-                    err = 1;
-                    return false;
-                }
-            });
+            // $(".selecttype").each(function(){
+            //     var taskselect              = $(this).val();
+            //     var checkPickupBarcode      = $('#check-pickup-barcode').val();
+            //     var checkDropBarcode        = $('#check-drop-barcode').val();
+            //     var checkAppointmentBarcode = $('#check-appointment-barcode').val();
+            //     var barcode                 = $(this).closest('.check-validation').find('.barcode').val();
+            //     if(taskselect == 1 && checkPickupBarcode == 1 && barcode == ''){
+            //         $(this).closest('.check-validation').find('.pickup-barcode-error').show();
+            //         err = 1;
+            //         return false;
+            //     }else if(taskselect == 2 && checkDropBarcode == 1 && barcode == ''){
+            //         $(this).closest('.check-validation').find('.drop-barcode-error').show();
+            //         err = 1;
+            //         return false;
+            //     }else if(taskselect == 3 && checkAppointmentBarcode == 1 && barcode == ''){
+            //         $(this).closest('.check-validation').find('.appointment-barcode-error').show();
+            //         err = 1;
+            //         return false;
+            //     }
+            // });
 
             if(err == 1){
                 return false;

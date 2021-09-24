@@ -326,7 +326,10 @@
                         <label>{{__("Drivers")}}</label>
                         <select class="form-control" name="agent" id="driverselect">
                             @foreach ($agents as $item)
-                                <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                @php
+                                    $checkAgentActive = ($item->is_available == 1) ? ' ('.__('Online').')' : ' ('.__('Offline').')';
+                                @endphp
+                                <option value="{{ $item->id }}">{{ ucfirst($item->name) . $checkAgentActive }}</option>
                             @endforeach
                         </select>
                     </div>

@@ -43,6 +43,8 @@ class ShortcodeController extends BaseController
 
         return response()->json([
             'data' => $client,
+            'status' => 200,
+            'message' => 'success'
         ]);
     }
 }

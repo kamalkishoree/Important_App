@@ -15,7 +15,10 @@
                                 {!! Form::label('title', 'Status',['class' => 'control-label']) !!}
                                 <select name="agent" id="agent_id" class="form-control">
                                     @foreach ($agents as $item)
-                                      <option value="{{$item->id}}">{{$item->name}}</option>
+                                    @php
+                                        $checkAgentActive = ($item->is_available == 1) ? ' ('.__('Online').')' : ' ('.__('Offline').')';
+                                    @endphp
+                                      <option value="{{$item->id}}">{{ ucfirst($item->name). $checkAgentActive}}</option>
                                     @endforeach
                                 </select>
                                 <span class="invalid-feedback" role="alert">

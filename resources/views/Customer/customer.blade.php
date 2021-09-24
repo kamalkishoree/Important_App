@@ -5,6 +5,43 @@
     .table th,.table td, .table td {
         display: table-cell !important;
     }
+
+    .footer{
+        z-index: 3;
+    }
+    #pricing-datatable_processing {
+        position: absolute !important;
+        background: transparent !important;
+        top: 60%;
+        transform: translateY(-50%) !important;
+        left: 0;
+        right: 0;
+        z-index: 1;
+    }
+    .dt-buttons.btn-group.flex-wrap {
+        float: right;
+        margin: 5px 0 10px 15px;
+    }
+    div#pricing-datatable_filter {
+        padding-top: 5px;
+    }
+    .dataTables_filter label {
+        width: 25%;
+    }
+    .dataTables_filter label .form-control {
+        height: 37px;
+        font-size: 16px;
+    }
+    .dt-buttons .btn.btn-secondary,.dt-buttons .btn.btn-secondary:focus,.dt-buttons .btn.btn-secondary:active {
+        border-radius: 5px;
+        background: #6658ddd6 !important;
+    }
+    .btn-label,.btn-label:focus,.btn-label:active {
+        background-color: rgb(102 88 221) !important;
+    }
+    .dataTables_scrollHead thead th {
+        cursor: pointer;
+    }
 </style>
 @endsection
 @php
@@ -84,9 +121,9 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                         <table class="table table-striped dt-responsive nowrap w-100"  id="pricing-datatable">
                             <thead>
                                 <tr>
-                                    <th>{{__("Name")}}</th>
-                                    <th>{{("Email")}}</th>
-                                    <th>{{__("Phone number")}}</th>
+                                    <th>{{__("Name")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
+                                    <th>{{("Email")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
+                                    <th>{{__("Phone number")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                     <th>{{__("Status")}}</th>
                                     <th style="width: 85px;">{{__("Action")}}</th>
                                 </tr>

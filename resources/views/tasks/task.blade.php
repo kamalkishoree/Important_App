@@ -9,14 +9,47 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
 <style>
-   #agents-datatable th, #agents-datatable td{
-    padding: 0.85rem;
-    }
+    .agents-datatable tbody td,.dataTables_scrollHead thead th {
+        display: table-cell !important;
+    } 
     #wrapper {
         overflow: auto !important;
     }
     .footer{
         z-index: 3;
+    }
+    #agents-datatable_processing {
+        position: absolute !important;
+        background: transparent !important;
+        top: 60%;
+        transform: translateY(-50%) !important;
+        left: 0;
+        right: 0;
+        z-index: 1;
+    }
+    .dt-buttons.btn-group.flex-wrap {
+        float: right;
+        margin: 5px 0 10px 15px;
+    }
+    div#agents-datatable_filter {
+        padding-top: 5px;
+    }
+    .dataTables_filter label {
+        width: 25%;
+    }
+    .dataTables_filter label .form-control {
+        height: 37px;
+        font-size: 16px;
+    }
+    .dt-buttons .btn.btn-secondary,.dt-buttons .btn.btn-secondary:focus,.dt-buttons .btn.btn-secondary:active {
+        border-radius: 5px;
+        background: #6658ddd6 !important;
+    }
+    .dataTables_scrollHead thead th {
+        cursor: pointer;
+    }
+    .btn-label,.btn-label:focus,.btn-label:active {
+        background-color: rgb(102 88 221) !important;
     }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
@@ -80,7 +113,8 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                 </div>
             </div>
         </div>
-
+    
+        
         <!-- end page title -->
         <div class="row">
             <div class="col-12">
@@ -148,19 +182,19 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                         @if (!isset($status) || $status == 'unassigned')
                                         <th><input type="checkbox" class="all-driver_check" name="all_driver_id" id="all-driver_check"></th>
                                         @endif
-                                        <th>{{__("Customer")}}</th>
-                                        <th>{{__("Phone.No")}}</th>
-                                        <th>{{__("Driver")}}</th>
-                                        <th>{{__("Due Time")}}</th>
-                                        <th>{{__("Routes")}}</th>
-                                        <th>{{__("Tracking Url")}}</th>
+                                        <th class="sort-icon">{{__("Customer")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
+                                        <th class="sort-icon">{{__("Phone.No")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
+                                        <th class="sort-icon">{{__("Driver")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
+                                        <th class="sort-icon">{{__("Due Time")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
+                                        <th class="routes-head">{{__("Routes")}}</th>
+                                        <th>{{__("Tracking URL")}}</th>
                                         <th>{{__("Route Proofs")}}</th>
                                         <th>{{__("Pricing")}}</th>
                                         <th style="width: 85px;">{{__("Action")}}</th>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                    
+                                <tbody style="height: 8%;overflow: auto !important;">
+                                
                                 </tbody>
                             </table>
                         </div>

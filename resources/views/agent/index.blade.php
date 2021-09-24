@@ -17,6 +17,43 @@
     .table th,.table td, .table td {
         display: table-cell !important;
     }
+
+    .footer{
+        z-index: 3;
+    }
+    #agent-listing_processing {
+        position: absolute !important;
+        background: transparent !important;
+        top: 60%;
+        transform: translateY(-50%) !important;
+        left: 0;
+        right: 0;
+        z-index: 1;
+    }
+    .dt-buttons.btn-group.flex-wrap {
+        float: right;
+        margin: 5px 0 10px 15px;
+    }
+    div#agent-listing_filter {
+        padding-top: 5px;
+    }
+    .dataTables_filter label {
+        width: 25%;
+    }
+    .dataTables_filter label .form-control {
+        height: 37px;
+        font-size: 16px;
+    }
+    .dt-buttons .btn.btn-secondary,.dt-buttons .btn.btn-secondary:focus,.dt-buttons .btn.btn-secondary:active {
+        border-radius: 5px;
+        background: #6658ddd6 !important;
+    }
+    .btn-label,.btn-label:focus,.btn-label:active {
+        background-color: rgb(102 88 221) !important;
+    }
+    .dataTables_scrollHead thead th {
+        cursor: pointer;
+    }
 </style>
 @endsection
 @php
@@ -113,22 +150,23 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                     </div>
 
                     <div class="table-responsive">
-                        <table class="table table-striped dt-responsive nowrap w-100 all" id="agent-listing">
+                        <table class="table table-striped dt-responsive nowrap w-100 all agent-listing" id="agent-listing">
                             <thead>
                                 <tr>
-                                    <th>{{__("Uid")}}</th>
-                                    <th>{{__("Profile")}}</th>
-                                    <th>{{__("Name")}}</th>
-                                    <th>{{__("Phone")}}</th>
-                                    <th>{{__("Type")}}</th>
-                                    <th>{{__("Team")}}</th>
-                                    <th>{{__("Vehicle")}}</th>
-                                    <th>{{__("Cash Collected")}}</th>
-                                    <th>{{__("Order Earning")}}</th>
-                                    <th>{{__("Total Paid to Driver")}}</th>
-                                    <th>{{__("Total Receive from Driver")}}</th>
-                                    <th>{{__("Final Balance")}}</th>
+                                    <th class="sort-icon">{{__("Uid")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
+                                    <th class="sort-icon">{{__("Profile")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
+                                    <th class="sort-icon">{{__("Name")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
+                                    <th class="sort-icon">{{__("Phone")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
+                                    <th class="sort-icon">{{__("Type")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
+                                    <th class="sort-icon">{{__("Team")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
+                                    <th class="sort-icon">{{__("Vehicle")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
+                                    <th class="sort-icon">{{__("Cash Collected")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
+                                    <th class="sort-icon">{{__("Order Earning")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
+                                    <th class="sort-icon">{{__("Total Paid to Driver")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
+                                    <th class="sort-icon">{{__("Total Receive from Driver")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
+                                    <th class="sort-icon">{{__("Final Balance")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                     <th>{{__("Is Approved?")}}</th>
+                                    <th>{{__("Is Active?")}}</th>
                                     <th>{{__("Action")}}</th>
                                 </tr>
                             </thead>
