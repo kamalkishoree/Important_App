@@ -77,26 +77,26 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
     <div class="col-md-12">
         <div class="form-group" id="vehicle_type_idInputEdit">
             <p class="text-muted mt-3 mb-2">{{__('TRANSPORT TYPE')}}</p>
-            <div class="radio radio-blue form-check-inline click cursors">
+            <div class="radio radio-blue form-check-inline click1 cursors">
                 <input type="radio" id="onfoot" value="1" act="edit" name="vehicle_type_id" readonly="readonly" @if ($agent->vehicle_type_id == '1') checked @else disabled='disabled'
                 @endif >
                 <img id="foot_edit" src="{{ $agent->vehicle_type_id == '1' ? asset('assets/icons/walk_blue.png') : asset('assets/icons/walk.png') }}">
             </div>
-            <div class="radio radio-primery form-check-inline click cursors">
+            <div class="radio radio-primery form-check-inline click1 cursors">
                 <input type="radio" id="bycycle" value="2" name="vehicle_type_id" act="edit" readonly="readonly" @if ($agent->vehicle_type_id == '2')
                 checked @else disabled='disabled' @endif >
                 <img id="cycle_edit" src="{{ $agent->vehicle_type_id == '2' ? asset('assets/icons/cycle_blue.png') : asset('assets/icons/cycle.png') }}">
             </div>
-            <div class="radio radio-info form-check-inline click cursors">
+            <div class="radio radio-info form-check-inline click1 cursors">
                 <input type="radio" id="motorbike" value="3" name="vehicle_type_id" act="edit" readonly="readonly" @if ($agent->vehicle_type_id == '3') checked @else disabled='disabled' @endif>
                 <img id="bike_edit" src="{{ $agent->vehicle_type_id == '3' ? asset('assets/icons/bike_blue.png') : asset('assets/icons/bike.png') }}">
             </div>
-            <div class="radio radio-danger form-check-inline click cursors">
+            <div class="radio radio-danger form-check-inline click1 cursors">
                 <input type="radio" id="car" value="4" name="vehicle_type_id" act="edit" readonly="readonly" @if ($agent->vehicle_type_id == '4') checked @else disabled='disabled'
                 @endif>
                 <img id="cars_edit" src="{{ $agent->vehicle_type_id == '4' ? asset('assets/icons/car_blue.png') : asset('assets/icons/car.png') }}">
             </div>
-            <div class="radio radio-warning form-check-inline click cursors">
+            <div class="radio radio-warning form-check-inline click1 cursors">
                 <input type="radio" id="truck" value="5" name="vehicle_type_id" act="edit" readonly="readonly" @if ($agent->vehicle_type_id == '5') checked @else disabled='disabled' @endif>
                 <img id="trucks_edit" src="{{ $agent->vehicle_type_id == '5' ? asset('assets/icons/truck_blue.png') : asset('assets/icons/truck.png') }}">
             </div>
@@ -158,46 +158,50 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
             </span>
         </div>
     </div>
-    <div class="row">
-        <label for="" class="control-label"></label>
+</div>
+<div class="row">
+    <label for="" class="control-label"></label>
 
-        @foreach($agent_docs as $agent_doc)
-        <div class="col-md-6">
+    @foreach($agent_docs as $key=>$agent_doc)
+    
+    <div class="col-md-6">
 
-            @if(strtolower($agent_doc->file_type) == 'text')
-            <div class="form-group">
-                <label for="" class="control-label">{{$agent_doc->file_name}}</label>
+        @if(strtolower($agent_doc->file_type) == 'text')
+        <div class="form-group">
+    
+            <label for="" class="control-label">{{$agent_doc->label_name}}</label>
 
-                <input type="text" class="form-control" id="" name="file" placeholder="{{__('Enter Text')}}" value="{{ old('name', $agent_doc->file_name ?? '') }}">
-            </div>
-            @elseif(strtolower($agent_doc->file_type) == 'pdf')
-            <div class="form-group">
-                <label for="" class="control-label">{{$agent_doc->label_name}}</label>
-                <div class="file file--upload">
-                    <label for="">
-                        <span class="update_pic pdf-icon">
-                            <a href="{{Storage::disk('s3')->url($agent_doc->file_name)}}" target="_blank"><img showImg="{{ isset($agent_doc->file_name) ? Storage::disk('s3')->url($agent_doc->file_name) : '' }}" id="file"></a>
-                        </span>
-                    </label>
-                    <div class="invalid-feedback" id=""><strong></strong></div>
-                </div>
-            </div>
-            @else
-            <div class="form-group">
-                <label for="" class="control-label">{{$agent_doc->label_name}}</label>
-                <div class="file file--upload">
-
-                    <a href="{{Storage::disk('s3')->url($agent_doc->file_name)}}" target="_blank"><img src="{{isset($agent_doc->file_name) ? $imgproxyurl.Storage::disk('s3')->url($agent_doc->file_name) : Phumbor::url(URL::to('/asset/images/no-image.png')) }}" style="width:240px;height:120px;"></a>
-                    <!-- @if(strtolower($agent_doc->file_type) == 'image')
-                <input id="" type="file" name="file" v accept="image/*" data-rel="">
-                @elseif(strtolower($agent_doc->file_type) == 'pdf')
-                <input id="" type="file" name="file" accept=".pdf" data-rel="">
-                @endif -->
-                    <div class="invalid-feedback" id=""><strong></strong></div>
-                </div>
-            </div>
-            @endif
+            <input type="text" class="form-control" id="" name="file" placeholder="{{__('Enter Text')}}" value="{{ old('name', $agent_doc->file_name ?? '') }}" readonly>
         </div>
-        @endforeach
+        @elseif(strtolower($agent_doc->file_type) == 'pdf')
+        <div class="form-group">
+
+            <label for="" class="control-label">{{$agent_doc->label_name}}</label>
+            <div class="file file--upload">
+                <label for="">
+                    <span class="update_pic pdf-icon">
+                        <a href="{{Storage::disk('s3')->url($agent_doc->file_name)}}" target="_blank"><img showImg="{{ isset($agent_doc->file_name) ? Storage::disk('s3')->url($agent_doc->file_name) : '' }}" id="file"></a>
+                    </span>
+                </label>
+                <div class="invalid-feedback" id=""><strong></strong></div>
+            </div>
+        </div>
+        @elseif(strtolower($agent_doc->file_type) == 'image')
+        <div class="form-group">
+
+            <label for="" class="control-label">{{$agent_doc->label_name}}</label>
+            <div class="file file--upload">
+
+                <a href="{{Storage::disk('s3')->url($agent_doc->file_name)}}" target="_blank"><img src="{{isset($agent_doc->file_name) ? $imgproxyurl.Storage::disk('s3')->url($agent_doc->file_name) : Phumbor::url(URL::to('/asset/images/no-image.png')) }}" style="width:240px;height:120px;"></a>
+                <!-- @if(strtolower($agent_doc->file_type) == 'image')
+            <input id="" type="file" name="file" v accept="image/*" data-rel="">
+            @elseif(strtolower($agent_doc->file_type) == 'pdf')
+            <input id="" type="file" name="file" accept=".pdf" data-rel="">
+            @endif -->
+                <div class="invalid-feedback" id=""><strong></strong></div>
+            </div>
+        </div>
+        @endif
     </div>
+    @endforeach
 </div>

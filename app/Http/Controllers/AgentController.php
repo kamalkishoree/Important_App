@@ -20,8 +20,13 @@ use Exception;
 use App\Model\Countries;
 use DataTables;
 use Illuminate\Support\Str;
+use GuzzleHttp\Client as GCLIENT;
 use Excel;
 use App\Exports\AgentsExport;
+use App\Model\ClientPreference;
+use App\Model\DriverRegistrationDocument;
+use Doctrine\DBAL\Driver\DrizzlePDOMySql\Driver;
+
 class AgentController extends Controller
 {
     /**
@@ -75,18 +80,20 @@ class AgentController extends Controller
         $agentNotAvailable = count($agents->where('is_available', 0));
         $agentIsApproved   = count($agents->where('is_approved', 1));
         $agentNotApproved  = count($agents->where('is_approved', 0));
+        $driver_registration_documents = DriverRegistrationDocument::get();
 
-        return view('agent.index')->with(['agents' => $agents, 'agentIsAvailable'=>$agentIsAvailable, 'agentNotAvailable'=>$agentNotAvailable, 'agentIsApproved'=>$agentIsApproved, 'agentNotApproved'=>$agentNotApproved, 'agentsCount'=>$agentsCount, 'employeesCount'=>$employeesCount, 'agentActive'=>$agentActive, 'agentInActive'=>$agentInActive, 'freelancerCount'=>$freelancerCount, 'teams' => $teams, 'tags' => $tags, 'selectedCountryCode' => $countryCode, 'calenderSelectedDate' => $selectedDate, 'showTag' => implode(',', $tag)]);
+        return view('agent.index')->with(['agents' => $agents, 'driver_registration_documents' => $driver_registration_documents, 'agentIsAvailable' => $agentIsAvailable, 'agentNotAvailable' => $agentNotAvailable, 'agentIsApproved' => $agentIsApproved, 'agentNotApproved' => $agentNotApproved, 'agentsCount' => $agentsCount, 'employeesCount' => $employeesCount, 'agentActive' => $agentActive, 'agentInActive' => $agentInActive, 'freelancerCount' => $freelancerCount, 'teams' => $teams, 'tags' => $tags, 'selectedCountryCode' => $countryCode, 'calenderSelectedDate' => $selectedDate, 'showTag' => implode(',', $tag)]);
     }
 
-    public function agentFilter(Request $request){
+    public function agentFilter(Request $request)
+    {
         try {
             $agents = Agent::orderBy('id', 'DESC');
             if (!empty($request->get('date_filter'))) {
                 $dateFilter = explode('to', $request->get('date_filter'));
-                if(count($dateFilter) > 1){
+                if (count($dateFilter) > 1) {
                     $agents->whereBetween('created_at', [trim($dateFilter[0]) . " 00:00:00", trim($dateFilter[1]) . " 23:59:59"]);
-                }else{
+                } else {
                     $agents->whereBetween('created_at', [trim($dateFilter[0]) . " 00:00:00", trim($dateFilter[0]) . " 23:59:59"]);
                 }
             }
@@ -99,7 +106,7 @@ class AgentController extends Controller
             $agents = $agents->orderBy('id', 'desc')->get();
             return Datatables::of($agents)
                 ->editColumn('profile_picture', function ($agents) use ($request) {
-                    $src = (isset($agents->profile_picture) ? $request->imgproxyurl.Storage::disk('s3')->url($agents->profile_picture) : Phumbor::url(URL::to('/asset/images/no-image.png')));
+                    $src = (isset($agents->profile_picture) ? $request->imgproxyurl . Storage::disk('s3')->url($agents->profile_picture) : Phumbor::url(URL::to('/asset/images/no-image.png')));
                     return $src;
                 })
                 ->editColumn('team', function ($agents) use ($request) {
@@ -107,7 +114,7 @@ class AgentController extends Controller
                     return $team;
                 })
                 ->editColumn('vehicle_type_id', function ($agents) use ($request) {
-                    $src = asset('assets/icons/extra/'. $agents->vehicle_type_id .'.png');
+                    $src = asset('assets/icons/extra/' . $agents->vehicle_type_id . '.png');
                     return $src;
                 })
                 ->editColumn('cash_to_be_collected', function ($agents) use ($request) {
@@ -135,11 +142,11 @@ class AgentController extends Controller
                 })
                 ->editColumn('action', function ($agents) use ($request) {
                     $action = '<div class="form-ul" style="width: 60px;">
-                                    <div class="inner-div" style="margin-top: 3px;"> <a href="'.route('agent.show', $agents->id).'" class="action-icon viewIcon" agentId="'.$agents->id.'"> <i class="fa fa-eye"></i></a></div>
-                                    <div class="inner-div" style="margin-top: 3px;"> <a href="'.route('agent.edit', $agents->id).'" class="action-icon editIcon" agentId="'.$agents->id.'"> <i class="mdi mdi-square-edit-outline"></i></a></div>
+                                    <div class="inner-div" style="margin-top: 3px;"> <a href="' . route('agent.show', $agents->id) . '" class="action-icon viewIcon" agentId="' . $agents->id . '"> <i class="fa fa-eye"></i></a></div>
+                                    <div class="inner-div" style="margin-top: 3px;"> <a href="' . route('agent.edit', $agents->id) . '" class="action-icon editIcon" agentId="' . $agents->id . '"> <i class="mdi mdi-square-edit-outline"></i></a></div>
                                     <div class="inner-div">
-                                        <form method="POST" action="'.route('agent.destroy', $agents->id).'">
-                                            <input type="hidden" name="_token" value="'.csrf_token().'" />
+                                        <form method="POST" action="' . route('agent.destroy', $agents->id) . '">
+                                            <input type="hidden" name="_token" value="' . csrf_token() . '" />
                                             <input type="hidden" name="_method" value="DELETE">
                                             <div class="form-group">
                                                 <button type="submit" class="btn btn-primary-outline action-icon"> <i class="mdi mdi-delete"></i></button>
@@ -151,14 +158,14 @@ class AgentController extends Controller
                 })
                 ->filter(function ($instance) use ($request) {
                     if (!empty($request->get('search'))) {
-                        $instance->collection = $instance->collection->filter(function ($row) use ($request){
-                            if (Str::contains(Str::lower($row['phone_number']), Str::lower($request->get('search')))){
+                        $instance->collection = $instance->collection->filter(function ($row) use ($request) {
+                            if (Str::contains(Str::lower($row['phone_number']), Str::lower($request->get('search')))) {
                                 return true;
-                            }else if (Str::contains(Str::lower($row['name']), Str::lower($request->get('search')))) {
+                            } else if (Str::contains(Str::lower($row['name']), Str::lower($request->get('search')))) {
                                 return true;
-                            }else if (Str::contains(Str::lower($row['type']), Str::lower($request->get('search')))) {
+                            } else if (Str::contains(Str::lower($row['type']), Str::lower($request->get('search')))) {
                                 return true;
-                            }else if (Str::contains(Str::lower($row['team']), Str::lower($request->get('search')))) {
+                            } else if (Str::contains(Str::lower($row['team']), Str::lower($request->get('search')))) {
                                 return true;
                             }
                             return false;
@@ -167,11 +174,11 @@ class AgentController extends Controller
                 })
                 ->make(true);
         } catch (Exception $e) {
-            
         }
     }
 
-    public function export() {
+    public function export()
+    {
         return Excel::download(new AgentsExport, 'agents.xlsx');
     }
 
@@ -255,6 +262,9 @@ class AgentController extends Controller
             $getFileName = $path;
         }
 
+
+
+
         $data = [
             'name' => $request->name,
             'team_id' => $request->team_id == null ? $team_id = null : $request->team_id,
@@ -274,6 +284,34 @@ class AgentController extends Controller
 
         $agent = Agent::create($data);
         $agent->tags()->sync($tag_id);
+
+        // $driver_registration_documents = DriverRegistrationDocument::get();
+        // foreach ($driver_registration_documents as $driver_registration_document) {
+        //     $agent_docs = new AgentDocs();
+        //     $name = $driver_registration_document->name;
+        //     $arr = explode(' ', $name);
+        //     $name = implode('_', $arr);
+        //     if ($driver_registration_document->file_type != "Text") {
+        //         if ($request->hasFile($request->$name)) {
+        //             $folder = str_pad(Auth::user()->code, 8, '0', STR_PAD_LEFT);
+        //             $folder = 'client_' . $folder;
+        //             $file = $request->file($request->$name);
+        //             $file_name = uniqid() . '.' . $file->getClientOriginalExtension();
+        //             $s3filePath = '/assets/' . $folder . '/agents' . $file_name;
+        //             $path = Storage::disk('s3')->put($s3filePath, $file, 'public');
+        //             $getFileName = $path;
+        //         }
+
+        //         $agent_docs->file_name = $getFileName;
+        //     }
+        //     else
+        //     {
+        //         $agent_docs->file_name = $request->$name;
+        //     }
+        //     $agent_docs->file_type = $driver_registration_document->file_type;
+        //     $agent_docs->label_name = $driver_registration_document->name;
+        //     $agent_docs->save();
+        // }
 
         if ($agent->wasRecentlyCreated) {
             return response()->json([
@@ -297,14 +335,14 @@ class AgentController extends Controller
         //
 
         $agent = Agent::with(['tags'])->where('id', $id)->first();
-  
+
         $teams = Team::where('client_id', auth()->user()->code);
         if (Auth::user()->is_superadmin == 0 && Auth::user()->all_team_access == 0) {
             $teams = $teams->whereHas('permissionToManager', function ($query) {
                 $query->where('sub_admin_id', Auth::user()->id);
             });
         }
- 
+
         $teams = $teams->get();
 
         $tags  = TagsForAgent::all();
@@ -315,21 +353,22 @@ class AgentController extends Controller
 
         $tagIds = [];
         $returnHTML = '';
-        if(!empty($agent)){
+        if (!empty($agent)) {
             foreach ($agent->tags as $tag) {
                 $tagIds[] = $tag->name;
             }
             $date = Date('Y-m-d H:i:s');
-    
+
             $otp = Otp::where('phone', $agent->phone_number)->where('valid_till', '>=', $date)->first();
             if (isset($otp)) {
                 $send_otp = $otp->opt;
-            }else{
+            } else {
                 $send_otp = 'View OTP after Logging in the Driver App';
             }
-            $agents_docs=AgentDocs::where('agent_id',$id)->get();
-    
-            $returnHTML = view('agent.form-show')->with(['agent' => $agent, 'teams' => $teams, 'tags' => $uptag, 'agent_docs' => $agents_docs, 'tagIds' => $tagIds, 'otp' => $send_otp])->render();
+            $agents_docs = AgentDocs::where('agent_id', $id)->get();
+            $driver_registration_documents = DriverRegistrationDocument::get();
+
+            $returnHTML = view('agent.form-show')->with(['agent' => $agent, 'driver_registration_documents' => $driver_registration_documents, 'teams' => $teams, 'tags' => $uptag, 'agent_docs' => $agents_docs, 'tagIds' => $tagIds, 'otp' => $send_otp])->render();
         }
         return response()->json(array('success' => true, 'html' => $returnHTML));
     }
