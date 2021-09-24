@@ -170,11 +170,11 @@ class TaskController extends Controller
                         $finalAddress = (!empty($addressArr[2])) ? $addressArr[0].' '.$addressArr[1].' '.$addressArr[2] : $finalAddress.'....';
                         $finalAddress = (!empty($addressArr[3])) ? $addressArr[0].' '.$addressArr[1].' '.$addressArr[2].' '.$addressArr[3] : $finalAddress.'....';
                         $finalAddress = (!empty($addressArr[4])) ? $addressArr[0].' '.$addressArr[1].' '.$addressArr[2].' '.$addressArr[3].' '.$addressArr[4] : $finalAddress.'....';
-                        $finalAddress = (!empty($addressArr[5])) ? $addressArr[0].' '.$addressArr[1].' '.$addressArr[2].' '.$addressArr[3].' '.$addressArr[4].' '.$addressArr[5].'.......' : $finalAddress.'....';
+                        $finalAddress = (!empty($addressArr[5])) ? $addressArr[0].' '.$addressArr[1].' '.$addressArr[2].' '.$addressArr[3].' '.$addressArr[4].' '.$addressArr[5] : $finalAddress.'....';
+                        $finalAddress = (!empty($addressArr[6])) ? $addressArr[0].' '.$addressArr[1].' '.$addressArr[2].' '.$addressArr[3].' '.$addressArr[4].' '.$addressArr[5].'.......' : $finalAddress;
 
                         $routes[]   = array('taskType'=>$taskType, 'pickupClass'=>$pickupClass, 'shortName'=>$shortName, 'toolTipAddress'=>$address, 'address'=> $finalAddress);
                     }
-                    // print_r($routes);
                     return json_encode($routes, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_UNESCAPED_UNICODE);
                 })
                 ->editColumn('track_url', function ($orders) use ($request) {
