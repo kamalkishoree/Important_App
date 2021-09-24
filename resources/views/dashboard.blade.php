@@ -229,7 +229,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                                         </div>
                                                         <div class="col-md-10 col-10">
                                                             @php
-                                                               $checkAgentActive = ($agent['is_available'] == 1)? '('.__('Online').')' : '('.__('Offline').')';
+                                                               $checkAgentActive = ($agent['is_available'] == 1)? ' ('.__('Online').')' : ' ('.__('Offline').')';
                                                             @endphp
                                                             <h6 class="mb-0 header-title scnd">{{ ucfirst($agent['name']) . $checkAgentActive }} <div class="optimizebtn{{ $agent['id'] }}">{!! $optimize !!}</div><div class="exportbtn{{ $agent['id'] }}">{!! $turnbyturn !!} </div></h6>
                                                             <p class="mb-0">{{count($agent['order'])>0?'Busy  ':'Free  '}}<span>{{$agent['agent_task_count']}} {{__('Tasks')}}</span> {!!$agent['total_distance']==''?'':' <i class="fas fa-route"></i>'!!}<span class="dist_sec totdis{{ $agent['id'] }}">{{ $agent['total_distance'] }}</span></p>
