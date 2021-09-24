@@ -58,6 +58,10 @@ $( document ).ready(function() {
                     var check = (full.is_approved == 1)? 'checked' : '';
                     return '<div class="custom-control custom-switch"><input type="checkbox" class="custom-control-input agent_approval_switch" '+check+' id="customSwitch_'+full.id+'" data-id="'+full.id+'"><label class="custom-control-label" for="customSwitch_'+full.id+'"></label></div>';
                 }},
+                {data: 'is_available', name: 'is_available', orderable: false, searchable: false, "mRender": function ( data, type, full ) {
+                    return (full.is_available == 1)? 'Active' : 'InActive';
+                    // return '<div class="custom-control custom-switch"><input type="checkbox" class="custom-control-input agent_approval_switch" '+check+' id="customSwitch_'+full.id+'" data-id="'+full.id+'"><label class="custom-control-label" for="customSwitch_'+full.id+'"></label></div>';
+                }},
                 {data: 'action', name: 'action', orderable: false, searchable: false},
             ]
         });         

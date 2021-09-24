@@ -166,6 +166,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                     <th class="sort-icon">{{__("Total Receive from Driver")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                     <th class="sort-icon">{{__("Final Balance")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                     <th>{{__("Is Approved?")}}</th>
+                                    <th>{{__("Is Active?")}}</th>
                                     <th>{{__("Action")}}</th>
                                 </tr>
                             </thead>
