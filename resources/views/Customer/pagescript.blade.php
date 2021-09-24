@@ -125,7 +125,8 @@
                 {data: 'phone_number', name: 'phone_number', orderable: true, searchable: false},
                 {data: 'status', name: 'status', orderable: false, searchable: false, "mRender": function ( data, type, full ) {
                     var check = (full.status == 'Active')? 'checked' : '';
-                    return '<div class="custom-control custom-switch "><input type="checkbox" class="custom-control-input" id="customSwitch1" '+check+' name="is_default" value="y" data-id="'+full.id+'"><label class="custom-control-label" for="customSwitch1"></label></div>';
+                    return '<div class="custom-control custom-switch"><input type="checkbox" class="custom-control-input customer_status_switch" '+check+' id="customSwitch_'+full.id+'" data-id="'+full.id+'"><label class="custom-control-label" for="customSwitch_'+full.id+'"></label></div>';
+                     
                 }},
                 {data: 'action', name: 'action', orderable: true, searchable: false}
             ]
@@ -135,7 +136,7 @@
 
     //change status on a customer
     $(function() {
-        $(document).on('change', '.custom-control-input', function() {
+        $(document).on('change', '.customer_status_switch', function() {
             var status = $(this).prop('checked') == true ? "Active" : 'In-Active';
             var user_id = $(this).data('id');
 
@@ -148,7 +149,9 @@
                     'id': user_id
                 },
                 success: function(data) {
-                    //console.log(data.success)
+                    if (data.status == 1) {
+                        $.NotificationApp.send("", data.success, "top-right", "#5ba035", "success");
+                    }
                 }
             });
         })
