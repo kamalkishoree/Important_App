@@ -301,8 +301,9 @@ class DashBoardController extends Controller
                 $un_total_distance = $gettotal_un_distance['total_distance_miles'];
             }
         }
- 
-        $client       = ClientPreference::where('id', 1)->first();
+
+        $client = ClientPreference::where('id', 1)->first();
+   
         $googleapikey = $client->map_key_1??'';
        
         $getAdminCurrentCountry = Countries::where('id', '=', Auth::user()->country_id)->get()->first();
