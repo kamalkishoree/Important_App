@@ -144,7 +144,7 @@
                     
                 </div>
                 <div class="modal-footer justify-content-center">
-                    <button type="submit" class="btn btn-blue waves-effect waves-light submitTaskHeader">{{__("Submit")}}</button>
+                    <a href="javascript: void(0);" class="btn btn-blue waves-effect waves-light submitTaskHeader"><span class="spinner-border spinner-border-sm submitTaskHeaderLoader" style="display:none;" role="status" aria-hidden="true"></span> <span id="submitTaskHeaderText">{{__("Submit")}}</span></a>
                 </div>
             </form>   
         </div>
@@ -609,13 +609,10 @@
         $(".tagspan2").hide();
         $(".searchspan").hide();
 
-        var cus_id = $('#cusid').val();
-        var name = $('#name_new').val();
-        var email = $('#email_new').val();
+        var cus_id   = $('#cusid').val();
+        var name     = $('#name_new').val();
+        var email    = $('#email_new').val();
         var phone_no = $('#phone_new').val();
-
-      
-        console.log(cus_id + ' - '+ name + '-' + phone_no + '-' + email);
 
         if (cus_id == '') {
             if (name != '' && email != '' && phone_no != '') {
@@ -625,14 +622,13 @@
                 return false;
             }
         }
-        var s_name = $("input[name='short_name[]']").val();
+        var s_name    = $("input[name='short_name[]']").val();
         var s_address = $("input[name='address[]']").val();
         if ((!$("input[name='old_address_id']:checked").val()) && (s_address=="") ) {
                 err = 1;
                 $(".addspan").show();
                 return false;
         }
-
         
         $(".selecttype").each(function(){
             var taskselect              = $(this).val();
@@ -653,25 +649,17 @@
                 err = 1;
                 return false;
             }
-            // else{
-            //     $(this).closest('.check-validation').find('.pickup-barcode-error').hide();
-            //     $(this).closest('.check-validation').find('.drop-barcode-error').hide();
-            //     $(this).closest('.check-validation').find('.appointment-barcode-error').hide();
-            //     return true;
-            // }
         });
-
-
 
        //return false;
         var selectedVal = "";
-        var selected = $("#typeInputss input[type='radio']:checked");
-        selectedVal = selected.val();
-        //console.log(selectedVal);
+        var selected    = $("#typeInputss input[type='radio']:checked");
+        selectedVal     = selected.val();
+        
         if (typeof(selectedVal) == "undefined") {
-            var short_name = $("#task-modal-header input[name=short_name").val();
-            var address = $("#task-modal-header input[name=address]").val();
-            var post_code = $("#task-modal-header input[name=post_code]").val();
+            var short_name  = $("#task-modal-header input[name=short_name").val();
+            var address     = $("#task-modal-header input[name=address]").val();
+            var post_code   = $("#task-modal-header input[name=post_code]").val();
             if (short_name != '' && address != '' && post_code != '') {
 
             } else {  err = 1;
@@ -681,25 +669,16 @@
         }
 
         var autoval = "";
-        var auto = $("#rediodiv input[type='radio']:checked");
-        autoval = auto.val();
-        //console.log(autoval);
-        // if (autoval == 'auto' || autoval == 'a') {
-        //     var value = $("#selectize-optgroups option:selected").text();
-        //     var value2 = $("#selectize-optgroup option:selected").text();
-        //     if (value == '') {
-        //         $(".tagspan").show();  err = 1;
-        //         return false;
-        //     }
-        //     if (value2 == '') {
-        //         $(".tagspan").show();  err = 1;
-        //         return false;
-        //     }
-        // }
+        var auto    = $("#rediodiv input[type='radio']:checked");
+        autoval     = auto.val();
+        
         if( err == 0){
+            $('.submitTaskHeaderLoader').css('display', 'inline-block');
+            $('#submitTaskHeaderText').text('Done');
+            $('.submitTaskHeader').attr("disabled","disabled");
+           
             var formData = new FormData(document.querySelector("#taskFormHeader"));
-            TaskSubmit(formData, 'POST', '/newtasks', '#task-modal-header');            
-          //$("#taskFormHeader").submit();
+            TaskSubmit(formData, 'POST', '/newtasks', '#task-modal-header');
         }
     });
 

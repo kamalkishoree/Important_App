@@ -29,7 +29,7 @@
         </div>
     </div>
     <!-- end page title -->
-f
+
     <div class="row">
         <div class="col-md-4">
             <form method="POST" action="{{route('preference', Auth::user()->code)}}">
