@@ -150,18 +150,18 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                         <table class="table table-striped dt-responsive nowrap w-100 all agent-listing" id="agent-listing">
                             <thead>
                                 <tr>
-                                    <th>{{__("Uid")}}</th>
-                                    <th>{{__("Profile")}}</th>
-                                    <th>{{__("Name")}}</th>
-                                    <th>{{__("Phone")}}</th>
-                                    <th>{{__("Type")}}</th>
-                                    <th>{{__("Team")}}</th>
-                                    <th>{{__("Vehicle")}}</th>
-                                    <th>{{__("Cash Collected")}}</th>
-                                    <th>{{__("Order Earning")}}</th>
-                                    <th>{{__("Total Paid to Driver")}}</th>
-                                    <th>{{__("Total Receive from Driver")}}</th>
-                                    <th>{{__("Final Balance")}}</th>
+                                    <th class="sort-icon">{{__("Uid")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
+                                    <th class="sort-icon">{{__("Profile")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
+                                    <th class="sort-icon">{{__("Name")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
+                                    <th class="sort-icon">{{__("Phone")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
+                                    <th class="sort-icon">{{__("Type")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
+                                    <th class="sort-icon">{{__("Team")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
+                                    <th class="sort-icon">{{__("Vehicle")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
+                                    <th class="sort-icon">{{__("Cash Collected")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
+                                    <th class="sort-icon">{{__("Order Earning")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
+                                    <th class="sort-icon">{{__("Total Paid to Driver")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
+                                    <th class="sort-icon">{{__("Total Receive from Driver")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
+                                    <th class="sort-icon">{{__("Final Balance")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                     <th>{{__("Is Approved?")}}</th>
                                     <th>{{__("Action")}}</th>
                                 </tr>

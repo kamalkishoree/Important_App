@@ -118,9 +118,9 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                         <table class="table table-striped dt-responsive nowrap w-100"  id="pricing-datatable">
                             <thead>
                                 <tr>
-                                    <th>{{__("Name")}}</th>
-                                    <th>{{("Email")}}</th>
-                                    <th>{{__("Phone number")}}</th>
+                                    <th>{{__("Name")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
+                                    <th>{{("Email")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
+                                    <th>{{__("Phone number")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                     <th>{{__("Status")}}</th>
                                     <th style="width: 85px;">{{__("Action")}}</th>
                                 </tr>

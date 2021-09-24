@@ -1388,6 +1388,15 @@ span.copied_txt {
     max-width: 50px;
 }
 
+.sort-icon{
+    position: relative;
+}
+
+.sort-icon .fa-sort {
+    position: absolute;
+    right: 7px;
+    bottom: 13px;
+}
 
 
 /* zz */

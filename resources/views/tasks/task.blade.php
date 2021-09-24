@@ -186,10 +186,10 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                         @if (!isset($status) || $status == 'unassigned')
                                         <th><input type="checkbox" class="all-driver_check" name="all_driver_id" id="all-driver_check"></th>
                                         @endif
-                                        <th>{{__("Customer")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
-                                        <th>{{__("Phone.No")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
-                                        <th>{{__("Driver")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
-                                        <th>{{__("Due Time")}}</th>
+                                        <th class="sort-icon">{{__("Customer")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
+                                        <th class="sort-icon">{{__("Phone.No")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
+                                        <th class="sort-icon">{{__("Driver")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
+                                        <th class="sort-icon">{{__("Due Time")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                         <th class="routes-head">{{__("Routes")}}</th>
                                         <th>{{__("Tracking URL")}}</th>
                                         <th>{{__("Route Proofs")}}</th>
