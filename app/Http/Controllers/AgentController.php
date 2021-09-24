@@ -153,13 +153,13 @@ class AgentController extends Controller
                 ->filter(function ($instance) use ($request) {
                     if (!empty($request->get('search'))) {
                         $instance->collection = $instance->collection->filter(function ($row) use ($request){
-                            if (Str::contains(Str::lower($row['phone_number']), Str::lower($request->get('search')))){
+                            if (!empty($row['phone_number']) && Str::contains(Str::lower($row['phone_number']), Str::lower($request->get('search')))){
                                 return true;
-                            }else if (Str::contains(Str::lower($row['name']), Str::lower($request->get('search')))) {
+                            }else if (!empty($row['name']) && Str::contains(Str::lower($row['name']), Str::lower($request->get('search')))) {
                                 return true;
-                            }else if (Str::contains(Str::lower($row['type']), Str::lower($request->get('search')))) {
+                            }else if (!empty($row['type']) && Str::contains(Str::lower($row['type']), Str::lower($request->get('search')))) {
                                 return true;
-                            }else if (Str::contains(Str::lower($row['team']), Str::lower($request->get('search')))) {
+                            }else if (!empty($row['team']) && Str::contains(Str::lower($row['team']), Str::lower($request->get('search')))) {
                                 return true;
                             }
                             return false;

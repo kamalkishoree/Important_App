@@ -326,7 +326,7 @@
                         <label>{{__("Drivers")}}</label>
                         <select class="form-control" name="agent" id="driverselect">
                             @foreach ($agents as $item)
-                                <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                <option value="{{ $item->id }}">{{ $item->name. ($item->is_available == 1) ? ' (Active)' : ' (InActive)' }}</option>
                             @endforeach
                         </select>
                     </div>
