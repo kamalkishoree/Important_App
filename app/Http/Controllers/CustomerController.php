@@ -286,7 +286,7 @@ class CustomerController extends Controller
         $customer = Customer::find($request->id);
         $customer->status = $request->status;
         $customer->save();
-        return response()->json(['status' => 1,'success' => 'Status change successfully.']);
+        return response()->json(['success' => 'Status change successfully.']);
     }
 
     public function changeLocation(Request $request)
