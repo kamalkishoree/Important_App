@@ -239,7 +239,8 @@ class DashBoardController extends Controller
                         }
                         $gettotal_distance = $this->getTotalDistance($tasklistids, $driverlocation);
                         $clientPreference  = ClientPreference::where('id', 1)->first();
-                        $teamdata[$k1]['agents'][$k2]['total_distance']  = ($clientPreference->distance_unit == 'metric')? $gettotal_distance['total_distance_km'] : $gettotal_distance['total_distance_miles'];
+
+                        $teamdata[$k1]['agents'][$k2]['total_distance'] = ($clientPreference->distance_unit == 'metric')? $gettotal_distance['total_distance_km'] : $gettotal_distance['total_distance_miles'];
                     }
                     $teamdata[$k1]['agents'][$k2]['order'] = $sorted_orders;
                 }
