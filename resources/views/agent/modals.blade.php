@@ -160,6 +160,35 @@
 
                         </div>
                     </div>
+                  {{-- <div class="form-row">
+                        @foreach($driver_registration_documents as $driver_registration_document)
+                        <div class="col-md-6 mb-3" id="{{$driver_registration_document->name}}Input">
+                            <label for="">{{$driver_registration_document->name ? $driver_registration_document->name : ''}}</label>
+                            @if(strtolower($driver_registration_document->file_type) == 'text')
+                            <div class="form-group">
+                                <input type="text" class="form-control" id="input_file_logo_{{$driver_registration_document->id}}" name="{{$driver_registration_document->name}}" placeholder="Enter Text" value="">
+                            </div>
+                            @else
+                            <div class="file file--upload">
+                                <label for="input_file_logo_{{$driver_registration_document->id}}">
+                                    <span class="update_pic pdf-icon">
+                                        <img src="" id="upload_logo_preview_{{$driver_registration_document->id}}">
+                                    </span>
+                                    <span class="plus_icon" id="plus_icon_{{$driver_registration_document->id}}">
+                                        <i class="fa fa-plus"></i>
+                                    </span>
+                                </label>
+                                @if(strtolower($driver_registration_document->file_type) == 'image')
+                                <input id="input_file_logo_{{$driver_registration_document->id}}" type="file" name="{{$driver_registration_document->name}}" v accept="image/*" data-rel="{{$driver_registration_document->id}}">
+                                @elseif(strtolower($driver_registration_document->file_type) == 'pdf')
+                                <input id="input_file_logo_{{$driver_registration_document->id}}" type="file" name="{{$driver_registration_document->name}}" accept=".pdf" data-rel="{{$driver_registration_document->id}}">
+                                @endif
+                                <div class="invalid-feedback" id="{{$driver_registration_document->name}}_error"><strong></strong></div>
+                            </div>
+                            @endif
+                        </div>
+                        @endforeach
+                    </div>--}}
 
                 </div>
                 <div class="modal-footer border-0">

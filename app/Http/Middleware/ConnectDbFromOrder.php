@@ -18,27 +18,21 @@ class ConnectDbFromOrder
      * @param  \Closure  $next
      * @return mixed
      */
-    
-
     public function handle($request, Closure $next)
     {
        
         config(['auth.guards.api.provider' => 'agents']);
-
         $database_name = $database = 'royodelivery_db';
-
-        $header = $request->header();
-        
+        $header = $request->header();        
         if (array_key_exists("shortcode", $header)){
             $shortcode =  $header['shortcode'][0];
         }
         if (array_key_exists("personaltoken", $header)){
             $personaltoken =  $header['personaltoken'][0];
         }
-       
         //$client = Cache::get($database);
-
         $client = Client::where('is_deleted', 0)->where('code', $shortcode)->first(['id', 'name', 'database_name', 'timezone', 'custom_domain', 'logo', 'company_name', 'company_address', 'is_blocked']);
+        
         if (!$client) {
             return response()->json([
                 'status' => 400,
@@ -48,9 +42,7 @@ class ConnectDbFromOrder
             return response()->json([
                 'status' => 400,
                 'message' => 'Company has been blocked. Please contact administration.']);
-        }
-
-      
+        }      
         if (isset($client)) {
             $database_name =  'db_'.$client['database_name'];
             $database_host = !empty($client->database_host) ? $client->database_host : env('DB_HOST','127.0.0.1');

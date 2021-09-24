@@ -14,11 +14,13 @@ use App\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use App\Jobs\ProcessClientDatabase;
+use App\Model\AgentDocs;
 use App\Model\Client;
 use App\Model\Cms;
 use App\Model\SubClient;
 use App\Model\TaskProof;
 use App\Model\TaskType;
+use App\Model\DriverRegistrationDocument;
 use App\Model\SmtpDetail;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Redis;
@@ -30,6 +32,23 @@ use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 class ClientController extends Controller
 {
+    protected function successResponse($data, $message = null, $code = 200)
+	{
+		return response()->json([
+			'status' => 'Success',
+			'message' => $message,
+			'data' => $data
+		], $code);
+	} 
+
+    protected function errorResponse($message = null, $code, $data = null)
+	{
+		return response()->json([
+			'status' => 'Error',
+			'message' => $message,
+			'data' => $data
+		], $code);
+	}
    
 
     private function randomString()
@@ -235,7 +254,8 @@ class ClientController extends Controller
         $client      = Auth::user();
         $subClients  = SubClient::all();
         $smtp        = SmtpDetail::where('id', 1)->first();
-        return view('configure')->with(['preference' => $preference, 'client' => $client,'subClients'=> $subClients,'smtp_details'=>$smtp]);
+        $agent_docs=DriverRegistrationDocument::get();
+        return view('configure')->with(['preference' => $preference, 'client' => $client,'subClients'=> $subClients,'smtp_details'=>$smtp, 'agent_docs' => $agent_docs]);
     }
 
     /**
@@ -301,4 +321,86 @@ class ClientController extends Controller
         $update->save();
         return redirect()->route('configure')->with('success', 'Configure updated successfully!');
     }
+
+     public function store(Request $request){
+        try {
+            $this->validate($request, [
+              'name' => 'required|string|max:60',
+              'file_type' => 'required',
+            ]);
+            DB::beginTransaction();
+            $driver_registration_document = new DriverRegistrationDocument();
+            $driver_registration_document->file_type = $request->file_type;
+            $driver_registration_document->name = $request->name;
+            $driver_registration_document->save();
+            DB::commit();
+            return $this->successResponse($driver_registration_document, 'Driver Registration Document Added Successfully.');
+        } catch (Exception $e) {
+            DB::rollback();
+            return $this->errorResponse([], $e->getMessage());
+        }
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  \App\Item  $item
+     * @return \Illuminate\Http\Response
+     */
+    public function show(Request $request){
+        try {
+            $driver_registration_document = DriverRegistrationDocument::where(['id' => $request->driver_registration_document_id])->firstOrFail();
+            return $this->successResponse($driver_registration_document, '');
+        } catch (Exception $e) {
+            return $this->errorResponse([], $e->getMessage());
+        }
+    }
+
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Item  $item
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, DriverRegistrationDocument $driverRegistrationDocument){
+         try {
+            $this->validate($request, [
+              'name' => 'required|string|max:60',
+              'file_type' => 'required',
+            ]);
+            DB::beginTransaction();
+            $driver_registration_document_id = $request->driver_registration_document_id;
+            $driver_registration_document = DriverRegistrationDocument::where('id', $driver_registration_document_id)->first();
+            $driver_registration_document->file_type = $request->file_type;
+            $driver_registration_document->name = $request->name;
+            $driver_registration_document->save();
+         
+            DB::commit();
+            return $this->successResponse($driver_registration_document, 'Driver Registration Document Updated Successfully.');
+        } catch (Exception $e) {
+            DB::rollback();
+            return $this->errorResponse([], $e->getMessage());
+        }
+    }
+
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \App\Item  $item
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy(Request $request){
+        try {
+            DriverRegistrationDocument::where('id', $request->driver_registration_document_id)->delete();
+           
+            return $this->successResponse([], 'Driver Registration Document Deleted Successfully.');
+        } catch (Exception $e) {
+            return $this->errorResponse([], $e->getMessage());
+        }
+    }
+
+   
 }
