@@ -51,17 +51,6 @@
                     }
                 },
                 columns: dataTableColumn(),
-                // columnDefs: [{
-                //     targets: 5,
-                //     render: function(data, type, full, meta) {
-                //         var shortName = JSON.parse(full.short_name.replace(/&quot;/g,'"'));
-                //         var routes = '';
-                //         $.each(shortName, function(index, elem) {
-                //             routes += '<div class="address_box"><span class="'+elem.pickupClass+'">'+elem.taskType+'</span> <span class="short_name">'+elem.shortName+'</span> <label class="datatable-cust-routes" data-toggle="tooltip" data-placement="bottom" title="'+elem.address+'">'+elem.address+'</label></div>';
-                //         });
-                //         return routes;
-                //     }
-                // }],
             });
         }
         
@@ -129,18 +118,10 @@
     });
 
     function handleClick(myRadio) {
-        // var routesListingType = $(myRadio).attr('value');
-        // $('#routes-listing-status').val(routesListingType);  
-        // initializeRouteListing();
         $('#getTask').submit();             
     }
 
     //this is for task detail pop-up
-
-    // $(document).on('click', '.paginate_button a', function() {
-    //     // $('.agents-datatable th').css("display", "block");
-    //     $('.agents-datatable td').css("display", "block");
-    // });
     $(document).on('click', '.showtasks', function() {
         var CSRF_TOKEN = $("input[name=_token]").val();
         var tour_id = $(this).val();
