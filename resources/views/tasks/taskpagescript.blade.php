@@ -49,10 +49,21 @@
                         d.imgproxyurl = '{{$imgproxyurl}}';
                     }
                 },
-                columns: dataTableColumn()
+                columns: dataTableColumn(),
+                // columnDefs: [{
+                //     targets: 5,
+                //     render: function(data, type, full, meta) {
+                //         var shortName = JSON.parse(full.short_name.replace(/&quot;/g,'"'));
+                //         var routes = '';
+                //         $.each(shortName, function(index, elem) {
+                //             routes += '<div class="address_box"><span class="'+elem.pickupClass+'">'+elem.taskType+'</span> <span class="short_name">'+elem.shortName+'</span> <label class="datatable-cust-routes" data-toggle="tooltip" data-placement="bottom" title="'+elem.address+'">'+elem.address+'</label></div>';
+                //         });
+                //         return routes;
+                //     }
+                // }],
             });
         }
-
+        
         function dataTableColumn(){
             var routesListing = $('#routes-listing-status').val();
             if(routesListing == 'unassigned'){
@@ -68,7 +79,7 @@
                         var shortName = JSON.parse(full.short_name.replace(/&quot;/g,'"'));
                         var routes = '';
                         $.each(shortName, function(index, elem) {
-                            routes += '<div class="address_box"><span class="'+elem.pickupClass+'">'+elem.taskType+'</span> <span class="short_name">'+elem.shortName+'</span> <label data-toggle="tooltip" data-placement="bottom" title="'+elem.address+'">'+elem.address+'</label></div>';
+                            routes += '<div class="address_box"><span class="'+elem.pickupClass+'">'+elem.taskType+'</span> <span class="short_name">'+elem.shortName+'</span> <label class="datatable-cust-routes" data-toggle="tooltip" data-placement="bottom" title="'+elem.toolTipAddress+'">'+elem.address+'</label></div>';
                         });
                         return routes;
                     }},
@@ -94,9 +105,9 @@
                         var shortName = JSON.parse(full.short_name.replace(/&quot;/g,'"'));
                         var routes = '';
                         $.each(shortName, function(index, elem) {
-                            routes += '<div class="address_box"><span class="'+elem.pickupClass+'">'+elem.taskType+'</span> <span class="short_name">'+elem.shortName+'</span> <label data-toggle="tooltip" data-placement="bottom" title="'+elem.address+'">'+elem.address+'</label></div>';
+                            routes += '<div class="address_box"><span class="'+elem.pickupClass+'">'+elem.taskType+'</span> <span class="short_name">'+elem.shortName+'</span> <label data-toggle="tooltip" data-placement="bottom" title="'+elem.toolTipAddress+'">'+elem.address+'</label></div>';
                         });
-                        return routes;
+                        return routes; 
                     }},
                     {data: 'track_url', name: 'track_url', orderable: false, searchable: false, "mRender": function ( data, type, full ) {
                         var trackUrl = full.track_url;

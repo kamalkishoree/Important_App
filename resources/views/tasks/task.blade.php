@@ -180,7 +180,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                         </div>
                         <input type="hidden" id="routes-listing-status" value="unassigned">
                         <div class="table-responsive">
-                            <table class="table table-striped dt-responsive nowrap w-100 agents-datatable" style="table-layout:50%" id="agents-datatable">
+                            <table class="table table-striped dt-responsive nowrap w-100 agents-datatable" id="agents-datatable">
                                 <thead>
                                     <tr>
                                         @if (!isset($status) || $status == 'unassigned')
@@ -197,9 +197,8 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                         <th style="width: 85px;">{{__("Action")}}</th>
                                     </tr>
                                 </thead>
-                                <!-- <tbody style="height: 8%;overflow: auto !important;"> -->
-                                <tbody>
-                                    
+                                <tbody style="height: 8%;overflow: auto !important;">
+                                
                                 </tbody>
                             </table>
                         </div>
