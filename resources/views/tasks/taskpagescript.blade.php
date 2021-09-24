@@ -15,6 +15,7 @@
             $('.agents-datatable').DataTable({
                 "dom": '<"toolbar">Bfrtip',
                 "destroy": true,
+                "scrollX": true,
                 "processing": true,
                 "serverSide": true,
                 "responsive": true,
