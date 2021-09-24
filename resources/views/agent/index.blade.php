@@ -51,6 +51,9 @@
     .btn-label,.btn-label:focus,.btn-label:active {
         background-color: rgb(102 88 221) !important;
     }
+    .dataTables_scrollHead thead th {
+        cursor: pointer;
+    }
 </style>
 @endsection
 @php
