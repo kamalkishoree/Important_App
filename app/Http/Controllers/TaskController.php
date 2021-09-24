@@ -134,7 +134,7 @@ class TaskController extends Controller
                     return $phoneNumber;
                 })
                 ->editColumn('agent_name', function ($orders) use ($request) {
-                    $checkActive = (!empty($orders->agent->name) && $orders->agent->is_available == 1) ? ' (Online)' : ' (Offline)';
+                    $checkActive = (!empty($orders->agent->name) && $orders->agent->is_available == 1) ? ' (Active)' : ' (InActive)';
                     $agentName   = !empty($orders->agent->name)? $orders->agent->name.$checkActive : '';
                     return $agentName;
                 })
