@@ -153,7 +153,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                         <table class="table table-striped dt-responsive nowrap w-100 all agent-listing" id="agent-listing">
                             <thead>
                                 <tr>
-                                    <th class="sort-icon">{{__("Uid")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
+                                    <th class="sort-icon">{{__("UID")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                     <th class="sort-icon">{{__("Profile")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                     <th class="sort-icon">{{__("Name")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                     <th class="sort-icon">{{__("Phone")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
