@@ -144,7 +144,7 @@
                     
                 </div>
                 <div class="modal-footer justify-content-center">
-                    <button type="submit" class="btn btn-blue waves-effect waves-light submitTaskHeader">{{__("Submit")}}</button>
+                     <a href="javascript: void(0);" class="btn btn-blue waves-effect waves-light submitTaskHeader"><span class="spinner-border spinner-border-sm submitTaskHeaderLoader" style="display:none;" role="status" aria-hidden="true"></span> <span id="submitTaskHeaderText">{{__("Submit")}}</span></a>
                 </div>
             </form>   
         </div>
@@ -681,26 +681,17 @@
         }
 
         var autoval = "";
-        var auto = $("#rediodiv input[type='radio']:checked");
-        autoval = auto.val();
-        //console.log(autoval);
-        // if (autoval == 'auto' || autoval == 'a') {
-        //     var value = $("#selectize-optgroups option:selected").text();
-        //     var value2 = $("#selectize-optgroup option:selected").text();
-        //     if (value == '') {
-        //         $(".tagspan").show();  err = 1;
-        //         return false;
-        //     }
-        //     if (value2 == '') {
-        //         $(".tagspan").show();  err = 1;
-        //         return false;
-        //     }
-        // }
-        if( err == 0){
-            var formData = new FormData(document.querySelector("#taskFormHeader"));
-            TaskSubmit(formData, 'POST', '/newtasks', '#task-modal-header');            
-          //$("#taskFormHeader").submit();
-        }
+        var auto    = $("#rediodiv input[type='radio']:checked");
+        autoval     = auto.val();
+        
+            if( err == 0){
+                $('.submitTaskHeaderLoader').css('display', 'inline-block');
+                $('#submitTaskHeaderText').text('Done');
+                $('.submitTaskHeader').attr("disabled","disabled");
+            
+                var formData = new FormData(document.querySelector("#taskFormHeader"));
+                TaskSubmit(formData, 'POST', '/newtasks', '#task-modal-header');
+            }
     });
 
     
