@@ -237,8 +237,8 @@ class DashBoardController extends Controller
                             $driverlocation['lat'] = $singleagentdetail->agentlog->lat??$singleagentdetail->order[0]['task'][0]['location']['latitude']??'0.000';
                             $driverlocation['long'] = $singleagentdetail->agentlog->long??$singleagentdetail->order[0]['task'][0]['location']['longitude']??'0.000';
                         }
-                        $gettotal_distance                              = $this->getTotalDistance($tasklistids, $driverlocation);
-                        $clientPreference                               = ClientPreference::where('id', 1)->first();
+                        $gettotal_distance = $this->getTotalDistance($tasklistids, $driverlocation);
+                        $clientPreference  = ClientPreference::where('id', 1)->first();
                         $teamdata[$k1]['agents'][$k2]['total_distance'] = ($clientPreference->distance_unit == 'metric')? $gettotal_distance['total_distance_km'] : $gettotal_distance['total_distance_miles'];
                     }
                     $teamdata[$k1]['agents'][$k2]['order'] = $sorted_orders;
@@ -308,10 +308,10 @@ class DashBoardController extends Controller
        
         $getAdminCurrentCountry = Countries::where('id', '=', Auth::user()->country_id)->get()->first();
         if(!empty($getAdminCurrentCountry)){
-            $defaultCountryLatitude   = $getAdminCurrentCountry->latitude;
+            $defaultCountryLatitude  = $getAdminCurrentCountry->latitude;
             $defaultCountryLongitude  = $getAdminCurrentCountry->longitude;
         }else{
-            $defaultCountryLatitude   = '';
+            $defaultCountryLatitude  = '';
             $defaultCountryLongitude  = '';
         }
         return view('dashboard')->with(['teams' => $teamdata, 'defaultCountryLongitude' => $defaultCountryLongitude, 'defaultCountryLatitude' => $defaultCountryLatitude, 'newmarker' => $newmarker, 'unassigned' => $unassigned, 'agents' => $agents,'date'=> $date,'preference' =>$preference, 'routedata' => $uniquedrivers,'distance_matrix' => $distancematrix, 'unassigned_orders' => $unassigned_orders,'unassigned_distance' => $un_total_distance,'map_key'=>$googleapikey,'client_timezone'=>$auth->timezone]);
