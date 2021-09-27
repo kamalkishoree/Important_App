@@ -75,7 +75,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                                 <span class="profile-circle">D</span>
                                             </div>
                                             <div class="col-md-10 col-10">                        
-                                                <h6 class="mb-0 header-title scnd">Unassigned Tasks<div class="optimizebtn0">{!! $optimize0 !!} </div><div class="exportbtn0">{!! $turnbyturn0 !!} </div></h6>
+                                                <h6 class="mb-0 header-title scnd">Unassigned Tasks<div  class="optimizebtn0">{!! $optimize0 !!} </div><div class="exportbtn0">{!! $turnbyturn0 !!} </div></h6>
                                                 <p class="mb-0"> <span>{{ count($unassigned_orders) }} Tasks</span> {!! $unassigned_distance==''?'':' <i class="fas fa-route"></i> '!!}<span class="dist_sec totdis0">{{ $unassigned_distance }}</span></p>
                                             </div>
                                         </div>
@@ -158,8 +158,8 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                             <span class="profile-circle {{$color[rand(0,7)]}}">{{ ucfirst($item['name'][0]) }}</span>
                                         </div>
                                         <div class="col-md-9 col-xl-10 col-10">
-                                            <h6 class="header-title">{{ ucfirst($item['name']) }}</h6>
-                                            <p class="mb-0">{{count($item['agents'])}} {{__('Agents')}} : <span>{{$item['online_agents']}} {{__('Online')}} ・ {{$item['offline_agents']}} {{__('Offline')}}</span></p>
+                                                <h6 class="header-title">{{ ucfirst($item['name']) }}</h6>
+                                                <p class="mb-0">{{count($item['agents'])}} {{__('Agents')}} : <span>{{$item['online_agents']}} {{__('Online')}} ・ {{$item['offline_agents']}} {{__('Offline')}}</span></p>
                                         </div>
                                     </div>
                                 </div>
@@ -228,11 +228,11 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                                                 src="{{isset($agent['profile_picture']) ? $imgproxyurl.Storage::disk('s3')->url($agent['profile_picture']):'https://dummyimage.com/36x36/ccc/fff'}}">
                                                         </div>
                                                         <div class="col-md-10 col-10">
-                                                            @php
-                                                               $checkAgentActive = ($agent['is_available'] == 1)? ' ('.__('Online').')' : ' ('.__('Offline').')';
-                                                            @endphp
-                                                            <h6 class="mb-0 header-title scnd">{{ ucfirst($agent['name']) . $checkAgentActive }} <div class="optimizebtn{{ $agent['id'] }}">{!! $optimize !!}</div><div class="exportbtn{{ $agent['id'] }}">{!! $turnbyturn !!} </div></h6>
-                                                            <p class="mb-0">{{count($agent['order'])>0?'Busy  ':'Free  '}}<span>{{$agent['agent_task_count']}} {{__('Tasks')}}</span> {!!$agent['total_distance']==''?'':' <i class="fas fa-route"></i>'!!}<span class="dist_sec totdis{{ $agent['id'] }}">{{ $agent['total_distance'] }}</span></p>
+                                                        @php
+                                                            $checkAgentActive = ($agent['is_available'] == 1)? ' ('.__('Online').')' : ' ('.__('Offline').')';
+                                                        @endphp
+                                                        <h6 class="mb-0 header-title scnd">{{ ucfirst($agent['name']) . $checkAgentActive }} <div class="optimizebtn{{ $agent['id'] }}">{!! $optimize !!}</div><div class="exportbtn{{ $agent['id'] }}">{!! $turnbyturn !!} </div></h6>
+                                                        <p class="mb-0">{{count($agent['order'])>0?'Busy  ':'Free  '}}<span>{{$agent['agent_task_count']}} {{__('Tasks')}}</span> {!!$agent['total_distance']==''?'':' <i class="fas fa-route"></i>'!!}<span class="dist_sec totdis{{ $agent['id'] }}">{{ $agent['total_distance'] }}</span></p>
                                                         </div>
                                                     </div>
                                                 </a>

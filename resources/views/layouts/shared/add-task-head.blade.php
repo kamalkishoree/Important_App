@@ -144,7 +144,7 @@
                     
                 </div>
                 <div class="modal-footer justify-content-center">
-                    <a href="javascript: void(0);" class="btn btn-blue waves-effect waves-light submitTaskHeader"><span class="spinner-border spinner-border-sm submitTaskHeaderLoader" style="display:none;" role="status" aria-hidden="true"></span> <span id="submitTaskHeaderText">{{__("Submit")}}</span></a>
+                     <a href="javascript: void(0);" class="btn btn-blue waves-effect waves-light submitTaskHeader"><span class="spinner-border spinner-border-sm submitTaskHeaderLoader" style="display:none;" role="status" aria-hidden="true"></span> <span id="submitTaskHeaderText">{{__("Submit")}}</span></a>
                 </div>
             </form>   
         </div>
@@ -672,14 +672,14 @@
         var auto    = $("#rediodiv input[type='radio']:checked");
         autoval     = auto.val();
         
-        if( err == 0){
-            $('.submitTaskHeaderLoader').css('display', 'inline-block');
-            $('#submitTaskHeaderText').text('Done');
-            $('.submitTaskHeader').attr("disabled","disabled");
-           
-            var formData = new FormData(document.querySelector("#taskFormHeader"));
-            TaskSubmit(formData, 'POST', '/newtasks', '#task-modal-header');
-        }
+            if( err == 0){
+                $('.submitTaskHeaderLoader').css('display', 'inline-block');
+                $('#submitTaskHeaderText').text('Done');
+                $('.submitTaskHeader').attr("disabled","disabled");
+            
+                var formData = new FormData(document.querySelector("#taskFormHeader"));
+                TaskSubmit(formData, 'POST', '/newtasks', '#task-modal-header');
+            }
     });
 
     
