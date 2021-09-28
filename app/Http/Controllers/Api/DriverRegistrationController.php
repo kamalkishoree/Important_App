@@ -20,7 +20,7 @@ class DriverRegistrationController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'upload_photo' => 'mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'name' => 'required|max:15',
+            'name' => 'required|max:255',
             'phone_number' => 'required||unique:agents|min:9|max:15',
             'type' => 'required',
             'vehicle_type_id' => 'required',
