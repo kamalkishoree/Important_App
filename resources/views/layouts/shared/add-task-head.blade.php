@@ -614,9 +614,6 @@
         var email = $('#email_new').val();
         var phone_no = $('#phone_new').val();
 
-      
-        console.log(cus_id + ' - '+ name + '-' + phone_no + '-' + email);
-
         if (cus_id == '') {
             if (name != '' && email != '' && phone_no != '') {
 
