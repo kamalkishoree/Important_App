@@ -124,8 +124,8 @@
                 {data: 'email', name: 'email', orderable: true, searchable: false},
                 {data: 'phone_number', name: 'phone_number', orderable: true, searchable: false},
                 {data: 'status', name: 'status', orderable: false, searchable: false, "mRender": function ( data, type, full ) {
-                    var check = (full.status == 'Active')? 'checked' : '';
-                    return '<div class="custom-control custom-switch"><input type="checkbox" class="custom-control-input customer_status_switch" '+check+' id="customSwitch_'+full.id+'" data-id="'+full.id+'"><label class="custom-control-label" for="customSwitch_'+full.id+'"></label></div>';
+                        var check = (full.status == 'Active')? 'checked' : '';
+                        return '<div class="custom-control custom-switch"><input type="checkbox" class="custom-control-input customer_status_switch" '+check+' id="customSwitch_'+full.id+'" data-id="'+full.id+'"><label class="custom-control-label" for="customSwitch_'+full.id+'"></label></div>';
                      
                 }},
                 {data: 'action', name: 'action', orderable: true, searchable: false}
@@ -135,27 +135,27 @@
     });
 
     //change status on a customer
-    $(function() {
-        $(document).on('change', '.customer_status_switch', function() {
-            var status = $(this).prop('checked') == true ? "Active" : 'In-Active';
-            var user_id = $(this).data('id');
+        $(function() {
+            $(document).on('change', '.customer_status_switch', function() {
+                var status = $(this).prop('checked') == true ? "Active" : 'In-Active';
+                var user_id = $(this).data('id');
 
-            $.ajax({
-                type: "GET",
-                dataType: "json",
-                url: '/changeStatus',
-                data: {
-                    'status': status,
-                    'id': user_id
-                },
-                success: function(data) {
-                    if (data.status == 1) {
-                        $.NotificationApp.send("", data.success, "top-right", "#5ba035", "success");
+                $.ajax({
+                    type: "GET",
+                    dataType: "json",
+                    url: '/changeStatus',
+                    data: {
+                        'status': status,
+                        'id': user_id
+                    },
+                    success: function(data) {
+                        if (data.status == 1) {
+                            $.NotificationApp.send("", data.success, "top-right", "#5ba035", "success");
+                        }
                     }
-                }
-            });
-        })
-    });
+                });
+            })
+        });
 
     //append new address fields
 

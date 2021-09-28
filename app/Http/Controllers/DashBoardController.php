@@ -239,7 +239,7 @@ class DashBoardController extends Controller
                         }
                         $gettotal_distance = $this->getTotalDistance($tasklistids, $driverlocation);
                         $clientPreference  = ClientPreference::where('id', 1)->first();
-                        $teamdata[$k1]['agents'][$k2]['total_distance']  = ($clientPreference->distance_unit == 'metric')? $gettotal_distance['total_distance_km'] : $gettotal_distance['total_distance_miles'];
+                        $teamdata[$k1]['agents'][$k2]['total_distance'] = ($clientPreference->distance_unit == 'metric')? $gettotal_distance['total_distance_km'] : $gettotal_distance['total_distance_miles'];
                     }
                     $teamdata[$k1]['agents'][$k2]['order'] = $sorted_orders;
                 }
@@ -302,15 +302,16 @@ class DashBoardController extends Controller
             }
         }
 
-        $client       = ClientPreference::where('id', 1)->first();
+        $client = ClientPreference::where('id', 1)->first();
+   
         $googleapikey = $client->map_key_1??'';
        
         $getAdminCurrentCountry = Countries::where('id', '=', Auth::user()->country_id)->get()->first();
         if(!empty($getAdminCurrentCountry)){
-            $defaultCountryLatitude   = $getAdminCurrentCountry->latitude;
+            $defaultCountryLatitude  = $getAdminCurrentCountry->latitude;
             $defaultCountryLongitude  = $getAdminCurrentCountry->longitude;
         }else{
-            $defaultCountryLatitude   = '';
+            $defaultCountryLatitude  = '';
             $defaultCountryLongitude  = '';
         }
         return view('dashboard')->with(['teams' => $teamdata, 'defaultCountryLongitude' => $defaultCountryLongitude, 'defaultCountryLatitude' => $defaultCountryLatitude, 'newmarker' => $newmarker, 'unassigned' => $unassigned, 'agents' => $agents,'date'=> $date,'preference' =>$preference, 'routedata' => $uniquedrivers,'distance_matrix' => $distancematrix, 'unassigned_orders' => $unassigned_orders,'unassigned_distance' => $un_total_distance,'map_key'=>$googleapikey,'client_timezone'=>$auth->timezone]);
