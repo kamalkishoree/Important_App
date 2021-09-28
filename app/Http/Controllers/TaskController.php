@@ -1134,20 +1134,21 @@ class TaskController extends Controller
 
         if (!isset($geo)) {
             $oneagent = Agent::where('id', $agent_id)->first();
-            $data = [
-                'order_id'            => $orders_id,
-                'driver_id'           => $agent_id,
-                'notification_time'   => $time,
-                'type'                => $allcation_type,
-                'client_code'         => Auth::user()->code,
-                'created_at'          => Carbon::now()->toDateTimeString(),
-                'updated_at'          => Carbon::now()->toDateTimeString(),
-                'device_type'         => $oneagent->device_type,
-                'device_token'        => $oneagent->device_token,
-                'detail_id'           => $randem,
-            ];
-
-            $this->dispatch(new RosterCreate($data, $extraData)); //this job is for create roster in main database for send the notification  in manual alloction
+            if(!empty($oneagent->device_token) && $oneagent->is_available == 1){
+                $data = [
+                    'order_id'            => $orders_id,
+                    'driver_id'           => $agent_id,
+                    'notification_time'   => $time,
+                    'type'                => $allcation_type,
+                    'client_code'         => Auth::user()->code,
+                    'created_at'          => Carbon::now()->toDateTimeString(),
+                    'updated_at'          => Carbon::now()->toDateTimeString(),
+                    'device_type'         => $oneagent->device_type,
+                    'device_token'        => $oneagent->device_token,
+                    'detail_id'           => $randem,
+                ];
+                $this->dispatch(new RosterCreate($data, $extraData)); //this job is for create roster in main database for send the notification  in manual alloction
+            }
         } else {
             $unit              = $auth->getPreference->distance_unit;
             $try               = $auth->getAllocation->number_of_retries;
@@ -1178,35 +1179,37 @@ class TaskController extends Controller
             $data = [];
             for ($i = 1; $i <= $try; $i++) {
                 foreach ($getgeo as $key =>  $geoitem) {
-                    if (in_array($geoitem->driver_id, $allreadytaken)) {
+                    if (in_array($geoitem->driver_id, $allreadytaken) && !empty($geoitem->agent->device_token) && $geoitem->agent->is_available == 1) {
                         $extra = [
                             'id' => $geoitem->driver_id,
                             'device_type' => $geoitem->agent->device_type, 'device_token' => $geoitem->agent->device_token
                         ];
                         array_push($remening, $extra);
                     } else {
-                        $data = [
-                            'order_id'            => $orders_id,
-                            'driver_id'           => $geoitem->driver_id,
-                            'notification_time'   => $time,
-                            'type'                => $allcation_type,
-                            'client_code'         => Auth::user()->code,
-                            'created_at'          => Carbon::now()->toDateTimeString(),
-                            'updated_at'          => Carbon::now()->toDateTimeString(),
-                            'device_type'         => $geoitem->agent->device_type??null,
-                            'device_token'        => $geoitem->agent->device_token??null,
-                            'detail_id'           => $randem,
-                        ];
-                        if (count($dummyentry) < 1) {
-                            array_push($dummyentry, $data);
+                        if(!empty($geoitem->agent->device_token) && $geoitem->agent->is_available == 1){
+                            $data = [
+                                'order_id'            => $orders_id,
+                                'driver_id'           => $geoitem->driver_id,
+                                'notification_time'   => $time,
+                                'type'                => $allcation_type,
+                                'client_code'         => Auth::user()->code,
+                                'created_at'          => Carbon::now()->toDateTimeString(),
+                                'updated_at'          => Carbon::now()->toDateTimeString(),
+                                'device_type'         => $geoitem->agent->device_type??null,
+                                'device_token'        => $geoitem->agent->device_token??null,
+                                'detail_id'           => $randem,
+                            ];
+                            if (count($dummyentry) < 1) {
+                                array_push($dummyentry, $data);
+                            }
+
+                            //here i am seting the time diffrence for every notification
+
+                            $time = Carbon::parse($time)
+                                ->addSeconds($expriedate + 3)
+                                ->format('Y-m-d H:i:s');
+                            array_push($all, $data);
                         }
-
-                        //here i am seting the time diffrence for every notification
-
-                        $time = Carbon::parse($time)
-                            ->addSeconds($expriedate + 3)
-                            ->format('Y-m-d H:i:s');
-                        array_push($all, $data);
                         $counter++;
                     }
 
