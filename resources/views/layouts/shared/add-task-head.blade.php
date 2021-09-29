@@ -533,8 +533,8 @@
                         //console.log(name+'-input');
                         document.getElementById(name + '-latitude').value = lat;
                         document.getElementById(name + '-longitude').value = lng;
-                        const postCode = results[0].address_components.find(addr => addr.types[0] === "postal_code").short_name;
-                        document.getElementById(name + '-postcode').value = postCode;
+                        // const postCode = results[0].address_components.find(addr => addr.types[0] === "postal_code").short_name;
+                        // document.getElementById(name + '-postcode').value = postCode;
                     }
                 });
             });
