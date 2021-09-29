@@ -125,7 +125,8 @@ class SendPushNotification
 
                 if(isset($new)){
                     try{
-                        $fcm_server_key = $client_preferences->fcm_server_key??config('laravel-fcm.server_key');
+                        Log::info('$client_preferences->fcm_server_key -- '.$client_preferences->fcm_server_key);
+                        $fcm_server_key = !empty($client_preferences->fcm_server_key)? $client_preferences->fcm_server_key : config('laravel-fcm.server_key');
                         Log::info($fcm_server_key);
                         $fcmObj = new Fcm($fcm_server_key);
                         $fcm_store = $fcmObj
