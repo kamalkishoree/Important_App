@@ -1131,7 +1131,7 @@ class TaskController extends Controller
             'created_at'               => Carbon::now()->toDateTimeString(),
             'updated_at'               => Carbon::now()->toDateTimeString(),
         ];
-        Log::info('finalRoster');
+        
         if (!isset($geo)) {
             $oneagent = Agent::where('id', $agent_id)->first();
             if(!empty($oneagent->device_token) && $oneagent->is_available == 1){
@@ -1147,6 +1147,9 @@ class TaskController extends Controller
                     'device_token'        => $oneagent->device_token,
                     'detail_id'           => $randem,
                 ];
+                Log::info('finalRoster-single');
+                Log::info($data);
+                Log::info('finalRoster-single');
                 $this->dispatch(new RosterCreate($data, $extraData)); //this job is for create roster in main database for send the notification  in manual alloction
             }
         } else {
@@ -1253,7 +1256,9 @@ class TaskController extends Controller
                     break;
                 }
             }
-          
+            Log::info('finalRoster-all');
+            Log::info($all);
+            Log::info('finalRoster-all');
             $this->dispatch(new RosterCreate($all, $extraData)); // //this job is for create roster in main database for send the notification  in auto alloction
         }
     }
