@@ -29,6 +29,10 @@ class RosterCreate implements ShouldQueue
     {
         $this->data      = $data;
         $this->extraData = $extraData;
+
+        Log::info('roster-data-cun');
+         Log::info($this->data);
+         Log::info('roster-data-cun');
     }
 
     /**
@@ -63,9 +67,9 @@ class RosterCreate implements ShouldQueue
         //    Log::info('mesooooo2');
             config(["database.connections.mysql.database" => $schemaName]);
          //   Log::info($schemaName);
-         Log::info('roster-data');
+         Log::info('roster-data-fun');
          Log::info($this->data);
-         Log::info('roster-data');
+         Log::info('roster-data-fun');
             DB::connection($schemaName)->table('rosters')->insert($this->data);
         //    Log::info('mesooooo4');
             DB::connection($schemaName)->table('roster_details')->insert($this->extraData);
