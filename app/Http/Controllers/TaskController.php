@@ -1177,7 +1177,7 @@ class TaskController extends Controller
             }
             $counter = 0;
             $data = [];
-            for ($i = 1; $i <= $try; $i++) {
+            for ($i = 0; $i <= $try-1; $i++) {
                 foreach ($getgeo as $key =>  $geoitem) {
                     if (in_array($geoitem->driver_id, $allreadytaken) && !empty($geoitem->agent->device_token) && $geoitem->agent->is_available == 1) {
                         $extra = [
