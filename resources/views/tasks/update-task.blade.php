@@ -350,7 +350,7 @@ use Carbon\Carbon;
                     <!-- end row -->
 
                     <!-- container -->
-                    <h4 class="header-title mb-3">{{__('Meta Data')}}</h4>
+                    <h4 class="header-title mb-3">{{__('Task Description')}}</h4>
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <div class="form-group" id="make_modelInput">
@@ -360,7 +360,7 @@ use Carbon\Carbon;
                                 __('Recipient Email')]) !!}
                                 {{-- {!! Form::textarea('task_description', null, ['class' => 'form-control', 'placeholder' =>
                                 'Task Description', 'rows' => 2, 'cols' => 40]) !!} --}}
-                                <textarea class='form-control' placeholder="{{__('Task Description')}}" rows='2' cols='40' name="task_description">{{$task->task_description}}</textarea>
+                                <textarea class='form-control' placeholder="{{__('Please enter task description')}}" rows='2' cols='40' name="task_description">{{$task->task_description}}</textarea>
                                 {!! Form::hidden('net_quantity', null, ['class' => 'form-control rec mt-1', 'placeholder' =>
                                 __('Net Quantity')]) !!}
                                 <span class="invalid-feedback" role="alert">

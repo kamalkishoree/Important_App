@@ -214,7 +214,7 @@
             <!-- end row -->
 
             <!-- container -->
-            <h4 class="header-title mb-2">{{__("Meta Data")}}</h4>
+            <h4 class="header-title mb-2">{{__("Task Description")}}</h4>
             <div class="row">
                 <div class="col-md-6 mb-3">
                     <div class="form-group" id="make_modelInput">
@@ -223,7 +223,7 @@
                         {!! Form::hidden('recipient_email', null, ['class' => 'form-control rec', 'placeholder'
                         => __('Recipient Email'), 'required' => 'required']) !!}
                             {!! Form::textarea('task_description', null, ['class' => 'form-control',
-                            'placeholder' => __('Task Description'), 'rows' => 2, 'cols' => 40]) !!}
+                            'placeholder' => __('Please enter task description'), 'rows' => 2, 'cols' => 40]) !!}
                             <span class="invalid-feedback" role="alert">
                                 <strong></strong>
                             </span>

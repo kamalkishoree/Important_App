@@ -124,6 +124,10 @@
            margin-right: 9px !important;
            padding-top: 10px;
        }
+       .inactiveLink {
+            pointer-events: none;
+            cursor: default;
+        }
        .hidealloction{
            display: none;
        }
@@ -293,6 +297,10 @@
 
                 //$('.page-title1').html('Hello');
                 //console.log('data');
+                
+                $('.submitTaskHeaderLoader').css('display', 'none');
+                $('#submitTaskHeaderText').text('Submit');
+                $('.submitTaskHeader').removeClass("inactiveLink");
 
                 $('#task-modal-header #addCardBox').html(data.html);
 
@@ -684,7 +692,7 @@
             if( err == 0){
                 $('.submitTaskHeaderLoader').css('display', 'inline-block');
                 $('#submitTaskHeaderText').text('Done');
-                $('.submitTaskHeader').attr("disabled","disabled");
+                $('.submitTaskHeader').addClass("inactiveLink");
             
                 var formData = new FormData(document.querySelector("#taskFormHeader"));
                 TaskSubmit(formData, 'POST', '/newtasks', '#task-modal-header');
