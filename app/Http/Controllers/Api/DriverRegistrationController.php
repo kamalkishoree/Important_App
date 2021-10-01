@@ -105,14 +105,14 @@ class DriverRegistrationController extends Controller
 
             if ($agent->wasRecentlyCreated) {
                 return response()->json([
-                    'status' => 'success',
-                    'message' => 'Agent created Successfully!',
+                    'status' => __('success'),
+                    'message' => __('Agent created Successfully!'),
                     'data' => $agent
                 ]);
             }
         } catch (\Exception $e) {
             return response()->json([
-                'status' => 'error',
+                'status' => __('error'),
                 'message' => $e->getMessage(),
             ]);
         }
@@ -124,13 +124,13 @@ class DriverRegistrationController extends Controller
             $documents = DriverRegistrationDocument::get();
 
             return response()->json([
-                'status' => 'success',
-                'message' => 'Documents Sent Successfully!',
+                'status' => __('success'),
+                'message' => __('Documents Sent Successfully!'),
                 'data' => $documents
             ]);
         } catch (\Exception $e) {
             return response()->json([
-                'status' => 'error',
+                'status' => __('error'),
                 'message' => $e->getMessage(),
             ]);
         }

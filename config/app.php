@@ -123,6 +123,9 @@ return [
 
     'cipher' => 'AES-256-CBC',
 
+
+    'supported_languages' => ['en', 'ar', 'fr', 'de', 'es', 'sv'],
+
     /*
     |--------------------------------------------------------------------------
     | Autoloaded Service Providers

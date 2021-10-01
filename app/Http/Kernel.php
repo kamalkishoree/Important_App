@@ -75,6 +75,7 @@ class Kernel extends HttpKernel
         'CheckManagerPermission' => \App\Http\Middleware\CheckManagerPermission::class,
         'ConnectDbFromOrder' => \App\Http\Middleware\ConnectDbFromOrder::class,
         'switchLanguage'  => \App\Http\Middleware\CheckLocale::class,
+        'apiLocalization'  => \App\Http\Middleware\ApiLocalization::class,
         
     ];
 }

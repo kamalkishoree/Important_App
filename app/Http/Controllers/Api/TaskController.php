@@ -282,7 +282,7 @@ class TaskController extends BaseController
         return response()->json([
             'data' => $newDetails,
             'status' => 200,
-            'message' => 'success'
+            'message' => __('success')
         ]);
     }
     /////////////////// **********************   update status in order panel also **********************************  ///////////////////////
@@ -309,7 +309,7 @@ class TaskController extends BaseController
         catch(\Exception $e)
         {
             return response()->json([
-                'status' => 'error',
+                'status' => __('error'),
                 'message' => $e->getMessage()
             ]);
                     
@@ -347,7 +347,7 @@ class TaskController extends BaseController
         $check = Order::where('id', $request->order_id)->with(['agent','customer'])->first();
         if (!isset($check)) {
             return response()->json([
-                'message' => 'This order has already been accepted.',
+                'message' => __('This order has already been accepted.'),
             ], 404);
         }
         
@@ -356,7 +356,7 @@ class TaskController extends BaseController
                 $call_web_hook = $this->updateStatusDataToOrder($check, 2);  # task accepted
             }
             return response()->json([
-                'message' => 'Task Accecpted Successfully',
+                'message' => __('Task Accecpted Successfully'),
             ], 200);
         }  // need to we change
 
@@ -385,7 +385,7 @@ class TaskController extends BaseController
                 $call_web_hook = $this->updateStatusDataToOrder($check, 2);  # task accepted
             }
             return response()->json([
-                'data' => 'Task Accecpted Successfully',
+                'data' => __('Task Accecpted Successfully'),
             ], 200);
         } else {
             $data = [
@@ -398,9 +398,9 @@ class TaskController extends BaseController
             TaskReject::create($data);
 
             return response()->json([
-                'data' => 'Task Rejected Successfully',
+                'data' => __('Task Rejected Successfully'),
                 'status' => 200,
-                'message' => 'success'
+                'message' => __('success')
             ], 200);
         }
     }
@@ -683,7 +683,7 @@ class TaskController extends BaseController
                 if ($to_time >= $from_time) {
                     DB::commit();
                     return response()->json([
-                        'message' => 'Task Added Successfully',
+                        'message' => __('Task Added Successfully'),
                         'task_id' => $orders->id,
                         'status'  => $orders->status,
                         'dispatch_traking_url'  => $dispatch_traking_url??null
@@ -723,7 +723,7 @@ class TaskController extends BaseController
 
                    
                     return response()->json([
-                        'message' => 'Task Added Successfully',
+                        'message' => __('Task Added Successfully'),
                         'task_id' => $orders->id,
                         'status'  => $orders->status,
                         'dispatch_traking_url'  => $dispatch_traking_url??null
@@ -758,7 +758,7 @@ class TaskController extends BaseController
 
             DB::commit();
             return response()->json([
-            'message' => 'Task Added Successfully',
+            'message' => __('Task Added Successfully'),
             'task_id' => $orders->id,
             'status'  => $orders->status,
             'dispatch_traking_url'  => $dispatch_traking_url??null
@@ -1550,7 +1550,7 @@ class TaskController extends BaseController
             'currency' => $currency,
             'paid_distance' => $paid_distance,
             'paid_duration' => $paid_duration,
-            'message' => 'success'
+            'message' => __('success')
         ], 200);
         
     }
@@ -1574,7 +1574,7 @@ class TaskController extends BaseController
 
         return response()->json([
             'tags' => $tags,
-            'message' => 'success'
+            'message' => __('success')
         ], 200);
         
     }
@@ -1594,7 +1594,7 @@ class TaskController extends BaseController
 
         return response()->json([
             'teams' => $teams,
-            'message' => 'success'
+            'message' => __('success')
         ], 200);
         
     }
@@ -1609,7 +1609,7 @@ class TaskController extends BaseController
                 $check_alredy  = DB::table('order_ratings')->where('order_id', $order->id)->first();
 
                 if (isset($check_alredy->id)) {
-                    return response()->json(['status' => true, 'message' => 'Feedback has been already submitted.']);
+                    return response()->json(['status' => true, 'message' => __('Feedback has been already submitted')]);
                 } else {
                     $data = [
                         'order_id'    => $order->id,
@@ -1619,10 +1619,10 @@ class TaskController extends BaseController
 
                     DB::table('order_ratings')->insert($data);
 
-                    return response()->json(['status' => true, 'message' => 'Your feedback is submitted']);
+                    return response()->json(['status' => true, 'message' => __('Your feedback is submitted')]);
                 }
             } else {
-                return response()->json(['status' => true, 'message' => 'Order Not Found']);
+                return response()->json(['status' => true, 'message' => __('Order Not Found')]);
             }
         
     }
