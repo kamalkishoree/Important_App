@@ -111,11 +111,7 @@ class ActivityController extends BaseController
                 }
             }
         }
-      
-        array_walk_recursive($tasks, function (&$item, $key) {
-            $item = $item === null ? '' : $item;
-        });
-
+        
         return response()->json([
             'data' => $tasks,
             'status' => 200,
