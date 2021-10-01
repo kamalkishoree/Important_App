@@ -442,8 +442,7 @@
             $('[data-toggle="tooltip"]').tooltip()
         });
 
-        $('.mdi-delete').click(function(){
-            
+        $(document).on('click', '.mdi-delete', function() {            
             var r = confirm("{{__('Are you sure?')}}");
             if (r == true) {
                var taskid = $(this).attr('taskid');
