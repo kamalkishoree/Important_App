@@ -60,7 +60,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
         </div>
     </div>
   
-    <div class="row mt-4">
+    <div class="row">
         <div class="col-12">
             <div class="card widget-inline">
                 <div class="card-body">

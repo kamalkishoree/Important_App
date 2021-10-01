@@ -42,7 +42,13 @@
 
 .navbar-custom{
     padding: 0 10px;
-    }
+}
+.table-responsive.mn-4 {
+    margin-top: -42px;
+}
+.dt-buttons .btn.btn-secondary, .dt-buttons .btn.btn-secondary:focus, .dt-buttons .btn.btn-secondary:active {
+    border-radius: 50px;
+}
 .table-responsive::-webkit-scrollbar {
     width: 6px !important;
     height: 6px;
@@ -50,6 +56,22 @@
 
 body .navbar-custom .topnav-menu .nav-link {
     font-weight: 400;
+}
+
+.agents-datatable tbody td, .dataTables_scrollHead thead th {
+    padding: 10px 0 !important;
+}
+
+.dataTables_wrapper .inner-div {
+    width: 28%;
+    vertical-align: middle;
+    float: none;
+    display: inline-block;
+}
+
+.dataTables_wrapper .inner-div .action-icon {
+    margin: 0;
+    padding: 0;
 }
 
 .table-responsive::-webkit-scrollbar-track {
@@ -74,6 +96,7 @@ body .navbar-custom .topnav-menu .nav-link {
     min-width: 80px;
     text-align: center;
     border: 1px solid transparent;
+    margin-bottom: 0;
 }
 
 .login-form .blank-label {
