@@ -25,6 +25,7 @@ use Faker\Generator as Faker;
 use Illuminate\Support\Facades\Storage;
 use Validator;
 use Config;
+use App;
 
 class AuthController extends BaseController
 {
@@ -50,10 +51,10 @@ class AuthController extends BaseController
 
         if (!$agent) {
             return response()->json([
-                'message' => 'User not found'], 404);
+                'message' => __('User not found')], 404);
         }
         if($agent->is_approved == 0){
-            return response()->json(['message' => 'Your account not approved yet. Please contact administration'], 422);
+            return response()->json(['message' => __('Your account not approved yet. Please contact administration')], 422);
         }
         Otp::where('phone', $request->phone_number)->delete();
         $otp = new Otp();
@@ -77,19 +78,17 @@ class AuthController extends BaseController
                    ->create(
                        $agent->phone_number,  //to number
                      [
-                                "body" => "Your Dispatcher verification code is: ".$data['otp']."",
+                                "body" => __('Your Dispatcher verification code is').": ".$data['otp']."",
                                 "from" => $client_prefrerence->sms_provider_number   //form_number
                      ]
                    );
         } catch (\Exception $e) {
         }
            
-
-
         return response()->json([
             'data' => $data,
             'status' => 200,
-            'message' => 'success'
+            'message' => __('success')
         ]);
     }
 
@@ -108,12 +107,12 @@ class AuthController extends BaseController
         $date = Date('Y-m-d H:i:s');
 
         if (!$otp) {
-            return response()->json(['message' => 'Please enter a valid OTP'], 422);
+            return response()->json(['message' => __('Please enter a valid OTP')], 422);
         }
        
 
         if ($date > $otp->valid_till) {
-            return response()->json(['message' => 'Your otp has been expired. Please try again.'], 422);
+            return response()->json(['message' => __('Your otp has been expired. Please try again.')], 422);
         }
 
         
@@ -122,7 +121,7 @@ class AuthController extends BaseController
         
         if (!$agent) {
             return response()->json([
-                'message' => 'User not found'], 404);
+                'message' => __('User not found')], 404);
         }
 
         $prefer = ClientPreference::select('theme', 'distance_unit', 'currency_id', 'language_id', 'agent_name', 'date_format', 'time_format', 'map_type', 'map_key_1')->first();
@@ -184,7 +183,7 @@ class AuthController extends BaseController
         return response()->json([
             'data' => $agent,
             'status' => 200,
-            'message' => 'success'
+            'message' => __('success')
         ]);
     }
   
@@ -313,7 +312,7 @@ class AuthController extends BaseController
             return response()->json([
                         'status' => 200,
                         'url' => $url,
-                        'message' => 'success'
+                        'message' => __('success')
                     ], 200);
         }
         catch(\Exception $e){
@@ -406,7 +405,7 @@ class AuthController extends BaseController
         $agent = Agent::create($data);
 
         if ($agent->wasRecentlyCreated) {
-            return response()->json(['status' => 200, 'message' => 'Your account created successfully. Please login'], 200);
+            return response()->json(['status' => 200, 'message' => __('Your account created successfully. Please login')], 200);
         }
     }
   

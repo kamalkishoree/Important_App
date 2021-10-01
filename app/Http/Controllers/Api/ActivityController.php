@@ -65,7 +65,7 @@ class ActivityController extends BaseController
         // if driver is offline so do not send push notification---------------end--code---
 
         return response()->json([
-            'message' => 'Status updated Successfully',
+            'message' => __('Status updated Successfully'),
             'data' => array('is_available' => $agent->is_available),
             'status' => 200
         ]);
@@ -111,12 +111,15 @@ class ActivityController extends BaseController
                 }
             }
         }
-        
-   
+      
+        array_walk_recursive($tasks, function (&$item, $key) {
+            $item = $item === null ? '' : $item;
+        });
+
         return response()->json([
             'data' => $tasks,
             'status' => 200,
-            'message' => 'success'
+            'message' => __('success')
         ], 200);
     }
 
@@ -131,6 +134,8 @@ class ActivityController extends BaseController
 
         return response()->json([
         'data' => $agent,
+        'status' => 200,
+        'message' => __('success')
        ], 200);
     }
 
@@ -169,11 +174,11 @@ class ActivityController extends BaseController
 
         if ($agent->save()) {
             return response()->json([
-                'message' => 'Profile Updated Successfully',
+                'message' => __('Profile Updated Successfully'),
             ], 200);
         } else {
             return response()->json([
-                'message' => 'Sorry Something Went Wrong',
+                'message' => __('Sorry Something Went Wrong'),
             ], 404);
         }
     }
@@ -252,7 +257,7 @@ class ActivityController extends BaseController
         return response()->json([
             'data' => $datas,
             'status' => 200,
-            'message' => 'success'
+            'message' => __('success')
         ], 200);
     }
 
@@ -262,6 +267,8 @@ class ActivityController extends BaseController
 
         return response()->json([
             'data' => $data,
+            'status' => 200,
+            'message' => __('success')
            ], 200);
     }
 
@@ -291,7 +298,7 @@ class ActivityController extends BaseController
         return response()->json([
             'data' => array('tasks' =>$tasks, 'totalCashCollected'=>$totalCashCollected),
             'status' => 200,
-            'message' => 'success'
+            'message' => __('success')
         ], 200);
     }
 }
