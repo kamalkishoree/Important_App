@@ -93,7 +93,9 @@ class ActivityController extends BaseController
         
         if ($all == 1) {
             $orders = Order::where('driver_id', $id)->where('status', 'assigned')->orderBy("order_time","ASC")->orderBy("id","ASC")->pluck('id')->toArray();
-        } else {
+        } else if ($all == 2){
+            $orders = Order::where('driver_id', $id)->whereNotNull('cash_to_be_collected')->whereIn('status', ['assigned', 'completed'])->orderBy("order_time","ASC")->orderBy("id","ASC")->pluck('id')->toArray();
+        }else {
             $orders = Order::where('driver_id', $id)->where('order_time', '>=', $utc_start)->where('order_time', '<=', $utc_end)->where('status', 'assigned')->orderBy("order_time","ASC")->orderBy("id","ASC")->pluck('id')->toArray();
         }
        

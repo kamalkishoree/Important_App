@@ -258,6 +258,28 @@ class ClientController extends Controller
         return view('configure')->with(['preference' => $preference, 'client' => $client,'subClients'=> $subClients,'smtp_details'=>$smtp, 'agent_docs' => $agent_docs]);
     }
 
+
+
+    /**
+     * Show Options page
+     */
+    public function routeCreateConfigure(Request $request, $domain = '', $id)
+    {
+        $updatePreference = ClientPreference::where('client_id', $id)->update(['route_flat_input' => $request->route_flat_input, 'route_alcoholic_input' => $request->route_alcoholic_input]);
+
+        if ($request->ajax()) {
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Preference updated successfully!',
+                'data' =>    $updatePreference
+            ]);
+        } else {
+            return redirect()->back()->with('success', 'Preference updated successfully!');
+        }
+
+    }
+
+
     /**
      * Show Options page
      */
@@ -276,6 +298,7 @@ class ClientController extends Controller
     public function taskProof(Request $request)
     {
         $requestAll = $request->all();
+        // echo "<pre>";print_r($requestAll);echo "</pre>";die;
         for ($i=1; $i <= 3 ; $i++) {
             $check = TaskProof::where('id', $i)->first();
 
@@ -293,6 +316,8 @@ class ClientController extends Controller
             $update->note_requried      = isset($request['note_requried_'.$i])? 1 : 0 ;
             $update->barcode            = isset($request['barcode_'.$i])? 1 : 0 ;
             $update->barcode_requried   = isset($request['barcode_requried_'.$i])? 1 : 0 ;
+            $update->otp                = isset($request['otp_'.$i])? 1 : 0 ;
+            $update->otp_requried       = isset($request['otp_requried_'.$i])? 1 : 0 ;
             $update->save();
         }
         

@@ -423,7 +423,8 @@ class TaskController extends Controller
             'freelancer_commission_percentage'=> $pricingRule->freelancer_commission_percentage,
             'freelancer_commission_fixed'     => $pricingRule->freelancer_commission_fixed,
             'unique_id'                       => $unique_order_id,
-            'call_back_url'                   => $request->call_back_url??null
+            'call_back_url'                   => $request->call_back_url??null,
+            'alcoholic_item'                  => !empty($request->alcoholic_item)? $request->alcoholic_item : 0,
         ];
         
         $orders = Order::create($order);
@@ -442,6 +443,7 @@ class TaskController extends Controller
                     'short_name'  => $request->short_name[$key],
                     'address'     => $request->address[$key],
                     'post_code'   => $request->post_code[$key],
+                    'flat_no'     => !empty($request->flat_no[$key])? $request->flat_no[$key] : '',
                     'email'         => $request->address_email[$key],
                     'phone_number'   => $request->address_phone_number[$key],
                     // 'due_after'      => $request->due_after[$key],
@@ -469,6 +471,7 @@ class TaskController extends Controller
                     'short_name'  => $location->short_name,
                     'address'     => $location->address,
                     'post_code'   => $location->post_code,
+                    'flat_no'     => $location->flat_no,
                     'email'         => $location->address_email,
                     'phone_number'   => $location->address_phone_number,
                     // 'due_after'      => $location->due_after,
@@ -749,9 +752,10 @@ class TaskController extends Controller
         }
         $agents = $agents->get();
 
+        $preference  = ClientPreference::where('id', 1)->first(['route_flat_input','route_alcoholic_input']);
        
         $task_proofs = TaskProof::all();
-        $returnHTML = view('modals/add-task-modal')->with(['teamTag' => $teamTag, 'agentTag' => $agentTag, 'agents' => $agents, 'pricingRule' => $pricingRule, 'allcation' => $allcation ,'task_proofs' => $task_proofs ])->render();
+        $returnHTML = view('modals/add-task-modal')->with(['teamTag' => $teamTag, 'preference'=>$preference, 'agentTag' => $agentTag, 'agents' => $agents, 'pricingRule' => $pricingRule, 'allcation' => $allcation ,'task_proofs' => $task_proofs ])->render();
         return response()->json(array('success' => true, 'html' => $returnHTML));
     }
 
@@ -874,6 +878,7 @@ class TaskController extends Controller
                     'short_name'  => $request->short_name[$key],
                     'address'     => $request->address[$key],
                     'post_code'   => $request->post_code[$key],
+                    'flat_no'   => !empty($request->flat_no[$key])? $request->flat_no[$key] : '',
                     'customer_id' => $cus_id,
                 ];
                 $Loction = Location::create($loc);
@@ -1857,7 +1862,9 @@ class TaskController extends Controller
             $all_locations = Location::where('customer_id', '!=', $cust_id)->where('short_name', '!=', null)->where('location_status', 1)->get();
         }
         $task_proofs = TaskProof::all();
-        return view('tasks/update-task')->with(['task' => $task, 'task_proofs' => $task_proofs, 'teamTag' => $teamTag, 'agentTag' => $agentTag, 'agents' => $agents, 'images' => $array, 'savedrivertag' => $savedrivertag, 'saveteamtag' => $saveteamtag, 'main' => $lastbaseurl,'alllocations'=>$all_locations,'client_timezone'=>$client_timezone]);
+        $preference  = ClientPreference::where('id', 1)->first(['route_flat_input','route_alcoholic_input']);
+
+        return view('tasks/update-task')->with(['task' => $task, 'task_proofs' => $task_proofs, 'preference' => $preference, 'teamTag' => $teamTag, 'agentTag' => $agentTag, 'agents' => $agents, 'images' => $array, 'savedrivertag' => $savedrivertag, 'saveteamtag' => $saveteamtag, 'main' => $lastbaseurl,'alllocations'=>$all_locations,'client_timezone'=>$client_timezone]);
     }
 
     /**
@@ -1960,6 +1967,7 @@ class TaskController extends Controller
             'cash_to_be_collected'       => $request->cash_to_be_collected,
             'status'                     => $assign,
             'driver_cost'                => $percentage,
+            'alcoholic_item'             => $request->alcoholic_item,
         ];
         $orders = Order::where('id', $id)->update($order);
         if ($last != '') {
@@ -1974,6 +1982,7 @@ class TaskController extends Controller
                     'short_name' => $request->short_name[$key],
                     'address'    => $request->address[$key],
                     'post_code'  => $request->post_code[$key],
+                    'flat_no'    => !empty($request->flat_no[$key])? $request->flat_no[$key] : '',
                     'latitude'   => $request->latitude[$key],
                     'longitude'  => $request->longitude[$key],
                     'email'  => $request->address_email[$key],
@@ -1982,6 +1991,7 @@ class TaskController extends Controller
                     // 'due_before'  => $request->due_before[$key],
                     'customer_id' => $cus_id,
                 ];
+                
                 $Loction = Location::create($loc);
                 $loc_id = $Loction->id;
             } else {
@@ -1999,6 +2009,7 @@ class TaskController extends Controller
                         'short_name'  => $location->short_name,
                         'address'     => $location->address,
                         'post_code'   => $location->post_code,
+                        'flat_no'   => $location->flat_no,
                         'email'         => $location->address_email,
                         'phone_number'   => $location->address_phone_number,
                         // 'due_after'      => $location->due_after,

@@ -8,7 +8,7 @@ class Order extends Model
 {
     protected $fillable = ['customer_id','scheduled_date_time','recipient_phone','Recipient_email','task_description','images_array','auto_alloction','driver_id','key_value_set','order_time','order_type','note','status'
     ,'cash_to_be_collected','base_price','base_duration','base_distance','base_waiting','duration_price','waiting_price','distance_fee','cancel_fee','agent_commission_percentage','agent_commission_fixed','freelancer_commission_percentage',
-     'freelancer_commission_fixed','actual_time','actual_distance','order_cost','driver_cost','proof_image','proof_signature','unique_id','net_quantity','call_back_url'];
+     'freelancer_commission_fixed','actual_time','actual_distance','order_cost','driver_cost','proof_image','proof_signature','unique_id','net_quantity','call_back_url', 'completion_otp'];
 
     public function customer(){
         return $this->hasOne('App\Model\Customer', 'id', 'customer_id')->select('id', 'name', 'email', 'phone_number');
@@ -16,7 +16,7 @@ class Order extends Model
     }
     public function location(){
         return $this->hasMany('App\Model\Location', 'customer_id', 'customer_id')
-                    ->select('latitude', 'longitude', 'short_name', 'address', 'post_code', 'customer_id');
+                    ->select('latitude', 'longitude', 'short_name', 'address', 'post_code', 'customer_id', 'flat_no');
         
     }
 

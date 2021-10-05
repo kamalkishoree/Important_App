@@ -37,7 +37,7 @@ use Mail;
 use App;
 use DB,Session;
 use Illuminate\Support\Str;
-
+use App\Model\TaskProof;
 use Twilio\Rest\Client as TwilioClient;
 use GuzzleHttp\Client as GClient;
 use App\Http\Requests\CreateTaskRequest;
@@ -95,7 +95,7 @@ class TaskController extends BaseController
             $proof_signature = null;
         }
        
-        $orderId        = Task::where('id', $request->task_id)->first();
+        $orderId        = Task::where('id', $request->task_id)->with(['tasktype'])->first();
         $orderAll       = Task::where('order_id', $orderId->order_id)->get();
         $order_details  = Order::where('id', $orderId->order_id)->with(['agent','customer'])->first();
         $allCount       = Count($orderAll);
@@ -106,7 +106,6 @@ class TaskController extends BaseController
         $checkfailed          = $allCount - $lastfailedtask;
         $sms_body       = '';
         $notification_type = NotificationType::with('notification_events.client_notification')->get();
-        
         
         switch ($orderId->task_type_id) {
             case 1:
@@ -122,7 +121,8 @@ class TaskController extends BaseController
               $sms_settings = $notification_type[2];
                 break;
         }
-       
+       $otpEnabled = 0;
+       $otpRequired = 0;
         switch ($request->task_status) {
             case 2:
                  $task_type        = 'assigned';
@@ -137,6 +137,29 @@ class TaskController extends BaseController
                 // $sms_body         = 'Driver '.$order_details->agent->name.' in our '.$order_details->agent->make_model.' with license plate '.$order_details->agent->plate_number.' has arrived at your location. ';
                  $sms_body         = $sms_settings['notification_events'][1]['message'];
                  $link             =  '';
+                 $otpCreate        = rand ( 10000 , 99999 );//substr(str_shuffle("0123456789abcdefghijklmnopqrstvwxyz"), 0, 5);
+                // print_r($orderId->order_id);die;
+                $taskProof = TaskProof::all();
+                if(!empty($orderId->tasktype->name) && $orderId->tasktype->name == 'Pickup' && ($taskProof[0]->otp == 1 || $taskProof[0]->otp_requried == 1)){
+                    $asd = Order::where('id', $orderId->order_id)->update(['completion_otp' => $otpCreate]);
+                    $otpEnabled = 1;
+                    if($taskProof[0]->otp_requried == 1){
+                        $otpRequired = 1;
+                    }
+                }else if(!empty($orderId->tasktype->name) && $orderId->tasktype->name == 'Drop' && ($taskProof[1]->otp == 1 || $taskProof[1]->otp_requried == 1)){
+                    Order::where('id', $orderId->order_id)->update(['completion_otp' => $otpCreate]);
+                    $otpEnabled = 1;
+                    if($taskProof[1]->otp_requried == 1){
+                        $otpRequired = 1;
+                    }
+                }else if(!empty($orderId->tasktype->name) && $orderId->tasktype->name == 'Appointment' && ($taskProof[2]->otp == 1 || $taskProof[2]->otp_requried == 1)){
+                    Order::where('id', $orderId->order_id)->update(['completion_otp' => $otpCreate]);
+                    $otpEnabled = 1;
+                    if($taskProof[2]->otp_requried == 1){
+                        $otpRequired = 1;
+                    }
+                }
+                 
                 break;
             case 4:
                 $task_type         = 'completed';
@@ -144,6 +167,38 @@ class TaskController extends BaseController
                // $sms_body          = 'Thank you, your order has been delivered successfully by driver '.$order_details->agent->name.'. You can rate them here .'.url('/order/feedback/'.$client_details->code.'/'.$order_details->unique_id.'');
                 $sms_body         = $sms_settings['notification_events'][2]['message'];
                 $link              =  $client_url.'/order/feedback/'.$client_details->code.'/'.$order_details->unique_id;
+
+                $taskProof = TaskProof::all();
+                $completionOtp = Order::where('id', $orderId->order_id)->select('completion_otp')->first();
+                $errorMsgOtp = '';
+                if(!empty($orderId->tasktype->name) && $orderId->tasktype->name == 'Pickup' && $taskProof[0]->otp_requried == 1){
+                    if(!empty($request->otp) && $completionOtp->completion_otp != $request->otp){
+                        $errorMsgOtp = __('Otp Not Match');
+                    }else if(empty($request->otp)){
+                        $errorMsgOtp = __('Otp is requried');
+                    }
+                }else if(!empty($orderId->tasktype->name) && $orderId->tasktype->name == 'Drop' && $taskProof[1]->otp_requried == 1){
+                    if(!empty($request->otp) && $completionOtp->completion_otp != $request->otp){
+                        $errorMsgOtp = __('Otp Not Match');
+                    }else if(empty($request->otp)){
+                        $errorMsgOtp = __('Otp is requried');
+                    }
+                }else if(!empty($orderId->tasktype->name) && $orderId->tasktype->name == 'Appointment' && $taskProof[2]->otp_requried == 1){
+                    if(!empty($request->otp) && $completionOtp->completion_otp != $request->otp){
+                        $errorMsgOtp = __('Otp Not Match');
+                    }else if(empty($request->otp)){
+                        $errorMsgOtp = __('Otp is requried');
+                    }
+                }
+
+                if(!empty($errorMsgOtp)){
+                    return response()->json([
+                        'data' => [],
+                        'status' => 200,
+                        'message' => $errorMsgOtp
+                    ]);
+                }
+                
                 break;
             case 5:
                 $task_type         = 'failed';
@@ -277,7 +332,8 @@ class TaskController extends BaseController
             }
         }
 
-       
+        $newDetails['otpEnabled'] = $otpEnabled;
+        $newDetails['otpRequired'] = $otpRequired;
        
         return response()->json([
             'data' => $newDetails,

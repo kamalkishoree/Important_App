@@ -221,6 +221,13 @@ use Carbon\Carbon;
                                                         id="add{{ $newcount }}-address_phone_number" class="form-control address address_phone_number"
                                                         placeholder="{{__('Phone Number')}}" />
                                                     </div>
+                                                    @if($preference->route_flat_input == 1)
+                                                    <div class="col-md-6">
+                                                        <input type="text" name="flat_no[]"
+                                                        id="add{{ $newcount }}-flat_no" value="{{ $item->flat_no }}" class="form-control address flat_no"
+                                                        placeholder="{{__('Flat No')}}" />
+                                                    </div>
+                                                    @endif
                                                     <div class="col-md-6">
                                                         <input type="text" name="post_code[]"
                                                         id="add{{ $newcount }}-postcode" class="form-control address postcode"
@@ -294,6 +301,7 @@ use Carbon\Carbon;
                                                                 data-lat="{{ $items->latitude }}" 
                                                                 data-long="{{ $items->longitude }}" 
                                                                 data-pstcd="{{ $items->post_code }}" 
+                                                                data-flat_no="{{ $items->flat_no }}" 
                                                                 data-emil="{{ $items->email }}" 
                                                                 data-ph="{{ $items->phone_number }}"
                                                                 {{ $item->location_id == $items->id ? 'checked' : '' }}
@@ -395,7 +403,16 @@ use Carbon\Carbon;
 
                         </div>
                     </div>
-
+                    @if($preference->route_alcoholic_input == 1)
+                        <div class="row">
+                            <div class="col-12 my-2">
+                                <div class="custom-switch redio-all">
+                                    <input type="checkbox" value="1" class="custom-control-input large-icon" id="alcoholic_item" name="alcoholic_item" {{ ($task->alcoholic_item == 1)? 'checked' : ''}} >
+                                    <label class="custom-control-label checkss" for="alcoholic_item">{{__("Alcoholic Item")}}</label>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
                     @if($task->call_back_url)
                     <h4 class="header-title mb-3">{{__('Call Back URL')}}</h4>
                     <div class="row">

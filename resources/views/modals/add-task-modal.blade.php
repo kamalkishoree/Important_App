@@ -156,6 +156,11 @@
                                     <div class="col-md-6">
                                         {!! Form::text('address_phone_number[]', null, ['class' => 'form-control address address_phone_number','placeholder' => __('Phone Number'),'id'=>'addHeader1-address_phone_number']) !!}
                                     </div>
+                                    @if($preference->route_flat_input == 1)
+                                    <div class="col-md-6">
+                                        {!! Form::text('flat_no[]', null, ['class' => 'form-control address flat_no','placeholder' => __('Flat No'),'id'=>'addHeader1-flat_no']) !!}
+                                    </div>
+                                    @endif
                                     <div class="col-md-6">
                                         <input type="hidden" name="latitude[]" id="addHeader1-latitude" value="0" class="cust_latitude" />
                                         <input type="hidden" name="longitude[]" id="addHeader1-longitude" value="0" class="cust_longitude" />
@@ -250,16 +255,27 @@
                     </div>
 
                 </div>
-            </div> 
+            </div>
+
+            @if($preference->route_alcoholic_input == 1)
+            <div class="row">
+                <div class="col-12 my-2">
+                    <div class="custom-switch redio-all">
+                        <input type="checkbox" value="1" class="custom-control-input large-icon" id="alcoholic_item" name="alcoholic_item" >
+                        <label class="custom-control-label checkss" for="alcoholic_item">{{__("Alcoholic Item")}}</label>
+                    </div>
+                </div>
+            </div>
+            @endif
 
             <h4 class="header-title mb-3">{{__("Call Back URL")}}</h4>
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <div class="form-group" id="make_modelInput">
-                                {!! Form::text('call_back_url', null, ['class' => 'form-control rec', 'placeholder' => __('Call Back URL')]) !!}
-                            </div>
-                        </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <div class="form-group" id="make_modelInput">
+                        {!! Form::text('call_back_url', null, ['class' => 'form-control rec', 'placeholder' => __('Call Back URL')]) !!}
                     </div>
+                </div>
+            </div>
 
             <h4 class="header-title mb-2">{{__("Allocation")}}</h4>
             <div class="row" id="rediodiv">
