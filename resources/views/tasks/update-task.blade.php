@@ -124,12 +124,15 @@ use Carbon\Carbon;
                     @php
                         $newcount = 0;
                     @endphp
+
                     <div class="taskrepet" id="newadd">
+                    
                         @foreach ($task->task as $keys => $item)
                             @php
                                 $maincount = 0;
                                 $newcount++;
                             @endphp
+                            
                             <div class="copyin check-validation" id="copyin1">
                                 <div class="requried allset">
                                     <div class="row firstclone1">
@@ -246,6 +249,14 @@ use Carbon\Carbon;
                                                             <span class="span1 appointment-barcode-error" style="display:none;">{{__('Task Barcode is required for appointment')}}</span>
                                                         </div> 
                                                     </div>
+                                                    @if($preference->route_alcoholic_input == 1)
+                                                    <div class="col-md-6">
+                                                        <div class="custom-switch redio-all">
+                                                            <input type="checkbox" value="1" class="custom-control-input large-icon alcoholic_item" id="add{{ $newcount }}-alcoholic_item" name="alcoholic_item[]" {{ ($item->alcoholic_item == 1)? 'checked' : ''}}>
+                                                            <label class="custom-control-label checkss alcoholic_item_label" for="add{{ $newcount }}-alcoholic_item">{{__("Alcoholic Item")}}</label>
+                                                        </div>
+                                                    </div>
+                                                    @endif
                                                     {{-- <div class="col-md-6">
                                                         <span>Due After</span>
                                                         {!! Form::time('due_after[]', $item->due_after, ['class' => 'form-control due_after', 'placeholder' => 'Due After']) !!}
@@ -347,7 +358,7 @@ use Carbon\Carbon;
                                 </div>
                             </div>
                         @endforeach
-
+                        <input type="hidden" id="newcount" value="{{$newcount}}">
                     </div>
                     <div class="row">
                         <div class="col-md-12" id="adds">
@@ -403,16 +414,6 @@ use Carbon\Carbon;
 
                         </div>
                     </div>
-                    @if($preference->route_alcoholic_input == 1)
-                        <div class="row">
-                            <div class="col-12 my-2">
-                                <div class="custom-switch redio-all">
-                                    <input type="checkbox" value="1" class="custom-control-input large-icon" id="alcoholic_item" name="alcoholic_item" {{ ($task->alcoholic_item == 1)? 'checked' : ''}} >
-                                    <label class="custom-control-label checkss" for="alcoholic_item">{{__("Alcoholic Item")}}</label>
-                                </div>
-                            </div>
-                        </div>
-                    @endif
                     @if($task->call_back_url)
                     <h4 class="header-title mb-3">{{__('Call Back URL')}}</h4>
                     <div class="row">
