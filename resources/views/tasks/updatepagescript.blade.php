@@ -401,6 +401,7 @@ $(document).ready(function(){
             $(this).closest('.check-validation').find("input[name='address[]']").val('');
             $(this).closest('.check-validation').find("input[name='address_phone_number[]']").val('');
             $(this).closest('.check-validation').find("input[name='post_code[]']").val('');
+            $(this).closest('.check-validation').find("input[name='flat_no[]']").val('');
             $(this).closest('.check-validation').find("input[name='latitude[]']").val('');
             $(this).closest('.check-validation').find("input[name='longitude[]']").val('');
         });
@@ -413,6 +414,7 @@ $(document).ready(function(){
                     var latitude    = $(this).data("lat");
                     var longitude   = $(this).data("long");
                     var postCode    = $(this).data("pstcd");
+                    var flat_no     = $(this).data("flat_no");
                     var email       = $(this).data("emil");
                     var phoneNumber = $(this).data("ph");
                     $(this).closest('.check-validation').find("input[name='short_name[]']").val(shortName);
@@ -420,6 +422,7 @@ $(document).ready(function(){
                     $(this).closest('.check-validation').find("input[name='address[]']").val(address);
                     $(this).closest('.check-validation').find("input[name='address_phone_number[]']").val(phoneNumber);
                     $(this).closest('.check-validation').find("input[name='post_code[]']").val(postCode);
+                    $(this).closest('.check-validation').find("input[name='flat_no[]']").val(flat_no);
                     $(this).closest('.check-validation').find("input[name='latitude[]']").val(latitude);
                     $(this).closest('.check-validation').find("input[name='longitude[]']").val(longitude);
                 }
@@ -434,12 +437,14 @@ $(document).ready(function(){
             var postCode    = $(this).data("pstcd");
             var email       = $(this).data("emil");
             var phoneNumber = $(this).data("ph");
-
+            var flat_no     = $(this).data("flat_no");
+            
             $(this).closest('.check-validation').find("input[name='short_name[]']").val(shortName);
             $(this).closest('.check-validation').find("input[name='address_email[]']").val(email);
             $(this).closest('.check-validation').find("input[name='address[]']").val(address);
             $(this).closest('.check-validation').find("input[name='address_phone_number[]']").val(phoneNumber);
             $(this).closest('.check-validation').find("input[name='post_code[]']").val(postCode);
+            $(this).closest('.check-validation').find("input[name='flat_no[]']").val(flat_no);
             $(this).closest('.check-validation').find("input[name='latitude[]']").val(latitude);
             $(this).closest('.check-validation').find("input[name='longitude[]']").val(longitude);
         });

@@ -493,6 +493,15 @@
               var jElem = $(elem); // jQuery element
               //jElem.prop('required', true);
           });
+
+          var flatNo1 = $clone.find('.flat_no');
+          $.each(flatNo1, function(index, elem){
+            var jElem = $(elem)
+            var name = jElem.prop('id');
+            name = name.replace(/\d+/g, '');
+            name = 'addHeader'+post_count+'-flat_no';
+            jElem.prop('id', name);
+          });
          
           var postcode1 = $clone.find('.postcode');
           $.each(postcode1, function(index, elem){

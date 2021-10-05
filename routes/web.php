@@ -118,6 +118,7 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 			Route::get('customize', 'ClientController@ShowPreference')->name('preference.show');
 			Route::post('save/cms/{id}', 'ClientController@cmsSave')->name('cms.save');
 			Route::post('client_preference/{id}', 'ClientController@storePreference')->name('preference');
+			Route::post('route-create-configure/{id}', 'ClientController@routeCreateConfigure')->name('route.create.configure');
 			Route::post('task/proof', 'ClientController@taskProof')->name('task.proof');
 			Route::get('configure', 'ClientController@ShowConfiguration')->name('configure');
 			Route::post('smtp/save', 'ClientController@saveSmtp')->name('smtp');
