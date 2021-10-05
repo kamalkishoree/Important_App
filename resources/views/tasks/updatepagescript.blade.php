@@ -73,13 +73,13 @@ $(document).ready(function(){
         $('#adds a').click(function() {
             countEdit = countEdit + 1;
           var abc = "{{ isset($maincount)?$maincount:0 }}";
-          var newcount = "{{ isset($newcount)?$newcount:0 }}"
-          //alert(newcount);
-           if(a == 0){
-             a = abc;
-             post_count = parseInt(newcount) + 1;
-           }
-          
+          var newcount = $('#newcount').val();
+        //   alert(newcount);
+        //    if(a == 0){
+        //      a = abc;
+        //      post_count = parseInt(newcount) + 1;
+        //    }
+        post_count = parseInt(newcount) + 1;
           
             a++;
            // alert(abc);
@@ -186,6 +186,35 @@ $(document).ready(function(){
                         var jElem = $(elem); // jQuery element
                         jElem.prop('required', true);
                     });
+
+                    var flat_no = $clone.find('.flat_no');
+                    $.each(flat_no, function(index, elem){
+                        var jElem = $(elem)
+                        var name = jElem.prop('id');
+                        console.log(name);
+                        name = name.replace(/\d+/g, '');
+                        name = 'add'+post_count+'-flat_no';
+                        jElem.prop('id', name);
+                    });
+
+                    var alcoholicItem = $clone.find('.alcoholic_item');
+                    $.each(alcoholicItem, function(index, elem){
+                        var jElem = $(elem)
+                        var name = jElem.prop('id');
+                        name = name.replace(/\d+/g, '');
+                        name = 'add'+post_count+'-alcoholic_item';
+                        jElem.prop('id', name);
+
+                        var alcoholicItemLabel = $clone.find('.alcoholic_item_label');
+                        $.each(alcoholicItemLabel, function(index, elem){
+                            var jElem = $(elem);
+                            var labelName = jElem.prop('for');
+                            labelName = labelName.replace(/\d+/g, '');
+                            labelName = 'add'+post_count+'-alcoholic_item';
+                            jElem.prop('for', labelName);
+                        });
+                    });
+
 
                     var postcode1 = $clone.find('.postcode');
                     $.each(postcode1, function(index, elem){

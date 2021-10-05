@@ -180,6 +180,14 @@
                                             <span class="span1 appointment-barcode-error">{{ __("Task Barcode is required for appointment")}}</span>
                                          </div>   
                                     </div>
+                                    @if($preference->route_alcoholic_input == 1)
+                                    <div class="col-md-6">
+                                        <div class="custom-switch redio-all">
+                                            <input type="checkbox" value="1" class="custom-control-input alcoholic_item large-icon" id="addHeader1-alcoholic_item" name="alcoholic_item[]" >
+                                            <label class="custom-control-label checkss alcoholic_item_label" for="addHeader1-alcoholic_item">{{__("Alcoholic Item")}}</label>
+                                        </div>
+                                    </div>
+                                    @endif
                                     {{-- <div class="col-md-6">
                                         <span>Due After</span>
                                         {!! Form::time('due_after[]', null, ['class' => 'form-control due_after', 'placeholder' => 'Due After']) !!}
@@ -256,18 +264,6 @@
 
                 </div>
             </div>
-
-            @if($preference->route_alcoholic_input == 1)
-            <div class="row">
-                <div class="col-12 my-2">
-                    <div class="custom-switch redio-all">
-                        <input type="checkbox" value="1" class="custom-control-input large-icon" id="alcoholic_item" name="alcoholic_item" >
-                        <label class="custom-control-label checkss" for="alcoholic_item">{{__("Alcoholic Item")}}</label>
-                    </div>
-                </div>
-            </div>
-            @endif
-
             <h4 class="header-title mb-3">{{__("Call Back URL")}}</h4>
             <div class="row">
                 <div class="col-md-6 mb-3">
