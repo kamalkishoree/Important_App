@@ -180,7 +180,6 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
             <div class="file file--upload">
                 <label for="">
                     <span class="update_pic pdf-icon">
-                        <a href="{{Storage::disk('s3')->url($agent_doc->file_name)}}" target="_blank"><img showImg="{{ isset($agent_doc->file_name) ? Storage::disk('s3')->url($agent_doc->file_name) : '' }}" id="file"></a>
                     </span>
                 </label>
                 <div class="invalid-feedback" id=""><strong></strong></div>
