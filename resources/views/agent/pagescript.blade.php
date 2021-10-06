@@ -223,11 +223,11 @@ $( document ).ready(function() {
                 $('#profilePic').attr("data-default-file", imgs);
                 $('#profilePic').dropify();
                 $('').dropify();
-                var imgs = $('#file').attr('showImg');
+                // var imgs = $('#file').attr('showImg');
 
-                $('#file').attr("data-default-file", imgs);
-                $('#file').dropify();
-                $('').dropify();
+                // $('#file').attr("data-default-file", imgs);
+                // $('#file').dropify();
+                // $('').dropify();
             },
             error: function(data) {
                 console.log('data2');
