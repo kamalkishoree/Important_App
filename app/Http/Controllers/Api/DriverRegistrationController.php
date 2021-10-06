@@ -124,13 +124,13 @@ class DriverRegistrationController extends Controller
             $documents = DriverRegistrationDocument::get();
 
             return response()->json([
-                'status' => 'success',
+                'status' => 200,
                 'message' => 'Documents Sent Successfully!',
                 'data' => $documents
             ]);
         } catch (\Exception $e) {
             return response()->json([
-                'status' => 'error',
+                'status' => 400,
                 'message' => $e->getMessage(),
             ]);
         }
