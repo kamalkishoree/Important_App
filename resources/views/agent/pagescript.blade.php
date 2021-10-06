@@ -223,7 +223,15 @@ $( document ).ready(function() {
                 $('#profilePic').attr("data-default-file", imgs);
                 $('#profilePic').dropify();
                 $('').dropify();
+<<<<<<< HEAD
                
+=======
+                // var imgs = $('#file').attr('showImg');
+
+                // $('#file').attr("data-default-file", imgs);
+                // $('#file').dropify();
+                // $('').dropify();
+>>>>>>> 3af7ef81dc17f5d96bbad18999c10bbc7d8b2363
             },
             error: function(data) {
                 console.log('data2');
