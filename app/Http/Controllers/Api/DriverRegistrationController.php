@@ -121,7 +121,7 @@ class DriverRegistrationController extends Controller
     public function sendDocuments()
     {
         try {
-            $documents = DriverRegistrationDocument::get();
+            $documents = DriverRegistrationDocument::orderBy('file_type','DESC')->get();
 
             return response()->json([
                 'status' => 200,
