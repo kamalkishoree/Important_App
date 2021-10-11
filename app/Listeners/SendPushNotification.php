@@ -126,7 +126,9 @@ class SendPushNotification
                 if(isset($new)){
                     try{
                         $fcm_server_key = !empty($client_preferences->fcm_server_key)? $client_preferences->fcm_server_key : config('laravel-fcm.server_key');
-                        Log::info('new -- '.$new);
+                        Log::info('new start -- ');
+                        Log::info($new);
+                        Log::info('new end -- ');
                         $fcmObj = new Fcm($fcm_server_key);
                         $fcm_store = $fcmObj->to($new) // $recipients must an array
                                         ->priority('high')
