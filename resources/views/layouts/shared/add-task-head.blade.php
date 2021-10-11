@@ -742,8 +742,8 @@
         success: function(response) {
             //alert(response)
             if (response) {
-                    $("#task-modal-header .close").click();
-                    location.reload();
+                    // $("#task-modal-header .close").click();
+                    // location.reload();
             } else {
                 $(".show_all_error.invalid-feedback").show();
                 $(".show_all_error.invalid-feedback").text(response.message);
