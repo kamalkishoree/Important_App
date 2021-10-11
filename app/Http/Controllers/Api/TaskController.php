@@ -1315,12 +1315,6 @@ class TaskController extends BaseController
         }
     }
 
-
-
-
-
-
-
     public function roundRobin($geo, $notification_time, $agent_id, $orders_id, $customer, $finalLocation, $taskcount, $header, $allocation)
     {
         $allcation_type    = 'AR';
@@ -1427,8 +1421,6 @@ class TaskController extends BaseController
             $this->dispatch(new RosterCreate($data, $extraData));      // job for insert data in roster table for send notification
         }
     }
-
-
 
 
     public function roundCalculation($getgeo, $finalLocation, $unit, $max_redius, $max_task)
