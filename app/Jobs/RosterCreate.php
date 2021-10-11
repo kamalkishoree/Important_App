@@ -57,7 +57,6 @@ class RosterCreate implements ShouldQueue
             ];
 
             // config(["database.connections.mysql.database" => null]);
-
          
             Config::set("database.connections.$schemaName", $default);
         //    Log::info('mesooooo2');
