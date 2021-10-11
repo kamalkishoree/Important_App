@@ -123,7 +123,7 @@ class TaskController extends Controller
         }
         $orders = $orders->where('status', $request->routesListingType)->where('status', '!=', null)->get();
 
-        // print_r($orders);die;
+      
         return Datatables::of($orders)
                 ->editColumn('customer_name', function ($orders) use ($request) {
                     $customerName = !empty($orders->customer->name)? $orders->customer->name : '';
