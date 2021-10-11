@@ -1297,7 +1297,7 @@ class TaskController extends Controller
         $randem            = rand(11111111, 99999999);
         $order_details = Order::find($orders_id);
         $data = [];
-print_r($max_task);die;
+print_r($unit);die;
         if ($type == 'acceptreject') {
             $allcation_type = 'AR';
         } elseif ($type == 'acknowledge') {
