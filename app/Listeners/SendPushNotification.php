@@ -83,8 +83,7 @@ class SendPushNotification
      ///   Log::info($newget);
         DB::connection($schemaName)->table('rosters')->where('status',10)->delete();
         if(count($get) > 0){
-            Log::info($get);
-            Log::info('Fill Roaster');
+            Log::info('update Roaster--');
             DB::connection($schemaName)->table('rosters')->whereIn('id',$newget)->update(['status'=>1]);
             // DB::connection($schemaName)->table('rosters')->whereIn('id',$newget)->delete();
             
@@ -96,20 +95,14 @@ class SendPushNotification
         }
         
         return;
-               
-       
-        
     }
 
     public function sendnotification($recipients)
     {
         try {
            
-        Log::info('sendnotificationlistener');
-        
         $array = json_decode(json_encode($recipients), true);
-        
-    
+       
         foreach($array as $item){
 
             if(isset($item['device_token']) && !empty($item['device_token'])){
@@ -126,9 +119,6 @@ class SendPushNotification
                 if(isset($new)){
                     try{
                         $fcm_server_key = !empty($client_preferences->fcm_server_key)? $client_preferences->fcm_server_key : config('laravel-fcm.server_key');
-                        Log::info('new start -- ');
-                        Log::info($new);
-                        Log::info('new end -- ');
                         $fcmObj = new Fcm($fcm_server_key);
                         $fcm_store = $fcmObj->to($new) // $recipients must an array
                                         ->priority('high')
@@ -140,12 +130,6 @@ class SendPushNotification
                                             'sound' => 'notification.mp3',
                                         ])
                                         ->send();
-                                        
-                        Log::info('mtest');
-                        Log::info($fcm_store);
-                        Log::info('mtest');
-                        Log::info($item);
-                    
                     }
                     catch(Exception $e){
                         Log::info($e->getMessage());
