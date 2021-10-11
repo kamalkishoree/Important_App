@@ -1374,7 +1374,9 @@ class TaskController extends Controller
                     break;
                 }
             }
-            
+            Log::info('roster-create-mm-c');
+            Log::info($data);
+            Log::info('roster-create-mm-c');
             $this->dispatch(new RosterCreate($data, $extraData));
         }
     }
