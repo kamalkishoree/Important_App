@@ -173,7 +173,7 @@ class SendPushNotification
         $check = DB::connection($schemaName)->table('rosters')->get();
 
         if(count($check) > 0){
-            // sleep(5);
+            sleep(5);
             $this->getData();
         }else{
             return;
