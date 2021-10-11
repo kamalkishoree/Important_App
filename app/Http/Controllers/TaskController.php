@@ -601,7 +601,6 @@ class TaskController extends Controller
                 $schduledata['taskcount']         = $taskcount;
                 $schduledata['allocation']        = $allocation;
                 $schduledata['database']          = $auth;
-                print_r($finaldelay);die;
                 scheduleNotification::dispatch($schduledata)->delay(now()->addMinutes($finaldelay));
                 return true;
             }
