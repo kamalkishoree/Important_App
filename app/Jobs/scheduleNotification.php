@@ -428,7 +428,7 @@ class scheduleNotification implements ShouldQueue
                     }
                 }
                 $time = Carbon::parse($time)
-                        ->addSeconds($expriedate + 4)
+                        ->addSeconds($expriedate + 3)
                         ->format('Y-m-d H:i:s');
                 if ($allcation_type == 'N' && 'A' ) {
 

@@ -1380,7 +1380,7 @@ class TaskController extends Controller
                     break;
                 }
             }
-            
+            print_r($extraData);die;
             $this->dispatch(new RosterCreate($data, $extraData));
         }
     }
