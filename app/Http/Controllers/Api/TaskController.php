@@ -366,55 +366,65 @@ class TaskController extends BaseController
 
 
             try {
-                if(!empty($smsProviderNumber) && !empty($customerPhoneNumber) && strlen($order_details->customer->phone_number) > 8){
-                    $twilio = new TwilioClient($twilio_sid, $token);
+
+                Log::info('customerPhoneNumber');
+                Log::info($customerPhoneNumber);
+                Log::info($smsProviderNumber);
+                Log::info('customerPhoneNumber');
+
+                // if(!empty($smsProviderNumber) && !empty($customerPhoneNumber) && strlen($customerPhoneNumber) > 8){
+                //     $twilio = new TwilioClient($twilio_sid, $token);
     
-                    $message = $twilio->messages
-                                ->create(
-                                    $order_details->customer->phone_number,  //to number
-                                    [
-                                        "body" => $sms_body,
-                                        "from" => $smsProviderNumber   //form_number
-                                    ]
-                                );
-                }
+                //     $message = $twilio->messages
+                //                 ->create(
+                //                     $customerPhoneNumber,  //to number
+                //                     [
+                //                         "body" => $sms_body,
+                //                         "from" => $smsProviderNumber   //form_number
+                //                     ]
+                //                 );
+                // }
 
                 $mail        = SmtpDetail::where('client_id', $client_details->id)->first();
                 $client_logo = Storage::disk('s3')->url($client_details->logo);
-                if(!empty($customerEmail) && !empty($mail)){
-                    $sendto    = $customerEmail;
-                    $emailData = ['customer_name' => $order_details->customer->name,'content' => $sms_body,'client_logo'=>$client_logo];
+                // if(!empty($customerEmail) && !empty($mail)){
+                //     $sendto    = $customerEmail;
+                //     $emailData = ['customer_name' => $order_details->customer->name,'content' => $sms_body,'client_logo'=>$client_logo];
 
-                    \Mail::send('email.verify', $emailData, function ($message) use ($sendto, $client_details, $mail) {
-                        $message->from($mail->from_address, $client_details->name);
-                        $message->to($sendto)->subject('Order Update | '.$client_details->company_name);
-                    });
-                }
+                //     \Mail::send('email.verify', $emailData, function ($message) use ($sendto, $client_details, $mail) {
+                //         $message->from($mail->from_address, $client_details->name);
+                //         $message->to($sendto)->subject('Order Update | '.$client_details->company_name);
+                //     });
+                // }
                 
                 $newTaskDetails  = Task::where('id', $request->task_id)->with(['location'])->first();
                 $recipient_phone = isset($newTaskDetails->location->phone_number)?$newTaskDetails->location->phone_number:'';
                 $recipient_email = isset($newTaskDetails->location->email)?$newTaskDetails->location->email:'';
                 
-                if(!empty($smsProviderNumber) && !empty($recipient_phone) && strlen($recipient_phone) > 8){
-                    $twilio  = new TwilioClient($twilio_sid, $token);
-                    $message = $twilio->messages
-                                ->create(
-                                    $recipient_phone,  //to number
-                                    [
-                                        "body" => $sms_body,
-                                        "from" => $smsProviderNumber   //form_number
-                                    ]
-                                );
-                }
+
+                Log::info('recipient_phone');
+                Log::info($recipient_phone);
+                Log::info('recipient_phone');
+                // if(!empty($smsProviderNumber) && !empty($recipient_phone) && strlen($recipient_phone) > 8){
+                //     $twilio  = new TwilioClient($twilio_sid, $token);
+                //     $message = $twilio->messages
+                //                 ->create(
+                //                     $recipient_phone,  //to number
+                //                     [
+                //                         "body" => $sms_body,
+                //                         "from" => $smsProviderNumber   //form_number
+                //                     ]
+                //                 );
+                // }
                 
-                if (!empty($recipient_email)) {
-                    $sendto    = $recipient_email;
-                    $emailData = ['customer_name' => $order_details->customer->name,'content' => $sms_body,'client_logo'=>$client_logo];
-                    \Mail::send('email.verify', $emailData, function ($message) use ($sendto, $client_details, $mail) {
-                        $message->from($mail->from_address, $client_details->name);
-                        $message->to($sendto)->subject('Order Update | '.$client_details->company_name);
-                    });
-                }
+                // if (!empty($recipient_email)) {
+                //     $sendto    = $recipient_email;
+                //     $emailData = ['customer_name' => $order_details->customer->name,'content' => $sms_body,'client_logo'=>$client_logo];
+                //     \Mail::send('email.verify', $emailData, function ($message) use ($sendto, $client_details, $mail) {
+                //         $message->from($mail->from_address, $client_details->name);
+                //         $message->to($sendto)->subject('Order Update | '.$client_details->company_name);
+                //     });
+                // }
 
 
             } catch (\Exception $e) {
