@@ -323,7 +323,8 @@ class TaskController extends BaseController
     }
 
     public function checkOTPRequried(Request $request){
-        $header         = $request->header();       
+        $header         = $request->header();
+        $client_details = Client::where('database_name', $header['client'][0])->first();       
         $otpEnabled     = 0;
         $otpRequired    = 0;
         $orderId        = Task::where('id', $request->task_id)->with(['tasktype'])->first();
@@ -331,21 +332,21 @@ class TaskController extends BaseController
         $order_details  = Order::where('id', $orderId->order_id)->with(['agent','customer'])->first();
         $otpCreate      = '';//substr(str_shuffle("0123456789abcdefghijklmnopqrstvwxyz"), 0, 5);
         $taskProof      = TaskProof::all();
-        if(!empty($orderId->tasktype->name) && $orderId->tasktype->name == 'Pickup' && ($taskProof[0]->otp == 1 || $taskProof[0]->otp_requried == 1)){
+        if(!empty($orderId->tasktype->name) && $orderId->tasktype->name == 'Pickup' && $taskProof[0]->otp == 1){
             $otpCreate = rand ( 10000 , 99999 );
             Order::where('id', $orderId->order_id)->update(['completion_otp' => $otpCreate]);
             $otpEnabled = 1;
             if($taskProof[0]->otp_requried == 1){
                 $otpRequired = 1;
             }
-        }else if(!empty($orderId->tasktype->name) && $orderId->tasktype->name == 'Drop' && ($taskProof[1]->otp == 1 || $taskProof[1]->otp_requried == 1)){
+        }else if(!empty($orderId->tasktype->name) && $orderId->tasktype->name == 'Drop' && $taskProof[1]->otp == 1){
             $otpCreate = rand ( 10000 , 99999 );
             Order::where('id', $orderId->order_id)->update(['completion_otp' => $otpCreate]);
             $otpEnabled = 1;
             if($taskProof[1]->otp_requried == 1){
                 $otpRequired = 1;
             }
-        }else if(!empty($orderId->tasktype->name) && $orderId->tasktype->name == 'Appointment' && ($taskProof[2]->otp == 1 || $taskProof[2]->otp_requried == 1)){
+        }else if(!empty($orderId->tasktype->name) && $orderId->tasktype->name == 'Appointment' && $taskProof[2]->otp == 1){
             $otpCreate = rand ( 10000 , 99999 );
             Order::where('id', $orderId->order_id)->update(['completion_otp' => $otpCreate]);
             $otpEnabled = 1;
@@ -353,6 +354,74 @@ class TaskController extends BaseController
                 $otpRequired = 1;
             }
         }
+        
+        if(!empty($otpCreate) && !empty($otpEnabled)){
+            $client_prefrerence  = ClientPreference::where('id', 1)->first();
+            $token               = $client_prefrerence->sms_provider_key_2;
+            $twilio_sid          = $client_prefrerence->sms_provider_key_1;
+            $smsProviderNumber   = $client_prefrerence->sms_provider_number;
+            $customerPhoneNumber = $order_details->customer->phone_number;
+            $customerEmail       = $order_details->customer->email;
+            $sms_body            = 'Your otp is '.$otpCreate;
+
+
+            try {
+                if(!empty($smsProviderNumber) && !empty($customerPhoneNumber) && strlen($order_details->customer->phone_number) > 8){
+                    $twilio = new TwilioClient($twilio_sid, $token);
+    
+                    $message = $twilio->messages
+                                ->create(
+                                    $order_details->customer->phone_number,  //to number
+                                    [
+                                        "body" => $sms_body,
+                                        "from" => $smsProviderNumber   //form_number
+                                    ]
+                                );
+                }
+
+                $mail        = SmtpDetail::where('client_id', $client_details->id)->first();
+                $client_logo = Storage::disk('s3')->url($client_details->logo);
+                if(!empty($customerEmail) && !empty($mail)){
+                    $sendto    = $customerEmail;
+                    $emailData = ['customer_name' => $order_details->customer->name,'content' => $sms_body,'client_logo'=>$client_logo];
+
+                    \Mail::send('email.verify', $emailData, function ($message) use ($sendto, $client_details, $mail) {
+                        $message->from($mail->from_address, $client_details->name);
+                        $message->to($sendto)->subject('Order Update | '.$client_details->company_name);
+                    });
+                }
+                
+                $newTaskDetails  = Task::where('id', $request->task_id)->with(['location'])->first();
+                $recipient_phone = isset($newTaskDetails->location->phone_number)?$newTaskDetails->location->phone_number:'';
+                $recipient_email = isset($newTaskDetails->location->email)?$newTaskDetails->location->email:'';
+                
+                if(!empty($smsProviderNumber) && !empty($recipient_phone) && strlen($recipient_phone) > 8){
+                    $twilio  = new TwilioClient($twilio_sid, $token);
+                    $message = $twilio->messages
+                                ->create(
+                                    $recipient_phone,  //to number
+                                    [
+                                        "body" => $sms_body,
+                                        "from" => $smsProviderNumber   //form_number
+                                    ]
+                                );
+                }
+                
+                if (!empty($recipient_email)) {
+                    $sendto    = $recipient_email;
+                    $emailData = ['customer_name' => $order_details->customer->name,'content' => $sms_body,'client_logo'=>$client_logo];
+                    \Mail::send('email.verify', $emailData, function ($message) use ($sendto, $client_details, $mail) {
+                        $message->from($mail->from_address, $client_details->name);
+                        $message->to($sendto)->subject('Order Update | '.$client_details->company_name);
+                    });
+                }
+
+
+            } catch (\Exception $e) {
+                Log::info($e->getMessage());
+            }
+        }
+       
 
         $newDetails['otp']         = $otpCreate;
         $newDetails['otpEnabled']  = $otpEnabled;
