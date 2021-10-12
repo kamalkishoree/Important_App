@@ -324,12 +324,7 @@ class TaskController extends BaseController
 
     public function checkOTPRequried(Request $request){
         $header         = $request->header();
-        $client_details = Client::where('database_name', $header['client'][0])->first();   
-
-        Log::info('client_details');
-        Log::info($client_details);
-        Log::info('client_details');
-        
+        $client_details = Client::where('database_name', $header['client'][0])->first();
         $otpEnabled     = 0;
         $otpRequired    = 0;
         $orderId        = Task::where('id', $request->task_id)->with(['tasktype'])->first();
@@ -385,10 +380,16 @@ class TaskController extends BaseController
                 // }
 
                 $mail        = SmtpDetail::where('client_id', $client_details->id)->first();
+
+                Log::info('mail');
+                Log::info($mail);
+                Log::info('mail');
+
                 $client_logo = Storage::disk('s3')->url($client_details->logo);
                 if(!empty($customerEmail) && !empty($mail)){
                     $sendto    = 'mohit.v@codebrewinnovations.com';//$customerEmail;
-                    $emailData = ['customer_name' => $order_details->customer->name,'content' => $sms_body,'agent_name' => $order_details->agent->name,'agent_profile' =>'','number_plate' =>'','client_logo'=>$client_logo,'link'=>''];
+                    $agent_profile = Storage::disk('s3')->url($order_details->agent->profile_picture ?? 'assets/client_00000051/agents605b6deb82d1b.png/XY5GF0B3rXvZlucZMiRQjGBQaWSFhcaIpIM5Jzlv.jpg');
+                    $emailData = ['customer_name' => $order_details->customer->name,'content' => $sms_body,'agent_name' => $order_details->agent->name,'agent_profile' => $agent_profile,'number_plate' => $order_details->agent->plate_number,'client_logo'=>$client_logo,'link'=>''];
                     
                     \Mail::send('email.verify', $emailData, function ($message) use ($sendto, $client_details, $mail) {
                         $message->from($mail->from_address, $client_details->name);
