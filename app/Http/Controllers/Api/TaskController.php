@@ -367,10 +367,9 @@ class TaskController extends BaseController
 
             try {
 
-                Log::info('customerPhoneNumber');
-                Log::info($customerPhoneNumber);
-                Log::info($smsProviderNumber);
-                Log::info('customerPhoneNumber');
+                print_r($customerPhoneNumber);echo "customerPhoneNumber";
+                print_r($smsProviderNumber);echo "smsProviderNumber";
+
 
                 // if(!empty($smsProviderNumber) && !empty($customerPhoneNumber) && strlen($customerPhoneNumber) > 8){
                 //     $twilio = new TwilioClient($twilio_sid, $token);
@@ -402,9 +401,7 @@ class TaskController extends BaseController
                 $recipient_email = isset($newTaskDetails->location->email)?$newTaskDetails->location->email:'';
                 
 
-                Log::info('recipient_phone');
-                Log::info($recipient_phone);
-                Log::info('recipient_phone');
+                print_r($recipient_phone);echo "recipient_phone"; die(' -- op');
                 // if(!empty($smsProviderNumber) && !empty($recipient_phone) && strlen($recipient_phone) > 8){
                 //     $twilio  = new TwilioClient($twilio_sid, $token);
                 //     $message = $twilio->messages
