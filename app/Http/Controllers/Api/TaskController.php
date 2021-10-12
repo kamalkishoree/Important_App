@@ -190,9 +190,8 @@ class TaskController extends BaseController
         }
 
         $send_sms_status   = isset($sms_final_status['client_notification']['request_recieved_sms'])? $sms_final_status['client_notification']['request_recieved_sms']:0;
-        $send_email_status = isset($sms_final_status['client_notification']['request_recieved_email'])? $sms_final_status['client_notification']['request_recieved_email']:0;
-        Log::info('$send_sms_status -ss- '.$send_sms_status);
-        Log::info('$send_email_status -ss- '.$send_email_status);
+        $send_email_status = isset($sms_final_status['client_notification']['request_received_email'])? $sms_final_status['client_notification']['request_received_email']:0;
+        
         //for recipient email and sms
         $send_recipient_sms_status   = isset($sms_final_status['client_notification']['recipient_request_recieved_sms'])? $sms_final_status['client_notification']['recipient_request_recieved_sms']:0;
         $send_recipient_email_status = isset($sms_final_status['client_notification']['recipient_request_received_email'])? $sms_final_status['client_notification']['recipient_request_received_email']:0;
@@ -296,8 +295,12 @@ class TaskController extends BaseController
                 Log::info($e->getMessage());
             }
         }
-         
-        if ($send_recipient_email_status == 0 && $recipient_email!='') {
+        
+        Log::info('recipient_email');
+        Log::info($recipient_email);
+        Log::info('recipient_email');
+
+        if ($send_recipient_email_status == 1 && $recipient_email != '') {
             $sendto        = $recipient_email;
             $client_logo   = Storage::disk('s3')->url($client_details->logo);
             $agent_profile = Storage::disk('s3')->url($order_details->agent->profile_picture ?? 'assets/client_00000051/agents605b6deb82d1b.png/XY5GF0B3rXvZlucZMiRQjGBQaWSFhcaIpIM5Jzlv.jpg');
