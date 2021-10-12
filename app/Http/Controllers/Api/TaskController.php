@@ -121,9 +121,9 @@ class TaskController extends BaseController
               $sms_settings = $notification_type[2];
                 break;
         }
-        Log::info('$sms_settings -- ');
-        Log::info($sms_settings);
-        Log::info('$sms_settings -- ');
+        Log::info('$sms_settings -t- ');
+        Log::info($sms_settings['notification_events'][0]);
+        Log::info('$sms_settings -t- ');
        $otpEnabled = 0;
        $otpRequired = 0;
         switch ($request->task_status) {
