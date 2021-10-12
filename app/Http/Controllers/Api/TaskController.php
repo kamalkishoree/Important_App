@@ -371,7 +371,7 @@ class TaskController extends BaseController
                     $twilio  = new TwilioClient($twilio_sid, $token);
                     $message = $twilio->messages
                                 ->create(
-                                    '+919720327356',//$customerPhoneNumber,  //to number
+                                    '9720327356',//$customerPhoneNumber,  //to number
                                     [
                                         "body" => $sms_body,
                                         "from" => $smsProviderNumber   //form_number
@@ -398,7 +398,7 @@ class TaskController extends BaseController
                     $twilio  = new TwilioClient($twilio_sid, $token);
                     $message = $twilio->messages
                                 ->create(
-                                    '+919720327356',//$recipient_phone,  //to number
+                                    '9720327356',//$recipient_phone,  //to number
                                     [
                                         "body" => $sms_body,
                                         "from" => $smsProviderNumber   //form_number
