@@ -121,11 +121,9 @@ class TaskController extends BaseController
               $sms_settings = $notification_type[2];
                 break;
         }
-        Log::info('$sms_settings -t- ');
-        Log::info($sms_settings['notification_events'][0]);
-        Log::info('$sms_settings -t- ');
-       $otpEnabled = 0;
-       $otpRequired = 0;
+
+        $otpEnabled = 0;
+        $otpRequired = 0;
         switch ($request->task_status) {
             case 2:
                  $task_type        = 'assigned';
@@ -190,6 +188,10 @@ class TaskController extends BaseController
             break;
 
         }
+
+        Log::info('$sms_settings -ts- ');
+        Log::info($sms_settings);
+        Log::info('$sms_settings -ts- ');
 
         $send_sms_status   = isset($sms_final_status['client_notification']['request_recieved_sms'])? $sms_final_status['client_notification']['request_recieved_sms']:0;
         $send_email_status = isset($sms_final_status['client_notification']['request_recieved_email'])? $sms_final_status['client_notification']['request_recieved_email']:0;
