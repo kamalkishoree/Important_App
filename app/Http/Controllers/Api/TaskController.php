@@ -383,9 +383,9 @@ class TaskController extends BaseController
                 $client_logo = Storage::disk('s3')->url($client_details->logo);
                 if(!empty($customerEmail) && !empty($mail)){
                     $sendto    = $customerEmail;
-                    $emailData = ['customer_name' => $order_details->customer->name,'content' => 'Your otp is hjdshfd5455','client_logo'=>$client_logo,'agent_profile'=>'','agent_name'=>'','number_plate'=>'','link'=>''];
+                    $emailData = ['customer_name' => $order_details->customer->name,'content' => $sms_body,'client_logo'=>$client_logo,'agent_profile'=>'','agent_name'=>'','number_plate'=>'','link'=>''];
 
-                    \Mail::send('email.verify', $emailData, function ($message) use ($sendto, $client_details, $mail) {
+                    \Mail::send('email.verify', ['customer_name' => $order_details->customer->name,'content' => $sms_body,'agent_name' => $order_details->agent->name,'agent_profile' =>'','number_plate' =>$order_details->agent->plate_number,'client_logo'=>$client_logo,'link'=>''], function ($message) use ($sendto, $client_details, $mail) {
                         $message->from($mail->from_address, $client_details->name);
                         $message->to($sendto)->subject('Order Update | '.$client_details->company_name);
                     });
@@ -409,8 +409,7 @@ class TaskController extends BaseController
                 
                 if (!empty($recipient_email)) {
                     $sendto    = $recipient_email;
-                    $emailData = ['customer_name' => $order_details->customer->name,'content' => 'Your otp is hjdshfd5455','client_logo'=>$client_logo,'agent_profile'=>'','agent_name'=>'','number_plate'=>'','link'=>''];
-                    \Mail::send('email.verify', $emailData, function ($message) use ($sendto, $client_details, $mail) {
+                    \Mail::send('email.verify', ['customer_name' => $order_details->customer->name,'content' => $sms_body,'agent_name' => $order_details->agent->name,'agent_profile' =>'','number_plate' =>$order_details->agent->plate_number,'client_logo'=>$client_logo,'link'=>''], function ($message) use ($sendto, $client_details, $mail) {
                         $message->from($mail->from_address, $client_details->name);
                         $message->to($sendto)->subject('Order Update | '.$client_details->company_name);
                     });
