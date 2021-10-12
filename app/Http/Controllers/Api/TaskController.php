@@ -195,9 +195,7 @@ class TaskController extends BaseController
         //for recipient email and sms
         $send_recipient_sms_status   = isset($sms_final_status['client_notification']['recipient_request_recieved_sms'])? $sms_final_status['client_notification']['recipient_request_recieved_sms']:0;
         $send_recipient_email_status = isset($sms_final_status['client_notification']['recipient_request_received_email'])? $sms_final_status['client_notification']['recipient_request_received_email']:0;
-        Log::info('$send_recipient_sms_status -sts- '.$send_recipient_sms_status);
-        Log::info('$send_recipient_email_status -sts- '.$send_recipient_email_status);
-
+        
         if ($request->task_status == 4) {
             if ($check == 1) {
                 $Order  = Order::where('id', $orderId->order_id)->update(['status' => $task_type]);
@@ -295,10 +293,6 @@ class TaskController extends BaseController
                 Log::info($e->getMessage());
             }
         }
-        
-        Log::info('recipient_email');
-        Log::info($recipient_email);
-        Log::info('recipient_email');
 
         if ($send_recipient_email_status == 1 && $recipient_email != '') {
             $sendto        = $recipient_email;
@@ -308,14 +302,10 @@ class TaskController extends BaseController
             $mail = SmtpDetail::where('client_id', $client_details->id)->first();
             
             try {
-                $sd = \Mail::send('email.verify', ['customer_name' => $order_details->customer->name,'content' => $sms_body,'agent_name' => $order_details->agent->name,'agent_profile' =>$agent_profile,'number_plate' =>$order_details->agent->plate_number,'client_logo'=>$client_logo,'link'=>$link], function ($message) use ($sendto, $client_details, $mail) {
+                \Mail::send('email.verify', ['customer_name' => $order_details->customer->name,'content' => $sms_body,'agent_name' => $order_details->agent->name,'agent_profile' =>$agent_profile,'number_plate' =>$order_details->agent->plate_number,'client_logo'=>$client_logo,'link'=>$link], function ($message) use ($sendto, $client_details, $mail) {
                     $message->from($mail->from_address, $client_details->name);
                     $message->to($sendto)->subject('Order Update | '.$client_details->company_name);
                 });
-
-                Log::info('recipient_mail -sd- ');
-                Log::info($sd);
-                Log::info('recipient_mail -sd- ');
 
             } catch (\Exception $e) {
                 Log::info($e->getMessage());
