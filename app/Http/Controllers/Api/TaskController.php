@@ -327,21 +327,24 @@ class TaskController extends BaseController
         $orderId        = Task::where('id', $request->task_id)->with(['tasktype'])->first();
         $orderAll       = Task::where('order_id', $orderId->order_id)->get();
         $order_details  = Order::where('id', $orderId->order_id)->with(['agent','customer'])->first();
-        $otpCreate = rand ( 10000 , 99999 );//substr(str_shuffle("0123456789abcdefghijklmnopqrstvwxyz"), 0, 5);
-        $taskProof = TaskProof::all();
+        $otpCreate      = '';//substr(str_shuffle("0123456789abcdefghijklmnopqrstvwxyz"), 0, 5);
+        $taskProof      = TaskProof::all();
         if(!empty($orderId->tasktype->name) && $orderId->tasktype->name == 'Pickup' && ($taskProof[0]->otp == 1 || $taskProof[0]->otp_requried == 1)){
+            $otpCreate = rand ( 10000 , 99999 );
             Order::where('id', $orderId->order_id)->update(['completion_otp' => $otpCreate]);
             $otpEnabled = 1;
             if($taskProof[0]->otp_requried == 1){
                 $otpRequired = 1;
             }
         }else if(!empty($orderId->tasktype->name) && $orderId->tasktype->name == 'Drop' && ($taskProof[1]->otp == 1 || $taskProof[1]->otp_requried == 1)){
+            $otpCreate = rand ( 10000 , 99999 );
             Order::where('id', $orderId->order_id)->update(['completion_otp' => $otpCreate]);
             $otpEnabled = 1;
             if($taskProof[1]->otp_requried == 1){
                 $otpRequired = 1;
             }
         }else if(!empty($orderId->tasktype->name) && $orderId->tasktype->name == 'Appointment' && ($taskProof[2]->otp == 1 || $taskProof[2]->otp_requried == 1)){
+            $otpCreate = rand ( 10000 , 99999 );
             Order::where('id', $orderId->order_id)->update(['completion_otp' => $otpCreate]);
             $otpEnabled = 1;
             if($taskProof[2]->otp_requried == 1){
