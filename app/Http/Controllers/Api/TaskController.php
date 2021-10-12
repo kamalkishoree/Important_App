@@ -307,6 +307,10 @@ class TaskController extends BaseController
 
             $mail = SmtpDetail::where('client_id', $client_details->id)->first();
             
+            Log::info('recipient_mail');
+            Log::info($mail);
+            Log::info('recipient_mail');
+
             try {
                 \Mail::send('email.verify', ['customer_name' => $order_details->customer->name,'content' => $sms_body,'agent_name' => $order_details->agent->name,'agent_profile' =>$agent_profile,'number_plate' =>$order_details->agent->plate_number,'client_logo'=>$client_logo,'link'=>$link], function ($message) use ($sendto, $client_details, $mail) {
                     $message->from($mail->from_address, $client_details->name);
