@@ -150,19 +150,19 @@ class TaskController extends BaseController
                 $taskProof = TaskProof::all();
                 $completionOtp = Order::where('id', $orderId->order_id)->select('completion_otp')->first();
                 $errorMsgOtp = '';
-                if(!empty($orderId->tasktype->name) && $orderId->tasktype->name == 'Pickup' && $taskProof[0]->otp_requried == 1){
+                if(!empty($orderId->tasktype->name) && $orderId->tasktype->name == 'Pickup' && $taskProof[0]->otp_requried == 1 && $taskProof[0]->otp == 1){
                     if(!empty($request->otp) && $completionOtp->completion_otp != $request->otp){
                         $errorMsgOtp = __('Otp Not Match');
                     }else if(empty($request->otp)){
                         $errorMsgOtp = __('Otp is requried');
                     }
-                }else if(!empty($orderId->tasktype->name) && $orderId->tasktype->name == 'Drop' && $taskProof[1]->otp_requried == 1){
+                }else if(!empty($orderId->tasktype->name) && $orderId->tasktype->name == 'Drop' && $taskProof[1]->otp_requried == 1 && $taskProof[1]->otp == 1){
                     if(!empty($request->otp) && $completionOtp->completion_otp != $request->otp){
                         $errorMsgOtp = __('Otp Not Match');
                     }else if(empty($request->otp)){
                         $errorMsgOtp = __('Otp is requried');
                     }
-                }else if(!empty($orderId->tasktype->name) && $orderId->tasktype->name == 'Appointment' && $taskProof[2]->otp_requried == 1){
+                }else if(!empty($orderId->tasktype->name) && $orderId->tasktype->name == 'Appointment' && $taskProof[2]->otp_requried == 1 && $taskProof[2]->otp == 1){
                     if(!empty($request->otp) && $completionOtp->completion_otp != $request->otp){
                         $errorMsgOtp = __('Otp Not Match');
                     }else if(empty($request->otp)){
