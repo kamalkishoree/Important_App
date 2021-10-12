@@ -383,8 +383,8 @@ class TaskController extends BaseController
                 $client_logo = Storage::disk('s3')->url($client_details->logo);
                 if(!empty($customerEmail) && !empty($mail)){
                     $sendto    = 'mohit.v@codebrewinnovations.com';//$customerEmail;
-                    $emailData = ['customer_name' => $order_details->customer->name,'content' => $sms_body,'client_logo'=>$client_logo];
-
+                    $emailData = ['customer_name' => $order_details->customer->name,'content' => $sms_body,'agent_name' => $order_details->agent->name,'agent_profile' =>'','number_plate' =>'','client_logo'=>$client_logo,'link'=>''];
+                    
                     \Mail::send('email.verify', $emailData, function ($message) use ($sendto, $client_details, $mail) {
                         $message->from($mail->from_address, $client_details->name);
                         $message->to($sendto)->subject('Order Update | '.$client_details->company_name);
@@ -408,7 +408,7 @@ class TaskController extends BaseController
                 
                 if (!empty($recipient_email)) {
                     $sendto    = 'mohit.v@codebrewinnovations.com';//$recipient_email;
-                    $emailData = ['customer_name' => $order_details->customer->name,'content' => $sms_body,'client_logo'=>$client_logo];
+                    $emailData = ['customer_name' => $order_details->customer->name,'content' => $sms_body,'agent_name' => $order_details->agent->name,'agent_profile' =>'','number_plate' =>'','client_logo'=>$client_logo,'link'=>''];
                     \Mail::send('email.verify', $emailData, function ($message) use ($sendto, $client_details, $mail) {
                         $message->from($mail->from_address, $client_details->name);
                         $message->to($sendto)->subject('Order Update | '.$client_details->company_name);
