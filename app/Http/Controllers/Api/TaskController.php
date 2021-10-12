@@ -324,7 +324,7 @@ class TaskController extends BaseController
 
     public function checkOTPRequried(Request $request){
         $header         = $request->header();
-        $client_details = Client::where('database_name', $header['client'][0])->first();
+        $client_details = Client::where('database_name', $header['client'][0])->first();       
         $otpEnabled     = 0;
         $otpRequired    = 0;
         $orderId        = Task::where('id', $request->task_id)->with(['tasktype'])->first();
@@ -366,61 +366,55 @@ class TaskController extends BaseController
 
 
             try {
-
-                // if(!empty($smsProviderNumber) && !empty($customerPhoneNumber) && strlen($customerPhoneNumber) > 8){
-                //     $twilio  = new TwilioClient($twilio_sid, $token);
-                //     $message = $twilio->messages
-                //                 ->create(
-                //                     $customerPhoneNumber,  //to number
-                //                     [
-                //                         "body" => $sms_body,
-                //                         "from" => $smsProviderNumber   //form_number
-                //                     ]
-                //                 );
-                // }
+                if(!empty($smsProviderNumber) && !empty($customerPhoneNumber) && strlen($order_details->customer->phone_number) > 8){
+                    $twilio = new TwilioClient($twilio_sid, $token);
+    
+                    $message = $twilio->messages
+                                ->create(
+                                    $order_details->customer->phone_number,  //to number
+                                    [
+                                        "body" => $sms_body,
+                                        "from" => $smsProviderNumber   //form_number
+                                    ]
+                                );
+                }
 
                 $mail        = SmtpDetail::where('client_id', $client_details->id)->first();
-
-                Log::info('mail');
-                Log::info($mail);
-                Log::info('mail');
-
                 $client_logo = Storage::disk('s3')->url($client_details->logo);
                 if(!empty($customerEmail) && !empty($mail)){
-                    $sendto    = 'mohit.v@codebrewinnovations.com';//$customerEmail;
-                    $agent_profile = Storage::disk('s3')->url($order_details->agent->profile_picture ?? 'assets/client_00000051/agents605b6deb82d1b.png/XY5GF0B3rXvZlucZMiRQjGBQaWSFhcaIpIM5Jzlv.jpg');
-                    // $emailData = ;
-                    
-                    \Mail::send('email.verify', ['customer_name' => $order_details->customer->name,'content' => $sms_body,'agent_name' => $order_details->agent->name,'agent_profile' => $agent_profile,'number_plate' => $order_details->agent->plate_number,'client_logo'=>$client_logo,'link'=>''], function ($message) use ($sendto, $client_details, $mail) {
+                    $sendto    = $customerEmail;
+                    $emailData = ['customer_name' => $order_details->customer->name,'content' => $sms_body,'client_logo'=>$client_logo,'agent_profile'=>''];
+
+                    \Mail::send('email.verify', $emailData, function ($message) use ($sendto, $client_details, $mail) {
                         $message->from($mail->from_address, $client_details->name);
-                        $message->to($sendto)->subject('Order Updatess | '.$client_details->company_name);
+                        $message->to($sendto)->subject('Order Update | '.$client_details->company_name);
                     });
                 }
                 
-                // $newTaskDetails  = Task::where('id', $request->task_id)->with(['location'])->first();
-                // $recipient_phone = isset($newTaskDetails->location->phone_number)?$newTaskDetails->location->phone_number:'';
-                // $recipient_email = isset($newTaskDetails->location->email)?$newTaskDetails->location->email:'';
-
-                // if(!empty($smsProviderNumber) && !empty($recipient_phone) && strlen($recipient_phone) > 8){
-                //     $twilio  = new TwilioClient($twilio_sid, $token);
-                //     $message = $twilio->messages
-                //                 ->create(
-                //                     $recipient_phone,  //to number
-                //                     [
-                //                         "body" => $sms_body,
-                //                         "from" => $smsProviderNumber   //form_number
-                //                     ]
-                //                 );
-                // }
+                $newTaskDetails  = Task::where('id', $request->task_id)->with(['location'])->first();
+                $recipient_phone = isset($newTaskDetails->location->phone_number)?$newTaskDetails->location->phone_number:'';
+                $recipient_email = isset($newTaskDetails->location->email)?$newTaskDetails->location->email:'';
                 
-                // if (!empty($recipient_email)) {
-                //     $sendto    = 'mohit.v@codebrewinnovations.com';//$recipient_email;
-                //     $emailData = ['customer_name' => $order_details->customer->name,'content' => $sms_body,'agent_name' => $order_details->agent->name,'agent_profile' =>'','number_plate' =>'','client_logo'=>$client_logo,'link'=>''];
-                //     \Mail::send('email.verify', $emailData, function ($message) use ($sendto, $client_details, $mail) {
-                //         $message->from($mail->from_address, $client_details->name);
-                //         $message->to($sendto)->subject('Order Update | '.$client_details->company_name);
-                //     });
-                // }
+                if(!empty($smsProviderNumber) && !empty($recipient_phone) && strlen($recipient_phone) > 8){
+                    $twilio  = new TwilioClient($twilio_sid, $token);
+                    $message = $twilio->messages
+                                ->create(
+                                    $recipient_phone,  //to number
+                                    [
+                                        "body" => $sms_body,
+                                        "from" => $smsProviderNumber   //form_number
+                                    ]
+                                );
+                }
+                
+                if (!empty($recipient_email)) {
+                    $sendto    = $recipient_email;
+                    $emailData = ['customer_name' => $order_details->customer->name,'content' => $sms_body,'client_logo'=>$client_logo,'agent_profile'=>''];
+                    \Mail::send('email.verify', $emailData, function ($message) use ($sendto, $client_details, $mail) {
+                        $message->from($mail->from_address, $client_details->name);
+                        $message->to($sendto)->subject('Order Update | '.$client_details->company_name);
+                    });
+                }
 
 
             } catch (\Exception $e) {
