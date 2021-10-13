@@ -364,11 +364,10 @@ class TaskController extends BaseController
             $customerEmail       = $order_details->customer->email;
             $sms_body            = 'Your otp is '.$otpCreate;
 
+            //set dynamic smtp for email send
+            $this->setMailDetail($client_details);
 
             try {
-
-                //set dynamic smtp for email send
-                $this->setMailDetail($client_details);
 
                 //**Send OTP to customer phone text msg */
                 if(!empty($smsProviderNumber) && !empty($customerPhoneNumber) && strlen($order_details->customer->phone_number) > 8){
