@@ -325,11 +325,6 @@ class TaskController extends BaseController
     public function checkOTPRequried(Request $request){
         $header         = $request->header();
         $client_details = Client::where('database_name', $header['client'][0])->first();  
-                
-        Log::info('company_name');
-        Log::info($client_details);
-        Log::info('company_name');
-
         $otpEnabled     = 0;
         $otpRequired    = 0;
         $orderId        = Task::where('id', $request->task_id)->with(['tasktype'])->first();
