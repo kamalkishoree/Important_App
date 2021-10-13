@@ -327,7 +327,7 @@ class TaskController extends BaseController
         $client_details = Client::where('database_name', $header['client'][0])->first();  
                 
         Log::info('company_name');
-        Log::info($client_details->company_name);
+        Log::info($client_details);
         Log::info('company_name');
 
         $otpEnabled     = 0;
