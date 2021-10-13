@@ -366,6 +366,11 @@ class TaskController extends BaseController
 
 
             try {
+
+                //set dynamic smtp for email send
+                $this->setMailDetail($client_details);
+
+                //**Send OTP to customer phone text msg */
                 if(!empty($smsProviderNumber) && !empty($customerPhoneNumber) && strlen($order_details->customer->phone_number) > 8){
                     $twilio = new TwilioClient($twilio_sid, $token);
     
@@ -381,6 +386,8 @@ class TaskController extends BaseController
 
                 $mail        = SmtpDetail::where('client_id', $client_details->id)->first();
                 $client_logo = Storage::disk('s3')->url($client_details->logo);
+
+                //**Send OTP to customer email */
                 if(!empty($customerEmail) && !empty($mail)){
                     $sendto    = $customerEmail;
                     $emailData = ['customer_name' => $order_details->customer->name,'content' => $sms_body,'client_logo'=>$client_logo,'agent_profile'=>'','agent_name'=>'','number_plate'=>'','link'=>''];
@@ -395,6 +402,7 @@ class TaskController extends BaseController
                 $recipient_phone = isset($newTaskDetails->location->phone_number)?$newTaskDetails->location->phone_number:'';
                 $recipient_email = isset($newTaskDetails->location->email)?$newTaskDetails->location->email:'';
                 
+                //**Send OTP to recipient phone text msg */
                 if(!empty($smsProviderNumber) && !empty($recipient_phone) && strlen($recipient_phone) > 8){
                     $twilio  = new TwilioClient($twilio_sid, $token);
                     $message = $twilio->messages
@@ -406,7 +414,8 @@ class TaskController extends BaseController
                                     ]
                                 );
                 }
-                
+
+                //**Send OTP to recipient email */
                 if (!empty($recipient_email)) {
                     $sendto    = $recipient_email;
                     \Mail::send('email.verify', ['customer_name' => $order_details->customer->name,'content' => $sms_body,'agent_name' => $order_details->agent->name,'agent_profile' =>'','number_plate' =>$order_details->agent->plate_number,'client_logo'=>$client_logo,'link'=>''], function ($message) use ($sendto, $client_details, $mail) {
