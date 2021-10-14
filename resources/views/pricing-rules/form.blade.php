@@ -76,7 +76,7 @@
 
                     </div>
                 </div>
-                <div class="col-md-6">
+              {{--  <div class="col-md-6">
                     <div class="form-group" id="">
                         {!! Form::label('title', __('Cancel Fee'),['class' => 'control-label']) !!}
                         {{isset($client_pre->currency)?'('.$client_pre->currency->iso_code.')':''}}
@@ -85,11 +85,7 @@
                             <strong></strong>
                         </span>
                     </div>
-                </div>
-
-            </div>
-
-            <div class="row">
+                </div>--}}
                 <div class="col-md-6">
                     <div class="form-group" id="">
                         {!! Form::label('title', __('Employee Commission Percentage'),['class' => 'control-label']) !!}
@@ -99,6 +95,11 @@
                         </span>
                     </div>
                 </div>
+
+            </div>
+
+            <div class="row">
+              
                 <div class="col-md-6">
                     <div class="form-group" id="">
                         {!! Form::label('title', __('Employee Commission Fixed'),['class' => 'control-label']) !!}
@@ -108,10 +109,6 @@
                         </span>
                     </div>
                 </div>
-
-            </div>
-            
-            <div class="row">
                 <div class="col-md-6">
                     <div class="form-group" id="">
                         {!! Form::label('title', __('Freelancer Commission Percentage'),['class' => 'control-label']) !!}
@@ -121,6 +118,11 @@
                         </span>
                     </div>
                 </div>
+
+            </div>
+            
+            <div class="row">
+               
                 <div class="col-md-6">
                     <div class="form-group" id="">
                         {!! Form::label('title', __('Freelancer Commission Fixed'),['class' => 'control-label']) !!}
