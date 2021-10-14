@@ -353,7 +353,7 @@ class AuthController extends BaseController
 
     public function signup(Request $request)
     {
-       // return response()->json(['data' => $request->all()]);
+        // return response()->json(['data' => $request->all()]);
         $validator = Validator::make($request->all(), [
             'name' => 'required',
             'phone_number' => 'required|min:9',
@@ -408,8 +408,10 @@ class AuthController extends BaseController
             $file = $request->file('uploaded_file');
             foreach ($request->uploaded_file as $key => $f) {
                 $header = $request->header();
-                if (array_key_exists("shortcode", $header)) {
-                    $shortcode =  $header['shortcode'][0];
+                $shortcode = "";
+                $clientDetail = Client::first();
+                if (!empty($clientDetail)) {
+                    $shortcode =  $clientDetail->code;
                 }
                 $folder = str_pad($shortcode, 8, '0', STR_PAD_LEFT);
                 $folder = 'client_' . $folder;
