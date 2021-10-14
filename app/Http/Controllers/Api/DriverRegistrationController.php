@@ -21,7 +21,7 @@ class DriverRegistrationController extends Controller
         $validator = Validator::make($request->all(), [
             'upload_photo' => 'mimes:jpeg,png,jpg,gif,svg|max:2048',
             'name' => 'required|max:255',
-            'phone_number' => 'required||unique:agents|min:9|max:15',
+            'phone_number' => 'required|unique:agents|min:9|max:15',
             'type' => 'required',
             'vehicle_type_id' => 'required',
             'make_model' => 'required',
@@ -103,7 +103,7 @@ class DriverRegistrationController extends Controller
                 $agent_docs = AgentDocs::create($files[$key]);
             }
 
-            if ($agent->wasRecentlyCreated) {
+            if ($agent->wasRecentlyCreated && $agent_docs->wasRecentlyCreated) {
                 return response()->json([
                     'status' => __('success'),
                     'message' => __('Agent created Successfully!'),
@@ -121,16 +121,16 @@ class DriverRegistrationController extends Controller
     public function sendDocuments()
     {
         try {
-            $documents = DriverRegistrationDocument::get();
+            $documents = DriverRegistrationDocument::orderBy('file_type','DESC')->get();
 
             return response()->json([
-                'status' => __('success'),
-                'message' => __('Documents Sent Successfully!'),
+                'status' => 200,
+                'message' => 'Success!',
                 'data' => $documents
             ]);
         } catch (\Exception $e) {
             return response()->json([
-                'status' => __('error'),
+                'status' => 400,
                 'message' => $e->getMessage(),
             ]);
         }

@@ -4,7 +4,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
 <div class="row mb-2">
     <div class="col-md-4">
         <div class="form-group" id="profile_pictureInputEdit">
-            <input type="file" id="profilePic" data-plugins="dropify" name="profile_picture" data-default-file="" showImg="{{ isset($agent->profile_picture) ? Storage::disk('s3')->url($agent->profile_picture) : '' }}" readonly />
+        <a href="{{Storage::disk('s3')->url($agent->profile_picture)}}" target="_blank"><img src="{{isset($agent->profile_picture) ? $imgproxyurl.Storage::disk('s3')->url($agent->profile_picture) : Phumbor::url(URL::to('/asset/images/no-image.png')) }}" style="width:240px;height:120px;"></a>
             <span class="invalid-feedback" role="alert">
                 <strong></strong>
             </span>
@@ -180,7 +180,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
             <div class="file file--upload">
                 <label for="">
                     <span class="update_pic pdf-icon">
-                        <a href="{{Storage::disk('s3')->url($agent_doc->file_name)}}" target="_blank"><img showImg="{{ isset($agent_doc->file_name) ? Storage::disk('s3')->url($agent_doc->file_name) : '' }}" id="file"></a>
+                        <a href="{{Storage::disk('s3')->url($agent_doc->file_name)}}" target="_blank"><img src="{{URL::asset('/assets/images/pdf.png')}}"></a>
                     </span>
                 </label>
                 <div class="invalid-feedback" id=""><strong></strong></div>

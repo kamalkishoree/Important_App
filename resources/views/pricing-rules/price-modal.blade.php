@@ -8,13 +8,13 @@
             <form id="add_customer" action="{{ route('pricing-rules.store') }}" method="POST">
                 @csrf
                 <div class="modal-body px-3 py-0">
-                    
+
                     <div class="row">
 
                         <div class="col-md-12">
                             <div class="card-box">
-                                <h4 class="header-title mb-3"></h4>                              
-                    
+                                <h4 class="header-title mb-3"></h4>
+
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group" id="nameInput">
@@ -22,7 +22,7 @@
                                             {!! Form::text('name', null, ['class' => 'form-control','placeholder'=> __('Name'),'required' => 'required']) !!}
                                             <span class="invalid-feedback" role="alert">
                                                 <strong></strong>
-                                            </span>                    
+                                            </span>
                                         </div>
                                     </div>
                                     {{-- <div class="col-md-6">
@@ -44,7 +44,7 @@
                                         </div>
                                     </div>
                                 </div>
-                    
+
                                 {{-- <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group" id="">
@@ -66,7 +66,7 @@
                                 </div> --}}
 
                                 <div class="row temp">
-                                    
+
                                     <div class="col-md-6">
                                         <div class="form-group" id="typeInput">
                                             {!! Form::label('title', __('Select Team'),['class' => 'control-label']) !!}
@@ -88,7 +88,7 @@
                                 </div>
 
                                 <div class="row temp">
-                                   
+
                                     <div class="col-md-6">
                                         <div class="form-group" id="typeInput">
                                             {!! Form::label('title', __('Select Driver Tag'),['class' => 'control-label']) !!}
@@ -109,7 +109,7 @@
                                             <span class="invalid-feedback" role="alert">
                                                 <strong></strong>
                                             </span>
-                    
+
                                         </div>
                                     </div>
                                     <div class="col-md-6">
@@ -119,7 +119,7 @@
                                             <span class="invalid-feedback" role="alert">
                                                 <strong></strong>
                                             </span>
-                    
+
                                         </div>
                                     </div>
                                 </div>
@@ -132,21 +132,9 @@
                                             <span class="invalid-feedback" role="alert">
                                                 <strong></strong>
                                             </span>
-                    
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group" id="">
-                                            {!! Form::label('title', __('Base Waiting'),['class' => 'control-label']) !!}
-                                            {!! Form::text('base_waiting', 1, ['class' => 'form-control','required' => 'required']) !!}
-                                            <span class="invalid-feedback" role="alert">
-                                                <strong></strong>
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
 
-                                <div class="row">
+                                        </div>
+                                    </div>
                                     <div class="col-md-6">
                                         <div class="form-group" id="">
                                             {!! Form::label('title', __('Duration Price(per minute)'),['class' => 'control-label']) !!}
@@ -154,10 +142,23 @@
                                             <span class="invalid-feedback" role="alert">
                                                 <strong></strong>
                                             </span>
-                    
+
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
+                                    {{-- <div class="col-md-6">
+                                        <div class="form-group" id="">
+                                            {!! Form::label('title', __('Base Waiting'),['class' => 'control-label']) !!}
+                                            {!! Form::text('base_waiting', 1, ['class' => 'form-control','required' => 'required']) !!}
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong></strong>
+                                            </span>
+                                        </div>
+                                    </div>--}}
+                                </div>
+
+                                <div class="row">
+
+                                    {{-- <div class="col-md-6">
                                         <div class="form-group" id="">
                                             {!! Form::label('title', __('Waiting Price'),['class' => 'control-label']) !!}
                                             {!! Form::text('waiting_price', 1, ['class' => 'form-control','required' => 'required']) !!}
@@ -165,7 +166,7 @@
                                                 <strong></strong>
                                             </span>
                                         </div>
-                                    </div>
+                                    </div>--}}
                                 </div>
 
                                 <div class="row">
@@ -176,10 +177,20 @@
                                             <span class="invalid-feedback" role="alert">
                                                 <strong></strong>
                                             </span>
-                    
+
                                         </div>
                                     </div>
                                     <div class="col-md-6">
+                                        <div class="form-group" id="">
+                                            {!! Form::label('title', __('Employee Commission Percentage'),['class' => 'control-label']) !!}
+                                            {!! Form::text('agent_commission_percentage', null, ['class' => 'form-control','required' => 'required']) !!}
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong></strong>
+                                            </span>
+
+                                        </div>
+                                    </div>
+                                    {{-- <div class="col-md-6">
                                         <div class="form-group" id="">
                                             {!! Form::label('title', __('Cancel Fee'),['class' => 'control-label']) !!}
                                             {!! Form::text('cancel_fee', 1, ['class' => 'form-control','required' => 'required']) !!}
@@ -188,20 +199,11 @@
                                             </span>
                     
                                         </div>
-                                    </div>
+                                    </div>--}}
                                 </div>
 
                                 <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group" id="">
-                                            {!! Form::label('title', __('Employee Commission Percentage'),['class' => 'control-label']) !!}
-                                            {!! Form::text('agent_commission_percentage', null, ['class' => 'form-control','required' => 'required']) !!}
-                                            <span class="invalid-feedback" role="alert">
-                                                <strong></strong>
-                                            </span>
-                    
-                                        </div>
-                                    </div>
+
                                     <div class="col-md-6">
                                         <div class="form-group" id="">
                                             {!! Form::label('title', __('Employee Commission Fixed'),['class' => 'control-label']) !!}
@@ -209,12 +211,9 @@
                                             <span class="invalid-feedback" role="alert">
                                                 <strong></strong>
                                             </span>
-                    
+
                                         </div>
                                     </div>
-                                </div>
-                                
-                                <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group" id="">
                                             {!! Form::label('title', __('Freelancer Commission Percentage'),['class' => 'control-label']) !!}
@@ -222,9 +221,13 @@
                                             <span class="invalid-feedback" role="alert">
                                                 <strong></strong>
                                             </span>
-                    
+
                                         </div>
                                     </div>
+                                </div>
+
+                                <div class="row">
+                                   
                                     <div class="col-md-6">
                                         <div class="form-group" id="">
                                             {!! Form::label('title', __('Freelancer Commission Fixed'),['class' => 'control-label']) !!}
@@ -238,7 +241,7 @@
                             </div>
                             {{-- Do not Remove this blow div --}}
                             <div class="" id="nestable_list_1" style="display: none">
-                                
+
                             </div>
                         </div>
                     </div>
@@ -258,18 +261,18 @@
                 <h4 class="modal-title">{{__("Pricing Edit")}}</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
             </div>
-            
+
             <div class="modal-body px-3 py-0">
                 <div class="row">
                     <div class="col-md-12" id="editCardBox">
-                        
+
                     </div>
                 </div>
             </div>
             <div class="modal-footer border-0">
                 <button type="submit" class="btn btn-blue waves-effect waves-light submitEditForm">{{__("Submit")}}</button>
             </div>
-          
+
         </div>
     </div>
 </div>

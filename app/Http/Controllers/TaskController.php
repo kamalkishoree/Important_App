@@ -197,13 +197,11 @@ class TaskController extends Controller
                                         </div>
                                     </div>
                                     <div class="inner-div">
-                                        <form id="taskdelete'.$orders->id.'" method="POST" action="'.route('tasks.destroy', $orders->id).'">
+                                        <form class="mb-0" id="taskdelete'.$orders->id.'" method="POST" action="'.route('tasks.destroy', $orders->id).'">
                                             <input type="hidden" name="_token" value="'.csrf_token().'" />
                                             <input type="hidden" name="_method" value="DELETE">
                                             <div class="form-group">
-                                                <button type="button"
-                                                    class="btn btn-primary-outline action-icon"> <i
-                                                        class="mdi mdi-delete" taskid="'.$orders->id.'"></i></button>
+                                                <button type="button" class="btn btn-primary-outline action-icon"> <i class="mdi mdi-delete" taskid="'.$orders->id.'"></i></button>
                                             </div>
                                         </form>
                                     </div>
