@@ -21,13 +21,8 @@ class DriverRegistrationController extends Controller
         $validator = Validator::make($request->all(), [
             'upload_photo' => 'mimes:jpeg,png,jpg,gif,svg|max:2048',
             'name' => 'required|max:255',
-            'phone_number' => 'required||unique:agents|min:9|max:15',
-            'type' => 'required',
-            'vehicle_type_id' => 'required',
-            'make_model' => 'required',
-            'uid' => 'required',
-            'plate_number' => 'required',
-            'color' => 'required',
+            'phone_number' => 'required|unique:agents|min:9|max:15',
+            
         ]);
         if ($validator->fails()) {
             foreach ($validator->errors()->toArray() as $error_key => $error_value) {
@@ -106,7 +101,7 @@ class DriverRegistrationController extends Controller
             if ($agent->wasRecentlyCreated && $agent_docs->wasRecentlyCreated) {
                 return response()->json([
                     'status' => 'success',
-                    'message' => 'Agent created Successfully!',
+                    'message' => 'Thanks for signing up. We will get back to you shortly!',
                     'data' => $agent
                 ]);
             }
