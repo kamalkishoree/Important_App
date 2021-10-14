@@ -83,8 +83,7 @@ class SendPushNotification
      ///   Log::info($newget);
         DB::connection($schemaName)->table('rosters')->where('status',10)->delete();
         if(count($get) > 0){
-            Log::info($get);
-            Log::info('Fill Roaster');
+            
             // DB::connection($schemaName)->table('rosters')->whereIn('id',$newget)->update(['status'=>1]);
             DB::connection($schemaName)->table('rosters')->whereIn('id',$newget)->delete();
             
@@ -125,9 +124,9 @@ class SendPushNotification
 
                 if(isset($new)){
                     try{
-                        Log::info('$client_preferences->fcm_server_key -- '.$client_preferences->fcm_server_key);
+                       
                         $fcm_server_key = !empty($client_preferences->fcm_server_key)? $client_preferences->fcm_server_key : config('laravel-fcm.server_key');
-                        Log::info($fcm_server_key);
+                        
                         $fcmObj = new Fcm($fcm_server_key);
                         $fcm_store = $fcmObj->to($new) // $recipients must an array
                                         ->priority('high')
@@ -140,10 +139,6 @@ class SendPushNotification
                                         ])
                                         ->send();
                                         
-                        Log::info('mtest');
-                        Log::info($fcm_store);
-                        Log::info('mtest');
-                        Log::info($item);
                     
                     }
                     catch(Exception $e){

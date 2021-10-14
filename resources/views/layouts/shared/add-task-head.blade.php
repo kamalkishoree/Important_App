@@ -493,6 +493,33 @@
               var jElem = $(elem); // jQuery element
               //jElem.prop('required', true);
           });
+
+          var flatNo1 = $clone.find('.flat_no');
+          $.each(flatNo1, function(index, elem){
+            var jElem = $(elem)
+            var name = jElem.prop('id');
+            name = name.replace(/\d+/g, '');
+            name = 'addHeader'+post_count+'-flat_no';
+            jElem.prop('id', name);
+          });
+
+          var alcoholicItem = $clone.find('.alcoholic_item');
+          $.each(alcoholicItem, function(index, elem){
+            var jElem = $(elem)
+            var name = jElem.prop('id');
+            name = name.replace(/\d+/g, '');
+            name = 'addHeader'+post_count+'-alcoholic_item';
+            jElem.prop('id', name);
+
+            var alcoholicItemLabel = $clone.find('.alcoholic_item_label');
+            $.each(alcoholicItemLabel, function(index, elem){
+                var jElem = $(elem);
+                var labelName = jElem.prop('for');
+                labelName = labelName.replace(/\d+/g, '');
+                labelName = 'addHeader'+post_count+'-alcoholic_item';
+                jElem.prop('for', labelName);
+            });
+          });
          
           var postcode1 = $clone.find('.postcode');
           $.each(postcode1, function(index, elem){

@@ -123,7 +123,7 @@ class TaskController extends Controller
         }
         $orders = $orders->where('status', $request->routesListingType)->where('status', '!=', null)->get();
 
-        // print_r($orders);die;
+      
         return Datatables::of($orders)
                 ->editColumn('customer_name', function ($orders) use ($request) {
                     $customerName = !empty($orders->customer->name)? $orders->customer->name : '';
@@ -435,16 +435,15 @@ class TaskController extends Controller
             $taskcount++;
             if (isset($request->address[$key])) {
                 $loc = [
-                    'latitude'    => $request->latitude[$key],
-                    'longitude'   => $request->longitude[$key],
-                    'short_name'  => $request->short_name[$key],
-                    'address'     => $request->address[$key],
-                    'post_code'   => $request->post_code[$key],
-                    'email'         => $request->address_email[$key],
+                    'latitude'       => $request->latitude[$key],
+                    'longitude'      => $request->longitude[$key],
+                    'short_name'     => $request->short_name[$key],
+                    'address'        => $request->address[$key],
+                    'post_code'      => $request->post_code[$key],
+                    'flat_no'        => !empty($request->flat_no[$key])? $request->flat_no[$key] : '',
+                    'email'          => $request->address_email[$key],
                     'phone_number'   => $request->address_phone_number[$key],
-                    // 'due_after'      => $request->due_after[$key],
-                    // 'due_before'    => $request->due_before[$key],
-                    'customer_id' => $cus_id,
+                    'customer_id'    => $cus_id,
                 ];
                 $Loction = Location::create($loc);
                 $loc_id = $Loction->id;
@@ -462,16 +461,15 @@ class TaskController extends Controller
             $location = Location::where('id', $loc_id)->first();
             if ($location->customer_id != $cus_id) {
                 $newloc = [
-                    'latitude'    => $location->latitude,
-                    'longitude'   => $location->longitude,
-                    'short_name'  => $location->short_name,
-                    'address'     => $location->address,
-                    'post_code'   => $location->post_code,
-                    'email'         => $location->address_email,
-                    'phone_number'   => $location->address_phone_number,
-                    // 'due_after'      => $location->due_after,
-                    // 'due_before'    => $location->due_before,
-                    'customer_id' => $cus_id,
+                    'latitude'     => $location->latitude,
+                    'longitude'    => $location->longitude,
+                    'short_name'   => $location->short_name,
+                    'address'      => $location->address,
+                    'post_code'    => $location->post_code,
+                    'flat_no'      => $location->flat_no,
+                    'email'        => $location->address_email,
+                    'phone_number' => $location->address_phone_number,
+                    'customer_id'  => $cus_id,
                 ];
                 $location = Location::create($newloc);
             }
@@ -495,7 +493,8 @@ class TaskController extends Controller
                 'created_at'                 => $notification_time,
                 'assigned_time'              => $notification_time,
                 'barcode'                    => $request->barcode[$key],
-                'quantity'                   => $request->quantity[$key]
+                'quantity'                   => $request->quantity[$key],
+                'alcoholic_item'             => !empty($request->alcoholic_item[$key])? $request->alcoholic_item[$key] : '',
             ];
             $task = Task::create($data);
             $dep_id = $task->id;
@@ -747,9 +746,10 @@ class TaskController extends Controller
         }
         $agents = $agents->get();
 
+        $preference  = ClientPreference::where('id', 1)->first(['route_flat_input','route_alcoholic_input']);
        
         $task_proofs = TaskProof::all();
-        $returnHTML = view('modals/add-task-modal')->with(['teamTag' => $teamTag, 'agentTag' => $agentTag, 'agents' => $agents, 'pricingRule' => $pricingRule, 'allcation' => $allcation ,'task_proofs' => $task_proofs ])->render();
+        $returnHTML = view('modals/add-task-modal')->with(['teamTag' => $teamTag, 'preference'=>$preference, 'agentTag' => $agentTag, 'agents' => $agents, 'pricingRule' => $pricingRule, 'allcation' => $allcation ,'task_proofs' => $task_proofs ])->render();
         return response()->json(array('success' => true, 'html' => $returnHTML));
     }
 
@@ -872,6 +872,7 @@ class TaskController extends Controller
                     'short_name'  => $request->short_name[$key],
                     'address'     => $request->address[$key],
                     'post_code'   => $request->post_code[$key],
+                    'flat_no'   => !empty($request->flat_no[$key])? $request->flat_no[$key] : '',
                     'customer_id' => $cus_id,
                 ];
                 $Loction = Location::create($loc);
@@ -907,7 +908,8 @@ class TaskController extends Controller
                 'created_at'                 => $notification_time,
                 'assigned_time'              => $notification_time,
                 'barcode'                    => $request->barcode[$key],
-                'quantity'                   => $request->quantity[$key]
+                'quantity'                   => $request->quantity[$key],
+                'alcoholic_item'             => !empty($request->alcoholic_item[$key])? $request->alcoholic_item[$key] : '',
             ];
             $task = Task::create($data);
             $dep_id = $task->id;
@@ -1855,7 +1857,9 @@ class TaskController extends Controller
             $all_locations = Location::where('customer_id', '!=', $cust_id)->where('short_name', '!=', null)->where('location_status', 1)->get();
         }
         $task_proofs = TaskProof::all();
-        return view('tasks/update-task')->with(['task' => $task, 'task_proofs' => $task_proofs, 'teamTag' => $teamTag, 'agentTag' => $agentTag, 'agents' => $agents, 'images' => $array, 'savedrivertag' => $savedrivertag, 'saveteamtag' => $saveteamtag, 'main' => $lastbaseurl,'alllocations'=>$all_locations,'client_timezone'=>$client_timezone]);
+        $preference  = ClientPreference::where('id', 1)->first(['route_flat_input','route_alcoholic_input']);
+
+        return view('tasks/update-task')->with(['task' => $task, 'task_proofs' => $task_proofs, 'preference' => $preference, 'teamTag' => $teamTag, 'agentTag' => $agentTag, 'agents' => $agents, 'images' => $array, 'savedrivertag' => $savedrivertag, 'saveteamtag' => $saveteamtag, 'main' => $lastbaseurl,'alllocations'=>$all_locations,'client_timezone'=>$client_timezone]);
     }
 
     /**
@@ -1969,17 +1973,17 @@ class TaskController extends Controller
         foreach ($request->task_type_id as $key => $value) {
             if (isset($request->short_name[$key])) {
                 $loc = [
-                    'short_name' => $request->short_name[$key],
-                    'address'    => $request->address[$key],
-                    'post_code'  => $request->post_code[$key],
-                    'latitude'   => $request->latitude[$key],
-                    'longitude'  => $request->longitude[$key],
-                    'email'  => $request->address_email[$key],
+                    'short_name'    => $request->short_name[$key],
+                    'address'       => $request->address[$key],
+                    'post_code'     => $request->post_code[$key],
+                    'flat_no'       => !empty($request->flat_no[$key])? $request->flat_no[$key] : '',
+                    'latitude'      => $request->latitude[$key],
+                    'longitude'     => $request->longitude[$key],
+                    'email'         => $request->address_email[$key],
                     'phone_number'  => $request->address_phone_number[$key],
-                    // 'due_after'  => $request->due_after[$key],
-                    // 'due_before'  => $request->due_before[$key],
-                    'customer_id' => $cus_id,
+                    'customer_id'   => $cus_id,
                 ];
+                
                 $Loction = Location::create($loc);
                 $loc_id = $Loction->id;
             } else {
@@ -1992,16 +1996,16 @@ class TaskController extends Controller
                 $location = Location::where('id', $loc_id)->first();
                 if ($location->customer_id != $cus_id) {
                     $newloc = [
-                        'latitude'    => $location->latitude,
-                        'longitude'   => $location->longitude,
-                        'short_name'  => $location->short_name,
-                        'address'     => $location->address,
-                        'post_code'   => $location->post_code,
-                        'email'         => $location->address_email,
+                        'latitude'       => $location->latitude,
+                        'longitude'      => $location->longitude,
+                        'short_name'     => $location->short_name,
+                        'address'        => $location->address,
+                        'post_code'      => $location->post_code,
+                        'flat_no'        => $location->flat_no,
+                        'alcoholic_item' => $location->alcoholic_item,
+                        'email'          => $location->address_email,
                         'phone_number'   => $location->address_phone_number,
-                        // 'due_after'      => $location->due_after,
-                        // 'due_before'    => $location->due_before,
-                        'customer_id' => $cus_id,
+                        'customer_id'    => $cus_id,
                     ];
                     $location = Location::create($newloc);
                 }
@@ -2009,15 +2013,16 @@ class TaskController extends Controller
             }
 
             $data = [
-                'order_id'                   => $id,
-                'task_type_id'               => $value,
-                'location_id'                => $loc_id,
-                'allocation_type'            => $request->allocation_type,
-                'dependent_task_id'          => $dep_id,
-                'task_status'                => isset($agent_id) ? 1 : 0,
-                'barcode'                    => $request->barcode[$key],
-                'quantity'                   => $request->quantity[$key],
-                'assigned_time'              => $notification_time,
+                'order_id'          => $id,
+                'task_type_id'      => $value,
+                'location_id'       => $loc_id,
+                'allocation_type'   => $request->allocation_type,
+                'dependent_task_id' => $dep_id,
+                'task_status'       => isset($agent_id) ? 1 : 0,
+                'barcode'           => $request->barcode[$key],
+                'quantity'          => $request->quantity[$key],
+                'assigned_time'     => $notification_time,
+                'alcoholic_item'    => !empty($request->alcoholic_item[$key])? $request->alcoholic_item[$key] : '',
             ];
             $task = Task::create($data);
             $dep_id = $task->id;

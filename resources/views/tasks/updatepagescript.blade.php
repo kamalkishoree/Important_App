@@ -73,13 +73,13 @@ $(document).ready(function(){
         $('#adds a').click(function() {
             countEdit = countEdit + 1;
           var abc = "{{ isset($maincount)?$maincount:0 }}";
-          var newcount = "{{ isset($newcount)?$newcount:0 }}"
-          //alert(newcount);
-           if(a == 0){
-             a = abc;
-             post_count = parseInt(newcount) + 1;
-           }
-          
+          var newcount = $('#newcount').val();
+        //   alert(newcount);
+        //    if(a == 0){
+        //      a = abc;
+        //      post_count = parseInt(newcount) + 1;
+        //    }
+        post_count = parseInt(newcount) + 1;
           
             a++;
            // alert(abc);
@@ -186,6 +186,35 @@ $(document).ready(function(){
                         var jElem = $(elem); // jQuery element
                         jElem.prop('required', true);
                     });
+
+                    var flat_no = $clone.find('.flat_no');
+                    $.each(flat_no, function(index, elem){
+                        var jElem = $(elem)
+                        var name = jElem.prop('id');
+                        console.log(name);
+                        name = name.replace(/\d+/g, '');
+                        name = 'add'+post_count+'-flat_no';
+                        jElem.prop('id', name);
+                    });
+
+                    var alcoholicItem = $clone.find('.alcoholic_item');
+                    $.each(alcoholicItem, function(index, elem){
+                        var jElem = $(elem)
+                        var name = jElem.prop('id');
+                        name = name.replace(/\d+/g, '');
+                        name = 'add'+post_count+'-alcoholic_item';
+                        jElem.prop('id', name);
+
+                        var alcoholicItemLabel = $clone.find('.alcoholic_item_label');
+                        $.each(alcoholicItemLabel, function(index, elem){
+                            var jElem = $(elem);
+                            var labelName = jElem.prop('for');
+                            labelName = labelName.replace(/\d+/g, '');
+                            labelName = 'add'+post_count+'-alcoholic_item';
+                            jElem.prop('for', labelName);
+                        });
+                    });
+
 
                     var postcode1 = $clone.find('.postcode');
                     $.each(postcode1, function(index, elem){
@@ -401,6 +430,7 @@ $(document).ready(function(){
             $(this).closest('.check-validation').find("input[name='address[]']").val('');
             $(this).closest('.check-validation').find("input[name='address_phone_number[]']").val('');
             $(this).closest('.check-validation').find("input[name='post_code[]']").val('');
+            $(this).closest('.check-validation').find("input[name='flat_no[]']").val('');
             $(this).closest('.check-validation').find("input[name='latitude[]']").val('');
             $(this).closest('.check-validation').find("input[name='longitude[]']").val('');
         });
@@ -413,6 +443,7 @@ $(document).ready(function(){
                     var latitude    = $(this).data("lat");
                     var longitude   = $(this).data("long");
                     var postCode    = $(this).data("pstcd");
+                    var flat_no     = $(this).data("flat_no");
                     var email       = $(this).data("emil");
                     var phoneNumber = $(this).data("ph");
                     $(this).closest('.check-validation').find("input[name='short_name[]']").val(shortName);
@@ -420,6 +451,7 @@ $(document).ready(function(){
                     $(this).closest('.check-validation').find("input[name='address[]']").val(address);
                     $(this).closest('.check-validation').find("input[name='address_phone_number[]']").val(phoneNumber);
                     $(this).closest('.check-validation').find("input[name='post_code[]']").val(postCode);
+                    $(this).closest('.check-validation').find("input[name='flat_no[]']").val(flat_no);
                     $(this).closest('.check-validation').find("input[name='latitude[]']").val(latitude);
                     $(this).closest('.check-validation').find("input[name='longitude[]']").val(longitude);
                 }
@@ -434,12 +466,14 @@ $(document).ready(function(){
             var postCode    = $(this).data("pstcd");
             var email       = $(this).data("emil");
             var phoneNumber = $(this).data("ph");
-
+            var flat_no     = $(this).data("flat_no");
+            
             $(this).closest('.check-validation').find("input[name='short_name[]']").val(shortName);
             $(this).closest('.check-validation').find("input[name='address_email[]']").val(email);
             $(this).closest('.check-validation').find("input[name='address[]']").val(address);
             $(this).closest('.check-validation').find("input[name='address_phone_number[]']").val(phoneNumber);
             $(this).closest('.check-validation').find("input[name='post_code[]']").val(postCode);
+            $(this).closest('.check-validation').find("input[name='flat_no[]']").val(flat_no);
             $(this).closest('.check-validation').find("input[name='latitude[]']").val(latitude);
             $(this).closest('.check-validation').find("input[name='longitude[]']").val(longitude);
         });

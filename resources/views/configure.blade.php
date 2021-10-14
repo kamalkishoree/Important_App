@@ -415,7 +415,7 @@
     </div>
     
     <div class="row">
-    <div class="col-md-3">
+        <div class="col-md-3">
             <div class="page-title-box">
                 <h4 class="page-title text-uppercase">Driver</h4>
             </div>
@@ -468,6 +468,53 @@
                     </table>
                 </div>
             </div>
+        </div>
+        <div class="col-md-3">
+            <form method="POST" action="{{ route('route.create.configure', Auth::user()->code) }}">
+                @csrf
+                <div class="card-box same-size">
+                    <h4 class="header-title">{{__("Routes")}}</h4>
+                    <!-- <p class="sub-header">
+                        {{__("View and update your Domain.")}}
+                    </p> -->
+                    <div class="row">
+                        <div class="col-12 my-2">
+                           <div class="custom-switch redio-all">
+                                    <input type="checkbox" value="1" class="custom-control-input large-icon" id="route_flat_input" name="route_flat_input" {{ isset($preference) && $preference->route_flat_input == 1 ? 'checked' : '' }}>
+                                    <label class="custom-control-label checkss" for="route_flat_input">{{__("Show flat number field on route create & update.")}}</label>
+                                <div class="col-sm-4 text-right">
+                                    @if ($errors->has('route_flat_input'))
+                                        <span class="text-danger" role="alert">
+                                            <strong>{{ $errors->first('route_flat_input') }}</strong>
+                                        </span>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 mb-2">
+                           <div class="custom-switch redio-all">
+                                <input type="checkbox" value="1" class="custom-control-input large-icon" id="route_alcoholic_input" name="route_alcoholic_input" {{ isset($preference) && $preference->route_alcoholic_input == 1 ? 'checked' : '' }}>
+                                <label class="custom-control-label checkss" for="route_alcoholic_input">{{__("Show alcoholic item redio button on create & update.")}}</label>
+                            <div class="col-sm-4 text-right">
+                                @if ($errors->has('route_alcoholic_input'))
+                                    <span class="text-danger" role="alert">
+                                        <strong>{{ $errors->first('route_alcoholic_input') }}</strong>
+                                    </span>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-group mb-0 text-center">
+                                <button class="btn btn-blue btn-block" type="submit"> {{__("Update")}} </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
         </div>
     </div>
 
