@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use App\Model\Countries;
 // use PDF;
-
+use Log;
 class DashBoardController extends Controller
 {
     /**

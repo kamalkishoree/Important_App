@@ -387,6 +387,27 @@ f
 
                                         
                                     </tr>
+                                    <tr>
+                                        <td>
+                                            <h5 class="m-0 font-weight-normal">{{__("OTP")}}</h5>
+                                        </td>
+
+                                        <td>
+                                            <div class="custom-control custom-switch">
+                                                <input type="checkbox" class="custom-control-input event_type" id="customSwitch_{{$key.''.$counter.'9'}}" name="otp_{{$key+1}}" {{!empty($taskproof->otp) && $taskproof->otp == 1 ? 'checked':''}}>
+                                                <label class="custom-control-label" for="customSwitch_{{$key.''.$counter.'9'}}"></label>
+                                            </div>
+                                        </td>
+
+                                        <td>
+                                            <div class="custom-control custom-switch">
+                                                <input type="checkbox" class="custom-control-input event_type otp-requried-check" id="customSwitch_{{$key.''.$counter.'10'}}" name="otp_requried_{{$key+1}}" {{!empty($taskproof->otp_requried) && $taskproof->otp_requried == 1 ? 'checked':''}}>
+                                                <label class="custom-control-label" for="customSwitch_{{$key.''.$counter.'10'}}"></label>
+                                            </div>
+                                        </td>
+
+                                        
+                                    </tr>
 
 
                                 </tbody>

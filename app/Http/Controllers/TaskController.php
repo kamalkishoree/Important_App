@@ -123,7 +123,7 @@ class TaskController extends Controller
         }
         $orders = $orders->where('status', $request->routesListingType)->where('status', '!=', null)->get();
 
-        // print_r($orders);die;
+      
         return Datatables::of($orders)
                 ->editColumn('customer_name', function ($orders) use ($request) {
                     $customerName = !empty($orders->customer->name)? $orders->customer->name : '';
@@ -435,16 +435,15 @@ class TaskController extends Controller
             $taskcount++;
             if (isset($request->address[$key])) {
                 $loc = [
-                    'latitude'    => $request->latitude[$key],
-                    'longitude'   => $request->longitude[$key],
-                    'short_name'  => $request->short_name[$key],
-                    'address'     => $request->address[$key],
-                    'post_code'   => $request->post_code[$key],
-                    'email'         => $request->address_email[$key],
+                    'latitude'       => $request->latitude[$key],
+                    'longitude'      => $request->longitude[$key],
+                    'short_name'     => $request->short_name[$key],
+                    'address'        => $request->address[$key],
+                    'post_code'      => $request->post_code[$key],
+                    'flat_no'        => !empty($request->flat_no[$key])? $request->flat_no[$key] : '',
+                    'email'          => $request->address_email[$key],
                     'phone_number'   => $request->address_phone_number[$key],
-                    // 'due_after'      => $request->due_after[$key],
-                    // 'due_before'    => $request->due_before[$key],
-                    'customer_id' => $cus_id,
+                    'customer_id'    => $cus_id,
                 ];
                 $Loction = Location::create($loc);
                 $loc_id = $Loction->id;
@@ -462,16 +461,15 @@ class TaskController extends Controller
             $location = Location::where('id', $loc_id)->first();
             if ($location->customer_id != $cus_id) {
                 $newloc = [
-                    'latitude'    => $location->latitude,
-                    'longitude'   => $location->longitude,
-                    'short_name'  => $location->short_name,
-                    'address'     => $location->address,
-                    'post_code'   => $location->post_code,
-                    'email'         => $location->address_email,
-                    'phone_number'   => $location->address_phone_number,
-                    // 'due_after'      => $location->due_after,
-                    // 'due_before'    => $location->due_before,
-                    'customer_id' => $cus_id,
+                    'latitude'     => $location->latitude,
+                    'longitude'    => $location->longitude,
+                    'short_name'   => $location->short_name,
+                    'address'      => $location->address,
+                    'post_code'    => $location->post_code,
+                    'flat_no'      => $location->flat_no,
+                    'email'        => $location->address_email,
+                    'phone_number' => $location->address_phone_number,
+                    'customer_id'  => $cus_id,
                 ];
                 $location = Location::create($newloc);
             }
@@ -495,7 +493,8 @@ class TaskController extends Controller
                 'created_at'                 => $notification_time,
                 'assigned_time'              => $notification_time,
                 'barcode'                    => $request->barcode[$key],
-                'quantity'                   => $request->quantity[$key]
+                'quantity'                   => $request->quantity[$key],
+                'alcoholic_item'             => !empty($request->alcoholic_item[$key])? $request->alcoholic_item[$key] : '',
             ];
             $task = Task::create($data);
             $dep_id = $task->id;
@@ -747,9 +746,10 @@ class TaskController extends Controller
         }
         $agents = $agents->get();
 
+        $preference  = ClientPreference::where('id', 1)->first(['route_flat_input','route_alcoholic_input']);
        
         $task_proofs = TaskProof::all();
-        $returnHTML = view('modals/add-task-modal')->with(['teamTag' => $teamTag, 'agentTag' => $agentTag, 'agents' => $agents, 'pricingRule' => $pricingRule, 'allcation' => $allcation ,'task_proofs' => $task_proofs ])->render();
+        $returnHTML = view('modals/add-task-modal')->with(['teamTag' => $teamTag, 'preference'=>$preference, 'agentTag' => $agentTag, 'agents' => $agents, 'pricingRule' => $pricingRule, 'allcation' => $allcation ,'task_proofs' => $task_proofs ])->render();
         return response()->json(array('success' => true, 'html' => $returnHTML));
     }
 
@@ -872,6 +872,7 @@ class TaskController extends Controller
                     'short_name'  => $request->short_name[$key],
                     'address'     => $request->address[$key],
                     'post_code'   => $request->post_code[$key],
+                    'flat_no'   => !empty($request->flat_no[$key])? $request->flat_no[$key] : '',
                     'customer_id' => $cus_id,
                 ];
                 $Loction = Location::create($loc);
@@ -907,7 +908,8 @@ class TaskController extends Controller
                 'created_at'                 => $notification_time,
                 'assigned_time'              => $notification_time,
                 'barcode'                    => $request->barcode[$key],
-                'quantity'                   => $request->quantity[$key]
+                'quantity'                   => $request->quantity[$key],
+                'alcoholic_item'             => !empty($request->alcoholic_item[$key])? $request->alcoholic_item[$key] : '',
             ];
             $task = Task::create($data);
             $dep_id = $task->id;
@@ -1318,51 +1320,56 @@ class TaskController extends Controller
         if (!isset($geo)) { 
             Log::info('innergeoty');
             $oneagent = Agent::where('id', $agent_id)->first();
-            $data = [
-                'order_id'            => $orders_id,
-                'driver_id'           => $agent_id,
-                'notification_time'   => $time,
-                'type'                => $allcation_type,
-                'client_code'         => Auth::user()->code,
-                'created_at'          => Carbon::now()->toDateTimeString(),
-                'updated_at'          => Carbon::now()->toDateTimeString(),
-                'device_type'         => $oneagent->device_type,
-                'device_token'        => $oneagent->device_token,
-                'detail_id'           => $randem,
-                'cash_to_be_collected' => $order_details->cash_to_be_collected??null,
-            ];
-            $this->dispatch(new RosterCreate($data, $extraData));
+            if(!empty($oneagent->device_token) && $oneagent->is_available == 1){
+                $data = [
+                    'order_id'            => $orders_id,
+                    'driver_id'           => $agent_id,
+                    'notification_time'   => $time,
+                    'type'                => $allcation_type,
+                    'client_code'         => Auth::user()->code,
+                    'created_at'          => Carbon::now()->toDateTimeString(),
+                    'updated_at'          => Carbon::now()->toDateTimeString(),
+                    'device_type'         => $oneagent->device_type,
+                    'device_token'        => $oneagent->device_token,
+                    'detail_id'           => $randem,
+                    'cash_to_be_collected' => $order_details->cash_to_be_collected??null,
+                ];
+                $this->dispatch(new RosterCreate($data, $extraData));
+            }
         } else {  
-            Log::info('outergeouu');
-            $getgeo = DriverGeo::where('geo_id', $geo)->with([
-                'agent'=> function ($o) use ($cash_at_hand, $date) {
-                    $o->where('cash_at_hand', '<', $cash_at_hand)->orderBy('id', 'DESC')->with(['logs','order'=> function ($f) use ($date) {
-                        $f->whereDate('order_time', $date)->with('task');
-                    }]);
-                }])->get();
-                Log::info($getgeo->toArray());
-            for ($i = 1; $i <= $try; $i++) {
+            $getgeo = DriverGeo::where('geo_id', $geo)->with(
+                        [
+                            'agent'=> function ($o) use ($cash_at_hand, $date) {
+                                $o->where('cash_at_hand', '<', $cash_at_hand)->orderBy('id', 'DESC')->with(['logs','order'=> function ($f) use ($date) {
+                                    $f->whereDate('order_time', $date)->with('task');
+                                }]);
+                            }
+                        ])->get();
+
+            for ($i = 0; $i <= $try-1; $i++) {
                 foreach ($getgeo as $key =>  $geoitem) { 
-                    $datas = [
-                        'order_id'            => $orders_id,
-                        'driver_id'           => $geoitem->driver_id,
-                        'notification_time'   => $time,
-                        'type'                => $allcation_type,
-                        'client_code'         => Auth::user()->code,
-                        'created_at'          => Carbon::now()->toDateTimeString(),
-                        'updated_at'          => Carbon::now()->toDateTimeString(),
-                        'device_type'         => $geoitem->agent->device_type??null,
-                        'device_token'        => $geoitem->agent->device_token??null,
-                        'detail_id'           => $randem,
-                        'cash_to_be_collected' => $order_details->cash_to_be_collected??null,
-                     ];
-                    array_push($data, $datas);
-                    if ($allcation_type == 'N' && 'ACK') {Log::info('break');
-                        Order::where('id', $orders_id)->update(['driver_id'=>$geoitem->driver_id]);
-                        break;
+                    if (!empty($geoitem->agent->device_token) && $geoitem->agent->is_available == 1) {
+                        $datas = [
+                            'order_id'            => $orders_id,
+                            'driver_id'           => $geoitem->driver_id,
+                            'notification_time'   => $time,
+                            'type'                => $allcation_type,
+                            'client_code'         => Auth::user()->code,
+                            'created_at'          => Carbon::now()->toDateTimeString(),
+                            'updated_at'          => Carbon::now()->toDateTimeString(),
+                            'device_type'         => $geoitem->agent->device_type??null,
+                            'device_token'        => $geoitem->agent->device_token??null,
+                            'detail_id'           => $randem,
+                            'cash_to_be_collected' => $order_details->cash_to_be_collected??null,
+                        ];
+                        array_push($data, $datas);
+                        if ($allcation_type == 'N' && 'ACK') {Log::info('break');
+                            Order::where('id', $orders_id)->update(['driver_id'=>$geoitem->driver_id]);
+                            break;
+                        }
                     }
 
-                    Log::info($geoitem->agent->device_token);
+                    
                 }
                 $time = Carbon::parse($time)
                         ->addSeconds($expriedate + 10)
@@ -1371,9 +1378,7 @@ class TaskController extends Controller
                     break;
                 }
             }
-            Log::info('test1');
-            Log::info($data);
-            Log::info('test2');
+            
             $this->dispatch(new RosterCreate($data, $extraData));
         }
     }
@@ -1420,72 +1425,76 @@ class TaskController extends Controller
 
         if (!isset($geo)) {
             $oneagent = Agent::where('id', $agent_id)->first();
-            $data = [
-                'order_id'            => $orders_id,
-                'driver_id'           => $agent_id,
-                'notification_time'   => $time,
-                'type'                => $allcation_type,
-                'client_code'         => Auth::user()->code,
-                'created_at'          => Carbon::now()->toDateTimeString(),
-                'updated_at'          => Carbon::now()->toDateTimeString(),
-                'device_type'         => $oneagent->device_type,
-                'device_token'        => $oneagent->device_token,
-                'detail_id'           => $randem,
-                'cash_to_be_collected' => $order_details->cash_to_be_collected??null,
-            ];
-            $this->dispatch(new RosterCreate($data, $extraData));
+            if(!empty($oneagent->device_token) && $oneagent->is_available == 1){
+                $data = [
+                    'order_id'            => $orders_id,
+                    'driver_id'           => $agent_id,
+                    'notification_time'   => $time,
+                    'type'                => $allcation_type,
+                    'client_code'         => Auth::user()->code,
+                    'created_at'          => Carbon::now()->toDateTimeString(),
+                    'updated_at'          => Carbon::now()->toDateTimeString(),
+                    'device_type'         => $oneagent->device_type,
+                    'device_token'        => $oneagent->device_token,
+                    'detail_id'           => $randem,
+                    'cash_to_be_collected' => $order_details->cash_to_be_collected??null,
+                ];
+                $this->dispatch(new RosterCreate($data, $extraData));
+            }
         } else {
-            $getgeo = DriverGeo::where('geo_id', $geo)->with([
-                'agent'=> function ($o) use ($cash_at_hand, $date) {
-                    $o->where('cash_at_hand', '<', $cash_at_hand)->orderBy('id', 'DESC')->with(['logs' => function ($g) {
-                        $g->orderBy('id', 'DESC');
-                    }
-                        ,'order'=> function ($f) use ($date) {
-                            $f->whereDate('order_time', $date)->with('task');
-                        }]);
-                }])->get()->toArray();
+            $getgeo = DriverGeo::where('geo_id', $geo)->with(
+                        [
+                            'agent'=> function ($o) use ($cash_at_hand, $date) {
+                                $o->where('cash_at_hand', '<', $cash_at_hand)->orderBy('id', 'DESC')->with(['logs' => function ($g) {
+                                    $g->orderBy('id', 'DESC');
+                                }
+                                    ,'order'=> function ($f) use ($date) {
+                                        $f->whereDate('order_time', $date)->with('task');
+                                    }]);
+                            }
+                        ])->get()->toArray();
            
             //this function is give me nearest drivers list accourding to the the task location.
 
             $distenseResult = $this->haversineGreatCircleDistance($getgeo, $finalLocation, $unit, $max_redius, $max_task);
-                     
-            for ($i = 1; $i <= $try; $i++) {
-                $counter = 0;
-                foreach ($distenseResult as $key =>  $geoitem) {
-                    $datas = [
-                        'order_id'            => $orders_id,
-                        'driver_id'           => $geoitem['driver_id'],
-                        'notification_time'   => $time,
-                        'type'                => $allcation_type,
-                        'client_code'         => Auth::user()->code,
-                        'created_at'          => Carbon::now()->toDateTimeString(),
-                        'updated_at'          => Carbon::now()->toDateTimeString(),
-                        'device_type'         => $geoitem['device_type'],
-                        'device_token'        => $geoitem['device_token'],
-                        'detail_id'           => $randem,
-                        'cash_to_be_collected' => $order_details->cash_to_be_collected??null,
-                    ];
-                    $counter++;
-                    if ($counter == $maxsize) {
-                        $time = Carbon::parse($time)
-                        ->addSeconds($expriedate)
-                        ->format('Y-m-d H:i:s');
-                        $counter = 0;
+            
+            if(!empty($distenseResult)){
+                for ($i = 1; $i <= $try; $i++) {
+                    $counter = 0;
+                    foreach ($distenseResult as $key =>  $geoitem) {
+                        $datas = [
+                            'order_id'            => $orders_id,
+                            'driver_id'           => $geoitem['driver_id'],
+                            'notification_time'   => $time,
+                            'type'                => $allcation_type,
+                            'client_code'         => Auth::user()->code,
+                            'created_at'          => Carbon::now()->toDateTimeString(),
+                            'updated_at'          => Carbon::now()->toDateTimeString(),
+                            'device_type'         => $geoitem['device_type'],
+                            'device_token'        => $geoitem['device_token'],
+                            'detail_id'           => $randem,
+                            'cash_to_be_collected' => $order_details->cash_to_be_collected??null,
+                        ];
+                        $counter++;
+                        if ($counter == $maxsize) {
+                            $time = Carbon::parse($time)
+                            ->addSeconds($expriedate)
+                            ->format('Y-m-d H:i:s');
+                            $counter = 0;
+                        }
+                        array_push($data, $datas);
+                        if ($allcation_type == 'N' && 'ACK') {
+                            break;
+                        }
                     }
-                    array_push($data, $datas);
+                    $time = Carbon::parse($time)->addSeconds($expriedate + 10)->format('Y-m-d H:i:s');
+    
                     if ($allcation_type == 'N' && 'ACK') {
                         break;
                     }
                 }
-                $time = Carbon::parse($time)
-                ->addSeconds($expriedate + 10)
-                ->format('Y-m-d H:i:s');
-
-                if ($allcation_type == 'N' && 'ACK') {
-                    break;
-                }
+                $this->dispatch(new RosterCreate($data, $extraData)); // job for create roster
             }
-            $this->dispatch(new RosterCreate($data, $extraData)); // job for create roster
         }
     }
 
@@ -1532,74 +1541,79 @@ class TaskController extends Controller
 
         if (!isset($geo)) {
             $oneagent = Agent::where('id', $agent_id)->first();
-            $data = [
-                'order_id'            => $orders_id,
-                'driver_id'           => $agent_id,
-                'notification_time'   => $time,
-                'type'                => $allcation_type,
-                'client_code'         => Auth::user()->code,
-                'created_at'          => Carbon::now()->toDateTimeString(),
-                'updated_at'          => Carbon::now()->toDateTimeString(),
-                'device_type'         => $oneagent->device_type,
-                'device_token'        => $oneagent->device_token,
-                'detail_id'           => $randem,
-                'cash_to_be_collected' => $order_details->cash_to_be_collected??null,
-            ];
-            $this->dispatch(new RosterCreate($data, $extraData));
+            if(!empty($oneagent->device_token) && $oneagent->is_available == 1){
+                $data = [
+                    'order_id'            => $orders_id,
+                    'driver_id'           => $agent_id,
+                    'notification_time'   => $time,
+                    'type'                => $allcation_type,
+                    'client_code'         => Auth::user()->code,
+                    'created_at'          => Carbon::now()->toDateTimeString(),
+                    'updated_at'          => Carbon::now()->toDateTimeString(),
+                    'device_type'         => $oneagent->device_type,
+                    'device_token'        => $oneagent->device_token,
+                    'detail_id'           => $randem,
+                    'cash_to_be_collected' => $order_details->cash_to_be_collected??null,
+                ];
+                $this->dispatch(new RosterCreate($data, $extraData));
+            }
         } else {
-            $getgeo = DriverGeo::where('geo_id', $geo)->with([
-                'agent'=> function ($o) use ($cash_at_hand, $date) {
-                    $o->where('cash_at_hand', '<', $cash_at_hand)->orderBy('id', 'DESC')->with(['logs','order'=> function ($f) use ($date) {
-                        $f->whereDate('order_time', $date)->with('task');
-                    }]);
-                }])->get()->toArray();
+            $getgeo = DriverGeo::where('geo_id', $geo)->with(
+                        [
+                            'agent'=> function ($o) use ($cash_at_hand, $date) {
+                                $o->where('cash_at_hand', '<', $cash_at_hand)->orderBy('id', 'DESC')->with(['logs','order'=> function ($f) use ($date) {
+                                    $f->whereDate('order_time', $date)->with('task');
+                                }]);
+                            }
+                        ])->get()->toArray();
            
             //this function give me the driver list accourding to who have liest task for the current date
 
             $distenseResult = $this->roundCalculation($getgeo, $finalLocation, $unit, $max_redius, $max_task);
-           
-            for ($i = 1; $i <= $try; $i++) {
-                foreach ($distenseResult as $key =>  $geoitem) {
-                    $datas = [
-                        'order_id'            => $orders_id,
-                        'driver_id'           => $geoitem['driver_id'],
-                        'notification_time'   => $time,
-                        'type'                => $allcation_type,
-                        'client_code'         => Auth::user()->code,
-                        'created_at'          => Carbon::now()->toDateTimeString(),
-                        'updated_at'          => Carbon::now()->toDateTimeString(),
-                        'device_type'         => $geoitem['device_type'],
-                        'device_token'        => $geoitem['device_token'],
-                        'detail_id'           => $randem,
-                        'cash_to_be_collected' => $order_details->cash_to_be_collected??null,
-                    ];
-                    $time = Carbon::parse($time)
-                    ->addSeconds($expriedate)
-                    ->format('Y-m-d H:i:s');
-                    array_push($data, $datas);
+            
+            if(!empty($distenseResult)){
+                for ($i = 1; $i <= $try; $i++) {
+                    foreach ($distenseResult as $key =>  $geoitem) {
+                        $datas = [
+                            'order_id'            => $orders_id,
+                            'driver_id'           => $geoitem['driver_id'],
+                            'notification_time'   => $time,
+                            'type'                => $allcation_type,
+                            'client_code'         => Auth::user()->code,
+                            'created_at'          => Carbon::now()->toDateTimeString(),
+                            'updated_at'          => Carbon::now()->toDateTimeString(),
+                            'device_type'         => $geoitem['device_type'],
+                            'device_token'        => $geoitem['device_token'],
+                            'detail_id'           => $randem,
+                            'cash_to_be_collected' => $order_details->cash_to_be_collected??null,
+                        ];
+                        $time = Carbon::parse($time)
+                        ->addSeconds($expriedate)
+                        ->format('Y-m-d H:i:s');
+                        array_push($data, $datas);
+                        if ($allcation_type == 'N' && 'ACK') {
+                            break;
+                        }
+                    }
+    
+                    $time = Carbon::parse($time)->addSeconds($expriedate +10)->format('Y-m-d H:i:s');
+                    
                     if ($allcation_type == 'N' && 'ACK') {
                         break;
                     }
                 }
-
-                $time = Carbon::parse($time)
-                    ->addSeconds($expriedate +10)
-                    ->format('Y-m-d H:i:s');
-                if ($allcation_type == 'N' && 'ACK') {
-                    break;
-                }
+                
+                $this->dispatch(new RosterCreate($data, $extraData));      // job for insert data in roster table for send notification
             }
-            
-            $this->dispatch(new RosterCreate($data, $extraData));      // job for insert data in roster table for send notification
         }
     }
 
     public function roundCalculation($getgeo, $finalLocation, $unit, $max_redius, $max_task)
     {
-        $extraarray    = [];
+        $extraarray = [];
         foreach ($getgeo as $item) {
             $count = isset($item['agent']['order']) ? count($item['agent']['order']):0;
-            if ($max_task > $count) {
+            if (($max_task > $count) && !empty($item['agent']['device_token']) && $item['agent']['is_available'] == 1) {
                 $data = [
                     'driver_id'    =>  $item['agent']['id'],
                     'device_type'  =>  $item['agent']['device_type'],
@@ -1609,9 +1623,14 @@ class TaskController extends Controller
                 array_push($extraarray, $data);
             }
         }
-        $allsort = array_values(Arr::sort($extraarray, function ($value) {
-            return $value['task_count'];
-        }));
+
+        $allsort = [];
+        if(!empty($extraarray)){
+            $allsort =  array_values(Arr::sort($extraarray, function ($value) {
+                            return $value['task_count'];
+                        }));
+        }
+        
         return $allsort;
     }
     
@@ -1626,7 +1645,7 @@ class TaskController extends Controller
         foreach ($getgeo as $item) {
             $latitudeTo  = $item['agent']['logs']['lat']??'';
             $longitudeTo = $item['agent']['logs']['long']??'';
-            if (!empty($latitudeFrom) && !empty($latitudeFrom) && !empty($latitudeTo) && !empty($longitudeTo) && !empty($latitudeTo) && !empty($longitudeTo)) {
+            if (!empty($latitudeFrom) && !empty($latitudeFrom) && !empty($latitudeTo) && !empty($longitudeTo) && !empty($latitudeTo) && !empty($longitudeTo) && !empty($item['agent']['device_token']) && $item['agent']['is_available'] == 1) {
                 $latFrom = deg2rad($latitudeFrom);
                 $lonFrom = deg2rad($longitudeFrom);
                 $latTo   = deg2rad($latitudeTo);
@@ -1652,7 +1671,7 @@ class TaskController extends Controller
                     if ($final <= $max_redius && $max_task > $count) {
                         $data = [
                             'driver_id'    =>  $item['agent']['logs']['agent_id'],
-                            'devide_type'  =>  $item['agent']['device_type'],
+                            'device_type'  =>  $item['agent']['device_type'],
                             'device_token' =>  $item['agent']['device_token'],
                             'distance'     =>  round($final * 0.6214)
                         ];
@@ -1661,11 +1680,13 @@ class TaskController extends Controller
                 }
             }
         }
-          
-        $allsort = array_values(Arr::sort($extraarray, function ($value) {
-            return $value['distance'];
-        }));
-       
+        $allsort = [];
+        if(!empty($extraarray)){
+            $allsort =  array_values(Arr::sort($extraarray, function ($value) {
+                            return $value['distance'];
+                        }));
+        }
+               
         return $allsort;
     }
 
@@ -1836,7 +1857,9 @@ class TaskController extends Controller
             $all_locations = Location::where('customer_id', '!=', $cust_id)->where('short_name', '!=', null)->where('location_status', 1)->get();
         }
         $task_proofs = TaskProof::all();
-        return view('tasks/update-task')->with(['task' => $task, 'task_proofs' => $task_proofs, 'teamTag' => $teamTag, 'agentTag' => $agentTag, 'agents' => $agents, 'images' => $array, 'savedrivertag' => $savedrivertag, 'saveteamtag' => $saveteamtag, 'main' => $lastbaseurl,'alllocations'=>$all_locations,'client_timezone'=>$client_timezone]);
+        $preference  = ClientPreference::where('id', 1)->first(['route_flat_input','route_alcoholic_input']);
+
+        return view('tasks/update-task')->with(['task' => $task, 'task_proofs' => $task_proofs, 'preference' => $preference, 'teamTag' => $teamTag, 'agentTag' => $agentTag, 'agents' => $agents, 'images' => $array, 'savedrivertag' => $savedrivertag, 'saveteamtag' => $saveteamtag, 'main' => $lastbaseurl,'alllocations'=>$all_locations,'client_timezone'=>$client_timezone]);
     }
 
     /**
@@ -1950,17 +1973,17 @@ class TaskController extends Controller
         foreach ($request->task_type_id as $key => $value) {
             if (isset($request->short_name[$key])) {
                 $loc = [
-                    'short_name' => $request->short_name[$key],
-                    'address'    => $request->address[$key],
-                    'post_code'  => $request->post_code[$key],
-                    'latitude'   => $request->latitude[$key],
-                    'longitude'  => $request->longitude[$key],
-                    'email'  => $request->address_email[$key],
+                    'short_name'    => $request->short_name[$key],
+                    'address'       => $request->address[$key],
+                    'post_code'     => $request->post_code[$key],
+                    'flat_no'       => !empty($request->flat_no[$key])? $request->flat_no[$key] : '',
+                    'latitude'      => $request->latitude[$key],
+                    'longitude'     => $request->longitude[$key],
+                    'email'         => $request->address_email[$key],
                     'phone_number'  => $request->address_phone_number[$key],
-                    // 'due_after'  => $request->due_after[$key],
-                    // 'due_before'  => $request->due_before[$key],
-                    'customer_id' => $cus_id,
+                    'customer_id'   => $cus_id,
                 ];
+                
                 $Loction = Location::create($loc);
                 $loc_id = $Loction->id;
             } else {
@@ -1973,16 +1996,16 @@ class TaskController extends Controller
                 $location = Location::where('id', $loc_id)->first();
                 if ($location->customer_id != $cus_id) {
                     $newloc = [
-                        'latitude'    => $location->latitude,
-                        'longitude'   => $location->longitude,
-                        'short_name'  => $location->short_name,
-                        'address'     => $location->address,
-                        'post_code'   => $location->post_code,
-                        'email'         => $location->address_email,
+                        'latitude'       => $location->latitude,
+                        'longitude'      => $location->longitude,
+                        'short_name'     => $location->short_name,
+                        'address'        => $location->address,
+                        'post_code'      => $location->post_code,
+                        'flat_no'        => $location->flat_no,
+                        'alcoholic_item' => $location->alcoholic_item,
+                        'email'          => $location->address_email,
                         'phone_number'   => $location->address_phone_number,
-                        // 'due_after'      => $location->due_after,
-                        // 'due_before'    => $location->due_before,
-                        'customer_id' => $cus_id,
+                        'customer_id'    => $cus_id,
                     ];
                     $location = Location::create($newloc);
                 }
@@ -1990,15 +2013,16 @@ class TaskController extends Controller
             }
 
             $data = [
-                'order_id'                   => $id,
-                'task_type_id'               => $value,
-                'location_id'                => $loc_id,
-                'allocation_type'            => $request->allocation_type,
-                'dependent_task_id'          => $dep_id,
-                'task_status'                => isset($agent_id) ? 1 : 0,
-                'barcode'                    => $request->barcode[$key],
-                'quantity'                   => $request->quantity[$key],
-                'assigned_time'              => $notification_time,
+                'order_id'          => $id,
+                'task_type_id'      => $value,
+                'location_id'       => $loc_id,
+                'allocation_type'   => $request->allocation_type,
+                'dependent_task_id' => $dep_id,
+                'task_status'       => isset($agent_id) ? 1 : 0,
+                'barcode'           => $request->barcode[$key],
+                'quantity'          => $request->quantity[$key],
+                'assigned_time'     => $notification_time,
+                'alcoholic_item'    => !empty($request->alcoholic_item[$key])? $request->alcoholic_item[$key] : '',
             ];
             $task = Task::create($data);
             $dep_id = $task->id;

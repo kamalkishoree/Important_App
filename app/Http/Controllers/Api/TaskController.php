@@ -37,7 +37,7 @@ use Mail;
 use App;
 use DB,Session;
 use Illuminate\Support\Str;
-
+use App\Model\TaskProof;
 use Twilio\Rest\Client as TwilioClient;
 use GuzzleHttp\Client as GClient;
 use App\Http\Requests\CreateTaskRequest;
@@ -95,7 +95,7 @@ class TaskController extends BaseController
             $proof_signature = null;
         }
        
-        $orderId        = Task::where('id', $request->task_id)->first();
+        $orderId        = Task::where('id', $request->task_id)->with(['tasktype'])->first();
         $orderAll       = Task::where('order_id', $orderId->order_id)->get();
         $order_details  = Order::where('id', $orderId->order_id)->with(['agent','customer'])->first();
         $allCount       = Count($orderAll);
@@ -106,7 +106,6 @@ class TaskController extends BaseController
         $checkfailed          = $allCount - $lastfailedtask;
         $sms_body       = '';
         $notification_type = NotificationType::with('notification_events.client_notification')->get();
-        
         
         switch ($orderId->task_type_id) {
             case 1:
@@ -122,7 +121,9 @@ class TaskController extends BaseController
               $sms_settings = $notification_type[2];
                 break;
         }
-       
+
+        $otpEnabled = 0;
+        $otpRequired = 0;
         switch ($request->task_status) {
             case 2:
                  $task_type        = 'assigned';
@@ -137,6 +138,7 @@ class TaskController extends BaseController
                 // $sms_body         = 'Driver '.$order_details->agent->name.' in our '.$order_details->agent->make_model.' with license plate '.$order_details->agent->plate_number.' has arrived at your location. ';
                  $sms_body         = $sms_settings['notification_events'][1]['message'];
                  $link             =  '';
+                 
                 break;
             case 4:
                 $task_type         = 'completed';
@@ -144,6 +146,38 @@ class TaskController extends BaseController
                // $sms_body          = 'Thank you, your order has been delivered successfully by driver '.$order_details->agent->name.'. You can rate them here .'.url('/order/feedback/'.$client_details->code.'/'.$order_details->unique_id.'');
                 $sms_body         = $sms_settings['notification_events'][2]['message'];
                 $link              =  $client_url.'/order/feedback/'.$client_details->code.'/'.$order_details->unique_id;
+
+                $taskProof = TaskProof::all();
+                $completionOtp = Order::where('id', $orderId->order_id)->select('completion_otp')->first();
+                $errorMsgOtp = '';
+                if(!empty($orderId->tasktype->name) && $orderId->tasktype->name == 'Pickup' && $taskProof[0]->otp_requried == 1 && $taskProof[0]->otp == 1){
+                    if(!empty($request->otp) && $completionOtp->completion_otp != $request->otp){
+                        $errorMsgOtp = __('Otp Not Match');
+                    }else if(empty($request->otp)){
+                        $errorMsgOtp = __('Otp is requried');
+                    }
+                }else if(!empty($orderId->tasktype->name) && $orderId->tasktype->name == 'Drop' && $taskProof[1]->otp_requried == 1 && $taskProof[1]->otp == 1){
+                    if(!empty($request->otp) && $completionOtp->completion_otp != $request->otp){
+                        $errorMsgOtp = __('Otp Not Match');
+                    }else if(empty($request->otp)){
+                        $errorMsgOtp = __('Otp is requried');
+                    }
+                }else if(!empty($orderId->tasktype->name) && $orderId->tasktype->name == 'Appointment' && $taskProof[2]->otp_requried == 1 && $taskProof[2]->otp == 1){
+                    if(!empty($request->otp) && $completionOtp->completion_otp != $request->otp){
+                        $errorMsgOtp = __('Otp Not Match');
+                    }else if(empty($request->otp)){
+                        $errorMsgOtp = __('Otp is requried');
+                    }
+                }
+
+                if(!empty($errorMsgOtp)){
+                    return response()->json([
+                        'data' => [],
+                        'status' => 200,
+                        'message' => $errorMsgOtp
+                    ]);
+                }
+                
                 break;
             case 5:
                 $task_type         = 'failed';
@@ -156,12 +190,12 @@ class TaskController extends BaseController
         }
 
         $send_sms_status   = isset($sms_final_status['client_notification']['request_recieved_sms'])? $sms_final_status['client_notification']['request_recieved_sms']:0;
-        $send_email_status = isset($sms_final_status['client_notification']['request_recieved_email'])? $sms_final_status['client_notification']['request_recieved_email']:0;
+        $send_email_status = isset($sms_final_status['client_notification']['request_received_email'])? $sms_final_status['client_notification']['request_received_email']:0;
         
         //for recipient email and sms
         $send_recipient_sms_status   = isset($sms_final_status['client_notification']['recipient_request_recieved_sms'])? $sms_final_status['client_notification']['recipient_request_recieved_sms']:0;
         $send_recipient_email_status = isset($sms_final_status['client_notification']['recipient_request_received_email'])? $sms_final_status['client_notification']['recipient_request_received_email']:0;
-
+        
         if ($request->task_status == 4) {
             if ($check == 1) {
                 $Order  = Order::where('id', $orderId->order_id)->update(['status' => $task_type]);
@@ -259,8 +293,8 @@ class TaskController extends BaseController
                 Log::info($e->getMessage());
             }
         }
-         
-        if ($send_recipient_email_status == 0 && $recipient_email!='') {
+
+        if ($send_recipient_email_status == 1 && $recipient_email != '') {
             $sendto        = $recipient_email;
             $client_logo   = Storage::disk('s3')->url($client_details->logo);
             $agent_profile = Storage::disk('s3')->url($order_details->agent->profile_picture ?? 'assets/client_00000051/agents605b6deb82d1b.png/XY5GF0B3rXvZlucZMiRQjGBQaWSFhcaIpIM5Jzlv.jpg');
@@ -272,19 +306,142 @@ class TaskController extends BaseController
                     $message->from($mail->from_address, $client_details->name);
                     $message->to($sendto)->subject('Order Update | '.$client_details->company_name);
                 });
+
             } catch (\Exception $e) {
                 Log::info($e->getMessage());
             }
         }
 
-       
+        $newDetails['otpEnabled'] = $otpEnabled;
+        $newDetails['otpRequired'] = $otpRequired;
        
         return response()->json([
             'data' => $newDetails,
             'status' => 200,
-            'message' => 'success'
+            'message' => __('success')
         ]);
     }
+
+    public function checkOTPRequried(Request $request){
+        $header         = $request->header();
+        $client_details = Client::where('database_name', $header['client'][0])->first();  
+        $otpEnabled     = 0;
+        $otpRequired    = 0;
+        $orderId        = Task::where('id', $request->task_id)->with(['tasktype'])->first();
+        $orderAll       = Task::where('order_id', $orderId->order_id)->get();
+        $order_details  = Order::where('id', $orderId->order_id)->with(['agent','customer'])->first();
+        $otpCreate      = '';//substr(str_shuffle("0123456789abcdefghijklmnopqrstvwxyz"), 0, 5);
+        $taskProof      = TaskProof::all();
+        if(!empty($orderId->tasktype->name) && $orderId->tasktype->name == 'Pickup' && $taskProof[0]->otp == 1){
+            $otpCreate = rand ( 10000 , 99999 );
+            Order::where('id', $orderId->order_id)->update(['completion_otp' => $otpCreate]);
+            $otpEnabled = 1;
+            if($taskProof[0]->otp_requried == 1){
+                $otpRequired = 1;
+            }
+        }else if(!empty($orderId->tasktype->name) && $orderId->tasktype->name == 'Drop' && $taskProof[1]->otp == 1){
+            $otpCreate = rand ( 10000 , 99999 );
+            Order::where('id', $orderId->order_id)->update(['completion_otp' => $otpCreate]);
+            $otpEnabled = 1;
+            if($taskProof[1]->otp_requried == 1){
+                $otpRequired = 1;
+            }
+        }else if(!empty($orderId->tasktype->name) && $orderId->tasktype->name == 'Appointment' && $taskProof[2]->otp == 1){
+            $otpCreate = rand ( 10000 , 99999 );
+            Order::where('id', $orderId->order_id)->update(['completion_otp' => $otpCreate]);
+            $otpEnabled = 1;
+            if($taskProof[2]->otp_requried == 1){
+                $otpRequired = 1;
+            }
+        }
+        
+        if(!empty($otpCreate) && !empty($otpEnabled)){
+            $client_prefrerence  = ClientPreference::where('id', 1)->first();
+            $token               = $client_prefrerence->sms_provider_key_2;
+            $twilio_sid          = $client_prefrerence->sms_provider_key_1;
+            $smsProviderNumber   = $client_prefrerence->sms_provider_number;
+            $customerPhoneNumber = $order_details->customer->phone_number;
+            $customerEmail       = $order_details->customer->email;
+            $sms_body            = 'Your otp is '.$otpCreate;
+
+            //set dynamic smtp for email send
+            $this->setMailDetail($client_details);
+
+            try {
+
+                //**Send OTP to customer phone text msg */
+                if(!empty($smsProviderNumber) && !empty($customerPhoneNumber) && strlen($order_details->customer->phone_number) > 8){
+                    $twilio = new TwilioClient($twilio_sid, $token);
+    
+                    $message = $twilio->messages
+                                ->create(
+                                    $order_details->customer->phone_number,  //to number
+                                    [
+                                        "body" => $sms_body,
+                                        "from" => $smsProviderNumber   //form_number
+                                    ]
+                                );
+                }
+
+                $mail        = SmtpDetail::where('client_id', $client_details->id)->first();
+                $client_logo = Storage::disk('s3')->url($client_details->logo);
+
+                //**Send OTP to customer email */
+                if(!empty($customerEmail) && !empty($mail)){
+                    $sendto    = $customerEmail;
+                    $emailData = ['customer_name' => $order_details->customer->name,'content' => $sms_body,'client_logo'=>$client_logo,'agent_profile'=>'','agent_name'=>'','number_plate'=>'','link'=>''];
+
+                    \Mail::send('email.verify', ['customer_name' => $order_details->customer->name,'content' => $sms_body,'agent_name' => $order_details->agent->name,'agent_profile' =>'','number_plate' =>$order_details->agent->plate_number,'client_logo'=>$client_logo,'link'=>''], function ($message) use ($sendto, $client_details, $mail) {
+                        $message->from($mail->from_address, $client_details->name);
+                        $message->to($sendto)->subject('Order Update | '.$client_details->company_name);
+                    });
+                }
+                
+                $newTaskDetails  = Task::where('id', $request->task_id)->with(['location'])->first();
+                $recipient_phone = isset($newTaskDetails->location->phone_number)?$newTaskDetails->location->phone_number:'';
+                $recipient_email = isset($newTaskDetails->location->email)?$newTaskDetails->location->email:'';
+                
+                //**Send OTP to recipient phone text msg */
+                if(!empty($smsProviderNumber) && !empty($recipient_phone) && strlen($recipient_phone) > 8){
+                    $twilio  = new TwilioClient($twilio_sid, $token);
+                    $message = $twilio->messages
+                                ->create(
+                                    $recipient_phone,  //to number
+                                    [
+                                        "body" => $sms_body,
+                                        "from" => $smsProviderNumber   //form_number
+                                    ]
+                                );
+                }
+
+                //**Send OTP to recipient email */
+                if (!empty($recipient_email)) {
+                    $sendto    = $recipient_email;
+                    \Mail::send('email.verify', ['customer_name' => $order_details->customer->name,'content' => $sms_body,'agent_name' => $order_details->agent->name,'agent_profile' =>'','number_plate' =>$order_details->agent->plate_number,'client_logo'=>$client_logo,'link'=>''], function ($message) use ($sendto, $client_details, $mail) {
+                        $message->from($mail->from_address, $client_details->name);
+                        $message->to($sendto)->subject('Order Update | '.$client_details->company_name);
+                    });
+                }
+
+
+            } catch (\Exception $e) {
+                Log::info($e->getMessage());
+            }
+        }
+       
+
+        $newDetails['otp']         = $otpCreate;
+        $newDetails['otpEnabled']  = $otpEnabled;
+        $newDetails['otpRequired'] = $otpRequired;
+       
+        return response()->json([
+            'data' => $newDetails,
+            'status' => 200,
+            'message' => __('success')
+        ]);
+
+    }
+
     /////////////////// **********************   update status in order panel also **********************************  ///////////////////////
     public function updateStatusDataToOrder($order_details,$dispatcher_status_option_id){
         try {  
@@ -309,7 +466,7 @@ class TaskController extends BaseController
         catch(\Exception $e)
         {
             return response()->json([
-                'status' => 'error',
+                'status' => __('error'),
                 'message' => $e->getMessage()
             ]);
                     
@@ -347,7 +504,7 @@ class TaskController extends BaseController
         $check = Order::where('id', $request->order_id)->with(['agent','customer'])->first();
         if (!isset($check)) {
             return response()->json([
-                'message' => 'This order has already been accepted.',
+                'message' => __('This order has already been accepted.'),
             ], 404);
         }
         
@@ -356,7 +513,7 @@ class TaskController extends BaseController
                 $call_web_hook = $this->updateStatusDataToOrder($check, 2);  # task accepted
             }
             return response()->json([
-                'message' => 'Task Accecpted Successfully',
+                'message' => __('Task Accecpted Successfully'),
             ], 200);
         }  // need to we change
 
@@ -385,7 +542,7 @@ class TaskController extends BaseController
                 $call_web_hook = $this->updateStatusDataToOrder($check, 2);  # task accepted
             }
             return response()->json([
-                'data' => 'Task Accecpted Successfully',
+                'data' => __('Task Accecpted Successfully'),
             ], 200);
         } else {
             $data = [
@@ -398,9 +555,9 @@ class TaskController extends BaseController
             TaskReject::create($data);
 
             return response()->json([
-                'data' => 'Task Rejected Successfully',
+                'data' => __('Task Rejected Successfully'),
                 'status' => 200,
-                'message' => 'success'
+                'message' => __('success')
             ], 200);
         }
     }
@@ -683,7 +840,7 @@ class TaskController extends BaseController
                 if ($to_time >= $from_time) {
                     DB::commit();
                     return response()->json([
-                        'message' => 'Task Added Successfully',
+                        'message' => __('Task Added Successfully'),
                         'task_id' => $orders->id,
                         'status'  => $orders->status,
                         'dispatch_traking_url'  => $dispatch_traking_url??null
@@ -723,7 +880,7 @@ class TaskController extends BaseController
 
                    
                     return response()->json([
-                        'message' => 'Task Added Successfully',
+                        'message' => __('Task Added Successfully'),
                         'task_id' => $orders->id,
                         'status'  => $orders->status,
                         'dispatch_traking_url'  => $dispatch_traking_url??null
@@ -758,7 +915,7 @@ class TaskController extends BaseController
 
             DB::commit();
             return response()->json([
-            'message' => 'Task Added Successfully',
+            'message' => __('Task Added Successfully'),
             'task_id' => $orders->id,
             'status'  => $orders->status,
             'dispatch_traking_url'  => $dispatch_traking_url??null
@@ -1550,7 +1707,7 @@ class TaskController extends BaseController
             'currency' => $currency,
             'paid_distance' => $paid_distance,
             'paid_duration' => $paid_duration,
-            'message' => 'success'
+            'message' => __('success')
         ], 200);
         
     }
@@ -1574,7 +1731,7 @@ class TaskController extends BaseController
 
         return response()->json([
             'tags' => $tags,
-            'message' => 'success'
+            'message' => __('success')
         ], 200);
         
     }
@@ -1594,7 +1751,7 @@ class TaskController extends BaseController
 
         return response()->json([
             'teams' => $teams,
-            'message' => 'success'
+            'message' => __('success')
         ], 200);
         
     }
@@ -1609,7 +1766,7 @@ class TaskController extends BaseController
                 $check_alredy  = DB::table('order_ratings')->where('order_id', $order->id)->first();
 
                 if (isset($check_alredy->id)) {
-                    return response()->json(['status' => true, 'message' => 'Feedback has been already submitted.']);
+                    return response()->json(['status' => true, 'message' => __('Feedback has been already submitted')]);
                 } else {
                     $data = [
                         'order_id'    => $order->id,
@@ -1619,10 +1776,10 @@ class TaskController extends BaseController
 
                     DB::table('order_ratings')->insert($data);
 
-                    return response()->json(['status' => true, 'message' => 'Your feedback is submitted']);
+                    return response()->json(['status' => true, 'message' => __('Your feedback is submitted')]);
                 }
             } else {
-                return response()->json(['status' => true, 'message' => 'Order Not Found']);
+                return response()->json(['status' => true, 'message' => __('Order Not Found')]);
             }
         
     }

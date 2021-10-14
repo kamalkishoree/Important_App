@@ -124,12 +124,15 @@ use Carbon\Carbon;
                     @php
                         $newcount = 0;
                     @endphp
+
                     <div class="taskrepet" id="newadd">
+                    
                         @foreach ($task->task as $keys => $item)
                             @php
                                 $maincount = 0;
                                 $newcount++;
                             @endphp
+                            
                             <div class="copyin check-validation" id="copyin1">
                                 <div class="requried allset">
                                     <div class="row firstclone1">
@@ -221,6 +224,13 @@ use Carbon\Carbon;
                                                         id="add{{ $newcount }}-address_phone_number" class="form-control address address_phone_number"
                                                         placeholder="{{__('Phone Number')}}" />
                                                     </div>
+                                                    @if($preference->route_flat_input == 1)
+                                                    <div class="col-md-6">
+                                                        <input type="text" name="flat_no[]"
+                                                        id="add{{ $newcount }}-flat_no" value="{{ $item->flat_no }}" class="form-control address flat_no"
+                                                        placeholder="{{__('Flat No')}}" />
+                                                    </div>
+                                                    @endif
                                                     <div class="col-md-6">
                                                         <input type="text" name="post_code[]"
                                                         id="add{{ $newcount }}-postcode" class="form-control address postcode"
@@ -239,6 +249,14 @@ use Carbon\Carbon;
                                                             <span class="span1 appointment-barcode-error" style="display:none;">{{__('Task Barcode is required for appointment')}}</span>
                                                         </div> 
                                                     </div>
+                                                    @if($preference->route_alcoholic_input == 1)
+                                                    <div class="col-md-6">
+                                                        <div class="custom-switch redio-all">
+                                                            <input type="checkbox" value="1" class="custom-control-input large-icon alcoholic_item" id="add{{ $newcount }}-alcoholic_item" name="alcoholic_item[]" {{ ($item->alcoholic_item == 1)? 'checked' : ''}}>
+                                                            <label class="custom-control-label checkss alcoholic_item_label" for="add{{ $newcount }}-alcoholic_item">{{__("Alcoholic Item")}}</label>
+                                                        </div>
+                                                    </div>
+                                                    @endif
                                                     {{-- <div class="col-md-6">
                                                         <span>Due After</span>
                                                         {!! Form::time('due_after[]', $item->due_after, ['class' => 'form-control due_after', 'placeholder' => 'Due After']) !!}
@@ -294,6 +312,7 @@ use Carbon\Carbon;
                                                                 data-lat="{{ $items->latitude }}" 
                                                                 data-long="{{ $items->longitude }}" 
                                                                 data-pstcd="{{ $items->post_code }}" 
+                                                                data-flat_no="{{ $items->flat_no }}" 
                                                                 data-emil="{{ $items->email }}" 
                                                                 data-ph="{{ $items->phone_number }}"
                                                                 {{ $item->location_id == $items->id ? 'checked' : '' }}
@@ -339,7 +358,7 @@ use Carbon\Carbon;
                                 </div>
                             </div>
                         @endforeach
-
+                        <input type="hidden" id="newcount" value="{{$newcount}}">
                     </div>
                     <div class="row">
                         <div class="col-md-12" id="adds">
@@ -395,7 +414,6 @@ use Carbon\Carbon;
 
                         </div>
                     </div>
-
                     @if($task->call_back_url)
                     <h4 class="header-title mb-3">{{__('Call Back URL')}}</h4>
                     <div class="row">
