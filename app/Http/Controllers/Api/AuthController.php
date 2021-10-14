@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Api\BaseController;
+use Illuminate\Support\Facades\Log;
 use App\Http\Requests\UserLogin;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -354,6 +355,8 @@ class AuthController extends BaseController
     public function signup(Request $request)
     {
         // return response()->json(['data' => $request->all()]);
+        // Log::info($request->all());
+        // die();
         $validator = Validator::make($request->all(), [
             'name' => 'required',
             'phone_number' => 'required|min:9',
@@ -444,7 +447,7 @@ class AuthController extends BaseController
             $agent_docs = AgentDocs::create($files[$key]);
         }
 
-        if ($agent->wasRecentlyCreated) {
+        if ($agent->wasRecentlyCreated && $agent_docs->wasRecentlyCreated) {
             return response()->json(['status' => 200, 'message' => 'Your account created successfully. Please login'], 200);
         } else {
             return response()->json([

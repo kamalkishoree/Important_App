@@ -103,7 +103,7 @@ class DriverRegistrationController extends Controller
                 $agent_docs = AgentDocs::create($files[$key]);
             }
 
-            if ($agent->wasRecentlyCreated) {
+            if ($agent->wasRecentlyCreated && $agent_docs->wasRecentlyCreated) {
                 return response()->json([
                     'status' => 'success',
                     'message' => 'Agent created Successfully!',
