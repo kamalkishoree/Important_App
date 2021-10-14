@@ -218,15 +218,10 @@ $( document ).ready(function() {
                 makeTag();
                 phoneInput();
                 //$('.dropify').dropify();
-                var imgs = $('#profilePic').attr('showImg');
+                // var imgs = $('#profilePic').attr('showImg');
 
-                $('#profilePic').attr("data-default-file", imgs);
-                $('#profilePic').dropify();
-                $('').dropify();
-                // var imgs = $('#file').attr('showImg');
-
-                // $('#file').attr("data-default-file", imgs);
-                // $('#file').dropify();
+                // $('#profilePic').attr("data-default-file", imgs);
+                // $('#profilePic').dropify();
                 // $('').dropify();
             },
             error: function(data) {

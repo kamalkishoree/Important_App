@@ -130,7 +130,7 @@
                                     <th>{{__("Base Price")}}</th>
                                     <th>{{__("Base Duration")}}</th>
                                     <th>{{__("Base Distance")}}</th>
-                                    <th>{{__("Base Waiting")}}</th>
+                                   {{--<th>{{__("Base Waiting")}}</th>--}}
                                     <th style="width: 85px;">{{__("Action")}}</th>
                                 </tr>
                             </thead>
@@ -149,9 +149,9 @@
                                         <td>
                                             {{ $price->base_distance }}
                                         </td>
-                                        <td>
+                                       {{-- <td>
                                             {{ $price->base_waiting }}
-                                        </td>
+                                        </td>--}}
                                         
 
                                         <td>
