@@ -14,13 +14,17 @@
         cursor: move;
         margin-right: 0rem !important;
     }
-    .table th,.table td, .table td {
+
+    .table th,
+    .table td,
+    .table td {
         display: table-cell !important;
     }
 
-    .footer{
+    .footer {
         z-index: 3;
     }
+
     #agent-listing_processing {
         position: absolute !important;
         background: transparent !important;
@@ -30,27 +34,38 @@
         right: 0;
         z-index: 1;
     }
+
     .dt-buttons.btn-group.flex-wrap {
         float: right;
         margin: 5px 0 10px 15px;
     }
+
     div#agent-listing_filter {
         padding-top: 5px;
     }
+
     .dataTables_filter label {
         width: 25%;
     }
+
     .dataTables_filter label .form-control {
         height: 37px;
         font-size: 16px;
     }
-    .dt-buttons .btn.btn-secondary,.dt-buttons .btn.btn-secondary:focus,.dt-buttons .btn.btn-secondary:active {
+
+    .dt-buttons .btn.btn-secondary,
+    .dt-buttons .btn.btn-secondary:focus,
+    .dt-buttons .btn.btn-secondary:active {
         border-radius: 5px;
         background: #6658ddd6 !important;
     }
-    .btn-label,.btn-label:focus,.btn-label:active {
+
+    .btn-label,
+    .btn-label:focus,
+    .btn-label:active {
         background-color: rgb(102 88 221) !important;
     }
+
     .dataTables_scrollHead thead th {
         cursor: pointer;
     }
@@ -61,7 +76,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
 @endphp
 @section('content')
 <div class="container-fluid">
-@csrf
+    @csrf
     <!-- start page title -->
     <div class="row">
         <div class="col-12">
@@ -125,14 +140,14 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
             </div>
         </div>
     </div>
-    
+
     <!-- end page title -->
     <div class="row">
         <div class="col-12">
             <div class="card">
                 <div class="card-body">
                     <div class="row mb-2">
-                        
+
                         <div class="col-sm-8">
                             <div class="text-sm-left">
                                 @if (\Session::has('success'))
@@ -155,7 +170,9 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                 <tr>
                                     <th class="sort-icon">{{__("UID")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                     <th class="sort-icon">{{__("Profile")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
+
                                     <th class="sort-icon">{{__("Name")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
+
                                     <th class="sort-icon">{{__("Phone")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                     <th class="sort-icon">{{__("Type")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                     <th class="sort-icon">{{__("Team")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
@@ -171,11 +188,11 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                 </tr>
                             </thead>
                             <tbody>
-                               
+
                             </tbody>
                         </table>
                     </div>
-                    
+
                 </div> <!-- end card-body-->
             </div> <!-- end card-->
         </div> <!-- end col -->
@@ -201,7 +218,6 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
 
 
 <script>
-
     $('#selectAgent').on('change', function(e) {
 
         var optionSelected = $("option:selected", this);

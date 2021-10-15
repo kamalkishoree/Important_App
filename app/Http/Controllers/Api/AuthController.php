@@ -451,7 +451,7 @@ class AuthController extends BaseController
             }
         }
 
-        if ($agent->wasRecentlyCreated && $agent_docs->wasRecentlyCreated) {
+        if ($agent->wasRecentlyCreated ) {
             return response()->json(['status' => 200, 'message' => 'Your account created successfully. Please login'], 200);
         } else {
             return response()->json([
