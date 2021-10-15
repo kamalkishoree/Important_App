@@ -357,8 +357,8 @@ class AuthController extends BaseController
     public function signup(Request $request)
     {
         // return response()->json(['data' => $request->all()]);
-        // Log::info($request->all());
-        // die();
+        Log::info($request->all());
+
         $validator = Validator::make($request->all(), [
             'name' => 'required',
             'phone_number' => 'required|min:9',
@@ -377,7 +377,7 @@ class AuthController extends BaseController
         }
 
         // Handle File Upload
-        if ($request->hasFile('upload_photo')) {
+        if ($request->hasFile('profile_picture')) {
             $header = $request->header();
             $shortcode = "";
             $clientDetail = Client::first();
@@ -439,14 +439,16 @@ class AuthController extends BaseController
                 }
             }
         }
-        foreach ($request->files_text as $key => $f) {
-            $files[$key] = [
-                'file_type' => $f['file_type'],
-                'agent_id' => $agent->id,
-                'file_name' => $f['contents'],
-                'label_name' => $f['label_name']
-            ];
-            $agent_docs = AgentDocs::create($files[$key]);
+        if (isset($request->files_text)) {
+            foreach ($request->files_text as $key => $f) {
+                $files[$key] = [
+                    'file_type' => $f['file_type'],
+                    'agent_id' => $agent->id,
+                    'file_name' => $f['contents'],
+                    'label_name' => $f['label_name']
+                ];
+                $agent_docs = AgentDocs::create($files[$key]);
+            }
         }
 
         if ($agent->wasRecentlyCreated && $agent_docs->wasRecentlyCreated) {

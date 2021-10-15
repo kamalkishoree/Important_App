@@ -22,12 +22,7 @@ class DriverRegistrationController extends Controller
             'upload_photo' => 'mimes:jpeg,png,jpg,gif,svg|max:2048',
             'name' => 'required|max:255',
             'phone_number' => 'required|unique:agents|min:9|max:15',
-            'type' => 'required',
-            'vehicle_type_id' => 'required',
-            'make_model' => 'required',
-            'uid' => 'required',
-            'plate_number' => 'required',
-            'color' => 'required',
+            
         ]);
         if ($validator->fails()) {
             foreach ($validator->errors()->toArray() as $error_key => $error_value) {
@@ -105,8 +100,8 @@ class DriverRegistrationController extends Controller
 
             if ($agent->wasRecentlyCreated && $agent_docs->wasRecentlyCreated) {
                 return response()->json([
-                    'status' => __('success'),
-                    'message' => __('Agent created Successfully!'),
+                    'status' => 'success',
+                    'message' => __('Thanks for signing up. We will get back to you shortly!'),
                     'data' => $agent
                 ]);
             }
