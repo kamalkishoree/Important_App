@@ -34,6 +34,9 @@ Route::post('update-order-feedback','Api\TaskController@SaveFeedbackOnOrder')->n
 Route::post('shortCode', 'Api\ShortcodeController@validateCompany');
 Route::get('cmscontent','Api\ActivityController@cmsData');
 
+Route::post('new-send-documents','Api\DriverRegistrationController@sendDocuments');
+
+
 Route::group(['prefix' => 'auth'], function () {
 
 	Route::group(['middleware' => ['dbCheck', 'AppAuth', 'apiLocalization']], function() {
