@@ -11,25 +11,43 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class DriverRegistrationController extends Controller
 {
     //
+    public function validator(array $data)
+    {
+
+
+        $full_number = '';
+        if (isset($data['country_code']) && !empty($data['country_code']) && isset($data['phone_number']) && !empty($data['phone_number']))
+            $full_number = '+' . $data['country_code'] . $data['phone_number'];
+
+        $data['phone_number'] = '+' . $data['country_code'] . $data['phone_number'];
+        return Validator::make($data, [
+            'name' => ['required', 'string', 'max:255'],
+            'type' => ['required'],
+            'vehicle_type_id' => ['required'],
+            //'make_model' => ['required'],
+            //'plate_number' => ['required'],
+            'phone_number' =>  ['required', 'min:9', 'max:15', Rule::unique('agents')->where(function ($query) use ($full_number) {
+                return $query->where('phone_number', $full_number);
+            })],
+            //'color' => ['required'],
+            'upload_photo' => ['mimes:jpeg,png,jpg,gif,svg|max:2048'],
+        ]);
+    }
 
     public function storeAgent(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'upload_photo' => 'mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'name' => 'required|max:255',
-            'phone_number' => 'required|unique:agents|min:9|max:15',
-            
-        ]);
-        if ($validator->fails()) {
-            foreach ($validator->errors()->toArray() as $error_key => $error_value) {
-                return response()->json(['status' => 0, "message" => $error_value[0]]);
-            }
-        }
         try {
+            $validator = $this->validator($request->all());
+            if ($validator->fails()) {
+                foreach ($validator->errors()->toArray() as $error_key => $error_value) {
+                    return response()->json(['status' => 0, "message" => $error_value[0]]);
+                }
+            }
             $getFileName = null;
             if ($request->hasFile('upload_photo')) {
                 $header = $request->header();
@@ -98,7 +116,7 @@ class DriverRegistrationController extends Controller
                 $agent_docs = AgentDocs::create($files[$key]);
             }
 
-            if ($agent->wasRecentlyCreated && $agent_docs->wasRecentlyCreated) {
+            if ($agent->wasRecentlyCreated) {
                 return response()->json([
                     'status' => 'success',
                     'message' => 'Thanks for signing up. We will get back to you shortly!',
@@ -116,7 +134,7 @@ class DriverRegistrationController extends Controller
     public function sendDocuments()
     {
         try {
-            $documents = DriverRegistrationDocument::orderBy('file_type','DESC')->get();
+            $documents = DriverRegistrationDocument::orderBy('file_type', 'DESC')->get();
 
             return response()->json([
                 'status' => 200,

@@ -105,6 +105,10 @@ class AgentController extends Controller
 
             $agents = $agents->orderBy('id', 'desc')->get();
             return Datatables::of($agents)
+            ->editColumn('name', function ($agents) use ($request) {
+                $name =$agents->name;
+                return $name;
+            })
                 ->editColumn('profile_picture', function ($agents) use ($request) {
                     $src = (isset($agents->profile_picture) ? $request->imgproxyurl . Storage::disk('s3')->url($agents->profile_picture) : Phumbor::url(URL::to('/asset/images/no-image.png')));
                     return $src;
@@ -317,7 +321,7 @@ class AgentController extends Controller
         if ($agent->wasRecentlyCreated) {
             return response()->json([
                 'status' => 'success',
-                'message' => 'Agent created Successfully!',
+                'message' => 'Thanks for signing up. We will get back to you shortly!',
                 'data' => $agent
             ]);
         }
