@@ -136,7 +136,7 @@ class SendPushNotification
                                             'title'     => 'Pickup Request',
                                             'body'      => 'Check All Details For This Request In App',
                                             'sound'     => 'notification.mp3',
-                                            'channelId' => 'Royo Delivery'
+                                            'android_channel_id' => 'Royo Delivery'
                                         ])
                                         ->send();
                                         
