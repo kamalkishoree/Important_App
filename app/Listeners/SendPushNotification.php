@@ -133,9 +133,10 @@ class SendPushNotification
                                         ->timeToLive(0)
                                         ->data($item)
                                         ->notification([
-                                            'title' => 'Pickup Request',
-                                            'body'  => 'Check All Details For This Request In App',
-                                            'sound' => 'notification.mp3',
+                                            'title'     => 'Pickup Request',
+                                            'body'      => 'Check All Details For This Request In App',
+                                            'sound'     => 'notification.mp3',
+                                            'channelId' => 'Royo Delivery'
                                         ])
                                         ->send();
                                         
