@@ -50,5 +50,13 @@ class NotificationSeeder extends Seeder
             ['name' => 'Successful','message'=>'Thank you, your order has been delivered successfully by driver "driver_name" You can rate them here ."feedback_url"'],
             ['name' => 'Failed','message'=>'Sorry, our driver "driver_name" is not able to complete your order delivery']
         ]);
+
+        $notification_types_d = NotificationType::create([
+            'name' => 'Customer Delivery OTP'
+        ]);
+
+        $notification_types_d->notification_events()->createMany([
+            ['name' => 'Delivery OTP','message'=>'We have delivered your order number "order_number" please provide your OTP "deliver_otp" to your agent to order delivery'],
+        ]);
     }
 }
