@@ -87,6 +87,7 @@ class SendPushNotification
             Log::info('Empty Roaster ssind');
             DB::connection($schemaName)->table('rosters')->whereIn('id',$newget)->update(['status'=>1]);
             Log::info('Empty Roaster ssind');
+            
             // DB::connection($schemaName)->table('rosters')->whereIn('id',$newget)->delete();
             $this->sendnotification($get);
         }else{
