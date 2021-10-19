@@ -118,14 +118,14 @@ class DriverRegistrationController extends Controller
 
             if ($agent->wasRecentlyCreated) {
                 return response()->json([
-                    'status' => 'success',
+                    'status' => 200,
                     'message' => __('Thanks for signing up. We will get back to you shortly!'),
                     'data' => $agent
                 ]);
             }
         } catch (\Exception $e) {
             return response()->json([
-                'status' => __('error'),
+                'status' => 400,
                 'message' => $e->getMessage(),
             ]);
         }
