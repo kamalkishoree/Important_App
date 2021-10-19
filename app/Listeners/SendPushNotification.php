@@ -83,9 +83,10 @@ class SendPushNotification
      ///   Log::info($newget);
         DB::connection($schemaName)->table('rosters')->where('status',10)->delete();
         if(count($get) > 0){
-            
-            // DB::connection($schemaName)->table('rosters')->whereIn('id',$newget)->update(['status'=>1]);
-            DB::connection($schemaName)->table('rosters')->whereIn('id',$newget)->delete();
+            Log::info('Empty Roaster ssind');
+            DB::connection($schemaName)->table('rosters')->whereIn('id',$newget)->update(['status'=>1]);
+            Log::info('Empty Roaster ssind');
+            // DB::connection($schemaName)->table('rosters')->whereIn('id',$newget)->delete();
             
             $this->sendnotification($get);
         }else{
@@ -115,7 +116,6 @@ class SendPushNotification
                
                 $item['title']     = 'Pickup Request';
                 $item['body']      = 'Check All Details For This Request In App';
-                $item['channelId'] = 'Royo Delivery';
                 $new = [];
                 array_push($new,$item['device_token']);
 
