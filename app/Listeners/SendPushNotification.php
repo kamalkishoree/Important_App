@@ -113,8 +113,9 @@ class SendPushNotification
 
             if(isset($item['device_token']) && !empty($item['device_token'])){
                
-                $item['title'] = 'Pickup Request';
-                $item['body']  = 'Check All Details For This Request In App';
+                $item['title']     = 'Pickup Request';
+                $item['body']      = 'Check All Details For This Request In App';
+                $item['channelId'] = 'Royo Delivery';
                 $new = [];
                 array_push($new,$item['device_token']);
 
