@@ -614,7 +614,7 @@ class TaskController extends Controller
                     break;
                 case 'send_to_all':
                     //this is called when allocation type is send to all
-                //    Log::info($allocation->auto_assign_logic);
+                   Log::info('send_to_all');
                     $this->SendToAll($geo, $notification_time, $agent_id, $orders->id, $customer, $finalLocation, $taskcount, $allocation);
                     break;
                 case 'round_robin':
@@ -1378,7 +1378,9 @@ class TaskController extends Controller
                     break;
                 }
             }
-            
+            Log::info('send_to_all data');
+            Log::info($data);
+            Log::info('send_to_all data');
             $this->dispatch(new RosterCreate($data, $extraData));
         }
     }
