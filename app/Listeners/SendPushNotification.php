@@ -83,10 +83,8 @@ class SendPushNotification
      ///   Log::info($newget);
         DB::connection($schemaName)->table('rosters')->where('status',10)->delete();
         if(count($get) > 0){
-            Log::info('Roaster ssind');
-            DB::connection($schemaName)->table('rosters')->whereIn('id',$newget)->update(['status'=>1]);
-            Log::info('Roaster ssind');
-            // DB::connection($schemaName)->table('rosters')->whereIn('id',$newget)->delete();
+            // DB::connection($schemaName)->table('rosters')->whereIn('id',$newget)->update(['status'=>1]);
+            DB::connection($schemaName)->table('rosters')->whereIn('id',$newget)->delete();
             
             $this->sendnotification($get);
         }else{
