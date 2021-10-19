@@ -69,6 +69,10 @@
     .dataTables_scrollHead thead th {
         cursor: pointer;
     }
+
+    .nagtive-margin {
+        margin-top: -57px;
+    }
 </style>
 @endsection
 @php
@@ -148,7 +152,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                 <div class="card-body">
                     <div class="row mb-2">
 
-                        <div class="col-sm-8">
+                        <div class="col-sm-12">
                             <div class="text-sm-left">
                                 @if (\Session::has('success'))
                                 <div class="alert alert-success">
@@ -157,14 +161,14 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                 @endif
                             </div>
                         </div>
-                        <div class="col-sm-4 text-right btn-auto">
+                        <div class="col-sm-4 btn-auto">
                             <button type="button" class="btn btn-blue waves-effect waves-light openModal" data-toggle="modal" data-target="" data-backdrop="static" data-keyboard="false"><i class="mdi mdi-plus-circle mr-1"></i> {{__("Add")}} {{ Session::get('agent_name') }}</button>
                             <button type="button" class="btn btn-success waves-effect waves-light saveaccounting" data-toggle="modal" data-target="#pay-receive-modal" data-backdrop="static" data-keyboard="false">{{__("Pay")}} / {{__("Receive")}}</button>
                         </div>
 
                     </div>
 
-                    <div class="table-responsive">
+                    <div class="table-responsive nagtive-margin">
                         <table class="table table-striped dt-responsive nowrap w-100 all agent-listing" id="agent-listing">
                             <thead>
                                 <tr>
