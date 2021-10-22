@@ -1056,15 +1056,9 @@ class TaskController extends Controller
 
             if(!empty($locality->polygon)){
                 $geoLocalitie = Geo::where('id', $locality->id)->whereRaw("ST_Contains(POLYGON, ST_GEOMFROMTEXT('POINT(" . $lat . " " . $lng . ")'))")->first();
-                Log::info('finalRoster-single45');
-                Log::info($geoLocalitie);
-                Log::info('finalRoster-single45');
-                Log::info($locality->id);
-                Log::info('finalRoster-single47');
                 if(!empty($geoLocalitie)){
                     return $locality->id;
                 }
-                return false;
             }else{
                 $all_points = $locality->geo_array;
                 $temp = $all_points;
