@@ -1055,12 +1055,14 @@ class TaskController extends Controller
         foreach ($localities as $k => $locality) {
 
             if(!empty($locality->polygon)){
+                Log::info('single1');
                 $geoLocalitie = Geo::where('id', $locality->id)->whereRaw("ST_Contains(POLYGON, ST_GEOMFROMTEXT('POINT(" . $lat . " " . $lng . ")'))")->first();
                 if(!empty($geoLocalitie)){
                     return $locality->id;
                 }
                 return false;
             }else{
+                Log::info('single2');
                 $all_points = $locality->geo_array;
                 $temp = $all_points;
                 $temp = str_replace('(', '[', $temp);
