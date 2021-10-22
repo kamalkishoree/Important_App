@@ -1039,7 +1039,11 @@ class TaskController extends Controller
         $getletlong = Location::where('id', $send_loc_id)->first();
         $lat = $getletlong->latitude;
         $long = $getletlong->longitude;
-        return $check = $this->findLocalityByLatLng($lat, $long);
+        $check = $this->findLocalityByLatLng($lat, $long);
+        Log::info('finalRoster-single45');
+        Log::info($check);
+        Log::info('finalRoster-single45');
+        return $check;
     }
 
     public function findLocalityByLatLng($lat, $lng)
@@ -1055,14 +1059,12 @@ class TaskController extends Controller
         foreach ($localities as $k => $locality) {
 
             if(!empty($locality->polygon)){
-                Log::info('single1');
                 $geoLocalitie = Geo::where('id', $locality->id)->whereRaw("ST_Contains(POLYGON, ST_GEOMFROMTEXT('POINT(" . $lat . " " . $lng . ")'))")->first();
                 if(!empty($geoLocalitie)){
                     return $locality->id;
                 }
                 return false;
             }else{
-                Log::info('single2');
                 $all_points = $locality->geo_array;
                 $temp = $all_points;
                 $temp = str_replace('(', '[', $temp);
