@@ -1101,7 +1101,6 @@ class TaskController extends Controller
                 $c = !$c;
             }
         }
-        print_r($c);die;
         return $c;
     }
 
