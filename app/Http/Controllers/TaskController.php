@@ -111,7 +111,7 @@ class TaskController extends Controller
 
     public function taskFilter(Request $request)
     {
-        $orders = Order::orderBy('created_at', 'DESC')->with(['customer', 'location', 'taskFirst', 'agent', 'task.location']);
+        $orders = Order::orderBy('updated_at', 'DESC')->with(['customer', 'location', 'taskFirst', 'agent', 'task.location']);
         if (Auth::user()->is_superadmin == 0 && Auth::user()->all_team_access == 0) {      # get all  tasks according to assign teams 
                 $team_tags  = TeamTag::whereHas('team.permissionToManager', function ($query) {
                     $query->where('sub_admin_id', Auth::user()->id);
@@ -1052,35 +1052,41 @@ class TaskController extends Controller
             return false;
         }
 
-
-        
-
         foreach ($localities as $k => $locality) {
-            $all_points = $locality->geo_array;
-            $temp = $all_points;
-            $temp = str_replace('(', '[', $temp);
-            $temp = str_replace(')', ']', $temp);
-            $temp = '[' . $temp . ']';
-            $temp_array =  json_decode($temp, true);
 
-            foreach ($temp_array as $k => $v) {
-                $data[] = [
-                    'lat' => $v[0],
-                    'lng' => $v[1]
-                ];
-            }
-
-            // $all_points[]= $all_points[0]; // push the first point in end to complete
-            $vertices_x = $vertices_y = array();
-            foreach ($data as $key => $value) {
-                $vertices_y[] = $value['lat'];
-                $vertices_x[] = $value['lng'];
-            }
-
-            $points_polygon = count($vertices_x) - 1;  // number vertices - zero-based array
-            $points_polygon;
-            if ($this->is_in_polygon($points_polygon, $vertices_x, $vertices_y, $longitude_x, $latitude_y)) {
-                return $locality->id;
+            if(!empty($locality->polygon)){
+                $geoLocalitie = Geo::where('id', $locality->id)->whereRaw("ST_Contains(POLYGON, ST_GEOMFROMTEXT('POINT(" . $lat . " " . $lng . ")'))")->first();
+                if(!empty($geoLocalitie)){
+                    return $locality->id;
+                }
+                return false;
+            }else{
+                $all_points = $locality->geo_array;
+                $temp = $all_points;
+                $temp = str_replace('(', '[', $temp);
+                $temp = str_replace(')', ']', $temp);
+                $temp = '[' . $temp . ']';
+                $temp_array =  json_decode($temp, true);
+    
+                foreach ($temp_array as $k => $v) {
+                    $data[] = [
+                        'lat' => $v[0],
+                        'lng' => $v[1]
+                    ];
+                }
+    
+                // $all_points[]= $all_points[0]; // push the first point in end to complete
+                $vertices_x = $vertices_y = array();
+                foreach ($data as $key => $value) {
+                    $vertices_y[] = $value['lat'];
+                    $vertices_x[] = $value['lng'];
+                }
+    
+                $points_polygon = count($vertices_x) - 1;  // number vertices - zero-based array
+                $points_polygon;
+                if ($this->is_in_polygon($points_polygon, $vertices_x, $vertices_y, $longitude_x, $latitude_y)) {
+                    return $locality->id;
+                }
             }
         }
         return false;
@@ -1095,6 +1101,7 @@ class TaskController extends Controller
                 $c = !$c;
             }
         }
+        print_r($c);die;
         return $c;
     }
 
