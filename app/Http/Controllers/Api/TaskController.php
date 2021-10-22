@@ -961,35 +961,44 @@ class TaskController extends BaseController
 
 
         foreach ($localities as $k => $locality) {
-            $all_points = $locality->geo_array;
-            $temp = $all_points;
-            $temp = str_replace('(', '[', $temp);
-            $temp = str_replace(')', ']', $temp);
-            $temp = '[' . $temp . ']';
-            $temp_array =  json_decode($temp, true);
 
-            foreach ($temp_array as $k => $v) {
-                $data[] = [
-                    'lat' => $v[0],
-                    'lng' => $v[1]
-                ];
-            }
+            if(!empty($locality->polygon)){
+                $geoLocalitie = Geo::where('id', $locality->id)->whereRaw("ST_Contains(POLYGON, ST_GEOMFROMTEXT('POINT(" . $lat . " " . $lng . ")'))")->first();
+                if(!empty($geoLocalitie)){
+                    return $locality->id;
+                }
+                return false;
+            }else{
+                $all_points = $locality->geo_array;
+                $temp = $all_points;
+                $temp = str_replace('(', '[', $temp);
+                $temp = str_replace(')', ']', $temp);
+                $temp = '[' . $temp . ']';
+                $temp_array =  json_decode($temp, true);
+
+                foreach ($temp_array as $k => $v) {
+                    $data[] = [
+                        'lat' => $v[0],
+                        'lng' => $v[1]
+                    ];
+                }
 
 
-            // $all_points[]= $all_points[0]; // push the first point in end to complete
-            $vertices_x = $vertices_y = array();
+                // $all_points[]= $all_points[0]; // push the first point in end to complete
+                $vertices_x = $vertices_y = array();
 
-            foreach ($data as $key => $value) {
-                $vertices_y[] = $value['lat'];
-                $vertices_x[] = $value['lng'];
-            }
+                foreach ($data as $key => $value) {
+                    $vertices_y[] = $value['lat'];
+                    $vertices_x[] = $value['lng'];
+                }
 
 
-            $points_polygon = count($vertices_x) - 1;  // number vertices - zero-based array
-            $points_polygon;
+                $points_polygon = count($vertices_x) - 1;  // number vertices - zero-based array
+                $points_polygon;
 
-            if ($this->is_in_polygon($points_polygon, $vertices_x, $vertices_y, $longitude_x, $latitude_y)) {
-                return $locality->id;
+                if ($this->is_in_polygon($points_polygon, $vertices_x, $vertices_y, $longitude_x, $latitude_y)) {
+                    return $locality->id;
+                }
             }
         }
 
