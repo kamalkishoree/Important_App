@@ -14,7 +14,7 @@ class AddPolygonColumnToGeos extends Migration
     public function up()
     {
         Schema::table('geos', function (Blueprint $table) {
-            $table->geometry('polygon');
+            $table->geometry('polygon')->nullable();
             
         });
     }
