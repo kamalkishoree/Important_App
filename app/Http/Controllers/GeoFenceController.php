@@ -134,11 +134,22 @@ class GeoFenceController extends Controller
     {
         $validator = $this->validator($request->all())->validate();
         
+
+        $latlng = str_replace('),(', ';', $request->latlongs);
+        $latlng = str_replace(')', '', $latlng);
+        $latlng = str_replace('(', '', $latlng);
+        $latlng = str_replace(', ', ' ', $latlng);
+        $codsArray = explode(';', $latlng);
+        $latlng = implode(', ', $codsArray);
+        $latlng = $latlng. ', ' . $codsArray[0];
+
+
         $data = [
             'name'          => $request->name,
             'description'   => $request->description,
             'zoom_level'    => $request->zoom_level,
             'geo_array'     => $request->latlongs,
+            'polygon'       => \DB::raw("ST_GEOMFROMTEXT('POLYGON((".$latlng."))')"),
             'client_id'     => auth()->user()->code
         ];
 
@@ -230,16 +241,26 @@ class GeoFenceController extends Controller
         
 
         if (isset($request->latlongs)) {
+
+            $latlng = str_replace('),(', ';', $request->latlongs);
+            $latlng = str_replace(')', '', $latlng);
+            $latlng = str_replace('(', '', $latlng);
+            $latlng = str_replace(', ', ' ', $latlng);
+            $codsArray = explode(';', $latlng);
+            $latlng = implode(', ', $codsArray);
+            $latlng = $latlng. ', ' . $codsArray[0];
+
             $data = [
-            'name'          => $request->name,
-            'description'   => $request->description,
-            'geo_array'     => $request->latlongs,
-        ];
+                'name'          => $request->name,
+                'description'   => $request->description,
+                'geo_array'     => $request->latlongs,
+                'polygon'       => \DB::raw("ST_GEOMFROMTEXT('POLYGON((".$latlng."))')"),
+            ];
         } else {
             $data = [
-            'name'          => $request->name,
-            'description'   => $request->description,
-        ];
+                'name'          => $request->name,
+                'description'   => $request->description,
+            ];
         }
 
         $updated = Geo::where('id', $id)->update($data);

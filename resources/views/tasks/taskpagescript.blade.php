@@ -23,7 +23,7 @@
                 "paging": true,
                 "lengthChange" : true,
                 "searching": true,
-                "ordering": true,
+                // "ordering": true,
                 language: {
                             search: "",
                             paginate: { previous: "<i class='mdi mdi-chevron-left'>", next: "<i class='mdi mdi-chevron-right'>" },
