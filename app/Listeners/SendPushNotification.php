@@ -34,7 +34,7 @@ class SendPushNotification
      */
     public function handle(PushNotification $event)
     {
-    //    Log::info('message');
+       Log::info('message');
         
         $date =  Carbon::now()->toDateTimeString();
         
@@ -72,7 +72,7 @@ class SendPushNotification
 
     public function getData()
     {
-    //    Log::info('getData');
+       Log::info('getData');
         
         $schemaName       = 'royodelivery_db';
         $date             =  Carbon::now()->toDateTimeString();
@@ -83,9 +83,9 @@ class SendPushNotification
      ///   Log::info($newget);
         DB::connection($schemaName)->table('rosters')->where('status',10)->delete();
         if(count($get) > 0){
-            
-            // DB::connection($schemaName)->table('rosters')->whereIn('id',$newget)->update(['status'=>1]);
+            Log::info('rosters update-99-');
             DB::connection($schemaName)->table('rosters')->whereIn('id',$newget)->delete();
+            // DB::connection($schemaName)->table('rosters')->whereIn('id',$newget)->update(['status'=>1]);
             
             $this->sendnotification($get);
         }else{
@@ -113,8 +113,8 @@ class SendPushNotification
 
             if(isset($item['device_token']) && !empty($item['device_token'])){
                
-                $item['title'] = 'Pickup Request';
-                $item['body']  = 'Check All Details For This Request In App';
+                $item['title']     = 'Pickup Request';
+                $item['body']      = 'Check All Details For This Request In App';
                 $new = [];
                 array_push($new,$item['device_token']);
 
@@ -133,10 +133,12 @@ class SendPushNotification
                                         ->timeToLive(0)
                                         ->data($item)
                                         ->notification([
-                                            'title'     => 'Pickup Request',
-                                            'body'      => 'Check All Details For This Request In App',
-                                            'sound'     => 'notification.mp3',
-                                            'channelId' => 'Royo Delivery'
+                                            'title'              => 'Pickup Request',
+                                            'body'               => 'Check All Details For This Request In App',
+                                            'sound'              => 'notification.mp3',
+                                            'android_channel_id' => 'Royo-Delivery',
+                                            'soundPlay'          => true,
+                                            'show_in_foreground' => true,
                                         ])
                                         ->send();
                                         

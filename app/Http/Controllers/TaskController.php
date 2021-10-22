@@ -614,7 +614,7 @@ class TaskController extends Controller
                     break;
                 case 'send_to_all':
                     //this is called when allocation type is send to all
-                //    Log::info($allocation->auto_assign_logic);
+                   Log::info('send_to_all');
                     $this->SendToAll($geo, $notification_time, $agent_id, $orders->id, $customer, $finalLocation, $taskcount, $allocation);
                     break;
                 case 'round_robin':
@@ -1378,7 +1378,9 @@ class TaskController extends Controller
                     break;
                 }
             }
-            
+            Log::info('send_to_all data');
+            Log::info($data);
+            Log::info('send_to_all data');
             $this->dispatch(new RosterCreate($data, $extraData));
         }
     }
@@ -1462,27 +1464,27 @@ class TaskController extends Controller
                 for ($i = 1; $i <= $try; $i++) {
                     $counter = 0;
                     foreach ($distenseResult as $key =>  $geoitem) {
-                        $datas = [
-                            'order_id'            => $orders_id,
-                            'driver_id'           => $geoitem['driver_id'],
-                            'notification_time'   => $time,
-                            'type'                => $allcation_type,
-                            'client_code'         => Auth::user()->code,
-                            'created_at'          => Carbon::now()->toDateTimeString(),
-                            'updated_at'          => Carbon::now()->toDateTimeString(),
-                            'device_type'         => $geoitem['device_type'],
-                            'device_token'        => $geoitem['device_token'],
-                            'detail_id'           => $randem,
-                            'cash_to_be_collected' => $order_details->cash_to_be_collected??null,
-                        ];
+                        if(!empty($geoitem['device_token'])){
+                            $datas = [
+                                'order_id'            => $orders_id,
+                                'driver_id'           => $geoitem['driver_id'],
+                                'notification_time'   => $time,
+                                'type'                => $allcation_type,
+                                'client_code'         => Auth::user()->code,
+                                'created_at'          => Carbon::now()->toDateTimeString(),
+                                'updated_at'          => Carbon::now()->toDateTimeString(),
+                                'device_type'         => $geoitem['device_type'],
+                                'device_token'        => $geoitem['device_token'],
+                                'detail_id'           => $randem,
+                                'cash_to_be_collected' => $order_details->cash_to_be_collected??null,
+                            ];
+                            array_push($data, $datas);
+                        }
                         $counter++;
                         if ($counter == $maxsize) {
-                            $time = Carbon::parse($time)
-                            ->addSeconds($expriedate)
-                            ->format('Y-m-d H:i:s');
+                            $time = Carbon::parse($time)->addSeconds($expriedate)->format('Y-m-d H:i:s');
                             $counter = 0;
                         }
-                        array_push($data, $datas);
                         if ($allcation_type == 'N' && 'ACK') {
                             break;
                         }
@@ -1574,23 +1576,26 @@ class TaskController extends Controller
             if(!empty($distenseResult)){
                 for ($i = 1; $i <= $try; $i++) {
                     foreach ($distenseResult as $key =>  $geoitem) {
-                        $datas = [
-                            'order_id'            => $orders_id,
-                            'driver_id'           => $geoitem['driver_id'],
-                            'notification_time'   => $time,
-                            'type'                => $allcation_type,
-                            'client_code'         => Auth::user()->code,
-                            'created_at'          => Carbon::now()->toDateTimeString(),
-                            'updated_at'          => Carbon::now()->toDateTimeString(),
-                            'device_type'         => $geoitem['device_type'],
-                            'device_token'        => $geoitem['device_token'],
-                            'detail_id'           => $randem,
-                            'cash_to_be_collected' => $order_details->cash_to_be_collected??null,
-                        ];
-                        $time = Carbon::parse($time)
-                        ->addSeconds($expriedate)
-                        ->format('Y-m-d H:i:s');
-                        array_push($data, $datas);
+                        if(!empty($geoitem['device_token'])){
+                            $datas = [
+                                'order_id'            => $orders_id,
+                                'driver_id'           => $geoitem['driver_id'],
+                                'notification_time'   => $time,
+                                'type'                => $allcation_type,
+                                'client_code'         => Auth::user()->code,
+                                'created_at'          => Carbon::now()->toDateTimeString(),
+                                'updated_at'          => Carbon::now()->toDateTimeString(),
+                                'device_type'         => $geoitem['device_type'],
+                                'device_token'        => $geoitem['device_token'],
+                                'detail_id'           => $randem,
+                                'cash_to_be_collected' => $order_details->cash_to_be_collected??null,
+                            ];
+                            
+                            $time = Carbon::parse($time)->addSeconds($expriedate)->format('Y-m-d H:i:s');
+
+                            array_push($data, $datas);
+                        }
+                        
                         if ($allcation_type == 'N' && 'ACK') {
                             break;
                         }

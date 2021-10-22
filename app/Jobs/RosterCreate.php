@@ -38,7 +38,7 @@ class RosterCreate implements ShouldQueue
      */
     public function handle()
     {
-        Log::info('roster-data-fun-----');
+        Log::info('roster-data-fun---112--');
         try {
             $schemaName = 'royodelivery_db';
             $default = [
@@ -75,7 +75,7 @@ class RosterCreate implements ShouldQueue
                 'type'  => 'extra',
                 'status'=> 10
             ]);
-            Log::info('create roster');
+            Log::info('create roster --12');
         } catch (Exception $ex) {
             Log::info($exception->getMessage());
            return $ex->getMessage();
