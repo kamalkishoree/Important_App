@@ -112,15 +112,7 @@ class TaskController extends Controller
     public function taskFilter(Request $request)
     {
         $orders = Order::orderBy('updated_at', 'DESC')->with(['customer', 'location', 'taskFirst', 'agent', 'task.location']);
-        if (Auth::user()->is_superadmin == 0 && Auth::user()->all_team_access == 0) {      # get all  tasks according to assign teams 
-                $team_tags  = TeamTag::whereHas('team.permissionToManager', function ($query) {
-                    $query->where('sub_admin_id', Auth::user()->id);
-                })->pluck('tag_id');
-
-                $orders = $orders->whereHas('allteamtags', function ($query)use($team_tags) {
-                    $query->whereIn('tag_id', $team_tags);
-                });
-        }
+        
         $orders = $orders->where('status', $request->routesListingType)->where('status', '!=', null)->get();
 
       
@@ -252,15 +244,6 @@ class TaskController extends Controller
             ];
         $data = array();
         $orders = Order::orderBy('created_at', 'DESC')->with(['customer', 'location', 'taskFirst', 'agent', 'task.location']);
-        if (Auth::user()->is_superadmin == 0 && Auth::user()->all_team_access == 0) {      # get all  tasks according to assign teams 
-                $team_tags  = TeamTag::whereHas('team.permissionToManager', function ($query) {
-                    $query->where('sub_admin_id', Auth::user()->id);
-                })->pluck('tag_id');
-
-                $orders = $orders->whereHas('allteamtags', function ($query)use($team_tags) {
-                    $query->whereIn('tag_id', $team_tags);
-                });
-        }
         $orders = $orders->where('status', '!=', null)->get();
         if(!empty($orders)){
             $tz              = new Timezone();
