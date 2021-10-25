@@ -176,4 +176,36 @@ class TrackingController extends Controller
             return view('tracking/order_not_found');
         }
     }
+
+
+
+    # order cancel section 
+
+    public function orderCancelFromOrder($domain = '', $user, $id)
+    {
+        $respnse = $this->connection($user);
+        if ($respnse['status'] == 'connected') {
+            $order = DB::connection($respnse['database'])->table('orders')->where('unique_id', $id)->first();
+            if (isset($order->id)) {
+                 $orderc = DB::connection($respnse['database'])->table('orders')->where('id', $order->id)->update(['status' => 'cancelled']);
+               
+
+                 return response()->json([
+                    'message' => 'Successfully',
+                     'order'  => $order
+                    ], 200);
+
+               
+            } else {
+
+                return response()->json([
+                    'message' => 'Error'], 400);
+               
+            }
+        } else {
+            return response()->json([
+                'message' => 'Error'], 400);
+          
+        }
+    }
 }
