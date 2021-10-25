@@ -967,7 +967,6 @@ class TaskController extends BaseController
                 if(!empty($geoLocalitie)){
                     return $locality->id;
                 }
-                return false;
             }else{
                 $all_points = $locality->geo_array;
                 $temp = $all_points;
