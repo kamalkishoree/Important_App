@@ -413,7 +413,7 @@
             </form>
         </div>
     </div>
-    
+
     <div class="row">
         <div class="col-md-3">
             <div class="page-title-box">
@@ -432,6 +432,7 @@
                             <tr>
                                 <th>Name</th>
                                 <th>Type</th>
+                                <th>Required?</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -444,6 +445,7 @@
                                     </a>
                                 </td>
                                 <td>{{$agent_doc->file_type}}</td>
+                                <td>{{$agent_doc->is_required?"Yes":"No"}}</td>
                                 <td>
                                     <div>
                                         <div class="inner-div" style="float: left;">
@@ -479,41 +481,41 @@
                     </p> -->
                     <div class="row">
                         <div class="col-12 my-2">
-                           <div class="custom-switch redio-all">
-                                    <input type="checkbox" value="1" class="custom-control-input large-icon" id="route_flat_input" name="route_flat_input" {{ isset($preference) && $preference->route_flat_input == 1 ? 'checked' : '' }}>
-                                    <label class="custom-control-label checkss" for="route_flat_input">{{__("Show flat number field on route create & update.")}}</label>
+                            <div class="custom-switch redio-all">
+                                <input type="checkbox" value="1" class="custom-control-input large-icon" id="route_flat_input" name="route_flat_input" {{ isset($preference) && $preference->route_flat_input == 1 ? 'checked' : '' }}>
+                                <label class="custom-control-label checkss" for="route_flat_input">{{__("Show flat number field on route create & update.")}}</label>
                                 <div class="col-sm-4 text-right">
                                     @if ($errors->has('route_flat_input'))
-                                        <span class="text-danger" role="alert">
-                                            <strong>{{ $errors->first('route_flat_input') }}</strong>
-                                        </span>
+                                    <span class="text-danger" role="alert">
+                                        <strong>{{ $errors->first('route_flat_input') }}</strong>
+                                    </span>
                                     @endif
                                 </div>
                             </div>
                         </div>
                         <div class="col-12 mb-2">
-                           <div class="custom-switch redio-all">
+                            <div class="custom-switch redio-all">
                                 <input type="checkbox" value="1" class="custom-control-input large-icon" id="route_alcoholic_input" name="route_alcoholic_input" {{ isset($preference) && $preference->route_alcoholic_input == 1 ? 'checked' : '' }}>
                                 <label class="custom-control-label checkss" for="route_alcoholic_input">{{__("Show alcoholic item redio button on create & update.")}}</label>
-                            <div class="col-sm-4 text-right">
-                                @if ($errors->has('route_alcoholic_input'))
+                                <div class="col-sm-4 text-right">
+                                    @if ($errors->has('route_alcoholic_input'))
                                     <span class="text-danger" role="alert">
                                         <strong>{{ $errors->first('route_alcoholic_input') }}</strong>
                                     </span>
-                                @endif
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="form-group mb-0 text-center">
+                                    <button class="btn btn-blue btn-block" type="submit"> {{__("Update")}} </button>
+                                </div>
                             </div>
                         </div>
                     </div>
-
-
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="form-group mb-0 text-center">
-                                <button class="btn btn-blue btn-block" type="submit"> {{__("Update")}} </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </form>
         </div>
     </div>
@@ -692,29 +694,31 @@
                                     <label for="">Type</label>
                                     <div class="input-group mb-2">
                                         <select class="form-control" name="file_type">
-                                           
                                             <option value="Image">Image</option>
                                             <option value="Pdf">Pdf</option>
                                             <option value="Text">Text</option>
-                                         
                                         </select>
                                     </div>
                                 </div>
                             </div>
-                         
-                            <div class="col-md-12 mb-2">
+
+                            <div class="col-md-12">
                                 <div class="row">
                                     <div class="col-12">
                                         <div class="form-group position-relative">
-                                            <label for="">Name </label>
-                                           
+                                            <label for="">{{__('Name')}}</label>
                                             <input class="form-control" name="name" type="text" id="driver_registration_document_name">
                                         </div>
-                                      
                                     </div>
                                 </div>
                             </div>
-                          
+                            <div class="col-md-12 mb-2">
+                                <label for="">{{__('Required?')}} </label>
+                                <div class="custom-switch redio-all">
+                                    <input type="checkbox" value="1" class="custom-control-input alcoholic_item large-icon" id="required_checkbox" name="is_required">
+                                    <label class="custom-control-label" for="required_checkbox"></label>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </form>
@@ -745,6 +749,8 @@
     }
 
     $('#add_driver_registration_document_modal_btn').click(function(e) {
+        document.getElementById("driverRegistrationDocumentForm").reset();
+        $('#add_driver_registration_document_modal input[name=driver_registration_document_id]').val("");
         $('#add_driver_registration_document_modal').modal('show');
         $('#add_driver_registration_document_modal #standard-modalLabel').html('Add Driver Registration Document');
     });
@@ -811,11 +817,15 @@
             url: "{{ route('driver.registration.document.edit') }}",
             success: function(response) {
                 if (response.status = 'Success') {
-                    $('#add_driver_registration_document_modal').modal('show');
-                    $("#add_driver_registration_document_modal input[name=file_type]").val(response.data.file_type).change();
+                    $("#add_driver_registration_document_modal select[name=file_type]").val(response.data.file_type).change();
                     $("#add_driver_registration_document_modal input[name=name]").val(response.data.name);
+                    if(response.data.is_required){
+                        $("#add_driver_registration_document_modal input[name=is_required]").prop("checked", "checked");
+                    } else {
+                        $("#add_driver_registration_document_modal input[name=is_required]").prop("checked", false);
+                    }
                     $('#add_driver_registration_document_modal #standard-modalLabel').html('Update Driver Registration Document');
-                
+                    $('#add_driver_registration_document_modal').modal('show');
                 }
             },
             error: function() {
