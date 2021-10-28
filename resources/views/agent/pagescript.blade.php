@@ -1,10 +1,35 @@
 <script type="text/javascript">
     $(document).ready(function() {
-        initDataTable();
+        $(document).on("click", ".nav-link", function() {
+            let rel = $(this).data('rel');
+            let status = $(this).data('status');
+            initDataTable(rel, status);
+            setTimeout(function() {
+                $('#' + rel).DataTable().ajax.reload();
+            }, 500);
+        });
 
-        function initDataTable() {
-            $('#agent-listing').DataTable({
-                "dom": '<"toolbar">Bfrtip',
+        // initDataTable();
+        setTimeout(function() {
+            $('#active-vendor').trigger('click');
+        }, 200);
+
+        function initDataTable(table, status) {
+            if (status == 1) {
+                var domRef = '<"toolbar">Bfrtip';
+                var btnObj = [{
+                    className: 'btn btn-success waves-effect waves-light',
+                    text: '<span class="btn-label"><i class="mdi mdi-export-variant"></i></span>Export CSV',
+                    action: function(e, dt, node, config) {
+                        window.location.href = "{{ route('agents.export') }}";
+                    }
+                }];
+            } else if (status == 0 || status == 2) {
+                var domRef = '<"toolbar">Brtip';
+                var btnObj = [];
+            }
+            $('#' + table).DataTable({
+                "dom": domRef,
                 "scrollX": true,
                 "destroy": true,
                 "serverSide": true,
@@ -24,18 +49,13 @@
                 drawCallback: function() {
                     $(".dataTables_paginate > .pagination").addClass("pagination-rounded");
                 },
-                buttons: [{
-                    className: 'btn btn-success waves-effect waves-light',
-                    text: '<span class="btn-label"><i class="mdi mdi-export-variant"></i></span>Export CSV',
-                    action: function(e, dt, node, config) {
-                        window.location.href = "{{ route('agents.export') }}";
-                    }
-                }],
+                buttons: btnObj,
                 ajax: {
                     url: "{{url('agent/filter')}}",
                     data: function(d) {
                         d.search = $('input[type="search"]').val();
                         d.imgproxyurl = '{{$imgproxyurl}}';
+                        d.status = status;
                     }
                 },
                 columns: [{
@@ -59,9 +79,9 @@
                         orderable: true,
                         searchable: false,
                         "mRender": function(data, type, full) {
-                            return full.name;
+                            var is_available_icon = (full.is_available == 1) ? '<i class="fa fa-circle" aria-hidden="true" style="color:green"></i>' : '<i class="fa fa-circle" aria-hidden="true" style="color:red"></i>'
+                            return is_available_icon + full.name;
                         }
-                      
                     },
                     {
                         data: 'phone_number',
@@ -120,26 +140,16 @@
                         orderable: true,
                         searchable: false
                     },
-                    {
-                        data: 'is_approved',
-                        name: 'is_approved',
-                        orderable: false,
-                        searchable: false,
-                        "mRender": function(data, type, full) {
-                            var check = (full.is_approved == 1) ? 'checked' : '';
-                            return '<div class="custom-control custom-switch"><input type="checkbox" class="custom-control-input agent_approval_switch" ' + check + ' id="customSwitch_' + full.id + '" data-id="' + full.id + '"><label class="custom-control-label" for="customSwitch_' + full.id + '"></label></div>';
-                        }
-                    },
-                    {
-                        data: 'is_available',
-                        name: 'is_available',
-                        orderable: false,
-                        searchable: false,
-                        "mRender": function(data, type, full) {
-                            return (full.is_available == 1) ? 'Active' : 'InActive';
-                            // return '<div class="custom-control custom-switch"><input type="checkbox" class="custom-control-input agent_approval_switch" '+check+' id="customSwitch_'+full.id+'" data-id="'+full.id+'"><label class="custom-control-label" for="customSwitch_'+full.id+'"></label></div>';
-                        }
-                    },
+                    // {
+                    //     data: 'is_approved',
+                    //     name: 'is_approved',
+                    //     orderable: false,
+                    //     searchable: false,
+                    //     "mRender": function(data, type, full) {
+                    //         var check = (full.is_approved == 1) ? 'checked' : '';
+                    //         return '<div class="custom-control custom-switch"><input type="checkbox" class="custom-control-input agent_approval_switch" ' + check + ' id="customSwitch_' + full.id + '" data-id="' + full.id + '"><label class="custom-control-label" for="customSwitch_' + full.id + '"></label></div>';
+                    //     }
+                    // },
                     {
                         data: 'action',
                         name: 'action',
@@ -435,7 +445,32 @@
                 }
             });
         });
-    });
 
-   
+        $(document).on("click", ".agent_approval_button", function(e) {
+            if (confirm('Are you sure?')) {
+                var agent_id = $(this).data('agent_id');
+                var status = $(this).data('status');
+                var activeTabDetail = $("#top-tab li a.active").data('rel');
+                $.ajax({
+                    type: "Post",
+                    dataType: "json",
+                    url: "{{ route('agent/change_approval_status')}}",
+                    data: {
+                        "_token": "{{ csrf_token() }}",
+                        'status': status,
+                        'id': agent_id
+                    },
+                    success: function(data) {
+                        if (data.status == 1) {
+                            $.NotificationApp.send("", data.message, "top-right", "#5ba035", "success");
+                            setTimeout(function() {
+                                $('#' + activeTabDetail).DataTable().ajax.reload();
+                            }, 100);
+                        }
+                    }
+                });
+            }
+        });
+
+    });
 </script>
