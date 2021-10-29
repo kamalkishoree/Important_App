@@ -715,11 +715,11 @@ class TaskController extends BaseController
                     'post_code'   => $value['post_code']??null,
                     'customer_id' => $cus_id,
                 ];
-                   // $Loction = Location::create($loc);
-                    $Loction = Location::updateOrCreate(
-                        ['latitude' => $value['latitude']??0.00, 'longitude' => $value['longitude']??0.00],
-                        [$loc]
-                    );
+                    $Loction = Location::create($loc);
+                    // $Loction = Location::updateOrCreate(
+                    //     ['latitude' => $value['latitude']??0.00, 'longitude' => $value['longitude']??0.00],
+                    //     [$loc]
+                    // );
                     $loc_id = $Loction->id;
                 }
            
