@@ -13,7 +13,8 @@ class DatabaseSeeder extends Seeder
     {
          $this->call([
               CurrenciesTableSeeder::class,
-              CountriesTableSeeder::class,
+             // CountriesTableSeeder::class,
+             CountriesWithLatLongTableSeeder::class,
              // ClientsTableSeeder::class,
               LanguageTableSeeder::class,
               VehicleTypeTableSeeder::class,
