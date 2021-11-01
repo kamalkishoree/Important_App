@@ -64,6 +64,7 @@ Route::group(['middleware' => ['dbCheck', 'AppAuth','apiLocalization']], functio
         Route::get('get/profile','Api\ActivityController@profile');                // api for get agent profile
         Route::post('update/profile','Api\ActivityController@updateProfile');       // api for updateprofile
         Route::get('task/history','Api\ActivityController@taskHistory');            // api for get task history
+        Route::get('agent/transaction/details/{id}', 'Api\DriverTransactionController@transactionDetails');   // api for agent transactions
 
 });
 
