@@ -356,6 +356,7 @@ class ClientController extends Controller
             $driver_registration_document = new DriverRegistrationDocument();
             $driver_registration_document->file_type = $request->file_type;
             $driver_registration_document->name = $request->name;
+            $driver_registration_document->is_required = (!empty($request->is_required))?1:0;
             $driver_registration_document->save();
             DB::commit();
             return $this->successResponse($driver_registration_document, 'Driver Registration Document Added Successfully.');
@@ -399,6 +400,7 @@ class ClientController extends Controller
             $driver_registration_document = DriverRegistrationDocument::where('id', $driver_registration_document_id)->first();
             $driver_registration_document->file_type = $request->file_type;
             $driver_registration_document->name = $request->name;
+            $driver_registration_document->is_required = (!empty($request->is_required))?1:0;
             $driver_registration_document->save();
          
             DB::commit();

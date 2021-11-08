@@ -307,7 +307,8 @@ class TaskController extends Controller
 
     // function for saving new order
     public function newtasks(Request $request)
-    { 
+    {   
+       // dd($request->toArray());
         $loc_id = $cus_id = $send_loc_id = $newlat = $newlong = 0;
         $iinputs = $request->toArray();
         $old_address_ids = array();
@@ -422,13 +423,19 @@ class TaskController extends Controller
                     'longitude'      => $request->longitude[$key],
                     'short_name'     => $request->short_name[$key],
                     'address'        => $request->address[$key],
-                    'post_code'      => $request->post_code[$key],
+                    'post_code'      => (int)$request->post_code[$key],
                     'flat_no'        => !empty($request->flat_no[$key])? $request->flat_no[$key] : '',
                     'email'          => $request->address_email[$key],
                     'phone_number'   => $request->address_phone_number[$key],
                     'customer_id'    => $cus_id,
                 ];
-                $Loction = Location::create($loc);
+
+                $Loction = Location::updateOrCreate(
+                    ['latitude' => $request->latitude[$key], 'longitude' => $request->longitude[$key],'address' => $request->address[$key]],
+                    [$loc]
+                );
+
+             //   $Loction = Location::create($loc);
                 $loc_id = $Loction->id;
                 $send_loc_id = $loc_id;
             } else {
@@ -448,13 +455,18 @@ class TaskController extends Controller
                     'longitude'    => $location->longitude,
                     'short_name'   => $location->short_name,
                     'address'      => $location->address,
-                    'post_code'    => $location->post_code,
+                    'post_code'    => (int)$location->post_code,
                     'flat_no'      => $location->flat_no,
                     'email'        => $location->address_email,
                     'phone_number' => $location->address_phone_number,
                     'customer_id'  => $cus_id,
                 ];
-                $location = Location::create($newloc);
+
+                $Loction = Location::updateOrCreate(
+                    ['latitude' => $location->latitude, 'longitude' => $location->longitude, 'address' => $location->address],
+                    [$newloc]
+                );
+               // $location = Location::create($newloc);
             }
             
             $loc_id = $location->id;
@@ -858,7 +870,11 @@ class TaskController extends Controller
                     'flat_no'   => !empty($request->flat_no[$key])? $request->flat_no[$key] : '',
                     'customer_id' => $cus_id,
                 ];
-                $Loction = Location::create($loc);
+              //  $Loction = Location::create($loc);
+                $Loction = Location::updateOrCreate(
+                    ['latitude' => $request->latitude[$key], 'longitude' => $request->longitude[$key], 'address' => $request->address[$key]],
+                    [$loc]
+                );
                 $loc_id = $Loction->id;
                 $send_loc_id = $loc_id;
             } else {
@@ -1977,7 +1993,11 @@ class TaskController extends Controller
                     'customer_id'   => $cus_id,
                 ];
                 
-                $Loction = Location::create($loc);
+              //  $Loction = Location::create($loc);
+                $Loction = Location::updateOrCreate(
+                    ['latitude' => $request->latitude[$key], 'longitude' => $request->longitude[$key], 'address' => $request->address[$key]],
+                    [$loc]
+                );
                 $loc_id = $Loction->id;
             } else {
                 if ($key == 0) {
@@ -1993,14 +2013,18 @@ class TaskController extends Controller
                         'longitude'      => $location->longitude,
                         'short_name'     => $location->short_name,
                         'address'        => $location->address,
-                        'post_code'      => $location->post_code,
+                        'post_code'      => (int)$location->post_code,
                         'flat_no'        => $location->flat_no,
                         'alcoholic_item' => $location->alcoholic_item,
                         'email'          => $location->address_email,
                         'phone_number'   => $location->address_phone_number,
                         'customer_id'    => $cus_id,
                     ];
-                    $location = Location::create($newloc);
+                  //  $location = Location::create($newloc);
+                    $location = Location::updateOrCreate(
+                        ['latitude' => $location->latitude, 'longitude' => $location->longitude, 'address' => $location->address],
+                        [$newloc]
+                    );
                 }
                 $loc_id = $location->id;
             }

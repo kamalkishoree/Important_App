@@ -80,9 +80,10 @@ class AgentController extends Controller
         $agentNotAvailable = count($agents->where('is_available', 0));
         $agentIsApproved   = count($agents->where('is_approved', 1));
         $agentNotApproved  = count($agents->where('is_approved', 0));
+        $agentRejected   = count($agents->where('is_approved', 2));
         $driver_registration_documents = DriverRegistrationDocument::get();
 
-        return view('agent.index')->with(['agents' => $agents, 'driver_registration_documents' => $driver_registration_documents, 'agentIsAvailable' => $agentIsAvailable, 'agentNotAvailable' => $agentNotAvailable, 'agentIsApproved' => $agentIsApproved, 'agentNotApproved' => $agentNotApproved, 'agentsCount' => $agentsCount, 'employeesCount' => $employeesCount, 'agentActive' => $agentActive, 'agentInActive' => $agentInActive, 'freelancerCount' => $freelancerCount, 'teams' => $teams, 'tags' => $tags, 'selectedCountryCode' => $countryCode, 'calenderSelectedDate' => $selectedDate, 'showTag' => implode(',', $tag)]);
+        return view('agent.index')->with(['agents' => $agents, 'driver_registration_documents' => $driver_registration_documents, 'agentIsAvailable' => $agentIsAvailable, 'agentNotAvailable' => $agentNotAvailable, 'agentIsApproved' => $agentIsApproved, 'agentNotApproved' => $agentNotApproved, 'agentsCount' => $agentsCount, 'employeesCount' => $employeesCount, 'agentActive' => $agentActive, 'agentInActive' => $agentInActive, 'freelancerCount' => $freelancerCount, 'teams' => $teams, 'tags' => $tags, 'selectedCountryCode' => $countryCode, 'calenderSelectedDate' => $selectedDate, 'showTag' => implode(',', $tag), 'agentRejected' => $agentRejected]);
     }
 
     public function agentFilter(Request $request)
@@ -103,7 +104,7 @@ class AgentController extends Controller
                 });
             }
 
-            $agents = $agents->orderBy('id', 'desc')->get();
+            $agents = $agents->where('is_approved', $request->status)->orderBy('id', 'desc')->get();
             return Datatables::of($agents)
             ->editColumn('name', function ($agents) use ($request) {
                 $name =$agents->name;
@@ -146,7 +147,14 @@ class AgentController extends Controller
                     return number_format((float)$payToDriver, 2, '.', '');
                 })
                 ->editColumn('action', function ($agents) use ($request) {
-                    $action = '<div class="form-ul" style="width: 60px;">
+                    if($request->status == 1){
+                        $approve_action = '<span class="agent_approval_button" data-agent_id="'.$agents->id.'" data-status="2" title="Reject"><i class="fa fa-user-times" style="color: red;"></i></span>';
+                    } else if($request->status == 0){
+                        $approve_action = '<span class="agent_approval_button" data-agent_id="'.$agents->id.'" data-status="1" title="Approve"><i class="fas fa-user-check" style="color: green;"></i></span><span class="agent_approval_button" data-agent_id="'.$agents->id.'" data-status="2" title="Reject"><i class="fa fa-user-times" style="color: red;"></i></span>';
+                    } else if($request->status == 2){
+                        $approve_action = '<span class="agent_approval_button" data-agent_id="'.$agents->id.'" data-status="1" title="Approve"><i class="fas fa-user-check" style="color: green;"></i></span>';
+                    }
+                    $action = '<div class="form-ul" style="width: 60px;">'.$approve_action.'
                                     <div class="inner-div" style="margin-top: 3px;"> <a href="' . route('agent.show', $agents->id) . '" class="action-icon viewIcon" agentId="' . $agents->id . '"> <i class="fa fa-eye"></i></a></div>
                                     <div class="inner-div" style="margin-top: 3px;"> <a href="' . route('agent.edit', $agents->id) . '" class="action-icon editIcon" agentId="' . $agents->id . '"> <i class="mdi mdi-square-edit-outline"></i></a></div>
                                     <div class="inner-div">
@@ -575,4 +583,19 @@ class AgentController extends Controller
             return response()->json(['status' => 0, 'message' => $e->getMessage()]);
         }
     }
+
+    /* Change Agent approval status */
+
+    public function change_approval_status(Request $request)
+    {
+        try {
+            $agent_approval = Agent::find($request->id);
+            $agent_approval->is_approved = $request->status;
+            $agent_approval->save();
+            return response()->json(['status' => 1, 'message' => 'Status change successfully.']);
+        } catch (Exception $e) {
+            return response()->json(['status' => 0, 'message' => $e->getMessage()]);
+        }
+    }
+
 }

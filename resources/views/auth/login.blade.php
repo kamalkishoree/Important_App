@@ -1,3 +1,6 @@
+@php
+     $image = App\Model\Client::first();
+@endphp
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -122,7 +125,7 @@
 
         <footer class="footer footer-alt">
             <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
-            <script>document.write(new Date().getFullYear())</script> &copy; All rights reserved by <a href="#" class="text-white-50">Royo Apps</a> 
+            <script>document.write(new Date().getFullYear())</script> &copy; All rights reserved by <a href="#" class="text-white-50">{{$image->name??__('Royo')}}</a> 
         </footer>
 
         @include('layouts.shared.footer-script')

@@ -74,7 +74,7 @@ class DriverRegistrationController extends Controller
                 'color' => $request->color,
                 'profile_picture' => $getFileName != null ? $getFileName : 'assets/client_00000051/agents5fedb209f1eea.jpeg/Ec9WxFN1qAgIGdU2lCcatJN5F8UuFMyQvvb4Byar.jpg',
                 'uid' => $request->uid,
-                'is_approved' => 1,
+                'is_approved' => 0,
             ];
             $agent = Agent::create($data);
             $files = [];
