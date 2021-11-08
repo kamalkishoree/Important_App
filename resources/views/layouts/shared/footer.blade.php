@@ -2,7 +2,7 @@
     $image = App\Model\Client::first();
    // $image->name = 'Royo';
 @endphp
-<!-- Footer Start -->
+<!-- Footer Start --> 
 <footer class="footer">
     <div class="container-fluid">
         <div class="row">
