@@ -1,6 +1,7 @@
 @php
-    $image = Cache::get('clientdetails');
-    $image->name = __('Royo');
+  //  $image = Cache::get('clientdetails');
+    $image = App\Model\Client::first();
+ //   $image->name = __('Royo');
 @endphp
 <meta charset="utf-8" />
 <title>{{$title ?? ' '}} | {{$image->name??__('Royo')}}</title>
