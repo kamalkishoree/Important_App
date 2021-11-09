@@ -409,6 +409,28 @@
                                         
                                     </tr>
 
+                                    <tr>
+                                        <td>
+                                            <h5 class="m-0 font-weight-normal">{{__("Face Proof")}}</h5>
+                                        </td>
+
+                                        <td>
+                                            <div class="custom-control custom-switch">
+                                                <input type="checkbox" class="custom-control-input event_type" id="customSwitch_{{$key.''.$counter.'11'}}" name="face_{{$key+1}}" {{!empty($taskproof->face) && $taskproof->face == 1 ? 'checked':''}}>
+                                                <label class="custom-control-label" for="customSwitch_{{$key.''.$counter.'11'}}"></label>
+                                            </div>
+                                        </td>
+
+                                        <td>
+                                            <div class="custom-control custom-switch">
+                                                <input type="checkbox" class="custom-control-input event_type otp-requried-check" id="customSwitch_{{$key.''.$counter.'12'}}" name="face_requried_{{$key+1}}" {{!empty($taskproof->face_requried) && $taskproof->face_requried == 1 ? 'checked':''}}>
+                                                <label class="custom-control-label" for="customSwitch_{{$key.''.$counter.'12'}}"></label>
+                                            </div>
+                                        </td>
+
+                                        
+                                    </tr>
+
 
                                 </tbody>
                             </table>
