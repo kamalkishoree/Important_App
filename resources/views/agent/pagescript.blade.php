@@ -274,7 +274,7 @@
                     });
                     makeTag();
                     phoneInput();
-                    //$('.dropify').dropify();
+                    $('.dropify').dropify();
                     var imgs = $('#profilePic').attr('showImg');
 
                     $('#profilePic').attr("data-default-file", imgs);
@@ -337,12 +337,13 @@
         });
 
         /* edit Team using ajax*/
-        $(document).on("submit", "#edit-agent-modal #UpdateAgent", function(e) {
+        // $(document).on("submit", "#edit-agent-modal #UpdateAgent", function(e) {
+        //     e.preventDefault();
+        // });
+
+
+        $(document).on("submit", '#UpdateAgent', function(e) {
             e.preventDefault();
-        });
-
-
-        $(document).on('click', '.submitEditForm', function() {
             var form = document.getElementById('UpdateAgent');
             var formData = new FormData(form);
             var urls = document.getElementById('agent_id').getAttribute('url');

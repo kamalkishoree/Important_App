@@ -219,6 +219,7 @@ class AgentController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'type' => ['required'],
             'vehicle_type_id' => ['required'],
+            'team_id' => ['required'],
             //'make_model' => ['required'],
             //'plate_number' => ['required'],
             'phone_number' =>  ['required', 'min:9', 'max:15', Rule::unique('agents')->where(function ($query) use ($full_number) {
@@ -298,33 +299,29 @@ class AgentController extends Controller
         $agent = Agent::create($data);
         $agent->tags()->sync($tag_id);
 
-        // $driver_registration_documents = DriverRegistrationDocument::get();
-        // foreach ($driver_registration_documents as $driver_registration_document) {
-        //     $agent_docs = new AgentDocs();
-        //     $name = $driver_registration_document->name;
-        //     $arr = explode(' ', $name);
-        //     $name = implode('_', $arr);
-        //     if ($driver_registration_document->file_type != "Text") {
-        //         if ($request->hasFile($request->$name)) {
-        //             $folder = str_pad(Auth::user()->code, 8, '0', STR_PAD_LEFT);
-        //             $folder = 'client_' . $folder;
-        //             $file = $request->file($request->$name);
-        //             $file_name = uniqid() . '.' . $file->getClientOriginalExtension();
-        //             $s3filePath = '/assets/' . $folder . '/agents' . $file_name;
-        //             $path = Storage::disk('s3')->put($s3filePath, $file, 'public');
-        //             $getFileName = $path;
-        //         }
-
-        //         $agent_docs->file_name = $getFileName;
-        //     }
-        //     else
-        //     {
-        //         $agent_docs->file_name = $request->$name;
-        //     }
-        //     $agent_docs->file_type = $driver_registration_document->file_type;
-        //     $agent_docs->label_name = $driver_registration_document->name;
-        //     $agent_docs->save();
-        // }
+        $driver_registration_documents = DriverRegistrationDocument::get();
+        foreach ($driver_registration_documents as $driver_registration_document) {
+            $agent_docs = new AgentDocs();
+            $name = str_replace(" ", "_", $driver_registration_document->name);
+            if ($driver_registration_document->file_type != "Text") {
+                if ($request->hasFile($name)) {
+                    $folder = str_pad(Auth::user()->code, 8, '0', STR_PAD_LEFT);
+                    $folder = 'client_' . $folder;
+                    $file = $request->file($name);
+                    $file_name = uniqid() . '.' . $file->getClientOriginalExtension();
+                    $s3filePath = '/assets/' . $folder . '/agents' . $file_name;
+                    $path = Storage::disk('s3')->put($s3filePath, $file, 'public');
+                    $getFileName = $path;
+                }
+                $agent_docs->file_name = $getFileName;
+            } else {
+                $agent_docs->file_name = $request->$name;
+            }
+            $agent_docs->agent_id = $agent->id;
+            $agent_docs->file_type = $driver_registration_document->file_type;
+            $agent_docs->label_name = $driver_registration_document->name;
+            $agent_docs->save();
+        }
 
         if ($agent->wasRecentlyCreated) {
             return response()->json([
@@ -424,7 +421,10 @@ class AgentController extends Controller
             $send_otp = 'View OTP after Logging in the Driver App';
         }
 
-        $returnHTML = view('agent.form')->with(['agent' => $agent, 'teams' => $teams, 'tags' => $uptag, 'tagIds' => $tagIds, 'otp' => $send_otp])->render();
+        $agents_docs = AgentDocs::where('agent_id', $id)->get();
+        $driver_registration_documents = DriverRegistrationDocument::get();
+
+        $returnHTML = view('agent.form')->with(['agent' => $agent, 'teams' => $teams, 'tags' => $uptag, 'tagIds' => $tagIds, 'otp' => $send_otp, 'driver_registration_documents' => $driver_registration_documents, 'agent_docs' => $agents_docs])->render();
 
         return response()->json(array('success' => true, 'html' => $returnHTML));
     }
@@ -441,6 +441,7 @@ class AgentController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'type' => ['required'],
             'vehicle_type_id' => ['required'],
+            'team_id' => ['required'],
             //'make_model' => ['required'],
             //'plate_number' => ['required'],
             'phone_number' => ['required', 'min:9', 'max:15', Rule::unique('agents')->where(function ($query) use ($full_number, $id) {
@@ -506,6 +507,27 @@ class AgentController extends Controller
         $agent->save();
 
         $agent->tags()->sync($tag_id);
+
+        $driver_registration_documents = DriverRegistrationDocument::get();
+        foreach ($driver_registration_documents as $driver_registration_document) {
+            $agent_docs = AgentDocs::firstOrNew(['agent_id' => $agent->id, 'label_name' => $driver_registration_document->name, 'file_type' => $driver_registration_document->file_type]);
+            $name = str_replace(" ", "_", $driver_registration_document->name);
+            if ($driver_registration_document->file_type != "Text") {
+                if ($request->hasFile($name)) {
+                    $folder = str_pad(Auth::user()->code, 8, '0', STR_PAD_LEFT);
+                    $folder = 'client_' . $folder;
+                    $file = $request->file($name);
+                    $file_name = uniqid() . '.' . $file->getClientOriginalExtension();
+                    $s3filePath = '/assets/' . $folder . '/agents' . $file_name;
+                    $path = Storage::disk('s3')->put($s3filePath, $file, 'public');
+                    $getFileName = $path;
+                }
+                $agent_docs->file_name = $getFileName;
+            } else {
+                $agent_docs->file_name = $request->$name;
+            }
+            $agent_docs->save();
+        }
 
         if ($agent) {
             return response()->json([
