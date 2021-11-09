@@ -510,7 +510,6 @@ class AgentController extends Controller
 
         $driver_registration_documents = DriverRegistrationDocument::get();
         foreach ($driver_registration_documents as $driver_registration_document) {
-            $agent_docs = AgentDocs::firstOrNew(['agent_id' => $agent->id, 'label_name' => $driver_registration_document->name, 'file_type' => $driver_registration_document->file_type]);
             $name = str_replace(" ", "_", $driver_registration_document->name);
             if ($driver_registration_document->file_type != "Text") {
                 if ($request->hasFile($name)) {
@@ -521,12 +520,15 @@ class AgentController extends Controller
                     $s3filePath = '/assets/' . $folder . '/agents' . $file_name;
                     $path = Storage::disk('s3')->put($s3filePath, $file, 'public');
                     $getFileName = $path;
+                    $agent_docs = AgentDocs::firstOrNew(['agent_id' => $agent->id, 'label_name' => $driver_registration_document->name, 'file_type' => $driver_registration_document->file_type]);
+                    $agent_docs->file_name = $getFileName;
+                    $agent_docs->save();
                 }
-                $agent_docs->file_name = $getFileName;
             } else {
+                $agent_docs = AgentDocs::firstOrNew(['agent_id' => $agent->id, 'label_name' => $driver_registration_document->name, 'file_type' => $driver_registration_document->file_type]);
                 $agent_docs->file_name = $request->$name;
+                $agent_docs->save();
             }
-            $agent_docs->save();
         }
 
         if ($agent) {
