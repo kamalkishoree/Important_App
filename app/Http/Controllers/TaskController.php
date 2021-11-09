@@ -2146,6 +2146,43 @@ class TaskController extends Controller
         return redirect()->back()->with('success', 'Task deleted successfully!');
     }
 
+    public function deleteSingleTask(Request $request, $domain = '')
+    {   
+        try {
+        $order = Task::find($request->task_id);
+
+        $ordercount = Task::where('order_id',$order->order_id)->count();
+      
+        if($ordercount == 1){
+            $delorder = Order::where('id',$order->order_id)->delete();
+            $route = route('tasks.index');
+           
+        }
+        else
+        {
+         $update_dep = Task::where('dependent_task_id',$request->task_id)->update(['dependent_task_id' => $order->dependent_task_id ]);   
+         $del = Task::where('id',$request->task_id)->delete();
+         $route = route('tasks.edit',$order->order_id);
+
+        }    
+
+
+
+        return response()->json([
+            'message' => __('Task Delete Successfully'),
+            'count' => $ordercount,
+            'url' => $route
+        ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => $e->getMessage()
+            ], 400);
+        }
+
+        
+    }
+    
+
     //this is for serch customer for when create tasking
 
     public function search(Request $request, $domain = '')

@@ -740,7 +740,7 @@
         contentType: false,
         processData: false,
         success: function(response) {
-            //alert(response)
+            alert(response)
             if (response) {
                     $("#task-modal-header .close").click();
                     location.reload();
