@@ -163,7 +163,7 @@ use Carbon\Carbon;
                                         </div>
                                         <div class="col-md-1 ">
 
-                                            <span class="span1 onedelete" id="spancheck"><img style="filter: grayscale(.5);"
+                                            <span class="span1 onedeletex" id="spancheckd" data-taskid="{{ $item->id }}"><img style="filter: grayscale(.5);"
                                                     src="{{ asset('assets/images/ic_delete.png') }}" alt=""></span>
 
 

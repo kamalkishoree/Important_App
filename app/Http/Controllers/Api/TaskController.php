@@ -49,6 +49,7 @@ class TaskController extends BaseController
         $header = $request->header();
         $client_details = Client::where('database_name', $header['client'][0])->first();
         $proof_image = '';
+        $proof_face = '';
         $proof_signature = '';
         $note = '';
         if (isset($request->note)) {
@@ -79,6 +80,20 @@ class TaskController extends BaseController
             }
         } else {
             $proof_image = null;
+        }
+
+        if (isset($request->proof_face)) {
+            if ($request->hasFile('proof_face')) {
+                $folder = str_pad($client_details->code, 8, '0', STR_PAD_LEFT);
+                $folder = 'client_'.$folder;
+                $file = $request->file('proof_face');
+                $file_name = uniqid() .'.'.  $file->getClientOriginalExtension();
+                $s3filePath = '/assets/'.$folder.'/orders' . $file_name;
+                $path = Storage::disk('s3')->put($s3filePath, $file, 'public');
+                $proof_face = $path;
+            }
+        } else {
+            $proof_face = null;
         }
 
         if (isset($request->signature)) {
@@ -222,7 +237,7 @@ class TaskController extends BaseController
         }
 
 
-        $task = Task::where('id', $request->task_id)->update(['task_status' => $request->task_status,'note' => $note ,'proof_image' => $proof_image,'proof_signature' => $proof_signature]);
+        $task = Task::where('id', $request->task_id)->update(['task_status' => $request->task_status,'note' => $note ,'proof_face' => $proof_face,'proof_image' => $proof_image,'proof_signature' => $proof_signature]);
 
         $newDetails = Task::where('id', $request->task_id)->with(['location','tasktype','pricing','order.customer'])->first();
 
