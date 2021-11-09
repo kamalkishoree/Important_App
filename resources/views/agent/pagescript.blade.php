@@ -70,7 +70,8 @@
                         orderable: true,
                         searchable: false,
                         "mRender": function(data, type, full) {
-                            return '<img alt="' + full.id + '" src="' + full.profile_picture + '" width="40">';
+                            var is_available_icon = (full.is_available == 1) ? '<i class="fa fa-circle agent-status" aria-hidden="true" style="color:green"></i>' : '<i class="fa fa-circle agent-status" aria-hidden="true" style="color:red"></i>'
+                            return is_available_icon + '<img alt="' + full.id + '" src="' + full.profile_picture + '" width="40">';
                         }
                     },
                     {
@@ -79,8 +80,7 @@
                         orderable: true,
                         searchable: false,
                         "mRender": function(data, type, full) {
-                            var is_available_icon = (full.is_available == 1) ? '<i class="fa fa-circle" aria-hidden="true" style="color:green"></i>' : '<i class="fa fa-circle" aria-hidden="true" style="color:red"></i>'
-                            return is_available_icon + full.name;
+                            return full.name;
                         }
                     },
                     {
