@@ -83,10 +83,10 @@ class TaskController extends BaseController
         }
 
         if (isset($request->proof_face)) {
-            if ($request->hasFile('image')) {
+            if ($request->hasFile('proof_face')) {
                 $folder = str_pad($client_details->code, 8, '0', STR_PAD_LEFT);
                 $folder = 'client_'.$folder;
-                $file = $request->file('image');
+                $file = $request->file('proof_face');
                 $file_name = uniqid() .'.'.  $file->getClientOriginalExtension();
                 $s3filePath = '/assets/'.$folder.'/orders' . $file_name;
                 $path = Storage::disk('s3')->put($s3filePath, $file, 'public');
