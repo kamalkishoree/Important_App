@@ -19,7 +19,7 @@
 
 $("#taskFormHeader").submit(function(e) {
     e.preventDefault();
-    alert();
+  //  alert();
     var formData = new FormData(this);
     AjaxSubmit(formData, 'POST', '/tasks', '#task-modal-header');
 });
@@ -31,7 +31,7 @@ $("#taskFormHeader").submit(function(e) {
  */
 
 function AjaxSubmit(data, method, url, modals) {
-    alert(data);
+  //  alert(data);
     // $.ajax({
     //     method: method,
     //     headers: {
