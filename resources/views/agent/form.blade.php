@@ -187,7 +187,11 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
     @endphp
     <div class="col-md-6">
         <div class="form-group" id="{{$driver_registration_document->name}}Input">
-            <label for="" class="control-label">{{$driver_registration_document->name ? $driver_registration_document->name : ''}}</label>
+            <label for="" class="control-label d-flex align-items-center justify-content-between">{{$driver_registration_document->name ? $driver_registration_document->name : ''}} 
+                @if(strtolower($driver_registration_document->file_type) == 'pdf' && (!empty($field_value)))
+                <a href="{{ Storage::disk('s3')->url($field_value) }}" download target="_blank"><i class="fa fa-eye" aria-hidden="true"></i></a>
+                @endif
+            </label>
             @if(strtolower($driver_registration_document->file_type) == 'text')
             <input type="text" class="form-control" id="input_file_logo_{{$driver_registration_document->id}}" name="{{$driver_registration_document->name}}" placeholder="Enter Text" value="{{ $field_value }}" {{ (!empty($driver_registration_document->is_required))?'required':''}}>
             @else
