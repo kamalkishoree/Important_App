@@ -75,11 +75,11 @@ class Order extends Model
         $lastbaseurl = str_replace('image.png', '', $can);
 
         foreach ($array as $item)  {
-             $values['images'] = $lastbaseurl.$item;
+             $array = $lastbaseurl.$item;
         }
        
         
-        return $values;
+        return $array;
     }
 
 
