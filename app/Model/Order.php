@@ -3,7 +3,7 @@
 namespace App\Model;
 
 use Illuminate\Database\Eloquent\Model;
-
+use Illuminate\Support\Facades\Storage;
 class Order extends Model
 {
     protected $fillable = ['customer_id','scheduled_date_time','recipient_phone','Recipient_email','task_description','images_array','auto_alloction','driver_id','key_value_set','order_time','order_type','note','status'
@@ -57,6 +57,29 @@ class Order extends Model
 
     public function first_task_order_by_date(){
         return $this->hasOne('');
+    }
+
+
+
+    public function getTaskImagesAttribute($value)
+    {
+      $array = array();
+      
+      if (isset($value)) {
+        $array = explode(",", $value);
+        } else {
+            $array = ''; 
+        }
+
+        $can = Storage::disk('s3')->url('image.png');
+        $lastbaseurl = str_replace('image.png', '', $can);
+
+        foreach ($array as $item)  {
+             $values['images'] = $lastbaseurl.$item;
+        }
+       
+        
+        return $values;
     }
 
 

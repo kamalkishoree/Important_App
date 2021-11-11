@@ -12,7 +12,7 @@ class Task extends Model
     ];
 
     public function order(){
-        return $this->belongsTo('App\Model\Order', 'order_id', 'id')->select('id', 'customer_id','driver_id','recipient_phone','Recipient_email','task_description','auto_alloction','order_time','status','cash_to_be_collected','cash_to_be_collected as amount');
+        return $this->belongsTo('App\Model\Order', 'order_id', 'id')->select('id', 'customer_id','driver_id','recipient_phone','Recipient_email','task_description','auto_alloction','order_time','status','cash_to_be_collected','cash_to_be_collected as amount','images_array as task_images');
         
     }
 
@@ -38,5 +38,7 @@ class Task extends Model
     public function drivertags(){
         return $this->belongsToMany('App\Model\TaskDriverTag', 'task_driver_tags','task_id','tag_id');
     }*/
+
+    
     
 }
