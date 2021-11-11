@@ -70,7 +70,8 @@
                         orderable: true,
                         searchable: false,
                         "mRender": function(data, type, full) {
-                            return '<img alt="' + full.id + '" src="' + full.profile_picture + '" width="40">';
+                            var is_available_icon = (full.is_available == 1) ? '<i class="fa fa-circle agent-status" aria-hidden="true" style="color:green"></i>' : '<i class="fa fa-circle agent-status" aria-hidden="true" style="color:red"></i>'
+                            return is_available_icon + '<img alt="' + full.id + '" src="' + full.profile_picture + '" width="40">';
                         }
                     },
                     {
@@ -79,8 +80,7 @@
                         orderable: true,
                         searchable: false,
                         "mRender": function(data, type, full) {
-                            var is_available_icon = (full.is_available == 1) ? '<i class="fa fa-circle" aria-hidden="true" style="color:green"></i>' : '<i class="fa fa-circle" aria-hidden="true" style="color:red"></i>'
-                            return is_available_icon + full.name;
+                            return full.name;
                         }
                     },
                     {
@@ -274,7 +274,7 @@
                     });
                     makeTag();
                     phoneInput();
-                    //$('.dropify').dropify();
+                    $('.dropify').dropify();
                     var imgs = $('#profilePic').attr('showImg');
 
                     $('#profilePic').attr("data-default-file", imgs);
@@ -337,12 +337,13 @@
         });
 
         /* edit Team using ajax*/
-        $(document).on("submit", "#edit-agent-modal #UpdateAgent", function(e) {
+        // $(document).on("submit", "#edit-agent-modal #UpdateAgent", function(e) {
+        //     e.preventDefault();
+        // });
+
+
+        $(document).on("submit", '#UpdateAgent', function(e) {
             e.preventDefault();
-        });
-
-
-        $(document).on('click', '.submitEditForm', function() {
             var form = document.getElementById('UpdateAgent');
             var formData = new FormData(form);
             var urls = document.getElementById('agent_id').getAttribute('url');

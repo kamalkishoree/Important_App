@@ -415,7 +415,7 @@
     </div>
 
     <div class="row">
-        <div class="col-md-3">
+        <div class="col-md-4">
             <div class="page-title-box">
                 <h4 class="page-title text-uppercase">Driver</h4>
             </div>
@@ -444,7 +444,7 @@
                                         {{$agent_doc->name ? $agent_doc->name : ''}}
                                     </a>
                                 </td>
-                                <td>{{$agent_doc->file_type}}</td>
+                                <td>{{ ($agent_doc->file_type == 'Pdf'?'PDF':$agent_doc->file_type) }}</td>
                                 <td>{{$agent_doc->is_required?"Yes":"No"}}</td>
                                 <td>
                                     <div>
@@ -695,7 +695,7 @@
                                     <div class="input-group mb-2">
                                         <select class="form-control" name="file_type">
                                             <option value="Image">Image</option>
-                                            <option value="Pdf">Pdf</option>
+                                            <option value="Pdf">PDF</option>
                                             <option value="Text">Text</option>
                                         </select>
                                     </div>
