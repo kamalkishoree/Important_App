@@ -64,6 +64,7 @@ class Order extends Model
     public function getTaskImagesAttribute($value)
     {
       $array = array();
+      $imgarray = array();
       
       if (isset($value)) {
         $array = explode(",", $value);
@@ -75,11 +76,11 @@ class Order extends Model
         $lastbaseurl = str_replace('image.png', '', $can);
 
         foreach ($array as $item)  {
-             $array[] = $lastbaseurl.$item;
+             $imgarray[] = $lastbaseurl.$item;
         }
        
         
-        return $array;
+        return $imgarray;
     }
 
 
