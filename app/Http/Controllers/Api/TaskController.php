@@ -638,6 +638,18 @@ class TaskController extends BaseController
                 }
                 $last = implode(",", $images);
             }
+            # string of image array
+            if (isset($request->images_array) && count($request->images_array) > 0){
+
+                foreach ($request->images_array as $key => $path) {
+                    array_push($images, $path);
+                }
+
+                $last = implode(",", $images);
+
+            }
+
+           
 
             //create new customer for task or get id of old customer
 
@@ -1832,22 +1844,22 @@ class TaskController extends BaseController
     /******************    ---- upload Image For Task  -----   ******************/
     public function uploadImageForTask(Request $request)
     {
-            if (isset($request->image)) {
-                if ($request->hasFile('image')) {
-                    $folder = str_pad($client_details->code, 8, '0', STR_PAD_LEFT);
-                    $folder = 'client_'.$folder;
-                    $file = $request->file('image');
-                    $file_name = uniqid() .'.'.  $file->getClientOriginalExtension();
-                    $s3filePath = '/assets/'.$folder.'/orders' . $file_name;
-                    $path = Storage::disk('s3')->put($s3filePath, $file, 'public');
-                    $image = $path;
-                }
-            } else {
-                $image = null;
+        if ($request->hasFile('upload_photo')) {
+            $header = $request->header();
+            if (array_key_exists("shortcode", $header)) {
+                $shortcode =  $header['shortcode'][0];
             }
+            $folder = str_pad($shortcode, 8, '0', STR_PAD_LEFT);
+            $folder = 'client_' . $folder;
+            $file = $request->file('upload_photo');
+            $file_name = uniqid() . '.' .  $file->getClientOriginalExtension();
+            $s3filePath = '/assets/' . $folder;
+            $path = Storage::disk('s3')->put($s3filePath, $file, 'public');
+            $getFileName = $path;
+        }
 
-            if (isset($image)) { 
-                return response()->json(['status' => true, 'message' => __('Image submitted'),'image' => $image ]);
+            if (isset($getFileName)) { 
+                return response()->json(['status' => true, 'message' => __('Image submitted'),'image' => $getFileName ]);
             } else {
                 return response()->json(['status' => true, 'message' => __('Error in upload image')]);
             }
