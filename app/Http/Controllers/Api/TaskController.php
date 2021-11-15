@@ -1805,8 +1805,6 @@ class TaskController extends BaseController
     /******************    ---- Save feedback on order  -----   ******************/
     public function SaveFeedbackOnOrder(Request $request)
     {
-            Log::info($request->order_id);
-            Log::info(ClientPreference::first());
             $order   = Order::where('id', $request->order_id)->first();
 
             if (isset($order->id)) {
@@ -1830,5 +1828,34 @@ class TaskController extends BaseController
             }
         
     }
+
+    /******************    ---- upload Image For Task  -----   ******************/
+    public function uploadImageForTask(Request $request)
+    {
+            if (isset($request->image)) {
+                if ($request->hasFile('image')) {
+                    $folder = str_pad($client_details->code, 8, '0', STR_PAD_LEFT);
+                    $folder = 'client_'.$folder;
+                    $file = $request->file('image');
+                    $file_name = uniqid() .'.'.  $file->getClientOriginalExtension();
+                    $s3filePath = '/assets/'.$folder.'/orders' . $file_name;
+                    $path = Storage::disk('s3')->put($s3filePath, $file, 'public');
+                    $image = $path;
+                }
+            } else {
+                $image = null;
+            }
+
+            if (isset($image)) { 
+                return response()->json(['status' => true, 'message' => __('Image submitted'),'image' => $image ]);
+            } else {
+                return response()->json(['status' => true, 'message' => __('Error in upload image')]);
+            }
+        
+    }
+
+
+
+    
     
 }

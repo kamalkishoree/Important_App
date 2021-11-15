@@ -89,7 +89,6 @@ class AppServiceProvider extends ServiceProvider
                           ->first();
                 }
                 $callback = '';
-      
                 $redisData = $client;
                 $dbname = DB::connection()->getDatabaseName();
           

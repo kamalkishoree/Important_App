@@ -31,6 +31,8 @@ Route::post('update-create-vendor-order', 'Api\AuthController@updateCreateVendor
 
 Route::post('update-order-feedback','Api\TaskController@SaveFeedbackOnOrder')->name('SaveFeedbackOnOrder')->middleware('ConnectDbFromOrder');
 
+Route::post('upload-image-for-task','Api\TaskController@uploadImageForTask')->name('uploadImageForTask')->middleware('ConnectDbFromOrder');
+
 Route::post('shortCode', 'Api\ShortcodeController@validateCompany');
 Route::get('cmscontent','Api\ActivityController@cmsData');
 
