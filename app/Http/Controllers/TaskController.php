@@ -431,7 +431,7 @@ class TaskController extends Controller
                 ];
 
                 $Loction = Location::updateOrCreate(
-                    ['latitude' => $request->latitude[$key], 'longitude' => $request->longitude[$key],'address' => $request->address[$key],'customer_id'    => $cus_id],
+                    ['latitude' => $request->latitude[$key], 'longitude' => $request->longitude[$key],'address' => $request->address[$key],'customer_id' => $cus_id],
                     [$loc]
                 );
 
