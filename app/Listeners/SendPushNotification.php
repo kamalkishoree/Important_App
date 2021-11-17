@@ -72,7 +72,7 @@ class SendPushNotification
 
     public function getData()
     {
-       Log::info('getData');
+      // Log::info('getData');
         
         $schemaName       = 'royodelivery_db';
         $date             =  Carbon::now()->toDateTimeString();
@@ -83,7 +83,7 @@ class SendPushNotification
      ///   Log::info($newget);
         DB::connection($schemaName)->table('rosters')->where('status',10)->delete();
         if(count($get) > 0){
-            Log::info('rosters update-99-');
+          //  Log::info('rosters update-99-');
             DB::connection($schemaName)->table('rosters')->whereIn('id',$newget)->delete();
             // DB::connection($schemaName)->table('rosters')->whereIn('id',$newget)->update(['status'=>1]);
             
