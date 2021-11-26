@@ -68,47 +68,7 @@ class TaskController extends BaseController
 
         // $cheking = NotificationEvent::is_checked_sms();
 
-        if (isset($request->image)) {
-            if ($request->hasFile('image')) {
-                $folder = str_pad($client_details->code, 8, '0', STR_PAD_LEFT);
-                $folder = 'client_'.$folder;
-                $file = $request->file('image');
-                $file_name = uniqid() .'.'.  $file->getClientOriginalExtension();
-                $s3filePath = '/assets/'.$folder.'/orders' . $file_name;
-                $path = Storage::disk('s3')->put($s3filePath, $file, 'public');
-                $proof_image = $path;
-            }
-        } else {
-            $proof_image = null;
-        }
-
-        if (isset($request->proof_face)) {
-            if ($request->hasFile('proof_face')) {
-                $folder = str_pad($client_details->code, 8, '0', STR_PAD_LEFT);
-                $folder = 'client_'.$folder;
-                $file = $request->file('proof_face');
-                $file_name = uniqid() .'.'.  $file->getClientOriginalExtension();
-                $s3filePath = '/assets/'.$folder.'/orders' . $file_name;
-                $path = Storage::disk('s3')->put($s3filePath, $file, 'public');
-                $proof_face = $path;
-            }
-        } else {
-            $proof_face = null;
-        }
-
-        if (isset($request->signature)) {
-            if ($request->hasFile('signature')) {
-                $folder = str_pad($client_details->code, 8, '0', STR_PAD_LEFT);
-                $folder = 'client_'.$folder;
-                $file = $request->file('signature');
-                $file_name = uniqid() .'.'.  $file->getClientOriginalExtension();
-                $s3filePath = '/assets/'.$folder.'/orders' . $file_name;
-                $path = Storage::disk('s3')->put($s3filePath, $file, 'public');
-                $proof_signature = $path;
-            }
-        } else {
-            $proof_signature = null;
-        }
+      
        
         $orderId        = Task::where('id', $request->task_id)->with(['tasktype'])->first();
         $orderAll       = Task::where('order_id', $orderId->order_id)->get();
@@ -237,7 +197,59 @@ class TaskController extends BaseController
         }
 
 
-        $task = Task::where('id', $request->task_id)->update(['task_status' => $request->task_status,'note' => $note ,'proof_face' => $proof_face,'proof_image' => $proof_image,'proof_signature' => $proof_signature]);
+        $task = Task::where('id', $request->task_id)->update(['task_status' => $request->task_status,'note' => $note ]);
+
+        if (isset($request->image)) {
+            if ($request->hasFile('image')) {
+                $folder = str_pad($client_details->code, 8, '0', STR_PAD_LEFT);
+                $folder = 'client_'.$folder;
+                $file = $request->file('image');
+                $file_name = uniqid() .'.'.  $file->getClientOriginalExtension();
+                $s3filePath = '/assets/'.$folder.'/orders' . $file_name;
+                $path = Storage::disk('s3')->put($s3filePath, $file, 'public');
+                $proof_image = $path;
+
+                $task = Task::where('id', $request->task_id)->update(['proof_image' => $proof_image]);
+
+            }
+        } else {
+            $proof_image = null;
+        }
+
+       
+       
+        if (isset($request->proof_face)) {
+            if ($request->hasFile('proof_face')) {
+                $folder = str_pad($client_details->code, 8, '0', STR_PAD_LEFT);
+                $folder = 'client_'.$folder;
+                $file = $request->file('proof_face');
+                $file_name = uniqid() .'.'.  $file->getClientOriginalExtension();
+                $s3filePath = '/assets/'.$folder.'/orders' . $file_name;
+                $path = Storage::disk('s3')->put($s3filePath, $file, 'public');
+                $proof_face = $path;
+
+                $task = Task::where('id', $request->task_id)->update(['proof_face' => $proof_face]);
+            }
+        } else {
+            $proof_face = null;
+        }
+
+        if (isset($request->signature)) {
+            if ($request->hasFile('signature')) {
+                $folder = str_pad($client_details->code, 8, '0', STR_PAD_LEFT);
+                $folder = 'client_'.$folder;
+                $file = $request->file('signature');
+                $file_name = uniqid() .'.'.  $file->getClientOriginalExtension();
+                $s3filePath = '/assets/'.$folder.'/orders' . $file_name;
+                $path = Storage::disk('s3')->put($s3filePath, $file, 'public');
+                $proof_signature = $path;
+
+                $task = Task::where('id', $request->task_id)->update(['proof_signature' => $proof_signature]);
+            }
+        } else {
+            $proof_signature = null;
+        }
+       // dd($request->toArray());
 
         $newDetails = Task::where('id', $request->task_id)->with(['location','tasktype','pricing','order.customer'])->first();
 

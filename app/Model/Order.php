@@ -66,19 +66,20 @@ class Order extends Model
       $array = array();
       $imgarray = array();
       
-      if (isset($value)) {
+      if (isset($value) && !empty($value)) {
         $array = explode(",", $value);
         } else {
-            $array = ''; 
+            $array = []; 
         }
 
         $can = Storage::disk('s3')->url('image.png');
         $lastbaseurl = str_replace('image.png', '', $can);
 
-        foreach ($array as $item)  {
-             $imgarray[] = $lastbaseurl.$item;
+        if(count($array) > 0){
+            foreach ($array as $item)  {
+                $imgarray[] = $lastbaseurl.$item;
+           }
         }
-       
         
         return $imgarray;
     }
