@@ -3,6 +3,7 @@
 namespace App\Model;
 
 use Illuminate\Database\Eloquent\Model;
+use Storage;
 
 class Task extends Model
 {
@@ -38,6 +39,26 @@ class Task extends Model
     public function drivertags(){
         return $this->belongsToMany('App\Model\TaskDriverTag', 'task_driver_tags','task_id','tag_id');
     }*/
+
+    public function getProofImageAttribute($value){
+        if(!empty($value))
+        {
+            $value = 'https://imgproxy.royodispatch.com/insecure/fit/300/100/sm/0/plain/' . Storage::disk('s3')->url($value);
+              
+        }
+        return $value;
+    }
+
+    public function getProofSignatureAttribute($value){
+        if(!empty($value))
+        {
+            $value = 'https://imgproxy.royodispatch.com/insecure/fit/300/100/sm/0/plain/' . Storage::disk('s3')->url($value);
+              
+        }
+        return $value;
+    }
+
+   
 
     
     
