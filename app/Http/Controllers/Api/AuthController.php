@@ -153,8 +153,8 @@ class AuthController extends BaseController
         } catch (\Exception $e) {
         }
 
-        $agent->device_type = $request->device_type;
-        $agent->device_token = $request->device_token;
+        $agent->device_type = $request->device_type??null;
+        $agent->device_token = $request->device_token??null;;
         $agent->access_token = $token;
         $agent->save();
 
