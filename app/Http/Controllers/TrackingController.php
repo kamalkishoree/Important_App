@@ -153,7 +153,7 @@ class TrackingController extends Controller
                 }
 
                 $img = 'https://imgproxy.royodispatch.com/insecure/fit/300/100/sm/0/plain/' . Storage::disk('s3')->url($order->profile_picture ?? 'assets/client_00000051/agents605b6deb82d1b.png/XY5GF0B3rXvZlucZMiRQjGBQaWSFhcaIpIM5Jzlv.jpg');
-                $base_url = 'https://imgproxy.royodispatch.com/insecure/fit/300/100/sm/0/plain/' . Storage::disk('s3')->url('');
+                $base_url = 'https://imgproxy.royodispatch.com/insecure/fit/300/100/sm/0/plain/';
                
                 return response()->json([
                     'message' => 'Successfully',
