@@ -43,7 +43,7 @@ class Task extends Model
     public function getProofImageAttribute($value){
         if(!empty($value))
         {
-            $value = 'https://imgproxy.royodispatch.com/insecure/fit/300/100/sm/0/plain/' . Storage::disk('s3')->url($value);
+            $value = Storage::disk('s3')->url($value);
               
         }
         return $value;
@@ -52,7 +52,7 @@ class Task extends Model
     public function getProofSignatureAttribute($value){
         if(!empty($value))
         {
-            $value = 'https://imgproxy.royodispatch.com/insecure/fit/300/100/sm/0/plain/' . Storage::disk('s3')->url($value);
+            $value = Storage::disk('s3')->url($value);
               
         }
         return $value;
