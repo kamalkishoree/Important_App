@@ -153,6 +153,7 @@ class TrackingController extends Controller
                 }
 
                 $img = 'https://imgproxy.royodispatch.com/insecure/fit/300/100/sm/0/plain/' . Storage::disk('s3')->url($order->profile_picture ?? 'assets/client_00000051/agents605b6deb82d1b.png/XY5GF0B3rXvZlucZMiRQjGBQaWSFhcaIpIM5Jzlv.jpg');
+                $base_url = 'https://imgproxy.royodispatch.com/insecure/fit/300/100/sm/0/plain/' . Storage::disk('s3');
                 return response()->json([
                     'message' => 'Successfully',
                     'tasks' => $tasks,
@@ -161,6 +162,7 @@ class TrackingController extends Controller
                     'agent_location'  => $agent_location,
                     'total_order_by_agent'  => $total_order_by_agent,
                     'avgrating'  => $avgrating,
+                    'base_url' => $base_url
                 ], 200);
 
                 return view('tracking/tracking', compact('tasks', 'order', 'agent_location'));
