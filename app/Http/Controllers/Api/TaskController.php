@@ -1826,9 +1826,11 @@ class TaskController extends BaseController
      /******************    ---- get all teams  -----   ******************/
      public function getAllTeams(Request $request){
        $teams = TagsForTeam::OrderBy('id','desc')->get();
+       $all_teams = Team::OrderBy('id','desc')->get();
 
         return response()->json([
             'teams' => $teams,
+            'all_teams' => $all_teams,
             'message' => __('success')
         ], 200);
         

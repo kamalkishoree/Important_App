@@ -7,6 +7,8 @@ use App\Model\Agent;
 use App\Model\AgentDocs;
 use App\Model\DriverRegistrationDocument;
 use App\Model\TagsForAgent;
+use App\Model\AgentsTag;
+use App\Model\Team;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
@@ -134,12 +136,14 @@ class DriverRegistrationController extends Controller
     public function sendDocuments()
     {
         try {
-            $documents = DriverRegistrationDocument::orderBy('file_type', 'DESC')->get();
-
+           
+            $data['documents'] = DriverRegistrationDocument::orderBy('file_type', 'DESC')->get();
+            $data['all_teams'] = Team::OrderBy('id','desc')->get();
+            $data['agent_tags'] = AgentsTag::OrderBy('id','desc')->get();
             return response()->json([
                 'status' => 200,
                 'message' => 'Success!',
-                'data' => $documents
+                'data' => $data
             ]);
         } catch (\Exception $e) {
             return response()->json([
