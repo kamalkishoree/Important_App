@@ -139,7 +139,7 @@ class DriverRegistrationController extends Controller
            
             $data['documents'] = DriverRegistrationDocument::orderBy('file_type', 'DESC')->get();
             $data['all_teams'] = Team::OrderBy('id','desc')->get();
-            $data['agent_tags'] = AgentsTag::OrderBy('id','desc')->get();
+            $data['agent_tags'] = TagsForAgent::OrderBy('id','desc')->get();
             return response()->json([
                 'status' => 200,
                 'message' => 'Success!',
