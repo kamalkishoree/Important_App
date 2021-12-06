@@ -156,11 +156,11 @@
                                     <div class="col-md-6">
                                         {!! Form::text('address_phone_number[]', null, ['class' => 'form-control address address_phone_number','placeholder' => __('Phone Number'),'id'=>'addHeader1-address_phone_number']) !!}
                                     </div>
-                                    @if($preference->route_flat_input == 1)
+                                    {{-- @if($preference->route_flat_input == 1) --}}
                                     <div class="col-md-6">
-                                        {!! Form::text('flat_no[]', null, ['class' => 'form-control address flat_no','placeholder' => __('Flat No'),'id'=>'addHeader1-flat_no']) !!}
+                                        {!! Form::text('flat_no[]', null, ['class' => 'form-control address flat_no','placeholder' => __('House/Apartment/Flat no'),'id'=>'addHeader1-flat_no']) !!}
                                     </div>
-                                    @endif
+                                    {{-- @endif --}}
                                     <div class="col-md-6">
                                         <input type="hidden" name="latitude[]" id="addHeader1-latitude" value="0" class="cust_latitude" />
                                         <input type="hidden" name="longitude[]" id="addHeader1-longitude" value="0" class="cust_longitude" />

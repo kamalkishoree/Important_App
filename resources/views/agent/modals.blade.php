@@ -141,7 +141,7 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group" id="plate_numberInput">
-                                <label for="plate_number" class="control-label">{{__("LICENCE PLACE")}}</label>
+                                <label for="plate_number" class="control-label">{{__("LICENCE PLATE")}}</label>
                                 <input type="text" class="form-control" id="plate_number" name="plate_number" placeholder="508.KLV">
                                 <span class="invalid-feedback" role="alert">
                                     <strong></strong>
