@@ -1159,7 +1159,7 @@ class TaskController extends Controller
         } else {
             $unit              = $auth->getPreference->distance_unit;
             $try               = $auth->getAllocation->number_of_retries;
-            $cash_at_hand      = $auth->getAllocation->maximum_cash_at_hand_per_person;
+            $cash_at_hand      = $auth->getAllocation->maximum_cash_at_hand_per_person??0;
             $max_redius        = $auth->getAllocation->maximum_radius;
             $max_task          = $auth->getAllocation->maximum_batch_size;
 
@@ -1292,7 +1292,7 @@ class TaskController extends Controller
         $type              = $auth->getPreference->acknowledgement_type;
         $unit              = $auth->getPreference->distance_unit;
         $try               = $auth->getAllocation->number_of_retries;
-        $cash_at_hand      = $auth->getAllocation->maximum_cash_at_hand_per_person;
+        $cash_at_hand      = $auth->getAllocation->maximum_cash_at_hand_per_person??0;
         $max_redius        = $auth->getAllocation->maximum_radius;
         $max_task          = $auth->getAllocation->maximum_batch_size;
         $time              = $this->checkTimeDiffrence($notification_time, $beforetime);
@@ -1400,7 +1400,7 @@ class TaskController extends Controller
         $type              = $auth->getPreference->acknowledgement_type;
         $unit              = $auth->getPreference->distance_unit;
         $try               = $auth->getAllocation->number_of_retries;
-        $cash_at_hand      = $auth->getAllocation->maximum_cash_at_hand_per_person;
+        $cash_at_hand      = $auth->getAllocation->maximum_cash_at_hand_per_person??0;
         $max_redius        = $auth->getAllocation->maximum_radius;
         $max_task          = $auth->getAllocation->maximum_batch_size;
         $time              = $this->checkTimeDiffrence($notification_time, $beforetime);
@@ -1516,7 +1516,7 @@ class TaskController extends Controller
         $type              = $auth->getPreference->acknowledgement_type;
         $unit              = $auth->getPreference->distance_unit;
         $try               = $auth->getAllocation->number_of_retries;
-        $cash_at_hand      = $auth->getAllocation->maximum_cash_at_hand_per_person;
+        $cash_at_hand      = $auth->getAllocation->maximum_cash_at_hand_per_person??0;
         $max_redius        = $auth->getAllocation->maximum_radius;
         $max_task          = $auth->getAllocation->maximum_batch_size;
         $time              = $this->checkTimeDiffrence($notification_time, $beforetime);
