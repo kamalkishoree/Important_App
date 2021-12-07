@@ -772,7 +772,7 @@ function initMap() {
             displayagent = allagent[i];
             
             if(displayagent.agentlog != null && displayagent.agentlog['lat'] != "0.00000000" && displayagent.agentlog['long'] != "0.00000000" ){
-                // console.log(displayagent.agentlog);
+             
                     if (displayagent['is_available'] == 1) {
                         images = url+'/demo/images/location.png';
                     }else {
@@ -802,7 +802,6 @@ function calculateAndDisplayRoute(directionsService, directionsRenderer,map,allt
 
             for (let i = 0; i < alltask.length; i++) {
                 if (i != alltask.length - 1 && alltask[i].task_status != 4 && alltask[i].task_status != 5 ) {
-                //    console.log(alltask[i]);
                     waypts.push({
                         location: new google.maps.LatLng(parseFloat(alltask[i].latitude), parseFloat(alltask[i]
                             .longitude)),
@@ -851,7 +850,6 @@ function addMarker(location, lables, images,data,type) {
         "</div>";
     }else{
         img = data['image_url'];
-        //console.log(img);
         contentString =
         '<div class="row no-gutters align-items-center">'+
             '<div class="col-sm-4">'+
@@ -1214,7 +1212,6 @@ function reInitMap(allroutes) {
             displayagent = allagent[i];
             
             if(displayagent.agentlog != null && displayagent.agentlog['lat'] != "0.00000000" && displayagent.agentlog['long'] != "0.00000000" ){
-                // console.log(displayagent.agentlog);
                         if (displayagent['is_available'] == 1) {
                             images = url+'/demo/images/location.png';
                         }else {

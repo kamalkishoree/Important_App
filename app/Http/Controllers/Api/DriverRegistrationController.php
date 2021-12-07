@@ -7,6 +7,8 @@ use App\Model\Agent;
 use App\Model\AgentDocs;
 use App\Model\DriverRegistrationDocument;
 use App\Model\TagsForAgent;
+use App\Model\AgentsTag;
+use App\Model\Team;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
@@ -63,7 +65,18 @@ class DriverRegistrationController extends Controller
                 $s3filePath = '/assets/' . $folder . '/agents' . $file_name;
                 $path = Storage::disk('s3')->put($s3filePath, $file, 'public');
                 $getFileName = $path;
+            } 
+
+            $newtag = explode(",", $request->tags);
+            $tag_id = [];
+            foreach ($newtag as $key => $value) {
+                if (!empty($value)) {
+                    $check = TagsForAgent::firstOrCreate(['name' => $value]);
+                    array_push($tag_id, $check->id);
+                }
             }
+
+
             $data = [
                 'name' => $request->name,
                 'type' => $request->type,
@@ -75,8 +88,10 @@ class DriverRegistrationController extends Controller
                 'profile_picture' => $getFileName != null ? $getFileName : 'assets/client_00000051/agents5fedb209f1eea.jpeg/Ec9WxFN1qAgIGdU2lCcatJN5F8UuFMyQvvb4Byar.jpg',
                 'uid' => $request->uid,
                 'is_approved' => 0,
+                'team_id' => $request->team_id == null ? $team_id = null : $request->team_id
             ];
             $agent = Agent::create($data);
+            $agent->tags()->sync($tag_id);
             $files = [];
             if ($request->hasFile('uploaded_file')) {
                 $file = $request->file('uploaded_file');
@@ -134,12 +149,14 @@ class DriverRegistrationController extends Controller
     public function sendDocuments()
     {
         try {
-            $documents = DriverRegistrationDocument::orderBy('file_type', 'DESC')->get();
-
+           
+            $data['documents'] = DriverRegistrationDocument::orderBy('file_type', 'DESC')->get();
+            $data['all_teams'] = Team::OrderBy('id','desc')->get();
+            $data['agent_tags'] = TagsForAgent::OrderBy('id','desc')->get();
             return response()->json([
                 'status' => 200,
                 'message' => 'Success!',
-                'data' => $documents
+                'data' => $data
             ]);
         } catch (\Exception $e) {
             return response()->json([

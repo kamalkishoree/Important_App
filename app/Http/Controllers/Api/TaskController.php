@@ -392,7 +392,13 @@ class TaskController extends BaseController
             // $sms_body            = 'Your otp is '.$otpCreate;
             
             $notification_type = NotificationType::where('name','Customer Delivery OTP')->with('notification_events.client_notification')->first();
-            $sms_body          = $notification_type['notification_events'][0]['message'];
+            if(isset($notification_type['notification_events']) && !empty($notification_type['notification_events'])){
+                $sms_body  = $notification_type['notification_events'][0]['message'];
+            }
+            else{
+                $sms_body  = '';
+            }
+            
             $sms_body          = str_replace('"order_number"', $order_details->unique_id, $sms_body);
             $sms_body          = str_replace('"deliver_otp"', $otpCreate, $sms_body);
 
@@ -1820,9 +1826,11 @@ class TaskController extends BaseController
      /******************    ---- get all teams  -----   ******************/
      public function getAllTeams(Request $request){
        $teams = TagsForTeam::OrderBy('id','desc')->get();
+       $all_teams = Team::OrderBy('id','desc')->get();
 
         return response()->json([
             'teams' => $teams,
+            'all_teams' => $all_teams,
             'message' => __('success')
         ], 200);
         

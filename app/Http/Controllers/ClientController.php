@@ -143,6 +143,9 @@ class ClientController extends Controller
             }
         }
 
+        unset($request['sub_domain']);
+        unset($request['custom_domain']);
+        
         $updatePreference = ClientPreference::updateOrCreate([
             'client_id' => $id
         ], $request->all());
