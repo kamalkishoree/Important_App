@@ -759,6 +759,9 @@ class TaskController extends BaseController
                     'address'     => $value['address']??null,
                     'post_code'   => $value['post_code']??null,
                     'customer_id' => $cus_id,
+                    'flat_no'     => $value['flat_no']??null,
+                    'email'       => $value['email']??null,
+                    'phone_number'=> $value['phone_number']??null,
                 ];
                     $Loction = Location::create($loc);
                     // $Loction = Location::updateOrCreate(
