@@ -130,7 +130,7 @@ class TrackingController extends Controller
         $avgrating = 0;
         if ($respnse['status'] == 'connected') {
             $order = DB::connection($respnse['database'])->table('orders')->where('unique_id', $id)->leftJoin('agents', 'orders.driver_id', '=', 'agents.id')
-                ->select('orders.*', 'agents.name', 'agents.profile_picture', 'agents.phone_number')->first();
+                ->select('orders.*', 'agents.name', 'agents.profile_picture', 'agents.phone_number')->with('agent')->first();
             if (isset($order->id)) {
                 $tasks = DB::connection($respnse['database'])->table('tasks')->where('order_id', $order->id)->leftJoin('locations', 'tasks.location_id', '=', 'locations.id')
                     ->select('tasks.*', 'locations.latitude', 'locations.longitude', 'locations.short_name', 'locations.address')->orderBy('task_order')->get();
