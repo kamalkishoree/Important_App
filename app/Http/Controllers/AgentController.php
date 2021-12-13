@@ -190,6 +190,63 @@ class AgentController extends Controller
         }
     }
 
+    /**
+     * Display list of payout requests by agent/driver.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function agentPayoutRequests(Request $request)
+    {
+        $agents = Agent::orderBy('id', 'DESC');
+        // if (!empty($request->date)) {
+        //     $agents->whereBetween('created_at', [$request->date . " 00:00:00", $request->date . " 23:59:59"]);
+        // }
+        if (Auth::user()->is_superadmin == 0 && Auth::user()->all_team_access == 0) {
+            $agents = $agents->whereHas('team.permissionToManager', function ($query) {
+                $query->where('sub_admin_id', Auth::user()->id);
+            });
+        }
+        $agents = $agents->get();
+
+
+        $tags  = TagsForAgent::all();
+        $tag   = [];
+        foreach ($tags as $key => $value) {
+            array_push($tag, $value->name);
+        }
+        $teams  = Team::where('client_id', auth()->user()->code)->orderBy('name');
+        if (Auth::user()->is_superadmin == 0 && Auth::user()->all_team_access == 0) {
+            $teams = $teams->whereHas('permissionToManager', function ($query) {
+                $query->where('sub_admin_id', Auth::user()->id);
+            });
+        }
+
+        $teams        = $teams->get();
+        $selectedDate = !empty($request->date) ? $request->date : '';
+        $tags         = TagsForTeam::all();
+
+        $getAdminCurrentCountry = Countries::where('id', '=', Auth::user()->country_id)->get()->first();
+        if (!empty($getAdminCurrentCountry)) {
+            $countryCode = $getAdminCurrentCountry->code;
+        } else {
+            $countryCode = '';
+        }
+
+        $agentsCount       = count($agents);
+        $employeesCount    = count($agents->where('type', 'Employee'));
+        $freelancerCount   = count($agents->where('type', 'Freelancer'));
+        $agentActive       = count($agents->where('is_activated', 1));
+        $agentInActive     = count($agents->where('is_activated', 0));
+        $agentIsAvailable  = count($agents->where('is_available', 1));
+        $agentNotAvailable = count($agents->where('is_available', 0));
+        $agentIsApproved   = count($agents->where('is_approved', 1));
+        $agentNotApproved  = count($agents->where('is_approved', 0));
+        $agentRejected   = count($agents->where('is_approved', 2));
+        $driver_registration_documents = DriverRegistrationDocument::get();
+
+        return view('agent.index')->with(['agents' => $agents, 'driver_registration_documents' => $driver_registration_documents, 'agentIsAvailable' => $agentIsAvailable, 'agentNotAvailable' => $agentNotAvailable, 'agentIsApproved' => $agentIsApproved, 'agentNotApproved' => $agentNotApproved, 'agentsCount' => $agentsCount, 'employeesCount' => $employeesCount, 'agentActive' => $agentActive, 'agentInActive' => $agentInActive, 'freelancerCount' => $freelancerCount, 'teams' => $teams, 'tags' => $tags, 'selectedCountryCode' => $countryCode, 'calenderSelectedDate' => $selectedDate, 'showTag' => implode(',', $tag), 'agentRejected' => $agentRejected]);
+    }
+
     public function export()
     {
         return Excel::download(new AgentsExport, 'agents.xlsx');
