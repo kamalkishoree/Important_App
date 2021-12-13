@@ -35,7 +35,7 @@ Route::post('update-order-feedback','Api\TaskController@SaveFeedbackOnOrder')->n
 
 Route::post('upload-image-for-task','Api\TaskController@uploadImageForTask')->name('uploadImageForTask')->middleware('ConnectDbFromOrder');
 
-Route::get('/notification/tracking/{clientcode}/{order_id}', 'Api\TaskController@notificationTrackingDetail')->middleware('ConnectDbFromOrder');
+Route::get('/notification/tracking/{order_id}', 'Api\TaskController@notificationTrackingDetail')->middleware('ConnectDbFromOrder');
 
 Route::post('shortCode', 'Api\ShortcodeController@validateCompany');
 Route::get('cmscontent','Api\ActivityController@cmsData');
