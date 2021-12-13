@@ -220,26 +220,16 @@ class TrackingController extends Controller
         $total_order_by_agent = 0;
         $avgrating = 0;
         if ($respnse['status'] == 'connected') {
-            $order = DB::connection($respnse['database'])->table('orders')->where('id', $id)->leftJoin('agents', 'orders.driver_id', '=', 'agents.id')
-                ->select('orders.*', 'agents.name','agents.name','agents.color','agents.plate_number', 'agents.profile_picture', 'agents.phone_number')->first();
-            if (isset($order->id)) {
+            $order = DB::connection($respnse['database'])->table('orders')->where('id',$id)->first();
+             if (isset($order->id)) {
                 $tasks = DB::connection($respnse['database'])->table('tasks')->where('order_id', $order->id)->leftJoin('locations', 'tasks.location_id', '=', 'locations.id')
                     ->select('tasks.*', 'locations.latitude', 'locations.longitude', 'locations.short_name', 'locations.address')->orderBy('task_order')->get();
-                $orderc = DB::connection($respnse['database'])->table('orders')->where('id', $order->id)->where('status','completed')->count();
-                if($orderc == 0)
-                $agent_location = DB::connection($respnse['database'])->table('agent_logs')->where('agent_id', $order->driver_id)->latest()->first();
-                else{
-                    $agent_location = [];
-                    $lastElement = $tasks->last();
-                    $agent_location['lat']  = $lastElement->latitude;
-                    $agent_location['lng']  = $lastElement->longitude;
-                }
+                
 
                return response()->json([
                     'message' => 'Successfully',
                     'tasks' => $tasks,
-                    'order'  => $order,
-                    'agent_location'  => $agent_location
+                    'order'  => $order
                 ], 200);
 
                
