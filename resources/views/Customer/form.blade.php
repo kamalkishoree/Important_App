@@ -39,8 +39,15 @@
     @foreach($customer->location as $loc)
 
     <div class="row address addEditAddress addressrow{{$i}}" id="edit{{$i}}">
-
-        <div class="col-lg-2 col-md-3 mb-lg-0 mb-3">
+        <div class="col-lg-4 col-md-3 mb-lg-0 mb-3">
+            <div class="form-group">
+                <input type="text" id="add{{$i}}-flat" name="flat_no[]" value="{{$loc->flat_no}}" class="form-control" placeholder="{{__('House / Apartment/ Flat number')}}"">
+                <span class="invalid-feedback" role="alert">
+                    <strong></strong>
+                </span>
+            </div>    
+        </div>
+        <div class="col-lg-4 col-md-3 mb-lg-0 mb-3">
             <div class="form-group" id=""> 
                 <input type="text" name="short_name[]" class="form-control" placeholder="{{__('Short Name')}}" value="{{$loc->short_name}}">
                 <span class="invalid-feedback" role="alert">
@@ -62,7 +69,7 @@
                 </span>
             </div>
         </div>        
-        <div class="col-lg-2 col-md-3 mb-lg-0 mb-3">
+        <div class="col-lg-4 col-md-3 mb-lg-0 mb-3">
             <div class="form-group">
                 <input type="text" id="edit{{$i}}-email" name="address_email[]" class="form-control" placeholder="{{__('Email')}}" value="{{$loc->email}}">
                 <span class="invalid-feedback" role="alert">
@@ -70,7 +77,7 @@
                 </span>
             </div>
         </div>
-        <div class="col-lg-2 col-md-3 mb-lg-0 mb-3">
+        <div class="col-lg-4 col-md-3 mb-lg-0 mb-3">
             <div class="form-group">
                 <input type="text" id="edit{{$i}}-phone_number" name="address_phone_number[]" class="form-control" placeholder="{{__('Phone Number')}}" value="{{$loc->phone_number}}">
                 <span class="invalid-feedback" role="alert">
@@ -78,7 +85,7 @@
                 </span>
             </div>
         </div>
-        <div class="col-lg-2 col-md-3 mb-lg-0 mb-3">
+        <div class="col-lg-4 col-md-3 mb-lg-0 mb-3">
             <div class="form-group delete_btn d-flex align-items-center" id="">
                 <input type="text" id="edit{{$i}}-postcode" name="post_code[]" class="form-control" placeholder="{{__('Post Code')}}" value="{{$loc->post_code}}">
                 <span class="invalid-feedback" role="alert">

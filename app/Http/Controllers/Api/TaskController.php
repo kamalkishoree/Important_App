@@ -49,6 +49,7 @@ class TaskController extends BaseController
         $header = $request->header();
         $client_details = Client::where('database_name', $header['client'][0])->first();
         $proof_image = '';
+        $proof_face = '';
         $proof_signature = '';
         $note = '';
         if (isset($request->note)) {
@@ -67,33 +68,7 @@ class TaskController extends BaseController
 
         // $cheking = NotificationEvent::is_checked_sms();
 
-        if (isset($request->image)) {
-            if ($request->hasFile('image')) {
-                $folder = str_pad($client_details->code, 8, '0', STR_PAD_LEFT);
-                $folder = 'client_'.$folder;
-                $file = $request->file('image');
-                $file_name = uniqid() .'.'.  $file->getClientOriginalExtension();
-                $s3filePath = '/assets/'.$folder.'/orders' . $file_name;
-                $path = Storage::disk('s3')->put($s3filePath, $file, 'public');
-                $proof_image = $path;
-            }
-        } else {
-            $proof_image = null;
-        }
-
-        if (isset($request->signature)) {
-            if ($request->hasFile('signature')) {
-                $folder = str_pad($client_details->code, 8, '0', STR_PAD_LEFT);
-                $folder = 'client_'.$folder;
-                $file = $request->file('signature');
-                $file_name = uniqid() .'.'.  $file->getClientOriginalExtension();
-                $s3filePath = '/assets/'.$folder.'/orders' . $file_name;
-                $path = Storage::disk('s3')->put($s3filePath, $file, 'public');
-                $proof_signature = $path;
-            }
-        } else {
-            $proof_signature = null;
-        }
+      
        
         $orderId        = Task::where('id', $request->task_id)->with(['tasktype'])->first();
         $orderAll       = Task::where('order_id', $orderId->order_id)->get();
@@ -200,7 +175,7 @@ class TaskController extends BaseController
             if ($check == 1) {
                 $Order  = Order::where('id', $orderId->order_id)->update(['status' => $task_type]);
 
-                if($order_details && $order_details->call_back_url){
+                if($order_details && $order_details->call_back_url && $orderId->task_type_id != 1){
                     $call_web_hook = $this->updateStatusDataToOrder($order_details,5);  # call web hook when order completed
                 }
             }
@@ -210,7 +185,7 @@ class TaskController extends BaseController
             }
         } else {
             $Order  = Order::where('id', $orderId->order_id)->update(['status' => $task_type, 'note' => $note]);
-            if($order_details && $order_details->call_back_url){
+            if($order_details && $order_details->call_back_url  && $orderId->task_type_id == 1 ){
                 if($request->task_status == 2 || $request->task_status == 3)
                 $stat = $request->task_status + 1;
                 else
@@ -222,7 +197,59 @@ class TaskController extends BaseController
         }
 
 
-        $task = Task::where('id', $request->task_id)->update(['task_status' => $request->task_status,'note' => $note ,'proof_image' => $proof_image,'proof_signature' => $proof_signature]);
+        $task = Task::where('id', $request->task_id)->update(['task_status' => $request->task_status,'note' => $note ]);
+
+        if (isset($request->image)) {
+            if ($request->hasFile('image')) {
+                $folder = str_pad($client_details->code, 8, '0', STR_PAD_LEFT);
+                $folder = 'client_'.$folder;
+                $file = $request->file('image');
+                $file_name = uniqid() .'.'.  $file->getClientOriginalExtension();
+                $s3filePath = '/assets/'.$folder.'/orders' . $file_name;
+                $path = Storage::disk('s3')->put($s3filePath, $file, 'public');
+                $proof_image = $path;
+
+                $task = Task::where('id', $request->task_id)->update(['proof_image' => $proof_image]);
+
+            }
+        } else {
+            $proof_image = null;
+        }
+
+       
+       
+        if (isset($request->proof_face)) {
+            if ($request->hasFile('proof_face')) {
+                $folder = str_pad($client_details->code, 8, '0', STR_PAD_LEFT);
+                $folder = 'client_'.$folder;
+                $file = $request->file('proof_face');
+                $file_name = uniqid() .'.'.  $file->getClientOriginalExtension();
+                $s3filePath = '/assets/'.$folder.'/orders' . $file_name;
+                $path = Storage::disk('s3')->put($s3filePath, $file, 'public');
+                $proof_face = $path;
+
+                $task = Task::where('id', $request->task_id)->update(['proof_face' => $proof_face]);
+            }
+        } else {
+            $proof_face = null;
+        }
+
+        if (isset($request->signature)) {
+            if ($request->hasFile('signature')) {
+                $folder = str_pad($client_details->code, 8, '0', STR_PAD_LEFT);
+                $folder = 'client_'.$folder;
+                $file = $request->file('signature');
+                $file_name = uniqid() .'.'.  $file->getClientOriginalExtension();
+                $s3filePath = '/assets/'.$folder.'/orders' . $file_name;
+                $path = Storage::disk('s3')->put($s3filePath, $file, 'public');
+                $proof_signature = $path;
+
+                $task = Task::where('id', $request->task_id)->update(['proof_signature' => $proof_signature]);
+            }
+        } else {
+            $proof_signature = null;
+        }
+       // dd($request->toArray());
 
         $newDetails = Task::where('id', $request->task_id)->with(['location','tasktype','pricing','order.customer'])->first();
 
@@ -365,7 +392,13 @@ class TaskController extends BaseController
             // $sms_body            = 'Your otp is '.$otpCreate;
             
             $notification_type = NotificationType::where('name','Customer Delivery OTP')->with('notification_events.client_notification')->first();
-            $sms_body          = $notification_type['notification_events'][0]['message'];
+            if(isset($notification_type['notification_events']) && !empty($notification_type['notification_events'])){
+                $sms_body  = $notification_type['notification_events'][0]['message'];
+            }
+            else{
+                $sms_body  = '';
+            }
+            
             $sms_body          = str_replace('"order_number"', $order_details->unique_id, $sms_body);
             $sms_body          = str_replace('"deliver_otp"', $otpCreate, $sms_body);
 
@@ -623,6 +656,18 @@ class TaskController extends BaseController
                 }
                 $last = implode(",", $images);
             }
+            # string of image array
+            if (isset($request->images_array) && count($request->images_array) > 0){
+
+                foreach ($request->images_array as $key => $path) {
+                    array_push($images, $path);
+                }
+
+                $last = implode(",", $images);
+
+            }
+
+           
 
             //create new customer for task or get id of old customer
 
@@ -714,13 +759,17 @@ class TaskController extends BaseController
                     'address'     => $value['address']??null,
                     'post_code'   => $value['post_code']??null,
                     'customer_id' => $cus_id,
+                    'flat_no'     => $value['flat_no']??null,
+                    'email'       => $value['email']??null,
+                    'phone_number'=> $value['phone_number']??null,
                 ];
                     $Loction = Location::create($loc);
                     // $Loction = Location::updateOrCreate(
-                    //     ['latitude' => $value['latitude']??0.00, 'longitude' => $value['longitude']??0.00],
+                    //     ['latitude' => $value['latitude']??0.00, 'longitude' => $value['longitude']??0.00,'customer_id' => $cus_id],
                     //     [$loc]
                     // );
                     $loc_id = $Loction->id;
+                    Log::info($loc);
                 }
            
 
@@ -728,9 +777,11 @@ class TaskController extends BaseController
                     $send_loc_id = $loc_id;
                     $finalLocation = Location::where('id', $loc_id)->first();
                 }
-
-                array_push($latitude, $finalLocation->latitude);
-                array_push($longitude, $finalLocation->longitude);
+                if(isset($finalLocation)){
+                    array_push($latitude, $finalLocation->latitude);
+                    array_push($longitude, $finalLocation->longitude);
+                }
+                
 
 
                 $task_appointment_duration = isset($value->appointment_duration) ? $value->appointment_duration : null;
@@ -1075,7 +1126,7 @@ class TaskController extends BaseController
         } else {
             $unit              = $auth->getPreference->distance_unit;
             $try               = $auth->getAllocation->number_of_retries;
-            $cash_at_hand      = $auth->getAllocation->maximum_cash_at_hand_per_person;
+            $cash_at_hand      = $auth->getAllocation->maximum_cash_at_hand_per_person??0;
             $max_redius        = $auth->getAllocation->maximum_radius;
             $max_task          = $auth->getAllocation->maximum_batch_size;
             
@@ -1213,7 +1264,7 @@ class TaskController extends BaseController
         $type              = $auth->getPreference->acknowledgement_type;
         $unit              = $auth->getPreference->distance_unit;
         $try               = $auth->getAllocation->number_of_retries;
-        $cash_at_hand      = $auth->getAllocation->maximum_cash_at_hand_per_person;
+        $cash_at_hand      = $auth->getAllocation->maximum_cash_at_hand_per_person??0;
         $max_redius        = $auth->getAllocation->maximum_radius;
         $max_task          = $auth->getAllocation->maximum_batch_size;
         $time              = $this->checkTimeDiffrence($notification_time, $beforetime);
@@ -1317,7 +1368,7 @@ class TaskController extends BaseController
         $type              = $auth->getPreference->acknowledgement_type;
         $unit              = $auth->getPreference->distance_unit;
         $try               = $auth->getAllocation->number_of_retries;
-        $cash_at_hand      = $auth->getAllocation->maximum_cash_at_hand_per_person;
+        $cash_at_hand      = $auth->getAllocation->maximum_cash_at_hand_per_person??0;
         $max_redius        = $auth->getAllocation->maximum_radius;
         $max_task          = $auth->getAllocation->maximum_batch_size;
         $time              = $this->checkTimeDiffrence($notification_time, $beforetime);
@@ -1439,7 +1490,7 @@ class TaskController extends BaseController
         $type              = $auth->getPreference->acknowledgement_type;
         $unit              = $auth->getPreference->distance_unit;
         $try               = $auth->getAllocation->number_of_retries;
-        $cash_at_hand      = $auth->getAllocation->maximum_cash_at_hand_per_person;
+        $cash_at_hand      = $auth->getAllocation->maximum_cash_at_hand_per_person??0;
         $max_redius        = $auth->getAllocation->maximum_radius;
         $max_task          = $auth->getAllocation->maximum_batch_size;
         $time              = $this->checkTimeDiffrence($notification_time, $beforetime);
@@ -1778,9 +1829,11 @@ class TaskController extends BaseController
      /******************    ---- get all teams  -----   ******************/
      public function getAllTeams(Request $request){
        $teams = TagsForTeam::OrderBy('id','desc')->get();
+       $all_teams = Team::OrderBy('id','desc')->get();
 
         return response()->json([
             'teams' => $teams,
+            'all_teams' => $all_teams,
             'message' => __('success')
         ], 200);
         
@@ -1788,8 +1841,6 @@ class TaskController extends BaseController
     /******************    ---- Save feedback on order  -----   ******************/
     public function SaveFeedbackOnOrder(Request $request)
     {
-            Log::info($request->order_id);
-            Log::info(ClientPreference::first());
             $order   = Order::where('id', $request->order_id)->first();
 
             if (isset($order->id)) {
@@ -1813,5 +1864,34 @@ class TaskController extends BaseController
             }
         
     }
+
+    /******************    ---- upload Image For Task  -----   ******************/
+    public function uploadImageForTask(Request $request)
+    {
+        if ($request->hasFile('upload_photo')) {
+            $header = $request->header();
+            if (array_key_exists("shortcode", $header)) {
+                $shortcode =  $header['shortcode'][0];
+            }
+            $folder = str_pad($shortcode, 8, '0', STR_PAD_LEFT);
+            $folder = 'client_' . $folder;
+            $file = $request->file('upload_photo');
+            $file_name = uniqid() . '.' .  $file->getClientOriginalExtension();
+            $s3filePath = '/assets/' . $folder;
+            $path = Storage::disk('s3')->put($s3filePath, $file, 'public');
+            $getFileName = $path;
+        }
+
+            if (isset($getFileName)) { 
+                return response()->json(['status' => true, 'message' => __('Image submitted'),'image' => $getFileName ]);
+            } else {
+                return response()->json(['status' => true, 'message' => __('Error in upload image')]);
+            }
+        
+    }
+
+
+
+    
     
 }

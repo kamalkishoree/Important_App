@@ -223,6 +223,12 @@ class ActivityController extends BaseController
         } else {
             $orders = Order::where('driver_id', $id)->whereBetween('order_time',[$utc_start, $utc_end])->where('status', 'assigned')->orderBy('order_time')->pluck('id')->toArray();
         }
+
+
+        $agent =  Agent::where('id',$id)->first();
+        $agent->device_type = $request->device_type??null;
+        $agent->device_token = $request->device_token??null;;
+        $agent->save();
        
 
         if (count($orders) > 0) {

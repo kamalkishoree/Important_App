@@ -335,7 +335,7 @@ class TaskController extends Controller
         //setting timezone from id
         $tz = new Timezone();
         $auth->timezone = $tz->timezone_name(Auth::user()->timezone);
-
+ 
         //save task images on s3 bucket
         if (isset($request->file) && count($request->file) > 0) {
             $folder = str_pad(Auth::user()->id, 8, '0', STR_PAD_LEFT);
@@ -431,7 +431,7 @@ class TaskController extends Controller
                 ];
 
                 $Loction = Location::updateOrCreate(
-                    ['latitude' => $request->latitude[$key], 'longitude' => $request->longitude[$key],'address' => $request->address[$key]],
+                    ['latitude' => $request->latitude[$key], 'longitude' => $request->longitude[$key],'address' => $request->address[$key],'customer_id' => $cus_id],
                     [$loc]
                 );
 
@@ -463,7 +463,7 @@ class TaskController extends Controller
                 ];
 
                 $Loction = Location::updateOrCreate(
-                    ['latitude' => $location->latitude, 'longitude' => $location->longitude, 'address' => $location->address],
+                    ['latitude' => $location->latitude, 'longitude' => $location->longitude, 'address' => $location->address,'customer_id'  => $cus_id],
                     [$newloc]
                 );
                // $location = Location::create($newloc);
@@ -872,7 +872,7 @@ class TaskController extends Controller
                 ];
               //  $Loction = Location::create($loc);
                 $Loction = Location::updateOrCreate(
-                    ['latitude' => $request->latitude[$key], 'longitude' => $request->longitude[$key], 'address' => $request->address[$key]],
+                    ['latitude' => $request->latitude[$key], 'longitude' => $request->longitude[$key], 'address' => $request->address[$key], 'customer_id' => $cus_id],
                     [$loc]
                 );
                 $loc_id = $Loction->id;
@@ -1159,7 +1159,7 @@ class TaskController extends Controller
         } else {
             $unit              = $auth->getPreference->distance_unit;
             $try               = $auth->getAllocation->number_of_retries;
-            $cash_at_hand      = $auth->getAllocation->maximum_cash_at_hand_per_person;
+            $cash_at_hand      = $auth->getAllocation->maximum_cash_at_hand_per_person??0;
             $max_redius        = $auth->getAllocation->maximum_radius;
             $max_task          = $auth->getAllocation->maximum_batch_size;
 
@@ -1292,7 +1292,7 @@ class TaskController extends Controller
         $type              = $auth->getPreference->acknowledgement_type;
         $unit              = $auth->getPreference->distance_unit;
         $try               = $auth->getAllocation->number_of_retries;
-        $cash_at_hand      = $auth->getAllocation->maximum_cash_at_hand_per_person;
+        $cash_at_hand      = $auth->getAllocation->maximum_cash_at_hand_per_person??0;
         $max_redius        = $auth->getAllocation->maximum_radius;
         $max_task          = $auth->getAllocation->maximum_batch_size;
         $time              = $this->checkTimeDiffrence($notification_time, $beforetime);
@@ -1400,7 +1400,7 @@ class TaskController extends Controller
         $type              = $auth->getPreference->acknowledgement_type;
         $unit              = $auth->getPreference->distance_unit;
         $try               = $auth->getAllocation->number_of_retries;
-        $cash_at_hand      = $auth->getAllocation->maximum_cash_at_hand_per_person;
+        $cash_at_hand      = $auth->getAllocation->maximum_cash_at_hand_per_person??0;
         $max_redius        = $auth->getAllocation->maximum_radius;
         $max_task          = $auth->getAllocation->maximum_batch_size;
         $time              = $this->checkTimeDiffrence($notification_time, $beforetime);
@@ -1516,7 +1516,7 @@ class TaskController extends Controller
         $type              = $auth->getPreference->acknowledgement_type;
         $unit              = $auth->getPreference->distance_unit;
         $try               = $auth->getAllocation->number_of_retries;
-        $cash_at_hand      = $auth->getAllocation->maximum_cash_at_hand_per_person;
+        $cash_at_hand      = $auth->getAllocation->maximum_cash_at_hand_per_person??0;
         $max_redius        = $auth->getAllocation->maximum_radius;
         $max_task          = $auth->getAllocation->maximum_batch_size;
         $time              = $this->checkTimeDiffrence($notification_time, $beforetime);
@@ -1995,7 +1995,7 @@ class TaskController extends Controller
                 
               //  $Loction = Location::create($loc);
                 $Loction = Location::updateOrCreate(
-                    ['latitude' => $request->latitude[$key], 'longitude' => $request->longitude[$key], 'address' => $request->address[$key]],
+                    ['latitude' => $request->latitude[$key], 'longitude' => $request->longitude[$key], 'address' => $request->address[$key],'customer_id' => $cus_id],
                     [$loc]
                 );
                 $loc_id = $Loction->id;
@@ -2145,6 +2145,43 @@ class TaskController extends Controller
         Order::where('id', $id)->delete();
         return redirect()->back()->with('success', 'Task deleted successfully!');
     }
+
+    public function deleteSingleTask(Request $request, $domain = '')
+    {   
+        try {
+        $order = Task::find($request->task_id);
+
+        $ordercount = Task::where('order_id',$order->order_id)->count();
+      
+        if($ordercount == 1){
+            $delorder = Order::where('id',$order->order_id)->delete();
+            $route = route('tasks.index');
+           
+        }
+        else
+        {
+         $update_dep = Task::where('dependent_task_id',$request->task_id)->update(['dependent_task_id' => $order->dependent_task_id ]);   
+         $del = Task::where('id',$request->task_id)->delete();
+         $route = route('tasks.edit',$order->order_id);
+
+        }    
+
+
+
+        return response()->json([
+            'message' => __('Task Delete Successfully'),
+            'count' => $ordercount,
+            'url' => $route
+        ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => $e->getMessage()
+            ], 400);
+        }
+
+        
+    }
+    
 
     //this is for serch customer for when create tasking
 

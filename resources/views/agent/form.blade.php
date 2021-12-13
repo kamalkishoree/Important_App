@@ -1,4 +1,6 @@
-
+@php
+$imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain/';
+@endphp
  <div class="row mb-2">
     <div class="col-md-4">
         <div class="form-group" id="profile_pictureInputEdit">
@@ -151,7 +153,7 @@
 <div class="row">
     <div class="col-md-6">
         <div class="form-group" id="plate_numberInputEdit">
-            <label for="plate_number" class="control-label">{{__("LICENCE PLACE")}}</label>
+            <label for="plate_number" class="control-label">{{__("LICENCE PLATE")}}</label>
             <input type="text" class="form-control" id="plate_number" name="plate_number"
                 placeholder="508.KLV" value="{{ old('name', $agent->plate_number ?? '') }}">
             <span class="invalid-feedback" role="alert">
@@ -168,4 +170,42 @@
             </span>
         </div>
     </div>
+</div>
+
+<div class="row">
+    @if(!empty($driver_registration_documents) && count($driver_registration_documents) > 0)
+    @foreach($driver_registration_documents as $driver_registration_document)
+    @php
+    $field_value = "";
+    if(!empty($agent_docs) && count($agent_docs) > 0){
+        foreach($agent_docs as $key => $agent_doc){
+            if($driver_registration_document->name == $agent_doc->label_name){
+                $field_value = $agent_doc->file_name;
+            }
+        }
+    }
+    @endphp
+    <div class="col-md-6">
+        <div class="form-group" id="{{$driver_registration_document->name}}Input">
+            <label for="" class="control-label d-flex align-items-center justify-content-between">{{$driver_registration_document->name ? $driver_registration_document->name : ''}} 
+                @if(strtolower($driver_registration_document->file_type) == 'pdf' && (!empty($field_value)))
+                <a href="{{ Storage::disk('s3')->url($field_value) }}" download target="_blank"><i class="fa fa-eye" aria-hidden="true"></i></a>
+                @endif
+            </label>
+            @if(strtolower($driver_registration_document->file_type) == 'text')
+            <input type="text" class="form-control" id="input_file_logo_{{$driver_registration_document->id}}" name="{{$driver_registration_document->name}}" placeholder="Enter Text" value="{{ $field_value }}" {{ (!empty($driver_registration_document->is_required))?'required':''}}>
+            @else
+            @if(strtolower($driver_registration_document->file_type) == 'image')
+            <input type="file" data-plugins="dropify" name="{{$driver_registration_document->name}}" accept="image/*" data-default-file="{{ (!empty($field_value)) ? $imgproxyurl.Storage::disk('s3')->url($field_value) : '' }}" class="dropify" />
+            @elseif(strtolower($driver_registration_document->file_type) == 'pdf')
+            <input type="file" data-plugins="dropify" name="{{$driver_registration_document->name}}" accept=".pdf" class="dropify" />
+            @endif
+            <span class="invalid-feedback" role="alert">
+                <strong></strong>
+            </span>
+            @endif
+        </div>
+    </div>
+    @endforeach
+    @endif
 </div>

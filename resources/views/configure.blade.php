@@ -80,8 +80,7 @@
                 </div>
             </form>
         </div>
-
-        <div class="col-md-4">
+        <div class="col-md-3">
             <form method="POST" action="{{ route('preference', Auth::user()->code) }}">
                 @csrf
                 <div class="card-box same-size">
@@ -161,7 +160,7 @@
                 </div>
             </form>
         </div>
-        <div class="col-md-5">
+        <div class="col-md-4">
             <form method="POST" action="{{ route('smtp') }}">
                 @csrf
                 <div class="card-box same-size">
@@ -266,6 +265,63 @@
                 </div>
             </form>
         </div>
+
+        <div class="col-md-2">
+            <form method="POST" action="{{ route('preference', Auth::user()->code) }}">
+                @csrf
+                <div class="card-box">
+                    <h4 class="header-title">{{__("Customer Support")}}</h4>
+                    <p class="sub-header">
+                        {{__("View and update your Customer Support and it's API key.")}}
+                    </p>
+                    <div class="row mb-2">
+                        <div class="col-sm-8">
+                            <div class="text-sm-left">
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-md-12">
+                            <div class="form-group mb-3">
+                                <label for="currency">{{__("Customer Support")}}</label>
+                                <select class="form-control" id="customer_support" name="customer_support">
+                                    <option value="zen_desk" {{ isset($preference) && $preference->customer_support == 'zen_desk' ? 'selected' : '' }}>
+                                        {{__('Zen Desk')}}
+                                    </option>
+                                </select>
+                                @if ($errors->has('customer_support'))
+                                <span class="text-danger" role="alert">
+                                    <strong>{{ $errors->first('customer_support') }}</strong>
+                                </span>
+                                @endif
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group mb-3">
+                                <label for="map_key_1">{{__("API Key")}}</label>
+                                <input type="password" name="customer_support_key" id="customer_support_key" placeholder="{{__('Please enter key')}}" class="form-control" value="{{ old('customer_support_key', $preference->customer_support_key ?? '') }}">
+                                @if ($errors->has('customer_support_key'))
+                                <span class="text-danger" role="alert">
+                                    <strong>{{ $errors->first('customer_support_key') }}</strong>
+                                </span>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-2">
+                        <div class="col-12">
+                            <div class="form-group mb-0 text-center">
+                                <button class="btn btn-blue btn-block" type="submit"> {{__("Update")}} </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+
         <div class="col-md-3">
             <form method="POST" action="{{ route('preference', Auth::user()->code) }}">
                 @csrf
@@ -415,10 +471,10 @@
     </div>
 
     <div class="row">
-        <div class="col-md-3">
-            <div class="page-title-box">
+        <div class="col-md-4">
+            {{-- <div class="page-title-box">
                 <h4 class="page-title text-uppercase">Driver</h4>
-            </div>
+            </div> --}}
             <div class="card-box pb-2">
                 <h4 class="header-title text-uppercase">Driver Registration Documents</h4>
                 <div class="d-flex align-items-center justify-content-end mt-2">
@@ -444,7 +500,7 @@
                                         {{$agent_doc->name ? $agent_doc->name : ''}}
                                     </a>
                                 </td>
-                                <td>{{$agent_doc->file_type}}</td>
+                                <td>{{ ($agent_doc->file_type == 'Pdf'?'PDF':$agent_doc->file_type) }}</td>
                                 <td>{{$agent_doc->is_required?"Yes":"No"}}</td>
                                 <td>
                                     <div>
@@ -518,6 +574,7 @@
                     </div>
             </form>
         </div>
+        
     </div>
 
 
@@ -695,7 +752,7 @@
                                     <div class="input-group mb-2">
                                         <select class="form-control" name="file_type">
                                             <option value="Image">Image</option>
-                                            <option value="Pdf">Pdf</option>
+                                            <option value="Pdf">PDF</option>
                                             <option value="Text">Text</option>
                                         </select>
                                     </div>

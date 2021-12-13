@@ -63,14 +63,57 @@ $(document).ready(function(){
         });
         
         $(document).on('click', ".span1", function() {
-            
-            $(this).closest(".copyin").remove();
+            var task_id = $(this).attr("data-taskid");
+            if(task_id != undefined && task_id > 0){   
+                $(this).closest(".copyin").remove();       ////// while update the task in dispatch 
+                var status = TaskDeleteSingle(task_id);
+               
+            }else{
+                $(this).closest(".copyin").remove();
+            }
+           
         });
+
+
+        ///////////////////// ****************              delete single task ********************* //////////////////////////////
+
+        function TaskDeleteSingle(task_id) {
+    //alert(data);
+    var CSRF_TOKEN = $("input[name=_token]").val();
+    $.ajax({
+        method: 'post',
+        headers: {
+            Accept: "application/json"
+        },
+        url: "{{route('tasks.single.destroy')}}",
+        data: {_token: CSRF_TOKEN,task_id:task_id},
+        success: function(response) {
+            //alert(response)
+            if (response) {
+                if(response.count == 1)
+                window.location.href = response.url;
+                else
+                return 1;
+               // window.location.href = response.url;
+            } else {
+                return 2;
+            }
+            //return response;
+        },
+        error: function(response) {
+            return 2;
+        }
+    });
+}
+
+
+        //////////////////// ************************** end delete single task ************************* ///////////////////////////
         
         //var a = 0;
         var a = totalcountEdit-1;
         var post_count = 1;
         $('#adds a').click(function() {
+           
             countEdit = countEdit + 1;
           var abc = "{{ isset($maincount)?$maincount:0 }}";
           var newcount = $('#newcount').val();
@@ -174,10 +217,13 @@ $(document).ready(function(){
                            
                         var jElem = $(elem); // jQuery element
                         var name = jElem.prop('id');
-                        name = name.replace(/\d+/g, '');
+                         name = name.replace(/\d+/g, '');
                         // remove the number
                         name = 'newspan';
                         jElem.prop('id', name);
+
+                        var taskid = jElem.attr("data-taskid");
+                        jElem.attr("data-taskid", 0);
                     });
 
                     var address1 = $clone.find('.address');
@@ -686,5 +732,18 @@ $('.onlynumber').keyup(function ()
     { 
     this.value = this.value.replace(/[^0-9\.]/g,'');
 });
+
+
+
+$(document).on('click', '.mdi-delete-single-task', function() {            
+            var r = confirm("{{__('Are you sure?')}}");
+            console.log($(this).attr('taskid'));
+            if (r == true) {
+               var taskid = $(this).attr('taskid');
+               $('form#taskdeletesingle'+taskid).submit();
+
+            }
+        });
+
 
 </script>

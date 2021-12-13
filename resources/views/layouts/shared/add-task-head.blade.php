@@ -171,6 +171,7 @@
                             <div id="googleMapHeader" style="height: 500px; min-width: 500px; width:100%"></div>
                             <input type="hidden" name="lat_input" id="lat_map_header" value="0" />
                             <input type="hidden" name="lng_input" id="lng_map_header" value="0" />
+                            <input type="hidden" name="address_input" id="addredd_map_header" value="" />
                             <input type="hidden" name="for" id="map_for_header" value="" />
                         </div>
                     </form>
@@ -439,6 +440,7 @@
         $clone.find('.cust_add').prop('id', 'addHeader' + countZ +'-input');
         $clone.find('.cust_btn').prop('id', 'addHeader' + countZ);
         $clone.find('.cust_btn').prop('num', 'addHeader' + countZ);
+        
         $clone.find('.cust_latitude').prop('id', 'addHeader' + countZ +'-latitude');
         $clone.find('.cust_longitude').prop('id', 'addHeader' + countZ +'-longitude');
 
@@ -543,6 +545,7 @@
     
     function loadMapHeader(autoWrap){  
        // console.log(autoWrap);
+
         $.each(autoWrap, function(index, name) {
             const geocoder = new google.maps.Geocoder;
 
@@ -565,7 +568,9 @@
                        
                         const lat = results[0].geometry.location.lat();
                         const lng = results[0].geometry.location.lng();
+                        const address = results[0].formatted_address;
                         //console.log(name+'-input');
+                        // document.getElementById(name + '-input').value = address;
                         document.getElementById(name + '-latitude').value = lat;
                         document.getElementById(name + '-longitude').value = lng;
                         // const postCode = results[0].address_components.find(addr => addr.types[0] === "postal_code").short_name;
@@ -740,7 +745,7 @@
         contentType: false,
         processData: false,
         success: function(response) {
-            //alert(response)
+           // alert(response)
             if (response) {
                     $("#task-modal-header .close").click();
                     location.reload();
@@ -845,7 +850,9 @@
     });
 
     $(document).on('click', '.showMapHeader', function(){
-        var no = $(this).attr('num');
+        //var no = $(this).attr('num');
+        var no = $(this).attr('id') ?? $(this).attr('num');
+       
         var lats = document.getElementById(no+'-latitude').value;
         var lngs = document.getElementById(no+'-longitude').value;
 
@@ -859,6 +866,8 @@
         }
 
         var myLatlng = new google.maps.LatLng(lats, lngs);
+        var infowindow = new google.maps.InfoWindow();
+        var geocoder = new google.maps.Geocoder();
             var mapProp = {
                 center:myLatlng,
                 zoom:13,
@@ -874,23 +883,46 @@
               });
             document.getElementById('lat_map_header').value= lats;
             document.getElementById('lng_map_header').value= lngs ; 
+            document.getElementById('addredd_map_header').value= '' ; 
+            
             // marker drag event
-            google.maps.event.addListener(marker,'drag',function(event) {
+            {{-- google.maps.event.addListener(marker,'drag',function(event) {
+                console.log(event);
                 document.getElementById('lat_map_header').value = event.latLng.lat();
                 document.getElementById('lng_map_header').value = event.latLng.lng();
-            });
+                //document.getElementById('addredd_map_header').value= event[].formatted_address; 
+            }); --}}
 
+                google.maps.event.addListener(marker, 'dragend', function() {
+                    geocoder.geocode({
+                    'latLng': marker.getPosition()
+                    }, function(results, status) {
+
+                    if (status == google.maps.GeocoderStatus.OK) {
+                        if (results[0]) {
+                             document.getElementById('lat_map_header').value = marker.getPosition().lat();
+                             document.getElementById('lng_map_header').value = marker.getPosition().lng();
+                             document.getElementById('addredd_map_header').value= results[0].formatted_address; 
+                        
+                            infowindow.setContent(results[0].formatted_address);
+                         
+                            infowindow.open(map, marker);
+                        }
+                    }
+                    });
+                });
             //marker drag event end
-            google.maps.event.addListener(marker,'dragend',function(event) {
+            {{-- google.maps.event.addListener(marker,'dragend',function(event) {
                 var zx =JSON.stringify(event);
                 //console.log(zx);
 
 
                 document.getElementById('lat_map_header').value = event.latLng.lat();
                 document.getElementById('lng_map_header').value = event.latLng.lng();
+              //   document.getElementById('addredd_map_header').value= event.formatted_address; 
                 //alert("lat=>"+event.latLng.lat());map_for_header
                 //alert("long=>"+event.latLng.lng());
-            });
+            }); --}}
             $('#task-modal-header').addClass('fadeIn');
         $('#show-map-Header').modal({
             //backdrop: 'static',
@@ -904,9 +936,11 @@
         var mapLat = document.getElementById('lat_map_header').value;
         var mapLlng = document.getElementById('lng_map_header').value;
         var mapFor = document.getElementById('map_for_header').value;
+        var address = document.getElementById('addredd_map_header').value;
         //console.log(mapLat+'-'+mapLlng+'-'+mapFor);
         document.getElementById(mapFor + '-latitude').value = mapLat;
         document.getElementById(mapFor + '-longitude').value = mapLlng;
+        document.getElementById(mapFor + '-input').value = address;
 
 
         $('#show-map-Header').modal('hide');

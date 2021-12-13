@@ -154,6 +154,7 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 
 			Route::post('newtasks', 'TaskController@newtasks');
 			Route::any('updatetasks/tasks/{id}', 'TaskController@update');
+			Route::post('single_taskdelete', 'TaskController@deleteSingleTask')->name('tasks.single.destroy');
 
 			Route::post('optimize-route', 'DashBoardController@optimizeRoute');
 			Route::post('arrange-route', 'DashBoardController@arrangeRoute');

@@ -130,7 +130,7 @@ class TrackingController extends Controller
         $avgrating = 0;
         if ($respnse['status'] == 'connected') {
             $order = DB::connection($respnse['database'])->table('orders')->where('unique_id', $id)->leftJoin('agents', 'orders.driver_id', '=', 'agents.id')
-                ->select('orders.*', 'agents.name', 'agents.profile_picture', 'agents.phone_number')->first();
+                ->select('orders.*', 'agents.name','agents.name','agents.color','agents.plate_number', 'agents.profile_picture', 'agents.phone_number')->first();
             if (isset($order->id)) {
                 $tasks = DB::connection($respnse['database'])->table('tasks')->where('order_id', $order->id)->leftJoin('locations', 'tasks.location_id', '=', 'locations.id')
                     ->select('tasks.*', 'locations.latitude', 'locations.longitude', 'locations.short_name', 'locations.address')->orderBy('task_order')->get();
@@ -153,6 +153,8 @@ class TrackingController extends Controller
                 }
 
                 $img = 'https://imgproxy.royodispatch.com/insecure/fit/300/100/sm/0/plain/' . Storage::disk('s3')->url($order->profile_picture ?? 'assets/client_00000051/agents605b6deb82d1b.png/XY5GF0B3rXvZlucZMiRQjGBQaWSFhcaIpIM5Jzlv.jpg');
+                $base_url = 'https://royodelivery-assets.s3.us-west-2.amazonaws.com';
+               
                 return response()->json([
                     'message' => 'Successfully',
                     'tasks' => $tasks,
@@ -161,6 +163,7 @@ class TrackingController extends Controller
                     'agent_location'  => $agent_location,
                     'total_order_by_agent'  => $total_order_by_agent,
                     'avgrating'  => $avgrating,
+                    'base_url' => $base_url
                 ], 200);
 
                 return view('tracking/tracking', compact('tasks', 'order', 'agent_location'));

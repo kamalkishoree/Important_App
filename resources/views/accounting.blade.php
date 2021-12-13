@@ -299,7 +299,7 @@
                                   <tr>
                                     <td>
                                         <h5 class="m-0 font-weight-normal">{{$customer->name}}</h5>
-                                        <p class="mb-0 text-muted"><small>{{__("Member Since")}} {{ \Carbon\Carbon::parse($agent->created_at)->format('Y')}}</small></p>
+                                        <p class="mb-0 text-muted"><small>{{__("Member Since")}} {{ \Carbon\Carbon::parse($customer->created_at)->format('Y')}}</small></p>
                                     </td>
 
                                     <td>

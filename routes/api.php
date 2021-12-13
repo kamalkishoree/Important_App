@@ -20,6 +20,8 @@ use Illuminate\Support\Facades\Route;
     return $request->user();
 });*/
 
+Route::group(['middleware' => ['apilogger']], function() {
+
 Route::post('check-dispatcher-keys', 'Api\TaskController@checkDispatcherKeys')->middleware('ConnectDbFromOrder');
 Route::post('get-delivery-fee', 'Api\TaskController@getDeliveryFee')->middleware('ConnectDbFromOrder');
 Route::post('task/create', 'Api\TaskController@CreateTask')->middleware('ConnectDbFromOrder');
@@ -30,6 +32,8 @@ Route::get('get-all-teams', 'Api\TaskController@getAllTeams')->middleware('Conne
 Route::post('update-create-vendor-order', 'Api\AuthController@updateCreateVendorOrder')->middleware('ConnectDbFromOrder');
 
 Route::post('update-order-feedback','Api\TaskController@SaveFeedbackOnOrder')->name('SaveFeedbackOnOrder')->middleware('ConnectDbFromOrder');
+
+Route::post('upload-image-for-task','Api\TaskController@uploadImageForTask')->name('uploadImageForTask')->middleware('ConnectDbFromOrder');
 
 Route::post('shortCode', 'Api\ShortcodeController@validateCompany');
 Route::get('cmscontent','Api\ActivityController@cmsData');
@@ -71,4 +75,7 @@ Route::group(['middleware' => ['dbCheck', 'AppAuth','apiLocalization']], functio
 Route::group(['middleware' => 'dbCheck','prefix' => 'public'], function() {
       Route::post('task/create', 'Api\TaskController@CreateTask');
       Route::get('task/currentstatus', 'Api\TaskController@currentstatus');                              
+});
+
+
 });

@@ -3,7 +3,7 @@
 namespace App\Model;
 
 use Illuminate\Database\Eloquent\Model;
-
+use Illuminate\Support\Facades\Storage;
 class Order extends Model
 {
     protected $fillable = ['customer_id','scheduled_date_time','recipient_phone','Recipient_email','task_description','images_array','auto_alloction','driver_id','key_value_set','order_time','order_type','note','status'
@@ -26,7 +26,7 @@ class Order extends Model
     }
 
     public function agent(){
-        return $this->belongsTo('App\Model\Agent', 'driver_id', 'id')->select('id', 'team_id', 'name', 'type', 'phone_number','make_model', 'plate_number', 'profile_picture', 'vehicle_type_id');
+        return $this->belongsTo('App\Model\Agent', 'driver_id', 'id')->select('id', 'team_id', 'name', 'type', 'phone_number','make_model', 'plate_number', 'profile_picture', 'vehicle_type_id','color');
         
     }
 
@@ -57,6 +57,31 @@ class Order extends Model
 
     public function first_task_order_by_date(){
         return $this->hasOne('');
+    }
+
+
+
+    public function getTaskImagesAttribute($value)
+    {
+      $array = array();
+      $imgarray = array();
+      
+      if (isset($value) && !empty($value)) {
+        $array = explode(",", $value);
+        } else {
+            $array = []; 
+        }
+
+        $can = Storage::disk('s3')->url('image.png');
+        $lastbaseurl = str_replace('image.png', '', $can);
+
+        if(count($array) > 0){
+            foreach ($array as $item)  {
+                $imgarray[] = $lastbaseurl.$item;
+           }
+        }
+        
+        return $imgarray;
     }
 
 

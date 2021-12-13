@@ -58,14 +58,42 @@ body .navbar-custom .topnav-menu .nav-link {
     font-weight: 400;
 }
 
+
+.agent-listing tbody td {
+    padding: 15px 0 10px 15px;
+}
+
+.agent-listing tbody td:nth-child(2){
+    position: relative;
+}
+
+.agent-status {
+    position: absolute;
+    left: 20px;
+    top: 10px;
+    border: 3px solid #fff;
+    border-radius: 50%;
+    font-size: 10px;
+}
+
 .agents-datatable tbody td, .dataTables_scrollHead thead th {
-    padding: 10px 0 !important;
+    padding: 10px 10px 10px 15px !important;
+}
+
+.dataTables_wrapper .form-ul {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.dataTables_wrapper .inner-div:last-child {
+    margin-left: -5px;
 }
 
 .dataTables_wrapper .inner-div {
-    width: 28%;
     vertical-align: middle;
     float: none;
+    width: auto;
     display: inline-block;
 }
 
@@ -1417,7 +1445,7 @@ span.copied_txt {
 
 .sort-icon .fa-sort {
     position: absolute;
-    right: 7px;
+    right: 0;
     bottom: 13px;
 }
 
