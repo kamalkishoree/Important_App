@@ -1893,7 +1893,7 @@ class TaskController extends BaseController
 
 
      # notification data 
-     public function notificationTrackingDetail($domain = '', $user, $id)
+     public function notificationTrackingDetail(Request $request,$id)
      {
         
              $order = DB::table('orders')->where('id',$id)->first();
