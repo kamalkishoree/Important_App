@@ -213,36 +213,5 @@ class TrackingController extends Controller
     }
 
 
-    # notification data 
-    public function notificationTrackingDetail($domain = '', $user, $id)
-    {
-        $respnse = $this->connection($user);
-        $total_order_by_agent = 0;
-        $avgrating = 0;
-        if ($respnse['status'] == 'connected') {
-            $order = DB::connection($respnse['database'])->table('orders')->where('id',$id)->first();
-             if (isset($order->id)) {
-                $tasks = DB::connection($respnse['database'])->table('tasks')->where('order_id', $order->id)->leftJoin('locations', 'tasks.location_id', '=', 'locations.id')
-                    ->select('tasks.*', 'locations.latitude', 'locations.longitude', 'locations.short_name', 'locations.address')->orderBy('task_order')->get();
-                
-
-               return response()->json([
-                    'message' => 'Successfully',
-                    'tasks' => $tasks,
-                    'order'  => $order
-                ], 200);
-
-               
-            } else {
-
-                return response()->json([
-                    'message' => 'Error'], 400);
-               
-            }
-        } else {
-            return response()->json([
-                'message' => 'Error'], 400);
-            
-        }
-    }
+   
 }

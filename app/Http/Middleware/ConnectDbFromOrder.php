@@ -27,6 +27,9 @@ class ConnectDbFromOrder
         if (array_key_exists("shortcode", $header)){
             $shortcode =  $header['shortcode'][0];
         }
+
+        
+        
         if (array_key_exists("personaltoken", $header)){
             $personaltoken =  $header['personaltoken'][0];
         }
@@ -69,11 +72,15 @@ class ConnectDbFromOrder
             DB::setDefaultConnection($database_name);
             DB::purge($database_name);
             //DB::reconnect($database_name);
-
-            $client_toke = Client::where('is_deleted', 0)->where('code',$shortcode)
-            ->whereHas('getPreference',function($q)use($personaltoken){
-                $q->where('personal_access_token_v1',$personaltoken);
-            })->first(['id', 'name', 'database_name', 'timezone', 'custom_domain', 'logo', 'company_name', 'company_address', 'is_blocked']);
+            if(isset($personaltoken) && !empty($personaltoken)){
+                $client_toke = Client::where('is_deleted', 0)->where('code',$shortcode)
+                ->whereHas('getPreference',function($q)use($personaltoken){
+                    $q->where('personal_access_token_v1',$personaltoken);
+                })->first(['id', 'name', 'database_name', 'timezone', 'custom_domain', 'logo', 'company_name', 'company_address', 'is_blocked']);
+            }else{
+                $client_toke = 1;
+            }
+           
             if($client_toke)
             return $next($request);
             else{

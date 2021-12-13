@@ -1892,6 +1892,33 @@ class TaskController extends BaseController
 
 
 
+     # notification data 
+     public function notificationTrackingDetail($domain = '', $user, $id)
+     {
+        
+             $order = DB::table('orders')->where('id',$id)->first();
+              if (isset($order->id)) {
+                 $tasks = DB::table('tasks')->where('order_id', $order->id)->leftJoin('locations', 'tasks.location_id', '=', 'locations.id')
+                     ->select('tasks.*', 'locations.latitude', 'locations.longitude', 'locations.short_name', 'locations.address')->orderBy('task_order')->get();
+                
+                 return response()->json([
+                     'message' => 'Successfully',
+                     'tasks' => $tasks,
+                     'order'  => $order
+                 ], 200);
+ 
+                
+             } else {
+ 
+                 return response()->json([
+                     'message' => 'Error'], 400);
+                
+             }
+         
+     }
+
+
+
     
     
 }

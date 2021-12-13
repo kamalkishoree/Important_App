@@ -103,7 +103,6 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 			Route::get('/order-details/tracking/{clientcode}/{order_id}', 'TrackingController@OrderTrackingDetail')->name('order.tracking.detail');
 			Route::get('/order-cancel/tracking/{clientcode}/{order_id}', 'TrackingController@orderCancelFromOrder')->name('order.cancel.from_order');
 
-			Route::get('/notification/tracking/{clientcode}/{order_id}', 'TrackingController@notificationTrackingDetail')->name('notification.tracking.detail');
 		});
 
 		Route::group(['middleware' => ['auth:client'], 'prefix' => '/'], function () {
