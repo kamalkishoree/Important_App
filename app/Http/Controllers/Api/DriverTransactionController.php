@@ -64,7 +64,7 @@ class DriverTransactionController extends BaseController
         }
         $data['debit'] = $debit;
         $data['credit'] = $credit;
-        $data['order_cost'] = $order_cost;
+        $data['order_cost'] = $order_cost??0;
         $data['driver_cost'] = $driver_cost;
         $data['cash_to_be_collected'] = $cash;
         $data['final_balance'] = $final_balance;

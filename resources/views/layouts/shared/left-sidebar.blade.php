@@ -116,6 +116,15 @@
                 </li>
                 @endif
 
+                {{-- @if(in_array('Payout Requests',$allowed) || Auth::user()->is_superadmin == 1)
+                <li>
+                    <a href="{{route('agent.payout.requests')}}">
+                        <i class="fa fa-search-dollar"></i>
+                        <span> {{ __('Payout Requests') }}</span>
+                    </a>
+                </li>
+                @endif --}}
+
                 @if(in_array('Geo Fence',$allowed) || Auth::user()->is_superadmin == 1)
                 <li>
                     <a href="{{route('geo.fence.list')}}">

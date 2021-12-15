@@ -102,6 +102,7 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 			Route::get('/order/tracking/{clientcode}/{order_id}', 'TrackingController@OrderTracking')->name('order.tracking');
 			Route::get('/order-details/tracking/{clientcode}/{order_id}', 'TrackingController@OrderTrackingDetail')->name('order.tracking.detail');
 			Route::get('/order-cancel/tracking/{clientcode}/{order_id}', 'TrackingController@orderCancelFromOrder')->name('order.cancel.from_order');
+
 		});
 
 		Route::group(['middleware' => ['auth:client'], 'prefix' => '/'], function () {
@@ -129,6 +130,7 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 			Route::post('pay/receive', 'AgentController@payreceive')->name('pay.receive');
 			Route::get('agent/paydetails/{id}', 'AgentController@agentPayDetails')->name('agent.paydetails');
 			Route::post('agent/approval_status', 'AgentController@approval_status')->name('agent/approval_status');
+			Route::get('agent/payout/requests', 'AgentController@agentPayoutRequests')->name('agent.payout.requests');
 			Route::post('agent/change_approval_status', 'AgentController@change_approval_status')->name('agent/change_approval_status');
 			Route::resource('customer', 'CustomerController');
 			Route::get('changeStatus', 'CustomerController@changeStatus');

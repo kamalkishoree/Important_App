@@ -393,6 +393,15 @@ class AuthController extends BaseController
             $getFileName = $path;
         }
 
+        $newtag = explode(",", $request->tags);
+        $tag_id = [];
+        foreach ($newtag as $key => $value) {
+            if (!empty($value)) {
+                $check = TagsForAgent::firstOrCreate(['name' => $value]);
+                array_push($tag_id, $check->id);
+            }
+        }
+
         $data = [
             'name' => $request->name,
             'team_id' => $request->team_id ?? null,
@@ -408,6 +417,7 @@ class AuthController extends BaseController
         ];
 
         $agent = Agent::create($data);
+        $agent->tags()->sync($tag_id);
         $files = [];
         if ($request->hasFile('uploaded_file')) {
             $file = $request->file('uploaded_file');
