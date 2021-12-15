@@ -6,7 +6,7 @@ use Session;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Traits\ApiResponser;
-use App\Models\{User, Transaction};
+use App\Model\{Agent, Transaction};
 use App\Http\Controllers\Controller;
 
 class WalletController extends Controller{
@@ -15,7 +15,7 @@ class WalletController extends Controller{
     # get my wallet details 
     public function getFindMyWalletDetails(Request $request){
     	$user = Auth::user();
-        $user = User::with('country')->find($user->id);
+        $user = Agent::find($user->id);
         $paginate = $request->has('limit') ? $request->limit : 12;
         $transactions = Transaction::where('payable_id', $user->id)->orderBy('id', 'desc')->paginate($paginate);
         foreach($transactions as $trans){
@@ -28,12 +28,10 @@ class WalletController extends Controller{
 
 
     # credit wallet set 
-    public function creditMyWallet(Request $request)
+    public function creditAgentWallet(Request $request)
     {   
         if($request->has('auth_token')){
-            $user = User::whereHas('device',function  ($qu) use ($request){
-                $qu->where('access_token', $request->auth_token);
-            })->first();
+            $user = Agent::where('access_token', $request->auth_token)->first();
         }
         else{
             $user = Auth::user();

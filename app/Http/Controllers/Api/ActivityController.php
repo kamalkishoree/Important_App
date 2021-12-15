@@ -247,7 +247,7 @@ class ActivityController extends BaseController
         $agents     = Agent::where('id', $id)->with('team')->first();
         $taskProof = TaskProof::all();
 
-        $prefer    = ClientPreference::select('theme', 'distance_unit', 'currency_id', 'language_id', 'agent_name', 'date_format', 'time_format', 'map_type', 'map_key_1')->first();
+        $prefer    = ClientPreference::select('theme', 'distance_unit', 'currency_id', 'language_id', 'agent_name', 'date_format', 'time_format', 'map_type', 'map_key_1', 'customer_support', 'customer_support_key', 'customer_support_application_id')->first();
         $allcation = AllocationRule::first('request_expiry');
 
         $prefer['alert_dismiss_time'] = (int)$allcation->request_expiry;

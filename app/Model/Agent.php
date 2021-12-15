@@ -2,6 +2,8 @@
 
 namespace App\Model;
 
+use Bavix\Wallet\Traits\HasWalletFloat;
+use Bavix\Wallet\Interfaces\WalletFloat;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -10,9 +12,10 @@ use Exception;
 use Thumbor\Url;
 
 
-class Agent extends Authenticatable
+class Agent extends Authenticatable implements WalletFloat
 {
 	use Notifiable;
+    use HasWalletFloat;
 
     protected $fillable = [
         'team_id', 'name', 'profile_picture', 'type', 'vehicle_type_id', 'make_model', 'plate_number', 'phone_number', 'color', 'is_activated', 'is_available','cash_at_hand','uid', 'is_approved'

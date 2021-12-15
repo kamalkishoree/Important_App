@@ -62,7 +62,7 @@
                         data: 'uid',
                         name: 'uid',
                         orderable: true,
-                        searchable: false
+                        searchable: true
                     },
                     {
                         data: 'profile_picture',
@@ -139,6 +139,12 @@
                         name: 'pay_to_driver',
                         orderable: true,
                         searchable: false
+                    },
+                    {
+                        data: 'created_at',
+                        name: 'created_at',
+                        orderable: true,
+                        searchable: true
                     },
                     // {
                     //     data: 'is_approved',

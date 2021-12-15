@@ -205,6 +205,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                             <th class="sort-icon">{{__("Total Paid to Agent")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                             <th class="sort-icon">{{__("Total Receive from Agent")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                             <th class="sort-icon">{{__("Final Balance")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
+                                            <th class="sort-icon">{{__("Created At")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                             <th>{{__("Action")}}</th>
                                         </tr>
                                     </thead>
@@ -233,6 +234,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                             <th class="sort-icon">{{__("Total Paid to Agent")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                             <th class="sort-icon">{{__("Total Receive from Agent")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                             <th class="sort-icon">{{__("Final Balance")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
+                                            <th class="sort-icon">{{__("Created At")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                             <th>{{__("Action")}}</th>
                                         </tr>
                                     </thead>
@@ -261,6 +263,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                             <th class="sort-icon">{{__("Total Paid to Agent")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                             <th class="sort-icon">{{__("Total Receive from Agent")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                             <th class="sort-icon">{{__("Final Balance")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
+                                            <th class="sort-icon">{{__("Created At")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                             <th>{{__("Action")}}</th>
                                         </tr>
                                     </thead>
