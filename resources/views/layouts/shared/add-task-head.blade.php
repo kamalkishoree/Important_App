@@ -855,6 +855,7 @@
        
         var lats = document.getElementById(no+'-latitude').value;
         var lngs = document.getElementById(no+'-longitude').value;
+        var address = document.getElementById(no+'-input').value;
 
         document.getElementById('map_for_header').value = no;
 
@@ -864,6 +865,11 @@
         if(lngs == null || lngs == '0'){
             lngs = 77.2217831;
         }
+         if(address==null){
+            address= '';
+        }
+        var infowindow = new google.maps.InfoWindow();
+        var geocoder = new google.maps.Geocoder();
 
         var myLatlng = new google.maps.LatLng(lats, lngs);
         var infowindow = new google.maps.InfoWindow();
@@ -883,7 +889,7 @@
               });
             document.getElementById('lat_map_header').value= lats;
             document.getElementById('lng_map_header').value= lngs ; 
-            document.getElementById('addredd_map_header').value= '' ; 
+            document.getElementById('addredd_map_header').value= address ; 
             
             // marker drag event
             {{-- google.maps.event.addListener(marker,'drag',function(event) {
