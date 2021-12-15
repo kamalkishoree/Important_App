@@ -60,23 +60,25 @@ Route::group(['prefix' => 'auth'], function () {
 });
 
 Route::group(['middleware' => ['dbCheck', 'AppAuth','apiLocalization']], function() {
-        Route::get('user', 'Api\AuthController@user');                              
-        Route::get('taskList', 'Api\ActivityController@tasks');                    // api for task list
-        Route::get('updateStatus', 'Api\ActivityController@updateDriverStatus');   // api for chnage driver status active ,in-active
-        Route::post('updateTaskStatus', 'Api\TaskController@updateTaskStatus');    // api for chnage task status like start,cpmplate,faild
-        Route::post('checkOTPRequried', 'Api\TaskController@checkOTPRequried');    // api for chnage task status like start,cpmplate,faild
-        Route::post('task/accecpt/reject', 'Api\TaskController@TaskUpdateReject'); // api for accecpt task reject task
-        Route::post('agent/logs', 'Api\ActivityController@agentLog');              // api for save agent logs
-        Route::get('get/profile','Api\ActivityController@profile');                // api for get agent profile
-        Route::post('update/profile','Api\ActivityController@updateProfile');       // api for updateprofile
-        Route::get('task/history','Api\ActivityController@taskHistory');            // api for get task history
-        Route::get('agent/transaction/details/{id}', 'Api\DriverTransactionController@transactionDetails');   // api for agent transactions
+    Route::get('user', 'Api\AuthController@user');                              
+    Route::get('taskList', 'Api\ActivityController@tasks');                    // api for task list
+    Route::get('updateStatus', 'Api\ActivityController@updateDriverStatus');   // api for chnage driver status active ,in-active
+    Route::post('updateTaskStatus', 'Api\TaskController@updateTaskStatus');    // api for chnage task status like start,cpmplate,faild
+    Route::post('checkOTPRequried', 'Api\TaskController@checkOTPRequried');    // api for chnage task status like start,cpmplate,faild
+    Route::post('task/accecpt/reject', 'Api\TaskController@TaskUpdateReject'); // api for accecpt task reject task
+    Route::post('agent/logs', 'Api\ActivityController@agentLog');              // api for save agent logs
+    Route::get('get/profile','Api\ActivityController@profile');                // api for get agent profile
+    Route::post('update/profile','Api\ActivityController@updateProfile');       // api for updateprofile
+    Route::get('task/history','Api\ActivityController@taskHistory');            // api for get task history
+    Route::post('myWallet/credit', 'Api\WalletController@creditMyWallet');      // api for credit money into wallet
+    Route::get('payment/options/{page}','Api\PaymentOptionController@getPaymentOptions'); // api for payment options
+    Route::get('agent/transaction/details/{id}', 'Api\DriverTransactionController@transactionDetails');   // api for agent transactions
 });
 
 
 Route::group(['middleware' => 'dbCheck','prefix' => 'public'], function() {
-      Route::post('task/create', 'Api\TaskController@CreateTask');
-      Route::get('task/currentstatus', 'Api\TaskController@currentstatus');                              
+    Route::post('task/create', 'Api\TaskController@CreateTask');
+    Route::get('task/currentstatus', 'Api\TaskController@currentstatus');                              
 });
 
 

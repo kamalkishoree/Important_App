@@ -308,6 +308,17 @@
                                 @endif
                             </div>
                         </div>
+                        <div class="col-md-12">
+                            <div class="form-group mb-3">
+                                <label for="customer_support_application_id">{{__("Application ID")}}</label>
+                                <input type="password" name="customer_support_application_id" id="customer_support_application_id" placeholder="{{__('Please enter application ID')}}" class="form-control" value="{{ old('customer_support_application_id', $preference->customer_support_application_id ?? '') }}">
+                                @if ($errors->has('customer_support_application_id'))
+                                <span class="text-danger" role="alert">
+                                    <strong>{{ $errors->first('customer_support_application_id') }}</strong>
+                                </span>
+                                @endif
+                            </div>
+                        </div>
                     </div>
 
                     <div class="row mb-2">

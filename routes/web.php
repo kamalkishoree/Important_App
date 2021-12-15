@@ -198,6 +198,10 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 
 
 			Route::get('demo/page', 'GeoFenceController@newDemo')->name('new.demo');
+
+			Route::resource('payoption', 'PaymentOptionController');
+			Route::post('updateAll', 'PaymentOptionController@updateAll')->name('payoption.updateAll');
+			Route::post('payoutUpdateAll', 'PaymentOptionController@payoutUpdateAll')->name('payoutOption.payoutUpdateAll');
 		});
 	});
 
