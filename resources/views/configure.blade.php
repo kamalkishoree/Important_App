@@ -272,7 +272,7 @@
                 <div class="card-box">
                     <h4 class="header-title">{{__("Customer Support")}}</h4>
                     <p class="sub-header">
-                        {{__("View and update your Customer Support and it's API key.")}}
+                        {{__("View and update your Customer Support, it's API key and Application ID")}}
                     </p>
                     <div class="row mb-2">
                         <div class="col-sm-8">
