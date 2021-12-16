@@ -146,6 +146,12 @@
                         orderable: true,
                         searchable: true
                     },
+                    {
+                        data: 'updated_at',
+                        name: 'updated_at',
+                        orderable: true,
+                        searchable: true
+                    },
                     // {
                     //     data: 'is_approved',
                     //     name: 'is_approved',

@@ -2,6 +2,8 @@
 
 namespace App\Model;
 
+use Bavix\Wallet\Traits\HasWallet;
+use Bavix\Wallet\Interfaces\Wallet;
 use Bavix\Wallet\Traits\HasWalletFloat;
 use Bavix\Wallet\Interfaces\WalletFloat;
 use Illuminate\Database\Eloquent\Model;
@@ -12,9 +14,10 @@ use Exception;
 use Thumbor\Url;
 
 
-class Agent extends Authenticatable implements WalletFloat
+class Agent extends Authenticatable implements  Wallet, WalletFloat
 {
 	use Notifiable;
+    use HasWallet;
     use HasWalletFloat;
 
     protected $fillable = [

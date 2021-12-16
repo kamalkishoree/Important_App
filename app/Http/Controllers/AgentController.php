@@ -150,6 +150,9 @@ class AgentController extends Controller
                 ->editColumn('created_at', function ($agents) use ($request) {
                     return $agents->created_at;
                 })
+                ->editColumn('updated_at', function ($agents) use ($request) {
+                    return $agents->updated_at;
+                })
                 ->editColumn('action', function ($agents) use ($request) {
                     if($request->status == 1){
                         $approve_action = '<div class="inner-div agent_approval_button" data-agent_id="'.$agents->id.'" data-status="2" title="Reject"><i class="fa fa-user-times" style="color: red; cursor:pointer;"></i></div>';
