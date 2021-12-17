@@ -563,7 +563,7 @@
                         <div class="col-12 mb-2">
                             <div class="custom-switch redio-all">
                                 <input type="checkbox" value="1" class="custom-control-input large-icon" id="route_alcoholic_input" name="route_alcoholic_input" {{ isset($preference) && $preference->route_alcoholic_input == 1 ? 'checked' : '' }}>
-                                <label class="custom-control-label checkss" for="route_alcoholic_input">{{__("Show alcoholic item redio button on create & update.")}}</label>
+                                <label class="custom-control-label checkss" for="route_alcoholic_input">{{__("Show alcoholic item radio button on create & update.")}}</label>
                                 <div class="col-sm-4 text-right">
                                     @if ($errors->has('route_alcoholic_input'))
                                     <span class="text-danger" role="alert">

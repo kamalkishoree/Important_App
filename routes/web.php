@@ -130,7 +130,9 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 			Route::post('pay/receive', 'AgentController@payreceive')->name('pay.receive');
 			Route::get('agent/paydetails/{id}', 'AgentController@agentPayDetails')->name('agent.paydetails');
 			Route::post('agent/approval_status', 'AgentController@approval_status')->name('agent/approval_status');
-			Route::get('agent/payout/requests', 'AgentController@agentPayoutRequests')->name('agent.payout.requests');
+			Route::get('agent/payout/requests', 'AgentPayoutController@agentPayoutRequests')->name('agent.payout.requests');
+			Route::get('agent/payout/requests/filter', 'AgentPayoutController@vendorPayoutRequestsFilter')->name('agent.payout.requests.filter');
+        	Route::post('agent/payout/request/complete/{id}', 'AgentPayoutController@vendorPayoutRequestComplete')->name('agent.payout.request.complete');
 			Route::post('agent/change_approval_status', 'AgentController@change_approval_status')->name('agent/change_approval_status');
 			Route::resource('customer', 'CustomerController');
 			Route::get('changeStatus', 'CustomerController@changeStatus');

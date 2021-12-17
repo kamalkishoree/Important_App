@@ -116,14 +116,14 @@
                 </li>
                 @endif
 
-                {{-- @if(in_array('Payout Requests',$allowed) || Auth::user()->is_superadmin == 1)
+                @if(in_array('Payout Requests',$allowed) || Auth::user()->is_superadmin == 1)
                 <li>
                     <a href="{{route('agent.payout.requests')}}">
                         <i class="fa fa-search-dollar"></i>
                         <span> {{ __('Payout Requests') }}</span>
                     </a>
                 </li>
-                @endif --}}
+                @endif
 
                 @if(in_array('Payment Options',$allowed) || Auth::user()->is_superadmin == 1)
                 <li>
