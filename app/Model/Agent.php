@@ -82,4 +82,8 @@ class Agent extends Authenticatable implements  Wallet, WalletFloat
         return $this->hasOne('App\Model\AgentLog','agent_id', 'id');
     }
 
+    public function agentBankDetails(){
+        return $this->hasMany('App\Model\AgentBankDetail' , 'id', 'agent_id');
+    }
+
 }

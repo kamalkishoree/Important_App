@@ -151,12 +151,15 @@ class AgentPayoutController extends BaseController{
     public function agentPayoutRequestComplete(Request $request, $domain = '', $id){
         try{
             DB::beginTransaction();
-            $payout = AgentPayout::where('id', $id)->first();
+            $payout = AgentPayout::with(['payoutBankDetails'=> function($q){
+                $q->where('status', 1);
+            }])->where('id', $id)->first();
             $user = Auth::user();
             
             $agent = Agent::where('id', $payout->agent_id)->where('is_approved', 1)->first();
             $credit = $agent->agentPayment->sum('cr');
             $debit = $agent->agentPayment->sum('dr');
+            $agent_account = $payout->payoutBankDetails->first() ? $payout->payoutBankDetails->first()->beneficiary_account_number : '';
             $agent_id = $agent->id;
 
             $total_order_value = Order::where('driver_id', $agent_id)->orderBy('id','desc');
@@ -175,6 +178,17 @@ class AgentPayoutController extends BaseController{
 
             $payout->status = 1;
             $payout->save();
+
+            $debit_amount = $request->amount;
+            $wallet = $agent->wallet;
+            if ($debit_amount > 0) {
+                $custom_meta = 'Wallet has been <b>Debited</b> for payout request';
+                if($agent_account != ''){
+                    $custom_meta = $custom_meta . '<b>XXXX'.substr($agent_account, -4).'</b>';
+                }
+                $wallet->withdrawFloat($debit_amount, [$custom_meta]);
+            }
+            
             DB::commit();
             return Redirect()->back()->with('success', __('Payout has been completed successfully'));
         }
