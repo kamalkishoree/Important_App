@@ -57,7 +57,9 @@ class AuthController extends BaseController
             ], 404);
         }
         if ($agent->is_approved == 0) {
-            return response()->json(['message' => 'Your account not approved yet. Please contact administration'], 422);
+            return response()->json(['message' => __('Your account not approved yet. Please contact administration')], 422);
+        }elseif ($agent->is_approved == 2) {
+            return response()->json(['message' => __('Your account has been rejected. Please contact administration')], 422);
         }
         Otp::where('phone', $request->phone_number)->delete();
         $otp = new Otp();
@@ -122,14 +124,16 @@ class AuthController extends BaseController
 
 
         $data = $agent = Agent::with('team')->where('phone_number', $request->phone_number)->first();
-
-
         if (!$agent) {
-            return response()->json([
-                'message' => __('User not found')], 404);
+            return response()->json(['message' => __('User not found')], 404);
+        }
+        if ($agent->is_approved == 0) {
+            return response()->json(['message' => __('Your account not approved yet. Please contact administration')], 422);
+        }elseif ($agent->is_approved == 2) {
+            return response()->json(['message' => __('Your account has been rejected. Please contact administration')], 422);
         }
 
-        $prefer = ClientPreference::select('theme', 'distance_unit', 'currency_id', 'language_id', 'agent_name', 'date_format', 'time_format', 'map_type', 'map_key_1')->first();
+        $prefer = ClientPreference::with('currency')->select('theme', 'distance_unit', 'currency_id', 'language_id', 'agent_name', 'date_format', 'time_format', 'map_type', 'map_key_1')->first();
         $allcation = AllocationRule::first('request_expiry');
         $prefer['alert_dismiss_time'] = (int)$allcation->request_expiry;
         $taskProof = TaskProof::all();
@@ -393,6 +397,15 @@ class AuthController extends BaseController
             $getFileName = $path;
         }
 
+        $newtag = explode(",", $request->tags);
+        $tag_id = [];
+        foreach ($newtag as $key => $value) {
+            if (!empty($value)) {
+                $check = TagsForAgent::firstOrCreate(['name' => $value]);
+                array_push($tag_id, $check->id);
+            }
+        }
+
         $data = [
             'name' => $request->name,
             'team_id' => $request->team_id ?? null,
@@ -408,6 +421,7 @@ class AuthController extends BaseController
         ];
 
         $agent = Agent::create($data);
+        $agent->tags()->sync($tag_id);
         $files = [];
         if ($request->hasFile('uploaded_file')) {
             $file = $request->file('uploaded_file');

@@ -308,7 +308,7 @@
                 <div class="card-box">
                     <h4 class="header-title">{{__("Customer Support")}}</h4>
                     <p class="sub-header">
-                        {{__("View and update your Customer Support and it's API key.")}}
+                        {{__("View and update your Customer Support, it's API key and Application ID")}}
                     </p>
                     <div class="row mb-2">
                         <div class="col-sm-8">
@@ -340,6 +340,17 @@
                                 @if ($errors->has('customer_support_key'))
                                 <span class="text-danger" role="alert">
                                     <strong>{{ $errors->first('customer_support_key') }}</strong>
+                                </span>
+                                @endif
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group mb-3">
+                                <label for="customer_support_application_id">{{__("Application ID")}}</label>
+                                <input type="password" name="customer_support_application_id" id="customer_support_application_id" placeholder="{{__('Please enter application ID')}}" class="form-control" value="{{ old('customer_support_application_id', $preference->customer_support_application_id ?? '') }}">
+                                @if ($errors->has('customer_support_application_id'))
+                                <span class="text-danger" role="alert">
+                                    <strong>{{ $errors->first('customer_support_application_id') }}</strong>
                                 </span>
                                 @endif
                             </div>
@@ -563,7 +574,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
+        {{-- <div class="col-md-3">
             <form method="POST" action="{{ route('route.create.configure', Auth::user()->code) }}">
                 @csrf
                 <div class="card-box same-size">
@@ -588,7 +599,7 @@
                         <div class="col-12 mb-2">
                             <div class="custom-switch redio-all">
                                 <input type="checkbox" value="1" class="custom-control-input large-icon" id="route_alcoholic_input" name="route_alcoholic_input" {{ isset($preference) && $preference->route_alcoholic_input == 1 ? 'checked' : '' }}>
-                                <label class="custom-control-label checkss" for="route_alcoholic_input">{{__("Show alcoholic item redio button on create & update.")}}</label>
+                                <label class="custom-control-label checkss" for="route_alcoholic_input">{{__("Show alcoholic item radio button on create & update.")}}</label>
                                 <div class="col-sm-4 text-right">
                                     @if ($errors->has('route_alcoholic_input'))
                                     <span class="text-danger" role="alert">
@@ -609,7 +620,7 @@
                         </div>
                     </div>
             </form>
-        </div>
+        </div> --}}
         
     </div>
 

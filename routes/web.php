@@ -102,6 +102,7 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 			Route::get('/order/tracking/{clientcode}/{order_id}', 'TrackingController@OrderTracking')->name('order.tracking');
 			Route::get('/order-details/tracking/{clientcode}/{order_id}', 'TrackingController@OrderTrackingDetail')->name('order.tracking.detail');
 			Route::get('/order-cancel/tracking/{clientcode}/{order_id}', 'TrackingController@orderCancelFromOrder')->name('order.cancel.from_order');
+
 		});
 
 		Route::group(['middleware' => ['auth:client'], 'prefix' => '/'], function () {
@@ -129,6 +130,10 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 			Route::post('pay/receive', 'AgentController@payreceive')->name('pay.receive');
 			Route::get('agent/paydetails/{id}', 'AgentController@agentPayDetails')->name('agent.paydetails');
 			Route::post('agent/approval_status', 'AgentController@approval_status')->name('agent/approval_status');
+			Route::get('agent/payout/requests', 'AgentPayoutController@agentPayoutRequests')->name('agent.payout.requests');
+			Route::get('agent/payout/requests/export', 'AgentPayoutController@export')->name('agents.payout.requests.export');
+			Route::get('agent/payout/requests/filter', 'AgentPayoutController@agentPayoutRequestsFilter')->name('agent.payout.requests.filter');
+        	Route::post('agent/payout/request/complete/{id}', 'AgentPayoutController@agentPayoutRequestComplete')->name('agent.payout.request.complete');
 			Route::post('agent/change_approval_status', 'AgentController@change_approval_status')->name('agent/change_approval_status');
 			Route::resource('customer', 'CustomerController');
 			Route::get('changeStatus', 'CustomerController@changeStatus');
@@ -196,6 +201,10 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 
 
 			Route::get('demo/page', 'GeoFenceController@newDemo')->name('new.demo');
+
+			Route::resource('payoption', 'PaymentOptionController');
+			Route::post('updateAll', 'PaymentOptionController@updateAll')->name('payoption.updateAll');
+			Route::post('payoutUpdateAll', 'PaymentOptionController@payoutUpdateAll')->name('payoutOption.payoutUpdateAll');
 		});
 	});
 

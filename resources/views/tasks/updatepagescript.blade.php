@@ -659,12 +659,11 @@ function loadMap(autocompletesWraps){
 }
 
 $(document).on('click', '.showMapTask', function(){
-    var no = $(this).attr('id');
+    var no = $(this).attr('id') ??  $(this).attr('num') ;
     console.log(no);
     var lats = document.getElementById(no+'-latitude').value;
     var lngs = document.getElementById(no+'-longitude').value;
-    console.log(lats);
-    console.log(lngs);
+    var address = document.getElementById(no+'-input').value;
     document.getElementById('map_for').value = no;
 
     if(lats == null || lats == '0'){
@@ -673,6 +672,11 @@ $(document).on('click', '.showMapTask', function(){
     if(lngs == null || lngs == '0'){
         lngs = -0.120850;
     }
+    if(address==null){
+            address= '';
+    }
+    var infowindow = new google.maps.InfoWindow();
+    var geocoder = new google.maps.Geocoder();
 
     var myLatlng = new google.maps.LatLng(lats, lngs);
         var mapProp = {
@@ -690,14 +694,33 @@ $(document).on('click', '.showMapTask', function(){
           });
         document.getElementById('lat_map').value= lats;
         document.getElementById('lng_map').value= lngs ; 
+        document.getElementById('addredd_map').value= address ; 
         // marker drag event
-        google.maps.event.addListener(marker,'drag',function(event) {
+        {{-- google.maps.event.addListener(marker,'drag',function(event) {
             document.getElementById('lat_map').value = event.latLng.lat();
             document.getElementById('lng_map').value = event.latLng.lng();
-        });
+        }); --}}
+        google.maps.event.addListener(marker, 'dragend', function() {
+                    geocoder.geocode({
+                    'latLng': marker.getPosition()
+                    }, function(results, status) {
+
+                    if (status == google.maps.GeocoderStatus.OK) {
+                        if (results[0]) {
+                             document.getElementById('lat_map_header').value = marker.getPosition().lat();
+                             document.getElementById('lng_map_header').value = marker.getPosition().lng();
+                             document.getElementById('addredd_map').value= results[0].formatted_address; 
+                        
+                            infowindow.setContent(results[0].formatted_address);
+                         
+                            infowindow.open(map, marker);
+                        }
+                    }
+                    });
+                });
 
         //marker drag event end
-        google.maps.event.addListener(marker,'dragend',function(event) {
+        {{-- google.maps.event.addListener(marker,'dragend',function(event) {
             var zx =JSON.stringify(event);
             console.log(zx);
 
@@ -706,7 +729,7 @@ $(document).on('click', '.showMapTask', function(){
             document.getElementById('lng_map').value = event.latLng.lng();
             //alert("lat=>"+event.latLng.lat());
             //alert("long=>"+event.latLng.lng());
-        });
+        }); --}}
         $('#add-customer-modal').addClass('fadeIn');
     $('#show-map-modal').modal({
         //backdrop: 'static',
@@ -720,9 +743,11 @@ $(document).on('click', '.selectMapLocation', function () {
     var mapLat = document.getElementById('lat_map').value;
     var mapLlng = document.getElementById('lng_map').value;
     var mapFor = document.getElementById('map_for').value;
+    var addredd_map = document.getElementById('addredd_map').value;
     console.log(mapLat+'-'+mapLlng+'-'+mapFor);
     document.getElementById(mapFor + '-latitude').value = mapLat;
     document.getElementById(mapFor + '-longitude').value = mapLlng;
+    document.getElementById(mapFor + '-input').value = addredd_map;
 
 
     $('#show-map-modal').modal('hide');
