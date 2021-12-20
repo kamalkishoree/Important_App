@@ -12,7 +12,7 @@ use Illuminate\Http\Request;
 use App\Traits\ApiResponser;
 // use App\Http\Traits\ToasterResponser;
 use Maatwebsite\Excel\Facades\Excel;
-// use App\Exports\OrderVendorListExport;
+use App\Exports\AgentPayoutRequestListExport;
 use App\Http\Controllers\BaseController;
 use App\Model\{Client, ClientPreference, User, Agent, Order, PaymentOption, PayoutOption, AgentPayout};
 
@@ -79,9 +79,9 @@ class AgentPayoutController extends BaseController{
             })->make(true);
     }
 
-    // public function export() {
-    //     return Excel::download(new OrderVendorListExport, 'vendor_list.xlsx');
-    // }
+    public function export() {
+        return Excel::download(new AgentPayoutRequestListExport, 'agent_payout_requests.csv');
+    }
 
 
     public function agentPayoutRequests(Request $request)
@@ -96,19 +96,21 @@ class AgentPayoutController extends BaseController{
         $total_order_value = $total_order_value->sum('order_cost');
 
         $pending_payouts = AgentPayout::where('status', 0);
-        $completed_payouts = AgentPayout::whereIn('status', [1,2]);
+        $completed_payouts = AgentPayout::where('status', 1);
+        $failed_payouts = AgentPayout::where('status', 2);
         $pending_payout_value = $pending_payouts->sum('amount');
         $completed_payout_value = $completed_payouts->sum('amount');
         $pending_payout_count = $pending_payouts->count();
         $completed_payout_count = $completed_payouts->count();
+        $failed_payout_count = $failed_payouts->count();
         $payout_options = PayoutOption::where('status', 1)->get();
         $preferences = ClientPreference::with('currency')->select('currency_id')->where('id', 1)->first();
         $currency_symbol = $preferences->currency->symbol ?? '$';
 
-        return view('agent.payout-requests')->with(['total_order_value' => number_format($total_order_value, 2), 'pending_payout_value'=>$pending_payout_value, 'completed_payout_value'=>$completed_payout_value, 'pending_payout_count'=>$pending_payout_count, 'completed_payout_count'=>$completed_payout_count, 'payout_options'=>$payout_options, 'currency_symbol'=>$currency_symbol]);
+        return view('agent.payout-requests')->with(['total_order_value' => number_format($total_order_value, 2), 'pending_payout_value'=>$pending_payout_value, 'completed_payout_value'=>$completed_payout_value, 'pending_payout_count'=>$pending_payout_count, 'completed_payout_count'=>$completed_payout_count, 'failed_payout_count'=>$failed_payout_count, 'payout_options'=>$payout_options, 'currency_symbol'=>$currency_symbol]);
     }
 
-    public function vendorPayoutRequestsFilter(Request $request){
+    public function agentPayoutRequestsFilter(Request $request){
         $from_date = "";
         $to_date = "";
         $user = Auth::user();
@@ -146,70 +148,39 @@ class AgentPayoutController extends BaseController{
             })->make(true);
     }
 
-    public function vendorPayoutRequestComplete(Request $request, $domain = '', $id){
+    public function agentPayoutRequestComplete(Request $request, $domain = '', $id){
         try{
             DB::beginTransaction();
             $payout = AgentPayout::where('id', $id)->first();
             $user = Auth::user();
-            $agent_id = $payout->agent_id;
-
-            $total_delivery_fees = Order::where('driver_id', $agent_id)->orderBy('id','desc');
-            // if ($user->is_superadmin == 0) {
-            //     $total_delivery_fees = $total_delivery_fees->whereHas('vendor.permissionToUser', function ($query) use($user) {
-            //         $query->where('user_id', $user->id);
-            //     });
-            // }
-            $total_delivery_fees = $total_delivery_fees->sum('distance_fee');
-
-            $total_promo_amount = Order::where('driver_id', $agent_id)->orderBy('id','desc');
-            // if ($user->is_superadmin == 0) {
-            //     $total_promo_amount = $total_promo_amount->whereHas('vendor.permissionToUser', function ($query) use($user) {
-            //         $query->where('user_id', $user->id);
-            //     });
-            // }
-            $total_promo_amount = $total_promo_amount->where('coupon_paid_by', 0)->sum('discount_amount');
-
-            $total_admin_commissions = Order::where('driver_id', $agent_id)->orderBy('id','desc');
-            // if ($user->is_superadmin == 0) {
-            //     $total_admin_commissions = $total_admin_commissions->whereHas('vendor.permissionToUser', function ($query) use($user) {
-            //         $query->where('user_id', $user->id);
-            //     });
-            // }
-            $total_admin_commissions = $total_admin_commissions->sum(DB::raw('admin_commission_percentage_amount + admin_commission_fixed_amount'));
+            
+            $agent = Agent::where('id', $payout->agent_id)->where('is_approved', 1)->first();
+            $credit = $agent->agentPayment->sum('cr');
+            $debit = $agent->agentPayment->sum('dr');
+            $agent_id = $agent->id;
 
             $total_order_value = Order::where('driver_id', $agent_id)->orderBy('id','desc');
-            // if ($user->is_superadmin == 0) {
-            //     $total_order_value = $total_order_value->whereHas('vendor.permissionToUser', function ($query) use($user) {
-            //         $query->where('user_id', $user->id);
-            //     });
-            // }
-            $total_order_value = $total_order_value->sum('order_cost') - $total_delivery_fees;
+            $total_order_value = $total_order_value->sum('order_cost');
 
-            $vendor_payouts = AgentPayout::where('agent_id', $agent_id)->orderBy('id','desc');
-            // if($user->is_superadmin == 0){
-            //     $vendor_payouts = $vendor_payouts->whereHas('vendor.permissionToUser', function ($query) use($user) {
-            //         $query->where('user_id', $user->id);
-            //     });
-            // }
-            $vendor_payouts = $vendor_payouts->where('status', 1)->sum('amount');
+            $agent_payouts = AgentPayout::where('agent_id', $agent_id)->orderBy('id','desc');
+            $agent_payouts = $agent_payouts->where('status', 1)->sum('amount');
 
-            $past_payout_value = $vendor_payouts;
-            $available_funds = $total_order_value - $total_admin_commissions - $total_promo_amount - $past_payout_value;
+            $past_payout_value = $agent_payouts;
+            $available_funds = $total_order_value + $agent->balanceFloat + $debit - $past_payout_value - $credit;
 
             if($request->amount > $available_funds){
-                $toaster = $this->errorToaster('Error', __('Payout amount is greater than agent available funds'));
-                return Redirect()->back()->with('toaster', $toaster);
+                $toaster = $this->errorToaster('Error', );
+                return Redirect()->back()->with('error', __('Payout amount is greater than agent available funds'));
             }
 
             $payout->status = 1;
             $payout->save();
             DB::commit();
-            $toaster = $this->successToaster(__('Success'), __('Payout has been completed successfully'));
+            return Redirect()->back()->with('success', __('Payout has been completed successfully'));
         }
         catch(Exception $ex){
             DB::rollback();
-            $toaster = $this->errorToaster(__('Errors'), $ex->message());
+            return Redirect()->back()->with('error', $ex->getMessage());
         }
-        return Redirect()->back()->with('toaster', $toaster);
     }
 }

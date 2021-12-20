@@ -84,6 +84,32 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
 
         <div class="row">
             <div class="col-12">
+                <div class="text-sm-left">
+                    @if (\Session::has('success'))
+                    <div class="alert mt-2 mb-0 alert-success">
+                        <span>{!! \Session::get('success') !!}</span>
+                    </div>
+                    @endif
+                    @if (\Session::has('error'))
+                    <div class="alert mt-2 mb-0 alert-danger">
+                        <span>{!! \Session::get('error') !!}</span>
+                    </div>
+                    @endif
+                    @if ( ($errors) && (count($errors) > 0) )
+                    <div class="alert mt-2 mb-0 alert-danger">
+                        <ul class="m-0">
+                            @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                    @endif
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
                 <div class="page-title-box">
                     <div class="page-title-right"></div>
                     <h4 class="page-title">{{ __("Payout Requests") }}</h4>
@@ -99,7 +125,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                 <div class="text-center">
                                     <h3>
                                         <i class="fas fa-money-check-alt text-primary"></i>
-                                        <span data-plugin="counterup" id="total_earnings_by_vendors">{{$total_order_value}}</span>
+                                        <span data-plugin="counterup" id="total_earnings_by_agents">{{$total_order_value}}</span>
                                     </h3>
                                     <p class="text-muted font-15 mb-0">{{ __('Total Order Value') }}</p>
                                 </div>
@@ -139,6 +165,12 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                     <li class="nav-item">
                         <a class="nav-link" id="completed-payouts" data-toggle="tab" href="#completed_payouts" role="tab" aria-selected="true" data-rel="completed_payouts_datatble" data-status="1">
                             <i class="icofont icofont-ui-home"></i>{{ __('Completed') }}<sup class="total-items">({{$completed_payout_count}})</sup>
+                        </a>
+                        <div class="material-border"></div>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="failed-payouts" data-toggle="tab" href="#failed_payouts" role="tab" aria-selected="true" data-rel="failed_payouts_datatble" data-status="2">
+                            <i class="icofont icofont-ui-home"></i>{{ __('Failed') }}<sup class="total-items">({{$failed_payout_count}})</sup>
                         </a>
                         <div class="material-border"></div>
                     </li>
@@ -183,13 +215,36 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                                     <tr>
                                                         <th>{{ __('Date') }}</th>
                                                         <th>{{ __('Agent') }}</th>
-                                                        {{-- <th>{{ _('Requested By') }}</th> --}}
                                                         <th>{{ __('Amount') }}</th>
                                                         <th>{{ __('Payout Type') }}</th>
                                                         <th class="text-center">{{ __('Status') }}</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody id="completed_payouts_list"></tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="failed_payouts" role="tabpanel" aria-labelledby="failed-payouts">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="table-responsive">
+                                            <table class="table table-centered table-nowrap table-striped" id="failed_payouts_datatble" width="100%">
+                                                <thead>
+                                                    <tr>
+                                                        <th>{{ __('Date') }}</th>
+                                                        <th>{{ __('Agent') }}</th>
+                                                        <th>{{ __('Amount') }}</th>
+                                                        <th>{{ __('Payout Type') }}</th>
+                                                        <th class="text-center">{{ __('Status') }}</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="failed_payouts_list"></tbody>
                                             </table>
                                         </div>
                                     </div>
@@ -219,7 +274,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                 <div class="modal-body px-3">
                     <div class="row">
                         <h4 class="modal-title">{{__('Are you sure you want to payout')}} 
-                            <span id="payout-vendor"></span> for
+                            <span id="payout-agent"></span> for
                             <span id="payout-amount-final"></span>?
                         </h4>
                     </div>
@@ -268,6 +323,21 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
         // initDataTable();
 
         function initDataTable(table, status) {
+
+            if (status == 0) {
+                var domRef = '<"toolbar">Bfrtip';
+                var btnObj = [{
+                    className: 'btn btn-success waves-effect waves-light',
+                    text: '<span class="btn-label"><i class="mdi mdi-export-variant"></i></span>Export CSV',
+                    action: function(e, dt, node, config) {
+                        window.location.href = "{{ route('agents.payout.requests.export') }}";
+                    }
+                }];
+            } else if (status == 1 || status == 2) {
+                var domRef = '<"toolbar">Brtip';
+                var btnObj = [];
+            }
+
             $('#'+table).DataTable({
                 "destroy": true,
                 "scrollX": true,
@@ -283,7 +353,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                 drawCallback: function () {
                     $(".dataTables_paginate > .pagination").addClass("pagination-rounded");
                 },
-                buttons: [],
+                buttons: btnObj,
                 ajax: {
                   url: "{{route('agent.payout.requests.filter')}}",
                   data: function (d) {
@@ -312,11 +382,11 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
         }
 
         $(document).delegate(".payout_btn", "click", function(){
-            var vendor = $(this).closest('tr').find('td:nth-child(2)').text();
-            var amount = $(this).closest('tr').find('td:nth-child(4)').text();
+            var agent = $(this).closest('tr').find('td:nth-child(2)').text();
+            var amount = $(this).closest('tr').find('td:nth-child(3)').text();
             var dataid = $(this).attr('data-id');
-            $("#payout_form_final").attr('action', "{{url('client/account/vendor/payout/request/complete')}}"+'/'+dataid);
-            $("#payout-confirm-modal #payout-vendor").text(vendor);
+            $("#payout_form_final").attr('action', "{{url('agent/payout/request/complete')}}"+'/'+dataid);
+            $("#payout-confirm-modal #payout-agent").text(agent);
             $("#payout-confirm-modal #payout-amount-final").text('{{$currency_symbol}}' + amount);
             $("#payout-confirm-modal #payout_amount").val(amount);
             $("#payout-confirm-modal").modal('show');

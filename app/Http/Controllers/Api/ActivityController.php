@@ -282,7 +282,7 @@ class ActivityController extends BaseController
 
             $totalCashCollected = 0;
             foreach($tasks as $task){
-                if(!empty($task->order->cash_to_be_collected)){
+                if(!empty($task->order->cash_to_be_collected) && ($task->task_type_id == 2)){
                     $totalCashCollected += $task->order->cash_to_be_collected;
                 }
             }
