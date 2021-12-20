@@ -223,6 +223,8 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                 <table class="table table-striped dt-responsive nowrap w-100 all agent-listing" id="awaiting_approval_agent_datatable">
                                     <thead>
                                         <tr>
+
+
                                             <th class="sort-icon">{{__("UID")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                             <th class="sort-icon">{{__("Profile")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                             <th class="sort-icon">{{__("Name")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
@@ -236,6 +238,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                             <th class="sort-icon">{{__("Total Receive from Agent")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                             <th class="sort-icon">{{__("Final Balance")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                             <th class="sort-icon">{{__("Reuested At")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
+                                            <th class="sort-icon">{{__("Approved At")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                             <th>{{__("Action")}}</th>
                                         </tr>
                                     </thead>

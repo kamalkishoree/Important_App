@@ -2,6 +2,7 @@
     $(document).ready(function() {
         $(document).on("click", ".nav-link", function() {
             let rel = $(this).data('rel');
+            console.log(rel);
             let status = $(this).data('status');
             initDataTable(rel, status);
             setTimeout(function() {
@@ -15,50 +16,8 @@
         }, 200);
 
         function initDataTable(table, status) {
-            if (status == 1) {
-                var domRef = '<"toolbar">Bfrtip';
-                var btnObj = [{
-                    className: 'btn btn-success waves-effect waves-light',
-                    text: '<span class="btn-label"><i class="mdi mdi-export-variant"></i></span>Export CSV',
-                    action: function(e, dt, node, config) {
-                        window.location.href = "{{ route('agents.export') }}";
-                    }
-                }];
-            } else if (status == 0 || status == 2) {
-                var domRef = '<"toolbar">Brtip';
-                var btnObj = [];
-            }
-            $('#' + table).DataTable({
-                "dom": domRef,
-                "scrollX": true,
-                "destroy": true,
-                "serverSide": true,
-                "responsive": true,
-                "processing": true,
-                "iDisplayLength": 10,
-                language: {
-                    search: "",
-                    paginate: {
-                        previous: "<i class='mdi mdi-chevron-left'>",
-                        next: "<i class='mdi mdi-chevron-right'>"
-                    },
-                    searchPlaceholder: "Search Agent",
-                    'loadingRecords': '&nbsp;',
-                    'processing': '<div class="spinner"></div>'
-                },
-                drawCallback: function() {
-                    $(".dataTables_paginate > .pagination").addClass("pagination-rounded");
-                },
-                buttons: btnObj,
-                ajax: {
-                    url: "{{url('agent/filter')}}",
-                    data: function(d) {
-                        d.search = $('input[type="search"]').val();
-                        d.imgproxyurl = '{{$imgproxyurl}}';
-                        d.status = status;
-                    }
-                },
-                columns: [{
+            console.log(table);
+            var columnsDynamic =   [{
                         data: 'uid',
                         name: 'uid',
                         orderable: true,
@@ -168,8 +127,56 @@
                         orderable: false,
                         searchable: false
                     },
-                ]
+                ];
+            if (status == 1) {
+                var domRef = '<"toolbar">Bfrtip';
+                var btnObj = [{
+                    className: 'btn btn-success waves-effect waves-light',
+                    text: '<span class="btn-label"><i class="mdi mdi-export-variant"></i></span>Export CSV',
+                    action: function(e, dt, node, config) {
+                        window.location.href = "{{ route('agents.export') }}";
+                    }
+                }];
+            } else if (status == 0 || status == 2) {
+                var domRef = '<"toolbar">Brtip';
+                var btnObj = [];
+            }
+            var table_dy = $('#' + table).DataTable({
+                "dom": domRef,
+                "scrollX": true,
+                "destroy": true,
+                "serverSide": true,
+                "responsive": true,
+                "processing": true,
+                "iDisplayLength": 10,
+                language: {
+                    search: "",
+                    paginate: {
+                        previous: "<i class='mdi mdi-chevron-left'>",
+                        next: "<i class='mdi mdi-chevron-right'>"
+                    },
+                    searchPlaceholder: "Search Agent",
+                    'loadingRecords': '&nbsp;',
+                    'processing': '<div class="spinner"></div>'
+                },
+                drawCallback: function() {
+                    $(".dataTables_paginate > .pagination").addClass("pagination-rounded");
+                },
+                buttons: btnObj,
+                ajax: {
+                    url: "{{url('agent/filter')}}",
+                    data: function(d) {
+                        d.search = $('input[type="search"]').val();
+                        d.imgproxyurl = '{{$imgproxyurl}}';
+                        d.status = status;
+                    }
+                },
+                columns:columnsDynamic
             });
+            if(status ==2 || status ==0){
+                table_dy.column(-2).visible(false);
+            }
+            
 
         }
 
