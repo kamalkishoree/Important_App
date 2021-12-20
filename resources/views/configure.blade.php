@@ -538,7 +538,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
+        {{-- <div class="col-md-3">
             <form method="POST" action="{{ route('route.create.configure', Auth::user()->code) }}">
                 @csrf
                 <div class="card-box same-size">
@@ -584,7 +584,7 @@
                         </div>
                     </div>
             </form>
-        </div>
+        </div> --}}
         
     </div>
 
