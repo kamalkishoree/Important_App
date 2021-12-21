@@ -120,7 +120,7 @@ class AgentPayoutController extends BaseController{
             $to_date = (!empty($date_date_filter[1]))?$date_date_filter[1]:$date_date_filter[0];
             $from_date = $date_date_filter[0];
         }
-        $vendor_payouts = AgentPayout::with(['agent', 'payoutOption'])->orderBy('id','desc');
+        $vendor_payouts = AgentPayout::with(['agent', 'payoutOption'])->orderBy('updated_at','desc');
         // if($user->is_superadmin == 0){
         //     $vendor_payouts = $vendor_payouts->whereHas('vendor.permissionToUser', function ($query) use($user) {
         //         $query->where('user_id', $user->id);
@@ -185,7 +185,7 @@ class AgentPayoutController extends BaseController{
                 if($agent_account != ''){
                     $custom_meta = $custom_meta . '<b>XXXX'.substr($agent_account, -4).'</b>';
                 }
-                $wallet->withdrawFloat($debit_amount, [$custom_meta]);
+                $wallet->forceWithdrawFloat($debit_amount, [$custom_meta]);
             }
             
             DB::commit();
@@ -194,6 +194,61 @@ class AgentPayoutController extends BaseController{
         catch(Exception $ex){
             DB::rollback();
             return Redirect()->back()->with('error', $ex->getMessage());
+        }
+    }
+
+    public function agentPayoutRequestsCompleteAll(Request $request, $domain = ''){
+        try{
+            DB::beginTransaction();
+            $payout_ids = $request->payout_ids;
+            if(count($payout_ids) < 1){
+                return $this->error(__('Please select any record'), 422);
+            }
+            foreach($payout_ids as $pay_id){
+                $payout = AgentPayout::with(['payoutBankDetails'=> function($q){
+                    $q->where('status', 1);
+                }])->where('id', $pay_id)->first();
+                
+                $agent = Agent::where('id', $payout->agent_id)->where('is_approved', 1)->first();
+                $credit = $agent->agentPayment->sum('cr');
+                $debit = $agent->agentPayment->sum('dr');
+                $agent_account = $payout->payoutBankDetails->first() ? $payout->payoutBankDetails->first()->beneficiary_account_number : '';
+                $agent_id = $agent->id;
+
+                $total_order_value = Order::where('driver_id', $agent_id)->orderBy('id','desc');
+                $total_order_value = $total_order_value->sum('order_cost');
+
+                $agent_payouts = AgentPayout::where('agent_id', $agent_id)->orderBy('id','desc');
+                $agent_payouts = $agent_payouts->where('status', 1)->sum('amount');
+
+                $past_payout_value = $agent_payouts;
+                $available_funds = $total_order_value + $agent->balanceFloat + $debit - $past_payout_value - $credit;
+
+                if($payout->amount > $available_funds){
+                    // return Redirect()->back()->with('error', __('Payout amount is greater than agent available funds'));
+                    continue;
+                }
+
+                $payout->status = 1;
+                $payout->save();
+
+                $debit_amount = $payout->amount;
+                $wallet = $agent->wallet;
+                if ($debit_amount > 0) {
+                    $custom_meta = 'Wallet has been <b>Debited</b> for payout request';
+                    if($agent_account != ''){
+                        $custom_meta = $custom_meta . '<b>XXXX'.substr($agent_account, -4).'</b>';
+                    }
+                    $wallet->forceWithdrawFloat($debit_amount, [$custom_meta]);
+                }
+            }
+            
+            DB::commit();
+            return $this->success('', __('Payout has been completed successfully'), 201);
+        }
+        catch(Exception $ex){
+            DB::rollback();
+            return $this->error($ex->getMessage(), $ex->getCode());
         }
     }
 }

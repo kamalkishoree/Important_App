@@ -159,8 +159,8 @@ class AgentPayoutController extends BaseController{
         $total_order_value = $total_order_value->sum('order_cost');
 
         $agent_payouts = AgentPayout::select('*','status as status_id')->with('payoutOption')->where('agent_id', $agent_id)->orderBy('id','desc');
-        $agent_payout_list = $agent_payouts->paginate($limit, $page);
         $past_payout_value = $agent_payouts->whereIn('status', [0,1])->sum('amount');
+        $agent_payout_list = $agent_payouts->paginate($limit, $page);
 
         $available_funds = $total_order_value + $agent->balanceFloat + $debit - $past_payout_value - $credit;
         // $available_funds = number_format($available_funds, 2, '.', ',');
