@@ -16,7 +16,8 @@ class PayoutOptionSeeder extends Seeder
       $payout_options = array(
         array('id' => '1', 'path' => '', 'code' => 'cash', 'title' => 'Off the Platform', 'off_site' => '0', 'status' => '0'),
         array('id' => '2', 'path' => 'omnipay/stripe', 'code' => 'stripe', 'title' => 'Stripe', 'off_site' => '0', 'status' => '0'),
-        array('id' => '3', 'path' => 'razorpay/razorpay', 'code' => 'razorpay', 'title' => 'Razorpay', 'off_site' => '0', 'status' => '0')
+        array('id' => '3', 'path' => 'razorpay/razorpay', 'code' => 'razorpay', 'title' => 'Razorpay', 'off_site' => '0', 'status' => '0'),
+        array('id' => '4', 'path' => '', 'code' => 'bank_account_m_india', 'title' => 'Bank Account M (India)', 'off_site' => '0', 'status' => '0')
       ); 
 
       if($option_count == 0)

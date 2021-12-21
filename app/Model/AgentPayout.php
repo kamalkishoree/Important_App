@@ -14,8 +14,16 @@ class AgentPayout extends Model
 	//     return $this->hasOne('App\Model\User' , 'id', 'requested_by'); 
 	// }
 
+    public function currencyDetails(){
+        return $this->hasOne('App\Model\Currency','id','currency');
+    }
+
     public function payoutOption(){
         return $this->hasOne('App\Model\PayoutOption' , 'id', 'payout_option_id');
+    }
+
+    public function payoutBankDetails(){
+        return $this->hasMany('App\Model\AgentBankDetail' , 'id', 'agent_bank_detail_id');
     }
 
     public function getStatusAttribute($value){

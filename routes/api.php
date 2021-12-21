@@ -73,7 +73,9 @@ Route::group(['middleware' => ['dbCheck', 'AppAuth','apiLocalization']], functio
     Route::post('agentWallet/credit', 'Api\WalletController@creditAgentWallet');      // api for credit money into agent wallet
     Route::get('payment/options/{page}','Api\PaymentOptionController@getPaymentOptions'); // api for payment options
     Route::get('agent/transaction/details/{id}', 'Api\DriverTransactionController@transactionDetails');   // api for agent transactions
-    Route::post('agent/payout/request/create/{id}', 'Api\AgentPayoutController@agentPayoutRequestCreate');
+    Route::get('agent/bank/details', 'Api\AgentPayoutController@agentBankDetails'); // api for getting agent bank details
+    Route::get('agent/payout/details', 'Api\AgentPayoutController@agentPayoutDetails'); // api for agent payout details
+    Route::post('agent/payout/request/create/{id}', 'Api\AgentPayoutController@agentPayoutRequestCreate'); // api for creating agent payout request
 });
 
 

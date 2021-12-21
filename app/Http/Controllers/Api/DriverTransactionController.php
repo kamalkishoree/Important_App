@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
-use App\Model\{Agent, AgentPayment, Order, Task, Transaction};
+use App\Model\{Agent, AgentPayment, AgentPayout, Order, Task, Transaction};
 
 class DriverTransactionController extends BaseController
 {
@@ -46,6 +46,9 @@ class DriverTransactionController extends BaseController
             $wallet_transactions = Transaction::select(DB::raw('id, "wallet" as transaction_type, NULL as order_id, NULL as dependent_task_id, NULL as task_type_id, NULL as location_id, NULL as appointment_duration, NULL as task_status, NULL as allocation_type, amount, type, meta, NULL as dr, NULL as cr, created_at'))
             ->where('payable_id', $agent->id);
 
+            $agent_payouts = AgentPayout::select(DB::raw('id, "payout" as transaction_type, NULL as order_id, NULL as dependent_task_id, NULL as task_type_id, NULL as location_id, NULL as appointment_duration, NULL as task_status, NULL as allocation_type, amount, NULL as type, NULL as meta, NULL as dr, NULL as cr, created_at'))
+            ->where('agent_id', $agent->id)->where('status', 1);
+        
             if(!empty($request->from_date) && !empty($request->to_date)){
                 $orders = Order::where('driver_id', $id)->whereBetween('order_time', [$request->from_date." 00:00:00",$request->to_date." 23:59:59"])->pluck('id')->toArray();
             }else{
@@ -57,6 +60,7 @@ class DriverTransactionController extends BaseController
                 ->select(DB::raw('id, "task" as transaction_type, order_id, dependent_task_id, task_type_id, location_id, appointment_duration, task_status, allocation_type, NULL as amount, NULL as type, NULL as meta, NULL as dr, NULL as cr, created_at'))
                 ->union($payments)
                 ->union($wallet_transactions)
+                ->union($agent_payouts)
                 ->orderBy('created_at', 'DESC')
                 ->paginate($limit, $page);
     

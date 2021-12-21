@@ -349,16 +349,25 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
     }
 
     $("#submitpayreceive").submit(function(stay) {
-
         var formdata = $(this).serialize();
         $.ajax({
             type: 'POST',
             url: "{{ route('pay.receive') }}",
             data: formdata,
-            success: function(data) {
-                $("#pay-receive-modal .close").click();
-                location.reload();
+            success: function(response) {
+                if (response.status == 'Success') {
+                    $("#pay-receive-modal .close").click();
+                    location.reload();
+                } else {
+                    $("#pay-receive-modal .show_all_error.invalid-feedback").show();
+                    $("#pay-receive-modal .show_all_error.invalid-feedback").text(response.message);
+                }
             },
+            error: function(response){
+                let errors = response.responseJSON;
+                $("#pay-receive-modal .show_all_error.invalid-feedback").show();
+                $("#pay-receive-modal .show_all_error.invalid-feedback").text(errors.message);
+            }
         });
         stay.preventDefault();
     });
