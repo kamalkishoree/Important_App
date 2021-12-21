@@ -57,14 +57,17 @@
                             <div class="card-box dispaly-cards">
                             {!! Form::label('title', 'Cash Collected',['class' => 'control-label']) !!} <br>
                             <span id="cash_collected"></span>
-                        </div>
+                            </div>
                         </div>
                         <div class="col-md-4">
                             <div class="card-box dispaly-cards">
                             {!! Form::label('title', 'Final Balance',['class' => 'control-label']) !!} <br>
                             <span id="final_balance"></span>
+                            </div>
                         </div>
-                    </div>
+                        <div class="col-md-12">
+                            <span class="show_all_error invalid-feedback"></span>
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer border-0">

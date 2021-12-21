@@ -172,7 +172,6 @@ class AgentPayoutController extends BaseController{
             $available_funds = $total_order_value + $agent->balanceFloat + $debit - $past_payout_value - $credit;
 
             if($request->amount > $available_funds){
-                $toaster = $this->errorToaster('Error', );
                 return Redirect()->back()->with('error', __('Payout amount is greater than agent available funds'));
             }
 
