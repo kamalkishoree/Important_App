@@ -25,6 +25,7 @@ use GuzzleHttp\Client as GCLIENT;
 use Excel;
 use App\Traits\ApiResponser;
 use App\Exports\AgentsExport;
+use App\Model\Client;
 use App\Model\ClientPreference;
 use App\Model\DriverRegistrationDocument;
 use Doctrine\DBAL\Driver\DrizzlePDOMySql\Driver;
@@ -92,6 +93,7 @@ class AgentController extends Controller
     public function agentFilter(Request $request)
     {
         try {
+            $client = Client::where('code', Auth::user()->code)->with(['getTimezone', 'getPreference'])->first();
             $agents = Agent::orderBy('id', 'DESC');
             if (!empty($request->get('date_filter'))) {
                 $dateFilter = explode('to', $request->get('date_filter'));
@@ -149,11 +151,11 @@ class AgentController extends Controller
                     $payToDriver = $agents->balanceFloat + ($pay - $receive) - ($cash - $orders);
                     return number_format((float)$payToDriver, 2, '.', '');
                 })
-                ->editColumn('created_at', function ($agents) use ($request) {
-                    return $agents->created_at;
+                ->editColumn('created_at', function ($agents) use ($request, $client) {
+                    return convertDateTimeInTimeZone($agents->created_at, $client->getTimezone->timezone);
                 })
-                ->editColumn('updated_at', function ($agents) use ($request) {
-                    return $agents->updated_at;
+                ->editColumn('updated_at', function ($agents) use ($request, $client) {
+                    return convertDateTimeInTimeZone($agents->updated_at, $client->getTimezone->timezone);
                 })
                 ->editColumn('action', function ($agents) use ($request) {
                     if($request->status == 1){

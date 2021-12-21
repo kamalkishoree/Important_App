@@ -83,5 +83,11 @@ class Client extends Authenticatable
       return $this->belongsTo('App\Model\Countries','country_id','id');
     }
 
-   
+    /**
+     * Get timezone
+    */
+    public function getTimezone()
+    {
+      return $this->belongsTo('App\Model\Timezone','timezone','id');
+    }
 }
