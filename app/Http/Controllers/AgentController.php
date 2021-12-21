@@ -146,7 +146,7 @@ class AgentController extends Controller
                     $orders      = $agents->order->sum('driver_cost');
                     $receive     = $agents->agentPayment->sum('cr');
                     $pay         = $agents->agentPayment->sum('dr');
-                    $payToDriver = ($pay - $receive) - ($cash - $orders);
+                    $payToDriver = $agents->balanceFloat + ($pay - $receive) - ($cash - $orders);
                     return number_format((float)$payToDriver, 2, '.', '');
                 })
                 ->editColumn('created_at', function ($agents) use ($request) {
@@ -627,6 +627,7 @@ class AgentController extends Controller
         $data['driver_cost']           = $driver_cost;
         $data['credit']           = $credit;
         $data['debit']           = $debit;
+        $data['wallet_balance']           = $agent->balanceFloat;
 
 
         return response()->json($data);
