@@ -324,7 +324,7 @@ class TaskController extends Controller
     // function for saving new order
     public function newtasks(Request $request)
     {   
-       // dd($request->toArray());
+        //dd($request->toArray());
         $loc_id = $cus_id = $send_loc_id = $newlat = $newlong = 0;
         $iinputs = $request->toArray();
         $old_address_ids = array();
@@ -448,7 +448,7 @@ class TaskController extends Controller
 
                 $Loction = Location::updateOrCreate(
                     ['latitude' => $request->latitude[$key], 'longitude' => $request->longitude[$key],'address' => $request->address[$key],'customer_id' => $cus_id],
-                    [$loc]
+                    $loc
                 );
 
              //   $Loction = Location::create($loc);
@@ -480,7 +480,7 @@ class TaskController extends Controller
 
                 $Loction = Location::updateOrCreate(
                     ['latitude' => $location->latitude, 'longitude' => $location->longitude, 'address' => $location->address,'customer_id'  => $cus_id],
-                    [$newloc]
+                    $newloc
                 );
                // $location = Location::create($newloc);
             }
@@ -889,7 +889,7 @@ class TaskController extends Controller
               //  $Loction = Location::create($loc);
                 $Loction = Location::updateOrCreate(
                     ['latitude' => $request->latitude[$key], 'longitude' => $request->longitude[$key], 'address' => $request->address[$key], 'customer_id' => $cus_id],
-                    [$loc]
+                    $loc
                 );
                 $loc_id = $Loction->id;
                 $send_loc_id = $loc_id;
@@ -2012,7 +2012,7 @@ class TaskController extends Controller
               //  $Loction = Location::create($loc);
                 $Loction = Location::updateOrCreate(
                     ['latitude' => $request->latitude[$key], 'longitude' => $request->longitude[$key], 'address' => $request->address[$key],'customer_id' => $cus_id],
-                    [$loc]
+                    $loc
                 );
                 $loc_id = $Loction->id;
             } else {
@@ -2039,7 +2039,7 @@ class TaskController extends Controller
                   //  $location = Location::create($newloc);
                     $location = Location::updateOrCreate(
                         ['latitude' => $location->latitude, 'longitude' => $location->longitude, 'address' => $location->address],
-                        [$newloc]
+                        $newloc
                     );
                 }
                 $loc_id = $location->id;
