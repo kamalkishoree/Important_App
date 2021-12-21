@@ -132,7 +132,7 @@ class AgentPayoutController extends BaseController{
         $vendor_payouts = $vendor_payouts->where('status', $status)->get();
         foreach ($vendor_payouts as $payout) {
             $payout->date = convertDateTimeInTimeZone($payout->created_at, $client->getTimezone->timezone);
-            $payout->agentName = $payout->agent->name;
+            $payout->agentName = $payout->agent ? $payout->agent->name : '';
             // $payout->requestedBy = ucfirst($payout->user->name);
             $payout->amount = $payout->amount;
             $payout->type = $payout->payoutOption->title;
