@@ -111,6 +111,7 @@ class AgentPayoutController extends BaseController{
     }
 
     public function agentPayoutRequestsFilter(Request $request){
+        $client = Client::where('code', Auth::user()->code)->with(['getTimezone', 'getPreference'])->first();
         $from_date = "";
         $to_date = "";
         $user = Auth::user();
@@ -130,7 +131,7 @@ class AgentPayoutController extends BaseController{
         // }
         $vendor_payouts = $vendor_payouts->where('status', $status)->get();
         foreach ($vendor_payouts as $payout) {
-            $payout->date = Carbon::parse($payout->created_at)->toDateTimeString();
+            $payout->date = convertDateTimeInTimeZone($payout->created_at, $client->getTimezone->timezone);
             $payout->agentName = $payout->agent->name;
             // $payout->requestedBy = ucfirst($payout->user->name);
             $payout->amount = $payout->amount;
