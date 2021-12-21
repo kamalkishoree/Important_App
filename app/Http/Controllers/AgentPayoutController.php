@@ -14,7 +14,7 @@ use App\Traits\ApiResponser;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\AgentPayoutRequestListExport;
 use App\Http\Controllers\BaseController;
-use App\Model\{Client, ClientPreference, User, Agent, Order, PaymentOption, PayoutOption, AgentPayout};
+use App\Model\{Client, ClientPreference, User, Agent, Order, PaymentOption, PayoutOption, AgentPayout, AgentBankDetail};
 
 class AgentPayoutController extends BaseController{
     use ApiResponser;
@@ -120,7 +120,9 @@ class AgentPayoutController extends BaseController{
             $to_date = (!empty($date_date_filter[1]))?$date_date_filter[1]:$date_date_filter[0];
             $from_date = $date_date_filter[0];
         }
-        $vendor_payouts = AgentPayout::with(['agent', 'payoutOption'])->orderBy('updated_at','desc');
+        $vendor_payouts = AgentPayout::with(['agent', 'payoutOption', 'payoutBankDetails'=>function($q){
+            $q->where('status', 1);
+        }])->orderBy('updated_at','desc');
         // if($user->is_superadmin == 0){
         //     $vendor_payouts = $vendor_payouts->whereHas('vendor.permissionToUser', function ($query) use($user) {
         //         $query->where('user_id', $user->id);
@@ -133,6 +135,7 @@ class AgentPayoutController extends BaseController{
             // $payout->requestedBy = ucfirst($payout->user->name);
             $payout->amount = $payout->amount;
             $payout->type = $payout->payoutOption->title;
+            $payout->bank_account = $payout->agent_bank_detail_id ?? '';
         }
         return Datatables::of($vendor_payouts)
             ->addIndexColumn()
@@ -249,6 +252,19 @@ class AgentPayoutController extends BaseController{
         catch(Exception $ex){
             DB::rollback();
             return $this->error($ex->getMessage(), $ex->getCode());
+        }
+    }
+
+    /**   get agent payout bank details  */
+    public function agentPayoutBankDetails(Request $request)
+    {
+        try{
+            $agent_payout_bank_detail_id = $request->id;
+            $agent_bank_details = AgentBankDetail::with('agent')->where('id', $agent_payout_bank_detail_id)->first();
+            return $this->success($agent_bank_details, __('Success'), 201);
+        }
+        catch(Exception $ex){
+            return $this->success($ex->getMessage(), $ex->getCode());
         }
     }
 }

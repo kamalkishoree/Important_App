@@ -199,6 +199,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                                         {{-- <th>{{ _('Requested By') }}</th> --}}
                                                         <th>{{ __('Amount') }}</th>
                                                         <th>{{ __('Payout Type') }}</th>
+                                                        <th>{{ __('Bank Detials') }}</th>
                                                         <th class="text-center">{{ __('Action') }}</th>
                                                     </tr>
                                                 </thead>
@@ -223,6 +224,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                                         <th>{{ __('Agent') }}</th>
                                                         <th>{{ __('Amount') }}</th>
                                                         <th>{{ __('Payout Type') }}</th>
+                                                        <th>{{ __('Bank Detials') }}</th>
                                                         <th class="text-center">{{ __('Status') }}</th>
                                                     </tr>
                                                 </thead>
@@ -247,6 +249,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                                         <th>{{ __('Agent') }}</th>
                                                         <th>{{ __('Amount') }}</th>
                                                         <th>{{ __('Payout Type') }}</th>
+                                                        <th>{{ __('Bank Detials') }}</th>
                                                         <th class="text-center">{{ __('Status') }}</th>
                                                     </tr>
                                                 </thead>
@@ -307,6 +310,46 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                 <button type="button" class="btn btn-danger waves-effect waves-light" data-dismiss="modal">{{__('Cancel')}}</button>
             </div>
             </form>
+        </div>
+    </div>
+</div>
+
+<div id="agent-bank-details-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="agentBankDetialsModalLabel" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header border-0">
+                <h4 class="modal-title">{{__("Bank Details")}} - <span id="agent_name"></span></h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            </div>
+
+            <div class="modal-body px-3 py-0">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="beneficiary_name" class="control-label">{{__("Beneficiary Name")}}</label>
+                            <input type="text" class="form-control" id="beneficiary_name" placeholder="{{__("Beneficiary Name")}}" readonly>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="beneficiary_account_number" class="control-label">{{__("Bank Account Number")}}</label>
+                            <input type="text" class="form-control" id="beneficiary_account_number" placeholder="{{__("Bank Account Number")}}" readonly>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="beneficiary_ifsc" class="control-label">{{__("Bank IFSC")}}</label>
+                            <input type="text" class="form-control" id="beneficiary_ifsc" placeholder="{{__("Bank IFSC")}}" readonly>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="beneficiary_address" class="control-label">{{__("Address")}}</label>
+                            <input type="text" class="form-control" id="beneficiary_address" placeholder="{{__("Address")}}" readonly>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -433,6 +476,13 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                     // {data: 'requestedBy', name: 'requestedBy', orderable: false, searchable: false},
                     {data: 'amount', class:'text-center', name: 'amount', orderable: false, searchable: false},
                     {data: 'type', name: 'type', orderable: false, searchable: false},
+                    {data: 'bank_account', class:'text-center', name: 'bank_account', orderable: false, searchable: false, "mRender":function(data, type, full){
+                        if(full.bank_account != ''){
+                            return '<a href="javascript:void(0)" class="view_agent_bank_details" data-id="'+full.bank_account+'">View</a>';
+                        }else{
+                            return 'NA';
+                        }
+                    }},
                     {data: 'status', class:'text-center', name: 'status', orderable: false, searchable: false, "mRender":function(data, type, full){
                         if(full.status == 'Pending'){
                             return "<button class='btn btn-sm btn-info payout_btn' data-id='"+full.id+"'>Payout</button>";
@@ -448,6 +498,13 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                     // {data: 'requestedBy', name: 'requestedBy', orderable: false, searchable: false},
                     {data: 'amount', class:'text-center', name: 'amount', orderable: false, searchable: false},
                     {data: 'type', name: 'type', orderable: false, searchable: false},
+                    {data: 'bank_account', class:'text-center', name: 'bank_account', orderable: false, searchable: false, "mRender":function(data, type, full){
+                        if(full.bank_account != ''){
+                            return '<a href="javascript:void(0)" class="view_agent_bank_details" data-id="'+full.bank_account+'">View</a>';
+                        }else{
+                            return 'NA';
+                        }
+                    }},
                     {data: 'status', class:'text-center', name: 'status', orderable: false, searchable: false, "mRender":function(data, type, full){
                         if(full.status == 'Pending'){
                             return "<button class='btn btn-sm btn-info payout_btn' data-id='"+full.id+"'>Payout</button>";
@@ -509,6 +566,29 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                 }
             });
         }
+
+        $(document).delegate('.view_agent_bank_details', 'click', function(e) {
+            var id = $(this).attr('data-id');
+            $.ajax({
+                type: 'post',
+                url: "{{ route('agent.payout.bank.details') }}",
+                data: {'id': id},
+                success: function(response) {
+                    if(response.status == 'Success'){
+                        var data = response.data;
+                        $("#agent-bank-details-modal").modal('show');
+                        $("#agent-bank-details-modal #agent_name").text(data.agent.name);
+                        $("#agent-bank-details-modal #beneficiary_name").val(data.beneficiary_name);
+                        $("#agent-bank-details-modal #beneficiary_account_number").val(data.beneficiary_account_number);
+                        $("#agent-bank-details-modal #beneficiary_ifsc").val(data.beneficiary_ifsc);
+                        $("#agent-bank-details-modal #beneficiary_address").val(data.beneficiary_address);
+                    }
+                    else{
+                        alert(response.message);
+                    }
+                },
+            });
+        });
     });
 
 </script>
