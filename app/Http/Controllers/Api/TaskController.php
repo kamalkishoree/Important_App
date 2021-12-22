@@ -755,21 +755,27 @@ class TaskController extends BaseController
                     $loc = [
                     'latitude'    => $value['latitude']??0.00,
                     'longitude'   => $value['longitude']??0.00,
-                    'short_name'  => $value['short_name']??null,
                     'address'     => $value['address']??null,
-                    'post_code'   => $value['post_code']??null,
                     'customer_id' => $cus_id,
-                    'flat_no'     => $value['flat_no']??null,
-                    'email'       => $value['email']??null,
-                    'phone_number'=> $value['phone_number']??null,
-                ];
-                    $Loction = Location::create($loc);
-                    // $Loction = Location::updateOrCreate(
-                    //     ['latitude' => $value['latitude']??0.00, 'longitude' => $value['longitude']??0.00,'customer_id' => $cus_id],
-                    //     [$loc]
-                    // );
+                      ];
+                    $loc_update = [
+                        'short_name'  => $value['short_name']??null,
+                        'address'     => $value['address']??null,
+                        'post_code'   => $value['post_code']??null,
+                        'flat_no'     => $value['flat_no']??null,
+                        'email'       => $value['email']??null,
+                        'phone_number'=> $value['phone_number']??null,
+                        ];
+
+                  //  $Loction = Location::create($loc);
+                    $Loction = Location::updateOrCreate(
+                        $loc,
+                        $loc_update
+                    );
                     $loc_id = $Loction->id;
                     Log::info($loc);
+                    Log::info($loc_update);
+                    Log::info($loc_id);
                 }
            
 
