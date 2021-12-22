@@ -265,7 +265,28 @@ class AgentPayoutController extends BaseController{
             return $this->success($agent_bank_details, __('Success'), 201);
         }
         catch(Exception $ex){
-            return $this->success($ex->getMessage(), $ex->getCode());
+            return $this->error($ex->getMessage(), $ex->getCode());
         }
     }
+
+    /**   UPDATE agent payout bank details  */
+    /*public function updateagentPayoutBankDetails(Request $request)
+    {
+        try{
+            $agent_payout_bank_detail_id = $request->id;
+            $agent_bank_account = AgentBankDetail::where('id', $agent_payout_bank_detail_id)->first();
+            if($agent_bank_account){
+                $agent_bank_account->beneficiary_name = $request->beneficiary_name;
+                $agent_bank_account->beneficiary_account_number = $request->bank_account;
+                $agent_bank_account->beneficiary_ifsc = $request->bank_ifsc;
+                $agent_bank_account->beneficiary_bank_name = $request->beneficiary_bank_name;
+                $agent_bank_account->update();
+                return $this->success('', __('Agent bank details are successfully updated'), 201);
+            }
+            return $this->error(__('Invalid Data'), 422);
+        }
+        catch(Exception $ex){
+            return $this->error($ex->getMessage(), $ex->getCode());
+        }
+    }*/
 }
