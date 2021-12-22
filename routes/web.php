@@ -130,6 +130,12 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 			Route::post('pay/receive', 'AgentController@payreceive')->name('pay.receive');
 			Route::get('agent/paydetails/{id}', 'AgentController@agentPayDetails')->name('agent.paydetails');
 			Route::post('agent/approval_status', 'AgentController@approval_status')->name('agent/approval_status');
+			Route::get('agent/payout/requests', 'AgentPayoutController@agentPayoutRequests')->name('agent.payout.requests');
+			Route::get('agent/payout/requests/export', 'AgentPayoutController@export')->name('agents.payout.requests.export');
+			Route::get('agent/payout/requests/filter', 'AgentPayoutController@agentPayoutRequestsFilter')->name('agent.payout.requests.filter');
+        	Route::post('agent/payout/request/complete/{id}', 'AgentPayoutController@agentPayoutRequestComplete')->name('agent.payout.request.complete');
+			Route::post('agent/payout/requests/complete/all', 'AgentPayoutController@agentPayoutRequestsCompleteAll')->name('agent.payout.requests.complete.all');
+			Route::post('agent/payout/bank/details', 'AgentPayoutController@agentPayoutbankDetails')->name('agent.payout.bank.details');
 			Route::post('agent/change_approval_status', 'AgentController@change_approval_status')->name('agent/change_approval_status');
 			Route::resource('customer', 'CustomerController');
 			Route::get('changeStatus', 'CustomerController@changeStatus');
@@ -197,6 +203,10 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 
 
 			Route::get('demo/page', 'GeoFenceController@newDemo')->name('new.demo');
+
+			Route::resource('payoption', 'PaymentOptionController');
+			Route::post('updateAll', 'PaymentOptionController@updateAll')->name('payoption.updateAll');
+			Route::post('payoutUpdateAll', 'PaymentOptionController@payoutUpdateAll')->name('payoutOption.payoutUpdateAll');
 		});
 	});
 

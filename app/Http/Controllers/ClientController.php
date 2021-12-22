@@ -21,7 +21,7 @@ use App\Model\SubClient;
 use App\Model\TaskProof;
 use App\Model\TaskType;
 use App\Model\DriverRegistrationDocument;
-use App\Model\SmtpDetail;
+use App\Model\{SmtpDetail, SmsProvider};
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Redis;
 use Session;
@@ -257,7 +257,8 @@ class ClientController extends Controller
         $subClients  = SubClient::all();
         $smtp        = SmtpDetail::where('id', 1)->first();
         $agent_docs=DriverRegistrationDocument::get();
-        return view('configure')->with(['preference' => $preference, 'client' => $client,'subClients'=> $subClients,'smtp_details'=>$smtp, 'agent_docs' => $agent_docs]);
+        $smsTypes = SmsProvider::where('status', '1')->get();
+        return view('configure')->with(['preference' => $preference, 'client' => $client,'subClients'=> $subClients,'smtp_details'=>$smtp, 'agent_docs' => $agent_docs,'smsTypes'=>$smsTypes]);
     }
 
 

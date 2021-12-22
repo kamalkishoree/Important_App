@@ -47,7 +47,7 @@ class TaskController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request)
-    {   
+    {  
         $tz = new Timezone();
         $client_timezone = $tz->timezone_name(Auth::user()->timezone);
         
@@ -57,8 +57,21 @@ class TaskController extends Controller
         } else {
             $check = 'unassigned';
         }
+        $agentids =[];
+        $agents = Agent::orderBy('id', 'DESC');
+        if (Auth::user()->is_superadmin == 0 && Auth::user()->all_team_access == 0) {
+            $agents = $agents->whereHas('team.permissionToManager', function ($query) {
+                $query->where('sub_admin_id', Auth::user()->id);
+            });
+            $agentids = $agents->pluck('id');
+        }
+        $agents = $agents->get();
 
         $all =  Order::where('status', '!=', null);
+
+        if(Auth::user()->is_superadmin == 0 && Auth::user()->all_team_access == 0){
+            $all =   $all->whereIn('driver_id',  $agentids)->orWhereNull('driver_id');
+        }
 
         $all = $all->get();
         $active   =  count($all->where('status', 'assigned'));
@@ -94,13 +107,7 @@ class TaskController extends Controller
         
         $allcation   = AllocationRule::where('id', 1)->first();
 
-       $agents = Agent::orderBy('id', 'DESC');
-        if (Auth::user()->is_superadmin == 0 && Auth::user()->all_team_access == 0) {
-            $agents = $agents->whereHas('team.permissionToManager', function ($query) {
-                $query->where('sub_admin_id', Auth::user()->id);
-            });
-        }
-        $agents = $agents->get();
+     
 
         $employees      = Customer::orderby('name', 'asc')->where('status','Active')->select('id', 'name')->get();
         $employeesCount = count($employees);
@@ -112,6 +119,15 @@ class TaskController extends Controller
     public function taskFilter(Request $request)
     {
         $orders = Order::orderBy('updated_at', 'DESC')->with(['customer', 'location', 'taskFirst', 'agent', 'task.location']);
+        
+        if (Auth::user()->is_superadmin == 0 && Auth::user()->all_team_access == 0) {
+            $agents = Agent::orderBy('id', 'DESC');
+            $agentids = $agents->whereHas('team.permissionToManager', function ($query) {
+                $query->where('sub_admin_id', Auth::user()->id);
+            })->pluck('id');
+           
+            $orders->whereIn('driver_id', $agentids)->orWhereNull('driver_id');
+        }
         
         $orders = $orders->where('status', $request->routesListingType)->where('status', '!=', null)->get();
 

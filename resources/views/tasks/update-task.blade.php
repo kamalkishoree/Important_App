@@ -542,6 +542,7 @@ use Carbon\Carbon;
                                 <div id="googleMap" style="height: 500px; min-width: 500px; width:100%"></div>
                                 <input type="hidden" name="lat_input" id="lat_map" value="0" />
                                 <input type="hidden" name="lng_input" id="lng_map" value="0" />
+                                <input type="hidden" name="address_input" id="addredd_map" value="">
                                 <input type="hidden" name="for" id="map_for" value="" />
                             </div>
                         </form>

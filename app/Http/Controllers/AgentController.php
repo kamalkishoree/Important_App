@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Model\Agent;
@@ -22,13 +23,16 @@ use DataTables;
 use Illuminate\Support\Str;
 use GuzzleHttp\Client as GCLIENT;
 use Excel;
+use App\Traits\ApiResponser;
 use App\Exports\AgentsExport;
+use App\Model\Client;
 use App\Model\ClientPreference;
 use App\Model\DriverRegistrationDocument;
 use Doctrine\DBAL\Driver\DrizzlePDOMySql\Driver;
 
 class AgentController extends Controller
 {
+    use ApiResponser;
     /**
      * Display a listing of the resource.
      *
@@ -89,6 +93,7 @@ class AgentController extends Controller
     public function agentFilter(Request $request)
     {
         try {
+            $client = Client::where('code', Auth::user()->code)->with(['getTimezone', 'getPreference'])->first();
             $agents = Agent::orderBy('id', 'DESC');
             if (!empty($request->get('date_filter'))) {
                 $dateFilter = explode('to', $request->get('date_filter'));
@@ -143,8 +148,14 @@ class AgentController extends Controller
                     $orders      = $agents->order->sum('driver_cost');
                     $receive     = $agents->agentPayment->sum('cr');
                     $pay         = $agents->agentPayment->sum('dr');
-                    $payToDriver = ($pay - $receive) - ($cash - $orders);
+                    $payToDriver = $agents->balanceFloat + ($pay - $receive) - ($cash - $orders);
                     return number_format((float)$payToDriver, 2, '.', '');
+                })
+                ->editColumn('created_at', function ($agents) use ($request, $client) {
+                    return convertDateTimeInTimeZone($agents->created_at, $client->getTimezone->timezone);
+                })
+                ->editColumn('updated_at', function ($agents) use ($request, $client) {
+                    return convertDateTimeInTimeZone($agents->updated_at, $client->getTimezone->timezone);
                 })
                 ->editColumn('action', function ($agents) use ($request) {
                     if($request->status == 1){
@@ -172,13 +183,17 @@ class AgentController extends Controller
                 ->filter(function ($instance) use ($request) {
                     if (!empty($request->get('search'))) {
                         $instance->collection = $instance->collection->filter(function ($row) use ($request){
-                            if (!empty($row['phone_number']) && Str::contains(Str::lower($row['phone_number']), Str::lower($request->get('search')))){
+                            if (!empty($row['uid']) && Str::contains(Str::lower($row['uid']), Str::lower($request->get('search')))){
+                                return true;
+                            }elseif (!empty($row['phone_number']) && Str::contains(Str::lower($row['phone_number']), Str::lower($request->get('search')))){
                                 return true;
                             }else if (!empty($row['name']) && Str::contains(Str::lower($row['name']), Str::lower($request->get('search')))) {
                                 return true;
                             }else if (!empty($row['type']) && Str::contains(Str::lower($row['type']), Str::lower($request->get('search')))) {
                                 return true;
                             }else if (!empty($row['team']) && Str::contains(Str::lower($row['team']), Str::lower($request->get('search')))) {
+                                return true;
+                            }else if (!empty($row['created_at']) && Str::contains(Str::lower($row['created_at']), Str::lower($request->get('search')))) {
                                 return true;
                             }
                             return false;
@@ -555,15 +570,40 @@ class AgentController extends Controller
 
     public function payreceive(Request $request, $domain = '')
     {
-        $data = [
-            'driver_id' => $request->driver_id,
-            'cr' => $request->payment_type == 1 ? $request->amount : null,
-            'dr' => $request->payment_type == 2 ? $request->amount : null,
-        ];
+        try{
+            $driver_id = $request->driver_id;
+            $agent = Agent::where('id', $driver_id)->where('is_approved', 1)->first();
+            $amount = $request->amount;
+            $wallet = $agent->wallet;
+            if ($amount > 0) {
+                if($request->payment_type == 1){
+                    $wallet->depositFloat($amount, ['Wallet has been <b>Credited</b>']);
+                }
+                elseif($request->payment_type == 2){
+                    if($amount > $agent->balanceFloat){
+                        return $this->error(__('Amount is greater than agent available funds'), 422);
+                    }
+                    $wallet->withdrawFloat($amount, ['Wallet has been <b>Dedited</b>']);
+                }
+                else{
+                    return $this->error(__('Invalid Data'), 422);
+                }
+                return $this->success('', __('Payment is successfully completed'), 201);
+            }else{
+                return $this->error(__('Insufficient Amount'), 422);
+            }
 
-        $agent = AgentPayment::create($data);
+            // $data = [
+            //     'driver_id' => $request->driver_id,
+            //     'cr' => $request->payment_type == 1 ? $request->amount : null,
+            //     'dr' => $request->payment_type == 2 ? $request->amount : null,
+            // ];
 
-        return response()->json(true);
+            // $agent = AgentPayment::create($data);
+        }
+        catch (Exception $e) {
+            return $this->error($e->getMessage(), $e->getCode());
+        }
     }
 
     public function agentPayDetails($domain = '', $id)
@@ -589,6 +629,7 @@ class AgentController extends Controller
         $data['driver_cost']           = $driver_cost;
         $data['credit']           = $credit;
         $data['debit']           = $debit;
+        $data['wallet_balance']           = $agent->balanceFloat;
 
 
         return response()->json($data);

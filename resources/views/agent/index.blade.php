@@ -205,6 +205,8 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                             <th class="sort-icon">{{__("Total Paid to Agent")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                             <th class="sort-icon">{{__("Total Receive from Agent")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                             <th class="sort-icon">{{__("Final Balance")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
+                                            <th class="sort-icon">{{__("Requested At")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
+                                            <th class="sort-icon">{{__("Approved At")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                             <th>{{__("Action")}}</th>
                                         </tr>
                                     </thead>
@@ -221,6 +223,8 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                 <table class="table table-striped dt-responsive nowrap w-100 all agent-listing" id="awaiting_approval_agent_datatable">
                                     <thead>
                                         <tr>
+
+
                                             <th class="sort-icon">{{__("UID")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                             <th class="sort-icon">{{__("Profile")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                             <th class="sort-icon">{{__("Name")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
@@ -233,6 +237,8 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                             <th class="sort-icon">{{__("Total Paid to Agent")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                             <th class="sort-icon">{{__("Total Receive from Agent")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                             <th class="sort-icon">{{__("Final Balance")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
+                                            <th class="sort-icon">{{__("Reuested At")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
+                                            <th class="sort-icon">{{__("Approved At")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                             <th>{{__("Action")}}</th>
                                         </tr>
                                     </thead>
@@ -261,6 +267,8 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                             <th class="sort-icon">{{__("Total Paid to Agent")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                             <th class="sort-icon">{{__("Total Receive from Agent")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                             <th class="sort-icon">{{__("Final Balance")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
+                                            <th class="sort-icon">{{__("Requested At")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
+                                            <th class="sort-icon">{{__("Rejected At")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                             <th>{{__("Action")}}</th>
                                         </tr>
                                     </thead>
@@ -312,7 +320,8 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                 var debit = round(data.debit, 2);
                 var cash = round(data.cash_to_be_collected, 2);
                 var final = round(cash - driver_cost, 2);
-                var new_final = round((debit - credit) - (cash - driver_cost), 2);
+                var wallet_balance = round(data.wallet_balance, 2);
+                var new_final = round(wallet_balance + (debit - credit) - (cash - driver_cost), 2);
                 $("#order_earning").text(driver_cost);
                 $("#cash_collected").text(cash);
                 $("#final_balance").text(new_final);
@@ -341,16 +350,25 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
     }
 
     $("#submitpayreceive").submit(function(stay) {
-
         var formdata = $(this).serialize();
         $.ajax({
             type: 'POST',
             url: "{{ route('pay.receive') }}",
             data: formdata,
-            success: function(data) {
-                $("#pay-receive-modal .close").click();
-                location.reload();
+            success: function(response) {
+                if (response.status == 'Success') {
+                    $("#pay-receive-modal .close").click();
+                    location.reload();
+                } else {
+                    $("#pay-receive-modal .show_all_error.invalid-feedback").show();
+                    $("#pay-receive-modal .show_all_error.invalid-feedback").text(response.message);
+                }
             },
+            error: function(response){
+                let errors = response.responseJSON;
+                $("#pay-receive-modal .show_all_error.invalid-feedback").show();
+                $("#pay-receive-modal .show_all_error.invalid-feedback").text(errors.message);
+            }
         });
         stay.preventDefault();
     });
