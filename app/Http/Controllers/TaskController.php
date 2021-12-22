@@ -2078,7 +2078,7 @@ class TaskController extends Controller
             $this->sendsilentnotification($notification_data);
             $orders = Order::where('id', $id)->first();
             if($orders && $orders->call_back_url){
-                $call_web_hook = $this->updateStatusDataToOrder($orders,2);  # call web hook when order completed
+                $call_web_hook = $this->updateStatusDataToOrder($orders,2,1);  # call web hook when order completed
             }
             
         }
@@ -2087,20 +2087,19 @@ class TaskController extends Controller
     }
 
     /////////////////// **********************   update status in order panel also **********************************  ///////////////////////
-    public function updateStatusDataToOrder($order_details,$dispatcher_status_option_id){
+    public function updateStatusDataToOrder($order_details,$dispatcher_status_option_id,$type){
         try {  
                 $code =  Client::select('id','code')->first();
                 $dispatch_traking_url = route('order.tracking',[$code->code,$order_details->unique_id]);
                 $client = new GClient(['content-type' => 'application/json']);                               
                 $url = $order_details->call_back_url;  
                 $dispatch_traking_url = $dispatch_traking_url??'';                     
-                $res = $client->get($url.'?dispatcher_status_option_id='.$dispatcher_status_option_id.'&dispatch_traking_url='.$dispatch_traking_url);
+                $res = $client->get($url.'?dispatcher_status_option_id='.$dispatcher_status_option_id.'&dispatch_traking_url='.$dispatch_traking_url.'&type='.$type);
                 $response = json_decode($res->getBody(), true);
                 if($response){
                    // Log::info($response);
                 }
                
-                
         }    
         catch(\Exception $e)
         {
@@ -2108,7 +2107,6 @@ class TaskController extends Controller
                 'status' => 'error',
                 'message' => $e->getMessage()
             ]);
-                    
         }
     }
 
