@@ -1388,9 +1388,7 @@ class TaskController extends Controller
                     break;
                 }
             }
-            Log::info('send_to_all data');
-            Log::info($data);
-            Log::info('send_to_all data');
+           
             $this->dispatch(new RosterCreate($data, $extraData));
         }
     }
