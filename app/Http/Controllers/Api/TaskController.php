@@ -760,7 +760,7 @@ class TaskController extends BaseController
                       ];
                     $loc_update = [
                         'short_name'  => $value['short_name']??null,
-                        'post_code'   => $value['post_code']??null,
+                        'post_code'   => (int)$value['post_code']??null,
                         'flat_no'     => $value['flat_no']??null,
                         'email'       => $value['email']??null,
                         'phone_number'=> $value['phone_number']??null,
