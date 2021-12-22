@@ -760,7 +760,6 @@ class TaskController extends BaseController
                       ];
                     $loc_update = [
                         'short_name'  => $value['short_name']??null,
-                        'address'     => $value['address']??null,
                         'post_code'   => $value['post_code']??null,
                         'flat_no'     => $value['flat_no']??null,
                         'email'       => $value['email']??null,
@@ -773,9 +772,7 @@ class TaskController extends BaseController
                         $loc_update
                     );
                     $loc_id = $Loction->id;
-                    Log::info($loc);
-                    Log::info($loc_update);
-                    Log::info($loc_id);
+                   
                 }
            
 
