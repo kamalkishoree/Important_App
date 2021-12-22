@@ -752,6 +752,7 @@ class TaskController extends BaseController
             foreach ($request->task as $key => $value) {
                 $taskcount++;
                 if (isset($value)) {
+                    $post_code = isset($value['post_code']) ? $value['post_code'] : '';
                     $loc = [
                     'latitude'    => $value['latitude']??0.00,
                     'longitude'   => $value['longitude']??0.00,
@@ -760,8 +761,7 @@ class TaskController extends BaseController
                       ];
                     $loc_update = [
                         'short_name'  => $value['short_name']??null,
-                        'address'     => $value['address']??null,
-                        'post_code'   => $value['post_code']??null,
+                        'post_code'   => (int)$post_code,
                         'flat_no'     => $value['flat_no']??null,
                         'email'       => $value['email']??null,
                         'phone_number'=> $value['phone_number']??null,
@@ -773,9 +773,7 @@ class TaskController extends BaseController
                         $loc_update
                     );
                     $loc_id = $Loction->id;
-                    Log::info($loc);
-                    Log::info($loc_update);
-                    Log::info($loc_id);
+                   
                 }
            
 

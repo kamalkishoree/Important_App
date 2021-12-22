@@ -435,20 +435,18 @@ class TaskController extends Controller
             $taskcount++;
             if (isset($request->address[$key])) {
                 $loc = [
-                    'latitude'       => $request->latitude[$key],
-                    'longitude'      => $request->longitude[$key],
                     'short_name'     => $request->short_name[$key],
-                    'address'        => $request->address[$key],
-                    'post_code'      => (int)$request->post_code[$key],
+                     'post_code'      => (int)$request->post_code[$key],
                     'flat_no'        => !empty($request->flat_no[$key])? $request->flat_no[$key] : '',
                     'email'          => $request->address_email[$key],
                     'phone_number'   => $request->address_phone_number[$key],
-                    'customer_id'    => $cus_id,
                 ];
+
+               
 
                 $Loction = Location::updateOrCreate(
                     ['latitude' => $request->latitude[$key], 'longitude' => $request->longitude[$key],'address' => $request->address[$key],'customer_id' => $cus_id],
-                    [$loc]
+                    $loc
                 );
 
              //   $Loction = Location::create($loc);
@@ -467,20 +465,16 @@ class TaskController extends Controller
             $location = Location::where('id', $loc_id)->first();
             if ($location->customer_id != $cus_id) {
                 $newloc = [
-                    'latitude'     => $location->latitude,
-                    'longitude'    => $location->longitude,
-                    'short_name'   => $location->short_name,
-                    'address'      => $location->address,
+                   'short_name'   => $location->short_name,
                     'post_code'    => (int)$location->post_code,
                     'flat_no'      => $location->flat_no,
                     'email'        => $location->address_email,
                     'phone_number' => $location->address_phone_number,
-                    'customer_id'  => $cus_id,
                 ];
 
                 $Loction = Location::updateOrCreate(
                     ['latitude' => $location->latitude, 'longitude' => $location->longitude, 'address' => $location->address,'customer_id'  => $cus_id],
-                    [$newloc]
+                    $newloc
                 );
                // $location = Location::create($newloc);
             }
@@ -878,18 +872,14 @@ class TaskController extends Controller
             $taskcount++;
             if (isset($request->address[$key])) {
                 $loc = [
-                    'latitude'    => $request->latitude[$key],
-                    'longitude'   => $request->longitude[$key],
-                    'short_name'  => $request->short_name[$key],
-                    'address'     => $request->address[$key],
-                    'post_code'   => $request->post_code[$key],
+                   'short_name'  => $request->short_name[$key],
+                    'post_code'   => (int)$request->post_code[$key],
                     'flat_no'   => !empty($request->flat_no[$key])? $request->flat_no[$key] : '',
-                    'customer_id' => $cus_id,
                 ];
               //  $Loction = Location::create($loc);
                 $Loction = Location::updateOrCreate(
                     ['latitude' => $request->latitude[$key], 'longitude' => $request->longitude[$key], 'address' => $request->address[$key], 'customer_id' => $cus_id],
-                    [$loc]
+                    $loc
                 );
                 $loc_id = $Loction->id;
                 $send_loc_id = $loc_id;
@@ -1398,9 +1388,7 @@ class TaskController extends Controller
                     break;
                 }
             }
-            Log::info('send_to_all data');
-            Log::info($data);
-            Log::info('send_to_all data');
+           
             $this->dispatch(new RosterCreate($data, $extraData));
         }
     }
@@ -1999,20 +1987,16 @@ class TaskController extends Controller
             if (isset($request->short_name[$key])) {
                 $loc = [
                     'short_name'    => $request->short_name[$key],
-                    'address'       => $request->address[$key],
-                    'post_code'     => $request->post_code[$key],
+                    'post_code'     => (int)$request->post_code[$key],
                     'flat_no'       => !empty($request->flat_no[$key])? $request->flat_no[$key] : '',
-                    'latitude'      => $request->latitude[$key],
-                    'longitude'     => $request->longitude[$key],
                     'email'         => $request->address_email[$key],
                     'phone_number'  => $request->address_phone_number[$key],
-                    'customer_id'   => $cus_id,
-                ];
+                 ];
                 
               //  $Loction = Location::create($loc);
                 $Loction = Location::updateOrCreate(
                     ['latitude' => $request->latitude[$key], 'longitude' => $request->longitude[$key], 'address' => $request->address[$key],'customer_id' => $cus_id],
-                    [$loc]
+                    $loc
                 );
                 $loc_id = $Loction->id;
             } else {
@@ -2025,21 +2009,17 @@ class TaskController extends Controller
                 $location = Location::where('id', $loc_id)->first();
                 if ($location->customer_id != $cus_id) {
                     $newloc = [
-                        'latitude'       => $location->latitude,
-                        'longitude'      => $location->longitude,
                         'short_name'     => $location->short_name,
-                        'address'        => $location->address,
                         'post_code'      => (int)$location->post_code,
                         'flat_no'        => $location->flat_no,
                         'alcoholic_item' => $location->alcoholic_item,
                         'email'          => $location->address_email,
-                        'phone_number'   => $location->address_phone_number,
-                        'customer_id'    => $cus_id,
+                        'phone_number'   => $location->address_phone_number
                     ];
                   //  $location = Location::create($newloc);
                     $location = Location::updateOrCreate(
-                        ['latitude' => $location->latitude, 'longitude' => $location->longitude, 'address' => $location->address],
-                        [$newloc]
+                        ['latitude' => $location->latitude, 'longitude' => $location->longitude, 'address' => $location->address, 'customer_id' => $cus_id],
+                        $newloc
                     );
                 }
                 $loc_id = $location->id;
