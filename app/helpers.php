@@ -4,10 +4,6 @@ use App\Model\ClientPreference;
 use App\Model\Client as ClientData;
 use App\Model\PaymentOption;
 
-function changeDateFormate($date,$date_format){
-    return \Carbon\Carbon::createFromFormat('Y-m-d', $date)->format($date_format);
-}
-
 function pr($var) {
   	echo '<pre>';
 	print_r($var);

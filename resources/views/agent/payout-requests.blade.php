@@ -321,13 +321,12 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                 <h4 class="modal-title">{{__("Bank Details")}} - <span id="agent_name"></span></h4>
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
             </div>
-
-            <div class="modal-body px-3 py-0">
+            <div class="modal-body px-3 pt-0 pb-2">
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="beneficiary_name" class="control-label">{{__("Beneficiary Name")}}</label>
-                            <input type="text" class="form-control" id="beneficiary_name" placeholder="{{__("Beneficiary Name")}}" readonly>
+                            <label for="beneficiary_name" class="control-label">{{__("Account Holder Name")}}</label>
+                            <input type="text" class="form-control" id="beneficiary_name" placeholder="{{__("Account Holder Name")}}" readonly>
                         </div>
                     </div>
                     <div class="col-md-6">
@@ -338,14 +337,14 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="beneficiary_ifsc" class="control-label">{{__("Bank IFSC")}}</label>
-                            <input type="text" class="form-control" id="beneficiary_ifsc" placeholder="{{__("Bank IFSC")}}" readonly>
+                            <label for="beneficiary_ifsc" class="control-label">{{__("IFSC Code")}}</label>
+                            <input type="text" class="form-control" id="beneficiary_ifsc" placeholder="{{__("IFSC Code")}}" readonly>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="beneficiary_address" class="control-label">{{__("Address")}}</label>
-                            <input type="text" class="form-control" id="beneficiary_address" placeholder="{{__("Address")}}" readonly>
+                            <label for="beneficiary_bank_name" class="control-label">{{__("Bank Name")}}</label>
+                            <input type="text" class="form-control" id="beneficiary_bank_name" placeholder="{{__("Bank Name")}}" readonly>
                         </div>
                     </div>
                 </div>
@@ -581,7 +580,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                         $("#agent-bank-details-modal #beneficiary_name").val(data.beneficiary_name);
                         $("#agent-bank-details-modal #beneficiary_account_number").val(data.beneficiary_account_number);
                         $("#agent-bank-details-modal #beneficiary_ifsc").val(data.beneficiary_ifsc);
-                        $("#agent-bank-details-modal #beneficiary_address").val(data.beneficiary_address);
+                        $("#agent-bank-details-modal #beneficiary_bank_name").val(data.beneficiary_bank_name);
                     }
                     else{
                         alert(response.message);

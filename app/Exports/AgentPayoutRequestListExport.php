@@ -23,10 +23,10 @@ class AgentPayoutRequestListExport implements FromCollection, WithMapping, WithH
             'Agent Name',
             'Amount',
             'Payout Type',
-            'Beneficiary Name',
-            'Account Number',
-            'Bank IFSC',
-            'Address'
+            'Account holder Name',
+            'Bank Account Number',
+            'IFSC Code',
+            'Bank Name'
         ];
     }
 
@@ -39,7 +39,7 @@ class AgentPayoutRequestListExport implements FromCollection, WithMapping, WithH
             $agents->payoutBankDetails->first() ? $agents->payoutBankDetails->first()->beneficiary_name : '',
             $agents->payoutBankDetails->first() ? $agents->payoutBankDetails->first()->beneficiary_account_number : '',
             $agents->payoutBankDetails->first() ? $agents->payoutBankDetails->first()->beneficiary_ifsc : '',
-            $agents->payoutBankDetails->first() ? $agents->payoutBankDetails->first()->beneficiary_address : '',
+            $agents->payoutBankDetails->first() ? $agents->payoutBankDetails->first()->beneficiary_bank_name : '',
         ];
     }
     

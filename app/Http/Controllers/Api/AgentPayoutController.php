@@ -78,7 +78,7 @@ class AgentPayoutController extends BaseController{
 
                 $validator = Validator::make($request->all(), [
                     'beneficiary_name' => 'required',
-                    'beneficiary_address' => 'required',
+                    'beneficiary_bank_name' => 'required',
                     'beneficiary_account_number' => 'required',
                     'beneficiary_ifsc' => 'required'
                 ]);
@@ -88,15 +88,17 @@ class AgentPayoutController extends BaseController{
                 }
 
                 $beneficiary_name = $request->beneficiary_name;
-                $beneficiary_address = $request->beneficiary_address;
+                // $beneficiary_address = $request->beneficiary_address;
                 $bank_account = $request->beneficiary_account_number;
+                $beneficiary_bank_name = $request->beneficiary_bank_name;
                 $bank_ifsc = $request->beneficiary_ifsc;
                 $agent_bank_account = AgentBankDetail::where('beneficiary_account_number', $bank_account)->where('beneficiary_ifsc', $bank_ifsc)->where('status', 1)->orderBy('id', 'desc')->first();
                 if($agent_bank_account){
                     $agent_bank_account->beneficiary_name = $beneficiary_name;
                     $agent_bank_account->beneficiary_account_number = $bank_account;
                     $agent_bank_account->beneficiary_ifsc = $bank_ifsc;
-                    $agent_bank_account->beneficiary_address = $beneficiary_address;
+                    // $agent_bank_account->beneficiary_address = $beneficiary_address;
+                    $agent_bank_account->beneficiary_bank_name = $beneficiary_bank_name;
                     $agent_bank_account->status = 1;
                     $agent_bank_account->update();
                 }
@@ -114,7 +116,8 @@ class AgentPayoutController extends BaseController{
                     $agent_bank_account->beneficiary_name = $beneficiary_name;
                     $agent_bank_account->beneficiary_account_number = $bank_account;
                     $agent_bank_account->beneficiary_ifsc = $bank_ifsc;
-                    $agent_bank_account->beneficiary_address = $beneficiary_address;
+                    // $agent_bank_account->beneficiary_address = $beneficiary_address;
+                    $agent_bank_account->beneficiary_bank_name = $beneficiary_bank_name;
                     $agent_bank_account->status = 1;
                     $agent_bank_account->save();
                 }
