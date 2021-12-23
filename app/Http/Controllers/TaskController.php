@@ -129,10 +129,33 @@ class TaskController extends Controller
             $orders->whereIn('driver_id', $agentids)->orWhereNull('driver_id');
         }
         
-        $orders = $orders->where('status', $request->routesListingType)->where('status', '!=', null)->get();
+        $orders = $orders->where('status', $request->routesListingType)->where('status', '!=', null)->orderBy('updated_at', 'desc')->get();
 
       
         return Datatables::of($orders)
+                // ->editColumn('order_number', function ($orders) use ($request) {
+                //     if(!empty($orders->call_back_url)){
+                //         $client = new GClient(['content-type' => 'application/json']);                               
+                //         $url = $orders->call_back_url;
+                //         if (stripos('dispatch-pickup-delivery', $url) !== 0){
+                //             $dispatch_order_detail_url = str_replace('dispatch-pickup-delivery', 'dispatch-order-status-update-details', $url);
+                //             $res = $client->get($dispatch_order_detail_url);
+                //             $response = json_decode($res->getBody(), true);
+                //             if($response){
+                //                 return $response['data']['order_number'];
+                //             }
+                //         }
+                //     }
+                //     return '';
+                // })
+                ->editColumn('customer_id', function ($orders) use ($request) {
+                    $customerID = !empty($orders->customer->id)? $orders->customer->id : '';
+                    $length = strlen($customerID);
+                    if($length < 4){
+                        $customerID = str_pad($customerID, 4, '0', STR_PAD_LEFT);
+                    }
+                    return $customerID;
+                })
                 ->editColumn('customer_name', function ($orders) use ($request) {
                     $customerName = !empty($orders->customer->name)? $orders->customer->name : '';
                     return $customerName;

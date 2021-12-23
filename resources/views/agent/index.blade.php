@@ -77,6 +77,12 @@
     .nagtive-margin {
         margin-top: -57px;
     }
+    .bootstrap-select .dropdown-menu > .inner{
+        overflow-y: scroll!important;
+    }
+    .bootstrap-select .dropdown-menu.inner{
+        overflow-y: hidden!important;
+    }
 </style>
 @endsection
 @php

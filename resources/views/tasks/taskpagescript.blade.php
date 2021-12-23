@@ -50,8 +50,18 @@
                         d.imgproxyurl = '{{$imgproxyurl}}';
                     }
                 },
+                order: dataTableColumnSort(),
                 columns: dataTableColumn(),
             });
+        }
+
+        function dataTableColumnSort(){
+            var routesListing = $('#routes-listing-status').val();
+            if(routesListing == 'unassigned'){
+                return [[ 6, "desc" ]];
+            }else{
+                return [[ 5, "desc" ]];
+            }
         }
         
         function dataTableColumn(){
@@ -61,6 +71,8 @@
                     {data: 'id', name: 'id', orderable: false, searchable: false, "mRender": function ( data, type, full ) {
                         return '<input type="checkbox" class="single_driver_check" name="driver_id[]" id="single_driver" value="'+full.id+'">';
                     }},
+                    // {data: 'order_number', name: 'order_number', orderable: true, searchable: false},
+                    {data: 'customer_id', name: 'customer_id', orderable: true, searchable: false},
                     {data: 'customer_name', name: 'customer_name', orderable: true, searchable: false},
                     {data: 'phone_number', name: 'phone_number', orderable: true, searchable: false},
                     {data: 'agent_name', name: 'agent_name', orderable: true, searchable: false},
@@ -87,6 +99,8 @@
                 ];
             }else{
                 return [
+                    // {data: 'order_number', name: 'order_number', orderable: true, searchable: false},
+                    {data: 'customer_id', name: 'customer_id', orderable: true, searchable: false},
                     {data: 'customer_name', name: 'customer_name', orderable: true, searchable: false},
                     {data: 'phone_number', name: 'phone_number', orderable: true, searchable: false},
                     {data: 'agent_name', name: 'agent_name', orderable: true, searchable: false},

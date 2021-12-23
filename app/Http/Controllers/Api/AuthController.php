@@ -160,6 +160,7 @@ class AuthController extends BaseController
         $agent->device_type = $request->device_type??null;
         $agent->device_token = $request->device_token??null;;
         $agent->access_token = $token;
+        $agent->is_available = 1;
         $agent->save();
 
         $agent['client_preference'] = $prefer;
@@ -229,7 +230,7 @@ class AuthController extends BaseController
         DB::connection($schemaName)->table('rosters')->where(['driver_id' => Auth::user()->id, 'device_type' => Auth::user()->device_type])->delete();
         DB::disconnect($schemaName);
 
-        Agent::where('id', Auth::user()->id)->update(['device_token' => null, 'device_type' => null]);
+        Agent::where('id', Auth::user()->id)->update(['is_available'=>0, 'device_token' => null, 'device_type' => null]);
 
         return response()->json([
             'message' => 'Successfully logged out'
