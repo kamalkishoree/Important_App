@@ -2,7 +2,7 @@
     $(document).ready(function() {
         $(document).on("click", ".nav-link", function() {
             let rel = $(this).data('rel');
-            console.log(rel);
+            // console.log(rel);
             let status = $(this).data('status');
             initDataTable(rel, status);
             setTimeout(function() {
@@ -15,14 +15,27 @@
             $('#active-vendor').trigger('click');
         }, 200);
 
+        function padDigits(number, digits) {
+            return Array(Math.max(digits - String(number).length + 1, 0)).join(0) + number;
+        }
+
         function initDataTable(table, status) {
-            console.log(table);
+            // console.log(table);
             var columnsDynamic =   [{
-                        data: 'uid',
-                        name: 'uid',
+                        data: 'id',
+                        name: 'id',
                         orderable: true,
-                        searchable: true
+                        searchable: true,
+                        "mRender": function(data, type, full) {
+                            return padDigits(full.id, 4);
+                        }
                     },
+                    // {
+                    //     data: 'uid',
+                    //     name: 'uid',
+                    //     orderable: true,
+                    //     searchable: true
+                    // },
                     {
                         data: 'profile_picture',
                         name: 'profile_picture',
@@ -60,15 +73,15 @@
                         orderable: true,
                         searchable: false
                     },
-                    {
-                        data: 'vehicle_type_id',
-                        name: 'vehicle_type_id',
-                        orderable: true,
-                        searchable: false,
-                        "mRender": function(data, type, full) {
-                            return '<img alt="" style="width: 80px;" src="' + full.vehicle_type_id + '">';
-                        }
-                    },
+                    // {
+                    //     data: 'vehicle_type_id',
+                    //     name: 'vehicle_type_id',
+                    //     orderable: true,
+                    //     searchable: false,
+                    //     "mRender": function(data, type, full) {
+                    //         return '<img alt="" style="width: 80px;" src="' + full.vehicle_type_id + '">';
+                    //     }
+                    // },
                     {
                         data: 'cash_to_be_collected',
                         name: 'cash_to_be_collected',
@@ -199,7 +212,7 @@
         });
 
         function phoneInput() {
-            console.log('phone working');
+            // console.log('phone working');
             var input = document.querySelector(".xyz");
 
             var mobile_number_input = document.querySelector(".xyz");
@@ -301,7 +314,7 @@
                     $('').dropify();
                 },
                 error: function(data) {
-                    console.log('data2');
+                    // console.log('data2');
                 }
             });
         });
@@ -337,7 +350,7 @@
                     // $('').dropify();
                 },
                 error: function(data) {
-                    console.log('data2');
+                    // console.log('data2');
                 }
             });
         });
@@ -367,7 +380,7 @@
             var formData = new FormData(form);
             var urls = document.getElementById('agent_id').getAttribute('url');
             saveTeam(urls, formData, inp = 'Edit', modal = 'edit-agent-modal');
-            console.log(urls);
+            // console.log(urls);
         });
 
         function saveTeam(urls, formData, inp = '', modal = '') {
@@ -440,7 +453,7 @@
                     $('').dropify();
                 },
                 error: function(data) {
-                    console.log('data2');
+                    // console.log('data2');
                 }
             });
         });

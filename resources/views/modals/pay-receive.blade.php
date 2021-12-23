@@ -32,7 +32,14 @@
                                 <select name="driver_id" id="selectAgent" class="selectpicker" required>
                                     <option hidden="true"></option>
                                     @foreach ($agents as $item)
-                                    <option value="{{$item->id}}">{{$item->name}}</option> 
+                                        @php
+                                            $id = $item->id;
+                                            $length = strlen($item->id);
+                                            if($length < 4){
+                                                $id = str_pad($id, 4, '0', STR_PAD_LEFT);
+                                            }
+                                        @endphp
+                                        <option value="{{$item->id}}">{{ $id . ' - ' . $item->name}}</option> 
                                     @endforeach
                                 
                                 </select>

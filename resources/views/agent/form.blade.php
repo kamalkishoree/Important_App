@@ -80,7 +80,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
 
 
 
-<div class="row">
+{{-- <div class="row">
     <div class="col-md-12">
         <div class="form-group" id="vehicle_type_idInputEdit">
             <p class="text-muted mt-3 mb-2">{{__("TRANSPORT TYPE")}}</p>
@@ -115,18 +115,18 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
 
         </div>
     </div>
-</div>
+</div> --}}
 
 <div class="row">
     <div class="col-md-12">
-        <div class="form-group mb-0">
+        <div class="form-group">
             <label class="control-label">{{__("Tags")}}</label>
         <input id="form-tags-4" name="tags" type="text" value="{{isset($tagIds) ? implode(',', $tagIds) : ''}}" class="myTag1">
         </div>
     </div>
 </div>
 
-<div class="row mt-3">
+{{-- <div class="row mt-3">
     <div class="col-md-6">
         <div class="form-group" id="make_modelInputEdit">
             <input type="hidden" id="agent_id" val_id="{{ $agent->id }}" url="{{route('agent.update', $agent->id)}}">
@@ -170,7 +170,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
             </span>
         </div>
     </div>
-</div>
+</div> --}}
 
 <div class="row">
     @if(!empty($driver_registration_documents) && count($driver_registration_documents) > 0)
@@ -192,7 +192,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                 <a href="{{ Storage::disk('s3')->url($field_value) }}" download target="_blank"><i class="fa fa-eye" aria-hidden="true"></i></a>
                 @endif
             </label>
-            @if(strtolower($driver_registration_document->file_type) == 'text')
+            @if(strtolower($driver_registration_document->file_type) == 'text' || strtolower($driver_registration_document->file_type) == 'date')
             <input type="text" class="form-control" id="input_file_logo_{{$driver_registration_document->id}}" name="{{$driver_registration_document->name}}" placeholder="Enter Text" value="{{ $field_value }}" {{ (!empty($driver_registration_document->is_required))?'required':''}}>
             @else
             @if(strtolower($driver_registration_document->file_type) == 'image')

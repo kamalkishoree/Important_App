@@ -801,6 +801,7 @@
                                             <option value="Image">Image</option>
                                             <option value="Pdf">PDF</option>
                                             <option value="Text">Text</option>
+                                            <option value="Date">Date</option>
                                         </select>
                                     </div>
                                 </div>
