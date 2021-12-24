@@ -12,7 +12,7 @@ use Twilio\Rest\Client as TwilioClient;
 
 class BaseController extends Controller
 {
-    use \App\Http\Traits\smsManager;
+    use \App\Traits\smsManager;
 
 	protected function sendSms($recipients, $message)
 	{
