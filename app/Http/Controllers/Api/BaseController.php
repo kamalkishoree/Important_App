@@ -9,10 +9,10 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use App\Http\Controllers\Controller;
 use Twilio\Rest\Client;
 use Twilio\Rest\Client as TwilioClient;
-
+use App\Traits\smsManager;
 class BaseController extends Controller
 {
-    use \app\Traits\smsManager;
+    use smsManager;
 
 	protected function sendSms($recipients, $message)
 	{
