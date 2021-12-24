@@ -180,7 +180,18 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                             <div class="material-border"></div>
                         </li>
                     </ul>
-                    <div class="tab-content nav-material pt-0   " id="top-tabContent">
+                    <div class="row mt-3">
+                        <div class="col-sm-2">
+                            <label for="geo_filter">{{__('Location Filter')}}</label>
+                            <select name="geo_filter" id="geo_filter" class="form-control">
+                                <option value="">{{__('All')}}</option>
+                                @foreach($geos as $geo)
+                                    <option value="{{$geo->id}}">{{$geo->name}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    <div class="tab-content nav-material pt-0" id="top-tabContent">
                         <div class="tab-pane fade past-order show active" id="active_vendor" role="tabpanel" aria-labelledby="active-vendor">
                             <div class="row mb-2 mt-3">
                                 <div class="col-sm-12">
@@ -196,7 +207,6 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                     <button type="button" class="btn btn-blue waves-effect waves-light openModal" data-toggle="modal" data-target="" data-backdrop="static" data-keyboard="false"><i class="mdi mdi-plus-circle mr-1"></i> {{__("Add")}} {{ Session::get('agent_name') }}</button>
                                     <button type="button" class="btn btn-success waves-effect waves-light saveaccounting" data-toggle="modal" data-target="#pay-receive-modal" data-backdrop="static" data-keyboard="false">{{__("Pay")}} / {{__("Receive")}}</button>
                                 </div>
-
                             </div>
 
                             <div class="table-responsive nagtive-margin">
