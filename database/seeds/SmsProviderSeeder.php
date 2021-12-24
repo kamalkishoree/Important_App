@@ -14,7 +14,7 @@ class SmsProviderSeeder extends Seeder
     public function run()
     {
         $sms_count = DB::table('sms_providers')->count();
- 
+
         $maps = array(
             array(
                 'id' => 1,
@@ -51,6 +51,6 @@ class SmsProviderSeeder extends Seeder
                     'status' => $map['status'],
                 ]);
             }
-        } 
+        }
     }
 }
