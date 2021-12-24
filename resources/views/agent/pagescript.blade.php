@@ -24,6 +24,15 @@
             }, 500);
         });
 
+        $(document).on("change", "#tag_filter", function() {
+            let rel = $('.nav-link.active').data('rel');
+            let status = $('.nav-link.active').data('status');
+            initDataTable(rel, status);
+            setTimeout(function() {
+                $('#' + rel).DataTable().ajax.reload();
+            }, 500);
+        });
+
         function padDigits(number, digits) {
             return Array(Math.max(digits - String(number).length + 1, 0)).join(0) + number;
         }
@@ -31,6 +40,7 @@
         function initDataTable(table, status) {
             // console.log(table);
             var geo_filter = $("#geo_filter").val();
+            var tag_filter = $("#tag_filter").val();
             var columnsDynamic =   [{
                     data: 'id',
                     name: 'id',
@@ -192,6 +202,7 @@
                         d.search = $('input[type="search"]').val();
                         d.imgproxyurl = '{{$imgproxyurl}}';
                         d.geo_filter = geo_filter;
+                        d.tag_filter = tag_filter;
                         d.status = status;
                     }
                 },
