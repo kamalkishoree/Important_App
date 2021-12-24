@@ -1721,8 +1721,8 @@ class TaskController extends BaseController
             $totalDuration = 0;
             foreach ($value as $item) {
                 //dd($item);
-                $totalDistance = $totalDistance + $item[0]->distance->value;
-                $totalDuration = $totalDuration + $item[0]->duration->value;
+                $totalDistance = $totalDistance + (isset($item[0]->distance) ? $item[0]->distance->value : 0);
+                $totalDuration = $totalDuration + (isset($item[0]->duration) ? $item[0]->duration->value : 0);
             }
            
            
