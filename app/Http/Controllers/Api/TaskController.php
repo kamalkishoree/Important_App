@@ -175,8 +175,8 @@ class TaskController extends BaseController
             if ($check == 1) {
                 $Order  = Order::where('id', $orderId->order_id)->update(['status' => $task_type]);
 
-                if($order_details && $order_details->call_back_url && $orderId->task_type_id != 1){
-                    $call_web_hook = $this->updateStatusDataToOrder($order_details,5);  # call web hook when order completed
+                if($order_details && $order_details->call_back_url){
+                    $call_web_hook = $this->updateStatusDataToOrder($order_details,5,$orderId->task_type_id);  # call web hook when order completed
                 }
             }
         } elseif ($request->task_status == 5) {
@@ -185,13 +185,13 @@ class TaskController extends BaseController
             }
         } else {
             $Order  = Order::where('id', $orderId->order_id)->update(['status' => $task_type, 'note' => $note]);
-            if($order_details && $order_details->call_back_url  && $orderId->task_type_id == 1 ){
+            if($order_details && $order_details->call_back_url){
                 if($request->task_status == 2 || $request->task_status == 3)
                 $stat = $request->task_status + 1;
                 else
                 $stat = $request->task_status;
 
-                $call_web_hook = $this->updateStatusDataToOrder($order_details,$stat);  # call web hook when order update
+                $call_web_hook = $this->updateStatusDataToOrder($order_details,$stat,$orderId->task_type_id);  # call web hook when order update
             }
             
         }
@@ -481,7 +481,7 @@ class TaskController extends BaseController
     }
 
     /////////////////// **********************   update status in order panel also **********************************  ///////////////////////
-    public function updateStatusDataToOrder($order_details,$dispatcher_status_option_id){
+    public function updateStatusDataToOrder($order_details,$dispatcher_status_option_id,$task_type){
         try {  
             $auth =  Client::with(['getAllocation', 'getPreference'])->first();
             if ($auth->custom_domain && !empty($auth->custom_domain)) {
@@ -493,7 +493,7 @@ class TaskController extends BaseController
 
                 $client = new GClient(['content-type' => 'application/json']);                               
                 $url = $order_details->call_back_url;                      
-                $res = $client->get($url.'?dispatcher_status_option_id='.$dispatcher_status_option_id.'&dispatch_traking_url='.$dispatch_traking_url);
+                $res = $client->get($url.'?dispatcher_status_option_id='.$dispatcher_status_option_id.'&dispatch_traking_url='.$dispatch_traking_url.'&task_type='.$task_type);
                 $response = json_decode($res->getBody(), true);
                 if($response){
                 //    Log::info($response);
@@ -548,7 +548,7 @@ class TaskController extends BaseController
         
         if (isset($check) && $check->driver_id != null) {
             if ($check && $check->call_back_url) {
-                $call_web_hook = $this->updateStatusDataToOrder($check, 2);  # task accepted
+                $call_web_hook = $this->updateStatusDataToOrder($check, 2,1);  # task accepted
             }
             return response()->json([
                 'message' => __('Task Accecpted Successfully'),
@@ -577,7 +577,7 @@ class TaskController extends BaseController
             Order::where('id', $request->order_id)->update(['driver_id' => $request->driver_id, 'status' => 'assigned','driver_cost'=> $percentage]);
             Task::where('order_id', $request->order_id)->update(['task_status' => 1]);
             if ($check && $check->call_back_url) {
-                $call_web_hook = $this->updateStatusDataToOrder($check, 2);  # task accepted
+                $call_web_hook = $this->updateStatusDataToOrder($check, 2,1);  # task accepted
             }
             return response()->json([
                 'data' => __('Task Accecpted Successfully'),
@@ -752,24 +752,28 @@ class TaskController extends BaseController
             foreach ($request->task as $key => $value) {
                 $taskcount++;
                 if (isset($value)) {
+                    $post_code = isset($value['post_code']) ? $value['post_code'] : '';
                     $loc = [
                     'latitude'    => $value['latitude']??0.00,
                     'longitude'   => $value['longitude']??0.00,
-                    'short_name'  => $value['short_name']??null,
                     'address'     => $value['address']??null,
-                    'post_code'   => $value['post_code']??null,
                     'customer_id' => $cus_id,
-                    'flat_no'     => $value['flat_no']??null,
-                    'email'       => $value['email']??null,
-                    'phone_number'=> $value['phone_number']??null,
-                ];
-                    $Loction = Location::create($loc);
-                    // $Loction = Location::updateOrCreate(
-                    //     ['latitude' => $value['latitude']??0.00, 'longitude' => $value['longitude']??0.00,'customer_id' => $cus_id],
-                    //     [$loc]
-                    // );
+                      ];
+                    $loc_update = [
+                        'short_name'  => $value['short_name']??null,
+                        'post_code'   => (int)$post_code,
+                        'flat_no'     => $value['flat_no']??null,
+                        'email'       => $value['email']??null,
+                        'phone_number'=> $value['phone_number']??null,
+                        ];
+
+                  //  $Loction = Location::create($loc);
+                    $Loction = Location::updateOrCreate(
+                        $loc,
+                        $loc_update
+                    );
                     $loc_id = $Loction->id;
-                    Log::info($loc);
+                   
                 }
            
 

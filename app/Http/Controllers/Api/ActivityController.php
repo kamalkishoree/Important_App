@@ -218,7 +218,7 @@ class ActivityController extends BaseController
             $orders = Order::where('driver_id', $id)->whereBetween('order_time',[$utc_start, $utc_end])->where('status', 'assigned')->orderBy('order_time')->pluck('id')->toArray();
         }
 
-        $agent =  Agent::where('id',$id)->first();
+        $agent =  Agent::with('team')->where('id',$id)->first();
         $agent->device_type = $request->device_type??null;
         $agent->device_token = $request->device_token??null;;
         $agent->save();
@@ -237,7 +237,7 @@ class ActivityController extends BaseController
             }
         }
         
-        $agents     = Agent::where('id', $id)->with('team')->first();
+        $agents    = $agent; //Agent::where('id', $id)->with('team')->first();
         $taskProof = TaskProof::all();
 
         $prefer    = ClientPreference::with('currency')->select('theme', 'distance_unit', 'currency_id', 'language_id', 'agent_name', 'date_format', 'time_format', 'map_type', 'map_key_1', 'customer_support', 'customer_support_key', 'customer_support_application_id')->first();

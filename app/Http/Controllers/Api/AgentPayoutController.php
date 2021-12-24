@@ -78,7 +78,7 @@ class AgentPayoutController extends BaseController{
 
                 $validator = Validator::make($request->all(), [
                     'beneficiary_name' => 'required',
-                    'beneficiary_address' => 'required',
+                    'beneficiary_bank_name' => 'required',
                     'beneficiary_account_number' => 'required',
                     'beneficiary_ifsc' => 'required'
                 ]);
@@ -88,15 +88,17 @@ class AgentPayoutController extends BaseController{
                 }
 
                 $beneficiary_name = $request->beneficiary_name;
-                $beneficiary_address = $request->beneficiary_address;
+                // $beneficiary_address = $request->beneficiary_address;
                 $bank_account = $request->beneficiary_account_number;
+                $beneficiary_bank_name = $request->beneficiary_bank_name;
                 $bank_ifsc = $request->beneficiary_ifsc;
                 $agent_bank_account = AgentBankDetail::where('beneficiary_account_number', $bank_account)->where('beneficiary_ifsc', $bank_ifsc)->where('status', 1)->orderBy('id', 'desc')->first();
                 if($agent_bank_account){
                     $agent_bank_account->beneficiary_name = $beneficiary_name;
                     $agent_bank_account->beneficiary_account_number = $bank_account;
                     $agent_bank_account->beneficiary_ifsc = $bank_ifsc;
-                    $agent_bank_account->beneficiary_address = $beneficiary_address;
+                    // $agent_bank_account->beneficiary_address = $beneficiary_address;
+                    $agent_bank_account->beneficiary_bank_name = $beneficiary_bank_name;
                     $agent_bank_account->status = 1;
                     $agent_bank_account->update();
                 }
@@ -114,7 +116,8 @@ class AgentPayoutController extends BaseController{
                     $agent_bank_account->beneficiary_name = $beneficiary_name;
                     $agent_bank_account->beneficiary_account_number = $bank_account;
                     $agent_bank_account->beneficiary_ifsc = $bank_ifsc;
-                    $agent_bank_account->beneficiary_address = $beneficiary_address;
+                    // $agent_bank_account->beneficiary_address = $beneficiary_address;
+                    $agent_bank_account->beneficiary_bank_name = $beneficiary_bank_name;
                     $agent_bank_account->status = 1;
                     $agent_bank_account->save();
                 }
@@ -158,9 +161,8 @@ class AgentPayoutController extends BaseController{
         $total_order_value = Order::where('driver_id', $agent_id)->orderBy('id','desc');
         $total_order_value = $total_order_value->sum('order_cost');
 
-        $agent_payouts = AgentPayout::select('*','status as status_id')->with('payoutOption')->where('agent_id', $agent_id)->orderBy('id','desc');
-        $agent_payout_list = $agent_payouts->paginate($limit, $page);
-        $past_payout_value = $agent_payouts->whereIn('status', [0,1])->sum('amount');
+        $agent_payout_list = AgentPayout::select('*','status as status_id')->with('payoutOption')->where('agent_id', $agent_id)->orderBy('id','desc')->paginate($limit, $page);
+        $past_payout_value = AgentPayout::where('agent_id', $agent_id)->whereIn('status', [0,1])->sum('amount');
 
         $available_funds = $total_order_value + $agent->balanceFloat + $debit - $past_payout_value - $credit;
         // $available_funds = number_format($available_funds, 2, '.', ',');

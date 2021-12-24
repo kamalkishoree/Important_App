@@ -30,6 +30,10 @@ class DriverTransactionController extends BaseController
         $totalCashCollected = 0;
 
         if ($agent) {
+            $wallet_balance = 0;
+            if($agent->wallet){
+                $wallet_balance = $agent->balanceFloat;
+            }
             $page = $request->has('page') ? $request->page : 1;
             $limit = $request->has('limit') ? $request->limit : 30;
             $cash  = $agent->order->sum('cash_to_be_collected');
@@ -37,7 +41,8 @@ class DriverTransactionController extends BaseController
             $order_cost = $agent->order->sum('order_cost');
             $credit = $agent->agentPayment->sum('cr');
             $debit = $agent->agentPayment->sum('dr');
-            $balance = ($debit - $credit) - ($cash - $driver_cost);
+            $payout = AgentPayout::where(['agent_id'=>$agent->id, 'status'=> 1])->sum('amount');
+            $balance = $wallet_balance + ($debit - $credit - $payout) - ($cash - $driver_cost);
             $final_balance = number_format($balance, 2, '.', '');
 
             $payments = AgentPayment::select(DB::raw('id, "payment" as transaction_type, NULL as order_id, NULL as dependent_task_id, NULL as task_type_id, NULL as location_id, NULL as appointment_duration, NULL as task_status, NULL as allocation_type, NULL as amount, NULL as type, NULL as meta, dr, cr, created_at'))
@@ -84,9 +89,9 @@ class DriverTransactionController extends BaseController
         
         $data['order_cost'] = $order_cost ?? 0;
         $data['driver_cost'] = $driver_cost;
-        $data['lifetime_earnings'] = $credit + $driver_cost + $agent->balanceFloat;
+        $data['lifetime_earnings'] = $credit + $driver_cost + $payout;
         $data['cash_to_be_collected'] = $cash;
-        $data['final_balance'] = $final_balance + $agent->balanceFloat;
+        $data['final_balance'] = $final_balance;
         $data['payments'] = $tasks;
         $data['totalCashCollected'] = $totalCashCollected;
 

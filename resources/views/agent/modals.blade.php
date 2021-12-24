@@ -75,7 +75,7 @@
                         </div>
                     </div>
 
-                    <div class="row ">
+                    {{-- <div class="row ">
                         <div class="col-md-12">
                             <div class="form-group" id="vehicle_type_idInput">
                                 <p class="text-muted mt-3 mb-2">{{__("TRANSPORT TYPE")}}</p>
@@ -106,7 +106,7 @@
 
                             </div>
                         </div>
-                    </div>
+                    </div> --}}
                     <div class="row">
                         <div class="col-lg-12">
                             <div class="form-group mb-3">
@@ -116,7 +116,7 @@
                         </div>
                     </div>
 
-                    <div class="row">
+                    {{-- <div class="row">
                         <div class="col-md-6">
                             <div class="form-group" id="make_modelInput1">
                                 <label for="make_model" class="control-label">{{__("TRANSPORT DETAILS")}}</label>
@@ -159,14 +159,14 @@
                             </div>
 
                         </div>
-                    </div>
+                    </div> --}}
 
                     <div class="row">
                         @foreach($driver_registration_documents as $driver_registration_document)
                         <div class="col-md-6">
                             <div class="form-group" id="{{$driver_registration_document->name}}Input">
                                 <label for="" class="control-label">{{$driver_registration_document->name ? $driver_registration_document->name : ''}}</label>
-                                @if(strtolower($driver_registration_document->file_type) == 'text')
+                                @if(strtolower($driver_registration_document->file_type) == 'text' || strtolower($driver_registration_document->file_type) == 'date')
                                 <input type="text" class="form-control" id="input_file_logo_{{$driver_registration_document->id}}" name="{{$driver_registration_document->name}}" placeholder="Enter Text" value="" {{ (!empty($driver_registration_document->is_required))?'required':''}}>
                                 @else
                                 @if(strtolower($driver_registration_document->file_type) == 'image')

@@ -129,10 +129,33 @@ class TaskController extends Controller
             $orders->whereIn('driver_id', $agentids)->orWhereNull('driver_id');
         }
         
-        $orders = $orders->where('status', $request->routesListingType)->where('status', '!=', null)->get();
+        $orders = $orders->where('status', $request->routesListingType)->where('status', '!=', null)->orderBy('updated_at', 'desc')->get();
 
       
         return Datatables::of($orders)
+                // ->editColumn('order_number', function ($orders) use ($request) {
+                //     if(!empty($orders->call_back_url)){
+                //         $client = new GClient(['content-type' => 'application/json']);                               
+                //         $url = $orders->call_back_url;
+                //         if (stripos('dispatch-pickup-delivery', $url) !== 0){
+                //             $dispatch_order_detail_url = str_replace('dispatch-pickup-delivery', 'dispatch-order-status-update-details', $url);
+                //             $res = $client->get($dispatch_order_detail_url);
+                //             $response = json_decode($res->getBody(), true);
+                //             if($response){
+                //                 return $response['data']['order_number'];
+                //             }
+                //         }
+                //     }
+                //     return '';
+                // })
+                ->editColumn('customer_id', function ($orders) use ($request) {
+                    $customerID = !empty($orders->customer->id)? $orders->customer->id : '';
+                    $length = strlen($customerID);
+                    if($length < 4){
+                        $customerID = str_pad($customerID, 4, '0', STR_PAD_LEFT);
+                    }
+                    return $customerID;
+                })
                 ->editColumn('customer_name', function ($orders) use ($request) {
                     $customerName = !empty($orders->customer->name)? $orders->customer->name : '';
                     return $customerName;
@@ -175,12 +198,12 @@ class TaskController extends Controller
 
                         $addressArr   = explode(' ',trim($address));
                         $finalAddress = (!empty($addressArr[0])) ? $addressArr[0] : '';
-                        $finalAddress = (!empty($addressArr[1])) ? $addressArr[0].' '.$addressArr[1] : $finalAddress.'...';
-                        $finalAddress = (!empty($addressArr[2])) ? $addressArr[0].' '.$addressArr[1].' '.$addressArr[2] : $finalAddress.'...';
-                        $finalAddress = (!empty($addressArr[3])) ? $addressArr[0].' '.$addressArr[1].' '.$addressArr[2].' '.$addressArr[3] : $finalAddress.'...';
-                        $finalAddress = (!empty($addressArr[4])) ? $addressArr[0].' '.$addressArr[1].' '.$addressArr[2].' '.$addressArr[3].' '.$addressArr[4] : $finalAddress.'...';
-                        $finalAddress = (!empty($addressArr[5])) ? $addressArr[0].' '.$addressArr[1].' '.$addressArr[2].' '.$addressArr[3].' '.$addressArr[4].' '.$addressArr[5] : $finalAddress.'...';
-                        $finalAddress = (!empty($addressArr[6])) ? $addressArr[0].' '.$addressArr[1].' '.$addressArr[2].' '.$addressArr[3].' '.$addressArr[4].' '.$addressArr[5].'...' : $finalAddress;
+                        $finalAddress = (!empty($addressArr[1])) ? $addressArr[0].' '.$addressArr[1] : $finalAddress.'';
+                        $finalAddress = (!empty($addressArr[2])) ? $addressArr[0].' '.$addressArr[1].' '.$addressArr[2] : $finalAddress.'';
+                        $finalAddress = (!empty($addressArr[3])) ? $addressArr[0].' '.$addressArr[1].' '.$addressArr[2].' '.$addressArr[3] : $finalAddress.'';
+                        $finalAddress = (!empty($addressArr[4])) ? $addressArr[0].' '.$addressArr[1].' '.$addressArr[2].' '.$addressArr[3].' '.$addressArr[4] : $finalAddress.'';
+                        $finalAddress = (!empty($addressArr[5])) ? $addressArr[0].' '.$addressArr[1].' '.$addressArr[2].' '.$addressArr[3].' '.$addressArr[4].' '.$addressArr[5] : $finalAddress.'';
+                        $finalAddress = (!empty($addressArr[6])) ? $addressArr[0].' '.$addressArr[1].' '.$addressArr[2].' '.$addressArr[3].' '.$addressArr[4].' '.$addressArr[5].'' : $finalAddress;
                         $routes[]     = array('taskType'=>$taskType, 'pickupClass'=>$pickupClass, 'shortName'=>$shortName, 'toolTipAddress'=>$address, 'address'=> $finalAddress);
                     }
                     return json_encode($routes, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_UNESCAPED_UNICODE);
@@ -435,16 +458,14 @@ class TaskController extends Controller
             $taskcount++;
             if (isset($request->address[$key])) {
                 $loc = [
-                    'latitude'       => $request->latitude[$key],
-                    'longitude'      => $request->longitude[$key],
                     'short_name'     => $request->short_name[$key],
-                    'address'        => $request->address[$key],
-                    'post_code'      => (int)$request->post_code[$key],
+                     'post_code'      => (int)$request->post_code[$key],
                     'flat_no'        => !empty($request->flat_no[$key])? $request->flat_no[$key] : '',
                     'email'          => $request->address_email[$key],
                     'phone_number'   => $request->address_phone_number[$key],
-                    'customer_id'    => $cus_id,
                 ];
+
+               
 
                 $Loction = Location::updateOrCreate(
                     ['latitude' => $request->latitude[$key], 'longitude' => $request->longitude[$key],'address' => $request->address[$key],'customer_id' => $cus_id],
@@ -467,15 +488,11 @@ class TaskController extends Controller
             $location = Location::where('id', $loc_id)->first();
             if ($location->customer_id != $cus_id) {
                 $newloc = [
-                    'latitude'     => $location->latitude,
-                    'longitude'    => $location->longitude,
-                    'short_name'   => $location->short_name,
-                    'address'      => $location->address,
+                   'short_name'   => $location->short_name,
                     'post_code'    => (int)$location->post_code,
                     'flat_no'      => $location->flat_no,
                     'email'        => $location->address_email,
                     'phone_number' => $location->address_phone_number,
-                    'customer_id'  => $cus_id,
                 ];
 
                 $Loction = Location::updateOrCreate(
@@ -878,13 +895,9 @@ class TaskController extends Controller
             $taskcount++;
             if (isset($request->address[$key])) {
                 $loc = [
-                    'latitude'    => $request->latitude[$key],
-                    'longitude'   => $request->longitude[$key],
-                    'short_name'  => $request->short_name[$key],
-                    'address'     => $request->address[$key],
-                    'post_code'   => $request->post_code[$key],
+                   'short_name'  => $request->short_name[$key],
+                    'post_code'   => (int)$request->post_code[$key],
                     'flat_no'   => !empty($request->flat_no[$key])? $request->flat_no[$key] : '',
-                    'customer_id' => $cus_id,
                 ];
               //  $Loction = Location::create($loc);
                 $Loction = Location::updateOrCreate(
@@ -1398,9 +1411,7 @@ class TaskController extends Controller
                     break;
                 }
             }
-            Log::info('send_to_all data');
-            Log::info($data);
-            Log::info('send_to_all data');
+           
             $this->dispatch(new RosterCreate($data, $extraData));
         }
     }
@@ -1999,15 +2010,11 @@ class TaskController extends Controller
             if (isset($request->short_name[$key])) {
                 $loc = [
                     'short_name'    => $request->short_name[$key],
-                    'address'       => $request->address[$key],
-                    'post_code'     => $request->post_code[$key],
+                    'post_code'     => (int)$request->post_code[$key],
                     'flat_no'       => !empty($request->flat_no[$key])? $request->flat_no[$key] : '',
-                    'latitude'      => $request->latitude[$key],
-                    'longitude'     => $request->longitude[$key],
                     'email'         => $request->address_email[$key],
                     'phone_number'  => $request->address_phone_number[$key],
-                    'customer_id'   => $cus_id,
-                ];
+                 ];
                 
               //  $Loction = Location::create($loc);
                 $Loction = Location::updateOrCreate(
@@ -2025,20 +2032,20 @@ class TaskController extends Controller
                 $location = Location::where('id', $loc_id)->first();
                 if ($location->customer_id != $cus_id) {
                     $newloc = [
-                        'latitude'       => $location->latitude,
-                        'longitude'      => $location->longitude,
                         'short_name'     => $location->short_name,
-                        'address'        => $location->address,
                         'post_code'      => (int)$location->post_code,
                         'flat_no'        => $location->flat_no,
                         'alcoholic_item' => $location->alcoholic_item,
                         'email'          => $location->address_email,
-                        'phone_number'   => $location->address_phone_number,
-                        'customer_id'    => $cus_id,
+                        'phone_number'   => $location->address_phone_number
                     ];
                   //  $location = Location::create($newloc);
                     $location = Location::updateOrCreate(
+<<<<<<< HEAD
                         ['latitude' => $location->latitude, 'longitude' => $location->longitude, 'address' => $location->address],
+=======
+                        ['latitude' => $location->latitude, 'longitude' => $location->longitude, 'address' => $location->address, 'customer_id' => $cus_id],
+>>>>>>> 27d56f3c66cc35ab75e85c4fccc05a9b5d0ea21a
                         $newloc
                     );
                 }
@@ -2098,7 +2105,7 @@ class TaskController extends Controller
             $this->sendsilentnotification($notification_data);
             $orders = Order::where('id', $id)->first();
             if($orders && $orders->call_back_url){
-                $call_web_hook = $this->updateStatusDataToOrder($orders,2);  # call web hook when order completed
+                $call_web_hook = $this->updateStatusDataToOrder($orders,2,1);  # call web hook when order completed
             }
             
         }
@@ -2107,20 +2114,19 @@ class TaskController extends Controller
     }
 
     /////////////////// **********************   update status in order panel also **********************************  ///////////////////////
-    public function updateStatusDataToOrder($order_details,$dispatcher_status_option_id){
+    public function updateStatusDataToOrder($order_details,$dispatcher_status_option_id,$type){
         try {  
                 $code =  Client::select('id','code')->first();
                 $dispatch_traking_url = route('order.tracking',[$code->code,$order_details->unique_id]);
                 $client = new GClient(['content-type' => 'application/json']);                               
                 $url = $order_details->call_back_url;  
                 $dispatch_traking_url = $dispatch_traking_url??'';                     
-                $res = $client->get($url.'?dispatcher_status_option_id='.$dispatcher_status_option_id.'&dispatch_traking_url='.$dispatch_traking_url);
+                $res = $client->get($url.'?dispatcher_status_option_id='.$dispatcher_status_option_id.'&dispatch_traking_url='.$dispatch_traking_url.'&type='.$type);
                 $response = json_decode($res->getBody(), true);
                 if($response){
                    // Log::info($response);
                 }
                
-                
         }    
         catch(\Exception $e)
         {
@@ -2128,7 +2134,6 @@ class TaskController extends Controller
                 'status' => 'error',
                 'message' => $e->getMessage()
             ]);
-                    
         }
     }
 

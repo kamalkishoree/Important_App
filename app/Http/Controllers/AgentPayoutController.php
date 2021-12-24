@@ -14,7 +14,7 @@ use App\Traits\ApiResponser;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\AgentPayoutRequestListExport;
 use App\Http\Controllers\BaseController;
-use App\Model\{Client, ClientPreference, User, Agent, Order, PaymentOption, PayoutOption, AgentPayout};
+use App\Model\{Client, ClientPreference, User, Agent, Order, PaymentOption, PayoutOption, AgentPayout, AgentBankDetail};
 
 class AgentPayoutController extends BaseController{
     use ApiResponser;
@@ -111,6 +111,7 @@ class AgentPayoutController extends BaseController{
     }
 
     public function agentPayoutRequestsFilter(Request $request){
+        $client = Client::where('code', Auth::user()->code)->with(['getTimezone', 'getPreference'])->first();
         $from_date = "";
         $to_date = "";
         $user = Auth::user();
@@ -120,7 +121,9 @@ class AgentPayoutController extends BaseController{
             $to_date = (!empty($date_date_filter[1]))?$date_date_filter[1]:$date_date_filter[0];
             $from_date = $date_date_filter[0];
         }
-        $vendor_payouts = AgentPayout::with(['agent', 'payoutOption'])->orderBy('id','desc');
+        $vendor_payouts = AgentPayout::with(['agent', 'payoutOption', 'payoutBankDetails'=>function($q){
+            $q->where('status', 1);
+        }])->orderBy('updated_at','desc');
         // if($user->is_superadmin == 0){
         //     $vendor_payouts = $vendor_payouts->whereHas('vendor.permissionToUser', function ($query) use($user) {
         //         $query->where('user_id', $user->id);
@@ -128,11 +131,12 @@ class AgentPayoutController extends BaseController{
         // }
         $vendor_payouts = $vendor_payouts->where('status', $status)->get();
         foreach ($vendor_payouts as $payout) {
-            $payout->date = Carbon::parse($payout->created_at)->toDateTimeString();
-            $payout->agentName = $payout->agent->name;
+            $payout->date = convertDateTimeInTimeZone($payout->created_at, $client->getTimezone->timezone);
+            $payout->agentName = $payout->agent ? $payout->agent->name : '';
             // $payout->requestedBy = ucfirst($payout->user->name);
             $payout->amount = $payout->amount;
             $payout->type = $payout->payoutOption->title;
+            $payout->bank_account = $payout->agent_bank_detail_id ?? '';
         }
         return Datatables::of($vendor_payouts)
             ->addIndexColumn()
@@ -185,7 +189,7 @@ class AgentPayoutController extends BaseController{
                 if($agent_account != ''){
                     $custom_meta = $custom_meta . '<b>XXXX'.substr($agent_account, -4).'</b>';
                 }
-                $wallet->withdrawFloat($debit_amount, [$custom_meta]);
+                $wallet->forceWithdrawFloat($debit_amount, [$custom_meta]);
             }
             
             DB::commit();
@@ -196,4 +200,93 @@ class AgentPayoutController extends BaseController{
             return Redirect()->back()->with('error', $ex->getMessage());
         }
     }
+
+    public function agentPayoutRequestsCompleteAll(Request $request, $domain = ''){
+        try{
+            DB::beginTransaction();
+            $payout_ids = $request->payout_ids;
+            if(count($payout_ids) < 1){
+                return $this->error(__('Please select any record'), 422);
+            }
+            foreach($payout_ids as $pay_id){
+                $payout = AgentPayout::with(['payoutBankDetails'=> function($q){
+                    $q->where('status', 1);
+                }])->where('id', $pay_id)->first();
+                
+                $agent = Agent::where('id', $payout->agent_id)->where('is_approved', 1)->first();
+                $credit = $agent->agentPayment->sum('cr');
+                $debit = $agent->agentPayment->sum('dr');
+                $agent_account = $payout->payoutBankDetails->first() ? $payout->payoutBankDetails->first()->beneficiary_account_number : '';
+                $agent_id = $agent->id;
+
+                $total_order_value = Order::where('driver_id', $agent_id)->orderBy('id','desc');
+                $total_order_value = $total_order_value->sum('order_cost');
+
+                $agent_payouts = AgentPayout::where('agent_id', $agent_id)->orderBy('id','desc');
+                $agent_payouts = $agent_payouts->where('status', 1)->sum('amount');
+
+                $past_payout_value = $agent_payouts;
+                $available_funds = $total_order_value + $agent->balanceFloat + $debit - $past_payout_value - $credit;
+
+                if($payout->amount > $available_funds){
+                    // return Redirect()->back()->with('error', __('Payout amount is greater than agent available funds'));
+                    continue;
+                }
+
+                $payout->status = 1;
+                $payout->save();
+
+                $debit_amount = $payout->amount;
+                $wallet = $agent->wallet;
+                if ($debit_amount > 0) {
+                    $custom_meta = 'Wallet has been <b>Debited</b> for payout request';
+                    if($agent_account != ''){
+                        $custom_meta = $custom_meta . '<b>XXXX'.substr($agent_account, -4).'</b>';
+                    }
+                    $wallet->forceWithdrawFloat($debit_amount, [$custom_meta]);
+                }
+            }
+            
+            DB::commit();
+            return $this->success('', __('Payout has been completed successfully'), 201);
+        }
+        catch(Exception $ex){
+            DB::rollback();
+            return $this->error($ex->getMessage(), $ex->getCode());
+        }
+    }
+
+    /**   get agent payout bank details  */
+    public function agentPayoutBankDetails(Request $request)
+    {
+        try{
+            $agent_payout_bank_detail_id = $request->id;
+            $agent_bank_details = AgentBankDetail::with('agent')->where('id', $agent_payout_bank_detail_id)->first();
+            return $this->success($agent_bank_details, __('Success'), 201);
+        }
+        catch(Exception $ex){
+            return $this->error($ex->getMessage(), $ex->getCode());
+        }
+    }
+
+    /**   UPDATE agent payout bank details  */
+    /*public function updateagentPayoutBankDetails(Request $request)
+    {
+        try{
+            $agent_payout_bank_detail_id = $request->id;
+            $agent_bank_account = AgentBankDetail::where('id', $agent_payout_bank_detail_id)->first();
+            if($agent_bank_account){
+                $agent_bank_account->beneficiary_name = $request->beneficiary_name;
+                $agent_bank_account->beneficiary_account_number = $request->bank_account;
+                $agent_bank_account->beneficiary_ifsc = $request->bank_ifsc;
+                $agent_bank_account->beneficiary_bank_name = $request->beneficiary_bank_name;
+                $agent_bank_account->update();
+                return $this->success('', __('Agent bank details are successfully updated'), 201);
+            }
+            return $this->error(__('Invalid Data'), 422);
+        }
+        catch(Exception $ex){
+            return $this->error($ex->getMessage(), $ex->getCode());
+        }
+    }*/
 }

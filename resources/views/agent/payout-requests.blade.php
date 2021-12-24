@@ -175,6 +175,11 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                         <div class="material-border"></div>
                     </li>
                 </ul>
+                
+                {{-- <div class="col-sm-4 payout-toggle">
+                    <button type="button" class="btn btn-info payout_all_agents" data-toggle="modal" data-target="#payout-all-agents-model" data-backdrop="static" data-keyboard="false">{{__("Payout")}}</button> 
+                </div> --}}
+                
                 <div class="tab-content nav-material pt-0" id="top-tabContent">
                     <div class="tab-pane fade past-order show active" id="pending_payouts" role="tabpanel" aria-labelledby="pending-payouts">
                         <div class="row">
@@ -188,11 +193,13 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                             <table class="table table-centered table-nowrap table-striped" id="pending_payouts_datatable" width="100%">
                                                 <thead>
                                                     <tr>
+                                                        <th><input type="checkbox" class="all-agent_check" name="all_agent_id" id="all-agent_check"></th>
                                                         <th>{{ __('Date') }}</th>
                                                         <th>{{ __('Agent') }}</th>
                                                         {{-- <th>{{ _('Requested By') }}</th> --}}
                                                         <th>{{ __('Amount') }}</th>
                                                         <th>{{ __('Payout Type') }}</th>
+                                                        <th>{{ __('Bank Detials') }}</th>
                                                         <th class="text-center">{{ __('Action') }}</th>
                                                     </tr>
                                                 </thead>
@@ -217,6 +224,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                                         <th>{{ __('Agent') }}</th>
                                                         <th>{{ __('Amount') }}</th>
                                                         <th>{{ __('Payout Type') }}</th>
+                                                        <th>{{ __('Bank Detials') }}</th>
                                                         <th class="text-center">{{ __('Status') }}</th>
                                                     </tr>
                                                 </thead>
@@ -241,6 +249,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                                         <th>{{ __('Agent') }}</th>
                                                         <th>{{ __('Amount') }}</th>
                                                         <th>{{ __('Payout Type') }}</th>
+                                                        <th>{{ __('Bank Detials') }}</th>
                                                         <th class="text-center">{{ __('Status') }}</th>
                                                     </tr>
                                                 </thead>
@@ -288,6 +297,62 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
     </div>
 </div>
 
+<div id="selected-payout-confirm-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="selectedPayoutConfirmLabel" style="display: none" aria-modal="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body px-3">
+                <div class="row">
+                    <h4 class="modal-title">{{__('Are you sure you want to payout for selected requests?')}}</h4>
+                </div>
+            </div>
+            <div class="modal-footer flex-nowrap justify-content-center align-items-center">
+                <button type="submit" class="btn btn-info waves-effect waves-light payout_all_agents">{{__('Continue')}}</button>
+                <button type="button" class="btn btn-danger waves-effect waves-light" data-dismiss="modal">{{__('Cancel')}}</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div id="agent-bank-details-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="agentBankDetialsModalLabel" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header border-0">
+                <h4 class="modal-title">{{__("Bank Details")}} - <span id="agent_name"></span></h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            </div>
+            <div class="modal-body px-3 pt-0 pb-2">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="beneficiary_name" class="control-label">{{__("Account Holder Name")}}</label>
+                            <input type="text" class="form-control" id="beneficiary_name" placeholder="{{__("Account Holder Name")}}" readonly>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="beneficiary_account_number" class="control-label">{{__("Bank Account Number")}}</label>
+                            <input type="text" class="form-control" id="beneficiary_account_number" placeholder="{{__("Bank Account Number")}}" readonly>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="beneficiary_ifsc" class="control-label">{{__("IFSC Code")}}</label>
+                            <input type="text" class="form-control" id="beneficiary_ifsc" placeholder="{{__("IFSC Code")}}" readonly>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="beneficiary_bank_name" class="control-label">{{__("Bank Name")}}</label>
+                            <input type="text" class="form-control" id="beneficiary_bank_name" placeholder="{{__("Bank Name")}}" readonly>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 {{-- @include('agent.modals')
 @include('modals.pay-receive') --}}
 @endsection
@@ -327,6 +392,13 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
             if (status == 0) {
                 var domRef = '<"toolbar">Bfrtip';
                 var btnObj = [{
+                    className: 'btn btn-success waves-effect waves-light rounded-pill payout-toggle d-none',
+                    text: '<span class="btn-label"><i class="fe-dollar-sign"></i></span>Payout',
+                    action: function(e, dt, node, config) {
+                        $("#selected-payout-confirm-modal").modal("show");
+                    }
+                },
+                {
                     className: 'btn btn-success waves-effect waves-light',
                     text: '<span class="btn-label"><i class="mdi mdi-export-variant"></i></span>Export CSV',
                     action: function(e, dt, node, config) {
@@ -361,23 +433,23 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                 //     d.search = $('input[type="search"]').val();
                 //     d.date_filter = $('#range-datepicker').val();
                 //     d.payment_option = $('#payment_option_select_box option:selected').val();
-                //     d.tax_type_filter = $('#tax_type_select_box option:selected').val();
                   }
                 },
-                columns: [
-                    {data: 'date', name: 'date', orderable: false, searchable: false},
-                    {data: 'agentName', name: 'agentName', orderable: false, searchable: false},
-                    // {data: 'requestedBy', name: 'requestedBy', orderable: false, searchable: false},
-                    {data: 'amount', class:'text-center', name: 'amount', orderable: false, searchable: false},
-                    {data: 'type', name: 'type', orderable: false, searchable: false},
-                    {data: 'status', class:'text-center', name: 'status', orderable: false, searchable: false, "mRender":function(data, type, full){
-                        if(full.status == 'Pending'){
-                            return "<button class='btn btn-sm btn-info payout_btn' data-id='"+full.id+"'>Payout</button>";
-                        }else{
-                            return full.status;
-                        }
-                    }},
-                ]
+                columns: dataTableColumn(status)
+                // [
+                //     {data: 'date', name: 'date', orderable: false, searchable: false},
+                //     {data: 'agentName', name: 'agentName', orderable: false, searchable: false},
+                //     // {data: 'requestedBy', name: 'requestedBy', orderable: false, searchable: false},
+                //     {data: 'amount', class:'text-center', name: 'amount', orderable: false, searchable: false},
+                //     {data: 'type', name: 'type', orderable: false, searchable: false},
+                //     {data: 'status', class:'text-center', name: 'status', orderable: false, searchable: false, "mRender":function(data, type, full){
+                //         if(full.status == 'Pending'){
+                //             return "<button class='btn btn-sm btn-info payout_btn' data-id='"+full.id+"'>Payout</button>";
+                //         }else{
+                //             return full.status;
+                //         }
+                //     }},
+                // ]
             });
         }
 
@@ -390,6 +462,131 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
             $("#payout-confirm-modal #payout-amount-final").text('{{$currency_symbol}}' + amount);
             $("#payout-confirm-modal #payout_amount").val(amount);
             $("#payout-confirm-modal").modal('show');
+        });
+
+        function dataTableColumn(status){
+            if(status == 0){
+                return [
+                    {data: 'id', name: 'id', orderable: false, searchable: false, "mRender": function ( data, type, full ) {
+                        return '<input type="checkbox" class="single_agent_check" name="agent_payout_id[]" value="'+full.id+'">';
+                    }},
+                    {data: 'date', name: 'date', orderable: false, searchable: false},
+                    {data: 'agentName', name: 'agentName', orderable: false, searchable: false},
+                    // {data: 'requestedBy', name: 'requestedBy', orderable: false, searchable: false},
+                    {data: 'amount', class:'text-center', name: 'amount', orderable: false, searchable: false},
+                    {data: 'type', name: 'type', orderable: false, searchable: false},
+                    {data: 'bank_account', class:'text-center', name: 'bank_account', orderable: false, searchable: false, "mRender":function(data, type, full){
+                        if(full.bank_account != ''){
+                            return '<a href="javascript:void(0)" class="view_agent_bank_details" data-id="'+full.bank_account+'">View</a>';
+                        }else{
+                            return 'NA';
+                        }
+                    }},
+                    {data: 'status', class:'text-center', name: 'status', orderable: false, searchable: false, "mRender":function(data, type, full){
+                        if(full.status == 'Pending'){
+                            return "<button class='btn btn-sm btn-info payout_btn' data-id='"+full.id+"'>Payout</button>";
+                        }else{
+                            return full.status;
+                        }
+                    }},
+                ];
+            }else{
+                return [
+                    {data: 'date', name: 'date', orderable: false, searchable: false},
+                    {data: 'agentName', name: 'agentName', orderable: false, searchable: false},
+                    // {data: 'requestedBy', name: 'requestedBy', orderable: false, searchable: false},
+                    {data: 'amount', class:'text-center', name: 'amount', orderable: false, searchable: false},
+                    {data: 'type', name: 'type', orderable: false, searchable: false},
+                    {data: 'bank_account', class:'text-center', name: 'bank_account', orderable: false, searchable: false, "mRender":function(data, type, full){
+                        if(full.bank_account != ''){
+                            return '<a href="javascript:void(0)" class="view_agent_bank_details" data-id="'+full.bank_account+'">View</a>';
+                        }else{
+                            return 'NA';
+                        }
+                    }},
+                    {data: 'status', class:'text-center', name: 'status', orderable: false, searchable: false, "mRender":function(data, type, full){
+                        if(full.status == 'Pending'){
+                            return "<button class='btn btn-sm btn-info payout_btn' data-id='"+full.id+"'>Payout</button>";
+                        }else{
+                            return full.status;
+                        }
+                    }},
+                ]
+            }
+        }
+
+        $(".all-agent_check").click(function() {
+            if ($(this).is(':checked')) {
+                $(".payout-toggle").removeClass('d-none');
+                $('.single_agent_check').prop('checked', true);
+            } else {
+                $(".payout-toggle").addClass('d-none');
+                $('.single_agent_check').prop('checked', false);
+            }
+        });
+
+        $(document).on('change', '.single_agent_check', function() {
+            if ($('input:checkbox.single_agent_check:checked').length > 0){
+                $(".payout-toggle").removeClass('d-none');
+            }
+            else{
+                $('.all-driver_check').prop('checked', false);
+                $(".payout-toggle").addClass('d-none');
+            }
+        });
+
+        $(document).on('click', '.payout_all_agents', function() {
+            payoutAllAgents();
+        });
+
+        function payoutAllAgents() {
+            var payout_id = [];
+            $('.single_agent_check:checked').each(function(i){
+                payout_id[i] = $(this).val();
+            });
+            if (payout_id.length == 0) {
+                // $("#add-assgin-agent-model .close").click();
+                alert('Please select any record');
+                return;
+            }
+            $.ajax({
+                type: "POST",
+                url: '{{route("agent.payout.requests.complete.all")}}',
+                data: {payout_ids: payout_id},
+                success: function( response ) {
+                    $("#pay-receive-modal").modal('hide');
+                    if (response.status == 'Success') {
+                        location.reload();
+                    } else {
+                        alert(response.message);
+                        // $("#pay-receive-modal .show_all_error.invalid-feedback").show();
+                        // $("#pay-receive-modal .show_all_error.invalid-feedback").text(response.message);
+                    }
+                }
+            });
+        }
+
+        $(document).delegate('.view_agent_bank_details', 'click', function(e) {
+            var id = $(this).attr('data-id');
+            $.ajax({
+                type: 'post',
+                url: "{{ route('agent.payout.bank.details') }}",
+                data: {'id': id},
+                success: function(response) {
+                    if(response.status == 'Success'){
+                        var data = response.data;
+                        $("#agent-bank-details-modal").modal('show');
+                        $("#agent-bank-details-modal #agent_name").text(data.agent.name);
+                        $("#agent-bank-details-modal #beneficiary_name").val(data.beneficiary_name);
+                        $("#agent-bank-details-modal #beneficiary_account_number").val(data.beneficiary_account_number);
+                        $("#agent-bank-details-modal #beneficiary_ifsc").val(data.beneficiary_ifsc);
+                        $("#agent-bank-details-modal #beneficiary_bank_name").val(data.beneficiary_bank_name);
+                    }
+                    else{
+                        alert(response.message);
+                    }
+                },
+            });
         });
     });
 
