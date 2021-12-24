@@ -190,6 +190,15 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                 @endforeach
                             </select>
                         </div>
+                        <div class="col-sm-2">
+                            <label for="tag_filter">{{__('Tags Filter')}}</label>
+                            <select name="tag_filter" id="tag_filter" class="form-control">
+                                <option value="">{{__('All')}}</option>
+                                @foreach($tags as $tag)
+                                    <option value="{{$tag->id}}">{{$tag->name}}</option>
+                                @endforeach
+                            </select>
+                        </div>
                     </div>
                     <div class="tab-content nav-material pt-0" id="top-tabContent">
                         <div class="tab-pane fade past-order show active" id="active_vendor" role="tabpanel" aria-labelledby="active-vendor">

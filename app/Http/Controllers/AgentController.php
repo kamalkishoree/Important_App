@@ -58,7 +58,7 @@ class AgentController extends Controller
 
         $teams        = $teams->get();
         $selectedDate = !empty($request->date) ? $request->date : '';
-        $tags         = TagsForTeam::all();
+        // $tags         = TagsForTeam::all();
 
         $getAdminCurrentCountry = Countries::where('id', '=', $user->country_id)->get()->first();
         if (!empty($getAdminCurrentCountry)) {
@@ -102,6 +102,12 @@ class AgentController extends Controller
                 $geo_id = $request->get('geo_filter');
                 $agents->whereHas('geoFence', function($q) use($geo_id){
                     $q->where('geo_id', $geo_id);
+                });
+            }
+            if (!empty($request->get('tag_filter'))) {
+                $tag_id = $request->get('tag_filter');
+                $agents->whereHas('tags', function($q) use($tag_id){
+                    $q->where('tag_id', $tag_id);
                 });
             }
             if (Auth::user()->is_superadmin == 0 && Auth::user()->all_team_access == 0) {
