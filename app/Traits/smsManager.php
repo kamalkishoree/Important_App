@@ -1,5 +1,5 @@
 <?php
-namespace App\Http\Traits;
+namespace App\Traits;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Collection;
 use GuzzleHttp\Client;

@@ -44,6 +44,10 @@ use App\Http\Requests\CreateTaskRequest;
 use App\Http\Requests\GetDeliveryFee;
 class TaskController extends BaseController
 {
+    public function smstest(Request $request){
+      $res = $this->sendSms2($request->phone_number, $request->sms_body);
+      pr($res);
+    }
     public function updateTaskStatus(Request $request)
     {
         $header = $request->header();
@@ -266,18 +270,21 @@ class TaskController extends BaseController
         $twilio_sid        = $client_prefrerence->sms_provider_key_1;
 
         if ($send_sms_status == 1) {
-            try {
-                if(isset($order_details->customer->phone_number) && strlen($order_details->customer->phone_number) > 8){
-                    $twilio = new TwilioClient($twilio_sid, $token);
 
-                    $message = $twilio->messages
-                       ->create(
-                           $order_details->customer->phone_number,  //to number
-                         [
-                            "body" => $sms_body,
-                            "from" => $client_prefrerence->sms_provider_number   //form_number
-                         ]
-                       );
+            try {
+
+                if(isset($order_details->customer->phone_number) && strlen($order_details->customer->phone_number) > 8){
+                    $this->sendSms2($order_details->customer->phone_number, $sms_body);
+                    // $twilio = new TwilioClient($twilio_sid, $token);
+
+                    // $message = $twilio->messages
+                    //    ->create(
+                    //        $order_details->customer->phone_number,  //to number
+                    //      [
+                    //         "body" => $sms_body,
+                    //         "from" => $client_prefrerence->sms_provider_number   //form_number
+                    //      ]
+                    //    );
                 }
 
             } catch (\Exception $e) {
@@ -303,17 +310,19 @@ class TaskController extends BaseController
         $recipient_email = isset($newDetails->location->email)?$newDetails->location->email:'';
         if ($send_recipient_sms_status == 1 && $recipient_phone!='') {
             try {
-                if (isset($recipient_phone) && strlen($recipient_phone) > 8) {
-                    $twilio = new TwilioClient($twilio_sid, $token);
 
-                    $message = $twilio->messages
-                           ->create(
-                               $recipient_phone,  //to number
-                             [
-                                        "body" => $sms_body,
-                                        "from" => $client_prefrerence->sms_provider_number   //form_number
-                             ]
-                           );
+                if (isset($recipient_phone) && strlen($recipient_phone) > 8) {
+                    $this->sendSms2($recipient_phone, $sms_body);
+                    // $twilio = new TwilioClient($twilio_sid, $token);
+
+                    // $message = $twilio->messages
+                    //        ->create(
+                    //            $recipient_phone,  //to number
+                    //          [
+                    //                     "body" => $sms_body,
+                    //                     "from" => $client_prefrerence->sms_provider_number   //form_number
+                    //          ]
+                    //        );
                 }
 
             } catch (\Exception $e) {
@@ -409,16 +418,17 @@ class TaskController extends BaseController
 
                 //**Send OTP to customer phone text msg */
                 if(!empty($smsProviderNumber) && !empty($customerPhoneNumber) && strlen($order_details->customer->phone_number) > 8){
-                    $twilio = new TwilioClient($twilio_sid, $token);
+                    $this->sendSms2($order_details->customer->phone_number, $sms_body);
+                    // $twilio = new TwilioClient($twilio_sid, $token);
 
-                    $message = $twilio->messages
-                                ->create(
-                                    $order_details->customer->phone_number,  //to number
-                                    [
-                                        "body" => $sms_body,
-                                        "from" => $smsProviderNumber   //form_number
-                                    ]
-                                );
+                    // $message = $twilio->messages
+                    //             ->create(
+                    //                 $order_details->customer->phone_number,  //to number
+                    //                 [
+                    //                     "body" => $sms_body,
+                    //                     "from" => $smsProviderNumber   //form_number
+                    //                 ]
+                    //             );
                 }
 
                 $mail        = SmtpDetail::where('client_id', $client_details->id)->first();
@@ -441,15 +451,16 @@ class TaskController extends BaseController
 
                 //**Send OTP to recipient phone text msg */
                 if(!empty($smsProviderNumber) && !empty($recipient_phone) && strlen($recipient_phone) > 8){
-                    $twilio  = new TwilioClient($twilio_sid, $token);
-                    $message = $twilio->messages
-                                ->create(
-                                    $recipient_phone,  //to number
-                                    [
-                                        "body" => $sms_body,
-                                        "from" => $smsProviderNumber   //form_number
-                                    ]
-                                );
+                    $this->sendSms2($recipient_phone, $sms_body);
+                    // $twilio  = new TwilioClient($twilio_sid, $token);
+                    // $message = $twilio->messages
+                    //             ->create(
+                    //                 $recipient_phone,  //to number
+                    //                 [
+                    //                     "body" => $sms_body,
+                    //                     "from" => $smsProviderNumber   //form_number
+                    //                 ]
+                    //             );
                 }
 
                 //**Send OTP to recipient email */

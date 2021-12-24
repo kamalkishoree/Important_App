@@ -12,7 +12,7 @@ use Twilio\Rest\Client as TwilioClient;
 
 class BaseController extends Controller
 {
-    use \App\Http\Traits\smsManager;
+    use \App\Traits\smsManager;
 
 	protected function sendSms($recipients, $message)
 	{
@@ -36,12 +36,13 @@ class BaseController extends Controller
     protected function sendSms2($to, $body){
         try{
             $client_preference =  getClientPreferenceDetail();
+
             if($client_preference->sms_provider == 1)
             {
                 $sms_key = $client_preference->sms_provider_key_1;
                 $sms_secret = $client_preference->sms_provider_key_2;
                 $sms_from  = $client_preference->sms_provider_number;
-
+                //pr($client_preference->toArray());
                 $client = new TwilioClient($sms_key, $sms_secret);
                 $client->messages->create($to, ['from' => $sms_from, 'body' => $body]);
             }elseif($client_preference->sms_provider == 2) //for mtalkz gateway
@@ -61,6 +62,7 @@ class BaseController extends Controller
             }
         }
         catch(\Exception $e){
+            \Log::info($e->getMessage());
             return '2';
         }
         return '1';
