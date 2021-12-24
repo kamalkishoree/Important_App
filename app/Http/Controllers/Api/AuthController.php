@@ -368,7 +368,7 @@ class AuthController extends BaseController
             'name' => 'required',
             'phone_number' => 'required|min:9',
             'type' => 'required',
-            'vehicle_type_id' => 'required'
+            // 'vehicle_type_id' => 'required'
         ]);
 
         if ($validator->fails()) {
@@ -411,7 +411,7 @@ class AuthController extends BaseController
             'name' => $request->name,
             'team_id' => $request->team_id ?? null,
             'type' => $request->type,
-            'vehicle_type_id' => $request->vehicle_type_id,
+            'vehicle_type_id' => $request->vehicle_type_id ?? null,
             'make_model' => $request->make_model ?? "",
             'plate_number' => $request->plate_number ?? "",
             'phone_number' => $request->phone_number,
