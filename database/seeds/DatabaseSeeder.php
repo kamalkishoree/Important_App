@@ -27,7 +27,8 @@ class DatabaseSeeder extends Seeder
               PermissionSeeder::class,
               TimezoneSeeder::class,
               PaymentOptionSeeder::class,
-              PayoutOptionSeeder::class
+              PayoutOptionSeeder::class,
+              SmsProviderSeeder::class
              ]);
     }
 }
