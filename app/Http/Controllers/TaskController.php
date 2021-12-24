@@ -347,7 +347,7 @@ class TaskController extends Controller
     // function for saving new order
     public function newtasks(Request $request)
     {   
-       // dd($request->toArray());
+        //dd($request->toArray());
         $loc_id = $cus_id = $send_loc_id = $newlat = $newlong = 0;
         $iinputs = $request->toArray();
         $old_address_ids = array();
@@ -2041,7 +2041,11 @@ class TaskController extends Controller
                     ];
                   //  $location = Location::create($newloc);
                     $location = Location::updateOrCreate(
+<<<<<<< HEAD
+                        ['latitude' => $location->latitude, 'longitude' => $location->longitude, 'address' => $location->address],
+=======
                         ['latitude' => $location->latitude, 'longitude' => $location->longitude, 'address' => $location->address, 'customer_id' => $cus_id],
+>>>>>>> 27d56f3c66cc35ab75e85c4fccc05a9b5d0ea21a
                         $newloc
                     );
                 }

@@ -39,7 +39,7 @@ class ClientController extends Controller
 			'message' => $message,
 			'data' => $data
 		], $code);
-	} 
+	}
 
     protected function errorResponse($message = null, $code, $data = null)
 	{
@@ -49,7 +49,7 @@ class ClientController extends Controller
 			'data' => $data
 		], $code);
 	}
-   
+
 
     private function randomString()
     {
@@ -62,7 +62,7 @@ class ClientController extends Controller
         return $random_string;
     }
 
-  
+
 
     /**
      * Store/Update Client Preferences
@@ -76,13 +76,13 @@ class ClientController extends Controller
                 $domain    = str_replace(array('http://', config('domainsetting.domain_set')), '', $request->custom_domain);
                 $domain    = str_replace(array('https://', config('domainsetting.domain_set')), '', $request->custom_domain);
                 $my_url =   $request->custom_domain;
-                
+
                 $data1 = [
                     'domain' => $my_url
                 ];
-                
+
                 $curl = curl_init();
-                
+
                 curl_setopt_array($curl, array(
                     CURLOPT_URL => "localhost:3000/add_subdomain",
                     CURLOPT_RETURNTRANSFER => true,
@@ -96,10 +96,10 @@ class ClientController extends Controller
                        "content-type: application/json",
                     ),
                 ));
-                
+
                 $response = curl_exec($curl);
                 $err = curl_error($curl);
-                
+
                 curl_close($curl);
                 if ($err) {
                     return redirect()->back()->withInput()->withErrors(new \Illuminate\Support\MessageBag(['custom_domain' => $err]));
@@ -109,8 +109,8 @@ class ClientController extends Controller
             } catch (Exception $e) {
                 return redirect()->back()->withInput()->withErrors(new \Illuminate\Support\MessageBag(['custom_domain' => $e->getMessage()]));
             }
-          
-            
+
+
             $connectionToGod = $this->createConnectionToGodDb($id);
             $exists = Client::where('code', '<>', $id)->where('custom_domain', $request->custom_domain)->count();
             if ($exists) {
@@ -125,6 +125,7 @@ class ClientController extends Controller
                 }
             }
         }
+
 
         # if submit sub_domain domain by client
         if ($request->sub_domain && ($request->sub_domain != $client->sub_domain)) {
@@ -145,13 +146,58 @@ class ClientController extends Controller
 
         unset($request['sub_domain']);
         unset($request['custom_domain']);
-        
+
+        if($request->has('sms_provider'))
+        {
+            if($request->sms_provider == 1) //for twillio
+            {
+
+                $sms_credentials = [
+                    'sms_from' => $request->sms_from,
+                    'sms_key' => $request->sms_key,
+                    'sms_secret' => $request->sms_secret,
+                ];
+                $request->merge([
+                    'sms_provider_key_1'=>$request->sms_key,
+                    'sms_provider_key_2'=>$request->sms_secret,
+                    'sms_provider_number'=>$request->sms_from,
+                     ]);
+            }elseif($request->sms_provider == 2) // for mTalkz
+            {
+                $sms_credentials = [
+                    'api_key' => $request->mtalkz_api_key,
+                    'sender_id' => $request->mtalkz_sender_id,
+                ];
+
+            }elseif($request->sms_provider == 3) // for mazinhost
+            {
+                $sms_credentials = [
+                    'api_key' => $request->mazinhost_api_key,
+                    'sender_id' => $request->mazinhost_sender_id,
+                ];
+
+            }
+            $request->merge(['sms_credentials'=>json_encode($sms_credentials)]);
+        }
+
+
+        unset($request['sms_from']);
+        unset($request['sms_key']);
+        unset($request['sms_secret']);
+        unset($request['mtalkz_api_key']);
+        unset($request['mtalkz_sender_id']);
+
+        unset($request['mazinhost_sender_id']);
+        unset($request['mazinhost_api_key']);
+
+       // pr( $request->all());
+
         $updatePreference = ClientPreference::updateOrCreate([
             'client_id' => $id
         ], $request->all());
-      
-      
-       
+
+
+
         if ($request->ajax()) {
             return response()->json([
                 'status' => 'success',
@@ -309,7 +355,7 @@ class ClientController extends Controller
             } else {
                 $update                     = new TaskProof;
             }
-                
+
             $update->image              = isset($requestAll['image_'.$i])? 1 : 0 ;
             $update->image_requried     = isset($request['image_requried_'.$i])? 1 : 0 ;
             $update->signature          = isset($request['signature_'.$i])? 1 : 0 ;
@@ -324,7 +370,7 @@ class ClientController extends Controller
             $update->face_requried       = isset($request['face_requried_'.$i])? 1 : 0 ;
             $update->save();
         }
-        
+
         return redirect()->route('preference.show')->with('success', 'Preference updated successfully!');
     }
 
@@ -337,7 +383,7 @@ class ClientController extends Controller
         } else {
             $update                     = new SmtpDetail;
         }
-            
+
         $update->client_id          = Auth::user()->id;
         $update->driver             = 'smtp';
         $update->host               = $request->host;
@@ -407,7 +453,7 @@ class ClientController extends Controller
             $driver_registration_document->name = $request->name;
             $driver_registration_document->is_required = (!empty($request->is_required))?1:0;
             $driver_registration_document->save();
-         
+
             DB::commit();
             return $this->successResponse($driver_registration_document, 'Driver Registration Document Updated Successfully.');
         } catch (Exception $e) {
@@ -426,12 +472,12 @@ class ClientController extends Controller
     public function destroy(Request $request){
         try {
             DriverRegistrationDocument::where('id', $request->driver_registration_document_id)->delete();
-           
+
             return $this->successResponse([], 'Driver Registration Document Deleted Successfully.');
         } catch (Exception $e) {
             return $this->errorResponse([], $e->getMessage());
         }
     }
 
-   
+
 }

@@ -417,7 +417,7 @@
                   $('.withradio .append').remove();
                   jQuery.each(array, function(i, val) {
                       $(".withradio").append(
-                          '<div class="append"><div class="custom-control custom-radio count"><input type="radio" id="' + val.id + '" name="old_address_id" value="' + val.id + '" class="custom-control-input redio old-select-address callradio" data-srtadd="'+ val.short_name +'" data-adr="'+ val.address +'" data-lat="'+ val.latitude +'" data-long="'+ val.longitude +'" data-pstcd="'+ val.post_code +'" data-emil="'+ val.email +'" data-ph="'+ val.phone_number +'"><label class="custom-control-label" for="' + val.id + '"><span class="spanbold">' + val.short_name +
+                          '<div class="append"><div class="custom-control custom-radio count"><input type="radio" id="' + val.id + '" name="old_address_id" value="' + val.id + '" class="custom-control-input redio old-select-address callradio" data-srtadd="'+ val.short_name +'" data-flat_no="'+ val.flat_no +'"  data-adr="'+ val.address +'" data-lat="'+ val.latitude +'" data-long="'+ val.longitude +'" data-pstcd="'+ val.post_code +'" data-emil="'+ val.email +'" data-ph="'+ val.phone_number +'"><label class="custom-control-label" for="' + val.id + '"><span class="spanbold">' + val.short_name +
                           '</span>-' + val.address +
                           '</label></div></div>');
                   });
@@ -632,6 +632,7 @@
         var postCode    = $(this).data("pstcd");
         var email       = $(this).data("emil");
         var phoneNumber = $(this).data("ph");
+        var flat_no = $(this).data("flat_no");
 
         $(this).closest('.check-validation').find("input[name='short_name[]']").val(shortName);
         $(this).closest('.check-validation').find("input[name='address_email[]']").val(email);
@@ -640,6 +641,7 @@
         $(this).closest('.check-validation').find("input[name='post_code[]']").val(postCode);
         $(this).closest('.check-validation').find("input[name='latitude[]']").val(latitude);
         $(this).closest('.check-validation').find("input[name='longitude[]']").val(longitude);
+        $(this).closest('.check-validation').find("input[name='flat_no[]']").val(flat_no);
     });
     $(document).on("click", ".submitTaskHeader", function(e) {
         e.preventDefault();    
