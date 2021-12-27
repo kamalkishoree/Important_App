@@ -2,21 +2,104 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
-use App\Model\Agent;
-use App\Model\AgentDocs;
-use App\Model\DriverRegistrationDocument;
-use App\Model\TagsForAgent;
-use App\Model\AgentsTag;
-use App\Model\Team;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
+use App\Traits\ApiResponser;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
+use App\Http\Controllers\Api\BaseController;
+use App\Model\{Agent, AgentDocs, ClientPreference, DriverRegistrationDocument, TagsForAgent, AgentsTag, Team, Otp};
 
-class DriverRegistrationController extends Controller
+class DriverRegistrationController extends BaseController
 {
+    use ApiResponser;
+
+    /**
+     * create token to register driver
+     *
+     * @param  [string] phone_number
+     * @param  [string] dial_code
+     */
+    public function sendOtp(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'phone_number' => 'required',
+                'dial_code' => 'required'
+            ]);
+            if ($validator->fails()) {
+                return $this->error($validator->errors()->first(), 422);
+            }
+            // $preferences = ClientPreference::select('verify_phone_for_driver_registration')->where('id', 1)->first();
+            $agent = Agent::where('phone_number', $request->phone_number)->first();
+
+            if ($agent) {
+                return response()->json([
+                    'message' => __('Phone number already exists')
+                ], 404);
+            }
+            Otp::where('phone', $request->phone_number)->delete();
+            $otp = new Otp();
+            $otp->phone = '+' . $request->dial_code . $request->phone_number;
+            $otp->opt = rand(111111, 999999);
+            $newDateTime = Carbon::now()->addMinutes(10)->toDateTimeString();
+            $otp->valid_till = $newDateTime;
+            $otp->save();
+
+            $to = $otp->phone;
+            $body = "Dear customer, OTP for registration is " . $otp->opt . ".";
+            $send = $this->sendSms2($to, $body)->getData();
+            if ($send->status == 'Success') {
+                return $this->success([], $send->message, 200);
+            } else {
+                return $this->error($send->message, 422);
+            }
+        } catch (\Exception $e) {
+            return $this->error($e->getMessage(), $e->getCode());
+        }
+    }
+
+    /**
+     * verify token to register driver
+     *
+     * @param  [string] phone_number
+     * @param  [string] OTP
+     */
+    public function verifyOtp(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'phone_number' => 'required'
+            ]);
+            if ($validator->fails()) {
+                return $this->error($validator->errors()->first(), 422);
+            }
+            $agent = Agent::where('phone_number', $request->phone_number)->first();
+            if ($agent) {
+                return $this->error(__('Phone number already exists'), 404);
+            }
+
+            $otp = Otp::where('phone', $request->phone_number)->where('opt', $request->otp)->orderBy('id', 'DESC')->first();
+            $currentTime = Carbon::now()->toDateTimeString();
+
+            if (!$otp) {
+                return $this->error(__('Please enter a valid OTP'), 422);
+            }
+            if ($currentTime > $otp->valid_till) {
+                return $this->error(__('Your OTP has been expired. Please try again.'), 422);
+            }
+
+            // Otp::where('phone', $request->phone_number)->delete();
+            return $this->success([], __('OTP has been verified'), 200);
+        }
+        catch (\Exception $e) {
+            return $this->error($e->getMessage(), $e->getCode());
+        }
+    }
+    
+
     //
     public function validator(array $data)
     {

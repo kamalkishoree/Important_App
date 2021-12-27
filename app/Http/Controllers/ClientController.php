@@ -190,7 +190,11 @@ class ClientController extends Controller
         unset($request['mazinhost_sender_id']);
         unset($request['mazinhost_api_key']);
 
-       // pr( $request->all());
+    //    dd( $request->all());
+
+        if($request->has('driver_phone_verify_config')){
+            $request->request->add(['verify_phone_for_driver_registration' => ($request->has('verify_phone_for_driver_registration') && $request->verify_phone_for_driver_registration == 'on') ? 1 : 0]);
+        }
 
         $updatePreference = ClientPreference::updateOrCreate([
             'client_id' => $id

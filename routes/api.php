@@ -41,6 +41,9 @@ Route::post('shortCode', 'Api\ShortcodeController@validateCompany');
 Route::get('cmscontent','Api\ActivityController@cmsData');
 
 
+Route::group(['middleware' => ['dbCheck', 'apiLocalization']], function() {
+    Route::get('client/preferences', 'Api\ActivityController@clientPreferences');
+});
 
 
 Route::group(['prefix' => 'auth'], function () {
@@ -54,6 +57,8 @@ Route::group(['prefix' => 'auth'], function () {
     	Route::post('sendOtp', 'Api\AuthController@sendOtp');
         Route::post('login', 'Api\AuthController@login');
         Route::post('signup', 'Api\AuthController@signup');
+        Route::post('signup/sendOtp', 'Api\DriverRegistrationController@sendOtp');
+        Route::post('signup/verifyOtp', 'Api\DriverRegistrationController@verifyOtp');
         Route::get('cmscontent','Api\ActivityController@cmsData');
     });
 

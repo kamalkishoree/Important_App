@@ -635,6 +635,33 @@ $sms_crendential = json_decode($preference->sms_credentials);
                 </div>
             </div>
         </div>
+        <div class="col-md-4">
+            <div class="card-box pb-2">
+                <form method="POST" action="{{ route('preference', Auth::user()->code) }}">
+                    @csrf
+                    <input type="hidden" name="driver_phone_verify_config" value="1">
+                    <div class="row">
+                        <div class="col-12">
+                            <h4 class="header-title text-uppercase">{{__('Driver Registration Phone Verification')}}</h4>
+                            <div class="d-flex align-items-center justify-content-between mt-3 mb-2">
+                                <h5 class="font-weight-normal m-0">{{__('Enable')}}</h5>
+                                <div class="custom-control custom-switch">
+                                    <input type="checkbox" class="custom-control-input event_type" id="customSwitch_{{$preference->verify_phone_for_driver_registration}}" name="verify_phone_for_driver_registration" {{$preference->verify_phone_for_driver_registration == 1 ? 'checked':''}}>
+                                    <label class="custom-control-label" for="customSwitch_{{$preference->verify_phone_for_driver_registration}}"></label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-group mb-0 text-center">
+                                <button class="btn btn-blue btn-block" type="submit"> {{__("Update")}} </button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
         {{-- <div class="col-md-3">
             <form method="POST" action="{{ route('route.create.configure', Auth::user()->code) }}">
                 @csrf
