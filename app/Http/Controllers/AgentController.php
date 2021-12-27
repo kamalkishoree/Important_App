@@ -17,7 +17,7 @@ use GuzzleHttp\Client as GCLIENT;
 use App\Traits\ApiResponser;
 use App\Exports\AgentsExport;
 use Doctrine\DBAL\Driver\DrizzlePDOMySql\Driver;
-use App\Model\{Agent, AgentDocs, AgentPayment, DriverGeo, Order, Otp, Team, TagsForAgent, TagsForTeam, Countries, Client, ClientPreferences, DriverRegistrationDocument, Geo};
+use App\Model\{Agent, AgentDocs, AgentPayment, DriverGeo, Order, Otp, Team, TagsForAgent, TagsForTeam, Countries, Client, ClientPreferences, DriverRegistrationDocument, Geo, Timezone};
 
 class AgentController extends Controller
 {
@@ -88,7 +88,11 @@ class AgentController extends Controller
     public function agentFilter(Request $request)
     {
         try {
-            $client = Client::where('code', Auth::user()->code)->with(['getTimezone', 'getPreference'])->first();
+            $tz = new Timezone();
+            $user = Auth::user();
+            $client = Client::where('code', $user->code)->with(['getTimezone', 'getPreference'])->first();
+            $client_timezone = $client->getTimezone ? $client->getTimezone->timezone : 251;
+            $timezone = $tz->timezone_name($client_timezone);
             $agents = Agent::orderBy('id', 'DESC');
             if (!empty($request->get('date_filter'))) {
                 $dateFilter = explode('to', $request->get('date_filter'));
@@ -110,9 +114,9 @@ class AgentController extends Controller
                     $q->where('tag_id', $tag_id);
                 });
             }
-            if (Auth::user()->is_superadmin == 0 && Auth::user()->all_team_access == 0) {
+            if ($user->is_superadmin == 0 && $user->all_team_access == 0) {
                 $agents = $agents->whereHas('team.permissionToManager', function ($query) {
-                    $query->where('sub_admin_id', Auth::user()->id);
+                    $query->where('sub_admin_id', $user->id);
                 });
             }
 
@@ -158,11 +162,11 @@ class AgentController extends Controller
                     $payToDriver = $agents->balanceFloat + ($pay - $receive) - ($cash - $orders);
                     return number_format((float)$payToDriver, 2, '.', '');
                 })
-                ->editColumn('created_at', function ($agents) use ($request, $client) {
-                    return convertDateTimeInTimeZone($agents->created_at, $client->getTimezone->timezone);
+                ->editColumn('created_at', function ($agents) use ($request, $timezone) {
+                    return convertDateTimeInTimeZone($agents->created_at, $timezone);
                 })
-                ->editColumn('updated_at', function ($agents) use ($request, $client) {
-                    return convertDateTimeInTimeZone($agents->updated_at, $client->getTimezone->timezone);
+                ->editColumn('updated_at', function ($agents) use ($request, $timezone) {
+                    return convertDateTimeInTimeZone($agents->updated_at, $timezone);
                 })
                 ->editColumn('action', function ($agents) use ($request) {
                     if($request->status == 1){
@@ -305,16 +309,15 @@ class AgentController extends Controller
             'name' => $request->name,
             'team_id' => $request->team_id == null ? $team_id = null : $request->team_id,
             'type' => $request->type,
-            'vehicle_type_id' => $request->vehicle_type_id,
+            'vehicle_type_id' => $request->vehicle_type_id ?? null,
             'make_model' => $request->make_model,
             'type' => $request->type,
-            'vehicle_type_id' => $request->vehicle_type_id,
-            'make_model' => $request->make_model,
-            'plate_number' => $request->plate_number,
+            'make_model' => $request->make_model ?? null,
+            'plate_number' => $request->plate_number ?? null,
             'phone_number' => '+' . $request->country_code . $request->phone_number,
-            'color' => $request->color,
+            'color' => $request->color ?? null,
             'profile_picture' => $getFileName != null ? $getFileName : 'assets/client_00000051/agents5fedb209f1eea.jpeg/Ec9WxFN1qAgIGdU2lCcatJN5F8UuFMyQvvb4Byar.jpg',
-            'uid' => $request->uid,
+            'uid' => $request->uid ?? null,
             'is_approved' => 1
         ];
 
@@ -462,7 +465,7 @@ class AgentController extends Controller
         return Validator::make($data, [
             'name' => ['required', 'string', 'max:255'],
             'type' => ['required'],
-            'vehicle_type_id' => ['required'],
+            // 'vehicle_type_id' => ['required'],
             'team_id' => ['required'],
             //'make_model' => ['required'],
             //'plate_number' => ['required'],

@@ -58,9 +58,9 @@
         function dataTableColumnSort(){
             var routesListing = $('#routes-listing-status').val();
             if(routesListing == 'unassigned'){
-                return [[ 6, "desc" ]];
+                return [[ 10, "desc" ]];
             }else{
-                return [[ 5, "desc" ]];
+                return [[ 10, "desc" ]];
             }
         }
         
@@ -94,7 +94,8 @@
                     }},
                     {data: 'order_cost', name: 'order_cost', orderable: false, searchable: false, "mRender": function ( data, type, full ) {
                         return '<button class="showaccounting btn btn-primary-outline action-icon setcolor" value="'+full.id+'">'+full.order_cost+'</button>';
-                    }},                
+                    }},
+                    {data: 'updated_at', name: 'updated_at', orderable: true, searchable: false},
                     {data: 'action', name: 'action', orderable: true, searchable: false}
                 ];
             }else{
@@ -122,7 +123,8 @@
                     }},
                     {data: 'order_cost', name: 'order_cost', orderable: false, searchable: false, "mRender": function ( data, type, full ) {
                         return '<button class="showaccounting btn btn-primary-outline action-icon setcolor" value="'+full.id+'">'+full.order_cost+'</button>';
-                    }},                
+                    }},
+                    {data: 'updated_at', name: 'updated_at', orderable: true, searchable: false},
                     {data: 'action', name: 'action', orderable: true, searchable: false}
                 ]
             }
