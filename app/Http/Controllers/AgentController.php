@@ -305,16 +305,15 @@ class AgentController extends Controller
             'name' => $request->name,
             'team_id' => $request->team_id == null ? $team_id = null : $request->team_id,
             'type' => $request->type,
-            'vehicle_type_id' => $request->vehicle_type_id,
+            'vehicle_type_id' => $request->vehicle_type_id ?? null,
             'make_model' => $request->make_model,
             'type' => $request->type,
-            'vehicle_type_id' => $request->vehicle_type_id,
-            'make_model' => $request->make_model,
-            'plate_number' => $request->plate_number,
+            'make_model' => $request->make_model ?? null,
+            'plate_number' => $request->plate_number ?? null,
             'phone_number' => '+' . $request->country_code . $request->phone_number,
-            'color' => $request->color,
+            'color' => $request->color ?? null,
             'profile_picture' => $getFileName != null ? $getFileName : 'assets/client_00000051/agents5fedb209f1eea.jpeg/Ec9WxFN1qAgIGdU2lCcatJN5F8UuFMyQvvb4Byar.jpg',
-            'uid' => $request->uid,
+            'uid' => $request->uid ?? null,
             'is_approved' => 1
         ];
 
@@ -462,7 +461,7 @@ class AgentController extends Controller
         return Validator::make($data, [
             'name' => ['required', 'string', 'max:255'],
             'type' => ['required'],
-            'vehicle_type_id' => ['required'],
+            // 'vehicle_type_id' => ['required'],
             'team_id' => ['required'],
             //'make_model' => ['required'],
             //'plate_number' => ['required'],
