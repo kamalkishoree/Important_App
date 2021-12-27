@@ -182,7 +182,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                     </ul>
                     <div class="row mt-3">
                         <div class="col-sm-2">
-                            <label for="geo_filter">{{__('Location Filter')}}</label>
+                            <label for="geo_filter">{{__('Filter by location')}}</label>
                             <select name="geo_filter" id="geo_filter" class="form-control">
                                 <option value="">{{__('All')}}</option>
                                 @foreach($geos as $geo)
@@ -191,7 +191,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                             </select>
                         </div>
                         <div class="col-sm-2">
-                            <label for="tag_filter">{{__('Tags Filter')}}</label>
+                            <label for="tag_filter">{{__('Filter by tags')}}</label>
                             <select name="tag_filter" id="tag_filter" class="form-control">
                                 <option value="">{{__('All')}}</option>
                                 @foreach($tags as $tag)
