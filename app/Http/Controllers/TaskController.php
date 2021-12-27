@@ -118,12 +118,13 @@ class TaskController extends Controller
 
     public function taskFilter(Request $request)
     {
+        $user = Auth::user();
         $orders = Order::orderBy('updated_at', 'DESC')->with(['customer', 'location', 'taskFirst', 'agent', 'task.location']);
         
-        if (Auth::user()->is_superadmin == 0 && Auth::user()->all_team_access == 0) {
+        if ($user->is_superadmin == 0 && $user->all_team_access == 0) {
             $agents = Agent::orderBy('id', 'DESC');
-            $agentids = $agents->whereHas('team.permissionToManager', function ($query) {
-                $query->where('sub_admin_id', Auth::user()->id);
+            $agentids = $agents->whereHas('team.permissionToManager', function ($query) use($user) {
+                $query->where('sub_admin_id', $user->id);
             })->pluck('id');
            
             $orders->whereIn('driver_id', $agentids)->orWhereNull('driver_id');
@@ -131,7 +132,8 @@ class TaskController extends Controller
         
         $orders = $orders->where('status', $request->routesListingType)->where('status', '!=', null)->orderBy('updated_at', 'desc')->get();
 
-      
+        $preference = ClientPreference::where('id', 1)->first(['theme','date_format','time_format']);
+
         return Datatables::of($orders)
                 // ->editColumn('order_number', function ($orders) use ($request) {
                 //     if(!empty($orders->call_back_url)){
@@ -169,10 +171,10 @@ class TaskController extends Controller
                     $agentName   = !empty($orders->agent->name)? $orders->agent->name.$checkActive : '';
                     return $agentName;
                 })
-                ->editColumn('order_time', function ($orders) use ($request) {
+                ->editColumn('order_time', function ($orders) use ($request, $user, $preference) {
                     $tz              = new Timezone();
-                    $client_timezone = $tz->timezone_name(Auth::user()->timezone);
-                    $preference      = ClientPreference::where('id', 1)->first(['theme','date_format','time_format']);
+                    $client_timezone = $tz->timezone_name($user->timezone);
+                    // $preference      = ClientPreference::where('id', 1)->first(['theme','date_format','time_format']);
                     $timeformat      = $preference->time_format == '24' ? 'H:i:s':'g:i a';
                     $order           = Carbon::createFromFormat('Y-m-d H:i:s', $orders->order_time, 'UTC');
                     $order->setTimezone($client_timezone);
@@ -208,9 +210,18 @@ class TaskController extends Controller
                     }
                     return json_encode($routes, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_UNESCAPED_UNICODE);
                 })
-                ->editColumn('track_url', function ($orders) use ($request) {
-                    $trackUrl = url('/order/tracking/'.Auth::user()->code.'/'.$orders->unique_id.'');
+                ->editColumn('track_url', function ($orders) use ($request, $user) {
+                    $trackUrl = url('/order/tracking/'.$user->code.'/'.$orders->unique_id.'');
                     return $trackUrl;
+                })
+                ->editColumn('updated_at', function ($orders) use ($request, $user, $preference) {
+                    $tz              = new Timezone();
+                    $client_timezone = $tz->timezone_name($user->timezone);
+                    $timeformat      = $preference->time_format == '24' ? 'H:i:s':'g:i a';
+                    $order           = Carbon::createFromFormat('Y-m-d H:i:s', $orders->updated_at, 'UTC');
+                    $order->setTimezone($client_timezone);
+                    $preference->date_format = $preference->date_format ?? 'm/d/Y';
+                    return date(''.$preference->date_format.' '.$timeformat.'', strtotime($order));
                 })
                 ->editColumn('action', function ($orders) use ($request) {
                     $action = '<div class="form-ul" style="width: 60px;">
