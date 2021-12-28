@@ -32,29 +32,35 @@ class DriverRegistrationController extends BaseController
             if ($validator->fails()) {
                 return $this->error($validator->errors()->first(), 422);
             }
-            // $preferences = ClientPreference::select('verify_phone_for_driver_registration')->where('id', 1)->first();
-            $agent = Agent::where('phone_number', $request->phone_number)->first();
+            $phone = '+' . $request->dial_code . $request->phone_number;
+            $agent = Agent::where('phone_number', $phone)->first();
 
             if ($agent) {
                 return response()->json([
                     'message' => __('Phone number already exists')
                 ], 404);
             }
-            Otp::where('phone', $request->phone_number)->delete();
-            $otp = new Otp();
-            $otp->phone = '+' . $request->dial_code . $request->phone_number;
-            $otp->opt = rand(111111, 999999);
-            $newDateTime = Carbon::now()->addMinutes(10)->toDateTimeString();
-            $otp->valid_till = $newDateTime;
-            $otp->save();
 
-            $to = $otp->phone;
-            $body = "Dear customer, OTP for registration is " . $otp->opt . ".";
-            $send = $this->sendSms2($to, $body)->getData();
-            if ($send->status == 'Success') {
-                return $this->success([], $send->message, 200);
-            } else {
-                return $this->error($send->message, 422);
+            $otp_verified = Otp::where('phone', $phone)->where('is_verified', 1)->first();
+            if(!$otp_verified){
+                Otp::where('phone', $phone)->delete();
+                $otp = new Otp();
+                $otp->phone = $phone;
+                $otp->opt = rand(111111, 999999);
+                $newDateTime = Carbon::now()->addMinutes(10)->toDateTimeString();
+                $otp->valid_till = $newDateTime;
+                $otp->save();
+
+                $to = $otp->phone;
+                $body = "Dear customer, OTP for registration is " . $otp->opt . ".";
+                $send = $this->sendSms2($to, $body)->getData();
+                if ($send->status == 'Success') {
+                    return $this->success([], $send->message, 200);
+                } else {
+                    return $this->error($send->message, 422);
+                }
+            }else{
+                return $this->success($otp_verified, __('Phone number has already been verified'), 200);
             }
         } catch (\Exception $e) {
             return $this->error($e->getMessage(), $e->getCode());
@@ -65,23 +71,27 @@ class DriverRegistrationController extends BaseController
      * verify token to register driver
      *
      * @param  [string] phone_number
+     * @param  [string] dial_code
      * @param  [string] OTP
      */
     public function verifyOtp(Request $request)
     {
         try {
             $validator = Validator::make($request->all(), [
-                'phone_number' => 'required'
+                'phone_number' => 'required',
+                'dial_code' => 'required',
+                'otp' => 'required'
             ]);
             if ($validator->fails()) {
                 return $this->error($validator->errors()->first(), 422);
             }
-            $agent = Agent::where('phone_number', $request->phone_number)->first();
+            $phone = '+' . $request->dial_code . $request->phone_number;
+            $agent = Agent::where('phone_number', $phone)->first();
             if ($agent) {
                 return $this->error(__('Phone number already exists'), 404);
             }
 
-            $otp = Otp::where('phone', $request->phone_number)->where('opt', $request->otp)->orderBy('id', 'DESC')->first();
+            $otp = Otp::where('phone', $phone)->where('opt', $request->otp)->orderBy('id', 'DESC')->first();
             $currentTime = Carbon::now()->toDateTimeString();
 
             if (!$otp) {
@@ -90,9 +100,9 @@ class DriverRegistrationController extends BaseController
             if ($currentTime > $otp->valid_till) {
                 return $this->error(__('Your OTP has been expired. Please try again.'), 422);
             }
-
-            // Otp::where('phone', $request->phone_number)->delete();
-            return $this->success([], __('OTP has been verified'), 200);
+            $otp->is_verified = 1;
+            $otp->update();
+            return $this->success($otp, __('Phone number has been verified'), 200);
         }
         catch (\Exception $e) {
             return $this->error($e->getMessage(), $e->getCode());
