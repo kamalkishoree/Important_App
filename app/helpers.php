@@ -4,12 +4,12 @@ use App\Model\ClientPreference;
 use App\Model\Client as ClientData;
 use App\Model\PaymentOption;
 
-function pr($var) {
-  	echo '<pre>';
-	print_r($var);
-  	echo '</pre>';
-    exit();
-}
+// function pr($var) {
+//   	echo '<pre>';
+// 	print_r($var);
+//   	echo '</pre>';
+//     exit();
+// }
 function http_check($url) {
     $return = $url;
     if (!preg_match("~^(?:f|ht)tps?://~i", $url)) {
@@ -62,8 +62,8 @@ function convertDateTimeInTimeZone($date, $timezone, $format = 'Y-m-d H:i:s'){
 function getClientPreferenceDetail()
 {
     $client_preference_detail = ClientPreference::first();
-    list($r, $g, $b) = sscanf($client_preference_detail->web_color, "#%02x%02x%02x");
-    $client_preference_detail->wb_color_rgb = "rgb(".$r.", ".$g.", ".$b.")";
+    // list($r, $g, $b) = sscanf($client_preference_detail->web_color, "#%02x%02x%02x");
+    // $client_preference_detail->wb_color_rgb = "rgb(".$r.", ".$g.", ".$b.")";
     return $client_preference_detail;
 }
 function getClientDetail()

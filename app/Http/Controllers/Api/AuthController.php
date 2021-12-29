@@ -2,35 +2,29 @@
 
 namespace App\Http\Controllers\Api;
 
+use DB;
+use App;
+use Crypt;
+use Config;
+use JWT\Token;
+use Validator;
+use Validation;
+use Carbon\Carbon;
 use App\Http\Controllers\Api\BaseController;
 use Illuminate\Support\Facades\Log;
 use App\Http\Requests\UserLogin;
+use App\Traits\ApiResponser;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Carbon\Carbon;
-use App\Model\User;
-use App\Model\Agent;
-use App\Model\AgentDocs;
-use App\Model\AllocationRule;
-use App\Model\Client;
-use App\Model\ClientPreference;
-use App\Model\BlockedToken;
-use App\Model\Otp;
-use App\Model\{TaskProof, TagsForTeam, SubAdminTeamPermissions, SubAdminPermissions, TagsForAgent, Team};
-use Validation;
-use DB;
-use JWT\Token;
-use Crypt;
 use Illuminate\Support\Facades\Hash;
 use Twilio\Rest\Client as TwilioClient;
 use Faker\Generator as Faker;
 use Illuminate\Support\Facades\Storage;
-use Validator;
-use Config;
-use App;
+use App\Model\{User, Agent, AgentDocs, AllocationRule, Client, ClientPreference, BlockedToken, Otp, TaskProof, TagsForTeam, SubAdminTeamPermissions, SubAdminPermissions, TagsForAgent, Team};
 
 class AuthController extends BaseController
 {
+    use ApiResponser;
 
     /**
      * Login user and create token
@@ -362,7 +356,7 @@ class AuthController extends BaseController
     public function signup(Request $request)
     {
         // return response()->json(['data' => $request->all()]);
-        Log::info($request->all());
+        // Log::info($request->all());
 
         $validator = Validator::make($request->all(), [
             'name' => 'required',
@@ -370,22 +364,28 @@ class AuthController extends BaseController
             'type' => 'required',
             // 'vehicle_type_id' => 'required'
         ]);
-
         if ($validator->fails()) {
             return response()->json(['message' => $validator->errors()->first()], 422);
         }
 
         $agent = Agent::where('phone_number', $request->phone_number)->first();
-
         if (!empty($agent)) {
             return response()->json(['message' => 'User already register. Please login'], 422);
+        }
+
+        $clientDetail = Client::with(['getPreference'])->first();
+        if($clientDetail->getPreference->verify_phone_for_driver_registration == 1){
+            $otp_verified = Otp::where('phone', $request->phone_number)->where('is_verified', 1)->first();
+            if(!$otp_verified){
+                return $this->error(__('Please verify your phone number to proceed'), 422);
+            }
         }
 
         // Handle File Upload
         if ($request->hasFile('profile_picture')) {
             $header = $request->header();
             $shortcode = "";
-            $clientDetail = Client::first();
+            // $clientDetail = Client::first();
             if (!empty($clientDetail)) {
                 $shortcode =  $clientDetail->code;
             }
@@ -429,7 +429,7 @@ class AuthController extends BaseController
             foreach ($request->uploaded_file as $key => $f) {
                 $header = $request->header();
                 $shortcode = "";
-                $clientDetail = Client::first();
+                // $clientDetail = Client::first();
                 if (!empty($clientDetail)) {
                     $shortcode =  $clientDetail->code;
                 }

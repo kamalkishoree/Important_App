@@ -28,6 +28,19 @@ class ActivityController extends BaseController
 {
 
     /**
+     * Store/Update Client Preferences
+     */
+    public function clientPreferences()
+    {
+        $preferences = ClientPreference::with('currency')->where('id', 1)->first();
+        return response()->json([
+            'message' => '',
+            'data' => $preferences,
+            'status' => 200
+        ]);
+    }
+
+    /**
      * update driver availability status if 0 than 1 if 1 than 0
 
      */

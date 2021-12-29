@@ -190,7 +190,16 @@ class ClientController extends Controller
         unset($request['mazinhost_sender_id']);
         unset($request['mazinhost_api_key']);
 
-       // pr( $request->all());
+    //    dd( $request->all());
+
+        if($request->has('driver_phone_verify_config')){
+            $request->request->add(['verify_phone_for_driver_registration' => ($request->has('verify_phone_for_driver_registration') && $request->verify_phone_for_driver_registration == 'on') ? 1 : 0]);
+        }
+
+        if($request->has('refer_and_earn')){
+            $request->request->add(['reffered_by_amount' => ($request->has('reffered_by_amount') && $request->reffered_by_amount > 0) ? $request->reffered_by_amount : 0]);
+            $request->request->add(['reffered_to_amount' => ($request->has('reffered_to_amount') && $request->reffered_to_amount > 0) ? $request->reffered_to_amount : 0]);
+        }
 
         $updatePreference = ClientPreference::updateOrCreate([
             'client_id' => $id
