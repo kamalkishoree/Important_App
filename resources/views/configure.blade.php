@@ -635,6 +635,61 @@ $sms_crendential = json_decode($preference->sms_credentials);
                 </div>
             </div>
         </div>
+        <div class="col-md-4">
+            <div class="card-box pb-2">
+                <form method="POST" action="{{ route('preference', Auth::user()->code) }}">
+                    @csrf
+                    <input type="hidden" name="driver_phone_verify_config" value="1">
+                    <div class="row">
+                        <div class="col-12">
+                            <h4 class="header-title">{{__('Driver Registration Phone Verification')}}</h4>
+                            <div class="d-flex align-items-center justify-content-between mt-3 mb-2">
+                                <h5 class="font-weight-normal m-0">{{__('Enable')}}</h5>
+                                <div class="custom-control custom-switch">
+                                    <input type="checkbox" class="custom-control-input event_type" id="customSwitch_{{$preference->verify_phone_for_driver_registration}}" name="verify_phone_for_driver_registration" {{$preference->verify_phone_for_driver_registration == 1 ? 'checked':''}}>
+                                    <label class="custom-control-label" for="customSwitch_{{$preference->verify_phone_for_driver_registration}}"></label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-group mb-0 text-center">
+                                <button class="btn btn-blue btn-block" type="submit"> {{__("Update")}} </button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card-box pb-2">
+                <form method="POST" class="h-100" action="{{route('preference', Auth::user()->code)}}">
+                    @csrf
+                    <input type="hidden" name="refer_and_earn" value="1">
+                    <div class="row">
+                        <div class="col-12">
+                            <h4 class="header-title">{{__('Refer And Earn')}}</h4>
+                            <div class="col-xl-12 my-2" id="addCur-160">
+                                <label class="primaryCurText">{{ __("Referred To Amount") }}</label>
+                                <input class="form-control" type="number" id="reffered_to_amount" name="reffered_to_amount" value="{{ old('reffered_to_amount', $preference->reffered_to_amount ?? '0')}}" min="0">
+                            </div>
+                            <div class="col-xl-12 mb-2 mt-3" id="addCur-160">
+                                <label class="primaryCurText">{{ __("Referred By Amount") }}</label>
+                                <input class="form-control" type="number" name="reffered_by_amount" id="reffered_by_amount" value="{{ old('reffered_by_amount', $preference->reffered_by_amount ?? '0')}}" min="0">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-group mb-0 text-center">
+                                <button class="btn btn-blue btn-block" type="submit"> {{__("Update")}} </button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
         {{-- <div class="col-md-3">
             <form method="POST" action="{{ route('route.create.configure', Auth::user()->code) }}">
                 @csrf
