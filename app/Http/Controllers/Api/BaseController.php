@@ -13,8 +13,10 @@ use Twilio\Rest\Client as TwilioClient;
 use App\Traits\smsManager;
 class BaseController extends Controller
 {
+
     use smsManager;
     use ApiResponser;
+
 
 	protected function sendSms($recipients, $message)
 	{
@@ -38,12 +40,14 @@ class BaseController extends Controller
     protected function sendSms2($to, $body){
         try{
             $client_preference =  getClientPreferenceDetail();
+
             if($client_preference->sms_provider == 1)
             {
+
                 $credentials = json_decode($client_preference->sms_credentials);
-                $sms_key = (isset($credentials->sms_key)) ? $credentials->sms_key : '';
-                $sms_secret = (isset($credentials->sms_secret)) ? $credentials->sms_secret : '';
-                $sms_from  = (isset($credentials->sms_from)) ? $credentials->sms_from : '';
+                $sms_key = (isset($credentials->sms_key)) ? $credentials->sms_key : $client_preference->sms_provider_key_1;
+                $sms_secret = (isset($credentials->sms_secret)) ? $credentials->sms_secret : $client_preference->sms_provider_key_2;
+                $sms_from  = (isset($credentials->sms_from)) ? $credentials->sms_from : $client_preference->sms_provider_number;
 
                 $client = new TwilioClient($sms_key, $sms_secret);
                 $client->messages->create($to, ['from' => $sms_from, 'body' => $body]);
@@ -56,16 +60,18 @@ class BaseController extends Controller
                 $credentials = json_decode($client_preference->sms_credentials);
                 $send = $this->mazinhost_sms($to,$body,$credentials);
             }else{
+
                 $credentials = json_decode($client_preference->sms_credentials);
-                $sms_key = (isset($credentials->sms_key)) ? $credentials->sms_key : '';
-                $sms_secret = (isset($credentials->sms_secret)) ? $credentials->sms_secret : '';
-                $sms_from  = (isset($credentials->sms_from)) ? $credentials->sms_from : '';
+                $sms_key = (isset($credentials->sms_key)) ? $credentials->sms_key : $client_preference->sms_provider_key_1;
+                $sms_secret = (isset($credentials->sms_secret)) ? $credentials->sms_secret : $client_preference->sms_provider_key_2;
+                $sms_from  = (isset($credentials->sms_from)) ? $credentials->sms_from : $client_preference->sms_provider_number;
 
                 $client = new TwilioClient($sms_key, $sms_secret);
                 $client->messages->create($to, ['from' => $sms_from, 'body' => $body]);
             }
         }
         catch(\Exception $e){
+            \Log::info($e->getMessage());
             // return $this->error(__('Provider service is not configured. Please contact administration.'), 404);
             return $this->error($e->getMessage(), $e->getCode());
         }

@@ -157,7 +157,7 @@ $sms_crendential = json_decode($preference->sms_credentials);
                         </div>
                     </div> --}}
                     <!-- For twillio -->
-                    <div class="sms_fields row mx-0" id="twilio_fields" style="display : {{$preference->sms_provider == 1 ? 'flex' : 'none'}};">
+                    <div class="sms_fields row mx-0" id="twilio_fields" style="display : {{($preference->sms_provider == 1 || $preference->sms_provider == "Twilio"  ) ? 'flex' : 'none'}};">
                         <div class="col-12">
                         <div class="form-group mb-2">
                             <label for="sms_from">{{ __("SMS From") }}</label>
