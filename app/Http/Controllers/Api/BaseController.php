@@ -13,10 +13,8 @@ use Twilio\Rest\Client as TwilioClient;
 use App\Traits\smsManager;
 class BaseController extends Controller
 {
-
     use smsManager;
     use ApiResponser;
-
 
 	protected function sendSms($recipients, $message)
 	{
@@ -65,7 +63,6 @@ class BaseController extends Controller
                 $sms_key = (isset($credentials->sms_key)) ? $credentials->sms_key : $client_preference->sms_provider_key_1;
                 $sms_secret = (isset($credentials->sms_secret)) ? $credentials->sms_secret : $client_preference->sms_provider_key_2;
                 $sms_from  = (isset($credentials->sms_from)) ? $credentials->sms_from : $client_preference->sms_provider_number;
-
                 $client = new TwilioClient($sms_key, $sms_secret);
                 $client->messages->create($to, ['from' => $sms_from, 'body' => $body]);
             }
