@@ -15,9 +15,11 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
         <span>{{__('Live OTP')}}</span>
         <h4>{{isset($otp)?$otp: __('View OTP after Logging in the Driver App')}}</h4>
     </div>
-    
 </div>
 <span class="show_all_error invalid-feedback"></span>
+<div class="row">
+    <input type="hidden" id="agent_id" val_id="{{ $agent->id }}" url="{{route('agent.update', $agent->id)}}">
+</div>
 <div class="row">
     <div class="col-md-6">
         <div class="form-group" id="nameInputEdit">
