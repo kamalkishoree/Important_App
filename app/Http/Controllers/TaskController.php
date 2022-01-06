@@ -317,6 +317,7 @@ class TaskController extends Controller
                 $preference->date_format = $preference->date_format ?? 'm/d/Y';
                 $ndata[] = date(''.$preference->date_format.' '.$timeformat.'', strtotime($order));
 
+                $task='';
                     foreach ($value->task as $singletask) {
                         if($singletask->task_type_id==1)
                         {
@@ -332,8 +333,13 @@ class TaskController extends Controller
                         }
                         $shortName = (isset($singletask->location->short_name))?$singletask->location->short_name.', ':'';
                         $address   = (isset($singletask->location->address))?$singletask->location->address:'';
+                        if($task){
+                            $task.=" & ";
+                        }
+                        $task.=$tasktype.', '.$shortName.$address;
                     }
-                $ndata[] = $tasktype.', '.$shortName.$address;
+
+                $ndata[] = $task;
             //     $ndata[] = '0';
                 $ndata[] = $value->status;
                 $ndata[] = $value->cash_to_be_collected;
@@ -355,6 +361,8 @@ class TaskController extends Controller
                 $i++;
             }
         }
+
+
         return Excel::download(new RoutesExport($data, $header), "task.xlsx");
     }
 
