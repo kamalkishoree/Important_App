@@ -84,7 +84,7 @@ class TaskController extends Controller
 
         $teamTag   = TagsForTeam::OrderBy('id','asc');
         if ($user->is_superadmin == 0 && $user->all_team_access == 0) {
-            $teamTag = $teamTag->whereHas('assignTeams.team.permissionToManager', function ($query) {
+            $teamTag = $teamTag->whereHas('assignTeams.team.permissionToManager', function ($query) use($user){
                 $query->where('sub_admin_id', $user->id);
             });
         }
@@ -92,7 +92,7 @@ class TaskController extends Controller
 
         $agentTag = TagsForAgent::OrderBy('id','asc');
         if ($user->is_superadmin == 0 && $user->all_team_access == 0) {
-            $agentTag = $agentTag->whereHas('assignTags.agent.team.permissionToManager', function ($query) {
+            $agentTag = $agentTag->whereHas('assignTags.agent.team.permissionToManager', function ($query) use($user) {
                 $query->where('sub_admin_id', $user->id);
             });
         }
@@ -100,7 +100,7 @@ class TaskController extends Controller
 
         $pricingRule = PricingRule::select('id', 'name');
         if ($user->is_superadmin == 0 && $user->all_team_access == 0) {
-            $pricingRule = $pricingRule->whereHas('team.permissionToManager', function ($query) {
+            $pricingRule = $pricingRule->whereHas('team.permissionToManager', function ($query) use($user) {
                 $query->where('sub_admin_id', $user->id);
             });
         }
@@ -122,7 +122,7 @@ class TaskController extends Controller
     {
         $user = Auth::user();
         $timezone = $user->timezone ?? 251;
-        $orders = Order::orderBy('updated_at', 'DESC')->with(['customer', 'location', 'taskFirst', 'agent', 'task.location']);
+        $orders = Order::with(['customer', 'location', 'taskFirst', 'agent', 'task.location']);
 
         if ($user->is_superadmin == 0 && $user->all_team_access == 0) {
             $agents = Agent::orderBy('id', 'DESC');
@@ -133,7 +133,7 @@ class TaskController extends Controller
             $orders->whereIn('driver_id', $agentids)->orWhereNull('driver_id');
         }
 
-        $orders = $orders->where('status', $request->routesListingType)->where('status', '!=', null)->orderBy('updated_at', 'desc')->get();
+        $orders = $orders->where('status', $request->routesListingType)->where('status', '!=', null)->orderBy('updated_at', 'desc');
 
         $preference = ClientPreference::where('id', 1)->first(['theme','date_format','time_format']);
 
@@ -317,6 +317,7 @@ class TaskController extends Controller
                 $preference->date_format = $preference->date_format ?? 'm/d/Y';
                 $ndata[] = date(''.$preference->date_format.' '.$timeformat.'', strtotime($order));
 
+                $task='';
                     foreach ($value->task as $singletask) {
                         if($singletask->task_type_id==1)
                         {
@@ -332,8 +333,13 @@ class TaskController extends Controller
                         }
                         $shortName = (isset($singletask->location->short_name))?$singletask->location->short_name.', ':'';
                         $address   = (isset($singletask->location->address))?$singletask->location->address:'';
+                        if($task){
+                            $task.=" & ";
+                        }
+                        $task.=$tasktype.', '.$shortName.$address;
                     }
-                $ndata[] = $tasktype.', '.$shortName.$address;
+
+                $ndata[] = $task;
             //     $ndata[] = '0';
                 $ndata[] = $value->status;
                 $ndata[] = $value->cash_to_be_collected;
@@ -355,6 +361,8 @@ class TaskController extends Controller
                 $i++;
             }
         }
+
+
         return Excel::download(new RoutesExport($data, $header), "task.xlsx");
     }
 

@@ -4,12 +4,12 @@ use App\Model\ClientPreference;
 use App\Model\Client as ClientData;
 use App\Model\PaymentOption;
 
-// function pr($var) {
-//   	echo '<pre>';
-// 	print_r($var);
-//   	echo '</pre>';
-//     exit();
-// }
+function pr($var) {
+  	echo '<pre>';
+	print_r($var);
+  	echo '</pre>';
+    exit();
+}
 function http_check($url) {
     $return = $url;
     if (!preg_match("~^(?:f|ht)tps?://~i", $url)) {
