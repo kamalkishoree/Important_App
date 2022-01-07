@@ -349,7 +349,10 @@ class ClientController extends Controller
 
     public function cmsSave(Request $request, $id)
     {
-        Cms::where('id', $id)->update(['content'=>$request->content]);
+        $cms =  Cms::where('id', $request->id)->first();
+        if($cms){
+            $cms->update(['content'=>$request->content]);
+        }
         return response()->json(true);
     }
 
@@ -375,8 +378,8 @@ class ClientController extends Controller
             $update->barcode_requried   = isset($request['barcode_requried_'.$i])? 1 : 0 ;
             $update->otp                = isset($request['otp_'.$i])? 1 : 0 ;
             $update->otp_requried       = isset($request['otp_requried_'.$i])? 1 : 0 ;
-            $update->face                = isset($request['face_'.$i])? 1 : 0 ;
-            $update->face_requried       = isset($request['face_requried_'.$i])? 1 : 0 ;
+            $update->face               = isset($request['face_'.$i])? 1 : 0 ;
+            $update->face_requried      = isset($request['face_requried_'.$i])? 1 : 0 ;
             $update->save();
         }
 
