@@ -84,7 +84,7 @@ class TaskController extends Controller
 
         $teamTag   = TagsForTeam::OrderBy('id','asc');
         if ($user->is_superadmin == 0 && $user->all_team_access == 0) {
-            $teamTag = $teamTag->whereHas('assignTeams.team.permissionToManager', function ($query) {
+            $teamTag = $teamTag->whereHas('assignTeams.team.permissionToManager', function ($query) use($user){
                 $query->where('sub_admin_id', $user->id);
             });
         }
@@ -92,7 +92,7 @@ class TaskController extends Controller
 
         $agentTag = TagsForAgent::OrderBy('id','asc');
         if ($user->is_superadmin == 0 && $user->all_team_access == 0) {
-            $agentTag = $agentTag->whereHas('assignTags.agent.team.permissionToManager', function ($query) {
+            $agentTag = $agentTag->whereHas('assignTags.agent.team.permissionToManager', function ($query) use($user) {
                 $query->where('sub_admin_id', $user->id);
             });
         }
@@ -100,7 +100,7 @@ class TaskController extends Controller
 
         $pricingRule = PricingRule::select('id', 'name');
         if ($user->is_superadmin == 0 && $user->all_team_access == 0) {
-            $pricingRule = $pricingRule->whereHas('team.permissionToManager', function ($query) {
+            $pricingRule = $pricingRule->whereHas('team.permissionToManager', function ($query) use($user) {
                 $query->where('sub_admin_id', $user->id);
             });
         }
