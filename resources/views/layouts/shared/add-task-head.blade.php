@@ -29,7 +29,7 @@
         }
 
         .tags {
-            
+
         }
 
         #typeInputss {
@@ -53,7 +53,7 @@
         }
 
         .check {
-            
+
         }
 
         .newcheck {
@@ -68,7 +68,7 @@
             margin-top: 11px !important;
         }
 
-        
+
 
         .append {
             margin-bottom: 15px;
@@ -81,12 +81,12 @@
         .copyin {
             background-color: rgb(148 148 148 / 11%);
             margin-top: 10px;
-            
- 
+
+
         }
         .copyin1 {
             background-color: rgb(148 148 148 / 11%);
-           
+
         }
         hr.new3 {
          border-top: 1px dashed white;
@@ -104,8 +104,8 @@
            margin-top: 5px;
        }
        .withradio{
-       
-        
+
+
        }
        .showsimage{
         margin-top: 31px;
@@ -145,12 +145,12 @@
             <form id="taskFormHeader" method="post" enctype="multipart/form-data" action="{{ route('tasks.store') }}">
                 @csrf
                 <div class="modal-body p-14 pt-0" id="addCardBox">
-                    
+
                 </div>
                 <div class="modal-footer justify-content-center">
                      <a href="javascript: void(0);" class="btn btn-blue waves-effect waves-light submitTaskHeader"><span class="spinner-border spinner-border-sm submitTaskHeaderLoader" style="display:none;" role="status" aria-hidden="true"></span> <span id="submitTaskHeaderText">{{__("Submit")}}</span></a>
                 </div>
-            </form>   
+            </form>
         </div>
     </div>
 </div>
@@ -161,10 +161,10 @@
 
             <div class="modal-header border-0">
                 <h4 class="modal-title">{{__("Select Location")}}</h4>
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <button type="button" class="close remove-modal-open" data-dismiss="modal" aria-hidden="true">×</button>
             </div>
             <div class="modal-body px-3 py-0">
-                
+
                 <div class="row">
                     <form id="task_form_header" action="#" method="POST" style="width: 100%">
                         <div class="col-md-12">
@@ -178,13 +178,13 @@
                 </div>
             </div>
             <div class="modal-footer border-0">
-                <button type="submit" class="btn btn-blue waves-effect waves-light selectMapOnHeader">{{__("Ok")}}</button>
+                <button type="submit" class="btn btn-blue waves-effect waves-light selectMapOnHeader remove-modal-open">{{__("Ok")}}</button>
                 <!--<button type="Cancel" class="btn btn-blue waves-effect waves-light cancelMapLocation">cancel</button>-->
             </div>
         </div>
     </div>
 </div>
-            @php 
+            @php
                 $style = "";
                 if(session('preferences.twilio_status') != 'invalid_key'){
                         $style = "display:none;";
@@ -238,9 +238,13 @@
 <!-- Page js-->
 <script src="{{asset('assets/js/pages/form-pickers.init.js')}}"></script>
 <script>
+// jQuery('.remove-modal-open').click(function(){
+//         jQuery('body').addClass('modal-open');
+//     });
+
     var theme      = {!!json_encode($theme)!!};
-    
-    
+
+
     var maoArray = {};
     var autoWrap = ['addHeader0'];
     var count = 1; editCount = 0; var a = 0; countZ = 1;
@@ -255,7 +259,7 @@
 
     $(document).ready(function(){
       loadMapHeader(autoWrap);
-      
+
     });
     function gm_authFailure() {
                 console.log('ok');
@@ -274,7 +278,7 @@
         $('.selectpicker').selectpicker();
     }
 
-    var latitudes = []; 
+    var latitudes = [];
     var longitude = [];
 
     $(".addTaskModalHeader").click(function (e) {
@@ -285,10 +289,10 @@
             }
         });
 
-        autoWrap.indexOf('addHeader1') === -1 ? autoWrap.push('addHeader1') : '' ; 
+        autoWrap.indexOf('addHeader1') === -1 ? autoWrap.push('addHeader1') : '' ;
         // console.log("exists");
         e.preventDefault();
-       
+
         $.ajax({
             type: "get",
             url: "<?php echo url('tasks'); ?>" + '/create',
@@ -298,7 +302,7 @@
 
                 //$('.page-title1').html('Hello');
                 //console.log('data');
-                
+
                 $('.submitTaskHeaderLoader').css('display', 'none');
                 $('#submitTaskHeaderText').text('Submit');
                 $('.submitTaskHeader').removeClass("inactiveLink");
@@ -353,7 +357,7 @@
                 $("#file").click(function() {
                     $('.showsimagegall').hide();
                     $('.imagepri').remove();
-                    
+
                 });
 
                 loadMapHeader(autoWrap);
@@ -375,7 +379,7 @@
     function searchRes(){
 
         $("#task-modal-header #searchCust").autocomplete({
-            source: function(request, response) {                
+            source: function(request, response) {
                 // Fetch data
                 $.ajax({
                     url: "{{route('search')}}",
@@ -434,13 +438,13 @@
         $clone.removeClass('cloningDiv');
         $clone.removeClass('copyin1');
         $clone.addClass('copyin');
-        $clone.addClass('repeated-block check-validation');       
-        
+        $clone.addClass('repeated-block check-validation');
+
         $clone.find('.cust_add_div').prop('id', 'addHeader' + countZ);
         $clone.find('.cust_add').prop('id', 'addHeader' + countZ +'-input');
         $clone.find('.cust_btn').prop('id', 'addHeader' + countZ);
         $clone.find('.cust_btn').prop('num', 'addHeader' + countZ);
-        
+
         $clone.find('.cust_latitude').prop('id', 'addHeader' + countZ +'-latitude');
         $clone.find('.cust_longitude').prop('id', 'addHeader' + countZ +'-longitude');
 
@@ -448,13 +452,13 @@
         var rand =  Math.random().toString(36).substring(7);
         var count1 = 1;
         $.each(inputid, function(index, elem){
-               
+
             var jElem = $(elem); // jQuery element
             //var name = jElem.prop('id');
-            
+
             ////console.log(name + "-hello");
             //name = rand;
-            
+
             //rand += count1;
             ////console.log(name);
             jElem.prop('id', rand+count1);
@@ -465,13 +469,13 @@
         var count2 = 1;
         var labels = $clone.find('label');
         $.each(labels, function(index, elem){
-               
+
             var jElem = $(elem); // jQuery element
             //var name = jElem.prop('for');
-            
+
             ////console.log(name + "-bye");
             //name = rand;
-            
+
             //name += count2;
             ////console.log(name);
             jElem.prop('for', rand+count2);
@@ -479,7 +483,7 @@
         });
         var spancheck = $clone.find('.delbtnhead');
           $.each(spancheck, function(index, elem){
-                 
+
               var jElem = $(elem); // jQuery element
               var name = jElem.prop('id');
               name = name.replace(/\d+/g, '');
@@ -491,7 +495,7 @@
 
           var address1 = $clone.find('.address');
           $.each(address1, function(index, elem){
-                 
+
               var jElem = $(elem); // jQuery element
               //jElem.prop('required', true);
           });
@@ -522,7 +526,7 @@
                 jElem.prop('for', labelName);
             });
           });
-         
+
           var postcode1 = $clone.find('.postcode');
           $.each(postcode1, function(index, elem){
             var jElem = $(elem)
@@ -536,36 +540,36 @@
               post_count++;
               console.log(post_count);
           });
-          
+
         $(document).find('#addSubFields').before($clone);
         $('#addHeader'+countZ+' input[type="text"]').val('');
         autoWrap.indexOf('addHeader'+countZ) === -1 ? autoWrap.push('addHeader'+countZ) : console.log("exists");
           loadMapHeader(autoWrap);
     });
-    
-    function loadMapHeader(autoWrap){  
+
+    function loadMapHeader(autoWrap){
        // console.log(autoWrap);
 
         $.each(autoWrap, function(index, name) {
             const geocoder = new google.maps.Geocoder;
 
         //console.log(index+'--'+name);
-            if($('#'+name).length == 0) { 
+            if($('#'+name).length == 0) {
                 //console.log('blank - ' + name);
                 return;
             }
             //maoArray[name] = new google.maps.places.Autocomplete(('.form-control')[0], { types: ['geocode'] }); //console.log('hello');
             maoArray[name] = new google.maps.places.Autocomplete(document.getElementById(name+'-input'), { types: ['geocode'] });
-                
+
             google.maps.event.addListener(maoArray[name], 'place_changed', function() {
 
                 var place = maoArray[name].getPlace();
 
                 geocoder.geocode({'placeId': place.place_id}, function (results, status) {
-                    
+
                     if (status === google.maps.GeocoderStatus.OK) {
-                        
-                       
+
+
                         const lat = results[0].geometry.location.lat();
                         const lng = results[0].geometry.location.lng();
                         const address = results[0].formatted_address;
@@ -582,12 +586,12 @@
     }
 
     $(document).on('click', ".onedelete", function() {
-                
+
         $(this).closest(".copyin").remove();
     });
 
     /*$(document).on('click', ".onedelete", function() {
-                
+
         $(this).closest(".copyin").remove();
     });
 
@@ -601,12 +605,12 @@
           }else{
               $(".datenow").hide();
           }
-          
+
       });
 
-      
+
       $(document).on('click', "#taskschedule", function() {
-                
+
             var dateredio = $("#dateredio input[type='radio']:checked").val();
                 if (dateredio == 'schedule') {
                     $(".opendatepicker").focus();
@@ -623,7 +627,7 @@
         $(this).closest('.check-validation').find("input[name='latitude[]']").val('');
         $(this).closest('.check-validation').find("input[name='longitude[]']").val('');
     });
-    
+
     $(document).on('click', '.old-select-address', function(){
         var shortName   = $(this).data("srtadd");
         var address     = $(this).data("adr");
@@ -644,7 +648,7 @@
         $(this).closest('.check-validation').find("input[name='flat_no[]']").val(flat_no);
     });
     $(document).on("click", ".submitTaskHeader", function(e) {
-        e.preventDefault();    
+        e.preventDefault();
         var err = 0;
         $(".addspan").hide();
         $(".tagspan").hide();
@@ -672,7 +676,7 @@
                 return false;
         }
 
-        
+
         $(".selecttype").each(function(){
             var taskselect              = $(this).val();
             var checkPickupBarcode      = $('#check-pickup-barcode').val();
@@ -722,18 +726,18 @@
         var autoval = "";
         var auto    = $("#rediodiv input[type='radio']:checked");
         autoval     = auto.val();
-        
+
             if( err == 0){
                 $('.submitTaskHeaderLoader').css('display', 'inline-block');
                 $('#submitTaskHeaderText').text('Done');
                 $('.submitTaskHeader').addClass("inactiveLink");
-            
+
                 var formData = new FormData(document.querySelector("#taskFormHeader"));
                 TaskSubmit(formData, 'POST', '/newtasks', '#task-modal-header');
             }
     });
 
-    
+
 
     function TaskSubmit(data, method, url, modals) {
     //alert(data);
@@ -758,16 +762,16 @@
             //return response;
         },
         error: function(response) {
-            
+
         }
     });
 }
 
-    // show proofs initial check 
+    // show proofs initial check
     // $(document).ready(function() {
     //     $('.selecttype').val("1").click();
     // });
-    $(document).on('keyup', ".onlynumber", function() { 
+    $(document).on('keyup', ".onlynumber", function() {
     this.value = this.value.replace(/[^0-9\.]/g,'');
     });
     // $(document).on("change", "#file", function() {
@@ -776,8 +780,8 @@
 
     //on select of task type
 
-    $(document).on('change', ".selecttype", function() { 
-        
+    $(document).on('change', ".selecttype", function() {
+
             // proof = task_proofs[this.value-1].barcode;
 
             // if(proof != 0){
@@ -790,8 +794,8 @@
 
         if (this.value == 3){
            $span = $(this).closest(".firstclone1").find(".appoint").show();
-           //console.log($span); 
-        }   
+           //console.log($span);
+        }
         else{
             $(this).closest(".firstclone1").find(".appoint").hide();
         }
@@ -821,12 +825,12 @@
          window.URL.revokeObjectURL(fileList[i]);
        }
     }
-   
+
     $(document).on('click', '.assignRadio', function () {
 
         var radioValue = $("#rediodiv input[type='radio']:checked").val();
         if (radioValue == 'a') {
-           
+
             $( ".tags" ).removeClass("hidealloction");
             $( ".drivers" ).addClass("hidealloction");
             // $(".tags").show();
@@ -854,7 +858,7 @@
     $(document).on('click', '.showMapHeader', function(){
         //var no = $(this).attr('num');
         var no = $(this).attr('id') ?? $(this).attr('num');
-       
+
         var lats = document.getElementById(no+'-latitude').value;
         var lngs = document.getElementById(no+'-longitude').value;
         var address = document.getElementById(no+'-input').value;
@@ -880,25 +884,25 @@
                 center:myLatlng,
                 zoom:13,
                 mapTypeId:google.maps.MapTypeId.ROADMAP
-              
+
             };
             var map=new google.maps.Map(document.getElementById("googleMapHeader"), mapProp);
                 var marker = new google.maps.Marker({
                   position: myLatlng,
                   map: map,
                   title: 'Hello World!',
-                  draggable:true  
+                  draggable:true
               });
             document.getElementById('lat_map_header').value= lats;
-            document.getElementById('lng_map_header').value= lngs ; 
-            document.getElementById('addredd_map_header').value= address ; 
-            
+            document.getElementById('lng_map_header').value= lngs ;
+            document.getElementById('addredd_map_header').value= address ;
+
             // marker drag event
             {{-- google.maps.event.addListener(marker,'drag',function(event) {
                 console.log(event);
                 document.getElementById('lat_map_header').value = event.latLng.lat();
                 document.getElementById('lng_map_header').value = event.latLng.lng();
-                //document.getElementById('addredd_map_header').value= event[].formatted_address; 
+                //document.getElementById('addredd_map_header').value= event[].formatted_address;
             }); --}}
 
                 google.maps.event.addListener(marker, 'dragend', function() {
@@ -910,10 +914,10 @@
                         if (results[0]) {
                              document.getElementById('lat_map_header').value = marker.getPosition().lat();
                              document.getElementById('lng_map_header').value = marker.getPosition().lng();
-                             document.getElementById('addredd_map_header').value= results[0].formatted_address; 
-                        
+                             document.getElementById('addredd_map_header').value= results[0].formatted_address;
+
                             infowindow.setContent(results[0].formatted_address);
-                         
+
                             infowindow.open(map, marker);
                         }
                     }
@@ -927,7 +931,7 @@
 
                 document.getElementById('lat_map_header').value = event.latLng.lat();
                 document.getElementById('lng_map_header').value = event.latLng.lng();
-              //   document.getElementById('addredd_map_header').value= event.formatted_address; 
+              //   document.getElementById('addredd_map_header').value= event.formatted_address;
                 //alert("lat=>"+event.latLng.lat());map_for_header
                 //alert("long=>"+event.latLng.lng());
             }); --}}
@@ -955,13 +959,13 @@
     });
 
 
-    
+
 
 
 
 
     if(theme['theme'] == 'dark'){
-        
+
             var themeType = [
                 { elementType: "geometry", stylers: [{ color: "#242f3e" }] },
                 {
@@ -1055,7 +1059,7 @@
                 ]
             },
             ];
-   
+
     }else{
         themeType = [
             {
@@ -1069,9 +1073,9 @@
     }
 
     $('.onlynumber').keyup(function ()
-        {    
+        {
         this.value = this.value.replace(/[^0-9\.]/g,'');
         });
 
-    
+
 </script>
