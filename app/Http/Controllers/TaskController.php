@@ -122,7 +122,7 @@ class TaskController extends Controller
     {
         $user = Auth::user();
         $timezone = $user->timezone ?? 251;
-        $orders = Order::orderBy('updated_at', 'DESC')->with(['customer', 'location', 'taskFirst', 'agent', 'task.location']);
+        $orders = Order::with(['customer', 'location', 'taskFirst', 'agent', 'task.location']);
 
         if ($user->is_superadmin == 0 && $user->all_team_access == 0) {
             $agents = Agent::orderBy('id', 'DESC');

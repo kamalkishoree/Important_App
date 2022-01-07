@@ -44,13 +44,16 @@
                 ajax: {
                     url: "{{url('task/filter')}}",
                     // "dataSrc": "",
+                    headers: {
+                        'X-CSRF-Token': '{{ csrf_token() }}',
+                    },
                     data: function (d) {
                         d.search = $('input[type="search"]').val();
                         d.routesListingType = $('#routes-listing-status').val();
                         d.imgproxyurl = '{{$imgproxyurl}}';
                     }
                 },
-                order: dataTableColumnSort(),
+               // order: dataTableColumnSort(),
                 columns: dataTableColumn(),
             });
         }
