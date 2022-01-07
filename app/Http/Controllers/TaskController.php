@@ -133,7 +133,7 @@ class TaskController extends Controller
             $orders->whereIn('driver_id', $agentids)->orWhereNull('driver_id');
         }
 
-        $orders = $orders->where('status', $request->routesListingType)->where('status', '!=', null)->orderBy('updated_at', 'desc')->get();
+        $orders = $orders->where('status', $request->routesListingType)->where('status', '!=', null)->orderBy('updated_at', 'desc');
 
         $preference = ClientPreference::where('id', 1)->first(['theme','date_format','time_format']);
 
