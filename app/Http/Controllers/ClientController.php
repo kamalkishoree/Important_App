@@ -474,6 +474,33 @@ class ClientController extends Controller
         }
     }
 
+    // upload logo
+    public function faviconUoload(Request $request){
+
+        $validator = Validator::make($request->all(), [
+            'favicon' => ['required']
+        ]);
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator, 'update');
+        }
+
+        $favicon='';
+        if ($request->hasFile('favicon')) {
+            $file = $request->file('favicon');
+            $s3filePath = '/assets/Clientfavicon';
+            $path = Storage::disk('s3')->put($s3filePath, $file, 'public');
+            $favicon = $path;
+        }
+        $preference = ClientPreference::where('client_id', Auth::user()->code)->first();
+        if($favicon){
+            $preference->favicon = $favicon;
+        }
+        $preference->save();
+
+        return redirect()->route('configure')->with('success', 'Favicon updated successfully!');
+
+    }
+
 
     /**
      * Remove the specified resource from storage.

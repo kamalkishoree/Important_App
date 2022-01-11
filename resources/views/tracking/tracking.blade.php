@@ -6,7 +6,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name=”format-detection” content=”telephone=no”>
-    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('assets/images/favicon.ico') }}">
+    <link rel="shortcut icon" type="image/x-icon" href="{{$favicon ?? asset('assets/images/favicon.ico') }}">
     <!-- Bootstrap CSS -->
     <!-- <link rel="stylesheet" href="css/fontawesome.css"> -->
     <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css">
@@ -88,7 +88,7 @@ $task_type_array = ['Pickup', 'Drop-Off', 'Appointment'];
     </script>
     <script src="{{ asset('tracking/js/common.js') }}"></script>
     <script src="{{ asset('tracking/js/bootstrap.min.js') }}"></script>
-    
+
     <script>
         var map = '';
         var alltask = {!! json_encode($tasks) !!};
@@ -104,8 +104,8 @@ $task_type_array = ['Pickup', 'Drop-Off', 'Appointment'];
         }else{
             var maplat  = 30.7046;
             var maplong = 76.7179;
-        }        
-        
+        }
+
         $(document).ready(function() {
 
             initMap();
@@ -121,7 +121,7 @@ $task_type_array = ['Pickup', 'Drop-Off', 'Appointment'];
                 ]
             }
         ];
-        
+
 
 
         function initMap() {
@@ -147,14 +147,14 @@ $task_type_array = ['Pickup', 'Drop-Off', 'Appointment'];
 
             for (let i = 0; i < alltask.length; i++) {
                 if (i != alltask.length - 1 && alltask[i].task_status != 4 && alltask[i].task_status != 5 ) {
-                 
+
                     waypts.push({
                         location: new google.maps.LatLng(parseFloat(alltask[i].latitude), parseFloat(alltask[i]
                             .longitude)),
                         stopover: true,
                     });
 
-                    
+
                 }
                 var image = url+'/assets/newicons/'+alltask[i].task_type_id+'.png';
 
@@ -195,7 +195,7 @@ $task_type_array = ['Pickup', 'Drop-Off', 'Appointment'];
 
         // Adds a marker to the map.
         function addMarker(agent_location,map) {
-       
+
          // Add the marker at the clicked location, and add the next-available label
          // from the array of alphabetical characters.
          var image = {
@@ -203,7 +203,7 @@ $task_type_array = ['Pickup', 'Drop-Off', 'Appointment'];
          scaledSize: new google.maps.Size(50, 50), // scaled size
          origin: new google.maps.Point(0,0), // origin
          anchor: new google.maps.Point(22,22) // anchor
-        }; 
+        };
         if (marker && marker.setMap) {
         marker.setMap(null);
         }
@@ -212,10 +212,10 @@ $task_type_array = ['Pickup', 'Drop-Off', 'Appointment'];
             label: null,
             icon: image,
             map: map,
-            
+
          });
          }
-         
+
          function makeMarker( position,icon,map) {
             new google.maps.Marker({
             position: position,
@@ -228,14 +228,14 @@ $task_type_array = ['Pickup', 'Drop-Off', 'Appointment'];
 
 
 
-         // traking hit api again and agian 
-         var dispatch_traking_url   = window.location.href; 
+         // traking hit api again and agian
+         var dispatch_traking_url   = window.location.href;
          setInterval(function(){
             var new_dispatch_traking_url = dispatch_traking_url.replace('/order/','/order-details/');
                     getDriverDetails(new_dispatch_traking_url)
                 },4000);
 
-       
+
             function getDriverDetails(new_dispatch_traking_url) {
                 $.ajax({
                     type:"GET",
@@ -250,8 +250,8 @@ $task_type_array = ['Pickup', 'Drop-Off', 'Appointment'];
                     }
                 });
             }
-            
-            
+
+
             // Use the DOM setInterval() function to change the offset of the symbol
 // at fixed intervals.
 function animateCircle(line) {

@@ -6,7 +6,7 @@
    <meta charset="utf-8">
    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
    <meta name=”format-detection” content=”telephone=no”>
-   <link rel="shortcut icon" type="image/x-icon" href="images/favicon.ico">
+   <link rel="shortcut icon" type="image/x-icon" href={{$favicon ?? ''}}>
    <!-- Bootstrap CSS -->
    <!-- <link rel="stylesheet" href="css/fontawesome.css"> -->
    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css">
@@ -27,18 +27,18 @@
                <div class="col-12 text-center">
                 <h1>Oops!</h1>
                 <h2 class="my-2">Order Not Found.</h2>
-                
-                   <img class="w-auto margin-auto" src="{{asset('tracking/images/illustration.png')}}" alt="">                   
-                   
-                   
+
+                   <img class="w-auto margin-auto" src="{{asset('tracking/images/illustration.png')}}" alt="">
+
+
                </div>
            </div>
        </div>
    </section>
-   
+
 
    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-   
+
 </body>
 
 </html>
