@@ -412,6 +412,7 @@ class AuthController extends BaseController
             'team_id' => $request->team_id ?? null,
             'type' => $request->type,
             'vehicle_type_id' => $request->vehicle_type_id ?? null,
+            'customer_type_id' => $request->customer_type_id ?? null,
             'make_model' => $request->make_model ?? "",
             'plate_number' => $request->plate_number ?? "",
             'phone_number' => $request->phone_number,
