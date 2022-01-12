@@ -106,7 +106,7 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 		});
 
 		Route::group(['middleware' => ['auth:client'], 'prefix' => '/'], function () {
-			
+
 
 			Route::get('agent/filter', 'AgentController@agentFilter');
 			Route::get('agent/export', 'AgentController@export')->name('agents.export');
@@ -124,6 +124,7 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 			Route::post('task/proof', 'ClientController@taskProof')->name('task.proof');
 			Route::get('configure', 'ClientController@ShowConfiguration')->name('configure');
 			Route::post('smtp/save', 'ClientController@saveSmtp')->name('smtp');
+            Route::post('fivcon/save', 'ClientController@faviconUoload')->name('favicon');
 			Route::get('options', 'ClientController@ShowOptions')->name('options');
 			Route::resource('agent', 'AgentController');
 			Route::get('agent/{id}/show', 'AgentController@show')->name('agent.show');

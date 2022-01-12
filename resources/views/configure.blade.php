@@ -1,6 +1,7 @@
 @extends('layouts.vertical', ['title' => 'Configure'])
 
 @section('css')
+
 @endsection
 @php
 
@@ -690,6 +691,52 @@ $sms_crendential = json_decode($preference->sms_credentials);
                 </form>
             </div>
         </div>
+        <div class="col-md-4">
+            <div class="card-box pb-2">
+                <form method="POST" class="h-100" enctype="multipart/form-data" action="{{route('favicon')}}">
+                    @csrf
+
+                    <div class="row">
+                        <div class="col-12">
+                            <h4 class="header-title">{{__('Favicon')}}</h4>
+                            <div class="col-xl-12 my-2" id="addCur-160">
+                                <div class="">
+                                    <input type="file" class="dropify" data-plugins="dropify" name="favicon" data-default-file="{{isset($preference->favicon) ? Storage::disk('s3')->url($preference->favicon) : ''}}" />
+                                    <p class="text-muted text-center mt-2 mb-0">{{__("Upload favicon")}} </p>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-group mb-0 text-center">
+                                <button class="btn btn-blue btn-block" type="submit"> {{__("Update")}} </button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        {{-- <div class="col-md-6 col-xl-3">
+            <div class="card card-box">
+                <div class="row">
+                    <div class="col-5">
+                        <h4 class="header-title">{{ __("Favicon") }}</h4>
+                        <div class="mb-0">
+
+                            <label>{{ __("Upload Favicon") }}</label>
+                            <input type="file" accept="image/*" data-default-file="{{$preference->favicon ? $preference->favicon['proxy_url'].'600/400'.$client_preferences->favicon['image_path'] : ''}}" data-plugins="dropify" name="favicon" class="dropify" id="image" />
+                            <label class="logo-size d-block text-right mt-1">{{ __("Icon Size") }} 32x32</label>
+                            <span class="invalid-feedback" role="alert">
+                                <strong></strong>
+                            </span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div> --}}
         {{-- <div class="col-md-3">
             <form method="POST" action="{{ route('route.create.configure', Auth::user()->code) }}">
                 @csrf
@@ -961,13 +1008,16 @@ $sms_crendential = json_decode($preference->sms_credentials);
 @endsection
 
 @section('script')
-
+<script src="{{asset('assets/libs/dropzone/dropzone.min.js')}}"></script>
+<script src="{{asset('assets/libs/dropify/dropify.min.js')}}"></script>
+<script src="{{asset('assets/js/pages/form-fileuploads.init.js')}}"></script>
 <script type="text/javascript">
     function toggleDisplayCustomDomain() {
         $("#custom_domain_name").toggle('fast', function() {
 
         });
     }
+
 
     $('#add_driver_registration_document_modal_btn').click(function(e) {
         document.getElementById("driverRegistrationDocumentForm").reset();

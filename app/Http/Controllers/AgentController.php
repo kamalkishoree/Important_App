@@ -244,7 +244,7 @@ class AgentController extends Controller
         return Validator::make($data, [
             'name' => ['required', 'string', 'max:255'],
             'type' => ['required'],
-            'vehicle_type_id' => ['required'],
+            // 'vehicle_type_id' => ['required'],
             'team_id' => ['required'],
             //'make_model' => ['required'],
             //'plate_number' => ['required'],

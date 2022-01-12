@@ -67,7 +67,7 @@
                             </div>
                         </div>
                     </div>
-        
+
                 </div>
             </form>
         </div>
@@ -107,7 +107,7 @@
                             </div>
                         </div>
                     </div>
-        
+
                 </div>
             </form>
         </div>
@@ -121,12 +121,12 @@
                     <div class="login-forms">
                         <ul class="list-inline mb-0">
                             <li class="d-inline-block ml-2">
-                               
-                    
+
+
                             <label for="acknowledge1"><a href="#" class="btn btn-blue btn-block" type="button" data-toggle="modal" data-target="#create-tandc-modal">{{__("Terms and Conditions")}}</a></label>
                             </li>
                             <li class="d-inline-block ml-2">
-                                
+
                             <label for="acknowledge2"><a href="#" class="btn btn-blue btn-block" type="button" data-toggle="modal" data-target="#create-pandp-modal">{{__('Privacy Policy')}}</a></label>
                             </li>
                           </ul>
@@ -174,7 +174,7 @@
                                 </div>
                             </div>
                             <div class="row mb-2">
-        
+
                                 <div class="col-md-12">
                                     <label>Unit</label>
                                     <div class="col-sm-12">
@@ -217,7 +217,7 @@
                                 {{__("View and update the date & time format.")}}
                             </p>
                             <div class="row mb-lg-5 mb-2">
-        
+
                                 <div class="col-md-6">
                                     <div class="form-group mb-3">
                                         <label for="date_format">{{__("DATE FORMAT")}}</label>
@@ -255,7 +255,7 @@
                                     </div>
                                 </div>
                             </div>
-        
+
                             <div class="row mb-2">
                                 <div class="col-md-2">
                                     <div class="form-group mb-0 text-center">
@@ -276,15 +276,15 @@
             <div class="col-xl-12">
                 <div class="card-box">
                     <h4 class="header-title mb-3">{{__("Task Completion Proofs")}}</h4>
-                    
+
                     <div>
-                        {{-- @php 
+                        {{-- @php
                             echo "<pre>";
                             print_r($task_list); @endphp --}}
                         @foreach ($task_proofs as $key => $taskproof)
                         @php $counter = 1; @endphp
                         <h5 class="header-title mb-3">{{__($task_list[$key]->name)}}</h5>
-                         
+
                         <div class="table-responsive table_spacing">
                             <table class="table table-borderless table-nowrap table-hover table-centered m-0">
 
@@ -293,7 +293,7 @@
                                         <th>{{__("Type")}}</th>
                                         <th>{{__("Enable")}}</th>
                                         <th>{{__("Required")}}</th>
-                                        
+
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -318,7 +318,7 @@
                                             </div>
                                         </td>
 
-                                        
+
                                     </tr>
 
                                     <tr>
@@ -340,9 +340,9 @@
                                             </div>
                                         </td>
 
-                                        
+
                                     </tr>
-                                    
+
                                     <tr>
                                         <td>
                                             <h5 class="m-0 font-weight-normal">{{__('Notes')}}</h5>
@@ -362,7 +362,7 @@
                                             </div>
                                         </td>
 
-                                        
+
                                     </tr>
 
 
@@ -385,7 +385,7 @@
                                             </div>
                                         </td>
 
-                                        
+
                                     </tr>
                                     <tr>
                                         <td>
@@ -406,7 +406,7 @@
                                             </div>
                                         </td>
 
-                                        
+
                                     </tr>
 
                                     <tr>
@@ -428,7 +428,7 @@
                                             </div>
                                         </td>
 
-                                        
+
                                     </tr>
 
 
@@ -438,7 +438,7 @@
                          {{-- <h4 class="header-title mb-3">{{$key == 0 ? 'Drop-Off': $key == 1 ? 'Appointment':''}}</h4> --}}
                          @php $counter++; @endphp
                         @endforeach
-                        
+
                         {{-- <h4 class="header-title mb-3">Drop-Off</h4>
                         <div class="table-responsive table_spacing">
                             <table class="table table-borderless table-nowrap table-hover table-centered m-0">
@@ -448,7 +448,7 @@
                                         <th>Type</th>
                                         <th>Enable</th>
                                         <th>Required</th>
-                                        
+
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -473,7 +473,7 @@
                                             </div>
                                         </td>
 
-                                        
+
                                     </tr>
 
                                     <tr>
@@ -495,9 +495,9 @@
                                             </div>
                                         </td>
 
-                                        
+
                                     </tr>
-                                    
+
                                     <tr>
                                         <td>
                                             <h5 class="m-0 font-weight-normal">Notes</h5>
@@ -517,7 +517,7 @@
                                             </div>
                                         </td>
 
-                                        
+
                                     </tr>
 
 
@@ -534,7 +534,7 @@
                                         <th>Type</th>
                                         <th>Enable</th>
                                         <th>Required</th>
-                                        
+
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -559,7 +559,7 @@
                                             </div>
                                         </td>
 
-                                        
+
                                     </tr>
 
                                     <tr>
@@ -581,9 +581,9 @@
                                             </div>
                                         </td>
 
-                                        
+
                                     </tr>
-                                    
+
                                     <tr>
                                         <td>
                                             <h5 class="m-0 font-weight-normal">Notes</h5>
@@ -603,7 +603,7 @@
                                             </div>
                                         </td>
 
-                                        
+
                                     </tr>
 
 
@@ -611,14 +611,14 @@
                             </table>
                         </div> --}}
 
-                        
-            
-                        
-                      
-                        
-                        
-                        
-                        
+
+
+
+
+
+
+
+
                     </div>
 
                     <div class="row mb-2 mt-2">
@@ -631,10 +631,10 @@
                 </div>
             </div>
         </div>
-    </form> 
-    
+    </form>
 
-    
+
+
 
 </div> <!-- container -->
 @endsection
@@ -647,19 +647,19 @@
 
 
         var CSRF_TOKEN = $("input[name=_token]").val();
-        
-      
+
+
 
         $( '#tandc_form' ).on( 'submit', function(e) {
             e.preventDefault();
 
             var content = $(this).find('textarea[name=content]').val();
 
-           
+
             $.ajax({
             type: "POST",
-            url: "{{ route('cms.save',1) }}",
-            data: { _token: CSRF_TOKEN,content:content}, 
+            url: "{{ route('cms.save',[1]) }}",
+            data: { _token: CSRF_TOKEN,content:content,id:1},
             success: function( msg ) {
                 $("#create-tandc-modal .close").click();
             }
@@ -672,11 +672,11 @@
 
             var content = $(this).find('textarea[name=content]').val();
 
-           
+
             $.ajax({
             type: "POST",
             url: "{{ route('cms.save',2) }}",
-            data: { _token: CSRF_TOKEN,content:content}, 
+            data: { _token: CSRF_TOKEN,content:content},
             success: function( msg ) {
                 $("#create-pandp-modal .close").click();
             }
