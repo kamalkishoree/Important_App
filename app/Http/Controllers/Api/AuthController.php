@@ -374,7 +374,7 @@ class AuthController extends BaseController
         }
 
         $clientDetail = Client::with(['getPreference'])->first();
-        if($client->getPreference->verify_phone_for_driver_registration == 1){
+        if($clientDetail->getPreference->verify_phone_for_driver_registration == 1){
             $otp_verified = Otp::where('phone', $request->phone_number)->where('is_verified', 1)->first();
             if(!$otp_verified){
                 return $this->error(__('Please verify your phone number to proceed'), 422);
@@ -412,6 +412,7 @@ class AuthController extends BaseController
             'team_id' => $request->team_id ?? null,
             'type' => $request->type,
             'vehicle_type_id' => $request->vehicle_type_id ?? null,
+            'customer_type_id' => $request->customer_type_id ?? null,
             'make_model' => $request->make_model ?? "",
             'plate_number' => $request->plate_number ?? "",
             'phone_number' => $request->phone_number,

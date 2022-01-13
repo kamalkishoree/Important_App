@@ -1,4 +1,4 @@
-<script>    
+<script>
 
     $(document).ready(function() {
         var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
@@ -8,10 +8,10 @@
         }else{
             $('#routes-listing-status').val('unassigned');
         }
-        
+
         initializeRouteListing();
         function initializeRouteListing(){
-            
+
             $('.agents-datatable').DataTable({
                 "dom": '<"toolbar">Bfrtip',
                 "destroy": true,
@@ -34,7 +34,7 @@
                 drawCallback: function () {
                     $(".dataTables_paginate > .pagination").addClass("pagination-rounded");
                 },
-                buttons: [{  
+                buttons: [{
                     className:'btn btn-success waves-effect waves-light',
                     text: '<span class="btn-label"><i class="mdi mdi-export-variant"></i></span>Export CSV',
                     action: function ( e, dt, node, config ) {
@@ -44,13 +44,16 @@
                 ajax: {
                     url: "{{url('task/filter')}}",
                     // "dataSrc": "",
+                    headers: {
+                        'X-CSRF-Token': '{{ csrf_token() }}',
+                    },
                     data: function (d) {
                         d.search = $('input[type="search"]').val();
                         d.routesListingType = $('#routes-listing-status').val();
                         d.imgproxyurl = '{{$imgproxyurl}}';
                     }
                 },
-                order: dataTableColumnSort(),
+               // order: dataTableColumnSort(),
                 columns: dataTableColumn(),
             });
         }
@@ -63,7 +66,7 @@
                 return [[ 10, "desc" ]];
             }
         }
-        
+
         function dataTableColumn(){
             var routesListing = $('#routes-listing-status').val();
             if(routesListing == 'unassigned'){
@@ -112,7 +115,7 @@
                         $.each(shortName, function(index, elem) {
                             routes += '<div class="address_box"><span class="'+elem.pickupClass+'">'+elem.taskType+'</span> <span class="short_name">'+elem.shortName+'</span> <label data-toggle="tooltip" data-placement="bottom" title="'+elem.toolTipAddress+'">'+elem.address+'</label></div>';
                         });
-                        return routes; 
+                        return routes;
                     }},
                     {data: 'track_url', name: 'track_url', orderable: false, searchable: false, "mRender": function ( data, type, full ) {
                         var trackUrl = full.track_url;
@@ -129,12 +132,12 @@
                 ]
             }
         }
-        
+
 
     });
 
     function handleClick(myRadio) {
-        $('#getTask').submit();             
+        $('#getTask').submit();
     }
 
     //this is for task detail pop-up
@@ -152,7 +155,7 @@
                 status: status
             },
             success: function(data) {
-                console.log(data.task);                
+                console.log(data.task);
                 $('.repet').remove();
                 var taskname = '';
                 $.each(data.task, function(index, elem) {
@@ -305,7 +308,7 @@
                             '</div>'+
                         '</div>' ;
                     }
-                                                            
+
                     if (sign_proof == 1) {
                         html  = html+ '<div class="col-md-4">'+
                                       '<label class="mb-3">Signature</label>'+
@@ -315,7 +318,7 @@
                                       '</div>'+
                                       '</div>'+
                                       '</div>';
- 
+
                      }
 
                     if (note == 1) {
@@ -336,7 +339,7 @@
                     }
 
 
-                                                            
+
                     html  = html+   '</div>'+
                                     '</div>'+
                                     '</div>'+
@@ -401,7 +404,7 @@
         });
 
         $('#submit_assign_agent').on('submit', function(e) {
-            e.preventDefault(); 
+            e.preventDefault();
             var name = $('#name').val();
             var agent_id = $('#agent_id').val();
             var order_id = [];
@@ -412,7 +415,7 @@
                 order_id[i] = $(this).val();
             });
             if (order_id.length == 0) {
-               
+
                 $("#add-assgin-agent-model .close").click();
                 return;
             }
@@ -427,22 +430,22 @@
         });
 
         $('#submit_assign_date').on('submit', function(e) {
-            e.preventDefault(); 
-            var name = $('#name').val();    
+            e.preventDefault();
+            var name = $('#name').val();
             var newdate = $('#datetime-datepicker').val();
             if(newdate!="")
-            {            
+            {
                 var order_id = [];
-            
+
                 $('.single_driver_check:checked').each(function(i){
                     order_id[i] = $(this).val();
                 });
                 if (order_id.length == 0) {
-                
+
                     $("#add-assgin-date-model .close").click();
                     return;
                 }
-                
+
                 $.ajax({
                     type: "POST",
                     url: '{{route("assign.date")}}',
@@ -458,7 +461,7 @@
             $('[data-toggle="tooltip"]').tooltip()
         });
 
-        $(document).on('click', '.mdi-delete', function() {            
+        $(document).on('click', '.mdi-delete', function() {
             var r = confirm("{{__('Are you sure?')}}");
             if (r == true) {
                var taskid = $(this).attr('taskid');

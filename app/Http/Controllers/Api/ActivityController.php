@@ -214,7 +214,8 @@ class ActivityController extends BaseController
             'app_version'       => $request->app_version,
             'current_speed'     => $request->current_speed,
             'on_route'          => $request->on_route,
-            'device_type'       => $request->device_type
+            'device_type'       => $request->device_type,
+            'heading_angle'     => $request->heading_angle ?? 0,
         ];
 
         if ($request->lat=="" || $request->lat==0 || $request->lat== '0.00000000') {

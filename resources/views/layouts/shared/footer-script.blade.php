@@ -10,6 +10,10 @@
 <script src="{{asset('assets/js/waitMe.min.js')}}"></script>
 
 <script>
+ $(".remove-modal-open").click(function (e) {
+       // alert("hello");
+        $('body').addClass('modal-opensag');
+    });
 
 
 
@@ -60,16 +64,16 @@ $('.showpassword').click(function(){
         spanid.classList.remove("showpassword");
         spanid.classList.add("fe-eye");
         spanid.classList.add("showpassword");
-        
+
     }else{
         $('#pass').prop('type', 'password');
         spanid.classList.remove("fe-eye");
         spanid.classList.remove("showpassword");
         spanid.classList.add("fe-eye-off");
         spanid.classList.add("showpassword");
-        
+
     }
-     
+
 });
 
 </script>

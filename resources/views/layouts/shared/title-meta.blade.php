@@ -10,4 +10,5 @@
 <meta content=" {{$image->name??__('Royo')}} {{__('Apps')}}" name="author" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <!-- App favicon -->
-<link rel="shortcut icon" href="{{asset('assets/images/favicon.ico')}}">
+<!-- uol : {{$favicon}}-->
+<link rel="shortcut icon" href="{{$favicon ?? ''}}">
