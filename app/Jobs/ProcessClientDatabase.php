@@ -40,9 +40,9 @@ class ProcessClientDatabase implements ShouldQueue
 
         $client = Client::where('id', $this->client_id)->first(['name', 'email', 'password', 'phone_number', 'password', 'database_path', 'database_name', 'database_username', 'database_password', 'logo', 'company_name', 'company_address', 'custom_domain', 'status', 'code','sub_domain'])->toarray();
         
-    //    Log::info($this->client_id);
-    //    Log::info($client);
-
+        Log::info($this->client_id);
+        Log::info($client);
+        Log::info($this->client_id);
  
         $teams    = array(array('name' => 'Car Team','location_accuracy'=>1,'location_frequency'=>1,'client_id'=>$client['code']),
                         array('name' => 'Moto Team','location_accuracy'=>1,'location_frequency'=>1,'client_id'=>$client['code']));
