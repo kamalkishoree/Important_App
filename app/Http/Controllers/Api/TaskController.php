@@ -46,7 +46,7 @@ class TaskController extends BaseController
 {
     public function smstest(Request $request){
       $res = $this->sendSms2($request->phone_number, $request->sms_body);
-      pr($res);
+     // pr($res);
     }
     public function updateTaskStatus(Request $request)
     {

@@ -115,7 +115,6 @@ class ProfileController extends Controller
             'phone_number' => $request->phone_number,
             'company_name' => $request->company_name,
             'company_address' => $request->company_address,
-            'custom_domain' => $request->custom_domain,
             'country_id' => $request->country ? $request->country : null,
             'timezone' => $request->timezone ? $request->timezone : null,
             'logo' => $getFileName,
