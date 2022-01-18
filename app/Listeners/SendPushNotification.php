@@ -167,7 +167,8 @@ class SendPushNotification
     {
     //    Log::info('extraTime');
 
-        $check = DB::connection($schemaName)->table('rosters')->get();
+    $date  =  Carbon::now()->toDateTimeString();
+    $check = DB::connection($schemaName)->table('rosters')->where('notification_time', '<=', $date)->get();
 
         if(count($check) > 0){
             sleep(5);
