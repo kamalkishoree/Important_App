@@ -46,7 +46,7 @@ class TaskController extends BaseController
 {
     public function smstest(Request $request){
       $res = $this->sendSms2($request->phone_number, $request->sms_body);
-      pr($res);
+     // pr($res);
     }
     public function updateTaskStatus(Request $request)
     {
@@ -549,7 +549,27 @@ class TaskController extends BaseController
 
     public function TaskUpdateReject(Request $request)
     {
+        $header = $request->header();
+        $client_details = Client::where('database_name', $header['client'][0])->first();
+
         $percentage = 0;
+
+        $proof_face = null;
+        if (isset($request->proof_face)) {
+            if ($request->hasFile('proof_face')) {
+                $folder = str_pad($client_details->code, 8, '0', STR_PAD_LEFT);
+                $folder = 'client_'.$folder;
+                $file = $request->file('proof_face');
+                $file_name = uniqid() .'.'.  $file->getClientOriginalExtension();
+                $s3filePath = '/assets/'.$folder.'/orders' . $file_name;
+                $path = Storage::disk('s3')->put($s3filePath, $file, 'public');
+                $proof_face = $path;
+            }
+        }
+        if(!empty($proof_face)){
+            Task::where('order_id', $request->order_id)->update(['proof_face' => $proof_face]);
+        }
+
         $check = Order::where('id', $request->order_id)->with(['agent','customer'])->first();
         if (!isset($check)) {
             return response()->json([
