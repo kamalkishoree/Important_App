@@ -113,7 +113,7 @@ class TaskController extends Controller
 
         $employees      = Customer::orderby('name', 'asc')->where('status','Active')->select('id', 'name')->get();
         $employeesCount = count($employees);
-        $agentsCount    = count($agents);
+        $agentsCount    = count($agents->where('is_approved', 1));
 
         return view('tasks/task')->with([ 'status' => $request->status, 'agentsCount'=>$agentsCount, 'employeesCount'=>$employeesCount, 'active_count' => $active, 'panding_count' => $pending, 'history_count' => $history, 'status' => $check,'preference' => $preference,'agents'=>$agents,'failed_count'=>$failed,'client_timezone'=>$client_timezone]);
     }
@@ -601,7 +601,7 @@ class TaskController extends Controller
 
         $geo = null;
         if ($request->allocation_type === 'a') {
-         //   Log::info($send_loc_id);
+           
             $geo = $this->createRoster($send_loc_id);
             $agent_id = null;
         }
@@ -617,7 +617,7 @@ class TaskController extends Controller
             $auth->timezone = $tz->timezone_name(Auth::user()->timezone);
 
             $beforetime = (int)$auth->getAllocation->start_before_task_time;
-      //    $to = new \DateTime("now", new \DateTimeZone(isset(Auth::user()->timezone)? Auth::user()->timezone : 'Asia/Kolkata') );
+              //    $to = new \DateTime("now", new \DateTimeZone(isset(Auth::user()->timezone)? Auth::user()->timezone : 'Asia/Kolkata') );
             $to = new \DateTime("now", new \DateTimeZone('UTC'));
             $sendTime = Carbon::now();
             $to = Carbon::parse($to)->format('Y-m-d H:i:s');
@@ -649,7 +649,9 @@ class TaskController extends Controller
                 $schduledata['taskcount']         = $taskcount;
                 $schduledata['allocation']        = $allocation;
                 $schduledata['database']          = $auth;
+                //->delay(now()->addMinutes($finaldelay))
                 scheduleNotification::dispatch($schduledata)->delay(now()->addMinutes($finaldelay));
+                //$this->dispatch(new scheduleNotification($schduledata));
                 return true;
             }
         }
@@ -664,7 +666,7 @@ class TaskController extends Controller
                     break;
                 case 'send_to_all':
                     //this is called when allocation type is send to all
-                   Log::info('send_to_all');
+                   Log::info('send_to_all taskController');
                     $this->SendToAll($geo, $notification_time, $agent_id, $orders->id, $customer, $finalLocation, $taskcount, $allocation);
                     break;
                 case 'round_robin':
@@ -1389,6 +1391,7 @@ class TaskController extends Controller
                     'detail_id'           => $randem,
                     'cash_to_be_collected' => $order_details->cash_to_be_collected??null,
                 ];
+                Log::info("if case RosterCreate send to all ");
                 $this->dispatch(new RosterCreate($data, $extraData));
             }
         } else {
@@ -1429,11 +1432,12 @@ class TaskController extends Controller
                 $time = Carbon::parse($time)
                         ->addSeconds($expriedate + 10)
                         ->format('Y-m-d H:i:s');
-                if ($allcation_type == 'N' && 'ACK') {Log::info('break2');
+                if ($allcation_type == 'N' && 'ACK') {
+                    Log::info('break2');
                     break;
                 }
             }
-
+            Log::info("else case send to all ");
             $this->dispatch(new RosterCreate($data, $extraData));
         }
     }
@@ -2229,9 +2233,12 @@ class TaskController extends Controller
         $search = $request->search;
         if (isset($search)) {
             if ($search == '') {
-                $employees = Customer::orderby('name', 'asc')->select('id', 'name')->limit(10)->get();
+                $employees = Customer::orderby('name', 'asc')->select('id', 'name')->where('status','Active')->limit(10)->get();
             } else {
-                $employees = Customer::orderby('name', 'asc')->select('id', 'name')->where('name', 'like', '%' . $search . '%')->limit(10)->get();
+                $employees = Customer::orderby('name', 'asc')->select('id', 'name')
+                                    ->where('status','Active')
+                                    ->where('name', 'like', '%' . $search . '%')
+                                    ->limit(10)->get();
             }
             $response = array();
             foreach ($employees as $employee) {
