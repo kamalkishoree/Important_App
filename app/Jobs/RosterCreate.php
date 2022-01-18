@@ -38,7 +38,7 @@ class RosterCreate implements ShouldQueue
      */
     public function handle()
     {
-        Log::info('roster-data-fun---112--');
+        Log::info('roster-data-fun---112-- RosterCreate');
         try {
             $schemaName = 'royodelivery_db';
             $default = [
@@ -58,13 +58,13 @@ class RosterCreate implements ShouldQueue
 
             // config(["database.connections.mysql.database" => null]);
 
-         
+
             Config::set("database.connections.$schemaName", $default);
         //    Log::info('mesooooo2');
             config(["database.connections.mysql.database" => $schemaName]);
          //   Log::info($schemaName);
             DB::connection($schemaName)->table('rosters')->insert($this->data);
-        //    Log::info('mesooooo4');
+             Log::info('RosterCreate insert');
             DB::connection($schemaName)->table('roster_details')->insert($this->extraData);
         //    Log::info('mesooooo5');
             DB::disconnect($schemaName);
@@ -75,23 +75,18 @@ class RosterCreate implements ShouldQueue
                 'type'  => 'extra',
                 'status'=> 10
             ]);
-            Log::info('create roster --12');
+            Log::info('create roster --12 RosterCreate');
         } catch (Exception $ex) {
             Log::info($exception->getMessage());
            return $ex->getMessage();
         }
-       
+
     }
 
     public function failed(\Throwable $exception)
     {
         // Log failure
-        
-        
         Log::info('error roster');
         Log::info($exception->getMessage());
-       
-
-
     }
 }
