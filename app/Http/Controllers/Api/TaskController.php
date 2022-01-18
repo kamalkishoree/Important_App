@@ -553,6 +553,23 @@ class TaskController extends BaseController
         $client_details = Client::where('database_name', $header['client'][0])->first();
 
         $percentage = 0;
+
+        $proof_face = null;
+        if (isset($request->proof_face)) {
+            if ($request->hasFile('proof_face')) {
+                $folder = str_pad($client_details->code, 8, '0', STR_PAD_LEFT);
+                $folder = 'client_'.$folder;
+                $file = $request->file('proof_face');
+                $file_name = uniqid() .'.'.  $file->getClientOriginalExtension();
+                $s3filePath = '/assets/'.$folder.'/orders' . $file_name;
+                $path = Storage::disk('s3')->put($s3filePath, $file, 'public');
+                $proof_face = $path;
+            }
+        }
+        if(!empty($proof_face)){
+            Task::where('order_id', $request->order_id)->update(['proof_face' => $proof_face]);
+        }
+
         $check = Order::where('id', $request->order_id)->with(['agent','customer'])->first();
         if (!isset($check)) {
             return response()->json([
@@ -589,23 +606,7 @@ class TaskController extends BaseController
 
 
             Order::where('id', $request->order_id)->update(['driver_id' => $request->driver_id, 'status' => 'assigned','driver_cost'=> $percentage]);
-            
-            $proof_face = null;
-            if (isset($request->proof_face)) {
-                if ($request->hasFile('proof_face')) {
-                    $folder = str_pad($client_details->code, 8, '0', STR_PAD_LEFT);
-                    $folder = 'client_'.$folder;
-                    $file = $request->file('proof_face');
-                    $file_name = uniqid() .'.'.  $file->getClientOriginalExtension();
-                    $s3filePath = '/assets/'.$folder.'/orders' . $file_name;
-                    $path = Storage::disk('s3')->put($s3filePath, $file, 'public');
-                    $proof_face = $path;
-                }
-            } else {
-                $proof_face = null;
-            }
-
-            Task::where('order_id', $request->order_id)->update(['task_status' => 1, 'proof_face' => $proof_face]);
+            Task::where('order_id', $request->order_id)->update(['task_status' => 1]);
             if ($check && $check->call_back_url) {
                 $call_web_hook = $this->updateStatusDataToOrder($check, 2,1);  # task accepted
             }
