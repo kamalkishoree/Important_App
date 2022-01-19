@@ -18,7 +18,7 @@ use App\Traits\ApiResponser;
 use App\Exports\AgentsExport;
 use Doctrine\DBAL\Driver\DrizzlePDOMySql\Driver;
 use App\Model\{Agent, AgentDocs, AgentPayment, DriverGeo, Order, Otp, Team, TagsForAgent, TagsForTeam, Countries, Client, ClientPreferences, DriverRegistrationDocument, Geo, Timezone};
-
+use Kawankoding\Fcm\Fcm;
 class AgentController extends Controller
 {
     use ApiResponser;
@@ -27,6 +27,29 @@ class AgentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    public function test_notification(Request $request){
+        $new[] =$request->tokon ?? 'elatojS0SVuKg_qljDzRFb:APA91bEMxlpN2VPkrGaPw7MMOIaRweblEJP9Ff1K1Yd82VBeCSVHCpqmzffWj9C-_1ouvlYvPYTXCj3sKg9iUXl2XZNXcOnx1xrNXRsqgMMqdubH5yoKRETDuqo5qDc6_vt-4X1YgZjT';
+        $client_preferences = getClientPreferenceDetail();
+        $fcm_server_key = !empty($client_preferences->fcm_server_key)? $client_preferences->fcm_server_key : config('laravel-fcm.server_key');
+        $item['title']     = 'Pickup Request';
+        $item['body']      = 'Check All Details For This Request In App';
+        $fcmObj = new Fcm($fcm_server_key);
+        $fcm_store = $fcmObj->to($new) // $recipients must an array
+                        ->priority('high')
+                        ->timeToLive(0)
+                        ->data($item)
+                        ->notification([
+                            'title'              => 'Pickup Request',
+                            'body'               => 'Check All Details For This Request In App',
+                            'sound'              => 'notification.mp3',
+                            'android_channel_id' => 'Royo-Delivery',
+                            'soundPlay'          => true,
+                            'show_in_foreground' => true,
+                        ])
+                        ->send();
+                        echo ($new[0]);
+                        pr($fcm_store);
+    }
     public function index(Request $request)
     {
         $agents = Agent::orderBy('id', 'DESC');

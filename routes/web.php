@@ -107,7 +107,7 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 
 		Route::group(['middleware' => ['auth:client'], 'prefix' => '/'], function () {
 
-
+            Route::get('notifi', 'AgentController@test_notification');
 			Route::get('agent/filter', 'AgentController@agentFilter');
 			Route::get('agent/export', 'AgentController@export')->name('agents.export');
 			Route::get('customer/filter', 'CustomerController@customerFilter');
