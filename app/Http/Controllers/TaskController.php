@@ -122,6 +122,13 @@ class TaskController extends Controller
     {
         $user = Auth::user();
         $timezone = $user->timezone ?? 251;
+    
+        // $count_filter = 0;
+        // $start = ($request->start) ? $request->start : '0';
+        // $pageSize = ($request->length) ? $request->length : '10';
+        // $pageNo = ceil($start / $pageSize);
+        // $offset = $pageNo * $pageSize;
+
         $orders = Order::with(['customer', 'location', 'taskFirst', 'agent', 'task.location']);
 
         if ($user->is_superadmin == 0 && $user->all_team_access == 0) {
@@ -134,6 +141,9 @@ class TaskController extends Controller
         }
 
         $orders = $orders->where('status', $request->routesListingType)->where('status', '!=', null)->orderBy('updated_at', 'desc');
+        // $count_total = $orders->count();
+        // $orders = $orders->skip($start)->take($pageSize)->get();
+        // $count_filter = $orders->count();
 
         $preference = ClientPreference::where('id', 1)->first(['theme','date_format','time_format']);
 
@@ -255,16 +265,28 @@ class TaskController extends Controller
                 })
                 ->filter(function ($instance) use ($request) {
                     if (!empty($request->get('search'))) {
-                        $instance->collection = $instance->collection->filter(function ($row) use ($request){
-                            if(!empty($row['customer']['name']) && Str::contains(Str::lower($row['customer']['name']), Str::lower($request->search))){
-                                return true;
-                            }else if (!empty($row['customer']['phone_number']) && Str::contains(Str::lower($row['customer']['phone_number']), Str::lower($request->search))) {
-                                return true;
-                            }
-                            return false;
+                        // $instance->collection = $instance->collection->filter(function ($row) use ($request){
+                        //     if(!empty($row['customer']['name']) && Str::contains(Str::lower($row['customer']['name']), Str::lower($request->search))){
+                        //         return true;
+                        //     }else if (!empty($row['customer']['phone_number']) && Str::contains(Str::lower($row['customer']['phone_number']), Str::lower($request->search))) {
+                        //         return true;
+                        //     }
+                        //     return false;
+                        // });
+                        
+                        $instance->whereHas('customer', function($q) use($request){
+                            $search = $request->get('search');
+                            $q->where('name', 'Like', '%'.$search.'%')
+                            ->orWhere('phone_number', 'Like', '%'.$search.'%');
                         });
                     }
-                })
+                }, true)
+                // ->with([
+                //     "recordsTotal" => $count_total,
+                //     "recordsFiltered" => $count_total,
+                // ])
+                // ->setTotalRecords($count_total)
+                // ->setOffset($start)
                 ->make(true);
     }
 
