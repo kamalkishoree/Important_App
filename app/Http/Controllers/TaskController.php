@@ -601,7 +601,7 @@ class TaskController extends Controller
 
         $geo = null;
         if ($request->allocation_type === 'a') {
-           
+
             $geo = $this->createRoster($send_loc_id);
             $agent_id = null;
         }
@@ -1439,6 +1439,7 @@ class TaskController extends Controller
             }
             Log::info("else case send to all ");
             $this->dispatch(new RosterCreate($data, $extraData));
+            Log::info("dispatch Done ");
         }
     }
 

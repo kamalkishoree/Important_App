@@ -75,7 +75,9 @@ class RosterCreate implements ShouldQueue
                 'type'  => 'extra',
                 'status'=> 10
             ]);
+            $date             =  Carbon::now()->toDateTimeString();
             Log::info('create roster --12 RosterCreate');
+            Log::info($date);
         } catch (Exception $ex) {
             Log::info($exception->getMessage());
            return $ex->getMessage();
