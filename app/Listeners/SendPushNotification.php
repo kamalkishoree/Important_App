@@ -93,7 +93,7 @@ class SendPushNotification
         }else{
             Log::info('Empty Roaster lisner');
             $this->extraTime($schemaName);
-            
+
 
         }
 
@@ -176,7 +176,7 @@ class SendPushNotification
                     ->get();
 
         if(count($check) > 0){
-            sleep(10);
+            sleep(15);
             $this->getData();
         }else{
             return;
