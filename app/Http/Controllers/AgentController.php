@@ -120,7 +120,7 @@ class AgentController extends Controller
                 });
             }
 
-            $agents = $agents->where('is_approved', $request->status)->orderBy('id', 'desc')->get();
+            $agents = $agents->where('is_approved', $request->status)->orderBy('id', 'desc');
             return Datatables::of($agents)
                 ->editColumn('name', function ($agents) use ($request) {
                     $name =$agents->name;
@@ -193,24 +193,34 @@ class AgentController extends Controller
                 })
                 ->filter(function ($instance) use ($request) {
                     if (!empty($request->get('search'))) {
-                        $instance->collection = $instance->collection->filter(function ($row) use ($request){
-                            if (!empty($row['uid']) && Str::contains(Str::lower($row['uid']), Str::lower($request->get('search')))){
-                                return true;
-                            }elseif (!empty($row['phone_number']) && Str::contains(Str::lower($row['phone_number']), Str::lower($request->get('search')))){
-                                return true;
-                            }else if (!empty($row['name']) && Str::contains(Str::lower($row['name']), Str::lower($request->get('search')))) {
-                                return true;
-                            }else if (!empty($row['type']) && Str::contains(Str::lower($row['type']), Str::lower($request->get('search')))) {
-                                return true;
-                            }else if (!empty($row['team']) && Str::contains(Str::lower($row['team']), Str::lower($request->get('search')))) {
-                                return true;
-                            }else if (!empty($row['created_at']) && Str::contains(Str::lower($row['created_at']), Str::lower($request->get('search')))) {
-                                return true;
-                            }
-                            return false;
-                        });
+                        // $instance->collection = $instance->collection->filter(function ($row) use ($request){
+                        //     if (!empty($row['uid']) && Str::contains(Str::lower($row['uid']), Str::lower($request->get('search')))){
+                        //         return true;
+                        //     }elseif (!empty($row['phone_number']) && Str::contains(Str::lower($row['phone_number']), Str::lower($request->get('search')))){
+                        //         return true;
+                        //     }else if (!empty($row['name']) && Str::contains(Str::lower($row['name']), Str::lower($request->get('search')))) {
+                        //         return true;
+                        //     }else if (!empty($row['type']) && Str::contains(Str::lower($row['type']), Str::lower($request->get('search')))) {
+                        //         return true;
+                        //     }else if (!empty($row['team']) && Str::contains(Str::lower($row['team']), Str::lower($request->get('search')))) {
+                        //         return true;
+                        //     }else if (!empty($row['created_at']) && Str::contains(Str::lower($row['created_at']), Str::lower($request->get('search')))) {
+                        //         return true;
+                        //     }
+                        //     return false;
+                        // });
+                        
+                        $search = $request->get('search');
+                        $instance->where('uid', 'Like', '%'.$search.'%')
+                            ->orWhere('name', 'Like', '%'.$search.'%')
+                            ->orWhere('phone_number', 'Like', '%'.$search.'%')
+                            ->orWhere('type', 'Like', '%'.$search.'%')
+                            ->orWhere('created_at', 'Like', '%'.$search.'%')
+                            ->orWhereHas('team', function($q) use($search){
+                                $q->where('name', 'Like', '%'.$search.'%');
+                            });
                     }
-                })
+                }, true)
                 ->make(true);
         } catch (Exception $e) {
         }
