@@ -174,7 +174,7 @@ class SendPushNotification
         $date             =  Carbon::now()->toDateTimeString();
         Log::info($date);
         $check = DB::connection($schemaName)->table('rosters')
-                    //->where('notification_time', '<=', $date)
+                    ->where('notification_time', '<=', $date)
                     ->get();
          Log::info(DB::connection($schemaName)->table('rosters')
          ->get()->pluck('id'));
