@@ -61,7 +61,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
             <div class="card-box">
                 <h4 class="header-title mb-2">{{__('Driver')}}</h4>
                 @if(empty($task->agent))
-                Unassigned
+                {{__('Unassigned')}}
                 @else
                 <div class="row">
                     <div class="col-xl-12">

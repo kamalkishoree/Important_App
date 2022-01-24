@@ -9,6 +9,7 @@ use App\Model\Team;
 use App\Model\Tag;
 use Illuminate\Http\Request;
 use App\Model\{Client, ClientPreference};
+use Illuminate\Support\Facades\Storage;
 use Closure;
 use Config;
 use Session;
@@ -35,11 +36,13 @@ class AppServiceProvider extends ServiceProvider
      * @return void
      */
     public function boot(Request $request)
-    {  
+    {
         $this->connectDynamicDb($request);
         if(config('app.env') != 'local') {
             \URL::forceScheme('https');
         }
+        //
+        $favicon_url= asset('assets/images/favicon.ico');
         $clientDetails = Cache::get('clientdetails');
         if (!empty($clientDetails) && !empty($clientDetails->code)) {
             if (Schema::hasColumn('client_id', 'client_preferences')) {
@@ -47,11 +50,20 @@ class AppServiceProvider extends ServiceProvider
                 if (!empty($preference->fcm_server_key)) {
                     config(['laravel-fcm.server_key' => $preference->fcm_server_key ?? ""]);
                 }
+
+
+
             }
         }
-       
+        $preference  = ClientPreference::where('client_id', ( $clientDetails->code ?? ''))->first();
+        if($preference){
+            $favicon_url =  isset($preference->favicon) ? Storage::disk('s3')->url($preference->favicon) : '';
+        }
+
         Builder::defaultStringLength(191);
-        
+
+        view()->share('favicon', $favicon_url);
+
         View::composer('modals.add-agent', function($view)
         {
             $teams = Team::select('id', 'name')->get();
@@ -63,13 +75,13 @@ class AppServiceProvider extends ServiceProvider
             $tags = Tag::select('id', 'name')->get();
             $view->with(["tags"=>$tags]);
         });
-        
-       
+
+
     }
 
     public function connectDynamicDb($request)
-    {   
-        
+    {
+
         if (strpos(URL::current(), '/api/') !== false){
 
 
@@ -89,10 +101,9 @@ class AppServiceProvider extends ServiceProvider
                           ->first();
                 }
                 $callback = '';
-      
                 $redisData = $client;
                 $dbname = DB::connection()->getDatabaseName();
-          
+
                 if ($domain) {
                     if ($domain != env('Main_Domain')) {
                         if ($client && $dbname != 'db_'.$client->database_name) {
@@ -125,6 +136,6 @@ class AppServiceProvider extends ServiceProvider
                 }
             }
         }
-       
+
     }
 }

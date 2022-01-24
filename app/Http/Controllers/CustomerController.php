@@ -100,6 +100,7 @@ class CustomerController extends Controller
      */
     public function create()
     {
+        
         //not in use
         return view('Customer/add-customer');
     }
@@ -154,6 +155,7 @@ class CustomerController extends Controller
                         'customer_id' => $customer->id,
                         'phone_number' => $request->address_phone_number[$key],
                         'email' => $request->address_email[$key],
+                        'flat_no'  => $request->flat_no[$key],
                         // 'due_after' => $request->due_after[$key],
                         // 'due_before' => $request->due_before[$key],
                     ];
@@ -229,6 +231,7 @@ class CustomerController extends Controller
                             $location->longitude = $request->longitude[$key];
                             $location->phone_number = $request->address_phone_number[$key];
                             $location->email = $request->address_email[$key];
+                            $location->flat_no = $request->flat_no[$key];
                             // $location->due_after = $request->due_after[$key];
                             // $location->due_before = $request->due_before[$key];
 
@@ -244,6 +247,7 @@ class CustomerController extends Controller
                             'customer_id' => $customer->id,
                             'phone_number' => $request->address_phone_number[$key],
                             'email' => $request->address_email[$key],
+                            'flat_no'  => $request->flat_no[$key],
                             // 'due_after' => $request->due_after[$key],
                             // 'due_before' => $request->due_before[$key],
                             

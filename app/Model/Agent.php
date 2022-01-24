@@ -2,6 +2,10 @@
 
 namespace App\Model;
 
+use Bavix\Wallet\Traits\HasWallet;
+use Bavix\Wallet\Interfaces\Wallet;
+use Bavix\Wallet\Traits\HasWalletFloat;
+use Bavix\Wallet\Interfaces\WalletFloat;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -10,12 +14,14 @@ use Exception;
 use Thumbor\Url;
 
 
-class Agent extends Authenticatable
+class Agent extends Authenticatable implements  Wallet, WalletFloat
 {
 	use Notifiable;
+    use HasWallet;
+    use HasWalletFloat;
 
     protected $fillable = [
-        'team_id', 'name', 'profile_picture', 'type', 'vehicle_type_id', 'make_model', 'plate_number', 'phone_number', 'color', 'is_activated', 'is_available','cash_at_hand','uid', 'is_approved'
+        'team_id', 'name', 'profile_picture', 'type', 'vehicle_type_id', 'make_model', 'plate_number', 'phone_number', 'color', 'is_activated', 'is_available','cash_at_hand','uid', 'is_approved','customer_type_id'
     ];
 
     protected $appends = ['image_url'];
@@ -74,6 +80,10 @@ class Agent extends Authenticatable
 
     public function agentfirstlog(){
         return $this->hasOne('App\Model\AgentLog','agent_id', 'id');
+    }
+
+    public function agentBankDetails(){
+        return $this->hasMany('App\Model\AgentBankDetail' , 'id', 'agent_id');
     }
 
 }

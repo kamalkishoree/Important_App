@@ -1,4 +1,6 @@
-
+@php
+$imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain/';
+@endphp
  <div class="row mb-2">
     <div class="col-md-4">
         <div class="form-group" id="profile_pictureInputEdit">
@@ -13,9 +15,11 @@
         <span>{{__('Live OTP')}}</span>
         <h4>{{isset($otp)?$otp: __('View OTP after Logging in the Driver App')}}</h4>
     </div>
-    
 </div>
 <span class="show_all_error invalid-feedback"></span>
+<div class="row">
+    <input type="hidden" id="agent_id" val_id="{{ $agent->id }}" url="{{route('agent.update', $agent->id)}}">
+</div>
 <div class="row">
     <div class="col-md-6">
         <div class="form-group" id="nameInputEdit">
@@ -78,7 +82,7 @@
 
 
 
-<div class="row">
+{{-- <div class="row">
     <div class="col-md-12">
         <div class="form-group" id="vehicle_type_idInputEdit">
             <p class="text-muted mt-3 mb-2">{{__("TRANSPORT TYPE")}}</p>
@@ -113,18 +117,18 @@
 
         </div>
     </div>
-</div>
+</div> --}}
 
 <div class="row">
     <div class="col-md-12">
-        <div class="form-group mb-0">
+        <div class="form-group">
             <label class="control-label">{{__("Tags")}}</label>
         <input id="form-tags-4" name="tags" type="text" value="{{isset($tagIds) ? implode(',', $tagIds) : ''}}" class="myTag1">
         </div>
     </div>
 </div>
 
-<div class="row mt-3">
+{{-- <div class="row mt-3">
     <div class="col-md-6">
         <div class="form-group" id="make_modelInputEdit">
             <input type="hidden" id="agent_id" val_id="{{ $agent->id }}" url="{{route('agent.update', $agent->id)}}">
@@ -151,7 +155,7 @@
 <div class="row">
     <div class="col-md-6">
         <div class="form-group" id="plate_numberInputEdit">
-            <label for="plate_number" class="control-label">{{__("LICENCE PLACE")}}</label>
+            <label for="plate_number" class="control-label">{{__("LICENCE PLATE")}}</label>
             <input type="text" class="form-control" id="plate_number" name="plate_number"
                 placeholder="508.KLV" value="{{ old('name', $agent->plate_number ?? '') }}">
             <span class="invalid-feedback" role="alert">
@@ -168,4 +172,42 @@
             </span>
         </div>
     </div>
+</div> --}}
+
+<div class="row">
+    @if(!empty($driver_registration_documents) && count($driver_registration_documents) > 0)
+    @foreach($driver_registration_documents as $driver_registration_document)
+    @php
+    $field_value = "";
+    if(!empty($agent_docs) && count($agent_docs) > 0){
+        foreach($agent_docs as $key => $agent_doc){
+            if($driver_registration_document->name == $agent_doc->label_name){
+                $field_value = $agent_doc->file_name;
+            }
+        }
+    }
+    @endphp
+    <div class="col-md-6">
+        <div class="form-group" id="{{$driver_registration_document->name}}Input">
+            <label for="" class="control-label d-flex align-items-center justify-content-between">{{$driver_registration_document->name ? $driver_registration_document->name : ''}} 
+                @if(strtolower($driver_registration_document->file_type) == 'pdf' && (!empty($field_value)))
+                <a href="{{ Storage::disk('s3')->url($field_value) }}" download target="_blank"><i class="fa fa-eye" aria-hidden="true"></i></a>
+                @endif
+            </label>
+            @if(strtolower($driver_registration_document->file_type) == 'text' || strtolower($driver_registration_document->file_type) == 'date')
+            <input type="text" class="form-control" id="input_file_logo_{{$driver_registration_document->id}}" name="{{$driver_registration_document->name}}" placeholder="Enter Text" value="{{ $field_value }}" {{ (!empty($driver_registration_document->is_required))?'required':''}}>
+            @else
+            @if(strtolower($driver_registration_document->file_type) == 'image')
+            <input type="file" data-plugins="dropify" name="{{$driver_registration_document->name}}" accept="image/*" data-default-file="{{ (!empty($field_value)) ? $imgproxyurl.Storage::disk('s3')->url($field_value) : '' }}" class="dropify" />
+            @elseif(strtolower($driver_registration_document->file_type) == 'pdf')
+            <input type="file" data-plugins="dropify" name="{{$driver_registration_document->name}}" accept=".pdf" class="dropify" />
+            @endif
+            <span class="invalid-feedback" role="alert">
+                <strong></strong>
+            </span>
+            @endif
+        </div>
+    </div>
+    @endforeach
+    @endif
 </div>

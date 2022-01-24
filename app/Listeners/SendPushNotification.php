@@ -34,12 +34,12 @@ class SendPushNotification
      */
     public function handle(PushNotification $event)
     {
-       Log::info('message');
-        
+       Log::info('message listener working ');
+
         $date =  Carbon::now()->toDateTimeString();
-        
+
         try {
-           
+
                 $schemaName = 'royodelivery_db';
                 $default = [
                     'driver' => env('DB_CONNECTION', 'mysql'),
@@ -60,59 +60,63 @@ class SendPushNotification
                 config(["database.connections.mysql.database" => $schemaName]);
 
                 $this->getData();
-                
+
 
                 DB::disconnect($schemaName);
         } catch (Exception $ex) {
            return $ex->getMessage();
         }
-        
-        
+
+
     }
 
     public function getData()
     {
-       Log::info('getData');
-        
+      // Log::info('getData');
+
         $schemaName       = 'royodelivery_db';
         $date             =  Carbon::now()->toDateTimeString();
-        $get              =  DB::connection($schemaName)->table('rosters')->where('notification_time', '<=', $date)->where('status',0)->leftJoin('roster_details', 'rosters.detail_id', '=', 'roster_details.unique_id')->select('rosters.*', 'roster_details.customer_name', 'roster_details.customer_phone_number',
+        $get              =  DB::connection($schemaName)->table('rosters')->where('notification_time', '<=', $date)->where('status',0)
+                                    ->leftJoin('roster_details', 'rosters.detail_id', '=', 'roster_details.unique_id')
+                                    ->select('rosters.*', 'roster_details.customer_name', 'roster_details.customer_phone_number',
         'roster_details.short_name','roster_details.address','roster_details.lat','roster_details.long','roster_details.task_count')->get();
         $newget           = $get->pluck('id');
-
-     ///   Log::info($newget);
+        Log::info('rostersIDs lisner');
+        Log::info($newget);
         DB::connection($schemaName)->table('rosters')->where('status',10)->delete();
         if(count($get) > 0){
             Log::info('rosters update-99-');
             DB::connection($schemaName)->table('rosters')->whereIn('id',$newget)->delete();
             // DB::connection($schemaName)->table('rosters')->whereIn('id',$newget)->update(['status'=>1]);
-            
+
             $this->sendnotification($get);
         }else{
+            Log::info('Empty Roaster lisner');
             $this->extraTime($schemaName);
-            Log::info('Empty Roaster');
-          
+
+
         }
-        
+
         return;
-               
-       
-        
+
+
+
     }
 
     public function sendnotification($recipients)
     {
         try {
-           
-        Log::info('sendnotificationlistener');
-        
-        $array = json_decode(json_encode($recipients), true);
-        
-    
-        foreach($array as $item){
 
+      //  Log::info('sendnotification listener');
+
+        $array = json_decode(json_encode($recipients), true);
+
+
+        foreach($array as $item){
+            Log::info("notificatin time");
+            Log::info($item['notification_time']);
             if(isset($item['device_token']) && !empty($item['device_token'])){
-               
+
                 $item['title']     = 'Pickup Request';
                 $item['body']      = 'Check All Details For This Request In App';
                 $new = [];
@@ -124,9 +128,9 @@ class SendPushNotification
 
                 if(isset($new)){
                     try{
-                       
+
                         $fcm_server_key = !empty($client_preferences->fcm_server_key)? $client_preferences->fcm_server_key : config('laravel-fcm.server_key');
-                        
+
                         $fcmObj = new Fcm($fcm_server_key);
                         $fcm_store = $fcmObj->to($new) // $recipients must an array
                                         ->priority('high')
@@ -141,36 +145,41 @@ class SendPushNotification
                                             'show_in_foreground' => true,
                                         ])
                                         ->send();
-                                        
-                    
+
+
                     }
                     catch(Exception $e){
                         Log::info($e->getMessage());
                     }
-                
+
                 }
             }
-            
-            
+
+
         }
 
         sleep(5);
         $this->getData();
         } catch (Exception $ex) {
             Log::info($ex->getMessage());
-            
+
         }
-       
+
     }
 
     public function extraTime($schemaName)
     {
-    //    Log::info('extraTime');
-
-        $check = DB::connection($schemaName)->table('rosters')->get();
-
+        Log::info('extraTime');
+        //sleep(30); ->addSeconds(45)
+        $date             =  Carbon::now()->toDateTimeString();
+        Log::info($date);
+        $check = DB::connection($schemaName)->table('rosters')
+                    ->where('notification_time', '<=', $date)
+                    ->get();
+         Log::info(DB::connection($schemaName)->table('rosters')
+         ->get()->pluck('id'));
         if(count($check) > 0){
-            sleep(5);
+            sleep(15);
             $this->getData();
         }else{
             return;

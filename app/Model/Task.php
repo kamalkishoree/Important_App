@@ -3,6 +3,7 @@
 namespace App\Model;
 
 use Illuminate\Database\Eloquent\Model;
+use Storage;
 
 class Task extends Model
 {
@@ -12,7 +13,7 @@ class Task extends Model
     ];
 
     public function order(){
-        return $this->belongsTo('App\Model\Order', 'order_id', 'id')->select('id', 'customer_id','driver_id','recipient_phone','Recipient_email','task_description','auto_alloction','order_time','status','cash_to_be_collected','cash_to_be_collected as amount');
+        return $this->belongsTo('App\Model\Order', 'order_id', 'id')->select('id', 'customer_id','driver_id','recipient_phone','Recipient_email','task_description','auto_alloction','order_time','status','cash_to_be_collected','cash_to_be_collected as amount','driver_cost','images_array as task_images','unique_id','call_back_url');
         
     }
 
@@ -38,5 +39,27 @@ class Task extends Model
     public function drivertags(){
         return $this->belongsToMany('App\Model\TaskDriverTag', 'task_driver_tags','task_id','tag_id');
     }*/
+
+    public function getProofImageAttribute($value){
+        if(!empty($value))
+        {
+            $value = Storage::disk('s3')->url($value);
+              
+        }
+        return $value;
+    }
+
+    public function getProofSignatureAttribute($value){
+        if(!empty($value))
+        {
+            $value = Storage::disk('s3')->url($value);
+              
+        }
+        return $value;
+    }
+
+   
+
+    
     
 }

@@ -21,7 +21,7 @@ use App\Model\SubClient;
 use App\Model\TaskProof;
 use App\Model\TaskType;
 use App\Model\DriverRegistrationDocument;
-use App\Model\SmtpDetail;
+use App\Model\{SmtpDetail, SmsProvider};
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Redis;
 use Session;
@@ -39,7 +39,7 @@ class ClientController extends Controller
 			'message' => $message,
 			'data' => $data
 		], $code);
-	} 
+	}
 
     protected function errorResponse($message = null, $code, $data = null)
 	{
@@ -49,7 +49,7 @@ class ClientController extends Controller
 			'data' => $data
 		], $code);
 	}
-   
+
 
     private function randomString()
     {
@@ -62,7 +62,7 @@ class ClientController extends Controller
         return $random_string;
     }
 
-  
+
 
     /**
      * Store/Update Client Preferences
@@ -76,13 +76,13 @@ class ClientController extends Controller
                 $domain    = str_replace(array('http://', config('domainsetting.domain_set')), '', $request->custom_domain);
                 $domain    = str_replace(array('https://', config('domainsetting.domain_set')), '', $request->custom_domain);
                 $my_url =   $request->custom_domain;
-                
+
                 $data1 = [
                     'domain' => $my_url
                 ];
-                
+
                 $curl = curl_init();
-                
+
                 curl_setopt_array($curl, array(
                     CURLOPT_URL => "localhost:3000/add_subdomain",
                     CURLOPT_RETURNTRANSFER => true,
@@ -96,10 +96,10 @@ class ClientController extends Controller
                        "content-type: application/json",
                     ),
                 ));
-                
+
                 $response = curl_exec($curl);
                 $err = curl_error($curl);
-                
+
                 curl_close($curl);
                 if ($err) {
                     return redirect()->back()->withInput()->withErrors(new \Illuminate\Support\MessageBag(['custom_domain' => $err]));
@@ -109,8 +109,8 @@ class ClientController extends Controller
             } catch (Exception $e) {
                 return redirect()->back()->withInput()->withErrors(new \Illuminate\Support\MessageBag(['custom_domain' => $e->getMessage()]));
             }
-          
-            
+
+
             $connectionToGod = $this->createConnectionToGodDb($id);
             $exists = Client::where('code', '<>', $id)->where('custom_domain', $request->custom_domain)->count();
             if ($exists) {
@@ -125,6 +125,7 @@ class ClientController extends Controller
                 }
             }
         }
+
 
         # if submit sub_domain domain by client
         if ($request->sub_domain && ($request->sub_domain != $client->sub_domain)) {
@@ -143,12 +144,73 @@ class ClientController extends Controller
             }
         }
 
+        unset($request['sub_domain']);
+        unset($request['custom_domain']);
+
+        if($request->has('sms_provider'))
+        {
+            if($request->sms_provider == 1) //for twillio
+            {
+
+                $sms_credentials = [
+                    'sms_from' => $request->sms_from,
+                    'sms_key' => $request->sms_key,
+                    'sms_secret' => $request->sms_secret,
+                ];
+                $request->merge([
+                    'sms_provider_key_1'=>$request->sms_key,
+                    'sms_provider_key_2'=>$request->sms_secret,
+                    'sms_provider_number'=>$request->sms_from,
+                     ]);
+            }elseif($request->sms_provider == 2) // for mTalkz
+            {
+                $sms_credentials = [
+                    'api_key' => $request->mtalkz_api_key,
+                    'sender_id' => $request->mtalkz_sender_id,
+                ];
+
+            }elseif($request->sms_provider == 3) // for mazinhost
+            {
+                $sms_credentials = [
+                    'api_key' => $request->mazinhost_api_key,
+                    'sender_id' => $request->mazinhost_sender_id,
+                ];
+
+            }
+            $request->merge(['sms_credentials'=>json_encode($sms_credentials)]);
+        }
+
+
+        unset($request['sms_from']);
+        unset($request['sms_key']);
+        unset($request['sms_secret']);
+        unset($request['mtalkz_api_key']);
+        unset($request['mtalkz_sender_id']);
+
+        unset($request['mazinhost_sender_id']);
+        unset($request['mazinhost_api_key']);
+
+    //    dd( $request->all());
+
+        if($request->has('driver_phone_verify_config')){
+            $request->request->add(['verify_phone_for_driver_registration' => ($request->has('verify_phone_for_driver_registration') && $request->verify_phone_for_driver_registration == 'on') ? 1 : 0]);
+        }
+
+        if($request->has('edit_order_config')){
+            $request->request->add(['is_edit_order_driver' => ($request->has('is_edit_order_driver') && $request->is_edit_order_driver == 'on') ? 1 : 0]);
+        }
+
+        if($request->has('refer_and_earn')){
+            $request->request->add(['reffered_by_amount' => ($request->has('reffered_by_amount') && $request->reffered_by_amount > 0) ? $request->reffered_by_amount : 0]);
+            $request->request->add(['reffered_to_amount' => ($request->has('reffered_to_amount') && $request->reffered_to_amount > 0) ? $request->reffered_to_amount : 0]);
+        }
+
         $updatePreference = ClientPreference::updateOrCreate([
             'client_id' => $id
         ], $request->all());
-      
-      
-       
+
+
+
         if ($request->ajax()) {
             return response()->json([
                 'status' => 'success',
@@ -240,7 +302,6 @@ class ClientController extends Controller
         $task_list   = TaskType::all();
         //print_r($task_list); die;
         $subClients  = SubClient::all();
-        
         return view('customize')->with(['preference' => $preference, 'currencies' => $currencies,'cms'=>$cms,'task_proofs' => $task_proofs,'task_list' => $task_list]);
     }
 
@@ -255,7 +316,8 @@ class ClientController extends Controller
         $subClients  = SubClient::all();
         $smtp        = SmtpDetail::where('id', 1)->first();
         $agent_docs=DriverRegistrationDocument::get();
-        return view('configure')->with(['preference' => $preference, 'client' => $client,'subClients'=> $subClients,'smtp_details'=>$smtp, 'agent_docs' => $agent_docs]);
+        $smsTypes = SmsProvider::where('status', '1')->get();
+        return view('configure')->with(['preference' => $preference, 'client' => $client,'subClients'=> $subClients,'smtp_details'=>$smtp, 'agent_docs' => $agent_docs,'smsTypes'=>$smsTypes]);
     }
 
 
@@ -291,7 +353,10 @@ class ClientController extends Controller
 
     public function cmsSave(Request $request, $id)
     {
-        Cms::where('id', $id)->update(['content'=>$request->content]);
+        $cms =  Cms::where('id', $request->id)->first();
+        if($cms){
+            $cms->update(['content'=>$request->content]);
+        }
         return response()->json(true);
     }
 
@@ -306,7 +371,7 @@ class ClientController extends Controller
             } else {
                 $update                     = new TaskProof;
             }
-                
+
             $update->image              = isset($requestAll['image_'.$i])? 1 : 0 ;
             $update->image_requried     = isset($request['image_requried_'.$i])? 1 : 0 ;
             $update->signature          = isset($request['signature_'.$i])? 1 : 0 ;
@@ -317,9 +382,11 @@ class ClientController extends Controller
             $update->barcode_requried   = isset($request['barcode_requried_'.$i])? 1 : 0 ;
             $update->otp                = isset($request['otp_'.$i])? 1 : 0 ;
             $update->otp_requried       = isset($request['otp_requried_'.$i])? 1 : 0 ;
+            $update->face               = isset($request['face_'.$i])? 1 : 0 ;
+            $update->face_requried      = isset($request['face_requried_'.$i])? 1 : 0 ;
             $update->save();
         }
-        
+
         return redirect()->route('preference.show')->with('success', 'Preference updated successfully!');
     }
 
@@ -332,7 +399,7 @@ class ClientController extends Controller
         } else {
             $update                     = new SmtpDetail;
         }
-            
+
         $update->client_id          = Auth::user()->id;
         $update->driver             = 'smtp';
         $update->host               = $request->host;
@@ -402,13 +469,40 @@ class ClientController extends Controller
             $driver_registration_document->name = $request->name;
             $driver_registration_document->is_required = (!empty($request->is_required))?1:0;
             $driver_registration_document->save();
-         
+
             DB::commit();
             return $this->successResponse($driver_registration_document, 'Driver Registration Document Updated Successfully.');
         } catch (Exception $e) {
             DB::rollback();
             return $this->errorResponse([], $e->getMessage());
         }
+    }
+
+    // upload logo
+    public function faviconUoload(Request $request){
+
+        $validator = Validator::make($request->all(), [
+            'favicon' => ['required']
+        ]);
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator, 'update');
+        }
+
+        $favicon='';
+        if ($request->hasFile('favicon')) {
+            $file = $request->file('favicon');
+            $s3filePath = '/assets/Clientfavicon';
+            $path = Storage::disk('s3')->put($s3filePath, $file, 'public');
+            $favicon = $path;
+        }
+        $preference = ClientPreference::where('client_id', Auth::user()->code)->first();
+        if($favicon){
+            $preference->favicon = $favicon;
+        }
+        $preference->save();
+
+        return redirect()->route('configure')->with('success', 'Favicon updated successfully!');
+
     }
 
 
@@ -421,12 +515,12 @@ class ClientController extends Controller
     public function destroy(Request $request){
         try {
             DriverRegistrationDocument::where('id', $request->driver_registration_document_id)->delete();
-           
+
             return $this->successResponse([], 'Driver Registration Document Deleted Successfully.');
         } catch (Exception $e) {
             return $this->errorResponse([], $e->getMessage());
         }
     }
 
-   
+
 }

@@ -2,19 +2,114 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
-use App\Model\Agent;
-use App\Model\AgentDocs;
-use App\Model\DriverRegistrationDocument;
-use App\Model\TagsForAgent;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
+use App\Traits\ApiResponser;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
+use App\Http\Controllers\Api\BaseController;
+use App\Model\{Agent, AgentDocs, ClientPreference, DriverRegistrationDocument, TagsForAgent, AgentsTag, Team, Otp};
 
-class DriverRegistrationController extends Controller
+class DriverRegistrationController extends BaseController
 {
+    use ApiResponser;
+
+    /**
+     * create token to register driver
+     *
+     * @param  [string] phone_number
+     * @param  [string] dial_code
+     */
+    public function sendOtp(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'phone_number' => 'required',
+                'dial_code' => 'required'
+            ]);
+            if ($validator->fails()) {
+                return $this->error($validator->errors()->first(), 422);
+            }
+            $phone = '+' . $request->dial_code . $request->phone_number;
+            $agent = Agent::where('phone_number', $phone)->first();
+
+            if ($agent) {
+                return response()->json([
+                    'message' => __('Phone number already exists')
+                ], 404);
+            }
+
+            $otp_verified = Otp::where('phone', $phone)->where('is_verified', 1)->first();
+            if(!$otp_verified){
+                Otp::where('phone', $phone)->delete();
+                $otp = new Otp();
+                $otp->phone = $phone;
+                $otp->opt = rand(111111, 999999);
+                $newDateTime = Carbon::now()->addMinutes(10)->toDateTimeString();
+                $otp->valid_till = $newDateTime;
+                $otp->save();
+
+                $to = $otp->phone;
+                $body = "Dear customer, OTP for registration is " . $otp->opt . ".";
+                $send = $this->sendSms2($to, $body)->getData();
+                if ($send->status == 'Success') {
+                    return $this->success([], $send->message, 200);
+                } else {
+                    return $this->error($send->message, 422);
+                }
+            }else{
+                return $this->success($otp_verified, __('Phone number has already been verified'), 200);
+            }
+        } catch (\Exception $e) {
+            return $this->error($e->getMessage(), $e->getCode());
+        }
+    }
+
+    /**
+     * verify token to register driver
+     *
+     * @param  [string] phone_number
+     * @param  [string] dial_code
+     * @param  [string] OTP
+     */
+    public function verifyOtp(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'phone_number' => 'required',
+                'dial_code' => 'required',
+                'otp' => 'required'
+            ]);
+            if ($validator->fails()) {
+                return $this->error($validator->errors()->first(), 422);
+            }
+            $phone = '+' . $request->dial_code . $request->phone_number;
+            $agent = Agent::where('phone_number', $phone)->first();
+            if ($agent) {
+                return $this->error(__('Phone number already exists'), 404);
+            }
+
+            $otp = Otp::where('phone', $phone)->where('opt', $request->otp)->orderBy('id', 'DESC')->first();
+            $currentTime = Carbon::now()->toDateTimeString();
+
+            if (!$otp) {
+                return $this->error(__('Please enter a valid OTP'), 422);
+            }
+            if ($currentTime > $otp->valid_till) {
+                return $this->error(__('Your OTP has been expired. Please try again.'), 422);
+            }
+            $otp->is_verified = 1;
+            $otp->update();
+            return $this->success($otp, __('Phone number has been verified'), 200);
+        }
+        catch (\Exception $e) {
+            return $this->error($e->getMessage(), $e->getCode());
+        }
+    }
+    
+
     //
     public function validator(array $data)
     {
@@ -63,7 +158,18 @@ class DriverRegistrationController extends Controller
                 $s3filePath = '/assets/' . $folder . '/agents' . $file_name;
                 $path = Storage::disk('s3')->put($s3filePath, $file, 'public');
                 $getFileName = $path;
+            } 
+
+            $newtag = explode(",", $request->tags);
+            $tag_id = [];
+            foreach ($newtag as $key => $value) {
+                if (!empty($value)) {
+                    $check = TagsForAgent::firstOrCreate(['name' => $value]);
+                    array_push($tag_id, $check->id);
+                }
             }
+
+
             $data = [
                 'name' => $request->name,
                 'type' => $request->type,
@@ -75,8 +181,10 @@ class DriverRegistrationController extends Controller
                 'profile_picture' => $getFileName != null ? $getFileName : 'assets/client_00000051/agents5fedb209f1eea.jpeg/Ec9WxFN1qAgIGdU2lCcatJN5F8UuFMyQvvb4Byar.jpg',
                 'uid' => $request->uid,
                 'is_approved' => 0,
+                'team_id' => $request->team_id == null ? $team_id = null : $request->team_id
             ];
             $agent = Agent::create($data);
+            $agent->tags()->sync($tag_id);
             $files = [];
             if ($request->hasFile('uploaded_file')) {
                 $file = $request->file('uploaded_file');
@@ -134,12 +242,14 @@ class DriverRegistrationController extends Controller
     public function sendDocuments()
     {
         try {
-            $documents = DriverRegistrationDocument::orderBy('file_type', 'DESC')->get();
-
+           
+            $data['documents'] = DriverRegistrationDocument::orderBy('file_type', 'DESC')->get();
+            $data['all_teams'] = Team::OrderBy('id','desc')->get();
+            $data['agent_tags'] = TagsForAgent::OrderBy('id','desc')->get();
             return response()->json([
                 'status' => 200,
                 'message' => 'Success!',
-                'data' => $documents
+                'data' => $data
             ]);
         } catch (\Exception $e) {
             return response()->json([

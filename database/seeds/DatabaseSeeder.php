@@ -26,7 +26,10 @@ class DatabaseSeeder extends Seeder
               CmsTableSeeder::class,
               PermissionSeeder::class,
               TimezoneSeeder::class,
-              
+              PaymentOptionSeeder::class,
+              PayoutOptionSeeder::class,
+              SmsProviderSeeder::class,
+              CustomerTypeSeeder::class
              ]);
     }
 }

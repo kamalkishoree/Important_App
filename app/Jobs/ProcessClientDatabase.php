@@ -40,10 +40,7 @@ class ProcessClientDatabase implements ShouldQueue
 
         $client = Client::where('id', $this->client_id)->first(['name', 'email', 'password', 'phone_number', 'password', 'database_path', 'database_name', 'database_username', 'database_password', 'logo', 'company_name', 'company_address', 'custom_domain', 'status', 'code','sub_domain'])->toarray();
         
-    //    Log::info($this->client_id);
-    //    Log::info($client);
-
- 
+       
         $teams    = array(array('name' => 'Car Team','location_accuracy'=>1,'location_frequency'=>1,'client_id'=>$client['code']),
                         array('name' => 'Moto Team','location_accuracy'=>1,'location_frequency'=>1,'client_id'=>$client['code']));
         $geo      = array(array('name'=> 'Chandigarh','description'=> 'This is chandigarh geo','geo_array'=> '(30.722193060918734, 76.81803091122487),(30.714814305242182, 76.80755956723073),(30.71201023004263, 76.81219442440846),(30.694298398185953, 76.79880483700612),(30.6991694760599, 76.79434164120534),(30.696217337000455, 76.79039342953541),(30.695184066995065, 76.78112371517994),(30.697398203461013, 76.77957876278737),(30.68101239087761, 76.75400121762135),(30.693707947798174, 76.74421651913502),(30.686179388754244, 76.73305852963307),(30.698579055472567, 76.72293050839284),(30.701678723255046, 76.72876699520924),(30.71983192053557, 76.71348913266041),(30.723668744295058, 76.71932561947682),(30.735473398091386, 76.70919759823659),(30.752440054615263, 76.73752172543385),(30.747129074771323, 76.74352987362721),(30.757308195503647, 76.75863607479909),(30.76202858190823, 76.7564044768987),(30.768076238713753, 76.76859243466237),(30.758930854436844, 76.77597387387135),(30.767191239502747, 76.79159505917409),(30.763208642343383, 76.80429800106862),(30.75745571108224, 76.80944784237721),(30.752587577652235, 76.80464132382252),(30.73724397145609, 76.8168292815862),(30.726915168213008, 76.81408269955494)','zoom_level'=> 13,'client_id'=> $client['code']),
@@ -91,6 +88,7 @@ class ProcessClientDatabase implements ShouldQueue
             Artisan::call('db:seed', ['--class' => 'createTaskProof', '--database' => $schemaName, '--force' => true]);
             DB::disconnect($schemaName);
         } catch (Exception $ex) {
+            Log::info($ex->getMessage());
            return $ex->getMessage();
         }
     }

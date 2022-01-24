@@ -28,6 +28,19 @@ class ActivityController extends BaseController
 {
 
     /**
+     * Store/Update Client Preferences
+     */
+    public function clientPreferences()
+    {
+        $preferences = ClientPreference::with('currency')->where('id', 1)->first();
+        return response()->json([
+            'message' => '',
+            'data' => $preferences,
+            'status' => 200
+        ]);
+    }
+
+    /**
      * update driver availability status if 0 than 1 if 1 than 0
 
      */
@@ -156,8 +169,7 @@ class ActivityController extends BaseController
             }
         } else {
             $getFileName = $saved->profile_picture;
-        }
-        
+        }        
         
         $agent                   = Agent::find(Auth::user()->id);
         $agent->name             = isset($request->name)?$request->name:$saved->name;
@@ -178,8 +190,6 @@ class ActivityController extends BaseController
             ], 404);
         }
     }
-
-
 
     public function agentLog(Request $request)
     {
@@ -204,16 +214,14 @@ class ActivityController extends BaseController
             'app_version'       => $request->app_version,
             'current_speed'     => $request->current_speed,
             'on_route'          => $request->on_route,
-            'device_type'       => $request->device_type
+            'device_type'       => $request->device_type,
+            'heading_angle'     => $request->heading_angle ?? 0,
         ];
 
         if ($request->lat=="" || $request->lat==0 || $request->lat== '0.00000000') {
         } else {
             AgentLog::create($data);
         }
-
-           
-        
 
         $id    = Auth::user()->id;
         $all   = $request->all;
@@ -223,6 +231,11 @@ class ActivityController extends BaseController
         } else {
             $orders = Order::where('driver_id', $id)->whereBetween('order_time',[$utc_start, $utc_end])->where('status', 'assigned')->orderBy('order_time')->pluck('id')->toArray();
         }
+
+        $agent =  Agent::with('team')->where('id',$id)->first();
+        $agent->device_type = $request->device_type??null;
+        $agent->device_token = $request->device_token??null;;
+        $agent->save();
        
 
         if (count($orders) > 0) {
@@ -238,10 +251,10 @@ class ActivityController extends BaseController
             }
         }
         
-        $agents     = Agent::where('id', $id)->with('team')->first();
+        $agents    = $agent; //Agent::where('id', $id)->with('team')->first();
         $taskProof = TaskProof::all();
 
-        $prefer    = ClientPreference::select('theme', 'distance_unit', 'currency_id', 'language_id', 'agent_name', 'date_format', 'time_format', 'map_type', 'map_key_1')->first();
+        $prefer    = ClientPreference::with('currency')->select('theme', 'distance_unit', 'currency_id', 'language_id', 'agent_name', 'date_format', 'time_format', 'map_type', 'map_key_1', 'customer_support', 'customer_support_key', 'customer_support_application_id', 'is_edit_order_driver')->first();
         $allcation = AllocationRule::first('request_expiry');
 
         $prefer['alert_dismiss_time'] = (int)$allcation->request_expiry;
@@ -283,7 +296,7 @@ class ActivityController extends BaseController
 
             $totalCashCollected = 0;
             foreach($tasks as $task){
-                if(!empty($task->order->cash_to_be_collected)){
+                if(!empty($task->order->cash_to_be_collected) && ($task->task_type_id == 2)){
                     $totalCashCollected += $task->order->cash_to_be_collected;
                 }
             }

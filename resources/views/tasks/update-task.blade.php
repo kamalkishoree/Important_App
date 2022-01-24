@@ -163,7 +163,7 @@ use Carbon\Carbon;
                                         </div>
                                         <div class="col-md-1 ">
 
-                                            <span class="span1 onedelete" id="spancheck"><img style="filter: grayscale(.5);"
+                                            <span class="span1 onedeletex" id="spancheckd" data-taskid="{{ $item->id }}"><img style="filter: grayscale(.5);"
                                                     src="{{ asset('assets/images/ic_delete.png') }}" alt=""></span>
 
 
@@ -224,13 +224,13 @@ use Carbon\Carbon;
                                                         id="add{{ $newcount }}-address_phone_number" class="form-control address address_phone_number"
                                                         placeholder="{{__('Phone Number')}}" />
                                                     </div>
-                                                    @if($preference->route_flat_input == 1)
+                                                    {{-- @if($preference->route_flat_input == 1) --}}
                                                     <div class="col-md-6">
                                                         <input type="text" name="flat_no[]"
                                                         id="add{{ $newcount }}-flat_no" value="{{ $item->flat_no }}" class="form-control address flat_no"
-                                                        placeholder="{{__('Flat No')}}" />
+                                                        placeholder="{{__('House/Apartment/Flat no')}}" />
                                                     </div>
-                                                    @endif
+                                                    {{-- @endif --}}
                                                     <div class="col-md-6">
                                                         <input type="text" name="post_code[]"
                                                         id="add{{ $newcount }}-postcode" class="form-control address postcode"
@@ -542,6 +542,7 @@ use Carbon\Carbon;
                                 <div id="googleMap" style="height: 500px; min-width: 500px; width:100%"></div>
                                 <input type="hidden" name="lat_input" id="lat_map" value="0" />
                                 <input type="hidden" name="lng_input" id="lng_map" value="0" />
+                                <input type="hidden" name="address_input" id="addredd_map" value="">
                                 <input type="hidden" name="for" id="map_for" value="" />
                             </div>
                         </form>

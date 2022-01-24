@@ -2,6 +2,7 @@
     $(document).ready(function() {
         $(document).on("click", ".nav-link", function() {
             let rel = $(this).data('rel');
+            // console.log(rel);
             let status = $(this).data('status');
             initDataTable(rel, status);
             setTimeout(function() {
@@ -14,7 +15,152 @@
             $('#active-vendor').trigger('click');
         }, 200);
 
+        $(document).on("change", "#geo_filter", function() {
+            let rel = $('.nav-link.active').data('rel');
+            let status = $('.nav-link.active').data('status');
+            initDataTable(rel, status);
+            setTimeout(function() {
+                $('#' + rel).DataTable().ajax.reload();
+            }, 500);
+        });
+
+        $(document).on("change", "#tag_filter", function() {
+            let rel = $('.nav-link.active').data('rel');
+            let status = $('.nav-link.active').data('status');
+            initDataTable(rel, status);
+            setTimeout(function() {
+                $('#' + rel).DataTable().ajax.reload();
+            }, 500);
+        });
+
+        function padDigits(number, digits) {
+            return Array(Math.max(digits - String(number).length + 1, 0)).join(0) + number;
+        }
+
         function initDataTable(table, status) {
+            // console.log(table);
+            var geo_filter = $("#geo_filter").val();
+            var tag_filter = $("#tag_filter").val();
+            var columnsDynamic =   [{
+                    data: 'id',
+                    name: 'id',
+                    orderable: true,
+                    searchable: true,
+                    "mRender": function(data, type, full) {
+                        return padDigits(full.id, 4);
+                    }
+                },
+                // {
+                //     data: 'uid',
+                //     name: 'uid',
+                //     orderable: true,
+                //     searchable: true
+                // },
+                {
+                    data: 'profile_picture',
+                    name: 'profile_picture',
+                    orderable: true,
+                    searchable: false,
+                    "mRender": function(data, type, full) {
+                        var is_available_icon = (full.is_available == 1) ? '<i class="fa fa-circle agent-status" aria-hidden="true" style="color:green"></i>' : '<i class="fa fa-circle agent-status" aria-hidden="true" style="color:red"></i>'
+                        return is_available_icon + '<img alt="' + full.id + '" src="' + full.profile_picture + '" width="40">';
+                    }
+                },
+                {
+                    data: 'name',
+                    name: 'name',
+                    orderable: true,
+                    searchable: false,
+                    "mRender": function(data, type, full) {
+                        return full.name;
+                    }
+                },
+                {
+                    data: 'phone_number',
+                    name: 'phone_number',
+                    orderable: true,
+                    searchable: false
+                },
+                {
+                    data: 'type',
+                    name: 'type',
+                    orderable: true,
+                    searchable: false
+                },
+                {
+                    data: 'team',
+                    name: 'team',
+                    orderable: true,
+                    searchable: false
+                },
+                // {
+                //     data: 'vehicle_type_id',
+                //     name: 'vehicle_type_id',
+                //     orderable: true,
+                //     searchable: false,
+                //     "mRender": function(data, type, full) {
+                //         return '<img alt="" style="width: 80px;" src="' + full.vehicle_type_id + '">';
+                //     }
+                // },
+                {
+                    data: 'cash_to_be_collected',
+                    name: 'cash_to_be_collected',
+                    orderable: true,
+                    searchable: false
+                },
+                {
+                    data: 'driver_cost',
+                    name: 'driver_cost',
+                    orderable: true,
+                    searchable: false
+                },
+                {
+                    data: 'cr',
+                    name: 'cr',
+                    orderable: true,
+                    searchable: false
+                },
+                {
+                    data: 'dr',
+                    name: 'dr',
+                    orderable: true,
+                    searchable: false
+                },
+                {
+                    data: 'pay_to_driver',
+                    name: 'pay_to_driver',
+                    orderable: true,
+                    searchable: false
+                },
+                {
+                    data: 'created_at',
+                    name: 'created_at',
+                    orderable: true,
+                    searchable: true
+                },
+                {
+                    data: 'updated_at',
+                    name: 'updated_at',
+                    orderable: true,
+                    searchable: true
+                },
+                // {
+                //     data: 'is_approved',
+                //     name: 'is_approved',
+                //     orderable: false,
+                //     searchable: false,
+                //     "mRender": function(data, type, full) {
+                //         var check = (full.is_approved == 1) ? 'checked' : '';
+                //         return '<div class="custom-control custom-switch"><input type="checkbox" class="custom-control-input agent_approval_switch" ' + check + ' id="customSwitch_' + full.id + '" data-id="' + full.id + '"><label class="custom-control-label" for="customSwitch_' + full.id + '"></label></div>';
+                //     }
+                // },
+                {
+                    data: 'action',
+                    name: 'action',
+                    orderable: false,
+                    searchable: false
+                },
+            ];
             if (status == 1) {
                 var domRef = '<"toolbar">Bfrtip';
                 var btnObj = [{
@@ -28,7 +174,7 @@
                 var domRef = '<"toolbar">Brtip';
                 var btnObj = [];
             }
-            $('#' + table).DataTable({
+            var table_dy = $('#' + table).DataTable({
                 "dom": domRef,
                 "scrollX": true,
                 "destroy": true,
@@ -55,109 +201,17 @@
                     data: function(d) {
                         d.search = $('input[type="search"]').val();
                         d.imgproxyurl = '{{$imgproxyurl}}';
+                        d.geo_filter = geo_filter;
+                        d.tag_filter = tag_filter;
                         d.status = status;
                     }
                 },
-                columns: [{
-                        data: 'uid',
-                        name: 'uid',
-                        orderable: true,
-                        searchable: false
-                    },
-                    {
-                        data: 'profile_picture',
-                        name: 'profile_picture',
-                        orderable: true,
-                        searchable: false,
-                        "mRender": function(data, type, full) {
-                            return '<img alt="' + full.id + '" src="' + full.profile_picture + '" width="40">';
-                        }
-                    },
-                    {
-                        data: 'name',
-                        name: 'name',
-                        orderable: true,
-                        searchable: false,
-                        "mRender": function(data, type, full) {
-                            var is_available_icon = (full.is_available == 1) ? '<i class="fa fa-circle" aria-hidden="true" style="color:green"></i>' : '<i class="fa fa-circle" aria-hidden="true" style="color:red"></i>'
-                            return is_available_icon + full.name;
-                        }
-                    },
-                    {
-                        data: 'phone_number',
-                        name: 'phone_number',
-                        orderable: true,
-                        searchable: false
-                    },
-                    {
-                        data: 'type',
-                        name: 'type',
-                        orderable: true,
-                        searchable: false
-                    },
-                    {
-                        data: 'team',
-                        name: 'team',
-                        orderable: true,
-                        searchable: false
-                    },
-                    {
-                        data: 'vehicle_type_id',
-                        name: 'vehicle_type_id',
-                        orderable: true,
-                        searchable: false,
-                        "mRender": function(data, type, full) {
-                            return '<img alt="" style="width: 80px;" src="' + full.vehicle_type_id + '">';
-                        }
-                    },
-                    {
-                        data: 'cash_to_be_collected',
-                        name: 'cash_to_be_collected',
-                        orderable: true,
-                        searchable: false
-                    },
-                    {
-                        data: 'driver_cost',
-                        name: 'driver_cost',
-                        orderable: true,
-                        searchable: false
-                    },
-                    {
-                        data: 'cr',
-                        name: 'cr',
-                        orderable: true,
-                        searchable: false
-                    },
-                    {
-                        data: 'dr',
-                        name: 'dr',
-                        orderable: true,
-                        searchable: false
-                    },
-                    {
-                        data: 'pay_to_driver',
-                        name: 'pay_to_driver',
-                        orderable: true,
-                        searchable: false
-                    },
-                    // {
-                    //     data: 'is_approved',
-                    //     name: 'is_approved',
-                    //     orderable: false,
-                    //     searchable: false,
-                    //     "mRender": function(data, type, full) {
-                    //         var check = (full.is_approved == 1) ? 'checked' : '';
-                    //         return '<div class="custom-control custom-switch"><input type="checkbox" class="custom-control-input agent_approval_switch" ' + check + ' id="customSwitch_' + full.id + '" data-id="' + full.id + '"><label class="custom-control-label" for="customSwitch_' + full.id + '"></label></div>';
-                    //     }
-                    // },
-                    {
-                        data: 'action',
-                        name: 'action',
-                        orderable: false,
-                        searchable: false
-                    },
-                ]
+                columns:columnsDynamic
             });
+            if(status ==2 || status ==0){
+                table_dy.column(-2).visible(false);
+            }
+            
 
         }
 
@@ -180,7 +234,7 @@
         });
 
         function phoneInput() {
-            console.log('phone working');
+            // console.log('phone working');
             var input = document.querySelector(".xyz");
 
             var mobile_number_input = document.querySelector(".xyz");
@@ -274,7 +328,7 @@
                     });
                     makeTag();
                     phoneInput();
-                    //$('.dropify').dropify();
+                    $('.dropify').dropify();
                     var imgs = $('#profilePic').attr('showImg');
 
                     $('#profilePic').attr("data-default-file", imgs);
@@ -282,7 +336,7 @@
                     $('').dropify();
                 },
                 error: function(data) {
-                    console.log('data2');
+                    // console.log('data2');
                 }
             });
         });
@@ -318,7 +372,7 @@
                     // $('').dropify();
                 },
                 error: function(data) {
-                    console.log('data2');
+                    // console.log('data2');
                 }
             });
         });
@@ -337,17 +391,18 @@
         });
 
         /* edit Team using ajax*/
-        $(document).on("submit", "#edit-agent-modal #UpdateAgent", function(e) {
+        // $(document).on("submit", "#edit-agent-modal #UpdateAgent", function(e) {
+        //     e.preventDefault();
+        // });
+
+
+        $(document).on("submit", '#UpdateAgent', function(e) {
             e.preventDefault();
-        });
-
-
-        $(document).on('click', '.submitEditForm', function() {
             var form = document.getElementById('UpdateAgent');
             var formData = new FormData(form);
             var urls = document.getElementById('agent_id').getAttribute('url');
             saveTeam(urls, formData, inp = 'Edit', modal = 'edit-agent-modal');
-            console.log(urls);
+            // console.log(urls);
         });
 
         function saveTeam(urls, formData, inp = '', modal = '') {
@@ -420,7 +475,7 @@
                     $('').dropify();
                 },
                 error: function(data) {
-                    console.log('data2');
+                    // console.log('data2');
                 }
             });
         });

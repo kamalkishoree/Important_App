@@ -52,10 +52,17 @@
                                 <div class="addapp"> 
                                     {!! Form::label('title', __('Address'),['class' => 'control-label']) !!} 
                                     <div class="row address addressrow1" id="add1">
-
-                                        <div class="col-lg-2 col-md-3 mb-lg-0 mb-3">
+                                        <div class="col-lg-4 col-md-3 mb-lg-0 mb-3">
+                                            <div class="form-group">
+                                                <input type="text" id="add1-flat" name="flat_no[]" class="form-control" placeholder="{{__('House / Apartment/ Flat number')}}"">
+                                                <span class="invalid-feedback" role="alert">
+                                                    <strong></strong>
+                                                </span>
+                                            </div>    
+                                        </div> 
+                                        <div class="col-lg-4 col-md-3 mb-lg-0 mb-3">
                                             <div class="form-group" id="short_nameInput"> 
-                                                <input type="text" name="short_name[]" class="form-control" placeholder={{__("Short Name")}}>
+                                                <input type="text" name="short_name[]" class="form-control" placeholder="{{__('Short Name')}}">
                                                 <span class="invalid-feedback" role="alert">
                                                     <strong></strong>
                                                 </span>
@@ -63,7 +70,7 @@
                                         </div>
                                         <div class="col-lg-4 col-md-3 mb-lg-0 mb-3">
                                             <div class="form-group input-group" id="addressInput">
-                                                <input type="text" id="add1-input" name="address[]" class="form-control" placeholder={{__("Address")}}>
+                                                <input type="text" id="add1-input" name="address[]" class="form-control" placeholder="{{__('Address')}}">
                                                 <div class="input-group-append">
                                                     <button class="btn btn-xs btn-dark waves-effect waves-light showMap" type="button" num="add1"> <i class="mdi mdi-map-marker-radius"></i></button>
                                                 </div>
@@ -74,7 +81,7 @@
                                                 </span>
                                             </div>
                                         </div>
-                                        <div class="col-lg-2 col-md-3 mb-lg-0 mb-3">
+                                        <div class="col-lg-4 col-md-3 mb-lg-0 mb-3">
                                             <div class="form-group">
                                                 <input type="text" id="add1-email" name="address_email[]" class="form-control" placeholder={{__("Email")}}>
                                                 <span class="invalid-feedback" role="alert">
@@ -82,7 +89,8 @@
                                                 </span>
                                             </div>    
                                         </div> 
-                                        <div class="col-lg-2 col-md-3 mb-lg-0 mb-3">
+                                         
+                                        <div class="col-lg-4 col-md-3 mb-lg-0 mb-3">
                                             <div class="form-group">
                                                 <input type="text" id="add1-phone_number" name="address_phone_number[]" class="form-control" placeholder={{__("Phone Number")}}>
                                                 <span class="invalid-feedback" role="alert">
@@ -90,9 +98,9 @@
                                                 </span>
                                             </div>    
                                         </div>
-                                        <div class="col-lg-2 col-md-3 mb-lg-0 mb-3">
+                                        <div class="col-lg-4 col-md-3 mb-lg-0 mb-3">
                                             <div class="form-group d-flex align-items-center" id="post_codeInput">
-                                                <input type="text" name="post_code[]" class="form-control" placeholder={{__("Post Code")}} id="add1-postcode">
+                                                <input type="text" name="post_code[]" class="form-control" placeholder="{{__('Post Code')}}" id="add1-postcode">
                                                 <span class="invalid-feedback" role="alert">
                                                     <strong></strong>
                                                 </span>

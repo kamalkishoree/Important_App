@@ -25,6 +25,8 @@ class createTaskProof extends Seeder
                 'note_requried'       => 0,
                 'barcode'             => 0,
                 'barcode_requried'    => 0,
+                'face'             => 0,
+                'face_requried'    => 0,
                 'type'                => 1
             ),
             array(
@@ -37,6 +39,8 @@ class createTaskProof extends Seeder
                 'note_requried'       => 0,
                 'barcode'             => 0,
                 'barcode_requried'    => 0,
+                'face'             => 0,
+                'face_requried'    => 0,
                 'type'                => 2
             ),
             array(
@@ -49,6 +53,8 @@ class createTaskProof extends Seeder
                 'note_requried'       => 0,
                 'barcode'             => 0,
                 'barcode_requried'    => 0,
+                'face'             => 0,
+                'face_requried'    => 0,
                 'type'                => 3
             )
 

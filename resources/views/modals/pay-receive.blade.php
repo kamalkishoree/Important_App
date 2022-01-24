@@ -32,7 +32,14 @@
                                 <select name="driver_id" id="selectAgent" class="selectpicker" required>
                                     <option hidden="true"></option>
                                     @foreach ($agents as $item)
-                                    <option value="{{$item->id}}">{{$item->name}}</option> 
+                                        @php
+                                            $id = $item->id;
+                                            $length = strlen($item->id);
+                                            if($length < 4){
+                                                $id = str_pad($id, 4, '0', STR_PAD_LEFT);
+                                            }
+                                        @endphp
+                                        <option value="{{$item->id}}">{{ $id . ' - ' . $item->name}}</option> 
                                     @endforeach
                                 
                                 </select>
@@ -57,14 +64,17 @@
                             <div class="card-box dispaly-cards">
                             {!! Form::label('title', 'Cash Collected',['class' => 'control-label']) !!} <br>
                             <span id="cash_collected"></span>
-                        </div>
+                            </div>
                         </div>
                         <div class="col-md-4">
                             <div class="card-box dispaly-cards">
                             {!! Form::label('title', 'Final Balance',['class' => 'control-label']) !!} <br>
                             <span id="final_balance"></span>
+                            </div>
                         </div>
-                    </div>
+                        <div class="col-md-12">
+                            <span class="show_all_error invalid-feedback"></span>
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer border-0">

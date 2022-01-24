@@ -1,7 +1,7 @@
 <div class="row">
     <div class="col-md-12">
-        
-        <div class="card-box p-0 m-0"> 
+
+        <div class="card-box p-0 m-0">
             @csrf
             <div class="row d-flex align-items-center" id="dateredio">
 
@@ -87,16 +87,16 @@
                     </div>
                </div>
             </div>
-            
+
             <input type="hidden" id="check-pickup-barcode" value="{{ (!empty($task_proofs[0]->barcode_requried) ? $task_proofs[0]->barcode_requried : 0)}}">
             <input type="hidden" id="check-drop-barcode" value="{{ (!empty($task_proofs[1]->barcode_requried) ? $task_proofs[1]->barcode_requried : 0)}}">
             <input type="hidden" id="check-appointment-barcode" value="{{ (!empty($task_proofs[2]->barcode_requried) ? $task_proofs[2]->barcode_requried : 0)}}">
-            
+
             <div class="taskrepet newAddHead" id="newadd">
                 <div class="copyin1 cloningDiv check-validation" id="copyin1">
                   <div class="requried allset">
                     <div class="row firstclone1">
-                        
+
                         <div class="col-md-6">
                             <div class="form-group mb-3">
                                 <select class="form-control selecttype mt-1 taskselect" id="task_type"  name="task_type_id[]" required>
@@ -131,13 +131,13 @@
                             {{-- <h4 class="header-title mb-2">Saved Addresses</h4> --}}
                         </div>
                     </div>
-                    
+
                     <span class="span1 addspan">{{__("Please select a address or create new")}}</span>
 
                     <div class="row cust_add_div" id="addHeader1">
                         <div class="col-lg-8">
                             <div class="form-group alladdress" id="typeInput">
-                                
+
                                 <div class="row">
                                     <div class="col-md-6">
                                         {!! Form::text('short_name[]', null, ['class' => 'form-control address', 'placeholder' => __('Short Name')]) !!}
@@ -156,11 +156,11 @@
                                     <div class="col-md-6">
                                         {!! Form::text('address_phone_number[]', null, ['class' => 'form-control address address_phone_number','placeholder' => __('Phone Number'),'id'=>'addHeader1-address_phone_number']) !!}
                                     </div>
-                                    @if($preference->route_flat_input == 1)
+                                    {{-- @if($preference->route_flat_input == 1) --}}
                                     <div class="col-md-6">
-                                        {!! Form::text('flat_no[]', null, ['class' => 'form-control address flat_no','placeholder' => __('Flat No'),'id'=>'addHeader1-flat_no']) !!}
+                                        {!! Form::text('flat_no[]', null, ['class' => 'form-control address flat_no','placeholder' => __('House/Apartment/Flat no'),'id'=>'addHeader1-flat_no']) !!}
                                     </div>
-                                    @endif
+                                    {{-- @endif --}}
                                     <div class="col-md-6">
                                         <input type="hidden" name="latitude[]" id="addHeader1-latitude" value="0" class="cust_latitude" />
                                         <input type="hidden" name="longitude[]" id="addHeader1-longitude" value="0" class="cust_longitude" />
@@ -168,9 +168,9 @@
                                     </div>
                                     <div class="col-md-6">
                                         <div class="row no-gutters">
-                                        
+
                                             <div class="col-6 pr-1">
-                                                {!! Form::text('barcode[]', null, ['class' => 'form-control barcode','placeholder' => __('Task Barcode')]) !!}  
+                                                {!! Form::text('barcode[]', null, ['class' => 'form-control barcode','placeholder' => __('Task Barcode')]) !!}
                                             </div>
                                             <div class="col-6 pl-1">
                                                 {!! Form::text('quantity[]', null, ['class' => 'form-control quantity onlynumber','placeholder' => __('Quantity')]) !!}
@@ -178,7 +178,7 @@
                                             <span class="span1 pickup-barcode-error">{{__("Task Barcode is required for pickup")}}</span>
                                             <span class="span1 drop-barcode-error">{{__("Task Barcode is required for drop")}}</span>
                                             <span class="span1 appointment-barcode-error">{{ __("Task Barcode is required for appointment")}}</span>
-                                         </div>   
+                                         </div>
                                     </div>
                                     @if($preference->route_alcoholic_input == 1)
                                     <div class="col-md-6">
@@ -197,7 +197,7 @@
                                         {!! Form::time('due_before[]', null, ['class' => 'form-control due_before','placeholder' => 'Due Before']) !!}
                                     </div> --}}
                                 </div>
-                                
+
                                 <span class="invalid-feedback" role="alert">
                                     <strong></strong>
                                 </span>
@@ -208,12 +208,12 @@
                                 <div class="oldhide text-center">
                                     <img class="showsimage" src="{{url('assets/images/ic_location_placeholder.png')}}" alt="">
                                 </div>
-                                
+
                             </div>
-                            
+
                         </div>
                     </div>
-                    
+
                   </div>
                 </div>
                 <div id="addSubFields" style="width:100%;height:400px; display: none;">&nbsp;</div>
@@ -240,7 +240,7 @@
                             <span class="invalid-feedback" role="alert">
                                 <strong></strong>
                             </span>
-                       
+
                         <span class="invalid-feedback" role="alert">
                             <strong></strong>
                         </span>
@@ -248,7 +248,7 @@
 
                 </div>
                 <div class="col-md-6 mb-3">
-                   
+
                     <div class="form-group text-center" id="colorInput">
                         <label class="btn btn-info width-lg waves-effect waves-light newchnageimage upload-img-btn">
                             <span><i class="fas fa-image mr-2"></i>{{__("Upload Image")}}</span>
@@ -299,7 +299,7 @@
                 <div class="col-md-4">
                     <input class="form-control" type="text" placeholder={{__("Cash to be collected")}} name="cash_to_be_collected">
                 </div>
-              
+
             </div>
             <span class="span1 tagspan">{{__("Please select atlest one tag for driver and agent")}}</span>
             <div class="tags {{ $allcation->manual_allocation == 0 ? "hidealloction":""}}">
@@ -336,7 +336,7 @@
                 <div class="col-md-12">
                     <div class="form-group mb-3">
                         <label>{{__("Drivers")}}</label>
-                        <select class="form-control" name="agent" id="driverselect">
+                        <select class="form-control selectpicker" name="agent" id="driverselect">
                             @foreach ($agents as $item)
                                 @php
                                     $checkAgentActive = ($item->is_available == 1) ? ' ('.__('Online').')' : ' ('.__('Offline').')';

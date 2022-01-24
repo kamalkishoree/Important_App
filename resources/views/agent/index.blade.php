@@ -69,9 +69,19 @@
     .dataTables_scrollHead thead th {
         cursor: pointer;
     }
+    
+    .agent-listing tbody td{
+        position: relative;
+    }
 
     .nagtive-margin {
         margin-top: -57px;
+    }
+    .bootstrap-select .dropdown-menu > .inner{
+        overflow-y: scroll!important;
+    }
+    .bootstrap-select .dropdown-menu.inner{
+        overflow-y: hidden!important;
     }
 </style>
 @endsection
@@ -170,7 +180,27 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                             <div class="material-border"></div>
                         </li>
                     </ul>
-                    <div class="tab-content nav-material pt-0   " id="top-tabContent">
+                    <div class="row mt-3">
+                        <div class="col-sm-2">
+                            <label for="geo_filter">{{__('Filter by location')}}</label>
+                            <select name="geo_filter" id="geo_filter" class="form-control">
+                                <option value="">{{__('All')}}</option>
+                                @foreach($geos as $geo)
+                                    <option value="{{$geo->id}}">{{$geo->name}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-sm-2">
+                            <label for="tag_filter">{{__('Filter by tags')}}</label>
+                            <select name="tag_filter" id="tag_filter" class="form-control">
+                                <option value="">{{__('All')}}</option>
+                                @foreach($tags as $tag)
+                                    <option value="{{$tag->id}}">{{$tag->name}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    <div class="tab-content nav-material pt-0" id="top-tabContent">
                         <div class="tab-pane fade past-order show active" id="active_vendor" role="tabpanel" aria-labelledby="active-vendor">
                             <div class="row mb-2 mt-3">
                                 <div class="col-sm-12">
@@ -186,25 +216,27 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                     <button type="button" class="btn btn-blue waves-effect waves-light openModal" data-toggle="modal" data-target="" data-backdrop="static" data-keyboard="false"><i class="mdi mdi-plus-circle mr-1"></i> {{__("Add")}} {{ Session::get('agent_name') }}</button>
                                     <button type="button" class="btn btn-success waves-effect waves-light saveaccounting" data-toggle="modal" data-target="#pay-receive-modal" data-backdrop="static" data-keyboard="false">{{__("Pay")}} / {{__("Receive")}}</button>
                                 </div>
-
                             </div>
 
                             <div class="table-responsive nagtive-margin">
                                 <table class="table table-striped dt-responsive nowrap w-100 all agent-listing" id="agent-listing">
                                     <thead>
                                         <tr>
-                                            <th class="sort-icon">{{__("UID")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
+                                            <th class="sort-icon">{{__("Agent ID")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
+                                            {{-- <th class="sort-icon">{{__("UID")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th> --}}
                                             <th class="sort-icon">{{__("Profile")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                             <th class="sort-icon">{{__("Name")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                             <th class="sort-icon">{{__("Phone")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                             <th class="sort-icon">{{__("Type")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                             <th class="sort-icon">{{__("Team")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
-                                            <th class="sort-icon">{{__("Vehicle")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
+                                            {{-- <th class="sort-icon">{{__("Vehicle")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th> --}}
                                             <th class="sort-icon">{{__("Cash Collected")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                             <th class="sort-icon">{{__("Order Earning")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                             <th class="sort-icon">{{__("Total Paid to Agent")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                             <th class="sort-icon">{{__("Total Receive from Agent")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                             <th class="sort-icon">{{__("Final Balance")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
+                                            <th class="sort-icon">{{__("Requested At")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
+                                            <th class="sort-icon">{{__("Approved At")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                             <th>{{__("Action")}}</th>
                                         </tr>
                                     </thead>
@@ -221,18 +253,21 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                 <table class="table table-striped dt-responsive nowrap w-100 all agent-listing" id="awaiting_approval_agent_datatable">
                                     <thead>
                                         <tr>
-                                            <th class="sort-icon">{{__("UID")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
+                                            <th class="sort-icon">{{__("Agent ID")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
+                                            {{-- <th class="sort-icon">{{__("UID")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th> --}}
                                             <th class="sort-icon">{{__("Profile")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                             <th class="sort-icon">{{__("Name")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                             <th class="sort-icon">{{__("Phone")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                             <th class="sort-icon">{{__("Type")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                             <th class="sort-icon">{{__("Team")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
-                                            <th class="sort-icon">{{__("Vehicle")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
+                                            {{-- <th class="sort-icon">{{__("Vehicle")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th> --}}
                                             <th class="sort-icon">{{__("Cash Collected")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                             <th class="sort-icon">{{__("Order Earning")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                             <th class="sort-icon">{{__("Total Paid to Agent")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                             <th class="sort-icon">{{__("Total Receive from Agent")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                             <th class="sort-icon">{{__("Final Balance")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
+                                            <th class="sort-icon">{{__("Reuested At")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
+                                            <th class="sort-icon">{{__("Approved At")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                             <th>{{__("Action")}}</th>
                                         </tr>
                                     </thead>
@@ -249,18 +284,21 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                 <table class="table table-striped dt-responsive nowrap w-100 all agent-listing" id="blocked_agent_datatable">
                                     <thead>
                                         <tr>
-                                            <th class="sort-icon">{{__("UID")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
+                                            <th class="sort-icon">{{__("Agent ID")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
+                                            {{-- <th class="sort-icon">{{__("UID")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th> --}}
                                             <th class="sort-icon">{{__("Profile")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                             <th class="sort-icon">{{__("Name")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                             <th class="sort-icon">{{__("Phone")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                             <th class="sort-icon">{{__("Type")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                             <th class="sort-icon">{{__("Team")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
-                                            <th class="sort-icon">{{__("Vehicle")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
+                                            {{-- <th class="sort-icon">{{__("Vehicle")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th> --}}
                                             <th class="sort-icon">{{__("Cash Collected")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                             <th class="sort-icon">{{__("Order Earning")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                             <th class="sort-icon">{{__("Total Paid to Agent")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                             <th class="sort-icon">{{__("Total Receive from Agent")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                             <th class="sort-icon">{{__("Final Balance")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
+                                            <th class="sort-icon">{{__("Requested At")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
+                                            <th class="sort-icon">{{__("Rejected At")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                             <th>{{__("Action")}}</th>
                                         </tr>
                                     </thead>
@@ -292,7 +330,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
 <script src="{{ asset('assets/libs/datatables/datatables.min.js') }}"></script>
 <script src="{{ asset('assets/js/jquery.tagsinput-revisited.js') }}"></script>
 <script src="{{ asset('telinput/js/intlTelInput.js') }}"></script>
-<link rel="stylesheet" href="{{ asset('assets/css/jquery.tagsinput-revisited.css') }}" />>
+<link rel="stylesheet" href="{{ asset('assets/css/jquery.tagsinput-revisited.css') }}" />
 
 
 <script>
@@ -305,14 +343,14 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
             url: "{{ url('/agent/paydetails') }}/" + valueSelected,
             data: '',
             success: function(data) {
-                console.log(data);
                 var order = round(data.order_cost, 2);
                 var driver_cost = round(data.driver_cost, 2);
                 var credit = round(data.credit, 2);
                 var debit = round(data.debit, 2);
                 var cash = round(data.cash_to_be_collected, 2);
                 var final = round(cash - driver_cost, 2);
-                var new_final = round((debit - credit) - (cash - driver_cost), 2);
+                var wallet_balance = round(data.wallet_balance, 2);
+                var new_final = round(wallet_balance + (debit - credit) - (cash - driver_cost), 2);
                 $("#order_earning").text(driver_cost);
                 $("#cash_collected").text(cash);
                 $("#final_balance").text(new_final);
@@ -341,16 +379,25 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
     }
 
     $("#submitpayreceive").submit(function(stay) {
-
         var formdata = $(this).serialize();
         $.ajax({
             type: 'POST',
             url: "{{ route('pay.receive') }}",
             data: formdata,
-            success: function(data) {
-                $("#pay-receive-modal .close").click();
-                location.reload();
+            success: function(response) {
+                if (response.status == 'Success') {
+                    $("#pay-receive-modal .close").click();
+                    location.reload();
+                } else {
+                    $("#pay-receive-modal .show_all_error.invalid-feedback").show();
+                    $("#pay-receive-modal .show_all_error.invalid-feedback").text(response.message);
+                }
             },
+            error: function(response){
+                let errors = response.responseJSON;
+                $("#pay-receive-modal .show_all_error.invalid-feedback").show();
+                $("#pay-receive-modal .show_all_error.invalid-feedback").text(errors.message);
+            }
         });
         stay.preventDefault();
     });

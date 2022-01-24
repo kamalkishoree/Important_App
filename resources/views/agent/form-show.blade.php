@@ -73,7 +73,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
         </div>
     </div>
 </div>
-<div class="row">
+{{-- <div class="row">
     <div class="col-md-12">
         <div class="form-group" id="vehicle_type_idInputEdit">
             <p class="text-muted mt-3 mb-2">{{__('TRANSPORT TYPE')}}</p>
@@ -105,7 +105,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
             </span>
         </div>
     </div>
-</div>
+</div> --}}
 <div class="row">
     <div class="col-md-12">
         <div class="form-group" id="nameInputEdit">
@@ -118,7 +118,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
        
     </div>
 </div>
-<div class="row mt-3">
+{{-- <div class="row mt-3">
     <div class="col-md-6">
         <div class="form-group" id="make_modelInputEdit">
             <input type="hidden" id="agent_id" val_id="{{ $agent->id }}" url="{{route('agent.update', $agent->id)}}">
@@ -142,7 +142,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
 <div class="row">
     <div class="col-md-6">
         <div class="form-group" id="plate_numberInputEdit">
-            <label for="plate_number" class="control-label">{{__('LICENCE PLACE')}}</label>
+            <label for="plate_number" class="control-label">{{__('LICENCE PLATE')}}</label>
             <input type="text" class="form-control" id="plate_number" name="plate_number" placeholder="508.KLV" value="{{ old('name', $agent->plate_number ?? '') }}" readonly>
             <span class="invalid-feedback" role="alert">
                 <strong></strong>
@@ -158,7 +158,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
             </span>
         </div>
     </div>
-</div>
+</div> --}}
 <div class="row">
     <label for="" class="control-label"></label>
 
@@ -166,7 +166,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
     
     <div class="col-md-6">
 
-        @if(strtolower($agent_doc->file_type) == 'text')
+        @if(strtolower($agent_doc->file_type) == 'text'  || strtolower($agent_doc->file_type) == 'date')
         <div class="form-group">
     
             <label for="" class="control-label">{{$agent_doc->label_name}}</label>

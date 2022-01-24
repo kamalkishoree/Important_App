@@ -1,4 +1,4 @@
-<script>    
+<script>
 
     $(document).ready(function() {
         var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
@@ -8,10 +8,10 @@
         }else{
             $('#routes-listing-status').val('unassigned');
         }
-        
+
         initializeRouteListing();
         function initializeRouteListing(){
-            
+
             $('.agents-datatable').DataTable({
                 "dom": '<"toolbar">Bfrtip',
                 "destroy": true,
@@ -34,7 +34,7 @@
                 drawCallback: function () {
                     $(".dataTables_paginate > .pagination").addClass("pagination-rounded");
                 },
-                buttons: [{  
+                buttons: [{
                     className:'btn btn-success waves-effect waves-light',
                     text: '<span class="btn-label"><i class="mdi mdi-export-variant"></i></span>Export CSV',
                     action: function ( e, dt, node, config ) {
@@ -44,16 +44,29 @@
                 ajax: {
                     url: "{{url('task/filter')}}",
                     // "dataSrc": "",
+                    headers: {
+                        'X-CSRF-Token': '{{ csrf_token() }}',
+                    },
                     data: function (d) {
                         d.search = $('input[type="search"]').val();
                         d.routesListingType = $('#routes-listing-status').val();
                         d.imgproxyurl = '{{$imgproxyurl}}';
                     }
                 },
+               // order: dataTableColumnSort(),
                 columns: dataTableColumn(),
             });
         }
-        
+
+        function dataTableColumnSort(){
+            var routesListing = $('#routes-listing-status').val();
+            if(routesListing == 'unassigned'){
+                return [[ 10, "desc" ]];
+            }else{
+                return [[ 10, "desc" ]];
+            }
+        }
+
         function dataTableColumn(){
             var routesListing = $('#routes-listing-status').val();
             if(routesListing == 'unassigned'){
@@ -61,6 +74,8 @@
                     {data: 'id', name: 'id', orderable: false, searchable: false, "mRender": function ( data, type, full ) {
                         return '<input type="checkbox" class="single_driver_check" name="driver_id[]" id="single_driver" value="'+full.id+'">';
                     }},
+                    // {data: 'order_number', name: 'order_number', orderable: true, searchable: false},
+                    {data: 'customer_id', name: 'customer_id', orderable: true, searchable: false},
                     {data: 'customer_name', name: 'customer_name', orderable: true, searchable: false},
                     {data: 'phone_number', name: 'phone_number', orderable: true, searchable: false},
                     {data: 'agent_name', name: 'agent_name', orderable: true, searchable: false},
@@ -82,11 +97,14 @@
                     }},
                     {data: 'order_cost', name: 'order_cost', orderable: false, searchable: false, "mRender": function ( data, type, full ) {
                         return '<button class="showaccounting btn btn-primary-outline action-icon setcolor" value="'+full.id+'">'+full.order_cost+'</button>';
-                    }},                
+                    }},
+                    {data: 'updated_at', name: 'updated_at', orderable: true, searchable: false},
                     {data: 'action', name: 'action', orderable: true, searchable: false}
                 ];
             }else{
                 return [
+                    // {data: 'order_number', name: 'order_number', orderable: true, searchable: false},
+                    {data: 'customer_id', name: 'customer_id', orderable: true, searchable: false},
                     {data: 'customer_name', name: 'customer_name', orderable: true, searchable: false},
                     {data: 'phone_number', name: 'phone_number', orderable: true, searchable: false},
                     {data: 'agent_name', name: 'agent_name', orderable: true, searchable: false},
@@ -97,7 +115,7 @@
                         $.each(shortName, function(index, elem) {
                             routes += '<div class="address_box"><span class="'+elem.pickupClass+'">'+elem.taskType+'</span> <span class="short_name">'+elem.shortName+'</span> <label data-toggle="tooltip" data-placement="bottom" title="'+elem.toolTipAddress+'">'+elem.address+'</label></div>';
                         });
-                        return routes; 
+                        return routes;
                     }},
                     {data: 'track_url', name: 'track_url', orderable: false, searchable: false, "mRender": function ( data, type, full ) {
                         var trackUrl = full.track_url;
@@ -108,17 +126,18 @@
                     }},
                     {data: 'order_cost', name: 'order_cost', orderable: false, searchable: false, "mRender": function ( data, type, full ) {
                         return '<button class="showaccounting btn btn-primary-outline action-icon setcolor" value="'+full.id+'">'+full.order_cost+'</button>';
-                    }},                
+                    }},
+                    {data: 'updated_at', name: 'updated_at', orderable: true, searchable: false},
                     {data: 'action', name: 'action', orderable: true, searchable: false}
                 ]
             }
         }
-        
+
 
     });
 
     function handleClick(myRadio) {
-        $('#getTask').submit();             
+        $('#getTask').submit();
     }
 
     //this is for task detail pop-up
@@ -136,7 +155,7 @@
                 status: status
             },
             success: function(data) {
-                console.log(data.task);                
+                console.log(data.task);
                 $('.repet').remove();
                 var taskname = '';
                 $.each(data.task, function(index, elem) {
@@ -284,22 +303,23 @@
                             '<label class="mb-3">Image</label>'+
                             '<div class="status-wrap-block">'+
                                 '<div class="image-wrap-sign">'+
-                                    '<a data-fancybox="images" href="https://royodelivery-assets.s3.us-west-2.amazonaws.com/'+ elem.proof_image +'"><img src="https://imgproxy.royodispatch.com/insecure/fit/400/400/sm/0/plain/https://royodelivery-assets.s3.us-west-2.amazonaws.com/'+ elem.proof_image +'" alt=""></a>'+
+                                    '<a data-fancybox="images" href="'+ elem.proof_image +'"><img src="https://imgproxy.royodispatch.com/insecure/fit/400/400/sm/0/plain/'+ elem.proof_image +'" alt=""></a>'+
                                 '</div>'+
                             '</div>'+
                         '</div>' ;
+                        //<a data-fancybox="images" href="https://royodelivery-assets.s3.us-west-2.amazonaws.com/'+ elem.proof_image +'"><img src="https://imgproxy.royodispatch.com/insecure/fit/400/400/sm/0/plain/https://royodelivery-assets.s3.us-west-2.amazonaws.com/'+ elem.proof_image +'" alt=""></a>
                     }
-                                                            
+
                     if (sign_proof == 1) {
                         html  = html+ '<div class="col-md-4">'+
                                       '<label class="mb-3">Signature</label>'+
                                        '<div class="status-wrap-block">'+
                                         '<div class="image-wrap-sign">'+
-                                      '<a data-fancybox="images" href="https://royodelivery-assets.s3.us-west-2.amazonaws.com/'+ elem.proof_signature +'"><img src="https://imgproxy.royodispatch.com/insecure/fit/200/200/sm/0/plain/https://royodelivery-assets.s3.us-west-2.amazonaws.com/'+ elem.proof_signature +'" alt=""></a>'+
+                                      '<a data-fancybox="images" href="'+ elem.proof_signature +'"><img src="https://imgproxy.royodispatch.com/insecure/fit/200/200/sm/0/plain/'+ elem.proof_signature +'" alt=""></a>'+
                                       '</div>'+
                                       '</div>'+
                                       '</div>';
- 
+
                      }
 
                     if (note == 1) {
@@ -320,7 +340,7 @@
                     }
 
 
-                                                            
+
                     html  = html+   '</div>'+
                                     '</div>'+
                                     '</div>'+
@@ -385,7 +405,7 @@
         });
 
         $('#submit_assign_agent').on('submit', function(e) {
-            e.preventDefault(); 
+            e.preventDefault();
             var name = $('#name').val();
             var agent_id = $('#agent_id').val();
             var order_id = [];
@@ -396,7 +416,7 @@
                 order_id[i] = $(this).val();
             });
             if (order_id.length == 0) {
-               
+
                 $("#add-assgin-agent-model .close").click();
                 return;
             }
@@ -411,22 +431,22 @@
         });
 
         $('#submit_assign_date').on('submit', function(e) {
-            e.preventDefault(); 
-            var name = $('#name').val();    
+            e.preventDefault();
+            var name = $('#name').val();
             var newdate = $('#datetime-datepicker').val();
             if(newdate!="")
-            {            
+            {
                 var order_id = [];
-            
+
                 $('.single_driver_check:checked').each(function(i){
                     order_id[i] = $(this).val();
                 });
                 if (order_id.length == 0) {
-                
+
                     $("#add-assgin-date-model .close").click();
                     return;
                 }
-                
+
                 $.ajax({
                     type: "POST",
                     url: '{{route("assign.date")}}',
@@ -442,7 +462,7 @@
             $('[data-toggle="tooltip"]').tooltip()
         });
 
-        $(document).on('click', '.mdi-delete', function() {            
+        $(document).on('click', '.mdi-delete', function() {
             var r = confirm("{{__('Are you sure?')}}");
             if (r == true) {
                var taskid = $(this).attr('taskid');

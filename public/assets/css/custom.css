@@ -9,7 +9,7 @@
     font-style: normal;
     font-display: block;
   }
-  
+
   [class^="icon-"], [class*=" icon-"] {
     /* use !important to prevent issues with browser extensions that change fonts */
     font-family: 'icomoon' !important;
@@ -19,12 +19,12 @@
     font-variant: normal;
     text-transform: none;
     line-height: 1;
-  
+
     /* Better Font Rendering =========== */
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
-  
+
   .icon-ic_currency:before {
     content: "\e900";
     color: #6658dd;
@@ -33,11 +33,16 @@
     content: "\e901";
     color: #6658dd;
   }
-  
+
 .icon-ic_lang:before {
     font-size: 20px;
     vertical-align: middle;
     margin-right: 5px;
+}
+
+.modal-opensag .modal {
+    overflow-x: hidden;
+    overflow-y: auto;
 }
 
 .navbar-custom{
@@ -58,14 +63,42 @@ body .navbar-custom .topnav-menu .nav-link {
     font-weight: 400;
 }
 
+
+.agent-listing tbody td {
+    padding: 15px 0 10px 15px;
+}
+
+.agent-listing tbody td:nth-child(2){
+    position: relative;
+}
+
+.agent-status {
+    position: absolute;
+    left: 20px;
+    top: 10px;
+    border: 3px solid #fff;
+    border-radius: 50%;
+    font-size: 10px;
+}
+
 .agents-datatable tbody td, .dataTables_scrollHead thead th {
-    padding: 10px 0 !important;
+    padding: 10px 10px 10px 15px !important;
+}
+
+.dataTables_wrapper .form-ul {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.dataTables_wrapper .inner-div:last-child {
+    margin-left: -5px;
 }
 
 .dataTables_wrapper .inner-div {
-    width: 28%;
     vertical-align: middle;
     float: none;
+    width: auto;
     display: inline-block;
 }
 
@@ -944,31 +977,31 @@ body[data-sidebar-size=condensed] .left-side-menu #sidebar-menu>ul>li:hover>a {
 .left-sidebar #accordion .card-header:hover, .left-sidebar #accordion .card-header:focus,.left-sidebar #accordion .card-header:visited {
     background: #FFF;
     }
-    
+
     .left-sidebar #accordion .card-header {
     transition: all 0.5s;
     margin-left: 0 !important;
     }
-    
+
     .left-sidebar {
     padding: 16px 10px 16px 0 !important;
     }
-    
-    
-    
+
+
+
     .dragable_tasks {
     border: 1px solid #c0c2c49c;
     margin: 0 0 5px;
     }
-    
+
     .assigned-block {
     background-color: #FFFFFF;
     }
-    
+
     #accordion .card-body .assigned-block h5 {
     font-weight: 900;
     }
-    
+
     body {
     background: #FFF;
     }
@@ -1092,7 +1125,7 @@ body.dark #sidebar-menu > ul > li > a:hover,body.dark #sidebar-menu > ul > li > 
     color: rgb(247 184 75 / 82%);
 }
 
-body.dark .action-icon .mdi-square-edit-outline{ 
+body.dark .action-icon .mdi-square-edit-outline{
     color: rgb(247 184 75 / 82%);
 }
 
@@ -1147,7 +1180,7 @@ body .tagsinput .tag {
         overflow-x: hidden;
         margin: 0 0 20px;
     }
-    
+
 }
 
 /*
@@ -1159,18 +1192,18 @@ body .tagsinput .tag {
      -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
      background-color: #F5F5F5;
  }
- 
+
  #scroll-bar::-webkit-scrollbar
  {
      width: 6px;
      background-color: #F5F5F5;
  }
- 
+
  #scroll-bar::-webkit-scrollbar-thumb
  {
      background-color: rgb(247 184 75 / 82%);
  }
- 
+
 
  body.dark  #form-tags-4_tagsinput {
     background: #36404a;
@@ -1417,7 +1450,7 @@ span.copied_txt {
 
 .sort-icon .fa-sort {
     position: absolute;
-    right: 7px;
+    right: 0;
     bottom: 13px;
 }
 
@@ -1432,9 +1465,9 @@ span.copied_txt {
         float: none !important;
         margin-left: auto;
     }
-    
-    
-    
+
+
+
 }
 
 @media(min-width:1800px) {
@@ -1442,7 +1475,7 @@ span.copied_txt {
         flex: 0 0 50%;
         max-width: 50%;
     }
-    
+
 }
 
 
