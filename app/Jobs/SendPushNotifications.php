@@ -60,12 +60,15 @@ class SendPushNotifications implements ShouldQueue
 
             Config::set("database.connections.$schemaName", $default);
             config(["database.connections.mysql.database" => $schemaName]);
+            Log::info('SendPushNotifications rosters insert');
             DB::connection($schemaName)->table('rosters')->insert($this->data);
+
+            Log::info('App\Jobs\SendPushNotifications rosters insert');
             DB::disconnect($schemaName);
         } catch (Exception $ex) {
            return $ex->getMessage();
         }
-        
+
         $recipients = [];
         $date =  Carbon::now()->toDateTimeString();
         $database_name = 'db_' .$this->client_db;
@@ -90,8 +93,9 @@ class SendPushNotifications implements ShouldQueue
         $counter = 12;
         while ($counter) {
             $counter--;
-            $get =  DB::connection($database_name)->table('rosters')->where('notification_time', '<=', $date)->leftJoin('agents', 'rosters.driver_id', '=', 'agents.id')->select('agents.device_token','agents.device_type')->get();
-           
+            $get =  DB::connection($database_name)->table('rosters')->where('notification_time', '<=', $date)
+            ->leftJoin('agents', 'rosters.driver_id', '=', 'agents.id')->select('agents.device_token','agents.device_type')->get();
+
             foreach($get as $item){
                 if(isset($item->device_token))
                 array_push($recipients,$item->device_token);
@@ -100,12 +104,12 @@ class SendPushNotifications implements ShouldQueue
             $this->sendnotification($recipients);
             sleep(5);
         }
-        
+
     }
 
     public function sendnotification($recipients)
     {
-        
+
         //Log::info($recipients);
         if(isset($recipients)){
             fcm()
@@ -122,9 +126,9 @@ class SendPushNotifications implements ShouldQueue
             ])
             ->send();
         }
-        
+
         //Log::info('sendinglog');
-        
+
     }
 
     public function failed(\Throwable $exception)
