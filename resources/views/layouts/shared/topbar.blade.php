@@ -124,7 +124,8 @@
                     <a href="/switch/language?lang=en" class="dropdown-item" langid="1">English</a>
                     <a href="/switch/language?lang=es" class="dropdown-item" langid="1">Spanish</a>
                     <a href="/switch/language?lang=ar" class="dropdown-item" langid="1">Arabic</a>
-                    <a href="/switch/language?lang=fr" class="dropdown-item" langid="1">French</a>                   
+                    <a href="/switch/language?lang=fr" class="dropdown-item" langid="1">French</a>
+                    <a href="/switch/language?lang=sv" class="dropdown-item" langid="1">Swedish</a>                   
                     
                     <div class="dropdown-divider"></div>
                 </div>
