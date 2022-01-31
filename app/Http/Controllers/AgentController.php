@@ -60,7 +60,7 @@ class AgentController extends Controller
         $user = Auth::user();
 
         if ($user->is_superadmin == 0 && $user->all_team_access == 0) {
-            $agents = $agents->whereHas('team.permissionToManager', function ($query) {
+            $agents = $agents->whereHas('team.permissionToManager', function ($query) use($user) {
                 $query->where('sub_admin_id', $user->id);
             });
         }
@@ -74,7 +74,7 @@ class AgentController extends Controller
         }
         $teams  = Team::where('client_id', auth()->user()->code)->orderBy('name');
         if ($user->is_superadmin == 0 && $user->all_team_access == 0) {
-            $teams = $teams->whereHas('permissionToManager', function ($query) {
+            $teams = $teams->whereHas('permissionToManager', function ($query) use($user) {
                 $query->where('sub_admin_id', $user->id);
             });
         }
@@ -138,7 +138,7 @@ class AgentController extends Controller
                 });
             }
             if ($user->is_superadmin == 0 && $user->all_team_access == 0) {
-                $agents = $agents->whereHas('team.permissionToManager', function ($query) {
+                $agents = $agents->whereHas('team.permissionToManager', function ($query) use($user) {
                     $query->where('sub_admin_id', $user->id);
                 });
             }

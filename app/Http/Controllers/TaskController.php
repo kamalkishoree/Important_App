@@ -163,7 +163,7 @@ class TaskController extends Controller
                 //     }
                 //     return '';
                 // })
-                ->editColumn('customer_id', function ($orders) use ($request) {
+                ->addColumn('customer_id', function ($orders) use ($request) {
                     $customerID = !empty($orders->customer->id)? $orders->customer->id : '';
                     $length = strlen($customerID);
                     if($length < 4){
@@ -171,20 +171,20 @@ class TaskController extends Controller
                     }
                     return $customerID;
                 })
-                ->editColumn('customer_name', function ($orders) use ($request) {
+                ->addColumn('customer_name', function ($orders) use ($request) {
                     $customerName = !empty($orders->customer->name)? $orders->customer->name : '';
                     return $customerName;
                 })
-                ->editColumn('phone_number', function ($orders) use ($request) {
+                ->addColumn('phone_number', function ($orders) use ($request) {
                     $phoneNumber = !empty($orders->customer->phone_number)? $orders->customer->phone_number : '';
                     return $phoneNumber;
                 })
-                ->editColumn('agent_name', function ($orders) use ($request) {
+                ->addColumn('agent_name', function ($orders) use ($request) {
                     $checkActive = (!empty($orders->agent->name) && $orders->agent->is_available == 1) ? ' (Active)' : ' (InActive)';
                     $agentName   = !empty($orders->agent->name)? $orders->agent->name.$checkActive : '';
                     return $agentName;
                 })
-                ->editColumn('order_time', function ($orders) use ($request, $timezone, $preference) {
+                ->addColumn('order_time', function ($orders) use ($request, $timezone, $preference) {
                     $tz              = new Timezone();
                     $client_timezone = $tz->timezone_name($timezone);
                     // $preference      = ClientPreference::where('id', 1)->first(['theme','date_format','time_format']);
@@ -194,7 +194,7 @@ class TaskController extends Controller
                     $preference->date_format = $preference->date_format ?? 'm/d/Y';
                     return date(''.$preference->date_format.' '.$timeformat.'', strtotime($order));
                 })
-                ->editColumn('short_name', function ($orders) use ($request) {
+                ->addColumn('short_name', function ($orders) use ($request) {
                     $routes = array();
                     foreach($orders->task as $task){
                         if($task->task_type_id == 1){
@@ -236,7 +236,7 @@ class TaskController extends Controller
                     $preference->date_format = $preference->date_format ?? 'm/d/Y';
                     return date(''.$preference->date_format.' '.$timeformat.'', strtotime($order));
                 })
-                ->editColumn('action', function ($orders) use ($request) {
+                ->addColumn('action', function ($orders) use ($request) {
                     $action = '<div class="form-ul" style="width: 60px;">
                                     <div class="inner-div">
                                         <div class="set-size"> <a href1="#"
