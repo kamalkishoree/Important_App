@@ -1,9 +1,8 @@
 <?php
 
 use Illuminate\Database\Seeder;
-use App\Model\Plan;
-use App\Models\SmsProvider;
-use DB;
+use App\Model\SmsProvider;
+
 class SmsProviderSeeder extends Seeder
 {
     /**
