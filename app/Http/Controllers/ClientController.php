@@ -176,21 +176,32 @@ class ClientController extends Controller
                     'sender_id' => $request->mazinhost_sender_id,
                 ];
 
+            }elseif($request->sms_provider == 4) // for unifonic
+            {
+                $sms_credentials = [
+                    'unifonic_app_id' => $request->unifonic_app_id,
+                    'unifonic_account_email' => $request->unifonic_account_email,
+                    'unifonic_account_password' => $request->unifonic_account_password,
+                ];
             }
             $request->merge(['sms_credentials'=>json_encode($sms_credentials)]);
         }
 
 
-        unset($request['sms_from']);
+
         unset($request['sms_key']);
+        unset($request['sms_from']);
         unset($request['sms_secret']);
+
         unset($request['mtalkz_api_key']);
         unset($request['mtalkz_sender_id']);
 
-        unset($request['mazinhost_sender_id']);
         unset($request['mazinhost_api_key']);
+        unset($request['mazinhost_sender_id']);
 
-    //    dd( $request->all());
+        unset($request['unifonic_app_id']);
+        unset($request['unifonic_account_email']);
+        unset($request['unifonic_account_password']);
 
         if($request->has('driver_phone_verify_config')){
             $request->request->add(['verify_phone_for_driver_registration' => ($request->has('verify_phone_for_driver_registration') && $request->verify_phone_for_driver_registration == 'on') ? 1 : 0]);

@@ -1,7 +1,8 @@
 <?php
 
 use Illuminate\Database\Seeder;
-use App\Model\Plan;
+use App\Model\SmsProvider;
+
 class SmsProviderSeeder extends Seeder
 {
     /**
@@ -30,6 +31,12 @@ class SmsProviderSeeder extends Seeder
                 'id' => 3,
                 'provider' => 'Mazinhost Service',
                 'keyword' => 'mazinhost',
+                'status' => '1'
+            ),
+            array(
+                'id' => 4,
+                'provider' => 'Unifonic Service',
+                'keyword' => 'unifonic',
                 'status' => '1'
             ),
         );
