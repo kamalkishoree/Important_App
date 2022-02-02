@@ -1974,6 +1974,7 @@ class TaskController extends BaseController
 
                         $item['title']     = 'Edit Order Status';
                         $item['body']      = 'Check Status of Edit Order Approval';
+                        $item['callback_url']      = $order->call_back_url;
 
                         $client_preferences = ClientPreference::where('id', 1)->first();
                         if(count($new))
