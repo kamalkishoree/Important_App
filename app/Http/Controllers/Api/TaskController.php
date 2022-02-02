@@ -1956,28 +1956,28 @@ class TaskController extends BaseController
      */
     public function editOrderNotification(Request $request)
     {
-        if(($request->has('web_hook_code')) && ($request->has('status')))
-        {
-            $web_hook_code = $request->web_hook_code;
-            $status = $request->status;
-            if($status == 1 || $status == 2)
+        try{
+            if(($request->has('web_hook_code')) && ($request->has('status')))
             {
-                $order = Order::where('call_back_url', 'LIKE', '%'.$web_hook_code.'%')->first();
-                if($order)
+                $web_hook_code = $request->web_hook_code;
+                $status = $request->status;
+                if($status == 1 || $status == 2)
                 {
-                    $driver_id = $order->driver_id;
-                    $device_token = Agent::where('id', $driver_id)->value('device_token');
-
-                    $new = [];
-                    array_push($new, $device_token);
-
-                    $item['title']     = 'Edit Order Status';
-                    $item['body']      = 'Check Status of Edit Order Approval';
-
-                    $client_preferences = ClientPreference::where('id', 1)->first();
-                    if(count($new))
+                    $order = Order::where('call_back_url', 'LIKE', '%'.$web_hook_code.'%')->first();
+                    if($order)
                     {
-                        try{
+                        $driver_id = $order->driver_id;
+                        $device_token = Agent::where('id', $driver_id)->value('device_token');
+
+                        $new = [];
+                        array_push($new, $device_token);
+
+                        $item['title']     = 'Edit Order Status';
+                        $item['body']      = 'Check Status of Edit Order Approval';
+
+                        $client_preferences = ClientPreference::where('id', 1)->first();
+                        if(count($new))
+                        {
                             $fcm_server_key = !empty($client_preferences->fcm_server_key)? $client_preferences->fcm_server_key : config('laravel-fcm.server_key');
 
                             $fcmObj = new Fcm($fcm_server_key);
@@ -1994,23 +1994,25 @@ class TaskController extends BaseController
                                     'show_in_foreground' => true,
                                 ])
                                 ->send();
-                        }
-                        catch(Exception $e){
-                            Log::info($e->getMessage());
-                            return response()->json([
-                                'data' => [],
-                                'status' => $e->getCode(),
-                                'message' => $e->getMessage()
-                            ]);
+                            
+                            return $fcm_store;
                         }
                     }
                 }
+            }else{
+                return response()->json([
+                    'data' => [],
+                    'status' => 422,
+                    'message' => 'Invalid Data'
+                ]);
             }
-        }else{
+        }
+        catch(Exception $e){
+            Log::info($e->getMessage());
             return response()->json([
                 'data' => [],
-                'status' => 422,
-                'message' => 'Invalid Data'
+                'status' => $e->getCode(),
+                'message' => $e->getMessage()
             ]);
         }
     }
