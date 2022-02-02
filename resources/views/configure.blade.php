@@ -776,11 +776,11 @@ $sms_crendential = json_decode($preference->sms_credentials);
                                     <h5 class="font-weight-normal m-0">{{ __('Enable') }}</h5>
                                     <div class="custom-control custom-switch">
                                         <input type="checkbox" class="custom-control-input"
-                                            id="customSwitch_{{ $preference->is_edit_order_driver }}"
+                                            id="editOrderCustomSwitch_{{ $preference->is_edit_order_driver }}"
                                             name="is_edit_order_driver"
                                             {{ $preference->is_edit_order_driver == 1 ? 'checked' : '' }}>
                                         <label class="custom-control-label"
-                                            for="customSwitch_{{ $preference->is_edit_order_driver }}"></label>
+                                            for="editOrderCustomSwitch_{{ $preference->is_edit_order_driver }}"></label>
                                     </div>
                                 </div>
                             </div>
