@@ -865,10 +865,10 @@
 
         document.getElementById('map_for_header').value = no;
 
-        if(lats == null || lats == '0'){
+        if(lats == null || lats == '0' || lats ==''){
             lats = 28.6862738;
         }
-        if(lngs == null || lngs == '0'){
+        if(lngs == null || lngs == '0' || lngs == ''){
             lngs = 77.2217831;
         }
          if(address==null){

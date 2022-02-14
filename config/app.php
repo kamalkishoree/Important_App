@@ -124,7 +124,7 @@ return [
     'cipher' => 'AES-256-CBC',
 
 
-    'supported_languages' => ['en', 'ar', 'fr', 'de', 'es', 'sv'],
+    'supported_languages' => ['en', 'ar', 'fr', 'de', 'es', 'sv','vi'],
 
     /*
     |--------------------------------------------------------------------------
@@ -242,7 +242,7 @@ return [
         'Image' => Intervention\Image\Facades\Image::class,
         'Fcm' => Kawankoding\Fcm\FcmFacade::class,
         // 'PDF' => Barryvdh\DomPDF\Facade::class,
-        
+
 
 
     ],

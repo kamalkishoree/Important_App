@@ -42,6 +42,8 @@ use Twilio\Rest\Client as TwilioClient;
 use GuzzleHttp\Client as GClient;
 use App\Http\Requests\CreateTaskRequest;
 use App\Http\Requests\GetDeliveryFee;
+use Kawankoding\Fcm\Fcm;
+
 class TaskController extends BaseController
 {
     public function smstest(Request $request){
@@ -1949,7 +1951,73 @@ class TaskController extends BaseController
 
      }
 
+     /**
+     * notify driver for user response on edit order approval
+     */
+    public function editOrderNotification(Request $request)
+    {
+        try{
+            if(($request->has('web_hook_code')) && ($request->has('status')))
+            {
+                $web_hook_code = $request->web_hook_code;
+                $status = $request->status;
+                if($status == 1 || $status == 2)
+                {
+                    $order = Order::where('call_back_url', 'LIKE', '%'.$web_hook_code.'%')->first();
+                    if($order)
+                    {
+                        $driver_id = $order->driver_id;
+                        $device_token = Agent::where('id', $driver_id)->value('device_token');
 
+                        $new = [];
+                        array_push($new, $device_token);
+
+                        $item['title']     = 'Edit Order Status';
+                        $item['body']      = 'Check Status of Edit Order Approval';
+                        $item['status']    = $status;
+                        $item['callback_url'] = $order->call_back_url;
+
+                        $client_preferences = ClientPreference::where('id', 1)->first();
+                        if(count($new))
+                        {
+                            $fcm_server_key = !empty($client_preferences->fcm_server_key)? $client_preferences->fcm_server_key : config('laravel-fcm.server_key');
+
+                            $fcmObj = new Fcm($fcm_server_key);
+                            $fcm_store = $fcmObj->to($new) // $recipients must an array
+                                ->priority('high')
+                                ->timeToLive(0)
+                                ->data($item)
+                                ->notification([
+                                    'title'              => 'Edit Order Status',
+                                    'body'               => 'Check Status of Edit Order Approval',
+                                    'sound'              => 'notification.mp3',
+                                    'android_channel_id' => 'Royo-Delivery',
+                                    'soundPlay'          => true,
+                                    'show_in_foreground' => true,
+                                ])
+                                ->send();
+                            
+                            return $fcm_store;
+                        }
+                    }
+                }
+            }else{
+                return response()->json([
+                    'data' => [],
+                    'status' => 422,
+                    'message' => 'Invalid Data'
+                ]);
+            }
+        }
+        catch(Exception $e){
+            Log::info($e->getMessage());
+            return response()->json([
+                'data' => [],
+                'status' => $e->getCode(),
+                'message' => $e->getMessage()
+            ]);
+        }
+    }
 
 
 

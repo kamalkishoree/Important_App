@@ -15,36 +15,36 @@
                             </div>
                         </div> -->
                         <!-- <div class="dropdown-menu dropdown-lg" id="search-dropdown">
-                            
+
                             <div class="dropdown-header noti-title">
                                 <h5 class="text-overflow mb-2">Found 22 results</h5>
                             </div>
-            
-                            
+
+
                             <a href="javascript:void(0);" class="dropdown-item notify-item">
                                 <i class="fe-home mr-1"></i>
                                 <span>Analytics Report</span>
                             </a>
-            
-                            
+
+
                             <a href="javascript:void(0);" class="dropdown-item notify-item">
                                 <i class="fe-aperture mr-1"></i>
                                 <span>How can I help you?</span>
                             </a>
-                            
-                            
+
+
                             <a href="javascript:void(0);" class="dropdown-item notify-item">
                                 <i class="fe-settings mr-1"></i>
                                 <span>User profile settings</span>
                             </a>
 
-                            
+
                             <div class="dropdown-header noti-title">
                                 <h6 class="text-overflow mb-2 text-uppercase">Users</h6>
                             </div>
 
                             <div class="notification-list">
-                                
+
                                 <a href="javascript:void(0);" class="dropdown-item notify-item">
                                     <div class="media">
                                         <img class="d-flex mr-2 rounded-circle" src="{{ asset('assets/images/users/user-2.jpg') }}" alt="Generic placeholder image" height="32">
@@ -55,7 +55,7 @@
                                     </div>
                                 </a>
 
-                                
+
                                 <a href="javascript:void(0);" class="dropdown-item notify-item">
                                     <div class="media">
                                         <img class="d-flex mr-2 rounded-circle" src="{{ asset('assets/images/users/user-5.jpg') }}" alt="Generic placeholder image" height="32">
@@ -82,7 +82,7 @@
                     </form>
                 </div>
             </li>
-                    <?php 
+                    <?php
                         $allowed = [];
                         if(Auth::user()->is_superadmin == 0){
                            // if(Session::get('usertype') == 'manager'){
@@ -95,9 +95,9 @@
                         }
                         ?>
 
-        @if(in_array('Add Route',$allowed) || Auth::user()->is_superadmin == 1)           
+        @if(in_array('Add Route',$allowed) || Auth::user()->is_superadmin == 1)
             <li class="d-lg-inline-block" >
-                <a class="nav-link" href="#"> 
+                <a class="nav-link" href="#">
                     <button type="button" class="btn btn-blue waves-effect waves-light addTaskModalHeader klklkl" data-toggle="modal" data-target="" data-backdrop="static" title="{{__('Add Route')}}" data-keyboard="false"><span><i class="mdi mdi-plus-circle mr-1"></i> {{__('Add Route')}}</span></button>
                 </a>
             </li>
@@ -105,7 +105,7 @@
 
             @php
             $applocale = 'en';
-            if(session()->has('applocale')){               
+            if(session()->has('applocale')){
                 $applocale = session()->get('applocale');
             }
             @endphp
@@ -118,15 +118,16 @@
                     <i class="icon-ic_lang"></i>
                     <span> Language </span>
                     {{session()->get('applocale')}}
-                    <i class="mdi mdi-chevron-down"></i> 
+                    <i class="mdi mdi-chevron-down"></i>
                 </a>
-                <div class="dropdown-menu">                    
+                <div class="dropdown-menu">
                     <a href="/switch/language?lang=en" class="dropdown-item" langid="1">English</a>
                     <a href="/switch/language?lang=es" class="dropdown-item" langid="1">Spanish</a>
                     <a href="/switch/language?lang=ar" class="dropdown-item" langid="1">Arabic</a>
                     <a href="/switch/language?lang=fr" class="dropdown-item" langid="1">French</a>
-                    <a href="/switch/language?lang=sv" class="dropdown-item" langid="1">Swedish</a>                   
-                    
+                    <a href="/switch/language?lang=sv" class="dropdown-item" langid="1">Swedish</a>
+                    <a href="/switch/language?lang=vi" class="dropdown-item" langid="1">Vietnamese</a>
+
                     <div class="dropdown-divider"></div>
                 </div>
             </li>
@@ -140,7 +141,7 @@
             <!-- <li class="dropdown d-none d-xl-block">
                 <a class="nav-link dropdown-toggle waves-effect waves-light" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
                     Create Task
-                    <i class="mdi mdi-chevron-down"></i> 
+                    <i class="mdi mdi-chevron-down"></i>
                 </a>
                 <div class="dropdown-menu">
                     <a href="javascript:void(0);" class="dropdown-item">
@@ -155,7 +156,7 @@
                     <i class="fe-grid noti-icon"></i>
                 </a>
                 <div class="dropdown-menu dropdown-lg dropdown-menu-right">
-    
+
                     <div class="p-lg-1">
                         <div class="row no-gutters">
                             <div class="col">
@@ -177,7 +178,7 @@
                                 </a>
                             </div>
                         </div>
-    
+
                         <div class="row no-gutters">
                             <div class="col">
                                 <a class="dropdown-icon-item" href="#">
@@ -197,10 +198,10 @@
                                     <span>G Suite</span>
                                 </a>
                             </div>
-                            
+
                         </div>
                     </div>
-    
+
                 </div>
             </li> -->
 
@@ -209,21 +210,21 @@
                     <img src="{{ asset('assets/images/flags/us.jpg') }}" alt="user-image" height="16">
                 </a>
                 <div class="dropdown-menu dropdown-menu-right">
-    
+
                     <a href="javascript:void(0);" class="dropdown-item">
                         <img src="{{ asset('assets/images/flags/germany.jpg') }}" alt="user-image" class="mr-1" height="12"> <span class="align-middle">German</span>
                     </a>
                     <a href="javascript:void(0);" class="dropdown-item">
                         <img src="{{ asset('assets/images/flags/italy.jpg') }}" alt="user-image" class="mr-1" height="12"> <span class="align-middle">Italian</span>
                     </a>
-    
+
                     <a href="javascript:void(0);" class="dropdown-item">
                         <img src="{{ asset('assets/images/flags/spain.jpg') }}" alt="user-image" class="mr-1" height="12"> <span class="align-middle">Spanish</span>
                     </a>
                     <a href="javascript:void(0);" class="dropdown-item">
                         <img src="{{ asset('assets/images/flags/russia.jpg') }}" alt="user-image" class="mr-1" height="12"> <span class="align-middle">Russian</span>
                     </a>
-    
+
                 </div>
             </li> -->
 
@@ -233,8 +234,8 @@
                     <span class="badge badge-danger rounded-circle noti-icon-badge">9</span>
                 </a>
                 <div class="dropdown-menu dropdown-menu-right dropdown-lg">
-    
-                    
+
+
                     <div class="dropdown-item noti-title">
                         <h5 class="m-0">
                             <span class="float-right">
@@ -244,10 +245,10 @@
                             </span>Notification
                         </h5>
                     </div>
-    
+
                     <div class="noti-scroll" data-simplebar>
-    
-                        
+
+
                         <a href="javascript:void(0);" class="dropdown-item notify-item active">
                             <div class="notify-icon">
                                 <img src="{{ asset('assets/images/users/user-1.jpg') }}" class="img-fluid rounded-circle" alt="" /> </div>
@@ -256,8 +257,8 @@
                                 <small>Hi, How are you? What about our next meeting</small>
                             </p>
                         </a>
-    
-                        
+
+
                         <a href="javascript:void(0);" class="dropdown-item notify-item">
                             <div class="notify-icon bg-primary">
                                 <i class="mdi mdi-comment-account-outline"></i>
@@ -266,8 +267,8 @@
                                 <small class="text-muted">1 min ago</small>
                             </p>
                         </a>
-    
-                        
+
+
                         <a href="javascript:void(0);" class="dropdown-item notify-item">
                             <div class="notify-icon">
                                 <img src="{{ asset('assets/images/users/user-4.jpg') }}" class="img-fluid rounded-circle" alt="" /> </div>
@@ -276,8 +277,8 @@
                                 <small>Wow ! this admin looks good and awesome design</small>
                             </p>
                         </a>
-    
-                        
+
+
                         <a href="javascript:void(0);" class="dropdown-item notify-item">
                             <div class="notify-icon bg-warning">
                                 <i class="mdi mdi-account-plus"></i>
@@ -286,8 +287,8 @@
                                 <small class="text-muted">5 hours ago</small>
                             </p>
                         </a>
-    
-                        
+
+
                         <a href="javascript:void(0);" class="dropdown-item notify-item">
                             <div class="notify-icon bg-info">
                                 <i class="mdi mdi-comment-account-outline"></i>
@@ -296,8 +297,8 @@
                                 <small class="text-muted">4 days ago</small>
                             </p>
                         </a>
-    
-                        
+
+
                         <a href="javascript:void(0);" class="dropdown-item notify-item">
                             <div class="notify-icon bg-secondary">
                                 <i class="mdi mdi-heart"></i>
@@ -308,12 +309,12 @@
                             </p>
                         </a>
                     </div>
-    
+
                     <a href="javascript:void(0);" class="dropdown-item text-center text-primary notify-item notify-all">
                         View all
                         <i class="fe-arrow-right"></i>
                     </a>
-    
+
                 </div>
             </li> -->
 
@@ -395,7 +396,7 @@ http://192.168.100.211:8888/unsafe/fit-in/90x50/https://royodelivery-assets.s3.u
                 $request = $client->createPresignedRequest($command, '+20 minutes');
 
                 //$generate_url = $request->getUri();
-                
+
                 $image = (string)$request->getUri();*/
 
                 //echo $url = Storage::disk('s3')->temporaryUrl(Auth::user()->logo , now()->addMinutes(5));
@@ -403,7 +404,7 @@ http://192.168.100.211:8888/unsafe/fit-in/90x50/https://royodelivery-assets.s3.u
             ?>
             @php
                     // $urlImg = URL::to('/').'images/users/user-1.jpg';
-              
+
                   if(isset(Auth::user()->logo)){
                     $urlImg = Storage::disk('s3')->url(Auth::user()->logo);
                   }
@@ -421,7 +422,7 @@ http://192.168.100.211:8888/unsafe/fit-in/90x50/https://royodelivery-assets.s3.u
                     <!-- <span class="logo-lg-text-light">U</span> -->
                 </span>
             </a>
-            
+
             <a href="{{ route('index') }}" class="logo logo-light text-center">
                 <span class="logo-sm">
                     <img src="{{$image}}"
@@ -456,53 +457,53 @@ http://192.168.100.211:8888/unsafe/fit-in/90x50/https://royodelivery-assets.s3.u
             <!-- <li class="dropdown d-none d-xl-block">
                 <a class="nav-link dropdown-toggle waves-effect waves-light" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
                     Create New
-                    <i class="mdi mdi-chevron-down"></i> 
+                    <i class="mdi mdi-chevron-down"></i>
                 </a>
                 <div class="dropdown-menu">
-                    
+
                     <a href="javascript:void(0);" class="dropdown-item">
                         <i class="fe-briefcase mr-1"></i>
                         <span>New Projects</span>
                     </a>
-    
-                    
+
+
                     <a href="javascript:void(0);" class="dropdown-item">
                         <i class="fe-user mr-1"></i>
                         <span>Create Users</span>
                     </a>
-    
-                    
+
+
                     <a href="javascript:void(0);" class="dropdown-item">
                         <i class="fe-bar-chart-line- mr-1"></i>
                         <span>Revenue Report</span>
                     </a>
-    
-                    
+
+
                     <a href="javascript:void(0);" class="dropdown-item">
                         <i class="fe-settings mr-1"></i>
                         <span>Settings</span>
                     </a>
-    
+
                     <div class="dropdown-divider"></div>
-    
-                    
+
+
                     <a href="javascript:void(0);" class="dropdown-item">
                         <i class="fe-headphones mr-1"></i>
                         <span>Help & Support</span>
                     </a>
-    
+
                 </div>
             </li> -->
 
             <!-- <li class="dropdown dropdown-mega d-none d-xl-block">
                 <a class="nav-link dropdown-toggle waves-effect waves-light" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
                     Mega Menu
-                    <i class="mdi mdi-chevron-down"></i> 
+                    <i class="mdi mdi-chevron-down"></i>
                 </a>
                 <div class="dropdown-menu dropdown-megamenu">
                     <div class="row">
                         <div class="col-sm-8">
-                            
+
                             <div class="row">
                                 <div class="col-md-4">
                                     <h5 class="text-dark mt-0">UI Components</h5>
@@ -530,7 +531,7 @@ http://192.168.100.211:8888/unsafe/fit-in/90x50/https://royodelivery-assets.s3.u
                                         </li>
                                     </ul>
                                 </div>
-    
+
                                 <div class="col-md-4">
                                     <h5 class="text-dark mt-0">Applications</h5>
                                     <ul class="list-unstyled megamenu-list">
@@ -557,7 +558,7 @@ http://192.168.100.211:8888/unsafe/fit-in/90x50/https://royodelivery-assets.s3.u
                                         </li>
                                     </ul>
                                 </div>
-    
+
                                 <div class="col-md-4">
                                     <h5 class="text-dark mt-0">Extra Pages</h5>
                                     <ul class="list-unstyled megamenu-list">
@@ -594,7 +595,7 @@ http://192.168.100.211:8888/unsafe/fit-in/90x50/https://royodelivery-assets.s3.u
                             </div>
                         </div>
                     </div>
-    
+
                 </div>
             </li> -->
         </ul>

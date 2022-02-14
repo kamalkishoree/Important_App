@@ -11,6 +11,7 @@ use App\Http\Controllers\Controller;
 use Twilio\Rest\Client;
 use Twilio\Rest\Client as TwilioClient;
 use App\Traits\smsManager;
+
 class BaseController extends Controller
 {
     use smsManager;
