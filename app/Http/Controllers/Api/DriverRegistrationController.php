@@ -123,7 +123,7 @@ class DriverRegistrationController extends BaseController
         return Validator::make($data, [
             'name' => ['required', 'string', 'max:255'],
             'type' => ['required'],
-            'vehicle_type_id' => ['required'],
+           // 'vehicle_type_id' => ['required'],
             //'make_model' => ['required'],
             //'plate_number' => ['required'],
             'phone_number' =>  ['required', 'min:9', 'max:15', Rule::unique('agents')->where(function ($query) use ($full_number) {
@@ -173,7 +173,7 @@ class DriverRegistrationController extends BaseController
             $data = [
                 'name' => $request->name,
                 'type' => $request->type,
-                'vehicle_type_id' => $request->vehicle_type_id,
+                'vehicle_type_id' => $request->vehicle_type_id??null,
                 'make_model' => $request->make_model,
                 'plate_number' => $request->plate_number,
                 'phone_number' =>  '+' . $request->country_code . $request->phone_number,

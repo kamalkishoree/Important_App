@@ -40,6 +40,8 @@ Route::get('/notification/tracking/{order_id}', 'Api\TaskController@notification
 Route::post('shortCode', 'Api\ShortcodeController@validateCompany');
 Route::get('cmscontent','Api\ActivityController@cmsData');
 
+// routes for edit order
+Route::post('edit-order/driver/notify', 'Api\TaskController@editOrderNotification')->middleware('ConnectDbFromOrder');
 
 Route::group(['middleware' => ['dbCheck', 'apiLocalization']], function() {
     Route::get('client/preferences', 'Api\ActivityController@clientPreferences');
