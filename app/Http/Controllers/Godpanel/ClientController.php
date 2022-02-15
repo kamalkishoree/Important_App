@@ -368,6 +368,10 @@ class ClientController extends Controller
                    
                     if($key == 'database_host'){
                         $clientData[$key] = env('DB_HOST_'.$stage);
+                    }else{
+                        
+                            $clientData[$key] = $value;
+                        
                     }
 
                     if($key == 'custom_domain'){
@@ -375,9 +379,12 @@ class ClientController extends Controller
                     }
 
                     
+
+                    
                 }
 
                 try {
+                    
                     DB::connection($stage)->table('clients')->insert($clientData);
                     return redirect()->route('client.index')->with('success', 'Client Migrated!');
                 } catch (Exception $ex) {
