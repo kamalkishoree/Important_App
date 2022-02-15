@@ -38,7 +38,7 @@ class ClientController extends Controller
      */
     public function index()
     {
-        $clients = Client::where('is_deleted', 0)->orderBy('created_at', 'DESC')->paginate(10);
+        $clients = Client::where('is_deleted', 0)->orderBy('created_at', 'DESC')->paginate(300);
         return view('godpanel/client')->with(['clients' => $clients]);
     }
 
