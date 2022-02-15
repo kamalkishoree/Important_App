@@ -383,7 +383,7 @@ class ClientController extends Controller
                 }
 
                 try {
-                    Log::info($clientData);
+                    
                     DB::connection($stage)->table('clients')->insert($clientData);
                     return redirect()->route('client.index')->with('success', 'Client Migrated!');
                 } catch (Exception $ex) {
