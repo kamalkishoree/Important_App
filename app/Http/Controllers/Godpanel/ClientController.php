@@ -28,6 +28,7 @@ use Crypt;
 use Carbon\Carbon;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessFailedException;
+use Log;
 
 class ClientController extends Controller
 {
@@ -369,9 +370,7 @@ class ClientController extends Controller
                     if($key == 'database_host'){
                         $clientData[$key] = env('DB_HOST_'.$stage);
                     }else{
-                        
-                            $clientData[$key] = $value;
-                        
+                        $clientData[$key] = $value;
                     }
 
                     if($key == 'custom_domain'){
@@ -384,7 +383,7 @@ class ClientController extends Controller
                 }
 
                 try {
-                    
+                    Log::info($clientData);
                     DB::connection($stage)->table('clients')->insert($clientData);
                     return redirect()->route('client.index')->with('success', 'Client Migrated!');
                 } catch (Exception $ex) {
