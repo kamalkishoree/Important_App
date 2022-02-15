@@ -348,4 +348,46 @@ class ClientController extends Controller
         $getClient = Client::where('id', $id)->update(['is_deleted' => 1,'custom_domain' => null,'sub_domain' => null]);
         return redirect()->back()->with('success', 'Client deleted successfully!');
     }
+
+
+    public function exportDb(Request $request,$databaseName){
+        $client = Client::where('database_name', $databaseName)->first(['name', 'email', 'password', 'phone_number', 'password', 'database_path', 'database_name', 'database_username', 'database_password', 'logo', 'company_name', 'company_address', 'custom_domain', 'status', 'code','sub_domain'])->toarray();
+        $check_if_already = 0;
+        $stage = $request->dump_into??'PROD';
+        $data = $request->all();
+        if($client){
+            
+            $check_if_already = Client::on($stage)->where(['database_name' => $client['database_name']])->where(['sub_domain' => $client['sub_domain']])->count();
+            if($check_if_already == 0){
+                $clientData = array();
+
+                foreach ($client as $key => $value) {
+                   
+                    if($key == 'database_host'){
+                        $clientData[$key] = env('DB_HOST_'.$stage);
+                    }
+
+                    if($key == 'custom_domain'){
+                        $clientData[$key] = '';
+                    }
+
+                    
+                }
+
+                try {
+                    DB::connection($stage)->table('clients')->insert($clientData);
+                    return redirect()->route('client.index')->with('success', 'Client Migrated!');
+                } catch (Exception $ex) {
+                    return redirect()->route('client.index')->with('error', $ex->getMessage());
+                  
+                }
+            }
+            else{
+                return redirect()->route('client.index')->with('error', 'This client is already exist!!');
+            }
+        }else{
+            return redirect()->route('client.index')->with('error', 'This client not exist!!');
+        }
+
+    }
 }

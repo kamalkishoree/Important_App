@@ -80,6 +80,8 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 			Route::resource('client', 'Godpanel\ClientController');
 			Route::resource('language', 'Godpanel\LanguageController');
 			Route::resource('currency', 'Godpanel\CurrencyController');
+
+			Route::post('exportDb/{dbname}', 'Godpanel\ClientController@exportDb')->name('client.exportdb');
 		});
 	});
 
