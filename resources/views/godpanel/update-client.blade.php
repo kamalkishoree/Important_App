@@ -219,36 +219,38 @@
                         </form>
 
 
+                        @if(isset($client))
                          <!-- Migrate Client  -->
-      <div class="row">
-        <div class="col-12">    
-                   <div class="card">
-                        <div class="card-body"><h3>{{__('Migrate Client')}}</h3>
-                        <form  method="post" action="{{route('client.exportdb',$client->database_name)}}"
-                            enctype="multipart/form-data" autocomplete="off">
-                            @csrf
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="languages">Stage </label>
-                                    <select class="form-control" id="dump_into" name="dump_into">
-                                        <option value="DEV">DEV</option>
-                                        <option value="STAG">STAG</option>
-                                        <option value="PROD">PROD</option>
-                                    </select>
-                                </div>    
-                            </div>
+                            <div class="row">
+                                <div class="col-12">    
+                                        <div class="card">
+                                                <div class="card-body"><h3>{{__('Migrate Client')}}</h3>
+                                                <form  method="post" action="{{route('client.exportdb',$client->database_name)}}"
+                                                    enctype="multipart/form-data" autocomplete="off">
+                                                    @csrf
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label for="languages">Stage </label>
+                                                            <select class="form-control" id="dump_into" name="dump_into">
+                                                                <option value="DEV">DEV</option>
+                                                                <option value="STAG">STAG</option>
+                                                                <option value="PROD">PROD</option>
+                                                            </select>
+                                                        </div>    
+                                                    </div>
 
-                            <div class="col-md-3">
-                                <div class="row">
-                                    <button type="submit" class="btn btn-info waves-effect waves-light">{{__('Submit')}}</button>
+                                                    <div class="col-md-3">
+                                                        <div class="row">
+                                                            <button type="submit" class="btn btn-info waves-effect waves-light">{{__('Submit')}}</button>
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                                </div>
+                                            </div>
+                                    
                                 </div>
                             </div>
-                        </form>
-                        </div>
-                    </div>
-            
-        </div>
-    </div>
+                        @endif    
                 </div>
             </div>
         </div>
