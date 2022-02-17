@@ -122,7 +122,7 @@ class TaskController extends Controller
     {
         $user = Auth::user();
         $timezone = $user->timezone ?? 251;
-    
+
         // $count_filter = 0;
         // $start = ($request->start) ? $request->start : '0';
         // $pageSize = ($request->length) ? $request->length : '10';
@@ -273,7 +273,7 @@ class TaskController extends Controller
                         //     }
                         //     return false;
                         // });
-                        
+
                         $instance->whereHas('customer', function($q) use($request){
                             $search = $request->get('search');
                             $q->where('name', 'Like', '%'.$search.'%')
@@ -461,6 +461,9 @@ class TaskController extends Controller
 
         $settime = ($request->task_type=="schedule") ? $request->schedule_time : Carbon::now()->toDateTimeString();
         $notification_time = ($request->task_type=="schedule")? Carbon::parse($settime . $auth->timezone ?? 'UTC')->tz('UTC') : Carbon::now()->toDateTimeString();
+       
+        
+        
         $agent_id          = $request->allocation_type === 'm' ? $request->agent : null;
 
         $order = [
@@ -632,6 +635,7 @@ class TaskController extends Controller
 
         $allocation = AllocationRule::where('id', 1)->first();
         if ($request->task_type != 'now') {
+            
             $auth = Client::where('code', Auth::user()->code)->with(['getAllocation', 'getPreference'])->first();
 
             //setting timezone from id
@@ -639,14 +643,14 @@ class TaskController extends Controller
             $auth->timezone = $tz->timezone_name(Auth::user()->timezone);
 
             $beforetime = (int)$auth->getAllocation->start_before_task_time;
-              //    $to = new \DateTime("now", new \DateTimeZone(isset(Auth::user()->timezone)? Auth::user()->timezone : 'Asia/Kolkata') );
+            //    $to = new \DateTime("now", new \DateTimeZone(isset(Auth::user()->timezone)? Auth::user()->timezone : 'Asia/Kolkata') );
             $to = new \DateTime("now", new \DateTimeZone('UTC'));
             $sendTime = Carbon::now();
             $to = Carbon::parse($to)->format('Y-m-d H:i:s');
             $from = Carbon::parse($notification_time)->format('Y-m-d H:i:s');
             $datecheck = 0;
             $to_time = strtotime($to);
-            $from_time = strtotime($from);
+            $from_time = strtotime($from);;
             if ($to_time >= $from_time) {
                 return redirect()->route('tasks.index')->with('success', 'Task Added Successfully!');
             }
@@ -655,6 +659,7 @@ class TaskController extends Controller
 
             $schduledata = [];
             if ($diff_in_minutes > $beforetime) {
+                $notification_befor_time =   Carbon::parse($notification_time)->subMinutes($beforetime); 
                 $finaldelay = (int)$diff_in_minutes - $beforetime;
 
                 $time = Carbon::parse($sendTime)
@@ -737,6 +742,7 @@ class TaskController extends Controller
         $type       = $auth->getPreference->acknowledgement_type;
         $try        = $auth->getAllocation->number_of_retries;
         $time       = $this->checkTimeDiffrence($notification_time, $beforetime); //this function is check the time diffrence and give the notification time
+        $rostersbeforetime  = $this->checkBeforeTimeDiffrence($notification_time, $beforetime);
         $randem     = rand(11111111, 99999999);
 
 
@@ -764,6 +770,7 @@ class TaskController extends Controller
             'order_id'            => $orders_id,
             'driver_id'           => $agent_id,
             'notification_time'   => $time,
+            'notification_befor_time' => $rostersbeforetime,
             'type'                => $allcation_type,
             'client_code'         => Auth::user()->code,
             'created_at'          => Carbon::now()->toDateTimeString(),
@@ -1189,6 +1196,7 @@ class TaskController extends Controller
         $try        = $auth->getAllocation->number_of_retries;
         $time       = $this->checkTimeDiffrence($notification_time, $beforetime); //this function is check the time diffrence and give the notification time
         $randem     = rand(11111111, 99999999);
+        $rostersbeforetime       = $this->checkBeforeTimeDiffrence($notification_time, $beforetime);
 
         if ($type == 'acceptreject') {
             $allcation_type = 'AR';
@@ -1218,6 +1226,8 @@ class TaskController extends Controller
                     'order_id'            => $orders_id,
                     'driver_id'           => $agent_id,
                     'notification_time'   => $time,
+                    'notification_befor_time'   => $rostersbeforetime,
+                  
                     'type'                => $allcation_type,
                     'client_code'         => Auth::user()->code,
                     'created_at'          => Carbon::now()->toDateTimeString(),
@@ -1273,6 +1283,7 @@ class TaskController extends Controller
                                 'order_id'            => $orders_id,
                                 'driver_id'           => $geoitem->driver_id,
                                 'notification_time'   => $time,
+                                'notification_befor_time' => $rostersbeforetime,
                                 'type'                => $allcation_type,
                                 'client_code'         => Auth::user()->code,
                                 'created_at'          => Carbon::now()->toDateTimeString(),
@@ -1288,6 +1299,9 @@ class TaskController extends Controller
                             //here i am seting the time diffrence for every notification
 
                             $time = Carbon::parse($time)
+                                ->addSeconds($expriedate + 3)
+                                ->format('Y-m-d H:i:s');
+                            $rostersbeforetime = Carbon::parse($rostersbeforetime)
                                 ->addSeconds($expriedate + 3)
                                 ->format('Y-m-d H:i:s');
                             array_push($all, $data);
@@ -1307,6 +1321,7 @@ class TaskController extends Controller
                         'order_id'            => $orders_id,
                         'driver_id'           => $rem['id'],
                         'notification_time'   => $time,
+                        'notification_befor_time' => $rostersbeforetime,
                         'type'                => $allcation_type,
                         'client_code'         => Auth::user()->code,
                         'created_at'          => Carbon::now()->toDateTimeString(),
@@ -1317,6 +1332,9 @@ class TaskController extends Controller
                     ];
 
                     $time = Carbon::parse($time)
+                        ->addSeconds($expriedate + 3)
+                        ->format('Y-m-d H:i:s');
+                    $rostersbeforetime = Carbon::parse($rostersbeforetime)
                         ->addSeconds($expriedate + 3)
                         ->format('Y-m-d H:i:s');
 
@@ -1354,8 +1372,19 @@ class TaskController extends Controller
         } else {
             return  $notification_time;
         }
+    } 
+    public function checkBeforeTimeDiffrence($notification_time, $beforetime)
+    {
+        $to   = Carbon::createFromFormat('Y-m-d H:s:i', Carbon::now()->toDateTimeString());
+        $from = Carbon::createFromFormat('Y-m-d H:s:i', Carbon::parse($notification_time)->format('Y-m-d H:i:s'));
+        $diff_in_minutes = $to->diffInMinutes($from);
+        if ($diff_in_minutes < $beforetime) {
+            return  Carbon::now()->toDateTimeString();
+        } else {
+            return Carbon::parse($notification_time)->subMinutes($beforetime); 
+           
+        }
     }
-
     public function SendToAll($geo, $notification_time, $agent_id, $orders_id, $customer, $finalLocation, $taskcount, $allocation)
     {
         $allcation_type    = 'AR';
@@ -1372,6 +1401,7 @@ class TaskController extends Controller
         $max_task          = $auth->getAllocation->maximum_batch_size;
         $time              = $this->checkTimeDiffrence($notification_time, $beforetime);
         $randem            = rand(11111111, 99999999);
+        $rostersbeforetime = $this->checkBeforeTimeDiffrence($notification_time, $beforetime);
         $order_details = Order::find($orders_id);
         $data = [];
 
@@ -1404,6 +1434,7 @@ class TaskController extends Controller
                     'order_id'            => $orders_id,
                     'driver_id'           => $agent_id,
                     'notification_time'   => $time,
+                    'notification_befor_time' => $rostersbeforetime,
                     'type'                => $allcation_type,
                     'client_code'         => Auth::user()->code,
                     'created_at'          => Carbon::now()->toDateTimeString(),
@@ -1433,6 +1464,7 @@ class TaskController extends Controller
                             'order_id'            => $orders_id,
                             'driver_id'           => $geoitem->driver_id,
                             'notification_time'   => $time,
+                            'notification_befor_time' => $rostersbeforetime,
                             'type'                => $allcation_type,
                             'client_code'         => Auth::user()->code,
                             'created_at'          => Carbon::now()->toDateTimeString(),
@@ -1452,6 +1484,9 @@ class TaskController extends Controller
 
                 }
                 $time = Carbon::parse($time)
+                        ->addSeconds($expriedate + 10)
+                        ->format('Y-m-d H:i:s');
+                $rostersbeforetime = Carbon::parse($rostersbeforetime)
                         ->addSeconds($expriedate + 10)
                         ->format('Y-m-d H:i:s');
                 if ($allcation_type == 'N' && 'ACK') {
@@ -1480,6 +1515,7 @@ class TaskController extends Controller
         $max_redius        = $auth->getAllocation->maximum_radius;
         $max_task          = $auth->getAllocation->maximum_batch_size;
         $time              = $this->checkTimeDiffrence($notification_time, $beforetime);
+        $rostersbeforetime = $this->checkBeforeTimeDiffrence($notification_time, $beforetime);
         $randem            = rand(11111111, 99999999);
         $order_details = Order::find($orders_id);
         $data = [];
@@ -1512,6 +1548,7 @@ class TaskController extends Controller
                     'order_id'            => $orders_id,
                     'driver_id'           => $agent_id,
                     'notification_time'   => $time,
+                    'notification_befor_time' => $rostersbeforetime,
                     'type'                => $allcation_type,
                     'client_code'         => Auth::user()->code,
                     'created_at'          => Carbon::now()->toDateTimeString(),
@@ -1549,6 +1586,7 @@ class TaskController extends Controller
                                 'order_id'            => $orders_id,
                                 'driver_id'           => $geoitem['driver_id'],
                                 'notification_time'   => $time,
+                                'notification_befor_time' => $rostersbeforetime,
                                 'type'                => $allcation_type,
                                 'client_code'         => Auth::user()->code,
                                 'created_at'          => Carbon::now()->toDateTimeString(),
@@ -1563,6 +1601,8 @@ class TaskController extends Controller
                         $counter++;
                         if ($counter == $maxsize) {
                             $time = Carbon::parse($time)->addSeconds($expriedate)->format('Y-m-d H:i:s');
+                            $rostersbeforetime = Carbon::parse($rostersbeforetime)->addSeconds($expriedate)->format('Y-m-d H:i:s');
+
                             $counter = 0;
                         }
                         if ($allcation_type == 'N' && 'ACK') {
@@ -1570,6 +1610,9 @@ class TaskController extends Controller
                         }
                     }
                     $time = Carbon::parse($time)->addSeconds($expriedate + 10)->format('Y-m-d H:i:s');
+
+                    $rostersbeforetime = Carbon::parse($rostersbeforetime)->addSeconds($expriedate + 10)->format('Y-m-d H:i:s');
+
 
                     if ($allcation_type == 'N' && 'ACK') {
                         break;
@@ -1596,6 +1639,7 @@ class TaskController extends Controller
         $max_redius        = $auth->getAllocation->maximum_radius;
         $max_task          = $auth->getAllocation->maximum_batch_size;
         $time              = $this->checkTimeDiffrence($notification_time, $beforetime);
+        $rostersbeforetime = $this->checkBeforeTimeDiffrence($notification_time, $beforetime);
         $randem            = rand(11111111, 99999999);
         $order_details = Order::find($orders_id);
         $data = [];
@@ -1628,6 +1672,7 @@ class TaskController extends Controller
                     'order_id'            => $orders_id,
                     'driver_id'           => $agent_id,
                     'notification_time'   => $time,
+                    'notification_befor_time' => $rostersbeforetime,
                     'type'                => $allcation_type,
                     'client_code'         => Auth::user()->code,
                     'created_at'          => Carbon::now()->toDateTimeString(),
@@ -1661,6 +1706,7 @@ class TaskController extends Controller
                                 'order_id'            => $orders_id,
                                 'driver_id'           => $geoitem['driver_id'],
                                 'notification_time'   => $time,
+                                'notification_befor_time' => $rostersbeforetime,
                                 'type'                => $allcation_type,
                                 'client_code'         => Auth::user()->code,
                                 'created_at'          => Carbon::now()->toDateTimeString(),
@@ -1672,6 +1718,7 @@ class TaskController extends Controller
                             ];
 
                             $time = Carbon::parse($time)->addSeconds($expriedate)->format('Y-m-d H:i:s');
+                            $rostersbeforetime = Carbon::parse($rostersbeforetime)->addSeconds($expriedate)->format('Y-m-d H:i:s');
 
                             array_push($data, $datas);
                         }
@@ -1682,6 +1729,7 @@ class TaskController extends Controller
                     }
 
                     $time = Carbon::parse($time)->addSeconds($expriedate +10)->format('Y-m-d H:i:s');
+                    $rostersbeforetime = Carbon::parse($rostersbeforetime)->addSeconds($expriedate +10)->format('Y-m-d H:i:s');
 
                     if ($allcation_type == 'N' && 'ACK') {
                         break;
