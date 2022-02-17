@@ -77,8 +77,8 @@ class SendPushNotification
         $schemaName       = 'royodelivery_db';
         $date             =  Carbon::now()->toDateTimeString();
         $get              =  DB::connection($schemaName)->table('rosters')
-                                        ->where(function ($query) {
-                                            $query->->where('notification_time', '<=', $date)
+                                        ->where(function ($query) use ( $date) {
+                                            $query->where('notification_time', '<=', $date)
                                                 ->orWhere('notification_befor_time', '<=', $date);
                                         })->where('status',0)
                                     ->leftJoin('roster_details', 'rosters.detail_id', '=', 'roster_details.unique_id')
@@ -178,8 +178,8 @@ class SendPushNotification
         $date             =  Carbon::now()->toDateTimeString();
         Log::info($date);
         $check = DB::connection($schemaName)->table('rosters')
-                        ->where(function ($query) {
-                            $query->->where('notification_time', '<=', $date)
+                        ->where(function ($query) use ( $date) {
+                            $query->where('notification_time', '<=', $date)
                                 ->orWhere('notification_befor_time', '<=', $date);
                         })
                     ->get();
