@@ -461,9 +461,9 @@ class TaskController extends Controller
 
         $settime = ($request->task_type=="schedule") ? $request->schedule_time : Carbon::now()->toDateTimeString();
         $notification_time = ($request->task_type=="schedule")? Carbon::parse($settime . $auth->timezone ?? 'UTC')->tz('UTC') : Carbon::now()->toDateTimeString();
-       
-        
-        
+
+
+
         $agent_id          = $request->allocation_type === 'm' ? $request->agent : null;
 
         $order = [
@@ -635,7 +635,7 @@ class TaskController extends Controller
 
         $allocation = AllocationRule::where('id', 1)->first();
         if ($request->task_type != 'now') {
-            
+
             $auth = Client::where('code', Auth::user()->code)->with(['getAllocation', 'getPreference'])->first();
 
             //setting timezone from id
@@ -659,7 +659,7 @@ class TaskController extends Controller
 
             $schduledata = [];
             if ($diff_in_minutes > $beforetime) {
-                $notification_befor_time =   Carbon::parse($notification_time)->subMinutes($beforetime); 
+                $notification_befor_time =   Carbon::parse($notification_time)->subMinutes($beforetime);
                 $finaldelay = (int)$diff_in_minutes - $beforetime;
 
                 $time = Carbon::parse($sendTime)
@@ -1227,7 +1227,7 @@ class TaskController extends Controller
                     'driver_id'           => $agent_id,
                     'notification_time'   => $time,
                     'notification_befor_time'   => $rostersbeforetime,
-                  
+
                     'type'                => $allcation_type,
                     'client_code'         => Auth::user()->code,
                     'created_at'          => Carbon::now()->toDateTimeString(),
@@ -1372,7 +1372,7 @@ class TaskController extends Controller
         } else {
             return  $notification_time;
         }
-    } 
+    }
     public function checkBeforeTimeDiffrence($notification_time, $beforetime)
     {
         $to   = Carbon::createFromFormat('Y-m-d H:s:i', Carbon::now()->toDateTimeString());
@@ -1381,8 +1381,8 @@ class TaskController extends Controller
         if ($diff_in_minutes < $beforetime) {
             return  Carbon::now()->toDateTimeString();
         } else {
-            return Carbon::parse($notification_time)->subMinutes($beforetime); 
-           
+            return Carbon::parse($notification_time)->subMinutes($beforetime);
+
         }
     }
     public function SendToAll($geo, $notification_time, $agent_id, $orders_id, $customer, $finalLocation, $taskcount, $allocation)
@@ -1854,8 +1854,8 @@ class TaskController extends Controller
             $totalDuration = 0;
             foreach ($value as $item) {
                 //dd($item);
-                $totalDistance = $totalDistance + $item[0]->distance->value;
-                $totalDuration = $totalDuration + $item[0]->duration->value;
+                $totalDistance = $totalDistance + (@$item[0]->distance->value );
+                $totalDuration = $totalDuration +(@$item[0]->duration->value);
             }
 
             if ($client->distance_unit == 'metric') {
