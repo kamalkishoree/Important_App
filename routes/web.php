@@ -119,6 +119,7 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 			Route::get('analytics', 'AccountingController@index')->name('accounting');
 			Route::get('profileImg', 'ProfileController@displayImage');
 			Route::get('', 'DashBoardController@index')->name('index');
+            Route::get('dashboard/data', 'DashBoardController@dashboardData')->name('dashboard.data');
 			Route::get('customize', 'ClientController@ShowPreference')->name('preference.show');
 			Route::post('save/cms/{id}', 'ClientController@cmsSave')->name('cms.save');
 			Route::post('client_preference/{id}', 'ClientController@storePreference')->name('preference');
