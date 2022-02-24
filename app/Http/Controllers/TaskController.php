@@ -819,7 +819,7 @@ class TaskController extends Controller
 
         $allcation   = AllocationRule::where('id', 1)->first();
 
-       $agents = Agent::orderBy('id', 'DESC');
+       $agents = Agent::orderBy('name', 'asc');
         if (Auth::user()->is_superadmin == 0 && Auth::user()->all_team_access == 0) {
             $agents = $agents->whereHas('team.permissionToManager', function ($query) {
                 $query->where('sub_admin_id', Auth::user()->id);
@@ -1914,6 +1914,7 @@ class TaskController extends Controller
                 }
             }
         }
+
         return view('tasks/show')->with(['task' => $task, 'client_timezone' => $client_timezone, 'preference' => $preference, 'driver_location_logs' => $driver_location_logs]);
     }
 
@@ -1968,7 +1969,7 @@ class TaskController extends Controller
 
 
 
-       $agents = Agent::orderBy('id', 'DESC');
+       $agents = Agent::orderBy('name', 'asc');
         if (Auth::user()->is_superadmin == 0 && Auth::user()->all_team_access == 0) {
             $agents = $agents->whereHas('team.permissionToManager', function ($query) {
                 $query->where('sub_admin_id', Auth::user()->id);
