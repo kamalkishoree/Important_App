@@ -58,6 +58,10 @@ class BaseController extends Controller
             {
                 $credentials = json_decode($client_preference->sms_credentials);
                 $send = $this->mazinhost_sms($to,$body,$credentials);
+            }elseif($client_preference->sms_provider == 4) //for unifonic gateway
+            {
+                $crendentials = json_decode($client_preference->sms_credentials);
+                $send = $this->unifonic($to,$body,$crendentials);
             }else{
 
                 $credentials = json_decode($client_preference->sms_credentials);

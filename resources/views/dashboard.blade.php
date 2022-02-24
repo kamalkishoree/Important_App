@@ -13,7 +13,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
 @section('content')
 
 <!-- Bannar Section -->
-{{-- <section class="bannar header-setting"> --}}   
+{{-- <section class="bannar header-setting"> --}}
 <div class="container-fluid p-0">
 <div class="row coolcheck no-gutters">
     <div class="pageloader" style="display: none;">
@@ -21,10 +21,10 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
             <h4 class="routetext"></h4>
             <div class="spinner-border avatar-lg text-primary m-2" role="status"></div>
         </div>
-    </div> 
-    <div id="scrollbar" class="col-md-4 col-xl-3 left-sidebar pt-3">  
+    </div>
+    <div id="scrollbar" class="col-md-4 col-xl-3 left-sidebar pt-3">
         <div class="side_head d-flex justify-content-between align-items-center mb-2">
-            <i class="mdi mdi-sync mr-1" onclick="reloadData()" aria-hidden="true"></i> 
+            <i class="mdi mdi-sync mr-1" onclick="reloadData()" aria-hidden="true"></i>
             <span class="allAccordian"><span class="" onclick="openAllAccordian()">{{__('Open All')}}</span></span>
         </div>
         <div id="accordion" class="overflow-hidden">
@@ -38,7 +38,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                     <span class="profile-circle">U</span>
                                 </div>
                                 <div class="col-md-8 col-lg-9 col-xl-10 col-10">
-                                    <h6 class="header-title">{{__('Unassigned')}}</h6>                                    
+                                    <h6 class="header-title">{{__('Unassigned')}}</h6>
                                 </div>
                             </div>
                         </div>
@@ -58,7 +58,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                             $opti0 = "yes";
                                         }else{
                                             $opti0 = "";
-                                        }                                                                                
+                                        }
                                         $routeperams0 = "'".$distance_matrix[0]['tasks']."','".json_encode($distance_matrix[0]['distance'])."','".$opti0."',0,'".$date."'";
                                         $optimize0 = '<span class="optimize_btn" onclick="RouteOptimization('.$routeperams0.')">Optimize</span>';
                                         $params0 = "'".$distance_matrix[0]['tasks']."','".json_encode($distance_matrix[0]['distance'])."','yes',0,'".$date."'";
@@ -71,19 +71,19 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                     ?>
                                     <a class="profile-block collapsed" role="button" data-toggle="collapse" href="#collapse0" aria-expanded="false" aria-controls="collapse0">
                                         <div class="row">
-                                            <div class="col-md-2 col-2">                                                
+                                            <div class="col-md-2 col-2">
                                                 <span class="profile-circle">D</span>
                                             </div>
-                                            <div class="col-md-10 col-10">                        
+                                            <div class="col-md-10 col-10">
                                                 <h6 class="mb-0 header-title scnd">Unassigned Tasks<div  class="optimizebtn0">{!! $optimize0 !!} </div><div class="exportbtn0">{!! $turnbyturn0 !!} </div></h6>
                                                 <p class="mb-0"> <span>{{ count($unassigned_orders) }} Tasks</span> {!! $unassigned_distance==''?'':' <i class="fas fa-route"></i> '!!}<span class="dist_sec totdis0">{{ $unassigned_distance }}</span></p>
                                             </div>
                                         </div>
                                     </a>
-                                </div>                               
-                                    
+                                </div>
+
                                 <div id="collapse0" class="collapse" data-parent="#accordion-0" aria-labelledby="by0">
-                                    <div id="handle-dragula-left0" class="dragable_tasks" agentid="0"  params="{{ $params0 }}" date="{{ $date }}">                                            
+                                    <div id="handle-dragula-left0" class="dragable_tasks" agentid="0"  params="{{ $params0 }}" date="{{ $date }}">
                                         @foreach($unassigned_orders as $orders)
                                             @foreach($orders['task'] as $tasks)
                                                 <div class="card-body" task_id ="{{ $tasks['id'] }}">
@@ -104,7 +104,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                                                 $pickup_class = "assign_";
                                                                 }
                                                         @endphp
-                                                    
+
                                                         <div>
                                                             <div class="row no-gutters align-items-center">
                                                                 <div class="col-9 d-flex">
@@ -118,7 +118,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
 
                                                                         //$order->setTimezone(isset(Auth::user()->timezone) ? Auth::user()->timezone : 'Asia/Kolkata');
                                                                         $order->setTimezone($client_timezone);
-                                                                    @endphp             
+                                                                    @endphp
 
                                                                     <h5 class="d-inline-flex align-items-center justify-content-between"><i class="fas fa-bars"></i> <span>{{date(''.$timeformat.'', strtotime($order))}}</span></h5>
                                                                     <h6 class="d-inline"><img class="vt-top"
@@ -127,13 +127,13 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                                                 <div class="col-3">
                                                                     <button class="assigned-btn float-right mb-2 {{$pickup_class}}">{{$tasktype}}</button>
                                                                     <button class="assigned-btn float-right {{$color_class}}">{{$st}}</button>
-                                                                </div>                        
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
-                                                </div> 
+                                                </div>
                                             @endforeach
-                        
+
                                         @endforeach
                                     </div>
                                 </div>
@@ -141,14 +141,14 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                         </div>
                     </div>
                 </div>
-                
+
             </div>
             <div class="card no-border-radius">
-                
-                
+
+
                 @foreach ($teams as $item)
-                    
-                   
+
+
                     <div class="card-header" id="heading-1">
                             <a role="button" data-toggle="collapse" href="#collapse-{{ $item['id'] }}"
                                 aria-expanded="false" aria-controls="collapse-{{ $item['id'] }}">
@@ -159,7 +159,21 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                         </div>
                                         <div class="col-md-9 col-xl-10 col-10">
                                                 <h6 class="header-title">{{ ucfirst($item['name']) }}</h6>
-                                                <p class="mb-0">{{count($item['agents'])}} {{__('Agents')}} : <span>{{$item['online_agents']}} {{__('Online')}} ・ {{$item['offline_agents']}} {{__('Offline')}}</span></p>
+                                                <p class="mb-0">
+                                                    <span class="team_agent_{{ $item['id'] }}" id="team_agent_{{ $item['id'] }}">{{ count($item['agents']) }}</span>
+                                                     {{ __('Agents') }}
+                                                    : <span>
+                                                        <span class="team_online_agent_{{ $item['id'] }}" id="team_online_agent_{{ $item['id'] }}"">{{ $item['online_agents'] }}</span>
+                                                         {{ __('Online') }} ・
+                                                    <span class="team_offline_agent_{{ $item['id'] }}" id="team_offline_agent_{{ $item['id'] }}">{{ $item['offline_agents'] }}</span>
+                                                     {{ __('Offline') }}
+                                                    </span>
+                                                </p>
+                                                {{-- <p class="mb-0">{{count($item['agents'])}} {{__('Agents')}} :
+                                                    <span>{{$item['online_agents']}} {{__('Online')}} ・ {{$item['offline_agents']}}
+                                                        {{__('Offline')}}</span
+                                                        ></p> --}}
+
                                         </div>
                                     </div>
                                 </div>
@@ -174,7 +188,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                             @foreach ($item['agents'] as $agent)
 
                                 <?php
-                                
+
                                     //print_r($distance_matrix[$agent['id']]); die;
 
                                 if(isset($distance_matrix[$agent['id']]))
@@ -185,12 +199,12 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                         $opti = "";
                                     }
 
-                                    //print_r($distance_matrix[$agent['id']]); 
+                                    //print_r($distance_matrix[$agent['id']]);
                                     $routeperams = "'".$distance_matrix[$agent['id']]['tasks']."','".json_encode($distance_matrix[$agent['id']]['distance'])."','".$opti."',".$agent['id'].",'".$date."'";
-                                    
+
                                     $optimize = '<span class="optimize_btn" onclick="RouteOptimization('.$routeperams.')">Optimize</span>';
                                     $params = "'".$distance_matrix[$agent['id']]['tasks']."','".json_encode($distance_matrix[$agent['id']]['distance'])."','yes',".$agent['id'].",'".$date."'";
-                                    
+
                                     $turnbyturn = '<span class="navigation_btn optimize_btn" onclick="NavigatePath('.$routeperams.')">Export</span>';
                                    //$turnbyturn = "";
                                 }else{
@@ -210,10 +224,10 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                         $pdfperams = "";
                                         $turnbyturn = "";
                                     }
-                                }                               
-                                
+                                }
+
                                 ?>
-                            
+
                                 <div id="accordion-{{ $agent['id'] }}">
                                     <div class="card no-border-radius">
                                         <div class="card-header ml-2" id="by{{ $agent['id'] }}">
@@ -231,7 +245,18 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                                         @php
                                                             $checkAgentActive = ($agent['is_available'] == 1)? ' ('.__('Online').')' : ' ('.__('Offline').')';
                                                         @endphp
-                                                        <h6 class="mb-0 header-title scnd">{{ ucfirst($agent['name']) . $checkAgentActive }} <div class="optimizebtn{{ $agent['id'] }}">{!! $optimize !!}</div><div class="exportbtn{{ $agent['id'] }}">{!! $turnbyturn !!} </div></h6>
+
+                                                        <h6 class="mb-0 header-title scnd">
+                                                            {{ ucfirst($agent['name']) }}
+                                                            <span class="tram_agent_online_status_{{ $agent['id'] }}" id="tram_agent_online_status_{{ $agent['id'] }}">
+                                                                {{ $checkAgentActive }}
+                                                            </span>
+                                                            <div class="optimizebtn{{ $agent['id'] }}">
+                                                                {!! $optimize !!}
+                                                            </div>
+                                                            <div class="exportbtn{{ $agent['id'] }}">
+                                                                {!! $turnbyturn !!}
+                                                            </div></h6>
                                                         <p class="mb-0">{{count($agent['order'])>0?'Busy  ':'Free  '}}<span>{{$agent['agent_task_count']}} {{__('Tasks')}}</span> {!!$agent['total_distance']==''?'':' <i class="fas fa-route"></i>'!!}<span class="dist_sec totdis{{ $agent['id'] }}">{{ $agent['total_distance'] }}</span></p>
                                                         </div>
                                                     </div>
@@ -241,19 +266,19 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                             data-parent="#accordion-{{ $agent['id'] }}"
                                             aria-labelledby="by{{ $agent['id'] }}">
                                             <div id="handle-dragula-left{{ $agent['id'] }}" class="dragable_tasks" agentid="{{ $agent['id'] }}"  params="{{ $params }}" date="{{ $date }}">
-                                                
+
                                             @foreach ($agent['order'] as $orders)
-                                                
+
                                                 @foreach ($orders['task'] as $tasks)
-                                                
+
                                                     <div class="card-body" task_id ="{{ $tasks['id'] }}">
                                                         <div class="p-2 assigned-block">
-                                                            
+
                                                             @php
                                                                     if($tasks['task_status']==1)
                                                                     {
                                                                     $st = "Assigned";
-                                                                    $color_class = "assign_";                                                                    
+                                                                    $color_class = "assign_";
                                                                     }elseif($tasks['task_status']==2)
                                                                     {
                                                                     $st = "Started";
@@ -293,18 +318,18 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                                                         }
                                                                             $timeformat = $preference->time_format == '24' ? 'H:i:s':'g:i a';
                                                                             $order = Carbon::createFromFormat('Y-m-d H:i:s', $tasks['assigned_time'], 'UTC');
-                                                                            
+
                                                                             //$order->setTimezone(isset(Auth::user()->timezone) ? Auth::user()->timezone : 'Asia/Kolkata');
                                                                             $order->setTimezone($client_timezone);
-                                                                        @endphp       
-                                                                          
+                                                                        @endphp
+
 
                                                                 <div class="row no-gutters align-items-center">
                                                                     <div class="col-9 d-flex">
                                                                         <h5 class="d-inline-flex align-items-center justify-content-between"><i class="fas fa-bars"></i> <span>{{date(''.$timeformat.'', strtotime($order))}}</span></h5>
                                                                         <h6 class="d-inline"><img class="vt-top"
                                                                             src="{{ asset('demo/images/ic_location_blue_1.png') }}"> {{ isset($tasks['location']['address'])? $tasks['location']['address']:'' }} <span class="d-block">{{ isset($tasks['location']['short_name'])? $tasks['location']['short_name']:'' }}</span></h6>
-                                                                        
+
                                                                     </div>
                                                                     <div class="col-3">
                                                                         <button class="assigned-btn float-right mb-2 {{$pickup_class}}">{{$tasktype}}</button>
@@ -314,12 +339,12 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
 
                                                             </div>
                                                         </div>
-                                                        
+
                                                     </div>
-                                                
-                                               
+
+
                                                 @endforeach
-                                                
+
                                             @endforeach
                                         </div>
                                         </div>
@@ -335,20 +360,20 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
 
         <form id="pdfgenerate" method="post" enctype="multipart/form-data" action="{{ route('download.pdf') }}">
             @csrf
-            <input id="pdfvalue" type="hidden" name="pdfdata">            
+            <input id="pdfvalue" type="hidden" name="pdfdata">
         </form>
 
     </div>
-    
+
     <div class="col-md-8 col-xl-9">
         <div class="map-wrapper">
             <div style="width: 100%">
-                <div id="map_canvas" style="width: 100%; height:calc(100vh - 70px);"></div>                
+                <div id="map_canvas" style="width: 100%; height:calc(100vh - 70px);"></div>
             </div>
             <div class="contant">
                 <div class="bottom-content">
                     <input type="text"  id="basic-datepicker" class="datetime brdr-1" value="{{date('Y-m-d', strtotime($date))}}" data-date-format="Y-m-d">
-                    
+
                     <div class="dropdown d-inline-block">
                         <button class="dropdown-toggle" type="button" id="dropdownMenuButton"
                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -422,12 +447,12 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
     if(!empty($agents)){
         foreach ($agents as $singleagent) {
             if((!empty($singleagent['agentlog'])) && ($singleagent['agentlog']['lat']!=0) && ($singleagent['agentlog']['long']!=0))
-            {        
+            {
                 $agentslocations[] = $singleagent['agentlog'];
-            }        
+            }
         }
     }
-    
+
     // $defaultmaplocation['lat'] = 30.7046;
     // $defaultmaplocation['long'] = 76.7179;
     $defaultmaplocation['lat'] = $defaultCountryLatitude;
@@ -440,15 +465,15 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
 <script>
 
 $('.teamchecks').on('change', function() {
-    $('.teamchecks').not(this).prop('checked', false);  
+    $('.teamchecks').not(this).prop('checked', false);
 });
 
 $('.taskchecks').on('change', function() {
-    $('.taskchecks').not(this).prop('checked', false);  
+    $('.taskchecks').not(this).prop('checked', false);
 });
 
 $('.agentcheck').on('change', function() {
-    $('.agentcheck').not(this).prop('checked', false);  
+    $('.agentcheck').not(this).prop('checked', false);
 });
 
 $(document).ready(function() {
@@ -456,6 +481,7 @@ $(document).ready(function() {
 $('#wrapper').addClass('dshboard');
 
 initMap();
+setInterval(autoloadmap, 5000);
 $('#shortclick').trigger('click');
 $(".timeago").timeago();
 });
@@ -470,6 +496,8 @@ function gm_authFailure() {
 var show = [0];
 let map;
 let markers = [];
+let driverMarkers = [];
+let privesRoute = [];
 
 var url = window.location.origin;
 var olddata  = {!!json_encode($newmarker)!!};
@@ -483,7 +511,7 @@ var defaultlong = parseFloat(defaultmaplocation[0].long);
 var imgproxyurl         = {!!json_encode($imgproxyurl)!!};
 
 
-$('.filtercheck').click(function() {    
+$('.filtercheck').click(function() {
     $('.agentcheck').not(this).prop('checked', false);
 // for teams
 var val = [];
@@ -494,7 +522,7 @@ $('.newchecks:checkbox:checked').each(function(i) {
 //for tasks
 var taskval = [];
 $('.taskchecks:checkbox:checked').each(function(i) {
-    taskval[i] = parseInt($(this).val());    
+    taskval[i] = parseInt($(this).val());
 });
 
 //for drivers
@@ -510,7 +538,7 @@ for (let i = 0; i < olddata.length; i++) {
     //alert(val);
     // addMarker({ lat: checkdata[3], lng: checkdata[4] });
     if ($.inArray(checkdata['team_id'], val) != -1 || $.inArray(-1, val) != -1) {
-        
+
         var urlnewcreate = '';
             if(checkdata['task_status'] == 0){
                 urlnewcreate = 'unassigned';
@@ -521,15 +549,15 @@ for (let i = 0; i < olddata.length; i++) {
             }else{
                 urlnewcreate = 'faild';
             }
-            
+
             if(checkdata['task_type_id'] == 1){
                     urlnewcreate += '_P.png';
             }else if(checkdata['task_type_id'] == 2){
                     urlnewcreate +='_D.png';
             }else{
                     urlnewcreate +='_A.png';
-            }    
-        
+            }
+
         image = '{{ asset('assets/newicons/') }}'+'/'+urlnewcreate;
 
         send = null;
@@ -543,7 +571,7 @@ for (let i = 0; i < olddata.length; i++) {
 
     // for tasks
         if($.inArray(checkdata['task_status'], taskval) !== -1 || $.inArray(5, taskval) != -1) {
-            
+
             var urlnewcreate = '';
             if(checkdata['task_status'] == 0){
                 urlnewcreate = 'unassigned';
@@ -554,7 +582,7 @@ for (let i = 0; i < olddata.length; i++) {
             }else{
                 urlnewcreate = 'faild';
             }
-            
+
                 if(checkdata['task_type_id'] == 1){
                     urlnewcreate += '_P.png';
                 }else if(checkdata['task_type_id'] == 2){
@@ -562,13 +590,13 @@ for (let i = 0; i < olddata.length; i++) {
                 }else{
                     urlnewcreate +='_A.png';
                 }
-                
+
                 image = '{{ asset('assets/newicons/') }}'+'/'+urlnewcreate;
-                
+
                 send = null;
                 type = 1;
             addMarker({lat:parseFloat(checkdata['latitude']),lng:parseFloat(checkdata['longitude'])}, send,image,checkdata,type);
-        }    
+        }
 }
 
     //for agents
@@ -576,7 +604,7 @@ for (let i = 0; i < olddata.length; i++) {
         checkdata = allagent[i];
         //for agents
         if ($.inArray(checkdata['is_available'], agentval) != -1 || $.inArray(2, agentval) != -1) {
-            
+
             if (checkdata['is_available'] == 1) {
                 images = url+'/demo/images/location.png';
             }else {
@@ -605,13 +633,13 @@ $('.taskchecks:checkbox:checked').each(function(i) {
 
 setMapOnAll(null);
 $(".newchecks").prop('checked', false);
-$(".agentdisplay").prop('checked', false); 
+$(".agentdisplay").prop('checked', false);
 
 for (let i = 0; i < olddata.length; i++) {
     checkdata = olddata[i];
-   
+
     if($.inArray(checkdata['task_status'], taskval) !== -1 || $.inArray(5, taskval) != -1) {
-        
+
         var urlnewcreate = '';
         if(checkdata['task_status'] == 0){
             urlnewcreate = 'unassigned';
@@ -622,7 +650,7 @@ for (let i = 0; i < olddata.length; i++) {
         }else{
             urlnewcreate = 'faild';
         }
-        
+
         if(checkdata['task_type_id'] == 1){
             urlnewcreate += '_P.png';
         }else if(checkdata['task_type_id'] == 2){
@@ -630,9 +658,9 @@ for (let i = 0; i < olddata.length; i++) {
         }else{
             urlnewcreate +='_A.png';
         }
-        
+
         image = '{{ asset('assets/newicons/') }}'+'/'+urlnewcreate;
-        
+
         send = null;
         type = 1;
         addMarker({lat:parseFloat(checkdata['latitude']),lng:parseFloat(checkdata['longitude'])}, send,image,checkdata,type);
@@ -651,9 +679,9 @@ $('.agentdisplay_old').click(function() {
     $(".newchecks").prop('checked', false);
 
     for (let i = 0; i < allagent.length; i++) {
-        checkdata = allagent[i];        
+        checkdata = allagent[i];
         // addMarker({ lat: checkdata[3], lng: checkdata[4] });
-        if ($.inArray(checkdata['is_available'], agentval) != -1 || $.inArray(2, agentval) != -1) {            
+        if ($.inArray(checkdata['is_available'], agentval) != -1 || $.inArray(2, agentval) != -1) {
             if (checkdata['is_available'] == 1) {
                 images = url+'/demo/images/location.png';
             }else {
@@ -673,18 +701,18 @@ $('.agentdisplay_old').click(function() {
 });
 
 function initMap() {
-    const haightAshbury = {    
+    const haightAshbury = {
         lat: allagent.length != 0 && allagent[0].agentlog && allagent[0].agentlog['lat']  != "0.00000000" ? parseFloat(allagent[0].agentlog['lat']): defaultlat,
-        lng: allagent.length != 0 && allagent[0].agentlog && allagent[0].agentlog['long'] != "0.00000000" ? parseFloat(allagent[0].agentlog['long']):defaultlong        
+        lng: allagent.length != 0 && allagent[0].agentlog && allagent[0].agentlog['long'] != "0.00000000" ? parseFloat(allagent[0].agentlog['long']):defaultlong
     };
-    
+
     // const geocoder = new google.maps.Geocoder;
     // var address = '';
     // geocoder.geocode( { 'address' : address }, function( results, status ) {
     //     if (status === google.maps.GeocoderStatus.OK) {
-    //         const haightAshbury = {    
+    //         const haightAshbury = {
     //                     lat: results[0].geometry.location.lat(),
-    //                     lng: results[0].geometry.location.lng()     
+    //                     lng: results[0].geometry.location.lng()
     //         };
     //         map = new google.maps.Map(document.getElementById("map_canvas"), {
     //             zoom: 12,
@@ -701,7 +729,7 @@ function initMap() {
         mapTypeId: "roadmap",
         styles: themeType,
     });
-    
+
     //new code for route
     var color = [
         "blue",
@@ -710,7 +738,7 @@ function initMap() {
         "purple",
         "skyblue",
         "yellow",
-        "orange",        
+        "orange",
         ];
 
     var allroutes = {!! json_encode($routedata) !!};
@@ -722,10 +750,10 @@ function initMap() {
             var routecolor = color[i];
         }else{
             var routecolor = "pink";
-        }        
+        }
         directionsRenderer.setOptions({
             polylineOptions: {
-                strokeColor: routecolor                
+                strokeColor: routecolor
             }
         });
         directionsRenderer.setMap(map);
@@ -737,7 +765,7 @@ function initMap() {
     // Adds a marker at the center of the map.
     for (let i = 0; i < olddata.length; i++) {
         checkdata = olddata[i];
-    
+
         var urlnewcreate = '';
         if(checkdata['task_status'] == 0){
             urlnewcreate = 'unassigned';
@@ -748,7 +776,7 @@ function initMap() {
         }else{
             urlnewcreate = 'faild';
         }
-        
+
         if(checkdata['task_type_id'] == 1){
                 urlnewcreate += '_P.png';
         }else if(checkdata['task_type_id'] == 2){
@@ -756,9 +784,9 @@ function initMap() {
         }else{
                 urlnewcreate +='_A.png';
         }
-            
+
         img = '{{ asset('assets/newicons/') }}'+'/'+urlnewcreate;
-           
+
         send = null;
             type = 1;
         addMarker({
@@ -766,13 +794,13 @@ function initMap() {
             lng:  parseFloat(checkdata['longitude'])
         }, send, img,checkdata,type);
     }
-    
+
     //agents markers
     for (let i = 0; i < allagent.length; i++) {
             displayagent = allagent[i];
-            
+
             if(displayagent.agentlog != null && displayagent.agentlog['lat'] != "0.00000000" && displayagent.agentlog['long'] != "0.00000000" ){
-             
+
                     if (displayagent['is_available'] == 1) {
                         images = url+'/demo/images/location.png';
                     }else {
@@ -791,12 +819,12 @@ function initMap() {
                     lng:  parseFloat(displayagent.agentlog['long'])
                     }, send, image,displayagent,type);
             }
-                       
+
     }
 }
- 
+
 // function for displaying route  on map
-function calculateAndDisplayRoute(directionsService, directionsRenderer,map,alltask,agent_location) {    
+function calculateAndDisplayRoute(directionsService, directionsRenderer,map,alltask,agent_location) {
             const waypts = [];
             const checkboxArray = document.getElementById("waypoints");
 
@@ -822,8 +850,8 @@ function calculateAndDisplayRoute(directionsService, directionsRenderer,map,allt
                 },
                 (response, status) => {
                     if (status === "OK" && response) {
-                        directionsRenderer.setDirections(response);                       
-                       
+                        directionsRenderer.setDirections(response);
+
                     } else {
                         //window.alert("Directions request failed due to " + status);
                     }
@@ -859,7 +887,7 @@ function addMarker(location, lables, images,data,type) {
                 '<div><b class="d-block mb-2"><i class="far fa-clock"></i> <span> '+jQuery.timeago(new Date(data['agentlog']['created_at']))+
                 ' </span></b> <b><i class="fas fa-mobile-alt"></i> '+data['agentlog']['device_type']+'</b> <b class="ml-2"> <i class="fas fa-battery-half"></i>  '+data['agentlog']['battery_level']+'%</b> </div>'
             '</div>'+
-        '</div>';  
+        '</div>';
     }
 
     const infowindow = new google.maps.InfoWindow({
@@ -867,15 +895,18 @@ function addMarker(location, lables, images,data,type) {
         minWidth: 250,
         minheight: 250,
     });
-    
+
     const marker = new google.maps.Marker({
                     position: location,
                     label: lables,
                     icon: images,
                     map: map,
-                    animation: google.maps.Animation.DROP,
-                }); 
-    
+                    //animation: google.maps.Animation.DROP,
+                });
+    if (type == 2) {
+        driverMarkers.push(marker)
+    }
+
      markers.push(marker);
 
     marker.addListener("click", () => {
@@ -897,7 +928,7 @@ function clearMarkers() {
 }
 
 // Shows any markers currently in the array.
-function showMarkers() { 
+function showMarkers() {
     setMapOnAll(map);
 }
 
@@ -925,10 +956,10 @@ function RouteOptimization(taskids,distancematrix,optimize,agentid,date) {
     $("input[name='driver_start_location'][value='current']").prop("checked",true);
     $('#addressBlock').css('display','none');
     $('#addressTaskBlock').css('display','none');
-    $('#selectedtasklocations').html(''); 
+    $('#selectedtasklocations').html('');
     $('.selecttask').css('display','');
     $.ajax({
-            type: 'POST',            
+            type: 'POST',
             url: '{{url("/get-tasks")}}',
             headers: {
                 'X-CSRF-Token': '{{ csrf_token() }}',
@@ -936,16 +967,16 @@ function RouteOptimization(taskids,distancematrix,optimize,agentid,date) {
             data: {'taskids':taskids},
 
             success: function(response) {
-                
-                var data = $.parseJSON(response);    
-                
+
+                var data = $.parseJSON(response);
+
                 for (var i = 0; i < data.length; i++) {
                     var object = data[i];
                     var task_id =  object['id'];
                     var tasktypeid = object['task_type_id'];
                     var current_location = object['current_location'];
                     if(current_location == 0)
-                    {   
+                    {
                         $('input[type=radio][name=driver_start_location]').prop('checked', false);
                         $("input[type=radio][name=driver_start_location][value='current']").remove();
                         $("#radio-current-location-span").remove();
@@ -960,12 +991,12 @@ function RouteOptimization(taskids,distancematrix,optimize,agentid,date) {
                         tasktype = "Dropoff";
                     }else{
                         tasktype = "Appointment";
-                    } 
+                    }
 
                     var location_address =  object['location']['address'];
                     var shortname =  object['location']['short_name'];
 
-                                        
+
                     var option   = '<option value="'+task_id+'">'+tasktype+' - '+shortname+' - '+location_address+'</option>';
                     //$('#collapse'+agentid).append(sidebarhtml);
                     $('#selectedtasklocations').append(option);
@@ -981,7 +1012,7 @@ function RouteOptimization(taskids,distancematrix,optimize,agentid,date) {
 }
 
 
-// on submiting optimization popup 
+// on submiting optimization popup
 $('.submitoptimizeForm').click(function(){
     var driverStartTime = $('.driverStartTime').val();
     var driverTaskDuration = $('.driverTaskDuration').val();
@@ -1014,7 +1045,7 @@ $('.submitoptimizeForm').click(function(){
 
     if(err == 0)
     {
-        $('.routetext').text('Optimizing Route'); 
+        $('.routetext').text('Optimizing Route');
         $('#optimize-route-modal').modal('hide');
         $('.pageloader').css('display','block');
         var formdata =$('form#optimizerouteform').serialize();
@@ -1025,36 +1056,36 @@ $('.submitoptimizeForm').click(function(){
             var formurl = '{{url("/optimize-arrange-route")}}';
         }
         $.ajax({
-                type: 'POST',                
+                type: 'POST',
                 url: formurl,
                 headers: {
                     'X-CSRF-Token': '{{ csrf_token() }}',
                 },
                 data : formdata,
-                success: function(response) {                    
+                success: function(response) {
                     if(response!="Try again later")
-                    {                        
-                        var data = $.parseJSON(response);                        
+                    {
+                        var data = $.parseJSON(response);
                         var tasklist = data.tasklist;
                         var taskorders = tasklist.order;
                         var agentid = data.agentid;
                         var taskids = data.taskids;
                         var distancematrix = data.distance_matrix;
-                        var date = data.date; 
-                        $('.totdis'+agentid).html(data.total_distance);                        
-                        $('#handle-dragula-left'+agentid).html('');                        
+                        var date = data.date;
+                        $('.totdis'+agentid).html(data.total_distance);
+                        $('#handle-dragula-left'+agentid).html('');
                         for (var i = 0; i < taskorders.length; i++) {
                             var object = taskorders[i];
                             var task_id =  object['task'][0]['id'];
                             var location_address =  object['task'][0]['location']['address'];
                             var shortname =  object['task'][0]['location']['short_name'];
-                            var tasktime = object['task'][0]['task_time'];                                                        
+                            var tasktime = object['task'][0]['task_time'];
                             var taskstatus = object['task'][0]['task_status'];
                             var tasktypeid = object['task'][0]['task_type_id'];
                             var classname = "";
                             var classtext = "";
                             var tasktype = "";
-                            var pickupclass = "";                            
+                            var pickupclass = "";
                             if(taskstatus==0)
                             {
                                 classtext = "Unassigned";
@@ -1091,8 +1122,8 @@ $('.submitoptimizeForm').click(function(){
                             }else{
                                 tasktype = "Appointment";
                                 pickupclass = "assign_";
-                            }                        
-                            var sidebarhtml   = '<div class="card-body ui-sortable-handle" task_id="'+task_id+'"><div class="p-2 assigned-block"><div><div class="row no-gutters align-items-center"><div class="col-9 d-flex"><h5 class="d-inline-flex align-items-center justify-content-between"><i class="fas fa-bars"></i><span>'+tasktime+'</span></h5><h6 class="d-inline"><img class="vt-top" src="{{ asset("demo/images/ic_location_blue_1.png") }}">'+location_address+'<span class="d-block">'+shortname+'</span></h6></div><div class="col-3"><button class="assigned-btn float-right mb-2 '+pickupclass+'">'+tasktype+'</button><button class="assigned-btn float-right '+classname+'">'+classtext+'</button></div></div></div></div></div>';                            
+                            }
+                            var sidebarhtml   = '<div class="card-body ui-sortable-handle" task_id="'+task_id+'"><div class="p-2 assigned-block"><div><div class="row no-gutters align-items-center"><div class="col-9 d-flex"><h5 class="d-inline-flex align-items-center justify-content-between"><i class="fas fa-bars"></i><span>'+tasktime+'</span></h5><h6 class="d-inline"><img class="vt-top" src="{{ asset("demo/images/ic_location_blue_1.png") }}">'+location_address+'<span class="d-block">'+shortname+'</span></h6></div><div class="col-3"><button class="assigned-btn float-right mb-2 '+pickupclass+'">'+tasktype+'</button><button class="assigned-btn float-right '+classname+'">'+classtext+'</button></div></div></div></div></div>';
                             $('#handle-dragula-left'+agentid).append(sidebarhtml);
                         }
 
@@ -1101,22 +1132,22 @@ $('.submitoptimizeForm').click(function(){
                             // -------- for route show ------------------
                             reInitMap(data.allroutedata);
                             var params = "'"+taskids+"','"+distancematrix+"','',"+agentid+",'"+date+"'";
-                            var funperams = '<span class="optimize_btn" onclick="RouteOptimization('+params+')">Optimize</span>';                    
+                            var funperams = '<span class="optimize_btn" onclick="RouteOptimization('+params+')">Optimize</span>';
                             $('.optimizebtn'+agentid).html(funperams);
 
                             // ----- route show end-----------
-                        }                        
+                        }
 
                         $('#optimizerouteform').trigger("reset");
                         $('.pageloader').css('display','none');
                         //location.reload();
-                    }else{                    
+                    }else{
                         alert(response);
                         $('.pageloader').css('display','none');
                     }
                 },
                 error: function(response) {
-                    
+
                 }
             });
     }
@@ -1128,9 +1159,94 @@ function cancleForm()
     $('#optimizerouteform').trigger("reset");
     $('#optimize-route-modal').modal('hide');
 }
+// autoload dashbard
+function autoloadmap(){
+    //setMapOnAll(map)
 
+    // setMapOnAll(null);
+
+    $.get("{{ route('dashboard.data') }}", function(data) {
+
+        allagent = data.data.agents;
+        allroutes = data.data.routedata;
+        olddata =  data.data.newmarker;
+        teams =  data.data.teams;
+
+
+        var color = [
+            "blue",
+            "green",
+            "red",
+            "purple",
+            "skyblue",
+            "yellow",
+            "orange",
+        ];
+
+
+        deleteAgentMarks();
+        //teamupdate markers
+        for (let j = 0; j < teams.length; j++) {
+                var agent_count = teams[j]['agents_count'];
+                var team_online_agent_count = teams[j]['online_agents'];
+                var team_offline_agent_count = teams[j]['offline_agents'];
+                //  console.log(agent_count);
+
+                $("#team_agent_"+ teams[j]['id']).text(agent_count);
+                $("#team_online_agent_"+ teams[j]['id']).text(team_online_agent_count);
+                $("#team_offline_agent_"+ teams[j]['id']).text(team_offline_agent_count);
+
+            let teamAgents = teams[j]['agents'];
+            for (let a = 0; a < teamAgents.length; a++) {
+
+                var agent_onlineStatus = ( teamAgents[a]['is_available']  == 1 ) ? ' ({{ __("Online") }})' : ' ({{__("Offline")}})' ;
+                    console.log("#tram_agent_online_status_"+ teamAgents[a]['id']);
+                    console.log(agent_onlineStatus);
+                    $("#tram_agent_online_status_"+teamAgents[a]['id']).text(agent_onlineStatus);
+            }
+
+
+        }
+
+        for (let i = 0; i < allagent.length; i++) {
+            displayagent = allagent[i];
+
+            if (displayagent.agentlog != null && displayagent.agentlog['lat'] != "0.00000000" && displayagent.agentlog[
+                    'long'] != "0.00000000") {
+                // console.log(displayagent.agentlog);
+                if (displayagent['is_available'] == 1) {
+                    images = url + '/demo/images/location.png';
+                } else {
+                    images = url + '/demo/images/location_grey.png';
+                }
+                var image = {
+                    url: images, // url
+                    scaledSize: new google.maps.Size(50, 50), // scaled size
+                    origin: new google.
+                    maps.Point(0, 0), // origin
+                    anchor: new google.maps.Point(22, 22) // anchor
+                };
+                send = null;
+                type = 2;
+
+                addMarker({
+                    lat: parseFloat(displayagent.agentlog['lat']),
+                    lng: parseFloat(displayagent.agentlog['long'])
+                }, send, image, displayagent, type);
+            }
+
+        }
+
+    });
+}
+// delete agent marks
+function deleteAgentMarks() {
+    for (let i = 0; i < driverMarkers.length; i++) {
+        driverMarkers[i].setMap(null);
+    }
+}
 // for reinitializing map in ajax response during drag drop and optimization
-function reInitMap(allroutes) {    
+function reInitMap(allroutes) {
     const haightAshbury = {
         lat: allagent[0].agentlog && allagent[0].agentlog['lat']  != "0.00000000" ? parseFloat(allagent[0].agentlog['lat']): defaultlat,
         lng: allagent[0].agentlog && allagent[0].agentlog['long'] != "0.00000000" ? parseFloat(allagent[0].agentlog['long']):defaultlong
@@ -1141,7 +1257,7 @@ function reInitMap(allroutes) {
         mapTypeId: "roadmap",
         styles: themeType,
     });
-   
+
     //new code for route
     var color = [
         "blue",
@@ -1150,7 +1266,7 @@ function reInitMap(allroutes) {
         "purple",
         "skyblue",
         "yellow",
-        "orange",        
+        "orange",
         ];
 
     $.each(allroutes, function(i, item) {
@@ -1162,10 +1278,10 @@ function reInitMap(allroutes) {
         }else{
             var routecolor = "pink";
         }
-        
+
         directionsRenderer.setOptions({
             polylineOptions: {
-                strokeColor: routecolor                
+                strokeColor: routecolor
             }
         });
 
@@ -1188,7 +1304,7 @@ function reInitMap(allroutes) {
         }else{
             urlnewcreate = 'faild';
         }
-        
+
         if(checkdata['task_type_id'] == 1){
                 urlnewcreate += '_P.png';
         }else if(checkdata['task_type_id'] == 2){
@@ -1196,9 +1312,9 @@ function reInitMap(allroutes) {
         }else{
                 urlnewcreate +='_A.png';
         }
-            
+
         img = '{{ asset('assets/newicons/') }}'+'/'+urlnewcreate;
-        
+
         send = null;
             type = 1;
         addMarker({
@@ -1210,7 +1326,7 @@ function reInitMap(allroutes) {
     //agents markers
     for (let i = 0; i < allagent.length; i++) {
             displayagent = allagent[i];
-            
+
             if(displayagent.agentlog != null && displayagent.agentlog['lat'] != "0.00000000" && displayagent.agentlog['long'] != "0.00000000" ){
                         if (displayagent['is_available'] == 1) {
                             images = url+'/demo/images/location.png';
@@ -1230,7 +1346,7 @@ function reInitMap(allroutes) {
                         lng:  parseFloat(displayagent.agentlog['long'])
                         }, send, image,displayagent,type);
             }
-            
+
     }
 }
 
@@ -1238,20 +1354,20 @@ function reInitMap(allroutes) {
 // jQuery(".dragable_tasks").sortable();
 $(".dragable_tasks").sortable({
     update : function(event, ui) {
-        $('.routetext').text('Arranging Route');    
-        $('.pageloader').css('display','block');        
+        $('.routetext').text('Arranging Route');
+        $('.pageloader').css('display','block');
         var divid = $(this).attr('id');
         var params = $(this).attr('params');
         var agentid = $(this).attr('agentid');
-        var date = $(this).attr('date');       
-        
+        var date = $(this).attr('date');
+
         var taskorder = "";
         jQuery("#"+divid+" .card-body.ui-sortable-handle").each(function (index, element) {
             taskorder = taskorder + $(this).attr('task_id') + ",";
         });
         $('input[type=radio][name=driver_start_location]').prop('checked', false);
         $.ajax({
-            type: 'POST',            
+            type: 'POST',
             url: '{{url("/arrange-route")}}',
             headers: {
                 'X-CSRF-Token': '{{ csrf_token() }}',
@@ -1259,9 +1375,9 @@ $(".dragable_tasks").sortable({
             data: {'taskids':taskorder,'agentid':agentid,'date':date},
 
             success: function(response) {
-                var data = $.parseJSON(response);                                                      
-                reInitMap(data.allroutedata);   
-                $('.totdis'+agentid).html(data.total_distance); 
+                var data = $.parseJSON(response);
+                reInitMap(data.allroutedata);
+                $('.totdis'+agentid).html(data.total_distance);
                 var funperams = '<span class="optimize_btn" onclick="RouteOptimization('+params+')">Optimize</span>';
                 $('.optimizebtn'+agentid).html(funperams);
                 $('.pageloader').css('display','none');
@@ -1275,10 +1391,10 @@ $(".dragable_tasks").sortable({
                 $("input[name='driver_start_location'][value='current']").prop("checked",true);
                 $('#addressBlock').css('display','none');
                 $('#addressTaskBlock').css('display','none');
-                $('#selectedtasklocations').html(''); 
+                $('#selectedtasklocations').html('');
                 $('.selecttask').css('display','none');
                 // $.ajax({
-                //     type: 'POST',            
+                //     type: 'POST',
                 //     url: '{{url("/get-tasks")}}',
                 //     headers: {
                 //         'X-CSRF-Token': '{{ csrf_token() }}',
@@ -1286,9 +1402,9 @@ $(".dragable_tasks").sortable({
                 //     data: {'taskids':taskorder},
 
                 //     success: function(response) {
-                        
-                //         var data = $.parseJSON(response);    
-                                    
+
+                //         var data = $.parseJSON(response);
+
                 //         for (var i = 0; i < data.length; i++) {
                 //             var object = data[i];
                 //             var task_id =  object['id'];
@@ -1301,13 +1417,13 @@ $(".dragable_tasks").sortable({
                 //                 tasktype = "Dropoff";
                 //             }else{
                 //                 tasktype = "Appointment";
-                //             } 
+                //             }
 
                 //             var location_address =  object['location']['address'];
                 //             var shortname =  object['location']['short_name'];
 
-                                                
-                //             var option   = '<option value="'+task_id+'">'+tasktype+' - '+shortname+' - '+location_address+'</option>';                            
+
+                //             var option   = '<option value="'+task_id+'">'+tasktype+' - '+shortname+' - '+location_address+'</option>';
                 //             $('#selectedtasklocations').append(option);
                 //         }
                 //     },
@@ -1339,23 +1455,23 @@ function reloadData() {
 function openAllAccordian() {
     $("#accordion").find(`[data-toggle="collapse"]`).removeClass('collapsed');
     $("#accordion").find(`[data-toggle="collapse"]`).attr('aria-expanded','true');
-    $(".collapse").addClass('show');    
+    $(".collapse").addClass('show');
     $(".allAccordian").html('<span class="" onclick="closeAllAccordian()">Close All</span>');
 }
 
 function closeAllAccordian() {
     $("#accordion").find(`[data-toggle="collapse"]`).addClass('collapsed');
     $("#accordion").find(`[data-toggle="collapse"]`).attr('aria-expanded','false');
-    $(".collapse").removeClass('show');    
+    $(".collapse").removeClass('show');
     $(".allAccordian").html('<span class="" onclick="openAllAccordian()">Open All</span>');
 }
 
 function NavigatePath(taskids,distancematrix,optimize,agentid,date) {
-    $('.routetext').text('Exporting Pdf');    
+    $('.routetext').text('Exporting Pdf');
     $('.pageloader').css('display','block');
-    
+
         $.ajax({
-            type: 'POST',            
+            type: 'POST',
             url: '{{url("/export-path")}}',
             headers: {
                 'X-CSRF-Token': '{{ csrf_token() }}',
@@ -1364,22 +1480,22 @@ function NavigatePath(taskids,distancematrix,optimize,agentid,date) {
 
             success: function(response) {
                 if(response!="Try again later")
-                {                       
+                {
                     $('#pdfvalue').val(response);
                     $("#pdfgenerate").submit();
-                    
-                    $('.pageloader').css('display','none');                    
-                }else{                    
+
+                    $('.pageloader').css('display','none');
+                }else{
                     alert(response);
                     $('.pageloader').css('display','none');
                 }
             },
             error: function(response) {
-                
+
             }
         });
-    
-    
+
+
 }
 
 $('input[type=radio][name=driver_start_location]').change(function() {
@@ -1440,7 +1556,7 @@ $('input[type=radio][name=driver_start_location]').change(function() {
    position: absolute;
     top: 40%;
     z-index: 999;
-    left: 50%;    
+    left: 50%;
 }
 
 .box {
