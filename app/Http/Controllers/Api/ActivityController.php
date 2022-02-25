@@ -98,18 +98,18 @@ class ActivityController extends BaseController
         $end       = Carbon::now($client_code->timezone ?? 'UTC')->endOfDay();
         $utc_start = Carbon::parse($start . $client_code->timezone ?? 'UTC')->tz('UTC');
         $utc_end   = Carbon::parse($end . $client_code->timezone ?? 'UTC')->tz('UTC');
-        
+
         $id     = Auth::user()->id;
 
         $all    = $request->all;
         $tasks   = [];
-        
+
         if ($all == 1) {
             $orders = Order::where('driver_id', $id)->where('status', 'assigned')->orderBy("order_time","ASC")->orderBy("id","ASC")->pluck('id')->toArray();
         } else {
             $orders = Order::where('driver_id', $id)->where('order_time', '>=', $utc_start)->where('order_time', '<=', $utc_end)->where('status', 'assigned')->orderBy("order_time","ASC")->orderBy("id","ASC")->pluck('id')->toArray();
         }
-       
+
 
         if (count($orders) > 0) {
             $tasks = Task::whereIn('order_id', $orders)->where('task_status', '!=', 4)->Where('task_status', '!=', 5)->with(['location','tasktype','order.customer'])->orderBy("order_id", "DESC")->orderBy("id","ASC")
@@ -124,7 +124,7 @@ class ActivityController extends BaseController
                 }
             }
         }
-        
+
         return response()->json([
             'data' => $tasks,
             'status' => 200,
@@ -152,7 +152,7 @@ class ActivityController extends BaseController
     public function updateProfile(Request $request)
     {
         $saved = Agent::where('id', Auth::user()->id)->first();
-        
+
         $header = $request->header();
         $client_code = Client::where('database_name', $header['client'][0])->first('code');
         $getFileName = '';
@@ -169,8 +169,8 @@ class ActivityController extends BaseController
             }
         } else {
             $getFileName = $saved->profile_picture;
-        }        
-        
+        }
+
         $agent                   = Agent::find(Auth::user()->id);
         $agent->name             = isset($request->name)?$request->name:$saved->name;
         $agent->profile_picture  = $getFileName;
@@ -201,10 +201,10 @@ class ActivityController extends BaseController
         $end       = Carbon::now($client_code->timezone ?? 'UTC')->endOfDay();
         $utc_start = Carbon::parse($start . $client_code->timezone ?? 'UTC')->tz('UTC');
         $utc_end   = Carbon::parse($end . $client_code->timezone ?? 'UTC')->tz('UTC');
-        
+
         $tasks   = [];
         $agent = AgentLog::where('agent_id', Auth::user()->id)->first();
-        
+
         $data =  [
             'agent_id'          => Auth::user()->id,
             'lat'               => $request->lat,
@@ -236,10 +236,10 @@ class ActivityController extends BaseController
         $agent->device_type = $request->device_type??null;
         $agent->device_token = $request->device_token??null;;
         $agent->save();
-       
+
 
         if (count($orders) > 0) {
-            $tasks = Task::whereIn('order_id', $orders)->where('task_status', '!=', 4)->Where('task_status', '!=', 5)->with(['location','tasktype','order.customer'])->orderBy('order_id', 'desc')->orderBy('id', 'ASC')->get(); 
+            $tasks = Task::whereIn('order_id', $orders)->where('task_status', '!=', 4)->Where('task_status', '!=', 5)->with(['location','tasktype','order.customer'])->orderBy('order_id', 'desc')->orderBy('id', 'ASC')->get();
                   if (count($tasks) > 0) {
                 //sort according to task_order
                 $tasks = $tasks->toArray();
@@ -250,7 +250,7 @@ class ActivityController extends BaseController
                 }
             }
         }
-        
+
         $agents    = $agent; //Agent::where('id', $id)->with('team')->first();
         $taskProof = TaskProof::all();
 
