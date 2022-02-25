@@ -59,8 +59,6 @@ class Order extends Model
         return $this->hasOne('');
     }
 
-
-
     public function getTaskImagesAttribute($value)
     {
       $array = array();
@@ -84,6 +82,8 @@ class Order extends Model
         return $imgarray;
     }
 
-
+    public function cancel_request(){
+        return $this->hasOne('App\Model\OrderCancelRequest', 'order_id', 'id')->orderBy('updated_at', 'desc');
+    }
     
 }
