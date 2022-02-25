@@ -20,6 +20,7 @@
                     <div class="col-md-4">
                         <h4 class="mt-0 mb-2">{{__("Tags")}}</h4>
                         <ul class="tags_list p-0">
+                            <li>{{__("order_number")}}</li>
                             <li>{{__("driver_name")}}</li>
                             <li>{{__("vehicle_model")}}</li>
                             <li>{{__("plate_number")}}</li>
