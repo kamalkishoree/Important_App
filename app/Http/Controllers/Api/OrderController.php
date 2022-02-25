@@ -43,7 +43,7 @@ class OrderController extends BaseController
             $order_cancel_request->status = 0;
             $order_cancel_request->save();
 
-            return $this->success(__('Your request for order cancellation has been submitted'));
+            return $this->success('', __('Your request for order cancellation has been submitted'));
         }
         catch(\Exception $ex){
             return $this->error($ex->getMessage(), $ex->getCode());
