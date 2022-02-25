@@ -27,7 +27,7 @@
    "Powered by":"Energizado por",
    "Dispatch. Fleet Management and Last Mile Delivery solution.":"Envío. Solución de gestión de flotas y entrega de última milla.",
    "Apps":"Aplicaciones",
-   "Open All":"Abrir todo",   
+   "Open All":"Abrir todo",
    "Agents":"Agentes",
    "Online":"En línea",
    "success":"éxito",
@@ -362,12 +362,14 @@
    "Rejections":"Rechazos",
    "No rejection found":"No se encontró ningún rechazo",
    "Task List":"Lista de tareas",
-   "Are you sure?":"Estas seguro",   
+   "Are you sure?":"Estas seguro",
    "Pickup":"Recoger",
    "Drop":"Soltar",
-   "John Doe":"John Doe",   
+   "John Doe":"John Doe",
    "View OTP after Logging in the Driver App":"Ver OTP después de iniciar sesión en la aplicación del controlador",
    "Base Duration (In Minutes)":"Duración base (en minutos)",
-   "Edit":"Editar"
-   
+   "Edit":"Editar",
+   "Hi ":"Hola ",
+   "Order Update | ":"Actualización de pedidos | "
+
 }

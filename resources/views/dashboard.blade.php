@@ -481,7 +481,7 @@ $(document).ready(function() {
 $('#wrapper').addClass('dshboard');
 
 initMap();
-setInterval(autoloadmap, 5000);
+//setInterval(autoloadmap, 5000);
 $('#shortclick').trigger('click');
 $(".timeago").timeago();
 });
@@ -821,6 +821,10 @@ function initMap() {
             }
 
     }
+
+    setTimeout(function() {
+            autoloadmap();
+    }, 5000);
 }
 
 // function for displaying route  on map
@@ -1236,8 +1240,11 @@ function autoloadmap(){
             }
 
         }
-
+        setTimeout(function() {
+            autoloadmap();
+        }, 5000);
     });
+    
 }
 // delete agent marks
 function deleteAgentMarks() {

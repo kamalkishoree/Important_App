@@ -23,8 +23,8 @@ class NotificationSeeder extends Seeder
         $notification_types->notification_events()->createMany([
             ['name' => 'Agent Started','message'=>'Driver "driver_name" in our "vehicle_model" with license plate "plate_number" is heading to your location. You can track them here "tracking_link" '],
             ['name' => 'Agent Arrived','message'=>'Driver "driver_name" in our "vehicle_model" with license plate "plate_number" has arrived at your location.'],
-            ['name' => 'Successful','message'=>'Thank you, your order has been delivered successfully by driver "driver_name" You can rate them here ."feedback_url"'],
-            ['name' => 'Failed','message'=>'Sorry, our driver "driver_name" is not able to complete your order delivery']
+            ['name' => 'Successful','message'=>'Thank you, your order ("order_number") has been delivered successfully by driver "driver_name" You can rate them here ."feedback_url"'],
+            ['name' => 'Failed','message'=>'Sorry, our driver "driver_name" is not able to complete your order ("order_number") delivery']
         ]);
 
         $notification_types_d = NotificationType::create([
