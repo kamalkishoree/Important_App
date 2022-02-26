@@ -43,17 +43,17 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                 <div class="row">
                     <div class="col-12">
                         <div class="form-group">
-                            <p><i class="fa fa-user" aria-hidden="true"></i> {{ (isset($task->customer->name))?$task->customer->name:'' }}</p>
+                            <p class="al_text_overflow"><i class="fa fa-user" aria-hidden="true"></i> {{ (isset($task->customer->name))?$task->customer->name:'' }}</p>
                         </div>
                     </div>
                     <div class="col-12">
                         <div class="form-group">
-                            <p><i class="fa fa-phone" aria-hidden="true"></i> {{ (isset($task->customer->phone_number))?$task->customer->phone_number:'' }}</p>
+                            <p class="al_text_overflow"><i class="fa fa-phone" aria-hidden="true"></i> {{ (isset($task->customer->phone_number))?$task->customer->phone_number:'' }}</p>
                         </div>
                     </div>
                     <div class="col-12">
                         <div class="form-group">
-                            <p><i class="fa fa-envelope" aria-hidden="true"></i> {{ (isset($task->customer->email))?$task->customer->email:'' }}</p>
+                            <p class="al_text_overflow"><i class="fa fa-envelope" aria-hidden="true"></i> {{ (isset($task->customer->email))?$task->customer->email:'' }}</p>
                         </div>
                     </div>
                 </div>
@@ -160,31 +160,42 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
         <div class="col-xl-7">
             <div class="card-box">
                 <h4 class="header-title mb-2">{{__('Task List')}}</h4>
-                @php
-                $tasksLocations = [];
-                @endphp
-                @foreach ($task->task as $singletask)
-                @php
-                if($singletask->task_type_id==1)
-                {
-                $tasktype = "Pickup";
-                $pickup_class = "yellow_";
-                }elseif($singletask->task_type_id==2)
-                {
-                $tasktype = "Dropoff";
-                $pickup_class = "green_";
-                }else{
-                $tasktype = "Appointment";
-                $pickup_class = "assign_";
-                }
-                $tasksLocations[] = ['task_type' => $tasktype, 'latitude' => isset($singletask->location->latitude) ? floatval($singletask->location->latitude):0.00, 'longitude' => isset($singletask->location->longitude) ? floatval($singletask->location->longitude): 0.00, 'address' => isset($singletask->location->address) ? $singletask->location->address : '', 'task_type_id' => $singletask->task_type_id, 'customer_name' => isset($task->customer->name)?$task->customer->name:'', 'customer_phone_number' => isset($task->customer->phone_number)?$task->customer->phone_number:'', 'task_status' => (int)$singletask->task_status];
-                @endphp
-                <div class="address_box mb-1">
-                    <span class="{{ $pickup_class }} mb-0"> {{ $tasktype }}</span>
-                    <span class="short_name">{{ (isset($singletask->location->short_name))?$singletask->location->short_name:'' }}</span>
-                    <label class="m-0" data-toggle="tooltip" data-placement="bottom" title="{{ (isset($singletask->location->address))?$singletask->location->address:'' }}">{{ (isset($singletask->location->address))?$singletask->location->address:'' }}</label>
+                <div class="al_new_address_box_outer position-relative">
+                    @php
+                    $tasksLocations = [];
+                    @endphp
+                    @foreach ($task->task as $singletask)
+                    @php
+                    if($singletask->task_type_id==1)
+                    {
+                    $tasktype = "Pickup";
+                    $pickup_class = "yellow_";
+                    }elseif($singletask->task_type_id==2)
+                    {
+                    $tasktype = "Dropoff";
+                    $pickup_class = "green_";
+                    }else{
+                    $tasktype = "Appointment";
+                    $pickup_class = "assign_";
+                    }
+                    $tasksLocations[] = ['task_type' => $tasktype, 'latitude' => isset($singletask->location->latitude) ? floatval($singletask->location->latitude):0.00, 'longitude' => isset($singletask->location->longitude) ? floatval($singletask->location->longitude): 0.00, 'address' => isset($singletask->location->address) ? $singletask->location->address : '', 'task_type_id' => $singletask->task_type_id, 'customer_name' => isset($task->customer->name)?$task->customer->name:'', 'customer_phone_number' => isset($task->customer->phone_number)?$task->customer->phone_number:'', 'task_status' => (int)$singletask->task_status];
+                    @endphp
+
+                        <div class="address_box mb-1 ">
+                            <div class="al_new_address_box d-flex align-items-start mb-3">
+                                <div class="al_new_address_box_pickup">
+                                    <span class="{{ $pickup_class }} mb-0" > {{ $tasktype }}</span>
+                                </div>
+                                <div class="al_new_address_box_content pl-3">
+                                    <div class="short_name">{{ (isset($singletask->location->short_name))?$singletask->location->short_name:'' }}</div>
+                                    <label class="m-0" data-toggle="tooltip" data-placement="bottom" title="{{ (isset($singletask->location->address))?$singletask->location->address:'' }}">{{ (isset($singletask->location->address))?$singletask->location->address:'' }}</label>
+                                    <div class="status p-1"> {{ $singletask->status }}</div>
+                                </div>
+                            </div>
+                        </div>
+
+                    @endforeach
                 </div>
-                @endforeach
             </div>
 
             @if(!empty($task->agent))

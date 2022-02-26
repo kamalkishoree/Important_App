@@ -1891,6 +1891,7 @@ class TaskController extends Controller
         $tz = new Timezone();
         $client_timezone = $tz->timezone_name(Auth::user()->timezone);
         $task = Order::with(['customer', 'location', 'taskFirst', 'agent', 'task.location', 'task_rejects.agent'])->find($id);
+
         $driver_location_logs = [];
         if (!empty($task->driver_id)) {
             $firstTask = $task->task()->first();
