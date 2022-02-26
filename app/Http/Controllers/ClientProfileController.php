@@ -26,7 +26,7 @@ class ClientProfileController extends Controller
     {
         $id = Auth::user()->id;
 
-        $user = Client::where('id', 1)->first();
+        $user = Auth::user(); // Client::where('id', 1)->first();
 
         $validator = Validator::make($request->all(), [
             'old_password' => 'required',

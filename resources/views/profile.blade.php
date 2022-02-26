@@ -136,7 +136,7 @@
                             <div class="col-md-3 mb-4">
                                 <label class="control-label">{{__("Short Code")}}</label><br/>
                                 <h1 class="control-label" style="font-size: 4rem;">{{Auth::user()->code}}</h1>
-                                
+
                             </div>
                             <div class="col-md-3 mb-4">
                                 <div class="text-center mb-3">
@@ -200,7 +200,7 @@
                                 </div>
                             </div>
 
-                           
+
                         </div>
 
                         <div class="row">
@@ -233,11 +233,11 @@
                                         <strong></strong>
                                     </span>
                                 </div>
-                            
+
                         </div>
 
                         <div class="row mb-2">
-                          
+
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group mb-3" id="timezoneInput">
