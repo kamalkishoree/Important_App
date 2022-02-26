@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Auth;
 use Twilio\Rest\Client as TwilioClient;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\Api\BaseController;
-use App\Model\{Agent, Client, Customer, Geo, Location, Order, Roster, Task, TaskReject, Timezone, AllocationRule, ClientPreference, DriverGeo, NotificationEvent, NotificationType, SmtpDetail, PricingRule, TagsForAgent, TagsForTeam, Team, TaskProof};
+use App\Model\{Agent, Client, Customer, Geo, Location, Order, Roster, Task, TaskReject, Timezone, AllocationRule, ClientPreference, DriverGeo, NotificationEvent, NotificationType, SmtpDetail, PricingRule, TagsForAgent, TagsForTeam, Team, TaskProof, OrderCancelReason};
 
 class OrderController extends BaseController
 {
@@ -45,5 +45,10 @@ class OrderController extends BaseController
         catch(\Exception $ex){
             return $this->error(__('Server Error'), $ex->getCode());
         }
+    }
+
+    public function getOrderCancelReasons(Request $request){
+        $reasons = OrderCancelReason::where('status', 1)->get();
+        return $this->success($reasons);
     }
 }
