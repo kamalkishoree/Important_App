@@ -38,13 +38,14 @@ Route::post('upload-image-for-task','Api\TaskController@uploadImageForTask')->na
 Route::get('/notification/tracking/{order_id}', 'Api\TaskController@notificationTrackingDetail')->middleware('ConnectDbFromOrder');
 
 Route::post('shortCode', 'Api\ShortcodeController@validateCompany');
-Route::get('cmscontent','Api\ActivityController@cmsData');
+
 
 // routes for edit order
 Route::post('edit-order/driver/notify', 'Api\TaskController@editOrderNotification')->middleware('ConnectDbFromOrder');
 
 Route::group(['middleware' => ['dbCheck', 'apiLocalization']], function() {
     Route::get('client/preferences', 'Api\ActivityController@clientPreferences');
+    Route::get('cmscontent','Api\ActivityController@cmsData');
 });
 
 
@@ -61,7 +62,7 @@ Route::group(['prefix' => 'auth'], function () {
         Route::post('signup', 'Api\AuthController@signup');
         Route::post('signup/sendOtp', 'Api\DriverRegistrationController@sendOtp');
         Route::post('signup/verifyOtp', 'Api\DriverRegistrationController@verifyOtp');
-        Route::get('cmscontent','Api\ActivityController@cmsData');
+        //Route::get('cmscontent','Api\ActivityController@cmsData');
     });
 
 });
