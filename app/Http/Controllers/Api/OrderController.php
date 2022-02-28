@@ -30,16 +30,24 @@ class OrderController extends BaseController
                 return $this->error(__('Invalid Data'), 422);
             }
 
-            $dispatch_order_cancel_url = str_replace('/dispatch-pickup-delivery/', '/dispatch-order-cancel-request/', $order->call_back_url);
-            
-            $client = new GClient(['content-type' => 'application/json']);
-            $res = $client->get($dispatch_order_cancel_url.'?reject_reason='.urlencode($request->reject_reason));
-            $response = json_decode($res->getBody(), true);
-            
-            if($response['status'] == 'Success'){
-                return $this->success('', $response['message']);
+            if(!empty($order->call_back_url)){
+                if(strpos($order->call_back_url, 'dispatch-order-status-update') !== false){
+                    $dispatch_order_cancel_url = str_replace('/dispatch-order-status-update/', '/dispatch-order-cancel-request/', $order->call_back_url);
+                }else{
+                    $dispatch_order_cancel_url = str_replace('/dispatch-pickup-delivery/', '/dispatch-order-cancel-request/', $order->call_back_url);
+                }
+                
+                $client = new GClient(['content-type' => 'application/json']);
+                $res = $client->get($dispatch_order_cancel_url.'?reject_reason='.urlencode($request->reject_reason));
+                $response = json_decode($res->getBody(), true);
+                
+                if($response['status'] == 'Success'){
+                    return $this->success('', $response['message']);
+                }else{
+                    return $this->error($response['message'], 422);
+                }
             }else{
-                return $this->error($response['message'], 422);
+                return $this->error(__('Invalid Data'), 422);
             }
         }
         catch(\Exception $ex){
