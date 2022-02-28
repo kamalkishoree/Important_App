@@ -106,10 +106,10 @@ class TaskController extends BaseController
               $sms_settings = $notification_type[2];
                 break;
         }
-        
+
         $otpEnabled = 0;
         $otpRequired = 0;
-      
+
         switch ($request->task_status) {
             case 2:
                  $task_type        = 'assigned';
@@ -117,7 +117,7 @@ class TaskController extends BaseController
                 // $sms_body         = 'Driver '.$order_details->agent->name.' in our '.$order_details->agent->make_model.' with license plate '.$order_details->agent->plate_number.' is heading to your location. You can track them here.'.url('/order/tracking/'.$client_details->code.'/'.$order_details->unique_id.'');
                  $sms_body         = $sms_settings['notification_events'][0]['message'];
                  $link             =  $client_url.'/order/tracking/'.$client_details->code.'/'.$order_details->unique_id;
-              
+
                 break;
             case 3:
                  $task_type        = 'assigned';
@@ -175,14 +175,14 @@ class TaskController extends BaseController
             break;
 
         }
-        
+
         $send_sms_status   = isset($sms_final_status['client_notification']['request_recieved_sms'])? $sms_final_status['client_notification']['request_recieved_sms']:0;
         $send_email_status = isset($sms_final_status['client_notification']['request_received_email'])? $sms_final_status['client_notification']['request_received_email']:0;
 
         //for recipient email and sms
         $send_recipient_sms_status   = isset($sms_final_status['client_notification']['recipient_request_recieved_sms'])? $sms_final_status['client_notification']['recipient_request_recieved_sms']:0;
         $send_recipient_email_status = isset($sms_final_status['client_notification']['recipient_request_received_email'])? $sms_final_status['client_notification']['recipient_request_received_email']:0;
-      
+
         if ($request->task_status == 4) {
             if ($check == 1) {
                 $Order  = Order::where('id', $orderId->order_id)->update(['status' => $task_type]);
@@ -264,7 +264,7 @@ class TaskController extends BaseController
        // dd($request->toArray());
 
         $newDetails = Task::where('id', $request->task_id)->with(['location','tasktype','pricing','order.customer'])->first();
-       
+
         $sms_body = str_replace('"order_number"', $order_details->unique_id, $sms_body);
         $sms_body = str_replace('"driver_name"', $order_details->agent->name, $sms_body);
         $sms_body = str_replace('"vehicle_model"', $order_details->agent->make_model, $sms_body);
@@ -295,7 +295,7 @@ class TaskController extends BaseController
             $mail = SmtpDetail::where('client_id', $client_details->id)->first();
 
             try {
-                
+
               $res =  \Mail::send('email.verify', ['customer_name' => $order_details->customer->name,'content' => $sms_body,'agent_name' => $order_details->agent->name,'agent_profile' =>$agent_profile,'number_plate' =>$order_details->agent->plate_number,'client_logo'=>$client_logo,'link'=>$link], function ($message) use ($sendto, $client_details, $mail) {
                     $message->from($mail->from_address, $client_details->name);
                     $message->to($sendto)->subject(__('Order Update | ').$client_details->company_name);
@@ -306,7 +306,7 @@ class TaskController extends BaseController
         }
         $recipient_phone = isset($newDetails->location->phone_number)?$newDetails->location->phone_number:'';
         $recipient_email = isset($newDetails->location->email)?$newDetails->location->email:'';
-        
+
         if ($send_recipient_sms_status == 1 && $recipient_phone!='') {
             try {
                 if (isset($recipient_phone) && strlen($recipient_phone) > 8) {
@@ -776,7 +776,7 @@ class TaskController extends BaseController
                       ];
                     $loc_update = [
                         'short_name'  => $value['short_name']??null,
-                        'post_code'   => (int)$post_code,
+                        'post_code'   => $post_code,
                         'flat_no'     => $value['flat_no']??null,
                         'email'       => $value['email']??null,
                         'phone_number'=> $value['phone_number']??null,

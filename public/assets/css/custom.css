@@ -676,24 +676,27 @@ hr.new3 {
 
 
 .red_ {
-    background-color: hsl(357deg 100% 50% / 50%) !important;
+    background-color: hsl(357deg 100% 50% / 100%) !important;
     color: #fff;
 }
 
 .yellow_ {
-    background-color: rgb(204 136 153 / 60%) !important;
+    background-color: rgb(204 136 153 / 100%) !important;
     color: #fff;
 }
 
 .green_ {
-    background-color: rgb(64 179 35 / 50%) !important;
+    background-color: rgb(64 179 35 / 100%) !important;
     color: #fff;
 }
 .assign_ {
     background-color: rgba(233, 130, 27, 0.5) !important;
     color: #fff;
 }
-
+.al_new_address_box.d-flex.align-items-start.mb-3 {
+    position: relative;
+    z-index: 1;
+}
 .light_green {
     background-color: rgb(235 183 133 / 65%) !important;
     color: #fff;
@@ -816,14 +819,31 @@ hr.new3 {
 
 
 .address_box label {
-    width: 70%;
-    white-space: nowrap;
+    width: 100%;
     margin-bottom: 0;
-    line-height: 27px;
-    overflow: hidden;
-    text-overflow: ellipsis;
 }
-
+.al_new_address_box_content .status {
+    background-color: #4ac9ef;
+    border-radius: 5px;
+    display: inline-block;
+    color: #fff;
+    padding: 2px 5px !important;
+    font-size: 12px;
+    line-height: normal;
+}
+.al_new_address_box_outer.position-relative:after {
+    position: absolute;
+    content: "";
+    border-left: 1px dashed #777;
+    height: calc(100% - 74px);
+    width: 1px;
+    z-index: 0;
+    left: 25px;
+    top: 0;
+}
+p.al_text_overflow {
+    word-break: break-all;
+}
 .address_box {
     display: flex;
     align-content: center;

@@ -506,7 +506,7 @@ class TaskController extends Controller
             if (isset($request->address[$key])) {
                 $loc = [
                     'short_name'     => $request->short_name[$key],
-                     'post_code'      => (int)$request->post_code[$key],
+                    'post_code'      => $request->post_code[$key],
                     'flat_no'        => !empty($request->flat_no[$key])? $request->flat_no[$key] : '',
                     'email'          => $request->address_email[$key],
                     'phone_number'   => $request->address_phone_number[$key],
@@ -536,7 +536,7 @@ class TaskController extends Controller
             if ($location->customer_id != $cus_id) {
                 $newloc = [
                    'short_name'   => $location->short_name,
-                    'post_code'    => (int)$location->post_code,
+                    'post_code'    =>$location->post_code,
                     'flat_no'      => $location->flat_no,
                     'email'        => $location->address_email,
                     'phone_number' => $location->address_phone_number,
@@ -949,7 +949,7 @@ class TaskController extends Controller
             if (isset($request->address[$key])) {
                 $loc = [
                    'short_name'  => $request->short_name[$key],
-                    'post_code'   => (int)$request->post_code[$key],
+                    'post_code'   => $request->post_code[$key],
                     'flat_no'   => !empty($request->flat_no[$key])? $request->flat_no[$key] : '',
                 ];
               //  $Loction = Location::create($loc);
@@ -1891,6 +1891,7 @@ class TaskController extends Controller
         $tz = new Timezone();
         $client_timezone = $tz->timezone_name(Auth::user()->timezone);
         $task = Order::with(['customer', 'location', 'taskFirst', 'agent', 'task.location', 'task_rejects.agent'])->find($id);
+
         $driver_location_logs = [];
         if (!empty($task->driver_id)) {
             $firstTask = $task->task()->first();
@@ -2108,7 +2109,7 @@ class TaskController extends Controller
             if (isset($request->short_name[$key])) {
                 $loc = [
                     'short_name'    => $request->short_name[$key],
-                    'post_code'     => (int)$request->post_code[$key],
+                    'post_code'     => $request->post_code[$key],
                     'flat_no'       => !empty($request->flat_no[$key])? $request->flat_no[$key] : '',
                     'email'         => $request->address_email[$key],
                     'phone_number'  => $request->address_phone_number[$key],
@@ -2131,7 +2132,7 @@ class TaskController extends Controller
                 if ($location->customer_id != $cus_id) {
                     $newloc = [
                         'short_name'     => $location->short_name,
-                        'post_code'      => (int)$location->post_code,
+                        'post_code'      => $location->post_code,
                         'flat_no'        => $location->flat_no,
                         'alcoholic_item' => $location->alcoholic_item,
                         'email'          => $location->address_email,

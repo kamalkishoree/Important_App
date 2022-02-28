@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Auth;
 use Twilio\Rest\Client as TwilioClient;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\Api\BaseController;
-use App\Model\{Agent, Client, Customer, Geo, Location, Order, OrderCancelRequest, Roster, Task, TaskReject, Timezone, AllocationRule, ClientPreference, DriverGeo, NotificationEvent, NotificationType, SmtpDetail, PricingRule, TagsForAgent, TagsForTeam, Team, TaskProof};
+use App\Model\{Agent, Client, Customer, Geo, Location, Order, Roster, Task, TaskReject, Timezone, AllocationRule, ClientPreference, DriverGeo, NotificationEvent, NotificationType, SmtpDetail, PricingRule, TagsForAgent, TagsForTeam, Team, TaskProof, OrderCancelReason};
 
 class OrderController extends BaseController
 {
@@ -25,28 +25,38 @@ class OrderController extends BaseController
     public function createOrderCancelRequest(Request $request, $id){
         try{
             $user = Auth::user();
-            $order = Order::with('cancel_request')->where('id', $id)->where('status', '!=', 'completed')->where('driver_id', $user->id)->first();
+            $order = Order::where('id', $id)->where('status', '!=', 'completed')->where('driver_id', $user->id)->first();
             if(!$order){
                 return $this->error(__('Invalid Data'), 422);
             }
-            if($order->cancel_request && $order->cancel_request->status == 0){
-                return $this->error(__('Cancel request has already been submitted'), 422);
-            }
-            if($order->cancel_request && $order->cancel_request->status == 1){
-                return $this->error(__('Cancel request has already been processed'), 422);
-            }
 
-            $order_cancel_request = new OrderCancelRequest();
-            $order_cancel_request->order_id = $id;
-            $order_cancel_request->driver_id = $user->id;
-            $order_cancel_request->reject_reason = $request->reject_reason;
-            $order_cancel_request->status = 0;
-            $order_cancel_request->save();
-
-            return $this->success('', __('Your request for order cancellation has been submitted'));
+            if(!empty($order->call_back_url)){
+                if(strpos($order->call_back_url, 'dispatch-order-status-update') !== false){
+                    $dispatch_order_cancel_url = str_replace('/dispatch-order-status-update/', '/dispatch-order-cancel-request/', $order->call_back_url);
+                }else{
+                    $dispatch_order_cancel_url = str_replace('/dispatch-pickup-delivery/', '/dispatch-order-cancel-request/', $order->call_back_url);
+                }
+                
+                $client = new GClient(['content-type' => 'application/json']);
+                $res = $client->get($dispatch_order_cancel_url.'?reject_reason='.urlencode($request->reject_reason));
+                $response = json_decode($res->getBody(), true);
+                
+                if($response['status'] == 'Success'){
+                    return $this->success('', $response['message']);
+                }else{
+                    return $this->error($response['message'], 422);
+                }
+            }else{
+                return $this->error(__('Invalid Data'), 422);
+            }
         }
         catch(\Exception $ex){
-            return $this->error($ex->getMessage(), $ex->getCode());
+            return $this->error(__('Server Error'), $ex->getCode());
         }
+    }
+
+    public function getOrderCancelReasons(Request $request){
+        $reasons = OrderCancelReason::where('status', 1)->get();
+        return $this->success($reasons);
     }
 }
