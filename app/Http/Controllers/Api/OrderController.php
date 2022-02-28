@@ -24,8 +24,8 @@ class OrderController extends BaseController
 
     public function createOrderCancelRequest(Request $request, $id){
         try{
-            // $user = Auth::user();
-            $order = Order::where('id', $id)->where('status', '!=', 'completed')->where('driver_id', 20)->first();
+            $user = Auth::user();
+            $order = Order::where('id', $id)->where('status', '!=', 'completed')->where('driver_id', $user->id)->first();
             if(!$order){
                 return $this->error(__('Invalid Data'), 422);
             }
