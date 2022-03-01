@@ -291,8 +291,16 @@ class ActivityController extends BaseController
             $orders = Order::where('driver_id', $id)->pluck('id')->toArray();
         }
         if (isset($orders)) {
-            $tasks = Task::whereIn('order_id', $orders)->whereIn('task_status', [4,5])->with(['location','tasktype','order.customer'])->orderBy('order_id', 'DESC')
-             ->get(['id','order_id','dependent_task_id','task_type_id','location_id','appointment_duration','task_status','allocation_type','created_at','barcode']);
+            $tasks = Task::with(['location','tasktype','order.customer'])
+            ->whereIn('order_id', $orders)
+            ->where(function($q){
+                $q->whereIn('task_status', [4,5])
+                ->orWhereHas('order', function($q1){
+                    $q1->where('status', 'cancelled');
+                });
+            })
+            ->orderBy('order_id', 'DESC')
+            ->get(['id','order_id','dependent_task_id','task_type_id','location_id','appointment_duration','task_status','allocation_type','created_at','barcode']);
 
             $totalCashCollected = 0;
             foreach($tasks as $task){
