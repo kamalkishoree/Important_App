@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Model\Client;
+use Config;
+use Storage;
+use Carbon\Carbon;
+use App\Model\{Client, Order};
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Config;
-use Storage;
+
 class TrackingController extends Controller
 {
     public function OrderTracking($domain = '', $user, $id)
@@ -184,31 +186,44 @@ class TrackingController extends Controller
 
     # order cancel section 
 
-    public function orderCancelFromOrder($domain = '', $user, $id)
+    public function orderCancelFromOrder(Request $request, $domain = '', $user, $id)
     {
         $respnse = $this->connection($user);
         if ($respnse['status'] == 'connected') {
-            $order = DB::connection($respnse['database'])->table('orders')->where('unique_id', $id)->first();
-            if (isset($order->id)) {
-                 $orderc = DB::connection($respnse['database'])->table('orders')->where('id', $order->id)->update(['status' => 'cancelled']);
-               
+            DB::connection($respnse['database'])->beginTransaction();
+            try{
+                $database_name = $respnse['database'];
+                $order = DB::connection($respnse['database'])->table('orders')->where('unique_id', $id)->first();
+                if (isset($order->id)) {
+                    $orderc = DB::connection($respnse['database'])->table('orders')->where('id', $order->id)->update(['status' => 'cancelled', 'note'=>$request->reject_reason]);
 
-                 return response()->json([
-                    'message' => 'Successfully',
-                     'order'  => $order
+                    $data = [
+                        'order_id'          => $order->id,
+                        'driver_id'         => $order->driver_id,
+                        'status'            => 2,
+                        'created_at'        => Carbon::now()->toDateTimeString(),
+                        'updated_at'        => Carbon::now()->toDateTimeString(),
+                    ];
+                    $order_reject = DB::connection($respnse['database'])->table('task_rejects')->insert($data);
+
+                    DB::connection($respnse['database'])->commit();
+                    return response()->json([
+                        'status' => 'Success',
+                        'message' => 'Order cancelled successfully',
+                        // 'order'  => $order
                     ], 200);
-
-               
-            } else {
-
-                return response()->json([
-                    'message' => 'Error'], 400);
-               
+                }
+                else {
+                    DB::connection($respnse['database'])->rollback();
+                    return response()->json(['status' => 'Error', 'message' => 'Invalid Data'], 400);
+                }
             }
-        } else {
-            return response()->json([
-                'message' => 'Error'], 400);
-          
+            catch(\Exception $ex){
+                DB::connection($respnse['database'])->rollback();
+                return response()->json(['status' => 'Error', 'message' => 'Server Error'], 400);
+            }
+        }else {
+            return response()->json(['status' => 'Error', 'message' => 'Connection Error'], 400);
         }
     }
 
