@@ -43,6 +43,9 @@ Route::post('shortCode', 'Api\ShortcodeController@validateCompany');
 // routes for edit order
 Route::post('edit-order/driver/notify', 'Api\TaskController@editOrderNotification')->middleware('ConnectDbFromOrder');
 
+// route for cancel order request status
+Route::post('cancel-order-request-status/driver/notify', 'Api\TaskController@cancelOrderRequestStatusNotification')->middleware('ConnectDbFromOrder');
+
 Route::group(['middleware' => ['dbCheck', 'apiLocalization']], function() {
     Route::get('client/preferences', 'Api\ActivityController@clientPreferences');
     Route::get('cmscontent','Api\ActivityController@cmsData');
