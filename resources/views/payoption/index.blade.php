@@ -55,7 +55,7 @@
         </div>
         <div class="row">
             @foreach($payOption as $key => $opt)
-            <div class="col-md-4 mb-3">
+            <div class="col-md-3 mb-3">
 
                 <input type="hidden" name="method_id[]" id="{{$opt->id}}" value="{{$opt->id}}">
                 <input type="hidden" name="method_name[]" id="{{$opt->code}}" value="{{$opt->code}}">
@@ -380,7 +380,7 @@
         </div>
         <div class="row">
             @foreach($payoutOption as $key => $opt)
-            <div class="col-md-4 mb-3">
+            <div class="col-md-3 mb-3">
 
                 <input type="hidden" name="method_id[]" id="{{$opt->id}}" value="{{$opt->id}}">
                 <input type="hidden" name="method_name[]" id="{{$opt->code}}" value="{{$opt->code}}">
