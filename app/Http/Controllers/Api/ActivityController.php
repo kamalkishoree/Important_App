@@ -293,7 +293,7 @@ class ActivityController extends BaseController
             $orders = Order::where('driver_id', $id)->pluck('id')->toArray();
         }
         if (isset($orders)) {
-            $tasks = Task::with(['location','tasktype','order.customer'])
+            $tasks = Task::with(['location','tasktype','order.customer','order.task.location'])
             ->whereIn('order_id', $orders)
             ->where(function($q){
                 $q->whereIn('task_status', [4,5])
