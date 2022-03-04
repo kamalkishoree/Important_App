@@ -42,7 +42,13 @@ class PaymentOptionController extends BaseController{
         if(!empty($gateway)){
             $code = $request->header('code');
             $client = Client::where('code',$code)->first();
-            $server_url = "https://".$client->sub_domain.env('SUBMAINDOMAIN')."/";
+            $domain = '';
+            if(!empty($client->custom_domain)){
+                $domain = $client->custom_domain;
+            }else{
+                $domain = $client->sub_domain.env('SUBMAINDOMAIN');
+            }
+            $server_url = "https://".$domain."/";
             $request->serverUrl = $server_url;
             $request->currencyId = $request->header('currency');
             $function = 'postPaymentVia_'.$gateway;
@@ -60,10 +66,10 @@ class PaymentOptionController extends BaseController{
         }
     }
 
-    // public function postPaymentVia_stripe(Request $request){
-    //     $gateway = new StripeGatewayController();
-    //     return $gateway->stripePurchase($request);
-    // }
+    public function postPaymentVia_stripe(Request $request){
+        $gateway = new StripeGatewayController();
+        return $gateway->stripePurchase($request);
+    }
 
     // public function postPaymentVia_payfast(Request $request){
     //     $gateway = new PayfastGatewayController();
