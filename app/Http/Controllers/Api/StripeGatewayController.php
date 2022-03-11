@@ -37,7 +37,8 @@ class StripeGatewayController extends BaseController
     {
         try {
             $user = Auth::user();
-            $amount = $this->getDollarCompareAmount($request->amount);
+            // $amount = $this->getDollarCompareAmount($request->amount);
+            $amount = $request->amount;
             $token = $request->input('stripe_token');
 
             $payment_form = $request->action;
@@ -47,7 +48,7 @@ class StripeGatewayController extends BaseController
                 $customerResponse = $this->gateway->createCustomer(array(
                     'description' => 'Creating Customer',
                     'name' => $user->name,
-                    'email' => $user->email,
+                    'email' => '',
                     'source' => $token,
                     'metadata' => [
                         'user_id' => $user->id,
