@@ -10,7 +10,7 @@ use App\Traits\ApiResponser;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\Api\{BaseController, WalletController};
-use App\Models\{Agent, Payment, PaymentOption, Client, ClientPreference};
+use App\Model\{Agent, Payment, PaymentOption, Client, ClientPreference};
 
 class StripeGatewayController extends BaseController
 {

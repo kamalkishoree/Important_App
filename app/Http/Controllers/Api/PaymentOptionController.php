@@ -11,7 +11,7 @@ use Illuminate\Http\Request;
 use App\Traits\ApiResponser;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\Api\{BaseController, RazorpayGatewayController};
-use App\Model\{Client, ClientPreference, ClientCurrency, User, PaymentOption};
+use App\Model\{Client, ClientPreference, Agent, PaymentOption};
 
 class PaymentOptionController extends BaseController{
     use ApiResponser;
