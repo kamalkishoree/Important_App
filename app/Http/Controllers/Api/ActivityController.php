@@ -6,17 +6,7 @@ use App\Http\Controllers\Api\BaseController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
-use App\Model\User;
-use App\Model\Agent;
-use App\Model\AgentLog;
-use App\Model\AllocationRule;
-use App\Model\Client;
-use App\Model\ClientPreference;
-use App\Model\Cms;
-use App\Model\Order;
-use App\Model\Task;
-use App\Model\TaskProof;
-use App\Model\Timezone;
+use App\Model\{Agent, AgentLog, AllocationRule, Client, ClientPreference, Cms, Order, Task, TaskProof, Timezone, User, PaymentOption};
 use Validation;
 use DB;
 use Illuminate\Support\Facades\Storage;
@@ -33,6 +23,17 @@ class ActivityController extends BaseController
     public function clientPreferences()
     {
         $preferences = ClientPreference::with('currency')->where('id', 1)->first();
+
+        $payment_codes = ['stripe'];
+        $payment_creds = PaymentOption::select('code', 'credentials')->whereIn('code', $payment_codes)->where('status', 1)->get();
+        if ($payment_creds) {
+            foreach ($payment_creds as $creds) {
+                $creds_arr = json_decode($creds->credentials);
+                if ($creds->code == 'stripe') {
+                    $preferences->stripe_publishable_key = (isset($creds_arr->publishable_key) && (!empty($creds_arr->publishable_key))) ? $creds_arr->publishable_key : '';
+                }
+            }
+        }
         return response()->json([
             'message' => '',
             'data' => $preferences,
