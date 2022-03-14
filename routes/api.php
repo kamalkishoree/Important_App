@@ -91,6 +91,9 @@ Route::group(['middleware' => ['dbCheck', 'AppAuth','apiLocalization']], functio
     // Order routes
     Route::post('order/cancel/request/create/{id}', 'Api\OrderController@createOrderCancelRequest'); // api for creating order cancel request by driver
     Route::get('order/cancel/reasons', 'Api\OrderController@getOrderCancelReasons'); // api for creating order cancel request by driver
+
+    // All Payment gateways
+    Route::get('payment/{gateway}', 'Api\PaymentOptionController@postPayment');
 });
 
 
