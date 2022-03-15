@@ -40,13 +40,13 @@ class PaymentOptionController extends BaseController{
 
     public function postPayment(Request $request, $gateway = ''){
         if(!empty($gateway)){
-            $code = $request->header('code');
-            $client = Client::where('code',$code)->first();
+            $header = $request->header();
+            $client = Client::where('database_name', $header['client'][0])->first();
             $domain = '';
             if(!empty($client->custom_domain)){
                 $domain = $client->custom_domain;
             }else{
-                $domain = $client->sub_domain.env('SUBMAINDOMAIN');
+                $domain = $client->sub_domain.env('SUBDOMAIN');
             }
             $server_url = "https://".$domain."/";
             $request->serverUrl = $server_url;

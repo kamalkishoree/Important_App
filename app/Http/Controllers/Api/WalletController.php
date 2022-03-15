@@ -6,7 +6,7 @@ use Session;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Traits\ApiResponser;
-use App\Model\{Agent, Transaction};
+use App\Model\{Agent, Transaction, PaymentOption};
 use App\Http\Controllers\Controller;
 
 class WalletController extends Controller{

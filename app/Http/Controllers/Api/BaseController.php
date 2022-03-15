@@ -11,7 +11,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use App\Http\Controllers\Controller;
 use Twilio\Rest\Client as TwilioClient;
 use App\Traits\smsManager;
-use App\Model\{Agent, PaymentOption, Client, ClientPreference, UserSavedPaymentMethods};
+use App\Model\{Agent, PaymentOption, Client, ClientPreference, AgentSavedPaymentMethod};
 
 class BaseController extends Controller
 {
@@ -84,7 +84,7 @@ class BaseController extends Controller
     /* Save user payment method */
     public function saveUserPaymentMethod($request)
     {
-        $payment_method = new UserSavedPaymentMethods;
+        $payment_method = new AgentSavedPaymentMethod;
         $payment_method->agent_id = Auth::user()->id;
         $payment_method->payment_option_id = $request->payment_option_id;
         $payment_method->card_last_four_digit = $request->card_last_four_digit;
@@ -98,7 +98,7 @@ class BaseController extends Controller
     /* Get Saved user payment method */
     public function getSavedUserPaymentMethod($request)
     {
-        $saved_payment_method = UserSavedPaymentMethods::where('user_id', Auth::user()->id)
+        $saved_payment_method = AgentSavedPaymentMethod::where('agent_id', Auth::user()->id)
                         ->where('payment_option_id', $request->payment_option_id)->first();
         return $saved_payment_method;
     }

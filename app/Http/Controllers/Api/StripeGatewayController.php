@@ -33,7 +33,7 @@ class StripeGatewayController extends BaseController
         $this->currency = (isset($primaryCurrency->currency->iso_code)) ? $primaryCurrency->currency->iso_code : 'USD';
     }
 
-    public function postPaymentViaStripe(request $request)
+    public function stripePurchase(request $request)
     {
         try {
             $user = Auth::user();
@@ -51,7 +51,7 @@ class StripeGatewayController extends BaseController
                     'email' => '',
                     'source' => $token,
                     'metadata' => [
-                        'user_id' => $user->id,
+                        'driver_id' => $user->id,
                         'phone_number' => $user->phone_number
                     ]
                 ))->send();
@@ -142,7 +142,7 @@ class StripeGatewayController extends BaseController
                     } elseif($payment_form == 'wallet'){
                         $request->request->add(['wallet_amount' => $amount, 'transaction_id' => $transactionId]);
                         $walletController = new WalletController();
-                        $walletController->creditWallet($request);
+                        $walletController->creditAgentWallet($request);
                     }
                     elseif($payment_form == 'tip'){
                         // $order_number = $request->order_number;
@@ -158,77 +158,16 @@ class StripeGatewayController extends BaseController
                         // $subscriptionController->purchaseSubscriptionPlan($request, '', $subscription);
                         // $returnUrl = route('user.subscription.plans');
                     }
-                    return $this->successResponse('', __('Payment has been completed successfully'), 200);
+                    return $this->success('', __('Payment has been completed successfully'), 200);
                 }
                 else {
-                    return $this->errorResponse($response->getMessage(), 400);
+                    return $this->error($response->getMessage(), 400);
                 }
             }else {
-                return $this->errorResponse($authorizeResponse->getMessage(), 400);
+                return $this->error($authorizeResponse->getMessage(), 400);
             }
         } catch (\Exception $ex) {
-            return $this->errorResponse($ex->getMessage(), 400);
-        }
-    }
-
-    public function subscriptionPaymentViaStripe(request $request)
-    {
-        try {
-            $user = Auth::user();
-            $address = UserAddress::where('user_id', $user->id);
-            $token = $request->stripe_token;
-            $plan = SubscriptionPlansUser::where('slug', $request->subscription_id)->firstOrFail();
-            $saved_payment_method = $this->getSavedUserPaymentMethod($request);
-            if (!$saved_payment_method) {
-                $customerResponse = $this->gateway->createCustomer(array(
-                    'description' => 'Creating Customer for subscription',
-                    'email' => $request->email,
-                    'source' => $token
-                ))->send();
-                // Find the card ID
-                $customer_id = $customerResponse->getCustomerReference();
-                if ($customer_id) {
-                    $request->request->set('customerReference', $customer_id);
-                    $save_payment_method_response = $this->saveUserPaymentMethod($request);
-                }
-            } else {
-                $customer_id = $saved_payment_method->customerReference;
-            }
-
-            // $subscriptionResponse = $this->gateway->createSubscription(array(
-            //     "customerReference" => $customer_id,
-            //     'plan' => 'Basic Plan',
-            // ))->send();
-
-            $amount = $this->getDollarCompareAmount($request->amount);
-            $authorizeResponse = $this->gateway->authorize([
-                'amount' => $amount,
-                'currency' => $this->currency,
-                'description' => 'This is a subscription purchase transaction.',
-                'customerReference' => $customer_id
-            ])->send();
-            if ($authorizeResponse->isSuccessful()) {
-                $purchaseResponse = $this->gateway->purchase([
-                    'currency' => $this->currency,
-                    'amount' => $amount,
-                    'metadata' => ['user_id' => $user->id, 'plan_id' => $plan->id],
-                    'description' => 'This is a subscription purchase transaction.',
-                    'customerReference' => $customer_id
-                ])->send();
-                if ($purchaseResponse->isSuccessful()) {
-                  //  $this->successMail();
-                    return $this->successResponse($purchaseResponse->getData());
-                } else {
-                    $this->failMail();
-                    return $this->errorResponse($purchaseResponse->getMessage(), 400);
-                }
-            } else {
-                $this->failMail();
-                return $this->errorResponse($authorizeResponse->getMessage(), 400);
-            }
-        } catch (\Exception $ex) {
-            $this->failMail();
-            return $this->errorResponse($ex->getMessage(), 400);
+            return $this->error($ex->getMessage(), 400);
         }
     }
 
