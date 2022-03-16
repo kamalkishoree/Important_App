@@ -257,11 +257,23 @@ class ActivityController extends BaseController
         $agents    = $agent; //Agent::where('id', $id)->with('team')->first();
         $taskProof = TaskProof::all();
 
-        $prefer    = ClientPreference::with('currency')->first();
+        $preferences    = ClientPreference::with('currency')->first();
+
+        $payment_codes = ['stripe'];
+        $payment_creds = PaymentOption::select('code', 'credentials')->whereIn('code', $payment_codes)->where('status', 1)->get();
+        if ($payment_creds) {
+            foreach ($payment_creds as $creds) {
+                $creds_arr = json_decode($creds->credentials);
+                if ($creds->code == 'stripe') {
+                    $preferences->stripe_publishable_key = (isset($creds_arr->publishable_key) && (!empty($creds_arr->publishable_key))) ? $creds_arr->publishable_key : '';
+                }
+            }
+        }
+
         $allcation = AllocationRule::first('request_expiry');
 
-        $prefer['alert_dismiss_time'] = (int)$allcation->request_expiry;
-        $agents['client_preference']  = $prefer;
+        $preferences['alert_dismiss_time'] = (int)$allcation->request_expiry;
+        $agents['client_preference']  = $preferences;
         $agents['task_proof']         = $taskProof;
         $datas['user']                = $agents;
         $datas['tasks']               = $tasks;
