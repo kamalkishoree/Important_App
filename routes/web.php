@@ -105,6 +105,9 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 			Route::get('/order-details/tracking/{clientcode}/{order_id}', 'TrackingController@OrderTrackingDetail')->name('order.tracking.detail');
 			Route::get('/order-cancel/tracking/{clientcode}/{order_id}', 'TrackingController@orderCancelFromOrder')->name('order.cancel.from_order');
 
+
+			// Create agent connected account stripe
+			Route::get('verify/oauth/token/stripe', 'StripeGatewayController@verifyOAuthToken')->name('verify.oauth.token.stripe');
 		});
 
 		Route::group(['middleware' => ['auth:client'], 'prefix' => '/'], function () {
