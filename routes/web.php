@@ -108,6 +108,8 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 
 			// Create agent connected account stripe
 			Route::get('client/verify/oauth/token/stripe', 'StripeGatewayController@verifyOAuthToken')->name('verify.oauth.token.stripe');
+
+			Route::get('payment/gateway/connect/response', 'BaseController@getGatewayConnectResponse')->name('payment.gateway.connect.response');
 		});
 
 		Route::group(['middleware' => ['auth:client'], 'prefix' => '/'], function () {

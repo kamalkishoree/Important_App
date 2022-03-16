@@ -11,7 +11,7 @@ use App\Traits\ApiResponser;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\{BaseController, WalletController};
-use App\Model\{Agent, Payment, PaymentOption, Client, ClientPreference, AgentConnectedAccount};
+use App\Model\{Agent, Payment, PaymentOption, PayoutOption, Client, ClientPreference, AgentConnectedAccount};
 
 class StripeGatewayController extends BaseController{
 
@@ -42,19 +42,21 @@ class StripeGatewayController extends BaseController{
     }
 
 
-    // Verifya and store connected account
+    // Verify and store connected account
     public function verifyOAuthToken(request $request)
     {
         try{
             $user = Auth::user();
             $driver = $request->state;
+            $returnUrl = url('payment/gateway/connect/response?gateway=stripe');
+            $returnType = 'error';
             if($request->has('code')){
                 $code = $request->code;
                 $checkIfExists = AgentConnectedAccount::where('agent_id', $driver)->first();
                 if($driver > 0){
                     if($checkIfExists){
                         $msg = __('You are already connected to stripe');
-                        $toaster = $this->error($msg, 400);
+                        $returnParams = '&status=0';
                     }
                     else{
                         // Complete the connection and get the account ID
@@ -68,27 +70,28 @@ class StripeGatewayController extends BaseController{
                         $connected_account_id = $response->stripe_user_id;
 
                         $connectdAccount = new AgentConnectedAccount();
-                        $connectdAccount->driver_id = $vendor;
+                        $connectdAccount->agent_id = $driver;
                         $connectdAccount->account_id = $connected_account_id;
                         $connectdAccount->payment_option_id = 2;
                         $connectdAccount->status = 1;
                         $connectdAccount->save();
 
                         $msg = __('Stripe connect has been enabled successfully');
-                        return $this->success('', $msg);
+                        $returnType = 'success';
+                        $returnParams = '&status=200&ac_id='.$connected_account_id;
                     }
                 }else{
                     $msg = __('Invalid Data');
-                    return $this->error($msg, 400);
                 }
             }
             else{
                 $msg = __('Stripe connect has been declined');
-                return $this->error($msg, 400);
             }
+            $returnUrl = $returnUrl . $returnParams;
+            return Redirect::to($returnUrl)->with($returnType, $msg);
         }
         catch(Exception $ex){
-            return $this->error($ex->getMessage(), $ex->getCode());
+            return Redirect::to(url('payment/gateway/connect/response?gateway=stripe&status=0'))->with('error', $ex->getMessage());
         }
     }
 
@@ -127,7 +130,7 @@ class StripeGatewayController extends BaseController{
                     'currency' => $this->currency,
                     'payment_method_types' => ['card'],
                     'on_behalf_of' => $connected_account->account_id,
-                    'transfer_group' => 'vendor_payout',
+                    'transfer_group' => 'driver_payout',
                 ]);
                 
                 // Create a Transfer to a connected account (later):
@@ -135,7 +138,7 @@ class StripeGatewayController extends BaseController{
                     'amount' => $amount * 100,
                     'currency' => $this->currency,
                     'destination' => $connected_account->account_id,
-                    'transfer_group' => 'vendor_payout',
+                    'transfer_group' => 'driver_payout',
                 ]);
                 $transactionReference = $transfer->balance_transaction;
                 return $this->successResponse($transactionReference, 'Payout is completed successfully', 200);

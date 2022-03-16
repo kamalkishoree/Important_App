@@ -38,6 +38,7 @@
         "rinvex/countries": "^6.1",
         "sarav/laravel-multiauth": "dev-master",
         "sentry/sentry-laravel": "^2.10",
+        "stripe/stripe-php": "^7.116",
         "twilio/sdk": "^6.13",
         "yajra/laravel-datatables-oracle": "~9.0"
     },
