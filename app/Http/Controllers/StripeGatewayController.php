@@ -95,11 +95,11 @@ class StripeGatewayController extends BaseController{
         }
     }
 
-    public function vendorPayoutViaStripe(request $request, $domain='')
+    public function AgentPayoutViaStripe(request $request, $domain='')
     {
         try{
             $user = Auth::user();
-            $connected_account = VendorConnectedAccount::where('vendor_id', $request->vendor_id)->first();
+            $connected_account = AgentConnectedAccount::where('agent_id', $request->agent_id)->first();
             if($connected_account && (!empty($connected_account->account_id))){
 
                 // $stripe = new \Stripe\StripeClient($this->payout_secret_key);
@@ -121,7 +121,7 @@ class StripeGatewayController extends BaseController{
                 //     // 'transfer_group' => $charge_id,
                 // ]);
                 
-                $amount = getDollarCompareAmount($request->amount, $this->currency_id);
+                $amount = $request->amount; //getDollarCompareAmount($request->amount, $this->currency_id);
                 \Stripe\Stripe::setApiKey($this->payout_secret_key);
 
                 // Create a PaymentIntent:
@@ -141,13 +141,13 @@ class StripeGatewayController extends BaseController{
                     'transfer_group' => 'driver_payout',
                 ]);
                 $transactionReference = $transfer->balance_transaction;
-                return $this->successResponse($transactionReference, 'Payout is completed successfully', 200);
+                return $this->success($transactionReference, 'Payout is completed successfully', 200);
 
             }else{
-                return $this->errorResponse('You are not connected to stripe', 400);
+                return $this->error('You are not connected to stripe', 400);
             }
         }catch(\Exception $ex){
-            return $this->errorResponse($ex->getMessage(), 400);
+            return $this->error($ex->getMessage(), 400);
         }
     }
 }
