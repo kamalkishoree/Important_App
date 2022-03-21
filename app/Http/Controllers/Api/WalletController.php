@@ -6,7 +6,7 @@ use Session;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Traits\ApiResponser;
-use App\Model\{Agent, Transaction};
+use App\Model\{Agent, Transaction, PaymentOption};
 use App\Http\Controllers\Controller;
 
 class WalletController extends Controller{
@@ -41,7 +41,18 @@ class WalletController extends Controller{
             $credit_amount = $request->amount;
             $wallet = $user->wallet;
             if ($credit_amount > 0) {
-                $wallet->depositFloat($credit_amount, ['Wallet has been <b>Credited</b> by transaction reference <b>'.$request->transaction_id.'</b>']);
+                $payment_option = '';
+                if($request->has('payment_option_id') && ($request->payment_option_id > 0) ){
+                    $payment_option = PaymentOption::where('id', $request->payment_option_id)->value('title');
+                }
+                
+                $wallet->depositFloat($credit_amount, [
+                    'type' => 'wallet',
+                    'transaction_type' => 'wallet_topup',
+                    'transaction_id' => $request->transaction_id,
+                    'payment_option' => $payment_option,
+                    'description' => 'Wallet has been <b>Credited</b> by transaction reference <b>'.$request->transaction_id.'</b>'
+                ]);
                 $transactions = Transaction::where('payable_id', $user->id)->get();
                 $response['wallet_balance'] = $wallet->balanceFloat;
                 $response['transactions'] = $transactions;
