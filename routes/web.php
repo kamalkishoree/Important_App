@@ -105,6 +105,11 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 			Route::get('/order-details/tracking/{clientcode}/{order_id}', 'TrackingController@OrderTrackingDetail')->name('order.tracking.detail');
 			Route::get('/order-cancel/tracking/{clientcode}/{order_id}', 'TrackingController@orderCancelFromOrder')->name('order.cancel.from_order');
 
+
+			// Create agent connected account stripe
+			Route::get('client/verify/oauth/token/stripe', 'StripeGatewayController@verifyOAuthToken')->name('verify.oauth.token.stripe');
+
+			Route::get('payment/gateway/connect/response', 'BaseController@getGatewayConnectResponse')->name('payment.gateway.connect.response');
 		});
 
 		Route::group(['middleware' => ['auth:client'], 'prefix' => '/'], function () {
@@ -137,7 +142,7 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 			Route::get('agent/payout/requests', 'AgentPayoutController@agentPayoutRequests')->name('agent.payout.requests');
 			Route::get('agent/payout/requests/export', 'AgentPayoutController@export')->name('agents.payout.requests.export');
 			Route::get('agent/payout/requests/filter', 'AgentPayoutController@agentPayoutRequestsFilter')->name('agent.payout.requests.filter');
-        	Route::post('agent/payout/request/complete/{id}', 'AgentPayoutController@agentPayoutRequestComplete')->name('agent.payout.request.complete');
+        	Route::post('agent/payout/request/complete', 'AgentPayoutController@agentPayoutRequestComplete')->name('agent.payout.request.complete');
 			Route::post('agent/payout/requests/complete/all', 'AgentPayoutController@agentPayoutRequestsCompleteAll')->name('agent.payout.requests.complete.all');
 			Route::post('agent/payout/bank/details', 'AgentPayoutController@agentPayoutBankDetails')->name('agent.payout.bank.details');
 			Route::post('agent/change_approval_status', 'AgentController@change_approval_status')->name('agent/change_approval_status');

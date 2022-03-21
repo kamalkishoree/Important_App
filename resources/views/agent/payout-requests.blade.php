@@ -193,7 +193,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                             <table class="table table-centered table-nowrap table-striped" id="pending_payouts_datatable" width="100%">
                                                 <thead>
                                                     <tr>
-                                                        <th><input type="checkbox" class="all-agent_check" name="all_agent_id" id="all-agent_check"></th>
+                                                        {{-- <th><input type="checkbox" class="all-agent_check" name="all_agent_id" id="all-agent_check"></th> --}}
                                                         <th>{{ __('Date') }}</th>
                                                         <th>{{ __('Agent') }}</th>
                                                         {{-- <th>{{ _('Requested By') }}</th> --}}
@@ -271,14 +271,12 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
 <div id="payout-confirm-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" style="display: none" aria-modal="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            {{-- <div class="modal-header border-0">
-                <h4 class="modal-title">Payout</h4>
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-            </div> --}}
-            <form id="payout_form_final" method="POST" action="">
+            <form id="payout_form_final" method="POST" action="{{url('agent/payout/request/complete')}}">
                 @csrf
                 <div>
                     <input type="hidden" name="amount" id="payout_amount" value="">
+                    <input type="hidden" name="payout_id" id="payout_id" value="">
+                    <input type="hidden" name="payout_option_id" id="payout_method" value="">
                 </div>
                 <div class="modal-body px-3">
                     <div class="row">
@@ -367,7 +365,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
 <script src="{{ asset('assets/libs/datatables/datatables.min.js') }}"></script>
 <script src="{{ asset('assets/js/jquery.tagsinput-revisited.js') }}"></script>
 <script src="{{ asset('telinput/js/intlTelInput.js') }}"></script>
-<link rel="stylesheet" href="{{ asset('assets/css/jquery.tagsinput-revisited.css') }}" />>
+<link rel="stylesheet" href="{{ asset('assets/css/jquery.tagsinput-revisited.css') }}" />
 
 
 <script>
@@ -453,23 +451,12 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
             });
         }
 
-        $(document).delegate(".payout_btn", "click", function(){
-            var agent = $(this).closest('tr').find('td:nth-child(2)').text();
-            var amount = $(this).closest('tr').find('td:nth-child(3)').text();
-            var dataid = $(this).attr('data-id');
-            $("#payout_form_final").attr('action', "{{url('agent/payout/request/complete')}}"+'/'+dataid);
-            $("#payout-confirm-modal #payout-agent").text(agent);
-            $("#payout-confirm-modal #payout-amount-final").text('{{$currency_symbol}}' + amount);
-            $("#payout-confirm-modal #payout_amount").val(amount);
-            $("#payout-confirm-modal").modal('show');
-        });
-
         function dataTableColumn(status){
             if(status == 0){
                 return [
-                    {data: 'id', name: 'id', orderable: false, searchable: false, "mRender": function ( data, type, full ) {
-                        return '<input type="checkbox" class="single_agent_check" name="agent_payout_id[]" value="'+full.id+'">';
-                    }},
+                    // {data: 'id', name: 'id', orderable: false, searchable: false, "mRender": function ( data, type, full ) {
+                    //     return '<input type="checkbox" class="single_agent_check" name="agent_payout_id[]" value="'+full.id+'">';
+                    // }},
                     {data: 'date', name: 'date', orderable: false, searchable: false},
                     {data: 'agentName', name: 'agentName', orderable: false, searchable: false},
                     // {data: 'requestedBy', name: 'requestedBy', orderable: false, searchable: false},
@@ -484,7 +471,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                     }},
                     {data: 'status', class:'text-center', name: 'status', orderable: false, searchable: false, "mRender":function(data, type, full){
                         if(full.status == 'Pending'){
-                            return "<button class='btn btn-sm btn-info payout_btn' data-id='"+full.id+"'>Payout</button>";
+                            return "<button class='btn btn-sm btn-info payout_btn' data-id='"+full.id+"' data-payout_method='"+full.payout_option_id+"' data-agent='"+full.aegnt_id+"'>Payout</button>";
                         }else{
                             return full.status;
                         }
@@ -515,56 +502,70 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
             }
         }
 
-        $(".all-agent_check").click(function() {
-            if ($(this).is(':checked')) {
-                $(".payout-toggle").removeClass('d-none');
-                $('.single_agent_check').prop('checked', true);
-            } else {
-                $(".payout-toggle").addClass('d-none');
-                $('.single_agent_check').prop('checked', false);
-            }
+        $(document).delegate(".payout_btn", "click", function(){
+            var agent = $(this).closest('tr').find('td:nth-child(2)').text();
+            var amount = $(this).closest('tr').find('td:nth-child(3)').text();
+            var dataid = $(this).attr('data-id');
+            var agent_id = $(this).attr('data-agent');
+            var payout_method = $(this).attr('data-payout_method');
+            $("#payout-confirm-modal #payout-agent").html('<b>'+agent+'</b>');
+            $("#payout-confirm-modal #payout-amount-final").text('{{$currency_symbol}}' + amount);
+            $("#payout-confirm-modal #payout_amount").val(amount);
+            $("#payout-confirm-modal #payout_id").val(dataid);
+            $("#payout-confirm-modal #payout_method").val(payout_method);
+            $("#payout-confirm-modal").modal('show');
         });
 
-        $(document).on('change', '.single_agent_check', function() {
-            if ($('input:checkbox.single_agent_check:checked').length > 0){
-                $(".payout-toggle").removeClass('d-none');
-            }
-            else{
-                $('.all-driver_check').prop('checked', false);
-                $(".payout-toggle").addClass('d-none');
-            }
-        });
+        // $(".all-agent_check").click(function() {
+        //     if ($(this).is(':checked')) {
+        //         $(".payout-toggle").removeClass('d-none');
+        //         $('.single_agent_check').prop('checked', true);
+        //     } else {
+        //         $(".payout-toggle").addClass('d-none');
+        //         $('.single_agent_check').prop('checked', false);
+        //     }
+        // });
 
-        $(document).on('click', '.payout_all_agents', function() {
-            payoutAllAgents();
-        });
+        // $(document).on('change', '.single_agent_check', function() {
+        //     if ($('input:checkbox.single_agent_check:checked').length > 0){
+        //         $(".payout-toggle").removeClass('d-none');
+        //     }
+        //     else{
+        //         $('.all-driver_check').prop('checked', false);
+        //         $(".payout-toggle").addClass('d-none');
+        //     }
+        // });
 
-        function payoutAllAgents() {
-            var payout_id = [];
-            $('.single_agent_check:checked').each(function(i){
-                payout_id[i] = $(this).val();
-            });
-            if (payout_id.length == 0) {
-                // $("#add-assgin-agent-model .close").click();
-                alert('Please select any record');
-                return;
-            }
-            $.ajax({
-                type: "POST",
-                url: '{{route("agent.payout.requests.complete.all")}}',
-                data: {payout_ids: payout_id},
-                success: function( response ) {
-                    $("#pay-receive-modal").modal('hide');
-                    if (response.status == 'Success') {
-                        location.reload();
-                    } else {
-                        alert(response.message);
-                        // $("#pay-receive-modal .show_all_error.invalid-feedback").show();
-                        // $("#pay-receive-modal .show_all_error.invalid-feedback").text(response.message);
-                    }
-                }
-            });
-        }
+        // $(document).on('click', '.payout_all_agents', function() {
+        //     payoutAllAgents();
+        // });
+
+        // function payoutAllAgents() {
+        //     var payout_id = [];
+        //     $('.single_agent_check:checked').each(function(i){
+        //         payout_id[i] = $(this).val();
+        //     });
+        //     if (payout_id.length == 0) {
+        //         // $("#add-assgin-agent-model .close").click();
+        //         alert('Please select any record');
+        //         return;
+        //     }
+        //     $.ajax({
+        //         type: "POST",
+        //         url: '{{route("agent.payout.requests.complete.all")}}',
+        //         data: {payout_ids: payout_id},
+        //         success: function( response ) {
+        //             $("#pay-receive-modal").modal('hide');
+        //             if (response.status == 'Success') {
+        //                 location.reload();
+        //             } else {
+        //                 alert(response.message);
+        //                 // $("#pay-receive-modal .show_all_error.invalid-feedback").show();
+        //                 // $("#pay-receive-modal .show_all_error.invalid-feedback").text(response.message);
+        //             }
+        //         }
+        //     });
+        // }
 
         $(document).delegate('.view_agent_bank_details', 'click', function(e) {
             var id = $(this).attr('data-id');
