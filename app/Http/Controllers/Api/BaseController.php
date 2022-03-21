@@ -2,15 +2,16 @@
 
 namespace App\Http\Controllers\Api;
 
+use Auth;
 use Illuminate\Http\Request;
 use App\Traits\ApiResponser;
 use Illuminate\Support\Collection;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Pagination\LengthAwarePaginator;
 use App\Http\Controllers\Controller;
-use Twilio\Rest\Client;
 use Twilio\Rest\Client as TwilioClient;
 use App\Traits\smsManager;
+use App\Model\{Agent, PaymentOption, Client, ClientPreference, AgentSavedPaymentMethod};
 
 class BaseController extends Controller
 {
@@ -22,7 +23,7 @@ class BaseController extends Controller
 	    $sid = getenv("TWILIO_SID");
 	    $token = getenv("TWILIO_AUTH_TOKEN");
 	    $twilio_number = getenv("TWILIO_NUMBER");
-	    $client = new Client($account_sid, $auth_token);
+	    $client = new TwilioClient($account_sid, $auth_token);
 	    $client->messages->create('+91'.$recipients,
 	            ['from' => $twilio_number, 'body' => $message]
             );
@@ -79,5 +80,27 @@ class BaseController extends Controller
         }
         return $this->success([], __('An otp has been sent to your phone. Please check.'), 200);
 	}
+
+    /* Save user payment method */
+    public function saveUserPaymentMethod($request)
+    {
+        $payment_method = new AgentSavedPaymentMethod;
+        $payment_method->agent_id = Auth::user()->id;
+        $payment_method->payment_option_id = $request->payment_option_id;
+        $payment_method->card_last_four_digit = $request->card_last_four_digit;
+        $payment_method->card_expiry_month = $request->card_expiry_month;
+        $payment_method->card_expiry_year = $request->card_expiry_year;
+        $payment_method->customerReference = ($request->has('customerReference')) ? $request->customerReference : NULL;
+        $payment_method->cardReference = ($request->has('cardReference')) ? $request->cardReference : NULL;
+        $payment_method->save();
+    }
+
+    /* Get Saved user payment method */
+    public function getSavedUserPaymentMethod($request)
+    {
+        $saved_payment_method = AgentSavedPaymentMethod::where('agent_id', Auth::user()->id)
+                        ->where('payment_option_id', $request->payment_option_id)->first();
+        return $saved_payment_method;
+    }
 
 }

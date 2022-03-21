@@ -13,7 +13,7 @@ use App\Traits\ApiResponser;
 // use App\Http\Traits\ToasterResponser;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\AgentPayoutRequestListExport;
-use App\Http\Controllers\BaseController;
+use App\Http\Controllers\{BaseController, StripeGatewayController};
 use App\Model\{Client, ClientPreference, User, Agent, Order, PaymentOption, PayoutOption, AgentPayout, AgentBankDetail};
 
 class AgentPayoutController extends BaseController{
@@ -152,52 +152,102 @@ class AgentPayoutController extends BaseController{
             })->make(true);
     }
 
-    public function agentPayoutRequestComplete(Request $request, $domain = '', $id){
+    public function agentPayoutRequestComplete(Request $request, $domain = ''){
         try{
-            DB::beginTransaction();
+            $user = Auth::user();
+            $id = $request->payout_id;
+            $payout_option_id = $request->payout_option_id;
+            
             $payout = AgentPayout::with(['payoutBankDetails'=> function($q){
                 $q->where('status', 1);
             }])->where('id', $id)->first();
-            $user = Auth::user();
+
+            $request->request->add(['agent_id' => $payout->agent_id]);
             
             $agent = Agent::where('id', $payout->agent_id)->where('is_approved', 1)->first();
             $credit = $agent->agentPayment->sum('cr');
             $debit = $agent->agentPayment->sum('dr');
             $agent_account = $payout->payoutBankDetails->first() ? $payout->payoutBankDetails->first()->beneficiary_account_number : '';
             $agent_id = $agent->id;
+            $wallet_balance = 0;
+            if($agent->wallet){
+                $wallet_balance = $agent->balanceFloat;
+            }
 
-            $total_order_value = Order::where('driver_id', $agent_id)->orderBy('id','desc');
-            $total_order_value = $total_order_value->sum('order_cost');
+            $cash  = $agent->order->where('status', 'completed')->sum('cash_to_be_collected');
+            $driver_cost  = $agent->order->where('status', 'completed')->sum('driver_cost');
+            $order_cost = $agent->order->where('status', 'completed')->sum('order_cost');
 
-            $agent_payouts = AgentPayout::where('agent_id', $agent_id)->orderBy('id','desc');
-            $agent_payouts = $agent_payouts->where('status', 1)->sum('amount');
-
-            $past_payout_value = $agent_payouts;
-            $available_funds = $total_order_value + $agent->balanceFloat + $debit - $past_payout_value - $credit;
+            $past_payout_value = AgentPayout::where(['agent_id'=>$agent->id, 'status'=> 1])->sum('amount');
+            
+            $available_funds = $wallet_balance + $order_cost + $debit - ($credit + $cash + $past_payout_value + $driver_cost);
 
             if($request->amount > $available_funds){
                 return Redirect()->back()->with('error', __('Payout amount is greater than agent available funds'));
             }
 
-            $payout->status = 1;
-            $payout->save();
+            $payout_option = '';
+            if($payout_option_id > 0){
+                $payout_option = PayoutOption::where('id', $payout_option_id)->value('title');
+            }
 
-            $debit_amount = $request->amount;
-            $wallet = $agent->wallet;
-            if ($debit_amount > 0) {
-                $custom_meta = 'Wallet has been <b>Debited</b> for payout request';
-                if($agent_account != ''){
-                    $custom_meta = $custom_meta . '<b>XXXX'.substr($agent_account, -4).'</b>';
+            /////// Payout via stripe ///////
+            if($payout_option_id == 2){
+                $stripeController = new StripeGatewayController();
+                $response = $stripeController->AgentPayoutViaStripe($request)->getData();
+                if($response->status != 'Success'){
+                    return Redirect()->back()->with('error', __($response->message));
                 }
-                $wallet->forceWithdrawFloat($debit_amount, [$custom_meta]);
+                $request->request->add(['transaction_id' => $response->data]);
+            }
+
+            // update payout request
+            $request->request->add(['status' => 1]);
+            $udpate_response = $this->updateAgentPayoutRequest($request, $payout)->getData();
+
+            if($udpate_response->status == 'Success'){
+                $debit_amount = $request->amount;
+                $wallet = $agent->wallet;
+                if ($debit_amount > 0) {
+                    $meta = [
+                        'type' => 'payout',
+                        'transaction_type' => 'payout_success',
+                        'payment_option' => $payout_option,
+                        'payout_id' => $payout->id
+                    ];
+                    if(isset($request->transaction_id)){
+                        $meta['transaction_id'] = $request->transaction_id;
+                    }
+                    $custom_meta = 'Debited for payout request';
+                    if($payout_option_id == 4){
+                        // $custom_meta = $custom_meta . '<b>XXXX'.substr($agent_account, -4).'</b>';
+                        $meta['bank_account'] = $agent_account;
+                    }
+                    $meta['description'] = $custom_meta;
+                    $wallet->forceWithdrawFloat($debit_amount, $meta);
+                }
             }
             
-            DB::commit();
             return Redirect()->back()->with('success', __('Payout has been completed successfully'));
         }
         catch(Exception $ex){
             DB::rollback();
             return Redirect()->back()->with('error', $ex->getMessage());
+        }
+    }
+
+    public function updateAgentPayoutRequest($request, $payout=''){
+        try{
+            DB::beginTransaction();
+            $payout->transaction_id = $request->transaction_id ?? null;
+            $payout->status = $request->status;
+            $payout->update();
+            DB::commit();
+            return $this->success('', __('Payout has been completed successfully'));
+        }
+        catch(\Exception $ex){
+            DB::rollback();
+            return $this->error($ex->getMessage(), $ex->getCode());
         }
     }
 

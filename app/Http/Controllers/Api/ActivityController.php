@@ -6,17 +6,7 @@ use App\Http\Controllers\Api\BaseController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
-use App\Model\User;
-use App\Model\Agent;
-use App\Model\AgentLog;
-use App\Model\AllocationRule;
-use App\Model\Client;
-use App\Model\ClientPreference;
-use App\Model\Cms;
-use App\Model\Order;
-use App\Model\Task;
-use App\Model\TaskProof;
-use App\Model\Timezone;
+use App\Model\{Agent, AgentLog, AllocationRule, Client, ClientPreference, Cms, Order, Task, TaskProof, Timezone, User, PaymentOption};
 use Validation;
 use DB;
 use Illuminate\Support\Facades\Storage;
@@ -33,6 +23,17 @@ class ActivityController extends BaseController
     public function clientPreferences()
     {
         $preferences = ClientPreference::with('currency')->where('id', 1)->first();
+
+        $payment_codes = ['stripe'];
+        $payment_creds = PaymentOption::select('code', 'credentials')->whereIn('code', $payment_codes)->where('status', 1)->get();
+        if ($payment_creds) {
+            foreach ($payment_creds as $creds) {
+                $creds_arr = json_decode($creds->credentials);
+                if ($creds->code == 'stripe') {
+                    $preferences->stripe_publishable_key = (isset($creds_arr->publishable_key) && (!empty($creds_arr->publishable_key))) ? $creds_arr->publishable_key : '';
+                }
+            }
+        }
         return response()->json([
             'message' => '',
             'data' => $preferences,
@@ -112,7 +113,9 @@ class ActivityController extends BaseController
 
 
         if (count($orders) > 0) {
-            $tasks = Task::whereIn('order_id', $orders)->where('task_status', '!=', 4)->Where('task_status', '!=', 5)->with(['location','tasktype','order.customer'])->orderBy("order_id", "DESC")->orderBy("id","ASC")
+            $tasks = Task::whereIn('order_id', $orders)->where('task_status', '!=', 4)->Where('task_status', '!=', 5)
+            ->with(['location','tasktype','order.customer','order.task.location'])->orderBy("order_id", "DESC")
+            ->orderBy("id","ASC")
             ->get();
             if (count($tasks) > 0) {
                 //sort according to task_order
@@ -254,11 +257,23 @@ class ActivityController extends BaseController
         $agents    = $agent; //Agent::where('id', $id)->with('team')->first();
         $taskProof = TaskProof::all();
 
-        $prefer    = ClientPreference::with('currency')->select('theme', 'distance_unit', 'currency_id', 'language_id', 'agent_name', 'date_format', 'time_format', 'map_type', 'map_key_1', 'customer_support', 'customer_support_key', 'customer_support_application_id', 'is_edit_order_driver')->first();
+        $preferences    = ClientPreference::with('currency')->first();
+
+        $payment_codes = ['stripe'];
+        $payment_creds = PaymentOption::select('code', 'credentials')->whereIn('code', $payment_codes)->where('status', 1)->get();
+        if ($payment_creds) {
+            foreach ($payment_creds as $creds) {
+                $creds_arr = json_decode($creds->credentials);
+                if ($creds->code == 'stripe') {
+                    $preferences->stripe_publishable_key = (isset($creds_arr->publishable_key) && (!empty($creds_arr->publishable_key))) ? $creds_arr->publishable_key : '';
+                }
+            }
+        }
+
         $allcation = AllocationRule::first('request_expiry');
 
-        $prefer['alert_dismiss_time'] = (int)$allcation->request_expiry;
-        $agents['client_preference']  = $prefer;
+        $preferences['alert_dismiss_time'] = (int)$allcation->request_expiry;
+        $agents['client_preference']  = $preferences;
         $agents['task_proof']         = $taskProof;
         $datas['user']                = $agents;
         $datas['tasks']               = $tasks;
@@ -291,7 +306,7 @@ class ActivityController extends BaseController
             $orders = Order::where('driver_id', $id)->pluck('id')->toArray();
         }
         if (isset($orders)) {
-            $tasks = Task::with(['location','tasktype','order.customer'])
+            $tasks = Task::with(['location','tasktype','order.customer','order.task.location'])
             ->whereIn('order_id', $orders)
             ->where(function($q){
                 $q->whereIn('task_status', [4,5])

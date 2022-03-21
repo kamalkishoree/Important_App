@@ -10,5 +10,8 @@ use Session;
 
 class BaseController extends Controller
 {
-    
+    public function getGatewayConnectResponse(Request $request, $domain='')
+    {
+        return view('pages.gateway-response');
+    }
 }
