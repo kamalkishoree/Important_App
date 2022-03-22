@@ -58,8 +58,8 @@ class AuthController extends BaseController
         Otp::where('phone', $request->phone_number)->delete();
         $otp = new Otp();
         $otp->phone = $data['phone_number'] = $agent->phone_number;
-        // $otp->opt = $data['otp'] = rand(111111, 999999);
-        $otp->opt = $data['otp'] = 871245;
+        $otp->opt = $data['otp'] = rand(111111, 999999);
+        //$otp->opt = $data['otp'] = 871245;
         $otp->valid_till = $data['valid_till'] = Date('Y-m-d H:i:s', strtotime("+10 minutes"));
         $otp->save();
 
