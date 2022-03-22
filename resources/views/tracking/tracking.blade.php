@@ -18,7 +18,7 @@
     <title> Order Tracking</title>
 </head>
 @php
-$task_type_array = ['Pickup', 'Drop-Off', 'Appointment'];
+$task_type_array = [__('Pickup'), __('Drop-Off'), __('Appointment')];
 @endphp
 
 <body>
@@ -48,7 +48,7 @@ $task_type_array = ['Pickup', 'Drop-Off', 'Appointment'];
                                     <img src="{{ 'https://imgproxy.royodispatch.com/insecure/fit/300/100/sm/0/plain/' . Storage::disk('s3')->url($order->profile_picture ?? 'assets/client_00000051/agents605b6deb82d1b.png/XY5GF0B3rXvZlucZMiRQjGBQaWSFhcaIpIM5Jzlv.jpg') }}"
                                         alt="" />
                                 </div>
-                                <h4>{{ isset($order->name) ? $order->name : 'Driver not assigned yet' }}</h4>
+                                <h4>{{ isset($order->name) ? $order->name :__('Driver not assigned yet') }}</h4>
                                 <p>{{ $order->phone_number }}</p>
                             </div>
                             <span class="col-lg-8 attrbute_classes">
@@ -71,9 +71,9 @@ $task_type_array = ['Pickup', 'Drop-Off', 'Appointment'];
             <div class="row no-gutters">
                 <div class="offset-sm-3 col-sm-6 btn_group d-flex align-items-center justify-content-between">
                     <a class="btn pink_btn" href="tel:{{ $order->phone_number }}"><i
-                            class="fas fa-phone-alt position-absolute"></i><span>Call</span></a>
+                            class="fas fa-phone-alt position-absolute"></i><span>{{__('Call')}}</span></a>
                     <a class="btn pink_btn" href="sms:{{ $order->phone_number }}"><i
-                            class="fas fa-comment position-absolute"></i><span>Message</span></a>
+                            class="fas fa-comment position-absolute"></i><span>{{__('Message')}}</span></a>
                 </div>
             </div>
         </div>

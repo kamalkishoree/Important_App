@@ -98,7 +98,7 @@
             language: {
                         search: "",
                         paginate: { previous: "<i class='mdi mdi-chevron-left'>", next: "<i class='mdi mdi-chevron-right'>" },
-                        searchPlaceholder: "Search Customers",
+                        searchPlaceholder: "{{__('Search Customers')}}",
                         'loadingRecords': '&nbsp;',
                         'processing': '<div class="spinner"></div>'
             },
@@ -107,7 +107,7 @@
             },
             buttons: [{  
                 className:'btn btn-success waves-effect waves-light',
-                text: '<span class="btn-label"><i class="mdi mdi-export-variant"></i></span>Export CSV',
+                text: '<span class="btn-label"><i class="mdi mdi-export-variant"></i></span>{{__("Export CSV")}}',
                 action: function ( e, dt, node, config ) {
                     window.location.href = "{{ route('customer.export') }}";
                 }
@@ -405,13 +405,12 @@
     }
 
     $(document).on('click', '.mdi-delete', function(e) {
-            
-            var r = confirm("Are you sure?");
-            if (r == true) {
-               var customerid = $(this).attr('customerid');
-               $('form#customerdelete'+customerid).submit();
+        var r = confirm("Are you sure?");
+        if (r == true) {
+            var customerid = $(this).attr('customerid');
+            $('form#customerdelete'+customerid).submit();
 
-            }
-        });
+        }
+    });
 
 </script>
