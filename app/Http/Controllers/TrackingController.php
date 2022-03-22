@@ -193,16 +193,18 @@ class TrackingController extends Controller
             if (isset($order->id)) {
                 $check_alredy  = DB::connection($respnse['database'])->table('driver_ratings')->where('order_id', $order->id)->first();
 
+                $data = [
+                    'order_id'    => $order->id,
+                    'driver_id'   => $order->driver_id,
+                    'rating'      => $request->rating,
+                    'review'      => $request->review,
+                ];
                 if (isset($check_alredy->id)) {
-                    return response()->json(['status' => true, 'message' => __('Rating has been already submitted')]);
+                    $data['updated_at'] = date('Y-m-d H:i:s');
+                    DB::connection($respnse['database'])->table('driver_ratings')->where('id',$check_alredy->id)->update($data);
+                    return response()->json(['status' => true, 'message' => __('Rating has been updated')]);
                 } else {
-                    $data = [
-                        'order_id'    => $order->id,
-                        'driver_id'   => $order->driver_id,
-                        'rating'      => $request->rating,
-                        'review'      => $request->review,
-                        'created_at'    => date('Y-m-d H:i:s')
-                    ];
+                    $data['created_at'] = date('Y-m-d H:i:s');
 
                     DB::connection($respnse['database'])->table('driver_ratings')->insert($data);
 
