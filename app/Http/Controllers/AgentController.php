@@ -154,12 +154,15 @@ class AgentController extends Controller
                     return $src;
                 })
                 ->editColumn('team', function ($agents) use ($request) {
-                    $team = (isset($agents->team->name) ? $agents->team->name : 'Team Not Alloted');
+                    $team = (isset($agents->team->name) ? $agents->team->name : __('Team Not Alloted'));
                     return $team;
                 })
                 ->editColumn('vehicle_type_id', function ($agents) use ($request) {
                     $src = asset('assets/icons/extra/' . $agents->vehicle_type_id . '.png');
                     return $src;
+                })
+                ->editColumn('type', function ($agents) use ($request) {
+                    return __($agents->type);
                 })
                 ->editColumn('cash_to_be_collected', function ($agents) use ($request) {
                     $cash = $agents->order->sum('cash_to_be_collected');
@@ -608,7 +611,7 @@ class AgentController extends Controller
     {
         DriverGeo::where('driver_id', $id)->delete();  // i have to fix it latter
         Agent::where('id', $id)->delete();
-        return redirect()->back()->with('success', 'Agent deleted successfully!');
+        return redirect()->back()->with('success',__('Agent deleted successfully!'));
     }
 
     public function payreceive(Request $request, $domain = '')

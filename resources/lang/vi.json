@@ -264,7 +264,7 @@
     "Profile Pic": "Hình ảnh cá nhân",
     "TYPE": "LOẠI",
     "Employee": "Nhân viên",
-    "Freelancer": "Freelancer",
+    "Freelancer": "nhân sự tự do",
     "ASSIGN TEAM": "ĐỘI ĐƯỢC CHỈ ĐỊNH",
     "TRANSPORT TYPE": "LOẠI VẬN CHUYỂN",
     "TRANSPORT DETAILS": "CHI TIẾT VẬN CHUYỂN",
@@ -480,5 +480,11 @@
     "Pay Details" : "Chi tiết thanh toán",
     "Favicon" : "Favicon",
     "Delivery OTP" : "OTP gửi",
+    "Sreach Agent": "Sreach Agent",
+    "Agent ID": "ID đại lý",
+    "Awaiting Approval": "Chờ phê duyệt",
+    "Requested At" : "Yêu cầu lúc",
+    "Total Agents" : "Tổng số đại lý",
+    "Approved At" : "Được chấp thuận tại",
     "Export CSV": "Xuất CSV"
 }
