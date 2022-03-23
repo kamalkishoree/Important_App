@@ -28,7 +28,7 @@
                         <div class="row mb-2">
                             <div class="col-sm-8">
                                 <div class="text-sm-left">
-                                    <h4 class="header-title">{{ $notification_type->name }}</h4>
+                                    <h4 class="header-title">{{ __($notification_type->name) }}</h4>
                                 </div>
                             </div>
                             

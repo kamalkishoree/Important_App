@@ -77,7 +77,7 @@
                                         @if(!empty($singleuser->dial_code)) +{{ $singleuser->dial_code }} @endif {{ $singleuser->phone_number }}
                                     </td>
                                     <td>
-                                        {{ ($singleuser->status==1)?"Active":"Inactive" }}
+                                        {{ ($singleuser->status==1)?__("Active"):__("Inactive") }}
                                     </td>                                    
                                     <td>
                                         <div class="form-ul" style="width: 60px;">

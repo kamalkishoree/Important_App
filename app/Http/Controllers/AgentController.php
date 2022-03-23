@@ -434,7 +434,7 @@ class AgentController extends Controller
             if (isset($otp)) {
                 $send_otp = $otp->opt;
             } else {
-                $send_otp = 'View OTP after Logging in the Driver App';
+                $send_otp = __('View OTP after Logging in the Driver App');
             }
             $agents_docs = AgentDocs::where('agent_id', $id)->get();
             $driver_registration_documents = DriverRegistrationDocument::get();
@@ -479,7 +479,7 @@ class AgentController extends Controller
         if (isset($otp)) {
             $send_otp = $otp->opt;
         } else {
-            $send_otp = 'View OTP after Logging in the Driver App';
+            $send_otp = __('View OTP after Logging in the Driver App');
         }
 
         $agents_docs = AgentDocs::where('agent_id', $id)->get();

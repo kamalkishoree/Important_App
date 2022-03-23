@@ -260,9 +260,9 @@
                                     
                                     <td>
                                         @if ($agent->type == 'Employee')
-                                        <span class="badge bg-soft-success text-success">{{$agent->type}}</span>
+                                        <span class="badge bg-soft-success text-success">{{__($agent->type)}}</span>
                                         @else
-                                        <span class="badge bg-soft-danger text-danger">{{$agent->type}}</span>
+                                        <span class="badge bg-soft-danger text-danger">{{__($agent->type)}}</span>
                                         @endif                                          
                                        
                                     </td>
