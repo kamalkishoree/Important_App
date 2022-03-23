@@ -1301,8 +1301,8 @@ class DashBoardController extends Controller
         $distance_in_miles = number_format($totaldistance/1609.344, 2);
         $output['total_distance'] = $totaldistance;
         $output['distance'] = $distancearray;
-        $output['total_distance_km'] = $distance_in_km . 'km';
-        $output['total_distance_miles'] = $distance_in_miles . 'miles';
+        $output['total_distance_km'] = $distance_in_km . __('km');
+        $output['total_distance_miles'] = $distance_in_miles . __('miles');
         return $output;
     }
 

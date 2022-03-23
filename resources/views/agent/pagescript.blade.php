@@ -165,7 +165,7 @@
                 var domRef = '<"toolbar">Bfrtip';
                 var btnObj = [{
                     className: 'btn btn-success waves-effect waves-light',
-                    text: '<span class="btn-label"><i class="mdi mdi-export-variant"></i></span>Export CSV',
+                    text: '<span class="btn-label"><i class="mdi mdi-export-variant"></i></span>{{__("Export CSV")}}',
                     action: function(e, dt, node, config) {
                         window.location.href = "{{ route('agents.export') }}";
                     }
@@ -188,7 +188,7 @@
                         previous: "<i class='mdi mdi-chevron-left'>",
                         next: "<i class='mdi mdi-chevron-right'>"
                     },
-                    searchPlaceholder: "Search Agent",
+                    searchPlaceholder: "{{__('Search Agent')}}",
                     'loadingRecords': '&nbsp;',
                     'processing': '<div class="spinner"></div>'
                 },

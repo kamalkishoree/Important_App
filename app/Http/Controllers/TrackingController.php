@@ -182,6 +182,45 @@ class TrackingController extends Controller
         }
     }
 
+    public function DriverRating($domain = '', $user, $id, Request $request)
+    {
+        //dd('sdfsdf');
+        // $domain = '', $user, $id
+        $respnse = $this->connection($user);
+        if ($respnse['status'] == 'connected') {
+            $order = DB::connection($respnse['database'])->table('orders')->where('unique_id', $id)->first();            
+
+            if (isset($order->id)) {
+                $check_alredy  = DB::connection($respnse['database'])->table('driver_ratings')->where('order_id', $order->id)->first();
+
+                $data = [
+                    'order_id'    => $order->id,
+                    'driver_id'   => $order->driver_id,
+                    'rating'      => $request->rating,
+                    'review'      => $request->review,
+                ];
+                if (isset($check_alredy->id)) {
+                    $data['updated_at'] = date('Y-m-d H:i:s');
+                    DB::connection($respnse['database'])->table('driver_ratings')->where('id',$check_alredy->id)->update($data);
+                    return response()->json(['status' => true, 'message' => __('Rating has been updated')]);
+                } else {
+                    $data['created_at'] = date('Y-m-d H:i:s');
+
+                    DB::connection($respnse['database'])->table('driver_ratings')->insert($data);
+
+                    return response()->json(['status' => true, 'message' => __('Your rating is submitted')]);
+                }
+            } else {
+                return response()->json(['status' => true, 'message' => __('Order Not Found')]);
+            }
+        } else {
+            return response()->json([
+                'message' => 'Error'], 400);
+            // return view('tracking/order_not_found');
+        }
+
+    }
+
 
 
     # order cancel section 

@@ -321,7 +321,7 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label>{{__("Driver Tag")}}</label>
-                            <select name="agent_tag[]" id="selectize-optgroup" class="selectizeInput" multiple placeholder={{__("Select tag...")}}>
+                            <select name="agent_tag[]" id="selectize-optgroup" class="selectizeInput" multiple placeholder="{{__('Select tag...')}}">
                                 <option value="">{{__("Select Tag...")}}</option>
                                 @foreach ($agentTag as $item)
                                     <option value="{{ $item->id }}">{{ $item->name }}</option>

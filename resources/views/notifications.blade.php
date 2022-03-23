@@ -63,7 +63,7 @@
                                     @foreach($notification_type->notification_events as $index => $event)
                                     <tr>
                                         <td>
-                                            <h5 class="m-0 font-weight-normal">{{ $event->name }}</h5>
+                                            <h5 class="m-0 font-weight-normal">{{ __($event->name) }}</h5>
                                         </td>
 
                                         <td>

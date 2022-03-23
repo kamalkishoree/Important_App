@@ -27,7 +27,7 @@
                 language: {
                             search: "",
                             paginate: { previous: "<i class='mdi mdi-chevron-left'>", next: "<i class='mdi mdi-chevron-right'>" },
-                            searchPlaceholder: "Search Routes",
+                            searchPlaceholder: "{{__('Search Routes')}}",
                             'loadingRecords': '&nbsp;',
                             'sProcessing': '<div class="spinner" style="top: 90% !important;"></div>'
                 },
@@ -36,7 +36,7 @@
                 },
                 buttons: [{
                     className:'btn btn-success waves-effect waves-light',
-                    text: '<span class="btn-label"><i class="mdi mdi-export-variant"></i></span>Export CSV',
+                    text: '<span class="btn-label"><i class="mdi mdi-export-variant"></i></span>{{__("Export CSV")}}',
                     action: function ( e, dt, node, config ) {
                         window.location.href = "{{ route('task.export') }}";
                     }
@@ -90,7 +90,7 @@
                     }},
                     {data: 'track_url', name: 'track_url', orderable: false, searchable: false, "mRender": function ( data, type, full ) {
                         var trackUrl = full.track_url;
-                        return '<a onclick="window.open(this.href,"_blank");return false;" href="'+trackUrl+'">Track</a>';
+                        return '<a onclick="window.open(this.href,"_blank");return false;" href="'+trackUrl+'">'+'{{__("Track")}}'+'</a>';
                     }},
                     {data: 'track_url', name: 'track_url', orderable: false, searchable: false, "mRender": function ( data, type, full ) {
                         return '<button class="showTaskProofs btn btn-primary-outline action-icon" value="'+full.id+'"><i class="fe-layers"></i></button>';
@@ -272,13 +272,13 @@
 
                     switch (elem.task_type_id) {
                         case 1:
-                            taskname = 'Pickup task';
+                            taskname = "{{__('Pickup task')}}";
                             break;
                         case 2:
-                            taskname = 'Drop Off task';
+                            taskname = "{{__('Drop Off task')}}";
                             break;
                         case 3:
-                            taskname = 'Appointment';
+                            taskname = "{{__('Appointment')}}";
                             break;
                     }
                     var date = new Date(elem.order_time);
@@ -300,7 +300,7 @@
                                                             '<div class="row">';
                     if (image_proof == 1) {
                     html  = html+'<div class="col-md-4">'+
-                            '<label class="mb-3">Image</label>'+
+                            '<label class="mb-3">'+"{{__('Image')}}"+'</label>'+
                             '<div class="status-wrap-block">'+
                                 '<div class="image-wrap-sign">'+
                                     '<a data-fancybox="images" href="'+ elem.proof_image +'"><img src="https://imgproxy.royodispatch.com/insecure/fit/400/400/sm/0/plain/'+ elem.proof_image +'" alt=""></a>'+
@@ -312,7 +312,7 @@
 
                     if (sign_proof == 1) {
                         html  = html+ '<div class="col-md-4">'+
-                                      '<label class="mb-3">Signature</label>'+
+                                      '<label class="mb-3">'+"{{__('Signature')}}"+'</label>'+
                                        '<div class="status-wrap-block">'+
                                         '<div class="image-wrap-sign">'+
                                       '<a data-fancybox="images" href="'+ elem.proof_signature +'"><img src="https://imgproxy.royodispatch.com/insecure/fit/200/200/sm/0/plain/'+ elem.proof_signature +'" alt=""></a>'+
@@ -324,7 +324,7 @@
 
                     if (note == 1) {
                         html  = html+   '<div class="col-md-4">'+
-                                        '<label class="mb-3">Notes</label>'+
+                                        '<label class="mb-3">'+"{{__('Notes')}}"+'</label>'+
                                         '<div class="status-wrap-block">'+
                                         '<div class="note-wrap">'+
                                             '<span>'+elem.note+'</span>'+
@@ -335,7 +335,7 @@
 
                     if(all == 1){
                         html  = html+   '<div class="col-12 text-center">'+
-                                            '<h5>No Proof Found</h5>'+
+                                            '<h5>'+"{{__('No Proof Found')}}"+'</h5>'+
                                           '</div>';
                     }
 

@@ -75,7 +75,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                     <i class="mdi mdi-storefront text-primary mdi-24px"></i>
                                     <span data-plugin="counterup" id="total_earnings_by_vendors">{{$customersCount}}</span>
                                 </h3>
-                                <p class="text-muted font-15 mb-0">{{ 'Total '. __("Customers") }}</p>
+                                <p class="text-muted font-15 mb-0">{{ __('Total Customers') }}</p>
                             </div>
                         </div>
                         <div class="col-sm-6 col-md-3 mb-3 mb-md-0">
@@ -84,7 +84,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                     <i class="mdi mdi-store-24-hour text-primary mdi-24px"></i>
                                     <span data-plugin="counterup" id="total_order_count">{{$activeCustomers}}</span>
                                 </h3>
-                                <p class="text-muted font-15 mb-0">Active</p>
+                                <p class="text-muted font-15 mb-0">{{__('Active')}}</p>
                             </div>
                         </div>
                         <div class="col-sm-6 col-md-3 mb-3 mb-md-0">
@@ -93,7 +93,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                     <i class="fas fa-money-check-alt text-primary"></i>
                                     <span data-plugin="counterup" id="total_cash_to_collected">{{$inActiveCustomers}}</span>
                                 </h3>
-                                <p class="text-muted font-15 mb-0">In-Active</p>
+                                <p class="text-muted font-15 mb-0">{{__('In-Active')}}</p>
                             </div>
                         </div>
                     </div>
@@ -126,7 +126,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                             <thead>
                                 <tr>
                                     <th>{{__("Name")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
-                                    <th>{{("Email")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
+                                    <th>{{__("Email")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                     <th>{{__("Phone number")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                     <th>{{__("Status")}}</th>
                                     <th style="width: 85px;">{{__("Action")}}</th>

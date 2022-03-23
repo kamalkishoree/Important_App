@@ -60,9 +60,9 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                             $opti0 = "";
                                         }
                                         $routeperams0 = "'".$distance_matrix[0]['tasks']."','".json_encode($distance_matrix[0]['distance'])."','".$opti0."',0,'".$date."'";
-                                        $optimize0 = '<span class="optimize_btn" onclick="RouteOptimization('.$routeperams0.')">Optimize</span>';
+                                        $optimize0 = '<span class="optimize_btn" onclick="RouteOptimization('.$routeperams0.')">'.__("Optimize").'</span>';
                                         $params0 = "'".$distance_matrix[0]['tasks']."','".json_encode($distance_matrix[0]['distance'])."','yes',0,'".$date."'";
-                                        $turnbyturn0 = '<span class="navigation_btn optimize_btn" onclick="NavigatePath('.$routeperams0.')">Export</span>';
+                                        $turnbyturn0 = '<span class="navigation_btn optimize_btn" onclick="NavigatePath('.$routeperams0.')">'.__("Export").'</span>';
                                     }else{
                                         $optimize0="";
                                         $params0 = "";
@@ -75,8 +75,8 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                                 <span class="profile-circle">D</span>
                                             </div>
                                             <div class="col-md-10 col-10">
-                                                <h6 class="mb-0 header-title scnd">Unassigned Tasks<div  class="optimizebtn0">{!! $optimize0 !!} </div><div class="exportbtn0">{!! $turnbyturn0 !!} </div></h6>
-                                                <p class="mb-0"> <span>{{ count($unassigned_orders) }} Tasks</span> {!! $unassigned_distance==''?'':' <i class="fas fa-route"></i> '!!}<span class="dist_sec totdis0">{{ $unassigned_distance }}</span></p>
+                                                <h6 class="mb-0 header-title scnd">{{__("Unassigned Tasks")}}<div  class="optimizebtn0">{!! $optimize0 !!} </div><div class="exportbtn0">{!! $turnbyturn0 !!} </div></h6>
+                                                <p class="mb-0"> <span>{{ count($unassigned_orders) }} {{__("Tasks")}}</span> {!! $unassigned_distance==''?'':' <i class="fas fa-route"></i> '!!}<span class="dist_sec totdis0">{{ $unassigned_distance }}</span></p>
                                             </div>
                                         </div>
                                     </a>
@@ -89,7 +89,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                                 <div class="card-body" task_id ="{{ $tasks['id'] }}">
                                                     <div class="p-2 assigned-block">
                                                         @php
-                                                            $st = "Unassigned";
+                                                            $st ="Unassigned";
                                                             $color_class = "assign_";
                                                             if($tasks['task_type_id']==1)
                                                             {
@@ -125,8 +125,8 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                                                         src="{{ asset('demo/images/ic_location_blue_1.png') }}"> {{ isset($tasks['location']['address'])? $tasks['location']['address']:'' }} <span class="d-block">{{ isset($tasks['location']['short_name'])? $tasks['location']['short_name']:'' }}</span></h6>
                                                                 </div>
                                                                 <div class="col-3">
-                                                                    <button class="assigned-btn float-right mb-2 {{$pickup_class}}">{{$tasktype}}</button>
-                                                                    <button class="assigned-btn float-right {{$color_class}}">{{$st}}</button>
+                                                                    <button class="assigned-btn float-right mb-2 {{$pickup_class}}">{{__($tasktype)}}</button>
+                                                                    <button class="assigned-btn float-right {{$color_class}}">{{__($st)}}</button>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -202,10 +202,10 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                     //print_r($distance_matrix[$agent['id']]);
                                     $routeperams = "'".$distance_matrix[$agent['id']]['tasks']."','".json_encode($distance_matrix[$agent['id']]['distance'])."','".$opti."',".$agent['id'].",'".$date."'";
 
-                                    $optimize = '<span class="optimize_btn" onclick="RouteOptimization('.$routeperams.')">Optimize</span>';
+                                    $optimize = '<span class="optimize_btn" onclick="RouteOptimization('.$routeperams.')">'.__("Optimize").'</span>';
                                     $params = "'".$distance_matrix[$agent['id']]['tasks']."','".json_encode($distance_matrix[$agent['id']]['distance'])."','yes',".$agent['id'].",'".$date."'";
 
-                                    $turnbyturn = '<span class="navigation_btn optimize_btn" onclick="NavigatePath('.$routeperams.')">Export</span>';
+                                    $turnbyturn = '<span class="navigation_btn optimize_btn" onclick="NavigatePath('.$routeperams.')">'.__("Export").'</span>';
                                    //$turnbyturn = "";
                                 }else{
                                     $optimize="";
@@ -219,7 +219,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                     if($agent['is_available']==1)
                                     {
                                         $pdfperams = "'".$agent['order'][0]['task'][0]['id']."','','',".$agent['id'].",'".$date."'";
-                                        $turnbyturn = '<span class="navigation_btn optimize_btn" onclick="NavigatePath('.$pdfperams.')">Export</span>';
+                                        $turnbyturn = '<span class="navigation_btn optimize_btn" onclick="NavigatePath('.$pdfperams.')">'.__("Export").'</span>';
                                     }else{
                                         $pdfperams = "";
                                         $turnbyturn = "";
@@ -257,7 +257,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                                             <div class="exportbtn{{ $agent['id'] }}">
                                                                 {!! $turnbyturn !!}
                                                             </div></h6>
-                                                        <p class="mb-0">{{count($agent['order'])>0?'Busy  ':'Free  '}}<span>{{$agent['agent_task_count']}} {{__('Tasks')}}</span> {!!$agent['total_distance']==''?'':' <i class="fas fa-route"></i>'!!}<span class="dist_sec totdis{{ $agent['id'] }}">{{ $agent['total_distance'] }}</span></p>
+                                                        <p class="mb-0">{{count($agent['order'])>0?__('Busy '):__('Free ')}}<span>{{$agent['agent_task_count']}} {{__('Tasks')}}</span> {!!$agent['total_distance']==''?'':' <i class="fas fa-route"></i>'!!}<span class="dist_sec totdis{{ $agent['id'] }}">{{ $agent['total_distance'] }}</span></p>
                                                         </div>
                                                     </div>
                                                 </a>
@@ -332,8 +332,8 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
 
                                                                     </div>
                                                                     <div class="col-3">
-                                                                        <button class="assigned-btn float-right mb-2 {{$pickup_class}}">{{$tasktype}}</button>
-                                                                        <button class="assigned-btn float-right {{$color_class}}">{{$st}}</button>
+                                                                        <button class="assigned-btn float-right mb-2 {{$pickup_class}}">{{__($tasktype)}}</button>
+                                                                        <button class="assigned-btn float-right {{$color_class}}">{{__($st)}}</button>
                                                                     </div>
                                                                 </div>
 

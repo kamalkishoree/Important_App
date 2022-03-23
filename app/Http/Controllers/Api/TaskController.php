@@ -725,6 +725,7 @@ class TaskController extends BaseController
 
             $order = [
             'customer_id'                     => $cus_id,
+            'scheduled_date_time'             => ($request->task_type=="schedule") ? $notification_time: null,
             'recipient_phone'                 => $request->recipient_phone,
             'Recipient_email'                 => $request->recipient_email,
             'task_description'                => $request->task_description,
