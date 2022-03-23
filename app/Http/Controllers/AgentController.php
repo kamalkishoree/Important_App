@@ -203,11 +203,11 @@ class AgentController extends Controller
                                     <div class="inner-div"> <a href="' . route('agent.show', $agents->id) . '" class="action-icon viewIcon" agentId="' . $agents->id . '"> <i class="fa fa-eye"></i></a></div>
                                     <div class="inner-div"> <a href="' . route('agent.edit', $agents->id) . '" class="action-icon editIcon" agentId="' . $agents->id . '"> <i class="mdi mdi-square-edit-outline"></i></a></div>
                                     <div class="inner-div">
-                                        <form method="POST" action="' . route('agent.destroy', $agents->id) . '">
+                                        <form id="agentdelete'.$agents->id.'" method="POST" action="' . route('agent.destroy', $agents->id) . '">
                                             <input type="hidden" name="_token" value="' . csrf_token() . '" />
                                             <input type="hidden" name="_method" value="DELETE">
                                             <div class="form-group">
-                                                <button type="submit" class="btn btn-primary-outline action-icon"> <i class="mdi mdi-delete"></i></button>
+                                                <button type="submit" class="btn btn-primary-outline action-icon"> <i class="mdi mdi-delete" agentid="'.$agents->id.'"></i></button>
                                             </div>
                                         </form>
                                     </div>
@@ -232,7 +232,7 @@ class AgentController extends Controller
                         //     }
                         //     return false;
                         // });
-                        
+
                         $search = $request->get('search');
                         $instance->where('uid', 'Like', '%'.$search.'%')
                             ->orWhere('name', 'Like', '%'.$search.'%')

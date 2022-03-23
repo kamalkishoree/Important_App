@@ -8,21 +8,21 @@
             <form id="add_customer" action="{{ route('customer.store') }}" method="POST">
                 @csrf
                 <div class="modal-body py-0">
-                    
+
                     <div class="row">
 
-                        
+
 
                         <div class="col-md-12">
                             <div class="card-box mb-0 p-0">
-                                
+
                                 <div class="row">
 
                                     <div class="col-lg-4 col-sm-6 mb-lg-0 mb-3">
                                         <div class="form-group" id="nameInput">
                                             {!! Form::label('title', __('Name'),['class' => 'control-label']) !!}
                                             {!! Form::text('name', null, ['class' => 'form-control']) !!}
-                                            
+
                                             <span class="invalid-feedback" role="alert">
                                                 <strong></strong>
                                             </span>
@@ -44,24 +44,24 @@
                                             <span class="invalid-feedback" role="alert">
                                                 <strong></strong>
                                             </span>
-                                        </div> 
+                                        </div>
                                     </div>
                                 </div>
 
-                                
-                                <div class="addapp"> 
-                                    {!! Form::label('title', __('Address'),['class' => 'control-label']) !!} 
+
+                                <div class="addapp">
+                                    {!! Form::label('title', __('Address'),['class' => 'control-label']) !!}
                                     <div class="row address addressrow1" id="add1">
                                         <div class="col-lg-4 col-md-3 mb-lg-0 mb-3">
                                             <div class="form-group">
-                                                <input type="text" id="add1-flat" name="flat_no[]" class="form-control" placeholder="{{__('House / Apartment/ Flat number')}}"">
+                                                <input type="text" id="add1-flat" name="flat_no[]" class="form-control" placeholder="{{__('House / Apartment/ Flat number')}}">
                                                 <span class="invalid-feedback" role="alert">
                                                     <strong></strong>
                                                 </span>
-                                            </div>    
-                                        </div> 
+                                            </div>
+                                        </div>
                                         <div class="col-lg-4 col-md-3 mb-lg-0 mb-3">
-                                            <div class="form-group" id="short_nameInput"> 
+                                            <div class="form-group" id="short_nameInput">
                                                 <input type="text" name="short_name[]" class="form-control" placeholder="{{__('Short Name')}}">
                                                 <span class="invalid-feedback" role="alert">
                                                     <strong></strong>
@@ -87,16 +87,16 @@
                                                 <span class="invalid-feedback" role="alert">
                                                     <strong></strong>
                                                 </span>
-                                            </div>    
-                                        </div> 
-                                         
+                                            </div>
+                                        </div>
+
                                         <div class="col-lg-4 col-md-3 mb-lg-0 mb-3">
                                             <div class="form-group">
                                                 <input type="text" id="add1-phone_number" name="address_phone_number[]" class="form-control" placeholder={{__("Phone Number")}}>
                                                 <span class="invalid-feedback" role="alert">
                                                     <strong></strong>
                                                 </span>
-                                            </div>    
+                                            </div>
                                         </div>
                                         <div class="col-lg-4 col-md-3 mb-lg-0 mb-3">
                                             <div class="form-group d-flex align-items-center" id="post_codeInput">
@@ -106,7 +106,7 @@
                                                 </span>
                                                 <button type="button" class="btn btn-primary-outline action-icon" onclick="deleteAddress('',1)"> <i class="mdi mdi-delete"></i></button>
                                             </div>
-                                        </div>  
+                                        </div>
 
                                         {{-- <div class="col-sm-6 mb-lg-0 mb-3">
 
@@ -116,7 +116,7 @@
                                                 <span class="invalid-feedback" role="alert">
                                                     <strong></strong>
                                                 </span>
-                                            </div>    
+                                            </div>
                                         </div>
                                         <div class="col-sm-6 mb-lg-0 mb-3">
                                             <div class="form-group">
@@ -125,7 +125,7 @@
                                                 <span class="invalid-feedback" role="alert">
                                                     <strong></strong>
                                                 </span>
-                                            </div>    
+                                            </div>
                                         </div> --}}
 
 
@@ -134,7 +134,7 @@
                                         <div style="width: 100%; height: 100%" id="address-map"></div>
                                     </div>
                                 </div>
-                                
+
                                 <div class="row">
                                     <div class="col-md-12 text-center" id="adds">
                                         <a href="#"  class="btn btn-success btn-rounded waves-effect waves-light addField" >{{__("Add More Address")}}</a>
@@ -143,10 +143,10 @@
 
                                 <div class="row">
                                     <div class="col-md-5">
-                                        
+
                                     </div>
                                     <div class="col-md-7">
-                                        
+
                                     </div>
                                 </div>
 
@@ -174,13 +174,13 @@
                 @csrf
                 @method('PUT')
                 <div class="modal-body px-3 py-0" id="editCardBox">
-                    
+
                 </div>
 
                 <div class="modal-footer border-0">
                     <button type="button" class="btn btn-blue waves-effect waves-light submitEditForm">{{__("Submit")}}</button>
                 </div>
-                
+
             </form>
         </div>
     </div>
@@ -195,7 +195,7 @@
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
             </div>
             <div class="modal-body px-3 py-0">
-                
+
                 <div class="row">
                     <form id="task_form" action="#" method="POST" style="width: 100%">
                         <div class="col-md-12">

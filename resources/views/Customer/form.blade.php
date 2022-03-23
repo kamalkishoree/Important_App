@@ -4,7 +4,7 @@
         <div class="form-group" id="nameInputEdit">
             {!! Form::label('title', __('Name'),['class' => 'control-label']) !!}
             {!! Form::text('name', $customer->name, ['class' => 'form-control']) !!}
-            
+
             <span class="invalid-feedback" role="alert">
                 <strong></strong>
             </span>
@@ -35,7 +35,7 @@
 
 
 <div class="editApp"> <?php $i = 1; ?>
-    {!! Form::label('title', __('Address'),['class' => 'control-label']) !!} 
+    {!! Form::label('title', __('Address'),['class' => 'control-label']) !!}
     @foreach($customer->location as $loc)
 
     <div class="row address addEditAddress addressrow{{$i}}" id="edit{{$i}}">
@@ -45,10 +45,10 @@
                 <span class="invalid-feedback" role="alert">
                     <strong></strong>
                 </span>
-            </div>    
+            </div>
         </div>
         <div class="col-lg-4 col-md-3 mb-lg-0 mb-3">
-            <div class="form-group" id=""> 
+            <div class="form-group" id="">
                 <input type="text" name="short_name[]" class="form-control" placeholder="{{__('Short Name')}}" value="{{$loc->short_name}}">
                 <span class="invalid-feedback" role="alert">
                     <strong></strong>
@@ -68,7 +68,7 @@
                     <strong></strong>
                 </span>
             </div>
-        </div>        
+        </div>
         <div class="col-lg-4 col-md-3 mb-lg-0 mb-3">
             <div class="form-group">
                 <input type="text" id="edit{{$i}}-email" name="address_email[]" class="form-control" placeholder="{{__('Email')}}" value="{{$loc->email}}">
@@ -94,7 +94,7 @@
                 <button type="button" class="btn btn-primary-outline action-icon" onclick="deleteAddress({{$loc->id}},{{$i}})"> <i class="mdi mdi-delete"></i></button>
             </div>
         </div>
-        {{-- <div class="col-sm-6 mb-lg-0 mb-3">            
+        {{-- <div class="col-sm-6 mb-lg-0 mb-3">
             <div class="form-group">
                 <label for="">Due After</label>
                 <input type="time" id="edit{{$i}}-due_after" name="due_after[]" class="form-control" placeholder="Due After" value="{{$loc->due_after}}">
@@ -103,7 +103,7 @@
                 </span>
             </div>
         </div>
-        <div class="col-sm-6 mb-lg-0 mb-3">            
+        <div class="col-sm-6 mb-lg-0 mb-3">
             <div class="form-group">
                 <label for="">Due Before</label>
                 <input type="time" id="edit{{$i}}-due_before" name="due_before[]" class="form-control" placeholder="Due Before" value="{{$loc->due_before}}">
@@ -126,4 +126,3 @@
         <a href="#"  class="btn btn-success btn-rounded waves-effect waves-light editInput" >{{__('Add More Address')}}</a>
     </div>
 </div>
-

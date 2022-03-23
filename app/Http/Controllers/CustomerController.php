@@ -27,7 +27,7 @@ class CustomerController extends Controller
         $customersCount    = count($customers);
         return view('Customer.customer')->with(['customersCount'=>$customersCount, 'activeCustomers'=>$activeCustomers, 'inActiveCustomers'=>$inActiveCustomers]);
     }
-    
+
     public function customerFilter(Request $request)
     {
         $customers = Customer::orderBy('created_at', 'DESC')->get();
@@ -100,7 +100,7 @@ class CustomerController extends Controller
      */
     public function create()
     {
-        
+
         //not in use
         return view('Customer/add-customer');
     }
@@ -134,14 +134,14 @@ class CustomerController extends Controller
     {
         $rule = $this->validationRules();
         $validation  = Validator::make($request->all(), $rule)->validate();
-        
+
         $data = [
             'name' => $request->name,
             'email' => $request->email,
             'phone_number' => $request->phone_number,
         ];
 
-        
+
         $customer = Customer::create($data);
         if (isset($request->short_name)) {
             foreach ($request->short_name as $key => $value) {
@@ -250,7 +250,7 @@ class CustomerController extends Controller
                             'flat_no'  => $request->flat_no[$key],
                             // 'due_after' => $request->due_after[$key],
                             // 'due_before' => $request->due_before[$key],
-                            
+
 
                         ];
                         $Loction = Location::create($datas);
@@ -258,7 +258,7 @@ class CustomerController extends Controller
                 }
             }
         }
-        
+
 
         if ($customer) {
             return response()->json([
@@ -284,7 +284,7 @@ class CustomerController extends Controller
 
 
     //this function for change status of customer active/in-active
-    
+
     public function changeStatus(Request $request)
     {
         $customer = Customer::find($request->id);
