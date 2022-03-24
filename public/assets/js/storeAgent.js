@@ -66,8 +66,8 @@ function AjaxSubmit(data, method, url, modals) {
         success: function(response) {
             if (response.status == 'success') {
                     $("#add-agent-modal .close").click();
-                         location.reload(); 
-                
+                         location.reload();
+
                 // $(".alert-success").removeClass('d-none');
                 // $(".alert-success").text(response.message);
                 // setTimeout(function() {
@@ -99,4 +99,3 @@ function AjaxSubmit(data, method, url, modals) {
         }
     });
 }
-
