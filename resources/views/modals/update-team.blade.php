@@ -38,7 +38,7 @@
                                 <label for="location_accuracy">Location Accuracy</label>
                                 <select class="form-control" id="location_accuracy" name="location_accuracy">
                                     @foreach($location_accuracy as $k=>$la)
-                                    <option value="{{ $k }}">{{ $la }}</option>
+                                    <option value="{{ $k }}">{{ __($la) }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -48,7 +48,7 @@
                                 <label for="location_frequency">Location Frequency</label>
                                 <select class="form-control" id="location_frequency" name="location_frequency">
                                     @foreach($location_frequency as $k=>$lf)
-                                    <option value="{{ $k }}">{{ $lf }}</option>
+                                    <option value="{{ $k }}">{{ __($lf) }}</option>
                                     @endforeach
                                 </select>
                             </div>
