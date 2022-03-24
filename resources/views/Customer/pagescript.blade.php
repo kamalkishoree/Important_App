@@ -404,16 +404,6 @@
 
     }
 
-<<<<<<< HEAD
-    $(document).on('click', '.mdi-delete', function(e) {
-        var r = confirm("Are you sure?");
-        if (r == true) {
-            var customerid = $(this).attr('customerid');
-            $('form#customerdelete'+customerid).submit();
-
-        }
-    });
-=======
     $(document).on('click', '.mdi-delete', function(e) {  
             var r = confirm("Are you sure?");
             if (r == true) {
@@ -421,6 +411,5 @@
                $('form#customerdelete'+customerid).submit();
             }
         });
->>>>>>> 2a647f9abe8f6af3ae2fff6c3295fa42f2e72408
 
 </script>
