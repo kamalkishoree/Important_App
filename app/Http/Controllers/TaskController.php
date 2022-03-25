@@ -87,11 +87,11 @@ class TaskController extends Controller
             });
         }
 
-        // $all = $all->get();
-        $active   =  $all->where('status', 'assigned')->count();
-        $pending  =  $all->where('status', 'unassigned')->count();
-        $history  =  $all->where('status', 'completed')->count();
-        $failed   =  $all->where('status', 'failed')->count();
+        $all = $all->get();
+        $active   =  count($all->where('status', 'assigned'));
+        $pending  =  count($all->where('status', 'unassigned'));
+        $history  =  count($all->where('status', 'completed'));
+        $failed   =  count($all->where('status', 'failed'));
         $preference  = ClientPreference::where('id', 1)->first(['theme','date_format','time_format']);
 
         $teamTag   = TagsForTeam::OrderBy('id','asc');
