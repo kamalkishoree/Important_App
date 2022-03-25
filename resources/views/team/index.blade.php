@@ -116,7 +116,7 @@
                     </div>
                 </div>
 
-                <h4 class="header-title mb-3">{{ Session::get('agent_name') ? Session::get('agent_name') : 'Agent' }}</h4>
+                <h4 class="header-title mb-3">{{ Session::get('agent_name') ? Session::get('agent_name') : __('Agent') }}</h4>
 
                 <div class="table-responsive">
                     <table class="table table-borderless table-nowrap table-hover table-centered m-0">

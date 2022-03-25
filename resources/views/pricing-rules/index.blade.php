@@ -65,7 +65,7 @@
                 </div><!-- end col -->
 
                 <div class="">
-                    <h4 class="header-title mt-3 mt-md-0 small-mt-0">Set Priority</h4>
+                    <h4 class="header-title mt-3 mt-md-0 small-mt-0">{{__('Set Priority')}}</h4>
                     <div class="custom-dd dd" id="nestable_list_2">
                         @if(!empty($priority))
                         <ol class="dd-list" id="priority">
@@ -230,7 +230,18 @@
 
 
     $(document).ready(function() {
-        $('#pricing-datatable').DataTable();
+        $('#pricing-datatable').DataTable({
+            language: {
+                    search: "",
+                    paginate: {
+                        previous: "<i class='mdi mdi-chevron-left'>",
+                        next: "<i class='mdi mdi-chevron-right'>"
+                    },
+                    searchPlaceholder: "{{__('Search')}}",
+                    'loadingRecords': '&nbsp;',
+                    'processing': '<div class="spinner"></div>'
+                },
+            });
     });
 
     function runPicker(){

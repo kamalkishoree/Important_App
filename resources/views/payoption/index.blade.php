@@ -83,7 +83,7 @@
 
                 <div class="card-box h-100">
                     <div class="d-flex align-items-center justify-content-between mb-2">
-                        <h4 class="header-title mb-0">{{$opt->title}}</h4>
+                        <h4 class="header-title mb-0">{{__($opt->title)}}</h4>
                     </div>
                     <div class="row">
                         <div class="col-6">
@@ -395,7 +395,7 @@
 
                 <div class="card-box h-100">
                     <div class="d-flex align-items-center justify-content-between mb-2">
-                        <h4 class="header-title mb-0">{{$opt->title}}</h4>
+                        <h4 class="header-title mb-0">{{__($opt->title)}}</h4>
                     </div>
                     <div class="row">
                         <div class="col-6">

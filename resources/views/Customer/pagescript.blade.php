@@ -74,7 +74,7 @@
     });
 
     $(document).on('click', '.selectMapLocation', function() {
-        
+
         var mapLat = document.getElementById('lat_map').value;
         var mapLlng = document.getElementById('lng_map').value;
         var mapFor = document.getElementById('map_for').value;
@@ -98,16 +98,16 @@
             language: {
                         search: "",
                         paginate: { previous: "<i class='mdi mdi-chevron-left'>", next: "<i class='mdi mdi-chevron-right'>" },
-                        searchPlaceholder: "Search Customers",
+                        searchPlaceholder: "{{__('Search Customers')}}",
                         'loadingRecords': '&nbsp;',
                         'processing': '<div class="spinner"></div>'
             },
             drawCallback: function () {
                 $(".dataTables_paginate > .pagination").addClass("pagination-rounded");
             },
-            buttons: [{  
+            buttons: [{
                 className:'btn btn-success waves-effect waves-light',
-                text: '<span class="btn-label"><i class="mdi mdi-export-variant"></i></span>Export CSV',
+                text: '<span class="btn-label"><i class="mdi mdi-export-variant"></i></span>{{__("Export CSV")}}',
                 action: function ( e, dt, node, config ) {
                     window.location.href = "{{ route('customer.export') }}";
                 }
@@ -126,7 +126,7 @@
                 {data: 'status', name: 'status', orderable: false, searchable: false, "mRender": function ( data, type, full ) {
                         var check = (full.status == 'Active')? 'checked' : '';
                         return '<div class="custom-control custom-switch"><input type="checkbox" class="custom-control-input customer_status_switch" '+check+' id="customSwitch_'+full.id+'" data-id="'+full.id+'"><label class="custom-control-label" for="customSwitch_'+full.id+'"></label></div>';
-                     
+
                 }},
                 {data: 'action', name: 'action', orderable: true, searchable: false}
             ]
@@ -216,17 +216,17 @@
 
                     if (status === google.maps.GeocoderStatus.OK) {
                        console.log('hello');
-                       
+
                         const lat = results[0].geometry.location.lat();
                         const lng = results[0].geometry.location.lng();
-                        
+
                         //console.log(latitudes);
                         document.getElementById(name + '-latitude').value = lat;
                         document.getElementById(name + '-longitude').value = lng;
                         const zip_code = results[0].address_components.find(addr => addr.types[0] === "postal_code").short_name;
                         document.getElementById(name + '-postcode').value = zip_code;
                         document.getElementById(name + '-postcode').value = zip_code;
-                        
+
                     }
                 });
             });
@@ -377,7 +377,7 @@
         if(id!="")
         {
             $.ajax({
-                type: 'POST',            
+                type: 'POST',
                 url: '{{url("/remove-location")}}',
                 headers: {
                     'X-CSRF-Token': '{{ csrf_token() }}',
@@ -400,17 +400,15 @@
         }else{
             $('.addressrow'+rowid).remove();
         }
-        
+
 
     }
 
-    $(document).on('click', '.mdi-delete', function(e) {
-            
+    $(document).on('click', '.mdi-delete', function(e) {  
             var r = confirm("Are you sure?");
             if (r == true) {
                var customerid = $(this).attr('customerid');
                $('form#customerdelete'+customerid).submit();
-
             }
         });
 

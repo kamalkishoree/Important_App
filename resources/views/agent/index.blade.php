@@ -110,7 +110,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                     <i class="mdi mdi-storefront text-primary mdi-24px"></i>
                                     <span data-plugin="counterup" id="total_earnings_by_vendors">{{$agentsCount}}</span>
                                 </h3>
-                                <p class="text-muted font-15 mb-0">Total Agents</p>
+                                <p class="text-muted font-15 mb-0">{{__('Total Agents')}}</p>
                             </div>
                         </div>
                         <div class="col-sm-6 col-md mb-3 mb-md-0">
@@ -119,7 +119,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                     <i class="fa fa-user-circle text-primary"></i>
                                     <span data-plugin="counterup" id="total_order_count">{{$freelancerCount}}</span>
                                 </h3>
-                                <p class="text-muted font-15 mb-0">Freelancer</p>
+                                <p class="text-muted font-15 mb-0">{{__('Freelancer')}}</p>
                             </div>
                         </div>
                         <div class="col-sm-6 col-md mb-3 mb-md-0">
@@ -128,7 +128,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                     <i class="fas fa-user text-primary"></i>
                                     <span data-plugin="counterup" id="total_cash_to_collected">{{$employeesCount}}</span>
                                 </h3>
-                                <p class="text-muted font-15 mb-0">Employees</p>
+                                <p class="text-muted font-15 mb-0">{{__('Employees')}}</p>
                             </div>
                         </div>
                         <div class="col-sm-6 col-md mb-3 mb-md-0">
@@ -137,7 +137,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                     <i class="fa fa-address-card text-primary"></i>
                                     <span data-plugin="counterup" id="total_delivery_fees">{{$agentIsApproved}}</span>
                                 </h3>
-                                <p class="text-muted font-15 mb-0">Approved Agents</p>
+                                <p class="text-muted font-15 mb-0">{{__('Approved Agents')}}</p>
                             </div>
                         </div>
                         <div class="col-sm-6 col-md mb-3 mb-md-0">
@@ -146,7 +146,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                     <i class="fa fa-user-times text-primary"></i>
                                     <span data-plugin="counterup" id="total_delivery_fees">{{$agentNotApproved}}</span>
                                 </h3>
-                                <p class="text-muted font-15 mb-0">Unapproved Agents</p>
+                                <p class="text-muted font-15 mb-0">{{__('Unapproved Agents')}}</p>
                             </div>
                         </div>
                     </div>

@@ -87,7 +87,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                         <i class="mdi mdi-store-24-hour text-primary mdi-24px"></i>
                                         <span data-plugin="counterup" id="total_order_count">{{$active_count}}</span>
                                     </h3>
-                                    <p class="text-muted font-15 mb-0">{{__("Active") . ' Orders'}}</p>
+                                    <p class="text-muted font-15 mb-0">{{__("Active") .' ' .__('Orders')}}</p>
                                 </div>
                             </div>
                             <div class="col-sm-6 col-md-3 mb-3 mb-md-0">
@@ -96,7 +96,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                         <i class="fas fa-money-check-alt text-primary"></i>
                                         <span data-plugin="counterup" id="total_cash_to_collected">{{$employeesCount}}</span>
                                     </h3>
-                                    <p class="text-muted font-15 mb-0">{{__("Active") . ' Customer'}}</p>
+                                    <p class="text-muted font-15 mb-0">{{__("Active") . ' ' .__('Customer')}}</p>
                                 </div>
                             </div>
                             <div class="col-sm-6 col-md-3 mb-3 mb-md-0">
@@ -105,7 +105,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                         <i class="fas fa-money-check-alt text-primary"></i>
                                         <span data-plugin="counterup" id="total_delivery_fees">{{$agentsCount}}</span>
                                     </h3>
-                                    <p class="text-muted font-15 mb-0">{{__("Active") . ' Agents'}}</p>
+                                    <p class="text-muted font-15 mb-0">{{__("Active") .' ' . __('Agents')}}</p>
                                 </div>
                             </div>
                         </div>

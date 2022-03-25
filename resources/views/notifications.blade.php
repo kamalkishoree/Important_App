@@ -28,7 +28,7 @@
                         <div class="row mb-2">
                             <div class="col-sm-8">
                                 <div class="text-sm-left">
-                                    <h4 class="header-title">{{ $notification_type->name }}</h4>
+                                    <h4 class="header-title">{{ __($notification_type->name) }}</h4>
                                 </div>
                             </div>
                             
@@ -63,7 +63,7 @@
                                     @foreach($notification_type->notification_events as $index => $event)
                                     <tr>
                                         <td>
-                                            <h5 class="m-0 font-weight-normal">{{ $event->name }}</h5>
+                                            <h5 class="m-0 font-weight-normal">{{ __($event->name) }}</h5>
                                         </td>
 
                                         <td>

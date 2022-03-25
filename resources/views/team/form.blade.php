@@ -28,7 +28,7 @@
             <select class="form-control" id="location_accuracy" name="location_accuracy">
                 @foreach ($location_accuracy as $k => $la)
                     <option value="{{ $k }}" @if ($team->location_accuracy == $k) selected
-                @endif>{{ $la }}</option>
+                @endif>{{ __($la) }}</option>
                 @endforeach
             </select>
             @if ($errors->has('location_accuracy'))
@@ -44,7 +44,7 @@
             <select class="form-control" id="location_frequency" name="location_frequency">
                 @foreach ($location_frequency as $k => $lf)
                     <option value="{{ $k }}" @if ($team->location_frequency == $k) selected
-                @endif>{{ $lf }}</option>
+                @endif>{{ __($lf) }}</option>
                 @endforeach
             </select>
             @if ($errors->has('location_frequency'))

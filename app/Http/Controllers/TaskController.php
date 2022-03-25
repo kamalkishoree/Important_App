@@ -204,7 +204,7 @@ class TaskController extends Controller
                     return $phoneNumber;
                 })
                 ->addColumn('agent_name', function ($orders) use ($request) {
-                    $checkActive = (!empty($orders->agent->name) && $orders->agent->is_available == 1) ? ' (Active)' : ' (InActive)';
+                    $checkActive = (!empty($orders->agent->name) && $orders->agent->is_available == 1) ? ' '.__('Active') : ' '. __('InActive');
                     $agentName   = !empty($orders->agent->name)? $orders->agent->name.$checkActive : '';
                     return $agentName;
                 })
@@ -243,7 +243,7 @@ class TaskController extends Controller
                         $finalAddress = (!empty($addressArr[4])) ? $addressArr[0].' '.$addressArr[1].' '.$addressArr[2].' '.$addressArr[3].' '.$addressArr[4] : $finalAddress.'';
                         $finalAddress = (!empty($addressArr[5])) ? $addressArr[0].' '.$addressArr[1].' '.$addressArr[2].' '.$addressArr[3].' '.$addressArr[4].' '.$addressArr[5] : $finalAddress.'';
                         $finalAddress = (!empty($addressArr[6])) ? $addressArr[0].' '.$addressArr[1].' '.$addressArr[2].' '.$addressArr[3].' '.$addressArr[4].' '.$addressArr[5].'' : $finalAddress;
-                        $routes[]     = array('taskType'=>$taskType, 'pickupClass'=>$pickupClass, 'shortName'=>$shortName, 'toolTipAddress'=>$address, 'address'=> $finalAddress);
+                        $routes[]     = array('taskType'=>__($taskType), 'pickupClass'=>$pickupClass, 'shortName'=>$shortName, 'toolTipAddress'=>$address, 'address'=> $finalAddress);
                     }
                     return json_encode($routes, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_UNESCAPED_UNICODE);
                 })

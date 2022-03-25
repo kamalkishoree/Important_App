@@ -154,12 +154,15 @@ class AgentController extends Controller
                     return $src;
                 })
                 ->editColumn('team', function ($agents) use ($request) {
-                    $team = (isset($agents->team->name) ? $agents->team->name : 'Team Not Alloted');
+                    $team = (isset($agents->team->name) ? $agents->team->name : __('Team Not Alloted'));
                     return $team;
                 })
                 ->editColumn('vehicle_type_id', function ($agents) use ($request) {
                     $src = asset('assets/icons/extra/' . $agents->vehicle_type_id . '.png');
                     return $src;
+                })
+                ->editColumn('type', function ($agents) use ($request) {
+                    return __($agents->type);
                 })
                 ->editColumn('cash_to_be_collected', function ($agents) use ($request) {
                     $cash = $agents->order->sum('cash_to_be_collected');
@@ -203,11 +206,11 @@ class AgentController extends Controller
                                     <div class="inner-div"> <a href="' . route('agent.show', $agents->id) . '" class="action-icon viewIcon" agentId="' . $agents->id . '"> <i class="fa fa-eye"></i></a></div>
                                     <div class="inner-div"> <a href="' . route('agent.edit', $agents->id) . '" class="action-icon editIcon" agentId="' . $agents->id . '"> <i class="mdi mdi-square-edit-outline"></i></a></div>
                                     <div class="inner-div">
-                                        <form method="POST" action="' . route('agent.destroy', $agents->id) . '">
+                                        <form id="agentdelete'.$agents->id.'" method="POST" action="' . route('agent.destroy', $agents->id) . '">
                                             <input type="hidden" name="_token" value="' . csrf_token() . '" />
                                             <input type="hidden" name="_method" value="DELETE">
                                             <div class="form-group">
-                                                <button type="submit" class="btn btn-primary-outline action-icon"> <i class="mdi mdi-delete"></i></button>
+                                                <button type="submit" class="btn btn-primary-outline action-icon"> <i class="mdi mdi-delete" agentid="'.$agents->id.'"></i></button>
                                             </div>
                                         </form>
                                     </div>
@@ -232,7 +235,7 @@ class AgentController extends Controller
                         //     }
                         //     return false;
                         // });
-                        
+
                         $search = $request->get('search');
                         $instance->where('uid', 'Like', '%'.$search.'%')
                             ->orWhere('name', 'Like', '%'.$search.'%')
@@ -431,7 +434,7 @@ class AgentController extends Controller
             if (isset($otp)) {
                 $send_otp = $otp->opt;
             } else {
-                $send_otp = 'View OTP after Logging in the Driver App';
+                $send_otp = __('View OTP after Logging in the Driver App');
             }
             $agents_docs = AgentDocs::where('agent_id', $id)->get();
             $driver_registration_documents = DriverRegistrationDocument::get();
@@ -476,7 +479,7 @@ class AgentController extends Controller
         if (isset($otp)) {
             $send_otp = $otp->opt;
         } else {
-            $send_otp = 'View OTP after Logging in the Driver App';
+            $send_otp = __('View OTP after Logging in the Driver App');
         }
 
         $agents_docs = AgentDocs::where('agent_id', $id)->get();
@@ -608,7 +611,7 @@ class AgentController extends Controller
     {
         DriverGeo::where('driver_id', $id)->delete();  // i have to fix it latter
         Agent::where('id', $id)->delete();
-        return redirect()->back()->with('success', 'Agent deleted successfully!');
+        return redirect()->back()->with('success',__('Agent deleted successfully!'));
     }
 
     public function payreceive(Request $request, $domain = '')

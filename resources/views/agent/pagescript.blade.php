@@ -165,7 +165,7 @@
                 var domRef = '<"toolbar">Bfrtip';
                 var btnObj = [{
                     className: 'btn btn-success waves-effect waves-light',
-                    text: '<span class="btn-label"><i class="mdi mdi-export-variant"></i></span>Export CSV',
+                    text: '<span class="btn-label"><i class="mdi mdi-export-variant"></i></span>{{__("Export CSV")}}',
                     action: function(e, dt, node, config) {
                         window.location.href = "{{ route('agents.export') }}";
                     }
@@ -188,7 +188,7 @@
                         previous: "<i class='mdi mdi-chevron-left'>",
                         next: "<i class='mdi mdi-chevron-right'>"
                     },
-                    searchPlaceholder: "Search Agent",
+                    searchPlaceholder: "{{__('Search Agent')}}",
                     'loadingRecords': '&nbsp;',
                     'processing': '<div class="spinner"></div>'
                 },
@@ -211,7 +211,7 @@
             if(status ==2 || status ==0){
                 table_dy.column(-2).visible(false);
             }
-            
+
 
         }
 
@@ -227,7 +227,7 @@
         }
         var mobile_number = '';
 
-        // $('#add-agent-modal .xyz').val(mobile_number.getSelectedCountryData().dialCode); 
+        // $('#add-agent-modal .xyz').val(mobile_number.getSelectedCountryData().dialCode);
         $(document).on("change", "#add-agent-modal .xyz", function(e) {
             var phonevalue = $('.xyz').val();
             $("#countryCode").val(mobile_number.getSelectedCountryData().dialCode);
@@ -383,7 +383,7 @@
         // });
         $(document).on("submit", "#submitAgent", function(e) {
             e.preventDefault();
-            // $(document).on('click', '.submitAgentForm', function() { 
+            // $(document).on('click', '.submitAgentForm', function() {
             var form = document.getElementById('submitAgent');
             var formData = new FormData(form);
             var urls = "{{URL::route('agent.store')}}";
@@ -527,5 +527,15 @@
             }
         });
 
+    });
+
+
+    $(document).on('click', '.mdi-delete', function(e) {
+      e.preventDefault();
+            var r = confirm("Are you sure?");
+            if (r == true) {
+               var agentid = $(this).attr('agentid');
+               $('form#agentdelete'+agentid).submit();
+            }
     });
 </script>

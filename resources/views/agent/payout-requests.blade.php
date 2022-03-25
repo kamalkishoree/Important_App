@@ -391,14 +391,14 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                 var domRef = '<"toolbar">Bfrtip';
                 var btnObj = [{
                     className: 'btn btn-success waves-effect waves-light rounded-pill payout-toggle d-none',
-                    text: '<span class="btn-label"><i class="fe-dollar-sign"></i></span>Payout',
+                    text: '<span class="btn-label"><i class="fe-dollar-sign"></i></span>{{__("Payout")}}',
                     action: function(e, dt, node, config) {
                         $("#selected-payout-confirm-modal").modal("show");
                     }
                 },
                 {
                     className: 'btn btn-success waves-effect waves-light',
-                    text: '<span class="btn-label"><i class="mdi mdi-export-variant"></i></span>Export CSV',
+                    text: '<span class="btn-label"><i class="mdi mdi-export-variant"></i></span>{{__("Export CSV")}}ij',
                     action: function(e, dt, node, config) {
                         window.location.href = "{{ route('agents.payout.requests.export') }}";
                     }
