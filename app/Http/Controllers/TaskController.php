@@ -157,11 +157,9 @@ class TaskController extends Controller
                 $q->whereIn('driver_id', $agentids)->orWhereNull('driver_id');
             });
 
-            if($request->routesListingType == 'unassigned'){
-                $orders = $orders->wherehas('allteamtags', function($query) use($team_tags) {
-                    $query->whereIn('tag_id', $team_tags);
-                });
-            }
+            $orders = $orders->wherehas('allteamtags', function($query) use($team_tags) {
+                $query->whereIn('tag_id', $team_tags);
+            });
         }
 
         $orders = $orders->where('status', $request->routesListingType)->where('status', '!=', null)->orderBy('updated_at', 'desc');
