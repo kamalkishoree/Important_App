@@ -76,8 +76,6 @@ class TaskController extends Controller
         $all =  Order::where('status', '!=', null);
 
         if($user->is_superadmin == 0 && $user->all_team_access == 0){
-            $all =   $all->whereIn('driver_id',  $agentids)->orWhereNull('driver_id');
-
             $all = $all->where(function($q) use($agentids) {
                 $q->whereIn('driver_id', $agentids)->orWhereNull('driver_id');
             });
