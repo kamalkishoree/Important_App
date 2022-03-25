@@ -12,7 +12,7 @@ class TaskTeamTag extends Model
 
 
     public function tag(){
-        return $this->belongsTo('App\Model\TagsForTeam','id','tag_id');
+        return $this->belongsTo('App\Model\TagsForTeam','tag_id','id');
     }
 
 }

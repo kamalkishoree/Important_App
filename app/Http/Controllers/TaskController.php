@@ -69,10 +69,22 @@ class TaskController extends Controller
         }
         $agents = $agents->get();
 
+        $team_tags = TeamTag::whereHas('team', function($q) use($user){
+            $q->where('manager_id', $user->id);
+        })->pluck('tag_id');
+
         $all =  Order::where('status', '!=', null);
 
         if($user->is_superadmin == 0 && $user->all_team_access == 0){
             $all =   $all->whereIn('driver_id',  $agentids)->orWhereNull('driver_id');
+
+            $all = $all->where(function($q) use($agentids) {
+                $q->whereIn('driver_id', $agentids)->orWhereNull('driver_id');
+            });
+
+            $all = $all->wherehas('allteamtags', function($query) use($team_tags) {
+                $query->whereIn('tag_id', $team_tags);
+            });
         }
 
         $all = $all->get();
@@ -128,6 +140,10 @@ class TaskController extends Controller
         // $pageSize = ($request->length) ? $request->length : '10';
         // $pageNo = ceil($start / $pageSize);
         // $offset = $pageNo * $pageSize;
+        
+        $team_tags = TeamTag::whereHas('team', function($q) use($user){
+            $q->where('manager_id', $user->id);
+        })->pluck('tag_id');
 
         $orders = Order::with(['customer', 'location', 'taskFirst', 'agent', 'task.location']);
 
@@ -137,7 +153,13 @@ class TaskController extends Controller
                 $query->where('sub_admin_id', $user->id);
             })->pluck('id');
 
-            $orders->whereIn('driver_id', $agentids)->orWhereNull('driver_id');
+            $orders = $orders->where(function($q) use($agentids) {
+                $q->whereIn('driver_id', $agentids)->orWhereNull('driver_id');
+            });
+
+            $orders = $orders->wherehas('allteamtags', function($query) use($team_tags) {
+                $query->whereIn('tag_id', $team_tags);
+            });
         }
 
         $orders = $orders->where('status', $request->routesListingType)->where('status', '!=', null)->orderBy('updated_at', 'desc');

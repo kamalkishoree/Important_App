@@ -52,7 +52,7 @@ $sms_crendential = json_decode($preference->sms_credentials);
                                     <select class="form-control" id="map_type" name="map_type">
                                         <option value="google_maps"
                                             {{ isset($preference) && $preference->map_type == 'google_maps' ? 'selected' : '' }}>
-                                            Google Maps</option>
+                                            {{__('Google Maps')}}</option>
                                     </select>
                                     @if ($errors->has('map_type'))
                                         <span class="text-danger" role="alert">
@@ -524,7 +524,7 @@ $sms_crendential = json_decode($preference->sms_credentials);
                             <div class="col-12">
                                 <div class="form-group mb-3">
                                     <div class="domain-outer border-0 d-flex align-items-center justify-content-between">
-                                        <label for="personal_access_token_v1">V1 {{ __(' API ACCESS TOKEN') }}</label>
+                                        <label for="personal_access_token_v1">V1 {{ __('API ACCESS TOKEN') }}</label>
                                         <span class="text-right col-6 col-md-6"><a
                                                 href="javascript: genrateKeyAndToken();">{{ __('Generate Key') }}</a></span>
 
@@ -673,23 +673,23 @@ $sms_crendential = json_decode($preference->sms_credentials);
         <div class="row">
             <div class="col-md-4">
                 {{-- <div class="page-title-box">
-                <h4 class="page-title text-uppercase">Driver</h4>
+                <h4 class="page-title text-uppercase">{{__('Driver')}}</h4>
             </div> --}}
                 <div class="card-box pb-2">
-                    <h4 class="header-title text-uppercase">Driver Registration Documents</h4>
+                    <h4 class="header-title text-uppercase">{{__('Driver Registration Documents')}}</h4>
                     <div class="d-flex align-items-center justify-content-end mt-2">
                         <a class="btn btn-info d-block" id="add_driver_registration_document_modal_btn">
-                            <i class="mdi mdi-plus-circle mr-1"></i>Add
+                            <i class="mdi mdi-plus-circle mr-1"></i>{{__('Add')}}
                         </a>
                     </div>
                     <div class="table-responsive mt-3 mb-1">
                         <table class="table table-centered table-nowrap table-striped" id="promo-datatable">
                             <thead>
                                 <tr>
-                                    <th>Name</th>
-                                    <th>Type</th>
-                                    <th>Required?</th>
-                                    <th>Action</th>
+                                    <th>{{__('Name')}}</th>
+                                    <th>{{__('Type')}}</th>
+                                    <th>{{__('Required?')}}</th>
+                                    <th>{{__('Action')}}</th>
                                 </tr>
                             </thead>
                             <tbody id="post_list">
@@ -725,7 +725,7 @@ $sms_crendential = json_decode($preference->sms_credentials);
                                     </tr>
                                 @empty
                                     <tr align="center">
-                                        <td colspan="4" style="padding: 20px 0">Result not found.</td>
+                                        <td colspan="4" style="padding: 20px 0">{{__('Result not found.')}}</td>
                                     </tr>
                                 @endforelse
                             </tbody>
