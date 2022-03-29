@@ -9,6 +9,7 @@ use App\Model\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Cookie;
 use Illuminate\Validation\Validator;
 use DB,Session;
 
@@ -20,11 +21,13 @@ class LoginController extends Controller
     {
         try {
             $this->validate($request, [
-            'email'           => 'required|max:255|email',
-            'password'        => 'required',
-        ]);
+                'email'           => 'required|max:255|email',
+                'password'        => 'required',
+            ]);
+
+            $remember_me = $request->has('remember') ? true : false;
         
-            if (Auth::guard('client')->attempt(['email' => $request->email, 'password' => $request->password], $request->get('remember'))) {
+            if (Auth::guard('client')->attempt(['email' => $request->email, 'password' => $request->password], $remember_me)) {
                 $client = Client::with(['getAllocation', 'getPreference'])->where('email', $request->email)->first();
                 if ($client->is_blocked == 1 || $client->is_deleted == 1) {
                     Auth::logout();
@@ -43,8 +46,12 @@ class LoginController extends Controller
         }
     }
 
-    public function Logout()
+    public function Logout(Request $request)
     {
+        // Get remember_me cookie name
+        $rememberMeCookie = Auth::getRecallerName();
+        // Tell Laravel to forget this cookie
+        $cookie = Cookie::forget($rememberMeCookie);
         Auth::logout();
         Auth::guard('client')->logout();
         return redirect()->route('login');
