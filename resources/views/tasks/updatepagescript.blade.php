@@ -5,8 +5,11 @@
     var autocompletesWraps = [];
  editCount = 0;
 $(document).ready(function(){
-    console.log(countEdit);
+    // console.log(countEdit);
    // autocompletesWraps.push('add1');
+
+    $('#selectize-optgroups').selectize();
+    $('#selectize-optgroup').selectize();
 
     for (var i = 1; i <= countEdit; i++) {
         autocompletesWraps.push('add'+i);
@@ -115,14 +118,14 @@ $(document).ready(function(){
         $('#adds a').click(function() {
            
             countEdit = countEdit + 1;
-          var abc = "{{ isset($maincount)?$maincount:0 }}";
-          var newcount = $('#newcount').val();
-        //   alert(newcount);
-        //    if(a == 0){
-        //      a = abc;
-        //      post_count = parseInt(newcount) + 1;
-        //    }
-        post_count = parseInt(newcount) + 1;
+            var abc = "{{ isset($maincount)?$maincount:0 }}";
+            var newcount = $('#newcount').val();
+            //   alert(newcount);
+            //    if(a == 0){
+            //      a = abc;
+            //      post_count = parseInt(newcount) + 1;
+            //    }
+            post_count = parseInt(newcount) + 1;
           
             a++;
            // alert(abc);
@@ -237,7 +240,7 @@ $(document).ready(function(){
                     $.each(flat_no, function(index, elem){
                         var jElem = $(elem)
                         var name = jElem.prop('id');
-                        console.log(name);
+                        // console.log(name);
                         name = name.replace(/\d+/g, '');
                         name = 'add'+post_count+'-flat_no';
                         jElem.prop('id', name);
@@ -266,14 +269,14 @@ $(document).ready(function(){
                     $.each(postcode1, function(index, elem){
                         var jElem = $(elem)
                         var name = jElem.prop('id');
-                        console.log(name);
+                        // console.log(name);
                         name = name.replace(/\d+/g, '');
                         name = 'add'+post_count+'-postcode';
                         jElem.prop('id', name);
                         //   var jElem = $(elem); // jQuery element
                         //jElem.prop('required', true);
                         post_count++;
-                        console.log(post_count);
+                        // console.log(post_count);
                     });
 
 
@@ -343,6 +346,10 @@ $(document).ready(function(){
                 $(".appointment-barcode-error").hide();
                 var id       = $("#order-id").val();
                 var formData = new FormData(document.querySelector("#taskFormHeader"));
+                // for (var [key, value] of formData.entries()) { 
+                //     console.log(key, value);
+                // }
+                // console.log(formData);
                 updateTaskSubmit(formData, 'POST', '/updatetasks/tasks/'+id);
             }
         });
@@ -372,7 +379,7 @@ $(document).ready(function(){
             
             if (this.value == 3){
                $span = $(this).closest(".firstclone1").find(".appoint").show();
-               console.log($span); 
+            //    console.log($span); 
             }   
             else{
                 $(this).closest(".firstclone1").find(".appoint").hide();
@@ -385,7 +392,7 @@ $(document).ready(function(){
 
             if ($(this).is(":checked")) { 
               $span = $(this).closest(".requried").find(".alladdress");
-              console.log($span);
+            //   console.log($span);
               $(this).parent().css("border", "2px solid black"); 
             }
         });
@@ -570,7 +577,7 @@ $(document).ready(function(){
             var selectedVal = "";
             var selected = $("#typeInputss input[type='radio']:checked");
             selectedVal = selected.val();
-            console.log(selectedVal);
+            // console.log(selectedVal);
             if (typeof(selectedVal) == "undefined") {
                 var short_name = $("input[name=short_name]").val();
                 var address = $("input[name=address]").val();
@@ -603,29 +610,29 @@ $(document).ready(function(){
 
         });
 
-        var inputLocalFont = document.getElementById("file");
-         inputLocalFont.addEventListener("change",previewImages,false);
+        // var inputLocalFont = document.getElementById("file");
+        //  inputLocalFont.addEventListener("change",previewImages,false);
 
-         function previewImages(){
-          var fileList = this.files;
+        //  function previewImages(){
+        //   var fileList = this.files;
 
-          var anyWindow = window.URL || window.webkitURL;
+        //   var anyWindow = window.URL || window.webkitURL;
 
-          for(var i = 0; i < fileList.length; i++){
-           var objectUrl = anyWindow.createObjectURL(fileList[i]);
-           $('#imagePreview').append('<img src="' + objectUrl + '" class="imagepri" />');
-           window.URL.revokeObjectURL(fileList[i]);
-           }
+        //   for(var i = 0; i < fileList.length; i++){
+        //    var objectUrl = anyWindow.createObjectURL(fileList[i]);
+        //    $('#imagePreview').append('<img src="' + objectUrl + '" class="imagepri" />');
+        //    window.URL.revokeObjectURL(fileList[i]);
+        //    }
 
 
-        }
+        // }
 
 
     });
 
 function loadMap(autocompletesWraps){
 
-    console.log(autocompletesWraps);
+    // console.log(autocompletesWraps);
     $.each(autocompletesWraps, function(index, name) {
         const geocoder = new google.maps.Geocoder; 
 
@@ -638,7 +645,7 @@ function loadMap(autocompletesWraps){
             
             var place = autocomplete[name].getPlace();
             
-            console.log('autocomplete[name]', autocomplete[name]);
+            // console.log('autocomplete[name]', autocomplete[name]);
             geocoder.geocode({'placeId': place.place_id}, function (results, status) {
                 
                 if (status === google.maps.GeocoderStatus.OK) {
@@ -660,7 +667,7 @@ function loadMap(autocompletesWraps){
 
 $(document).on('click', '.showMapTask', function(){
     var no = $(this).attr('id') ??  $(this).attr('num') ;
-    console.log(no);
+    // console.log(no);
     var lats = document.getElementById(no+'-latitude').value;
     var lngs = document.getElementById(no+'-longitude').value;
     var address = document.getElementById(no+'-input').value;
@@ -722,7 +729,7 @@ $(document).on('click', '.showMapTask', function(){
         //marker drag event end
         {{-- google.maps.event.addListener(marker,'dragend',function(event) {
             var zx =JSON.stringify(event);
-            console.log(zx);
+            // console.log(zx);
 
 
             document.getElementById('lat_map').value = event.latLng.lat();
@@ -744,7 +751,7 @@ $(document).on('click', '.selectMapLocation', function () {
     var mapLlng = document.getElementById('lng_map').value;
     var mapFor = document.getElementById('map_for').value;
     var addredd_map = document.getElementById('addredd_map').value;
-    console.log(mapLat+'-'+mapLlng+'-'+mapFor);
+    // console.log(mapLat+'-'+mapLlng+'-'+mapFor);
     document.getElementById(mapFor + '-latitude').value = mapLat;
     document.getElementById(mapFor + '-longitude').value = mapLlng;
     document.getElementById(mapFor + '-input').value = addredd_map;
@@ -762,7 +769,7 @@ $('.onlynumber').keyup(function ()
 
 $(document).on('click', '.mdi-delete-single-task', function() {            
             var r = confirm("{{__('Are you sure?')}}");
-            console.log($(this).attr('taskid'));
+            // console.log($(this).attr('taskid'));
             if (r == true) {
                var taskid = $(this).attr('taskid');
                $('form#taskdeletesingle'+taskid).submit();
