@@ -56,19 +56,19 @@
                     <div class="row">
                         <div class="col-md-4">
                             <div class="card-box dispaly-cards">
-                            {!! Form::label('title', 'Order Earning',['class' => 'control-label']) !!} <br>
+                            {!! Form::label('title', __('Order Earning'),['class' => 'control-label']) !!} <br>
                             <span id="order_earning"></span>
                             </div>
                         </div>
                         <div class="col-md-4 ">
                             <div class="card-box dispaly-cards">
-                            {!! Form::label('title', 'Cash Collected',['class' => 'control-label']) !!} <br>
+                            {!! Form::label('title', __('Cash Collected'),['class' => 'control-label']) !!} <br>
                             <span id="cash_collected"></span>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="card-box dispaly-cards">
-                            {!! Form::label('title', 'Final Balance',['class' => 'control-label']) !!} <br>
+                            {!! Form::label('title', __('Final Balance'),['class' => 'control-label']) !!} <br>
                             <span id="final_balance"></span>
                             </div>
                         </div>

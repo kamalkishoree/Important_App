@@ -464,14 +464,14 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                     {data: 'type', name: 'type', orderable: false, searchable: false},
                     {data: 'bank_account', class:'text-center', name: 'bank_account', orderable: false, searchable: false, "mRender":function(data, type, full){
                         if(full.bank_account != ''){
-                            return '<a href="javascript:void(0)" class="view_agent_bank_details" data-id="'+full.bank_account+'">View</a>';
+                            return '<a href="javascript:void(0)" class="view_agent_bank_details" data-id="'+full.bank_account+'">{{__("View")}}</a>';
                         }else{
                             return 'NA';
                         }
                     }},
                     {data: 'status', class:'text-center', name: 'status', orderable: false, searchable: false, "mRender":function(data, type, full){
                         if(full.status == 'Pending'){
-                            return "<button class='btn btn-sm btn-info payout_btn' data-id='"+full.id+"' data-payout_method='"+full.payout_option_id+"' data-agent='"+full.aegnt_id+"'>Payout</button>";
+                            return "<button class='btn btn-sm btn-info payout_btn' data-id='"+full.id+"' data-payout_method='"+full.payout_option_id+"' data-agent='"+full.aegnt_id+"'>{{__('Payout')}}</button>";
                         }else{
                             return full.status;
                         }
@@ -486,14 +486,14 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                     {data: 'type', name: 'type', orderable: false, searchable: false},
                     {data: 'bank_account', class:'text-center', name: 'bank_account', orderable: false, searchable: false, "mRender":function(data, type, full){
                         if(full.bank_account != ''){
-                            return '<a href="javascript:void(0)" class="view_agent_bank_details" data-id="'+full.bank_account+'">View</a>';
+                            return '<a href="javascript:void(0)" class="view_agent_bank_details" data-id="'+full.bank_account+'">{{__("View")}}</a>';
                         }else{
                             return 'NA';
                         }
                     }},
                     {data: 'status', class:'text-center', name: 'status', orderable: false, searchable: false, "mRender":function(data, type, full){
                         if(full.status == 'Pending'){
-                            return "<button class='btn btn-sm btn-info payout_btn' data-id='"+full.id+"'>Payout</button>";
+                            return "<button class='btn btn-sm btn-info payout_btn' data-id='"+full.id+"'>{{__('Payout')}}</button>";
                         }else{
                             return full.status;
                         }
