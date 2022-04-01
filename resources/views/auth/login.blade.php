@@ -87,7 +87,7 @@
 
                                     <div class="form-group mb-3">
                                         <div class="custom-control custom-checkbox">
-                                            <input type="checkbox" class="custom-control-input" id="checkbox-signin" checked>
+                                            <input type="checkbox" name="remember" class="custom-control-input" id="checkbox-signin" checked>
                                             <label class="custom-control-label" for="checkbox-signin">Remember me</label>
                                         </div>
                                     </div>

@@ -158,6 +158,7 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 			Route::resource('geo-fence', 'GeoFenceController');
 			Route::get('geo-fence-all', 'GeoFenceController@allList')->name('geo.fence.list');
 			Route::resource('team', 'TeamController');
+			Route::get('team/agents/export/{team_id}', 'TeamController@exportAgents')->name('team.agents.export');
 			Route::delete('team-agent/{team_id}/{agent_id}', 'TeamController@removeTeamAgent')->name('team.agent.destroy');
 			Route::resource('notifications', 'ClientNotificationController');
 			Route::resource('pricing-rules', 'PricingRulesController');

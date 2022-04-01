@@ -352,16 +352,16 @@
                         <span>Logout</span>
                     </a>
                     --}}
-                    <a class="dropdown-item notify-item" href="{{ route('client.logout') }}" onclick="event.preventDefault();
-                                    document.getElementById('logout-form').submit();">
+                    <a class="dropdown-item notify-item" href="{{ route('client.logout') }}" > 
+                        {{-- onclick="event.preventDefault(); document.getElementById('logout-form').submit();"> --}}
                         <i class="fe-log-out"></i>
                         <span>{{__('Logout')}}</span>
 
                     </a>
 
-                    <form id="logout-form" action="{{ route('client.logout') }}" method="POST">
+                    {{-- <form id="logout-form" action="{{ route('client.logout') }}" method="GET">
                         @csrf
-                    </form>
+                    </form> --}}
 
                 </div>
             </li>

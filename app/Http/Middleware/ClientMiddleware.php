@@ -31,6 +31,5 @@ class ClientMiddleware
                 break;
         }
         return $next($request);
-        return $next($request);
     }
 }

@@ -718,7 +718,8 @@ class TaskController extends BaseController
 
             //here order save code is started
             $settime = ($request->task_type=="schedule") ? $request->schedule_time : Carbon::now()->toDateTimeString();
-            $notification_time = ($request->task_type=="schedule")? Carbon::parse($settime . $auth->timezone ?? 'UTC')->tz('UTC') : Carbon::now()->toDateTimeString();
+        //    $notification_time = ($request->task_type=="schedule") ? Carbon::parse($settime . $auth->timezone ?? 'UTC')->tz('UTC') : Carbon::now()->toDateTimeString();
+            $notification_time = ($request->task_type=="schedule") ? $settime : Carbon::now()->toDateTimeString();
          //   $notification_time = isset($request->schedule_time) ? $request->schedule_time : Carbon::now()->toDateTimeString();
 
             $agent_id          = $request->allocation_type === 'm' ? $request->agent : null;
@@ -1727,7 +1728,9 @@ class TaskController extends BaseController
             $result = json_decode($response);
             curl_close($ch); // Close the connection
             $new =   $result;
-            array_push($value, $result->rows[0]->elements);
+            if(count($result->rows) > 0){
+                array_push($value, $result->rows[0]->elements);
+            }
             $count++;
             $count1++;
         }
@@ -1735,10 +1738,10 @@ class TaskController extends BaseController
         if (isset($value)) {
             $totalDistance = 0;
             $totalDuration = 0;
-            foreach ($value as $item) {
+            foreach ($value as $i => $item) {
                 //dd($item);
-                $totalDistance = $totalDistance + (isset($item[0]->distance) ? $item[0]->distance->value : 0);
-                $totalDuration = $totalDuration + (isset($item[0]->duration) ? $item[0]->duration->value : 0);
+                $totalDistance = $totalDistance + (isset($item[$i]->distance) ? $item[$i]->distance->value : 0);
+                $totalDuration = $totalDuration + (isset($item[$i]->duration) ? $item[$i]->duration->value : 0);
             }
 
 
