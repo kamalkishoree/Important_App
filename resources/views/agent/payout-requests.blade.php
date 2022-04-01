@@ -398,7 +398,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                 },
                 {
                     className: 'btn btn-success waves-effect waves-light',
-                    text: '<span class="btn-label"><i class="mdi mdi-export-variant"></i></span>{{__("Export CSV")}}ij',
+                    text: '<span class="btn-label"><i class="mdi mdi-export-variant"></i></span>{{__("Export CSV")}}',
                     action: function(e, dt, node, config) {
                         window.location.href = "{{ route('agents.payout.requests.export') }}";
                     }
