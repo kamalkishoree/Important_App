@@ -157,14 +157,17 @@ class AgentPayoutController extends BaseController{
             $user = Auth::user();
             $id = $request->payout_id;
             $payout_option_id = $request->payout_option_id;
-            
+          
             $payout = AgentPayout::with(['payoutBankDetails'=> function($q){
                 $q->where('status', 1);
             }])->where('id', $id)->first();
-
+          
             $request->request->add(['agent_id' => $payout->agent_id]);
             
             $agent = Agent::where('id', $payout->agent_id)->where('is_approved', 1)->first();
+            if(!$agent){
+                return Redirect()->back()->with('error', __('This Agent is not approved!'));
+            }
             $credit = $agent->agentPayment->sum('cr');
             $debit = $agent->agentPayment->sum('dr');
             $agent_account = $payout->payoutBankDetails->first() ? $payout->payoutBankDetails->first()->beneficiary_account_number : '';

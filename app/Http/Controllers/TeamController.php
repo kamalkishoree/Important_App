@@ -2,17 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use Auth;
+use Excel;
+use Exception;
+use App\Exports\TeamAgentsExport;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use App\Model\Agent;
+use App\Model\{Agent, Timezone, ClientPreference};
 use App\Model\Team;
 use App\Model\TeamTag;
 use App\Model\Tag;
 use App\Model\TagsForTeam;
 use App\Model\Manager;
 use App\Model\SubAdminTeamPermissions;
-use Auth;
-use Exception;
 
 class TeamController extends Controller
 {
@@ -249,4 +251,36 @@ class TeamController extends Controller
         return redirect()->back()->with('success', 'Agent removed successfully!');
     }
     
+    public function exportAgents(Request $request, $domain='', $id){
+        $header = [
+                [
+                    'Sr. No.',
+                    'Team Name',
+                    'Agent Name'
+                ]
+            ];
+        $data = array();
+        $user = Auth::user();
+        $team  = Team::with(['manager', 'tags', 'agents'])->where('id', $id);
+        if ($user->is_superadmin == 0 && $user->all_team_access == 0) {
+            $team = $team->whereHas('permissionToManager', function ($query) use($user) {
+                $query->where('sub_admin_id', $user->id);
+            });
+        }
+        $team = $team->first();
+        if($team){
+            $i = 1;
+            foreach ($team->agents as $key => $agent) {
+                $ndata = [];
+                $ndata[] = $i;
+                $ndata[] = $team->name;
+                $ndata[] = (isset($agent->name)) ? $agent->name : '';
+
+                $data[]  = $ndata;
+                $i++;
+            }
+        }
+
+        return Excel::download(new TeamAgentsExport($data, $header), "team-agents.xlsx");
+    }
 }
