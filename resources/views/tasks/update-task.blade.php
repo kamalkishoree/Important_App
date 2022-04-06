@@ -1,6 +1,6 @@
 @extends('layouts.vertical', ['title' => __('Routes')])
 @section('css')
-
+<link href="{{ asset('assets/libs/selectize/selectize.min.css') }}" rel="stylesheet" type="text/css" />
 @endsection
 @php
 use Carbon\Carbon;
@@ -26,7 +26,7 @@ use Carbon\Carbon;
 
             <div class="col-lg-8">
                 <div class="card-box">
-                    @csrf
+                    {{-- @csrf --}}
                     <div class="row d-flex align-items-center" id="dateredio">
                         <div class="col-md-3">
                             <h4 class="header-title mb-3">{{__('Customer')}}</h4>
@@ -559,8 +559,9 @@ use Carbon\Carbon;
 
 @section('script')
     <script src="{{ asset('assets/libs/select2/select2.min.js') }}"></script>
-    <script src="{{ asset('assets/js/pages/form-advanced2.init.js') }}"></script>
-    <script src="{{ asset('assets/js/pages/form-advanced.init.js') }}"></script>
+    {{-- <script src="{{ asset('assets/js/pages/form-advanced2.init.js') }}"></script>
+    <script src="{{ asset('assets/js/pages/form-advanced.init.js') }}"></script> --}}
+    <script src="{{ asset('assets/libs/selectize/selectize.min.js') }}"></script>
     @include('tasks.updatepagescript')
     
 @endsection
