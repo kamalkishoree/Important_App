@@ -69,10 +69,16 @@ class AuthController extends BaseController
 
         $client_prefrerence = ClientPreference::where('id', 1)->first();
 
-        $sms_body="Your Dispatcher verification code is sent on Phone";  
-        $dataApi = $this->sendSms2($agent->phone_number, $sms_body);
-       
-
+        $sms_body = "Your Dispatcher verification code is: " . $data['otp'];
+        $send = $this->sendSms2($agent->phone_number, $sms_body)->getData();
+        if ($send->status == 'Success') {
+            unset($data['otp']);
+            unset($data['valid_till']);
+            return $this->success($data, $send->message, 200);
+        }
+        else {
+            return $this->error($send->message, 422);
+        }
         //twilio opt code
 
         // $token             = $client_prefrerence->sms_provider_key_2;
@@ -91,23 +97,23 @@ class AuthController extends BaseController
         //         );
         // } catch (\Exception $e) {
         // }
-        $apiData = json_decode(json_encode($dataApi),true);
-       unset($data['otp']);
-       unset($data['valid_till']);
-       if($apiData["original"]["status"] == "Success"){
-            return response()->json([
-                'data' => $data,
-                'status' => 200,
-                'message' => __('success')
-            ]);
-        }else{
-            return response()->json([
-                'data' => $data,
-                'status' => 400,
-                'message' => __('Failure')
-            ]);
+    //     $apiData = json_decode(json_encode($dataApi),true);
+    //    unset($data['otp']);
+    //    unset($data['valid_till']);
+    //    if($apiData["original"]["status"] == "Success"){
+    //         return response()->json([
+    //             'data' => $data,
+    //             'status' => 200,
+    //             'message' => __('success')
+    //         ]);
+    //     }else{
+    //         return response()->json([
+    //             'data' => $data,
+    //             'status' => 400,
+    //             'message' => __('Failure')
+    //         ]);
 
-        }
+    //     }
         
     }
 

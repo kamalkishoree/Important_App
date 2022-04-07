@@ -135,7 +135,7 @@ class AgentPayoutController extends BaseController{
             $payout->agentName = $payout->agent ? $payout->agent->name : '';
             // $payout->requestedBy = ucfirst($payout->user->name);
             $payout->amount = $payout->amount;
-            $payout->type = $payout->payoutOption->title;
+            $payout->type = __($payout->payoutOption->title);
             $payout->bank_account = $payout->agent_bank_detail_id ?? '';
         }
         return Datatables::of($vendor_payouts)

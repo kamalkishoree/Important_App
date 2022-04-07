@@ -488,6 +488,7 @@ class TaskController extends Controller
         $agent_id          = $request->allocation_type === 'm' ? $request->agent : null;
 
         $order = [
+            'order_number'                    => generateOrderNo(),
             'customer_id'                     => $cus_id,
             'recipient_phone'                 => $request->recipient_phone,
             'Recipient_email'                 => $request->recipient_email,
@@ -514,9 +515,9 @@ class TaskController extends Controller
             'unique_id'                       => $unique_order_id,
             'call_back_url'                   => $request->call_back_url??null
         ];
-
+       
         $orders = Order::create($order);
-
+     
         //here is task save code is started
 
         $dep_id = null; // this is used as dependent task id
@@ -933,6 +934,7 @@ class TaskController extends Controller
         $agent_id          = $request->allocation_type === 'm' ? $request->agent : null;
 
         $order = [
+            'order_number'                    => generateOrderNo(),
             'customer_id'                     => $cus_id,
             'recipient_phone'                 => $request->recipient_phone,
             'Recipient_email'                 => $request->recipient_email,
