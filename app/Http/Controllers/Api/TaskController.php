@@ -725,6 +725,7 @@ class TaskController extends BaseController
             $agent_id          = $request->allocation_type === 'm' ? $request->agent : null;
 
             $order = [
+            'order_number'                    => $request->order_number ?? generateOrderNo(),
             'customer_id'                     => $cus_id,
             'scheduled_date_time'             => ($request->task_type=="schedule") ? $notification_time: null,
             'recipient_phone'                 => $request->recipient_phone,
