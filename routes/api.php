@@ -21,7 +21,7 @@ use Illuminate\Support\Facades\Route;
 });*/
 
 Route::group(['middleware' => ['apilogger']], function() {
-    Route::post('otp_test', 'Api\TaskController@smstest')->middleware('ConnectDbFromOrder');
+Route::post('otp_test', 'Api\TaskController@smstest')->middleware('ConnectDbFromOrder');
 Route::post('check-dispatcher-keys', 'Api\TaskController@checkDispatcherKeys')->middleware('ConnectDbFromOrder');
 Route::post('get-delivery-fee', 'Api\TaskController@getDeliveryFee')->middleware('ConnectDbFromOrder');
 Route::post('task/create', 'Api\TaskController@CreateTask')->middleware('ConnectDbFromOrder');
@@ -61,7 +61,7 @@ Route::group(['prefix' => 'auth'], function () {
     Route::group(['middleware' => ['dbCheck','apiLocalization']], function() {
         Route::post('new-send-documents','Api\DriverRegistrationController@sendDocuments');
     	Route::post('sendOtp', 'Api\AuthController@sendOtp');
-        Route::post('login', 'Api\AuthController@login');
+        Route::post('login', 'Api\AuthController@login');        
         Route::post('signup', 'Api\AuthController@signup');
         Route::post('signup/sendOtp', 'Api\DriverRegistrationController@sendOtp');
         Route::post('signup/verifyOtp', 'Api\DriverRegistrationController@verifyOtp');
@@ -72,6 +72,7 @@ Route::group(['prefix' => 'auth'], function () {
 
 Route::group(['middleware' => ['dbCheck', 'AppAuth','apiLocalization']], function() {
     Route::get('user', 'Api\AuthController@user');
+    
     Route::get('taskList', 'Api\ActivityController@tasks');                    // api for task list
     Route::get('updateStatus', 'Api\ActivityController@updateDriverStatus');   // api for chnage driver status active ,in-active
     Route::post('updateTaskStatus', 'Api\TaskController@updateTaskStatus');    // api for chnage task status like start,cpmplate,faild

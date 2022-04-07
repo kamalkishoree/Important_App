@@ -71,23 +71,28 @@ trait smsManager{
         return json_decode($result);
     }
     public function unifonic($recipient,$message,$crendentials)
-    {   try{
+    { 
+      
+        //$crendentials = (object)$crendentials; 
+        try{
             $crendential = [
-                'app_id' =>$crendentials->unifonic_app_id,
-                'account_email' => $crendentials->unifonic_account_email,
-                'account_password' => $crendentials->unifonic_account_password
+                'app_id'=> $crendentials->unifonic_app_id,
+                'account_email'=> $crendentials->unifonic_account_email,
+                'account_password'=> $crendentials->unifonic_account_password
             ];
             config(['services.unifonic' => $crendential]);
             $to_number = substr($recipient, 1);
-            $respont = Unifonic::send( $to_number,  $message, $senderID = null);
-            Log::info($respont);
-            Log::info("unifonic sms respont ");
+            $respont = Unifonic::send( $to_number, $message, $senderID = null);            
+            //Log::info($respont);
+            Log::info("unifonic sms respont");
             return 1;
         }catch(Exception $e) {
             return $e->getMessage();
         }
 
     }
+
+
     private function getCurl($endpoint):object{
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $endpoint);
