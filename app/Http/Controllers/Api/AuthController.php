@@ -14,6 +14,7 @@ use App\Http\Controllers\Api\BaseController;
 use Illuminate\Support\Facades\Log;
 use App\Http\Requests\UserLogin;
 use App\Traits\ApiResponser;
+use App\Traits\smsManager;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -22,9 +23,12 @@ use Faker\Generator as Faker;
 use Illuminate\Support\Facades\Storage;
 use App\Model\{User, Agent, AgentDocs, AllocationRule, Client, ClientPreference, BlockedToken, Otp, TaskProof, TagsForTeam, SubAdminTeamPermissions, SubAdminPermissions, TagsForAgent, Team};
 
+
 class AuthController extends BaseController
 {
     use ApiResponser;
+    use smsManager;
+
 
     /**
      * Login user and create token
@@ -43,7 +47,7 @@ class AuthController extends BaseController
         ]);
 
 
-        $agent = Agent::where('phone_number', $request->phone_number)->first();
+        $agent = Agent::where('phone_number', $request->phone_number)->first();      
 
         if (!$agent) {
             return response()->json([
@@ -65,32 +69,46 @@ class AuthController extends BaseController
 
         $client_prefrerence = ClientPreference::where('id', 1)->first();
 
+        $sms_body="Your Dispatcher verification code is sent on Phone";  
+        $dataApi = $this->sendSms2($agent->phone_number, $sms_body);
+       
+
         //twilio opt code
 
-        $token             = $client_prefrerence->sms_provider_key_2;
-        $twilio_sid        = $client_prefrerence->sms_provider_key_1;
+        // $token             = $client_prefrerence->sms_provider_key_2;
+        // $twilio_sid        = $client_prefrerence->sms_provider_key_1;
 
-        try {
-            $twilio = new TwilioClient($twilio_sid, $token);
+        // try {
+        //     $twilio = new TwilioClient($twilio_sid, $token);
 
-            $message = $twilio->messages
-                ->create(
-                    $agent->phone_number,  //to number
-                    [
-                        "body" => "Your Dispatcher verification code is: " . $data['otp'] . "",
-                        "from" => $client_prefrerence->sms_provider_number   //form_number
-                    ]
-                );
-        } catch (\Exception $e) {
+        //     $message = $twilio->messages
+        //         ->create(
+        //             $agent->phone_number,  //to number
+        //             [
+        //                 "body" => "Your Dispatcher verification code is: " . $data['otp'] . "",
+        //                 "from" => $client_prefrerence->sms_provider_number   //form_number
+        //             ]
+        //         );
+        // } catch (\Exception $e) {
+        // }
+        $apiData = json_decode(json_encode($dataApi),true);
+       unset($data['otp']);
+       unset($data['valid_till']);
+       if($apiData["original"]["status"] == "Success"){
+            return response()->json([
+                'data' => $data,
+                'status' => 200,
+                'message' => __('success')
+            ]);
+        }else{
+            return response()->json([
+                'data' => $data,
+                'status' => 400,
+                'message' => __('Failure')
+            ]);
+
         }
-
-
-
-        return response()->json([
-            'data' => $data,
-            'status' => 200,
-            'message' => __('success')
-        ]);
+        
     }
 
     /**
@@ -123,7 +141,7 @@ class AuthController extends BaseController
         
 
 
-        $data = $agent = Agent::with('team')->where('phone_number', $request->phone_number)->first();
+        $data = $agent = Agent::with('team')->where('phone_number', $request->phone_number)->first();        
         if (!$agent) {
             return response()->json(['message' => __('User not found')], 404);
         }
@@ -136,7 +154,7 @@ class AuthController extends BaseController
         $prefer = ClientPreference::with('currency')->select('theme', 'distance_unit', 'currency_id', 'language_id', 'agent_name', 'date_format', 'time_format', 'map_type', 'map_key_1')->first();
         $allcation = AllocationRule::first('request_expiry');
         $prefer['alert_dismiss_time'] = (int)$allcation->request_expiry;
-        $taskProof = TaskProof::all();
+        $taskProof = TaskProof::all();       
         Auth::login($agent);
 
 
@@ -195,8 +213,7 @@ class AuthController extends BaseController
             'status' => 200,
             'message' => __('success')
         ]);
-    }
-
+    }  
     /**
      * Logout user (Revoke the token)
      *
