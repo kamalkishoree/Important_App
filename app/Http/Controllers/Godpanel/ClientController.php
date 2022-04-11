@@ -28,6 +28,7 @@ use Crypt;
 use Carbon\Carbon;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessFailedException;
+use Log;
 
 class ClientController extends Controller
 {
@@ -38,7 +39,7 @@ class ClientController extends Controller
      */
     public function index()
     {
-        $clients = Client::where('is_deleted', 0)->orderBy('created_at', 'DESC')->paginate(10);
+        $clients = Client::where('is_deleted', 0)->orderBy('created_at', 'DESC')->paginate(300);
         return view('godpanel/client')->with(['clients' => $clients]);
     }
 
@@ -351,7 +352,10 @@ class ClientController extends Controller
 
 
     public function exportDb(Request $request,$databaseName){
-        $client = Client::where('database_name', $databaseName)->first(['name', 'email', 'password', 'phone_number', 'password', 'database_path', 'database_name', 'database_username', 'database_password', 'logo', 'company_name', 'company_address', 'custom_domain', 'status', 'code','sub_domain'])->toarray();
+
+        try {
+
+        $client = Client::where('database_name', $databaseName)->first(['name', 'email', 'password', 'phone_number', 'password', 'database_path', 'database_name', 'database_username', 'database_password', 'logo', 'company_name', 'company_address', 'custom_domain', 'status', 'code','sub_domain','database_host'])->toarray();
         $check_if_already = 0;
         $stage = $request->dump_into??'PROD';
         $data = $request->all();
@@ -365,6 +369,8 @@ class ClientController extends Controller
                    
                     if($key == 'database_host'){
                         $clientData[$key] = env('DB_HOST_'.$stage);
+                    }else{
+                        $clientData[$key] = $value;
                     }
 
                     if($key == 'custom_domain'){
@@ -372,9 +378,12 @@ class ClientController extends Controller
                     }
 
                     
+
+                    
                 }
 
                 try {
+                    
                     DB::connection($stage)->table('clients')->insert($clientData);
                     return redirect()->route('client.index')->with('success', 'Client Migrated!');
                 } catch (Exception $ex) {
@@ -388,6 +397,11 @@ class ClientController extends Controller
         }else{
             return redirect()->route('client.index')->with('error', 'This client not exist!!');
         }
+
+    } catch (Exception $ex) {
+        return redirect()->route('client.index')->with('error', $ex->getMessage());
+      
+    }
 
     }
 }
