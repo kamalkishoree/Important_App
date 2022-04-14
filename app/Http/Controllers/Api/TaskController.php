@@ -725,6 +725,7 @@ class TaskController extends BaseController
             $agent_id          = $request->allocation_type === 'm' ? $request->agent : null;
 
             $order = [
+            'order_number'                    => $request->order_number ?? null,
             'customer_id'                     => $cus_id,
             'scheduled_date_time'             => ($request->task_type=="schedule") ? $notification_time: null,
             'recipient_phone'                 => $request->recipient_phone,
@@ -1704,7 +1705,7 @@ class TaskController extends BaseController
         }));
 
         return $allsort;
-    }
+    }   
 
     public function GoogleDistanceMatrix($latitude, $longitude)
     {
@@ -1920,6 +1921,7 @@ class TaskController extends BaseController
      {
           $order = DB::table('orders')->where('id',$id)->first();
               if (isset($order->id)) {
+                $order->order_cost = $order->cash_to_be_collected ?? $order->order_cost;
                  $tasks = DB::table('tasks')->where('order_id', $order->id)->leftJoin('locations', 'tasks.location_id', '=', 'locations.id')
                      ->select('tasks.*', 'locations.latitude', 'locations.longitude', 'locations.short_name', 'locations.address')->orderBy('task_order')->get();
 
