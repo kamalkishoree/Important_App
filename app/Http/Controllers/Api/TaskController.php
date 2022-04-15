@@ -799,6 +799,7 @@ class TaskController extends BaseController
                     $send_loc_id = $loc_id;
                     $finalLocation = Location::where('id', $loc_id)->first();
                 }
+                $finalLocation = Location::where('id', $loc_id)->first();
                 if(isset($finalLocation)){
                     array_push($latitude, $finalLocation->latitude);
                     array_push($longitude, $finalLocation->longitude);
