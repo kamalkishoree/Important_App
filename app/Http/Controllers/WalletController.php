@@ -6,7 +6,7 @@ use Session;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Traits\ApiResponser;
-use App\Model\{Agent, Transaction, PaymentOption,User};
+use App\Model\{Agent, Transaction, PaymentOption};
 use App\Http\Controllers\Controller;
 
 class WalletController extends Controller{
@@ -31,7 +31,7 @@ class WalletController extends Controller{
     public function creditAgentWallet(Request $request)
     {   
       
-        $user = User::find($request->user_id);
+        $user = Agent::find($request->user_id);
        
        
         if($user){
