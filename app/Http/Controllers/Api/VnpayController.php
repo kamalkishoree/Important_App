@@ -60,7 +60,7 @@ class VnpayController extends BaseController
         $language= ($request->hasHeader('language')) ? $request->header('language') : 'en';
         if($primaryCurrency->currency->iso_code != 'VND' ) {
             $error =  __(' Currency format error!');
-            return $this->errorResponse($error, 400);
+            return $this->error($error, 400);
         }
         $user = Auth::user();
         // pr($request->all());
