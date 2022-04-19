@@ -46,13 +46,13 @@ class WalletController extends Controller{
                 if($request->has('payment_option_id') && ($request->payment_option_id > 0) ){
                     $payment_option = PaymentOption::where('id', $request->payment_option_id)->value('title');
                 }
-                
+                $description = __('Wallet has been').'<b>'.__('Credited').'</b>'.__(' by transaction reference ').'<b>'.$request->transaction_id.'</b>';
                 $wallet->depositFloat($credit_amount, [
                     'type' => 'wallet',
                     'transaction_type' => 'wallet_topup',
                     'transaction_id' => $request->transaction_id,
                     'payment_option' => $payment_option,
-                    'description' => 'Wallet has been <b>Credited</b> by transaction reference <b>'.$request->transaction_id.'</b>'
+                    'description' => $description
                 ]);
                 $transactions = Transaction::where('payable_id', $user->id)->get();
                 $response['wallet_balance'] = $wallet->balanceFloat;
