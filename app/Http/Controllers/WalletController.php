@@ -37,7 +37,7 @@ class WalletController extends Controller{
        
         if($user){
             \Log::info("user fuinde");
-            $credit_amount = $request->amount;
+            $credit_amount = $request->wallet_amount;
             $wallet = $user->wallet;
             \Log::info($credit_amount );
             if ($credit_amount > 0) {
