@@ -115,7 +115,18 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 
 		Route::group(['middleware' => ['auth:client'], 'prefix' => '/'], function () {
 
+			
+			Route::get('vnpay/test',   'VnpayController@order');
+			Route::any('vnpay_respont', 'VnpayController@vnpay_respont')->name('vnpay_respont');
+			Route::any('payment/vnpay/notify', 'VnpayController@VnpayNotify')->name('payment.vnpay.VnpayNotify');
+			Route::any('payment/vnpay/api',    'VnpayController@vnpay_respontAPP')->name('vnpay_webview');
+			Route::get('payment/gateway/returnResponse', 'PaymentOptionController@getGatewayReturnResponse')->name('payment.gateway.return.response');
+
+		
+			
+
             Route::get('notifi', 'AgentController@test_notification');
+			Route::get('vnpay/test',   'VnpayController@order');
 			Route::get('agent/filter', 'AgentController@agentFilter');
 			Route::get('agent/export', 'AgentController@export')->name('agents.export');
 			Route::get('customer/filter', 'CustomerController@customerFilter');
@@ -235,6 +246,7 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 	Route::post('driverregistrationdocument/create', 'ClientController@store')->name('driver.registration.document.create');
 	Route::post('driverregistrationdocument/update', 'ClientController@update')->name('driver.registration.document.update');
 	Route::post('driver/registration/document/delete', 'ClientController@destroy')->name('driver.registration.document.delete');
-
+	
+	
 
 });

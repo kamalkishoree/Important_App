@@ -26,7 +26,7 @@ class PaymentOptionController extends BaseController
      */
     public function index()
     {
-        $payment_codes = array('razorpay', 'stripe');
+        $payment_codes = array('razorpay', 'stripe','vnpay');
         $payout_codes = array('cash', 'stripe', 'bank_account_m_india');
         $payOption = PaymentOption::whereIn('code', $payment_codes)->get();
         $payoutOption = PayoutOption::whereIn('code', $payout_codes)->get();
@@ -224,6 +224,16 @@ class PaymentOptionController extends BaseController
                         'api_key' => $request->ozow_api_key,
                     ));
                 }
+                else if ((isset($method_name_arr[$key])) && (strtolower($method_name_arr[$key]) == 'vnpay')) {
+                    $validatedData = $request->validate([
+                        'vnpay_website_id' => 'required',
+                        'vnpay_server_key' => 'required'
+                    ]);
+                    $json_creds = json_encode(array(
+                        'vnpay_website_id' => $request->vnpay_website_id,
+                        'vnpay_server_key' => $request->vnpay_server_key
+                    ));
+                }
             }
             PaymentOption::where('id', $id)->update(['status' => $status, 'credentials' => $json_creds, 'test_mode' => $test_mode]);
         }
@@ -284,6 +294,11 @@ class PaymentOptionController extends BaseController
         }
         // $toaster = $this->successToaster(__('Success'), $msg);
         return redirect()->back()->with('success', $msg);
+    }
+
+    public function getGatewayReturnResponse(Request $request)
+    {
+        return view('payoption.gatewayReturnResponse');
     }
 
 }
