@@ -91,7 +91,7 @@ class VnpayController extends BaseController
         $vnp_OrderInfo = $vnp_OrderInfo ;
         $vnp_OrderType = $request->order_type ?? 'billpayment' ;
         $vnp_Amount    = $vnp_Amount ; //"1806000";//
-        $vnp_Locale   = ($primeLang->language->sort_code == 'en') ? 'en' : 'vn';
+        $vnp_Locale   = ($language == 'en') ? 'en' : 'vn';
         $vnp_BankCode = $request->bank_code ?? null  ;
         $vnp_IpAddr   = $request->ip(); // $_SERVER['REMOTE_ADDR'] ;
         $startTime = date("YmdHis");
@@ -138,9 +138,7 @@ class VnpayController extends BaseController
             $vnpSecureHash =   hash_hmac('sha512', $hashdata, $vnp_HashSecret);//  
             $vnp_Url .= 'vnp_SecureHash=' . $vnpSecureHash;
         }
-
-        return $this->successResponse($vnp_Url, 'Payment Url has been created successfully');
-        
+        return $this->success($vnp_Url, __('Success'), 201);
        
     }
 }
