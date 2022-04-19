@@ -77,7 +77,7 @@ class VnpayController extends BaseController
         
         $payment_form = $request->action ?? 'cart';
         $returnUrlParams = '?order_id={order_id}&order_token={order_token}&gateway=vnpay&amount=' . $request->amount . '&payment_form=' . $payment_form;
-        $vnp_Returnurl =  url('payment/vnpay/api' . $returnUrlParams);
+        $vnp_Returnurl =  url($request->serverUrl.'payment/vnpay/api' . $returnUrlParams);
         $order_info = [
             'payment_form'=>  $payment_form ,
             'user_id'=> auth()->user()->id,
