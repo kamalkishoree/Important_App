@@ -131,7 +131,7 @@ class VnpayController extends BaseController{
             $vnpSecureHash =   hash_hmac('sha512', $hashdata, $vnp_HashSecret);//  
             $vnp_Url .= 'vnp_SecureHash=' . $vnpSecureHash;
         }
-        pr($vnp_Url);
+        
         $response['status']='Success';
         $response['data']=$vnp_Url;
         
@@ -224,7 +224,7 @@ class VnpayController extends BaseController{
         $order_number = $inputData['vnp_TxnRef'];
         $meta_data = json_decode($inputData['vnp_OrderInfo']);
             
-        $cart_id = $meta_data->cart_id ? $request->cart_id : '';
+       
         $payment_form = $meta_data->payment_form;
         $returnUrl = url('payment/gateway/returnResponse');
         if($inputData['vnp_ResponseCode'] == '00' || $inputData['vnp_TransactionStatus'] == '00' ){
@@ -266,9 +266,9 @@ class VnpayController extends BaseController{
             }
             $meta_data = json_decode($inputData['vnp_OrderInfo']);
         
-            $cart_id = $meta_data->cart_id ;
+     
             $payment_form = $meta_data->payment_form;
-            $subscription_id = $meta_data->subscription_id;
+          
             $secureHash = hash_hmac('sha512', $hashData, $vnp_HashSecret);
             $user_id =  $meta_data->user_id;
             $order_number = $inputData['vnp_TxnRef'];
