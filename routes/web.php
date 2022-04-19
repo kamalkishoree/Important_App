@@ -24,7 +24,7 @@ Route::get('/switch/language', function (Request $request) {
 	}
 	return redirect()->back();
 });
-
+Route::get('payment/gateway/returnResponse', 'PaymentOptionController@getGatewayReturnResponse')->name('payment.gateway.return.response');
 Route::group(['middleware' => 'switchLanguage'], function () {
 	$imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain/';
 	Route::get('dispatch-logs', '\Rap2hpoutre\LaravelLogViewer\LogViewerController@index');
@@ -111,7 +111,7 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 			Route::get('client/verify/oauth/token/stripe', 'StripeGatewayController@verifyOAuthToken')->name('verify.oauth.token.stripe');
 
 			//Route::get('payment/gateway/connect/response', 'BaseController@getGatewayConnectResponse')->name('payment.gateway.connect.response');
-			Route::get('payment/gateway/returnResponse', 'PaymentOptionController@getGatewayReturnResponse')->name('payment.gateway.return.response');
+			
 		});
 
 		Route::group(['middleware' => ['auth:client'], 'prefix' => '/'], function () {
