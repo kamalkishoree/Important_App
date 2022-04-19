@@ -14,6 +14,7 @@ class VerifyCsrfToken extends Middleware
     protected $except = [
         "vnpay_respont",
         "payment/vnpay/notify",
-        "payment/vnpay/api"
+        "payment/vnpay/api",
+        "payment/gateway/returnResponse"
     ];
 }
