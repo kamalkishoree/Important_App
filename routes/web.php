@@ -120,6 +120,7 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 			
 		});
 		
+		Route::any('payment/vnpay/notify', 'VnpayController@VnpayNotify')->name('payment.vnpay.VnpayNotify'); // webhook
 		Route::any('payment/vnpay/api',    'VnpayController@vnpay_respontAPP')->name('vnpay_webview');
 		
 		Route::group(['middleware' => ['auth:client'], 'prefix' => '/'], function () {
@@ -127,7 +128,6 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 			
 			Route::get('vnpay/test',   'VnpayController@order');
 			Route::any('vnpay_respont', 'VnpayController@vnpay_respont')->name('vnpay_respont');
-			Route::any('payment/vnpay/notify', 'VnpayController@VnpayNotify')->name('payment.vnpay.VnpayNotify'); // webhook
 		
 
 		

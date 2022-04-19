@@ -241,6 +241,7 @@ class VnpayController extends BaseController{
     }
     public function VnpayNotify(Request $request, $domain = '')
     {
+        \Log::info("web hooke hit");
         try{
            
             $inputData = array();
@@ -276,7 +277,6 @@ class VnpayController extends BaseController{
             $amount = ($inputData['vnp_Amount'] / 100 );
             
             $transactionId = $inputData['vnp_TransactionNo'] ;
-            
             if($inputData['vnp_ResponseCode'] == '00' || $inputData['vnp_TransactionStatus'] == '00'){
                 if($payment_form == 'wallet'){
                     $request->request->add(['user_id' => $user_id, 'wallet_amount' => $amount,'payment_option_id'=>15  ,'transaction_id' => $transactionId]);
@@ -284,12 +284,6 @@ class VnpayController extends BaseController{
                     $walletController->creditAgentWallet($request);
                 }
             }
-            else{
-                
-            }
-            
-            
-           
         }
         catch(Exception $ex){
             \Log::info($ex->getMessage());
