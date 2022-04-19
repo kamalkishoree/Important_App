@@ -39,6 +39,7 @@ class WalletController extends Controller{
             \Log::info("user fuinde");
             $credit_amount = $request->amount;
             $wallet = $user->wallet;
+            \Log::info($credit_amount );
             if ($credit_amount > 0) {
                 \Log::info("amount grater then 0");
                 $payment_option = '';
@@ -61,6 +62,7 @@ class WalletController extends Controller{
                 return $this->success($response, $message, 201);
             }
             else{
+                \Log::info('Amount is not sufficient');
                 return $this->error('Amount is not sufficient', 402);
             }
         }
