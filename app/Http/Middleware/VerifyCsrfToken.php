@@ -12,6 +12,9 @@ class VerifyCsrfToken extends Middleware
      * @var array
      */
     protected $except = [
-        //
+        "vnpay_respont",
+        "payment/vnpay/notify",
+        "payment/vnpay/api",
+        "payment/gateway/returnResponse"
     ];
 }

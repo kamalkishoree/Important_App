@@ -22,7 +22,7 @@ class ShortcodeController extends BaseController
     {
         $client = Client::where('is_deleted', 0)->where('code', $request->shortCode)->select('id','country_id', 'name', 'phone_number', 'email', 'database_name', 'timezone', 'custom_domain', 'logo', 'company_name', 'company_address', 'is_blocked')->with('getCountrySet')->first();
 
-        
+      
         if (!$client) {
             return response()->json([
                 'error' => 'Company not found',
@@ -33,14 +33,14 @@ class ShortcodeController extends BaseController
                 'error' => 'Blocked Company',
                 'message' => 'Company has been blocked. Please contact administration.'], 404);
         }
-        
+       
         $img = env('APP_URL').'/assets/images/default_image.png';
 
         if (file_exists(public_path().'/assets/images/'.$client->logo)) {
             $img = public_path().'/assets/images/'.$client->logo;
         }
         $client->logo = \Storage::disk("s3")->url($client->logo);
-
+        //pr($client->toArray());
         return response()->json([
             'data' => $client,
             'status' => 200,
