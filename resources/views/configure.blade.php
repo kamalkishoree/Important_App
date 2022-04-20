@@ -672,65 +672,34 @@ $sms_crendential = json_decode($preference->sms_credentials);
 
         <div class="row">
             <div class="col-md-4">
-                {{-- <div class="page-title-box">
-                <h4 class="page-title text-uppercase">{{__('Driver')}}</h4>
-            </div> --}}
                 <div class="card-box pb-2">
-                    <h4 class="header-title text-uppercase">{{__('Driver Registration Documents')}}</h4>
-                    <div class="d-flex align-items-center justify-content-end mt-2">
-                        <a class="btn btn-info d-block" id="add_driver_registration_document_modal_btn">
-                            <i class="mdi mdi-plus-circle mr-1"></i>{{__('Add')}}
-                        </a>
-                    </div>
-                    <div class="table-responsive mt-3 mb-1">
-                        <table class="table table-centered table-nowrap table-striped" id="promo-datatable">
-                            <thead>
-                                <tr>
-                                    <th>{{__('Name')}}</th>
-                                    <th>{{__('Type')}}</th>
-                                    <th>{{__('Required?')}}</th>
-                                    <th>{{__('Action')}}</th>
-                                </tr>
-                            </thead>
-                            <tbody id="post_list">
-                                @forelse($agent_docs as $agent_doc)
-                                    <tr>
-                                        <td>
-                                            <a class="edit_driver_registration_document_btn"
-                                                data-driver_registration_document_id="{{ $agent_doc->id }}"
-                                                href="javascript:void(0)">
-                                                {{ $agent_doc->name ? $agent_doc->name : '' }}
-                                            </a>
-                                        </td>
-                                        <td>{{ $agent_doc->file_type == 'Pdf' ? 'PDF' : $agent_doc->file_type }}</td>
-                                        <td>{{ $agent_doc->is_required ? 'Yes' : 'No' }}</td>
-                                        <td>
-                                            <div>
-                                                <div class="inner-div" style="float: left;">
-                                                    <a class="action-icon edit_driver_registration_document_btn"
-                                                        data-driver_registration_document_id="{{ $agent_doc->id }}"
-                                                        href="javascript:void(0)">
-                                                        <i class="mdi mdi-square-edit-outline"></i>
-                                                    </a>
-                                                </div>
-                                                <div class="inner-div">
-                                                    <button type="button"
-                                                        class="btn btn-primary-outline action-icon delete_driver_registration_document_btn"
-                                                        data-driver_registration_document_id="{{ $agent_doc->id }}">
-                                                        <i class="mdi mdi-delete"></i>
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                @empty
-                                    <tr align="center">
-                                        <td colspan="4" style="padding: 20px 0">{{__('Result not found.')}}</td>
-                                    </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
-                    </div>
+                    <form method="POST" action="{{ route('preference', Auth::user()->code) }}">
+                        @csrf
+                        <input type="hidden" name="cancel_order_config" value="1">
+                        <div class="row">
+                            <div class="col-12">
+                                <h4 class="header-title">{{ __('Cancel Order By Driver') }}</h4>
+                                <div class="d-flex align-items-center justify-content-between mt-3 mb-2">
+                                    <h5 class="font-weight-normal m-0">{{ __('Enable') }}</h5>
+                                    <div class="custom-control custom-switch">
+                                        <input type="checkbox" class="custom-control-input"
+                                            id="cancelOrderCustomSwitch_{{ $preference->is_cancel_order_driver }}"
+                                            name="is_cancel_order_driver"
+                                            {{ $preference->is_cancel_order_driver == 1 ? 'checked' : '' }}>
+                                        <label class="custom-control-label"
+                                            for="cancelOrderCustomSwitch_{{ $preference->is_cancel_order_driver }}"></label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="form-group mb-0 text-center">
+                                    <button class="btn btn-blue btn-block" type="submit"> {{ __('Update') }} </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </div>
             <div class="col-md-4">
@@ -796,34 +765,65 @@ $sms_crendential = json_decode($preference->sms_credentials);
                 </div>
             </div>
             <div class="col-md-4">
+                {{-- <div class="page-title-box">
+                <h4 class="page-title text-uppercase">{{__('Driver')}}</h4>
+            </div> --}}
                 <div class="card-box pb-2">
-                    <form method="POST" action="{{ route('preference', Auth::user()->code) }}">
-                        @csrf
-                        <input type="hidden" name="cancel_order_config" value="1">
-                        <div class="row">
-                            <div class="col-12">
-                                <h4 class="header-title">{{ __('Cancel Order By Driver') }}</h4>
-                                <div class="d-flex align-items-center justify-content-between mt-3 mb-2">
-                                    <h5 class="font-weight-normal m-0">{{ __('Enable') }}</h5>
-                                    <div class="custom-control custom-switch">
-                                        <input type="checkbox" class="custom-control-input"
-                                            id="cancelOrderCustomSwitch_{{ $preference->is_cancel_order_driver }}"
-                                            name="is_cancel_order_driver"
-                                            {{ $preference->is_cancel_order_driver == 1 ? 'checked' : '' }}>
-                                        <label class="custom-control-label"
-                                            for="cancelOrderCustomSwitch_{{ $preference->is_cancel_order_driver }}"></label>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="form-group mb-0 text-center">
-                                    <button class="btn btn-blue btn-block" type="submit"> {{ __('Update') }} </button>
-                                </div>
-                            </div>
-                        </div>
-                    </form>
+                    <h4 class="header-title text-uppercase">{{__('Driver Registration Documents')}}</h4>
+                    <div class="d-flex align-items-center justify-content-end mt-2">
+                        <a class="btn btn-info d-block" id="add_driver_registration_document_modal_btn">
+                            <i class="mdi mdi-plus-circle mr-1"></i>{{__('Add')}}
+                        </a>
+                    </div>
+                    <div class="table-responsive mt-3 mb-1">
+                        <table class="table table-centered table-nowrap table-striped" id="promo-datatable">
+                            <thead>
+                                <tr>
+                                    <th>{{__('Name')}}</th>
+                                    <th>{{__('Type')}}</th>
+                                    <th>{{__('Required?')}}</th>
+                                    <th>{{__('Action')}}</th>
+                                </tr>
+                            </thead>
+                            <tbody id="post_list">
+                                @forelse($agent_docs as $agent_doc)
+                                    <tr>
+                                        <td>
+                                            <a class="edit_driver_registration_document_btn"
+                                                data-driver_registration_document_id="{{ $agent_doc->id }}"
+                                                href="javascript:void(0)">
+                                                {{ $agent_doc->name ? $agent_doc->name : '' }}
+                                            </a>
+                                        </td>
+                                        <td>{{ $agent_doc->file_type == 'Pdf' ? 'PDF' : $agent_doc->file_type }}</td>
+                                        <td>{{ $agent_doc->is_required ? 'Yes' : 'No' }}</td>
+                                        <td>
+                                            <div>
+                                                <div class="inner-div" style="float: left;">
+                                                    <a class="action-icon edit_driver_registration_document_btn"
+                                                        data-driver_registration_document_id="{{ $agent_doc->id }}"
+                                                        href="javascript:void(0)">
+                                                        <i class="mdi mdi-square-edit-outline"></i>
+                                                    </a>
+                                                </div>
+                                                <div class="inner-div">
+                                                    <button type="button"
+                                                        class="btn btn-primary-outline action-icon delete_driver_registration_document_btn"
+                                                        data-driver_registration_document_id="{{ $agent_doc->id }}">
+                                                        <i class="mdi mdi-delete"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr align="center">
+                                        <td colspan="4" style="padding: 20px 0">{{__('Result not found.')}}</td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
             <div class="col-md-4">
