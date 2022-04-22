@@ -69,7 +69,7 @@ class AuthController extends BaseController
 
         $client_prefrerence = ClientPreference::where('id', 1)->first();
 
-        $sms_body = "Your Dispatcher verification code is: " . $data['otp'];
+        $sms_body = __("Your Dispatcher verification code is") . ": " . $data['otp'];
         $send = $this->sendSms2($agent->phone_number, $sms_body)->getData();
         if ($send->status == 'Success') {
             unset($data['otp']);
