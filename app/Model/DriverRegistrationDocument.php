@@ -10,6 +10,6 @@ class DriverRegistrationDocument extends Model
     protected $fillable=['file_type','name'];
 
     public function driver_document(){
-        return $this->hasOne('App\Models\AgentDocs','label_name','name');
+        return $this->hasOne('App\Model\AgentDocs','label_name','name');
     }
 }
