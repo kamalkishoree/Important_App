@@ -312,6 +312,32 @@ $sms_crendential = json_decode($preference->sms_credentials);
                         </div>
 
 
+                         <!-- For arkesel -->
+                        <div class="row sms_fields mx-0" id="arkesel_fields" style="display : {{$preference->sms_provider == 5 ? 'flex' : 'none'}};">
+                            <div class="col-12">
+                                <div class="form-group mb-2">
+                                <label for="arkesel_api_key">{{ __("API Key") }}</label>
+                                <input type="text" name="arkesel_api_key" id="arkesel_api_key" placeholder="" class="form-control" value="{{ old('arkesel_api_key', $sms_crendential->api_key ?? '')}}">
+                                @if($errors->has('arkesel_api_key'))
+                                <span class="text-danger" role="alert">
+                                    <strong>{{ $errors->first('arkesel_api_key') }}</strong>
+                                </span>
+                                @endif
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group mb-2">
+                                <label for="arkesel_sender_id">{{ __("Sender ID") }}</label>
+                                <input type="text" name="arkesel_sender_id" id="arkesel_sender_id" placeholder="" class="form-control" value="{{ old('arkesel_sender_id', $sms_crendential->sender_id ?? '')}}">
+                                @if($errors->has('arkesel_sender_id'))
+                                <span class="text-danger" role="alert">
+                                    <strong>{{ $errors->first('arkesel_sender_id') }}</strong>
+                                </span>
+                                @endif
+                                </div>
+                            </div>
+                        </div>
+
 
                         <div class="row mb-2">
                             <div class="col-12">
