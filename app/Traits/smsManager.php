@@ -91,7 +91,14 @@ trait smsManager{
         }
 
     }
-
+    public function arkesel_sms($to,$message,$crendentials)
+    {
+        $api_url = "https://sms.arkesel.com/sms/api?action=send-sms&";
+        $to_number = substr($to, 1);
+        $endpoint = $api_url.'api_key='.$crendentials->api_key.'&to='.$to_number.'&from='.$crendentials->sender_id.'&sms='.$message;
+        $response=$this->getGuzzle($endpoint);
+        return $response;
+    }
 
     private function getCurl($endpoint):object{
         $ch = curl_init();

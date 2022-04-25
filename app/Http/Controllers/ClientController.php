@@ -184,6 +184,13 @@ class ClientController extends Controller
                     'unifonic_account_password' => $request->unifonic_account_password,
                 ];
             }
+            elseif($request->sms_provider == 5) // for unifonic
+            {
+                $sms_credentials = [
+                    'api_key' => $request->arkesel_api_key,
+                    'sender_id' => $request->arkesel_sender_id,
+                ];
+            }
             $request->merge(['sms_credentials'=>json_encode($sms_credentials)]);
         }
 
@@ -202,6 +209,9 @@ class ClientController extends Controller
         unset($request['unifonic_app_id']);
         unset($request['unifonic_account_email']);
         unset($request['unifonic_account_password']);
+
+        unset($request['arkesel_api_key']);
+        unset($request['arkesel_sender_id']);
 
         if($request->has('driver_phone_verify_config')){
             $request->request->add(['verify_phone_for_driver_registration' => ($request->has('verify_phone_for_driver_registration') && $request->verify_phone_for_driver_registration == 'on') ? 1 : 0]);

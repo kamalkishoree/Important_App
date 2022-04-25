@@ -521,5 +521,9 @@
     "Sub Domain" : "Tên miền phụ",
     "Result not found." : "Không tìm thấy kết quả.",
     "Amount is greater than agent available funds ":"Số tiền lớn hơn số tiền có sẵn của đại lý",
-    "Export CSV": "Xuất CSV"
+    "Export CSV": "Xuất CSV",
+    "Wallet has been " : "Ví đã được ",
+    "Credited" : "Được công nhận",
+    " by transaction reference " : " bằng cách tham chiếu giao dịch "
+    
 }
