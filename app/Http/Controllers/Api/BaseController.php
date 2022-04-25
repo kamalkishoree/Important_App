@@ -68,7 +68,6 @@ class BaseController extends Controller
                 $crendentials = json_decode($client_preference->sms_credentials);
                 $send = $this->arkesel_sms($to,$body,$crendentials);
             }else{
-
                 $credentials = json_decode($client_preference->sms_credentials);
                 $sms_key = (isset($credentials->sms_key)) ? $credentials->sms_key : $client_preference->sms_provider_key_1;
                 $sms_secret = (isset($credentials->sms_secret)) ? $credentials->sms_secret : $client_preference->sms_provider_key_2;
