@@ -93,11 +93,24 @@ trait smsManager{
     }
     public function arkesel_sms($to,$message,$crendentials)
     {
-        $api_url = "https://sms.arkesel.com/sms/api?action=send-sms&";
         $to_number = substr($to, 1);
-        $endpoint = $api_url.'api_key='.$crendentials->api_key.'&to='.$to_number.'&from='.$crendentials->sender_id.'&sms='.$message;
-        $response=$this->getGuzzle($endpoint);
-        return $response;
+        $api_url = "https://sms.arkesel.com/sms/api?action=send-sms&";
+        $endpoint = $api_url.'api_key='.$crendentials->api_key.'&to='.$to_number.'&from='.$crendentials->sender_id.'&sms='.urlencode($message);
+        $curl = curl_init();
+            curl_setopt_array($curl, array(
+            CURLOPT_URL => $endpoint,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => "",
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => "GET",
+            ));
+
+        $response = curl_exec($curl);
+        curl_close($curl);
+        return json_decode($response);
     }
 
     private function getCurl($endpoint):object{

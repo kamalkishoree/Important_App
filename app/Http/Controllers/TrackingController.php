@@ -152,12 +152,11 @@ class TrackingController extends Controller
                     $avgrating = DB::connection($respnse['database'])->table('order_ratings')->whereIn('order_id',$total_orders)->sum('rating');
                     if($avgrating != 0)
                     $avgrating = $avgrating/$avgrating;
-
-                    $agent_id =$order->driver_id;
-                    $driver_document = DriverRegistrationDocument::with('driver_document')
-                            ->whereHas('driver_document', function($q) use($agent_id){
-                                $q->where('agent_id', $agent_id);
-                            })->get();
+                    
+                    $driver_document = DB::connection($respnse['database'])->table('driver_registration_documents')
+                                            ->join('agent_docs','driver_registration_documents.name','=', 'agent_docs.label_name')
+                                            ->select('agent_docs.*','driver_registration_documents.file_type','driver_registration_documents.name')
+                                            ->where('agent_docs.agent_id',$order->driver_id)->get();
                     $order->driver_document =$driver_document;        
                 }
 
