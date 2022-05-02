@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Config;
 use Storage;
 use Carbon\Carbon;
-use App\Model\{Client, Order};
+use App\Model\{Client, Order,DriverRegistrationDocument};
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -152,6 +152,12 @@ class TrackingController extends Controller
                     $avgrating = DB::connection($respnse['database'])->table('order_ratings')->whereIn('order_id',$total_orders)->sum('rating');
                     if($avgrating != 0)
                     $avgrating = $avgrating/$avgrating;
+                    
+                    $driver_document = DB::connection($respnse['database'])->table('driver_registration_documents')
+                                            ->join('agent_docs','driver_registration_documents.name','=', 'agent_docs.label_name')
+                                            ->select('agent_docs.*','driver_registration_documents.file_type','driver_registration_documents.name')
+                                            ->where('agent_docs.agent_id',$order->driver_id)->get();
+                    $order->driver_document =$driver_document;        
                 }
 
                 $img = 'https://imgproxy.royodispatch.com/insecure/fit/300/100/sm/0/plain/' . Storage::disk('s3')->url($order->profile_picture ?? 'assets/client_00000051/agents605b6deb82d1b.png/XY5GF0B3rXvZlucZMiRQjGBQaWSFhcaIpIM5Jzlv.jpg');
