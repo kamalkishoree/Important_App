@@ -39,6 +39,7 @@ Route::get('/notification/tracking/{order_id}', 'Api\TaskController@notification
 
 Route::post('shortCode', 'Api\ShortcodeController@validateCompany');
 
+Route::get('importCustomer', 'Api\ImportThirdPartyUserController@importCustomer');
 
 // routes for edit order
 Route::post('edit-order/driver/notify', 'Api\TaskController@editOrderNotification')->middleware('ConnectDbFromOrder');
