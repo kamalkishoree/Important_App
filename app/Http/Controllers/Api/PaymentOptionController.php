@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 // use Omnipay\Common\CreditCard;
 use App\Traits\ApiResponser;
 use Illuminate\Support\Facades\Validator;
-use App\Http\Controllers\Api\{BaseController, RazorpayGatewayController,VnpayController};
+use App\Http\Controllers\Api\{BaseController, RazorpayGatewayController,VnpayController,CcavenueController};
 use App\Model\{Client, ClientPreference, Agent, PaymentOption};
 
 class PaymentOptionController extends BaseController{
@@ -19,7 +19,7 @@ class PaymentOptionController extends BaseController{
 
     public function getPaymentOptions(Request $request, $page = ''){
         if($page == 'wallet'){
-            $code = array('paypal', 'stripe', 'yoco', 'paylink','razorpay','simplify','square','vnpay');
+            $code = array('paypal', 'stripe', 'yoco', 'paylink','razorpay','simplify','square','vnpay','ccavenue');
         }else{
             $code = array('cod', 'paypal', 'payfast', 'stripe', 'mobbex','yoco','paylink','razorpay','gcash','simplify','square');
         }
@@ -99,6 +99,12 @@ class PaymentOptionController extends BaseController{
         $gateway = new VnpayController();
         return $gateway->order($request);
     }
+
+    public function postPaymentVia_ccavenue(Request $request){
+        $gateway = new CcavenueController();
+        return $gateway->paywebView($request);
+    }
+
     // public function postPaymentVia_simplify(Request $request){
     //     $gateway = new SimplifyGatewayController();
     //     return $gateway->simplifyPurchase($request);
