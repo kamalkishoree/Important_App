@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use App\Traits\ApiResponser;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\Api\{BaseController, RazorpayGatewayController,VnpayController,CcavenueController};
+use App\Http\Controllers\CcavenueController as ControllersCcavenueController;
 use App\Model\{Client, ClientPreference, Agent, PaymentOption};
 
 class PaymentOptionController extends BaseController{
@@ -101,7 +102,7 @@ class PaymentOptionController extends BaseController{
     }
 
     public function postPaymentVia_ccavenue(Request $request){
-        $gateway = new CcavenueController();
+        $gateway = new ControllersCcavenueController();
         return $gateway->paywebView($request);
     }
 
