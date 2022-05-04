@@ -25,31 +25,35 @@ Route::get('/switch/language', function (Request $request) {
 	return redirect()->back();
 });
 
+// payment sateway 
+Route::get('payment/gateway/returnResponse', 'PaymentOptionController@getGatewayReturnResponse')->name('payment.gateway.return.response');
+
+
 Route::group(['middleware' => 'switchLanguage'], function () {
 	$imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain/';
 	Route::get('dispatch-logs', '\Rap2hpoutre\LaravelLogViewer\LogViewerController@index');
 	Route::get('show/{agent_doc}', function ($agent_doc) {
 		$filename = $agent_doc->file_name;
 		$path = storage_path($filename);
-
+		
 		return Response::make($imgproxyurl . Storage::disk('s3')->url($filename), 200, [
 			'Content-Type' => 'application/pdf',
 			'Content-Disposition' => 'inline; filename="' . $filename . '"'
 		]);
 	});
-
+	
 	Route::get('/howto/signup', function () {
 		return view('How-to-SignUp-in-Royo-Dispatcher');
 	});
 	Route::get('terms_n_condition', 'CMSScreenController@terms_n_condition');
 	Route::get('privacy_policy', 'CMSScreenController@privacy_policy');
-
+	
 	Auth::routes();
-
+	
 	Route::get('check-redis-jobs', function () {
 		$connection = null;
 		$default = 'default';
-
+		
 		//For the delayed jobs
 		print_r("For the delayed jobs");
 		print_r("<pre>");
@@ -61,9 +65,9 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 		var_dump(\Queue::getRedis()->connection($connection)->zrange('queues:' . $default . ':reserved', 0, -1));
 		print_r("</pre>");
 	});
-
-
-
+	
+	
+	
 	Route::group(['prefix' => '/godpanel', 'middleware' => 'CheckGodPanel'], function () {
 		Route::get('/', function () {
 			return view('godpanel/login');
@@ -72,42 +76,67 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 			return view('godpanel/login');
 		})->name('get.god.login');
 		Route::post('login', 'Godpanel\LoginController@Login')->name('god.login');
-
+		
 		Route::middleware('auth')->group(function () {
-
+			
 			Route::any('/logout', 'Godpanel\LoginController@logout')->name('god.logout');
 			Route::get('dashboard', 'Godpanel\DashBoardController@index')->name('god.dashboard');
 			Route::resource('client', 'Godpanel\ClientController');
 			Route::resource('language', 'Godpanel\LanguageController');
 			Route::resource('currency', 'Godpanel\CurrencyController');
+			
+			Route::post('exportDb/{dbname}', 'Godpanel\ClientController@exportDb')->name('client.exportdb');
 		});
 	});
-
+	
 	Route::domain('{domain}')->middleware(['subdomain'])->group(function () {
-		Route::group(['middleware' => ['domain', 'database']], function () {
 
+		
+		Route::group(['middleware' => ['domain', 'database']], function () {
+			
 			Route::get('/signin', function () {
 				return view('auth/login');
 			})->name('client-login');
 			Route::get('get-order-session', 'LoginController@getOrderSession')->name('setorders');
 		});
-
+		
 		Route::get('/demo/page', function () {
 			return view('demo');
 		});
-
+		
 		Route::post('/login/client', 'LoginController@clientLogin')->name('client.login');
 		Route::get('/wrong/url', 'LoginController@wrongurl')->name('wrong.client');
 		Route::group(['middleware' => 'database'], function () {
 			Route::get('/order/tracking/{clientcode}/{order_id}', 'TrackingController@OrderTracking')->name('order.tracking');
 			Route::get('/order-details/tracking/{clientcode}/{order_id}', 'TrackingController@OrderTrackingDetail')->name('order.tracking.detail');
 			Route::get('/order-cancel/tracking/{clientcode}/{order_id}', 'TrackingController@orderCancelFromOrder')->name('order.cancel.from_order');
-
+			Route::get('/order/driver-rating/{clientcode}/{order_id}', 'TrackingController@DriverRating')->name('order.driver.rating');
+			
+			
+			// Create agent connected account stripe
+			Route::get('client/verify/oauth/token/stripe', 'StripeGatewayController@verifyOAuthToken')->name('verify.oauth.token.stripe');
+			
+			//Route::get('payment/gateway/connect/response', 'BaseController@getGatewayConnectResponse')->name('payment.gateway.connect.response');
+			
 		});
+		Route::any('payment/ccavenue/success', 'CcavenueController@successForm')->name('ccavenue.success');
+		Route::get('ccavenue/pay', 'CcavenueController@viewForm');
 
+		Route::any('payment/vnpay/notify', 'VnpayController@VnpayNotify')->name('payment.vnpay.VnpayNotify'); // webhook
+		Route::any('payment/vnpay/api',    'VnpayController@vnpay_respontAPP')->name('vnpay_webview');
+		
 		Route::group(['middleware' => ['auth:client'], 'prefix' => '/'], function () {
 
+			
+			Route::get('vnpay/test',   'VnpayController@order');
+			Route::any('vnpay_respont', 'VnpayController@vnpay_respont')->name('vnpay_respont');
+		
+
+		
+			
+
             Route::get('notifi', 'AgentController@test_notification');
+			Route::get('vnpay/test',   'VnpayController@order');
 			Route::get('agent/filter', 'AgentController@agentFilter');
 			Route::get('agent/export', 'AgentController@export')->name('agents.export');
 			Route::get('customer/filter', 'CustomerController@customerFilter');
@@ -117,6 +146,7 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 			Route::get('analytics', 'AccountingController@index')->name('accounting');
 			Route::get('profileImg', 'ProfileController@displayImage');
 			Route::get('', 'DashBoardController@index')->name('index');
+            Route::get('dashboard/data', 'DashBoardController@dashboardData')->name('dashboard.data');
 			Route::get('customize', 'ClientController@ShowPreference')->name('preference.show');
 			Route::post('save/cms/{id}', 'ClientController@cmsSave')->name('cms.save');
 			Route::post('client_preference/{id}', 'ClientController@storePreference')->name('preference');
@@ -134,7 +164,7 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 			Route::get('agent/payout/requests', 'AgentPayoutController@agentPayoutRequests')->name('agent.payout.requests');
 			Route::get('agent/payout/requests/export', 'AgentPayoutController@export')->name('agents.payout.requests.export');
 			Route::get('agent/payout/requests/filter', 'AgentPayoutController@agentPayoutRequestsFilter')->name('agent.payout.requests.filter');
-        	Route::post('agent/payout/request/complete/{id}', 'AgentPayoutController@agentPayoutRequestComplete')->name('agent.payout.request.complete');
+        	Route::post('agent/payout/request/complete', 'AgentPayoutController@agentPayoutRequestComplete')->name('agent.payout.request.complete');
 			Route::post('agent/payout/requests/complete/all', 'AgentPayoutController@agentPayoutRequestsCompleteAll')->name('agent.payout.requests.complete.all');
 			Route::post('agent/payout/bank/details', 'AgentPayoutController@agentPayoutBankDetails')->name('agent.payout.bank.details');
 			Route::post('agent/change_approval_status', 'AgentController@change_approval_status')->name('agent/change_approval_status');
@@ -149,6 +179,7 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 			Route::resource('geo-fence', 'GeoFenceController');
 			Route::get('geo-fence-all', 'GeoFenceController@allList')->name('geo.fence.list');
 			Route::resource('team', 'TeamController');
+			Route::get('team/agents/export/{team_id}', 'TeamController@exportAgents')->name('team.agents.export');
 			Route::delete('team-agent/{team_id}/{agent_id}', 'TeamController@removeTeamAgent')->name('team.agent.destroy');
 			Route::resource('notifications', 'ClientNotificationController');
 			Route::resource('pricing-rules', 'PricingRulesController');
@@ -225,7 +256,7 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 	Route::post('driverregistrationdocument/create', 'ClientController@store')->name('driver.registration.document.create');
 	Route::post('driverregistrationdocument/update', 'ClientController@update')->name('driver.registration.document.update');
 	Route::post('driver/registration/document/delete', 'ClientController@destroy')->name('driver.registration.document.delete');
- 
- 
+	
+	
 
 });
