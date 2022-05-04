@@ -35,29 +35,6 @@ class CcavenueController extends BaseController{
      }
  
     }
-
-
-public function paywebView(Request $request)
-{
-    $this->configuration();
-    $token =  auth()->user()->access_token;
-  
- $merchant_data='';
- $number = $request->order_number ?? time(); // order no
- $orderType = $request->order_type ?? 'billpayment' ;
- $working_key=$this->access_key;//Shared by CCAVENUES
- $access_code=$this->access_code;//Shared by CCAVENUES
- $url=$this->url;//Shared by CCAVENUES
- $user = auth()->user();
- 
- $merchant_data = 'merchant_id='.$this->merchant_id.'&order_id='.$number.'&amount='.$request->amount.'&currency=AED&redirect_url='.url('payment/ccavenue/success').'&cancel_url='.url('payment/ccavenue/success').'&language=EN&billing_name='.$user->name.'&billing_address=&billing_city=&billing_state=&billing_zip=&billing_country=&billing_tel='.$user->phone_number.'&billing_email=&delivery_name='.$user->name.'&delivery_address=&delivery_city=&delivery_state=&delivery_zip=&delivery_country=&delivery_tel='.$user->phone_number.'&merchant_param1='.$number.'&merchant_param2=wallet&merchant_param3=mob&merchant_param4=&merchant_param5='.$token.'&promo_code=&customer_identifier=&';
- //return $merchant_data;die;
- $encrypted_data=$this->encrypt($merchant_data,$working_key); // Method for encrypting the data.
- $webUrl = url('ccavenue/pay?encData='.$encrypted_data.'&access_code='.$access_code.'&url='.$url.'&tk='.$token);
- return $this->success($webUrl, __('Success'), 201);
-
- //return view('ccavenue_view', compact('encrypted_data','access_code','url'));
-}
     
 
     public function viewForm(Request $request)
