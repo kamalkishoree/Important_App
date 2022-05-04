@@ -26,8 +26,8 @@ class CcavenueController extends BaseController{
     private $merchant_id;
     private $url;
     private $access_code;
- 
-    public function __construct()
+
+    public function configuration()
     {
        $payOpt = PaymentOption::select('credentials', 'test_mode','status')->where('code', 'ccavenue')->where('status', 1)->first();
        $json = json_decode($payOpt->credentials);
@@ -45,13 +45,8 @@ class CcavenueController extends BaseController{
  
 public function paywebView(Request $request)
     {
+        $this->configuration();
         $token =  auth()->user()->access_token;
-    //  if(isset(auth()->user()->access_token) && !empty($token)){
-    //      $user = Agent::where('access_token', $token)->first();
-    //      Auth::login($user);
-    //      $user->access_token = $token;
-    //      $user->save();
-    //   }
       
      $merchant_data='';
      $number = $request->order_number ?? time(); // order no
