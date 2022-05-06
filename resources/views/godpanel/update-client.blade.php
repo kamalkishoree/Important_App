@@ -197,7 +197,7 @@
                                         <label for="sub_domain" class="control-label">SUB DOMAIN</label>
                                             <div class="domain-outer d-flex align-items-center">
                                                 <div class="domain_name">https://</div>
-                                                <input type="text" name="sub_domain" pattern="[a-z]+" id="sub_domain" placeholder="Enter Sub domain" class="form-control" value="{{ old('sub_domain', $client->sub_domain ?? '')}}"><div class="domain_name">{{\env('SUBDOMAIN')}}</div>
+                                                <input type="text" name="sub_domain" id="sub_domain" placeholder="Enter Sub domain" class="form-control" value="{{ old('sub_domain', $client->sub_domain ?? '')}}"><div class="domain_name">{{\env('SUBDOMAIN')}}</div>
                                             </div>
                                             
 

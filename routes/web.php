@@ -119,7 +119,9 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 			//Route::get('payment/gateway/connect/response', 'BaseController@getGatewayConnectResponse')->name('payment.gateway.connect.response');
 			
 		});
-		
+		Route::any('payment/ccavenue/success', 'CcavenueController@successForm')->name('ccavenue.success');
+		Route::get('ccavenue/pay', 'CcavenueController@viewForm');
+
 		Route::any('payment/vnpay/notify', 'VnpayController@VnpayNotify')->name('payment.vnpay.VnpayNotify'); // webhook
 		Route::any('payment/vnpay/api',    'VnpayController@vnpay_respontAPP')->name('vnpay_webview');
 		
