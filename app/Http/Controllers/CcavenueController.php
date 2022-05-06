@@ -19,8 +19,8 @@ class CcavenueController extends BaseController{
     private $merchant_id;
     private $url;
     private $access_code;
- 
-    public function __construct()
+
+    public function configuration()
     {
        $payOpt = PaymentOption::select('credentials', 'test_mode','status')->where('code', 'ccavenue')->where('status', 1)->first();
        $json = json_decode($payOpt->credentials);
@@ -39,7 +39,8 @@ class CcavenueController extends BaseController{
 
     public function viewForm(Request $request)
     {
-        if(isset($request->tk) && !empty($request->tk)){
+        $this->configuration();
+            if(isset($request->tk) && !empty($request->tk)){
             $user = Agent::where('access_token', $request->tk)->first();
             Auth::login($user);
          }
@@ -52,6 +53,7 @@ class CcavenueController extends BaseController{
  
     public function successForm(Request $request)
     {
+    $this->configuration();
      $encResponse=$request->encResp;			//This is the response sent by the CCAvenue Server
      $rcvdString=$this->decrypt($encResponse,$this->access_key);		//Crypto Decryption used as per the specified working key.
        $order_status="";
