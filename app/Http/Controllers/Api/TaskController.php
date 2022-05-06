@@ -751,9 +751,12 @@ class TaskController extends BaseController
             'freelancer_commission_percentage'=> $pricingRule->freelancer_commission_percentage,
             'freelancer_commission_fixed'     => $pricingRule->freelancer_commission_fixed,
             'unique_id'                       => $unique_order_id,
-            'call_back_url'                   => $request->call_back_url??null
+            'call_back_url'                   => $request->call_back_url??null,
+            'type'=>$request->type,
+            'friend_name'=>$request->friend_name,
+            'friend_phone_number'=>$request->friend_phone_number
         ];
-
+            
             $orders = Order::create($order);
 
 
