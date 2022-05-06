@@ -69,6 +69,7 @@ class ClientController extends Controller
      */
     public function storePreference(Request $request, $domain = '', $id)
     {
+      
         $client = Client::where('code', $id)->firstOrFail();
         # if submit custom domain by client
         if ($request->custom_domain && $request->custom_domain != $client->custom_domain) {
@@ -194,8 +195,6 @@ class ClientController extends Controller
             $request->merge(['sms_credentials'=>json_encode($sms_credentials)]);
         }
 
-
-
         unset($request['sms_key']);
         unset($request['sms_from']);
         unset($request['sms_secret']);
@@ -229,7 +228,10 @@ class ClientController extends Controller
             $request->request->add(['reffered_by_amount' => ($request->has('reffered_by_amount') && $request->reffered_by_amount > 0) ? $request->reffered_by_amount : 0]);
             $request->request->add(['reffered_to_amount' => ($request->has('reffered_to_amount') && $request->reffered_to_amount > 0) ? $request->reffered_to_amount : 0]);
         }
-
+        if(!$request->show_limited_address){
+            $request->merge(['show_limited_address'=>0]);
+        }
+       // pr($request->all());
         $updatePreference = ClientPreference::updateOrCreate([
             'client_id' => $id
         ], $request->all());
