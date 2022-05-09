@@ -87,7 +87,7 @@
                                         <input type="radio" id="all_contact" value="1" name="allow_all_location" {{ (isset($preference) && $preference->allow_all_location ==1)? "checked" : "" }}>
                                         <label for="all_contact"> {{__("Shared saved addresses for all customers")}} </label>
                                     </div>
-                                    <div class="radio form-check-inline">
+                                    <div class="radio form-check-inline mb-2">
                                         <input type="radio" id="my_contact" value="0" name="allow_all_location" {{ (isset($preference) &&  $preference->allow_all_location ==0)? "checked" : "" }}>
                                         <label for="my_contact"> {{__("Saved addresses linked to each customer")}} </label>
                                     </div>
@@ -96,6 +96,18 @@
                                         <strong>{{ $errors->first('allow_all_location') }}</strong>
                                     </span>
                                     @endif
+                                    <hr>
+                                    <h4 class="header-title">{{__("Show Limited Address")}}</h4>
+                                    <div class="custom-control custom-switch">
+                                        <input type="checkbox" class="custom-control-input event_type" id="show_address" name="show_limited_address" {{isset($preference) && $preference->show_limited_address == 1 ? 'checked':''}}>
+                                        <label class="custom-control-label" for="show_limited_address">{{__("Show only first 5 address")}}</label>
+                                    </div>
+
+                                    <!-- <div class="radio form-check-inline">
+                                        <input type="checkbox" id="show_address" value="1" name="show_limited_address" {{ (isset($preference) &&  $preference->show_limited_address ==1)? "checked" : "" }}>
+                                        <label for="show_address"> {{__("Show only first 5 address")}} </label>
+                                    </div> -->
+                                    
                                 </div>
                             </div>
                             <div class="row mb-2">

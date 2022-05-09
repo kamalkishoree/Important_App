@@ -56,6 +56,16 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                             <p class="al_text_overflow"><i class="fa fa-envelope" aria-hidden="true"></i> {{ (isset($task->customer->email))?$task->customer->email:'' }}</p>
                         </div>
                     </div>
+                    <div class="col-12">
+                        <div class="form-group">
+                            <p class="al_text_overflow"><b>Friend Name: </b><br> {{ (isset($task->friend_name))?$task->friend_name:'' }}</p>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="form-group">
+                            <p class="al_text_overflow"><b>Friend Phone Number: </b><br> {{ (isset($task->friend_phone_number))?$task->friend_phone_number:'' }}</p>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="card-box">
