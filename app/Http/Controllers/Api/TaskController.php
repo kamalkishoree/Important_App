@@ -264,7 +264,7 @@ class TaskController extends BaseController
        // dd($request->toArray());
 
         $newDetails = Task::where('id', $request->task_id)->with(['location','tasktype','pricing','order.customer'])->first();
-
+        
         $sms_body = str_replace('"order_number"', $order_details->unique_id, $sms_body);
         $sms_body = str_replace('"driver_name"', $order_details->agent->name, $sms_body);
         $sms_body = str_replace('"vehicle_model"', $order_details->agent->make_model, $sms_body);
@@ -277,10 +277,9 @@ class TaskController extends BaseController
 
         if ($send_sms_status == 1) {
 
-            try {
-
+            try {                 
                 if(isset($order_details->customer->phone_number) && strlen($order_details->customer->phone_number) > 8){
-                    $this->sendSms2($order_details->customer->phone_number, $sms_body);
+                   $this->sendSms2($order_details->customer->phone_number, $sms_body);
                 }
 
             } catch (\Exception $e) {
@@ -690,6 +689,14 @@ class TaskController extends BaseController
                 $customer = Customer::where('email', '=', $request->customer_email)->first();
                 if (isset($customer->id)) {
                     $cus_id = $customer->id;
+                    //check is number is different then update custom phone number
+                    if($customer->phone_number != $request->customer_phone_number && $request->customer_phone_number!="")
+                    {
+                        $customer_phone_number = [
+                            'phone_number'        => $request->customer_phone_number
+                         ];                 
+                        Customer::where('id', $cus_id)->update($customer_phone_number);
+                    }
                 } else {
                     $cus = [
                     'name' => $request->customer_name,
