@@ -69,7 +69,14 @@ class ClientController extends Controller
      */
     public function storePreference(Request $request, $domain = '', $id)
     {
-      
+        $customerDistenceNotification = '';
+        if(!empty($request->customer_notification)){
+            $data = ['customer_notification_per_distance'=>json_encode($request->customer_notification)];
+            ClientPreference::where('client_id', $id)->update($data);
+
+            return redirect()->back()->with('success', 'Preference updated successfully!');
+        }
+        
         $client = Client::where('code', $id)->firstOrFail();
         # if submit custom domain by client
         if ($request->custom_domain && $request->custom_domain != $client->custom_domain) {

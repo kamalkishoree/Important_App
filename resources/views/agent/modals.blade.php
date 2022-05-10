@@ -165,7 +165,7 @@
                         @foreach($driver_registration_documents as $driver_registration_document)
                         <div class="col-md-6">
                             <div class="form-group" id="{{$driver_registration_document->name}}Input">
-                                <label for="" class="control-label">{{$driver_registration_document->name ? $driver_registration_document->name : ''}}</label>
+                                <label for="" class="control-label">{{$driver_registration_document->name ? ucwords($driver_registration_document->name) : ''}}</label>
                                 @if(strtolower($driver_registration_document->file_type) == 'text' || strtolower($driver_registration_document->file_type) == 'date')
                                 <input type="text" class="form-control" id="input_file_logo_{{$driver_registration_document->id}}" name="{{$driver_registration_document->name}}" placeholder="Enter Text" value="" {{ (!empty($driver_registration_document->is_required))?'required':''}}>
                                 @else

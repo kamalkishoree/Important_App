@@ -243,7 +243,7 @@ class ActivityController extends BaseController
 
         if (count($orders) > 0) {
             $tasks = Task::whereIn('order_id', $orders)->where('task_status', '!=', 4)->Where('task_status', '!=', 5)->with(['location','tasktype','order.customer'])->orderBy('order_id', 'desc')->orderBy('id', 'ASC')->get();
-                  if (count($tasks) > 0) {
+            if (count($tasks) > 0) {
                 //sort according to task_order
                 $tasks = $tasks->toArray();
                 if ($tasks[0]['task_order'] !=0) {
@@ -258,6 +258,15 @@ class ActivityController extends BaseController
         $taskProof = TaskProof::all();
 
         $preferences    = ClientPreference::with('currency')->first();
+
+        if ($request->lat=="" || $request->lat==0 || $request->lat== '0.00000000') {
+        } else {
+            $customerDistanceNotification = json_decode($preferences->customer_notification_per_distance);
+
+        }
+        
+
+
 
         $payment_codes = ['stripe'];
         $payment_creds = PaymentOption::select('code', 'credentials')->whereIn('code', $payment_codes)->where('status', 1)->get();
