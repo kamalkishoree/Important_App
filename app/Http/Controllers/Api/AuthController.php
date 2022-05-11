@@ -68,12 +68,15 @@ class AuthController extends BaseController
         $otp->save();
 
         $client_prefrerence = ClientPreference::where('id', 1)->first();
-
-        $sms_body = __("Your Dispatcher verification code is") . ": " . $data['otp'];
+        
+        $sms_body = __("Your Dispatcher verification code is") . ": " . $data['otp'].".".((!empty($request->app_hash_key))?" ".$request->app_hash_key:'');
+        
         $send = $this->sendSms2($agent->phone_number, $sms_body)->getData();
+        
         if ($send->status == 'Success') {
             unset($data['otp']);
             unset($data['valid_till']);
+            $data['app_hash_key'] = (!empty($request->app_hash_key))?$request->app_hash_key:'';
             return $this->success($data, $send->message, 200);
         }
         else {
