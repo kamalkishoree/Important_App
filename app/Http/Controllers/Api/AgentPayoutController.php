@@ -103,6 +103,7 @@ class AgentPayoutController extends BaseController{
                     $agent_bank_account->update();
                 }
                 else{
+                    
                     // find any other account of current agent and inactive that account
                     $get_agent_existing_account = AgentBankDetail::where('agent_id', $agent_id)->where('status', 1)->orderBy('id', 'desc')->first();
                     if($get_agent_existing_account){
