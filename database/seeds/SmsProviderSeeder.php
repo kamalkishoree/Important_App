@@ -39,6 +39,12 @@ class SmsProviderSeeder extends Seeder
                 'keyword' => 'unifonic',
                 'status' => '1'
             ),
+            array(
+                'id' => 5,
+                'provider' => 'Arkesel Service',
+                'keyword' => 'arkesel',
+                'status' => '1'
+            ),
         );
         if($sms_count == 0)
         {
@@ -49,12 +55,16 @@ class SmsProviderSeeder extends Seeder
             DB::table('sms_providers')->insert($maps);
         }else{
             foreach($maps as $map){
-                $sms = SmsProvider::updateOrCreate([
-                    'keyword' => $map['keyword']
-                ],[
-                    'provider' => $map['provider'],
-                    'status' => $map['status'],
-                ]);
+                $first = SmsProvider::where('keyword',$map['keyword'] )->first();
+                if(!$first){
+                    DB::table('sms_providers')->insert($map);
+                }
+                // $sms = SmsProvider::updateOrCreate([
+                //     'keyword' => $map['keyword']
+                // ],[
+                //     'provider' => $map['provider'],
+                //     'status' => $map['status'],
+                // ]);
             }
         }
     }

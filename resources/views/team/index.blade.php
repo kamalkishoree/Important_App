@@ -108,11 +108,11 @@
                     </a>
                     <div class="dropdown-menu dropdown-menu-right">
 
-                        <a href="javascript:void(0);" class="dropdown-item">{{__("Edit Report")}}</a>
+                        {{-- <a href="javascript:void(0);" class="dropdown-item">{{__("Edit Report")}}</a> --}}
 
-                        <a href="javascript:void(0);" class="dropdown-item">{{__("Export Report")}}</a>
+                        <a href="{{route('team.agents.export', $team->id)}}" class="dropdown-item">{{__("Export Report")}}</a>
 
-                        <a href="javascript:void(0);" class="dropdown-item">{{__("Action")}}</a>
+                        {{-- <a href="javascript:void(0);" class="dropdown-item">{{__("Action")}}</a> --}}
                     </div>
                 </div>
 

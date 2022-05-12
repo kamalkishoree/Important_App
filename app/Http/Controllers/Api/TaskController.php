@@ -264,7 +264,7 @@ class TaskController extends BaseController
        // dd($request->toArray());
 
         $newDetails = Task::where('id', $request->task_id)->with(['location','tasktype','pricing','order.customer'])->first();
-
+        
         $sms_body = str_replace('"order_number"', $order_details->unique_id, $sms_body);
         $sms_body = str_replace('"driver_name"', $order_details->agent->name, $sms_body);
         $sms_body = str_replace('"vehicle_model"', $order_details->agent->make_model, $sms_body);
@@ -277,10 +277,9 @@ class TaskController extends BaseController
 
         if ($send_sms_status == 1) {
 
-            try {
-
+            try {                 
                 if(isset($order_details->customer->phone_number) && strlen($order_details->customer->phone_number) > 8){
-                    $this->sendSms2($order_details->customer->phone_number, $sms_body);
+                   $this->sendSms2($order_details->customer->phone_number, $sms_body);
                 }
 
             } catch (\Exception $e) {
@@ -690,6 +689,14 @@ class TaskController extends BaseController
                 $customer = Customer::where('email', '=', $request->customer_email)->first();
                 if (isset($customer->id)) {
                     $cus_id = $customer->id;
+                    //check is number is different then update custom phone number
+                    if($customer->phone_number != $request->customer_phone_number && $request->customer_phone_number!="")
+                    {
+                        $customer_phone_number = [
+                            'phone_number'        => $request->customer_phone_number
+                         ];                 
+                        Customer::where('id', $cus_id)->update($customer_phone_number);
+                    }
                 } else {
                     $cus = [
                     'name' => $request->customer_name,
@@ -725,6 +732,7 @@ class TaskController extends BaseController
             $agent_id          = $request->allocation_type === 'm' ? $request->agent : null;
 
             $order = [
+            'order_number'                    => $request->order_number ?? null,
             'customer_id'                     => $cus_id,
             'scheduled_date_time'             => ($request->task_type=="schedule") ? $notification_time: null,
             'recipient_phone'                 => $request->recipient_phone,
@@ -750,9 +758,12 @@ class TaskController extends BaseController
             'freelancer_commission_percentage'=> $pricingRule->freelancer_commission_percentage,
             'freelancer_commission_fixed'     => $pricingRule->freelancer_commission_fixed,
             'unique_id'                       => $unique_order_id,
-            'call_back_url'                   => $request->call_back_url??null
+            'call_back_url'                   => $request->call_back_url??null,
+            'type'=>$request->type,
+            'friend_name'=>$request->friend_name,
+            'friend_phone_number'=>$request->friend_phone_number
         ];
-
+            
             $orders = Order::create($order);
 
 
@@ -798,6 +809,7 @@ class TaskController extends BaseController
                     $send_loc_id = $loc_id;
                     $finalLocation = Location::where('id', $loc_id)->first();
                 }
+                $finalLocation = Location::where('id', $loc_id)->first();
                 if(isset($finalLocation)){
                     array_push($latitude, $finalLocation->latitude);
                     array_push($longitude, $finalLocation->longitude);
@@ -1704,7 +1716,7 @@ class TaskController extends BaseController
         }));
 
         return $allsort;
-    }
+    }   
 
     public function GoogleDistanceMatrix($latitude, $longitude)
     {
@@ -1920,6 +1932,7 @@ class TaskController extends BaseController
      {
           $order = DB::table('orders')->where('id',$id)->first();
               if (isset($order->id)) {
+                $order->order_cost = $order->cash_to_be_collected ?? $order->order_cost;
                  $tasks = DB::table('tasks')->where('order_id', $order->id)->leftJoin('locations', 'tasks.location_id', '=', 'locations.id')
                      ->select('tasks.*', 'locations.latitude', 'locations.longitude', 'locations.short_name', 'locations.address')->orderBy('task_order')->get();
 

@@ -79,6 +79,10 @@
                 $merchant_key = (isset($creds->merchant_key)) ? $creds->merchant_key : '';
                 $passphrase = (isset($creds->passphrase)) ? $creds->passphrase : '';
                 $merchant_account = (isset($creds->merchant_account)) ? $creds->merchant_account : '';
+                $vnpay_website_id = (isset($creds->vnpay_website_id)) ? $creds->vnpay_website_id : '';
+                $vnpay_server_key = (isset($creds->vnpay_server_key)) ? $creds->vnpay_server_key : '';
+                $access_code = (isset($creds->access_code)) ? $creds->access_code : '';
+                $enc_key = (isset($creds->enc_key)) ? $creds->enc_key : '';
                 ?>
 
                 <div class="card-box h-100">
@@ -200,7 +204,7 @@
                                 </div>
                             </div>
                             <div class="col-12">
-                                <div class="form-group mb-0">
+                                <div classvnpay_website_id="form-group mb-0">
                                     <label for="mobbex_api_access_token" class="mr-3">{{ __("API Access Token") }}</label>
                                     <input type="password" name="mobbex_api_access_token" id="mobbex_api_access_token" class="form-control" value="{{$api_access_token}}" @if($opt->status == 1) required @endif>
                                 </div>
@@ -348,6 +352,51 @@
                                 <div class="form-group mb-0">
                                     <label for="ozow_api_key" class="mr-3">{{ __("Api Key") }}</label>
                                     <input type="text" name="ozow_api_key" id="ozow_api_key" class="form-control" value="{{$api_key}}" @if($opt->status == 1) required @endif>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @endif
+                    @if ( (strtolower($opt->code) == 'vnpay') )
+                    <div class="mt-2" id="vnpay_fields_wrapper" @if($opt->status != 1) style="display:none" @endif>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="form-group mb-2">
+                                    <label for="vnpay_website_id" class="mr-3">{{ __("Website ID") }}</label>
+                                    <input type="text" name="vnpay_website_id" id="vnpay_website_id" class="form-control" value="{{$vnpay_website_id}}" @if($opt->status == 1) required @endif>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group mb-2">
+                                    <label for="vnpay_server_key" class="mr-3">{{ __("Server Key") }}</label>
+                                    <input type="text" name="vnpay_server_key" id="vnpay_server_key" class="form-control" value="{{$vnpay_server_key}}" @if($opt->status == 1) required @endif>
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </div>
+                    @endif
+
+                    @if ( (strtolower($opt->code) == 'ccavenue'))
+                    <div class="mt-2" id="ccavenue_fields_wrapper" @if($opt->status != 1) style="display:none" @endif>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="form-group mb-2">
+                                    <label for="ccavenue_merchant" class="mr-3">{{ __("Merchant Id") }}</label>
+                                    <input type="text" name="ccavenue_merchant_id" id="ccavenue_merchant_id" class="form-control" value="{{$merchant_id}}" @if($opt->status == 1) required @endif>
+                                </div>
+                            </div>
+                             <div class="col-12">
+                                <div class="form-group mb-2">
+                                    <label for="ccavenue_access_code" class="mr-3">{{ __("Access Code") }}</label>
+                                    <input type="text" name="ccavenue_access_code" id="ccavenue_access_code" class="form-control" value="{{$access_code}}" @if($opt->status == 1) required @endif>
+                                </div>
+                            </div>
+
+                            <div class="col-12">
+                                <div class="form-group mb-2">
+                                    <label for="ccavenue_merchant" class="mr-3">{{ __("Encryption Key") }}</label>
+                                    <input type="text" name="ccavenue_enc_key" id="ccavenue_enc_key" class="form-control" value="{{$enc_key}}" @if($opt->status == 1) required @endif>
                                 </div>
                             </div>
                         </div>
