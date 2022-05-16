@@ -125,6 +125,7 @@
                         </div>
                     </div>
                     @endforeach
+                    @if($showCustomerNotification == 1)
                     <div class="col-md-4">
                         <div class="card-box">
                             <form method="POST" class="h-100" action="{{ route('preference', Auth::user()->code) }}">
@@ -160,7 +161,7 @@
                                                 <textarea class="txtarea form-control" rows="3" placeholder="Description" name="customer_notification[description]" type="text" id="description">{{ !empty($client_preference->description)? $client_preference->description : '' }}</textarea>
                                             </div>
                                             <div class="col-xl-4 my-2" id="">
-                                                <label for="title" class="control-label">Tags:-<div id="tags" disabled="">{miles}, {co2_emission}</div></label>
+                                                <label for="title" class="control-label">Tags:-<div id="tags" disabled="">{distance}, {co2_emission}</div></label>
                                             </div>
                                         </div>
                                         <div class="row">
@@ -196,6 +197,7 @@
                             </form>
                         </div>
                     </div>
+                    @endif
                 </div> 
             </div> 
         </div>

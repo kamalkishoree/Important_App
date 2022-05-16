@@ -76,6 +76,13 @@ class ClientController extends Controller
 
             return redirect()->back()->with('success', 'Preference updated successfully!');
         }
+
+        if($request->has('custom_mode')){
+            $customMode['is_hide_customer_notification'] = (!empty($request->custom_mode['is_hide_customer_notification']) && $request->custom_mode['is_hide_customer_notification'] == 'on')? 1 : 0;
+            $data = ['custom_mode'=>json_encode($customMode)];
+            ClientPreference::where('client_id', $id)->update($data);
+            return redirect()->back()->with('success', 'Preference updated successfully!');
+        }
         
         $client = Client::where('code', $id)->firstOrFail();
         # if submit custom domain by client
@@ -346,12 +353,13 @@ class ClientController extends Controller
     public function ShowConfiguration()
     {
         $preference  = ClientPreference::where('client_id', Auth::user()->code)->first();
+        $customMode  = json_decode($preference->custom_mode);
         $client      = Auth::user();
         $subClients  = SubClient::all();
         $smtp        = SmtpDetail::where('id', 1)->first();
         $agent_docs=DriverRegistrationDocument::get();
         $smsTypes = SmsProvider::where('status', '1')->get();
-        return view('configure')->with(['preference' => $preference, 'client' => $client,'subClients'=> $subClients,'smtp_details'=>$smtp, 'agent_docs' => $agent_docs,'smsTypes'=>$smsTypes]);
+        return view('configure')->with(['preference' => $preference, 'customMode' => $customMode, 'client' => $client,'subClients'=> $subClients,'smtp_details'=>$smtp, 'agent_docs' => $agent_docs,'smsTypes'=>$smsTypes]);
     }
 
 

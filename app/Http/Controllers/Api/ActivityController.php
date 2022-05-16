@@ -223,6 +223,56 @@ class ActivityController extends BaseController
 
         if ($request->lat=="" || $request->lat==0 || $request->lat== '0.00000000') {
         } else {
+
+            //get details of customer notification per distance 
+            $clientPreference = json_decode($preferences->customer_notification_per_distance);
+                            
+            //check is_send_customer_notification is on/not
+            if(!empty($clientPreference->is_send_customer_notification) && $clientPreference->is_send_customer_notification == 'on'){
+
+                //get task locations and other details
+                $orders = Order::where('driver_id', $id)->where('status', 'assigned')->with(['customer', 'location', 'taskFirst', 'agent', 'task.location'])->get()->first();
+
+                $latitude  = [];
+                $longitude = [];
+                // check task location in not empty and task created by custmer from order penel  
+                if(!empty($clientPreference->is_send_customer_notification) && $clientPreference->is_send_customer_notification == 'on'){
+
+                    //get task locations and other details
+                    $orders = Order::with(['customer', 'location', 'taskFirst', 'agent', 'task.location'])->where('id', 222)->get()->first();
+                    
+                    $latitude  = [];
+                    $longitude = [];
+
+                    // check task location in not empty and task created by custmer from order penel  
+                    if(!empty($orders->location[0]) && !empty($orders->call_back_url)){
+                        
+                        //get distance using lat-long
+                        $getDistance = $this->getLatLongDistance($orders->location[0]->latitude, $orders->location[0]->longitude, 30.738788078748588, 76.78601216839927, $clientPreference->distance_unit);
+                        
+                        //insert agent coverd distance 
+                        $data['distance_covered'] = $getdata['distance'];
+
+                        if($getDistance % $clientPreference->notification_per_distance == 0 && $getDistance > 0){
+                            
+                            $notificationTitle = $clientPreference->title;
+                            $notificationDiscription = str_ireplace("{distance}", $getdata['distance'].' '.$clientPreference->distance_unit, $clientPreference->description);
+    
+                            $postdata =  ['notificationTitle' => $notificationTitle, 'notificationDiscription' => $notificationDiscription];
+    
+                            $client = new GClient(['content-type' => 'application/json']);
+    
+                            $url = $orders->call_back_url;
+                            
+                            $res = $client->post($url,
+                                ['form_params' => ($postdata)]
+                            );
+                            $response = json_decode($res->getBody(), true);   
+                        }
+                    }                   
+                }                   
+            }
+
             AgentLog::create($data);
         }
 
@@ -292,6 +342,27 @@ class ActivityController extends BaseController
             'status' => 200,
             'message' => __('success')
         ], 200);
+    }
+
+    function getLatLongDistance($lat1, $lon1, $lat2, $lon2, $unit) {
+
+        $earthRadius = 6371;  // earth radius in km
+
+        $latFrom = deg2rad($lat1);
+        $lonFrom = deg2rad($lon1);
+        $latTo   = deg2rad($lat2);
+        $lonTo   = deg2rad($lon2);
+        $latDelta = $latTo - $latFrom;
+        $lonDelta = $lonTo - $lonFrom;
+        $angle = 2 * asin(sqrt(pow(sin($latDelta / 2), 2) +
+        cos($latFrom) * cos($latTo) * pow(sin($lonDelta / 2), 2)));
+
+        $final = round($angle * $earthRadius);
+        if ($unit == "km") {
+            return $final;
+        } else {
+            return round($final * 0.6214);
+        }
     }
 
     public function cmsData(Request $request)

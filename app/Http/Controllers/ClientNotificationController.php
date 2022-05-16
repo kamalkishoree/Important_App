@@ -24,11 +24,17 @@ class ClientNotificationController extends Controller
     {
         $notification_types = NotificationType::with('notification_events')->get();
         $client_notifications = ClientNotification::where('client_id', 1)->get();
-        $client_preference = ClientPreference::select('customer_notification_per_distance')->where('client_id', Auth::user()->code)->get()->first();
+        $client_preference = ClientPreference::select('customer_notification_per_distance','custom_mode')->where('client_id', Auth::user()->code)->get()->first();
+        $customMode = json_decode($client_preference->custom_mode);
+        $showCustomerNotification = 0;
+        if(!empty($customMode) && $customMode->is_hide_customer_notification == 1){
+            $showCustomerNotification = 1;
+        }
         return view('notifications')->with([
             'client_notifications' => $client_notifications,
             'notification_types'   => $notification_types,
-            'client_preference' => json_decode($client_preference->customer_notification_per_distance)
+            'client_preference' => json_decode($client_preference->customer_notification_per_distance),
+            'showCustomerNotification' => $showCustomerNotification
         ]);
     }
 
