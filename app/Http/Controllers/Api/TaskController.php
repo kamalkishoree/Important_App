@@ -485,61 +485,10 @@ class TaskController extends BaseController
             }
             $dispatch_traking_url = $client_url.'/order/tracking/'.$auth->code.'/'.$order_details->unique_id;
 
-                // $client = new GClient(['content-type' => 'application/json']);
-                // $url = $order_details->call_back_url;
-                // $res = $client->get($url.'?dispatcher_status_option_id='.$dispatcher_status_option_id.'&dispatch_traking_url='.$dispatch_traking_url.'&task_type='.$task_type);
-                // $response = json_decode($res->getBody(), true);
-                //-----------------------------------------------------------------------------
-                
-
-                
-
-                $client_preference = ClientPreference::select('customer_notification_per_distance')->where('client_id', $auth->code)->get()->first();
-                $clientPreference = json_decode($client_preference->customer_notification_per_distance);
-                
-                                                
-                if(!empty($clientPreference->is_send_customer_notification) && $clientPreference->is_send_customer_notification == 'on'){
-
-                    //get task locations and other details
-                    $orders = Order::with(['customer', 'location', 'taskFirst', 'agent', 'task.location'])->where('id', 222)->get()->first();
-
-                    $latitude  = [];
-                    $longitude = [];
-
-                    // check task location in not empty and task created by custmer from order penel  
-                    if(!empty($orders->location[0]) && !empty($orders->call_back_url)){
-                        
-                        //get distance using lat-long
-                        $getDistance = $this->getLatLongDistance($orders->location[0]->latitude, $orders->location[0]->longitude, 30.738788078748588, 76.78601216839927, $clientPreference->distance_unit);
-                        
-                        if($getDistance % $clientPreference->notification_per_distance == 0 && $getDistance > 0){
-                            
-                            $notificationTitle = $clientPreference->title;
-                            $notificationDiscription = str_ireplace("{distance}", $getdata['distance'].' '.$clientPreference->distance_unit, $clientPreference->description);
-    
-                            $postdata =  ['notificationTitle' => $notificationTitle, 'notificationDiscription' => $notificationDiscription];
-    
-                            $client = new GClient(['content-type' => 'application/json']);
-    
-                            $url = $orders->call_back_url;
-                            
-                            $res = $client->post($url,
-                                ['form_params' => ($postdata)]
-                            );
-                            $response = json_decode($res->getBody(), true);   
-                        }
-                    }                   
-                }
-                
-
-                die('---fhgjfhkghfdh');
-                
-
-
-
-                
-
-
+                $client = new GClient(['content-type' => 'application/json']);
+                $url = $order_details->call_back_url;
+                $res = $client->get($url.'?dispatcher_status_option_id='.$dispatcher_status_option_id.'&dispatch_traking_url='.$dispatch_traking_url.'&task_type='.$task_type);
+                $response = json_decode($res->getBody(), true);
                 if($response){
                 //    Log::info($response);
                 }
@@ -556,27 +505,7 @@ class TaskController extends BaseController
         }
     }
 
-    function getLatLongDistance($lat1, $lon1, $lat2, $lon2, $unit) {
 
-        $earthRadius = 6371;  // earth radius in km
-
-        $latFrom = deg2rad($lat1);
-        $lonFrom = deg2rad($lon1);
-        $latTo   = deg2rad($lat2);
-        $lonTo   = deg2rad($lon2);
-        $latDelta = $latTo - $latFrom;
-        $lonDelta = $lonTo - $lonFrom;
-        $angle = 2 * asin(sqrt(pow(sin($latDelta / 2), 2) +
-        cos($latFrom) * cos($latTo) * pow(sin($lonDelta / 2), 2)));
-
-        $final = round($angle * $earthRadius);
-        if ($unit == "km") {
-            return $final;
-        } else {
-            return round($final * 0.6214);
-        }
-    }
-    
     public function setMailDetail($client)
     {
         $mail = SmtpDetail::where('client_id', $client->id)->first();

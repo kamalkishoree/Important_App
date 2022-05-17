@@ -166,7 +166,16 @@
                                         </div>
                                         <div class="row">
                                             <div class="col-xl-12 mb-2 mt-3" id="">
-                                                <label class="primaryCurText">{{ __('Distance') }}</label>
+                                                <label class="primaryCurText">{{ __('CO2 Emission') }}</label>
+                                                <input class="form-control" type="number" name="customer_notification[co2_emission]"
+                                                    id="co2_emission"
+                                                    value="{{ !empty($client_preference->co2_emission)? $client_preference->co2_emission : '' }}"
+                                                    min="0">
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-xl-12 mb-2 mt-3" id="">
+                                                <label class="primaryCurText">{{ __('Distance Increment') }}</label>
                                                 <input class="form-control" type="number" name="customer_notification[notification_per_distance]"
                                                     id="notification_per_distance"
                                                     value="{{ !empty($client_preference->notification_per_distance)? $client_preference->notification_per_distance : '' }}"

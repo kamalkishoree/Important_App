@@ -14,7 +14,7 @@ class AddDistancecoveredToAgentLogsTable extends Migration
     public function up()
     {
         Schema::table('agent_logs', function (Blueprint $table) {
-            $table->json('distance_covered')->nullable();
+            $table->tinyInteger('distance_covered')->nullable();
         });
     }
 
