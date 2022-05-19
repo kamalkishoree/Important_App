@@ -98,8 +98,9 @@
                                     @endif
                                     <hr>
                                     <h4 class="header-title">{{__("Show Limited Address")}}</h4>
+                                   
                                     <div class="custom-control custom-switch">
-                                        <input type="checkbox" class="custom-control-input event_type" id="show_address" name="show_limited_address" {{isset($preference) && $preference->show_limited_address == 1 ? 'checked':''}}>
+                                        <input type="checkbox" class="custom-control-input event_type" id="show_limited_address" name="show_limited_address" {{isset($preference) && $preference->show_limited_address == 1 ? 'checked':''}}>
                                         <label class="custom-control-label" for="show_limited_address">{{__("Show only first 5 address")}}</label>
                                     </div>
 
