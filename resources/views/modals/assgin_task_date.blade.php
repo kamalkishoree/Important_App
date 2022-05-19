@@ -1,5 +1,5 @@
 <div id="add-assgin-date-model" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header border-0">
                 <h4 class="modal-title">Change Date/Time</h4>

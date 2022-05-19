@@ -125,10 +125,91 @@
                         </div>
                     </div>
                     @endforeach
+                    @if($showCustomerNotification == 1)
+                    <div class="col-md-4">
+                        <div class="card-box">
+                            <form method="POST" class="h-100" action="{{ route('preference', Auth::user()->code) }}">
+                                @csrf
+                                <input type="hidden" name="refer_and_earn" value="1">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <h4 class="header-title">{{ __('Send Customer Notification Per Distance') }}</h4>
+                                        <div class="row">
+                                            <div class="col-xl-12 my-2 d-flex align-items-center justify-content-between mt-3 mb-2">
+                                                <h5 class="font-weight-normal m-0">{{ __('Enable') }}</h5>
+                                                <div class="custom-control custom-switch">
+                                                    <input type="checkbox" class="custom-control-input"
+                                                        id="customer_notification"
+                                                        name="customer_notification[is_send_customer_notification]"
+                                                        {{ (!empty($client_preference->is_send_customer_notification) && ($client_preference->is_send_customer_notification == 'on'))? 'checked' : '' }}>
+                                                    <label class="custom-control-label"
+                                                        for="customer_notification"></label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-xl-12 my-2" id="">
+                                                <label class="primaryCurText">{{ __('Title') }}</label>
+                                                <input class="form-control" type="text" id="title"
+                                                    name="customer_notification[title]" placeholder="push notification title"
+                                                    value="{{ !empty($client_preference)? $client_preference->title : '' }}">
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-xl-8 my-2" id="">
+                                                <label class="primaryCurText">{{ __('Description') }}</label>
+                                                <textarea class="txtarea form-control" rows="3" placeholder="Description" name="customer_notification[description]" type="text" id="description">{{ !empty($client_preference->description)? $client_preference->description : '' }}</textarea>
+                                            </div>
+                                            <div class="col-xl-4 my-2" id="">
+                                                <label for="title" class="control-label">Tags:-<div id="tags" disabled="">{distance}, {co2_emission}</div></label>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-xl-12 mb-2 mt-3" id="">
+                                                <label class="primaryCurText">{{ __('CO2 Emission') }}</label>
+                                                <input class="form-control" type="number" name="customer_notification[co2_emission]"
+                                                    id="co2_emission"
+                                                    value="{{ !empty($client_preference->co2_emission)? $client_preference->co2_emission : '' }}"
+                                                    min="0">
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-xl-12 mb-2 mt-3" id="">
+                                                <label class="primaryCurText">{{ __('Distance Increment') }}</label>
+                                                <input class="form-control" type="number" name="customer_notification[notification_per_distance]"
+                                                    id="notification_per_distance"
+                                                    value="{{ !empty($client_preference->notification_per_distance)? $client_preference->notification_per_distance : '' }}"
+                                                    min="0">
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-xl-12 mb-2 mt-3" id="">
+                                                <div class="radio radio-info form-check-inline">
+                                                    <input type="radio" id="distance_unit_km" value="km" name="customer_notification[distance_unit]" {{ (!empty($client_preference->distance_unit) && ($client_preference->distance_unit == 'km'))? 'checked' : '' }} >
+                                                    <label for="distance_unit_km"> {{__("KM")}}</label>
+                                                </div>
+                                                <div class="radio radio-info form-check-inline">
+                                                    <input type="radio" id="distance_unit_miles" value="miles" name="customer_notification[distance_unit]" {{ (!empty($client_preference->distance_unit) && ($client_preference->distance_unit == 'miles'))? 'checked' : '' }} >
+                                                    <label for="distance_unit_miles"> {{__("Miles")}}</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="form-group mb-0 text-center">
+                                            <button class="btn btn-blue btn-block" type="submit"> {{ __('Update') }} </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    @endif
                 </div> 
             </div> 
         </div>
-        
     </div>
 @endsection
 
