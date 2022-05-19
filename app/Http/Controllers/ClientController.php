@@ -228,10 +228,12 @@ class ClientController extends Controller
             $request->request->add(['reffered_by_amount' => ($request->has('reffered_by_amount') && $request->reffered_by_amount > 0) ? $request->reffered_by_amount : 0]);
             $request->request->add(['reffered_to_amount' => ($request->has('reffered_to_amount') && $request->reffered_to_amount > 0) ? $request->reffered_to_amount : 0]);
         }
-        if(!$request->show_limited_address){
-            $request->merge(['show_limited_address'=>0]);
-        }
-       // pr($request->all());
+        $show_limited_address = ($request->has('show_limited_address') && $request->show_limited_address == 'on') ? 1 : 0;
+       // if(!$request->show_limited_address){
+            $request->merge(['show_limited_address'=>$show_limited_address]);
+        //}
+        
+        //pr($request->all());
         $updatePreference = ClientPreference::updateOrCreate([
             'client_id' => $id
         ], $request->all());
