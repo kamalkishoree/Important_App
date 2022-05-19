@@ -227,9 +227,11 @@ class ActivityController extends BaseController
 
             //get details of customer notification per distance 
             $clientPreference = json_decode($preferences->customer_notification_per_distance);
-                            
+
+            $configCustomerNotification = !empty($preferences->custom_mode)? json_decode($preferences->custom_mode)->is_hide_customer_notification : 0;
+
             //check is_send_customer_notification is on/not
-            if(!empty($clientPreference->is_send_customer_notification) && $clientPreference->is_send_customer_notification == 'on'){
+            if(!empty($clientPreference->is_send_customer_notification) && ($clientPreference->is_send_customer_notification == 'on') && ($configCustomerNotification == 1)){
 
                 //get task locations and other details
                 $orders = Order::with(['customer', 'location', 'taskFirst', 'agent', 'task.location'])->where('driver_id', Auth::user()->id)->where('status', 'assigned')->get()->first();
