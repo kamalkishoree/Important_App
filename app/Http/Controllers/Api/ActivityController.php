@@ -237,7 +237,7 @@ class ActivityController extends BaseController
                 if(!empty($clientPreference->is_send_customer_notification) && ($clientPreference->is_send_customer_notification == 'on') && ($configCustomerNotification == 1)){
 
                     //get task locations and other details
-                    $orders = Order::with(['customer', 'location', 'taskFirst', 'agent', 'task.location'])->where('driver_id', Auth::user()->id)->where('status', 'assigned')->get()->first();
+                    $orders = Order::where('driver_id', Auth::user()->id)->where('status', 'assigned')->with(['customer', 'location', 'taskFirst', 'agent', 'task.location'])->get()->first();
 
                     $latitude  = [];
                     $longitude = [];
@@ -253,7 +253,7 @@ class ActivityController extends BaseController
 
                         // check notification send to customer pr km/miles
                         $agentDistanceCovered = AgentLog::where('distance_covered', 'LIKE', '%'.$getDistance.'%')->count();
-                        // if($agentDistanceCovered == 1 && $getDistance > 0){
+                        if($agentDistanceCovered == 1 && $getDistance > 0){
 
                             $notificationTitle       = $clientPreference->title;
                             $notificationDiscription = str_ireplace("{distance}", $getDistance.' '.$clientPreference->distance_unit, $clientPreference->description);
@@ -269,7 +269,7 @@ class ActivityController extends BaseController
                                 ['form_params' => ($postdata)]
                             );
                             $response = json_decode($res->getBody(), true);   
-                        // }
+                        }
                     }                   
                 }
             }
