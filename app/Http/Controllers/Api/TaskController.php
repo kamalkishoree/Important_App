@@ -281,6 +281,9 @@ class TaskController extends BaseController
                 if(isset($order_details->customer->phone_number) && strlen($order_details->customer->phone_number) > 8){
                    $this->sendSms2($order_details->customer->phone_number, $sms_body);
                 }
+                if(isset($order_details->type) && $order_details->type == 1 && strlen($order_details->friend_phone_number) > 8){
+                    $this->sendSms2($order_details->friend_phone_number, $sms_body);
+                }
 
             } catch (\Exception $e) {
                 Log::info($e->getMessage());
@@ -400,8 +403,14 @@ class TaskController extends BaseController
             try {
 
                 //**Send OTP to customer phone text msg */
-                if(!empty($smsProviderNumber) && !empty($customerPhoneNumber) && strlen($order_details->customer->phone_number) > 8){
-                    $this->sendSms2($order_details->customer->phone_number, $sms_body);
+                if(!empty($smsProviderNumber)){
+                    if( !empty($customerPhoneNumber) && strlen($order_details->customer->phone_number) > 8){
+                        $this->sendSms2($order_details->customer->phone_number, $sms_body);
+                    }
+                    if(isset($order_details->type) && $order_details->type == 1 && $order_details->friend_phone_number > 8){
+                        $this->sendSms2($order_details->friend_phone_number, $sms_body);
+                    }
+                    
                     // $twilio = new TwilioClient($twilio_sid, $token);
 
                     // $message = $twilio->messages
@@ -413,6 +422,7 @@ class TaskController extends BaseController
                     //                 ]
                     //             );
                 }
+                
 
                 $mail        = SmtpDetail::where('client_id', $client_details->id)->first();
                 $client_logo = Storage::disk('s3')->url($client_details->logo);
