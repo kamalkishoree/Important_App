@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Storage;
 use App\Model\Roster;
 use Config;
 use Illuminate\Support\Facades\URL;
+use GuzzleHttp\Client as GClient;
 
 class ActivityController extends BaseController
 {
@@ -252,7 +253,7 @@ class ActivityController extends BaseController
 
                         // check notification send to customer pr km/miles
                         $agentDistanceCovered = AgentLog::where('distance_covered', 'LIKE', '%'.$getDistance.'%')->count();
-                        if($agentDistanceCovered == 1 && $getDistance > 0){
+                        // if($agentDistanceCovered == 1 && $getDistance > 0){
 
                             $notificationTitle       = $clientPreference->title;
                             $notificationDiscription = str_ireplace("{distance}", $getDistance.' '.$clientPreference->distance_unit, $clientPreference->description);
@@ -268,7 +269,7 @@ class ActivityController extends BaseController
                                 ['form_params' => ($postdata)]
                             );
                             $response = json_decode($res->getBody(), true);   
-                        }
+                        // }
                     }                   
                 }
             }
