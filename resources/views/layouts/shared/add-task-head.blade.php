@@ -801,29 +801,31 @@
         }
     });
 
-    $(document).on("click", "#file", function() {
-      $('.showsimagegall').hide();
-      $('.imagepri').remove();
-       //readURL(this);
-    });
+    // $(document).on("click", "#file", function() {
+    //   $('.showsimagegall').hide();
+    //   $('.imagepri').remove();
+    //    //readURL(this);
+    // });
 
     $(document).on("change", "#file", function() {
        previewImages(this);
     });
 
     function previewImages(input) { //console.log('1');
+        $('.imagepri').remove();
+        var fileList = input.files;
+        if(fileList.length){
+            $(".showsimagegall").removeClass('d-block').addClass("d-none");
+        }else{
+            $(".showsimagegall").removeClass('d-none').addClass("d-block");
+        }
+        var anyWindow = window.URL || window.webkitURL; //console.log('2');
 
-      var fileList = input.files;
-      if(fileList.length == 0){
-        $('.showsimagegall').show();
-      }
-      var anyWindow = window.URL || window.webkitURL; //console.log('2');
-
-      for(var i = 0; i < fileList.length; i++){
-         var objectUrl = anyWindow.createObjectURL(fileList[i]);
-         $('#imagePreview').append('<img src="' + objectUrl + '" class="imagepri" />');
-         window.URL.revokeObjectURL(fileList[i]);
-       }
+        for(var i = 0; i < fileList.length; i++){
+            var objectUrl = anyWindow.createObjectURL(fileList[i]);
+            $('#imagePreview').append('<img src="' + objectUrl + '" class="imagepri" />');
+            window.URL.revokeObjectURL(fileList[i]);
+        }
     }
 
     $(document).on('click', '.assignRadio', function () {
