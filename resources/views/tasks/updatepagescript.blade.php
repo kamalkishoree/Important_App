@@ -60,10 +60,10 @@ $(document).ready(function(){
             countEdit = 1;
 
         });
-        $("#file").click(function() {
-            $('.imagepri').remove();
+        // $("#file").click(function() {
+        //     $('.imagepri').remove();
             
-        });
+        // });
         
         $(document).on('click', ".span1", function() {
             var task_id = $(this).attr("data-taskid");

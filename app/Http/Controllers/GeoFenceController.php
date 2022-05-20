@@ -36,7 +36,7 @@ class GeoFenceController extends Controller
             });
         }
         
-        $agents = $agents->get();
+        $agents = $agents->where('is_approved', 1)->get();
 
         $geos = Geo::where('client_id', auth()->user()->code)->orderBy('created_at', 'DESC')->first();
 
@@ -204,7 +204,7 @@ class GeoFenceController extends Controller
             });
         }
         
-        $agents = $agents->get();
+        $agents = $agents->where('is_approved', 1)->get();
 
         return view('update-geo-fence')->with([
             'geo' => $geo,
@@ -267,19 +267,19 @@ class GeoFenceController extends Controller
        
         if(Auth::user()->is_superadmin == 0){
            $agents = Agent::with('team');
-                if (Auth::user()->is_superadmin == 0 && Auth::user()->all_team_access == 0) {
-                    $agents = $agents->whereHas('team.permissionToManager', function ($query) {
-                        $query->where('sub_admin_id', Auth::user()->id);
-                    });
-                }
-        
-                $agents = $agents->pluck('id');
-                
-                DriverGeo::whereIn('driver_id',$agents)->where('geo_id',$id)->delete();
-                if(isset($request->agents) && !empty($request->agents)){
-                    foreach($request->agents as $key => $driver_id)
+            if (Auth::user()->is_superadmin == 0 && Auth::user()->all_team_access == 0) {
+                $agents = $agents->whereHas('team.permissionToManager', function ($query) {
+                    $query->where('sub_admin_id', Auth::user()->id);
+                });
+            }
+    
+            $agents = $agents->where('is_approved', 1)->pluck('id');
+            
+            DriverGeo::whereIn('driver_id',$agents)->where('geo_id',$id)->delete();
+            if(isset($request->agents) && !empty($request->agents)){
+                foreach($request->agents as $key => $driver_id)
                 DriverGeo::updateOrCreate(['geo_id' => $id,'driver_id' => $driver_id],['team_id' => $request->team_id]);
-                }
+            }
                 
             
         }else{

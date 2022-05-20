@@ -69,7 +69,21 @@ class ClientController extends Controller
      */
     public function storePreference(Request $request, $domain = '', $id)
     {
-      
+        $customerDistenceNotification = '';
+        if(!empty($request->customer_notification)){
+            $data = ['customer_notification_per_distance'=>json_encode($request->customer_notification)];
+            ClientPreference::where('client_id', $id)->update($data);
+
+            return redirect()->back()->with('success', 'Preference updated successfully!');
+        }
+
+        if($request->has('custom_mode')){
+            $customMode['is_hide_customer_notification'] = (!empty($request->custom_mode['is_hide_customer_notification']) && $request->custom_mode['is_hide_customer_notification'] == 'on')? 1 : 0;
+            $data = ['custom_mode'=>json_encode($customMode)];
+            ClientPreference::where('client_id', $id)->update($data);
+            return redirect()->back()->with('success', 'Preference updated successfully!');
+        }
+        
         $client = Client::where('code', $id)->firstOrFail();
         # if submit custom domain by client
         if ($request->custom_domain && $request->custom_domain != $client->custom_domain) {
@@ -228,10 +242,12 @@ class ClientController extends Controller
             $request->request->add(['reffered_by_amount' => ($request->has('reffered_by_amount') && $request->reffered_by_amount > 0) ? $request->reffered_by_amount : 0]);
             $request->request->add(['reffered_to_amount' => ($request->has('reffered_to_amount') && $request->reffered_to_amount > 0) ? $request->reffered_to_amount : 0]);
         }
-        if(!$request->show_limited_address){
-            $request->merge(['show_limited_address'=>0]);
-        }
-       // pr($request->all());
+        $show_limited_address = ($request->has('show_limited_address') && $request->show_limited_address == 'on') ? 1 : 0;
+       // if(!$request->show_limited_address){
+            $request->merge(['show_limited_address'=>$show_limited_address]);
+        //}
+        
+        //pr($request->all());
         $updatePreference = ClientPreference::updateOrCreate([
             'client_id' => $id
         ], $request->all());
@@ -339,12 +355,13 @@ class ClientController extends Controller
     public function ShowConfiguration()
     {
         $preference  = ClientPreference::where('client_id', Auth::user()->code)->first();
+        $customMode  = json_decode($preference->custom_mode);
         $client      = Auth::user();
         $subClients  = SubClient::all();
         $smtp        = SmtpDetail::where('id', 1)->first();
         $agent_docs=DriverRegistrationDocument::get();
         $smsTypes = SmsProvider::where('status', '1')->get();
-        return view('configure')->with(['preference' => $preference, 'client' => $client,'subClients'=> $subClients,'smtp_details'=>$smtp, 'agent_docs' => $agent_docs,'smsTypes'=>$smsTypes]);
+        return view('configure')->with(['preference' => $preference, 'customMode' => $customMode, 'client' => $client,'subClients'=> $subClients,'smtp_details'=>$smtp, 'agent_docs' => $agent_docs,'smsTypes'=>$smsTypes]);
     }
 
 

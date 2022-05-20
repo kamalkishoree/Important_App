@@ -67,7 +67,7 @@ class TaskController extends Controller
             });
             $agentids = $agents->pluck('id');
         }
-        $agents = $agents->get();
+        $agents = $agents->where('is_approved', 1)->get();
 
         $team_tags = TeamTag::whereHas('team', function($q) use($user){
             $q->where('manager_id', $user->id);
@@ -1999,7 +1999,7 @@ class TaskController extends Controller
                 $query->where('sub_admin_id', Auth::user()->id);
             });
         }
-        $agents = $agents->get();
+        $agents = $agents->where('is_approved', 1)->get();
 
 
         if (isset($task->images_array)) {

@@ -210,16 +210,16 @@
         },
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.222.5",
+            "version": "3.220.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "26596820b043db985bf7c9deb98aa2234f6054cb"
+                "reference": "8beb098a2224742b2756e3b40a07593b1e6ff967"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/26596820b043db985bf7c9deb98aa2234f6054cb",
-                "reference": "26596820b043db985bf7c9deb98aa2234f6054cb",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/8beb098a2224742b2756e3b40a07593b1e6ff967",
+                "reference": "8beb098a2224742b2756e3b40a07593b1e6ff967",
                 "shasum": ""
             },
             "require": {
@@ -295,9 +295,9 @@
             "support": {
                 "forum": "https://forums.aws.amazon.com/forum.jspa?forumID=80",
                 "issues": "https://github.com/aws/aws-sdk-php/issues",
-                "source": "https://github.com/aws/aws-sdk-php/tree/3.222.5"
+                "source": "https://github.com/aws/aws-sdk-php/tree/3.220.0"
             },
-            "time": "2022-05-04T20:25:34+00:00"
+            "time": "2022-04-19T18:17:15+00:00"
         },
         {
             "name": "awt/apilogger",
@@ -7653,16 +7653,16 @@
         },
         {
             "name": "stripe/stripe-php",
-            "version": "v7.126.0",
+            "version": "v7.124.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/stripe/stripe-php.git",
-                "reference": "c36de62a89475e81d9c75ec08de19376466f67b7"
+                "reference": "548e8ef08a86c6c621446082393dc6a1af51076c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/stripe/stripe-php/zipball/c36de62a89475e81d9c75ec08de19376466f67b7",
-                "reference": "c36de62a89475e81d9c75ec08de19376466f67b7",
+                "url": "https://api.github.com/repos/stripe/stripe-php/zipball/548e8ef08a86c6c621446082393dc6a1af51076c",
+                "reference": "548e8ef08a86c6c621446082393dc6a1af51076c",
                 "shasum": ""
             },
             "require": {
@@ -7707,9 +7707,9 @@
             ],
             "support": {
                 "issues": "https://github.com/stripe/stripe-php/issues",
-                "source": "https://github.com/stripe/stripe-php/tree/v7.126.0"
+                "source": "https://github.com/stripe/stripe-php/tree/v7.124.0"
             },
-            "time": "2022-05-03T15:37:27+00:00"
+            "time": "2022-04-18T23:07:08+00:00"
         },
         {
             "name": "swagger-api/swagger-ui",
@@ -13251,5 +13251,5 @@
         "php": "^7.2||^8.0"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.2.0"
+    "plugin-api-version": "2.3.0"
 }
