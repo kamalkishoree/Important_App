@@ -25,14 +25,14 @@ class StripeGatewayController extends BaseController{
     public function __construct()
     {
         $stripe_creds = PaymentOption::select('credentials')->where('code', 'stripe')->where('status', 1)->first();
-        $creds_arr = json_decode($stripe_creds->credentials);
+        $creds_arr = isset($stripe_creds->credentials) ? json_decode($stripe_creds->credentials) : null;
         $api_key = (isset($creds_arr->api_key)) ? $creds_arr->api_key : '';
         $this->gateway = Omnipay::create('Stripe');
         $this->gateway->setApiKey($api_key);
         $this->gateway->setTestMode(true); //set it to 'false' when go live
 
         $payout_creds = PayoutOption::select('credentials')->where('code', 'stripe')->where('status', 1)->first();
-        $payout_creds_arr = json_decode($payout_creds->credentials);
+        $payout_creds_arr = isset($stripe_creds->credentials) ? json_decode($payout_creds->credentials) : null;
         $this->payout_secret_key = (isset($payout_creds_arr->secret_key)) ? $payout_creds_arr->secret_key : '';
         $this->payout_client_id = (isset($payout_creds_arr->client_id)) ? $payout_creds_arr->client_id : '';
 
