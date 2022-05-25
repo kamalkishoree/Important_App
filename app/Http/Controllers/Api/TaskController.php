@@ -786,9 +786,11 @@ class TaskController extends BaseController
 
 
             $dep_id = null;
+            $pickup_location = null;
 
             foreach ($request->task as $key => $value) {
                 $taskcount++;
+                $loc_id = null;
                 if (isset($value)) {
                     $post_code = isset($value['post_code']) ? $value['post_code'] : '';
                     $loc = [
@@ -814,12 +816,12 @@ class TaskController extends BaseController
 
                 }
 
-
+                $finalLocation = Location::where('id', $loc_id)->first();
                 if ($key == 0) {
                     $send_loc_id = $loc_id;
-                    $finalLocation = Location::where('id', $loc_id)->first();
+                    $pickup_location = $finalLocation;
                 }
-                $finalLocation = Location::where('id', $loc_id)->first();
+                
                 if(isset($finalLocation)){
                     array_push($latitude, $finalLocation->latitude);
                     array_push($longitude, $finalLocation->longitude);
@@ -830,16 +832,16 @@ class TaskController extends BaseController
                 $task_appointment_duration = isset($value->appointment_duration) ? $value->appointment_duration : null;
 
                 $data = [
-                'order_id'                   => $orders->id,
-                'task_type_id'               => $value['task_type_id'],
-                'location_id'                => $loc_id,
-                'appointment_duration'       => $task_appointment_duration,
-                'dependent_task_id'          => $dep_id,
-                'task_status'                => $agent_id != null ? 1 : 0,
-                'allocation_type'            => $request->allocation_type,
-                'assigned_time'              => $notification_time,
-                'barcode'                    => $value['barcode']??null,
-            ];
+                    'order_id'                   => $orders->id,
+                    'task_type_id'               => $value['task_type_id'],
+                    'location_id'                => $loc_id,
+                    'appointment_duration'       => $task_appointment_duration,
+                    'dependent_task_id'          => $dep_id,
+                    'task_status'                => $agent_id != null ? 1 : 0,
+                    'allocation_type'            => $request->allocation_type,
+                    'assigned_time'              => $notification_time,
+                    'barcode'                    => $value['barcode']??null,
+                ];
 
                 $task = Task::create($data);
                 $dep_id = $task->id;
@@ -999,19 +1001,19 @@ class TaskController extends BaseController
                 switch ($allocation->auto_assign_logic) {
                 case 'one_by_one':
                      //this is called when allocation type is one by one
-                    $this->finalRoster($geo, $notification_time, $agent_id, $orders->id, $customer, $finalLocation, $taskcount, $header, $allocation);
+                    $this->finalRoster($geo, $notification_time, $agent_id, $orders->id, $customer, $pickup_location, $taskcount, $header, $allocation);
                     break;
                 case 'send_to_all':
                     //this is called when allocation type is send to all
-                    $this->SendToAll($geo, $notification_time, $agent_id, $orders->id, $customer, $finalLocation, $taskcount, $header, $allocation);
+                    $this->SendToAll($geo, $notification_time, $agent_id, $orders->id, $customer, $pickup_location, $taskcount, $header, $allocation);
                     break;
                 case 'round_robin':
                     //this is called when allocation type is round robin
-                    $this->roundRobin($geo, $notification_time, $agent_id, $orders->id, $customer, $finalLocation, $taskcount, $header, $allocation);
+                    $this->roundRobin($geo, $notification_time, $agent_id, $orders->id, $customer, $pickup_location, $taskcount, $header, $allocation);
                     break;
                 default:
                    //this is called when allocation type is batch wise
-                    $this->batchWise($geo, $notification_time, $agent_id, $orders->id, $customer, $finalLocation, $taskcount, $header, $allocation);
+                    $this->batchWise($geo, $notification_time, $agent_id, $orders->id, $customer, $pickup_location, $taskcount, $header, $allocation);
             }
             }
             $dispatch_traking_url = $client_url.'/order/tracking/'.$auth->code.'/'.$orders->unique_id;
