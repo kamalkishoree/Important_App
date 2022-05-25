@@ -236,41 +236,50 @@ class ActivityController extends BaseController
                 //check is_send_customer_notification is on/not
                 if(!empty($clientPreference->is_send_customer_notification) && ($clientPreference->is_send_customer_notification == 'on') && ($configCustomerNotification == 1)){
 
-                    //get task locations and other details
-                    $orders = Order::where('driver_id', Auth::user()->id)->where('status', 'assigned')->with(['customer', 'location', 'taskFirst', 'agent', 'task.location'])->get()->first();
+                    //get agent orders 
+                    $orders = Order::where('driver_id', Auth::user()->id)->where('status', 'assigned')->orderBy('order_time')->pluck('id')->toArray();
+                    if (count($orders) > 0) {
 
-                    $latitude  = [];
-                    $longitude = [];
-
-                    // check task location in not empty and task created by custmer from order penel  
-                    if(!empty($orders->location[0]) && !empty($orders->call_back_url)){
-                        
-                        //get distance using lat-long
-                        $getDistance = $this->getLatLongDistance($orders->location[0]->latitude, $orders->location[0]->longitude, $request->lat, $request->long, $clientPreference->distance_unit);
-
-                        // insert agent coverd distance
-                        $data['distance_covered'] = $getDistance;
-
-                        // check notification send to customer pr km/miles
-                        $agentDistanceCovered = AgentLog::where('distance_covered', 'LIKE', '%'.$getDistance.'%')->count();
-                        if($agentDistanceCovered == 1 && $getDistance > 0){
-
-                            $notificationTitle       = $clientPreference->title;
-                            $notificationDiscription = str_ireplace("{distance}", $getDistance.' '.$clientPreference->distance_unit, $clientPreference->description);
-                            $notificationDiscription = str_ireplace("{co2_emission}", $clientPreference->co2_emission * $getDistance, $notificationDiscription);
+                        //get agent current task
+                        $tasks = Task::whereIn('order_id', $orders)->where('task_status', '!=', 4)->Where('task_status', '!=', 5)->with(['location','tasktype','order.customer'])->orderBy('order_id', 'desc')->orderBy('id', 'ASC')->get()->first();
+                        if (!empty($tasks)) {
+                            $callBackUrl = $tasks->order->call_back_url;
+                            $latitude    = [];
+                            $longitude   = [];
                             
-                            $postdata =  ['notificationTitle' => $notificationTitle, 'notificationDiscription' => $notificationDiscription];
+                            // check task location in not empty and task created by custmer from order penel  
+                            if(!empty($tasks->location) && !empty($callBackUrl)){
+                                
+                                $tasksLocationLat  = $tasks->location->latitude;
+                                $tasksLocationLong = $tasks->location->longitude;
 
-                            $client = new GClient(['content-type' => 'application/json']);
-
-                            $url = $orders->call_back_url;
-                            
-                            $res = $client->post($url,
-                                ['form_params' => ($postdata)]
-                            );
-                            $response = json_decode($res->getBody(), true);   
+                                //get distance using lat-long
+                                $getDistance = $this->getLatLongDistance($tasksLocationLat, $tasksLocationLong, $request->lat, $request->long, $clientPreference->distance_unit);
+        
+                                // insert agent coverd distance
+                                $data['distance_covered'] = $getDistance;
+        
+                                // check notification send to customer pr km/miles
+                                $agentDistanceCovered = AgentLog::where('distance_covered', 'LIKE', '%'.$getDistance.'%')->count();
+                                
+                                if($agentDistanceCovered == 1 && $getDistance > 0){
+        
+                                    $notificationTitle       = $clientPreference->title;
+                                    $notificationDiscription = str_ireplace("{distance}", $getDistance.' '.$clientPreference->distance_unit, $clientPreference->description);
+                                    $notificationDiscription = str_ireplace("{co2_emission}", $clientPreference->co2_emission * $getDistance, $notificationDiscription);
+                                    
+                                    $postdata =  ['notificationTitle' => $notificationTitle, 'notificationDiscription' => $notificationDiscription];
+        
+                                    $client = new GClient(['content-type' => 'application/json']);
+                                    
+                                    $res = $client->post($callBackUrl,
+                                        ['form_params' => ($postdata)]
+                                    );
+                                    $response = json_decode($res->getBody(), true);   
+                                }
+                            }
                         }
-                    }                   
+                    }                                           
                 }
             }
             

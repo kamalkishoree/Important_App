@@ -27,12 +27,12 @@ class CcavenueController extends BaseController{
        $this->access_key = $json->enc_key;
        $this->access_code = $json->access_code;
        $this->merchant_id = $json->merchant_id;
-     if($payOpt->test_mode =='1')
-     {
-         $this->url = 'https://secure.ccavenue.ae/transaction/transaction.do?command=initiateTransaction';
-     }else{
-         $this->url = 'https://secure.ccavenue.ae/transaction/transaction.do?command=initiateTransaction';
-     }
+       if($payOpt->test_mode =='1')
+       {
+            $this->url = 'https://secure.ccavenue.ae/transaction/transaction.do?command=initiateTransaction';
+        }else{
+            $this->url = 'https://secure.ccavenue.ae/transaction/transaction.do?command=initiateTransaction';
+        }
  
     }
     
