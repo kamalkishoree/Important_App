@@ -19,6 +19,8 @@ use App\Exports\AgentsExport;
 use Doctrine\DBAL\Driver\DrizzlePDOMySql\Driver;
 use App\Model\{Agent, AgentDocs, AgentPayment, DriverGeo, Order, Otp, Team, TagsForAgent, TagsForTeam, Countries, Client, ClientPreferences, DriverRegistrationDocument, Geo, Timezone};
 use Kawankoding\Fcm\Fcm;
+use App\Traits\agentEarningManager;
+
 class AgentController extends Controller
 {
     use ApiResponser;
@@ -185,7 +187,8 @@ class AgentController extends Controller
                     $orders      = $agents->order->sum('driver_cost');
                     $receive     = $agents->agentPayment->sum('cr');
                     $pay         = $agents->agentPayment->sum('dr');
-                    $payToDriver = $agents->balanceFloat + ($pay - $receive) - ($cash - $orders);
+                    //$payToDriver = $agents->balanceFloat + ($pay - $receive) - ($cash - $orders);
+                    $payToDriver = ($pay - $receive) - ($cash - $orders);
                     return number_format((float)$payToDriver, 2, '.', '');
                 })
                 ->editColumn('created_at', function ($agents) use ($request, $timezone) {
@@ -614,6 +617,7 @@ class AgentController extends Controller
         return redirect()->back()->with('success',__('Agent deleted successfully!'));
     }
 
+    //----------------------------------function modified by surendra singh-------------------------------//
     public function payreceive(Request $request, $domain = '')
     {
         try{
@@ -633,24 +637,25 @@ class AgentController extends Controller
                 }
                 else{
                     return $this->error(__('Invalid Data'), 422);
-                }
+                } 
+                $data = [
+                    'driver_id' => $request->driver_id,
+                    'cr' => $request->payment_type == 1 ? $request->amount : null,
+                    'dr' => $request->payment_type == 2 ? $request->amount : null,
+                ];
+                $agent = AgentPayment::create($data);
                 return $this->success('', __('Payment is successfully completed'), 201);
             }else{
                 return $this->error(__('Insufficient Amount'), 422);
             }
 
-            // $data = [
-            //     'driver_id' => $request->driver_id,
-            //     'cr' => $request->payment_type == 1 ? $request->amount : null,
-            //     'dr' => $request->payment_type == 2 ? $request->amount : null,
-            // ];
-
-            // $agent = AgentPayment::create($data);
+            
         }
         catch (Exception $e) {
             return $this->error($e->getMessage(), $e->getCode());
         }
     }
+    //----------------------------------------------------------------------------------------//
 
     public function agentPayDetails($domain = '', $id)
     {
@@ -662,20 +667,22 @@ class AgentController extends Controller
             $order = $agent->order->sum('order_cost');
             $credit = $agent->agentPayment->sum('cr');
             $debit = $agent->agentPayment->sum('dr');
+            $final_balance = agentEarningManager::getAgentEarning($agent->id, 0);
         } else {
             $cash  = 0;
             $order = 0;
             $driver_cost = 0;
             $credit = 0;
             $debit = 0;
+            $final_balance = 0;
         }
 
-        $data['cash_to_be_collected'] = $cash;
-        $data['order_cost']           = $order;
+        $data['cash_to_be_collected']  = $cash;
+        $data['order_cost']            = $order;
         $data['driver_cost']           = $driver_cost;
-        $data['credit']           = $credit;
-        $data['debit']           = $debit;
-        $data['wallet_balance']           = $agent->balanceFloat;
+        $data['credit']                = $credit;
+        $data['debit']                 = $debit;
+        $data['final_balance']         = $final_balance;
 
 
         return response()->json($data);
