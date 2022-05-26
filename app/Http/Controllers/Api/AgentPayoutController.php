@@ -15,6 +15,7 @@ use App\Traits\ApiResponser;
 use Maatwebsite\Excel\Facades\Excel;
 // use App\Exports\OrderVendorListExport;
 use App\Http\Controllers\Api\BaseController;
+use App\Traits\agentEarningManager;
 use App\Model\{Client, ClientPreference, User, Agent, Order, PaymentOption, PayoutOption, AgentPayout, AgentBankDetail, AgentConnectedAccount};
 
 class AgentPayoutController extends BaseController{
@@ -55,18 +56,10 @@ class AgentPayoutController extends BaseController{
             $user = Auth::user();
             $agent = $agent->first();
             $agent_id = $agent->id;
-            $credit = $agent->agentPayment->sum('cr');
-            $debit = $agent->agentPayment->sum('dr');
-
-            $total_order_value = Order::where('driver_id', $agent_id)->orderBy('id','desc');
-            $total_order_value = $total_order_value->sum('order_cost');
-
-            $agent_payouts = AgentPayout::where('agent_id', $agent_id)->orderBy('id','desc');
-            $agent_payouts = $agent_payouts->whereIn('status', [0,1])->sum('amount');
-
-            $past_payout_value = $agent_payouts;
-            $available_funds = $total_order_value + $agent->balanceFloat + $debit - $past_payout_value - $credit;
-
+            //-----------------Code modified by Surendra Singh--------------------------//
+            $pending_payout_value  = AgentPayout::where('agent_id', $agent_id)->whereIn('status', [0])->sum('amount');
+            $available_funds = agentEarningManager::getAgentEarning($agent_id) - $pending_payout_value;
+            //-------------------------------------------------------------------------//
             if($request->amount > $available_funds){
                 return $this->error(__('Payout amount is greater than available funds'), 402);
             }
@@ -149,27 +142,26 @@ class AgentPayoutController extends BaseController{
     /**   show agent payout tab details   */
     public function agentPayoutDetails(Request $request)
     {
-        $page = $request->has('page') ? $request->page : 1;
-        $limit = $request->has('limit') ? $request->limit : 30;
-        $user = Auth::user();
-        $agent = Agent::where('id',$user->id)->first();
-        $credit = $agent->agentPayment->sum('cr');
-        $debit = $agent->agentPayment->sum('dr');
+        $page     = $request->has('page') ? $request->page : 1;
+        $limit    = $request->has('limit') ? $request->limit : 30;
+        $user     = Auth::user();
+        $agent    = Agent::where('id',$user->id)->first();
+        //----------------------------------code modified by surendra Singh-------------------//
         $agent_id = $agent->id;
 
         $client_preferences = ClientPreference::with('currency')->where('id', '>', 0)->first();
+       
+        $agent_payout_list  = AgentPayout::select('*','status as status_id')->with('payoutOption')->where('agent_id', $agent_id)->orderBy('id','desc')->paginate($limit, $page);
+        $past_payout_value  = AgentPayout::where('agent_id', $agent_id)->whereIn('status', [1])->sum('amount');
+        $pending_payout_value  = AgentPayout::where('agent_id', $agent_id)->whereIn('status', [0])->sum('amount');
 
-        $total_order_value = Order::where('driver_id', $agent_id)->orderBy('id','desc');
-        $total_order_value = $total_order_value->sum('order_cost');
+        
+        $available_funds    = agentEarningManager::getAgentEarning($agent->id) - $pending_payout_value;
+        
+        $available_funds    = number_format($available_funds, 2, '.', ',');
+        $past_payout_value  = number_format($past_payout_value, 2, '.', ',');
 
-        $agent_payout_list = AgentPayout::select('*','status as status_id')->with('payoutOption')->where('agent_id', $agent_id)->orderBy('id','desc')->paginate($limit, $page);
-        $past_payout_value = AgentPayout::where('agent_id', $agent_id)->whereIn('status', [0,1])->sum('amount');
-
-        $available_funds = $total_order_value + $agent->balanceFloat + $debit - $past_payout_value - $credit;
-        // $available_funds = number_format($available_funds, 2, '.', ',');
-        $past_payout_value = number_format($past_payout_value, 2, '.', ',');
-
-
+        //-------------------------------------------------------------------------------------//
         // Payout Options start
         // $code = array('cash', 'razorpay', 'bank_account_m_india');
         // $payout_options = PayoutOption::whereIn('code', $code)->where('status', 1)->get(['id', 'code', 'title', 'credentials', 'off_site']);

@@ -349,8 +349,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                 var debit = round(data.debit, 2);
                 var cash = round(data.cash_to_be_collected, 2);
                 var final = round(cash - driver_cost, 2);
-                var wallet_balance = round(data.wallet_balance, 2);
-                var new_final = round(wallet_balance + (debit - credit) - (cash - driver_cost), 2);
+                var new_final = round(data.final_balance, 2);
                 $("#order_earning").text(driver_cost);
                 $("#cash_collected").text(cash);
                 $("#final_balance").text(new_final);

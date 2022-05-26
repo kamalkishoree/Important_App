@@ -847,7 +847,7 @@ class TaskController extends Controller
                 $query->where('sub_admin_id', Auth::user()->id);
             });
         }
-        $agents = $agents->get();
+        $agents = $agents->where('is_approved', 1)->get();
 
         $preference  = ClientPreference::where('id', 1)->first(['route_flat_input','route_alcoholic_input']);
 
