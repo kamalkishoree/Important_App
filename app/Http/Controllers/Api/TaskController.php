@@ -772,9 +772,9 @@ class TaskController extends BaseController
             'call_back_url'                   => $request->call_back_url??null,
             'type'=>$request->type??0,
             'friend_name'=>$request->friend_name,
-            'friend_phone_number'=>$request->friend_phone_number
+            'friend_phone_number'=>$request->friend_phone_number,
+            'request_type'=>$request->request_type??'P'
         ];
-            
             $orders = Order::create($order);
 
 

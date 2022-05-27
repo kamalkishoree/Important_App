@@ -169,7 +169,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
 
         <div class="col-xl-7">
             <div class="card-box">
-                <h4 class="header-title mb-2">{{__('Task List')}}</h4>
+                <h4 class="header-title mb-2">{{(($task->request_type=='D')?__('Delivery'):__('Pickup')).' '.__('Task List')}}</h4>
                 <div class="al_new_address_box_outer position-relative">
                     @php
                     $tasksLocations = [];
