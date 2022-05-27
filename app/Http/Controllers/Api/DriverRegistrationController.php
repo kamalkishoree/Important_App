@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\Api\BaseController;
-use App\Model\{Agent, AgentDocs, ClientPreference, DriverRegistrationDocument, TagsForAgent, AgentsTag, Team, Otp};
+use App\Model\{Agent, AgentDocs, AgentSmsTemplate, ClientPreference, DriverRegistrationDocument, TagsForAgent, AgentsTag, Team, Otp};
 
 class DriverRegistrationController extends BaseController
 {
@@ -52,7 +52,18 @@ class DriverRegistrationController extends BaseController
                 $otp->save();
 
                 $to = $otp->phone;
-                $body = "Dear customer, OTP for registration is " . $otp->opt . ".";
+                $body = "Dear customer, OTP for registration is " . $otp->opt;
+                
+                $sms_template = AgentSmsTemplate::where('slug', 'sign-up')->first();
+                if($sms_template){
+                    if(!empty($sms_template->content)){
+                        $body = preg_replace('/{OTP}/', $otp->opt, $sms_template->content, 1);
+                        if(isset($request->app_hash_key) && (!empty($request->app_hash_key))){
+                            $body .= ".".$request->app_hash_key;
+                        }
+                    }
+                }
+
                 $send = $this->sendSms2($to, $body)->getData();
                 if ($send->status == 'Success') {
                     return $this->success([], $send->message, 200);
