@@ -166,7 +166,7 @@
                                                         @csrf
                                                         @method('DELETE')
                                                         <div class="form-group">
-                                                            <button type="submit" class="btn btn-primary-outline action-icon" onclick="return confirm('Are you sure ?');"> <i class="mdi mdi-delete"></i></button>
+                                                            <button type="submit" class="btn btn-primary-outline action-icon" onclick="return confirm('{{__('Are you sure?')}}');"> <i class="mdi mdi-delete"></i></button>
     
                                                         </div>
                                                     </form>

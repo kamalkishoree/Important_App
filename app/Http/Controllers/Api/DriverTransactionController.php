@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use App\Traits\agentEarningManager;
 use App\Model\{Agent, AgentPayment, AgentPayout, Order, Task, Transaction};
 
 class DriverTransactionController extends BaseController
@@ -17,7 +18,7 @@ class DriverTransactionController extends BaseController
     {
         $data = [];
         $agent = Agent::where('id', $id)->first();
-        $data['wallet_balance'] = $agent->balanceFloat;
+        //$data['wallet_balance'] = $agent->balanceFloat;
 
         $cash  = 0;
         $order = 0;
@@ -34,17 +35,19 @@ class DriverTransactionController extends BaseController
             if($agent->wallet){
                 $wallet_balance = $agent->balanceFloat;
             }
+            //-----------------------------function calculation modified by surendra singh-------------------//
             $page = $request->has('page') ? $request->page : 1;
             $limit = $request->has('limit') ? $request->limit : 30;
             $cash  = $agent->order->where('status', 'completed')->sum('cash_to_be_collected');
             $driver_cost  = $agent->order->where('status', 'completed')->sum('driver_cost');
             $order_cost = $agent->order->where('status', 'completed')->sum('order_cost');
-            $credit = $agent->agentPayment->sum('cr');
-            $debit = $agent->agentPayment->sum('dr');
+            
             $payout = AgentPayout::where(['agent_id'=>$agent->id, 'status'=> 1])->sum('amount');
-            $balance = $wallet_balance + $order_cost + $debit - ($credit + $cash + $payout + $driver_cost);
+            $pendingpayout = AgentPayout::where(['agent_id'=>$agent->id, 'status'=> 0])->sum('amount');
+            
+            $balance = agentEarningManager::getAgentEarning($agent->id);
             $final_balance = number_format($balance, 2, '.', '');
-
+            //-----------------------------------------------------------------------------------------------//
             $payments = AgentPayment::select(DB::raw('id, "payment" as transaction_type, NULL as order_id, NULL as dependent_task_id, NULL as task_type_id, NULL as location_id, NULL as appointment_duration, NULL as task_status, NULL as allocation_type, NULL as amount, NULL as type, NULL as meta, dr, cr, created_at'))
             ->where("driver_id", $id);
 
@@ -91,7 +94,7 @@ class DriverTransactionController extends BaseController
         $data['driver_cost'] = $driver_cost;
         $data['lifetime_earnings'] = $order_cost;
         $data['cash_to_be_collected'] = $cash;
-        $data['final_balance'] = $final_balance;
+        $data['wallet_balance'] = $final_balance;
         $data['payments'] = $tasks;
         $data['totalCashCollected'] = $totalCashCollected;
 

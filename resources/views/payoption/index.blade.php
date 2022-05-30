@@ -520,7 +520,14 @@
 @endsection
 
 @section('script')
+<script src="{{asset('assets/libs/mohithg-switchery/mohithg-switchery.min.js')}}"></script>
 <script type="text/javascript">
+    
+    var elems = Array.prototype.slice.call(document.querySelectorAll('.chk_box'));
+        elems.forEach(function(html) {
+        var switchery =new Switchery(html);
+    });
+
     $('.applyVendor').click(function() {
         $('#applyVendorModal').modal({
             backdrop: 'static',

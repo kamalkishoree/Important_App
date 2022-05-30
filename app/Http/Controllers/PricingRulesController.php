@@ -126,7 +126,7 @@ class PricingRulesController extends Controller
         $task = PricingRule::create($data);
 
 
-        return redirect()->route('pricing-rules.index')->with('success', 'Pricing Rule Added successfully!');
+        return redirect()->route('pricing-rules.index')->with('success', __('Pricing rule added successfully'));
     }
 
     /**
@@ -189,7 +189,7 @@ class PricingRulesController extends Controller
         ];
         
         $pricing = PricingRule::where('id', $id)->update($data);
-        return redirect()->route('pricing-rules.index')->with('success', 'Pricing Rule Updated successfully!');
+        return redirect()->route('pricing-rules.index')->with('success', __('Pricing rule updated successfully'));
     }
 
     /**
@@ -208,6 +208,6 @@ class PricingRulesController extends Controller
         }
         $del_price_rule = $del_price_rule->delete();
 
-        return redirect()->back()->with('success', 'Task deleted successfully!');
+        return redirect()->back()->with('success', __('Pricing rule deleted successfully'));
     }
 }

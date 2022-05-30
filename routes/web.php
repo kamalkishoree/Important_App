@@ -239,6 +239,12 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 			Route::resource('payoption', 'PaymentOptionController');
 			Route::post('updateAll', 'PaymentOptionController@updateAll')->name('payoption.updateAll');
 			Route::post('payoutUpdateAll', 'PaymentOptionController@payoutUpdateAll')->name('payoutOption.payoutUpdateAll');
+
+
+			/**  */ 
+			Route::get('cms/agent-sms/templates', 'CMS\DriverSMSTemplateController@index')->name('cms.agent-sms.templates');
+			Route::get('cms/agent-sms/template/{id}', 'CMS\DriverSMSTemplateController@show')->name('cms.agent-sms.template.show');
+			Route::post('cms/agent-sms/template/update', 'CMS\DriverSMSTemplateController@update')->name('cms.agent-sms.template.update');
 		});
 	});
 
