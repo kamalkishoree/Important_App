@@ -38,9 +38,12 @@ use Maatwebsite\Excel\HeadingRowImport;
 use App\Exports\RoutesExport;
 use Excel;
 use GuzzleHttp\Client as Gclient;
+use App\Traits\ApiResponser;
 
 class TaskController extends Controller
 {
+    use ApiResponser;
+    
     /**
      * Display a listing of the resource.
      *
@@ -412,6 +415,10 @@ class TaskController extends Controller
     // function for saving new order
     public function newtasks(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'cash_to_be_collected' => ['required','numeric', 'min:0']
+        ])->validate();
+
         //dd($request->toArray());
         $loc_id = $cus_id = $send_loc_id = $newlat = $newlong = 0;
         $iinputs = $request->toArray();
@@ -674,7 +681,8 @@ class TaskController extends Controller
             $to_time = strtotime($to);
             $from_time = strtotime($from);;
             if ($to_time >= $from_time) {
-                return redirect()->route('tasks.index')->with('success', 'Task Added Successfully!');
+                // return redirect()->route('tasks.index')->with('success', 'Task Added Successfully!');
+                return $this->success('', __('Task Added Successfully!'), 200);
             }
 
             $diff_in_minutes = round(abs($to_time - $from_time) / 60);
@@ -701,7 +709,8 @@ class TaskController extends Controller
                 //->delay(now()->addMinutes($finaldelay))
                 scheduleNotification::dispatch($schduledata)->delay(now()->addMinutes($finaldelay));
                 //$this->dispatch(new scheduleNotification($schduledata));
-                return true;
+                // return true;
+                return $this->success('', __('Task Added Successfully!'), 200);
             }
         }
 
@@ -727,7 +736,8 @@ class TaskController extends Controller
                     $this->batchWise($geo, $notification_time, $agent_id, $orders->id, $customer, $finalLocation, $taskcount, $allocation);
             }
         }
-        return true;
+        // return true;
+        return $this->success('', __('Task Added Successfully!'), 200);
     }
 
     //function for assigning driver to unassigned orders
