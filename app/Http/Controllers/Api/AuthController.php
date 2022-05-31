@@ -76,7 +76,7 @@ class AuthController extends BaseController
         $sms_template = AgentSmsTemplate::where('slug', 'sign-in')->first();
         if($sms_template){
             if(!empty($sms_template->content)){
-                $sms_body = preg_replace('{OTP}', $data['otp'], $sms_template->content, 1);
+                $sms_body = preg_replace('/{OTP}/', $data['otp'], $sms_template->content, 1);
                 if(isset($request->app_hash_key) && (!empty($request->app_hash_key))){
                     $sms_body .= ".".$request->app_hash_key;
                 }

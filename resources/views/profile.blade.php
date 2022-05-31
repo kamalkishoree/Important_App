@@ -7,6 +7,12 @@
 @endsection
 @php
     $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain/';
+    $is_readonly = '';
+    $is_disabled = '';
+    if(Auth::user()->is_superadmin != 1){
+        $is_readonly = 'readonly';
+        $is_disabled = 'disabled';
+    }
 @endphp
 @section('content')
 <!-- Start Content-->
@@ -164,7 +170,7 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="email" class="control-label">{{__("EMAIL")}}</label>
-                                    <input type="email" class="form-control" id="email" name="email" value="{{ old('email', Auth::user()->email ?? '')}}" placeholder={{__("Enter email address")}}>
+                                    <input type="email" class="form-control" id="email" name="email" value="{{ old('email', Auth::user()->email ?? '')}}" placeholder="{{__("Enter email address")}}" {{ $is_readonly }}>
                                     @if($errors->has('email'))
                                     <span class="text-danger" role="alert">
                                         <strong>{{ $errors->first('email') }}</strong>
@@ -191,7 +197,7 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="company_address" class="control-label">{{__("COMPANY ADDRESS")}}</label>
-                                    <input type="text" class="form-control" id="company_address" name="company_address" value="{{ old('company_address', Auth::user()->company_address ?? '')}}" placeholder={{__("Enter company address")}}>
+                                    <input type="text" class="form-control" id="company_address" name="company_address" value="{{ old('company_address', Auth::user()->company_address ?? '')}}" placeholder="{{__("Enter company address")}}" {{ $is_readonly }}>
                                     @if($errors->has('company_address'))
                                     <span class="text-danger" role="alert">
                                         <strong>{{ $errors->first('company_address') }}</strong>
@@ -207,7 +213,7 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="company_name" class="control-label">{{__("COMPANY NAME")}}</label>
-                                    <input type="text" class="form-control" name="company_name" id="company_name" value="{{ old('company_name', Auth::user()->company_name ?? '')}}" placeholder="Enter company name">
+                                    <input type="text" class="form-control" name="company_name" id="company_name" value="{{ old('company_name', Auth::user()->company_name ?? '')}}" placeholder="Enter company name" {{ $is_readonly }}>
                                     @if($errors->has('company_name'))
                                     <span class="text-danger" role="alert">
                                         <strong>{{ $errors->first('company_name') }}</strong>
@@ -224,9 +230,9 @@
                                         <strong>{{ $errors->first('country') }}</strong>
                                     </span>
                                     @endif
-                                    <select class="form-control" id="country" name="country" value="{{ old('country', $client->id ?? '')}}" placeholder={{__("Country")}}>
+                                    <select class="form-control" id="country" name="country" value="{{ old('country', $client->id ?? '')}}" placeholder="{{__("Country")}}">
                                         @foreach($countries as $code=>$country)
-                                        <option value="{{ $country->id }}" @if(Auth::user()->country_id == $country->id) selected @endif>{{ $country->name }}</option>
+                                        <option value="{{ $country->id }}" @if(Auth::user()->country_id == $country->id) selected @endif  {{ $is_disabled }}>{{ $country->name }}</option>
                                         @endforeach
                                     </select>
                                     <span class="invalid-feedback" role="alert">
@@ -247,10 +253,10 @@
                                         <strong>{{ $errors->first('timezone') }}</strong>
                                     </span>
                                     @endif
-                                    <select class="form-control" id="timezone" name="timezone" value="{{ old('timezone', $client->timezone ?? '')}}" placeholder={{__("Timezone")}}>
+                                    <select class="form-control" id="timezone" name="timezone" value="{{ old('timezone', $client->timezone ?? '')}}" placeholder="{{__("Timezone")}}">
                                         @foreach($tzlist as $tz)
                                         {{-- <option value="{{ $tz }}" @if(Auth::user()->timezone == $tz) selected @endif>{{ $tz }}</option> --}}
-                                        <option value="{{ $tz->id }}" @if(Auth::user()->timezone == $tz->id) selected @endif>{{ $tz->timezone.' ('.$tz->diff_from_gtm.')' }}</option>
+                                        <option value="{{ $tz->id }}" @if(Auth::user()->timezone == $tz->id) selected @endif  {{ $is_disabled }}>{{ $tz->timezone.' ('.$tz->diff_from_gtm.')' }}</option>
                                         @endforeach
                                     </select>
                                     <span class="invalid-feedback" role="alert">
@@ -259,14 +265,14 @@
                                 </div>
                             </div>
                         </div>
-                        @if (Auth::user()->is_superadmin == 1)
+                        {{-- @if (Auth::user()->is_superadmin == 1) --}}
                         <div class="row">
                             <div class="col-md-12">
                                 <button type="submit" class="btn btn-blue waves-effect waves-light">{{__("Update")}}</button>
                             </div>
 
                         </div>
-                        @endif
+                        {{-- @endif --}}
                     </form>
                 </div>
             </div>
