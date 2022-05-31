@@ -76,7 +76,13 @@
                     }},
                     // {data: 'order_number', name: 'order_number', orderable: true, searchable: false},
                     {data: 'customer_id', name: 'customer_id', orderable: true, searchable: false},
-                    {data: 'order_number', name: 'order_number', orderable: true, searchable: false},
+                    {data: 'order_number', name: 'order_number', orderable: true, searchable: false , "mRender": function ( data, type, full ) {
+                        if(full.request_type=='D')
+                        return full.order_number+' (Delivery)';
+                        
+                        return full.order_number+' (Pickup)';
+
+                    }},
                     {data: 'customer_name', name: 'customer_name', orderable: true, searchable: false},
                     {data: 'phone_number', name: 'phone_number', orderable: true, searchable: false},
                     {data: 'agent_name', name: 'agent_name', orderable: true, searchable: false},

@@ -94,7 +94,9 @@ class ProfileController extends Controller
             return redirect()->back()->withErrors($validator, 'update');
         }
 
-        $getClient = Auth::user()->logo;
+        $user = Auth::user();
+
+        $getClient = $user->logo;
         $getFileName = $getClient;
 
         // Handle File Upload
@@ -108,8 +110,7 @@ class ProfileController extends Controller
             $getFileName = $path;
         }
 
-        //echo $request->timezone; die;
-        $data = [
+        $alldata = [
             'name' => $request->name,
             'email' => $request->email,
             'phone_number' => $request->phone_number,
@@ -120,9 +121,19 @@ class ProfileController extends Controller
             'logo' => $getFileName,
         ];
 
-        $client = Client::where('code', $id)->where('id', Auth::user()->id)->update($data);
+        //echo $request->timezone; die;
+        if($user->is_superadmin == 1){
+            $client = Client::where('code', $id)->where('id', $user->id)->update($alldata);
+        }else{
+            $data = [
+                'name' => $request->name,
+                'phone_number' => $request->phone_number
+            ];
+            $client = Client::where('code', $id)->where('id', $user->id)->update($data);
+        }
+
         $password = null;
-        $this->dispatchNow(new UpdatePassword($password, $data));
+        $this->dispatchNow(new UpdatePassword($password, $alldata));
         
         return redirect()->back()->with('success', 'Profile Updated successfully!');
     }

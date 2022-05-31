@@ -147,6 +147,7 @@
                 <div class="modal-body p-14 pt-0" id="addCardBox">
 
                 </div>
+                <span class="show_all_error invalid-feedback"></span>
                 <div class="modal-footer justify-content-center">
                      <a href="javascript: void(0);" class="btn btn-blue waves-effect waves-light submitTaskHeader"><span class="spinner-border spinner-border-sm submitTaskHeaderLoader" style="display:none;" role="status" aria-hidden="true"></span> <span id="submitTaskHeaderText">{{__("Submit")}}</span></a>
                 </div>
@@ -715,7 +716,8 @@
             var short_name = $("#task-modal-header input[name=short_name").val();
             var address = $("#task-modal-header input[name=address]").val();
             var post_code = $("#task-modal-header input[name=post_code]").val();
-            if (short_name != '' && address != '' && post_code != '') {
+            var cash_to_be_collected = $("#task-modal-header input[name=cash_to_be_collected]").val();
+            if (short_name != '' && address != '' && post_code != '' && cash_to_be_collected != '') {
 
             } else {  err = 1;
                 $(".addspan").show();
@@ -729,7 +731,7 @@
 
             if( err == 0){
                 $('.submitTaskHeaderLoader').css('display', 'inline-block');
-                $('#submitTaskHeaderText').text('Done');
+                // $('#submitTaskHeaderText').text('Done');
                 $('.submitTaskHeader').addClass("inactiveLink");
 
                 var formData = new FormData(document.querySelector("#taskFormHeader"));
@@ -752,17 +754,31 @@
         processData: false,
         success: function(response) {
            // alert(response)
-            if (response) {
+            if (response.status == 'Success') {
                     $("#task-modal-header .close").click();
                     location.reload();
             } else {
-                $(".show_all_error.invalid-feedback").show();
-                $(".show_all_error.invalid-feedback").text(response.message);
+                $("#task-modal-header .show_all_error.invalid-feedback").show();
+                $("#task-modal-header .show_all_error.invalid-feedback").text(response.message);
             }
             //return response;
         },
         error: function(response) {
-
+            if (response.status === 422) {
+                let errors = response.responseJSON.errors;
+                Object.keys(errors).forEach(function (key) {
+                    $("#" + key + "Input input").addClass("is-invalid");
+                    $("#" + key + "Input span.invalid-feedback").children("strong").text(errors[key][0]);
+                    $("#" + key + "Input span.invalid-feedback").show();
+                });
+            } else {
+                $("#task-modal-header .show_all_error.invalid-feedback").show();
+                $("#task-modal-header .show_all_error.invalid-feedback").text("Something went wrong, Please try Again.");
+            }
+        },
+        complete: function(data){
+            $('.submitTaskHeaderLoader').css('display', 'none');
+            $('.submitTaskHeader').removeClass("inactiveLink");
         }
     });
 }

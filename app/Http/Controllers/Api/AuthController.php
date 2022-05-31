@@ -21,7 +21,7 @@ use Illuminate\Support\Facades\Hash;
 use Twilio\Rest\Client as TwilioClient;
 use Faker\Generator as Faker;
 use Illuminate\Support\Facades\Storage;
-use App\Model\{User, Agent, AgentDocs, AllocationRule, Client, ClientPreference, BlockedToken, Otp, TaskProof, TagsForTeam, SubAdminTeamPermissions, SubAdminPermissions, TagsForAgent, Team};
+use App\Model\{User, Agent, AgentDocs, AllocationRule, AgentSmsTemplate, Client, ClientPreference, BlockedToken, Otp, TaskProof, TagsForTeam, SubAdminTeamPermissions, SubAdminPermissions, TagsForAgent, Team};
 
 
 class AuthController extends BaseController
@@ -72,6 +72,16 @@ class AuthController extends BaseController
         $client_prefrerence = ClientPreference::where('id', 1)->first();
         
         $sms_body = __("Your Dispatcher verification code is") . ": " . $data['otp'].".".((!empty($request->app_hash_key))?" ".$request->app_hash_key:'');
+
+        $sms_template = AgentSmsTemplate::where('slug', 'sign-in')->first();
+        if($sms_template){
+            if(!empty($sms_template->content)){
+                $sms_body = preg_replace('/{OTP}/', $data['otp'], $sms_template->content, 1);
+                if(isset($request->app_hash_key) && (!empty($request->app_hash_key))){
+                    $sms_body .= ".".$request->app_hash_key;
+                }
+            }
+        }
         
         $send = $this->sendSms2($agent->phone_number, $sms_body)->getData();
         

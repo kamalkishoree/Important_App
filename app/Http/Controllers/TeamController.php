@@ -243,7 +243,7 @@ class TeamController extends Controller
         }
     }
 
-    public function removeTeamAgent(Request $request, $team_id, $agent_id)
+    public function removeTeamAgent(Request $request, $domain='', $team_id, $agent_id)
     {
         Agent::where('id', $agent_id)->update([
             'team_id' => null
