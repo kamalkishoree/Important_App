@@ -290,6 +290,10 @@ class TaskController extends BaseController
                 Log::info($e->getMessage());
             }
         }
+        // if($request->task_status == 2 && isset($order_details->type) && $order_details->type == 1 && strlen($order_details->friend_phone_number) > 8){
+        //     $friend_sms_body = $order_details->recipient_phone.' have booked a ride for you. Driver '.$order_details->agent->name.' in our '.$order_details->agent->make_model.' with license plate '.$order_details->agent->plate_number.' has arrived at your location. ';
+        //     $this->sendSms2($order_details->customer->phone_number, $friend_sms_body);
+        // }
         if($send_email_status == 1){
             $sendto        = isset($order_details->customer->email)?$order_details->customer->email:'';
             $client_logo   = Storage::disk('s3')->url($client_details->logo);
