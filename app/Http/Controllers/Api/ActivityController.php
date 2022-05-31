@@ -226,7 +226,7 @@ class ActivityController extends BaseController
         if ($request->lat=="" || $request->lat==0 || $request->lat== '0.00000000') {
         } else {
 
-            if(!empty($preferences->customer_notification_per_distance) && !empty($preferences->custom_mode) && (1==2)){
+            if(!empty($preferences->customer_notification_per_distance) && !empty($preferences->custom_mode)){
                 
                 //get details of customer notification per distance 
                 $clientPreference = json_decode($preferences->customer_notification_per_distance);
