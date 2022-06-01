@@ -262,7 +262,9 @@ class ActivityController extends BaseController
             
                                 // insert agent coverd distance
                                 $data['distance_covered'] = $getDistance;
-            
+                                $data['current_task_id'] = $tasks->id;
+                                AgentLog::create($data);
+                                
                                 // check notification send to customer pr km/miles
                                 $agentDistanceCovered = AgentLog::where('distance_covered', 'LIKE', '%'.$getDistance.'%')->count();
                                 
@@ -282,16 +284,16 @@ class ActivityController extends BaseController
                                     $response = json_decode($res->getBody(), true);   
                                     \Log::info('responce');
                                     \Log::info($response);
-                                    
+
                                 }
+                                
                             }
                         }
                     }                                           
                 }
+            }else{
+                AgentLog::create($data);
             }
-            
-
-            AgentLog::create($data);
         }
 
         $id    = Auth::user()->id;
