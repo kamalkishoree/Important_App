@@ -268,7 +268,7 @@ class ActivityController extends BaseController
                                 // check notification send to customer pr km/miles
                                 $agentDistanceCovered = AgentLog::where('current_task_id', $tasks->id)->where('distance_covered', 'LIKE', '%'.$getDistance.'%')->count();
                                 
-                                if($agentDistanceCovered == 1){
+                                if($agentDistanceCovered == 1 && $getDistance > 1){
                                     \Log::info('in send notification');
                                     $notificationTitle       = $clientPreference->title;
                                     $notificationDiscription = str_ireplace("{distance}", $getDistance.' '.$clientPreference->distance_unit, $clientPreference->description);
