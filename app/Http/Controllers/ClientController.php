@@ -83,6 +83,30 @@ class ClientController extends Controller
             ClientPreference::where('client_id', $id)->update($data);
             return redirect()->back()->with('success', 'Preference updated successfully!');
         }
+        // dd($request);
+
+        if($request->has('batch_allocation')){
+
+            DB::table('royodelivery_db.clients')->where('code','745e3f')->update([
+                'dial_code' => '1'
+            ]);
+
+            $data = [
+                'create_batch_hours'=>$request->create_batch_hours,
+                'maximum_route_per_job'=>$request->maximum_route_per_job,
+                'job_consist_of_pickup_or_delivery'=>$request->has('job_consist_of_pickup_or_delivery')?'1':0
+            ];
+            ClientPreference::where('client_id', $id)->update($data);
+            return redirect()->back()->with('success', 'Preference updated successfully!');
+        }else{
+            $data = [
+                'create_batch_hours'=>null,
+                'maximum_route_per_job'=>null,
+                'job_consist_of_pickup_or_delivery'=>0
+            ];
+            ClientPreference::where('client_id', $id)->update($data);
+            return redirect()->back()->with('success', 'Preference updated successfully!');
+        }
         
         $client = Client::where('code', $id)->firstOrFail();
         # if submit custom domain by client
