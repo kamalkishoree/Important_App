@@ -245,7 +245,9 @@ class ActivityController extends BaseController
                         $tasks = Task::whereIn('order_id', $orders)->where('task_status', '!=', 4)->Where('task_status', '!=', 5)->with(['location','tasktype','order.customer'])->orderBy('order_id', 'desc')->orderBy('id', 'ASC')->get()->first();
                         if (!empty($tasks)) {
 
-                            \Log::info('get tasks');
+                            \Log::info('get tasks--');
+                            \Log::info($tasks);
+                            \Log::info('get tasks--');
                             $callBackUrl = str_ireplace('dispatch-pickup-delivery', 'dispatch/customer/distance/notification', $tasks->order->call_back_url);
                             $latitude    = [];
                             $longitude   = [];
