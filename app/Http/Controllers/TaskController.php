@@ -290,6 +290,7 @@ class TaskController extends BaseController
                 })
                 ->filter(function ($instance) use ($request) {
                     if (!empty($request->get('search'))) {
+                        $search = $request->get('search');
                         // $instance->collection = $instance->collection->filter(function ($row) use ($request){
                         //     if(!empty($row['customer']['name']) && Str::contains(Str::lower($row['customer']['name']), Str::lower($request->search))){
                         //         return true;
@@ -298,12 +299,16 @@ class TaskController extends BaseController
                         //     }
                         //     return false;
                         // });
-
-                        $instance->whereHas('customer', function($q) use($request){
-                            $search = $request->get('search');
-                            $q->where('name', 'Like', '%'.$search.'%')
-                            ->orWhere('phone_number', 'Like', '%'.$search.'%');
+                        $instance->where(function($query) use ($search){
+                            $query->whereHas('customer', function($q) use($search){
+                           
+                                $q->where('name', 'Like', '%'.$search.'%')
+                                ->orWhere('phone_number', 'Like', '%'.$search.'%');
+                            })
+                            ->orWhere("order_number",'Like', '%'.$search.'%');
+                            
                         });
+                        
                     }
                 }, true)
                 // ->with([
