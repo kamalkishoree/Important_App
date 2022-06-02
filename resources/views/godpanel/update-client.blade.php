@@ -233,7 +233,7 @@
                                                             <label for="languages">Stage </label>
                                                             <select class="form-control" id="dump_into" name="dump_into">
                                                                 <option value="DEV">DEV</option>
-                                                                <option value="STAG">STAG</option>
+                                                                <option value="STAGING">STAG</option>
                                                                 <option value="PROD">PROD</option>
                                                             </select>
                                                         </div>    
