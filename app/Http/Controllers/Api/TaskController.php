@@ -1000,7 +1000,7 @@ class TaskController extends BaseController
 
             //this is roster create accounding to the allocation methed
 
-
+            
             if ($request->allocation_type === 'a' || $request->allocation_type === 'm') {
                 $allocation = AllocationRule::where('id', 1)->first();
                 switch ($allocation->auto_assign_logic) {
@@ -1467,10 +1467,8 @@ class TaskController extends BaseController
     public function findLocalityByLatLng($lat, $lng)
     {
         // get the locality_id by the coordinate //
-
         $latitude_y = $lat;
         $longitude_x = $lng;
-
         $localities = Geo::all();
 
         if (empty($localities)) {
@@ -1517,6 +1515,7 @@ class TaskController extends BaseController
                     return $locality->id;
                 }
             }
+            
         }
 
         return false;
@@ -1559,7 +1558,7 @@ class TaskController extends BaseController
         $extraData = [
             'customer_name'            => $customer->name,
             'customer_phone_number'    => $customer->phone_number,
-            'short_name'                => $finalLocation->short_name,
+            'short_name'               => $finalLocation->short_name,
             'address'                  => $finalLocation->address,
             'lat'                      => $finalLocation->latitude,
             'long'                     => $finalLocation->longitude,

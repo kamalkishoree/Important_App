@@ -83,12 +83,13 @@ class ClientController extends Controller
             ClientPreference::where('client_id', $id)->update($data);
             return redirect()->back()->with('success', 'Preference updated successfully!');
         }
-        // dd($request);
+
+
+        //Batch Allocation Code
 
         if($request->has('batch_allocation')){
-
-            DB::table('royodelivery_db.clients')->where('code','745e3f')->update([
-                'dial_code' => '1'
+            DB::table('royodelivery_db.clients')->where('code',$id)->update([
+                'batch_allocation' => 1
             ]);
 
             $data = [
@@ -99,6 +100,10 @@ class ClientController extends Controller
             ClientPreference::where('client_id', $id)->update($data);
             return redirect()->back()->with('success', 'Preference updated successfully!');
         }else{
+            DB::table('royodelivery_db.clients')->where('code',$id)->update([
+                'batch_allocation' => 0
+            ]);
+
             $data = [
                 'create_batch_hours'=>null,
                 'maximum_route_per_job'=>null,

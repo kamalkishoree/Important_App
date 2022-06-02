@@ -31,8 +31,8 @@ class Kernel extends ConsoleKernel
     {
         
            $schedule->command('create:batch')->everyFiveMinutes();
-        //    $schedule->command('push:send')->everyMinute();
-      //  $schedule->command('queue:restart')->everyMinute()
+        // $schedule->command('push:send')->everyMinute();
+       //  $schedule->command('queue:restart')->everyMinute()
     }
 
     /**
