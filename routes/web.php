@@ -245,6 +245,10 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 			Route::get('cms/agent-sms/templates', 'CMS\DriverSMSTemplateController@index')->name('cms.agent-sms.templates');
 			Route::get('cms/agent-sms/template/{id}', 'CMS\DriverSMSTemplateController@show')->name('cms.agent-sms.template.show');
 			Route::post('cms/agent-sms/template/update', 'CMS\DriverSMSTemplateController@update')->name('cms.agent-sms.template.update');
+
+			Route::get('cms/page/templates', 'CMS\PageTemplateController@index')->name('cms.page.templates');
+			Route::get('cms/page/template/{id}', 'CMS\PageTemplateController@show')->name('cms.page.template.show');
+			Route::post('cms/page/template/update', 'CMS\PageTemplateController@update')->name('cms.page.template.update');
 		});
 	});
 

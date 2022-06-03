@@ -183,6 +183,12 @@
                                     <a href="{{route('cms.agent-sms.templates')}}">{{ __('Agent SMS') }}</a>
                                 </li>
                             @endif
+
+                            @if(in_array('page_templates',$allowed) || Auth::user()->is_superadmin == 1)
+                                <li>
+                                    <a href="{{route('cms.page.templates')}}">{{ __('Pages') }}</a>
+                                </li>
+                            @endif
                         </ul>
                     </div>
                 </li>
