@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Http\Controllers\Api\BaseController;
 
 use App\Model\Task;
 use App\Model\Location;
@@ -40,7 +41,7 @@ use Excel;
 use GuzzleHttp\Client as Gclient;
 use App\Traits\ApiResponser;
 
-class TaskController extends Controller
+class TaskController extends BaseController
 {
     use ApiResponser;
     
@@ -289,6 +290,7 @@ class TaskController extends Controller
                 })
                 ->filter(function ($instance) use ($request) {
                     if (!empty($request->get('search'))) {
+                        $search = $request->get('search');
                         // $instance->collection = $instance->collection->filter(function ($row) use ($request){
                         //     if(!empty($row['customer']['name']) && Str::contains(Str::lower($row['customer']['name']), Str::lower($request->search))){
                         //         return true;
@@ -297,12 +299,16 @@ class TaskController extends Controller
                         //     }
                         //     return false;
                         // });
-
-                        $instance->whereHas('customer', function($q) use($request){
-                            $search = $request->get('search');
-                            $q->where('name', 'Like', '%'.$search.'%')
-                            ->orWhere('phone_number', 'Like', '%'.$search.'%');
+                        $instance->where(function($query) use ($search){
+                            $query->whereHas('customer', function($q) use($search){
+                           
+                                $q->where('name', 'Like', '%'.$search.'%')
+                                ->orWhere('phone_number', 'Like', '%'.$search.'%');
+                            })
+                            ->orWhere("order_number",'Like', '%'.$search.'%');
+                            
                         });
+                        
                     }
                 }, true)
                 // ->with([
@@ -811,6 +817,12 @@ class TaskController extends Controller
             'device_token'        => $oneagent->device_token,
             'detail_id'           => $randem,
         ];
+        if(isset($order_details->type) && $order_details->type == 1 && strlen($order_details->friend_phone_number) > 8)
+        {
+            $friend_sms_body = $order_details->customer->name.' have booked a ride for you. Driver '.$oneagent->name.' in our '.$oneagent->make_model.' with license plate '.$oneagent->plate_number.' has been assgined.';
+            $this->sendSms2($order_details->friend_phone_number , $friend_sms_body);
+        }
+
         $this->dispatch(new RosterCreate($data, $extraData)); //this job is for create roster in main database for send the notification  in manual alloction
     }
 
@@ -2039,6 +2051,7 @@ class TaskController extends Controller
      */
     public function update(Request $request, $domain = '', $id)
     {
+        // dd($request->all());
         $iinputs = $request->toArray();
         $old_address_ids = array();
         foreach ($iinputs as $key => $value) {
