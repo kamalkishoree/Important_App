@@ -60,7 +60,7 @@
                             <div class="row">
                                 <div class="col-md-10 mb-2">
                                     <label for="title" class="control-label">{{ __("Content") }}</label>
-                                    <textarea class="form-control" id="content" placeholder="Meta Keyword" rows="6" name="content" cols="10" maxlength="250"></textarea>
+                                    <textarea class="form-control" id="content" placeholder="Meta Keyword" rows="10" name="content" cols="10"></textarea>
                                 </div>
                                 {{-- <div class="col-md-2">
                                     <label for="title" class="control-label">{{ __("Tags") }}:-<div id="tags" disabled=""></div></label>
@@ -92,15 +92,12 @@
                 if(response.data){
                     $('#edit_page_content #template_id').val(response.data.id);
                     if(response.data){
-                        $('#edit_page_content #tags').html(response.data.tags);
                         $('#edit_page_content #content').val(response.data.content);
                     }else{
-                      $(':input:text').val('');
                       $('textarea').val('');
                     }
                 }else{
                     $('textarea').val('');
-                    $(':input:text').val('');
                     $('#edit_page_content #page_id').val('');
                 }
               }
