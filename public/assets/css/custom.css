@@ -1180,7 +1180,7 @@ body .tagsinput .tag {
 
 .geo_middle {
     /* height: calc(100vh - 400px); */
-    max-height: 300px;
+    max-height: 200px;
     overflow-y: auto;
     overflow-x: hidden;
     margin: 0 0 20px;
@@ -1789,3 +1789,16 @@ span.copied_txt {
         padding: 10px;
     }
 }
+
+
+body[dir="rtl"] .dt-buttons.btn-group{
+    float: left;
+}
+body[dir="rtl"] .dt-buttons .btn-label{
+    margin: 0px 0px 0px 12px;
+}
+body[dir="rtl"] .btn.btn-secondary.btn-success.waves-effect.waves-light {
+    padding: 8px 0px 8px 11px;
+}
+body[dir="rtl"] .dataTables_filter label{float: left!important;margin-left: 10px;}
+body.dark[data-sidebar-size=condensed] .left-side-menu{position: fixed; overflow: hidden scroll;}
