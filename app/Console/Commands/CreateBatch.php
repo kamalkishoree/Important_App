@@ -3,13 +3,15 @@
 namespace App\Console\Commands;
 
 use App\Http\Controllers\Api\TaskController;
-use App\Http\Controllers\Godpanel\DashBoardController;
+use App\Http\Controllers\DashBoardController;
 use App\Model\AllocationRule;
 use App\Model\Client;
 use App\Model\Order;
 use App\Model\BatchAllocation;
 use App\Model\BatchAllocationDetail;
 use App\Model\ClientPreference;
+use App\Model\Location;
+use App\Model\orderTemp;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Config;
@@ -82,39 +84,81 @@ class CreateBatch extends Command
             //Fetch Pickup order with tasks
             $pickupOrders = Order::with(['task'=>function($o){
                 $o->where('task_type_id',1);
-            }])->where(['status'=> 'unassigned','request_type'=>'P'])->orderBy('id','desc')->get();
-           
+            }])->where(['status'=> 'unassigned','request_type'=>'P'])->orderBy('id','desc')->limit('10')->get();
+           //->where('id','164')->orWhere('id','178')
             
-           $geoOrders = [];
+            $geoOrders = [];
             foreach($pickupOrders as $k=> $order)
             {
                 //Find Geo fence id for every order
                 $task = new TaskController();
-                $geoId = $task->createRoster($order->task[0]->location_id);                
-                $geoOrders[$k] = ['order_id'=>$order->id,'geo_id'=>$geoId];
+                $geoId = $task->createRoster($order->task[0]->location_id);    
+                $location = Location::find($order->task[0]->location_id);            
+                $geoOrders[$k] = [
+                                'order_id'=>$order->id,
+                                'task_id'=>$order->task[0]->id,
+                                'geo_id'=>$geoId,
+                                'order_order'=>0,
+                                'task_lat'=>$location->latitude,
+                                'task_long'=>$location->longitude,
+                                ];
+
+                //orderTemp::UpdateOrCreate(['order_id'=>$order->id],$geoOrders);
+            }            
+            
+            //Sort Geo Fence id wise route 
+            $tempOrders = array();
+            $sortArray = $this->sortAssociativeArrayByKey($geoOrders,'geo_id','ASC');
+            //dd($sortArray);
+            foreach($sortArray as $sortRec)
+            {
+                $tempOrders = [
+                    'order_id'=>$sortRec['order_id'],
+                    'task_id'=>$sortRec['task_id'],
+                    'geo_id'=>$sortRec['geo_id'],
+                    'order_order'=>0,
+                    'task_lat'=>$sortRec['task_lat'],
+                    'task_long'=>$sortRec['task_long'],
+                    ];
+
+                orderTemp::UpdateOrCreate(['order_id'=>$sortRec['order_id']],$tempOrders);
             }
-            $ddb  = new DashBoardController();
-            $pointarray[0][1] = '11.000210121'; 
-            $pointarray[0][2] = '17.111210121'; 
-            $taskids = 
-            $matrix = $ddb->distanceMatrix($pointarray, $taskids);
-            
-
-            //Sort Geo Fence id wise route
-            $sort = $this->sortAssociativeArrayByKey($geoOrders,'geo_id','ASC');
-        
-            
-
-            //Now find  Shortest Path according to geo ids
 
 
+            $tempOrderRec = orderTemp::select('order_id','task_id','geo_id','task_lat','task_long')->get()->toArray();
 
-            $grpChunks = $this->groupingArray($sort);
-            //\Log::info($grpChunks);
 
+            $grpChunks = $this->groupingArray($tempOrderRec);
+           
             $i = 0;
             foreach($grpChunks as $sort)
             {
+                \Log::info(json_encode($sort));
+                $taskids = array();
+                $distancematrixarray[][] = array();
+
+                $distancematrixarray[0][0] = 0;
+                $distancematrixarray[0][1] = 0;
+                $ddb  = new DashBoardController();
+                foreach($sort as $i => $records)
+                {
+                    
+                    $distancematrixarray[$i+1][0] = $records['task_lat'];
+                    $distancematrixarray[$i+1][1] = $records['task_long'];
+                    $taskids[] = $records['task_id'];
+                }
+           
+                $points = $distancematrixarray;
+                \Log::info(json_encode($points));
+                \Log::info(json_encode($taskids));
+                
+                $matrix = $ddb->distanceMatrix($points, implode(',',$taskids));
+                $this->otimizeRoutes($matrix,implode(',',$taskids));
+           
+
+            $sort = orderTemp::where('geo_id',$records['geo_id'])->select('order_id','task_id','geo_id','task_lat','task_long')->orderBy('order_order','ASC')->get()->toArray();
+            
+
             //Make batch accoring to admin requirments
             $chunks =  array_chunk($sort,$allocation->maximum_task_per_person);
            // \Log::info($chunks);
@@ -158,6 +202,33 @@ class CreateBatch extends Command
 
         }
         
+    }
+
+    function otimizeRoutes($distance_matrix,$taskids)
+    {
+        $payload = json_encode(array("data" => $distance_matrix));
+        //api for getting optimize path
+        $url = "https://optimizeroute.royodispatch.com/optimize";
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $result = curl_exec($ch);
+        curl_close($ch);
+        if ($result) {
+            $taskids = explode(',', $taskids);
+            $newtaskidorder = [];
+            $newroute = json_decode($result);
+            $routecount = count($newroute->data)-1;
+            for ($i=1; $i < $routecount; $i++) {
+                $taskorder = [
+                    'order_order'        => $i
+                ];
+                $index =  $newroute->data[$i]-1;
+                orderTemp::where('task_id', $taskids[$index])->update($taskorder);
+                $newtaskidorder[] = $taskids[$index];
+            }
+        }
     }
 
     function groupingArray($array)
