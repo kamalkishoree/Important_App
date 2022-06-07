@@ -1791,14 +1791,29 @@ span.copied_txt {
 }
 
 
-body[dir="rtl"] .dt-buttons.btn-group{
-    float: left;
-}
-body[dir="rtl"] .dt-buttons .btn-label{
-    margin: 0px 0px 0px 12px;
-}
-body[dir="rtl"] .btn.btn-secondary.btn-success.waves-effect.waves-light {
-    padding: 8px 0px 8px 11px;
-}
+body[dir="rtl"] .dt-buttons.btn-group{float: left;}
+body[dir="rtl"] .dt-buttons .btn-label{ margin: 0px 0px 0px 12px;}
+body[dir="rtl"] .btn.btn-secondary.btn-success.waves-effect.waves-light { padding: 8px 0px 8px 11px;}
 body[dir="rtl"] .dataTables_filter label{float: left!important;margin-left: 10px;}
-body.dark[data-sidebar-size=condensed] .left-side-menu{position: fixed; overflow: hidden scroll;}
+/* body.dark[data-sidebar-size=condensed] .left-side-menu{position: fixed; overflow: hidden scroll;} */
+body[dir="rtl"] .left-side-menu{z-index: 999;}body[dir="rtl"] .footer{right: 240px;}
+body.dark[data-sidebar-size=condensed] .left-side-menu #sidebar-menu > ul > li > a {
+    padding: 13px 20px;
+    min-height: 10px;
+    transition: none;
+}
+
+
+
+@media only screen and (min-width: 768px) and (max-width:1366px) {
+        body.dark[data-sidebar-size=condensed] .left-side-menu #sidebar-menu > ul > li > a {
+        padding: 8px 20px;
+        min-height: 10px;
+        transition: none;
+    }
+    body.dark[data-sidebar-size=condensed] .left-side-menu #sidebar-menu > ul > li > a svg {
+        width: 18px;
+        height: 18px;
+        margin-left: 6px;
+    }
+}
