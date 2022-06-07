@@ -749,7 +749,19 @@ class TaskController extends BaseController
     //function for assigning driver to unassigned orders
     public function assignAgent(Request $request)
     {
-        $order_update = Order::whereIn('id', $request->orders_id)->update(['driver_id'=>$request->agent_id,'status'=>'assigned','auto_alloction'=>'m']);
+        if(!empty($request->agent_id)):
+            $pricingRule = PricingRule::where('id', 1)->first();
+            $task_id = Order::find($request->orders_id);
+            $agent_details = Agent::where('id', $request->agent_id)->first();
+            if ($agent_details->type == 'Employee'):
+                $percentage = $pricingRule->agent_commission_fixed + (($task_id[0]->order_cost / 100) * $pricingRule->agent_commission_percentage);
+            else:
+                $percentage = $pricingRule->freelancer_commission_percentage + (($task_id[0]->order_cost / 100) * $pricingRule->freelancer_commission_fixed);
+            endif;
+        else:
+            $percentage = 0.00;
+        endif;
+        $order_update = Order::whereIn('id', $request->orders_id)->update(['driver_id'=>$request->agent_id, 'driver_cost'=>$percentage, 'status'=>'assigned', 'auto_alloction'=>'m']);
         $task         = Task::whereIn('order_id', $request->orders_id)->update(['task_status'=>1]);
         $this->MassAndEditNotification($request->orders_id[0], $request->agent_id);
     }
@@ -1300,7 +1312,7 @@ class TaskController extends BaseController
 
             $getgeo = DriverGeo::where('geo_id', $geo)->with([
                 'agent'=> function ($o) use ($cash_at_hand, $date) {
-                    $o->whereRaw("(select COALESCE(SUM(cash_to_be_collected),0) from orders where orders.driver_id=agents.id and status='completed') - (select COALESCE(SUM(driver_cost),0) from orders where orders.driver_id=agents.id and status='completed') + (select COALESCE(SUM(cr),0) as sum from payments where payments.driver_id=agents.id) - (select COALESCE(SUM(dr),0) as sum from payments where payments.driver_id=agents.id) - ((select COALESCE(balance,0) as sum from wallets where wallets.holder_id=agents.id)/100) + (select COALESCE(SUM(amount),0) from agent_payouts where agent_payouts.agent_id=agents.id and agent_payouts.status=0) < ".$cash_at_hand)->orderBy('id', 'DESC')->with(['logs','order'=> function ($f) use ($date) {
+                    $o->whereRaw("(select COALESCE(SUM(cash_to_be_collected),0) from orders where orders.driver_id=agents.id and status='completed') - (select COALESCE(SUM(driver_cost),0) from orders where orders.driver_id=agents.id and status='completed' and is_comm_settled != 1) + (select COALESCE(SUM(cr),0) as sum from payments where payments.driver_id=agents.id) - (select COALESCE(SUM(dr),0) as sum from payments where payments.driver_id=agents.id) - ((select COALESCE(balance,0) as sum from wallets where wallets.holder_id=agents.id)/100) + (select COALESCE(SUM(amount),0) from agent_payouts where agent_payouts.agent_id=agents.id and agent_payouts.status=0) < ".$cash_at_hand)->orderBy('id', 'DESC')->with(['logs','order'=> function ($f) use ($date) {
                         $f->whereDate('order_time', $date)->with('task');
                     }]);
                 }])->get();
@@ -1496,7 +1508,7 @@ class TaskController extends BaseController
             $getgeo = DriverGeo::where('geo_id', $geo)->with(
                         [
                             'agent'=> function ($o) use ($cash_at_hand, $date) {
-                                $o->whereRaw("(select COALESCE(SUM(cash_to_be_collected),0) from orders where orders.driver_id=agents.id and status='completed') - (select COALESCE(SUM(driver_cost),0) from orders where orders.driver_id=agents.id and status='completed') + (select COALESCE(SUM(cr),0) as sum from payments where payments.driver_id=agents.id) - (select COALESCE(SUM(dr),0) as sum from payments where payments.driver_id=agents.id) - ((select COALESCE(balance,0) as sum from wallets where wallets.holder_id=agents.id)/100) + (select COALESCE(SUM(amount),0) from agent_payouts where agent_payouts.agent_id=agents.id and agent_payouts.status=0) < ".$cash_at_hand)->orderBy('id', 'DESC')->with(['logs','order'=> function ($f) use ($date) {
+                                $o->whereRaw("(select COALESCE(SUM(cash_to_be_collected),0) from orders where orders.driver_id=agents.id and status='completed') - (select COALESCE(SUM(driver_cost),0) from orders where orders.driver_id=agents.id and status='completed' and is_comm_settled != 1) + (select COALESCE(SUM(cr),0) as sum from payments where payments.driver_id=agents.id) - (select COALESCE(SUM(dr),0) as sum from payments where payments.driver_id=agents.id) - ((select COALESCE(balance,0) as sum from wallets where wallets.holder_id=agents.id)/100) + (select COALESCE(SUM(amount),0) from agent_payouts where agent_payouts.agent_id=agents.id and agent_payouts.status=0) < ".$cash_at_hand)->orderBy('id', 'DESC')->with(['logs','order'=> function ($f) use ($date) {
                                     $f->whereDate('order_time', $date)->with('task');
                                 }]);
                             }
@@ -1609,7 +1621,7 @@ class TaskController extends BaseController
             $getgeo = DriverGeo::where('geo_id', $geo)->with(
                         [
                             'agent'=> function ($o) use ($cash_at_hand, $date) {
-                                $o->whereRaw("(select COALESCE(SUM(cash_to_be_collected),0) from orders where orders.driver_id=agents.id and status='completed') - (select COALESCE(SUM(driver_cost),0) from orders where orders.driver_id=agents.id and status='completed') + (select COALESCE(SUM(cr),0) as sum from payments where payments.driver_id=agents.id) - (select COALESCE(SUM(dr),0) as sum from payments where payments.driver_id=agents.id) - ((select COALESCE(balance,0) as sum from wallets where wallets.holder_id=agents.id)/100) + (select COALESCE(SUM(amount),0) from agent_payouts where agent_payouts.agent_id=agents.id and agent_payouts.status=0) < ".$cash_at_hand)->orderBy('id', 'DESC')->with(['logs' => function ($g) {
+                                $o->whereRaw("(select COALESCE(SUM(cash_to_be_collected),0) from orders where orders.driver_id=agents.id and status='completed') - (select COALESCE(SUM(driver_cost),0) from orders where orders.driver_id=agents.id and status='completed' and is_comm_settled != 1) + (select COALESCE(SUM(cr),0) as sum from payments where payments.driver_id=agents.id) - (select COALESCE(SUM(dr),0) as sum from payments where payments.driver_id=agents.id) - ((select COALESCE(balance,0) as sum from wallets where wallets.holder_id=agents.id)/100) + (select COALESCE(SUM(amount),0) from agent_payouts where agent_payouts.agent_id=agents.id and agent_payouts.status=0) < ".$cash_at_hand)->orderBy('id', 'DESC')->with(['logs' => function ($g) {
                                     $g->orderBy('id', 'DESC');
                                 }
                                     ,'order'=> function ($f) use ($date) {
@@ -1733,7 +1745,7 @@ class TaskController extends BaseController
             $getgeo = DriverGeo::where('geo_id', $geo)->with(
                         [
                             'agent'=> function ($o) use ($cash_at_hand, $date) {
-                                $o->whereRaw("(select COALESCE(SUM(cash_to_be_collected),0) from orders where orders.driver_id=agents.id and status='completed') - (select COALESCE(SUM(driver_cost),0) from orders where orders.driver_id=agents.id and status='completed') + (select COALESCE(SUM(cr),0) as sum from payments where payments.driver_id=agents.id) - (select COALESCE(SUM(dr),0) as sum from payments where payments.driver_id=agents.id) - ((select COALESCE(balance,0) as sum from wallets where wallets.holder_id=agents.id)/100) + (select COALESCE(SUM(amount),0) from agent_payouts where agent_payouts.agent_id=agents.id and agent_payouts.status=0) < ".$cash_at_hand)->orderBy('id', 'DESC')->with(['logs','order'=> function ($f) use ($date) {
+                                $o->whereRaw("(select COALESCE(SUM(cash_to_be_collected),0) from orders where orders.driver_id=agents.id and status='completed') - (select COALESCE(SUM(driver_cost),0) from orders where orders.driver_id=agents.id and status='completed' and is_comm_settled != 1) + (select COALESCE(SUM(cr),0) as sum from payments where payments.driver_id=agents.id) - (select COALESCE(SUM(dr),0) as sum from payments where payments.driver_id=agents.id) - ((select COALESCE(balance,0) as sum from wallets where wallets.holder_id=agents.id)/100) + (select COALESCE(SUM(amount),0) from agent_payouts where agent_payouts.agent_id=agents.id and agent_payouts.status=0) < ".$cash_at_hand)->orderBy('id', 'DESC')->with(['logs','order'=> function ($f) use ($date) {
                                     $f->whereDate('order_time', $date)->with('task');
                                 }]);
                             }
