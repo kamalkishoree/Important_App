@@ -919,6 +919,20 @@ class TaskController extends BaseController
                 $agent_id = null;
             }
 
+           
+            //If batch allocation is on them return from there no job is created 
+            if($client->getPreference->create_batch_hours > 0){
+                \Log::info('Batch Allocation is on');
+                    $dispatch_traking_url = $client_url.'/order/tracking/'.$auth->code.'/'.$orders->unique_id;
+
+                    DB::commit();
+                    return response()->json([
+                    'message' => __('Task Added Successfully'),
+                    'task_id' => $orders->id,
+                    'status'  => $orders->status,
+                    'dispatch_traking_url'  => $dispatch_traking_url??null
+                ], 200);
+            }   
 
 
             // task schdule code is hare
