@@ -15,7 +15,7 @@ class Alteragentconnectisprimary extends Migration
     {
         
         Schema::table('agent_connected_accounts', function (Blueprint $table) {
-            $table->change('is_primary')->default(1);
+            $table->tinyInteger('is_primary')->default(1)->comment('0=>No, 1=> Yes')->change();
         });
     }
 
