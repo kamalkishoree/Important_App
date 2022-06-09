@@ -998,7 +998,7 @@ $sms_crendential = json_decode($preference->sms_credentials);
                         <div class="row align-items-start">
                             <div class="col-md-4">
                                 <div class="form-group d-flex justify-content-between mb-3">
-                                <label for="pharmacy_check" class="mr-2 mb-0">{{__("Hide Customer Notification Per Distance")}} <small class="d-block pr-5">Enable to hide customer notification per distance from notifications.</small></label>
+                                <label for="pharmacy_check" class="mr-2 mb-0">{{__("Customer Notification Per Distance")}} <small class="d-block pr-5">Enable to show customer notification per distance from notifications.</small></label>
                                 <div class="d-flex align-items-center justify-content-between mt-3 mb-2">
                                     <div class="custom-control custom-switch">
                                             <input type="checkbox" class="custom-control-input" id="hide_customer_notification_{{ !empty($customMode->is_hide_customer_notification)? $customMode->is_hide_customer_notification : 0 }}" name="custom_mode[is_hide_customer_notification]" {{ (!empty($customMode->is_hide_customer_notification) && $customMode->is_hide_customer_notification == 1) ? 'checked' : '' }}>

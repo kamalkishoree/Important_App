@@ -242,7 +242,7 @@ class ActivityController extends BaseController
                         \Log::info('get order');
                         
                         //get agent current task
-                        $tasks = Task::whereIn('order_id', $orders)->where('task_status', '!=', 4)->Where('task_status', '!=', 5)->with(['location','tasktype','order.customer'])->orderBy('order_id', 'desc')->orderBy('id', 'ASC')->get()->first();
+                        $tasks = Task::whereIn('order_id', $orders)->where('task_status', 2)->with(['location','tasktype','order.customer'])->orderBy('order_id', 'desc')->orderBy('id', 'ASC')->get()->first();
                         if (!empty($tasks)) {
 
                             \Log::info('get tasks--');
@@ -270,7 +270,7 @@ class ActivityController extends BaseController
                                 // check notification send to customer pr km/miles
                                 $agentDistanceCovered = AgentLog::where('current_task_id', $tasks->id)->where('distance_covered', 'LIKE', '%'.$getDistance.'%')->count();
                                 
-                                if($agentDistanceCovered == 1 && $getDistance > 1){
+                                if($agentDistanceCovered == 1 && $getDistance > 0){
                                     \Log::info('in send notification');
                                     $notificationTitle       = $clientPreference->title;
                                     $notificationDiscription = str_ireplace("{distance}", $getDistance.' '.$clientPreference->distance_unit, $clientPreference->description);

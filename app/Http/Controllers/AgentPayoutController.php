@@ -174,7 +174,7 @@ class AgentPayoutController extends BaseController{
             $agent_id = $agent->id;
             
 
-            $available_funds = agentEarningManager::getAgentEarning($payout->agent_id);
+            $available_funds = agentEarningManager::getAgentEarning($payout->agent_id, 1);
 
             if($request->amount > $available_funds){
                 return Redirect()->back()->with('error', __('Payout amount is greater than agent available funds'));

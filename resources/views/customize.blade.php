@@ -70,6 +70,43 @@
 
                 </div>
             </form>
+
+
+            <form method="POST" action="{{route('preference', Auth::user()->code)}}">
+                @csrf
+                <div class="row">
+                    <div class="col-xl-12">
+                        <div class="card-box">
+                            <h4 class="header-title">{{__("Auto Payout")}}</h4>
+                            <p class="sub-header">
+                                {{__("It will credit driver's share instantly to his account as soon as service completed.")}}
+                            </p>
+                            <div class="row mb-2">
+                                <div class="col-sm-12">
+                                    <div class="custom-control custom-switch">
+                                        <input type="checkbox" class="custom-control-input auto_payout" id="customSwitch" name="auto_payout" {{ (isset($preference) && $preference->auto_payout =="1")? "checked" : "" }}>
+                                        <label class="custom-control-label" for="customSwitch"></label>
+                                    </div>
+                                    @if($errors->has('auto_payout'))
+                                    <span class="text-danger" role="alert">
+                                        <strong>{{ $errors->first('theme') }}</strong>
+                                    </span>
+                                    @endif
+                                </div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-md-2">
+                                    <div class="form-group mb-0 text-center">
+                                        <input type="hidden" name="autopay_submit" id="autopay_submit" value="submit"/>
+                                        <button class="btn btn-blue btn-block" type="submit"> {{__("Update")}} </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </form>
         </div>
         <div class="col-md-4">
             <form method="POST" action="{{route('preference', Auth::user()->code)}}">
