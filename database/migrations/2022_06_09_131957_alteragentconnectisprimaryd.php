@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class Alteragentconnectisprimary extends Migration
+class Alteragentconnectisprimaryd extends Migration
 {
     /**
      * Run the migrations.
@@ -15,7 +15,7 @@ class Alteragentconnectisprimary extends Migration
     {
         
         Schema::table('agent_connected_accounts', function (Blueprint $table) {
-            $table->tinyInteger('is_primary')->default(1)->comment('0=>No, 1=> Yes')->change();
+            $table->tinyInteger('is_primary')->default(1)->change();
         });
     }
 
