@@ -4,7 +4,6 @@ namespace App\Console\Commands;
 
 use App\Http\Controllers\Api\TaskController;
 use App\Http\Controllers\DashBoardController;
-use App\Jobs\RosterCreate;
 use App\Model\Agent;
 use App\Model\AllocationRule;
 use App\Model\Client;
@@ -15,11 +14,20 @@ use App\Model\ClientPreference;
 use App\Model\DriverGeo;
 use App\Model\Location;
 use App\Model\orderTemp;
+use App\Model\Task;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Config;
 use DB;
 use Illuminate\Support\Facades\Auth;
+
+use Kawankoding\Fcm\Fcm;
+use App\Jobs\RosterCreate;
+use App\Jobs\RosterDelete;
+use Illuminate\Support\Arr;
+use App\Model\NotificationEvent;
+use App\Jobs\scheduleNotification;
+
 
 class CreateBatch extends Command
 {
@@ -57,10 +65,11 @@ class CreateBatch extends Command
         //Pick only clients which has enable batch allocation feture
         $clients = Client::where(['status'=> 1,'batch_allocation'=>1])->get();
         foreach($clients as $client){
-
-
+            $agent_id = '';
             //Connect client connection for batch allocation
             $database_name = 'db_' . $client->database_name;
+            $header = $client->database_name;
+
             $default = [
                 'driver' => env('DB_CONNECTION', 'mysql'),
                 'host' => env('DB_HOST'),
@@ -87,7 +96,7 @@ class CreateBatch extends Command
             //Fetch Pickup order with tasks
             $pickupOrders = Order::with(['task'=>function($o){
                 $o->where('task_type_id',1);
-            }])->where(['status'=> 'unassigned','request_type'=>'P'])->orderBy('id','desc')->get();
+            }])->where(['status'=> 'unassigned','request_type'=>'P'])->limit(10)->orderBy('id','desc')->get();
            //->where('id','164')->orWhere('id','178')->limit(10)
             
             $geoOrders = array();
@@ -169,12 +178,21 @@ class CreateBatch extends Command
             $chunks =  array_chunk($sort,$allocation->maximum_task_per_person);
            // \Log::info($chunks);
 
-                    foreach($chunks as $chunk)
+                    foreach($chunks as  $chunk)
                     {
                         $batch_no = time().'_'.++$i;
                         $geo_id = '';
-                            foreach($chunk as $detals)
+                        $pickup_location = '';
+                        $taskcount = count($chunk)*2;
+                            foreach($chunk as $l => $detals)
                             {
+                                if ($l == 0) {
+                                    $taskDetail = Task::where(['order_id'=> $detals['order_id'],'task_type_id'=>'1'])->first();
+                                    $finalLocation = Location::where('id', $taskDetail->location_id)->first();
+                                        $send_loc_id = $taskDetail->location_id;
+                                        $pickup_location = $finalLocation;
+                                }
+                                
                                 $data = [
                                     'batch_no'   => $batch_no,
                                     'geo_id'     => $detals['geo_id'],
@@ -197,6 +215,8 @@ class CreateBatch extends Command
                                     'created_at' => Carbon::now()->toDateTimeString(),
                                     ]
                             );
+                    $notification_time = Carbon::now()->toDateTimeString();
+                     $this->notificationType($geo_id,$notification_time,$agent_id,$batch_no,$pickup_location , $taskcount,$header,$allocation);
 
                     }
             }
@@ -266,35 +286,39 @@ class CreateBatch extends Command
         return $array;
     }
 
-    public function notificationType($allocation,$geo,$notification_time,$agent_id,$batch_no,)
+    public function notificationType($geo,$notification_time,$agent_id,$batch_no,$pickup_location , $taskcount,$header,$allocation)
     {
+       // \Log::info('Batch notificatio type');
          // $allocation = AllocationRule::where('id', 1)->first();
          switch ($allocation->auto_assign_logic) {
             case 'one_by_one':
                  //this is called when allocation type is one by one
-                $this->finalRoster($geo, $notification_time, $agent_id, $orders->id, $customer, $pickup_location, $taskcount, $header, $allocation);
+                $this->finalRoster($geo, $notification_time, $agent_id, $batch_no, $pickup_location, $taskcount, $header);
                 break;
             case 'send_to_all':
+               // \Log::info('Batch SendToAll SendToAll');
                 //this is called when allocation type is send to all
-                $this->SendToAll($geo, $notification_time, $agent_id, $orders->id, $customer, $pickup_location, $taskcount, $header, $allocation);
+                $this->SendToAll($geo, $notification_time, $agent_id, $batch_no, $pickup_location, $taskcount, $header);
                 break;
             case 'round_robin':
                 //this is called when allocation type is round robin
-                $this->roundRobin($geo, $notification_time, $agent_id, $orders->id, $customer, $pickup_location, $taskcount, $header, $allocation);
+                $this->roundRobin($geo, $notification_time, $agent_id, $batch_no, $pickup_location, $taskcount, $header);
                 break;
             default:
                //this is called when allocation type is batch wise
-                $this->batchWise($geo, $notification_time, $agent_id, $orders->id, $customer, $pickup_location, $taskcount, $header, $allocation);
+                $this->batchWise($geo, $notification_time, $agent_id, $batch_no, $pickup_location, $taskcount, $header);
         }
 
     }
 
 
-    public function SendToAll($geo, $notification_time, $agent_id, $batch_id, $customer, $finalLocation, $taskcount, $header, $allocation)
+    public function SendToAll($geo, $notification_time, $agent_id, $batch_id, $finalLocation, $taskcount, $header)
     {
+        //\Log::info('in SendToAll SendToAll db ='.$header);
+
         $allcation_type    = 'AR';
         $date              = \Carbon\Carbon::today();
-        $auth              = Client::where('database_name', $header['client'][0])->with(['getAllocation', 'getPreference'])->first();
+        $auth              = Client::where('database_name', $header)->with(['getAllocation', 'getPreference'])->first();
         $expriedate        = (int)$auth->getAllocation->request_expiry;
         $beforetime        = (int)$auth->getAllocation->start_before_task_time;
         $maxsize           = (int)$auth->getAllocation->maximum_batch_size;
@@ -317,8 +341,8 @@ class CreateBatch extends Command
         }
 
         $extraData = [
-            'customer_name'            => $customer->name,
-            'customer_phone_number'    => $customer->phone_number,
+            'customer_name'            => 'Batch Name',
+            'customer_phone_number'    => '1234567895',
             'short_name'               => $finalLocation->short_name,
             'address'                  => $finalLocation->address,
             'lat'                      => $finalLocation->latitude,
@@ -333,7 +357,8 @@ class CreateBatch extends Command
             $oneagent = Agent::where('id', $agent_id)->first();
             if(!empty($oneagent->device_token) && $oneagent->is_available == 1){
                 $data = [
-                    'order_id'            => $orders_id,
+                    'order_id'            => $batch_id,
+                    'batch_no'            => $batch_id,
                     'driver_id'           => $agent_id,
                     'notification_time'   => $time,
                     'type'                => $allcation_type,
@@ -344,7 +369,9 @@ class CreateBatch extends Command
                     'device_token'        => $oneagent->device_token,
                     'detail_id'           => $randem,
                 ];
-                $this->dispatch(new RosterCreate($data, $extraData));
+                //$this->dispatch(new RosterCreate($data, $extraData));
+                RosterCreate::dispatch($data, $extraData);
+
             }
         } else {
             $getgeo = DriverGeo::where('geo_id', $geo)->with([
@@ -354,12 +381,14 @@ class CreateBatch extends Command
                     }]);
                 }])->get();
 
+                //\Log::info(json_encode($getgeo));
 
             for ($i = 1; $i <= $try; $i++) {
                 foreach ($getgeo as $key =>  $geoitem) {
                     if (!empty($geoitem->agent->device_token) && $geoitem->agent->is_available == 1) {
                         $datas = [
-                            'order_id'            => $orders_id,
+                            'order_id'            => $batch_id,
+                            'batch_no'            => $batch_id,
                             'driver_id'           => $geoitem->driver_id,
                             'notification_time'   => $time,
                             'type'                => $allcation_type,
@@ -373,7 +402,7 @@ class CreateBatch extends Command
                         ];
                         array_push($data, $datas);
                         if ($allcation_type == 'N' && 'ACK') {
-                            Order::where('id', $orders_id)->update(['driver_id'=>$geoitem->driver_id]);
+                            BatchAllocation::where('batch_no', $batch_id)->update(['agent_id'=>$geoitem->driver_id]);
                             break;
                         }
                     }
@@ -386,13 +415,26 @@ class CreateBatch extends Command
                 }
             }
 
-            $this->dispatch(new RosterCreate($data, $extraData));
-
+            //$this->dispatch(new RosterCreate($data, $extraData));
+            RosterCreate::dispatch($data, $extraData);
             // print_r($data);
             //  die;
             //die('hello');
         }
     }
 
+    public function checkTimeDiffrence($notification_time, $beforetime)
+    {
+        $to   = Carbon::createFromFormat('Y-m-d H:s:i', Carbon::now()->toDateTimeString());
+
+        $from = Carbon::createFromFormat('Y-m-d H:s:i', Carbon::parse($notification_time)->format('Y-m-d H:i:s'));
+
+        $diff_in_minutes = $to->diffInMinutes($from);
+        if ($diff_in_minutes < $beforetime) {
+            return  Carbon::now()->toDateTimeString();
+        } else {
+            return  $notification_time;
+        }
+    }
 
 }

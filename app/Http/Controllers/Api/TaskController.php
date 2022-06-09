@@ -18,6 +18,8 @@ use App\Model\TaskProof;
 use App\Model\DriverGeo;
 use App\Model\TaskReject;
 use App\Model\SmtpDetail;
+use App\Model\BatchAllocation;
+use App\Model\BatchAllocationDetail;
 use App\Model\AllocationRule;
 use App\Model\ClientPreference;
 use App\Model\NotificationType;
@@ -549,7 +551,8 @@ class TaskController extends BaseController
     {
         $header = $request->header();
         $client_details = Client::where('database_name', $header['client'][0])->first();
-
+        //\Log::info('accept and reject service call.');
+       // \Log::info('type = '.$request->order_id);
         $percentage = 0;
 
         $proof_face = null;
@@ -564,28 +567,34 @@ class TaskController extends BaseController
                 $proof_face = $path;
             }
         }
-        if(!empty($proof_face)){
-            Task::where('order_id', $request->order_id)->update(['proof_face' => $proof_face]);
-        }
+        // if(!empty($proof_face)){
+        //     Task::where('order_id', $request->order_id)->update(['proof_face' => $proof_face]);
+        // }
 
-        $check = Order::where('id', $request->order_id)->with(['agent','customer'])->first();
-        if (!isset($check)) {
-            return response()->json([
-                'message' => __('This order has already been accepted.'),
-            ], 404);
-        }
 
-        if (isset($check) && $check->driver_id != null) {
-            if ($check && $check->call_back_url) {
-                $call_web_hook = $this->updateStatusDataToOrder($check, 2,1);  # task accepted
-            }
-            return response()->json([
-                'message' => __('Task Accecpted Successfully'),
-            ], 200);
-        }  // need to we change
+        // if (isset($check) && $check->driver_id != null) {
+        //     if ($check && $check->call_back_url) {
+        //        // $call_web_hook = $this->updateStatusDataToOrder($check, 2,1);  # task accepted
+        //     }
+        //     return response()->json([
+        //         'message' => __('Task Accecpted Successfully'),
+        //     ], 200);
+        // }  // need to we change
 
         if ($request->status == 1) {
-            $this->dispatchNow(new RosterDelete($request->order_id));
+
+            if($request->type=='B')
+            {
+            //For Batch Order api
+                // $check = BatchAllocation::where('batch_no', $request->order_id)->first();
+                // if (!isset($check->agent_id)) {
+                //     return response()->json([
+                //         'message' => __('This Batch has already been accepted.'),
+                //     ], 404);
+                // }
+
+            $batchNo = $request->order_id;
+            $this->dispatchNow(new RosterDelete($request->order_id,'B'));
             $task_id = Order::where('id', $request->order_id)->first();
             $pricingRule = PricingRule::where('id', 1)->first();
             $agent_id =  isset($request->allocation_type) && $request->allocation_type == 'm' ? $request->agent : null;
@@ -602,15 +611,59 @@ class TaskController extends BaseController
                 $percentage = $task_id->driver_cost;
             }
 
-
-            Order::where('id', $request->order_id)->update(['driver_id' => $request->driver_id, 'status' => 'assigned','driver_cost'=> $percentage]);
-            Task::where('order_id', $request->order_id)->update(['task_status' => 1]);
-            if ($check && $check->call_back_url) {
-                $call_web_hook = $this->updateStatusDataToOrder($check, 2,1);  # task accepted
+            BatchAllocation::where(['batch_no'=>$request->order_id])>update(['agent_id' => $request->driver_id]);
+            BatchAllocationDetail::where(['batch_no'=>$request->order_id])>update(['agent_id' => $request->driver_id]);
+            $batchs = BatchAllocationDetail::where(['batch_no'=>$request->order_id])->get();
+            foreach($batch as $batch){
+                Order::where('id', $batch->order_id)->update(['driver_id' => $request->driver_id, 'status' => 'assigned','driver_cost'=> $percentage]);
+                Task::where('order_id', $batch->order_id)->update(['task_status' => 1]);
             }
+            if ($check && $check->call_back_url) {
+                //$call_web_hook = $this->updateStatusDataToOrder($check, 2,1);  # task accepted
+            }
+
+
+            }else{
+
+                $check = Order::where('id', $request->order_id)->with(['agent','customer'])->first();
+                if (!isset($check)) {
+                    return response()->json([
+                        'message' => __('This order has already been accepted.'),
+                    ], 404);
+                }
+
+                //For order api
+                $this->dispatchNow(new RosterDelete($request->order_id,'O'));
+                $task_id = Order::where('id', $request->order_id)->first();
+                $pricingRule = PricingRule::where('id', 1)->first();
+                $agent_id =  isset($request->allocation_type) && $request->allocation_type == 'm' ? $request->agent : null;
+    
+                if (isset($agent_id) && $task_id->driver_cost <= 0.00) {
+                    $agent_details = Agent::where('id', $agent_id)->first();
+                    if ($agent_details->type == 'Employee') {
+                        $percentage = $pricingRule->agent_commission_fixed + (($task_id->order_cost / 100) * $pricingRule->agent_commission_percentage);
+                    } else {
+                        $percentage = $pricingRule->freelancer_commission_percentage + (($task_id->order_cost / 100) * $pricingRule->freelancer_commission_fixed);
+                    }
+                }
+                if ($task_id->driver_cost != 0.00) {
+                    $percentage = $task_id->driver_cost;
+                }
+    
+    
+                Order::where('id', $request->order_id)->update(['driver_id' => $request->driver_id, 'status' => 'assigned','driver_cost'=> $percentage]);
+                Task::where('order_id', $request->order_id)->update(['task_status' => 1]);
+                if ($check && $check->call_back_url) {
+                    $call_web_hook = $this->updateStatusDataToOrder($check, 2,1);  # task accepted
+                }
+            }
+
+
+
             return response()->json([
                 'data' => __('Task Accecpted Successfully'),
             ], 200);
+
         } else {
             $data = [
                 'order_id'          => $request->order_id,
@@ -922,7 +975,7 @@ class TaskController extends BaseController
            
             //If batch allocation is on them return from there no job is created 
             if($client->getPreference->create_batch_hours > 0){
-                \Log::info('Batch Allocation is on');
+                //\Log::info('Batch Allocation is on');
                     $dispatch_traking_url = $client_url.'/order/tracking/'.$auth->code.'/'.$orders->unique_id;
 
                     DB::commit();

@@ -39,7 +39,7 @@ class RosterCreate implements ShouldQueue
      */
     public function handle()
     {
-        Log::info('roster-data-fun---112-- RosterCreate');
+        Log::info('my inder RosterCreate');
         try {
             $schemaName = 'royodelivery_db';
             $default = [
@@ -77,8 +77,8 @@ class RosterCreate implements ShouldQueue
                 'status'=> 10
             ]);
             $date   =  Carbon::now()->toDateTimeString();
-            Log::info('create roster --12 RosterCreate');
-            Log::info($date);
+            //Log::info('create roster --12 RosterCreate');
+            //Log::info($date);
         } catch (Exception $ex) {
             Log::info($exception->getMessage());
            return $ex->getMessage();
