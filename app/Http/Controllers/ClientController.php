@@ -83,6 +83,13 @@ class ClientController extends Controller
             ClientPreference::where('client_id', $id)->update($data);
             return redirect()->back()->with('success', 'Preference updated successfully!');
         }
+
+        if($request->has('autopay_submit')){
+            $auto_payout = (!empty($request->auto_payout))? 1 : 0;
+            $data = ['auto_payout'=>$auto_payout];
+            ClientPreference::where('client_id', $id)->update($data);
+            return redirect()->back()->with('success', 'Preference updated successfully!');
+        }
         
         $client = Client::where('code', $id)->firstOrFail();
         # if submit custom domain by client
