@@ -373,38 +373,42 @@
     }
 
     function deleteAddress(id,rowid)
-    {
-        if(id!="")
-        {
-            $.ajax({
-                type: 'POST',
-                url: '{{url("/remove-location")}}',
-                headers: {
-                    'X-CSRF-Token': '{{ csrf_token() }}',
-                },
-                data: {'locationid':id},
+    { 
+        let text = "Are you sure?";
+        if (confirm(text) == true) {
+          
+            
+            if(id!="")
+            {
+                $.ajax({
+                    type: 'POST',
+                    url: '{{url("/remove-location")}}',
+                    headers: {
+                        'X-CSRF-Token': '{{ csrf_token() }}',
+                    },
+                    data: {'locationid':id},
 
-                success: function(response) {
-                    if(response=="removed")
-                    {
-                        $('.addressrow'+rowid).remove();
-                    }else{
-                        alert('Try again later');
+                    success: function(response) {
+                        if(response=="removed")
+                        {
+                            $('.addressrow'+rowid).remove();
+                        }else{
+                            alert('Try again later');
+                        }
+                    },
+                    error: function(response) {
+                        alert('There is some issue. Try again later');
+                        // $('.pageloader').css('display','none');
                     }
-                },
-                error: function(response) {
-                    alert('There is some issue. Try again later');
-                    // $('.pageloader').css('display','none');
-                }
-            });
-        }else{
-            $('.addressrow'+rowid).remove();
+                });
+            }else{
+                $('.addressrow'+rowid).remove();
+            }
         }
-
 
     }
 
-    $(document).on('click', '.mdi-delete', function(e) {  
+    $(document).on('click', '.form-ul .mdi-delete', function(e) {  
             var r = confirm("Are you sure?");
             if (r == true) {
                var customerid = $(this).attr('customerid');

@@ -92,6 +92,7 @@ class AllocationController extends Controller
     {
         $validator = $this->updateValidator($request->all())->validate();
         $request['manual_allocation'] = $request->manual_allocation ?? 'n';
+        $request['job_consist_of_pickup_or_delivery'] = $request->job_consist_of_pickup_or_delivery ?? '0';
         $updatePreference = AllocationRule::updateOrCreate([
             'client_id' => $id
         ], $request->all());

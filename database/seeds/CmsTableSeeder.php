@@ -16,7 +16,7 @@ class CmsTableSeeder extends Seeder
         $type = array(
             array(
                 'id' => 1,
-                'name' => 'terms and conditions',
+                'name' => 'Terms and Conditions',
                 'content'=>'Terms and conditions allow you to establish what constitutes appropriate activity on your site or app, so you can remove abusive users and content that violates your guidelines.
                 Intellectual property theft — Asserting your claim to the creative assets of your site in your terms and conditions will prevent ownership disputes and copyright infringement.
                 Potential litigation — If a user lodges a legal complaint against your business, showing that they were presented with clear terms and conditions before they used your site will help you immensely in court.',
@@ -24,7 +24,7 @@ class CmsTableSeeder extends Seeder
             ),
             array(
                 'id' => 2,
-                'name' => 'privacy policy',
+                'name' => 'Privacy Policy',
                 'content'=>'Not everyone knows how to make a Privacy Policy agreement, especially with CCPA or GDPR or CalOPPA or PIPEDA or Australia s Privacy Act provisions. If you are not a lawyer or someone who is familiar to Privacy Policies, you will be clueless. Some people might even take advantage of you because of this. Some people may even extort money from you. These are some examples that we want to stop from happening to you.
                 We will help you protect yourself by generating a Privacy Policy. 
                 Our Privacy Policy Generator can help you make sure that your business complies with the law. We are here to help you protect your business, yourself and your customers.
