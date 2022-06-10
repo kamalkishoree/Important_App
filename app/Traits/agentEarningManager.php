@@ -20,7 +20,7 @@ trait agentEarningManager{
         }
 
         $cash  = $agent->order->where('status', 'completed')->sum('cash_to_be_collected');
-        $driver_cost  = $agent->order->where('status', 'completed')->where('is_comm_settled', '!=', 1)->sum('driver_cost');
+        $driver_cost  = $agent->order->where('status', 'completed')->where('is_comm_settled', '!=', 2)->sum('driver_cost');
 
         if($include_wallet == 1):
             $available_funds = $wallet_balance + $debit + $driver_cost - ($credit + $cash);
