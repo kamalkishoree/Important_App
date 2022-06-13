@@ -92,7 +92,7 @@ class SendPushNotification
         DB::connection($schemaName)->table('rosters')->where('status',10)->delete();
         if(count($get) > 0){
         //Log::info('getdata count inder'.count($get));
-           // DB::connection($schemaName)->table('rosters')->whereIn('id',$getids)->delete();
+            DB::connection($schemaName)->table('rosters')->whereIn('id',$getids)->delete();
             // DB::connection($schemaName)->table('rosters')->whereIn('id',$newget)->update(['status'=>1]);
 
            // Log::info('getdata count inder='.count($get));
@@ -133,7 +133,7 @@ class SendPushNotification
                // Log::info('token=');
 
                 array_push($new,$item['device_token']);
-                //Log::info($new);
+                Log::info($new);
 
                 $clientRecord = Client::where('code', $item['client_code'])->first();
                 $this->seperate_connection('db_'.$clientRecord->database_name);
@@ -143,7 +143,7 @@ class SendPushNotification
                 if(isset($new)){
                     try{
                         $fcm_server_key = !empty($client_preferences->fcm_server_key)? $client_preferences->fcm_server_key : 'null';
-                       // Log::info($fcm_server_key);
+                        //Log::info($fcm_server_key);
 
                         $fcmObj = new Fcm($fcm_server_key);
                         $fcm_store = $fcmObj->to($new) // $recipients must an array
@@ -160,8 +160,8 @@ class SendPushNotification
                                         ])
                                         ->send();
 
-                                            //Log::info('Fcm Response in');
-                                           // Log::info($fcm_store);
+                                           // Log::info('Fcm Response in');
+                                            Log::info($fcm_store);
                     }
                     catch(Exception $e){
                         Log::info($e->getMessage());

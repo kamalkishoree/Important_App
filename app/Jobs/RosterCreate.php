@@ -39,7 +39,7 @@ class RosterCreate implements ShouldQueue
      */
     public function handle()
     {
-        Log::info('my inder RosterCreate');
+        //Log::info('my inder RosterCreate');
         try {
             $schemaName = 'royodelivery_db';
             $default = [

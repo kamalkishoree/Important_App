@@ -58,7 +58,7 @@ class RosterDelete implements ShouldQueue
 
             Config::set("database.connections.$schemaName", $default);
             config(["database.connections.mysql.database" => $schemaName]);
-            if($type=='B'){
+            if($this->type=='B'){
                 DB::connection($schemaName)->table('rosters')->where('batch_no',$this->order_id)->delete();
             }else{
                 DB::connection($schemaName)->table('rosters')->where('order_id',$this->order_id)->delete();

@@ -1019,6 +1019,7 @@ $sms_crendential = json_decode($preference->sms_credentials);
                 <!-- Custom Mods start -->
                 <form method="POST" action="{{ route('preference', Auth::user()->code) }}">
                     @csrf          
+                    <input type="hidden" name="mybatch" value="1">
                     <div class="card-box h-100 h-100">
                         <div class="d-flex align-items-center justify-content-between mb-3">
                             <h4 class="header-title text-uppercase mb-0">{{__("Batch Allocation")}}</h4>

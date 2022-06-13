@@ -93,17 +93,24 @@ class CreateBatch extends Command
             //Client Allocation Rules
             $allocation = AllocationRule::where('client_id', $client->code)->select('auto_assign_logic','maximum_task_per_person')->first();
 
+            $typeArrayRoute = ['P','D'];
+            foreach($typeArrayRoute as $typeR)
+            {
+
             //Fetch Pickup order with tasks
             $pickupOrders = Order::with(['task'=>function($o){
                 $o->where('task_type_id',1);
-            }])->where(['status'=> 'unassigned','request_type'=>'P'])->limit(10)->orderBy('id','desc')->get();
+            }])->where(['status'=> 'unassigned','request_type'=>$typeR])->orderBy('id','desc')->get();
            //->where('id','164')->orWhere('id','178')->limit(10)
-            
+
+            //Empty Order Temp Table First
+            orderTemp::truncate();
+
             $geoOrders = array();
             foreach($pickupOrders as $k=> $order)
             {
                 //Find Geo fence id for every order
-                $task = new TaskController();
+                $task = new TaskController(); 
                 $geoId = $task->createRoster($order->task[0]->location_id);  
                 if($geoId){  
                     $location = Location::find($order->task[0]->location_id);            
@@ -118,7 +125,8 @@ class CreateBatch extends Command
                 }
 
             }            
-            
+            //  \Log::info(json_encode($geoOrders));
+            // dd('hi');
             //Sort Geo Fence id wise route 
             $tempOrders = array();
             $sortArray = $this->sortAssociativeArrayByKey($geoOrders,'geo_id','ASC');
@@ -220,6 +228,8 @@ class CreateBatch extends Command
 
                     }
             }
+
+        }
 
             //End Coonection
             DB::disconnect($database_name);

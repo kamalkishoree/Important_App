@@ -93,31 +93,32 @@ class ClientController extends Controller
 
 
         //Batch Allocation Code
+        if($request->has('mybatch')){
+            if($request->has('batch_allocation')){
+                DB::table('royodelivery_db.clients')->where('code',$id)->update([
+                    'batch_allocation' => 1
+                ]);
 
-        if($request->has('batch_allocation')){
-            DB::table('royodelivery_db.clients')->where('code',$id)->update([
-                'batch_allocation' => 1
-            ]);
+                $data = [
+                    'create_batch_hours'=>$request->create_batch_hours,
+                    'maximum_route_per_job'=>$request->maximum_route_per_job,
+                    'job_consist_of_pickup_or_delivery'=>$request->has('job_consist_of_pickup_or_delivery')?'1':0
+                ];
+                ClientPreference::where('client_id', $id)->update($data);
+                return redirect()->back()->with('success', 'Preference updated successfully!');
+            }else{
+                DB::table('royodelivery_db.clients')->where('code',$id)->update([
+                    'batch_allocation' => 0
+                ]);
 
-            $data = [
-                'create_batch_hours'=>$request->create_batch_hours,
-                'maximum_route_per_job'=>$request->maximum_route_per_job,
-                'job_consist_of_pickup_or_delivery'=>$request->has('job_consist_of_pickup_or_delivery')?'1':0
-            ];
-            ClientPreference::where('client_id', $id)->update($data);
-            return redirect()->back()->with('success', 'Preference updated successfully!');
-        }else{
-            DB::table('royodelivery_db.clients')->where('code',$id)->update([
-                'batch_allocation' => 0
-            ]);
-
-            $data = [
-                'create_batch_hours'=>null,
-                'maximum_route_per_job'=>null,
-                'job_consist_of_pickup_or_delivery'=>0
-            ];
-            ClientPreference::where('client_id', $id)->update($data);
-            return redirect()->back()->with('success', 'Preference updated successfully!');
+                $data = [
+                    'create_batch_hours'=>null,
+                    'maximum_route_per_job'=>null,
+                    'job_consist_of_pickup_or_delivery'=>0
+                ];
+                ClientPreference::where('client_id', $id)->update($data);
+                return redirect()->back()->with('success', 'Preference updated successfully!');
+            }
         }
         
         $client = Client::where('code', $id)->firstOrFail();
