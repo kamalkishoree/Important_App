@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AlterIsPeimaryAgentConnectedAccountsTable extends Migration
+class changeIsCommSettledOrdersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,13 @@ class AlterIsPeimaryAgentConnectedAccountsTable extends Migration
      */
     public function up()
     {
-        Schema::table('agent_connected_accounts', function (Blueprint $table) {
-            $table->tinyInteger('is_primary')->default(1)->comment('0=>No, 1=> Yes');
+        Schema::table('orders', function (Blueprint $table) {
+            $table->dropColumn(['is_comm_settled']);
         });
-        
+
+        Schema::table('orders', function (Blueprint $table) {
+            $table->tinyInteger('is_comm_settled')->default(0)->comment('0=>Not settled, 1=> Processing, 2=> settled');
+        });
     }
 
     /**
