@@ -14,7 +14,11 @@ class changeIsCommSettledOrdersTable extends Migration
     public function up()
     {
         Schema::table('orders', function (Blueprint $table) {
-            $table->tinyInteger('is_comm_settled')->default(0)->comment('0=>Not settled, 1=> Processing, 2=> settled')->change();
+            $table->dropColumn(['is_comm_settled']);
+        });
+
+        Schema::table('orders', function (Blueprint $table) {
+            $table->tinyInteger('is_comm_settled')->default(0)->comment('0=>Not settled, 1=> Processing, 2=> settled');
         });
     }
 
