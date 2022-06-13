@@ -167,7 +167,7 @@ class CustomerController extends Controller
         if ($customer->wasRecentlyCreated) {
             return response()->json([
                 'status' => 'success',
-                'message' => 'Customer created Successfully!',
+                'message' => __('Customer created Successfully!'),
                 'data' => $customer
             ]);
         }
@@ -263,7 +263,7 @@ class CustomerController extends Controller
         if ($customer) {
             return response()->json([
                 'status' => 'success',
-                'message' => 'Customer updated Successfully!',
+                'message' => __('Customer updated Successfully!'),
                 'data' => $customer
             ]);
         }
@@ -290,7 +290,7 @@ class CustomerController extends Controller
         $customer = Customer::find($request->id);
         $customer->status = $request->status;
         $customer->save();
-        return response()->json(['success' => 'Status change successfully.']);
+        return response()->json(['success' => __('Status change successfully.')]);
     }
 
     public function changeLocation(Request $request)
