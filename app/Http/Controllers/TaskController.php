@@ -705,7 +705,7 @@ class TaskController extends Controller
                 //->delay(now()->addMinutes($finaldelay))
                 scheduleNotification::dispatch($schduledata)->delay(now()->addMinutes($finaldelay));
                 //$this->dispatch(new scheduleNotification($schduledata));
-                return true;
+                return response()->json(['success'=> true,'status' => "Success"]);
             }
         }
 
@@ -731,7 +731,7 @@ class TaskController extends Controller
                     $this->batchWise($geo, $notification_time, $agent_id, $orders->id, $customer, $finalLocation, $taskcount, $allocation);
             }
         }
-        return true;
+        return response()->json(['success'=> true,'status' => "Success"]);
     }
 
     //function for assigning driver to unassigned orders
