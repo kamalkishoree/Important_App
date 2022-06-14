@@ -144,11 +144,11 @@ class StripeGatewayController extends BaseController
 
                         // Access the connected account id in the response
                         $connected_account_id = $response->stripe_user_id;
-
                         $connectdAccount = new AgentConnectedAccount();
                         $connectdAccount->driver_id = $vendor;
                         $connectdAccount->account_id = $connected_account_id;
                         $connectdAccount->payment_option_id = 2;
+                        $connectdAccount->is_primary = 1;
                         $connectdAccount->status = 1;
                         $connectdAccount->save();
 
