@@ -228,7 +228,7 @@ class AgentPayoutController extends BaseController{
         }
 
         //stripe connected account details
-        $codes = ['cash', 'stripe', 'pagarme'];
+        $codes = ['cash', 'stripe', 'pagarme', 'bank_account_m_india'];
         $payout_creds = PayoutOption::whereIn('code', $codes)->where('status', 1)->get();
         if ($payout_creds) {
             foreach ($payout_creds as $creds) {
