@@ -753,7 +753,6 @@
         contentType: false,
         processData: false,
         success: function(response) {
-           // alert(response)
             if (response.status == 'Success') {
                     $("#task-modal-header .close").click();
                     location.reload();

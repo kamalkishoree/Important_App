@@ -84,7 +84,6 @@ class TaskController extends Controller
                 $query->whereIn('tag_id', $team_tags);
             });
         }
-
         $all = $all->get();
         $active   =  count($all->where('status', 'assigned'));
         $pending  =  count($all->where('status', 'unassigned'));
@@ -416,7 +415,6 @@ class TaskController extends Controller
     // function for saving new order
     public function newtasks(Request $request)
     {
-        //dd($request->toArray());
         $loc_id = $cus_id = $send_loc_id = $newlat = $newlong = 0;
         $iinputs = $request->toArray();
         $old_address_ids = array();
@@ -705,7 +703,7 @@ class TaskController extends Controller
                 //->delay(now()->addMinutes($finaldelay))
                 scheduleNotification::dispatch($schduledata)->delay(now()->addMinutes($finaldelay));
                 //$this->dispatch(new scheduleNotification($schduledata));
-                return true;
+                return response()->json(['success'=> true,'status' => "Success"]);
             }
         }
 
@@ -731,7 +729,7 @@ class TaskController extends Controller
                     $this->batchWise($geo, $notification_time, $agent_id, $orders->id, $customer, $finalLocation, $taskcount, $allocation);
             }
         }
-        return true;
+        return response()->json(['success'=> true,'status' => "Success"]);
     }
 
     //function for assigning driver to unassigned orders
