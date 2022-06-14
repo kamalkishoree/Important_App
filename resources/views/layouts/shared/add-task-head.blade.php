@@ -753,15 +753,13 @@
         contentType: false,
         processData: false,
         success: function(response) {
-           // alert(response)
-            if (response.status == 'Success') {
+            if (response) {
                     $("#task-modal-header .close").click();
                     location.reload();
             } else {
                 $("#task-modal-header .show_all_error.invalid-feedback").show();
                 $("#task-modal-header .show_all_error.invalid-feedback").text(response.message);
             }
-            //return response;
         },
         error: function(response) {
             if (response.status === 422) {
