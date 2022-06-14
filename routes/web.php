@@ -158,6 +158,7 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 			Route::get('options', 'ClientController@ShowOptions')->name('options');
 			Route::resource('agent', 'AgentController');
 			Route::get('agent/{id}/show', 'AgentController@show')->name('agent.show');
+			Route::post('agent/search', 'AgentController@search')->name('agent.search');
 			Route::post('pay/receive', 'AgentController@payreceive')->name('pay.receive');
 			Route::get('agent/paydetails/{id}', 'AgentController@agentPayDetails')->name('agent.paydetails');
 			Route::post('agent/approval_status', 'AgentController@approval_status')->name('agent/approval_status');
