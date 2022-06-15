@@ -18,8 +18,8 @@ class EmailTemplateSeeder extends Seeder
             [
                 'label' =>'New Agent Signup',
                 'subject' =>'New Agent Signup',
-                'tags' => '{agent_name}, {title}, {description}, {email}, {phone_no}, {address},{website}', 
-                'content' => '<tbody><tr><td><div style="margin-bottom: 20px;"><h4 style="margin-bottom: 5px;">Name</h4><p>{agent_name}</p></div><div style="margin-bottom: 20px;"><h4 style="margin-bottom: 5px;">Title</h4><p>{title}</p></div><div style="margin-bottom: 20px;"><h4 style="margin-bottom: 5px;">Description</h4><p>{description}</p></div><div style="margin-bottom: 20px;"><h4 style="margin-bottom: 5px;">Email</h4><p>{email}</p></div><div style="margin-bottom: 20px;"><h4 style="margin-bottom: 5px;">Phone Number</h4><p>{phone_no}</p></div><div style="margin-bottom: 20px;"><h4 style="margin-bottom: 5px;">Address</h4><address style="font-style: normal;"><p style="width: 300px;">{address}</p></address></div><div style="margin-bottom: 20px;"><h4 style="margin-bottom: 5px;">Website</h4><a style="color: #8142ff;" href="{website}" target="_blank"><b>{website}</b></a></div></td></tr></tbody>'
+                'tags' => '{agent_name}, {phone_no}, {team}', 
+                'content' => ''
             ]
         ];
 
@@ -39,7 +39,6 @@ class EmailTemplateSeeder extends Seeder
                     // $ops->update(['label' => $option['label']]);
                 } else {
                     $ops = EmailTemplate::create([
-                      'id' => $option['id'],
                       'label' => $option['label'],
                       'subject' => $option['subject'],
                       'tags' => $option['tags'],
