@@ -293,9 +293,14 @@ class AuthController extends BaseController
     {
         DB::beginTransaction();
         try {
-            if (isset($request->email))
+            if (isset($request->email)){
                 $subdmin = Client::where('email', $request->email)->first();
+            }
             $password = $request->public_session;
+
+            $superadmin_data = Client::select('country_id', 'timezone', 'custom_domain', 'is_deleted', 'is_blocked', 'database_path', 'database_name', 'database_username', 'database_password', 'logo', 'company_name', 'company_address', 'code', 'sub_domain')->where('is_superadmin', 1)->first()->toArray();
+            $clientcode = $superadmin_data['code'];
+
             if (empty($subdmin)) {
                 $data = [
                     'name' => $request->name,
@@ -309,10 +314,6 @@ class AuthController extends BaseController
                     'public_login_session' => $request->public_login_session
                 ];
 
-                $superadmin_data = Client::select('country_id', 'timezone', 'custom_domain', 'is_deleted', 'is_blocked', 'database_path', 'database_name', 'database_username', 'database_password', 'logo', 'company_name', 'company_address', 'code', 'sub_domain')
-                    ->where('is_superadmin', 1)
-                    ->first()->toArray();
-                $clientcode = $superadmin_data['code'];
                 $superadmin_data['code'] = "";
 
                 $finaldata = array_merge($data, $superadmin_data);
@@ -349,6 +350,7 @@ class AuthController extends BaseController
                     SubAdminTeamPermissions::insert($addteampermission);
                 }
             } else {
+                $team = $this->createTeamFromManager($request, $clientcode, $subdmin->id);
             }
 
             $update_token = Client::where('id', $subdmin->id)->update(['password' => Hash::make($request->public_session), 'public_login_session' => $request->public_session]);
@@ -375,12 +377,7 @@ class AuthController extends BaseController
     public function createTeamFromManager($request, $clientcode, $manager_id)
     {
         $value = $request->team_tag;
-        $tag_id = [];
-        if (!empty($value)) {
-            $check = TagsForTeam::firstOrCreate(['name' => $value]);
-            array_push($tag_id, $check->id);
-        }
-
+        
         $data = [
             'manager_id'    => $manager_id,
             'name'          => $request->name . " Team",
@@ -389,7 +386,17 @@ class AuthController extends BaseController
             'location_frequency' => $request->location_frequency ?? 1
         ];
 
-        $team = Team::create($data);
+        $team = Team::updateOrCreate($data);
+        
+        $tag_id = [];
+        $default_tag_exists = TagsForTeam::where('name', $value)->first();
+        if (!$default_tag_exists && !empty($value)) {
+            $check = TagsForTeam::firstOrCreate(['name' => $value]);
+            array_push($tag_id, $check->id);
+        }else{
+            $tag_id = $team->tags()->pluck('tag_id');
+            $tag_id[] = $default_tag_exists->id;
+        }
         $team->tags()->sync($tag_id);
 
         if ($team->wasRecentlyCreated) {

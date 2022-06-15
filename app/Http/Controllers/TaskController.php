@@ -297,11 +297,17 @@ class TaskController extends Controller
                         //     }
                         //     return false;
                         // });
-
-                        $instance->whereHas('customer', function($q) use($request){
-                            $search = $request->get('search');
-                            $q->where('name', 'Like', '%'.$search.'%')
-                            ->orWhere('phone_number', 'Like', '%'.$search.'%');
+                        
+                        $search = $request->get('search');
+                        $instance->where(function($query) use($search){
+                            $query->where('order_number', 'Like', '%'.$search.'%')
+                            ->orWhereHas('customer', function($q) use($search){
+                                $q->where('name', 'Like', '%'.$search.'%')
+                                ->orWhere('phone_number', 'Like', '%'.$search.'%');
+                            })
+                            ->orWhereHas('agent', function($q) use($search){
+                                $q->where('name', 'Like', '%'.$search.'%');
+                            });
                         });
                     }
                 }, true)
