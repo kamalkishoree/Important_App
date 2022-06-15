@@ -127,9 +127,10 @@ class ProfileController extends Controller
         }else{
             $data = [
                 'name' => $request->name,
-                'phone_number' => $request->phone_number
+                'phone_number' => $request->phone_number,
+                'company_address' => $request->company_address
             ];
-            $client = Client::where('code', $id)->where('id', $user->id)->update($data);
+            $client = Client::where('code', $user->id.'_'.$id)->where('id', $user->id)->update($data);
         }
 
         $password = null;
