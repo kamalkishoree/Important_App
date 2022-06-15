@@ -22,6 +22,6 @@ class Customer extends Model
     }
     public function resources()
     {
-        return $this->hasOne('App\Models\CustomerVerificationResource','customer_id','id');  
+        return $this->hasOne('App\Model\CustomerVerificationResource','customer_id','id');  
     }
 }
