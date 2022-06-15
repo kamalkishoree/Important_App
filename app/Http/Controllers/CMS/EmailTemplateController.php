@@ -15,12 +15,12 @@ class EmailTemplateController extends BaseController
     use ApiResponser;
 
     public function index(){
-        $templates = EmailTemplate::all();
-        return view('auth.cms.email.index', compact('templates'));
+        $email_templates = EmailTemplate::all();
+        return view('auth.cms.email.index', compact('email_templates'));
     }
     public function show(Request $request, $domain = '', $id){
         $email_template =  EmailTemplate::where('id', $id)->first();
-        return $this->successResponse($email_template);
+        return $this->success($email_template);
     }
     public function update(Request $request, $id){
         $rules = array(
@@ -32,6 +32,6 @@ class EmailTemplateController extends BaseController
         $email_template->subject = $request->subject;
         $email_template->content = $request->content;
         $email_template->save();
-        return $this->successResponse($email_template, 'Email Template Updated Successfully.');
+        return $this->success($email_template, 'Email Template Updated Successfully.');
     }
 }
