@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use App\Model\Cms;
 
 class CmsTableSeeder extends Seeder
 {
@@ -11,9 +12,9 @@ class CmsTableSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('cms')->delete();
+        $option_count = DB::table('payment_options')->count();
  
-        $type = array(
+        $options = array(
             array(
                 'id' => 1,
                 'name' => 'Terms and Conditions',
@@ -34,6 +35,29 @@ class CmsTableSeeder extends Seeder
             )
             
         );
-        DB::table('cms')->insert($type);
+        if($option_count == 0)
+        {
+          DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+          DB::table('cms')->truncate();
+          DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+  
+          DB::table('cms')->insert($options);
+        }
+        else{
+            foreach ($options as $option) {
+                $ops = Cms::where('name', $option['name'])->first();
+   
+                if ($ops !== null) {
+                    // $ops->update(['name' => $option['name']]);
+                } else {
+                    $ops = Cms::create([
+                      'id' => $option['id'],
+                      'name' => $option['name'],
+                      'content' => $option['content'],
+                      'status' => $option['status'],
+                    ]);
+                }
+            }
+        }
     }
 }
