@@ -405,6 +405,31 @@
                 return false;
             }
         });
+
+        $("#task-modal-header #searchDriver").autocomplete({
+            source: function(request, response) {
+                // Fetch data
+                $.ajax({
+                    url: "{{ route('agent.search') }}",
+                    type: 'post',
+                    dataType: "json",
+                    data: {
+                        _token: CSRF_TOKEN,
+                        search: request.term
+                    },
+                    success: function(data) {
+                        response(data);
+                    }
+                });
+            },
+            select: function(event, ui) {
+                // Set selection
+                $('#task-modal-header #searchDriver').val(ui.item.label); // display the selected text
+                $('#task-modal-header #agentid').val(ui.item.value); // save selected id to input
+                // $(".oldhide").hide();
+                return false;
+            }
+        });
     }
 
     function add_event(ids) {
