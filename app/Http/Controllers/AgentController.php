@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Str;
 use GuzzleHttp\Client as GCLIENT;
+use Twilio\Rest\Client as TwilioClient;
 use App\Traits\ApiResponser;
 use App\Exports\AgentsExport;
 use Doctrine\DBAL\Driver\DrizzlePDOMySql\Driver;
@@ -710,6 +711,11 @@ class AgentController extends Controller
             $agent_approval = Agent::find($request->id);
             $agent_approval->is_approved = $request->status;
             $agent_approval->save();
+
+            $status = ($request->status == 1)? 'Accepted' : 'Rejected';
+            $sms_body = __("Your dispatcher account has been ") . $status;
+            $send = $this->sendSms2($agent_approval->phone_number, $sms_body)->getData();
+
             return response()->json(['status' => 1, 'message' => 'Status change successfully.']);
         } catch (Exception $e) {
             return response()->json(['status' => 0, 'message' => $e->getMessage()]);
@@ -738,5 +744,56 @@ class AgentController extends Controller
             return response()->json([]);
         }
     }
+
+    protected function sendSms2($to, $body){
+        try{
+            $client_preference =  getClientPreferenceDetail();
+
+            if($client_preference->sms_provider == 1)
+            {
+                $credentials = json_decode($client_preference->sms_credentials);
+                $sms_key = (isset($credentials->sms_key)) ? $credentials->sms_key : $client_preference->sms_provider_key_1;
+                $sms_secret = (isset($credentials->sms_secret)) ? $credentials->sms_secret : $client_preference->sms_provider_key_2;
+                $sms_from  = (isset($credentials->sms_from)) ? $credentials->sms_from : $client_preference->sms_provider_number;
+
+                $client = new TwilioClient($sms_key, $sms_secret);
+                $client->messages->create($to, ['from' => $sms_from, 'body' => $body]);
+            }elseif($client_preference->sms_provider == 2) //for mtalkz gateway
+            {
+                $credentials = json_decode($client_preference->sms_credentials);
+                $send = $this->mTalkz_sms($to,$body,$credentials);
+            }elseif($client_preference->sms_provider == 3) //for mazinhost gateway
+            {
+                $credentials = json_decode($client_preference->sms_credentials);
+                $send = $this->mazinhost_sms($to,$body,$credentials);
+            }elseif($client_preference->sms_provider == 4) //for unifonic gateway
+            {
+                $crendentials = json_decode($client_preference->sms_credentials);
+                $send = $this->unifonic($to,$body,$crendentials);
+            }
+            elseif($client_preference->sms_provider == 5) //for arkesel_sms gateway
+            {
+                $crendentials = json_decode($client_preference->sms_credentials);
+                $send = $this->arkesel_sms($to,$body,$crendentials);
+                if( isset($send->code) && $send->code != 'ok'){
+                    return $this->error($send->message, 404);
+                }
+
+            }else{
+                $credentials = json_decode($client_preference->sms_credentials);
+                $sms_key = (isset($credentials->sms_key)) ? $credentials->sms_key : $client_preference->sms_provider_key_1;
+                $sms_secret = (isset($credentials->sms_secret)) ? $credentials->sms_secret : $client_preference->sms_provider_key_2;
+                $sms_from  = (isset($credentials->sms_from)) ? $credentials->sms_from : $client_preference->sms_provider_number;
+                $client = new TwilioClient($sms_key, $sms_secret);
+                $client->messages->create($to, ['from' => $sms_from, 'body' => $body]);
+            }
+        }
+        catch(\Exception $e){
+            \Log::info($e->getMessage());
+            // return $this->error(__('Provider service is not configured. Please contact administration.'), 404);
+            return $this->error($e->getMessage(), $e->getCode());
+        }
+        return $this->success([], __('An otp has been sent to your phone. Please check.'), 200);
+	}
 
 }
