@@ -355,11 +355,11 @@
                     countZ = 1;
                 });
 
-                $("#file").click(function() {
-                    $('.showsimagegall').hide();
-                    $('.imagepri').remove();
+                // $("#file").click(function() {
+                //     $('.showsimagegall').hide();
+                //     $('.imagepri').remove();
 
-                });
+                // });
 
                 loadMapHeader(autoWrap);
                 searchRes();
