@@ -16,6 +16,7 @@ class EmailTemplateSeeder extends Seeder
 
         $options = [
             [
+                'slug' =>'new-agent-signup',
                 'label' =>'New Agent Signup',
                 'subject' =>'New Agent Signup',
                 'tags' => '{agent_name}, {phone_no}, {team}', 
@@ -33,12 +34,13 @@ class EmailTemplateSeeder extends Seeder
         }
         else{
             foreach ($options as $option) {
-                $ops = EmailTemplate::where('label', $option['label'])->first();
+                $ops = EmailTemplate::where('slug', $option['slug'])->first();
    
                 if ($ops !== null) {
                     // $ops->update(['label' => $option['label']]);
                 } else {
                     $ops = EmailTemplate::create([
+                      'slug' => $option['slug'],
                       'label' => $option['label'],
                       'subject' => $option['subject'],
                       'tags' => $option['tags'],

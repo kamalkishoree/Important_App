@@ -18,7 +18,7 @@ use Twilio\Rest\Client as TwilioClient;
 use App\Traits\ApiResponser;
 use App\Exports\AgentsExport;
 use Doctrine\DBAL\Driver\DrizzlePDOMySql\Driver;
-use App\Model\{Agent, AgentDocs, AgentPayment, DriverGeo, Order, Otp, Team, TagsForAgent, TagsForTeam, Countries, Client, ClientPreferences, DriverRegistrationDocument, Geo, Timezone};
+use App\Model\{Agent, AgentDocs, AgentPayment, DriverGeo, Order, Otp, Team, TagsForAgent, TagsForTeam, Countries, Client, ClientPreferences, DriverRegistrationDocument, Geo, Timezone, AgentSmsTemplate};
 use Kawankoding\Fcm\Fcm;
 use App\Traits\agentEarningManager;
 
@@ -712,10 +712,11 @@ class AgentController extends Controller
             $agent_approval->is_approved = $request->status;
             $agent_approval->save();
 
-            $status = ($request->status == 1)? 'Accepted' : 'Rejected';
-            $sms_body = __("Your dispatcher account has been ") . $status;
-            $send = $this->sendSms2($agent_approval->phone_number, $sms_body)->getData();
-
+            $slug = ($request->status == 1)? 'driver-accepted' : 'driver-rejected';
+            $sms_body = AgentSmsTemplate::where('slug', $slug)->first()->content;
+            if(!empty($sms_body)){
+                $send = $this->sendSms2($agent_approval->phone_number, $sms_body)->getData();
+            }
             return response()->json(['status' => 1, 'message' => 'Status change successfully.']);
         } catch (Exception $e) {
             return response()->json(['status' => 0, 'message' => $e->getMessage()]);

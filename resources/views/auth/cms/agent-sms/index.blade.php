@@ -13,7 +13,7 @@
     <div class="row">
         <div class="col-12">
             <div class="page-title-box">
-                <h4 class="page-title">{{ __("Agent SMS") }}</h4>
+                <h4 class="page-title">{{ __("SMS") }}</h4>
             </div>
         </div>
     </div>
