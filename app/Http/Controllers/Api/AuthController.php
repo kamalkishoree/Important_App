@@ -17,6 +17,7 @@ use App\Traits\ApiResponser;
 use App\Traits\smsManager;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Hash;
 use Twilio\Rest\Client as TwilioClient;
 use Faker\Generator as Faker;
@@ -516,6 +517,34 @@ class AuthController extends BaseController
                 ];
                 $agent_docs = AgentDocs::create($files[$key]);
             }
+        }
+
+        $clientContact = Client::first();
+        $emailSmtpDetail = SmtpDetail::where('id', 1)->first();
+        $smtp = SmtpDetail::where('id', 1)->first();
+        if(!empty($smtp) && !empty($clientContact->contact_email))
+        {
+            $clientName  = $clientContact->name;
+            $clientEmail = $clientContact->contact_email;
+            $mailFrom    = $smtp->from_address;
+
+            $emailTemplate = EmailTemplate::where('slug', 'new-agent-signup')->first()->content;
+            $emailTemplate = str_replace("{agent_name}", $request->name, $emailTemplate);
+            $emailTemplate = str_replace("{phone_no}", $request->phone_number, $emailTemplate);
+            if(!empty($request->team_id)){
+                $team = Team::where('id', $request->team_id)->first()->name;
+                $emailTemplate = str_replace("{team}", $team, $emailTemplate);
+            }
+
+            Mail::send([], [],
+                function ($message) use($clientEmail, $clientName, $mailFrom, $emailTemplate) {
+                    $message->from($mailFrom, $clientName);
+                    $message->to($clientEmail)->subject('Agent SignUp');
+                    $message->setBody($emailTemplate, 'text/html'); // for HTML rich messages
+                });
+            Log::info('send vendor sign up email to admin--');
+            Log::info(count(Mail::failures()));
+            Log::info('send vendor sign up email to admin--');
         }
 
         if ($agent->wasRecentlyCreated ) {
