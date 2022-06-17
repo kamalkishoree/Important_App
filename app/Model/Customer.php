@@ -20,4 +20,8 @@ class Customer extends Model
     public function orders(){
         return $this->hasMany('App\Model\Order','customer_id', 'id');
     }
+    public function resources()
+    {
+        return $this->hasOne('App\Model\CustomerVerificationResource','customer_id','id');  
+    }
 }

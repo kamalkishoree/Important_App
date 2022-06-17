@@ -222,9 +222,9 @@
 {{-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB85kLYYOmuAhBUPd7odVmL6gnQsSGWU-4&libraries=places"></script>  --}}
 <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
 @if(\Route::current()->getName() == "tasks.show")
-<script src="https://maps.googleapis.com/maps/api/js?key={{Auth::user()->getPreference->map_key_1??''}}&libraries=places,drawing,visualization&v=weekly"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key={{Auth::user()->getPreference->map_key_1??''}}&libraries=places,drawing,geometry,visualization&v=weekly"></script>
 @else
-<script defer src="https://maps.googleapis.com/maps/api/js?key={{Auth::user()->getPreference->map_key_1??''}}&libraries=places,drawing,visualization&v=weekly"></script>
+<script defer src="https://maps.googleapis.com/maps/api/js?key={{Auth::user()->getPreference->map_key_1??''}}&libraries=places,geometry,drawing,visualization&v=weekly"></script>
 @endif
 <script src="{{ asset('assets/libs/selectize/selectize.min.js') }}"></script>
 <script src="{{ asset('assets/libs/multiselect/multiselect.min.js') }}"></script>
@@ -355,11 +355,11 @@
                     countZ = 1;
                 });
 
-                $("#file").click(function() {
-                    $('.showsimagegall').hide();
-                    $('.imagepri').remove();
+                // $("#file").click(function() {
+                //     $('.showsimagegall').hide();
+                //     $('.imagepri').remove();
 
-                });
+                // });
 
                 loadMapHeader(autoWrap);
                 searchRes();
@@ -402,6 +402,31 @@
                 $('#task-modal-header #cusid').val(ui.item.value); // save selected id to input
                 add_event(ui.item.value);
                 $(".oldhide").hide();
+                return false;
+            }
+        });
+
+        $("#task-modal-header #searchDriver").autocomplete({
+            source: function(request, response) {
+                // Fetch data
+                $.ajax({
+                    url: "{{ route('agent.search') }}",
+                    type: 'post',
+                    dataType: "json",
+                    data: {
+                        _token: CSRF_TOKEN,
+                        search: request.term
+                    },
+                    success: function(data) {
+                        response(data);
+                    }
+                });
+            },
+            select: function(event, ui) {
+                // Set selection
+                $('#task-modal-header #searchDriver').val(ui.item.label); // display the selected text
+                $('#task-modal-header #agentid').val(ui.item.value); // save selected id to input
+                // $(".oldhide").hide();
                 return false;
             }
         });
@@ -753,7 +778,6 @@
         contentType: false,
         processData: false,
         success: function(response) {
-           // alert(response)
             if (response.status == 'Success') {
                     $("#task-modal-header .close").click();
                     location.reload();

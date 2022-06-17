@@ -58,7 +58,7 @@ class AgentPayoutController extends BaseController{
             $agent_id = $agent->id;
             //-----------------Code modified by Surendra Singh--------------------------//
             $pending_payout_value  = AgentPayout::where('agent_id', $agent_id)->whereIn('status', [0])->sum('amount');
-            $available_funds = agentEarningManager::getAgentEarning($agent_id) - $pending_payout_value;
+            $available_funds = agentEarningManager::getAgentEarning($agent_id, 1) - $pending_payout_value;
             //-------------------------------------------------------------------------//
             if($request->amount > $available_funds){
                 return $this->error(__('Payout amount is greater than available funds'), 402);
@@ -156,7 +156,7 @@ class AgentPayoutController extends BaseController{
         $pending_payout_value  = AgentPayout::where('agent_id', $agent_id)->whereIn('status', [0])->sum('amount');
 
         
-        $available_funds    = agentEarningManager::getAgentEarning($agent->id) - $pending_payout_value;
+        $available_funds    = agentEarningManager::getAgentEarning($agent->id, 1) - $pending_payout_value;
         
         $available_funds    = number_format($available_funds, 2, '.', ',');
         $past_payout_value  = number_format($past_payout_value, 2, '.', ',');
@@ -228,7 +228,7 @@ class AgentPayoutController extends BaseController{
         }
 
         //stripe connected account details
-        $codes = ['cash', 'stripe', 'pagarme'];
+        $codes = ['cash', 'stripe', 'pagarme', 'bank_account_m_india'];
         $payout_creds = PayoutOption::whereIn('code', $codes)->where('status', 1)->get();
         if ($payout_creds) {
             foreach ($payout_creds as $creds) {

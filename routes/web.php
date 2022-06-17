@@ -152,12 +152,14 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 			Route::post('client_preference/{id}', 'ClientController@storePreference')->name('preference');
 			Route::post('route-create-configure/{id}', 'ClientController@routeCreateConfigure')->name('route.create.configure');
 			Route::post('task/proof', 'ClientController@taskProof')->name('task.proof');
+			Route::post('update-contact-us', 'ClientController@updateContactUs')->name('update.contact.us');
 			Route::get('configure', 'ClientController@ShowConfiguration')->name('configure');
 			Route::post('smtp/save', 'ClientController@saveSmtp')->name('smtp');
             Route::post('fivcon/save', 'ClientController@faviconUoload')->name('favicon');
 			Route::get('options', 'ClientController@ShowOptions')->name('options');
 			Route::resource('agent', 'AgentController');
 			Route::get('agent/{id}/show', 'AgentController@show')->name('agent.show');
+			Route::post('agent/search', 'AgentController@search')->name('agent.search');
 			Route::post('pay/receive', 'AgentController@payreceive')->name('pay.receive');
 			Route::get('agent/paydetails/{id}', 'AgentController@agentPayDetails')->name('agent.paydetails');
 			Route::post('agent/approval_status', 'AgentController@approval_status')->name('agent/approval_status');
@@ -245,6 +247,15 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 			Route::get('cms/agent-sms/templates', 'CMS\DriverSMSTemplateController@index')->name('cms.agent-sms.templates');
 			Route::get('cms/agent-sms/template/{id}', 'CMS\DriverSMSTemplateController@show')->name('cms.agent-sms.template.show');
 			Route::post('cms/agent-sms/template/update', 'CMS\DriverSMSTemplateController@update')->name('cms.agent-sms.template.update');
+
+			Route::get('cms/page/templates', 'CMS\PageTemplateController@index')->name('cms.page.templates');
+			Route::get('cms/page/template/{id}', 'CMS\PageTemplateController@show')->name('cms.page.template.show');
+			Route::post('cms/page/template/update', 'CMS\PageTemplateController@update')->name('cms.page.template.update');
+
+			Route::get('cms/email/templates', 'CMS\EmailTemplateController@index')->name('cms.email.templates');
+			Route::get('cms/email/template/{id}', 'CMS\EmailTemplateController@show')->name('cms.email.template.show');
+			Route::post('cms/email/template/update', 'CMS\EmailTemplateController@update')->name('cms.email.template.update');
+			
 		});
 	});
 

@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Http\Controllers\Api\BaseController;
 
 use App\Model\Task;
 use App\Model\Location;
@@ -39,12 +38,9 @@ use Maatwebsite\Excel\HeadingRowImport;
 use App\Exports\RoutesExport;
 use Excel;
 use GuzzleHttp\Client as Gclient;
-use App\Traits\ApiResponser;
 
-class TaskController extends BaseController
+class TaskController extends Controller
 {
-    use ApiResponser;
-    
     /**
      * Display a listing of the resource.
      *
@@ -88,7 +84,6 @@ class TaskController extends BaseController
                 $query->whereIn('tag_id', $team_tags);
             });
         }
-
         $all = $all->get();
         $active   =  count($all->where('status', 'assigned'));
         $pending  =  count($all->where('status', 'unassigned'));
@@ -211,12 +206,16 @@ class TaskController extends BaseController
                 ->addColumn('order_time', function ($orders) use ($request, $timezone, $preference) {
                     $tz              = new Timezone();
                     $client_timezone = $tz->timezone_name($timezone);
-                    // $preference      = ClientPreference::where('id', 1)->first(['theme','date_format','time_format']);
-                    $timeformat      = $preference->time_format == '24' ? 'H:i:s':'g:i a';
-                    $order           = Carbon::createFromFormat('Y-m-d H:i:s', $orders->order_time, 'UTC');
-                    $order->setTimezone($client_timezone);
-                    $preference->date_format = $preference->date_format ?? 'm/d/Y';
-                    return date(''.$preference->date_format.' '.$timeformat.'', strtotime($order));
+                    if(!empty($orders->order_time)):
+                        $timeformat      = $preference->time_format == '24' ? 'H:i:s':'g:i a';
+                        $order           = Carbon::createFromFormat('Y-m-d H:i:s', $orders->order_time, 'UTC');
+                        
+                        $order->setTimezone($client_timezone);
+                        $preference->date_format = $preference->date_format ?? 'm/d/Y';
+                        return date(''.$preference->date_format.' '.$timeformat.'', strtotime($order));
+                    else:
+                        return '';
+                    endif;
                 })
                 ->addColumn('short_name', function ($orders) use ($request) {
                     $routes = array();
@@ -298,11 +297,17 @@ class TaskController extends BaseController
                         //     }
                         //     return false;
                         // });
-
-                        $instance->whereHas('customer', function($q) use($request){
-                            $search = $request->get('search');
-                            $q->where('name', 'Like', '%'.$search.'%')
-                            ->orWhere('phone_number', 'Like', '%'.$search.'%');
+                        
+                        $search = $request->get('search');
+                        $instance->where(function($query) use($search){
+                            $query->where('order_number', 'Like', '%'.$search.'%')
+                            ->orWhereHas('customer', function($q) use($search){
+                                $q->where('name', 'Like', '%'.$search.'%')
+                                ->orWhere('phone_number', 'Like', '%'.$search.'%');
+                            })
+                            ->orWhereHas('agent', function($q) use($search){
+                                $q->where('name', 'Like', '%'.$search.'%');
+                            });
                         });
                     }
                 }, true)
@@ -416,11 +421,6 @@ class TaskController extends BaseController
     // function for saving new order
     public function newtasks(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'cash_to_be_collected' => ['required','numeric', 'min:0']
-        ])->validate();
-
-        //dd($request->toArray());
         $loc_id = $cus_id = $send_loc_id = $newlat = $newlong = 0;
         $iinputs = $request->toArray();
         $old_address_ids = array();
@@ -682,8 +682,7 @@ class TaskController extends BaseController
             $to_time = strtotime($to);
             $from_time = strtotime($from);;
             if ($to_time >= $from_time) {
-                // return redirect()->route('tasks.index')->with('success', 'Task Added Successfully!');
-                return $this->success('', __('Task Added Successfully!'), 200);
+                return redirect()->route('tasks.index')->with('success', 'Task Added Successfully!');
             }
 
             $diff_in_minutes = round(abs($to_time - $from_time) / 60);
@@ -710,8 +709,7 @@ class TaskController extends BaseController
                 //->delay(now()->addMinutes($finaldelay))
                 scheduleNotification::dispatch($schduledata)->delay(now()->addMinutes($finaldelay));
                 //$this->dispatch(new scheduleNotification($schduledata));
-                // return true;
-                return $this->success('', __('Task Added Successfully!'), 200);
+                return response()->json(['success'=> true,'status' => "Success"]);
             }
         }
 
@@ -737,14 +735,25 @@ class TaskController extends BaseController
                     $this->batchWise($geo, $notification_time, $agent_id, $orders->id, $customer, $finalLocation, $taskcount, $allocation);
             }
         }
-        // return true;
-        return $this->success('', __('Task Added Successfully!'), 200);
+        return response()->json(['success'=> true,'status' => "Success"]);
     }
 
     //function for assigning driver to unassigned orders
     public function assignAgent(Request $request)
     {
-        $order_update = Order::whereIn('id', $request->orders_id)->update(['driver_id'=>$request->agent_id,'status'=>'assigned','auto_alloction'=>'m']);
+        if(!empty($request->agent_id)):
+            $pricingRule = PricingRule::where('id', 1)->first();
+            $task_id = Order::find($request->orders_id);
+            $agent_details = Agent::where('id', $request->agent_id)->first();
+            if ($agent_details->type == 'Employee'):
+                $percentage = $pricingRule->agent_commission_fixed + (($task_id[0]->order_cost / 100) * $pricingRule->agent_commission_percentage);
+            else:
+                $percentage = $pricingRule->freelancer_commission_percentage + (($task_id[0]->order_cost / 100) * $pricingRule->freelancer_commission_fixed);
+            endif;
+        else:
+            $percentage = 0.00;
+        endif;
+        $order_update = Order::whereIn('id', $request->orders_id)->update(['driver_id'=>$request->agent_id, 'driver_cost'=>$percentage, 'status'=>'assigned', 'auto_alloction'=>'m']);
         $task         = Task::whereIn('order_id', $request->orders_id)->update(['task_status'=>1]);
         $this->MassAndEditNotification($request->orders_id[0], $request->agent_id);
     }
@@ -812,12 +821,6 @@ class TaskController extends BaseController
             'device_token'        => $oneagent->device_token,
             'detail_id'           => $randem,
         ];
-        if(isset($order_details->type) && $order_details->type == 1 && strlen($order_details->friend_phone_number) > 8)
-        {
-            $friend_sms_body = $order_details->customer->name.' have booked a ride for you. Driver '.$oneagent->name.' in our '.$oneagent->make_model.' with license plate '.$oneagent->plate_number.' has been assgined.';
-            $this->sendSms2($order_details->friend_phone_number , $friend_sms_body);
-        }
-
         $this->dispatch(new RosterCreate($data, $extraData)); //this job is for create roster in main database for send the notification  in manual alloction
     }
 
@@ -1295,7 +1298,7 @@ class TaskController extends BaseController
 
             $getgeo = DriverGeo::where('geo_id', $geo)->with([
                 'agent'=> function ($o) use ($cash_at_hand, $date) {
-                    $o->whereRaw("(select COALESCE(SUM(cash_to_be_collected),0) from orders where orders.driver_id=agents.id and status='completed') - (select COALESCE(SUM(driver_cost),0) from orders where orders.driver_id=agents.id and status='completed') + (select COALESCE(SUM(cr),0) as sum from payments where payments.driver_id=agents.id) - (select COALESCE(SUM(dr),0) as sum from payments where payments.driver_id=agents.id) - ((select COALESCE(balance,0) as sum from wallets where wallets.holder_id=agents.id)/100) + (select COALESCE(SUM(amount),0) from agent_payouts where agent_payouts.agent_id=agents.id and agent_payouts.status=0) < ".$cash_at_hand)->orderBy('id', 'DESC')->with(['logs','order'=> function ($f) use ($date) {
+                    $o->whereRaw("(select COALESCE(SUM(cash_to_be_collected),0) from orders where orders.driver_id=agents.id and status='completed') - (select COALESCE(SUM(driver_cost),0) from orders where orders.driver_id=agents.id and status='completed' and is_comm_settled != 2) + (select COALESCE(SUM(cr),0) as sum from payments where payments.driver_id=agents.id) - (select COALESCE(SUM(dr),0) as sum from payments where payments.driver_id=agents.id) - ((select COALESCE(balance,0) as sum from wallets where wallets.holder_id=agents.id)/100) + (select COALESCE(SUM(amount),0) from agent_payouts where agent_payouts.agent_id=agents.id and agent_payouts.status=0) < ".$cash_at_hand)->orderBy('id', 'DESC')->with(['logs','order'=> function ($f) use ($date) {
                         $f->whereDate('order_time', $date)->with('task');
                     }]);
                 }])->get();
@@ -1491,7 +1494,7 @@ class TaskController extends BaseController
             $getgeo = DriverGeo::where('geo_id', $geo)->with(
                         [
                             'agent'=> function ($o) use ($cash_at_hand, $date) {
-                                $o->whereRaw("(select COALESCE(SUM(cash_to_be_collected),0) from orders where orders.driver_id=agents.id and status='completed') - (select COALESCE(SUM(driver_cost),0) from orders where orders.driver_id=agents.id and status='completed') + (select COALESCE(SUM(cr),0) as sum from payments where payments.driver_id=agents.id) - (select COALESCE(SUM(dr),0) as sum from payments where payments.driver_id=agents.id) - ((select COALESCE(balance,0) as sum from wallets where wallets.holder_id=agents.id)/100) + (select COALESCE(SUM(amount),0) from agent_payouts where agent_payouts.agent_id=agents.id and agent_payouts.status=0) < ".$cash_at_hand)->orderBy('id', 'DESC')->with(['logs','order'=> function ($f) use ($date) {
+                                $o->whereRaw("(select COALESCE(SUM(cash_to_be_collected),0) from orders where orders.driver_id=agents.id and status='completed') - (select COALESCE(SUM(driver_cost),0) from orders where orders.driver_id=agents.id and status='completed' and is_comm_settled != 2) + (select COALESCE(SUM(cr),0) as sum from payments where payments.driver_id=agents.id) - (select COALESCE(SUM(dr),0) as sum from payments where payments.driver_id=agents.id) - ((select COALESCE(balance,0) as sum from wallets where wallets.holder_id=agents.id)/100) + (select COALESCE(SUM(amount),0) from agent_payouts where agent_payouts.agent_id=agents.id and agent_payouts.status=0) < ".$cash_at_hand)->orderBy('id', 'DESC')->with(['logs','order'=> function ($f) use ($date) {
                                     $f->whereDate('order_time', $date)->with('task');
                                 }]);
                             }
@@ -1604,7 +1607,7 @@ class TaskController extends BaseController
             $getgeo = DriverGeo::where('geo_id', $geo)->with(
                         [
                             'agent'=> function ($o) use ($cash_at_hand, $date) {
-                                $o->whereRaw("(select COALESCE(SUM(cash_to_be_collected),0) from orders where orders.driver_id=agents.id and status='completed') - (select COALESCE(SUM(driver_cost),0) from orders where orders.driver_id=agents.id and status='completed') + (select COALESCE(SUM(cr),0) as sum from payments where payments.driver_id=agents.id) - (select COALESCE(SUM(dr),0) as sum from payments where payments.driver_id=agents.id) - ((select COALESCE(balance,0) as sum from wallets where wallets.holder_id=agents.id)/100) + (select COALESCE(SUM(amount),0) from agent_payouts where agent_payouts.agent_id=agents.id and agent_payouts.status=0) < ".$cash_at_hand)->orderBy('id', 'DESC')->with(['logs' => function ($g) {
+                                $o->whereRaw("(select COALESCE(SUM(cash_to_be_collected),0) from orders where orders.driver_id=agents.id and status='completed') - (select COALESCE(SUM(driver_cost),0) from orders where orders.driver_id=agents.id and status='completed' and is_comm_settled != 2) + (select COALESCE(SUM(cr),0) as sum from payments where payments.driver_id=agents.id) - (select COALESCE(SUM(dr),0) as sum from payments where payments.driver_id=agents.id) - ((select COALESCE(balance,0) as sum from wallets where wallets.holder_id=agents.id)/100) + (select COALESCE(SUM(amount),0) from agent_payouts where agent_payouts.agent_id=agents.id and agent_payouts.status=0) < ".$cash_at_hand)->orderBy('id', 'DESC')->with(['logs' => function ($g) {
                                     $g->orderBy('id', 'DESC');
                                 }
                                     ,'order'=> function ($f) use ($date) {
@@ -1728,7 +1731,7 @@ class TaskController extends BaseController
             $getgeo = DriverGeo::where('geo_id', $geo)->with(
                         [
                             'agent'=> function ($o) use ($cash_at_hand, $date) {
-                                $o->whereRaw("(select COALESCE(SUM(cash_to_be_collected),0) from orders where orders.driver_id=agents.id and status='completed') - (select COALESCE(SUM(driver_cost),0) from orders where orders.driver_id=agents.id and status='completed') + (select COALESCE(SUM(cr),0) as sum from payments where payments.driver_id=agents.id) - (select COALESCE(SUM(dr),0) as sum from payments where payments.driver_id=agents.id) - ((select COALESCE(balance,0) as sum from wallets where wallets.holder_id=agents.id)/100) + (select COALESCE(SUM(amount),0) from agent_payouts where agent_payouts.agent_id=agents.id and agent_payouts.status=0) < ".$cash_at_hand)->orderBy('id', 'DESC')->with(['logs','order'=> function ($f) use ($date) {
+                                $o->whereRaw("(select COALESCE(SUM(cash_to_be_collected),0) from orders where orders.driver_id=agents.id and status='completed') - (select COALESCE(SUM(driver_cost),0) from orders where orders.driver_id=agents.id and status='completed' and is_comm_settled != 2) + (select COALESCE(SUM(cr),0) as sum from payments where payments.driver_id=agents.id) - (select COALESCE(SUM(dr),0) as sum from payments where payments.driver_id=agents.id) - ((select COALESCE(balance,0) as sum from wallets where wallets.holder_id=agents.id)/100) + (select COALESCE(SUM(amount),0) from agent_payouts where agent_payouts.agent_id=agents.id and agent_payouts.status=0) < ".$cash_at_hand)->orderBy('id', 'DESC')->with(['logs','order'=> function ($f) use ($date) {
                                     $f->whereDate('order_time', $date)->with('task');
                                 }]);
                             }
@@ -2046,7 +2049,6 @@ class TaskController extends BaseController
      */
     public function update(Request $request, $domain = '', $id)
     {
-        // dd($request->all());
         $iinputs = $request->toArray();
         $old_address_ids = array();
         foreach ($iinputs as $key => $value) {

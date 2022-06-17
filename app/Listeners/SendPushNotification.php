@@ -121,8 +121,7 @@ class SendPushNotification
 
 
         foreach($array as $item){
-           // Log::info(json_encode($item));
-            //Log::info($item['notification_time']);
+
             if(isset($item['device_token']) && !empty($item['device_token'])){
                 //Log::info('Fcm Response 11');
 
@@ -133,7 +132,7 @@ class SendPushNotification
                // Log::info('token=');
 
                 array_push($new,$item['device_token']);
-                Log::info($new);
+               // Log::info($new);
 
                 $clientRecord = Client::where('code', $item['client_code'])->first();
                 $this->seperate_connection('db_'.$clientRecord->database_name);
@@ -161,7 +160,7 @@ class SendPushNotification
                                         ->send();
 
                                            // Log::info('Fcm Response in');
-                                            Log::info($fcm_store);
+                                            //Log::info($fcm_store);
                     }
                     catch(Exception $e){
                         Log::info($e->getMessage());

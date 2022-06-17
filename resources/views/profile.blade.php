@@ -197,7 +197,7 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="company_address" class="control-label">{{__("COMPANY ADDRESS")}}</label>
-                                    <input type="text" class="form-control" id="company_address" name="company_address" value="{{ old('company_address', Auth::user()->company_address ?? '')}}" placeholder="{{__("Enter company address")}}" {{ $is_readonly }}>
+                                    <input type="text" class="form-control" id="company_address" name="company_address" value="{{ old('company_address', Auth::user()->company_address ?? '')}}" placeholder="{{__("Enter company address")}}">
                                     @if($errors->has('company_address'))
                                     <span class="text-danger" role="alert">
                                         <strong>{{ $errors->first('company_address') }}</strong>
