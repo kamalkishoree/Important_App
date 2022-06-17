@@ -117,8 +117,20 @@
        }
        .showsimagegall{
         margin-top: 20px;
-
        }
+       .imagepri_wrap {
+            position: relative;
+        }
+        button.close.imagepri_close {
+            position: absolute;
+            top: -7px;
+            right: 1px;
+            background-color: red;
+            border-radius: 50%;
+            padding: 0px 3px;
+            font-size: 14px;
+            color: white;
+        }
        .allset{
            margin-left: 9px !important;
            margin-right: 9px !important;
@@ -847,13 +859,33 @@
     //    //readURL(this);
     // });
 
+    function reArrangeFileWrapIndexes(){
+        $('.imagepri_wrap').each(function(index, elem){
+            $(elem).attr('data-id', index);
+        });
+    }
+
+    function insertArrayToFiles(routefileListArray){
+        console.log(routefileListArray);
+        const dT = new ClipboardEvent('').clipboardData || new DataTransfer(); 
+        for (let file of routefileListArray) { 
+            dT.items.add(file);
+        }
+        $('#file').prop("files",dT.files);
+    }
+
+    var routefileListArray = [];
     $(document).on("change", "#file", function() {
        previewImages(this);
     });
 
     function previewImages(input) { //console.log('1');
-        $('.imagepri').remove();
+        // $('.imagepri_wrap').remove();
         var fileList = input.files;
+        Array.prototype.push.apply(routefileListArray, Array.from(fileList));
+        insertArrayToFiles(routefileListArray);
+
+        // routefileListArray = Array.from(fileList);
         if(fileList.length){
             $(".showsimagegall").removeClass('d-block').addClass("d-none");
         }else{
@@ -863,10 +895,28 @@
 
         for(var i = 0; i < fileList.length; i++){
             var objectUrl = anyWindow.createObjectURL(fileList[i]);
-            $('#imagePreview').append('<img src="' + objectUrl + '" class="imagepri" />');
+            $('#imagePreview').append('<div class="imagepri_wrap mb-2"><img src="' + objectUrl + '" class="imagepri mr-2" /><button type="button" class="close imagepri_close" data-id="'+i+'" aria-hidden="true">×</button></div>');
             window.URL.revokeObjectURL(fileList[i]);
         }
+        
+        reArrangeFileWrapIndexes();
     }
+
+    $(document).on('click', '.imagepri_close', function(e){
+        // console.log(savedFileListArray);
+        var index = $(this).attr('data-id');
+        // console.log(index)
+        if($(this).hasClass(".saved")){
+            savedFileListArray.splice(index, 1);
+            // console.log(savedFileListArray);
+            $(this).parents('.imagepri_wrap').remove();
+        }else{
+            routefileListArray.splice(index, 1); // At position index, remove 1 file
+            $(this).parents('.imagepri_wrap').remove();
+            insertArrayToFiles(routefileListArray);
+            reArrangeFileWrapIndexes();
+        }
+    });
 
     $(document).on('click', '.assignRadio', function () {
 
