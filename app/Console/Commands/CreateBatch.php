@@ -61,7 +61,22 @@ class CreateBatch extends Command
      * @return int
      */
     public function handle()
-    {
+    {   
+        $timeZone = 'Asia/kolkata';
+        //Start morning batch allocation time is greater than 7:59am
+        $now = new \DateTime("now", new \DateTimeZone('UTC'));
+        $to = Carbon::parse($now)->format('Y-m-d H:i:s');
+        $start = date('Y-m-d').' 07:59:59';
+        $end = date('Y-m-d').' 20:01:59';
+        $now_time = strtotime($to);
+        $start_time = $this->convertDateTimeToUtcAndAddMinToTimeStemp($start,$timeZone);
+        $end_time = $this->convertDateTimeToUtcAndAddMinToTimeStemp($end,$timeZone);
+
+        
+
+        if($now_time<=$start_time || $now_time>$end_time){
+        return false;
+        }
         //Pick only clients which has enable batch allocation feture
         $clients = Client::where(['status'=> 1,'batch_allocation'=>1])->get();
         foreach($clients as $client){
@@ -86,21 +101,42 @@ class CreateBatch extends Command
             ];
             Config::set("database.connections.$database_name", $default);
             DB::setDefaultConnection($database_name);
-            
+
             //Client Prefernces
             $preferences = ClientPreference::where('id', 1)->select('create_batch_hours','maximum_route_per_job','job_consist_of_pickup_or_delivery')->first();
 
             //Client Allocation Rules
             $allocation = AllocationRule::where('client_id', $client->code)->select('auto_assign_logic','maximum_task_per_person')->first();
 
+            $addminutes = $preferences->create_batch_hours*60;
+           
+            $batchCompareDate =  BatchAllocation::select('created_at')->latest()->first();
+            if(isset($batchCompareDate->created_at)){
+                $timeStempBatch = $this->convertDateTimeToUtcAndAddMinToTimeStemp($batchCompareDate->created_at,$timeZone,$addminutes);
+                $nextBatchDate = $this->convertDateTimeToUtcAndAddMinToTimeStemp($batchCompareDate->created_at,$timeZone,$addminutes,'D');
+              }else{
+                $nextBatchDate = Carbon::parse($now)->addMinutes($addminutes)->format('Y-m-d H:i:s');
+                $timeStempBatch =  $now_time-1;
+            }
+            //Check Last Batch Created Time for next Create Batch  
+            if($now_time<=$timeStempBatch){
+                return false;
+            }
+           
+
             $typeArrayRoute = ['P','D'];
             foreach($typeArrayRoute as $typeR)
             {
-
+            
+            $taskType = (($typeR=='P')?'1':'2');
             //Fetch Pickup order with tasks
-            $pickupOrders = Order::with(['task'=>function($o){
-                $o->where('task_type_id',1);
-            }])->where(['status'=> 'unassigned','request_type'=>$typeR])->orderBy('id','desc')->get();
+            $pickupOrders = Order::whereNotIn('id',function($query) {
+
+                $query->select('order_id')->from('batch_allocation_details');
+             
+             })->with(['task'=>function($o)use($taskType){
+                $o->where('task_type_id',$taskType);
+            }])->where(['status'=> 'unassigned','request_type'=>$typeR])->where('order_time','<=',$nextBatchDate)->orderBy('id','desc')->get();
            //->where('id','164')->orWhere('id','178')->limit(10)
 
             //Empty Order Temp Table First
@@ -431,6 +467,16 @@ class CreateBatch extends Command
             //  die;
             //die('hello');
         }
+    }
+
+    public function convertDateTimeToUtcAndAddMinToTimeStemp($date,$timeZone,$minutes = '0', $type='T')
+    {
+        $timeStemp = Carbon::createFromFormat('Y-m-d H:i:s', $date, $timeZone)->addMinutes($minutes)->setTimezone('UTC');
+
+        if($type=='T')
+        $timeStemp = strtotime($timeStemp);
+
+        return $timeStemp;
     }
 
     public function checkTimeDiffrence($notification_time, $beforetime)
