@@ -178,17 +178,23 @@
                     </a>
                     <div class="collapse" id="sidebarcms">
                         <ul class="nav-second-level">
-                            @if(in_array('agent_sms_templates',$allowed) || Auth::user()->is_superadmin == 1)
-                                <li>
-                                    <a href="{{route('cms.agent-sms.templates')}}">{{ __('Agent SMS') }}</a>
-                                </li>
-                            @endif
-
                             @if(in_array('page_templates',$allowed) || Auth::user()->is_superadmin == 1)
                                 <li>
                                     <a href="{{route('cms.page.templates')}}">{{ __('Pages') }}</a>
                                 </li>
                             @endif
+                            @if(in_array('email_templates',$allowed) || Auth::user()->is_superadmin == 1)
+                                <li>
+                                    <a href="{{route('cms.email.templates')}}">{{ __('Email') }}</a>
+                                </li>
+                            @endif
+                            @if(in_array('agent_sms_templates',$allowed) || Auth::user()->is_superadmin == 1)
+                                <li>
+                                    <a href="{{route('cms.agent-sms.templates')}}">{{ __('SMS') }}</a>
+                                </li>
+                            @endif
+
+                            
                         </ul>
                     </div>
                 </li>

@@ -12,7 +12,7 @@ class CmsTableSeeder extends Seeder
      */
     public function run()
     {
-        $option_count = DB::table('payment_options')->count();
+        $option_count = DB::table('cms')->count();
  
         $options = array(
             array(

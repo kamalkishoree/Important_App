@@ -350,11 +350,28 @@ class ClientController extends Controller
         $cms         = Cms::all('content');
         $task_proofs = TaskProof::where('type', '!=', 0)->get();
         $task_list   = TaskType::all();
-        //print_r($task_list); die;
+        $user        = Auth::user();
+        $client      = Client::where('code', $user->code)->first();
         $subClients  = SubClient::all();
-        return view('customize')->with(['preference' => $preference, 'currencies' => $currencies,'cms'=>$cms,'task_proofs' => $task_proofs,'task_list' => $task_list]);
+        return view('customize')->with(['clientContact'=>$client, 'preference' => $preference, 'currencies' => $currencies,'cms'=>$cms,'task_proofs' => $task_proofs,'task_list' => $task_list]);
     }
 
+    public function updateContactUs(Request $request){
+        $rules = array(
+            'contact_phone_number' => 'required|min:7|max:15'
+        );
+        $validation  = Validator::make($request->all(), $rules);
+        if ($validation->fails()) {
+            return redirect()->back()->withInput()->withErrors($validation);
+        }
+        $user = Auth::user();
+        $client = Client::where('code', $user->code)->first();
+        $client->contact_address =  $request->contact_address ;
+        $client->contact_phone_number =  $request->contact_phone_number ;
+        $client->contact_email =  $request->contact_email ;
+        $client->save();
+        return redirect()->back()->with('success', 'Contact Us Updated successfully!');
+    }
 
     /**
      * Show Configuration page
