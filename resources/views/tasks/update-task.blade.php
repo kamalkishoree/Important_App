@@ -404,9 +404,9 @@ use Carbon\Carbon;
                                     <div id="imagePreview" class="privewcheck d-flex justify-content-center flex-wrap">
                                         @if (count($images) > 0 && $images[0] != '')
                                             @foreach ($images as $i => $item)
-                                                <div class="imagepri_wrap mb-2">
+                                                <div class="imagepri_wrap mb-2 saved" data-id="{{ $i }}">
                                                     <img src="{{ $main }}{{ $item }}" class="imagepri mr-2" />
-                                                    <button type="button" class="close imagepri_close saved" data-id="{{ $i }}" aria-hidden="true">×</button>
+                                                    <button type="button" class="close imagepri_close saved" aria-hidden="true">×</button>
                                                 </div>
                                             @endforeach
                                         @endif

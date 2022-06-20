@@ -2082,6 +2082,11 @@ class TaskController extends BaseController
         $tz = new Timezone();
         $auth->timezone = $tz->timezone_name(Auth::user()->timezone);
 
+        if(isset($request->savedFiles) && (count($request->savedFiles) > 0)){
+            $update_saved = implode(",", $request->savedFiles);
+            $last .= $update_saved;
+        }
+
         if (isset($request->file) && count($request->file) > 0) {
             $folder = str_pad(Auth::user()->id, 8, '0', STR_PAD_LEFT);
             $folder = 'client_' . $folder;
@@ -2094,7 +2099,11 @@ class TaskController extends BaseController
                 $path = Storage::disk('s3')->put($s3filePath, $file, 'public');
                 array_push($images, $path);
             }
-            $last = implode(",", $images);
+            $file_paths = implode(",", $images);
+            if(!empty($last)){
+                $last .= ',' ;
+            }
+            $last .= $file_paths;
         }
 
         if (!isset($request->ids)) {

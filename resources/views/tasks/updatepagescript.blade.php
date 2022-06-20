@@ -368,7 +368,7 @@ $(document).ready(function(){
                 contentType: false,
                 processData: false,
                 success: function(response) {
-                    window.location.href = '/tasks';             
+                    window.location.href = '/tasks';
                 },
                 error: function(response) {
                     

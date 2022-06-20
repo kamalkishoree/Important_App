@@ -859,14 +859,13 @@
     //    //readURL(this);
     // });
 
-    function reArrangeFileWrapIndexes(){
-        $('.imagepri_wrap').each(function(index, elem){
+    function reArrangeFileWrapIndexes(img_wrap_class){
+        $(img_wrap_class).each(function(index, elem){
             $(elem).attr('data-id', index);
         });
     }
 
     function insertArrayToFiles(routefileListArray){
-        console.log(routefileListArray);
         const dT = new ClipboardEvent('').clipboardData || new DataTransfer(); 
         for (let file of routefileListArray) { 
             dT.items.add(file);
@@ -895,7 +894,7 @@
 
         for(var i = 0; i < fileList.length; i++){
             var objectUrl = anyWindow.createObjectURL(fileList[i]);
-            $('#imagePreview').append('<div class="imagepri_wrap mb-2"><img src="' + objectUrl + '" class="imagepri mr-2" /><button type="button" class="close imagepri_close" data-id="'+i+'" aria-hidden="true">×</button></div>');
+            $('#imagePreview').append('<div class="imagepri_wrap mb-2" data-id="'+i+'"><img src="' + objectUrl + '" class="imagepri mr-2" /><button type="button" class="close imagepri_close" aria-hidden="true">×</button></div>');
             window.URL.revokeObjectURL(fileList[i]);
         }
         
@@ -903,18 +902,19 @@
     }
 
     $(document).on('click', '.imagepri_close', function(e){
-        // console.log(savedFileListArray);
-        var index = $(this).attr('data-id');
-        // console.log(index)
-        if($(this).hasClass(".saved")){
+        // console.log(savedFileListArray, 'before');
+        var index = $(this).parents('.imagepri_wrap').attr('data-id');
+        // console.log(index, 'index');
+        if($(this).parents('.imagepri_wrap').hasClass("saved")){
             savedFileListArray.splice(index, 1);
-            // console.log(savedFileListArray);
+            // console.log(savedFileListArray, 'after');
             $(this).parents('.imagepri_wrap').remove();
+            reArrangeFileWrapIndexes('.imagepri_wrap.saved');
         }else{
             routefileListArray.splice(index, 1); // At position index, remove 1 file
             $(this).parents('.imagepri_wrap').remove();
             insertArrayToFiles(routefileListArray);
-            reArrangeFileWrapIndexes();
+            reArrangeFileWrapIndexes('.imagepri_wrap');
         }
     });
 
