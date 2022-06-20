@@ -117,8 +117,20 @@
        }
        .showsimagegall{
         margin-top: 20px;
-
        }
+       .imagepri_wrap {
+            position: relative;
+        }
+        button.close.imagepri_close {
+            position: absolute;
+            top: -7px;
+            right: 1px;
+            background-color: red;
+            border-radius: 50%;
+            padding: 0px 3px;
+            font-size: 14px;
+            color: white;
+        }
        .allset{
            margin-left: 9px !important;
            margin-right: 9px !important;
@@ -355,11 +367,11 @@
                     countZ = 1;
                 });
 
-                $("#file").click(function() {
-                    $('.showsimagegall').hide();
-                    $('.imagepri').remove();
+                // $("#file").click(function() {
+                //     $('.showsimagegall').hide();
+                //     $('.imagepri').remove();
 
-                });
+                // });
 
                 loadMapHeader(autoWrap);
                 searchRes();
@@ -402,6 +414,31 @@
                 $('#task-modal-header #cusid').val(ui.item.value); // save selected id to input
                 add_event(ui.item.value);
                 $(".oldhide").hide();
+                return false;
+            }
+        });
+
+        $("#task-modal-header #searchDriver").autocomplete({
+            source: function(request, response) {
+                // Fetch data
+                $.ajax({
+                    url: "{{ route('agent.search') }}",
+                    type: 'post',
+                    dataType: "json",
+                    data: {
+                        _token: CSRF_TOKEN,
+                        search: request.term
+                    },
+                    success: function(data) {
+                        response(data);
+                    }
+                });
+            },
+            select: function(event, ui) {
+                // Set selection
+                $('#task-modal-header #searchDriver').val(ui.item.label); // display the selected text
+                $('#task-modal-header #agentid').val(ui.item.value); // save selected id to input
+                // $(".oldhide").hide();
                 return false;
             }
         });
@@ -821,13 +858,32 @@
     //    //readURL(this);
     // });
 
+    function reArrangeFileWrapIndexes(img_wrap_class){
+        $(img_wrap_class).each(function(index, elem){
+            $(elem).attr('data-id', index);
+        });
+    }
+
+    function insertArrayToFiles(routefileListArray){
+        const dT = new ClipboardEvent('').clipboardData || new DataTransfer(); 
+        for (let file of routefileListArray) { 
+            dT.items.add(file);
+        }
+        $('#file').prop("files",dT.files);
+    }
+
+    var routefileListArray = [];
     $(document).on("change", "#file", function() {
        previewImages(this);
     });
 
     function previewImages(input) { //console.log('1');
-        $('.imagepri').remove();
+        // $('.imagepri_wrap').remove();
         var fileList = input.files;
+        Array.prototype.push.apply(routefileListArray, Array.from(fileList));
+        insertArrayToFiles(routefileListArray);
+
+        // routefileListArray = Array.from(fileList);
         if(fileList.length){
             $(".showsimagegall").removeClass('d-block').addClass("d-none");
         }else{
@@ -837,10 +893,29 @@
 
         for(var i = 0; i < fileList.length; i++){
             var objectUrl = anyWindow.createObjectURL(fileList[i]);
-            $('#imagePreview').append('<img src="' + objectUrl + '" class="imagepri" />');
+            $('#imagePreview').append('<div class="imagepri_wrap mb-2" data-id="'+i+'"><img src="' + objectUrl + '" class="imagepri mr-2" /><button type="button" class="close imagepri_close" aria-hidden="true">×</button></div>');
             window.URL.revokeObjectURL(fileList[i]);
         }
+        
+        reArrangeFileWrapIndexes();
     }
+
+    $(document).on('click', '.imagepri_close', function(e){
+        // console.log(savedFileListArray, 'before');
+        var index = $(this).parents('.imagepri_wrap').attr('data-id');
+        // console.log(index, 'index');
+        if($(this).parents('.imagepri_wrap').hasClass("saved")){
+            savedFileListArray.splice(index, 1);
+            // console.log(savedFileListArray, 'after');
+            $(this).parents('.imagepri_wrap').remove();
+            reArrangeFileWrapIndexes('.imagepri_wrap.saved');
+        }else{
+            routefileListArray.splice(index, 1); // At position index, remove 1 file
+            $(this).parents('.imagepri_wrap').remove();
+            insertArrayToFiles(routefileListArray);
+            reArrangeFileWrapIndexes('.imagepri_wrap');
+        }
+    });
 
     $(document).on('click', '.assignRadio', function () {
 

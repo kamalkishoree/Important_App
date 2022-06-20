@@ -22,7 +22,7 @@ use App\Model\AllocationRule;
 use App\Model\ClientPreference;
 use App\Model\NotificationType;
 use App\Traits\agentEarningManager;
-use App\Model\{PricingRule, TagsForAgent, AgentPayout, TagsForTeam, Team, PaymentOption, PayoutOption, AgentConnectedAccount};
+use App\Model\{PricingRule, TagsForAgent, AgentPayout, TagsForTeam, Team, PaymentOption, PayoutOption, AgentConnectedAccount, CustomerVerificationResource};
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -637,6 +637,12 @@ class TaskController extends BaseController
             if ($check && $check->call_back_url) {
                 $call_web_hook = $this->updateStatusDataToOrder($check, 2,1);  # task accepted
             }
+            //Send SMS in case of friend's booking
+            if(isset($check->type) && $check->type == 1 && strlen($check->friend_phone_number) > 8)
+            {
+                $friend_sms_body = 'Hi '.($check->friend_name).', '.($check->customer->name??'Our customer').' has booked a ride for you.';
+                $send = $this->sendSms2($check->friend_phone_number , $friend_sms_body);
+            }
             return response()->json([
                 'message' => __('Task Accecpted Successfully'),
             ], 200);
@@ -666,6 +672,12 @@ class TaskController extends BaseController
             if ($check && $check->call_back_url) {
                 $call_web_hook = $this->updateStatusDataToOrder($check, 2,1);  # task accepted
             }
+            //Send SMS in case of friend's booking
+            if(isset($check->type) && $check->type == 1 && strlen($check->friend_phone_number) > 8)
+            {
+                $friend_sms_body = 'Hi '.($check->friend_name).', '.($check->customer->name??'Our customer').' has booked a ride for you.';
+                $send = $this->sendSms2($check->friend_phone_number , $friend_sms_body);
+            }
             return response()->json([
                 'data' => __('Task Accecpted Successfully'),
             ], 200);
@@ -689,6 +701,7 @@ class TaskController extends BaseController
 
     public function CreateTask(CreateTaskRequest $request)
     {
+        // Log::info($request->all());
         try {
             $header = $request->header();
             if(isset($header['client'][0]))
@@ -805,39 +818,49 @@ class TaskController extends BaseController
             $agent_id          = $request->allocation_type === 'm' ? $request->agent : null;
 
             $order = [
-            'order_number'                    => $request->order_number ?? null,
-            'customer_id'                     => $cus_id,
-            'scheduled_date_time'             => ($request->task_type=="schedule") ? $notification_time: null,
-            'recipient_phone'                 => $request->recipient_phone,
-            'Recipient_email'                 => $request->recipient_email,
-            'task_description'                => $request->task_description,
-            'driver_id'                       => $agent_id,
-            'auto_alloction'                  => $request->allocation_type,
-            'images_array'                    => $last,
-            'order_type'                      => $request->task_type,
-            'order_time'                      => $notification_time,
-            'status'                          => $agent_id != null ? 'assigned' : 'unassigned',
-            'cash_to_be_collected'            => $request->cash_to_be_collected,
-            'base_price'                      => $pricingRule->base_price,
-            'base_duration'                   => $pricingRule->base_duration,
-            'base_distance'                   => $pricingRule->base_distance,
-            'base_waiting'                    => $pricingRule->base_waiting,
-            'duration_price'                  => $pricingRule->duration_price,
-            'waiting_price'                   => $pricingRule->waiting_price,
-            'distance_fee'                    => $pricingRule->distance_fee,
-            'cancel_fee'                      => $pricingRule->cancel_fee,
-            'agent_commission_percentage'     => $pricingRule->agent_commission_percentage,
-            'agent_commission_fixed'          => $pricingRule->agent_commission_fixed,
-            'freelancer_commission_percentage'=> $pricingRule->freelancer_commission_percentage,
-            'freelancer_commission_fixed'     => $pricingRule->freelancer_commission_fixed,
-            'unique_id'                       => $unique_order_id,
-            'call_back_url'                   => $request->call_back_url??null,
-            'type'=>$request->type??0,
-            'friend_name'=>$request->friend_name,
-            'friend_phone_number'=>$request->friend_phone_number,
-            'request_type'=>$request->request_type??'P'
-        ];
+                'order_number'                    => $request->order_number ?? null,
+                'customer_id'                     => $cus_id,
+                'scheduled_date_time'             => ($request->task_type=="schedule") ? $notification_time: null,
+                'recipient_phone'                 => $request->recipient_phone,
+                'Recipient_email'                 => $request->recipient_email,
+                'task_description'                => $request->task_description,
+                'driver_id'                       => $agent_id,
+                'auto_alloction'                  => $request->allocation_type,
+                'images_array'                    => $last,
+                'order_type'                      => $request->task_type,
+                'order_time'                      => $notification_time,
+                'status'                          => $agent_id != null ? 'assigned' : 'unassigned',
+                'cash_to_be_collected'            => $request->cash_to_be_collected,
+                'base_price'                      => $pricingRule->base_price,
+                'base_duration'                   => $pricingRule->base_duration,
+                'base_distance'                   => $pricingRule->base_distance,
+                'base_waiting'                    => $pricingRule->base_waiting,
+                'duration_price'                  => $pricingRule->duration_price,
+                'waiting_price'                   => $pricingRule->waiting_price,
+                'distance_fee'                    => $pricingRule->distance_fee,
+                'cancel_fee'                      => $pricingRule->cancel_fee,
+                'agent_commission_percentage'     => $pricingRule->agent_commission_percentage,
+                'agent_commission_fixed'          => $pricingRule->agent_commission_fixed,
+                'freelancer_commission_percentage'=> $pricingRule->freelancer_commission_percentage,
+                'freelancer_commission_fixed'     => $pricingRule->freelancer_commission_fixed,
+                'unique_id'                       => $unique_order_id,
+                'call_back_url'                   => $request->call_back_url??null,
+                'type'                            => $request->type??0,
+                'friend_name'                     => $request->friend_name,
+                'friend_phone_number'             => $request->friend_phone_number,
+                'request_type'                    => $request->request_type??'P',
+                'is_restricted'                   => $request->is_restricted??0
+            ];
             $orders = Order::create($order);
+
+            if($request->is_restricted == 1){
+                $add_resource = CustomerVerificationResource::updateOrCreate([
+                    'customer_id' => $cus_id
+                ],[
+                    'verification_type' => $request->user_verification_type,
+                    'datapoints' => json_encode($request->user_datapoints)
+                ]);
+            }
 
 
             if ($auth->custom_domain && !empty($auth->custom_domain)) {
@@ -1659,7 +1682,7 @@ class TaskController extends BaseController
 
             $getgeo = DriverGeo::where('geo_id', $geo)->with([
                 'agent'=> function ($o) use ($cash_at_hand, $date) {
-                    $o->whereRaw("(select COALESCE(SUM(cash_to_be_collected),0) from orders where orders.driver_id=agents.id and status='completed') - (select COALESCE(SUM(driver_cost),0) from orders where orders.driver_id=agents.id and status='completed' and is_comm_settled != 2) + (select COALESCE(SUM(cr),0) as sum from payments where payments.driver_id=agents.id) - (select COALESCE(SUM(dr),0) as sum from payments where payments.driver_id=agents.id) - ((select COALESCE(balance,0) as sum from wallets where wallets.holder_id=agents.id)/100) + (select COALESCE(SUM(amount),0) from agent_payouts where agent_payouts.agent_id=agents.id and agent_payouts.status=0) < ".$cash_at_hand)->orderBy('id', 'DESC')->with(['logs','order'=> function ($f) use ($date) {
+                    $o->select("id")->whereRaw("(select COALESCE(SUM(cash_to_be_collected),0) from orders where orders.driver_id=agents.id and status='completed') - (select COALESCE(SUM(driver_cost),0) from orders where orders.driver_id=agents.id and status='completed' and is_comm_settled != 2) + (select COALESCE(SUM(cr),0) as sum from payments where payments.driver_id=agents.id) - (select COALESCE(SUM(dr),0) as sum from payments where payments.driver_id=agents.id) - ((select COALESCE(balance,0) as sum from wallets where wallets.holder_id=agents.id)/100) + (select COALESCE(SUM(amount),0) from agent_payouts where agent_payouts.agent_id=agents.id and agent_payouts.status=0) < ".$cash_at_hand)->orderBy('id', 'DESC')->with(['logs','order'=> function ($f) use ($date) {
                         $f->whereDate('order_time', $date)->with('task');
                     }]);
                 }])->get();
@@ -1833,7 +1856,7 @@ class TaskController extends BaseController
         } else {
             $getgeo = DriverGeo::where('geo_id', $geo)->with([
                 'agent'=> function ($o) use ($cash_at_hand, $date) {
-                    $o->whereRaw("(select COALESCE(SUM(cash_to_be_collected),0) from orders where orders.driver_id=agents.id and status='completed') - (select COALESCE(SUM(driver_cost),0) from orders where orders.driver_id=agents.id and status='completed' and is_comm_settled != 2) + (select COALESCE(SUM(cr),0) as sum from payments where payments.driver_id=agents.id) - (select COALESCE(SUM(dr),0) as sum from payments where payments.driver_id=agents.id) - ((select COALESCE(balance,0) as sum from wallets where wallets.holder_id=agents.id)/100) + (select COALESCE(SUM(amount),0) from agent_payouts where agent_payouts.agent_id=agents.id and agent_payouts.status=0) < ".$cash_at_hand)->orderBy('id', 'DESC')->with(['logs','order'=> function ($f) use ($date) {
+                    $o->select("id")->whereRaw("(select COALESCE(SUM(cash_to_be_collected),0) from orders where orders.driver_id=agents.id and status='completed') - (select COALESCE(SUM(driver_cost),0) from orders where orders.driver_id=agents.id and status='completed' and is_comm_settled != 2) + (select COALESCE(SUM(cr),0) as sum from payments where payments.driver_id=agents.id) - (select COALESCE(SUM(dr),0) as sum from payments where payments.driver_id=agents.id) - ((select COALESCE(balance,0) as sum from wallets where wallets.holder_id=agents.id)/100) + (select COALESCE(SUM(amount),0) from agent_payouts where agent_payouts.agent_id=agents.id and agent_payouts.status=0) < ".$cash_at_hand)->orderBy('id', 'DESC')->with(['logs','order'=> function ($f) use ($date) {
                         $f->whereDate('order_time', $date)->with('task');
                     }]);
                 }])->get();
@@ -1938,7 +1961,7 @@ class TaskController extends BaseController
         } else {
             $getgeo = DriverGeo::where('geo_id', $geo)->with([
                 'agent'=> function ($o) use ($cash_at_hand, $date) {
-                    $o->whereRaw("(select COALESCE(SUM(cash_to_be_collected),0) from orders where orders.driver_id=agents.id and status='completed') - (select COALESCE(SUM(driver_cost),0) from orders where orders.driver_id=agents.id and status='completed' and is_comm_settled != 2) + (select COALESCE(SUM(cr),0) as sum from payments where payments.driver_id=agents.id) - (select COALESCE(SUM(dr),0) as sum from payments where payments.driver_id=agents.id) - ((select COALESCE(balance,0) as sum from wallets where wallets.holder_id=agents.id)/100) + (select COALESCE(SUM(amount),0) from agent_payouts where agent_payouts.agent_id=agents.id and agent_payouts.status=0) < ".$cash_at_hand)->orderBy('id', 'DESC')->with(['logs' => function ($g) {
+                    $o->select("id")->whereRaw("(select COALESCE(SUM(cash_to_be_collected),0) from orders where orders.driver_id=agents.id and status='completed') - (select COALESCE(SUM(driver_cost),0) from orders where orders.driver_id=agents.id and status='completed' and is_comm_settled != 2) + (select COALESCE(SUM(cr),0) as sum from payments where payments.driver_id=agents.id) - (select COALESCE(SUM(dr),0) as sum from payments where payments.driver_id=agents.id) - ((select COALESCE(balance,0) as sum from wallets where wallets.holder_id=agents.id)/100) + (select COALESCE(SUM(amount),0) from agent_payouts where agent_payouts.agent_id=agents.id and agent_payouts.status=0) < ".$cash_at_hand)->orderBy('id', 'DESC')->with(['logs' => function ($g) {
                         $g->orderBy('id', 'DESC');
                     }
                         ,'order'=> function ($f) use ($date) {
@@ -2059,7 +2082,7 @@ class TaskController extends BaseController
         } else {
             $getgeo = DriverGeo::where('geo_id', $geo)->with([
                 'agent'=> function ($o) use ($cash_at_hand, $date) {
-                    $o->whereRaw("(select COALESCE(SUM(cash_to_be_collected),0) from orders where orders.driver_id=agents.id and status='completed') - (select COALESCE(SUM(driver_cost),0) from orders where orders.driver_id=agents.id and status='completed' and is_comm_settled != 2) + (select COALESCE(SUM(cr),0) as sum from payments where payments.driver_id=agents.id) - (select COALESCE(SUM(dr),0) as sum from payments where payments.driver_id=agents.id) - ((select COALESCE(balance,0) as sum from wallets where wallets.holder_id=agents.id)/100) + (select COALESCE(SUM(amount),0) from agent_payouts where agent_payouts.agent_id=agents.id and agent_payouts.status=0) < ".$cash_at_hand)->orderBy('id', 'DESC')->with(['logs','order'=> function ($f) use ($date) {
+                    $o->select("id")->whereRaw("(select COALESCE(SUM(cash_to_be_collected),0) from orders where orders.driver_id=agents.id and status='completed') - (select COALESCE(SUM(driver_cost),0) from orders where orders.driver_id=agents.id and status='completed' and is_comm_settled != 2) + (select COALESCE(SUM(cr),0) as sum from payments where payments.driver_id=agents.id) - (select COALESCE(SUM(dr),0) as sum from payments where payments.driver_id=agents.id) - ((select COALESCE(balance,0) as sum from wallets where wallets.holder_id=agents.id)/100) + (select COALESCE(SUM(amount),0) from agent_payouts where agent_payouts.agent_id=agents.id and agent_payouts.status=0) < ".$cash_at_hand)->orderBy('id', 'DESC')->with(['logs','order'=> function ($f) use ($date) {
                         $f->whereDate('order_time', $date)->with('task');
                     }]);
                 }])->get()->toArray();

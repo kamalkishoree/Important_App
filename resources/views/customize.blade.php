@@ -163,26 +163,53 @@
         </div>
         <div class="col-md-4">
             <div class="card-box">
-                <h4 class="header-title">{{__('CMS')}}</h4>
+                <h4 class="header-title">{{__('Contact Us')}}</h4>
                 <p class="sub-header">
-                    {{__("View and update the Terms and Privacy content for the Agent App.")}}
+                    <!-- {{__("View and update the Terms and Privacy content for the Agent App.")}} -->
                 </p>
-                <div class="row">
-                    <div class="login-forms">
-                        <ul class="list-inline mb-0">
-                            <li class="d-inline-block ml-2">
-
-
-                            <label for="acknowledge1"><a href="#" class="btn btn-blue btn-block" type="button" data-toggle="modal" data-target="#create-tandc-modal">{{__("Terms and Conditions")}}</a></label>
-                            </li>
-                            <li class="d-inline-block ml-2">
-
-                            <label for="acknowledge2"><a href="#" class="btn btn-blue btn-block" type="button" data-toggle="modal" data-target="#create-pandp-modal">{{__('Privacy Policy')}}</a></label>
-                            </li>
-                          </ul>
+                <form method="POST" action="{{route('update.contact.us', Auth::user()->code)}}">
+                @csrf
+                <div class="row mb-lg-5 mb-2">
+                    <div class="col-12">
+                        <div class="form-group mb-0">
+                            <label for="contact_address">Address</label>
+                            <div class="input-group">
+                                <input type="text" name="contact_address" id="contact_address"  class="form-control" value="{{ old('contact_address', $clientContact->contact_address ?? '')}}">
+                            </div>
+                            @if($errors->has('contact_address'))
+                            <span class="text-danger" role="alert">
+                                <strong>{{ $errors->first('contact_address') }}</strong>
+                            </span>
+                            @endif
+                        </div>
+                        <div class="form-group mt-2 mb-0">
+                            <label for="contact_phone_number">Number</label>
+                            <input type="text" name="contact_phone_number" id="contact_phone_number" placeholder="" class="form-control" value="{{ old('contact_phone_number', $clientContact->contact_phone_number ?? '')}}">
+                            @if($errors->has('contact_phone_number'))
+                            <span class="text-danger" role="alert">
+                                <strong>{{ $errors->first('contact_phone_number') }}</strong>
+                            </span>
+                            @endif
+                        </div>
+                        <div class="form-group mt-2 mb-0">
+                            <label for="contact_email">Email</label>
+                            <input type="text" name="contact_email" id="contact_email" placeholder="" class="form-control" value="{{ old('contact_email', $clientContact->contact_email ?? '')}}">
+                            @if($errors->has('contact_email'))
+                            <span class="text-danger" role="alert">
+                                <strong>{{ $errors->first('contact_email') }}</strong>
+                            </span>
+                            @endif
+                        </div>
                     </div>
                 </div>
-
+                <div class="row mb-2">
+                    <div class="col-md-2">
+                        <div class="form-group mb-0 text-center">
+                            <button class="btn btn-blue btn-block" type="submit"> Update </button>
+                        </div>
+                    </div>
+                </div>
+                </form>
             </div>
         </div>
         <div class="col-md-6">
