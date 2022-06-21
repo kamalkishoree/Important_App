@@ -113,27 +113,30 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 			Route::get('/order/driver-rating/{clientcode}/{order_id}', 'TrackingController@DriverRating')->name('order.driver.rating');
 			
 			
-		// Create agent connected account stripe
-		Route::get('client/verify/oauth/token/stripe', 'StripeGatewayController@verifyOAuthToken')->name('verify.oauth.token.stripe');
-		
-		//Route::get('payment/gateway/connect/response', 'BaseController@getGatewayConnectResponse')->name('payment.gateway.connect.response');
+			// Create agent connected account stripe
+			Route::get('client/verify/oauth/token/stripe', 'StripeGatewayController@verifyOAuthToken')->name('verify.oauth.token.stripe');
+			
+			//Route::get('payment/gateway/connect/response', 'BaseController@getGatewayConnectResponse')->name('payment.gateway.connect.response');
 			
 		});
-		
+		Route::any('payment/ccavenue/success', 'CcavenueController@successForm')->name('ccavenue.success');
+		Route::get('ccavenue/pay', 'CcavenueController@viewForm');
+
 		Route::any('payment/vnpay/notify', 'VnpayController@VnpayNotify')->name('payment.vnpay.VnpayNotify'); // webhook
 		Route::any('payment/vnpay/api',    'VnpayController@vnpay_respontAPP')->name('vnpay_webview');
-
-		Route::get('ccavenue/pay',   'CcavenueController@viewForm');
-		// Route::any('payment/ccavenue/api',    'CcavenueController@paywebView')->name('ccavenue_webview');
-		Route::any('payment/ccavenue/success',    'CcavenueController@successForm')->name('ccavenue.success');
+		
 		Route::group(['middleware' => ['auth:client'], 'prefix' => '/'], function () {
 
-			
 			
 			Route::get('vnpay/test',   'VnpayController@order');
 			Route::any('vnpay_respont', 'VnpayController@vnpay_respont')->name('vnpay_respont');
 		
+
+		
+			
+
             Route::get('notifi', 'AgentController@test_notification');
+			Route::get('vnpay/test',   'VnpayController@order');
 			Route::get('agent/filter', 'AgentController@agentFilter');
 			Route::get('agent/export', 'AgentController@export')->name('agents.export');
 			Route::get('customer/filter', 'CustomerController@customerFilter');
@@ -236,6 +239,16 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 			Route::resource('payoption', 'PaymentOptionController');
 			Route::post('updateAll', 'PaymentOptionController@updateAll')->name('payoption.updateAll');
 			Route::post('payoutUpdateAll', 'PaymentOptionController@payoutUpdateAll')->name('payoutOption.payoutUpdateAll');
+
+
+			/**  */ 
+			Route::get('cms/agent-sms/templates', 'CMS\DriverSMSTemplateController@index')->name('cms.agent-sms.templates');
+			Route::get('cms/agent-sms/template/{id}', 'CMS\DriverSMSTemplateController@show')->name('cms.agent-sms.template.show');
+			Route::post('cms/agent-sms/template/update', 'CMS\DriverSMSTemplateController@update')->name('cms.agent-sms.template.update');
+
+			Route::get('cms/page/templates', 'CMS\PageTemplateController@index')->name('cms.page.templates');
+			Route::get('cms/page/template/{id}', 'CMS\PageTemplateController@show')->name('cms.page.template.show');
+			Route::post('cms/page/template/update', 'CMS\PageTemplateController@update')->name('cms.page.template.update');
 		});
 	});
 

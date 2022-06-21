@@ -8,6 +8,7 @@ use App\Model\NotificationType;
 use App\Model\NotificationEvent;
 use App\Model\ClientNotification;
 use App\Model\Roster;
+use App\Model\ClientPreference;
 use Carbon\Carbon;
 use App\Jobs\SendPushNotifications;
 use Illuminate\Support\Facades\Auth;
@@ -23,10 +24,17 @@ class ClientNotificationController extends Controller
     {
         $notification_types = NotificationType::with('notification_events')->get();
         $client_notifications = ClientNotification::where('client_id', 1)->get();
-
+        $client_preference = ClientPreference::select('customer_notification_per_distance','custom_mode')->where('client_id', Auth::user()->code)->get()->first();
+        $customMode = json_decode($client_preference->custom_mode);
+        $showCustomerNotification = 0;
+        if(!empty($customMode) && $customMode->is_hide_customer_notification == 1){
+            $showCustomerNotification = 1;
+        }
         return view('notifications')->with([
             'client_notifications' => $client_notifications,
-            'notification_types'   => $notification_types
+            'notification_types'   => $notification_types,
+            'client_preference' => json_decode($client_preference->customer_notification_per_distance),
+            'showCustomerNotification' => $showCustomerNotification
         ]);
     }
 

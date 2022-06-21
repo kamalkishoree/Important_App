@@ -25,6 +25,7 @@ Route::post('otp_test', 'Api\TaskController@smstest')->middleware('ConnectDbFrom
 Route::post('check-dispatcher-keys', 'Api\TaskController@checkDispatcherKeys')->middleware('ConnectDbFromOrder');
 Route::post('get-delivery-fee', 'Api\TaskController@getDeliveryFee')->middleware('ConnectDbFromOrder');
 Route::post('task/create', 'Api\TaskController@CreateTask')->middleware('ConnectDbFromOrder');
+Route::post('task/lims/create', 'Api\TaskController@CreateLimsTask')->middleware('ConnectDbFromOrder');
 Route::post('agent/create', 'Api\DriverRegistrationController@storeAgent')->middleware('ConnectDbFromOrder');
 Route::post('send-documents','Api\DriverRegistrationController@sendDocuments')->middleware('ConnectDbFromOrder');
 Route::get('get-agent-tags', 'Api\TaskController@getAgentTags')->middleware('ConnectDbFromOrder');
@@ -39,6 +40,7 @@ Route::get('/notification/tracking/{order_id}', 'Api\TaskController@notification
 
 Route::post('shortCode', 'Api\ShortcodeController@validateCompany');
 
+Route::get('importCustomer', 'Api\ImportThirdPartyUserController@importCustomer');
 
 // routes for edit order
 Route::post('edit-order/driver/notify', 'Api\TaskController@editOrderNotification')->middleware('ConnectDbFromOrder');

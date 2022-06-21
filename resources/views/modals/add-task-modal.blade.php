@@ -51,7 +51,7 @@
             <div class="newcus shows">
                 <div class="row no-gutters row-spacing">
                     <div class="col-md-3">
-                        <div class="form-group" id="">
+                        <div class="form-group" id="nameInput">
                             {!! Form::text('name', null, ['class' => 'form-control', 'placeholder' => __('Name'),'id'=>'name_new']) !!}
                             <span class="invalid-feedback" role="alert">
                                 <strong></strong>
@@ -60,22 +60,20 @@
                         </div>
                     </div>
                     <div class="col-md-4">
-                        <div class="form-group" id="">
+                        <div class="form-group" id="emailInput">
                             {!! Form::text('email', null, ['class' => 'form-control', 'placeholder' => __('Email'),'id'=>'email_new']) !!}
                             <span class="invalid-feedback" role="alert">
                                 <strong></strong>
                             </span>
-
                         </div>
                     </div>
                     <div class="col-md-3">
-                        <div class="form-group" id="">
+                        <div class="form-group" id="phone_numberInput">
                             {!! Form::text('phone_number', null, ['class' => 'form-control', 'placeholder' => __('Phone Number'),'id'=> 'phone_new'
                             ]) !!}
                             <span class="invalid-feedback" role="alert">
                                 <strong></strong>
                             </span>
-
                         </div>
                     </div>
                     <div class="col-md-2">
@@ -297,7 +295,12 @@
                         </div>
                 </div>
                 <div class="col-md-4">
-                    <input class="form-control" type="text" placeholder={{__("Cash to be collected")}} name="cash_to_be_collected">
+                    <div class="form-group" id="cash_to_be_collectedInput">
+                        <input class="form-control" type="text" placeholder={{__("Cash to be collected")}} name="cash_to_be_collected">
+                        <span class="invalid-feedback" role="alert">
+                            <strong></strong>
+                        </span>
+                    </div>
                 </div>
 
             </div>

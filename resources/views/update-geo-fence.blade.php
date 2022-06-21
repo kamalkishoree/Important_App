@@ -102,7 +102,7 @@
             <input type="hidden" name="zoom_level" value="13" id="zoom_level" />
             <div class="row">
                 <div class="col-lg-5">
-                    <div class="card-box card_outer mb-0">
+                    <div class="card-box mb-0">
                         <h4 class="header-title mb-3">Edit Geofence</h4>
                         <div class="top_items">
                             <div class="row mb-2">

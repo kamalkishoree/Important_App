@@ -14,6 +14,7 @@ use App\Traits\ApiResponser;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\AgentPayoutRequestListExport;
 use App\Http\Controllers\{BaseController, StripeGatewayController};
+use App\Traits\agentEarningManager;
 use App\Model\{Client, ClientPreference, User, Agent, Order, PaymentOption, PayoutOption, AgentPayout, AgentBankDetail};
 
 class AgentPayoutController extends BaseController{
@@ -168,22 +169,12 @@ class AgentPayoutController extends BaseController{
             if(!$agent){
                 return Redirect()->back()->with('error', __('This Agent is not approved!'));
             }
-            $credit = $agent->agentPayment->sum('cr');
-            $debit = $agent->agentPayment->sum('dr');
+            
             $agent_account = $payout->payoutBankDetails->first() ? $payout->payoutBankDetails->first()->beneficiary_account_number : '';
             $agent_id = $agent->id;
-            $wallet_balance = 0;
-            if($agent->wallet){
-                $wallet_balance = $agent->balanceFloat;
-            }
-
-            $cash  = $agent->order->where('status', 'completed')->sum('cash_to_be_collected');
-            $driver_cost  = $agent->order->where('status', 'completed')->sum('driver_cost');
-            $order_cost = $agent->order->where('status', 'completed')->sum('order_cost');
-
-            $past_payout_value = AgentPayout::where(['agent_id'=>$agent->id, 'status'=> 1])->sum('amount');
             
-            $available_funds = $wallet_balance + $order_cost + $debit - ($credit + $cash + $past_payout_value + $driver_cost);
+
+            $available_funds = agentEarningManager::getAgentEarning($payout->agent_id, 1);
 
             if($request->amount > $available_funds){
                 return Redirect()->back()->with('error', __('Payout amount is greater than agent available funds'));

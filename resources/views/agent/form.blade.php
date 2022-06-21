@@ -173,7 +173,18 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
         </div>
     </div>
 </div> --}}
-
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group" id="plate_numberInputEdit">
+            <label for="plate_number" class="control-label">{{__("LICENCE PLATE")}}</label>
+            <input type="text" class="form-control" id="plate_number" name="plate_number"
+                placeholder="508.KLV" value="{{ old('name', $agent->plate_number ?? '') }}">
+            <span class="invalid-feedback" role="alert">
+                <strong></strong>
+            </span>
+        </div>
+    </div>
+</div>
 <div class="row">
     @if(!empty($driver_registration_documents) && count($driver_registration_documents) > 0)
     @foreach($driver_registration_documents as $driver_registration_document)
@@ -189,7 +200,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
     @endphp
     <div class="col-md-6">
         <div class="form-group" id="{{$driver_registration_document->name}}Input">
-            <label for="" class="control-label d-flex align-items-center justify-content-between">{{$driver_registration_document->name ? $driver_registration_document->name : ''}} 
+            <label for="" class="control-label d-flex align-items-center justify-content-between">{{$driver_registration_document->name ? ucwords($driver_registration_document->name)  : ''}} 
                 @if(strtolower($driver_registration_document->file_type) == 'pdf' && (!empty($field_value)))
                 <a href="{{ Storage::disk('s3')->url($field_value) }}" download target="_blank"><i class="fa fa-eye" aria-hidden="true"></i></a>
                 @endif

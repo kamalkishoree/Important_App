@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Storage;
 use App\Model\Roster;
 use Config;
 use Illuminate\Support\Facades\URL;
+use GuzzleHttp\Client as GClient;
 
 class ActivityController extends BaseController
 {
@@ -114,7 +115,7 @@ class ActivityController extends BaseController
 
         if (count($orders) > 0) {
             $tasks = Task::whereIn('order_id', $orders)->where('task_status', '!=', 4)->Where('task_status', '!=', 5)
-            ->with(['location','tasktype','order.customer','order.task.location'])->orderBy("order_id", "DESC")
+            ->with(['location','tasktype','order.customer','order.task.location'])->whereHas('location')->orderBy("order_id", "DESC")
             ->orderBy("id","ASC")
             ->get();
             if (count($tasks) > 0) {
@@ -198,6 +199,7 @@ class ActivityController extends BaseController
     {
         $header = $request->header();
         $client_code = Client::where('database_name', $header['client'][0])->first();
+        $preferences = ClientPreference::with('currency')->first();
         $tz = new Timezone();
         $client_code->timezone = $tz->timezone_name($client_code->timezone);
         $start     = Carbon::now($client_code->timezone ?? 'UTC')->startOfDay();
@@ -223,7 +225,77 @@ class ActivityController extends BaseController
 
         if ($request->lat=="" || $request->lat==0 || $request->lat== '0.00000000') {
         } else {
-            AgentLog::create($data);
+
+            if(!empty($preferences->customer_notification_per_distance) && !empty($preferences->custom_mode)){
+                
+                //get details of customer notification per distance 
+                $clientPreference = json_decode($preferences->customer_notification_per_distance);
+
+                $configCustomerNotification = json_decode($preferences->custom_mode)->is_hide_customer_notification;
+
+                //check is_send_customer_notification is on/not
+                if(!empty($clientPreference->is_send_customer_notification) && ($clientPreference->is_send_customer_notification == 'on') && ($configCustomerNotification == 1)){
+                    \Log::info('permission sucess');
+                    //get agent orders 
+                    $orders = Order::where('driver_id', Auth::user()->id)->where('status', 'assigned')->orderBy('order_time')->pluck('id')->toArray();
+                    if (count($orders) > 0) {
+                        \Log::info('get order');
+                        
+                        //get agent current task
+                        $tasks = Task::whereIn('order_id', $orders)->where('task_status', 2)->with(['location','tasktype','order.customer'])->orderBy('order_id', 'desc')->orderBy('id', 'ASC')->get()->first();
+                        if (!empty($tasks)) {
+
+                            \Log::info('get tasks--');
+                            \Log::info($tasks);
+                            \Log::info('get tasks--');
+                            $callBackUrl = str_ireplace('dispatch-pickup-delivery', 'dispatch/customer/distance/notification', $tasks->order->call_back_url);
+                            $latitude    = [];
+                            $longitude   = [];
+
+                            \Log::info($callBackUrl);
+                            // check task location in not empty and task created by custmer from order penel  
+                            if(!empty($tasks->location) && !empty($callBackUrl)){
+                                \Log::info('get task location');
+                                $tasksLocationLat  = $tasks->location->latitude;
+                                $tasksLocationLong = $tasks->location->longitude;
+            
+                                //get distance using lat-long
+                                $getDistance = $this->getLatLongDistance($tasksLocationLat, $tasksLocationLong, $request->lat, $request->long, $clientPreference->distance_unit);
+            
+                                // insert agent coverd distance
+                                $data['distance_covered'] = $getDistance;
+                                $data['current_task_id'] = $tasks->id;
+                                AgentLog::create($data);
+
+                                // check notification send to customer pr km/miles
+                                $agentDistanceCovered = AgentLog::where('current_task_id', $tasks->id)->where('distance_covered', 'LIKE', '%'.$getDistance.'%')->count();
+                                
+                                if($agentDistanceCovered == 1 && $getDistance > 0){
+                                    \Log::info('in send notification');
+                                    $notificationTitle       = $clientPreference->title;
+                                    $notificationDiscription = str_ireplace("{distance}", $getDistance.' '.$clientPreference->distance_unit, $clientPreference->description);
+                                    $notificationDiscription = str_ireplace("{co2_emission}", $clientPreference->co2_emission * $getDistance, $notificationDiscription);
+                                    
+                                    $postdata =  ['notificationTitle' => $notificationTitle, 'notificationDiscription' => $notificationDiscription];
+            
+                                    $client = new GClient(['content-type' => 'application/json']);
+                                    
+                                    $res = $client->post($callBackUrl,
+                                        ['form_params' => ($postdata)]
+                                    );
+                                    $response = json_decode($res->getBody(), true);   
+                                    \Log::info('responce');
+                                    \Log::info($response);
+
+                                }
+                                
+                            }
+                        }
+                    }                                           
+                }
+            }else{
+                AgentLog::create($data);
+            }
         }
 
         $id    = Auth::user()->id;
@@ -243,7 +315,7 @@ class ActivityController extends BaseController
 
         if (count($orders) > 0) {
             $tasks = Task::whereIn('order_id', $orders)->where('task_status', '!=', 4)->Where('task_status', '!=', 5)->with(['location','tasktype','order.customer'])->orderBy('order_id', 'desc')->orderBy('id', 'ASC')->get();
-                  if (count($tasks) > 0) {
+            if (count($tasks) > 0) {
                 //sort according to task_order
                 $tasks = $tasks->toArray();
                 if ($tasks[0]['task_order'] !=0) {
@@ -256,8 +328,6 @@ class ActivityController extends BaseController
 
         $agents    = $agent; //Agent::where('id', $id)->with('team')->first();
         $taskProof = TaskProof::all();
-
-        $preferences    = ClientPreference::with('currency')->first();
 
         $payment_codes = ['stripe'];
         $payment_creds = PaymentOption::select('code', 'credentials')->whereIn('code', $payment_codes)->where('status', 1)->get();
@@ -283,6 +353,27 @@ class ActivityController extends BaseController
             'status' => 200,
             'message' => __('success')
         ], 200);
+    }
+
+    function getLatLongDistance($lat1, $lon1, $lat2, $lon2, $unit) {
+
+        $earthRadius = 6371;  // earth radius in km
+
+        $latFrom = deg2rad($lat1);
+        $lonFrom = deg2rad($lon1);
+        $latTo   = deg2rad($lat2);
+        $lonTo   = deg2rad($lon2);
+        $latDelta = $latTo - $latFrom;
+        $lonDelta = $lonTo - $lonFrom;
+        $angle = 2 * asin(sqrt(pow(sin($latDelta / 2), 2) +
+        cos($latFrom) * cos($latTo) * pow(sin($lonDelta / 2), 2)));
+
+        $final = round($angle * $earthRadius);
+        if ($unit == "km") {
+            return $final;
+        } else {
+            return round($final * 0.6214);
+        }
     }
 
     public function cmsData(Request $request)

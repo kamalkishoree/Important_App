@@ -170,6 +170,29 @@
                     </a>
                 </li>
                 @endif
+                @if(in_array('Configure',$allowed) || Auth::user()->is_superadmin == 1)
+                <li>
+                    <a href="#sidebarcms" data-toggle="collapse">
+                        <i class="fa fa-file-code"></i>
+                        <span>{{ __("CMS") }}</span>
+                    </a>
+                    <div class="collapse" id="sidebarcms">
+                        <ul class="nav-second-level">
+                            @if(in_array('agent_sms_templates',$allowed) || Auth::user()->is_superadmin == 1)
+                                <li>
+                                    <a href="{{route('cms.agent-sms.templates')}}">{{ __('Agent SMS') }}</a>
+                                </li>
+                            @endif
+
+                            @if(in_array('page_templates',$allowed) || Auth::user()->is_superadmin == 1)
+                                <li>
+                                    <a href="{{route('cms.page.templates')}}">{{ __('Pages') }}</a>
+                                </li>
+                            @endif
+                        </ul>
+                    </div>
+                </li>
+                @endif
                 <!-- <li>
                     <a href="{{route('plan-billing.index')}}">
                         <i data-feather="dollar-sign"></i>

@@ -400,16 +400,15 @@ use Carbon\Carbon;
                                         alt="">
                                 @endif
 
-                                @if (count($images) > 0 && $images[0] != '')
-                                    <div class="allimages">
-                                        <div id="imagePreview" class="privewcheck">
+                                <div class="allimages">
+                                    <div id="imagePreview" class="privewcheck">
+                                        @if (count($images) > 0 && $images[0] != '')
                                             @foreach ($images as $item)
-
                                                 <img src="{{ $main }}{{ $item }}" class="imagepri" />
                                             @endforeach
-                                        </div>
+                                        @endif
                                     </div>
-                                @endif
+                                </div>
                             </div>
 
                         </div>

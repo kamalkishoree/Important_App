@@ -118,6 +118,7 @@ class SendPushNotification
 
         foreach($array as $item){
             Log::info("notificatin time");
+           // Log::info("driver_id".$item['driver_id']);
             Log::info($item['notification_time']);
             if(isset($item['device_token']) && !empty($item['device_token'])){
 

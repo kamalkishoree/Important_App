@@ -19,27 +19,28 @@ class CcavenueController extends BaseController{
     private $merchant_id;
     private $url;
     private $access_code;
- 
-    public function __construct()
+
+    public function configuration()
     {
        $payOpt = PaymentOption::select('credentials', 'test_mode','status')->where('code', 'ccavenue')->where('status', 1)->first();
        $json = json_decode($payOpt->credentials);
        $this->access_key = $json->enc_key;
        $this->access_code = $json->access_code;
        $this->merchant_id = $json->merchant_id;
-     if($payOpt->test_mode =='1')
-     {
-         $this->url = 'https://secure.ccavenue.ae/transaction/transaction.do?command=initiateTransaction';
-     }else{
-         $this->url = 'https://secure.ccavenue.ae/transaction/transaction.do?command=initiateTransaction';
-     }
+       if($payOpt->test_mode =='1')
+       {
+            $this->url = 'https://secure.ccavenue.ae/transaction/transaction.do?command=initiateTransaction';
+        }else{
+            $this->url = 'https://secure.ccavenue.ae/transaction/transaction.do?command=initiateTransaction';
+        }
  
     }
     
 
     public function viewForm(Request $request)
     {
-        if(isset($request->tk) && !empty($request->tk)){
+        $this->configuration();
+            if(isset($request->tk) && !empty($request->tk)){
             $user = Agent::where('access_token', $request->tk)->first();
             Auth::login($user);
          }
@@ -52,6 +53,7 @@ class CcavenueController extends BaseController{
  
     public function successForm(Request $request)
     {
+    $this->configuration();
      $encResponse=$request->encResp;			//This is the response sent by the CCAvenue Server
      $rcvdString=$this->decrypt($encResponse,$this->access_key);		//Crypto Decryption used as per the specified working key.
        $order_status="";

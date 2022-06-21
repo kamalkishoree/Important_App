@@ -147,6 +147,7 @@
                 <div class="modal-body p-14 pt-0" id="addCardBox">
 
                 </div>
+                <span class="show_all_error invalid-feedback"></span>
                 <div class="modal-footer justify-content-center">
                      <a href="javascript: void(0);" class="btn btn-blue waves-effect waves-light submitTaskHeader"><span class="spinner-border spinner-border-sm submitTaskHeaderLoader" style="display:none;" role="status" aria-hidden="true"></span> <span id="submitTaskHeaderText">{{__("Submit")}}</span></a>
                 </div>
@@ -221,9 +222,9 @@
 {{-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB85kLYYOmuAhBUPd7odVmL6gnQsSGWU-4&libraries=places"></script>  --}}
 <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
 @if(\Route::current()->getName() == "tasks.show")
-<script src="https://maps.googleapis.com/maps/api/js?key={{Auth::user()->getPreference->map_key_1??''}}&libraries=places,drawing,visualization&v=weekly"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key={{Auth::user()->getPreference->map_key_1??''}}&libraries=places,drawing,geometry,visualization&v=weekly"></script>
 @else
-<script defer src="https://maps.googleapis.com/maps/api/js?key={{Auth::user()->getPreference->map_key_1??''}}&libraries=places,drawing,visualization&v=weekly"></script>
+<script defer src="https://maps.googleapis.com/maps/api/js?key={{Auth::user()->getPreference->map_key_1??''}}&libraries=places,geometry,drawing,visualization&v=weekly"></script>
 @endif
 <script src="{{ asset('assets/libs/selectize/selectize.min.js') }}"></script>
 <script src="{{ asset('assets/libs/multiselect/multiselect.min.js') }}"></script>
@@ -715,7 +716,8 @@
             var short_name = $("#task-modal-header input[name=short_name").val();
             var address = $("#task-modal-header input[name=address]").val();
             var post_code = $("#task-modal-header input[name=post_code]").val();
-            if (short_name != '' && address != '' && post_code != '') {
+            var cash_to_be_collected = $("#task-modal-header input[name=cash_to_be_collected]").val();
+            if (short_name != '' && address != '' && post_code != '' && cash_to_be_collected != '') {
 
             } else {  err = 1;
                 $(".addspan").show();
@@ -729,7 +731,7 @@
 
             if( err == 0){
                 $('.submitTaskHeaderLoader').css('display', 'inline-block');
-                $('#submitTaskHeaderText').text('Done');
+                // $('#submitTaskHeaderText').text('Done');
                 $('.submitTaskHeader').addClass("inactiveLink");
 
                 var formData = new FormData(document.querySelector("#taskFormHeader"));
@@ -752,17 +754,31 @@
         processData: false,
         success: function(response) {
            // alert(response)
-            if (response) {
+            if (response.status == 'Success') {
                     $("#task-modal-header .close").click();
                     location.reload();
             } else {
-                $(".show_all_error.invalid-feedback").show();
-                $(".show_all_error.invalid-feedback").text(response.message);
+                $("#task-modal-header .show_all_error.invalid-feedback").show();
+                $("#task-modal-header .show_all_error.invalid-feedback").text(response.message);
             }
             //return response;
         },
         error: function(response) {
-
+            if (response.status === 422) {
+                let errors = response.responseJSON.errors;
+                Object.keys(errors).forEach(function (key) {
+                    $("#" + key + "Input input").addClass("is-invalid");
+                    $("#" + key + "Input span.invalid-feedback").children("strong").text(errors[key][0]);
+                    $("#" + key + "Input span.invalid-feedback").show();
+                });
+            } else {
+                $("#task-modal-header .show_all_error.invalid-feedback").show();
+                $("#task-modal-header .show_all_error.invalid-feedback").text("Something went wrong, Please try Again.");
+            }
+        },
+        complete: function(data){
+            $('.submitTaskHeaderLoader').css('display', 'none');
+            $('.submitTaskHeader').removeClass("inactiveLink");
         }
     });
 }
@@ -801,29 +817,31 @@
         }
     });
 
-    $(document).on("click", "#file", function() {
-      $('.showsimagegall').hide();
-      $('.imagepri').remove();
-       //readURL(this);
-    });
+    // $(document).on("click", "#file", function() {
+    //   $('.showsimagegall').hide();
+    //   $('.imagepri').remove();
+    //    //readURL(this);
+    // });
 
     $(document).on("change", "#file", function() {
        previewImages(this);
     });
 
     function previewImages(input) { //console.log('1');
+        $('.imagepri').remove();
+        var fileList = input.files;
+        if(fileList.length){
+            $(".showsimagegall").removeClass('d-block').addClass("d-none");
+        }else{
+            $(".showsimagegall").removeClass('d-none').addClass("d-block");
+        }
+        var anyWindow = window.URL || window.webkitURL; //console.log('2');
 
-      var fileList = input.files;
-      if(fileList.length == 0){
-        $('.showsimagegall').show();
-      }
-      var anyWindow = window.URL || window.webkitURL; //console.log('2');
-
-      for(var i = 0; i < fileList.length; i++){
-         var objectUrl = anyWindow.createObjectURL(fileList[i]);
-         $('#imagePreview').append('<img src="' + objectUrl + '" class="imagepri" />');
-         window.URL.revokeObjectURL(fileList[i]);
-       }
+        for(var i = 0; i < fileList.length; i++){
+            var objectUrl = anyWindow.createObjectURL(fileList[i]);
+            $('#imagePreview').append('<img src="' + objectUrl + '" class="imagepri" />');
+            window.URL.revokeObjectURL(fileList[i]);
+        }
     }
 
     $(document).on('click', '.assignRadio', function () {
