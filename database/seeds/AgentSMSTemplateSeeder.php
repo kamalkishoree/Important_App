@@ -14,7 +14,7 @@ class AgentSMSTemplateSeeder extends Seeder
      */
     public function run()
     {
-        $option_count = DB::table('payment_options')->count();
+        $option_count = DB::table('agent_sms_templates')->count();
 
         $options = array(
             [
@@ -29,6 +29,18 @@ class AgentSMSTemplateSeeder extends Seeder
                 'tags' => '{OTP}',
                 'label' => 'Sign In',
                 'content' => 'Your Dispatcher verification code is {OTP}',
+            ],
+            [
+              'slug' => 'driver-accepted',
+              'tags' => '',
+              'label' => 'Driver Accepted',
+              'content' => '',
+            ],
+            [
+              'slug' => 'driver-rejected',
+              'tags' => '',
+              'label' => 'Driver Rejected',
+              'content' => '',
             ]
         );
         

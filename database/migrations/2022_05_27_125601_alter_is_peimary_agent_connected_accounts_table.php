@@ -13,10 +13,10 @@ class AlterIsPeimaryAgentConnectedAccountsTable extends Migration
      */
     public function up()
     {
-        
         Schema::table('agent_connected_accounts', function (Blueprint $table) {
-            $table->tinyInteger('is_primary')->default(0)->comment('0=>No, 1=> Yes');
+            $table->tinyInteger('is_primary')->default(1)->comment('0=>No, 1=> Yes');
         });
+        
     }
 
     /**

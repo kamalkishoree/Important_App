@@ -256,7 +256,7 @@
                             <img class="showsimagegall" src="{{url('assets/images/ic_image_placeholder.png')}}" alt="">
                         </div>
                         <div class="allimages">
-                          <div id="imagePreview" class="privewcheck"></div>
+                          <div id="imagePreview" class="privewcheck d-flex justify-content-center flex-wrap"></div>
                         </div>
                     </div>
 
@@ -339,14 +339,16 @@
                 <div class="col-md-12">
                     <div class="form-group mb-3">
                         <label>{{__("Drivers")}}</label>
-                        <select class="form-control selectpicker" name="agent" id="driverselect">
+                        {!! Form::text('searchDriver', null, ['class' => 'form-control', 'placeholder' => __('Search Driver'), 'id' => 'searchDriver']) !!}
+                        <input type="hidden" id='agentid' name="agent" readonly>
+                        {{-- <select class="form-control selectpicker" name="agent" id="driverselect">
                             @foreach ($agents as $item)
                                 @php
                                     $checkAgentActive = ($item->is_available == 1) ? ' ('.__('Online').')' : ' ('.__('Offline').')';
                                 @endphp
                                 <option value="{{ $item->id }}">{{ ucfirst($item->name) . $checkAgentActive }}</option>
                             @endforeach
-                        </select>
+                        </select> --}}
                     </div>
                 </div>
             </div>

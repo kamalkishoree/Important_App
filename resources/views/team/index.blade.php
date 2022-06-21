@@ -97,6 +97,10 @@
                     </tbody>
                 </table>
             </div>
+
+            <div class="pagination pagination-rounded justify-content-end mb-0">
+                {{ $teams->links() }}
+            </div>
         </div> <!-- end col -->
 
         @foreach ($teams as $index => $team)
