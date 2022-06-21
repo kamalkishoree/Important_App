@@ -1668,14 +1668,12 @@ class TaskController extends BaseController
             $extra      = [];
             $remening   = [];
 
-            $getgeo = DriverGeo::where('geo_id', $geo)->with([
-                'agent'=> function ($o) use ($cash_at_hand, $date) {
-                    $o->select("id")->whereRaw("(select COALESCE(SUM(cash_to_be_collected),0) from orders where orders.driver_id=agents.id and status='completed') - (select COALESCE(SUM(driver_cost),0) from orders where orders.driver_id=agents.id and status='completed' and is_comm_settled != 2) + (select COALESCE(SUM(cr),0) as sum from payments where payments.driver_id=agents.id) - (select COALESCE(SUM(dr),0) as sum from payments where payments.driver_id=agents.id) - ((select COALESCE(balance,0) as sum from wallets where wallets.holder_id=agents.id)/100) + (select COALESCE(SUM(amount),0) from agent_payouts where agent_payouts.agent_id=agents.id and agent_payouts.status=0) < ".$cash_at_hand)->orderBy('id', 'DESC')->with(['logs','order'=> function ($f) use ($date) {
-                        $f->whereDate('order_time', $date)->with('task');
-                    }]);
-                }])->get();
+            $geoagents_ids =  DriverGeo::where('geo_id', $geo)->pluck('driver_id');
+            $geoagents = Agent::whereIn('id',  $geoagents_ids)->with(['logs','order'=> function ($f) use ($date) {
+                $f->whereDate('order_time', $date)->with('task');
+            }])->orderBy('id', 'DESC')->get()->where("agent_cash_at_hand", '<', $cash_at_hand);
 
-            $totalcount = $getgeo->count();
+            $totalcount = $geoagents->count();
             $orders = order::where('driver_id', '!=', null)->whereDate('created_at', $date)->groupBy('driver_id')->get('driver_id');
 
             $allreadytaken = [];
@@ -1687,25 +1685,25 @@ class TaskController extends BaseController
             $counter = 0;
             $data = [];
             for ($i = 1; $i <= $try; $i++) {
-                foreach ($getgeo as $key =>  $geoitem) {
-                    if (in_array($geoitem->driver_id, $allreadytaken) && !empty($geoitem->agent->device_token) && $geoitem->agent->is_available == 1) {
+                foreach ($geoagents as $key =>  $geoitem) {
+                    if (in_array($geoitem->id, $allreadytaken) && !empty($geoitem->device_token) && $geoitem->is_available == 1) {
                         $extra = [
-                            'id' => $geoitem->driver_id,
-                            'device_type' => $geoitem->agent->device_type, 'device_token' => $geoitem->agent->device_token
+                            'id' => $geoitem->id,
+                            'device_type' => $geoitem->device_type, 'device_token' => $geoitem->device_token
                         ];
                         array_push($remening, $extra);
                     } else {
-                        if(!empty($geoitem->agent->device_token) && $geoitem->agent->is_available == 1){
+                        if(!empty($geoitem->device_token) && $geoitem->is_available == 1){
                             $data = [
                                 'order_id'            => $orders_id,
-                                'driver_id'           => $geoitem->driver_id,
+                                'driver_id'           => $geoitem->id,
                                 'notification_time'   => $time,
                                 'type'                => $allcation_type,
                                 'client_code'         => $auth->code,
                                 'created_at'          => Carbon::now()->toDateTimeString(),
                                 'updated_at'          => Carbon::now()->toDateTimeString(),
-                                'device_type'         => $geoitem->agent->device_type,
-                                'device_token'        => $geoitem->agent->device_token,
+                                'device_type'         => $geoitem->device_type,
+                                'device_token'        => $geoitem->device_token,
                                 'detail_id'           => $randem,
 
                             ];
@@ -1724,7 +1722,7 @@ class TaskController extends BaseController
                     }
 
                     if ($allcation_type == 'N' && 'ACK' && count($all) > 0) {
-                        Order::where('id', $orders_id)->update(['driver_id'=>$geoitem->driver_id]);
+                        Order::where('id', $orders_id)->update(['driver_id'=>$geoitem->id]);
 
                         break;
                     }
@@ -1842,33 +1840,31 @@ class TaskController extends BaseController
                 $this->dispatch(new RosterCreate($data, $extraData));
             }
         } else {
-            $getgeo = DriverGeo::where('geo_id', $geo)->with([
-                'agent'=> function ($o) use ($cash_at_hand, $date) {
-                    $o->select("id")->whereRaw("(select COALESCE(SUM(cash_to_be_collected),0) from orders where orders.driver_id=agents.id and status='completed') - (select COALESCE(SUM(driver_cost),0) from orders where orders.driver_id=agents.id and status='completed' and is_comm_settled != 2) + (select COALESCE(SUM(cr),0) as sum from payments where payments.driver_id=agents.id) - (select COALESCE(SUM(dr),0) as sum from payments where payments.driver_id=agents.id) - ((select COALESCE(balance,0) as sum from wallets where wallets.holder_id=agents.id)/100) + (select COALESCE(SUM(amount),0) from agent_payouts where agent_payouts.agent_id=agents.id and agent_payouts.status=0) < ".$cash_at_hand)->orderBy('id', 'DESC')->with(['logs','order'=> function ($f) use ($date) {
-                        $f->whereDate('order_time', $date)->with('task');
-                    }]);
-                }])->get();
+            $geoagents_ids =  DriverGeo::where('geo_id', $geo)->pluck('driver_id');
+            $geoagents = Agent::whereIn('id',  $geoagents_ids)->with(['logs','order'=> function ($f) use ($date) {
+                $f->whereDate('order_time', $date)->with('task');
+            }])->orderBy('id', 'DESC')->get()->where("agent_cash_at_hand", '<', $cash_at_hand);
 
 
             for ($i = 1; $i <= $try; $i++) {
-                foreach ($getgeo as $key =>  $geoitem) {
-                    if (!empty($geoitem->agent->device_token) && $geoitem->agent->is_available == 1) {
+                foreach ($geoagents as $key =>  $geoitem) {
+                    if (!empty($geoitem->device_token) && $geoitem->is_available == 1) {
                         $datas = [
                             'order_id'            => $orders_id,
-                            'driver_id'           => $geoitem->driver_id,
+                            'driver_id'           => $geoitem->id,
                             'notification_time'   => $time,
                             'type'                => $allcation_type,
                             'client_code'         => $auth->code,
                             'created_at'          => Carbon::now()->toDateTimeString(),
                             'updated_at'          => Carbon::now()->toDateTimeString(),
-                            'device_type'         => $geoitem->agent->device_type,
-                            'device_token'        => $geoitem->agent->device_token,
+                            'device_type'         => $geoitem->device_type,
+                            'device_token'        => $geoitem->device_token,
                             'detail_id'           => $randem,
 
                         ];
                         array_push($data, $datas);
                         if ($allcation_type == 'N' && 'ACK') {
-                            Order::where('id', $orders_id)->update(['driver_id'=>$geoitem->driver_id]);
+                            Order::where('id', $orders_id)->update(['driver_id'=>$geoitem->id]);
                             break;
                         }
                     }
@@ -1947,19 +1943,14 @@ class TaskController extends BaseController
                 $this->dispatch(new RosterCreate($data, $extraData));
             }
         } else {
-            $getgeo = DriverGeo::where('geo_id', $geo)->with([
-                'agent'=> function ($o) use ($cash_at_hand, $date) {
-                    $o->select("id")->whereRaw("(select COALESCE(SUM(cash_to_be_collected),0) from orders where orders.driver_id=agents.id and status='completed') - (select COALESCE(SUM(driver_cost),0) from orders where orders.driver_id=agents.id and status='completed' and is_comm_settled != 2) + (select COALESCE(SUM(cr),0) as sum from payments where payments.driver_id=agents.id) - (select COALESCE(SUM(dr),0) as sum from payments where payments.driver_id=agents.id) - ((select COALESCE(balance,0) as sum from wallets where wallets.holder_id=agents.id)/100) + (select COALESCE(SUM(amount),0) from agent_payouts where agent_payouts.agent_id=agents.id and agent_payouts.status=0) < ".$cash_at_hand)->orderBy('id', 'DESC')->with(['logs' => function ($g) {
-                        $g->orderBy('id', 'DESC');
-                    }
-                        ,'order'=> function ($f) use ($date) {
-                            $f->whereDate('order_time', $date)->with('task');
-                        }]);
-                }])->get()->toArray();
+            $geoagents_ids =  DriverGeo::where('geo_id', $geo)->pluck('driver_id');
+            $geoagents = Agent::whereIn('id',  $geoagents_ids)->with(['logs','order'=> function ($f) use ($date) {
+                $f->whereDate('order_time', $date)->with('task');
+            }])->orderBy('id', 'DESC')->get()->where("agent_cash_at_hand", '<', $cash_at_hand)->toArray();
 
             //this function is give me nearest drivers list accourding to the the task location.
 
-            $distenseResult = $this->haversineGreatCircleDistance($getgeo, $finalLocation, $unit, $max_redius, $max_task);
+            $distenseResult = $this->haversineGreatCircleDistance($geoagents, $finalLocation, $unit, $max_redius, $max_task);
 
 
             if(!empty($distenseResult)){
@@ -2068,16 +2059,14 @@ class TaskController extends BaseController
                 $this->dispatch(new RosterCreate($data, $extraData));
             }
         } else {
-            $getgeo = DriverGeo::where('geo_id', $geo)->with([
-                'agent'=> function ($o) use ($cash_at_hand, $date) {
-                    $o->select("id")->whereRaw("(select COALESCE(SUM(cash_to_be_collected),0) from orders where orders.driver_id=agents.id and status='completed') - (select COALESCE(SUM(driver_cost),0) from orders where orders.driver_id=agents.id and status='completed' and is_comm_settled != 2) + (select COALESCE(SUM(cr),0) as sum from payments where payments.driver_id=agents.id) - (select COALESCE(SUM(dr),0) as sum from payments where payments.driver_id=agents.id) - ((select COALESCE(balance,0) as sum from wallets where wallets.holder_id=agents.id)/100) + (select COALESCE(SUM(amount),0) from agent_payouts where agent_payouts.agent_id=agents.id and agent_payouts.status=0) < ".$cash_at_hand)->orderBy('id', 'DESC')->with(['logs','order'=> function ($f) use ($date) {
-                        $f->whereDate('order_time', $date)->with('task');
-                    }]);
-                }])->get()->toArray();
+            $geoagents_ids =  DriverGeo::where('geo_id', $geo)->pluck('driver_id');
+            $geoagents = Agent::whereIn('id',  $geoagents_ids)->with(['logs','order'=> function ($f) use ($date) {
+                $f->whereDate('order_time', $date)->with('task');
+            }])->orderBy('id', 'DESC')->get()->where("agent_cash_at_hand", '<', $cash_at_hand)->toArray();
 
             //this function give me the driver list accourding to who have liest task for the current date
 
-            $distenseResult = $this->roundCalculation($getgeo, $finalLocation, $unit, $max_redius, $max_task);
+            $distenseResult = $this->roundCalculation($geoagents, $finalLocation, $unit, $max_redius, $max_task);
 
             if(!empty($distenseResult)){
                 for ($i = 1; $i <= $try; $i++) {
@@ -2130,13 +2119,13 @@ class TaskController extends BaseController
         $extraarray    = [];
 
         foreach ($getgeo as $item) {
-            $count = isset($item['agent']['order']) ? count($item['agent']['order']):0;
+            $count = isset($item['order']) ? count($item['order']):0;
 
             if ($max_task > $count) {
                 $data = [
-                                'driver_id'    =>  $item['agent']['id'],
-                                'device_type'  =>  $item['agent']['device_type'],
-                                'device_token' =>  $item['agent']['device_token'],
+                                'driver_id'    =>  $item['id'],
+                                'device_type'  =>  $item['device_type'],
+                                'device_token' =>  $item['device_token'],
                                 'task_count'   =>  $count,
                             ];
 
@@ -2154,7 +2143,7 @@ class TaskController extends BaseController
 
 
 
-    public function haversineGreatCircleDistance($getgeo, $finalLocation, $unit, $max_redius, $max_task)
+    public function haversineGreatCircleDistance($getgeoagent, $finalLocation, $unit, $max_redius, $max_task)
     {
         //$latitudeFrom, $longitudeFrom, $latitudeTo, $longitudeTo,
         // convert from degrees to radians
@@ -2164,9 +2153,9 @@ class TaskController extends BaseController
         $longitudeFrom = $finalLocation->longitude;
         $lastarray     = [];
         $extraarray    = [];
-        foreach ($getgeo as $item) {
-            $latitudeTo  = $item['agent']['logs']['lat']??null;
-            $longitudeTo = $item['agent']['logs']['long']??null;
+        foreach ($getgeoagent as $item) {
+            $latitudeTo  = $item['logs']['lat']??null;
+            $longitudeTo = $item['logs']['long']??null;
 
             if(!empty($latitudeTo) && !empty($longitudeTo))
             {
@@ -2183,13 +2172,13 @@ class TaskController extends BaseController
                     cos($latFrom) * cos($latTo) * pow(sin($lonDelta / 2), 2)));
 
                     $final = round($angle * $earthRadius);
-                    $count = isset($item['agent']['order']) ? count($item['agent']['order']):0;
+                    $count = isset($item['order']) ? count($item['order']):0;
                     if ($unit == 'metric') {
                         if ($final <= $max_redius && $max_task > $count) {
                             $data = [
-                                'driver_id'    =>  $item['agent']['logs']['agent_id'],
-                                'device_type'  =>  $item['agent']['device_type'],
-                                'device_token' =>  $item['agent']['device_token'],
+                                'driver_id'    =>  $item['id'],
+                                'device_type'  =>  $item['device_type'],
+                                'device_token' =>  $item['device_token'],
                                 'distance'     =>  $final
                             ];
                             array_push($extraarray, $data);
@@ -2197,9 +2186,9 @@ class TaskController extends BaseController
                     } else {
                         if ($final <= $max_redius && $max_task > $count) {
                             $data = [
-                                'driver_id'    =>  $item['agent']['logs']['agent_id'],
-                                'devide_type'  =>  $item['agent']['device_type'],
-                                'device_token' =>  $item['agent']['device_token'],
+                                'driver_id'    =>  $item['id'],
+                                'devide_type'  =>  $item['device_type'],
+                                'device_token' =>  $item['device_token'],
                                 'distance'     =>  round($final * 0.6214)
                             ];
                             array_push($extraarray, $data);

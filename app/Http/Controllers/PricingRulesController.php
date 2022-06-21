@@ -11,6 +11,9 @@ use App\Model\TagsForAgent;
 use App\Model\TagsForTeam;
 use App\Model\Team;
 use App\Model\TeamTag;
+use App\Model\Timezone;
+use App\Model\Client;
+use App\Model\ClientPreferences;
 use Illuminate\Http\Request;
 use Auth;
 use Illuminate\Support\Facades\Validator;
@@ -24,6 +27,11 @@ class PricingRulesController extends Controller
      */
     public function index()
     {
+        $tz = new Timezone();
+        $client = Client::where('code', Auth::user()->code)->with(['getAllocation', 'getPreference'])->first();
+        $client_timezone = $client->getTimezone ? $client->getTimezone->timezone : 251;
+        $timezone = $tz->timezone_name($client_timezone);
+        
         $pricing = PricingRule::orderBy('created_at', 'DESC');
         if (Auth::user()->is_superadmin == 0 && Auth::user()->all_team_access == 0) {
             $pricing = $pricing->whereHas('team.permissionToManager', function ($query) {
@@ -31,6 +39,8 @@ class PricingRulesController extends Controller
             });
         }
         
+        $weekdays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
         $pricing = $pricing->get();
 
         $priority = PricePriority::where('id', 1)->first();
@@ -61,7 +71,7 @@ class PricingRulesController extends Controller
         }
         
         $driver_tag = $driver_tag->get()->pluck('name', 'id');
-        return view('pricing-rules.index')->with(['pricing' => $pricing, 'priority'=>$priority, 'geos' => $geos, 'teams' => $teams, 'team_tag' => $team_tag, 'driver_tag' => $driver_tag]);
+        return view('pricing-rules.index')->with(['pricing' => $pricing, 'priority'=>$priority, 'geos' => $geos, 'teams' => $teams, 'team_tag' => $team_tag, 'driver_tag' => $driver_tag, 'weekdays' => $weekdays, 'timezone' => $timezone]);
     }
 
     /**

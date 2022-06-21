@@ -203,10 +203,6 @@
 <script src="{{ asset('assets/libs/flatpickr/flatpickr.min.js') }}"></script> 
 <script src="{{asset('assets/libs/bootstrap-datepicker/bootstrap-datepicker.min.js')}}"></script>
 
-<script src="{{asset('assets/js/pages/form-pickers.init.js')}}"></script>
-
-<script src="{{ asset('assets/js/pages/form-advanced.init.js') }}"></script>
-<script src="{{ asset('assets/js/pages/form-pickers.init.js') }}"></script>
 <script src="{{ asset('assets/libs/select2/select2.min.js') }}"></script>
 <script src="{{ asset('assets/libs/bootstrap-select/bootstrap-select.min.js') }}"></script>
 
@@ -215,12 +211,13 @@
 <script src="{{ asset('assets/libs/dropify/dropify.min.js') }}"></script>
 <script src="{{ asset('assets/js/pages/form-fileuploads.init.js') }}"></script>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/8.4.7/js/intlTelInput.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/9.0.10/js/intlTelInput.js"></script>
 
 <script src="{{ asset('assets/libs/datatables/datatables.min.js') }}"></script>
 <script src="{{ asset('assets/libs/sweetalert2/sweetalert2.min.js') }}"></script>
-<script src="{{ asset('assets/libs/nestable2/nestable2.min.js') }}"></script>
-<script src="{{ asset('assets/js/pages/nestable.init.js') }}"></script>
+<script src="{{ asset('assets/js/pages/form-advanced.init.js') }}"></script>
+<script src="{{ asset('assets/js/pages/form-pickers.init.js') }}"></script>
+
 
 <script>
 
@@ -230,6 +227,12 @@
 
 
     $(document).ready(function() {
+        const date = new Date();
+        date.toLocaleTimeString('en-US', {timeZone: "{{$timezone}}"});
+
+        clockUpdate();
+        setInterval(clockUpdate, 1000);
+
         $('#pricing-datatable').DataTable({
             language: {
                     search: "",
@@ -244,6 +247,45 @@
             });
     });
 
+    function clockUpdate() {
+        var date = new Date();
+        $('.digital-clock1').css({'text-shadow': '0 0 6px #ff0'});
+
+        function addZero(x) {
+            if (x < 10) {
+            return x = '0' + x;
+            } else {
+            return x;
+            }
+        }
+
+        function twelveHour(x) {
+            if (x > 12) {
+            return x = x - 12;
+            } else if (x == 0) {
+            return x = 12;
+            } else {
+            return x;
+            }
+        }
+
+        function twentyfourHour(x) {
+            if (x > 24) {
+            return x = x - 24;
+            } else if (x == 0) {
+            return x = 24;
+            } else {
+            return x;
+            }
+        }
+
+        var h = addZero(twelveHour(date.getHours()));
+        var m = addZero(date.getMinutes());
+        var s = addZero(date.getSeconds());
+
+        $('.digital-clock1').text("Current Time: "+h + ':' + m + ':' + s)
+        }
+
     function runPicker(){
         $('.datetime-datepicker').flatpickr({
             enableTime: true,
@@ -251,6 +293,8 @@
         });
 
         $('.selectpicker').selectpicker();
+        // timepicker for days and time
+        $("[id^='price_starttime_'], [id^='price_endtime_']").flatpickr({enableTime:!0,noCalendar:!0,dateFormat:"H:i",time_24hr:!0});
     }
 
     $('.openModal').click(function(){
@@ -259,6 +303,60 @@
             keyboard: false
         });
         runPicker();
+    });
+
+    // click event of add new time frame button
+    $(document).on('click', '.add_sub_pricing_row', function(){
+        var rowid = $(this).attr("data-id");
+        var id = $("#no_of_time_"+rowid).val();
+        if($("#price_starttime_"+rowid+"_"+id).val()!='' && $("#price_endtime_"+rowid+"_"+id).val()!='')
+        {
+            id = parseInt(id) + 1;
+            //new time frame row creation under day row
+            $("#timeframe_tbody_"+rowid).append('<tr id="timeframe_row_'+rowid+'_'+id+'"><td></td><td><input id="price_starttime_'+rowid+'_'+id+'" class="form-control" autocomplete="off" placeholder="00:00" name="price_starttime_'+rowid+'_'+id+'" type="text" readonly="readonly"></td><td><input id="price_endtime_'+rowid+'_'+id+'" class="form-control" autocomplete="off" placeholder="00:00" name="price_endtime_'+rowid+'_'+id+'" type="text" readonly="readonly"></td><td style="text-align:center;"><span data-id="pricruledelspan_'+rowid+'_'+id+'" class="del_pricrule_span"><img style="filter: grayscale(.5);" src="{{asset("assets/images/ic_delete.png")}}"  alt=""></span></td></tr>');
+            $("#no_of_time_"+rowid).val(id);
+            $("#price_starttime_"+rowid+"_"+id+", #price_endtime_"+rowid+"_"+id).flatpickr({enableTime:!0,noCalendar:!0,dateFormat:"H:i",time_24hr:!0});
+        }else{
+            //empty previous row fields warning
+            var color = 'orange';var heading="Warning!";
+            $.toast({ 
+            heading:heading,
+            text : "Please fill previous data first.", 
+            showHideTransition : 'slide', 
+            bgColor : color,              
+            textColor : '#eee',            
+            allowToastClose : true,      
+            hideAfter : 5000,            
+            stack : 5,                   
+            textAlign : 'left',         
+            position : 'top-right'      
+            });
+            //focus empty field
+            if($("#price_starttime_"+rowid+"_"+id).val()=='')
+            {
+                $("#price_starttime_"+rowid+"_"+id).focus();
+            }else{
+                $("#price_endtime_"+rowid+"_"+id).focus();
+            }
+            
+        }
+    });
+
+    $(document).on('click', '.del_pricrule_span', function(){
+        //var rowid = $(this).attr("data-id");
+        //var id_arr = rowid.split('_');
+        Swal.fire({
+                title: "Are you sure?",
+                text:"You want to delete this row ?.",
+                showCancelButton: true,
+                confirmButtonText: 'Ok',
+            }).then((result) => {
+                if(result.value)
+                {
+                    $(this).closest("tr").remove();
+                }
+                
+            });
     });
 
     $(".editIcon").click(function (e) {
@@ -293,7 +391,7 @@
                 });
 
                 runPicker();
-                ('.custom-switch').switch();
+                //$('.custom-switch').switch();
 
             },
             error: function (data) {
@@ -305,52 +403,6 @@
     $(document).on('click', '.submitEditForm', function(){ console.log('ad');
         document.getElementById("edit_price").submit();
     });
-
-    !function($) {
-        "use strict";
-        
-        var Nestable = function() {};
-        Nestable.prototype.updateOutput = function(e) {
-                var list = e.length ? e : $(e.target),
-                    output = list.data('output');
-                if (window.JSON) {
-                   output.val(window.JSON.stringify(list.nestable('serialize'))); //, null, 2));
-                } else {
-                    output.val('JSON browser support required for this demo.');
-                }
-            },
-            //init
-            Nestable.prototype.init = function() {
-                
-                $('#nestable_list_2').nestable({
-                    group: 1
-                }).on('change', this.updateOutput);
-
-                // output initial serialised data                
-                this.updateOutput($('#nestable_list_2').data('output', data));
-
-                $('#nestable_list_menu').on('click', function(e) {
-                    var target = $(e.target),
-                        action = target.data('action');
-                    if (action === 'expand-all') {
-                        $('.dd').nestable('expandAll');
-                    }
-                    if (action === 'collapse-all') {
-                        $('.dd').nestable('collapseAll');
-                    }
-                });
-
-                $('#nestable_list_3').nestable();
-            },
-            //init
-            $.Nestable = new Nestable, $.Nestable.Constructor = Nestable
-    }(window.jQuery),
-
-    //initializing 
-    function($) {
-        "use strict";
-        $.Nestable.init()
-    }(window.jQuery);
 
 </script>
 
