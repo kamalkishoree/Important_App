@@ -18,4 +18,9 @@ class PricingRule extends Model
         return $this->belongsTo('App\Model\TagsForAgent','driver_tag_id','id');
     }
 
+    public function priceRuleTimeframe(){
+        return $this->hasMany('App\Model\priceRuleTimeframe', 'pricing_id', 'id');
+        
+    }
+
 }

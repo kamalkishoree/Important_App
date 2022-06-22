@@ -57,7 +57,7 @@
                                 </div>
 
                                 <hr>
-                                <h5 class="text-uppercase bg-light-yellopink p-2 mt-0 mb-3">Timetable  <span class="digital-clock1" style="float:right;color: rgb(183 33 33);">00:00:00</span></h5>
+                                <h5 class="text-uppercase bg-light-yellopink p-2 mt-0 mb-3">Timetable  <span class="digital-clock1" style="float:right;color: rgb(183 33 33);text-shadow:0 0 6px #ff0;">00:00:00</span></h5>
                                 <div class="table-responsive">
                                     <table class="table table-striped dt-responsive nowrap w-100">
                                         <thead>
@@ -65,7 +65,7 @@
                                                 <th>Day</th>
                                                 <th>{{__("Start Time")}}</th>
                                                 <th>{{__("End Time")}}</th>
-                                                <th>{{__("Add")}}</th>   
+                                                <th>{{__("Add")}} <input type="hidden" id="hddn_days_count" name="hddn_days_count" value="{{count($weekdays)}}"/></th>   
                                             </tr>
                                         </thead>
                                         <?php $i = 0;?>
@@ -75,7 +75,7 @@
                                                 <td>
                                                     <input type="hidden" name="hddnWeekdays_{{$i}}" id="hddnWeekdays_{{$i}}" value="{{$weekday}}" />
                                                     <div class="checkbox checkbox-primary mb-1">
-                                                        <input type="checkbox" name="checkdays[]" id="checkdays_{{$i}}" value="1" data-parsley-mincheck="2">
+                                                        <input type="checkbox" name="checkdays_{{$i}}" id="checkdays_{{$i}}" value="1" data-parsley-mincheck="2">
                                                         <label for="checkdays_{{$i}}">&nbsp;&nbsp;&nbsp;&nbsp;{{__($weekday)}} </label>
                                                     </div>
                                                 </td>
@@ -223,7 +223,7 @@
 </div>
 
 <div id="edit-price-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
         <div class="modal-content">
             <div class="modal-header border-0">
                 <h4 class="modal-title">{{__("Pricing Edit")}}</h4>

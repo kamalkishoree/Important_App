@@ -2126,11 +2126,11 @@ class TaskController extends BaseController
 
 
 
-    public function roundCalculation($getgeo, $finalLocation, $unit, $max_redius, $max_task)
+    public function roundCalculation($geoagents, $finalLocation, $unit, $max_redius, $max_task)
     {
         $extraarray    = [];
 
-        foreach ($getgeo as $item) {
+        foreach ($geoagents as $item) {
             $count = isset($item['order']) ? count($item['order']):0;
 
             if ($max_task > $count) {
@@ -2155,7 +2155,7 @@ class TaskController extends BaseController
 
 
 
-    public function haversineGreatCircleDistance($getgeoagent, $finalLocation, $unit, $max_redius, $max_task)
+    public function haversineGreatCircleDistance($geoagents, $finalLocation, $unit, $max_redius, $max_task)
     {
         //$latitudeFrom, $longitudeFrom, $latitudeTo, $longitudeTo,
         // convert from degrees to radians
@@ -2165,7 +2165,7 @@ class TaskController extends BaseController
         $longitudeFrom = $finalLocation->longitude;
         $lastarray     = [];
         $extraarray    = [];
-        foreach ($getgeoagent as $item) {
+        foreach ($geoagents as $item) {
             $latitudeTo  = $item['logs']['lat']??null;
             $longitudeTo = $item['logs']['long']??null;
 

@@ -227,9 +227,6 @@
 
 
     $(document).ready(function() {
-        const date = new Date();
-        date.toLocaleTimeString('en-US', {timeZone: "{{$timezone}}"});
-
         clockUpdate();
         setInterval(clockUpdate, 1000);
 
@@ -248,53 +245,22 @@
     });
 
     function clockUpdate() {
-        var date = new Date();
-        $('.digital-clock1').css({'text-shadow': '0 0 6px #ff0'});
-
-        function addZero(x) {
-            if (x < 10) {
-            return x = '0' + x;
-            } else {
-            return x;
-            }
-        }
-
-        function twelveHour(x) {
-            if (x > 12) {
-            return x = x - 12;
-            } else if (x == 0) {
-            return x = 12;
-            } else {
-            return x;
-            }
-        }
-
-        function twentyfourHour(x) {
-            if (x > 24) {
-            return x = x - 24;
-            } else if (x == 0) {
-            return x = 24;
-            } else {
-            return x;
-            }
-        }
-
-        var h = addZero(twelveHour(date.getHours()));
-        var m = addZero(date.getMinutes());
-        var s = addZero(date.getSeconds());
-
-        $('.digital-clock1').text("Current Time: "+h + ':' + m + ':' + s)
-        }
+        @if($client->getPreference->time_format == 12)
+            var date = new Date().toLocaleString('en-US', { timeZone: '{{$timezone}}', hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: true});
+        @else
+            var date = new Date().toLocaleString('en-US', { timeZone: '{{$timezone}}', hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: false});
+        @endif
+        $('.digital-clock1').text("Current Time: "+date) 
+    }
 
     function runPicker(){
-        $('.datetime-datepicker').flatpickr({
-            enableTime: true,
-            dateFormat: "Y-m-d H:i"
-        });
-
         $('.selectpicker').selectpicker();
         // timepicker for days and time
-        $("[id^='price_starttime_'], [id^='price_endtime_']").flatpickr({enableTime:!0,noCalendar:!0,dateFormat:"H:i",time_24hr:!0});
+        @if($client->getPreference->time_format == 12)
+            $("[id^='price_starttime_'], [id^='price_endtime_'], [id^='edit_price_starttime_'], [id^='edit_price_endtime_']").flatpickr({enableTime:!0,noCalendar:!0,dateFormat:"H:i", static: true});
+        @else
+            $("[id^='price_starttime_'], [id^='price_endtime_'], [id^='edit_price_starttime_'], [id^='edit_price_endtime_']").flatpickr({enableTime:!0,noCalendar:!0,dateFormat:"H:i",time_24hr:!0, static: true});
+        @endif
     }
 
     $('.openModal').click(function(){
@@ -312,10 +278,14 @@
         if($("#price_starttime_"+rowid+"_"+id).val()!='' && $("#price_endtime_"+rowid+"_"+id).val()!='')
         {
             id = parseInt(id) + 1;
-            //new time frame row creation under day row
+            //new time frame row creation below day row
             $("#timeframe_tbody_"+rowid).append('<tr id="timeframe_row_'+rowid+'_'+id+'"><td></td><td><input id="price_starttime_'+rowid+'_'+id+'" class="form-control" autocomplete="off" placeholder="00:00" name="price_starttime_'+rowid+'_'+id+'" type="text" readonly="readonly"></td><td><input id="price_endtime_'+rowid+'_'+id+'" class="form-control" autocomplete="off" placeholder="00:00" name="price_endtime_'+rowid+'_'+id+'" type="text" readonly="readonly"></td><td style="text-align:center;"><span data-id="pricruledelspan_'+rowid+'_'+id+'" class="del_pricrule_span"><img style="filter: grayscale(.5);" src="{{asset("assets/images/ic_delete.png")}}"  alt=""></span></td></tr>');
             $("#no_of_time_"+rowid).val(id);
-            $("#price_starttime_"+rowid+"_"+id+", #price_endtime_"+rowid+"_"+id).flatpickr({enableTime:!0,noCalendar:!0,dateFormat:"H:i",time_24hr:!0});
+            @if($client->getPreference->time_format == 12)
+                $("#price_starttime_"+rowid+"_"+id+", #price_endtime_"+rowid+"_"+id).flatpickr({enableTime:!0,noCalendar:!0,dateFormat:"H:i", static: true});
+            @else
+                $("#price_starttime_"+rowid+"_"+id+", #price_endtime_"+rowid+"_"+id).flatpickr({enableTime:!0,noCalendar:!0,dateFormat:"H:i",time_24hr:!0, static: true});
+            @endif
         }else{
             //empty previous row fields warning
             var color = 'orange';var heading="Warning!";
@@ -331,20 +301,12 @@
             textAlign : 'left',         
             position : 'top-right'      
             });
-            //focus empty field
-            if($("#price_starttime_"+rowid+"_"+id).val()=='')
-            {
-                $("#price_starttime_"+rowid+"_"+id).focus();
-            }else{
-                $("#price_endtime_"+rowid+"_"+id).focus();
-            }
-            
         }
     });
 
+    
+
     $(document).on('click', '.del_pricrule_span', function(){
-        //var rowid = $(this).attr("data-id");
-        //var id_arr = rowid.split('_');
         Swal.fire({
                 title: "Are you sure?",
                 text:"You want to delete this row ?.",
@@ -378,20 +340,61 @@
             success: function (data) {
 
                 console.log('data');
-        
-                $('.datetime-datepicker').flatpickr({
-                    enableTime: true,
-                    dateFormat: "Y-m-d H:i"
-                });
 
                 $('#edit-price-modal #editCardBox').html(data.html);
                 $('#edit-price-modal').modal({
                     backdrop: 'static',
                     keyboard: false
                 });
-
+                
                 runPicker();
-                //$('.custom-switch').switch();
+
+                $(document).on('click', '.add_edit_sub_pricing_row', function(){
+                    var rowid = $(this).attr("data-id");
+                    var id = $("#edit_no_of_time_"+rowid).val();
+                    if($("#edit_price_starttime_"+rowid+"_"+id).val()!='' && $("#edit_price_endtime_"+rowid+"_"+id).val()!='')
+                    {
+                        id = parseInt(id) + 1;
+                        //new time frame row creation below day row
+                        $("#timeframe_edit_tbody_"+rowid).append('<tr id="timeframe_edit_row_'+rowid+'_'+id+'"><td></td><td><input id="edit_price_starttime_'+rowid+'_'+id+'" class="form-control" autocomplete="off" placeholder="00:00" name="edit_price_starttime_'+rowid+'_'+id+'" type="text" readonly="readonly"></td><td><input id="edit_price_endtime_'+rowid+'_'+id+'" class="form-control" autocomplete="off" placeholder="00:00" name="edit_price_endtime_'+rowid+'_'+id+'" type="text" readonly="readonly"></td><td style="text-align:center;"><span data-id="pricruledelspan_'+rowid+'_'+id+'" class="del_edit_pricrule_span"><img style="filter: grayscale(.5);" src="{{asset("assets/images/ic_delete.png")}}"  alt=""></span></td></tr>');
+                        $("#edit_no_of_time_"+rowid).val(id);
+                        @if($client->getPreference->time_format == 12)
+                            $("#edit_price_starttime_"+rowid+"_"+id+", #edit_price_endtime_"+rowid+"_"+id).flatpickr({enableTime:!0,noCalendar:!0,dateFormat:"H:i", static: true});
+                        @else
+                            $("#edit_price_starttime_"+rowid+"_"+id+", #edit_price_endtime_"+rowid+"_"+id).flatpickr({enableTime:!0,noCalendar:!0,dateFormat:"H:i",time_24hr:!0, static: true});
+                        @endif
+                    }else{
+                        //empty previous row fields warning
+                        var color = 'orange';var heading="Warning!";
+                        $.toast({ 
+                        heading:heading,
+                        text : "Please fill previous data first.", 
+                        showHideTransition : 'slide', 
+                        bgColor : color,              
+                        textColor : '#eee',            
+                        allowToastClose : true,      
+                        hideAfter : 5000,            
+                        stack : 5,                   
+                        textAlign : 'left',         
+                        position : 'top-right'      
+                        });
+                    }
+                });
+
+                $(document).on('click', '.del_edit_pricrule_span', function(){
+                    Swal.fire({
+                            title: "Are you sure?",
+                            text:"You want to delete this row ?.",
+                            showCancelButton: true,
+                            confirmButtonText: 'Ok',
+                        }).then((result) => {
+                            if(result.value)
+                            {
+                                $(this).closest("tr").remove();
+                            }
+                            
+                        });
+                });
 
             },
             error: function (data) {
