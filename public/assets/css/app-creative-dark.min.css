@@ -220,7 +220,7 @@ body[data-sidebar-size=condensed] .left-side-menu #sidebar-menu > ul > li {
 }
 body[data-sidebar-size=condensed] .left-side-menu #sidebar-menu > ul > li > a {
   padding: 15px 20px;
-  min-height: 54px;
+  min-height: 48px;
   transition: none;
 }
 body[data-sidebar-size=condensed] .left-side-menu #sidebar-menu > ul > li > a:hover, body[data-sidebar-size=condensed] .left-side-menu #sidebar-menu > ul > li > a:active, body[data-sidebar-size=condensed] .left-side-menu #sidebar-menu > ul > li > a:focus {
