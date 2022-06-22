@@ -1813,7 +1813,7 @@ body[dir="rtl"] .agent-listing tbody td{
     padding: 15px 10px 10px 15px;
 }
 
-
+ 
 
 @media only screen and (min-width: 768px) and (max-width:1366px) {
         body.dark[data-sidebar-size=condensed] .left-side-menu #sidebar-menu > ul > li > a {
