@@ -637,6 +637,12 @@ class TaskController extends BaseController
             if ($check && $check->call_back_url) {
                 $call_web_hook = $this->updateStatusDataToOrder($check, 2,1);  # task accepted
             }
+            //Send SMS in case of friend's booking
+            if(isset($check->type) && $check->type == 1 && strlen($check->friend_phone_number) > 8)
+            {
+                $friend_sms_body = 'Hi '.($check->friend_name).', '.($check->customer->name??'Our customer').' has booked a ride for you.';
+                $send = $this->sendSms2($check->friend_phone_number , $friend_sms_body);
+            }
             return response()->json([
                 'message' => __('Task Accecpted Successfully'),
             ], 200);
@@ -665,6 +671,12 @@ class TaskController extends BaseController
             Task::where('order_id', $request->order_id)->update(['task_status' => 1]);
             if ($check && $check->call_back_url) {
                 $call_web_hook = $this->updateStatusDataToOrder($check, 2,1);  # task accepted
+            }
+            //Send SMS in case of friend's booking
+            if(isset($check->type) && $check->type == 1 && strlen($check->friend_phone_number) > 8)
+            {
+                $friend_sms_body = 'Hi '.($check->friend_name).', '.($check->customer->name??'Our customer').' has booked a ride for you.';
+                $send = $this->sendSms2($check->friend_phone_number , $friend_sms_body);
             }
             return response()->json([
                 'data' => __('Task Accecpted Successfully'),
