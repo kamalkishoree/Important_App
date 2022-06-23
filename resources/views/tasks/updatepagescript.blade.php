@@ -355,6 +355,9 @@ $(document).ready(function(){
         });
 
         function updateTaskSubmit(data, method, url) {
+            for(var i=0; i < savedFileListArray.length; i++){
+                data.append('savedFiles[]', savedFileListArray[i]);
+            }
             $.ajax({
                 method: method,
                 headers: {
@@ -365,7 +368,7 @@ $(document).ready(function(){
                 contentType: false,
                 processData: false,
                 success: function(response) {
-                    window.location.href = '/tasks';             
+                    window.location.href = '/tasks';
                 },
                 error: function(response) {
                     

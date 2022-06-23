@@ -117,8 +117,20 @@
        }
        .showsimagegall{
         margin-top: 20px;
-
        }
+       .imagepri_wrap {
+            position: relative;
+        }
+        button.close.imagepri_close {
+            position: absolute;
+            top: -7px;
+            right: 1px;
+            background-color: red;
+            border-radius: 50%;
+            padding: 0px 3px;
+            font-size: 14px;
+            color: white;
+        }
        .allset{
            margin-left: 9px !important;
            margin-right: 9px !important;
@@ -778,14 +790,13 @@
         contentType: false,
         processData: false,
         success: function(response) {
-            if (response.status == 'Success') {
+            if (response) {
                     $("#task-modal-header .close").click();
                     location.reload();
             } else {
                 $("#task-modal-header .show_all_error.invalid-feedback").show();
                 $("#task-modal-header .show_all_error.invalid-feedback").text(response.message);
             }
-            //return response;
         },
         error: function(response) {
             if (response.status === 422) {
@@ -847,13 +858,32 @@
     //    //readURL(this);
     // });
 
+    function reArrangeFileWrapIndexes(img_wrap_class){
+        $(img_wrap_class).each(function(index, elem){
+            $(elem).attr('data-id', index);
+        });
+    }
+
+    function insertArrayToFiles(routefileListArray){
+        const dT = new ClipboardEvent('').clipboardData || new DataTransfer(); 
+        for (let file of routefileListArray) { 
+            dT.items.add(file);
+        }
+        $('#file').prop("files",dT.files);
+    }
+
+    var routefileListArray = [];
     $(document).on("change", "#file", function() {
        previewImages(this);
     });
 
     function previewImages(input) { //console.log('1');
-        $('.imagepri').remove();
+        // $('.imagepri_wrap').remove();
         var fileList = input.files;
+        Array.prototype.push.apply(routefileListArray, Array.from(fileList));
+        insertArrayToFiles(routefileListArray);
+
+        // routefileListArray = Array.from(fileList);
         if(fileList.length){
             $(".showsimagegall").removeClass('d-block').addClass("d-none");
         }else{
@@ -863,10 +893,29 @@
 
         for(var i = 0; i < fileList.length; i++){
             var objectUrl = anyWindow.createObjectURL(fileList[i]);
-            $('#imagePreview').append('<img src="' + objectUrl + '" class="imagepri" />');
+            $('#imagePreview').append('<div class="imagepri_wrap mb-2" data-id="'+i+'"><img src="' + objectUrl + '" class="imagepri mr-2" /><button type="button" class="close imagepri_close" aria-hidden="true">×</button></div>');
             window.URL.revokeObjectURL(fileList[i]);
         }
+        
+        reArrangeFileWrapIndexes();
     }
+
+    $(document).on('click', '.imagepri_close', function(e){
+        // console.log(savedFileListArray, 'before');
+        var index = $(this).parents('.imagepri_wrap').attr('data-id');
+        // console.log(index, 'index');
+        if($(this).parents('.imagepri_wrap').hasClass("saved")){
+            savedFileListArray.splice(index, 1);
+            // console.log(savedFileListArray, 'after');
+            $(this).parents('.imagepri_wrap').remove();
+            reArrangeFileWrapIndexes('.imagepri_wrap.saved');
+        }else{
+            routefileListArray.splice(index, 1); // At position index, remove 1 file
+            $(this).parents('.imagepri_wrap').remove();
+            insertArrayToFiles(routefileListArray);
+            reArrangeFileWrapIndexes('.imagepri_wrap');
+        }
+    });
 
     $(document).on('click', '.assignRadio', function () {
 

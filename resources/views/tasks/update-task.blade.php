@@ -395,16 +395,19 @@ use Carbon\Carbon;
                                     <input id="file" type="file" name="file[]" multiple style="display: none" />
                                 </label>
                                 
-                                @if ($images[0] == '')
+                                @if (count($images) && $images[0] == '')
                                     <img class="showsimagegall d-block m-auto" src="{{ url('assets/images/ic_image_placeholder.png') }}"
                                         alt="">
                                 @endif
 
                                 <div class="allimages">
-                                    <div id="imagePreview" class="privewcheck">
+                                    <div id="imagePreview" class="privewcheck d-flex justify-content-center flex-wrap">
                                         @if (count($images) > 0 && $images[0] != '')
-                                            @foreach ($images as $item)
-                                                <img src="{{ $main }}{{ $item }}" class="imagepri" />
+                                            @foreach ($images as $i => $item)
+                                                <div class="imagepri_wrap mb-2 saved" data-id="{{ $i }}">
+                                                    <img src="{{ $main }}{{ $item }}" class="imagepri mr-2" />
+                                                    <button type="button" class="close imagepri_close saved" aria-hidden="true">×</button>
+                                                </div>
                                             @endforeach
                                         @endif
                                     </div>
@@ -561,6 +564,10 @@ use Carbon\Carbon;
     {{-- <script src="{{ asset('assets/js/pages/form-advanced2.init.js') }}"></script>
     <script src="{{ asset('assets/js/pages/form-advanced.init.js') }}"></script> --}}
     <script src="{{ asset('assets/libs/selectize/selectize.min.js') }}"></script>
+    
+    <script>
+        var savedFileListArray = {!! json_encode($images) !!};
+    </script>
     @include('tasks.updatepagescript')
     
 @endsection
