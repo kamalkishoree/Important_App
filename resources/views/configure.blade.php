@@ -1044,7 +1044,7 @@ $sms_crendential = json_decode($preference->sms_credentials);
 
                             <div class="col-md-4"> 
                                 <div class="form-group d-flex justify-content-between mb-3">
-                                <label for="" class="mr-2 mb-0">{{__("Enable this option Job consist of pickup or delivery.")}} </label>
+                                <label for="" class="mr-2 mb-0">{{__("Enable this to specify Job consist of pickup or delivery.")}} </label>
                                 <div class="d-flex align-items-center justify-content-between mb-2">
                                     <div class="custom-control custom-switch">
                                             <input type="checkbox" class="custom-control-input " id="job_consist_of_pickup_or_delivery" name="job_consist_of_pickup_or_delivery" {{ (!empty($preference->job_consist_of_pickup_or_delivery) && $preference->job_consist_of_pickup_or_delivery == 1) ? 'checked' : '' }}>

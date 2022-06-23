@@ -14,4 +14,8 @@ class BatchAllocation extends Model
         return $this->hasMany('App\Model\BatchAllocationDetail', 'order_id', 'id')->orderBy('task_order');
     }
 
+    public function batchDetails(){
+        return $this->hasMany('App\Model\BatchAllocationDetail');
+    }
+
 }
