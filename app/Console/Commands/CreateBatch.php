@@ -66,17 +66,18 @@ class CreateBatch extends Command
         //Start morning batch allocation time is greater than 7:59am
         $now = new \DateTime("now", new \DateTimeZone('UTC'));
         $to = Carbon::parse($now)->format('Y-m-d H:i:s');
-        $start = date('Y-m-d').' 07:59:59';
-        $end = date('Y-m-d').' 20:01:59';
+        $start = date('Y-m-d').' 05:59:59';
+        $end = date('Y-m-d').' 22:01:59';
         $now_time = strtotime($to);
         $start_time = $this->convertDateTimeToUtcAndAddMinToTimeStemp($start,$timeZone);
-        $end_time = $this->convertDateTimeToUtcAndAddMinToTimeStemp($end,$timeZone);
+        $end_time = $this->convertDateTimeToUtcAndAddMinToTimeStemp($end,$timeZone);              
 
-        
-
-        if($now_time<=$start_time || $now_time>$end_time){
-        return false;
-        }
+        if($now_time<$start_time){
+            return false;
+        }  
+        if($now_time>$end_time){
+            return false;
+        }    
         //Pick only clients which has enable batch allocation feture
         $clients = Client::where(['status'=> 1,'batch_allocation'=>1])->get();
         foreach($clients as $client){
@@ -112,8 +113,8 @@ class CreateBatch extends Command
            
             $batchCompareDate =  BatchAllocation::select('created_at')->latest()->first();
             if(isset($batchCompareDate->created_at)){
-                $timeStempBatch = $this->convertDateTimeToUtcAndAddMinToTimeStemp($batchCompareDate->created_at,$timeZone,$addminutes);
-                $nextBatchDate = $this->convertDateTimeToUtcAndAddMinToTimeStemp($batchCompareDate->created_at,$timeZone,$addminutes,'D');
+                $timeStempBatch = $this->convertDateTimeToUtcAndAddMinToTimeStemp($batchCompareDate->created_at,$timeZone,$addminutes,'T','');
+                $nextBatchDate = $this->convertDateTimeToUtcAndAddMinToTimeStemp($batchCompareDate->created_at,$timeZone,$addminutes,'D','');
               }else{
                 $nextBatchDate = Carbon::parse($now)->addMinutes($addminutes)->format('Y-m-d H:i:s');
                 $timeStempBatch =  $now_time-1;
@@ -122,12 +123,10 @@ class CreateBatch extends Command
             if($now_time<=$timeStempBatch){
                 return false;
             }
-           
 
             $typeArrayRoute = ['P','D'];
             foreach($typeArrayRoute as $typeR)
             {
-            
             $taskType = (($typeR=='P')?'1':'2');
             //Fetch Pickup order with tasks
             $pickupOrders = Order::whereNotIn('id',function($query) {
@@ -138,8 +137,8 @@ class CreateBatch extends Command
                 $o->where('task_type_id',$taskType);
             }])->where(['status'=> 'unassigned','request_type'=>$typeR])->where('order_time','<=',$nextBatchDate)->orderBy('id','desc')->get();
            //->where('id','164')->orWhere('id','178')->limit(10)
-
-            //Empty Order Temp Table First
+            
+           //Empty Order Temp Table First
             orderTemp::truncate();
 
             $geoOrders = array();
@@ -161,8 +160,6 @@ class CreateBatch extends Command
                 }
 
             }            
-            //  \Log::info(json_encode($geoOrders));
-            // dd('hi');
             //Sort Geo Fence id wise route 
             $tempOrders = array();
             $sortArray = $this->sortAssociativeArrayByKey($geoOrders,'geo_id','ASC');
@@ -469,9 +466,13 @@ class CreateBatch extends Command
         }
     }
 
-    public function convertDateTimeToUtcAndAddMinToTimeStemp($date,$timeZone,$minutes = '0', $type='T')
+    public function convertDateTimeToUtcAndAddMinToTimeStemp($date,$timeZone,$minutes = '0', $type='T',$utc='U')
     {
-        $timeStemp = Carbon::createFromFormat('Y-m-d H:i:s', $date, $timeZone)->addMinutes($minutes)->setTimezone('UTC');
+        if($utc){
+            $timeStemp = Carbon::createFromFormat('Y-m-d H:i:s', $date, $timeZone)->addMinutes($minutes)->setTimezone('UTC');
+        }else{
+            $timeStemp = Carbon::createFromFormat('Y-m-d H:i:s', $date)->addMinutes($minutes);
+        }
 
         if($type=='T')
         $timeStemp = strtotime($timeStemp);
