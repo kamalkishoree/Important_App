@@ -256,7 +256,7 @@
                             <img class="showsimagegall" src="{{url('assets/images/ic_image_placeholder.png')}}" alt="">
                         </div>
                         <div class="allimages">
-                          <div id="imagePreview" class="privewcheck"></div>
+                          <div id="imagePreview" class="privewcheck d-flex justify-content-center flex-wrap"></div>
                         </div>
                     </div>
 

@@ -131,22 +131,6 @@
                             </div>
                         </div>
 
-                        <div class="custom-switch redio-all">
-                            <input type="checkbox" value="1" class="custom-control-input large-icon" id="job_consist_of_pickup_or_delivery"
-                                name="job_consist_of_pickup_or_delivery"
-                                {{ isset($allocation) && $allocation->job_consist_of_pickup_or_delivery == 1 ? 'checked' : '' }}>
-                            <label class="custom-control-label checkss" for="job_consist_of_pickup_or_delivery">{{__("Enable this option Job consist of pickup or delivery.")}}</label>
-
-                            <div class="col-sm-4 text-right">
-
-                                @if ($errors->has('job_consist_of_pickup_or_delivery'))
-                                    <span class="text-danger" role="alert">
-                                        <strong>{{ $errors->first('job_consist_of_pickup_or_delivery') }}</strong>
-                                    </span>
-                                @endif
-                            </div>
-                        </div>
-
                         {{-- <div class="custom-switch redio-all mb-3">
                             <input type="checkbox" value="1" class="custom-control-input large-icon" id="self_assign"
                                 name="self_assign"

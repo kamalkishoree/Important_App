@@ -18,6 +18,8 @@ use App\Model\TaskProof;
 use App\Model\DriverGeo;
 use App\Model\TaskReject;
 use App\Model\SmtpDetail;
+use App\Model\BatchAllocation;
+use App\Model\BatchAllocationDetail;
 use App\Model\AllocationRule;
 use App\Model\ClientPreference;
 use App\Model\NotificationType;
@@ -607,7 +609,6 @@ class TaskController extends BaseController
     {
         $header = $request->header();
         $client_details = Client::where('database_name', $header['client'][0])->first();
-
         $percentage = 0;
 
         $proof_face = null;
@@ -622,16 +623,10 @@ class TaskController extends BaseController
                 $proof_face = $path;
             }
         }
-        if(!empty($proof_face)){
-            Task::where('order_id', $request->order_id)->update(['proof_face' => $proof_face]);
-        }
+        // if(!empty($proof_face)){
+        //     Task::where('order_id', $request->order_id)->update(['proof_face' => $proof_face]);
+        // }
 
-        $check = Order::where('id', $request->order_id)->with(['agent','customer'])->first();
-        if (!isset($check)) {
-            return response()->json([
-                'message' => __('This order has already been accepted.'),
-            ], 404);
-        }
 
         if (isset($check) && $check->driver_id != null) {
             if ($check && $check->call_back_url) {
@@ -649,29 +644,88 @@ class TaskController extends BaseController
         }  // need to we change
 
         if ($request->status == 1) {
-            $this->dispatchNow(new RosterDelete($request->order_id));
-            $task_id = Order::where('id', $request->order_id)->first();
-            $pricingRule = PricingRule::where('id', 1)->first();
-            $agent_id =  isset($request->allocation_type) && $request->allocation_type == 'm' ? $request->agent : null;
 
-            if (isset($agent_id) && $task_id->driver_cost <= 0.00) {
-                $agent_details = Agent::where('id', $agent_id)->first();
-                if ($agent_details->type == 'Employee') {
-                    $percentage = $pricingRule->agent_commission_fixed + (($task_id->order_cost / 100) * $pricingRule->agent_commission_percentage);
-                } else {
-                    $percentage = $pricingRule->freelancer_commission_percentage + (($task_id->order_cost / 100) * $pricingRule->freelancer_commission_fixed);
+            if($request->type=='B')
+            {
+            //For Batch Order api
+                $check = BatchAllocation::where('batch_no', $request->order_id)->first();
+                if ($check->agent_id) {
+                    return response()->json([
+                        'message' => __('This Batch has already been accepted.'),
+                    ], 404);
                 }
-            }
-            if ($task_id->driver_cost != 0.00) {
-                $percentage = $task_id->driver_cost;
-            }
+
+            $batchNo = $request->order_id;
+            $this->dispatchNow(new RosterDelete($request->order_id,'B'));
+          
+
+            BatchAllocation::where(['batch_no'=>$request->order_id])->update(['agent_id' => $request->driver_id]);
+            BatchAllocationDetail::where(['batch_no'=>$request->order_id])->update(['agent_id' => $request->driver_id]);
+            $batchs = BatchAllocationDetail::where(['batch_no'=>$request->order_id])->get();
+            foreach($batchs as $batch){
+
+                $task_id = Order::where('id', $batch->order_id)->first();
+                $pricingRule = PricingRule::where('id', 1)->first();
+                $agent_id =  isset($request->allocation_type) && $request->allocation_type == 'm' ? $request->agent : null;
+    
+                if (isset($agent_id) && $task_id->driver_cost <= 0.00) {
+                    $agent_details = Agent::where('id', $agent_id)->first();
+                    if ($agent_details->type == 'Employee') {
+                        $percentage = $pricingRule->agent_commission_fixed + (($task_id->order_cost / 100) * $pricingRule->agent_commission_percentage);
+                    } else {
+                        $percentage = $pricingRule->freelancer_commission_percentage + (($task_id->order_cost / 100) * $pricingRule->freelancer_commission_fixed);
+                    }
+                }
+                if ($task_id->driver_cost != 0.00) {
+                    $percentage = $task_id->driver_cost;
+                }
 
 
-            Order::where('id', $request->order_id)->update(['driver_id' => $request->driver_id, 'status' => 'assigned','driver_cost'=> $percentage]);
-            Task::where('order_id', $request->order_id)->update(['task_status' => 1]);
+                Order::where('id', $batch->order_id)->update(['driver_id' => $request->driver_id, 'status' => 'assigned','driver_cost'=> $percentage]);
+                Task::where('order_id', $batch->order_id)->update(['task_status' => 1]);
+            }
             if ($check && $check->call_back_url) {
                 $call_web_hook = $this->updateStatusDataToOrder($check, 2,1);  # task accepted
             }
+
+
+            }else{
+
+                $check = Order::where('id', $request->order_id)->with(['agent','customer'])->first();
+                if (!isset($check)) {
+                    return response()->json([
+                        'message' => __('This order has already been accepted.'),
+                    ], 404);
+                }
+
+                //For order api
+                $this->dispatchNow(new RosterDelete($request->order_id,'O'));
+                $task_id = Order::where('id', $request->order_id)->first();
+                $pricingRule = PricingRule::where('id', 1)->first();
+                $agent_id =  isset($request->allocation_type) && $request->allocation_type == 'm' ? $request->agent : null;
+    
+                if (isset($agent_id) && $task_id->driver_cost <= 0.00) {
+                    $agent_details = Agent::where('id', $agent_id)->first();
+                    if ($agent_details->type == 'Employee') {
+                        $percentage = $pricingRule->agent_commission_fixed + (($task_id->order_cost / 100) * $pricingRule->agent_commission_percentage);
+                    } else {
+                        $percentage = $pricingRule->freelancer_commission_percentage + (($task_id->order_cost / 100) * $pricingRule->freelancer_commission_fixed);
+                    }
+                }
+                if ($task_id->driver_cost != 0.00) {
+                    $percentage = $task_id->driver_cost;
+                }
+    
+    
+                Order::where('id', $request->order_id)->update(['driver_id' => $request->driver_id, 'status' => 'assigned','driver_cost'=> $percentage]);
+                Task::where('order_id', $request->order_id)->update(['task_status' => 1]);
+                if ($check && $check->call_back_url) {
+                    $call_web_hook = $this->updateStatusDataToOrder($check, 2,1);  # task accepted
+                }
+            }
+
+
+
             //Send SMS in case of friend's booking
             if(isset($check->type) && $check->type == 1 && strlen($check->friend_phone_number) > 8)
             {
@@ -681,6 +735,8 @@ class TaskController extends BaseController
             return response()->json([
                 'data' => __('Task Accecpted Successfully'),
             ], 200);
+
+
         } else {
             $data = [
                 'order_id'          => $request->order_id,
@@ -1000,6 +1056,20 @@ class TaskController extends BaseController
                 $agent_id = null;
             }
 
+           
+            //If batch allocation is on them return from there no job is created 
+            if($client->getPreference->create_batch_hours > 0){
+                //\Log::info('Batch Allocation is on');
+                    $dispatch_traking_url = $client_url.'/order/tracking/'.$auth->code.'/'.$orders->unique_id;
+
+                    DB::commit();
+                    return response()->json([
+                    'message' => __('Task Added Successfully'),
+                    'task_id' => $orders->id,
+                    'status'  => $orders->status,
+                    'dispatch_traking_url'  => $dispatch_traking_url??null
+                ], 200);
+            }   
 
 
             // task schdule code is hare
@@ -1081,7 +1151,7 @@ class TaskController extends BaseController
 
             //this is roster create accounding to the allocation methed
 
-
+            
             if ($request->allocation_type === 'a' || $request->allocation_type === 'm') {
                 $allocation = AllocationRule::where('id', 1)->first();
                 switch ($allocation->auto_assign_logic) {
@@ -1548,10 +1618,8 @@ class TaskController extends BaseController
     public function findLocalityByLatLng($lat, $lng)
     {
         // get the locality_id by the coordinate //
-
         $latitude_y = $lat;
         $longitude_x = $lng;
-
         $localities = Geo::all();
 
         if (empty($localities)) {
@@ -1598,6 +1666,7 @@ class TaskController extends BaseController
                     return $locality->id;
                 }
             }
+            
         }
 
         return false;
@@ -1640,7 +1709,7 @@ class TaskController extends BaseController
         $extraData = [
             'customer_name'            => $customer->name,
             'customer_phone_number'    => $customer->phone_number,
-            'short_name'                => $finalLocation->short_name,
+            'short_name'               => $finalLocation->short_name,
             'address'                  => $finalLocation->address,
             'lat'                      => $finalLocation->latitude,
             'long'                     => $finalLocation->longitude,

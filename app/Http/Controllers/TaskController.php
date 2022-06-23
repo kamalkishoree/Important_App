@@ -22,7 +22,7 @@ use App\Model\Geo;
 use App\Model\Order;
 use App\Model\Timezone;
 use App\Model\AgentLog;
-use App\Model\{Team,TeamTag};
+use App\Model\{BatchAllocation, Team,TeamTag};
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
@@ -125,6 +125,34 @@ class TaskController extends BaseController
         $agentsCount    = count($agents->where('is_approved', 1));
 
         return view('tasks/task')->with([ 'status' => $request->status, 'agentsCount'=>$agentsCount, 'employeesCount'=>$employeesCount, 'active_count' => $active, 'panding_count' => $pending, 'history_count' => $history, 'status' => $check,'preference' => $preference,'agents'=>$agents,'failed_count'=>$failed,'client_timezone'=>$client_timezone]);
+    }
+
+
+    public function batchlist(Request $request)
+    {
+        $user = Auth::user();
+        $timezone = $user->timezone ?? 251;
+        $tz = new Timezone();
+        $client_timezone = $tz->timezone_name($timezone);
+
+        $check = '';
+        if ($request->has('status') && $request->status != 'all') {
+            $check = $request->status;
+        } else {
+            $check = 'unassigned';
+        }
+
+        $all =  BatchAllocation::with('batchDetails')->where('agent_id', '==', null);
+        $all = $all->get();
+        // dd($all);
+        $preference  = ClientPreference::where('id', 1)->first(['theme','date_format','time_format']);
+        $allcation   = AllocationRule::where('id', 1)->first();
+
+        $employees      = Customer::orderby('name', 'asc')->where('status','Active')->select('id', 'name')->get();
+        $employeesCount = count($employees);
+        // $agentsCount    = count($agents->where('is_approved', 1));
+        // 'active_count' => $active, 'panding_count' => $pending, 'history_count' => $history, 'status' => $check,
+        return view('tasks/batch')->with([ 'status' => $request->status, 'employeesCount'=>$employeesCount, 'preference' => $preference,'client_timezone'=>$client_timezone,'batchs'=>$all]);
     }
 
     public function taskFilter(Request $request)
@@ -2082,6 +2110,11 @@ class TaskController extends BaseController
         $tz = new Timezone();
         $auth->timezone = $tz->timezone_name(Auth::user()->timezone);
 
+        if(isset($request->savedFiles) && (count($request->savedFiles) > 0)){
+            $update_saved = implode(",", $request->savedFiles);
+            $last .= $update_saved;
+        }
+
         if (isset($request->file) && count($request->file) > 0) {
             $folder = str_pad(Auth::user()->id, 8, '0', STR_PAD_LEFT);
             $folder = 'client_' . $folder;
@@ -2094,7 +2127,11 @@ class TaskController extends BaseController
                 $path = Storage::disk('s3')->put($s3filePath, $file, 'public');
                 array_push($images, $path);
             }
-            $last = implode(",", $images);
+            $file_paths = implode(",", $images);
+            if(!empty($last)){
+                $last .= ',' ;
+            }
+            $last .= $file_paths;
         }
 
         if (!isset($request->ids)) {
