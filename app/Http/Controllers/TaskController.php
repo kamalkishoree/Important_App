@@ -38,9 +38,11 @@ use App\Exports\RoutesExport;
 use Excel;
 use GuzzleHttp\Client as Gclient;
 use App\Http\Controllers\Api\BaseController;
+use App\Traits\ApiResponser;
 
 class TaskController extends BaseController
 {
+    use ApiResponser;
     /**
      * Display a listing of the resource.
      *
@@ -142,9 +144,8 @@ class TaskController extends BaseController
             $check = 'unassigned';
         }
 
-        $all =  BatchAllocation::with('batchDetails')->where('agent_id', '==', null);
+        $all =  BatchAllocation::with('batchDetails');
         $all = $all->get();
-        // dd($all);
         $preference  = ClientPreference::where('id', 1)->first(['theme','date_format','time_format']);
         $allcation   = AllocationRule::where('id', 1)->first();
 
@@ -153,6 +154,22 @@ class TaskController extends BaseController
         // $agentsCount    = count($agents->where('is_approved', 1));
         // 'active_count' => $active, 'panding_count' => $pending, 'history_count' => $history, 'status' => $check,
         return view('tasks/batch')->with([ 'status' => $request->status, 'employeesCount'=>$employeesCount, 'preference' => $preference,'client_timezone'=>$client_timezone,'batchs'=>$all]);
+    }
+
+    public function batchDetails(Request $request)
+    {
+        $all =  BatchAllocation::with('batchDetails')->where('id',$request->id)->first();
+            $table = '<table><tr><th>Order No</th><th>Due Time</th><th>Tracking Url</th><th>Updated Time</th></tr>';
+            foreach($all->batchDetails as $order){
+                $table .= '<tr>
+                    <td>'.$order->order_id.'</td>
+                    <td>'.$order->order_id.'</td>
+                    <td>'.$order->order_id.'</td>
+                    <td>'.$order->order_time.'</td>
+                </tr>';
+            }
+            $table .='</table>';
+      return json_encode(['success'=>$table]);
     }
 
     public function taskFilter(Request $request)

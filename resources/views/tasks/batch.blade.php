@@ -62,7 +62,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
         <div class="row">
             <div class="col-12">
                 <div class="page-title-box">
-                    <h4 class="page-title">{{__("Routes")}}</h4>
+                    <h4 class="page-title">{{__("Batch Details")}}</h4>
                 </div>
             </div>
         </div>
@@ -91,15 +91,25 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                             <table class="table table-striped dt-responsive nowrap w-100 agents-datatable" id="agents-datatable">
                                 <thead>
                                     <tr>
-                                        @if (!isset($status) || $status == 'unassigned')
-                                        <th><input type="checkbox" class="all-driver_check" name="all_driver_id" id="all-driver_check"></th>
-                                        @endif
-                                        <th class="sort-icon">{{__("Batch Number")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
-                                        <th style="width: 85px;">{{__("Action")}}</th>
+                                        
+                                        <th class="sort-icon">{{__("Sr.no")}} </th>
+                                        <th class="sort-icon">{{__("Batch Number")}}</th>
+                                        <th class="sort-icon">{{__("Agent Name")}}</th>
+                                        <th class="sort-icon">{{__("Batch Time")}}</th>
+                                        <th >{{__("Action")}}</th>
                                     </tr>
                                 </thead>
                                 <tbody style="height: 8%;overflow: auto !important;">
-                                
+                                @foreach($batchs as $batch)
+                                <tr>
+                                    <td>{{$batch->id}}</td>
+                                    <td>{{$batch->batch_no}}</td>
+                                    <td>{{$batch->agent_name??'Null'}}</td>
+                                    <td>{{$batch->created_at??'Null'}}</td>
+                                    <td><button class="btn btn-primary btn-sm" onclick="alert('Are you Sure you want to assign batch')">Assign Batch</button>
+                                        <button class="btn btn-primary btn-sm" onclick="viewOrders({{$batch->id}})">View Orders</button></td>
+                                </tr>
+                                @endforeach
                                 </tbody>
                             </table>
                         </div>
@@ -108,6 +118,20 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
             </div> <!-- end col -->
         </div>
 
+        <div id="batch_details_modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+        aria-hidden="true" style="display: none;">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header border-0">
+                        <h4 class="modal-title">{{__('Batch Details')}}</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    </div>
+                    <div class="modal-body px-3 py-0 allin batchData">
+                        
+                    </div>
+                </div>
+            </div>
+        </div><!-- /.modal -->
 
     </div>
 
@@ -125,140 +149,34 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
     {{-- @include('tasks.taskpagescript') --}}
 
 <script>
-     initializeRouteListing();
-        function initializeRouteListing(){
 
-            $('.agents-datatable').DataTable({
-                "dom": '<"toolbar">Bfrtip',
-                "destroy": true,
-                "scrollX": true,
-                "processing": true,
-                "serverSide": true,
-                "responsive": true,
-                "iDisplayLength": 10,
-                "paging": true,
-                "lengthChange" : true,
-                "searching": true,
-                // "ordering": true,
-                language: {
-                            search: "",
-                            paginate: { previous: "<i class='mdi mdi-chevron-left'>", next: "<i class='mdi mdi-chevron-right'>" },
-                            searchPlaceholder: "{{__('Search Routes')}}",
-                            'loadingRecords': '&nbsp;',
-                            'sProcessing': '<div class="spinner" style="top: 90% !important;"></div>'
-                },
-                drawCallback: function () {
-                    $(".dataTables_paginate > .pagination").addClass("pagination-rounded");
-                },
-                buttons: [{
-                    className:'btn btn-success waves-effect waves-light',
-                    text: '<span class="btn-label"><i class="mdi mdi-export-variant"></i></span>{{__("Export CSV")}}',
-                    action: function ( e, dt, node, config ) {
-                        window.location.href = "{{ route('task.export') }}";
-                    }
-                }],
-                ajax: {
-                    url: "{{url('task/filter')}}",
-                    // "dataSrc": "",
-                    headers: {
+    function viewOrders(id)
+    {
+        $.ajax({
+            type: "post",
+            dataType: "json",
+            headers: {
                         'X-CSRF-Token': '{{ csrf_token() }}',
                     },
-                    data: function (d) {
-                        d.search = $('input[type="search"]').val();
-                        d.routesListingType = $('#routes-listing-status').val();
-                        d.imgproxyurl = '{{$imgproxyurl}}';
-                    }
-                },
-               // order: dataTableColumnSort(),
-                columns: dataTableColumn(),
-            });
-        }
+            url: "{{route('batchDetails')}}",
+            data: { "id": id},
+            success: function(response) {
+              
+                    $("#batch_details_modal .batchData").html('');
+                    $("#batch_details_modal .batchData").append(response.success);
+                    $("#batch_details_modal").modal('show');                  
+              
+            },
+            error: function(error) {
+                var response = $.parseJSON(error.responseText);
+                let error_messages = response.message;
+                alert(error_messages);
+            },
+        });
 
-        function dataTableColumnSort(){
-            var routesListing = $('#routes-listing-status').val();
-            if(routesListing == 'unassigned'){
-                return [[ 10, "desc" ]];
-            }else{
-                return [[ 10, "desc" ]];
-            }
-        }
-
-        function dataTableColumn(){
-            var routesListing = $('#routes-listing-status').val();
-            if(routesListing == 'unassigned'){
-                return [
-                    {data: 'id', name: 'id', orderable: false, searchable: false, "mRender": function ( data, type, full ) {
-                        return '<input type="checkbox" class="single_driver_check" name="driver_id[]" id="single_driver" value="'+full.id+'">';
-                    }},
-                    // {data: 'order_number', name: 'order_number', orderable: true, searchable: false},
-                    {data: 'customer_id', name: 'customer_id', orderable: true, searchable: false},
-                    {data: 'order_number', name: 'order_number', orderable: true, searchable: false , "mRender": function ( data, type, full ) {
-                        if(full.request_type=='D')
-                        return full.order_number+' (Delivery)';
-                        
-                        return full.order_number+' (Pickup)';
-
-                    }},
-                    {data: 'customer_name', name: 'customer_name', orderable: true, searchable: false},
-                    {data: 'phone_number', name: 'phone_number', orderable: true, searchable: false},
-                    {data: 'agent_name', name: 'agent_name', orderable: true, searchable: false},
-                    {data: 'order_time', name: 'order_time', orderable: true, searchable: false},
-                    {data: 'short_name', name: 'short_name', orderable: false, searchable: false, "mRender": function ( data, type, full ) {
-                        var shortName = JSON.parse(full.short_name.replace(/&quot;/g,'"'));
-                        var routes = '';
-                        $.each(shortName, function(index, elem) {
-                            routes += '<div class="address_box"><span class="'+elem.pickupClass+'">'+elem.taskType+'</span> <span class="short_name">'+elem.shortName+'</span> <label class="datatable-cust-routes" data-toggle="tooltip" data-placement="bottom" title="'+elem.toolTipAddress+'">'+elem.address+'</label></div>';
-                        });
-                        return routes;
-                    }},
-                    {data: 'track_url', name: 'track_url', orderable: false, searchable: false, "mRender": function ( data, type, full ) {
-                        var trackUrl = full.track_url;
-                        return '<a onclick="window.open(this.href,"_blank");return false;" href="'+trackUrl+'">'+'{{__("Track")}}'+'</a>';
-                    }},
-                    {data: 'track_url', name: 'track_url', orderable: false, searchable: false, "mRender": function ( data, type, full ) {
-                        return '<button class="showTaskProofs btn btn-primary-outline action-icon" value="'+full.id+'"><i class="fe-layers"></i></button>';
-                    }},
-                    {data: 'order_cost', name: 'order_cost', orderable: false, searchable: false, "mRender": function ( data, type, full ) {
-                        return '<button class="showaccounting btn btn-primary-outline action-icon setcolor" value="'+full.id+'">'+full.order_cost+'</button>';
-                    }},
-                    {data: 'updated_at', name: 'updated_at', orderable: true, searchable: false},
-                    {data: 'action', name: 'action', orderable: true, searchable: false}
-                ];
-            }else{
-                return [
-                    // {data: 'order_number', name: 'order_number', orderable: true, searchable: false},
-                    {data: 'customer_id', name: 'customer_id', orderable: true, searchable: false},
-                    {data: 'order_number', name: 'order_number', orderable: true, searchable: false},
-                    {data: 'customer_name', name: 'customer_name', orderable: true, searchable: false},
-                    {data: 'phone_number', name: 'phone_number', orderable: true, searchable: false},
-                    {data: 'agent_name', name: 'agent_name', orderable: true, searchable: false},
-                    {data: 'order_time', name: 'order_time', orderable: true, searchable: false},
-                    {data: 'short_name', name: 'short_name', orderable: false, searchable: false, "mRender": function ( data, type, full ) {
-                        var shortName = JSON.parse(full.short_name.replace(/&quot;/g,'"'));
-                        var routes = '';
-                        $.each(shortName, function(index, elem) {
-                            routes += '<div class="address_box"><span class="'+elem.pickupClass+'">'+elem.taskType+'</span> <span class="short_name">'+elem.shortName+'</span> <label data-toggle="tooltip" data-placement="bottom" title="'+elem.toolTipAddress+'">'+elem.address+'</label></div>';
-                        });
-                        return routes;
-                    }},
-                    {data: 'track_url', name: 'track_url', orderable: false, searchable: false, "mRender": function ( data, type, full ) {
-                        var trackUrl = full.track_url;
-                        return '<a onclick="window.open(this.href,"_blank");return false;" href="'+trackUrl+'">Track</a>';
-                    }},
-                    {data: 'track_url', name: 'track_url', orderable: false, searchable: false, "mRender": function ( data, type, full ) {
-                        return '<button class="showTaskProofs btn btn-primary-outline action-icon" value="'+full.id+'"><i class="fe-layers"></i></button>';
-                    }},
-                    {data: 'order_cost', name: 'order_cost', orderable: false, searchable: false, "mRender": function ( data, type, full ) {
-                        return '<button class="showaccounting btn btn-primary-outline action-icon setcolor" value="'+full.id+'">'+full.order_cost+'</button>';
-                    }},
-                    {data: 'updated_at', name: 'updated_at', orderable: true, searchable: false},
-                    {data: 'action', name: 'action', orderable: true, searchable: false}
-                ]
-            }
-        }
+    }
 
 
-    });
 </script>
     
 @endsection

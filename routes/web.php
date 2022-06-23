@@ -191,6 +191,7 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 			Route::resource('manager', 'ManagerController');
 			Route::resource('plan-billing', 'PlanBillingController');
 			Route::get('batchs/', 'TaskController@batchlist')->name('batch.list');
+			Route::POST('batchDetails/', 'TaskController@batchDetails')->name('batchDetails');
 			Route::resource('tasks', 'TaskController');
 
 			Route::post('newtasks', 'TaskController@newtasks');

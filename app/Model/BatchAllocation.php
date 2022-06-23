@@ -15,7 +15,7 @@ class BatchAllocation extends Model
     }
 
     public function batchDetails(){
-        return $this->hasMany('App\Model\BatchAllocationDetail');
+        return $this->hasMany('App\Model\BatchAllocationDetail','batch_no', 'batch_no');
     }
 
 }
