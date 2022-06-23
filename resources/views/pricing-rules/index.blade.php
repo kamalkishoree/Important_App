@@ -254,13 +254,57 @@
     }
 
     function runPicker(){
-        $('.selectpicker').selectpicker();
-        // timepicker for days and time
+        $('#geo_id, #team_id, #team_tag_id, #driver_tag_id, #geo_id_edit, #team_id_edit, #team_tag_id_edit, #driver_tag_id_edit').select2({
+            placeholder: "Select an option",
+            allowClear: true
+        });
+        
         @if($client->getPreference->time_format == 12)
             $("[id^='price_starttime_'], [id^='price_endtime_'], [id^='edit_price_starttime_'], [id^='edit_price_endtime_']").flatpickr({enableTime:!0,noCalendar:!0,dateFormat:"H:i", static: true});
         @else
             $("[id^='price_starttime_'], [id^='price_endtime_'], [id^='edit_price_starttime_'], [id^='edit_price_endtime_']").flatpickr({enableTime:!0,noCalendar:!0,dateFormat:"H:i",time_24hr:!0, static: true});
         @endif
+        // select all for add form
+        $(document).on('click', '#select_geo_all', function(){
+            $("#geo_id").find('option').prop("selected",true);
+            $("#geo_id").trigger('change');
+        });
+
+        $(document).on('click', '#select_team_all', function(){
+            $("#team_id").find('option').prop("selected",true);
+            $("#team_id").trigger('change');
+        });
+
+        $(document).on('click', '#select_team_tag_all', function(){
+            $("#team_tag_id").find('option').prop("selected",true);
+            $("#team_tag_id").trigger('change');
+        });
+
+        $(document).on('click', '#select_driver_tag_all', function(){
+            $("#driver_tag_id").find('option').prop("selected",true);
+            $("#driver_tag_id").trigger('change');
+        });
+
+        // select all for edit form
+        $(document).on('click', '#select_geo_edit_all', function(){
+            $("#geo_id_edit").find('option').prop("selected",true);
+            $("#geo_id_edit").trigger('change');
+        });
+
+        $(document).on('click', '#select_team_edit_all', function(){
+            $("#team_id_edit").find('option').prop("selected",true);
+            $("#team_id_edit").trigger('change');
+        });
+
+        $(document).on('click', '#select_team_tag_edit_all', function(){
+            $("#team_tag_id_edit").find('option').prop("selected",true);
+            $("#team_tag_id_edit").trigger('change');
+        });
+
+        $(document).on('click', '#select_driver_tag_edit_all', function(){
+            $("#driver_tag_id_edit").find('option').prop("selected",true);
+            $("#driver_tag_id_edit").trigger('change');
+        });
     }
 
     $('.openModal').click(function(){

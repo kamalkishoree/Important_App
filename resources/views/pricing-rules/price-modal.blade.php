@@ -1,5 +1,5 @@
 <div id="add-pricing-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
-    <div class="modal-dialog modal-dialog-centered modal-xl">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-header border-0">
                 <h4 class="modal-title">{{__("Add Pricing Rule")}}</h4>
@@ -17,8 +17,8 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group" id="typeInput">
-                                            {!! Form::label('title', __('Select Geo Fence'),['class' => 'control-label']) !!}
-                                            {!! Form::select('geo_id',$geos,null,['class' => 'selectpicker']) !!}
+                                            {!! Form::label('title', __('Select Geo Fence'),['class' => 'control-label']) !!} <span class="badge badge-primary float-right" id="select_geo_all" style="cursor:pointer;">Select All</span>
+                                            {!! Form::select('geo_id[]',$geos,null,['id' => 'geo_id', 'data-toggle' => 'select2', 'class' => 'form-control', 'multiple' => 'multiple', 'data-placeholder' => 'Choose ...']) !!}
                                             <span class="invalid-feedback" role="alert">
                                                 <strong></strong>
                                             </span>
@@ -26,8 +26,8 @@
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group" id="typeInput">
-                                            {!! Form::label('title', __('Select Team'),['class' => 'control-label']) !!}
-                                            {!! Form::select('team_id',$teams,null,['class' => 'selectpicker']) !!}
+                                            {!! Form::label('title', __('Select Team'),['class' => 'control-label']) !!} <span class="badge badge-primary float-right" id="select_team_all" style="cursor:pointer;">Select All</span>
+                                            {!! Form::select('team_id[]',$teams,null,['id' => 'team_id','data-toggle' => 'select2', 'class' => 'form-control', 'multiple' => 'multiple', 'data-placeholder' => 'Choose ...']) !!}
                                             <span class="invalid-feedback" role="alert">
                                                 <strong></strong>
                                             </span>
@@ -38,8 +38,8 @@
                                 <div class="row">    
                                     <div class="col-md-6">
                                         <div class="form-group" id="typeInput">
-                                            {!! Form::label('title', __('Select Team Tag'),['class' => 'control-label']) !!}
-                                            {!! Form::select('team_tag_id',$team_tag,null,['class' => 'selectpicker']) !!}
+                                            {!! Form::label('title', __('Select Team Tag'),['class' => 'control-label']) !!} <span class="badge badge-primary float-right" id="select_team_tag_all" style="cursor:pointer;">Select All</span>
+                                            {!! Form::select('team_tag_id[]',$team_tag,null,['id' => 'team_tag_id','data-toggle' => 'select2', 'class' => 'form-control', 'multiple' => 'multiple', 'data-placeholder' => 'Choose ...']) !!}
                                             <span class="invalid-feedback" role="alert">
                                                 <strong></strong>
                                             </span>
@@ -47,8 +47,8 @@
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group" id="typeInput">
-                                            {!! Form::label('title', __('Select Driver Tag'),['class' => 'control-label']) !!}
-                                            {!! Form::select('driver_tag_id',$driver_tag,null,['class' => 'selectpicker']) !!}
+                                            {!! Form::label('title', __('Select Driver Tag'),['class' => 'control-label']) !!} <span class="badge badge-primary float-right" id="select_driver_tag_all" style="cursor:pointer;">Select All</span>
+                                            {!! Form::select('driver_tag_id[]',$driver_tag,null,['id' => 'driver_tag_id','data-toggle' => 'select2', 'class' => 'form-control', 'multiple' => 'multiple', 'data-placeholder' => 'Choose ...']) !!}
                                             <span class="invalid-feedback" role="alert">
                                                 <strong></strong>
                                             </span>
@@ -223,7 +223,7 @@
 </div>
 
 <div id="edit-price-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
-    <div class="modal-dialog modal-dialog-centered modal-xl">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-header border-0">
                 <h4 class="modal-title">{{__("Pricing Edit")}}</h4>

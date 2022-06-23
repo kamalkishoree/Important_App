@@ -8,8 +8,8 @@
         <div class="row">
             <div class="col-md-6">
                 <div class="form-group" id="typeInput">
-                    {!! Form::label('title', __('Select Geo Fence'),['class' => 'control-label']) !!}
-                    {!! Form::select('geo_id', $geos, $pricing->geo_id,['class' => 'selectpicker']) !!}
+                    {!! Form::label('title', __('Select Geo Fence'),['class' => 'control-label']) !!} <span class="badge badge-primary float-right" id="select_geo_edit_all" style="cursor:pointer;">Select All</span>
+                    {!! Form::select('geo_id[]', $geos, !empty($selectedtags['Geo'])?$selectedtags['Geo']:NULL,['id' => 'geo_id_edit','data-toggle' => 'select2', 'class' => 'form-control', 'multiple' => 'multiple', 'data-placeholder' => 'Choose ...']) !!}
                     <span class="invalid-feedback" role="alert">
                         <strong></strong>
                     </span>
@@ -17,8 +17,8 @@
             </div>
             <div class="col-md-6">
                 <div class="form-group" id="typeInput">
-                    {!! Form::label('title', __('Select Team'),['class' => 'control-label']) !!}
-                    {!! Form::select('team_id', $teams, $pricing->team_id,['class' => 'selectpicker']) !!}
+                    {!! Form::label('title', __('Select Team'),['class' => 'control-label']) !!} <span class="badge badge-primary float-right" id="select_team_edit_all" style="cursor:pointer;">Select All</span>
+                    {!! Form::select('team_id[]', $teams, !empty($selectedtags['Team'])?$selectedtags['Team']:NULL,['id' => 'team_id_edit', 'data-toggle' => 'select2', 'class' => 'form-control', 'multiple' => 'multiple', 'data-placeholder' => 'Choose ...']) !!}
                     <span class="invalid-feedback" role="alert">
                         <strong></strong>
                     </span>
@@ -29,8 +29,8 @@
         <div class="row">    
             <div class="col-md-6">
                 <div class="form-group" id="typeInput">
-                    {!! Form::label('title', __('Select Team Tag'),['class' => 'control-label']) !!}
-                    {!! Form::select('team_tag_id', $team_tag, $pricing->team_tag_id,['class' => 'selectpicker']) !!}
+                    {!! Form::label('title', __('Select Team Tag'),['class' => 'control-label']) !!} <span class="badge badge-primary float-right" id="select_team_tag_edit_all" style="cursor:pointer;">Select All</span>
+                    {!! Form::select('team_tag_id[]', $team_tag, !empty($selectedtags['Team_tag'])?$selectedtags['Team_tag']:NULL,['id' => 'team_tag_id_edit','data-toggle' => 'select2', 'class' => 'form-control', 'multiple' => 'multiple', 'data-placeholder' => 'Choose ...']) !!}
                     <span class="invalid-feedback" role="alert">
                         <strong></strong>
                     </span>
@@ -38,8 +38,8 @@
             </div>
             <div class="col-md-6">
                 <div class="form-group" id="typeInput">
-                    {!! Form::label('title', __('Select Driver Tag'),['class' => 'control-label']) !!}
-                    {!! Form::select('driver_tag_id', $driver_tag, $pricing->driver_tag_id,['class' => 'selectpicker']) !!}
+                    {!! Form::label('title', __('Select Driver Tag'),['class' => 'control-label']) !!} <span class="badge badge-primary float-right" id="select_driver_tag_edit_all" style="cursor:pointer;">Select All</span>
+                    {!! Form::select('driver_tag_id[]', $driver_tag, !empty($selectedtags['Agent'])?$selectedtags['Agent']:NULL,['id' => 'driver_tag_id_edit','data-toggle' => 'select2', 'class' => 'form-control', 'multiple' => 'multiple', 'data-placeholder' => 'Choose ...']) !!}
                     <span class="invalid-feedback" role="alert">
                         <strong></strong>
                     </span>

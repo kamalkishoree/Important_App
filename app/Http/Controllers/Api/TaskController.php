@@ -800,7 +800,7 @@ class TaskController extends BaseController
 
             //get pricing rule  for save with every order
             if(isset($request->order_agent_tag) && !empty($request->order_agent_tag))
-            $pricingRule = PricingRule::orderBy('id', 'desc')->whereHas('tagsForAgent',function($q)use($request){
+            $pricingRule = PricingRule::orderBy('id', 'desc')->whereHas('priceRuleTags.tagsForAgent',function($q)use($request){
                 $q->where('name',$request->order_agent_tag);
             })->first();
 
@@ -2302,7 +2302,7 @@ class TaskController extends BaseController
 
         //get pricing rule  for save with every order
         if(isset($request->agent_tag) && !empty($request->agent_tag))
-        $pricingRule = PricingRule::orderBy('id', 'desc')->whereHas('tagsForAgent',function($q)use($request){
+        $pricingRule = PricingRule::orderBy('id', 'desc')->whereHas('priceRuleTags.tagsForAgent',function($q)use($request){
             $q->where('name',$request->agent_tag);
         })->first();
 

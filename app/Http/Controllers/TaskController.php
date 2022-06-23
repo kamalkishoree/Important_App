@@ -109,7 +109,7 @@ class TaskController extends BaseController
 
         $pricingRule = PricingRule::select('id', 'name');
         if ($user->is_superadmin == 0 && $user->all_team_access == 0) {
-            $pricingRule = $pricingRule->whereHas('team.permissionToManager', function ($query) use($user) {
+            $pricingRule = $pricingRule->whereHas('priceRuleTags.team.permissionToManager', function ($query) use($user) {
                 $query->where('sub_admin_id', $user->id);
             });
         }
@@ -862,7 +862,7 @@ class TaskController extends BaseController
 
         $pricingRule = PricingRule::select('id', 'name');
         if (Auth::user()->is_superadmin == 0 && Auth::user()->all_team_access == 0) {
-            $pricingRule = $pricingRule->whereHas('team.permissionToManager', function ($query) {
+            $pricingRule = $pricingRule->whereHas('priceRuleTags.team.permissionToManager', function ($query) {
                 $query->where('sub_admin_id', Auth::user()->id);
             });
         }
