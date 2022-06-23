@@ -336,7 +336,7 @@
                             <div class="row mb-2">
                                 <div class="col-md-4">
                                     <div class="form-group mb-3">
-                                        <label for="start_radius">{{__("Start Radius")}}</label>
+                                        <label for="start_radius">{{__("Start Radius")}} {{$preference->distance_unit  == "metric" ? '(In Km)':'(In Mile)'}}</label>
                                         <input type="text" name="start_radius" id="start_radius" placeholder="0"
                                             class="form-control"
                                             value="{{ isset($allocation) && $allocation->start_radius != null ? $allocation->start_radius : '' }}">
@@ -344,7 +344,7 @@
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group mb-3">
-                                        <label for="increment_radius">{{__("Increment Radius")}}</label>
+                                        <label for="increment_radius">{{__("Increment Radius")}} {{$preference->distance_unit  == "metric" ? '(In Km)':'(In Mile)'}}</label>
                                         <input type="text" name="increment_radius" id="increment_radius" placeholder="5"
                                             class="form-control"
                                             value="{{ isset($allocation) && $allocation->increment_radius != null ? $allocation->increment_radius : '' }}">
