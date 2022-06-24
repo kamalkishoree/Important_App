@@ -104,10 +104,12 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                 <tr>
                                     <td>{{$batch->id}}</td>
                                     <td>{{$batch->batch_no}}</td>
-                                    <td>{{$batch->agent_name??'Null'}}</td>
-                                    <td>{{$batch->created_at??'Null'}}</td>
-                                    <td><button class="btn btn-primary btn-sm" onclick="alert('Are you Sure you want to assign batch')">Assign Batch</button>
-                                        <button class="btn btn-primary btn-sm" onclick="viewOrders({{$batch->id}})">View Orders</button></td>
+                                    <td>{{$batch->agent->name??'Null'}}</td>
+                                    <td>{{$batch->batchTime??'Null'}}</td>
+                                    <td>
+                                        <button type="button" class="btn btn-info assign_agent" onclick="assignBatch({{$batch->id}})"">Assign</button>
+
+                                        <button class="btn btn-primary btn-sm" onclick="viewOrders({{$batch->id}})">Batch Orders</button></td>
                                 </tr>
                                 @endforeach
                                 </tbody>
@@ -120,10 +122,10 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
 
         <div id="batch_details_modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
         aria-hidden="true" style="display: none;">
-            <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
                 <div class="modal-content">
                     <div class="modal-header border-0">
-                        <h4 class="modal-title">{{__('Batch Details')}}</h4>
+                        <h4 class="modal-title">{{__('Batch Orders Detail')}}</h4>
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                     </div>
                     <div class="modal-body px-3 py-0 allin batchData">
@@ -133,22 +135,61 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
             </div>
         </div><!-- /.modal -->
 
-    </div>
 
-    {{-- @include('modals.task-list')
-    @include('modals.task-accounting')
-    @include('modals.task-proofs')
-    @include('modals.assgin_task_agent')
-    @include('modals.assgin_task_date') --}}
+        <div id="add-assgin-agent-model" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header border-0">
+                        <h4 class="modal-title">Assign {{ Session::get('agent_name') }}</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    </div>
+                    <form id="submit_assign_agent" method="POST" enctype="multipart/form-data" action="{{route('assign.agent')}}">
+                        <input type="hidden" name="type" value="B" >
+                        <input type="hidden" name="batchId" id="batchId" value="" >
+                        @csrf
+                        <div class="modal-body px-3 py-0">
+        
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group" id="typeInput">
+                                        {!! Form::label('title', 'Status',['class' => 'control-label']) !!}
+                                        <select name="agent" id="agent_id" class="form-control">
+                                            @foreach ($agents as $item)
+                                            @php
+                                                $checkAgentActive = ($item->is_available == 1) ? ' ('.__('Online').')' : ' ('.__('Offline').')';
+                                            @endphp
+                                              <option value="{{$item->id}}">{{ ucfirst($item->name). $checkAgentActive}}</option>
+                                            @endforeach
+                                        </select>
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong></strong>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer border-0">
+                            <button type="submit" class="btn btn-blue waves-effect waves-light">Save</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </div>
 @endsection
 
 @section('script')
-    <script src="{{asset('assets/libs/select2/select2.min.js')}}"></script>
+    {{-- <script src="{{asset('assets/libs/select2/select2.min.js')}}"></script>
     <script src="{{asset('assets/libs/bootstrap-select/bootstrap-select.min.js')}}"></script>
-    <script src="{{ asset('assets/libs/datatables/datatables.min.js') }}"></script>
-    {{-- @include('tasks.taskpagescript') --}}
-
+    <script src="{{ asset('assets/libs/datatables/datatables.min.js') }}"></script> --}}
 <script>
+
+    function assignBatch(id)
+    {
+        $("#batchId").val(id);
+        $("#add-assgin-agent-model").modal('show');  
+    }
 
     function viewOrders(id)
     {
@@ -176,6 +217,8 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
 
     }
 
+
+    
 
 </script>
     
