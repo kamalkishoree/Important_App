@@ -213,6 +213,7 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/9.0.10/js/intlTelInput.js"></script>
 
+<script src="{{asset('assets/libs/mohithg-switchery/mohithg-switchery.min.js')}}"></script>
 <script src="{{ asset('assets/libs/datatables/datatables.min.js') }}"></script>
 <script src="{{ asset('assets/libs/sweetalert2/sweetalert2.min.js') }}"></script>
 <script src="{{ asset('assets/js/pages/form-advanced.init.js') }}"></script>
@@ -264,6 +265,17 @@
         @else
             $("[id^='price_starttime_'], [id^='price_endtime_'], [id^='edit_price_starttime_'], [id^='edit_price_endtime_']").flatpickr({enableTime:!0,noCalendar:!0,dateFormat:"H:i",time_24hr:!0, static: true});
         @endif
+
+        
+        var elems = Array.prototype.slice.call(document.querySelectorAll('.apply_timetable'));
+            elems.forEach(function(html) {
+            var switchery =new Switchery(html);
+        });
+
+        var elems = Array.prototype.slice.call(document.querySelectorAll('.apply_timetable'));
+            elems.forEach(function(html) {
+            var switchery =new Switchery(html);
+        });
         // select all for add form
         $(document).on('click', '#select_geo_all', function(){
             $("#geo_id").find('option').prop("selected",true);
@@ -305,6 +317,26 @@
             $("#driver_tag_id_edit").find('option').prop("selected",true);
             $("#driver_tag_id_edit").trigger('change');
         });
+
+        $("#add-pricing-modal .apply_timetable").on("change", function() {
+            if($(this).is(":checked")){
+                $("#add-pricing-modal .timetable_div").show();
+            }else{
+                $("#add-pricing-modal .timetable_div").hide();
+            }
+        });
+
+        $("#editCardBox .apply_timetable").on("change", function() {
+            if($(this).is(":checked")){
+                $("#editCardBox .timetable_div").show();
+            }else{
+                $("#editCardBox .timetable_div").hide();
+            }
+        });
+
+        
+        $("#edit-pricing-modal .apply_timetable").change();
+        $("#editCardBox .apply_timetable").change();
     }
 
     $('.openModal').click(function(){

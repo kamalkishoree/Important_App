@@ -797,18 +797,6 @@ class TaskController extends BaseController
             // $customer = Customer::where('id',$request->ids)->first();
             }
 
-
-            //get pricing rule  for save with every order
-            if(isset($request->order_agent_tag) && !empty($request->order_agent_tag))
-            $pricingRule = PricingRule::orderBy('id', 'desc')->whereHas('priceRuleTags.tagsForAgent',function($q)use($request){
-                $q->where('name',$request->order_agent_tag);
-            })->first();
-
-            if(empty($pricingRule))
-            $pricingRule = PricingRule::orderBy('id', 'desc')->first();
-
-
-
             //here order save code is started
             $settime = ($request->task_type=="schedule") ? $request->schedule_time : Carbon::now()->toDateTimeString();
         //    $notification_time = ($request->task_type=="schedule") ? Carbon::parse($settime . $auth->timezone ?? 'UTC')->tz('UTC') : Carbon::now()->toDateTimeString();
@@ -831,18 +819,6 @@ class TaskController extends BaseController
                 'order_time'                      => $notification_time,
                 'status'                          => $agent_id != null ? 'assigned' : 'unassigned',
                 'cash_to_be_collected'            => $request->cash_to_be_collected,
-                'base_price'                      => $pricingRule->base_price,
-                'base_duration'                   => $pricingRule->base_duration,
-                'base_distance'                   => $pricingRule->base_distance,
-                'base_waiting'                    => $pricingRule->base_waiting,
-                'duration_price'                  => $pricingRule->duration_price,
-                'waiting_price'                   => $pricingRule->waiting_price,
-                'distance_fee'                    => $pricingRule->distance_fee,
-                'cancel_fee'                      => $pricingRule->cancel_fee,
-                'agent_commission_percentage'     => $pricingRule->agent_commission_percentage,
-                'agent_commission_fixed'          => $pricingRule->agent_commission_fixed,
-                'freelancer_commission_percentage'=> $pricingRule->freelancer_commission_percentage,
-                'freelancer_commission_fixed'     => $pricingRule->freelancer_commission_fixed,
                 'unique_id'                       => $unique_order_id,
                 'call_back_url'                   => $request->call_back_url??null,
                 'type'                            => $request->type??0,
@@ -952,14 +928,49 @@ class TaskController extends BaseController
                 }
             }
 
+            $geoid = '';
+            if(($pickup_location->latitude!='' || $pickup_location->latitude!='0.0000') && ($pickup_location->longitude !='' || $pickup_location->longitude!='0.0000')):
+                $geoid = $this->findLocalityByLatLng($pickup_location->latitude, $pickup_location->longitude);
+            endif;
+            
+            //get pricing rule  for save with every order based on geo fence and agent tags
+            $pricingRules = PricingRule::query();
+            
+            if(isset($request->order_agent_tag) && !empty($request->order_agent_tag))
+            $pricingRules->orderBy('id', 'desc')->whereHas('priceRuleTags.tagsForAgent',function($q)use($request){
+                $q->where('name',$request->order_agent_tag);
+            })->first();
+
+            if($geoid!='')
+            $pricingRules->orWhereHas('priceRuleTags.geoFence',function($q)use($geoid){
+                $q->where('id',$geoid);
+            });
+        
+            $pricingRule = $pricingRules->first();
+
+            if(empty($pricingRule))
+            $pricingRule = PricingRule::orderBy('id', 'desc')->first();
+
             //update order with order cost details
 
             $updateorder = [
-           'actual_time'        => $getdata['duration'],
-           'actual_distance'    => $getdata['distance'],
-           'order_cost'         => $total,
-           'driver_cost'        => $percentage,
-        ];
+            'base_price'                      => $pricingRule->base_price,
+            'base_duration'                   => $pricingRule->base_duration,
+            'base_distance'                   => $pricingRule->base_distance,
+            'base_waiting'                    => $pricingRule->base_waiting,
+            'duration_price'                  => $pricingRule->duration_price,
+            'waiting_price'                   => $pricingRule->waiting_price,
+            'distance_fee'                    => $pricingRule->distance_fee,
+            'cancel_fee'                      => $pricingRule->cancel_fee,
+            'agent_commission_percentage'     => $pricingRule->agent_commission_percentage,
+            'agent_commission_fixed'          => $pricingRule->agent_commission_fixed,
+            'freelancer_commission_percentage'=> $pricingRule->freelancer_commission_percentage,
+            'freelancer_commission_fixed'     => $pricingRule->freelancer_commission_fixed,
+            'actual_time'                     => $getdata['duration'],
+            'actual_distance'                 => $getdata['distance'],
+            'order_cost'                      => $total,
+            'driver_cost'                     => $percentage,
+            ];
 
             Order::where('id', $orders->id)->update($updateorder);
 
@@ -2292,20 +2303,39 @@ class TaskController extends BaseController
         $latitude  = [];
         $longitude = [];
         $pricingRule = '';
-
+        $lat = $long = '';
+        
         foreach ($request->locations as $key => $value) {
             if(empty($value['latitude']) || empty($value['longitude']))
             return response()->json(['message' => 'Pickup and Dropoff location required.',], 404);
             array_push($latitude, $value['latitude']??0.0000);
             array_push($longitude, $value['longitude']??0.0000);
+            $lat  = $value['latitude']??0.0000;
+            $long = $value['longitude']??0.0000;
         }
+        
+        //get geoid based on customer location
+        
+        $geoid = '';
+        if(($lat!='' || $lat!='0.0000') && ($long !='' || $long!='0.0000')):
+            $geoid = $this->findLocalityByLatLng($lat, $long);
+        endif;
+        
+        //get pricing rule  for save with every order based on geo fence and agent tags
+        $pricingRules = PricingRule::query();
 
-        //get pricing rule  for save with every order
         if(isset($request->agent_tag) && !empty($request->agent_tag))
-        $pricingRule = PricingRule::orderBy('id', 'desc')->whereHas('priceRuleTags.tagsForAgent',function($q)use($request){
+        $pricingRules->whereHas('priceRuleTags.tagsForAgent',function($q)use($request){
             $q->where('name',$request->agent_tag);
-        })->first();
+        });
 
+        if($geoid!='')
+        $pricingRules->orWhereHas('priceRuleTags.geoFence',function($q)use($geoid){
+            $q->where('id',$geoid);
+        });
+        
+        $pricingRule = $pricingRules->first();
+        
         if(empty($pricingRule))
         $pricingRule = PricingRule::orderBy('is_default', 'desc')->orderBy('is_default', 'asc')->first();
 

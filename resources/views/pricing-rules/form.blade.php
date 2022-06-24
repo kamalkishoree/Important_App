@@ -46,79 +46,94 @@
                 </div>
             </div>
         </div>
-        <hr>
-        <h5 class="text-uppercase bg-light-yellopink p-2 mt-0 mb-3">Timetable  <span class="digital-clock1" style="float:right;color: rgb(183 33 33);text-shadow:0 0 6px #ff0;">00:00:00</span></h5>
-        <div class="table-responsive">
-            <table class="table table-striped dt-responsive nowrap w-100">
-                <thead>
-                    <tr>
-                        <th>Day</th>
-                        <th>{{__("Start Time")}}</th>
-                        <th>{{__("End Time")}}</th>
-                        <th>{{__("Add")}} <input type="hidden" id="hddn_edit_days_count" name="hddn_edit_days_count" value="{{count($pricetimeframes)}}"/></th>   
-                    </tr>
-                </thead>
-                <?php $i = 0;?>
-                @foreach($pricetimeframes as $pricetimeframe)
-                    <?php $i++;?>
 
-                    @if(count($pricetimeframe['timeframe']) > 0)
-                        <?php $weekday = $pricetimeframe['days'];$j = 0;?>
-                        <tbody id="timeframe_edit_tbody_{{$i}}">
-                        @foreach($pricetimeframe['timeframe'] as $timeframe)
-                        
-                            <?php $j++;?>
+        <div class="row">  
+            <div class="col-md-12">
+                <div class="form-group">
+                    {!! Form::label('title', __('Apply Timetable ?'),['class' => 'control-label']) !!}
+                    <div class="mt-md-1">
+                        <input type="checkbox" data-plugin="switchery" name="apply_timetable" class="form-control apply_timetable" data-color="#43bee1" @if($pricing->apply_timetable == 1) checked='checked' @endif>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="timetable_div">
+            <hr>
+            <h5 class="text-uppercase bg-light-yellopink p-2 mt-0 mb-3">Timetable  <span class="digital-clock1" style="float:right;color: rgb(183 33 33);text-shadow:0 0 6px #ff0;">00:00:00</span></h5>
+
+            <div class="table-responsive">
+                <table class="table table-striped dt-responsive nowrap w-100">
+                    <thead>
+                        <tr>
+                            <th>Day</th>
+                            <th>{{__("Start Time")}}</th>
+                            <th>{{__("End Time")}}</th>
+                            <th>{{__("Add")}} <input type="hidden" id="hddn_edit_days_count" name="hddn_edit_days_count" value="{{count($pricetimeframes)}}"/></th>   
+                        </tr>
+                    </thead>
+                    <?php $i = 0;?>
+                    @foreach($pricetimeframes as $pricetimeframe)
+                        <?php $i++;?>
+
+                        @if(count($pricetimeframe['timeframe']) > 0)
+                            <?php $weekday = $pricetimeframe['days'];$j = 0;?>
+                            <tbody id="timeframe_edit_tbody_{{$i}}">
+                            @foreach($pricetimeframe['timeframe'] as $timeframe)
                             
-                            <tr id="timeframe_edit_row_{{$i}}_{{$j}}">
+                                <?php $j++;?>
+                                
+                                <tr id="timeframe_edit_row_{{$i}}_{{$j}}">
+                                    <td>
+                                    @if($j == 1)
+                                    <input type="hidden" name="hddnWeekdays_edit_{{$i}}" id="hddnWeekdays_edit_{{$i}}" value="{{$weekday}}" />
+                                    <div class="checkbox checkbox-primary mb-1">
+                                        <input type="checkbox" name="checkdays_edit_{{$i}}" id="checkdays_edit_{{$i}}" value="1" data-parsley-mincheck="2" @if($timeframe['is_applicable'] == 1) checked @endif>
+                                        <label for="checkdays_edit_{{$i}}">&nbsp;&nbsp;&nbsp;&nbsp;{{__($weekday)}} </label>
+                                    </div>
+                                    @endif
+                                    </td>
+                                    
+                                    <td>{!! Form::text('edit_price_starttime_'.$i.'_'.$j, $timeframe['start_time'], ['id'=>'edit_price_starttime_'.$i.'_'.$j, 'class' => 'form-control', 'autocomplete' => 'off', 'placeholder' => __('00:00')]) !!}</td>
+                                    <td>{!! Form::text('edit_price_endtime_'.$i.'_'.$j, $timeframe['end_time'], ['id'=>'edit_price_endtime_'.$i.'_'.$j, 'class' => 'form-control', 'autocomplete' => 'off', 'placeholder' => __('00:00')]) !!}</td>
+                                    <td style="text-align:center;">
+                                    @if($j == 1)
+                                        <input type="hidden" name="edit_no_of_time_{{$i}}" id="edit_no_of_time_{{$i}}" value="{{count($pricetimeframe['timeframe'])}}" />
+                                        <button type="button" class="btn btn-info btn-rounded waves-effect waves-light add_edit_sub_pricing_row" data-id="{{$i}}"><i class="far fa-plus-square"></i> Add</button>
+                                    @else
+                                        <span data-id="pricruledelspan_{{$i}}_{{$j}}" class="del_edit_pricrule_span"><img style="filter: grayscale(.5);" src="{{asset("assets/images/ic_delete.png")}}"  alt=""></span>
+                                    @endif
+                                    </td>
+                                </tr>
+
+                            @endforeach
+                            </tbody>
+                        @else
+
+                        <tbody id="timeframe_edit_tbody_{{$i}}">
+                            <tr id="timeframe_edit_row_{{$i}}_1">
                                 <td>
-                                @if($j == 1)
-                                <input type="hidden" name="hddnWeekdays_edit_{{$i}}" id="hddnWeekdays_edit_{{$i}}" value="{{$weekday}}" />
-                                <div class="checkbox checkbox-primary mb-1">
-                                    <input type="checkbox" name="checkdays_edit_{{$i}}" id="checkdays_edit_{{$i}}" value="1" data-parsley-mincheck="2" @if($timeframe['is_applicable'] == 1) checked @endif>
-                                    <label for="checkdays_edit_{{$i}}">&nbsp;&nbsp;&nbsp;&nbsp;{{__($weekday)}} </label>
-                                </div>
-                                @endif
+                                    <input type="hidden" name="hddnWeekdays_edit_{{$i}}" id="hddnWeekdays_edit_{{$i}}" value="{{$pricetimeframe['days']}}" />
+                                    <div class="checkbox checkbox-primary mb-1">
+                                        <input type="checkbox" name="checkdays_edit_{{$i}}" id="checkdays_edit_{{$i}}" value="1" data-parsley-mincheck="2">
+                                        <label for="checkdays_edit_{{$i}}">&nbsp;&nbsp;&nbsp;&nbsp;{{__($pricetimeframe['days'])}} </label>
+                                    </div>
                                 </td>
                                 
-                                <td>{!! Form::text('edit_price_starttime_'.$i.'_'.$j, $timeframe['start_time'], ['id'=>'edit_price_starttime_'.$i.'_'.$j, 'class' => 'form-control', 'autocomplete' => 'off', 'placeholder' => __('00:00')]) !!}</td>
-                                <td>{!! Form::text('edit_price_endtime_'.$i.'_'.$j, $timeframe['end_time'], ['id'=>'edit_price_endtime_'.$i.'_'.$j, 'class' => 'form-control', 'autocomplete' => 'off', 'placeholder' => __('00:00')]) !!}</td>
+                                <td>{!! Form::text('edit_price_starttime_'.$i.'_1', null, ['id'=>'edit_price_starttime_'.$i.'_1', 'class' => 'form-control', 'autocomplete' => 'off', 'placeholder' => __('00:00')]) !!}</td>
+                                <td>{!! Form::text('edit_price_endtime_'.$i.'_1', null, ['id'=>'edit_price_endtime_'.$i.'_1', 'class' => 'form-control', 'autocomplete' => 'off', 'placeholder' => __('00:00')]) !!}</td>
                                 <td style="text-align:center;">
-                                @if($j == 1)
-                                    <input type="hidden" name="edit_no_of_time_{{$i}}" id="edit_no_of_time_{{$i}}" value="{{count($pricetimeframe['timeframe'])}}" />
+                                    <input type="hidden" name="edit_no_of_time_{{$i}}" id="edit_no_of_time_{{$i}}" value="1" />
                                     <button type="button" class="btn btn-info btn-rounded waves-effect waves-light add_edit_sub_pricing_row" data-id="{{$i}}"><i class="far fa-plus-square"></i> Add</button>
-                                @else
-                                    <span data-id="pricruledelspan_{{$i}}_{{$j}}" class="del_edit_pricrule_span"><img style="filter: grayscale(.5);" src="{{asset("assets/images/ic_delete.png")}}"  alt=""></span>
-                                @endif
                                 </td>
                             </tr>
-
-                        @endforeach
                         </tbody>
-                    @else
+                        @endif
 
-                    <tbody id="timeframe_edit_tbody_{{$i}}">
-                        <tr id="timeframe_edit_row_{{$i}}_1">
-                            <td>
-                                <input type="hidden" name="hddnWeekdays_edit_{{$i}}" id="hddnWeekdays_edit_{{$i}}" value="{{$pricetimeframe['days']}}" />
-                                <div class="checkbox checkbox-primary mb-1">
-                                    <input type="checkbox" name="checkdays_edit_{{$i}}" id="checkdays_edit_{{$i}}" value="1" data-parsley-mincheck="2">
-                                    <label for="checkdays_edit_{{$i}}">&nbsp;&nbsp;&nbsp;&nbsp;{{__($pricetimeframe['days'])}} </label>
-                                </div>
-                            </td>
-                            
-                            <td>{!! Form::text('edit_price_starttime_'.$i.'_1', null, ['id'=>'edit_price_starttime_'.$i.'_1', 'class' => 'form-control', 'autocomplete' => 'off', 'placeholder' => __('00:00')]) !!}</td>
-                            <td>{!! Form::text('edit_price_endtime_'.$i.'_1', null, ['id'=>'edit_price_endtime_'.$i.'_1', 'class' => 'form-control', 'autocomplete' => 'off', 'placeholder' => __('00:00')]) !!}</td>
-                            <td style="text-align:center;">
-                                <input type="hidden" name="edit_no_of_time_{{$i}}" id="edit_no_of_time_{{$i}}" value="1" />
-                                <button type="button" class="btn btn-info btn-rounded waves-effect waves-light add_edit_sub_pricing_row" data-id="{{$i}}"><i class="far fa-plus-square"></i> Add</button>
-                            </td>
-                        </tr>
-                    </tbody>
-                    @endif
-
-                @endforeach
-                
-            </table>
+                    @endforeach
+                    
+                </table>
+            </div>
         </div>
          
         <hr>

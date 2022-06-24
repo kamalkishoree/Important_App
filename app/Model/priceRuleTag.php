@@ -17,14 +17,14 @@ class priceRuleTag extends Model
     }
 
     public function tagsForAgent(){
-        return $this->belongsTo('App\Model\TagsForAgent','driver_tag_id','id')->where('identity', '=', 'Agent');
+        return $this->belongsTo('App\Model\TagsForAgent','tag_id','id')->where('identity', '=', 'Agent');
     }
 
     public function geoFence(){
-        return $this->belongsTo('App\Model\Geo','driver_tag_id','id')->where('identity', '=', 'Geo');
+        return $this->belongsTo('App\Model\Geo','tag_id','id')->where('identity', '=', 'Geo');
     }
 
     public function tagsForTeam(){
-        return $this->belongsTo('App\Model\TagsForTeam','driver_tag_id','id')->where('identity', '=', 'Team_tag');
+        return $this->belongsTo('App\Model\TagsForTeam','tag_id','id')->where('identity', '=', 'Team_tag');
     }
 }

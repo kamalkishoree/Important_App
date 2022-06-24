@@ -110,8 +110,6 @@ class PricingRulesController extends Controller
      */
     public function store(Request $request, $domain = '')
     {
-        //$validator = $this->validator($request->all())->validate();
-       //pr($request->geo_id);
         $data = [
             'name'                            => $request->name,
             'start_date_time'                 => $request->start_date_time??date("Y-m-d H:i:s"),
@@ -129,6 +127,7 @@ class PricingRulesController extends Controller
             'agent_commission_fixed'          => $request->agent_commission_fixed,
             'freelancer_commission_percentage'=> $request->freelancer_commission_percentage,
             'freelancer_commission_fixed'     => $request->freelancer_commission_fixed,
+            'apply_timetable'                 => ($request->has('apply_timetable') && $request->apply_timetable == 'on') ? '1' : '2'
         ];
         
         $pricerule = PricingRule::create($data);
@@ -249,15 +248,14 @@ class PricingRulesController extends Controller
             'base_price'                      => $request->base_price,
             'base_duration'                   => $request->base_duration,
             'base_distance'                   => $request->base_distance,
-            //'base_waiting'                    => $request->base_waiting,
             'duration_price'                  => $request->duration_price,
-            //'waiting_price'                   => $request->waiting_price,
             'distance_fee'                    => $request->distance_fee,
             'cancel_fee'                      => $request->cancel_fee,
             'agent_commission_percentage'     => $request->agent_commission_percentage,
             'agent_commission_fixed'          => $request->agent_commission_fixed,
             'freelancer_commission_percentage'=> $request->freelancer_commission_percentage,
             'freelancer_commission_fixed'     => $request->freelancer_commission_fixed,
+            'apply_timetable'                 => ($request->has('apply_timetable') && $request->apply_timetable == 'on') ? '1' : '2'
         ];
         
         $pricing = PricingRule::where('id', $id)->update($data);

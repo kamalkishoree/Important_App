@@ -56,40 +56,54 @@
                                     </div>
                                 </div>
 
-                                <hr>
-                                <h5 class="text-uppercase bg-light-yellopink p-2 mt-0 mb-3">Timetable  <span class="digital-clock1" style="float:right;color: rgb(183 33 33);text-shadow:0 0 6px #ff0;">00:00:00</span></h5>
-                                <div class="table-responsive">
-                                    <table class="table table-striped dt-responsive nowrap w-100">
-                                        <thead>
-                                            <tr>
-                                                <th>Day</th>
-                                                <th>{{__("Start Time")}}</th>
-                                                <th>{{__("End Time")}}</th>
-                                                <th>{{__("Add")}} <input type="hidden" id="hddn_days_count" name="hddn_days_count" value="{{count($weekdays)}}"/></th>   
-                                            </tr>
-                                        </thead>
-                                        <?php $i = 0;?>
-                                        @foreach($weekdays as $weekday)<?php $i++;?>
-                                        <tbody id="timeframe_tbody_{{$i}}">
-                                            <tr id="timeframe_row_{{$i}}_1">
-                                                <td>
-                                                    <input type="hidden" name="hddnWeekdays_{{$i}}" id="hddnWeekdays_{{$i}}" value="{{$weekday}}" />
-                                                    <div class="checkbox checkbox-primary mb-1">
-                                                        <input type="checkbox" name="checkdays_{{$i}}" id="checkdays_{{$i}}" value="1" data-parsley-mincheck="2">
-                                                        <label for="checkdays_{{$i}}">&nbsp;&nbsp;&nbsp;&nbsp;{{__($weekday)}} </label>
-                                                    </div>
-                                                </td>
-                                                
-                                                <td>{!! Form::text('price_starttime_'.$i.'_1', null, ['id'=>'price_starttime_'.$i.'_1', 'class' => 'form-control', 'autocomplete' => 'off', 'placeholder' => __('00:00')]) !!}</td>
-                                                <td>{!! Form::text('price_endtime_'.$i.'_1', null, ['id'=>'price_endtime_'.$i.'_1', 'class' => 'form-control', 'autocomplete' => 'off', 'placeholder' => __('00:00')]) !!}</td>
-                                                <td style="text-align:center;">
-                                                    <input type="hidden" name="no_of_time_{{$i}}" id="no_of_time_{{$i}}" value="1" />
-                                                    <button type="button" class="btn btn-info btn-rounded waves-effect waves-light add_sub_pricing_row" data-id="{{$i}}"><i class="far fa-plus-square"></i> Add</button>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                        @endforeach
-                                    </table>
+                                <div class="row">  
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            {!! Form::label('title', __('Apply Timetable ?'),['class' => 'control-label']) !!}
+                                            <div class="mt-md-1">
+                                                <input type="checkbox" data-plugin="switchery" name="apply_timetable" class="form-control apply_timetable" data-color="#43bee1" checked='checked'>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="timetable_div">
+                                    <hr>
+                                    <h5 class="text-uppercase bg-light-yellopink p-2 mt-0 mb-3">Timetable  <span class="digital-clock1" style="float:right;color: rgb(183 33 33);text-shadow:0 0 6px #ff0;">00:00:00</span></h5>
+                                    
+                                    <div class="table-responsive">
+                                        <table class="table table-striped dt-responsive nowrap w-100">
+                                            <thead>
+                                                <tr>
+                                                    <th>Day</th>
+                                                    <th>{{__("Start Time")}}</th>
+                                                    <th>{{__("End Time")}}</th>
+                                                    <th>{{__("Add")}} <input type="hidden" id="hddn_days_count" name="hddn_days_count" value="{{count($weekdays)}}"/></th>   
+                                                </tr>
+                                            </thead>
+                                            <?php $i = 0;?>
+                                            @foreach($weekdays as $weekday)<?php $i++;?>
+                                            <tbody id="timeframe_tbody_{{$i}}">
+                                                <tr id="timeframe_row_{{$i}}_1">
+                                                    <td>
+                                                        <input type="hidden" name="hddnWeekdays_{{$i}}" id="hddnWeekdays_{{$i}}" value="{{$weekday}}" />
+                                                        <div class="checkbox checkbox-primary mb-1">
+                                                            <input type="checkbox" name="checkdays_{{$i}}" id="checkdays_{{$i}}" value="1" data-parsley-mincheck="2">
+                                                            <label for="checkdays_{{$i}}">&nbsp;&nbsp;&nbsp;&nbsp;{{__($weekday)}} </label>
+                                                        </div>
+                                                    </td>
+                                                    
+                                                    <td>{!! Form::text('price_starttime_'.$i.'_1', null, ['id'=>'price_starttime_'.$i.'_1', 'class' => 'form-control', 'autocomplete' => 'off', 'placeholder' => __('00:00')]) !!}</td>
+                                                    <td>{!! Form::text('price_endtime_'.$i.'_1', null, ['id'=>'price_endtime_'.$i.'_1', 'class' => 'form-control', 'autocomplete' => 'off', 'placeholder' => __('00:00')]) !!}</td>
+                                                    <td style="text-align:center;">
+                                                        <input type="hidden" name="no_of_time_{{$i}}" id="no_of_time_{{$i}}" value="1" />
+                                                        <button type="button" class="btn btn-info btn-rounded waves-effect waves-light add_sub_pricing_row" data-id="{{$i}}"><i class="far fa-plus-square"></i> Add</button>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                            @endforeach
+                                        </table>
+                                    </div>
                                 </div>
 
                                 <hr>
