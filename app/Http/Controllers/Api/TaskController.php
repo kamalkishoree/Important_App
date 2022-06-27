@@ -919,7 +919,7 @@ class TaskController extends BaseController
             $paid_distance = $paid_distance < 0 ? 0 : $paid_distance;
             $total         = $pricingRule->base_price + ($paid_distance * $pricingRule->distance_fee) + ($paid_duration * $pricingRule->duration_price);
 
-            if (isset($agent_id)) {
+            if(isset($agent_id)) {
                 $agent_details = Agent::where('id', $agent_id)->first();
                 if ($agent_details->type == 'Employee') {
                     $percentage = $pricingRule->agent_commission_fixed + (($total / 100) * $pricingRule->agent_commission_percentage);
@@ -934,13 +934,33 @@ class TaskController extends BaseController
             endif;
             
             //get pricing rule  for save with every order based on geo fence and agent tags
+
+            $dayname = Carbon::parse($notification_time)->format('l');
+            $time    = Carbon::parse($notification_time)->format('H:i:s');
+
+            $request->order_agent_tag = 'cdd';
             if((isset($request->order_agent_tag) && !empty($request->order_agent_tag)) && $geoid!=''):
                 $pricingRule = PricingRule::orderBy('id', 'desc')->whereHas('priceRuleTags.tagsForAgent',function($q)use($request){
                     $q->where('name',$request->order_agent_tag);
                 })->orWhereHas('priceRuleTags.geoFence',function($q)use($geoid){
                     $q->where('id',$geoid);
+                })
+                ->where('apply_timetable', '!=', 1)
+                ->orWhereHas('priceRuleTimeframe', function($query) use ($dayname, $time){
+                    $query->where('is_applicable', 1)
+                        ->Where('day_name', '=', $dayname)
+                        ->whereTime('start_time', '<=', $time)
+                        ->whereTime('end_time', '>=', $time);
                 })->first();
             endif;
+
+            /* if((isset($request->order_agent_tag) && !empty($request->order_agent_tag)) && $geoid!=''):
+                $pricingRule = PricingRule::orderBy('id', 'desc')->whereHas('priceRuleTags.tagsForAgent',function($q)use($request){
+                    $q->where('name',$request->order_agent_tag);
+                })->orWhereHas('priceRuleTags.geoFence',function($q)use($geoid){
+                    $q->where('id',$geoid);
+                })->first();
+            endif; */
 
             if(empty($pricingRule))
             $pricingRule = PricingRule::orderBy('id', 'desc')->first();
@@ -1862,6 +1882,15 @@ class TaskController extends BaseController
                 $f->whereDate('order_time', $date)->with('task');
             }])->orderBy('id', 'DESC')->get()->where("agent_cash_at_hand", '<', $cash_at_hand);
 
+            for ($i = 1; $i <= $try; $i++) {
+                foreach ($geoagents as $key =>  $geoitem) {
+                    if (!empty($geoitem->device_token) && $geoitem->is_available == 1) {
+                        $datas = [
+                            'order_id'            => $orders_id,
+                            'driver_id'           => $geoitem->id,
+                            'notification_time'   => $time,
+                            'type'                => $allcation_type,
+                            'client_code'         => $auth->code,
                             'created_at'          => Carbon::now()->toDateTimeString(),
                             'updated_at'          => Carbon::now()->toDateTimeString(),
                             'device_type'         => $geoitem->device_type,
@@ -2288,6 +2317,12 @@ class TaskController extends BaseController
         $longitude = [];
         $pricingRule = '';
         $lat = $long = '';
+
+        $auth =  Client::with(['getAllocation', 'getPreference', 'getTimezone'])->first();
+        $client_timezone = $auth->getTimezone ? $auth->getTimezone->timezone : 251;
+        $tz = new Timezone();
+        
+        $timezone = $tz->timezone_name($client_timezone);
         
         foreach ($request->locations as $key => $value) {
             if(empty($value['latitude']) || empty($value['longitude']))
@@ -2306,14 +2341,31 @@ class TaskController extends BaseController
         endif;
         
         //get pricing rule  for save with every order based on geo fence and agent tags
+        
+        if(!empty($request->schedule_datetime_del)):
+            $order_datetime = Carbon::parse($request->schedule_datetime_del)->timezone($timezone)->toDateTimeString();
+        else:
+            $order_datetime = Carbon::now()->timezone($timezone)->toDateTimeString();
+        endif;
+        $dayname = Carbon::parse($order_datetime)->format('l');
+        $time    = Carbon::parse($order_datetime)->format('H:i:s');
+
+        $request->agent_tag = 'cdd';
         if((isset($request->agent_tag) && !empty($request->agent_tag)) && $geoid!=''):
             $pricingRule = PricingRule::orderBy('id', 'desc')->whereHas('priceRuleTags.tagsForAgent',function($q)use($request){
-                $q->where('name',$request->order_agent_tag);
+                $q->where('name',$request->agent_tag);
             })->orWhereHas('priceRuleTags.geoFence',function($q)use($geoid){
                 $q->where('id',$geoid);
+            })
+            ->where('apply_timetable', '!=', 1)
+            ->orWhereHas('priceRuleTimeframe', function($query) use ($dayname, $time){
+                $query->where('is_applicable', 1)
+                      ->Where('day_name', '=', $dayname)
+                      ->whereTime('start_time', '<=', $time)
+                      ->whereTime('end_time', '>=', $time);
             })->first();
         endif;
-        
+        return response()->json(['message' => $order_datetime], 200);
         if(empty($pricingRule))
         $pricingRule = PricingRule::orderBy('is_default', 'desc')->orderBy('is_default', 'asc')->first();
 
