@@ -934,19 +934,13 @@ class TaskController extends BaseController
             endif;
             
             //get pricing rule  for save with every order based on geo fence and agent tags
-            $pricingRules = PricingRule::query();
-            
-            if(isset($request->order_agent_tag) && !empty($request->order_agent_tag))
-            $pricingRules->orderBy('id', 'desc')->whereHas('priceRuleTags.tagsForAgent',function($q)use($request){
-                $q->where('name',$request->order_agent_tag);
-            })->first();
-
-            if($geoid!='')
-            $pricingRules->orWhereHas('priceRuleTags.geoFence',function($q)use($geoid){
-                $q->where('id',$geoid);
-            });
-        
-            $pricingRule = $pricingRules->first();
+            if((isset($request->order_agent_tag) && !empty($request->order_agent_tag)) && $geoid!=''):
+                $pricingRule = PricingRule::orderBy('id', 'desc')->whereHas('priceRuleTags.tagsForAgent',function($q)use($request){
+                    $q->where('name',$request->order_agent_tag);
+                })->orWhereHas('priceRuleTags.geoFence',function($q)use($geoid){
+                    $q->where('id',$geoid);
+                })->first();
+            endif;
 
             if(empty($pricingRule))
             $pricingRule = PricingRule::orderBy('id', 'desc')->first();
@@ -2322,19 +2316,13 @@ class TaskController extends BaseController
         endif;
         
         //get pricing rule  for save with every order based on geo fence and agent tags
-        $pricingRules = PricingRule::query();
-
-        if(isset($request->agent_tag) && !empty($request->agent_tag))
-        $pricingRules->whereHas('priceRuleTags.tagsForAgent',function($q)use($request){
-            $q->where('name',$request->agent_tag);
-        });
-
-        if($geoid!='')
-        $pricingRules->orWhereHas('priceRuleTags.geoFence',function($q)use($geoid){
-            $q->where('id',$geoid);
-        });
-        
-        $pricingRule = $pricingRules->first();
+        if((isset($request->agent_tag) && !empty($request->agent_tag)) && $geoid!=''):
+            $pricingRule = PricingRule::orderBy('id', 'desc')->whereHas('priceRuleTags.tagsForAgent',function($q)use($request){
+                $q->where('name',$request->order_agent_tag);
+            })->orWhereHas('priceRuleTags.geoFence',function($q)use($geoid){
+                $q->where('id',$geoid);
+            })->first();
+        endif;
         
         if(empty($pricingRule))
         $pricingRule = PricingRule::orderBy('is_default', 'desc')->orderBy('is_default', 'asc')->first();

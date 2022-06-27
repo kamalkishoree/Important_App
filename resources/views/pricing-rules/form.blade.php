@@ -50,9 +50,9 @@
         <div class="row">  
             <div class="col-md-12">
                 <div class="form-group">
-                    {!! Form::label('title', __('Apply Timetable ?'),['class' => 'control-label']) !!}
+                    {!! Form::label('title', __('Apply Timetable'),['class' => 'control-label']) !!}
                     <div class="mt-md-1">
-                        <input type="checkbox" data-plugin="switchery" name="apply_timetable" class="form-control apply_timetable" data-color="#43bee1" @if($pricing->apply_timetable == 1) checked='checked' @endif>
+                        <input type="checkbox" data-plugin="switchery" name="apply_timetable" class="form-control apply_timetable1" data-color="#43bee1" @if($pricing->apply_timetable == 1) checked='checked' @endif>
                     </div>
                 </div>
             </div>
@@ -60,13 +60,13 @@
 
         <div class="timetable_div">
             <hr>
-            <h5 class="text-uppercase bg-light-yellopink p-2 mt-0 mb-3">Timetable  <span class="digital-clock1" style="float:right;color: rgb(183 33 33);text-shadow:0 0 6px #ff0;">00:00:00</span></h5>
+            <h5 class="text-uppercase bg-light-yellopink p-2 mt-0 mb-3">{{__("Timetable")}}  <span class="digital-clock1" style="float:right;color: rgb(183 33 33);text-shadow:0 0 6px #ff0;">00:00:00</span></h5>
 
             <div class="table-responsive">
                 <table class="table table-striped dt-responsive nowrap w-100">
                     <thead>
                         <tr>
-                            <th>Day</th>
+                            <th>{{__("Day")}}</th>
                             <th>{{__("Start Time")}}</th>
                             <th>{{__("End Time")}}</th>
                             <th>{{__("Add")}} <input type="hidden" id="hddn_edit_days_count" name="hddn_edit_days_count" value="{{count($pricetimeframes)}}"/></th>   
