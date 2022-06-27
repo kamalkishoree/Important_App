@@ -266,16 +266,6 @@
             $("[id^='price_starttime_'], [id^='price_endtime_'], [id^='edit_price_starttime_'], [id^='edit_price_endtime_']").flatpickr({enableTime:!0,noCalendar:!0,dateFormat:"H:i",time_24hr:!0, static: true});
         @endif
 
-        
-        var elems = Array.prototype.slice.call(document.querySelectorAll('.apply_timetable'));
-            elems.forEach(function(html) {
-            var switchery =new Switchery(html);
-        });
-
-        var elems = Array.prototype.slice.call(document.querySelectorAll('.apply_timetable'));
-            elems.forEach(function(html) {
-            var switchery =new Switchery(html);
-        });
         // select all for add form
         $(document).on('click', '#select_geo_all', function(){
             $("#geo_id").find('option').prop("selected",true);
@@ -326,7 +316,7 @@
             }
         });
 
-        $("#editCardBox .apply_timetable").on("change", function() {
+        $("#editCardBox .apply_timetable1").on("change", function() {
             if($(this).is(":checked")){
                 $("#editCardBox .timetable_div").show();
             }else{
@@ -336,7 +326,7 @@
 
         
         $("#edit-pricing-modal .apply_timetable").change();
-        $("#editCardBox .apply_timetable").change();
+        $("#editCardBox .apply_timetable1").change();
     }
 
     $('.openModal').click(function(){
@@ -423,6 +413,10 @@
                     keyboard: false
                 });
                 
+                var elems = Array.prototype.slice.call(document.querySelectorAll('.apply_timetable1'));
+                    elems.forEach(function(html) {
+                    var switchery =new Switchery(html);
+                });
                 runPicker();
 
                 $(document).on('click', '.add_edit_sub_pricing_row', function(){
