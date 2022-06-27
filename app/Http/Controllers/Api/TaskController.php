@@ -1868,16 +1868,6 @@ class TaskController extends BaseController
                 $f->whereDate('order_time', $date)->with('task');
             }])->orderBy('id', 'DESC')->get()->where("agent_cash_at_hand", '<', $cash_at_hand);
 
-
-            for ($i = 1; $i <= $try; $i++) {
-                foreach ($geoagents as $key =>  $geoitem) {
-                    if (!empty($geoitem->device_token) && $geoitem->is_available == 1) {
-                        $datas = [
-                            'order_id'            => $orders_id,
-                            'driver_id'           => $geoitem->id,
-                            'notification_time'   => $time,
-                            'type'                => $allcation_type,
-                            'client_code'         => $auth->code,
                             'created_at'          => Carbon::now()->toDateTimeString(),
                             'updated_at'          => Carbon::now()->toDateTimeString(),
                             'device_type'         => $geoitem->device_type,
