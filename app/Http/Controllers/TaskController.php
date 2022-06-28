@@ -483,15 +483,12 @@ class TaskController extends BaseController
             $customer = Customer::where('id', $request->ids)->first();
         }
 
-        //get pricing rule  for save with every order
-        $pricingRule = PricingRule::where('id', 1)->first();
-
-        //here order save code is started
-
         $settime = ($request->task_type=="schedule") ? $request->schedule_time : Carbon::now()->toDateTimeString();
         $notification_time = ($request->task_type=="schedule")? Carbon::parse($settime . $auth->timezone ?? 'UTC')->tz('UTC') : Carbon::now()->toDateTimeString();
 
+        
 
+        //here order save code is started
 
         $agent_id          = $request->allocation_type === 'm' ? $request->agent : null;
 
@@ -508,18 +505,6 @@ class TaskController extends BaseController
             'order_time'                      => $notification_time,
             'status'                          => $agent_id != null ? 'assigned' : 'unassigned',
             'cash_to_be_collected'            => $request->cash_to_be_collected,
-            'base_price'                      => $pricingRule->base_price,
-            'base_duration'                   => $pricingRule->base_duration,
-            'base_distance'                   => $pricingRule->base_distance,
-            'base_waiting'                    => $pricingRule->base_waiting,
-            'duration_price'                  => $pricingRule->duration_price,
-            'waiting_price'                   => $pricingRule->waiting_price,
-            'distance_fee'                    => $pricingRule->distance_fee,
-            'cancel_fee'                      => $pricingRule->cancel_fee,
-            'agent_commission_percentage'     => $pricingRule->agent_commission_percentage,
-            'agent_commission_fixed'          => $pricingRule->agent_commission_fixed,
-            'freelancer_commission_percentage'=> $pricingRule->freelancer_commission_percentage,
-            'freelancer_commission_fixed'     => $pricingRule->freelancer_commission_fixed,
             'unique_id'                       => $unique_order_id,
             'call_back_url'                   => $request->call_back_url??null
         ];
@@ -613,6 +598,40 @@ class TaskController extends BaseController
             $net_quantity = $pickup_quantity - $drop_quantity;
         }
 
+        //get pricing rule  for save with every order
+
+        $geo = null;
+        if ($request->allocation_type === 'a') {
+
+            $geo = $this->createRoster($send_loc_id);
+            $agent_id = null;
+        }
+
+        $dayname = Carbon::parse($notification_time)->format('l');
+        $time    = Carbon::parse($notification_time)->format('H:i:s');
+
+        if((isset($request->agent_tag) && !empty($request->agent_tag)) && (isset($request->team_tag) && !empty($request->team_tag)) && ($geo!='' && $geo != null)):
+            $pricingRule = PricingRule::orderBy('id', 'desc')->whereHas('priceRuleTags.tagsForAgent', function($q)use($request){
+                $q->whereIn('id',$request->agent_tag);
+            })->whereHas('priceRuleTags.tagsForTeam', function($q)use($request){
+                $q->whereIn('id',$request->team_tag);
+            })->whereHas('priceRuleTags.geoFence', function($q)use($geo){
+                $q->where('id',$geo);
+            })
+            ->where(function($q) use ($dayname, $time){
+                $q->where('apply_timetable', '!=', 1)
+                ->orWhereHas('priceRuleTimeframe', function($query) use ($dayname, $time){
+                    $query->where('is_applicable', 1)
+                          ->Where('day_name', '=', $dayname)
+                          ->whereTime('start_time', '<=', $time)
+                          ->whereTime('end_time', '>=', $time);
+                });
+            })->first();
+        endif;
+        
+        if(empty($pricingRule))
+        $pricingRule = PricingRule::where('id', 1)->first();
+
         //accounting for task duration distanse
         $getdata = $this->GoogleDistanceMatrix($latitude, $longitude);
         $paid_duration = $getdata['duration'] - $pricingRule->base_duration;
@@ -629,14 +648,25 @@ class TaskController extends BaseController
                 $percentage = $pricingRule->freelancer_commission_percentage + (($total / 100) * $pricingRule->freelancer_commission_fixed);
             }
         }
-
         //update order with order cost details
         $updateorder = [
-            'actual_time'        => $getdata['duration'],
-            'actual_distance'    => $getdata['distance'],
-            'order_cost'         => $total,
-            'driver_cost'        => $percentage,
-            'net_quantity'       => $net_quantity
+            'actual_time'                     => $getdata['duration'],
+            'actual_distance'                 => $getdata['distance'],
+            'base_price'                      => $pricingRule->base_price,
+            'base_duration'                   => $pricingRule->base_duration,
+            'base_distance'                   => $pricingRule->base_distance,
+            'base_waiting'                    => $pricingRule->base_waiting,
+            'duration_price'                  => $pricingRule->duration_price,
+            'waiting_price'                   => $pricingRule->waiting_price,
+            'distance_fee'                    => $pricingRule->distance_fee,
+            'cancel_fee'                      => $pricingRule->cancel_fee,
+            'agent_commission_percentage'     => $pricingRule->agent_commission_percentage,
+            'agent_commission_fixed'          => $pricingRule->agent_commission_fixed,
+            'freelancer_commission_percentage'=> $pricingRule->freelancer_commission_percentage,
+            'freelancer_commission_fixed'     => $pricingRule->freelancer_commission_fixed,
+            'order_cost'                      => $total,
+            'driver_cost'                     => $percentage,
+            'net_quantity'                    => $net_quantity
 
          ];
 
@@ -653,13 +683,6 @@ class TaskController extends BaseController
         }
 
         //this function is called when allocation type is Accept/Reject it find the current task location belongs to which geo fence
-
-        $geo = null;
-        if ($request->allocation_type === 'a') {
-
-            $geo = $this->createRoster($send_loc_id);
-            $agent_id = null;
-        }
 
         // task schdule code is hare
 
@@ -742,13 +765,12 @@ class TaskController extends BaseController
     public function assignAgent(Request $request)
     {
         if(!empty($request->agent_id)):
-            $pricingRule = PricingRule::where('id', 1)->first();
             $task_id = Order::find($request->orders_id);
             $agent_details = Agent::where('id', $request->agent_id)->first();
             if ($agent_details->type == 'Employee'):
-                $percentage = $pricingRule->agent_commission_fixed + (($task_id[0]->order_cost / 100) * $pricingRule->agent_commission_percentage);
+                $percentage = $task_id[0]->agent_commission_fixed + (($task_id[0]->order_cost / 100) * $task_id[0]->agent_commission_percentage);
             else:
-                $percentage = $pricingRule->freelancer_commission_percentage + (($task_id[0]->order_cost / 100) * $pricingRule->freelancer_commission_fixed);
+                $percentage = $task_id[0]->freelancer_commission_fixed + (($task_id[0]->order_cost / 100) * $task_id[0]->freelancer_commission_percentage);
             endif;
         else:
             $percentage = 0.00;
@@ -2129,9 +2151,9 @@ class TaskController extends BaseController
         if (isset($agent_id) && $task_id->driver_cost <= 0.00) {
             $agent_details = Agent::where('id', $agent_id)->first();
             if ($agent_details->type == 'Employee') {
-                $percentage = $pricingRule->agent_commission_fixed + (($task_id->order_cost / 100) * $pricingRule->agent_commission_percentage);
+                $percentage = $task_id->agent_commission_fixed + (($task_id->order_cost / 100) * $task_id->agent_commission_percentage);
             } else {
-                $percentage = $pricingRule->freelancer_commission_percentage + (($task_id->order_cost / 100) * $pricingRule->freelancer_commission_fixed);
+                $percentage = $task_id->freelancer_commission_fixed + (($task_id->order_cost / 100) * $task_id->freelancer_commission_percentage);
             }
             $this->MassAndEditNotification($id, $agent_id);
         }

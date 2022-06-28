@@ -805,8 +805,8 @@
             position : 'top-right'      
             });
             if (response.status == 'Success') {
-                    $("#task-modal-header .close").click();
-                    location.reload();
+                    //$("#task-modal-header .close").click();
+                    //location.reload();
             } else {
                 $("#task-modal-header .show_all_error.invalid-feedback").show();
                 $("#task-modal-header .show_all_error.invalid-feedback").text(response.message);
