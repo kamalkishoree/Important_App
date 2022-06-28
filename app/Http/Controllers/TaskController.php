@@ -22,7 +22,7 @@ use App\Model\Geo;
 use App\Model\Order;
 use App\Model\Timezone;
 use App\Model\AgentLog;
-use App\Model\{Team,TeamTag};
+use App\Model\{BatchAllocation, Team,TeamTag};
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
@@ -125,6 +125,34 @@ class TaskController extends BaseController
         $agentsCount    = count($agents->where('is_approved', 1));
 
         return view('tasks/task')->with([ 'status' => $request->status, 'agentsCount'=>$agentsCount, 'employeesCount'=>$employeesCount, 'active_count' => $active, 'panding_count' => $pending, 'history_count' => $history, 'status' => $check,'preference' => $preference,'agents'=>$agents,'failed_count'=>$failed,'client_timezone'=>$client_timezone]);
+    }
+
+
+    public function batchlist(Request $request)
+    {
+        $user = Auth::user();
+        $timezone = $user->timezone ?? 251;
+        $tz = new Timezone();
+        $client_timezone = $tz->timezone_name($timezone);
+
+        $check = '';
+        if ($request->has('status') && $request->status != 'all') {
+            $check = $request->status;
+        } else {
+            $check = 'unassigned';
+        }
+
+        $all =  BatchAllocation::with('batchDetails')->where('agent_id', '==', null);
+        $all = $all->get();
+        // dd($all);
+        $preference  = ClientPreference::where('id', 1)->first(['theme','date_format','time_format']);
+        $allcation   = AllocationRule::where('id', 1)->first();
+
+        $employees      = Customer::orderby('name', 'asc')->where('status','Active')->select('id', 'name')->get();
+        $employeesCount = count($employees);
+        // $agentsCount    = count($agents->where('is_approved', 1));
+        // 'active_count' => $active, 'panding_count' => $pending, 'history_count' => $history, 'status' => $check,
+        return view('tasks/batch')->with([ 'status' => $request->status, 'employeesCount'=>$employeesCount, 'preference' => $preference,'client_timezone'=>$client_timezone,'batchs'=>$all]);
     }
 
     public function taskFilter(Request $request)

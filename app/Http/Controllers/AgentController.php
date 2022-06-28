@@ -18,7 +18,7 @@ use Twilio\Rest\Client as TwilioClient;
 use App\Traits\ApiResponser;
 use App\Exports\AgentsExport;
 use Doctrine\DBAL\Driver\DrizzlePDOMySql\Driver;
-use App\Model\{Agent, AgentDocs, AgentPayment, DriverGeo, Order, Otp, Team, TagsForAgent, TagsForTeam, Countries, Client, ClientPreferences, DriverRegistrationDocument, Geo, Timezone, AgentSmsTemplate};
+use App\Model\{Agent, AgentDocs, AgentPayment, AgentLog, DriverGeo, Order, Otp, Team, TagsForAgent, TagsForTeam, Countries, Client, ClientPreferences, DriverRegistrationDocument, Geo, Timezone, AgentSmsTemplate};
 use Kawankoding\Fcm\Fcm;
 use App\Traits\agentEarningManager;
 
@@ -705,12 +705,16 @@ class AgentController extends Controller
 
     /* Change Agent approval status */
 
-    public function change_approval_status(Request $request)
+    public function change_approval_status(Request $request) 
     {
         try {
             $agent_approval = Agent::find($request->id);
             $agent_approval->is_approved = $request->status;
             $agent_approval->save();
+
+            // Updtae log also
+            $is_active = ($request->status == 1)? 1 : 0;
+            AgentLog::where('agent_id',$request->id)->update(['is_active' => $is_active]);
 
             $slug = ($request->status == 1)? 'driver-accepted' : 'driver-rejected';
             $sms_body = AgentSmsTemplate::where('slug', $slug)->first()->content;

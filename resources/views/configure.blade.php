@@ -1014,6 +1014,91 @@ $sms_crendential = json_decode($preference->sms_credentials);
             </div>
         </div>
 
+        <div class="row">
+            <div class="col-md-12">
+                <!-- Custom Mods start -->
+                <form method="POST" action="{{ route('preference', Auth::user()->code) }}">
+                    @csrf          
+                    <input type="hidden" name="mybatch" value="1">
+                    <div class="card-box h-100 h-100">
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                            <h4 class="header-title text-uppercase mb-0">{{__("Batch Allocation")}}</h4>
+                            <button class="btn btn-info d-block" type="submit"> Save </button>
+                        </div>
+
+                        <div class="row align-items-start">
+                            <div class="col-md-4"> 
+                                <div class="form-group d-flex justify-content-between mb-3">
+                                <label for="" class="mr-2 mb-0">{{__("Enable Batch Allocation")}} </label>
+                                <div class="d-flex align-items-center justify-content-between mb-2">
+                                    <div class="custom-control custom-switch">
+                                            <input type="checkbox" class="custom-control-input " id="batch_allocation" name="batch_allocation" {{ (!empty($preference->create_batch_hours) && $preference->create_batch_hours > 0) ? 'checked' :'' }}>
+                                            <label class="custom-control-label" for="batch_allocation"></label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row align-items-start batch-allocation" style="display:{{ (!empty($preference->create_batch_hours) && $preference->create_batch_hours > 0) ? '':'none'}}" >
+
+                            <div class="col-md-4"> 
+                                <div class="form-group d-flex justify-content-between mb-3">
+                                <label for="" class="mr-2 mb-0">{{__("Enable this to specify Job consist of pickup or delivery.")}} </label>
+                                <div class="d-flex align-items-center justify-content-between mb-2">
+                                    <div class="custom-control custom-switch">
+                                            <input type="checkbox" class="custom-control-input " id="job_consist_of_pickup_or_delivery" name="job_consist_of_pickup_or_delivery" {{ (!empty($preference->job_consist_of_pickup_or_delivery) && $preference->job_consist_of_pickup_or_delivery == 1) ? 'checked' : '' }}>
+                                            <label class="custom-control-label" for="job_consist_of_pickup_or_delivery"></label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-4"> 
+                                <div class="form-group d-flex justify-content-between mb-3">
+                                <label for="" class="mr-2 mb-0">{{__("Create batch on every hours")}} </label>
+                                <div class="d-flex align-items-center justify-content-between mb-2">
+                                    <div class="custom-control custom-switch">
+                                            <select class="form-control" name="create_batch_hours">
+                                                <option value="">Select Hour to create job</option>
+                                                <option value="1" {{($preference->create_batch_hours == 1) ? 'selected' : '' }}>1 Hour</option>
+                                                <option value="2" {{($preference->create_batch_hours == 2) ? 'selected' : '' }}>2 Hour</option>
+                                                <option value="3" {{($preference->create_batch_hours == 3) ? 'selected' : '' }}>3 Hour</option>
+                                                <option value="4" {{($preference->create_batch_hours == 4) ? 'selected' : '' }}>4 Hour</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4"> 
+                                <div class="form-group d-flex justify-content-between mb-3">
+                                <label for="" class="mr-2 mb-0">{{__("Maximum Route/Job per Geo Fence")}} </label>
+                                <div class="d-flex align-items-center justify-content-between mb-2">
+                                    <div class="custom-control custom-switch">
+                                            <select class="form-control" name="maximum_route_per_job">
+                                                <option value="">Select route per job</option>
+                                                <option value="2" {{($preference->maximum_route_per_job == 2) ? 'selected' : '' }}>2</option>
+                                                <option value="3" {{($preference->maximum_route_per_job == 3) ? 'selected' : '' }}>3</option>
+                                                <option value="4" {{($preference->maximum_route_per_job == 4) ? 'selected' : '' }}>4</option>
+                                                <option value="5" {{($preference->maximum_route_per_job == 5) ? 'selected' : '' }}>5</option>
+                                                <option value="6" {{($preference->maximum_route_per_job == 6) ? 'selected' : '' }}>6</option>
+                                                <option value="7" {{($preference->maximum_route_per_job == 7) ? 'selected' : '' }}>7</option>
+                                                <option value="8" {{($preference->maximum_route_per_job == 8) ? 'selected' : '' }}>8</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        </div>
+
+                    </div>
+                </form>
+                <!-- Custom Mods start -->
+            </div>
+        </div>
+
 
         <div style="display:none;">
             <form method="POST" action="{{ route('preference', Auth::user()->code) }}">
@@ -1388,6 +1473,13 @@ $sms_crendential = json_decode($preference->sms_credentials);
             $('#' + id).css('display', 'flex');
             console.log(id);
         }
+        $('#batch_allocation').on('change',function(){
+            if ($(this).is(":checked")) {
+                $('.batch-allocation').show();
+            }else{
+                $('.batch-allocation').hide();
+            }
+        });
     </script>
 
 @endsection

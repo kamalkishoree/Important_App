@@ -84,6 +84,42 @@ class ClientController extends Controller
             return redirect()->back()->with('success', 'Preference updated successfully!');
         }
 
+        if(!empty($request->fcm_server_key)){
+            $data = ['fcm_server_key'=>$request->fcm_server_key];
+            ClientPreference::where('client_id', $id)->update($data);
+
+            return redirect()->back()->with('success', 'Preference updated successfully!');
+        }
+
+        //Batch Allocation Code
+        if($request->has('mybatch')){
+            if($request->has('batch_allocation')){
+                DB::table('royodelivery_db.clients')->where('code',$id)->update([
+                    'batch_allocation' => 1
+                ]);
+
+                $data = [
+                    'create_batch_hours'=>$request->create_batch_hours,
+                    'maximum_route_per_job'=>$request->maximum_route_per_job,
+                    'job_consist_of_pickup_or_delivery'=>$request->has('job_consist_of_pickup_or_delivery')?'1':0
+                ];
+                ClientPreference::where('client_id', $id)->update($data);
+                return redirect()->back()->with('success', 'Preference updated successfully!');
+            }else{
+                DB::table('royodelivery_db.clients')->where('code',$id)->update([
+                    'batch_allocation' => 0
+                ]);
+
+                $data = [
+                    'create_batch_hours'=>null,
+                    'maximum_route_per_job'=>null,
+                    'job_consist_of_pickup_or_delivery'=>0
+                ];
+                ClientPreference::where('client_id', $id)->update($data);
+                return redirect()->back()->with('success', 'Preference updated successfully!');
+            }
+        }
+
         if($request->has('autopay_submit')){
             $auto_payout = (!empty($request->auto_payout))? 1 : 0;
             $data = ['auto_payout'=>$auto_payout];

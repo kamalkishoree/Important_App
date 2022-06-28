@@ -209,10 +209,10 @@
 
                         <div class="geo_bottom_btns">
                             <div class="row">
-                                <div class="col-md-6 mb-2 mb-md-0">
+                                {{--<div class="col-md-6 mb-2 mb-md-0">
                                     <button type="button"
                                         class="btn btn-block btn-outline-primary waves-effect waves-light mb-0">Cancel</button>
-                                </div>
+                                </div>--}}
                                 <div class="col-md-6">
                                     <button type="submit"
                                         class="btn btn-block btn-primary waves-effect waves-light">Save</button>

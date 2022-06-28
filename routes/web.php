@@ -190,6 +190,7 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 			Route::post('set_message', 'ClientNotificationController@setmessage')->name('set.message');
 			Route::resource('manager', 'ManagerController');
 			Route::resource('plan-billing', 'PlanBillingController');
+			Route::get('batchs/', 'TaskController@batchlist')->name('batch.list');
 			Route::resource('tasks', 'TaskController');
 
 			Route::post('newtasks', 'TaskController@newtasks');
