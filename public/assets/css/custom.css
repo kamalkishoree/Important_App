@@ -1801,14 +1801,16 @@ body.dark[data-sidebar-size=condensed] .left-side-menu #sidebar-menu > ul > li >
     padding: 13px 20px;
     min-height: 10px;
     transition: none;
-}
+} 
+body[dir="rtl"] .imageagent{margin-left:15px;margin-right: 0px;}
+body[dir="rtl"] .custom-control { padding-left: 0px; padding-right: 1.5rem;}
+body[dir="rtl"] .custom-control-label::after{right: -1.5rem;left:0px;}
+body[dir="rtl"] .custom-checkbox .custom-control-label::before{right: -1.5rem;left: 0px;}
 body[dir="rtl"] .iti__flag-container {left: auto;right: 0;}
 body[dir="rtl"] .iti--separate-dial-code input[type=tel] {padding-left: 0px;padding-right: 90px;}
 body[dir="rtl"] .iti--separate-dial-code .iti__selected-dial-code {margin-right: 6px;}
 body[dir="rtl"] .modal-header .close{ position:absolute; left: 5px;}
-body[dir="rtl"] .agent-listing tbody td{
-    padding: 15px 10px 10px 15px;
-}
+body[dir="rtl"] .agent-listing tbody td{ padding: 15px 10px 10px 15px;}
 
  
 
