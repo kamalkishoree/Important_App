@@ -1187,12 +1187,23 @@ body .tagsinput .tag {
 }
 
 
+body[dir="rtl"] .card_outer{
+    height: auto !important;
+}
+
+
 @media(max-width:1366px) {
     #map-canvas {
         height: calc(100vh - 284px);
     }
+    body[dir="rtl"] .geo_middle{
+        height: calc(100vh - 650px); 
+        margin-bottom: 10px;
+    }
+    body[dir="rtl"] .card_outer{
+        height: auto !important;
+    }
 }
-
 
 @media(min-width:1200px){
     .geo_middle {
@@ -1201,6 +1212,7 @@ body .tagsinput .tag {
         overflow-x: hidden;
         margin: 0 0 20px;
     }
+   
 
 }
 
@@ -1486,6 +1498,7 @@ span.copied_txt {
         float: none !important;
         margin-left: auto;
     }
+    
 
 
 
@@ -1769,7 +1782,13 @@ span.copied_txt {
     .geo_middle {
         height: 300px !important;
     }
+    body[dir="rtl"] .geo_middle{
+        height: 120px;
+        margin-bottom: 10px;
+    }
 }
+
+
 
 .lite-box-brdr {
     border: 1px solid #ececec;
