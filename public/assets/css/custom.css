@@ -1801,7 +1801,7 @@ body.dark[data-sidebar-size=condensed] .left-side-menu #sidebar-menu > ul > li >
     padding: 13px 20px;
     min-height: 10px;
     transition: none;
-}
+} 
 body[dir="rtl"] .imageagent{margin-left:15px;margin-right: 0px;}
 body[dir="rtl"] .custom-control { padding-left: 0px; padding-right: 1.5rem;}
 body[dir="rtl"] .custom-control-label::after{right: -1.5rem;left:0px;}
