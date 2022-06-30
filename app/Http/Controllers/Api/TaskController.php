@@ -673,7 +673,7 @@ class TaskController extends BaseController
                     if ($agent_details->type == 'Employee') {
                         $percentage = $pricingRule->agent_commission_fixed + (($task_id->order_cost / 100) * $pricingRule->agent_commission_percentage);
                     } else {
-                        $percentage = $pricingRule->freelancer_commission_percentage + (($task_id->order_cost / 100) * $pricingRule->freelancer_commission_fixed);
+                        $percentage = $pricingRule->freelancer_commission_fixed + (($task_id->order_cost / 100) * $pricingRule->freelancer_commission_percentage);
                     }
                 }
                 if ($task_id->driver_cost != 0.00) {
@@ -709,7 +709,7 @@ class TaskController extends BaseController
                     if ($agent_details->type == 'Employee') {
                         $percentage = $pricingRule->agent_commission_fixed + (($task_id->order_cost / 100) * $pricingRule->agent_commission_percentage);
                     } else {
-                        $percentage = $pricingRule->freelancer_commission_percentage + (($task_id->order_cost / 100) * $pricingRule->freelancer_commission_fixed);
+                        $percentage = $pricingRule->freelancer_commission_fixed + (($task_id->order_cost / 100) * $pricingRule->freelancer_commission_percentage);
                     }
                 }
                 if ($task_id->driver_cost != 0.00) {
@@ -1011,7 +1011,7 @@ class TaskController extends BaseController
                 if ($agent_details->type == 'Employee') {
                     $percentage = $pricingRule->agent_commission_fixed + (($total / 100) * $pricingRule->agent_commission_percentage);
                 } else {
-                    $percentage = $pricingRule->freelancer_commission_percentage + (($total / 100) * $pricingRule->freelancer_commission_fixed);
+                    $percentage = $pricingRule->freelancer_commission_fixed + (($total / 100) * $pricingRule->freelancer_commission_percentage);
                 }
             }
 
