@@ -91,7 +91,6 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                             <table class="table table-striped dt-responsive nowrap w-100 agents-datatable" id="agents-datatable">
                                 <thead>
                                     <tr>
-                                        
                                         <th class="sort-icon">{{__("Sr.no")}} </th>
                                         <th class="sort-icon">{{__("Batch Number")}}</th>
                                         <th class="sort-icon">{{__("Agent Name")}}</th>
@@ -100,7 +99,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                     </tr>
                                 </thead>
                                 <tbody style="height: 8%;overflow: auto !important;">
-                                @foreach($batchs as $batch)
+                                @forelse($batchs as $batch)
                                 <tr>
                                     <td>{{$batch->id}}</td>
                                     <td>{{$batch->batch_no}}</td>
@@ -111,7 +110,9 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
 
                                         <button class="btn btn-primary btn-sm" onclick="viewOrders({{$batch->id}})">Batch Orders</button></td>
                                 </tr>
-                                @endforeach
+                                @empty
+                                <tr><td colspan="10" class="text-center">No Batch Found</td></tr>
+                                @endforelse
                                 </tbody>
                             </table>
                         </div>
