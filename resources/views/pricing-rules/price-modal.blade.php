@@ -12,8 +12,19 @@
                     <div class="row">
 
                         <div class="col-md-12">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group" id="nameInput">
+                                            {!! Form::label('title', __('Name'),['class' => 'control-label']) !!}
+                                            {!! Form::text('name', null, ['class' => 'form-control','placeholder'=> __('Name'),'required' => 'required']) !!}
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong></strong>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
                                 <hr>
-                                <h5 class="text-uppercase bg-light-yellopink p-2 mt-0 mb-3">Multiple Tags</h5>
+                                <h5 class="text-uppercase bg-light-yellopink p-2 mt-0 mb-3">Conditions To Apply Price Rule</h5>
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group" id="typeInput">
@@ -68,8 +79,7 @@
                                 </div>
                                 
                                 <div class="timetable_div">
-                                    <hr>
-                                    <h5 class="text-uppercase bg-light-yellopink p-2 mt-0 mb-3">{{__("Timetable")}}  <span class="digital-clock1" style="float:right;color: rgb(183 33 33);text-shadow:0 0 6px #ff0;">00:00:00</span></h5>
+                                    <h5><span class="digital-clock1" style="float:right;color: rgb(183 33 33);text-shadow:0 0 6px #ff0;">00:00:00</span></h5>
                                     
                                     <div class="table-responsive">
                                         <table class="table table-striped dt-responsive nowrap w-100">
@@ -107,18 +117,9 @@
                                 </div>
 
                                 <hr>
-                                <h5 class="text-uppercase bg-light-yellopink p-2 mt-0 mb-3">Variables</h5>
+                                <h5 class="text-uppercase bg-light-yellopink p-2 mt-0 mb-3">Pricing Values</h5>
                                 <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group" id="nameInput">
-                                            {!! Form::label('title', __('Name'),['class' => 'control-label']) !!}
-                                            {!! Form::text('name', null, ['class' => 'form-control','placeholder'=> __('Name'),'required' => 'required']) !!}
-                                            <span class="invalid-feedback" role="alert">
-                                                <strong></strong>
-                                            </span>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
+                                    <div class="col-md-12">
                                         <div class="form-group" id="">
                                             {!! Form::label('title', __('Base Price'),['class' => 'control-label']) !!}
                                             {!! Form::text('base_price', 10, ['class' => 'form-control','required' => 'required']) !!}
