@@ -666,7 +666,7 @@ class TaskController extends BaseController
 
                 $task_id = Order::where('id', $batch->order_id)->first();
                 $pricingRule = PricingRule::where('id', 1)->first();
-                $agent_id =  isset($request->allocation_type) && $request->allocation_type == 'm' ? $request->agent : null;
+                $agent_id =  $request->driver_id  ? $request->driver_id : null;
     
                 if (isset($agent_id) && $task_id->driver_cost <= 0.00) {
                     $agent_details = Agent::where('id', $agent_id)->first();
