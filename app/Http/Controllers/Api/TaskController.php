@@ -85,6 +85,7 @@ class TaskController extends BaseController
 
         $orderId        = Task::where('id', $request->task_id)->with(['tasktype'])->first();
         $user           = Auth::user();
+
         
         $orderAll       = Task::where('order_id', $orderId->order_id)->get();
         $order_details  = Order::where('id', $orderId->order_id)->with(['agent','customer'])->first();
@@ -96,6 +97,28 @@ class TaskController extends BaseController
                 'message' => "You can not complete this order."
             ]);
         endif;
+
+        \Log::info('call');
+        if(isset($request->qr_code) && ($order_details && $order_details->call_back_url)){
+            \Log::info('call in ');
+
+        $qrcode_web_hook = $this->checkQrcodeStatusDataToOrderPanel($order_details,$request->qr_code,'1'); 
+            if($qrcode_web_hook == '0')
+            {
+                return response()->json([
+                    'data' => [],
+                    'status' => 403,
+                    'message' => "Wrong Qr Code."
+                ]);
+            }else{
+                return response()->json([
+                    'data' => [],
+                    'status' => 200,
+                    'message' => "qr code Found."
+                ]);
+            }
+        }
+
 
         $allCount       = Count($orderAll);
         $inProgress     = $orderAll->where('task_status', 2);
@@ -220,6 +243,11 @@ class TaskController extends BaseController
                 $call_web_hook = $this->updateStatusDataToOrder($order_details,$stat,$orderId->task_type_id);  # call web hook when order update
             }
 
+        }
+
+        if(isset($request->qr_code))
+        {
+            $task = Task::where('id', $request->task_id)->update(['bag_qrcode' => $request->qr_code]);
         }
 
 
@@ -577,6 +605,37 @@ class TaskController extends BaseController
                 'message' => $e->getMessage()
             ]);
 
+        }
+    }
+
+
+    /////////////////// **********************   check qrcode exist in order panel **********************************  ///////////////////////
+    public function checkQrcodeStatusDataToOrderPanel($order_details,$orderQrcode,$checkQr='0'){
+        try {
+       
+        $auth =  Client::with(['getAllocation', 'getPreference'])->first();
+        if ($auth->custom_domain && !empty($auth->custom_domain)) {
+            $client_url = "https://".$auth->custom_domain;
+        } else {
+            $client_url = "https://".$auth->sub_domain.\env('SUBDOMAIN');
+        }
+        $dispatch_traking_url = $client_url.'/order/tracking/'.$auth->code.'/'.$order_details->unique_id;
+
+        $client = new GClient(['content-type' => 'application/json']);
+        $url = $order_details->call_back_url;
+        $res = $client->get($url.'?dispatcher_status_option_id=5&qr_code='.$orderQrcode.'&order_number='.$order_details->order_number.'&check_qr='.$checkQr.'&dispatch_traking_url='.$dispatch_traking_url);
+        $response = json_decode($res->getBody(), true);
+                if($response['status']=='1'){
+                    return 1;
+                }
+                    return 0;
+        }
+        catch(\Exception $e)
+        {
+            return response()->json([
+                'status' => __('error'),
+                'message' => $e->getMessage()
+            ]);
         }
     }
 

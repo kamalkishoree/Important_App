@@ -125,7 +125,6 @@ class CreateBatch extends Command
             }else{
                 $nextBatchDate = Carbon::parse($now)->format('Y-m-d H:i:s');
                 $nextBatchDate = Carbon::createFromFormat('Y-m-d H:i:s', $nextBatchDate)->setTimezone($timeZone);
-
             }
 
             $typeArrayRoute = ['P','D'];

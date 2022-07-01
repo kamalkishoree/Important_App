@@ -488,6 +488,8 @@ class ClientController extends Controller
             $update->otp_requried       = isset($request['otp_requried_'.$i])? 1 : 0 ;
             $update->face               = isset($request['face_'.$i])? 1 : 0 ;
             $update->face_requried      = isset($request['face_requried_'.$i])? 1 : 0 ;
+            $update->qrcode             = isset($request['qrcode_'.$i])? 1 : 0 ;
+            $update->qrcode_requried    = isset($request['qrcode_requried_'.$i])? 1 : 0 ;
             $update->save();
         }
 
