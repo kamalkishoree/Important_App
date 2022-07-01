@@ -790,7 +790,21 @@
         contentType: false,
         processData: false,
         success: function(response) {
-            if (response) {
+            if(response.status == 'Success')
+            {var color = 'green';var heading="Success!";}else{var color = 'red';var heading="Error!";}
+            $.toast({ 
+            heading:heading,
+            text : response.message, 
+            showHideTransition : 'slide', 
+            bgColor : color,              
+            textColor : '#eee',            
+            allowToastClose : true,      
+            hideAfter : 5000,            
+            stack : 5,                   
+            textAlign : 'left',         
+            position : 'top-right'      
+            });
+            if (response.status == 'Success') {
                     $("#task-modal-header .close").click();
                     location.reload();
             } else {

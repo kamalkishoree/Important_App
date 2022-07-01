@@ -24,7 +24,7 @@ class Agent extends Authenticatable implements  Wallet, WalletFloat
         'team_id', 'name', 'profile_picture', 'type', 'vehicle_type_id', 'make_model', 'plate_number', 'phone_number', 'color', 'is_activated', 'is_available','cash_at_hand','uid', 'is_approved','customer_type_id'
     ];
 
-    protected $appends = ['image_url'];
+    protected $appends = ['image_url', 'agent_cash_at_hand'];
     
     
     public function getImageUrlAttribute()
@@ -46,6 +46,28 @@ class Agent extends Authenticatable implements  Wallet, WalletFloat
     //         $this->commands->toArray()
     //     );
     // }
+
+    public function getAgentCashAtHandAttribute()
+    {
+
+    $credit = $this->agentPayment->sum('cr');
+    $debit = $this->agentPayment->sum('dr');
+
+    $wallet_balance = 0;
+    if($this->wallet){
+    $wallet_balance = $this->balanceFloat;
+    }
+    $cash = $this->completeOrder->sum('cash_to_be_collected');
+    $driver_cost = $this->completeOrder->sum('driver_cost');
+
+    $available_funds = ($credit + $cash) - ($wallet_balance + $debit + $driver_cost) ;
+
+    return $available_funds;
+    }
+
+    public function completeOrder(){
+    return $this->hasMany('App\Model\Order','driver_id', 'id')->where('status', 'completed');
+    }
    
 
     public function team(){

@@ -6329,6 +6329,10 @@ button.bg-danger:focus {
   background-color: #f3f7f9 !important;
 }
 
+.bg-light-yellopink {
+  background-color: #ccab574a !important;
+}
+
 a.bg-light:hover, a.bg-light:focus,
 button.bg-light:hover,
 button.bg-light:focus {
