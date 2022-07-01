@@ -827,24 +827,30 @@ class TaskController extends BaseController
 
             //create new customer for task or get id of old customer
 
-            if (isset($request->customer_email)) {
-                $customer = Customer::where('email', '=', $request->customer_email)->first();
+            if (isset($request->customer_email) || isset($request->customer_phone_number)) {
+                $dialCode = $request->customer_dial_code ?? null;
+                $customerNo = $dialCode . $request->customer_phone_number;
+                $customer = Customer::where('email', $request->customer_email)->orWhere(function ($q) use($customerNo){
+                    $q->whereRaw("CONCAT(`dial_code`, '', `phone_number`)", $customerNo)->orWhere('phone_number', '+'.$customerNo);
+                })->first();
                 if (isset($customer->id)) {
                     $cus_id = $customer->id;
                     //check is number is different then update custom phone number
-                    if($customer->phone_number != $request->customer_phone_number && $request->customer_phone_number!="")
+                    if(($customer->phone_number != $request->customer_phone_number) && ($request->customer_phone_number != ""))
                     {
                         $customer_phone_number = [
-                            'phone_number'        => $request->customer_phone_number
-                         ];                 
+                            'phone_number' => $request->customer_phone_number,
+                            'dial_code' => $dialCode
+                        ];
                         Customer::where('id', $cus_id)->update($customer_phone_number);
                     }
                 } else {
                     $cus = [
-                    'name' => $request->customer_name,
-                    'email' => $request->customer_email,
-                    'phone_number' => $request->customer_phone_number,
-                ];
+                        'name' => $request->customer_name,
+                        'email' => $request->customer_email,
+                        'phone_number' => $request->customer_phone_number,
+                        'dial_code' => $dialCode
+                    ];
                     $customer = Customer::create($cus);
                     $cus_id = $customer->id;
                 }

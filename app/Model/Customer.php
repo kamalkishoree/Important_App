@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Customer extends Model
 {
     protected $fillable = [
-        'name', 'email', 'address', 'phone_number','status'
+        'name', 'email', 'address', 'phone_number', 'dial_code', 'status'
     ];
     public function location(){
         $clientPreference =  getClientPreferenceDetail();
