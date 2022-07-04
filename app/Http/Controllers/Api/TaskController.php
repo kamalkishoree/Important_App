@@ -98,24 +98,12 @@ class TaskController extends BaseController
             ]);
         endif;
 
-        \Log::info('call');
+        // dd($order_details->toArray());
         if(isset($request->qr_code) && ($order_details && $order_details->call_back_url)){
-            \Log::info('call in ');
-
         $qrcode_web_hook = $this->checkQrcodeStatusDataToOrderPanel($order_details,$request->qr_code,'1'); 
             if($qrcode_web_hook == '0')
             {
-                return response()->json([
-                    'data' => [],
-                    'status' => 403,
-                    'message' => "Wrong Qr Code."
-                ]);
-            }else{
-                return response()->json([
-                    'data' => [],
-                    'status' => 200,
-                    'message' => "qr code Found."
-                ]);
+                return $this->error('Wrong Qr Code.',400);
             }
         }
 
@@ -226,6 +214,9 @@ class TaskController extends BaseController
 
                 if($order_details && $order_details->call_back_url){
                     $call_web_hook = $this->updateStatusDataToOrder($order_details,5,$orderId->task_type_id);  # call web hook when order completed
+                }
+                if(isset($request->qr_code)){
+                    $this->checkQrcodeStatusDataToOrderPanel($order_details,$request->qr_code,5);
                 }
             }
         } elseif ($request->task_status == 5) {
@@ -612,7 +603,7 @@ class TaskController extends BaseController
     /////////////////// **********************   check qrcode exist in order panel **********************************  ///////////////////////
     public function checkQrcodeStatusDataToOrderPanel($order_details,$orderQrcode,$checkQr='0'){
         try {
-       
+        $order_details  = Order::where(['order_number'=> $order_details->order_number,'request_type'=>'D'])->with(['agent','customer'])->first();
         $auth =  Client::with(['getAllocation', 'getPreference'])->first();
         if ($auth->custom_domain && !empty($auth->custom_domain)) {
             $client_url = "https://".$auth->custom_domain;
@@ -625,10 +616,12 @@ class TaskController extends BaseController
         $url = $order_details->call_back_url;
         $res = $client->get($url.'?dispatcher_status_option_id=5&qr_code='.$orderQrcode.'&order_number='.$order_details->order_number.'&check_qr='.$checkQr.'&dispatch_traking_url='.$dispatch_traking_url);
         $response = json_decode($res->getBody(), true);
-                if($response['status']=='1'){
-                    return 1;
-                }
-                    return 0;
+            
+            if($response['status']=='0'){
+                return 0;
+            }
+                return 1;
+
         }
         catch(\Exception $e)
         {
