@@ -426,11 +426,11 @@ http://192.168.100.211:8888/unsafe/fit-in/90x50/https://royodelivery-assets.s3.u
             <a href="{{ route('index') }}" class="logo logo-light text-center">
                 <span class="logo-sm">
                     <img src="{{$image}}"
-                        alt="" height="30" style="padding-top: 4px;">
+                        alt="" height="30">
                 </span>
                 <span class="logo-lg">
                     <img src="{{$image}}"
-                        alt="" height="50" style="padding-top: 4px;">
+                        alt="" height="50">
                 </span>
             </a>
         </div>
