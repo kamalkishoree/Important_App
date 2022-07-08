@@ -702,8 +702,9 @@ class TaskController extends BaseController
                 $this->dispatchNow(new RosterDelete($request->order_id,'O'));
                 $task_id = Order::where('id', $request->order_id)->first();
                 $pricingRule = PricingRule::where('id', 1)->first();
-                $agent_id =  isset($request->allocation_type) && $request->allocation_type == 'm' ? $request->agent : null;
-    
+                
+                $agent_id =  isset($request->allocation_type) && $request->allocation_type == 'm' ? $request->driver_id : null;
+                Log::info($agent_id.'#'.$request->allocation_type);
                 if (isset($agent_id) && $task_id->driver_cost <= 0.00) {
                     $agent_details = Agent::where('id', $agent_id)->first();
                     if ($agent_details->type == 'Employee') {
@@ -712,7 +713,7 @@ class TaskController extends BaseController
                         $percentage = $pricingRule->freelancer_commission_fixed + (($task_id->order_cost / 100) * $pricingRule->freelancer_commission_percentage);
                     }
                 }
-                if ($task_id->driver_cost != 0.00) {
+                if ($task_id->driver_cost > 0.00) {
                     $percentage = $task_id->driver_cost;
                 }
     
@@ -981,7 +982,7 @@ class TaskController extends BaseController
             //get pricing rule  for save with every order based on geo fence and agent tags
 
             $dayname = Carbon::parse($notification_time)->format('l');
-            $time    = Carbon::parse($notification_time)->format('H:i:s');
+            $time    = Carbon::parse($notification_time)->format('H:i');
 
             
             if((isset($request->order_agent_tag) && !empty($request->order_agent_tag)) && $geoid!=''):
@@ -2399,8 +2400,10 @@ class TaskController extends BaseController
             return response()->json(['message' => 'Pickup and Dropoff location required.',], 404);
             array_push($latitude, $value['latitude']??0.0000);
             array_push($longitude, $value['longitude']??0.0000);
-            $lat  = $value['latitude']??0.0000;
-            $long = $value['longitude']??0.0000;
+            if($lat=='' && $long==''):
+                $lat  = $value['latitude']??0.0000;
+                $long = $value['longitude']??0.0000;
+            endif;
         }
         
         //get geoid based on customer location
@@ -2418,7 +2421,7 @@ class TaskController extends BaseController
             $order_datetime = Carbon::now()->timezone($timezone)->toDateTimeString();
         endif;
         $dayname = Carbon::parse($order_datetime)->format('l');
-        $time    = Carbon::parse($order_datetime)->format('H:i:s');
+        $time    = Carbon::parse($order_datetime)->format('H:i');
 
         
         if((isset($request->agent_tag) && !empty($request->agent_tag)) && $geoid!=''):
