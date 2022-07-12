@@ -104,6 +104,8 @@ class TaskController extends BaseController
             if($qrcode_web_hook == '0')
             {
                 return $this->error('Wrong Qr Code.',400);
+            }else{
+                $codeVendor = $qrcode_web_hook;
             }
         }
 
@@ -216,7 +218,7 @@ class TaskController extends BaseController
                     $call_web_hook = $this->updateStatusDataToOrder($order_details,5,$orderId->task_type_id);  # call web hook when order completed
                 }
                 if(isset($request->qr_code)){
-                    $this->checkQrcodeStatusDataToOrderPanel($order_details,$request->qr_code,5);
+                   $codeVendor = $this->checkQrcodeStatusDataToOrderPanel($order_details,$request->qr_code,5);
                 }
             }
         } elseif ($request->task_status == 5) {
@@ -420,6 +422,7 @@ class TaskController extends BaseController
         //------------------------------------------------------------------------------------------------//
         $newDetails['otpEnabled'] = $otpEnabled;
         $newDetails['otpRequired'] = $otpRequired;
+        $newDetails['qrCodeVendor'] = $codeVendor??null;
 
         return response()->json([
             'data' => $newDetails,
@@ -616,11 +619,11 @@ class TaskController extends BaseController
         $url = $order_details->call_back_url;
         $res = $client->get($url.'?dispatcher_status_option_id=5&qr_code='.$orderQrcode.'&order_number='.$order_details->order_number.'&check_qr='.$checkQr.'&dispatch_traking_url='.$dispatch_traking_url);
         $response = json_decode($res->getBody(), true);
-            
             if($response['status']=='0'){
                 return 0;
             }
-                return 1;
+           // \Log::info($response['data']['vendor_detail']);
+                return $response['data']['vendor_detail']??1;
 
         }
         catch(\Exception $e)

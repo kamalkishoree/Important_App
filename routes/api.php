@@ -45,6 +45,9 @@ Route::get('importCustomer', 'Api\ImportThirdPartyUserController@importCustomer'
 // routes for edit order
 Route::post('edit-order/driver/notify', 'Api\TaskController@editOrderNotification')->middleware('ConnectDbFromOrder');
 
+//route for reschedule order
+Route::post('order/reschedule', 'Api\OrderController@rescheduleOrder')->middleware('ConnectDbFromOrder');
+
 // route for cancel order request status
 Route::post('cancel-order-request-status/driver/notify', 'Api\TaskController@cancelOrderRequestStatusNotification')->middleware('ConnectDbFromOrder');
 
