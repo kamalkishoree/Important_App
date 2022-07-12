@@ -98,6 +98,15 @@ Route::group(['middleware' => ['dbCheck', 'AppAuth','apiLocalization']], functio
     Route::post('order/cancel/request/create/{id}', 'Api\OrderController@createOrderCancelRequest'); // api for creating order cancel request by driver
     Route::get('order/cancel/reasons', 'Api\OrderController@getOrderCancelReasons'); // api for creating order cancel request by driver
 
+    // Driver subscription
+    Route::group(['prefix' => 'driver/subscription'], function () {
+        Route::get('plans', 'Api\DriverSubscriptionController@getSubscriptionPlans');
+        Route::get('selectPlan/{slug}', 'Api\DriverSubscriptionController@selectSubscriptionPlan');
+        Route::post('purchase/{slug}', 'Api\DriverSubscriptionController@purchaseSubscriptionPlan');
+        Route::post('cancel/{slug}', 'Api\DriverSubscriptionController@cancelSubscriptionPlan');
+        Route::get('checkActivePlan/{slug}', 'Api\DriverSubscriptionController@checkActiveSubscriptionPlan');
+    });
+
     // All Payment gateways
     Route::get('payment/{gateway}', 'Api\PaymentOptionController@postPayment');
 });

@@ -168,11 +168,11 @@ class AgentController extends Controller
                     return __($agents->type);
                 })
                 ->editColumn('cash_to_be_collected', function ($agents) use ($request) {
-                    $cash = $agents->order->sum('cash_to_be_collected');
+                    $cash = $agents->order->where('status', 'completed')->sum('cash_to_be_collected');
                     return number_format((float)$cash, 2, '.', '');
                 })
                 ->editColumn('driver_cost', function ($agents) use ($request) {
-                    $orders = $agents->order->sum('driver_cost');
+                    $orders = $agents->order->where('status', 'completed')->sum('driver_cost');
                     return number_format((float)$orders, 2, '.', '');
                 })
                 ->editColumn('cr', function ($agents) use ($request) {
@@ -184,11 +184,11 @@ class AgentController extends Controller
                     return number_format((float)$pay, 2, '.', '');
                 })
                 ->editColumn('pay_to_driver', function ($agents) use ($request) {
-                    $cash        = $agents->order->sum('cash_to_be_collected');
-                    $orders      = $agents->order->sum('driver_cost');
+                    $cash        = $agents->order->where('status', 'completed')->sum('cash_to_be_collected');
+                    $orders      = $agents->order->where('status', 'completed')->sum('driver_cost');
                     $receive     = $agents->agentPayment->sum('cr');
                     $pay         = $agents->agentPayment->sum('dr');
-                    //$payToDriver = $agents->balanceFloat + ($pay - $receive) - ($cash - $orders);
+                    
                     $payToDriver = ($pay - $receive) - ($cash - $orders);
                     return number_format((float)$payToDriver, 2, '.', '');
                 })

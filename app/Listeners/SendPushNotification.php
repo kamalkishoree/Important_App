@@ -131,6 +131,9 @@ class SendPushNotification
                // Log::info($item);
                // Log::info('token=');
 
+               $item['notificationType'] = $item['type'];
+               unset($item['type']); // done by Preet due to notification title is displaying like AR in iOS 
+
                 array_push($new,$item['device_token']);
                // Log::info($new);
 
