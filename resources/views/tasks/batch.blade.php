@@ -144,7 +144,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                         <h4 class="modal-title">Assign {{ Session::get('agent_name') }}</h4>
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                     </div>
-                    <form id="submit_assign_agent" method="POST" enctype="multipart/form-data" action="{{route('assign.agent')}}">
+                    <form id="" method="POST" enctype="multipart/form-data" action="{{route('assign.agent')}}">
                         <input type="hidden" name="type" value="B" >
                         <input type="hidden" name="batchId" id="batchId" value="" >
                         @csrf
@@ -154,7 +154,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                 <div class="col-md-12">
                                     <div class="form-group" id="typeInput">
                                         {!! Form::label('title', 'Status',['class' => 'control-label']) !!}
-                                        <select name="agent" id="agent_id" class="form-control">
+                                        <select name="agent_id" id="agent_id" class="form-control">
                                             @foreach ($agents as $item)
                                             @php
                                                 $checkAgentActive = ($item->is_available == 1) ? ' ('.__('Online').')' : ' ('.__('Offline').')';
