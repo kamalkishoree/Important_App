@@ -45,6 +45,9 @@ Route::get('importCustomer', 'Api\ImportThirdPartyUserController@importCustomer'
 // routes for edit order
 Route::post('edit-order/driver/notify', 'Api\TaskController@editOrderNotification')->middleware('ConnectDbFromOrder');
 
+//route for reschedule order
+Route::post('order/reschedule', 'Api\OrderController@rescheduleOrder')->middleware('ConnectDbFromOrder');
+
 // route for cancel order request status
 Route::post('cancel-order-request-status/driver/notify', 'Api\TaskController@cancelOrderRequestStatusNotification')->middleware('ConnectDbFromOrder');
 
@@ -94,6 +97,15 @@ Route::group(['middleware' => ['dbCheck', 'AppAuth','apiLocalization']], functio
     // Order routes
     Route::post('order/cancel/request/create/{id}', 'Api\OrderController@createOrderCancelRequest'); // api for creating order cancel request by driver
     Route::get('order/cancel/reasons', 'Api\OrderController@getOrderCancelReasons'); // api for creating order cancel request by driver
+
+    // Driver subscription
+    Route::group(['prefix' => 'driver/subscription'], function () {
+        Route::get('plans', 'Api\DriverSubscriptionController@getSubscriptionPlans');
+        Route::get('selectPlan/{slug}', 'Api\DriverSubscriptionController@selectSubscriptionPlan');
+        Route::post('purchase/{slug}', 'Api\DriverSubscriptionController@purchaseSubscriptionPlan');
+        Route::post('cancel/{slug}', 'Api\DriverSubscriptionController@cancelSubscriptionPlan');
+        Route::get('checkActivePlan/{slug}', 'Api\DriverSubscriptionController@checkActiveSubscriptionPlan');
+    });
 
     // All Payment gateways
     Route::get('payment/{gateway}', 'Api\PaymentOptionController@postPayment');

@@ -22,7 +22,7 @@ use App\Model\Geo;
 use App\Model\Order;
 use App\Model\Timezone;
 use App\Model\AgentLog;
-use App\Model\{BatchAllocation, Team,TeamTag};
+use App\Model\{BatchAllocation, BatchAllocationDetail, Team,TeamTag};
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
@@ -38,9 +38,11 @@ use App\Exports\RoutesExport;
 use Excel;
 use GuzzleHttp\Client as Gclient;
 use App\Http\Controllers\Api\BaseController;
+use App\Traits\ApiResponser;
 
 class TaskController extends BaseController
 {
+    use ApiResponser;
     /**
      * Display a listing of the resource.
      *
@@ -134,25 +136,79 @@ class TaskController extends BaseController
         $timezone = $user->timezone ?? 251;
         $tz = new Timezone();
         $client_timezone = $tz->timezone_name($timezone);
-
-        $check = '';
-        if ($request->has('status') && $request->status != 'all') {
-            $check = $request->status;
-        } else {
-            $check = 'unassigned';
-        }
-
-        $all =  BatchAllocation::with('batchDetails')->where('agent_id', '==', null);
-        $all = $all->get();
-        // dd($all);
         $preference  = ClientPreference::where('id', 1)->first(['theme','date_format','time_format']);
+
+        $agentids =[];
+        $agents = Agent::orderBy('id', 'DESC');
+        if ($user->is_superadmin == 0 && $user->all_team_access == 0) {
+            $agents = $agents->whereHas('team.permissionToManager', function ($query) use($user) {
+                $query->where('sub_admin_id', $user->id);
+            });
+            $agentids = $agents->pluck('id');
+        }
+        $agents = $agents->where('is_approved', 1)->get();
+        $all =  BatchAllocation::with('batchDetails')->orderBy('id','desc');
+        $all = $all->get();
+       
+
+        $all->map(function ($all)use($preference,$client_timezone) {
+
+            if(!empty($all->batch_time)){
+                $timeformat      = $preference->time_format == '24' ? 'H:i:s':'g:i a';
+                $orderT           = Carbon::createFromFormat('Y-m-d H:i:s', $all->batch_time, 'UTC');
+                
+                $orderT->setTimezone($client_timezone);
+                $preference->date_format = $preference->date_format ?? 'm/d/Y';
+            }
+
+            $all['batchTime'] = date(''.$preference->date_format.' '.$timeformat.'', strtotime($orderT));
+            return $all;
+        });
+
+
         $allcation   = AllocationRule::where('id', 1)->first();
 
         $employees      = Customer::orderby('name', 'asc')->where('status','Active')->select('id', 'name')->get();
         $employeesCount = count($employees);
         // $agentsCount    = count($agents->where('is_approved', 1));
         // 'active_count' => $active, 'panding_count' => $pending, 'history_count' => $history, 'status' => $check,
-        return view('tasks/batch')->with([ 'status' => $request->status, 'employeesCount'=>$employeesCount, 'preference' => $preference,'client_timezone'=>$client_timezone,'batchs'=>$all]);
+        return view('tasks/batch')->with([ 'status' => $request->status, 'agents'=>$agents,'client_timezone'=>$client_timezone,'batchs'=>$all]);
+    }
+
+    public function batchDetails(Request $request)
+    {
+        $user = Auth::user();
+        $preference = ClientPreference::where('id', 1)->first(['theme','date_format','time_format']);
+        $timezone = $user->timezone ?? 251;
+
+        $all =  BatchAllocation::with('batchDetails')->where('id',$request->id)->first();
+            $table = '<table class="table table-striped dt-responsive nowrap w-100 agents-datatable"><tr><th>Sr.No </th><th>Order No</th><th>Phone No</th><th>Due Time</th><th>Customer</th><th>Tracking Url</th></tr>';
+            foreach($all->batchDetails as $no=>  $order){
+                $trackUrl = url('/order/tracking/'.$user->code.'/'.$order->order->unique_id.'');
+
+                $tz              = new Timezone();
+                $client_timezone = $tz->timezone_name($timezone);
+                if(!empty($order->order->order_time)){
+                    $timeformat      = $preference->time_format == '24' ? 'H:i:s':'g:i a';
+                    $orderT           = Carbon::createFromFormat('Y-m-d H:i:s', $order->order->order_time, 'UTC');
+                    
+                    $orderT->setTimezone($client_timezone);
+                    $preference->date_format = $preference->date_format ?? 'm/d/Y';
+                }
+
+
+                $table .= '<tr>
+                    <td>'.++$no.'</td>
+                    <td>'.$order->order->order_number.'</td>
+                    <td>'.$order->order->customer->phone_number.'</td>
+                    <td>'.date(''.$preference->date_format.' '.$timeformat.'', strtotime($orderT)).'</td>
+                    <td>'.$order->order->customer->name.'</td>
+                    <td><a href="'.$trackUrl.'" target="_blank" >View</a></td>
+                </tr>';
+            }
+
+            $table .='</table>';
+      return json_encode(['success'=>$table]);
     }
 
     public function taskFilter(Request $request)
@@ -792,20 +848,61 @@ class TaskController extends BaseController
     //function for assigning driver to unassigned orders
     public function assignAgent(Request $request)
     {
+        try{
+            if($request->type != 'B'){
+
         if(!empty($request->agent_id)):
-            $task_id = Order::find($request->orders_id);
-            $agent_details = Agent::where('id', $request->agent_id)->first();
-            if ($agent_details->type == 'Employee'):
-                $percentage = $task_id[0]->agent_commission_fixed + (($task_id[0]->order_cost / 100) * $task_id[0]->agent_commission_percentage);
+                $task_id = Order::find($request->orders_id);
+                $agent_details = Agent::where('id', $request->agent_id)->first();
+                if ($agent_details->type == 'Employee'):
+                    $percentage = $task_id[0]->agent_commission_fixed + (($task_id[0]->order_cost / 100) * $task_id[0]->agent_commission_percentage);
+                else:
+                    $percentage = $task_id[0]->freelancer_commission_fixed + (($task_id[0]->order_cost / 100) * $task_id[0]->freelancer_commission_percentage);
+                endif;
+
             else:
-                $percentage = $task_id[0]->freelancer_commission_fixed + (($task_id[0]->order_cost / 100) * $task_id[0]->freelancer_commission_percentage);
+                $percentage = 0.00;
             endif;
-        else:
-            $percentage = 0.00;
-        endif;
-        $order_update = Order::whereIn('id', $request->orders_id)->update(['driver_id'=>$request->agent_id, 'driver_cost'=>$percentage, 'status'=>'assigned', 'auto_alloction'=>'m']);
-        $task         = Task::whereIn('order_id', $request->orders_id)->update(['task_status'=>1]);
-        $this->MassAndEditNotification($request->orders_id[0], $request->agent_id);
+
+            $order_update = Order::whereIn('id', $request->orders_id)->update(['driver_id'=>$request->agent_id, 'driver_cost'=>$percentage, 'status'=>'assigned', 'auto_alloction'=>'m']);
+            $task         = Task::whereIn('order_id', $request->orders_id)->update(['task_status'=>1]);
+
+            $this->MassAndEditNotification($request->orders_id[0], $request->agent_id);
+        }else{
+
+           $batchs = BatchAllocation::with('batchDetails')->where('id',$request->batchId)->first();
+           //dd($batchs->batchDetails);
+           
+           foreach($batchs->batchDetails as  $k=> $batch)
+            {
+                if(!empty($request->agent_id)):
+                    $task_id = Order::find($batch->order_id);
+                    $agent_details = Agent::where('id', $request->agent_id)->first();
+                    if ($agent_details->type == 'Employee'):
+                        $percentage = $task_id->agent_commission_fixed + (($task_id->order_cost / 100) * $task_id->agent_commission_percentage);
+                    else:
+                        $percentage = $task_id->freelancer_commission_fixed + (($task_id->order_cost / 100) * $task_id->freelancer_commission_percentage);
+                    endif;
+    
+                else:
+                    $percentage = 0.00;
+                endif;
+
+                $order_update = Order::where('id', $batch->order_id)->update(['driver_id'=>$request->agent_id, 'driver_cost'=>$percentage, 'status'=>'assigned', 'auto_alloction'=>'m']);
+                $task         = Task::where('order_id', $batch->order_id)->update(['task_status'=>1]);
+
+                $batch    = BatchAllocationDetail::where('order_id', $batch->order_id)->update(['agent_id'=>$request->agent_id]);
+            
+            $batchs->agent_id =$request->agent_id;
+            $batchs->save();
+            }
+            $this->MassAndEditNotification($batchs->batchDetails[0]->order->id, $request->agent_id,$request->batchId);
+            return redirect()->back();
+        }
+        }catch(\Exception $e)
+        {
+            dd($e->getMessage());
+        }
     }
 
     //function for updating date of orders
@@ -822,12 +919,20 @@ class TaskController extends BaseController
     }
 
     //function for sending bulk notification
-    public function MassAndEditNotification($orders_id, $agent_id)
+    public function MassAndEditNotification($orders_id, $agent_id,$batch="")
     {
+        $batchTime = '';
+        $batch_id = '';
+        if($batch)
+        {
+            $batch = BatchAllocation::findOrFail($batch);
+            $batchTime = $batch->batch_time;
+            $batch_id = $batch->batch_no;
+        }
        // Log::info('mass and edit notification');
         $order_details = Order::where('id', $orders_id)->with(['customer','agent', 'task.location'])->first();
         $auth = Client::where('code', Auth::user()->code)->with(['getAllocation', 'getPreference'])->first();
-        $notification_time = $order_details->order_time;
+        $notification_time = $batchTime??$order_details->order_time;
         $expriedate = (int)$auth->getAllocation->request_expiry;
         $beforetime = (int)$auth->getAllocation->start_before_task_time;
         $maxsize    = (int)$auth->getAllocation->maximum_batch_size;
@@ -860,6 +965,7 @@ class TaskController extends BaseController
         $oneagent = Agent::where('id', $agent_id)->first();
         $data = [
             'order_id'            => $orders_id,
+            'batch_no'            => $batch_id??'',
             'driver_id'           => $agent_id,
             'notification_time'   => $time,
             'notification_befor_time' => $rostersbeforetime,

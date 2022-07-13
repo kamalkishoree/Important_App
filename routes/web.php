@@ -191,6 +191,7 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 			Route::resource('manager', 'ManagerController');
 			Route::resource('plan-billing', 'PlanBillingController');
 			Route::get('batchs/', 'TaskController@batchlist')->name('batch.list');
+			Route::POST('batchDetails/', 'TaskController@batchDetails')->name('batchDetails');
 			Route::resource('tasks', 'TaskController');
 
 			Route::post('newtasks', 'TaskController@newtasks');
@@ -256,6 +257,14 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 			Route::get('cms/email/templates', 'CMS\EmailTemplateController@index')->name('cms.email.templates');
 			Route::get('cms/email/template/{id}', 'CMS\EmailTemplateController@show')->name('cms.email.template.show');
 			Route::post('cms/email/template/update', 'CMS\EmailTemplateController@update')->name('cms.email.template.update');
+
+			// Subscription module
+			Route::get('subscription/plans/driver', 'SubscriptionPlansDriverController@getSubscriptionPlans')->name('subscription.plans.driver');
+			Route::post('subscription/plan/save/driver/{slug?}', 'SubscriptionPlansDriverController@saveSubscriptionPlan')->name('subscription.plan.save.driver');
+			Route::get('subscription/plan/edit/driver/{slug}', 'SubscriptionPlansDriverController@editSubscriptionPlan')->name('subscription.plan.edit.driver');
+			Route::get('subscription/plan/delete/driver/{slug}', 'SubscriptionPlansDriverController@deleteSubscriptionPlan')->name('subscription.plan.delete.driver');
+			Route::post('subscription/plan/updateStatus/driver/{slug}', 'SubscriptionPlansDriverController@updateSubscriptionPlanStatus')->name('subscription.plan.updateStatus.driver');
+			Route::post('show/subscription/plan/driver', 'SubscriptionPlansDriverController@showSubscriptionPlanDriver')->name('show.subscription.plan.driver');
 			
 		});
 	});

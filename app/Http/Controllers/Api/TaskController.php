@@ -85,6 +85,7 @@ class TaskController extends BaseController
 
         $orderId        = Task::where('id', $request->task_id)->with(['tasktype'])->first();
         $user           = Auth::user();
+
         
         $orderAll       = Task::where('order_id', $orderId->order_id)->get();
         $order_details  = Order::where('id', $orderId->order_id)->with(['agent','customer'])->first();
@@ -96,6 +97,18 @@ class TaskController extends BaseController
                 'message' => "You can not complete this order."
             ]);
         endif;
+
+        // dd($order_details->toArray());
+        if(isset($request->qr_code) && ($order_details && $order_details->call_back_url)){
+        $qrcode_web_hook = $this->checkQrcodeStatusDataToOrderPanel($order_details,$request->qr_code,'1'); 
+            if($qrcode_web_hook == '0')
+            {
+                return $this->error('Wrong Qr Code.',400);
+            }else{
+                $codeVendor = $qrcode_web_hook;
+            }
+        }
+
 
         $allCount       = Count($orderAll);
         $inProgress     = $orderAll->where('task_status', 2);
@@ -204,6 +217,9 @@ class TaskController extends BaseController
                 if($order_details && $order_details->call_back_url){
                     $call_web_hook = $this->updateStatusDataToOrder($order_details,5,$orderId->task_type_id);  # call web hook when order completed
                 }
+                if(isset($request->qr_code)){
+                   $codeVendor = $this->checkQrcodeStatusDataToOrderPanel($order_details,$request->qr_code,5);
+                }
             }
         } elseif ($request->task_status == 5) {
             if ($checkfailed == 1) {
@@ -220,6 +236,11 @@ class TaskController extends BaseController
                 $call_web_hook = $this->updateStatusDataToOrder($order_details,$stat,$orderId->task_type_id);  # call web hook when order update
             }
 
+        }
+
+        if(isset($request->qr_code))
+        {
+            $task = Task::where('id', $request->task_id)->update(['bag_qrcode' => $request->qr_code]);
         }
 
 
@@ -401,6 +422,7 @@ class TaskController extends BaseController
         //------------------------------------------------------------------------------------------------//
         $newDetails['otpEnabled'] = $otpEnabled;
         $newDetails['otpRequired'] = $otpRequired;
+        $newDetails['qrCodeVendor'] = $codeVendor??null;
 
         return response()->json([
             'data' => $newDetails,
@@ -577,6 +599,39 @@ class TaskController extends BaseController
                 'message' => $e->getMessage()
             ]);
 
+        }
+    }
+
+
+    /////////////////// **********************   check qrcode exist in order panel **********************************  ///////////////////////
+    public function checkQrcodeStatusDataToOrderPanel($order_details,$orderQrcode,$checkQr='0'){
+        try {
+        $order_details  = Order::where(['order_number'=> $order_details->order_number,'request_type'=>'D'])->with(['agent','customer'])->first();
+        $auth =  Client::with(['getAllocation', 'getPreference'])->first();
+        if ($auth->custom_domain && !empty($auth->custom_domain)) {
+            $client_url = "https://".$auth->custom_domain;
+        } else {
+            $client_url = "https://".$auth->sub_domain.\env('SUBDOMAIN');
+        }
+        $dispatch_traking_url = $client_url.'/order/tracking/'.$auth->code.'/'.$order_details->unique_id;
+
+        $client = new GClient(['content-type' => 'application/json']);
+        $url = $order_details->call_back_url;
+        $res = $client->get($url.'?dispatcher_status_option_id=5&qr_code='.$orderQrcode.'&order_number='.$order_details->order_number.'&check_qr='.$checkQr.'&dispatch_traking_url='.$dispatch_traking_url);
+        $response = json_decode($res->getBody(), true);
+            if($response['status']=='0'){
+                return 0;
+            }
+           // \Log::info($response['data']['vendor_detail']);
+                return $response['data']['vendor_detail']??1;
+
+        }
+        catch(\Exception $e)
+        {
+            return response()->json([
+                'status' => __('error'),
+                'message' => $e->getMessage()
+            ]);
         }
     }
 

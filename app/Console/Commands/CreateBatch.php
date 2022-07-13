@@ -122,6 +122,9 @@ class CreateBatch extends Command
             //Check Last Batch Created Time for next Create Batch  
             if($now_time<=$timeStempBatch){
                 return false;
+            }else{
+                $nextBatchDate = Carbon::parse($now)->format('Y-m-d H:i:s');
+                $nextBatchDate = Carbon::createFromFormat('Y-m-d H:i:s', $nextBatchDate)->setTimezone($timeZone);
             }
 
             $typeArrayRoute = ['P','D'];
@@ -137,7 +140,7 @@ class CreateBatch extends Command
                 $o->where('task_type_id',$taskType);
             }])->where(['status'=> 'unassigned','request_type'=>$typeR])->where('order_time','<=',$nextBatchDate)->orderBy('id','desc')->get();
            //->where('id','164')->orWhere('id','178')->limit(10)
-            
+            //dd($pickupOrders);
            //Empty Order Temp Table First
             orderTemp::truncate();
 
