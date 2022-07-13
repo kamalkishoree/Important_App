@@ -2510,6 +2510,7 @@ class TaskController extends BaseController
         $currency = $client->currency??'';
         return response()->json([
             'total' => $total,
+            'total_duration' => $getdata['duration'],
             'currency' => $currency,
             'paid_distance' => $paid_distance,
             'paid_duration' => $paid_duration,
