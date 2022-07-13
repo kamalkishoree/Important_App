@@ -148,10 +148,10 @@
   .pac-container, .pac-container .pac-item { z-index: 9999 !important; }
 </style>
 <div id="task-modal-header" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-dialog modal-dialog-centered modal-xxl">
         <div class="modal-content" style="">
-            <div class="modal-header align-items-center border-0 mb-md-0 mb-3">
-                <h4 class="page-title m-0">{{__("Route")}}</h4>
+            <div class="modal-header align-items-center border-0 mb-md-0">
+                <!-- <h4 class="page-title m-0">{{__("Route")}}</h4> -->
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
             </div>
             <form id="taskFormHeader" method="post" enctype="multipart/form-data" action="{{ route('tasks.store') }}">
@@ -270,6 +270,27 @@
         loadMap(autoWrap);
     });*/
 
+    @if(Auth::user())
+    $(document).on("change",".admin_panel_theme", function(){
+        if($(this).prop('checked')){
+            var theme = 'dark';
+        }else{
+            var theme = 'light';
+        }
+        $.ajax({
+            url: "{{route('preference', Auth::user()->code)}}",
+            type: "POST",
+            data: {
+                theme: theme,
+                "_token": "{{ csrf_token() }}",
+            },
+            success: function(response) {
+                location.reload();
+            },
+        });
+
+    });
+    @endif
     $(document).ready(function(){
       loadMapHeader(autoWrap);
 
@@ -327,18 +348,22 @@
                 //$('#task-modal-header #selectize-optgroups').selectize();
                 //$('#task-modal-header #selectize-optgroups').selectize();
 
-                $(".shows").hide();
+                $(".newcustomer").hide();
+                $(".searchshow").show();
+                $(".append").show();
+                $('.copyin').remove();
+
                 $(".addspan").hide();
                 $(".tagspan").hide();
                 $(".tagspan2").hide();
-                $(".searchspan").hide();
-                $(".appoint").hide();
+                
+                //$(".appoint").hide();
                 $(".datenow").hide();
 
                 $(".pickup-barcode-error").hide();
                 $(".drop-barcode-error").hide();
                 $(".appointment-barcode-error").hide();
-                $("#AddressInput a").click(function() {
+                /* $("#AddressInput a").click(function() {
                     $(".shows").show();
                     $(".append").hide();
                     $(".searchshow").hide();
@@ -365,7 +390,7 @@
                     $('.copyin').remove();
                     autoWrap = ['addHeader0', 'addHeader1'];
                     countZ = 1;
-                });
+                }); */
 
                 // $("#file").click(function() {
                 //     $('.showsimagegall').hide();
@@ -635,16 +660,37 @@
 
     subTaskHeader*/
 
-    $(document).on("click", "input[type='radio'].check", function() {
+    $(document).on("click", "input[type='radio'].checkcustomer", function() {
 
-          var dateredio = $("#dateredio input[type='radio']:checked").val();
-          if (dateredio == 'schedule') {
-            $(".datenow").show();
-          }else{
-              $(".datenow").hide();
-          }
-
-      });
+        var customerredio = $("#customerradio input[type='radio']:checked").val();
+        if(customerredio == 'existingcustomer') {
+            $(".newcustomer").hide();
+            $(".searchshow").show();
+            $(".append").show();
+            $('.copyin').remove();
+            autoWrap = ['addHeader0', 'addHeader1'];
+            countZ = 1;
+        }else{
+            $(".newcustomer").show();
+            $(".append").hide();
+            $(".searchshow").hide();
+            $('input[name=ids').val('');
+            $('input[name=search').val('');
+            $('.copyin').remove();
+            autoWrap = ['addHeader0', 'addHeader1'];
+            countZ = 1;
+        }
+    });
+    
+    
+    $(document).on("click", "input[type='radio'].checkschedule", function() {
+        var dateredio = $("#dateredio input[type='radio']:checked").val();
+        if (dateredio == 'schedule') {
+        $(".datenow").show();
+        }else{
+            $(".datenow").hide();
+        }
+    });
 
 
       $(document).on('click', "#taskschedule", function() {

@@ -1,36 +1,107 @@
 <div class="row">
     <div class="col-md-12">
+        <div class="card-box pt-0 pb-0">            
+            <div class="row d-flex">
+                <div class="col-md-4" style="border-right: 1px solid #ccc;">
+                    <h4 class="header-title mb-2">{{__("Add Route")}}</h4>
+                    @csrf
+
+                    <div class="row mb-3" id="dateredio">
+                        <div class="col-md-12">
+                            <div class="radio radio-primary form-check-inline mr-4">
+                                <input type="radio" id="tasknow" value="now" name="task_type" class="checkschedule" checked>
+                                <label for="tasknow"> {{__("Add Now")}} </label>
+                            </div>
+                            <div class="radio radio-info form-check-inline">
+                                <input type="radio" id="taskschedule" value="schedule" class="checkschedule" name="task_type">
+                                <label for="taskschedule"> {{__("Schedule For Later")}} </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3 datenow">
+                        <div class="col-md-12">
+                            <input type="text"  name="schedule_time"
+                            class="form-control opendatepicker upside datetime-datepicker" placeholder={{__("Date Time")}}>
+                            <button type="button" class="cstmbtn check_btn btn btn-info"><i class="fa fa-check" aria-hidden="true"></i></button>
+                        </div>
+                    </div>
+
+                    <h4 class="header-title mb-3">{{__("Customer Details")}}</h4>
+
+                    <div class="row mb-3" id="customerradio">
+                        <div class="col-md-12">
+                            <div class="radio radio-primary form-check-inline mr-4">
+                                <input type="radio" id="existing_customer" value="existingcustomer" name="customer_type" class="checkcustomer" checked>
+                                <label for="existing_customer"> {{__("Existing Customer")}} </label>
+                            </div>
+                            <div class="radio radio-info form-check-inline">
+                                <input type="radio" id="new_customer" value="newcustomer" class="checkcustomer" name="customer_type">
+                                <label for="new_customer"> {{__("New Customer")}} </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3 searchshow">
+                        <div class="col-md-12">
+                            <div class="form-group" id="nameInputHeader">
+                            {!! Form::text('search', null, ['class' => 'form-control', 'placeholder' => __('Search Customer'), 'id' => 'searchCust']) !!}
+                            <input type="hidden" id='cusid' name="ids" readonly>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3 newcustomer">
+                        <div class="col-md-12">
+                            <div class="form-group" id="nameInput">
+                                {!! Form::text('name', null, ['class' => 'form-control', 'placeholder' => __('Name'),'id'=>'name_new']) !!}
+                                <span class="invalid-feedback" role="alert">
+                                    <strong></strong>
+                                </span>
+
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group" id="emailInput">
+                                {!! Form::text('email', null, ['class' => 'form-control', 'placeholder' => __('Email'),'id'=>'email_new']) !!}
+                                <span class="invalid-feedback" role="alert">
+                                    <strong></strong>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group" id="phone_numberInput">
+                                {!! Form::text('phone_number', null, ['class' => 'form-control', 'placeholder' => __('Phone Number'),'id'=> 'phone_new'
+                                ]) !!}
+                                <span class="invalid-feedback" role="alert">
+                                    <strong></strong>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h4 class="header-title mb-3">{{__("Meta Data")}}</h4>
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                        <input type="file" data-plugins="dropify" data-height="300" />
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-md-8">
+                    <h4 class="header-title mb-3">{{__("Tasks")}}</h4>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
 
         <div class="card-box p-0 m-0">
             @csrf
-            <div class="row d-flex align-items-center" id="dateredio">
-
-                <div class="col-sm-2">
-                    <h4 class="header-title mb-3">{{__("Customer")}}</h4>
-                </div>
-                <div class="col-sm-5 text-right">
-                    <div class="login-form">
-                        <ul class="list-inline">
-                            <li class="d-inline-block mr-2">
-                                <input type="radio" class="custom-control-input check" id="tasknow"
-                                name="task_type" value="now" checked>
-                                <label class="custom-control-label" for="tasknow">{{__("Now")}}</label>
-                            </li>
-                            <li class="d-inline-block">
-                                <input type="radio" class="custom-control-input check" id="taskschedule"
-                                name="task_type" value="schedule" >
-                                <label class="custom-control-label" for="taskschedule">{{__("Schedule")}}</label>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="col-sm-5 datenow">
-                    <input type="text"  name="schedule_time"
-                        class="form-control opendatepicker upside datetime-datepicker" placeholder={{__("Date Time")}}>
-                        <button type="button" class="cstmbtn check_btn btn btn-info"><i class="fa fa-check" aria-hidden="true"></i></button>
-                </div>
-            </div>
-
+            
             <span class="span1 searchspan">{{__("Please search a customer or add a customer")}}</span>
             <div class="row searchshow">
                 <div class="col-md-8">

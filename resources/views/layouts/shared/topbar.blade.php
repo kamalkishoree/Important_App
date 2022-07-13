@@ -1,4 +1,7 @@
 <!-- Topbar Start -->
+@php
+$clientData = \App\Model\Client::select('id', 'logo','custom_domain','code')->with('getPreference')->where('id', '>', 0)->first();
+@endphp
 <div class="navbar-custom">
     <div class="container-fluid">
         <ul class="list-unstyled topnav-menu float-right mb-0 d-flex align-items-center">
@@ -95,7 +98,20 @@
                         }
                         ?>
 
+        <li class="alToggleSwitch">
+            <label class="altoggle">
+                <input type="checkbox" class="admin_panel_theme" {{$clientData->getPreference->theme == "dark" ? 'checked' : ''}}>
+                <div class="toggle__bg">
+                    <div class="toggle__sphere">
+                        <div class="toggle__sphere-bg">
+                        </div>
+                        <div class="toggle__sphere-overlay"></div>
+                    </div>
+                </div>
+            </label>
+        </li>
         @if(in_array('Add Route',$allowed) || Auth::user()->is_superadmin == 1)
+            
             <li class="d-lg-inline-block" >
                 <a class="nav-link" href="#">
                     <button type="button" class="btn btn-blue waves-effect waves-light addTaskModalHeader klklkl" data-toggle="modal" data-target="" data-backdrop="static" title="{{__('Add Route')}}" data-keyboard="false"><span><i class="mdi mdi-plus-circle mr-1"></i> {{__('Add Route')}}</span></button>
