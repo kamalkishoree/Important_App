@@ -18,8 +18,11 @@ class SubscriptionPlansDriver extends Model
     //     return $this->belongsToMany('App\Models\SubscriptionFeaturesListUser', 'subscription_plan_features_user', 'subscription_plan_id', 'feature_id');
     // }
 
-    // public function getImageAttribute($value)
-    // {
-    //     return \Storage::disk('s3')->url($this->image);
-    // }
+    public function getImageAttribute($value)
+    {
+        if(!empty($value)){
+            return \Storage::disk('s3')->url($value);
+        }
+        return null;
+    }
 }

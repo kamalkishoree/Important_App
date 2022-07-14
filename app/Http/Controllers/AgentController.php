@@ -801,4 +801,19 @@ class AgentController extends Controller
         return $this->success([], __('An otp has been sent to your phone. Please check.'), 200);
 	}
 
+    public function refreshWalletbalance(Request $request, $domain='', $id=''){
+        if(!empty($id)){
+            $user = Agent::find($id);
+            if($user){
+                if($user->wallet){
+                    $user->wallet->refreshBalance();
+                }
+            }
+        }
+
+        echo '<pre>';
+        echo 'Successfully Done';
+        echo '</pre>';
+    }
+
 }
