@@ -2511,6 +2511,7 @@ class TaskController extends BaseController
         return response()->json([
             'total' => $total,
             'total_duration' => $getdata['duration'],
+            'total_distance' => $getdata['distance'],
             'currency' => $currency,
             'paid_distance' => $paid_distance,
             'paid_duration' => $paid_duration,
