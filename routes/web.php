@@ -124,6 +124,7 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 
 		Route::any('payment/vnpay/notify', 'VnpayController@VnpayNotify')->name('payment.vnpay.VnpayNotify'); // webhook
 		Route::any('payment/vnpay/api',    'VnpayController@vnpay_respontAPP')->name('vnpay_webview');
+		Route::get('driver/wallet/refreshBalance/{id?}', 'AgentController@refreshWalletbalance')->name('driver.wallet.refreshBalance');
 		
 		Route::group(['middleware' => ['auth:client'], 'prefix' => '/'], function () {
 

@@ -197,7 +197,7 @@
                                             ?>
                                             <tr data-row-id="{{$plan->slug}}">
                                                 <td>
-                                                    <img src="{{ !empty($plan->image) ? \Storage::disk('s3')->url($plan->image) : '' }}" class="rounded-circle" alt="{{$plan->slug}}" width="40px" height="40px">
+                                                    <img src="{{ !empty($plan->image) ? $plan->image : '' }}" class="rounded-circle" alt="{{$plan->slug}}" width="40px" height="40px">
                                                 </td>
                                                 <td><a href="javascript:void(0)" class="editSubscriptionPlanBtn" data-id="{{$plan->slug}}">{{$plan->title}}</a></td>
                                                 <td>{{$plan->description}}</td>
