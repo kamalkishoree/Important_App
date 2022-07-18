@@ -724,12 +724,33 @@ class TaskController extends BaseController
         $paid_distance = $paid_distance < 0 ? 0 : $paid_distance;
         $total         = $pricingRule->base_price + ($paid_distance * $pricingRule->distance_fee) + ($paid_duration * $pricingRule->duration_price);
 
+        $agent_commission_fixed = $pricingRule->agent_commission_fixed;
+        $agent_commission_percentage = $pricingRule->agent_commission_percentage;
+        $freelancer_commission_fixed = $pricingRule->freelancer_commission_fixed;
+        $freelancer_commission_percentage = $pricingRule->freelancer_commission_percentage;
         if (isset($agent_id)) {
             $agent_details = Agent::where('id', $agent_id)->first();
             if ($agent_details->type == 'Employee') {
-                $percentage = $pricingRule->agent_commission_fixed + (($total / 100) * $pricingRule->agent_commission_percentage);
+                $percentage = $agent_commission_fixed + (($total / 100) * $agent_commission_percentage);
             } else {
-                $percentage = $pricingRule->freelancer_commission_fixed + (($total / 100) * $pricingRule->freelancer_commission_percentage);
+                $percentage = $freelancer_commission_fixed + (($total / 100) * $freelancer_commission_percentage);
+            }
+
+            $now = Carbon::now()->toDateString();
+            $driver_subscription = SubscriptionInvoicesDriver::where('driver_id', $agent_id)->where('end_date', '>', $now)->orderBy('end_date', 'desc')->first();
+            if($driver_subscription && ($driver_subscription->driver_type == $agent_details->type)){
+                if ($driver_subscription->type == 'Employee') {
+                    $agent_commission_fixed = $driver_subscription->driver_commission_fixed;
+                    $agent_commission_percentage = $driver_subscription->driver_commission_percentage;
+                    $freelancer_commission_fixed = null;
+                    $freelancer_commission_percentage = null;
+                } else {
+                    $agent_commission_fixed = null;
+                    $agent_commission_percentage = null;
+                    $freelancer_commission_fixed = $driver_subscription->driver_commission_fixed;
+                    $freelancer_commission_percentage = $driver_subscription->driver_commission_percentage;
+                }
+                $percentage = $driver_subscription->driver_commission_fixed + (($task_id->order_cost / 100) * $driver_subscription->driver_commission_percentage);
             }
         }
         //update order with order cost details
@@ -744,10 +765,10 @@ class TaskController extends BaseController
             'waiting_price'                   => $pricingRule->waiting_price,
             'distance_fee'                    => $pricingRule->distance_fee,
             'cancel_fee'                      => $pricingRule->cancel_fee,
-            'agent_commission_percentage'     => $pricingRule->agent_commission_percentage,
-            'agent_commission_fixed'          => $pricingRule->agent_commission_fixed,
-            'freelancer_commission_percentage'=> $pricingRule->freelancer_commission_percentage,
-            'freelancer_commission_fixed'     => $pricingRule->freelancer_commission_fixed,
+            'agent_commission_percentage'     => $agent_commission_percentage,
+            'agent_commission_fixed'          => $agent_commission_fixed,
+            'freelancer_commission_percentage'=> $freelancer_commission_percentage,
+            'freelancer_commission_fixed'     => $freelancer_commission_fixed,
             'order_cost'                      => $total,
             'driver_cost'                     => $percentage,
             'net_quantity'                    => $net_quantity
