@@ -750,7 +750,7 @@ class TaskController extends BaseController
                     $freelancer_commission_fixed = $driver_subscription->driver_commission_fixed;
                     $freelancer_commission_percentage = $driver_subscription->driver_commission_percentage;
                 }
-                $percentage = $driver_subscription->driver_commission_fixed + (($task_id->order_cost / 100) * $driver_subscription->driver_commission_percentage);
+                $percentage = $driver_subscription->driver_commission_fixed + (($total / 100) * $driver_subscription->driver_commission_percentage);
             }
         }
         //update order with order cost details
