@@ -133,6 +133,18 @@
                     searchable: false
                 },
                 {
+                    data: 'subscription_plan',
+                    name: 'subscription_plan',
+                    orderable: true,
+                    searchable: false
+                },
+                {
+                    data: 'subscription_expiry',
+                    name: 'subscription_expiry',
+                    orderable: true,
+                    searchable: false
+                },
+                {
                     data: 'created_at',
                     name: 'created_at',
                     orderable: true,

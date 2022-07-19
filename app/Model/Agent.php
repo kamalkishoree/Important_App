@@ -2,6 +2,7 @@
 
 namespace App\Model;
 
+use Carbon\Carbon;
 use Bavix\Wallet\Traits\HasWallet;
 use Bavix\Wallet\Interfaces\Wallet;
 use Bavix\Wallet\Traits\HasWalletFloat;
@@ -106,6 +107,10 @@ class Agent extends Authenticatable implements  Wallet, WalletFloat
 
     public function agentBankDetails(){
         return $this->hasMany('App\Model\AgentBankDetail' , 'id', 'agent_id');
+    }
+
+    public function subscriptionPlan(){
+        return $this->hasOne('App\Model\SubscriptionInvoicesDriver' , 'driver_id', 'id')->orderBy('end_date', 'desc');
     }
 
 }
