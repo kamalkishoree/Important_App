@@ -126,6 +126,17 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                     @if (\Session::has('success'))
                                         <div class="alert alert-success">
                                             <span>{!! \Session::get('success') !!}</span>
+                                            @php
+                                                \Session::forget('success')
+                                            @endphp
+                                        </div>
+                                    @endif
+                                    @if (\Session::has('error'))
+                                        <div class="alert alert-danger">
+                                            <span>{!! \Session::get('error') !!}</span>
+                                            @php
+                                                \Session::forget('error')
+                                            @endphp
                                         </div>
                                     @endif
                                 </div>
