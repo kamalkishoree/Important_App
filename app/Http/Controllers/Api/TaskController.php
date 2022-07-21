@@ -999,7 +999,8 @@ class TaskController extends BaseController
                 'friend_name'                     => $request->friend_name,
                 'friend_phone_number'             => $request->friend_phone_number,
                 'request_type'                    => $request->request_type??'P',
-                'is_restricted'                   => $request->is_restricted??0
+                'is_restricted'                   => $request->is_restricted??0,
+                'vendor_id'                       => $request->vendor_id
             ];
             $orders = Order::create($order);
 
