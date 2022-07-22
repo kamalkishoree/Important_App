@@ -734,7 +734,12 @@ class TaskController extends BaseController
                     } else {
                         $percentage = $freelancer_commission_fixed + (($task_id->order_cost / 100) * $freelancer_commission_percentage);
                     }
+                }
+                if ($task_id->driver_cost != 0.00) {
+                    $percentage = $task_id->driver_cost;
+                }
 
+                if($agent_id){
                     $now = Carbon::now()->toDateString();
                     $driver_subscription = SubscriptionInvoicesDriver::where('driver_id', $agent_id)->where('end_date', '>', $now)->orderBy('end_date', 'desc')->first();
                     if($driver_subscription && ($driver_subscription->driver_type == $agent_details->type)){
@@ -751,9 +756,6 @@ class TaskController extends BaseController
                         }
                         $percentage = $driver_subscription->driver_commission_fixed + (($task_id->order_cost / 100) * $driver_subscription->driver_commission_percentage);
                     }
-                }
-                if ($task_id->driver_cost != 0.00) {
-                    $percentage = $task_id->driver_cost;
                 }
 
                 Order::where('id', $batch->order_id)->update([
@@ -799,7 +801,12 @@ class TaskController extends BaseController
                     } else {
                         $percentage = $freelancer_commission_fixed + (($task_id->order_cost / 100) * $freelancer_commission_percentage);
                     }
+                }
+                if ($task_id->driver_cost != 0.00) {
+                    $percentage = $task_id->driver_cost;
+                }
 
+                if($agent_id){
                     $now = Carbon::now()->toDateString();
                     $driver_subscription = SubscriptionInvoicesDriver::where('driver_id', $agent_id)->where('end_date', '>', $now)->orderBy('end_date', 'desc')->first();
                     if($driver_subscription && ($driver_subscription->driver_type == $agent_details->type)){
@@ -816,9 +823,6 @@ class TaskController extends BaseController
                         }
                         $percentage = $driver_subscription->driver_commission_fixed + (($task_id->order_cost / 100) * $driver_subscription->driver_commission_percentage);
                     }
-                }
-                if ($task_id->driver_cost != 0.00) {
-                    $percentage = $task_id->driver_cost;
                 }
     
                 Order::where('id', $request->order_id)->update([
