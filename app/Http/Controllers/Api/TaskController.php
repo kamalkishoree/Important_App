@@ -743,7 +743,7 @@ class TaskController extends BaseController
                     $now = Carbon::now()->toDateString();
                     $driver_subscription = SubscriptionInvoicesDriver::where('driver_id', $agent_id)->where('end_date', '>', $now)->orderBy('end_date', 'desc')->first();
                     if($driver_subscription && ($driver_subscription->driver_type == $agent_details->type)){
-                        if ($driver_subscription->type == 'Employee') {
+                        if ($driver_subscription->driver_type == 'Employee') {
                             $agent_commission_fixed = $driver_subscription->driver_commission_fixed;
                             $agent_commission_percentage = $driver_subscription->driver_commission_percentage;
                             $freelancer_commission_fixed = null;
@@ -810,7 +810,7 @@ class TaskController extends BaseController
                     $now = Carbon::now()->toDateString();
                     $driver_subscription = SubscriptionInvoicesDriver::where('driver_id', $agent_id)->where('end_date', '>', $now)->orderBy('end_date', 'desc')->first();
                     if($driver_subscription && ($driver_subscription->driver_type == $agent_details->type)){
-                        if ($driver_subscription->type == 'Employee') {
+                        if ($driver_subscription->driver_type == 'Employee') {
                             $agent_commission_fixed = $driver_subscription->driver_commission_fixed;
                             $agent_commission_percentage = $driver_subscription->driver_commission_percentage;
                             $freelancer_commission_fixed = null;
