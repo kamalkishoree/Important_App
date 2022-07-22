@@ -77,6 +77,7 @@ Route::group(['prefix' => 'auth'], function () {
 
 Route::group(['middleware' => ['dbCheck', 'AppAuth','apiLocalization']], function() {
     Route::get('user', 'Api\AuthController@user');
+    Route::post('agent/delete', 'Api\AuthController@deleteAgent');              // api for agent soft delete
     
     Route::get('taskList', 'Api\ActivityController@tasks');                    // api for task list
     Route::get('updateStatus', 'Api\ActivityController@updateDriverStatus');   // api for chnage driver status active ,in-active
