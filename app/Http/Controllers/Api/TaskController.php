@@ -1000,7 +1000,9 @@ class TaskController extends BaseController
                 'friend_phone_number'             => $request->friend_phone_number,
                 'request_type'                    => $request->request_type??'P',
                 'is_restricted'                   => $request->is_restricted??0,
-                'vendor_id'                       => $request->vendor_id
+                'vendor_id'                       => $request->vendor_id,
+                'order_vendor_id'                 => $request->order_vendor_id,
+                'sync_order_id'                   => $request->order_id
             ];
             $orders = Order::create($order);
 
@@ -1115,7 +1117,7 @@ class TaskController extends BaseController
             endif;
 
             if(empty($pricingRule))
-            $pricingRule = PricingRule::orderBy('id', 'desc')->first();
+            $pricingRule = PricingRule::orderBy('is_default', 'desc')->orderBy('is_default', 'asc')->first();
 
             $getdata = $this->GoogleDistanceMatrix($latitude, $longitude);
 
@@ -2563,9 +2565,12 @@ class TaskController extends BaseController
 
         $client = ClientPreference::take(1)->with('currency')->first();
         $currency = $client->currency??'';
+
+        Log::info($total);
         return response()->json([
             'total' => $total,
             'currency' => $currency,
+            'total_duration' => $getdata['duration'],
             'paid_distance' => $paid_distance,
             'paid_duration' => $paid_duration,
             'message' => __('success')

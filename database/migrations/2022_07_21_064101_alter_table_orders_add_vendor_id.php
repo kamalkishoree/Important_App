@@ -15,6 +15,8 @@ class AlterTableOrdersAddVendorId extends Migration
     {
         Schema::table('orders', function (Blueprint $table) {
             $table->integer('vendor_id')->nullable();
+            $table->integer('order_vendor_id')->nullable();
+            $table->integer('sync_order_id')->nullable();
         });
     }
 
