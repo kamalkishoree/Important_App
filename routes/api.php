@@ -20,7 +20,7 @@ use Illuminate\Support\Facades\Route;
     return $request->user();
 });*/
 
-Route::group(['middleware' => ['apilogger']], function() {
+Route::group(['middleware' => []], function() {
 Route::post('otp_test', 'Api\TaskController@smstest')->middleware('ConnectDbFromOrder');
 Route::post('check-dispatcher-keys', 'Api\TaskController@checkDispatcherKeys')->middleware('ConnectDbFromOrder');
 Route::post('get-delivery-fee', 'Api\TaskController@getDeliveryFee')->middleware('ConnectDbFromOrder');
