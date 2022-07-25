@@ -884,7 +884,7 @@ class TaskController extends BaseController
                $client =  Client::with(['getAllocation', 'getPreference'])->first();
                $header['client'][0] = $client->database_name;
             }
-
+           
             if($request->task_type == 'later')
             $request->task_type = 'schedule';
 
@@ -1006,6 +1006,7 @@ class TaskController extends BaseController
                 'is_restricted'                   => $request->is_restricted??0,
                 'vendor_id'                       => $request->vendor_id,
                 'order_vendor_id'                 => $request->order_vendor_id,
+                'dbname'                          => $request->dbname,
                 'sync_order_id'                   => $request->order_id
             ];
             $orders = Order::create($order);
