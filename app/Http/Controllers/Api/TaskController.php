@@ -944,7 +944,6 @@ class TaskController extends BaseController
 
 
             //create new customer for task or get id of old customer
-
             if (isset($request->customer_email) || isset($request->customer_phone_number)) {
                 $dialCode = $request->customer_dial_code ?? null;
                 $customerNo = $dialCode . $request->customer_phone_number;
@@ -954,13 +953,15 @@ class TaskController extends BaseController
                 if (isset($customer->id)) {
                     $cus_id = $customer->id;
                     //check is number is different then update custom phone number
-                    if(($customer->phone_number != $request->customer_phone_number) && ($request->customer_phone_number != ""))
+                    if($request->customer_phone_number != "")
                     {
                         $customer_phone_number = [
                             'phone_number' => $request->customer_phone_number,
                             'dial_code' => $dialCode,
-                            'sync_customer_id' => $request->customer_id
+                            'sync_customer_id' => $request->customer_id,
+                            'user_icon' => !empty($request->user_icon['proxy_url'])?$request->user_icon['proxy_url'].'512/512'.$request->user_icon['image_path']:''
                         ];
+                        Log::info(json_encode($customer_phone_number));
                         Customer::where('id', $cus_id)->update($customer_phone_number);
                     }
                 } else {
@@ -969,14 +970,15 @@ class TaskController extends BaseController
                         'email' => $request->customer_email,
                         'phone_number' => $request->customer_phone_number,
                         'dial_code' => $dialCode,
-                        'sync_customer_id' => $request->customer_id
+                        'sync_customer_id' => $request->customer_id,
+                        'user_icon' => !empty($request->user_icon['proxy_url'])?$request->user_icon['proxy_url'].'512/512'.$request->user_icon['image_path']:''
                     ];
+                    Log::info(json_encode($cus));
                     $customer = Customer::create($cus);
                     $cus_id = $customer->id;
                 }
             } else {
-                // $cus_id = $request->ids;
-            // $customer = Customer::where('id',$request->ids)->first();
+                
             }
 
             //here order save code is started
