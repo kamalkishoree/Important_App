@@ -802,31 +802,28 @@ class TaskController extends BaseController
             $auth->timezone = $tz->timezone_name(Auth::user()->timezone);
 
             $beforetime = (int)$auth->getAllocation->start_before_task_time;
-            //    $to = new \DateTime("now", new \DateTimeZone(isset(Auth::user()->timezone)? Auth::user()->timezone : 'Asia/Kolkata') );
             $to = new \DateTime("now", new \DateTimeZone('UTC'));
             $sendTime = Carbon::now();
             $to = Carbon::parse($to)->format('Y-m-d H:i:s');
             $from = Carbon::parse($notification_time)->format('Y-m-d H:i:s');
             $datecheck = 0;
             $to_time = strtotime($to);
-            $from_time = strtotime($from);;
+            $from_time = strtotime($from);
+            
             if ($to_time >= $from_time) {
                 return redirect()->route('tasks.index')->with('success', 'Task Added Successfully!');
             }
 
             $diff_in_minutes = round(abs($to_time - $from_time) / 60);
-
             $schduledata = [];
             if ($diff_in_minutes > $beforetime) {
                 $notification_befor_time =   Carbon::parse($notification_time)->subMinutes($beforetime);
                 $finaldelay = (int)$diff_in_minutes - $beforetime;
-
                 $time = Carbon::parse($sendTime)
                 ->addMinutes($finaldelay)
                 ->format('Y-m-d H:i:s');
 
                 $schduledata['geo']               = $geo;
-                //$schduledata['notification_time'] = $time;
                 $schduledata['notification_time'] = $notification_time;
                 $schduledata['agent_id']          = $agent_id;
                 $schduledata['orders_id']         = $orders->id;
@@ -835,9 +832,7 @@ class TaskController extends BaseController
                 $schduledata['taskcount']         = $taskcount;
                 $schduledata['allocation']        = $allocation;
                 $schduledata['database']          = $auth;
-                //->delay(now()->addMinutes($finaldelay))
                 scheduleNotification::dispatch($schduledata)->delay(now()->addMinutes($finaldelay));
-                //$this->dispatch(new scheduleNotification($schduledata));
                 return response()->json(['status' => "Success", 'message' => 'Route created Successfully']);
             }
         }
@@ -1748,14 +1743,7 @@ class TaskController extends BaseController
                 $this->dispatch(new RosterCreate($data, $extraData));
             }
         } else {
-            /* $getgeo = DriverGeo::where('geo_id', $geo)->with(
-                        [
-                            'agent'=> function ($o) use ($cash_at_hand, $date) {
-                                $o->where("agent_cash_at_hand", '<', $cash_at_hand)->orderBy('id', 'DESC')->with(['logs','order'=> function ($f) use ($date) {
-                                    $f->whereDate('order_time', $date)->with('task');
-                                }]);
-                            }
-                        ])->get(); */
+            
             $geoagents_ids =  DriverGeo::where('geo_id', $geo)->pluck('driver_id');
             $geoagents = Agent::whereIn('id',  $geoagents_ids)->with(['logs','order'=> function ($f) use ($date) {
                 $f->whereDate('order_time', $date)->with('task');

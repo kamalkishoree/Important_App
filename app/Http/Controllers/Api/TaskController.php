@@ -944,7 +944,6 @@ class TaskController extends BaseController
 
 
             //create new customer for task or get id of old customer
-
             if (isset($request->customer_email) || isset($request->customer_phone_number)) {
                 $dialCode = $request->customer_dial_code ?? null;
                 $customerNo = $dialCode . $request->customer_phone_number;
@@ -954,12 +953,15 @@ class TaskController extends BaseController
                 if (isset($customer->id)) {
                     $cus_id = $customer->id;
                     //check is number is different then update custom phone number
-                    if(($customer->phone_number != $request->customer_phone_number) && ($request->customer_phone_number != ""))
+                    if($request->customer_phone_number != "")
                     {
                         $customer_phone_number = [
                             'phone_number' => $request->customer_phone_number,
-                            'dial_code' => $dialCode
+                            'dial_code' => $dialCode,
+                            'sync_customer_id' => $request->customer_id,
+                            'user_icon' => !empty($request->user_icon['proxy_url'])?$request->user_icon['proxy_url'].'512/512'.$request->user_icon['image_path']:''
                         ];
+                        Log::info(json_encode($customer_phone_number));
                         Customer::where('id', $cus_id)->update($customer_phone_number);
                     }
                 } else {
@@ -967,14 +969,16 @@ class TaskController extends BaseController
                         'name' => $request->customer_name,
                         'email' => $request->customer_email,
                         'phone_number' => $request->customer_phone_number,
-                        'dial_code' => $dialCode
+                        'dial_code' => $dialCode,
+                        'sync_customer_id' => $request->customer_id,
+                        'user_icon' => !empty($request->user_icon['proxy_url'])?$request->user_icon['proxy_url'].'512/512'.$request->user_icon['image_path']:''
                     ];
+                    Log::info(json_encode($cus));
                     $customer = Customer::create($cus);
                     $cus_id = $customer->id;
                 }
             } else {
-                // $cus_id = $request->ids;
-            // $customer = Customer::where('id',$request->ids)->first();
+                
             }
 
             //here order save code is started
@@ -1237,14 +1241,13 @@ class TaskController extends BaseController
                 $auth->timezone = $tz->timezone_name($auth->timezone);
 
                 $beforetime = (int)$auth->getAllocation->start_before_task_time;
-                //    $to = new \DateTime("now", new \DateTimeZone(isset(Auth::user()->timezone)? Auth::user()->timezone : 'Asia/Kolkata') );
-                      $to = new \DateTime("now", new \DateTimeZone('UTC'));
-                      $sendTime = Carbon::now();
-                      $to = Carbon::parse($to)->format('Y-m-d H:i:s');
-                      $from = Carbon::parse($notification_time)->format('Y-m-d H:i:s');
-                      $datecheck = 0;
-                      $to_time = strtotime($to);
-                      $from_time = strtotime($from);
+                $to = new \DateTime("now", new \DateTimeZone('UTC'));
+                $sendTime = Carbon::now();
+                $to = Carbon::parse($to)->format('Y-m-d H:i:s');
+                $from = Carbon::parse($notification_time)->format('Y-m-d H:i:s');
+                $datecheck = 0;
+                $to_time = strtotime($to);
+                $from_time = strtotime($from);
                 if ($to_time >= $from_time) {
                     DB::commit();
                     return response()->json([
