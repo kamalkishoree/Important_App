@@ -666,6 +666,9 @@ class TaskController extends BaseController
         $client_details = Client::where('database_name', $header['client'][0])->first();
         $percentage = 0;
 
+        $agent_details = Auth::user();
+        $agent_id = $agent_details->id;
+
         $proof_face = null;
         if (isset($request->proof_face)) {
             if ($request->hasFile('proof_face')) {
@@ -714,20 +717,20 @@ class TaskController extends BaseController
             $this->dispatchNow(new RosterDelete($request->order_id,'B'));
           
 
-            BatchAllocation::where(['batch_no'=>$request->order_id])->update(['agent_id' => $request->driver_id]);
-            BatchAllocationDetail::where(['batch_no'=>$request->order_id])->update(['agent_id' => $request->driver_id]);
+            BatchAllocation::where(['batch_no'=>$request->order_id])->update(['agent_id' => $agent_id]);
+            BatchAllocationDetail::where(['batch_no'=>$request->order_id])->update(['agent_id' => $agent_id]);
             $batchs = BatchAllocationDetail::where(['batch_no'=>$request->order_id])->get();
             foreach($batchs as $batch){
 
                 $task_id = Order::where('id', $batch->order_id)->first();
                 $pricingRule = PricingRule::where('id', 1)->first();
-                $agent_id =  $request->driver_id  ? $request->driver_id : null;
+                // $agent_id =  $request->driver_id  ? $request->driver_id : null;
                 $agent_commission_fixed = $pricingRule->agent_commission_fixed;
                 $agent_commission_percentage = $pricingRule->agent_commission_percentage;
                 $freelancer_commission_fixed = $pricingRule->freelancer_commission_fixed;
                 $freelancer_commission_percentage = $pricingRule->freelancer_commission_percentage;
     
-                if (isset($agent_id) && $task_id->driver_cost <= 0.00) {
+                if ($task_id->driver_cost <= 0.00) {
                     $agent_details = Agent::where('id', $agent_id)->first();
                     if ($agent_details->type == 'Employee') {
                         $percentage = $agent_commission_fixed + (($task_id->order_cost / 100) * $agent_commission_percentage);
@@ -735,7 +738,7 @@ class TaskController extends BaseController
                         $percentage = $freelancer_commission_fixed + (($task_id->order_cost / 100) * $freelancer_commission_percentage);
                     }
                 }
-                if ($task_id->driver_cost != 0.00) {
+                else{
                     $percentage = $task_id->driver_cost;
                 }
 
@@ -759,7 +762,7 @@ class TaskController extends BaseController
                 }
 
                 Order::where('id', $batch->order_id)->update([
-                    'driver_id' => $request->driver_id,
+                    'driver_id' => $agent_id,
                     'status' => 'assigned',
                     'driver_cost'=> $percentage,
                     'agent_commission_fixed' => $agent_commission_fixed,
@@ -775,7 +778,6 @@ class TaskController extends BaseController
 
 
             }else{
-
                 $check = Order::where('id', $request->order_id)->with(['agent','customer'])->first();
                 if (!isset($check)) {
                     return response()->json([
@@ -792,17 +794,17 @@ class TaskController extends BaseController
                 $freelancer_commission_fixed = $pricingRule->freelancer_commission_fixed;
                 $freelancer_commission_percentage = $pricingRule->freelancer_commission_percentage;
 
-                $agent_id =  isset($request->allocation_type) && $request->allocation_type == 'm' ? $request->agent : null;
+                // $agent_id =  isset($request->allocation_type) && $request->allocation_type == 'm' ? $request->driver_id : null;
     
-                if (isset($agent_id) && $task_id->driver_cost <= 0.00) {
-                    $agent_details = Agent::where('id', $agent_id)->first();
+                if ($task_id->driver_cost <= 0.00) {
+                    // $agent_details = Agent::where('id', $agent_id)->first();
                     if ($agent_details->type == 'Employee') {
                         $percentage = $agent_commission_fixed + (($task_id->order_cost / 100) * $agent_commission_percentage);
                     } else {
                         $percentage = $freelancer_commission_fixed + (($task_id->order_cost / 100) * $freelancer_commission_percentage);
                     }
                 }
-                if ($task_id->driver_cost != 0.00) {
+                else{
                     $percentage = $task_id->driver_cost;
                 }
 
@@ -826,7 +828,7 @@ class TaskController extends BaseController
                 }
     
                 Order::where('id', $request->order_id)->update([
-                    'driver_id' => $request->driver_id,
+                    'driver_id' => $agent_id,
                     'status' => 'assigned',
                     'driver_cost'=> $percentage,
                     'agent_commission_fixed' => $agent_commission_fixed,
