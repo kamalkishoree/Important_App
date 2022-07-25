@@ -956,7 +956,8 @@ class TaskController extends BaseController
                     {
                         $customer_phone_number = [
                             'phone_number' => $request->customer_phone_number,
-                            'dial_code' => $dialCode
+                            'dial_code' => $dialCode,
+                            'sync_customer_id' => $request->customer_id
                         ];
                         Customer::where('id', $cus_id)->update($customer_phone_number);
                     }
@@ -965,7 +966,8 @@ class TaskController extends BaseController
                         'name' => $request->customer_name,
                         'email' => $request->customer_email,
                         'phone_number' => $request->customer_phone_number,
-                        'dial_code' => $dialCode
+                        'dial_code' => $dialCode,
+                        'sync_customer_id' => $request->customer_id
                     ];
                     $customer = Customer::create($cus);
                     $cus_id = $customer->id;
@@ -1234,14 +1236,13 @@ class TaskController extends BaseController
                 $auth->timezone = $tz->timezone_name($auth->timezone);
 
                 $beforetime = (int)$auth->getAllocation->start_before_task_time;
-                //    $to = new \DateTime("now", new \DateTimeZone(isset(Auth::user()->timezone)? Auth::user()->timezone : 'Asia/Kolkata') );
-                      $to = new \DateTime("now", new \DateTimeZone('UTC'));
-                      $sendTime = Carbon::now();
-                      $to = Carbon::parse($to)->format('Y-m-d H:i:s');
-                      $from = Carbon::parse($notification_time)->format('Y-m-d H:i:s');
-                      $datecheck = 0;
-                      $to_time = strtotime($to);
-                      $from_time = strtotime($from);
+                $to = new \DateTime("now", new \DateTimeZone('UTC'));
+                $sendTime = Carbon::now();
+                $to = Carbon::parse($to)->format('Y-m-d H:i:s');
+                $from = Carbon::parse($notification_time)->format('Y-m-d H:i:s');
+                $datecheck = 0;
+                $to_time = strtotime($to);
+                $from_time = strtotime($from);
                 if ($to_time >= $from_time) {
                     DB::commit();
                     return response()->json([
