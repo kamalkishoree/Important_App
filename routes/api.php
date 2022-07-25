@@ -94,6 +94,9 @@ Route::group(['middleware' => ['dbCheck', 'AppAuth','apiLocalization']], functio
     Route::get('agent/payout/details', 'Api\AgentPayoutController@agentPayoutDetails'); // api for agent payout details
     Route::post('agent/payout/request/create/{id}', 'Api\AgentPayoutController@agentPayoutRequestCreate'); // api for creating agent payout request
     Route::post('chat/startChat',      'Api\ChatController@startChat');
+    Route::post('chat/userAgentChatRoom',      'Api\ChatController@userAgentChatRoom');
+    //Route::post('chat/userAgentChatRoom',      'Api\ChatController@startChat');
+    
     // Order routes
     Route::post('order/cancel/request/create/{id}', 'Api\OrderController@createOrderCancelRequest'); // api for creating order cancel request by driver
     Route::get('order/cancel/reasons', 'Api\OrderController@getOrderCancelReasons'); // api for creating order cancel request by driver

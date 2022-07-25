@@ -59,12 +59,13 @@ class ChatController extends BaseController
 
     }
 
-    public function getChatRoomForUser($order_user_id,$type,$sub_domain){
+    public function getChatRoomForAgent($order_user_id,$type,$sub_domain,$agent_id){
         $clientData = $this->client_data;
         $server_name = $sub_domain;
-        $response =   Http::post($clientData->socket_url.'/api/room/fetchRoomByUserId', [
+        $response =   Http::post($clientData->socket_url.'/api/room/fetchRoomByUserAgent', [
             'order_user_id' => $order_user_id, 
             'sub_domain' =>$server_name,
+            'aget_id' =>$agent_id,
             'type'=>$type,
             'db_name'=>$clientData->database_name,
             'client_id'=>$clientData->id
@@ -153,6 +154,7 @@ class ChatController extends BaseController
                 'vendor_user_id' =>$data['user_id'],
                 'order_user_id' =>$orderby_user_id,
                 'type'=>$data['type'],
+                'agent_id'=>$data['agent_id'],
                 'db_name'=>$data['db_name'],
                 'client_id'=>$data['client_id']
             ]);
@@ -186,7 +188,8 @@ class ChatController extends BaseController
         $user = Auth::user();
         $data = $request->all();
         $sub_domain = $data['sub_domain'];
-        $roomData = $this->getChatRoomForUser($user->id,'agent_to_user',$sub_domain);
+        $agent_id = $data['agent_id'];
+        $roomData = $this->getChatRoomForAgent($user->id,'agent_to_user',$sub_domain,$agent_id);
         if($roomData['status']){
             $chatroom = $roomData['roomData'];
         } else {
