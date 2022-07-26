@@ -556,4 +556,29 @@ class AuthController extends BaseController
             ]);
         }
     }
+
+
+    public function deleteAgent(Request $request){
+        try {
+            DB::beginTransaction(); //Initiate transaction
+                $agent = Auth::user();
+                if(!$agent){
+                    return response()->json(['massage' => __('User not found!')], 200);
+                }
+                Agent::where('id', $agent->id)->update([
+                    'phone_number' => $agent->phone_number.'_'.$agent->id."_D",  
+                    'device_token' =>'',  
+                    'device_type' =>'',  
+                    'access_token' => ''
+                    ]);
+                $agent->delete();
+                DB::commit(); //Commit transaction after all the operations
+                return response()->json(['massage' => __('Agent Deleted Successfully')], 200);
+                //code...
+            } catch (Exception $e) {
+                DB::rollBack();
+                return response()->json(['massage' => __('Something went wrong!')], 400);
+               
+            }
+    }
 }
