@@ -73,7 +73,7 @@ function getClientPreferenceDetail()
 function getClientDetail()
 {
     $clientData = ClientData::first();
-    $clientData->logo_image_url = $clientData ? $clientData->logo['image_fit'].'150/92'.$clientData->logo['image_path'] : " ";
+    // $clientData->logo_image_url = $clientData ? $clientData->logo['image_fit'].'150/92'.$clientData->logo['image_path'] : " ";
     return $clientData;
 }
 function getRazorPayApiKey()
