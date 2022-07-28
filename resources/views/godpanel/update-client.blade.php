@@ -209,6 +209,22 @@
                                         @endif
                                     </div>
                                 </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="languages">Socket Url </label>
+                                        <select class="form-control" id="socket_url" name="socket_url">
+                                            <option class="" value="" data-id="">Disable chat</option>
+                                            @if(isset($ChatSocketUrl))
+                                                @foreach ($ChatSocketUrl as $socketUrl)
+                                                    <option @if(isset($client)) @if($client->socket_url == $socketUrl->domain_url) selected="selected" @endif @endif class="" value="{{$socketUrl->domain_url}}" data-id="{{$socketUrl->id}}">{{ $socketUrl->domain_url }}</option>
+                                                @endforeach
+                                            @endif
+                                            <!-- <option value="DEV">DEV</option>
+                                            <option value="STAGING">STAG</option>
+                                            <option value="PROD">PROD</option> -->
+                                        </select>
+                                    </div>    
+                                </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-12">
@@ -256,8 +272,7 @@
         </div>
     </div>
 
-
-
+    
 </div>
 @endsection
 
@@ -266,6 +281,25 @@
 <script src="{{asset('assets/libs/dropify/dropify.min.js')}}"></script>
 <!-- Page js-->
 <script src="{{asset('assets/js/pages/form-fileuploads.init.js')}}"></script>
+<script src="{{asset('assets/libs/mohithg-switchery/mohithg-switchery.min.js')}}"></script>
 
+<script type="text/javascript">
+$(document).ready(function(){
+    var update_status_chat = "{{route('client.socketUpdateAction', ':id')}}";
 
+    var loc = "{{route('client.index')}}";
+    $('#side-menu').find('a').each(function() {
+        if($(this).attr('href') == loc)
+        {  
+            $(this).toggleClass('active');
+            $(this).parent().toggleClass('menuitem-active');
+        }
+    });
+    var elems = Array.prototype.slice.call(document.querySelectorAll('.chk_box'));
+        elems.forEach(function(html) {
+        var switchery =new Switchery(html);
+    });
+});
+</script>
 @endsection
+

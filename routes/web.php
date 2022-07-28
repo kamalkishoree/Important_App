@@ -86,6 +86,18 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 			Route::resource('currency', 'Godpanel\CurrencyController');
 			
 			Route::post('exportDb/{dbname}', 'Godpanel\ClientController@exportDb')->name('client.exportdb');
+
+
+			Route::post('socketUpdate/{id}', 'Godpanel\ClientController@socketUrl')->name('client.socketUpdate');
+			Route::post('socketUpdateAction/{id}', 'Godpanel\ClientController@socketUpdateAction')->name('client.socketUpdateAction');
+
+			
+			Route::get('chatsocket', 'Godpanel\chatSocketController@chatsocket')->name('chatsocket');
+			Route::post('chatsocket/save/{id?}', 'Godpanel\chatSocketController@chatsocketSave')->name('chatsocket.save');
+			Route::get('chatsocket/edit/{id}', 'Godpanel\chatSocketController@editchatsocket')->name('chatsocket.edit');
+			Route::post('chatsocket/upDateSocket/{id}', 'Godpanel\chatSocketController@upDateSocket')->name('chatsocket.upDateSocket');
+			Route::post('chatsocket/upDateSocketStatus/{id}', 'Godpanel\chatSocketController@upDateSocketStatus')->name('chatsocket.upDateSocketStatus');
+			Route::get('chatsocket/deleteSocketUrl/{id}', 'Godpanel\chatSocketController@deleteSocketUrl')->name('chatsocket.delete');
 		});
 	});
 	
