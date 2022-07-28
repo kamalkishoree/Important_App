@@ -111,7 +111,8 @@ class ClientController extends Controller
             'status'=> 1,
             'timezone' => $request->timezone ? $request->timezone : 'America/New_York',
             'custom_domain'=> $request->custom_domain??'',
-            'sub_domain'   => $request->sub_domain
+            'sub_domain'   => $request->sub_domain,
+            'socket_url' =>$request->socket_url
         ];
             $data['code'] = $this->randomString();
 
@@ -252,7 +253,8 @@ class ClientController extends Controller
             $data = [
             'database_name' => $getClient['database_name'],
             'custom_domain' => $request->custom_domain,
-            'sub_domain'   => $request->sub_domain
+            'sub_domain'   => $request->sub_domain,
+            'socket_url' =>$request->socket_url
         ];
         
             $client = Client::where('id', $id)->update($data);

@@ -155,9 +155,8 @@
                             </div>                            
                             
                             @endif
-                            
-                            @if(empty($client))
                             <div class="row">
+                                @if(empty($client))
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="company_address" class="control-label">COMPANY ADDRESS</label>
@@ -171,27 +170,8 @@
                                         </span>
                                         @endif
                                     </div>
-                                </div>
-                                
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="languages">Socket Url </label>
-                                        <select class="form-control" id="socket_url" name="socket_url">
-                                            <option class="" value="" data-id="">Disable chat</option>
-                                            @if(isset($ChatSocketUrl))
-                                                @foreach ($ChatSocketUrl as $socketUrl)
-                                                    <option @if(isset($client)) @if($client->socket_url == $socketUrl->domain_url) selected="selected" @endif @endif class="" value="{{$socketUrl->domain_url}}" data-id="{{$socketUrl->id}}">{{ $socketUrl->domain_url }}</option>
-                                                @endforeach
-                                            @endif
-                                            <!-- <option value="DEV">DEV</option>
-                                            <option value="STAGING">STAG</option>
-                                            <option value="PROD">PROD</option> -->
-                                        </select>
-                                    </div>    
-                                </div>
-                            </div>
-                            @endif
-                            <div class="row">
+                                </div> 
+                                @endif
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="custom_domain" class="control-label">CUSTOM DOMAIN (*Make sure you already pointed to our ip ({{\env('IP')}}) from your domain.)</label>
@@ -228,6 +208,22 @@
                                         </span>
                                         @endif
                                     </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="languages">Socket Url </label>
+                                        <select class="form-control" id="socket_url" name="socket_url">
+                                            <option class="" value="" data-id="">Disable chat</option>
+                                            @if(isset($ChatSocketUrl))
+                                                @foreach ($ChatSocketUrl as $socketUrl)
+                                                    <option @if(isset($client)) @if($client->socket_url == $socketUrl->domain_url) selected="selected" @endif @endif class="" value="{{$socketUrl->domain_url}}" data-id="{{$socketUrl->id}}">{{ $socketUrl->domain_url }}</option>
+                                                @endforeach
+                                            @endif
+                                            <!-- <option value="DEV">DEV</option>
+                                            <option value="STAGING">STAG</option>
+                                            <option value="PROD">PROD</option> -->
+                                        </select>
+                                    </div>    
                                 </div>
                             </div>
                             <div class="row">
@@ -276,71 +272,7 @@
         </div>
     </div>
 
-    @if(isset($client))
-    <div class="row">
-        <div class="col-12">    
-                   <div class="card">
-                        <div class="card-body"><h3>{{__('Socket Url')}}</h3>
-                        <form  method="post" action="{{route('client.socketUpdate', (isset($client))?$client->id:'')}}"
-                            enctype="multipart/form-data" autocomplete="off">
-                            @csrf
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="languages">Socket Url </label>
-                                    <select class="form-control" id="socket_url" name="socket_url">
-                                        <option class="" value="" data-id="">Disable chat</option>
-                                        @if(isset($ChatSocketUrl))
-                                            @foreach ($ChatSocketUrl as $socketUrl)
-                                                <option @if(isset($client)) @if($client->socket_url == $socketUrl->domain_url) selected="selected" @endif @endif class="" value="{{$socketUrl->domain_url}}" data-id="{{$socketUrl->id}}">{{ $socketUrl->domain_url }}</option>
-                                            @endforeach
-                                        @endif
-                                        <!-- <option value="DEV">DEV</option>
-                                        <option value="STAGING">STAG</option>
-                                        <option value="PROD">PROD</option> -->
-                                    </select>
-                                </div>    
-                            </div>
-                            <div class=" row">
-                                <div class="col-md-2">
-                                    <div class="form-group">
-                                        {!! Form::label('Admin chat', __('Admin chat '),['class' => 'control-label']) !!}
-                                        <div class="mt-md-1">
-                                            <input type="checkbox" @if(isset($client)) {{($client->admin_chat == 1) ? 'checked' : ''}} @endif data-action="admin_chat"  data-plugin="switchery" name="admin_chat" class="form-control chk_box" data-color="#43bee1" >
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-2">
-                                    <div class="form-group">
-                                        {!! Form::label('Driver chat', __('Driver chat '),['class' => 'control-label']) !!}
-                                        <div class="mt-md-1">
-                                            <input type="checkbox" @if(isset($client)) {{($client->driver_chat == 1) ? 'checked' : ''}} @endif  data-action="driver_chat" data-plugin="switchery" name="driver_chat" class="form-control chk_box" data-color="#43bee1" >
-                                        </div>
-                                    </div>
-                                   
-                                </div>
-                            </div>
-                            <div class=" row">
-                                <div class="col-md-2">
-                                    <div class="form-group">
-                                        {!! Form::label('Customer chat', __('Customer chat '),['class' => 'control-label']) !!}
-                                        <div class="mt-md-1">
-                                            <input type="checkbox" @if(isset($client)) {{($client->customer_chat == 1) ? 'checked' : ''}} @endif  data-action="customer_chat" data-plugin="switchery" name="customer_chat" class="form-control chk_box" data-color="#43bee1" >
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="row">
-                                    <button type="submit" class="btn btn-info waves-effect waves-light">{{__('Submit')}}</button>
-                                </div>
-                            </div>
-                        </form>
-                        </div>
-                    </div>
-            
-        </div>
-    </div>
-    @endif    
+    
 </div>
 @endsection
 
