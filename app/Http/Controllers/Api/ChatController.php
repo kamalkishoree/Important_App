@@ -29,7 +29,7 @@ class ChatController extends BaseController
         
         $this->middleware(function ($request, $next) {
             $this->id = Auth::user()->id;
-            $data = Client::find(1);
+            $data = Client::first();
             $this->client_data =  $data;
             if ($data->socket_url == null) {
                 abort(404);
@@ -59,15 +59,16 @@ class ChatController extends BaseController
 
     }
 
-    public function getChatRoomForAgent($order_user_id,$type,$sub_domain,$agent_id){
+    public function getChatRoomForAgent($agent_id,$type,$sub_domain){
         $clientData = $this->client_data;
         $server_name = $sub_domain;
         $response =   Http::post($clientData->socket_url.'/api/room/fetchRoomByUserAgent', [
-            'order_user_id' => $order_user_id, 
+            'order_user_id' => $agent_id, 
             'sub_domain' =>$server_name,
-            'aget_id' =>$agent_id,
+            'agent_id' =>$agent_id,
             'type'=>$type,
-            'db_name'=>$clientData->database_name,
+            'agent_db'=>$clientData->database_name,
+            'db_name'=>'',
             'client_id'=>$clientData->id
         ]);
         
@@ -149,6 +150,7 @@ class ChatController extends BaseController
                 'room_name' => $room_name,
                 'order_vendor_id'=>$order_vendor_id,
                 'order_id'=>$order_id,
+                'agent_db'=>$this->client_data->database_name,
                 'vendor_id'=>$vendor_id,
                 'sub_domain' =>$data['sub_domain'],
                 'vendor_user_id' =>$data['user_id'],
@@ -188,8 +190,8 @@ class ChatController extends BaseController
         $user = Auth::user();
         $data = $request->all();
         $sub_domain = $data['sub_domain'];
-        $agent_id = $data['agent_id'];
-        $roomData = $this->getChatRoomForAgent($user->id,'agent_to_user',$sub_domain,$agent_id);
+        $agent_id = @$data['agent_id'];
+        $roomData = $this->getChatRoomForAgent($user->id,'agent_to_user',$sub_domain);
         if($roomData['status']){
             $chatroom = $roomData['roomData'];
         } else {
