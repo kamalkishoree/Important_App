@@ -219,9 +219,7 @@
                                                     <option @if(isset($client)) @if($client->socket_url == $socketUrl->domain_url) selected="selected" @endif @endif class="" value="{{$socketUrl->domain_url}}" data-id="{{$socketUrl->id}}">{{ $socketUrl->domain_url }}</option>
                                                 @endforeach
                                             @endif
-                                            <!-- <option value="DEV">DEV</option>
-                                            <option value="STAGING">STAG</option>
-                                            <option value="PROD">PROD</option> -->
+                                            
                                         </select>
                                     </div>    
                                 </div>

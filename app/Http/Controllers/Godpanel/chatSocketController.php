@@ -68,7 +68,7 @@ class chatSocketController extends Controller
             $data = $request->all();
             $data2['title'] = $data['title'];
             $data2['domain_url'] = $data['domain_url'];
-            $data2['status'] = ($data == true) ? 1 : 2;
+            $data2['status'] = !empty($data['status'])?(($data['status'] == "on")?1:2):2;
             ChatSocket::where('id', $id)->update($data2);
             DB::commit(); //Commit transaction after all the operations
            return redirect()->route('chatsocket')->with('success', 'Socket url has been updated successfully.');
@@ -84,7 +84,7 @@ class chatSocketController extends Controller
         try {
             DB::beginTransaction(); //Initiate transaction
             $data = $request->all();
-            $data2['status'] = ($data == true) ? 1 : 2;
+            $data2['status'] = $data['status'];
             ChatSocket::where('id', $id)->update($data2);
             DB::commit(); //Commit transaction after all the operations
             return response()->json(array('success' => true, 'message'=>'Socket url status has been updated.'));
