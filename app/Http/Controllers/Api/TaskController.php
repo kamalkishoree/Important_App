@@ -668,6 +668,13 @@ class TaskController extends BaseController
 
         $agent_details = Auth::user();
         $agent_id = $agent_details->id;
+        
+        $unassignedorder_data = Order::where('id', $request->order_id)->where('status', 'unassigned')->first();
+        if(empty($unassignedorder_data)){
+            return response()->json([
+                'message' => __('This order has already been accepted.'),
+            ], 404);
+        }
 
         $proof_face = null;
         if (isset($request->proof_face)) {

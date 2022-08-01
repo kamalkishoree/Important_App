@@ -208,7 +208,7 @@ class scheduleNotification implements ShouldQueue
             ->leftjoin(DB::raw('(SELECT COUNT(id) num_order, driver_id FROM `orders` WHERE DATE(order_time) = "'.$date.'" GROUP BY driver_id  ) ord'), function($join){
                 $join->on('agents.id', '=', 'ord.driver_id');
 
-            })
+            })->where('agents.deleted_at', NULL)
             ->groupBy('agent_logs.agent_id')
             ->get();
 
@@ -403,7 +403,7 @@ class scheduleNotification implements ShouldQueue
             ->leftjoin(DB::raw('(SELECT COUNT(id) num_order, driver_id FROM `orders` WHERE DATE(order_time) = "'.$date.'" GROUP BY driver_id  ) ord'), function($join){
                 $join->on('agents.id', '=', 'ord.driver_id');
 
-            })
+            })->where('agents.deleted_at', NULL)
             ->groupBy('agent_logs.agent_id')
             ->get();
             Log::info($getgeo);
@@ -520,7 +520,7 @@ class scheduleNotification implements ShouldQueue
             ->leftjoin(DB::raw('(SELECT COUNT(id) num_order, driver_id FROM `orders` WHERE DATE(order_time) = "'.$date.'" GROUP BY driver_id  ) ord'), function($join){
                 $join->on('agents.id', '=', 'ord.driver_id');
 
-            })
+            })->where('agents.deleted_at', NULL)
             ->groupBy('agent_logs.agent_id')
             ->get();
 
@@ -683,7 +683,7 @@ class scheduleNotification implements ShouldQueue
             ->leftjoin(DB::raw('(SELECT COUNT(id) num_order, driver_id FROM `orders` WHERE DATE(order_time) = "'.$date.'" GROUP BY driver_id  ) ord'), function($join){
                 $join->on('agents.id', '=', 'ord.driver_id');
 
-            })
+            })->where('agents.deleted_at', NULL)
             ->groupBy('agent_logs.agent_id')
             ->get();
 
