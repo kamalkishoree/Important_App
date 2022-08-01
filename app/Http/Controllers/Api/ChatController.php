@@ -141,7 +141,7 @@ class ChatController extends BaseController
         
             $socket_url = $this->client_data->socket_url;
             $room_id = $order_number;
-            $room_name = 'OrderNo-'.$order_number.'-orderId-'.$order_id.'-oderVendor-'.$vendor_id;
+            $room_name = 'OrderNo-'.$order_number.'-orderId-'.$order_id.'-oderVendor-'.$vendor_id.'-agentId-'.$data['agent_id'];
             $order_vendor_id = $vendor_order_id;
             $orderby_user_id =  $data['order_user_id'];
             //$response = $client->request('Post', 'https://chat.royoorders.com/api/room', ['body' => [
