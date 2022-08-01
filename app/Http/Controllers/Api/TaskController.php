@@ -831,7 +831,7 @@ class TaskController extends BaseController
                 $dialCode = $request->customer_dial_code ?? null;
                 $customerNo = $dialCode . $request->customer_phone_number;
                 $customer = Customer::where('email', $request->customer_email)->orWhere(function ($q) use($customerNo){
-                    $q->whereRaw("CONCAT(`dial_code`, '', `phone_number`)", $customerNo)->orWhere('phone_number', '+'.$customerNo);
+                    $q->whereRaw("CONCAT(dial_code, '', phone_number) = '".$customerNo."'")->orWhere('phone_number', '+'.$customerNo);
                 })->first();
                 if (isset($customer->id)) {
                     $cus_id = $customer->id;
