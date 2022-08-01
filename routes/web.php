@@ -129,6 +129,12 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 			Route::get('client/verify/oauth/token/stripe', 'StripeGatewayController@verifyOAuthToken')->name('verify.oauth.token.stripe');
 			
 			//Route::get('payment/gateway/connect/response', 'BaseController@getGatewayConnectResponse')->name('payment.gateway.connect.response');
+
+			// Payment Gateway Routes
+			Route::get('payment/gateway/returnResponse', 'PaymentOptionController@getGatewayReturnResponse')->name('payment.gateway.return.response');
+			Route::post('payment/khalti/verification', 'KhaltiGatewayController@khaltiVerification')->name('payment.khaltiVerification');
+			Route::post('payment/khalti/completePurchase/app', 'KhaltiGatewayController@khaltiCompletePurchaseApp')->name('payment.khaltiCompletePurchaseApp');
+			Route::get('payment/webview/khalti', 'KhaltiGatewayController@webView')->name('payment.khalti.webView');
 			
 		});
 		Route::any('payment/ccavenue/success', 'CcavenueController@successForm')->name('ccavenue.success');
