@@ -336,7 +336,7 @@ class ClientController extends Controller
         ];
             Config::set("database.connections.$schemaName", $default);
             config(["database.connections.mysql.database" => $schemaName]);
-            DB::connection($schemaName)->table('clients')->update(['custom_domain' => $request->custom_domain,'sub_domain'   => $request->sub_domain]);
+            DB::connection($schemaName)->table('clients')->update(['custom_domain' => $request->custom_domain, 'sub_domain'   => $request->sub_domain, 'socket_url'   => $request->socket_url]);
             DB::disconnect($schemaName);
             return 1;
         } catch (Exception $ex) {
