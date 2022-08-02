@@ -278,6 +278,26 @@ class ClientController extends Controller
     {
         try {
 
+            $schemaName = 'db_' . $getClient['database_name'];
+            $default = [
+                'driver' => env('DB_CONNECTION', 'mysql'),
+                'host' => env('DB_HOST'),
+                'port' => env('DB_PORT'),
+                'database' => $schemaName,
+                'username' => env('DB_USERNAME'),
+                'password' => env('DB_PASSWORD'),
+                'charset' => 'utf8mb4',
+                'collation' => 'utf8mb4_unicode_ci',
+                'prefix' => '',
+                'prefix_indexes' => true,
+                'strict' => false,
+                'engine' => null
+            ];
+
+            Config::set("database.connections.$schemaName", $default);
+            config(["database.connections.mysql.database" => $schemaName]);
+            DB::connection($schemaName)->table('clients')->update(['socket_url'   => $request->socket_url]);
+            DB::disconnect($schemaName);
          # if submit custom domain from god panel
             if ($request->custom_domain && $request->custom_domain != $getClient->custom_domain) {
                 try {
@@ -319,21 +339,7 @@ class ClientController extends Controller
                 return 'Sub Domain name "' . $request->sub_domain . '" is not available. Please select a different sub domain';
             }
 
-            $schemaName = 'db_' . $getClient['database_name'];
-            $default = [
-            'driver' => env('DB_CONNECTION', 'mysql'),
-            'host' => env('DB_HOST'),
-            'port' => env('DB_PORT'),
-            'database' => $schemaName,
-            'username' => env('DB_USERNAME'),
-            'password' => env('DB_PASSWORD'),
-            'charset' => 'utf8mb4',
-            'collation' => 'utf8mb4_unicode_ci',
-            'prefix' => '',
-            'prefix_indexes' => true,
-            'strict' => false,
-            'engine' => null
-        ];
+            
             Config::set("database.connections.$schemaName", $default);
             config(["database.connections.mysql.database" => $schemaName]);
             DB::connection($schemaName)->table('clients')->update(['custom_domain' => $request->custom_domain, 'sub_domain'   => $request->sub_domain, 'socket_url'   => $request->socket_url]);
