@@ -971,20 +971,14 @@
 
             $( ".tags" ).removeClass("hidealloction");
             $( ".drivers" ).addClass("hidealloction");
-            // $(".tags").show();
-            // $(".drivers").hide();
         }
         if (radioValue == 'u') {
             $( ".tags" ).addClass("hidealloction");
             $( ".drivers" ).addClass("hidealloction");
-            // $(".tags").hide();
-            // $(".drivers").hide();
         }
         if (radioValue == 'm') {
             $( ".drivers" ).removeClass("hidealloction");
             $( ".tags" ).addClass("hidealloction");
-            // $(".drivers").show();
-            // $(".tags").hide();
         }
     });
 
