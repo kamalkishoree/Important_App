@@ -22,7 +22,7 @@ use Illuminate\Support\Facades\Hash;
 use Twilio\Rest\Client as TwilioClient;
 use Faker\Generator as Faker;
 use Illuminate\Support\Facades\Storage;
-use App\Model\{User, Agent, AgentDocs, AllocationRule, AgentSmsTemplate, Client, ClientPreference, BlockedToken, Otp, TaskProof, TagsForTeam, SubAdminTeamPermissions, SubAdminPermissions, TagsForAgent, Team};
+use App\Model\{User, Agent, AgentDocs, AllocationRule, AgentSmsTemplate, Client, SmtpDetail, ClientPreference, BlockedToken, Otp, TaskProof, TagsForTeam, SubAdminTeamPermissions, SubAdminPermissions, TagsForAgent, Team};
 
 
 class AuthController extends BaseController
@@ -555,5 +555,30 @@ class AuthController extends BaseController
                 'message' => 'Error while creating your account!!!'
             ]);
         }
+    }
+
+
+    public function deleteAgent(Request $request){
+        try {
+            DB::beginTransaction(); //Initiate transaction
+                $agent = Auth::user();
+                if(!$agent){
+                    return response()->json(['massage' => __('User not found!')], 200);
+                }
+                Agent::where('id', $agent->id)->update([
+                    'phone_number' => $agent->phone_number.'_'.$agent->id."_D",  
+                    'device_token' =>'',  
+                    'device_type' =>'',  
+                    'access_token' => ''
+                    ]);
+                $agent->delete();
+                DB::commit(); //Commit transaction after all the operations
+                return response()->json(['massage' => __('Agent Deleted Successfully')], 200);
+                //code...
+            } catch (Exception $e) {
+                DB::rollBack();
+                return response()->json(['massage' => __('Something went wrong!')], 400);
+               
+            }
     }
 }

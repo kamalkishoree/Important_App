@@ -2,6 +2,7 @@
 
 namespace App\Model;
 
+use Carbon\Carbon;
 use Bavix\Wallet\Traits\HasWallet;
 use Bavix\Wallet\Interfaces\Wallet;
 use Bavix\Wallet\Traits\HasWalletFloat;
@@ -10,6 +11,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Exception;
 use Thumbor\Url;
 
@@ -19,6 +21,7 @@ class Agent extends Authenticatable implements  Wallet, WalletFloat
 	use Notifiable;
     use HasWallet;
     use HasWalletFloat;
+    use SoftDeletes;
 
     protected $fillable = [
         'team_id', 'name', 'profile_picture', 'type', 'vehicle_type_id', 'make_model', 'plate_number', 'phone_number', 'color', 'is_activated', 'is_available','cash_at_hand','uid', 'is_approved','customer_type_id'
@@ -106,6 +109,10 @@ class Agent extends Authenticatable implements  Wallet, WalletFloat
 
     public function agentBankDetails(){
         return $this->hasMany('App\Model\AgentBankDetail' , 'id', 'agent_id');
+    }
+
+    public function subscriptionPlan(){
+        return $this->hasOne('App\Model\SubscriptionInvoicesDriver' , 'driver_id', 'id')->orderBy('end_date', 'desc');
     }
 
 }

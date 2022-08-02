@@ -20,7 +20,7 @@ use Illuminate\Support\Facades\Route;
     return $request->user();
 });*/
 
-Route::group(['middleware' => ['apilogger']], function() {
+Route::group(['middleware' => []], function() {
 Route::post('otp_test', 'Api\TaskController@smstest')->middleware('ConnectDbFromOrder');
 Route::post('check-dispatcher-keys', 'Api\TaskController@checkDispatcherKeys')->middleware('ConnectDbFromOrder');
 Route::post('get-delivery-fee', 'Api\TaskController@getDeliveryFee')->middleware('ConnectDbFromOrder');
@@ -77,6 +77,7 @@ Route::group(['prefix' => 'auth'], function () {
 
 Route::group(['middleware' => ['dbCheck', 'AppAuth','apiLocalization']], function() {
     Route::get('user', 'Api\AuthController@user');
+    Route::post('agent/delete', 'Api\AuthController@deleteAgent');
     
     Route::get('taskList', 'Api\ActivityController@tasks');                    // api for task list
     Route::get('updateStatus', 'Api\ActivityController@updateDriverStatus');   // api for chnage driver status active ,in-active
@@ -93,7 +94,10 @@ Route::group(['middleware' => ['dbCheck', 'AppAuth','apiLocalization']], functio
     Route::get('agent/bank/details', 'Api\AgentPayoutController@agentBankDetails'); // api for getting agent bank details
     Route::get('agent/payout/details', 'Api\AgentPayoutController@agentPayoutDetails'); // api for agent payout details
     Route::post('agent/payout/request/create/{id}', 'Api\AgentPayoutController@agentPayoutRequestCreate'); // api for creating agent payout request
-
+    Route::post('chat/startChat',      'Api\ChatController@startChat');
+    Route::post('chat/userAgentChatRoom',      'Api\ChatController@userAgentChatRoom');
+    //Route::post('chat/userAgentChatRoom',      'Api\ChatController@startChat');
+    
     // Order routes
     Route::post('order/cancel/request/create/{id}', 'Api\OrderController@createOrderCancelRequest'); // api for creating order cancel request by driver
     Route::get('order/cancel/reasons', 'Api\OrderController@getOrderCancelReasons'); // api for creating order cancel request by driver
