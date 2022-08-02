@@ -151,7 +151,7 @@
     <div class="modal-dialog modal-dialog-centered modal-xxl">
         <div class="modal-content" style="">
             <div class="modal-header align-items-center border-0 mb-md-0">
-                <!-- <h4 class="page-title m-0">{{__("Route")}}</h4> -->
+                <h4 class="page-title ml-3 m-1">{{__("Add Route")}}</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
             </div>
             <form id="taskFormHeader" method="post" enctype="multipart/form-data" action="{{ route('tasks.store') }}">
@@ -247,28 +247,16 @@
 <script src="{{asset('assets/libs/bootstrap-colorpicker/bootstrap-colorpicker.min.js')}}"></script>
 <script src="{{asset('assets/libs/clockpicker/clockpicker.min.js')}}"></script>
 <script src="{{asset('assets/libs/bootstrap-datepicker/bootstrap-datepicker.min.js')}}"></script>
-
+<script src="{{asset('assets/libs/dropzone/dropzone.min.js')}}"></script>
+<script src="{{asset('assets/libs/dropify/dropify.min.js')}}"></script>
 <!-- Page js-->
 <script src="{{asset('assets/js/pages/form-pickers.init.js')}}"></script>
 <script>
-// jQuery('.remove-modal-open').click(function(){
-//         jQuery('body').addClass('modal-open');
-//     });
-
     var theme      = {!!json_encode($theme)!!};
-
 
     var maoArray = {};
     var autoWrap = ['addHeader0'];
     var count = 1; editCount = 0; var a = 0; countZ = 1;
-   /* $('.openModal').click(function(){
-        $('#task-modal-header').modal({
-            //backdrop: 'static',
-            keyboard: false
-        });
-        autoWrap.push('addHeader1');
-        loadMap(autoWrap);
-    });*/
 
     @if(Auth::user())
     $(document).on("change",".admin_panel_theme", function(){
@@ -347,7 +335,7 @@
 
                 //$('#task-modal-header #selectize-optgroups').selectize();
                 //$('#task-modal-header #selectize-optgroups').selectize();
-
+                $('.dropify').dropify();
                 $(".newcustomer").hide();
                 $(".searchshow").show();
                 $(".append").show();
@@ -429,7 +417,6 @@
                     },
                     success: function(data) {
                         response(data);
-                        //console.log(data);
                     }
                 });
             },

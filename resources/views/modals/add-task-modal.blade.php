@@ -3,9 +3,7 @@
         <div class="card-box pt-0 pb-0">            
             <div class="row d-flex">
                 <div class="col-md-4" style="border-right: 1px solid #ccc;">
-                    <h4 class="header-title mb-2">{{__("Add Route")}}</h4>
                     @csrf
-
                     <div class="row mb-3" id="dateredio">
                         <div class="col-md-12">
                             <div class="radio radio-primary form-check-inline mr-4">
@@ -29,7 +27,7 @@
 
                     <h4 class="header-title mb-3">{{__("Customer Details")}}</h4>
 
-                    <div class="row mb-3" id="customerradio">
+                    <div class="row mb-2" id="customerradio">
                         <div class="col-md-12">
                             <div class="radio radio-primary form-check-inline mr-4">
                                 <input type="radio" id="existing_customer" value="existingcustomer" name="customer_type" class="checkcustomer" checked>
@@ -41,7 +39,7 @@
                             </div>
                         </div>
                     </div>
-
+                    <span class="span1 searchspan">{{__("Please search a customer or add a customer")}}</span>
                     <div class="row mb-3 searchshow">
                         <div class="col-md-12">
                             <div class="form-group" id="nameInputHeader">
@@ -58,7 +56,6 @@
                                 <span class="invalid-feedback" role="alert">
                                     <strong></strong>
                                 </span>
-
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -80,17 +77,126 @@
                         </div>
                     </div>
 
-                    <h4 class="header-title mb-3">{{__("Meta Data")}}</h4>
-                    <div class="row mb-3">
+                    <h4 class="header-title mb-2">{{__("Meta Data")}}</h4>
+                    <div class="row mb-2">
                         <div class="col-md-4">
-                        <input type="file" data-plugins="dropify" data-height="300" />
+                            <input type="file" data-plugins="dropify" class="dropify" data-height="300" />
+                        </div>
+                        <div class="col-md-8" id="make_modelInput">
+                            {!! Form::hidden('recipient_phone', null, ['class' => 'form-control rec', 'placeholder' =>
+                            __('Recipient Phone'), 'required' => 'required']) !!}
+                            {!! Form::hidden('recipient_email', null, ['class' => 'form-control rec', 'placeholder'
+                            => __('Recipient Email'), 'required' => 'required']) !!}
+                            {!! Form::textarea('task_description', null, ['class' => 'form-control',
+                            'placeholder' => __('Please enter task description'), 'rows' => 5, 'cols' => 40]) !!}
+                            <span class="invalid-feedback" role="alert">
+                                <strong></strong>
+                            </span>
+
+                            <span class="invalid-feedback" role="alert">
+                                <strong></strong>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-md-12"  id="make_modelInput">
+                            {!! Form::text('call_back_url', null, ['class' => 'form-control rec', 'placeholder' => __('Call Back URL')]) !!}
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-12" id="cash_to_be_collectedInput">
+                            <input class="form-control" type="text" placeholder={{__("Cash to be collected")}} name="cash_to_be_collected">
+                            <span class="invalid-feedback" role="alert">
+                                <strong></strong>
+                            </span>
                         </div>
                     </div>
 
+                    <h4 class="header-title mb-2">{{__("Allocation")}}</h4>
+
+                    <div class="row" id="rediodiv">
+                        <div class="col-md-12">
+                            <div class="login-form">
+                                <ul class="list-inline">
+                                    <li class="d-inline-block mr-2">
+                                        <input type="radio" class="custom-control-input check assignRadio" id="customRadio"
+                                        name="allocation_type" value="u" {{$allcation->manual_allocation == 0 ?'checked':''}}>
+                                    <label class="custom-control-label" for="customRadio">{{__("Unassigned")}}</label>
+                                    </li>
+                                    <li class="d-inline-block mr-2">
+                                        <input type="radio" class="custom-control-input check assignRadio" id="customRadio22"
+                                        name="allocation_type" value="a" {{$allcation->manual_allocation == 1 ?'checked':''}}>
+                                    <label class="custom-control-label" for="customRadio22">{{__("Auto Allocation")}}</label>
+                                    </li>
+                                    <li class="d-inline-block">
+                                        <input type="radio" class="custom-control-input check assignRadio" id="customRadio33"
+                                        name="allocation_type" value="m">
+                                    <label class="custom-control-label" for="customRadio33">{{__("Manual")}}</label>
+                                    </li>
+                                </ul>
+                                </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group" id="cash_to_be_collectedInput">
+                                <input class="form-control" type="text" placeholder={{__("Cash to be collected")}} name="cash_to_be_collected">
+                                <span class="invalid-feedback" role="alert">
+                                    <strong></strong>
+                                </span>
+                            </div>
+                        </div>
+
+                    </div>
+                    <span class="span1 tagspan">{{__("Please select atlest one tag for driver and agent")}}</span>
+                    <div class="tags {{ $allcation->manual_allocation == 0 ? "hidealloction":""}}">
+                        <div class="row ">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>{{__("Team Tag")}}</label>
+                                    <select name="team_tag[]" id="selectize-optgroups" class="selectizeInput" multiple placeholder={{__("Select tag...")}}>
+                                        <option value="">{{__("Select Tag...")}}</option>
+                                        @foreach ($teamTag as $item)
+                                            <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                        @endforeach
+
+                                    </select>
+                                </div>
+                            </div>
+
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>{{__("Driver Tag")}}</label>
+                                    <select name="agent_tag[]" id="selectize-optgroup" class="selectizeInput" multiple placeholder="{{__('Select tag...')}}">
+                                        <option value="">{{__("Select Tag...")}}</option>
+                                        @foreach ($agentTag as $item)
+                                            <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row drivers hidealloction">
+                        <div class="col-md-12">
+                            <div class="form-group mb-3">
+                                <label>{{__("Drivers")}}</label>
+                                {!! Form::text('searchDriver', null, ['class' => 'form-control', 'placeholder' => __('Search Driver'), 'id' => 'searchDriver']) !!}
+                                <input type="hidden" id='agentid' name="agent" readonly>
+                                {{-- <select class="form-control selectpicker" name="agent" id="driverselect">
+                                    @foreach ($agents as $item)
+                                        @php
+                                            $checkAgentActive = ($item->is_available == 1) ? ' ('.__('Online').')' : ' ('.__('Offline').')';
+                                        @endphp
+                                        <option value="{{ $item->id }}">{{ ucfirst($item->name) . $checkAgentActive }}</option>
+                                    @endforeach
+                                </select> --}}
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="col-md-8">
                     <h4 class="header-title mb-3">{{__("Tasks")}}</h4>
-                    
                 </div>
             </div>
         </div>
