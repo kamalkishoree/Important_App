@@ -672,7 +672,7 @@ class TaskController extends BaseController
         $unassignedorder_data = Order::where('id', $request->order_id)->where('status', 'unassigned')->first();
         if(empty($unassignedorder_data)){
             return response()->json([
-                'message' => __('This order has already been accepted.'),
+                'message' => __('This Task has already been accepted.'),
             ], 404);
         }
 

@@ -128,7 +128,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                     <i class="mdi mdi-storefront text-primary mdi-24px"></i>
                                     <span data-plugin="counterup" id="total_earnings_by_vendors">{{$agentsCount}}</span>
                                 </h3>
-                                <p class="text-muted font-15 mb-0">{{__('Total Agents')}}</p>
+                                <p class="text-muted font-15 mb-0">{{__('Total')}} {{ Session::get('agent_name') ? Session::get('agent_name') : __('Agent') }}</p>
                             </div>
                         </div>
                         <div class="col-sm-6 col-md mb-3 mb-md-0">
@@ -155,7 +155,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                     <i class="fa fa-address-card text-primary"></i>
                                     <span data-plugin="counterup" id="total_delivery_fees">{{$agentIsApproved}}</span>
                                 </h3>
-                                <p class="text-muted font-15 mb-0">{{__('Approved Agents')}}</p>
+                                <p class="text-muted font-15 mb-0">{{__('Approved')}} {{ Session::get('agent_name') ? Session::get('agent_name') : __('Agent') }}</p>
                             </div>
                         </div>
                         <div class="col-sm-6 col-md mb-3 mb-md-0">
@@ -164,7 +164,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                     <i class="fa fa-user-times text-primary"></i>
                                     <span data-plugin="counterup" id="total_delivery_fees">{{$agentNotApproved}}</span>
                                 </h3>
-                                <p class="text-muted font-15 mb-0">{{__('Unapproved Agents')}}</p>
+                                <p class="text-muted font-15 mb-0">{{__('Unapproved')}} {{ Session::get('agent_name') ? Session::get('agent_name') : __('Agent') }}</p>
                             </div>
                         </div>
                     </div>
