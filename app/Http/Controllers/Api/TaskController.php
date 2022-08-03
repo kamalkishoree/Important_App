@@ -666,13 +666,10 @@ class TaskController extends BaseController
         $client_details = Client::where('database_name', $header['client'][0])->first();
         $percentage = 0;
 
-        $agent_details = Auth::user();
-        $agent_id = $agent_details->id;
-        
         $unassignedorder_data = Order::where('id', $request->order_id)->where('status', 'unassigned')->first();
         if(empty($unassignedorder_data)){
             return response()->json([
-                'message' => __('This order has already been accepted.'),
+                'message' => __('This task has already been accepted.'),
             ], 404);
         }
 
