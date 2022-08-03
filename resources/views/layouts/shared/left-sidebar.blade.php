@@ -179,7 +179,7 @@
                     </a>
                 </li>
                 @endif
-                @if(in_array('Configure',$allowed) || Auth::user()->is_superadmin == 1)
+                <!-- @if(in_array('Configure',$allowed) || Auth::user()->is_superadmin == 1)
                 <li>
                     <a href="#sidebarcms" data-toggle="collapse">
                         <i class="fa fa-file-code"></i>
@@ -207,7 +207,7 @@
                         </ul>
                     </div>
                 </li>
-                @endif
+                @endif -->
                 <!-- <li>
                     <a href="{{route('plan-billing.index')}}">
                         <i data-feather="dollar-sign"></i>

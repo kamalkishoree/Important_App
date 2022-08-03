@@ -83,6 +83,24 @@
     .bootstrap-select .dropdown-menu.inner{
         overflow-y: hidden!important;
     }
+
+/* agent page css here */
+.edit-icon-div {
+    position: relative;
+}
+.edit-icon-div:hover .child-icon.editIcon {
+    display: block !important;
+    left: -20px;
+    position: absolute;
+    top: 0;
+    border-radius: 2px;
+    background: #6658ddf0;
+    color: #fff;
+    font-size: 14px;
+    padding: 0px 2px;
+}
+
+
 </style>
 @endsection
 @php
@@ -99,7 +117,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
             </div>
         </div>
     </div>
-    <div class="row mt-4">
+    <div class="row">
         <div class="col-12">
             <div class="card widget-inline">
                 <div class="card-body">

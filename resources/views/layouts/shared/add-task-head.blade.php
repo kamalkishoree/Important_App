@@ -148,7 +148,7 @@
   .pac-container, .pac-container .pac-item { z-index: 9999 !important; }
 </style>
 <div id="task-modal-header" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
-    <div class="modal-dialog modal-dialog-centered modal-xxl">
+    <div class="modal-dialog modal-dialog-top modal-xxl">
         <div class="modal-content" style="">
             <div class="modal-header align-items-center border-0 mb-md-0">
                 <h4 class="page-title ml-3 m-1">{{__("Add Route")}}</h4>
