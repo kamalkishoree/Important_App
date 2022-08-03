@@ -6,7 +6,7 @@ use App\Http\Controllers\Api\BaseController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
-use App\Model\{Agent, AgentLog, AllocationRule, Client, ClientPreference, Cms, Order, Task, TaskProof, Timezone, User, DriverGeo, Geo};
+use App\Model\{Agent, AgentLog, AllocationRule, Client, ClientPreference, Cms, Order, Task, TaskProof, Timezone, User, DriverGeo, Geo, TagsForAgent};
 use Validator;
 use DB;
 use Illuminate\Support\Facades\Storage;
@@ -32,7 +32,31 @@ class AgentController extends BaseController
 
             $geoid = $this->findLocalityByLatLng($request->latitude, $request->longitude);
             $geoagents_ids = DriverGeo::where('geo_id', $geoid)->pluck('driver_id');
-            $geoagents = Agent::with('agentlog')->whereIn('id', $geoagents_ids)->where(["is_available" => 1, "is_approved" => 1])->orderBy('id', 'DESC')->get();
+
+            $tagId = '';
+            if(!empty($request->tag)){
+                $tag = TagsForAgent::where('name', $request->tag)->get()->first();
+                if(!empty($tag)){
+                    $tagId = $tag->id;
+                }else{
+                    return response()->json([
+                        'data' => [],
+                        'status' => 200,
+                        'message' => __('Agents not found.')
+                    ], 200);
+                }
+
+            }
+
+            $geoagents = Agent::with(['agentlog','vehicle_type']);
+
+            if(!empty($tagId)){
+                $geoagents->whereHas('tags', function($q) use($tagId){
+                    $q->where('tag_id', $tagId);
+                });
+            }
+
+            $geoagents = $geoagents->whereIn('id', $geoagents_ids)->where(["is_available" => 1, "is_approved" => 1])->orderBy('id', 'DESC')->get();
             // $preferences = ClientPreference::with('currency')->first();
             // $clientPreference = json_decode($preferences->customer_notification_per_distance);
             
@@ -45,9 +69,18 @@ class AgentController extends BaseController
                 
                 //get agent under 5 km
                 if($getDistance < 6){
+                    $geoagent->distance = $getDistance;
+                    $geoagent->distance_type = 'km';
                     $finalAgents[] = $geoagent;
                 }
+
+                $getArrivalTime = $this->getLatLongDistance($agentLat, $agentLong, $request->latitude, $request->longitude, 'minutes');
+                $geoagent->arrival_time = $getArrivalTime;
+                
             }
+
+            $distance = array_column($finalAgents, 'distance');
+            array_multisort($distance, SORT_ASC, $finalAgents);
 
             return response()->json([
                 'data' => $finalAgents,
@@ -79,8 +112,16 @@ class AgentController extends BaseController
         $final = round($angle * $earthRadius);
         if ($unit == "km") {
             return $final;
+        } else if ($unit == "minutes") {
+            $kmsPerMin = 0.5; // asume per km time estimate 0.5 minute
+            $minutesTaken = $final / $kmsPerMin;
+            if($minutesTaken < 60){
+                return $minutesTaken.' minutes';
+            }else{
+                return intdiv($minutesTaken, 60).'hours '. ($minutesTaken % 60).'minutes';
+            }
         } else {
-            return round($final * 0.6214);
+            return round($final * 0.6214); //miles
         }
     }
 
