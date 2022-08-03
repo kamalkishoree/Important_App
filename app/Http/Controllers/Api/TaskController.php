@@ -611,6 +611,13 @@ class TaskController extends BaseController
         $client_details = Client::where('database_name', $header['client'][0])->first();
         $percentage = 0;
 
+        $unassignedorder_data = Order::where('id', $request->order_id)->where('status', 'unassigned')->first();
+        if(empty($unassignedorder_data)){
+            return response()->json([
+                'message' => __('This task has already been accepted.'),
+            ], 404);
+        }
+
         $proof_face = null;
         if (isset($request->proof_face)) {
             if ($request->hasFile('proof_face')) {
