@@ -116,9 +116,9 @@ class AgentController extends BaseController
             $kmsPerMin = 0.5; // asume per km time estimate 0.5 minute
             $minutesTaken = $final / $kmsPerMin;
             if($minutesTaken < 60){
-                return $minutesTaken.' minutes';
+                return $minutesTaken.' min';
             }else{
-                return intdiv($minutesTaken, 60).'hours '. ($minutesTaken % 60).'minutes';
+                return intdiv($minutesTaken, 60).'hours '. ($minutesTaken % 60).'min';
             }
         } else {
             return round($final * 0.6214); //miles
