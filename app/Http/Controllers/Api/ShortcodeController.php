@@ -20,7 +20,7 @@ class ShortcodeController extends BaseController
      */
     public function validateCompany(Request $request)
     {
-        $client = Client::where('is_deleted', 0)->where('code', $request->shortCode)->select('id','country_id', 'name', 'phone_number', 'email', 'database_name', 'timezone', 'custom_domain', 'database_host', 'database_port', 'database_username', 'database_password', 'logo', 'company_name', 'company_address', 'is_blocked', 'socket_url')->with('getCountrySet')->first();
+        $client = Client::where('is_deleted', 0)->where('code', $request->shortCode)->select('id','country_id', 'name', 'phone_number', 'email', 'database_name', 'timezone', 'custom_domain', 'database_host', 'database_port', 'database_username', 'database_password', 'logo', 'dark_logo', 'company_name', 'company_address', 'is_blocked', 'socket_url')->with('getCountrySet')->first();
 
       
         if (!$client) {
@@ -40,6 +40,7 @@ class ShortcodeController extends BaseController
             $img = public_path().'/assets/images/'.$client->logo;
         }
         $client->logo = \Storage::disk("s3")->url($client->logo);
+        $client->dark_logo = \Storage::disk("s3")->url($client->dark_logo);
 
 
         if (!empty($client)) {
