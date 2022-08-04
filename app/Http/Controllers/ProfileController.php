@@ -110,6 +110,13 @@ class ProfileController extends Controller
             $getFileName = $path;
         }
 
+        if ($request->hasFile('dark_logo')) {
+            $file = $request->file('dark_logo');
+            $s3filePath = '/assets/Clientlogo';
+            $path = Storage::disk('s3')->put($s3filePath, $file, 'public');
+            $getDarkLogoFileName = $path;
+        }
+
         $alldata = [
             'name' => $request->name,
             'email' => $request->email,
@@ -119,6 +126,7 @@ class ProfileController extends Controller
             'country_id' => $request->country ? $request->country : null,
             'timezone' => $request->timezone ? $request->timezone : null,
             'logo' => $getFileName,
+            'dark_logo' => $getDarkLogoFileName,
         ];
 
         //echo $request->timezone; die;
