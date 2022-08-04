@@ -110,6 +110,7 @@ class ProfileController extends Controller
             $getFileName = $path;
         }
 
+        $getDarkLogoFileName = $user->dark_logo;
         if ($request->hasFile('dark_logo')) {
             $file = $request->file('dark_logo');
             $s3filePath = '/assets/Clientlogo';
