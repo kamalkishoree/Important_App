@@ -201,8 +201,7 @@
                                 </div>
                                 <div class="col-md-5">
                                     <div class="form-group appoint mt-1">
-                                        {!! Form::text('appointment_date[]', null, ['class' => 'form-control
-                                        appointment_date', 'placeholder' => __('Duration (In Min)')]) !!}
+                                        {!! Form::text('appointment_date[]', null, ['class' => 'form-control appointment_date', 'placeholder' => __('Duration (In Min)')]) !!}
                                         <span class="invalid-feedback" role="alert">
                                             <strong></strong>
                                         </span>
