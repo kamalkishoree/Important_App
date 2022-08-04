@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Model\Client;
+use App\Model\ClientPreference;
 use Illuminate\Http\Request;
 use App\Model\Countries;
 use App\Model\Timezone;
@@ -27,7 +28,8 @@ class ProfileController extends Controller
         $countries = Countries::all();
         //$tzlist = DateTimeZone::listIdentifiers(DateTimeZone::ALL);
         $tzlist = Timezone::get();
-        return view('profile')->with(['client' => $client ,'countries'=> $countries,'tzlist'=>$tzlist ]);
+        $preference  = ClientPreference::where('client_id', Auth::user()->code)->first();
+        return view('profile')->with(['client' => $client, 'preference' => $preference,'countries'=> $countries,'tzlist'=>$tzlist ]);
     }
 
     /**
@@ -110,6 +112,13 @@ class ProfileController extends Controller
             $getFileName = $path;
         }
 
+        if ($request->hasFile('favicon')) {
+            $file = $request->file('favicon');
+            $s3filePath = '/assets/Clientfavicon';
+            $path = Storage::disk('s3')->put($s3filePath, $file, 'public');
+            $faviconFileName = $path;
+        }
+
         $alldata = [
             'name' => $request->name,
             'email' => $request->email,
@@ -124,6 +133,12 @@ class ProfileController extends Controller
         //echo $request->timezone; die;
         if($user->is_superadmin == 1){
             $client = Client::where('code', $id)->where('id', $user->id)->update($alldata);
+
+            $preference = ClientPreference::where('client_id', Auth::user()->code)->first();
+            if($faviconFileName){
+                $preference->favicon = $faviconFileName;
+            }
+            $preference->save();
         }else{
             $data = [
                 'name' => $request->name,
