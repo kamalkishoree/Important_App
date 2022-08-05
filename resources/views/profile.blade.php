@@ -134,7 +134,11 @@
                         <div class="row mb-2 d-flex align-items-center">
                             <div class="col-md-3 upload_box">
                                 <input type="file" data-plugins="dropify" name="logo" data-default-file="{{isset(Auth::user()->logo) ? Storage::disk('s3')->url(Auth::user()->logo) : ''}}" />
-                                <p class="text-muted text-center mt-2 mb-0">{{__("Upload Logo")}} </p>
+                                <p class="text-muted text-center mt-2 mb-0">{{__("Upload Light Logo")}} </p>
+                            </div>
+                            <div class="col-md-3 upload_box">
+                                <input type="file" data-plugins="dropify" name="dark_logo" data-default-file="{{isset(Auth::user()->dark_logo) ? Storage::disk('s3')->url(Auth::user()->dark_logo) : ''}}" />
+                                <p class="text-muted text-center mt-2 mb-0">{{__("Upload Dark Logo")}} </p>
                             </div>
                             <div class="col-md-3 upload_box">
                                 <input type="file" class="dropify" data-plugins="dropify" name="favicon" data-default-file="{{ isset($preference->favicon) ? Storage::disk('s3')->url($preference->favicon) : '' }}" />
@@ -144,7 +148,6 @@
                             <div class="col-md-3 mb-4">
                                 <label class="control-label">{{__("Short Code")}}</label><br/>
                                 <h1 class="control-label" style="font-size: 4rem;">{{Auth::user()->code}}</h1>
-
                             </div>
                             <div class="col-md-3 mb-4">
                                 <div class="text-center mb-3">

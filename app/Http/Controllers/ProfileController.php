@@ -106,17 +106,23 @@ class ProfileController extends Controller
         if ($request->hasFile('logo')) {
             $file = $request->file('logo');
             $s3filePath = '/assets/Clientlogo';
-            //$file_name = uniqid() .'.'.  $file->getClientOriginalExtension();
-            //$s3filePath = '/assets/Clientlogo/' . $file_name;
             $path = Storage::disk('s3')->put($s3filePath, $file, 'public');
             $getFileName = $path;
         }
 
         if ($request->hasFile('favicon')) {
-            $file = $request->file('favicon');
-            $s3filePath = '/assets/Clientfavicon';
+           $file = $request->file('favicon');
+           $s3filePath = '/assets/Clientfavicon';
             $path = Storage::disk('s3')->put($s3filePath, $file, 'public');
             $faviconFileName = $path;
+        }
+        
+        $getDarkLogoFileName = $user->dark_logo;
+        if ($request->hasFile('dark_logo')) {
+            $file = $request->file('dark_logo');
+            $s3filePath = '/assets/Clientlogo';
+            $path = Storage::disk('s3')->put($s3filePath, $file, 'public');
+            $getDarkLogoFileName = $path;
         }
 
         $alldata = [
@@ -128,6 +134,7 @@ class ProfileController extends Controller
             'country_id' => $request->country ? $request->country : null,
             'timezone' => $request->timezone ? $request->timezone : null,
             'logo' => $getFileName,
+            'dark_logo' => $getDarkLogoFileName,
         ];
 
         //echo $request->timezone; die;
