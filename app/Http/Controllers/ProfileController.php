@@ -116,7 +116,7 @@ class ProfileController extends Controller
             $path = Storage::disk('s3')->put($s3filePath, $file, 'public');
             $faviconFileName = $path;
         }
-        
+
         $getDarkLogoFileName = $user->dark_logo;
         if ($request->hasFile('dark_logo')) {
             $file = $request->file('dark_logo');
@@ -142,7 +142,7 @@ class ProfileController extends Controller
             $client = Client::where('code', $id)->where('id', $user->id)->update($alldata);
 
             $preference = ClientPreference::where('client_id', Auth::user()->code)->first();
-            if($faviconFileName){
+            if(isset($faviconFileName)){
                 $preference->favicon = $faviconFileName;
             }
             $preference->save();
