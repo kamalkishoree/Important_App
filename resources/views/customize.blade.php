@@ -31,7 +31,7 @@
         </div>
     </div>
     <!-- end Section title -->
-    <div class="row mb-2">
+    <div class="row mb-3">
         <div class="col-md-4">
             <div class="card-box h-100">
                 <div class="row">
@@ -95,7 +95,7 @@
                         </form>
                     </div>
                 </div>
-                <div class="row mb-2">
+                <div class="row">
                     <div class="col-md-12">
                         <form method="POST" action="{{route('preference',Auth::user()->code)}}">
                         @csrf
@@ -106,9 +106,9 @@
                             <p class="sub-header">
                                 {{__("View and update the date & time format.")}}
                             </p>
-                            <div class="row mb-lg-5">
+                            <div class="row">
                                 <div class="col-md-6">
-                                    <div class="form-group mb-3">
+                                    <div class="form-group">
                                         <label for="date_format">{{__("DATE FORMAT")}}</label>
                                         <select class="form-control" id="date_format" name="date_format">
                                             <option value="m/d/Y" {{ ($preference && $preference->date_format =="m/d/Y")? "selected" : "" }}>
@@ -128,7 +128,7 @@
                                     </div>
                                 </div>
                                 <div class="col-md-6">
-                                    <div class="form-group mb-3">
+                                    <div class="form-group">
                                         <label for="time_format">{{__("TIME FORMAT")}}</label>
                                         <select class="form-control" id="time_format" name="time_format">
                                             <option value="12" {{ ($preference && $preference->time_format =="12")? "selected" : "" }}>12 {{__("hours")}}
@@ -151,99 +151,89 @@
         </div>
         
         <div class="col-md-4">
-            <div class="row">
-                <div class="col-md-12">
-                    <form method="POST" class="h-100" action="{{route('preference', Auth::user()->code)}}">
-                        @csrf
-                        <input type="hidden" name="address_limit_order_config" value="1">
-                        <div class="row">
-                            <div class="col-xl-12">
-                                <div class="card-box h-100 mb-2">
-                                    <div class="d-flex align-items-center justify-content-between mb-2">
-                                        <h4 class="header-title mb-0">{{__("Saved Address selection")}}</h4>
-                                        <button class="btn btn-outline-info d-block" type="submit"> Save </button>
-                                    </div>
-                                    <p class="sub-header">{{__("Manage how you want to show saved addresses while creating routes.")}}</p>
-                                    <div class="row mb-2">
-                                        <div class="col-sm-12">
-                                            <div class="radio radio-info form-check-inline mb-2">
-                                                <input type="radio" id="all_contact" value="1" name="allow_all_location" {{ (isset($preference) && $preference->allow_all_location ==1)? "checked" : "" }}>
-                                                <label for="all_contact"> {{__("Shared saved addresses for all customers")}} </label>
-                                            </div>
-                                            <div class="radio form-check-inline mb-2">
-                                                <input type="radio" id="my_contact" value="0" name="allow_all_location" {{ (isset($preference) &&  $preference->allow_all_location ==0)? "checked" : "" }}>
-                                                <label for="my_contact"> {{__("Saved addresses linked to each customer")}} </label>
-                                            </div>
-                                            @if($errors->has('allow_all_location'))
-                                            <span class="text-danger" role="alert">
-                                                <strong>{{ $errors->first('allow_all_location') }}</strong>
-                                            </span>
-                                            @endif
-                                            <hr>
-                                            <h4 class="header-title">{{__("Show Limited Address")}}</h4>
-                                        
-                                            <div class="custom-control custom-switch">
-                                                <input type="checkbox" class="custom-control-input event_type" id="show_limited_address" name="show_limited_address" {{isset($preference) && $preference->show_limited_address == 1 ? 'checked':''}}>
-                                                <label class="custom-control-label" for="show_limited_address">{{__("Show only first 5 address")}}</label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+            <div class="card-box h-100">
+                <form method="POST" class="h-100" action="{{route('preference', Auth::user()->code)}}">
+                    @csrf
+                    <input type="hidden" name="address_limit_order_config" value="1">
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                        <h4 class="header-title mb-0">{{__("Saved Address selection")}}</h4>
+                        <button class="btn btn-outline-info d-block" type="submit"> Save </button>
+                    </div>
+                    <p class="sub-header">{{__("Manage how you want to show saved addresses while creating routes.")}}</p>
+                    <div class="row mb-2">
+                        <div class="col-sm-12">
+                            <div class="radio radio-info form-check-inline mb-2">
+                                <input type="radio" id="all_contact" value="1" name="allow_all_location" {{ (isset($preference) && $preference->allow_all_location ==1)? "checked" : "" }}>
+                                <label for="all_contact"> {{__("Shared saved addresses for all customers")}} </label>
+                            </div>
+                            <div class="radio form-check-inline mb-2">
+                                <input type="radio" id="my_contact" value="0" name="allow_all_location" {{ (isset($preference) &&  $preference->allow_all_location ==0)? "checked" : "" }}>
+                                <label for="my_contact"> {{__("Saved addresses linked to each customer")}} </label>
+                            </div>
+                            @if($errors->has('allow_all_location'))
+                            <span class="text-danger" role="alert">
+                                <strong>{{ $errors->first('allow_all_location') }}</strong>
+                            </span>
+                            @endif
+                            <hr>
+                            <h4 class="header-title">{{__("Show Limited Address")}}</h4>
+                        
+                            <div class="custom-control custom-switch">
+                                <input type="checkbox" class="custom-control-input event_type" id="show_limited_address" name="show_limited_address" {{isset($preference) && $preference->show_limited_address == 1 ? 'checked':''}}>
+                                <label class="custom-control-label" for="show_limited_address">{{__("Show only first 5 address")}}</label>
                             </div>
                         </div>
-                    </form>
-                </div>
+                    </div>      
+                </form>
             </div>
         </div>
         <div class="col-md-4">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="card-box h-100 mb-2">
-                        <div class="d-flex align-items-center justify-content-between mb-2">
-                            <h4 class="header-title mb-0">{{__('Contact Us')}}</h4>
-                            <button class="btn btn-outline-info d-block" type="submit"> Save </button>
-                        </div>
-                        <form method="POST"  class="h-100" action="{{route('update.contact.us', Auth::user()->code)}}">
-                            @csrf
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="form-group mb-0">
-                                        <label for="contact_address">Address</label>
-                                        <div class="input-group">
-                                            <input type="text" name="contact_address" id="contact_address"  class="form-control" value="{{ old('contact_address', $clientContact->contact_address ?? '')}}">
-                                        </div>
-                                        @if($errors->has('contact_address'))
-                                        <span class="text-danger" role="alert">
-                                            <strong>{{ $errors->first('contact_address') }}</strong>
-                                        </span>
-                                        @endif
-                                    </div>
-                                    <div class="form-group mt-2 mb-0">
-                                        <label for="contact_phone_number">Number</label>
-                                        <input type="text" name="contact_phone_number" id="contact_phone_number" placeholder="" class="form-control" value="{{ old('contact_phone_number', $clientContact->contact_phone_number ?? '')}}">
-                                        @if($errors->has('contact_phone_number'))
-                                        <span class="text-danger" role="alert">
-                                            <strong>{{ $errors->first('contact_phone_number') }}</strong>
-                                        </span>
-                                        @endif
-                                    </div>
-                                    <div class="form-group mt-2 mb-0">
-                                        <label for="contact_email">Email</label>
-                                        <input type="text" name="contact_email" id="contact_email" placeholder="" class="form-control" value="{{ old('contact_email', $clientContact->contact_email ?? '')}}">
-                                        @if($errors->has('contact_email'))
-                                        <span class="text-danger" role="alert">
-                                            <strong>{{ $errors->first('contact_email') }}</strong>
-                                        </span>
-                                        @endif
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
+            <div class="card-box h-100">
+                <form method="POST" class="h-100" action="{{route('update.contact.us', Auth::user()->code)}}">
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                        <h4 class="header-title mb-0">{{__('Contact Us')}}</h4>
+                        <button class="btn btn-outline-info d-block" type="submit"> Save </button>
                     </div>
-                </div>
+                
+                    @csrf
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group mb-0">
+                                <label for="contact_address">Address</label>
+                                <div class="input-group">
+                                    <input type="text" name="contact_address" id="contact_address"  class="form-control" value="{{ old('contact_address', $clientContact->contact_address ?? '')}}">
+                                </div>
+                                @if($errors->has('contact_address'))
+                                <span class="text-danger" role="alert">
+                                    <strong>{{ $errors->first('contact_address') }}</strong>
+                                </span>
+                                @endif
+                            </div>
+                            <div class="form-group mt-2 mb-0">
+                                <label for="contact_phone_number">Number</label>
+                                <input type="text" name="contact_phone_number" id="contact_phone_number" placeholder="" class="form-control" value="{{ old('contact_phone_number', $clientContact->contact_phone_number ?? '')}}">
+                                @if($errors->has('contact_phone_number'))
+                                <span class="text-danger" role="alert">
+                                    <strong>{{ $errors->first('contact_phone_number') }}</strong>
+                                </span>
+                                @endif
+                            </div>
+                            <div class="form-group mt-2 mb-0">
+                                <label for="contact_email">Email</label>
+                                <input type="text" name="contact_email" id="contact_email" placeholder="" class="form-control" value="{{ old('contact_email', $clientContact->contact_email ?? '')}}">
+                                @if($errors->has('contact_email'))
+                                <span class="text-danger" role="alert">
+                                    <strong>{{ $errors->first('contact_email') }}</strong>
+                                </span>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
+    
         <form method="POST" action="{{route('task.proof')}}">
         @csrf
         <div class="row">
