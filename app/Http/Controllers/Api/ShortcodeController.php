@@ -39,8 +39,14 @@ class ShortcodeController extends BaseController
         if (file_exists(public_path().'/assets/images/'.$client->logo)) {
             $img = public_path().'/assets/images/'.$client->logo;
         }
-        $client->logo = \Storage::disk("s3")->url($client->logo);
-        $client->dark_logo = \Storage::disk("s3")->url($client->dark_logo);
+        if ($client->logo) {
+            $client->logo = \Storage::disk("s3")->url($client->logo);
+        }
+
+        if($client->dark_logo){
+            $client->dark_logo = \Storage::disk("s3")->url($client->dark_logo);
+        }
+        
 
 
         if (!empty($client)) {
