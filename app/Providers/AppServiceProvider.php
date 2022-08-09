@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\View;
 use App\Model\Team;
 use App\Model\Tag;
 use Illuminate\Http\Request;
-use App\Model\{Client, ClientPreference};
+use App\Model\{Client, ClientPreference, PaymentOption};
 use Illuminate\Support\Facades\Storage;
 use Closure;
 use Config;
@@ -62,8 +62,6 @@ class AppServiceProvider extends ServiceProvider
 
         Builder::defaultStringLength(191);
 
-        view()->share('favicon', $favicon_url);
-
         View::composer('modals.add-agent', function($view)
         {
             $teams = Team::select('id', 'name')->get();
@@ -76,7 +74,20 @@ class AppServiceProvider extends ServiceProvider
             $view->with(["tags"=>$tags]);
         });
 
+        $payment_codes = ['khalti'];
+        $khalti_api_key = '';
+        $payment_options = PaymentOption::select('code','credentials')->whereIn('code', $payment_codes)->where('status', 1)->get();
+        if($payment_options){
+            foreach($payment_options as $option){
+                $creds = json_decode($option->credentials);
+                if($option->code == 'khalti'){
+                    $khalti_api_key = (isset($creds->api_key) && (!empty($creds->api_key))) ? $creds->api_key : '';
+                }
+            }
+        }
 
+        view()->share('khalti_api_key', $khalti_api_key);
+        view()->share('favicon', $favicon_url);
     }
 
     public function connectDynamicDb($request)

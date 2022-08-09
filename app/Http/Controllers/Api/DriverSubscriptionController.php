@@ -27,11 +27,14 @@ class DriverSubscriptionController extends BaseController
     public function getSubscriptionPlans(Request $request)
     {
         $user = Auth::user();
+        $now = Carbon::now()->toDateString();
         $preferences = ClientPreference::with('currency')->where('id', '>', 0)->first();
-        $sub_plans = SubscriptionPlansDriver::where('status', '1')->orderBy('id', 'asc')->get();
+        $sub_plans = SubscriptionPlansDriver::where('status', '1')->where('driver_type', $user->type)->orderBy('id', 'asc')->get();
         $active_subscription = SubscriptionInvoicesDriver::with(['plan'])
-                            ->where('driver_id', $user->id)
-                            ->orderBy('end_date', 'desc')->first();
+            // ->whereNull('cancelled_at')
+            ->where('driver_id', $user->id)
+            ->where('end_date', '>=', $now )
+            ->orderBy('end_date', 'desc')->first();
         
         return response()->json(["status"=>"Success", "data"=>['all_plans'=>$sub_plans, 'subscription'=>$active_subscription, "clientCurrency"=> $preferences->currency ?? NULL]]);
     }
@@ -47,9 +50,10 @@ class DriverSubscriptionController extends BaseController
     {
         try{
             $user = Auth::user();
+            $preferences = ClientPreference::with('currency')->where('id', '>', 0)->first();
             $previousSubscriptionActive = $this->checkActiveSubscriptionPlan($slug)->getOriginalContent();
             if( $previousSubscriptionActive['status'] == 'Error' ){
-                return $this->errorResponse($previousSubscriptionActive['message'], 400);
+                return $this->error($previousSubscriptionActive['message'], 400);
             }
             $sub_plan = SubscriptionPlansDriver::where('slug', $slug)->first();
             if($sub_plan){
@@ -89,10 +93,10 @@ class DriverSubscriptionController extends BaseController
                     unset($payment_options[$k]);
                 }
             }
-            return response()->json(["status"=>"Success", "data"=>["sub_plan" => $sub_plan, "payment_options" => [] ]]);
+            return response()->json(["status"=>"Success", "data"=>["sub_plan" => $sub_plan, "payment_options" => [], "clientCurrency"=> $preferences->currency ?? NULL ]]);
         }
         catch(\Exception $ex){
-            return $this->errorResponse($ex->getMessage(), 400);
+            return $this->error($ex->getMessage(), 400);
         }
     }
 
@@ -114,12 +118,12 @@ class DriverSubscriptionController extends BaseController
                                 ->where('end_date', '>=', $now )
                                 ->orderBy('end_date', 'desc')->first();
             if( ($userActiveSubscription) && ($userActiveSubscription->plan->slug != $slug) ){
-                return $this->errorResponse('You cannot buy two subscriptions at the same time', 400);
+                return $this->error('You cannot buy two subscriptions at the same time', 400);
             }
-            return $this->successResponse('', 'Processing...');
+            return $this->success($userActiveSubscription, 'Processing...');
         }
         catch(\Exception $ex){
-            return $this->errorResponse($ex->getMessage(), 400);
+            return $this->error($ex->getMessage(), 400);
         }
     }
 
@@ -138,36 +142,64 @@ class DriverSubscriptionController extends BaseController
         try{
             $validator = Validator::make($request->all(), [
                 // 'amount'            => 'required|not_in:0',
-                'transaction_id'    => 'required',
-                'payment_option_id' => 'required',
+                // 'transaction_id'    => 'required',
+                // 'payment_option_id' => 'required',
             ]);
             if($validator->fails()){
                 foreach($validator->errors()->toArray() as $error_key => $error_value){
-                    return $this->errorResponse($error_value[0], 400);
+                    return $this->error($error_value[0], 400);
                 }
             }
             DB::beginTransaction();
             $user = Auth::user();
             $subscription_plan = SubscriptionPlansDriver::where('slug', $slug)->where('status', '1')->first();
             if( ($user) && ($subscription_plan) ){
-                $last_subscription = SubscriptionInvoicesDriver::with(['plan', 'features.feature'])
+                $last_subscription = SubscriptionInvoicesDriver::with(['plan'])
                     ->where('driver_id', $user->id)
                     ->where('subscription_id', $subscription_plan->id)
                     ->orderBy('end_date', 'desc')->first();
                 $subscription_invoice = new SubscriptionInvoicesDriver;
-                $subscription_invoice->user_id = $user->id;
+                $subscription_invoice->driver_id = $user->id;
                 $subscription_invoice->subscription_id = $subscription_plan->id;
                 $subscription_invoice->slug = strtotime(Carbon::now()).'_'.$slug;
-                $subscription_invoice->payment_option_id = $request->payment_option_id;
                 // $subscription_invoice->status_id = 2;
                 $subscription_invoice->frequency = $subscription_plan->frequency;
-                $subscription_invoice->payment_option_id = $request->payment_option_id;
-                $subscription_invoice->transaction_reference = $request->transaction_id;
+                $subscription_invoice->driver_type = $subscription_plan->driver_type;
+                $subscription_invoice->driver_commission_fixed = $subscription_plan->driver_commission_fixed;
+                $subscription_invoice->driver_commission_percentage = $subscription_plan->driver_commission_percentage;
+                // $subscription_invoice->payment_option_id = $request->payment_option_id;
+                
                 $now = Carbon::now();
                 $current_date = $now->toDateString();
                 $start_date = $current_date;
                 $next_date = NULL;
                 $end_date = NULL;
+
+                if($user->wallet){
+                    $wallet_balance = $user->balanceFloat;
+                    if($wallet_balance < $subscription_plan->price){
+                        return $this->error(__('Please recharge yout wallet to buy this subscription'), 400);
+                    }
+                }else{
+                    return $this->error(__('Wallet is not active. Please contact administrator'), 400);
+                }
+
+                $transactionID = generateUniqueTransactionID();
+                $wallet_transaction = $user->wallet->withdrawFloat($subscription_plan->price, [
+                    'type' => 'subscription',
+                    'transaction_type' => 'subscription_purchase',
+                    'transaction_id' => $transactionID,
+                    'subscription_slug' => $subscription_plan->slug,
+                    'description' => 'Debited by purchasing subscription ('.$subscription_plan->title.')',
+                ]);
+
+                // update previous cancelled subscription end date
+                $userActiveSubscription = SubscriptionInvoicesDriver::whereNotNull('cancelled_at')->where('driver_id', $user->id)->where('end_date', '>=', $current_date )->orderBy('end_date', 'desc')->first();
+                if( $userActiveSubscription ){
+                    $previous_sub_end_date = Carbon::now()->subDays(1)->toDateString();
+                    $userActiveSubscription->end_date = $previous_sub_end_date;
+                    $userActiveSubscription->update();
+                }
 
                 if($last_subscription){
                     if($last_subscription->end_date >= $current_date){
@@ -185,33 +217,36 @@ class DriverSubscriptionController extends BaseController
                 $subscription_invoice->start_date = $start_date;
                 $subscription_invoice->next_date = $next_date;
                 $subscription_invoice->end_date = $end_date;
+                $subscription_invoice->transaction_reference = $transactionID;
+                $subscription_invoice->wallet_transaction_id = $wallet_transaction->id;
                 $subscription_invoice->subscription_amount = $subscription_plan->price;
                 $subscription_invoice->save();
                 $subscription_invoice_id = $subscription_invoice->id;
                 if($subscription_invoice_id){
-                    $payment = new Payment;
-                    $payment->balance_transaction = $subscription_plan->price;
-                    $payment->transaction_id = $request->transaction_id;
-                    $payment->user_subscription_invoice_id = $subscription_invoice_id;
-                    $payment->date = Carbon::now()->format('Y-m-d');
-                    $payment->save();
+                    // $payment = new Payment;
+                    // $payment->balance_transaction = $subscription_plan->price;
+                    // $payment->transaction_id = $request->transaction_id;
+                    // $payment->user_subscription_invoice_id = $subscription_invoice_id;
+                    // $payment->date = Carbon::now()->format('Y-m-d');
+                    // $payment->save();
 
                     $message = 'Your subscription has been activated successfully.';
                     DB::commit();
-                    return $this->successResponse('', $message);
+                    $user->wallet->refreshBalance();
+                    return $this->success('', $message);
                 }
                 else{
                     DB::rollback();
-                    return $this->errorResponse('Error in purchasing subscription.', 400);
+                    return $this->error('Error in purchasing subscription.', 400);
                 }
             }
             else{
-                return $this->errorResponse('Invalid Data', 400);
+                return $this->error('Invalid Data', 400);
             }
         }
         catch(\Exception $ex){
             DB::rollback();
-            return $this->errorResponse($ex->getMessage(), 400);
+            return $this->error($ex->getMessage(), 400);
         }
     }
 
@@ -235,15 +270,15 @@ class DriverSubscriptionController extends BaseController
                 $active_subscription->updated_at = Carbon::now()->toDateTimeString();
                 $active_subscription->save();
                 DB::commit();
-                return $this->successResponse('', 'Your '.$active_subscription->plan->title.' subscription has been cancelled successfully');
+                return $this->success('', 'Your '.$active_subscription->plan->title.' subscription has been cancelled successfully');
             }
             else{
-                return $this->errorResponse('Unable to cancel subscription', 400);
+                return $this->error('Unable to cancel subscription', 400);
             }
         }
         catch(\Exception $ex){
             DB::rollback();
-            return $this->errorResponse($ex->getMessage(), 400);
+            return $this->error($ex->getMessage(), 400);
         }
     }
 }

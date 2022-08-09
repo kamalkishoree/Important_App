@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Session;
 use App\Model\Task;
 use App\Model\Location;
 use App\Model\Customer;
@@ -22,7 +23,7 @@ use App\Model\Geo;
 use App\Model\Order;
 use App\Model\Timezone;
 use App\Model\AgentLog;
-use App\Model\{BatchAllocation, BatchAllocationDetail, Team,TeamTag};
+use App\Model\{BatchAllocation, BatchAllocationDetail, Team,TeamTag, SubscriptionInvoicesDriver};
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
@@ -724,12 +725,33 @@ class TaskController extends BaseController
         $paid_distance = $paid_distance < 0 ? 0 : $paid_distance;
         $total         = $pricingRule->base_price + ($paid_distance * $pricingRule->distance_fee) + ($paid_duration * $pricingRule->duration_price);
 
+        $agent_commission_fixed = $pricingRule->agent_commission_fixed;
+        $agent_commission_percentage = $pricingRule->agent_commission_percentage;
+        $freelancer_commission_fixed = $pricingRule->freelancer_commission_fixed;
+        $freelancer_commission_percentage = $pricingRule->freelancer_commission_percentage;
         if (isset($agent_id)) {
             $agent_details = Agent::where('id', $agent_id)->first();
             if ($agent_details->type == 'Employee') {
-                $percentage = $pricingRule->agent_commission_fixed + (($total / 100) * $pricingRule->agent_commission_percentage);
+                $percentage = $agent_commission_fixed + (($total / 100) * $agent_commission_percentage);
             } else {
-                $percentage = $pricingRule->freelancer_commission_fixed + (($total / 100) * $pricingRule->freelancer_commission_percentage);
+                $percentage = $freelancer_commission_fixed + (($total / 100) * $freelancer_commission_percentage);
+            }
+
+            $now = Carbon::now()->toDateString();
+            $driver_subscription = SubscriptionInvoicesDriver::where('driver_id', $agent_id)->where('end_date', '>', $now)->orderBy('end_date', 'desc')->first();
+            if($driver_subscription && ($driver_subscription->driver_type == $agent_details->type)){
+                if ($driver_subscription->driver_type == 'Employee') {
+                    $agent_commission_fixed = $driver_subscription->driver_commission_fixed;
+                    $agent_commission_percentage = $driver_subscription->driver_commission_percentage;
+                    $freelancer_commission_fixed = null;
+                    $freelancer_commission_percentage = null;
+                } else {
+                    $agent_commission_fixed = null;
+                    $agent_commission_percentage = null;
+                    $freelancer_commission_fixed = $driver_subscription->driver_commission_fixed;
+                    $freelancer_commission_percentage = $driver_subscription->driver_commission_percentage;
+                }
+                $percentage = $driver_subscription->driver_commission_fixed + (($total / 100) * $driver_subscription->driver_commission_percentage);
             }
         }
         //update order with order cost details
@@ -744,10 +766,10 @@ class TaskController extends BaseController
             'waiting_price'                   => $pricingRule->waiting_price,
             'distance_fee'                    => $pricingRule->distance_fee,
             'cancel_fee'                      => $pricingRule->cancel_fee,
-            'agent_commission_percentage'     => $pricingRule->agent_commission_percentage,
-            'agent_commission_fixed'          => $pricingRule->agent_commission_fixed,
-            'freelancer_commission_percentage'=> $pricingRule->freelancer_commission_percentage,
-            'freelancer_commission_fixed'     => $pricingRule->freelancer_commission_fixed,
+            'agent_commission_percentage'     => $agent_commission_percentage,
+            'agent_commission_fixed'          => $agent_commission_fixed,
+            'freelancer_commission_percentage'=> $freelancer_commission_percentage,
+            'freelancer_commission_fixed'     => $freelancer_commission_fixed,
             'order_cost'                      => $total,
             'driver_cost'                     => $percentage,
             'net_quantity'                    => $net_quantity
@@ -780,31 +802,28 @@ class TaskController extends BaseController
             $auth->timezone = $tz->timezone_name(Auth::user()->timezone);
 
             $beforetime = (int)$auth->getAllocation->start_before_task_time;
-            //    $to = new \DateTime("now", new \DateTimeZone(isset(Auth::user()->timezone)? Auth::user()->timezone : 'Asia/Kolkata') );
             $to = new \DateTime("now", new \DateTimeZone('UTC'));
             $sendTime = Carbon::now();
             $to = Carbon::parse($to)->format('Y-m-d H:i:s');
             $from = Carbon::parse($notification_time)->format('Y-m-d H:i:s');
             $datecheck = 0;
             $to_time = strtotime($to);
-            $from_time = strtotime($from);;
+            $from_time = strtotime($from);
+            
             if ($to_time >= $from_time) {
                 return redirect()->route('tasks.index')->with('success', 'Task Added Successfully!');
             }
 
             $diff_in_minutes = round(abs($to_time - $from_time) / 60);
-
             $schduledata = [];
             if ($diff_in_minutes > $beforetime) {
                 $notification_befor_time =   Carbon::parse($notification_time)->subMinutes($beforetime);
                 $finaldelay = (int)$diff_in_minutes - $beforetime;
-
                 $time = Carbon::parse($sendTime)
                 ->addMinutes($finaldelay)
                 ->format('Y-m-d H:i:s');
 
                 $schduledata['geo']               = $geo;
-                //$schduledata['notification_time'] = $time;
                 $schduledata['notification_time'] = $notification_time;
                 $schduledata['agent_id']          = $agent_id;
                 $schduledata['orders_id']         = $orders->id;
@@ -813,9 +832,7 @@ class TaskController extends BaseController
                 $schduledata['taskcount']         = $taskcount;
                 $schduledata['allocation']        = $allocation;
                 $schduledata['database']          = $auth;
-                //->delay(now()->addMinutes($finaldelay))
                 scheduleNotification::dispatch($schduledata)->delay(now()->addMinutes($finaldelay));
-                //$this->dispatch(new scheduleNotification($schduledata));
                 return response()->json(['status' => "Success", 'message' => 'Route created Successfully']);
             }
         }
@@ -849,25 +866,62 @@ class TaskController extends BaseController
     public function assignAgent(Request $request)
     {
         try{
-            if($request->type != 'B'){
+        if($request->type != 'B'){
+            $agent_id = $request->has('agent_id') ? $request->agent_id : null;
+            $agent_details = Agent::where('id', $agent_id)->where('is_approved', 1)->first();
+            if(!empty($agent_details)){
+                $orders = Order::find($request->orders_id);
+                foreach($orders as $order){
+                    $percentage = 0.00;
+                    $agent_commission_fixed = $order->agent_commission_fixed;
+                    $agent_commission_percentage = $order->agent_commission_percentage;
+                    $freelancer_commission_fixed = $order->freelancer_commission_fixed;
+                    $freelancer_commission_percentage = $order->freelancer_commission_percentage;
 
-        if(!empty($request->agent_id)):
-                $task_id = Order::find($request->orders_id);
-                $agent_details = Agent::where('id', $request->agent_id)->first();
-                if ($agent_details->type == 'Employee'):
-                    $percentage = $task_id[0]->agent_commission_fixed + (($task_id[0]->order_cost / 100) * $task_id[0]->agent_commission_percentage);
-                else:
-                    $percentage = $task_id[0]->freelancer_commission_fixed + (($task_id[0]->order_cost / 100) * $task_id[0]->freelancer_commission_percentage);
-                endif;
+                    if ($agent_details->type == 'Employee'){
+                        $percentage = $agent_commission_fixed + (($order->order_cost / 100) * $agent_commission_percentage);
+                    }else{
+                        $percentage = $freelancer_commission_fixed + (($order->order_cost / 100) * $freelancer_commission_percentage);
+                    }
+                    
+                    $now = Carbon::now()->toDateString();
+                    $driver_subscription = SubscriptionInvoicesDriver::where('driver_id', $agent_id)->where('end_date', '>', $now)->orderBy('end_date', 'desc')->first();
+                    if($driver_subscription && ($driver_subscription->driver_type == $agent_details->type)){
+                        if ($driver_subscription->driver_type == 'Employee') {
+                            $agent_commission_fixed = $driver_subscription->driver_commission_fixed;
+                            $agent_commission_percentage = $driver_subscription->driver_commission_percentage;
+                            $freelancer_commission_fixed = null;
+                            $freelancer_commission_percentage = null;
+                        } else {
+                            $agent_commission_fixed = null;
+                            $agent_commission_percentage = null;
+                            $freelancer_commission_fixed = $driver_subscription->driver_commission_fixed;
+                            $freelancer_commission_percentage = $driver_subscription->driver_commission_percentage;
+                        }
+                        $percentage = $driver_subscription->driver_commission_fixed + (($order->order_cost / 100) * $driver_subscription->driver_commission_percentage);
+                    }
 
-            else:
-                $percentage = 0.00;
-            endif;
+                    $order_update = Order::where('id', $order->id)->update([
+                        'driver_id' => $agent_id, 
+                        'driver_cost' => $percentage, 
+                        'status' => 'assigned', 
+                        'auto_alloction' => 'm',
+                        'agent_commission_fixed' => $agent_commission_fixed,
+                        'agent_commission_percentage' => $agent_commission_percentage,
+                        'freelancer_commission_fixed' => $freelancer_commission_fixed,
+                        'freelancer_commission_percentage' => $freelancer_commission_percentage
+                    ]);
 
-            $order_update = Order::whereIn('id', $request->orders_id)->update(['driver_id'=>$request->agent_id, 'driver_cost'=>$percentage, 'status'=>'assigned', 'auto_alloction'=>'m']);
-            $task         = Task::whereIn('order_id', $request->orders_id)->update(['task_status'=>1]);
+                    $task = Task::where('order_id', $order->id)->update(['task_status'=>1]);
 
-            $this->MassAndEditNotification($request->orders_id[0], $request->agent_id);
+                    $this->MassAndEditNotification($order->id, $agent_id);
+                }
+                Session::put('success', __('Agent assigned successfully'));
+                return $this->success(__('Agent assigned successfully'), 400);
+            }else{
+                Session::put('error', __('Invalid agent data'));
+                return $this->error(__('Invalid agent data'), 400);
+            }
         }else{
 
            $batchs = BatchAllocation::with('batchDetails')->where('id',$request->batchId)->first();
@@ -875,20 +929,52 @@ class TaskController extends BaseController
            
            foreach($batchs->batchDetails as  $k=> $batch)
             {
-                if(!empty($request->agent_id)):
+                if(!empty($request->agent_id)){
                     $task_id = Order::find($batch->order_id);
                     $agent_details = Agent::where('id', $request->agent_id)->first();
-                    if ($agent_details->type == 'Employee'):
-                        $percentage = $task_id->agent_commission_fixed + (($task_id->order_cost / 100) * $task_id->agent_commission_percentage);
-                    else:
-                        $percentage = $task_id->freelancer_commission_fixed + (($task_id->order_cost / 100) * $task_id->freelancer_commission_percentage);
-                    endif;
-    
-                else:
-                    $percentage = 0.00;
-                endif;
 
-                $order_update = Order::where('id', $batch->order_id)->update(['driver_id'=>$request->agent_id, 'driver_cost'=>$percentage, 'status'=>'assigned', 'auto_alloction'=>'m']);
+                    $agent_commission_fixed = $task_id->agent_commission_fixed;
+                    $agent_commission_percentage = $task_id->agent_commission_percentage;
+                    $freelancer_commission_fixed = $task_id->freelancer_commission_fixed;
+                    $freelancer_commission_percentage = $task_id->freelancer_commission_percentage;
+
+                    if ($agent_details->type == 'Employee'){
+                        $percentage = $task_id->agent_commission_fixed + (($task_id->order_cost / 100) * $task_id->agent_commission_percentage);
+                    }else{
+                        $percentage = $task_id->freelancer_commission_fixed + (($task_id->order_cost / 100) * $task_id->freelancer_commission_percentage);
+                    }
+
+                    $now = Carbon::now()->toDateString();
+                    $driver_subscription = SubscriptionInvoicesDriver::where('driver_id', $request->agent_id)->where('end_date', '>', $now)->orderBy('end_date', 'desc')->first();
+                    if($driver_subscription && ($driver_subscription->driver_type == $agent_details->type)){
+                        if ($driver_subscription->driver_type == 'Employee') {
+                            $agent_commission_fixed = $driver_subscription->driver_commission_fixed;
+                            $agent_commission_percentage = $driver_subscription->driver_commission_percentage;
+                            $freelancer_commission_fixed = null;
+                            $freelancer_commission_percentage = null;
+                        } else {
+                            $agent_commission_fixed = null;
+                            $agent_commission_percentage = null;
+                            $freelancer_commission_fixed = $driver_subscription->driver_commission_fixed;
+                            $freelancer_commission_percentage = $driver_subscription->driver_commission_percentage;
+                        }
+                        $percentage = $driver_subscription->driver_commission_fixed + (($task_id->order_cost / 100) * $driver_subscription->driver_commission_percentage);
+                    }
+                }
+                else{
+                    $percentage = 0.00;
+                }
+
+                $order_update = Order::where('id', $batch->order_id)->update([
+                    'driver_id'=>$request->agent_id,
+                    'driver_cost'=>$percentage,
+                    'status'=>'assigned',
+                    'auto_alloction'=>'m',
+                    'agent_commission_fixed' => $agent_commission_fixed,
+                    'agent_commission_percentage' => $agent_commission_percentage,
+                    'freelancer_commission_fixed' => $freelancer_commission_fixed,
+                    'freelancer_commission_percentage' => $freelancer_commission_percentage
+                ]);
                 $task         = Task::where('order_id', $batch->order_id)->update(['task_status'=>1]);
 
                 $batch    = BatchAllocationDetail::where('order_id', $batch->order_id)->update(['agent_id'=>$request->agent_id]);
@@ -1657,14 +1743,7 @@ class TaskController extends BaseController
                 $this->dispatch(new RosterCreate($data, $extraData));
             }
         } else {
-            /* $getgeo = DriverGeo::where('geo_id', $geo)->with(
-                        [
-                            'agent'=> function ($o) use ($cash_at_hand, $date) {
-                                $o->where("agent_cash_at_hand", '<', $cash_at_hand)->orderBy('id', 'DESC')->with(['logs','order'=> function ($f) use ($date) {
-                                    $f->whereDate('order_time', $date)->with('task');
-                                }]);
-                            }
-                        ])->get(); */
+            
             $geoagents_ids =  DriverGeo::where('geo_id', $geo)->pluck('driver_id');
             $geoagents = Agent::whereIn('id',  $geoagents_ids)->with(['logs','order'=> function ($f) use ($date) {
                 $f->whereDate('order_time', $date)->with('task');

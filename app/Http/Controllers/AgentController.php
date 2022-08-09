@@ -192,6 +192,12 @@ class AgentController extends Controller
                     $payToDriver = ($pay - $receive) - ($cash - $orders);
                     return number_format((float)$payToDriver, 2, '.', '');
                 })
+                ->addColumn('subscription_plan', function ($agents) use ($request) {
+                    return $agents->subscriptionPlan ? $agents->subscriptionPlan->plan->title : '';
+                })
+                ->addColumn('subscription_expiry', function ($agents) use ($request, $timezone) {
+                    return $agents->subscriptionPlan ? convertDateTimeInTimeZone($agents->subscriptionPlan->end_date, $timezone) : '';
+                })
                 ->editColumn('created_at', function ($agents) use ($request, $timezone) {
                     return convertDateTimeInTimeZone($agents->created_at, $timezone);
                 })
@@ -800,5 +806,20 @@ class AgentController extends Controller
         }
         return $this->success([], __('An otp has been sent to your phone. Please check.'), 200);
 	}
+
+    public function refreshWalletbalance(Request $request, $domain='', $id=''){
+        if(!empty($id)){
+            $user = Agent::find($id);
+            if($user){
+                if($user->wallet){
+                    $user->wallet->refreshBalance();
+                }
+            }
+        }
+
+        echo '<pre>';
+        echo 'Successfully Done';
+        echo '</pre>';
+    }
 
 }

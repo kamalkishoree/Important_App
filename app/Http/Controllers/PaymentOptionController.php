@@ -26,7 +26,7 @@ class PaymentOptionController extends BaseController
      */
     public function index()
     {
-        $payment_codes = array('razorpay', 'stripe','vnpay','ccavenue');
+        $payment_codes = array('razorpay', 'stripe','vnpay','ccavenue', 'khalti');
         $payout_codes = array('cash', 'stripe', 'bank_account_m_india');
         $payOption = PaymentOption::whereIn('code', $payment_codes)->get();
         $payoutOption = PayoutOption::whereIn('code', $payout_codes)->get();
@@ -243,6 +243,16 @@ class PaymentOptionController extends BaseController
                         'merchant_id' => $request->ccavenue_merchant_id,
                         'access_code' => $request->ccavenue_access_code,
                         'enc_key' => $request->ccavenue_enc_key
+                    ));
+                }
+                else if ((isset($method_name_arr[$key])) && (strtolower($method_name_arr[$key]) == 'khalti')) {
+                    $validatedData = $request->validate([
+                        'khalti_public_key' => 'required',
+                        'khalti_secret_key' => 'required'
+                    ]);
+                    $json_creds = json_encode(array(
+                        'api_key' => $request->khalti_public_key,
+                        'api_secret_key' => $request->khalti_secret_key
                     ));
                 }
             }

@@ -434,6 +434,9 @@
                 data: {_token: CSRF_TOKEN, orders_id: order_id, agent_id: agent_id},
                 success: function( msg ) {
                     location.reload();
+                },
+                error: function(errors){
+                    location.reload();
                 }
             });
         });
