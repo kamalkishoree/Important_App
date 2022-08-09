@@ -336,7 +336,7 @@ class ClientController extends Controller
         ];
             Config::set("database.connections.$schemaName", $default);
             config(["database.connections.mysql.database" => $schemaName]);
-            DB::connection($schemaName)->table('clients')->update(['custom_domain' => $request->custom_domain,'sub_domain'   => $request->sub_domain]);
+            DB::connection($schemaName)->table('clients')->update(['custom_domain' => $request->custom_domain, 'sub_domain'   => $request->sub_domain]);
             DB::disconnect($schemaName);
             return 1;
         } catch (Exception $ex) {
@@ -412,44 +412,22 @@ class ClientController extends Controller
     }
 
 
-    /////////////// *********************** socket url Setting********************************* ////////////////////////////////////////
-
-    public function socketUrl(Request $request,$id)
-    {
-      $data = GlobalFunction::checkDbStat($id);
-        try {
-                
-                DB::connection($data['schemaName'])->beginTransaction();
-                $update = DB::table('clients')->where('id',$id)->update(['socket_url' => $request->socket_url]);
-                $update_sub = DB::connection($data['schemaName'])->table('clients')->where('id',1)->update(['socket_url' => $request->socket_url]);
-                DB::connection($data['schemaName'])->commit();
-                return redirect()->route('client.index')->with('success', 'Client updated successfully!');
-           
-            
-        } catch (\PDOException $e) {
-            DB::connection($data['schemaName'])->rollBack();
-            return redirect()->route('client.index')->with('error', $e->getMessage());
-        }
-            
-            
-    }
+    /////////////// *********************** socket url update********************************* ////////////////////////////////////////
 
     public function socketUpdateAction(Request $request,$id)
     {
       $data = GlobalFunction::checkDbStat($id);
         try {
-                $action = $request->action;
                 DB::connection($data['schemaName'])->beginTransaction();
-                $update = DB::table('clients')->where('id',$id)->update([$action => $request->status]);
-                $update_sub = DB::connection($data['schemaName'])->table('clients')->where('id',1)->update([$action => $request->status]);
+                $update = DB::table('clients')->where('id',$id)->update(['socket_url' => $request->socket_url]);
+                $update_sub = DB::connection($data['schemaName'])->table('clients')->where('id',1)->update(['socket_url' => $request->socket_url]);
                 DB::connection($data['schemaName'])->commit();
-                return response()->json(array('success' => true, 'message'=>'Socket url status has been updated.'));
+                return redirect()->route('client.index')->with('success', 'Socket URL updated successfully!');
            
             
         } catch (\PDOException $e) {
             DB::connection($data['schemaName'])->rollBack();
-            return response()->json(array('success' => false, 'message'=>'Something went wrong.'));
-
+            return redirect()->route('client.index')->with('error', $e->getMessage());
         }
             
             

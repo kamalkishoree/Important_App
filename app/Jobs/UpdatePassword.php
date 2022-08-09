@@ -64,7 +64,7 @@ class UpdatePassword implements ShouldQueue
         Config::set("database.connections.$schemaName", $default);
         config(["database.connections.mysql.database" => $schemaName]);
         if($this->client_data != 'empty'){
-            DB::connection($schemaName)->table('clients')->where('code',Auth::user()->code)->update(['name'=>$this->client_data['name'],'email'=>$this->client_data['email'],'phone_number'=>$this->client_data['phone_number'],'company_name'=>$this->client_data['company_name'],'company_address'=>$this->client_data['company_address'],'logo'=>$this->client_data['logo'],'country_id'=>$this->client_data['country_id'],'timezone'=>$this->client_data['timezone']]);
+            DB::connection($schemaName)->table('clients')->where('code',Auth::user()->code)->update(['name'=>$this->client_data['name'],'email'=>$this->client_data['email'],'phone_number'=>$this->client_data['phone_number'],'company_name'=>$this->client_data['company_name'],'company_address'=>$this->client_data['company_address'],'logo'=>$this->client_data['logo'],'dark_logo'=>$this->client_data['dark_logo'],'country_id'=>$this->client_data['country_id'],'timezone'=>$this->client_data['timezone']]);
         }else{
             DB::connection($schemaName)->table('clients')->where('code',Auth::user()->code)->update(['password'=>$this->password['password'],'confirm_password'=>$this->password['confirm_password']]);
         }

@@ -75,7 +75,7 @@
                         </div>
                     </div>
 
-                    {{-- <div class="row ">
+                    <div class="row ">
                         <div class="col-md-12">
                             <div class="form-group" id="vehicle_type_idInput">
                                 <p class="text-muted mt-3 mb-2">{{__("TRANSPORT TYPE")}}</p>
@@ -106,7 +106,7 @@
 
                             </div>
                         </div>
-                    </div> --}}
+                    </div>
                     <div class="row">
                         <div class="col-lg-12">
                             <div class="form-group mb-3">
