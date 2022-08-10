@@ -26,7 +26,7 @@ class AddCoulmnDarkLogoToClientsTable extends Migration
     public function down()
     {
         Schema::table('clients', function (Blueprint $table) {
-           $table->dropColumn('dark_logo');
+          $table->dropColumn('dark_logo');
         });
     }
 }

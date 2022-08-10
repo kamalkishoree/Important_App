@@ -879,7 +879,6 @@ class TaskController extends BaseController
 
     public function CreateTask(CreateTaskRequest $request)
     {
-        // Log::info($request->all());
         try {
             $header = $request->header();
             if(isset($header['client'][0]))
