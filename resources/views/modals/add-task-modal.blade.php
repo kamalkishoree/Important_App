@@ -6,7 +6,7 @@
                     @csrf
                     <div class="row mb-2" id="dateredio">
                         <div class="col-md-12">
-                            <div class="radio radio-primary form-check-inline mr-4">
+                            <div class="radio radio-primary form-check-inline mr-3">
                                 <input type="radio" id="tasknow" value="now" name="task_type" class="checkschedule" checked>
                                 <label for="tasknow"> {{__("Add Now")}} </label>
                             </div>
@@ -29,7 +29,7 @@
 
                     <div class="row mb-2" id="customerradio">
                         <div class="col-md-12">
-                            <div class="radio radio-primary form-check-inline mr-4">
+                            <div class="radio radio-primary form-check-inline mr-3">
                                 <input type="radio" id="existing_customer" value="existingcustomer" name="customer_type" class="checkcustomer" checked>
                                 <label for="existing_customer"> {{__("Existing Customer")}} </label>
                             </div>
@@ -82,10 +82,10 @@
 
                     <h4 class="header-title mb-2">{{__("Meta Data")}}</h4>
                     <div class="row mb-2">
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             <input type="file" data-plugins="dropify" class="dropify" data-height="300" />
                         </div>
-                        <div class="col-md-8" id="make_modelInput">
+                        <div class="col-md-6" id="make_modelInput">
                             {!! Form::hidden('recipient_phone', null, ['class' => 'form-control rec', 'placeholder' =>
                             __('Recipient Phone'), 'required' => 'required']) !!}
                             {!! Form::hidden('recipient_email', null, ['class' => 'form-control rec', 'placeholder'
@@ -118,11 +118,11 @@
                     <h4 class="header-title mb-2">{{__("Allocation")}}</h4>
                     <div class="row mb-2" id="rediodiv">
                         <div class="col-md-12">
-                            <div class="radio radio-primary form-check-inline mr-4">
+                            <div class="radio radio-primary form-check-inline mr-2">
                                 <input type="radio" id="customRadio" value="u" name="allocation_type" class="assignRadio" {{$allcation->manual_allocation == 0 ?'checked':''}}>
                                 <label for="customRadio"> {{__("Unassigned")}} </label>
                             </div>
-                            <div class="radio radio-info form-check-inline mr-4">
+                            <div class="radio radio-info form-check-inline mr-2">
                                 <input type="radio" id="customRadio22" value="a" name="allocation_type" class="assignRadio" {{$allcation->manual_allocation == 1 ?'checked':''}}>
                                 <label for="customRadio22"> {{__("Auto Allocation")}} </label>
                             </div>

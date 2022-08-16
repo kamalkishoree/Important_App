@@ -84,10 +84,10 @@
 
 
         }
-        .copyin1 {
+        /* .copyin1 {
             background-color: rgb(148 148 148 / 11%);
 
-        }
+        } */
         hr.new3 {
          border-top: 1px dashed white;
          margin: 0 0 .5rem 0;
@@ -147,16 +147,16 @@
 
   .pac-container, .pac-container .pac-item { z-index: 9999 !important; }
 </style>
-<div id="task-modal-header" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
-    <div class="modal-dialog modal-dialog-top modal-xxl">
+<div id="task-modal-header" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;font-size: 14px;">
+    <div class="modal-dialog modal-dialog-top modal-xl">
         <div class="modal-content" style="">
             <div class="modal-header align-items-center border-0 mb-md-0">
-                <h4 class="page-title ml-3 m-1">{{__("Add Route")}}</h4>
+                <h4 class="page-title m-1">{{__("Add Route")}}</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
             </div>
             <form id="taskFormHeader" method="post" enctype="multipart/form-data" action="{{ route('tasks.store') }}">
                 @csrf
-                <div class="modal-body p-14 pt-0" id="addCardBox">
+                <div class="modal-body p-0" id="addCardBox">
 
                 </div>
                 <span class="show_all_error invalid-feedback"></span>
