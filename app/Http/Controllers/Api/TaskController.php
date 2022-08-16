@@ -801,7 +801,7 @@ class TaskController extends BaseController
                 // $agent_id =  isset($request->allocation_type) && $request->allocation_type == 'm' ? $request->driver_id : null;
     
                 if ($task_id->driver_cost <= 0.00) {
-                    // $agent_details = Agent::where('id', $agent_id)->first();
+                    $agent_details = Agent::where('id', $agent_id)->first();
                     if ($agent_details->type == 'Employee') {
                         $percentage = $agent_commission_fixed + (($task_id->order_cost / 100) * $agent_commission_percentage);
                     } else {
