@@ -127,7 +127,7 @@
                     <a href="/switch/language?lang=fr" class="dropdown-item" langid="1">French</a>
                     <a href="/switch/language?lang=sv" class="dropdown-item" langid="1">Swedish</a>
                     <a href="/switch/language?lang=vi" class="dropdown-item" langid="1">Vietnamese</a>
-
+                    <a href="/switch/language?lang=ru" class="dropdown-item" langid="1">Russian</a>
                     <div class="dropdown-divider"></div>
                 </div>
             </li>
