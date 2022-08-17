@@ -508,6 +508,7 @@ class TaskController extends BaseController
     {
         $loc_id = $cus_id = $send_loc_id = $newlat = $newlong = 0;
         $iinputs = $request->toArray();
+        
         $old_address_ids = array();
         foreach ($iinputs as $key => $value) {
             if (substr_count($key, "old_address_id") == 1) {
