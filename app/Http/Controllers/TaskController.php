@@ -620,7 +620,6 @@ class TaskController extends BaseController
                     $loc
                 );
 
-             //   $Loction = Location::create($loc);
                 $loc_id = $Loction->id;
                 $send_loc_id = $loc_id;
             } else {

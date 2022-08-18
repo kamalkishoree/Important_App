@@ -83,7 +83,7 @@
                     <h4 class="header-title mb-2">{{__("Meta Data")}}</h4>
                     <div class="row mb-2">
                         <div class="col-md-6">
-                            <input type="file" data-plugins="dropify" class="dropify" data-height="300" />
+                            <input type="file" data-plugins="dropify" class="dropify" name="file[]" multiple data-height="300" accept="image/*"/>
                         </div>
                         <div class="col-md-6" id="make_modelInput">
                             {!! Form::hidden('recipient_phone', null, ['class' => 'form-control rec', 'placeholder' =>
@@ -185,6 +185,7 @@
                 </div>
                 <div class="col-md-8">
                     <h4 class="header-title mb-2">{{__("Tasks")}}</h4>
+                    <span class="span1 addspan">{{__("Please select a address or create new")}}</span>
                     <div class="cust_add_div" id="addHeader1">
                         <div class="alTaskType pt-1 pb-1 copyin1 cloningDiv check-validation" id="copyin1">
                             <div class="alFormTaskType row m-0">

@@ -462,10 +462,20 @@
                   var array = data;
                   $('.withradio .append').remove();
                   jQuery.each(array, function(i, val) {
-                      $(".withradio").append(
-                          '<div class="append"><div class="custom-control custom-radio count"><input type="radio" id="' + val.id + '" name="old_address_id" value="' + val.id + '" class="custom-control-input redio old-select-address callradio" data-srtadd="'+ val.short_name +'" data-flat_no="'+ val.flat_no +'"  data-adr="'+ val.address +'" data-lat="'+ val.latitude +'" data-long="'+ val.longitude +'" data-pstcd="'+ val.post_code +'" data-emil="'+ val.email +'" data-ph="'+ val.phone_number +'"><label class="custom-control-label" for="' + val.id + '"><span class="spanbold">' + val.short_name +
+                    var countz = '';
+                    var rand =  Math.random().toString(36).substring(7);
+                    $(".withradio").each(function(){
+                        var count = parseInt(countz);if(isNaN(count)){count = 0;}
+                        $(this).append(
+                          '<div class="append"><div class="custom-control custom-radio count"><input type="radio" id="' + (rand + count) + '" name="old_address_id' + countz + '" value="' + val.id + '" class="custom-control-input redio old-select-address callradio" data-srtadd="'+ val.short_name +'" data-flat_no="'+ val.flat_no +'"  data-adr="'+ val.address +'" data-lat="'+ val.latitude +'" data-long="'+ val.longitude +'" data-pstcd="'+ val.post_code +'" data-emil="'+ val.email +'" data-ph="'+ val.phone_number +'"><label class="custom-control-label" for="' + (rand + count) + '"><span class="spanbold">' + val.short_name +
                           '</span>-' + val.address +
                           '</label></div></div>');
+                        countz = count + 1;
+                    });
+                      /* $(".withradio").append(
+                          '<div class="append"><div class="custom-control custom-radio count"><input type="radio" id="' + val.id + '" name="old_address_id" value="' + val.id + '" class="custom-control-input redio old-select-address callradio" data-srtadd="'+ val.short_name +'" data-flat_no="'+ val.flat_no +'"  data-adr="'+ val.address +'" data-lat="'+ val.latitude +'" data-long="'+ val.longitude +'" data-pstcd="'+ val.post_code +'" data-emil="'+ val.email +'" data-ph="'+ val.phone_number +'"><label class="custom-control-label" for="' + val.id + '"><span class="spanbold">' + val.short_name +
+                          '</span>-' + val.address +
+                          '</label></div></div>'); */
                   });
 
               }
@@ -1057,7 +1067,7 @@
     });
 
 
-    $(document).on('click', '.alFormTaskType input,select,textarea', function () {
+    $(document).on('click', '.alFormTaskType', function () {
 
         $(".alTaskType").removeClass("active");
         $(".mainaddress").addClass("alCol-12");
