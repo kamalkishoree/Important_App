@@ -35,7 +35,7 @@
         #typeInputss {
             overflow-y: auto;
             overflow-x: hidden;
-            height: 130px;
+            height: 200px;
             /* display: flex;
             align-items: center;
             justify-content: center;
@@ -84,10 +84,7 @@
 
 
         }
-        .copyin1 {
-            background-color: rgb(148 148 148 / 11%);
-
-        }
+        
         hr.new3 {
          border-top: 1px dashed white;
          margin: 0 0 .5rem 0;
@@ -145,18 +142,55 @@
        }
        .ui-menu.ui-autocomplete { z-index: 9000 !important; }
 
-  .pac-container, .pac-container .pac-item { z-index: 9999 !important; }
+    .pac-container, .pac-container .pac-item { z-index: 9999 !important; }
+
+    .alTaskType{background-color: #F4F3FD; border: 1px solid transparent;border-radius: 7px;}
+    .alTaskType.active{background-color: #FEE9DB;border: 1px solid #FA6400;}
+    .alTaskType input{background-color: transparent;padding: 10px;border:1px solid #d1d1d1;border-radius: 5px;}
+    .alTaskType select{background-color: transparent;padding: 10px;border:1px solid #d1d1d1;border-radius: 5px;}
+    .alTaskType textarea{background-color: transparent;padding: 10px;border:1px solid #d1d1d1;border-radius: 5px;}
+    .border-right{border-right: 1px dashed #d1d1d1 !important;}
+    .alCol-12{-ms-flex: 0 0 100%;flex: 0 0 100%;max-width: 100%;}    
+    .alCol-6{-ms-flex: 0 0 50%;flex: 0 0 50%;max-width: 50%;}
+    .alCol-12.mainaddress.col-8 .addressDetails .form-group.col-6{-ms-flex: 0 0 50%;flex: 0 0 50%;max-width: 50%;}
+    .mainaddress.col-8 .addressDetails .form-group.col-6{-ms-flex: 0 0 100%;flex: 0 0 100%;max-width: 100%;}
+    .addressDetails{-ms-flex: 0 0 50%;flex: 0 0 50%;max-width: 50%;}
+    .alCol-12.mainaddress.col-8 .alContactOther .col-6{-ms-flex: 0 0 50%;flex: 0 0 50%;max-width: 50%;}
+    .mainaddress.col-8 .alContactOther .col-6{-ms-flex: 0 0 100%;flex: 0 0 100%;max-width: 100%;}
+    .mainaddress.col-8 .alContactOther .alRightBorder,
+    .alCol-12.mainaddress.col-8 .alContactOther{border-right: 1px dashed transparent;}
+    .alCol-12.mainaddress.col-8 .alContactOther .alRightBorder,
+    .mainaddress.col-8 .alContactOther{border-right: 1px dashed #d1d1d1;}
+
+    ::-webkit-scrollbar {
+    width: 5px;
+    }
+
+    /* Track */
+    ::-webkit-scrollbar-track {
+    background: #f1f1f1; 
+    }
+    
+    /* Handle */
+    ::-webkit-scrollbar-thumb {
+    background: #888; 
+    }
+
+    /* Handle on hover */
+    ::-webkit-scrollbar-thumb:hover {
+    background: #555; 
+    }
 </style>
-<div id="task-modal-header" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
+<div id="task-modal-header" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;font-size: 14px;">
+    <div class="modal-dialog modal-dialog-top modal-xl">
         <div class="modal-content" style="">
-            <div class="modal-header align-items-center border-0 mb-md-0 mb-3">
-                <h4 class="page-title m-0">{{__("Route")}}</h4>
+            <div class="modal-header align-items-center border-0 mb-md-0">
+                <h4 class="page-title m-1">{{__("Add Route")}}</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
             </div>
             <form id="taskFormHeader" method="post" enctype="multipart/form-data" action="{{ route('tasks.store') }}">
                 @csrf
-                <div class="modal-body p-14 pt-0" id="addCardBox">
+                <div class="modal-body p-0" id="addCardBox">
 
                 </div>
                 <span class="show_all_error invalid-feedback"></span>
@@ -247,29 +281,38 @@
 <script src="{{asset('assets/libs/bootstrap-colorpicker/bootstrap-colorpicker.min.js')}}"></script>
 <script src="{{asset('assets/libs/clockpicker/clockpicker.min.js')}}"></script>
 <script src="{{asset('assets/libs/bootstrap-datepicker/bootstrap-datepicker.min.js')}}"></script>
-
+<script src="{{asset('assets/libs/dropzone/dropzone.min.js')}}"></script>
+<script src="{{asset('assets/libs/dropify/dropify.min.js')}}"></script>
 <!-- Page js-->
 <script src="{{asset('assets/js/pages/form-pickers.init.js')}}"></script>
 <script>
-// jQuery('.remove-modal-open').click(function(){
-//         jQuery('body').addClass('modal-open');
-//     });
-
     var theme      = {!!json_encode($theme)!!};
-
 
     var maoArray = {};
     var autoWrap = ['addHeader0'];
     var count = 1; editCount = 0; var a = 0; countZ = 1;
-   /* $('.openModal').click(function(){
-        $('#task-modal-header').modal({
-            //backdrop: 'static',
-            keyboard: false
-        });
-        autoWrap.push('addHeader1');
-        loadMap(autoWrap);
-    });*/
 
+    @if(Auth::user())
+    $(document).on("change",".admin_panel_theme", function(){
+        if($(this).prop('checked')){
+            var theme = 'dark';
+        }else{
+            var theme = 'light';
+        }
+        $.ajax({
+            url: "{{route('preference', Auth::user()->code)}}",
+            type: "POST",
+            data: {
+                theme: theme,
+                "_token": "{{ csrf_token() }}",
+            },
+            success: function(response) {
+                location.reload();
+            },
+        });
+
+    });
+    @endif
     $(document).ready(function(){
       loadMapHeader(autoWrap);
 
@@ -284,8 +327,6 @@
             enableTime: true,
             dateFormat: "Y-m-d H:i",
             minDate: "today",
-
-            //wrap:true,
         });
 
         $('.selectpicker').selectpicker();
@@ -303,7 +344,6 @@
         });
 
         autoWrap.indexOf('addHeader1') === -1 ? autoWrap.push('addHeader1') : '' ;
-        // console.log("exists");
         e.preventDefault();
 
         $.ajax({
@@ -312,10 +352,6 @@
             data: '',
             dataType: 'json',
             success: function (data) {
-
-                //$('.page-title1').html('Hello');
-                //console.log('data');
-
                 $('.submitTaskHeaderLoader').css('display', 'none');
                 $('#submitTaskHeaderText').text('Submit');
                 $('.submitTaskHeader').removeClass("inactiveLink");
@@ -324,54 +360,23 @@
 
                 $('#task-modal-header').find('.selectizeInput').selectize();
 
-                //$('#task-modal-header #selectize-optgroups').selectize();
-                //$('#task-modal-header #selectize-optgroups').selectize();
+                $('.dropify').dropify();
+                $(".newcustomer").hide();
+                $(".searchshow").show();
+                $(".append").show();
+                $('.copyin').remove();
 
-                $(".shows").hide();
                 $(".addspan").hide();
                 $(".tagspan").hide();
                 $(".tagspan2").hide();
-                $(".searchspan").hide();
-                $(".appoint").hide();
+                
                 $(".datenow").hide();
 
                 $(".pickup-barcode-error").hide();
                 $(".drop-barcode-error").hide();
                 $(".appointment-barcode-error").hide();
-                $("#AddressInput a").click(function() {
-                    $(".shows").show();
-                    $(".append").hide();
-                    $(".searchshow").hide();
-                    $('input[name=ids').val('');
-                    $('input[name=search').val('');
-                    $('.copyin').remove();
-                    autoWrap = ['addHeader0', 'addHeader1'];
-                    countZ = 1;
-                });
-                $("#Inputsearch a").click(function() {
-                    $(".shows").hide();
-                    $(".append").hide();
-                    $(".searchshow").show();
-                    $('.copyin').remove();
-                    autoWrap = ['addHeader0', 'addHeader1'];
-                    countZ = 1;
-                });
-
-                $("#nameInputHeader").keyup(function() {
-                    $(".shows").hide();
-                    $(".oldhide").show();
-                    $(".append").hide();
-                    $('input[name=ids').val('');
-                    $('.copyin').remove();
-                    autoWrap = ['addHeader0', 'addHeader1'];
-                    countZ = 1;
-                });
-
-                // $("#file").click(function() {
-                //     $('.showsimagegall').hide();
-                //     $('.imagepri').remove();
-
-                // });
+                
+                $('.appoint').hide();
 
                 loadMapHeader(autoWrap);
                 searchRes();
@@ -404,7 +409,6 @@
                     },
                     success: function(data) {
                         response(data);
-                        //console.log(data);
                     }
                 });
             },
@@ -458,10 +462,20 @@
                   var array = data;
                   $('.withradio .append').remove();
                   jQuery.each(array, function(i, val) {
-                      $(".withradio").append(
-                          '<div class="append"><div class="custom-control custom-radio count"><input type="radio" id="' + val.id + '" name="old_address_id" value="' + val.id + '" class="custom-control-input redio old-select-address callradio" data-srtadd="'+ val.short_name +'" data-flat_no="'+ val.flat_no +'"  data-adr="'+ val.address +'" data-lat="'+ val.latitude +'" data-long="'+ val.longitude +'" data-pstcd="'+ val.post_code +'" data-emil="'+ val.email +'" data-ph="'+ val.phone_number +'"><label class="custom-control-label" for="' + val.id + '"><span class="spanbold">' + val.short_name +
+                    var countz = '';
+                    var rand =  Math.random().toString(36).substring(7);
+                    $(".withradio").each(function(){
+                        var count = parseInt(countz);if(isNaN(count)){count = 0;}
+                        $(this).append(
+                          '<div class="append"><div class="custom-control custom-radio count"><input type="radio" id="' + (rand + count) + '" name="old_address_id' + countz + '" value="' + val.id + '" class="custom-control-input redio old-select-address callradio" data-srtadd="'+ val.short_name +'" data-flat_no="'+ val.flat_no +'"  data-adr="'+ val.address +'" data-lat="'+ val.latitude +'" data-long="'+ val.longitude +'" data-pstcd="'+ val.post_code +'" data-emil="'+ val.email +'" data-ph="'+ val.phone_number +'"><label class="custom-control-label" for="' + (rand + count) + '"><span class="spanbold">' + val.short_name +
                           '</span>-' + val.address +
                           '</label></div></div>');
+                        countz = count + 1;
+                    });
+                      /* $(".withradio").append(
+                          '<div class="append"><div class="custom-control custom-radio count"><input type="radio" id="' + val.id + '" name="old_address_id" value="' + val.id + '" class="custom-control-input redio old-select-address callradio" data-srtadd="'+ val.short_name +'" data-flat_no="'+ val.flat_no +'"  data-adr="'+ val.address +'" data-lat="'+ val.latitude +'" data-long="'+ val.longitude +'" data-pstcd="'+ val.post_code +'" data-emil="'+ val.email +'" data-ph="'+ val.phone_number +'"><label class="custom-control-label" for="' + val.id + '"><span class="spanbold">' + val.short_name +
+                          '</span>-' + val.address +
+                          '</label></div></div>'); */
                   });
 
               }
@@ -469,9 +483,8 @@
       }
       var post_count = 2;
     $(document).on('click', '.subTaskHeader', function(){
-      var cur = countZ;
-      countZ = countZ + 1;
-      //console.log(countZ);
+        var cur = countZ;
+        countZ = countZ + 1;
         var $clone = $('.cloningDiv').clone();
         $clone.removeClass('cloningDiv');
         $clone.removeClass('copyin1');
@@ -491,14 +504,7 @@
         var count1 = 1;
         $.each(inputid, function(index, elem){
 
-            var jElem = $(elem); // jQuery element
-            //var name = jElem.prop('id');
-
-            ////console.log(name + "-hello");
-            //name = rand;
-
-            //rand += count1;
-            ////console.log(name);
+            var jElem = $(elem);
             jElem.prop('id', rand+count1);
             jElem.prop('name', 'old_address_id' + cur);
             jElem.prop('checked', false);
@@ -509,13 +515,6 @@
         $.each(labels, function(index, elem){
 
             var jElem = $(elem); // jQuery element
-            //var name = jElem.prop('for');
-
-            ////console.log(name + "-bye");
-            //name = rand;
-
-            //name += count2;
-            ////console.log(name);
             jElem.prop('for', rand+count2);
             count2++;
         });
@@ -535,7 +534,6 @@
           $.each(address1, function(index, elem){
 
               var jElem = $(elem); // jQuery element
-              //jElem.prop('required', true);
           });
 
           var flatNo1 = $clone.find('.flat_no');
@@ -569,34 +567,28 @@
           $.each(postcode1, function(index, elem){
             var jElem = $(elem)
             var name = jElem.prop('id');
-            console.log(name);
             name = name.replace(/\d+/g, '');
             name = 'addHeader'+post_count+'-postcode';
             jElem.prop('id', name);
-            //   var jElem = $(elem); // jQuery element
-              //jElem.prop('required', true);
               post_count++;
               console.log(post_count);
           });
 
+        $clone.find('.appoint').hide();
         $(document).find('#addSubFields').before($clone);
         $('#addHeader'+countZ+' input[type="text"]').val('');
         autoWrap.indexOf('addHeader'+countZ) === -1 ? autoWrap.push('addHeader'+countZ) : console.log("exists");
           loadMapHeader(autoWrap);
+          $clone.find('input').click();
     });
 
     function loadMapHeader(autoWrap){
-       // console.log(autoWrap);
-
         $.each(autoWrap, function(index, name) {
             const geocoder = new google.maps.Geocoder;
 
-        //console.log(index+'--'+name);
             if($('#'+name).length == 0) {
-                //console.log('blank - ' + name);
                 return;
             }
-            //maoArray[name] = new google.maps.places.Autocomplete(('.form-control')[0], { types: ['geocode'] }); //console.log('hello');
             maoArray[name] = new google.maps.places.Autocomplete(document.getElementById(name+'-input'), { types: ['geocode'] });
 
             google.maps.event.addListener(maoArray[name], 'place_changed', function() {
@@ -611,12 +603,8 @@
                         const lat = results[0].geometry.location.lat();
                         const lng = results[0].geometry.location.lng();
                         const address = results[0].formatted_address;
-                        //console.log(name+'-input');
-                        // document.getElementById(name + '-input').value = address;
                         document.getElementById(name + '-latitude').value = lat;
                         document.getElementById(name + '-longitude').value = lng;
-                        // const postCode = results[0].address_components.find(addr => addr.types[0] === "postal_code").short_name;
-                        // document.getElementById(name + '-postcode').value = postCode;
                     }
                 });
             });
@@ -635,16 +623,37 @@
 
     subTaskHeader*/
 
-    $(document).on("click", "input[type='radio'].check", function() {
+    $(document).on("click", "input[type='radio'].checkcustomer", function() {
 
-          var dateredio = $("#dateredio input[type='radio']:checked").val();
-          if (dateredio == 'schedule') {
-            $(".datenow").show();
-          }else{
-              $(".datenow").hide();
-          }
-
-      });
+        var customerredio = $("#customerradio input[type='radio']:checked").val();
+        if(customerredio == 'existingcustomer') {
+            $(".newcustomer").hide();
+            $(".searchshow").show();
+            $(".append").show();
+            $('.copyin').remove();
+            autoWrap = ['addHeader0', 'addHeader1'];
+            countZ = 1;
+        }else{
+            $(".newcustomer").show();
+            $(".append").hide();
+            $(".searchshow").hide();
+            $('input[name=ids').val('');
+            $('input[name=search').val('');
+            $('.copyin').remove();
+            autoWrap = ['addHeader0', 'addHeader1'];
+            countZ = 1;
+        }
+    });
+    
+    
+    $(document).on("click", "input[type='radio'].checkschedule", function() {
+        var dateredio = $("#dateredio input[type='radio']:checked").val();
+        if (dateredio == 'schedule') {
+        $(".datenow").show();
+        }else{
+            $(".datenow").hide();
+        }
+    });
 
 
       $(document).on('click', "#taskschedule", function() {
@@ -938,20 +947,14 @@
 
             $( ".tags" ).removeClass("hidealloction");
             $( ".drivers" ).addClass("hidealloction");
-            // $(".tags").show();
-            // $(".drivers").hide();
         }
         if (radioValue == 'u') {
             $( ".tags" ).addClass("hidealloction");
             $( ".drivers" ).addClass("hidealloction");
-            // $(".tags").hide();
-            // $(".drivers").hide();
         }
         if (radioValue == 'm') {
             $( ".drivers" ).removeClass("hidealloction");
             $( ".tags" ).addClass("hidealloction");
-            // $(".drivers").show();
-            // $(".tags").hide();
         }
     });
 
@@ -1064,8 +1067,16 @@
     });
 
 
+    $(document).on('click', '.alFormTaskType', function () {
 
-
+        $(".alTaskType").removeClass("active");
+        $(".mainaddress").addClass("alCol-12");
+        $(".alsavedaddress").hide();
+        $(this).closest('.alTaskType').find(".mainaddress").removeClass("alCol-12");
+        $(this).closest('.alTaskType').addClass("active");
+        $(this).closest('.alTaskType').find(".alsavedaddress").show();
+        
+    });
 
 
 
