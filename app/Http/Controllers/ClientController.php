@@ -120,8 +120,8 @@ class ClientController extends Controller
             }
         }
 
-        if($request->has('autopay_submit')){
-            $auto_payout = (!empty($request->auto_payout))? 1 : 0;
+        if($request->has('autopay_submit')){//dd($request->auto_payout);
+            $auto_payout = !empty($request->auto_payout)?(($request->auto_payout == "on")?1:0):0;
             $data = ['auto_payout'=>$auto_payout];
             ClientPreference::where('client_id', $id)->update($data);
             return redirect()->back()->with('success', 'Preference updated successfully!');
@@ -269,15 +269,9 @@ class ClientController extends Controller
         unset($request['arkesel_api_key']);
         unset($request['arkesel_sender_id']);
 
-        if($request->has('driver_phone_verify_config')){
+        if($request->has('cancel_verify_edit_order_config')){
             $request->request->add(['verify_phone_for_driver_registration' => ($request->has('verify_phone_for_driver_registration') && $request->verify_phone_for_driver_registration == 'on') ? 1 : 0]);
-        }
-
-        if($request->has('edit_order_config')){
             $request->request->add(['is_edit_order_driver' => ($request->has('is_edit_order_driver') && $request->is_edit_order_driver == 'on') ? 1 : 0]);
-        }
-
-        if($request->has('cancel_order_config')){
             $request->request->add(['is_cancel_order_driver' => ($request->has('is_cancel_order_driver') && $request->is_cancel_order_driver == 'on') ? 1 : 0]);
         }
 
@@ -285,10 +279,10 @@ class ClientController extends Controller
             $request->request->add(['reffered_by_amount' => ($request->has('reffered_by_amount') && $request->reffered_by_amount > 0) ? $request->reffered_by_amount : 0]);
             $request->request->add(['reffered_to_amount' => ($request->has('reffered_to_amount') && $request->reffered_to_amount > 0) ? $request->reffered_to_amount : 0]);
         }
-        $show_limited_address = ($request->has('show_limited_address') && $request->show_limited_address == 'on') ? 1 : 0;
-       // if(!$request->show_limited_address){
-            $request->merge(['show_limited_address'=>$show_limited_address]);
-        //}
+        if($request->has('address_limit_order_config')){
+            $request->request->add(['show_limited_address' => ($request->has('show_limited_address') && $request->show_limited_address == 'on') ? 1 : 0]);
+        }
+        
         
         //pr($request->all());
         $updatePreference = ClientPreference::updateOrCreate([

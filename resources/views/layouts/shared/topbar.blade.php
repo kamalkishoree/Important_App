@@ -1,4 +1,7 @@
 <!-- Topbar Start -->
+@php
+$clientData = \App\Model\Client::select('id', 'logo','custom_domain','code')->with('getPreference')->where('id', '>', 0)->first();
+@endphp
 <div class="navbar-custom">
     <div class="container-fluid">
         <ul class="list-unstyled topnav-menu float-right mb-0 d-flex align-items-center">
@@ -95,7 +98,20 @@
                         }
                         ?>
 
+        <li class="alToggleSwitch">
+            <label class="altoggle">
+                <input type="checkbox" class="admin_panel_theme" {{$clientData->getPreference->theme == "dark" ? 'checked' : ''}}>
+                <div class="toggle__bg">
+                    <div class="toggle__sphere">
+                        <div class="toggle__sphere-bg">
+                        </div>
+                        <div class="toggle__sphere-overlay"></div>
+                    </div>
+                </div>
+            </label>
+        </li>
         @if(in_array('Add Route',$allowed) || Auth::user()->is_superadmin == 1)
+            
             <li class="d-lg-inline-block" >
                 <a class="nav-link" href="#">
                     <button type="button" class="btn btn-blue waves-effect waves-light addTaskModalHeader klklkl" data-toggle="modal" data-target="" data-backdrop="static" title="{{__('Add Route')}}" data-keyboard="false"><span><i class="mdi mdi-plus-circle mr-1"></i> {{__('Add Route')}}</span></button>
@@ -127,7 +143,7 @@
                     <a href="/switch/language?lang=fr" class="dropdown-item" langid="1">French</a>
                     <a href="/switch/language?lang=sv" class="dropdown-item" langid="1">Swedish</a>
                     <a href="/switch/language?lang=vi" class="dropdown-item" langid="1">Vietnamese</a>
-
+                    <a href="/switch/language?lang=ru" class="dropdown-item" langid="1">Russian</a>
                     <div class="dropdown-divider"></div>
                 </div>
             </li>
@@ -429,11 +445,11 @@ http://192.168.100.211:8888/unsafe/fit-in/90x50/https://royodelivery-assets.s3.u
             <a href="{{ route('index') }}" class="logo logo-light text-center">
                 <span class="logo-sm">
                     <img src="{{$image}}"
-                        alt="" height="30" style="padding-top: 4px;">
+                        alt="" height="30">
                 </span>
                 <span class="logo-lg">
                     <img src="{{$image}}"
-                        alt="" height="50" style="padding-top: 4px;">
+                        alt="" height="50">
                 </span>
             </a>
         </div>

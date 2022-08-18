@@ -121,7 +121,23 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                 <div class="card widget-inline">
                     <div class="card-body">
                         <div class="row">
-                            <div class="col-sm-6 col-md-4 mb-3 mb-md-0">
+                            <div class="col-sm-4 col-md-3 mb-3 mb-md-0">
+                                <div class="text-center">
+                                    <form method="POST" id="form_auto_payout" action="{{route('preference', Auth::user()->code)}}">
+                                        @csrf
+                                        <input type="hidden" name="autopay_submit" id="autopay_submit" value="submit"/>
+                                    <!-- <div class="custom-control custom-switch mb-2">
+                                        <input type="checkbox" class="custom-control-input auto_payout" id="customSwitch" name="auto_payout" {{ (isset($preference) && $preference->auto_payout =="1")? "checked" : "" }}>
+                                        <label class="custom-control-label" for="customSwitch"></label>
+                                    </div> -->
+                                    <div class="mb-2">
+                                        <input type="checkbox" data-plugin="switchery" id="auto_payout" name="auto_payout" class="switchery" data-color="#039cfd" {{ (isset($preferences) && $preferences->auto_payout =="1")? "checked" : "" }}/>
+                                    </div>
+                                    <p class="text-muted font-15 mb-0">{{__("Auto Payout")}}</p>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="col-sm-4 col-md-3 mb-3 mb-md-0">
                                 <div class="text-center">
                                     <h3>
                                         <i class="fas fa-money-check-alt text-primary"></i>
@@ -130,7 +146,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                     <p class="text-muted font-15 mb-0">{{ __('Total Order Value') }}</p>
                                 </div>
                             </div>
-                            <div class="col-sm-6 col-md-4 mb-3 mb-md-0">
+                            <div class="col-sm-4 col-md-3 mb-3 mb-md-0">
                                 <div class="text-center">
                                     <h3>
                                         <i class="fas fa-money-check-alt text-primary"></i>
@@ -139,7 +155,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                     <p class="text-muted font-15 mb-0"> {{ __('Pending Payout Value') }}</p>
                                 </div>
                             </div>
-                            <div class="col-sm-6 col-md-4 mb-3 mb-md-0">
+                            <div class="col-sm-4 col-md-3 mb-3 mb-md-0">
                                 <div class="text-center">
                                     <h3>
                                         <i class="fas fa-money-check-alt text-primary"></i>
@@ -366,11 +382,14 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
 <script src="{{ asset('assets/js/jquery.tagsinput-revisited.js') }}"></script>
 <script src="{{ asset('telinput/js/intlTelInput.js') }}"></script>
 <link rel="stylesheet" href="{{ asset('assets/css/jquery.tagsinput-revisited.css') }}" />
-
-
+<script src="{{asset('assets/libs/mohithg-switchery/mohithg-switchery.min.js')}}"></script>
 <script>
     
     $(document).ready(function() {
+        var elems = Array.prototype.slice.call(document.querySelectorAll('.switchery'));
+            elems.forEach(function(html) {
+            var switchery =new Switchery(html);
+        });
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('input[name="_token"]').val()
@@ -381,6 +400,10 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
             let rel= $(this).data('rel');
             let status= $(this).data('status');
             initDataTable(rel, status);
+        });
+
+        $(document).on("change","#auto_payout",function() {
+            document.getElementById("form_auto_payout").submit();
         });
 
         // initDataTable();

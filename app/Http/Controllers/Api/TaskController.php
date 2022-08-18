@@ -1061,7 +1061,7 @@ class TaskController extends BaseController
                         'phone_number'=> $value['phone_number']??null,
                         ];
 
-                  //  $Loction = Location::create($loc);
+                    //  $Loction = Location::create($loc);
                     $Loction = Location::updateOrCreate(
                         $loc,
                         $loc_update
@@ -1111,7 +1111,7 @@ class TaskController extends BaseController
             //get pricing rule  for save with every order based on geo fence and agent tags
 
             $dayname = Carbon::parse($notification_time)->format('l');
-            $time    = Carbon::parse($notification_time)->format('H:i:s');
+            $time    = Carbon::parse($notification_time)->format('H:i');
 
             
             if((isset($request->order_agent_tag) && !empty($request->order_agent_tag)) && $geoid!=''):
@@ -2528,8 +2528,10 @@ class TaskController extends BaseController
             return response()->json(['message' => 'Pickup and Dropoff location required.',], 404);
             array_push($latitude, $value['latitude']??0.0000);
             array_push($longitude, $value['longitude']??0.0000);
-            $lat  = $value['latitude']??0.0000;
-            $long = $value['longitude']??0.0000;
+            if($lat=='' && $long==''):
+                $lat  = $value['latitude']??0.0000;
+                $long = $value['longitude']??0.0000;
+            endif;
         }
         
         //get geoid based on customer location
@@ -2547,7 +2549,7 @@ class TaskController extends BaseController
             $order_datetime = Carbon::now()->timezone($timezone)->toDateTimeString();
         endif;
         $dayname = Carbon::parse($order_datetime)->format('l');
-        $time    = Carbon::parse($order_datetime)->format('H:i:s');
+        $time    = Carbon::parse($order_datetime)->format('H:i');
 
         
         if((isset($request->agent_tag) && !empty($request->agent_tag)) && $geoid!=''):
@@ -2583,6 +2585,7 @@ class TaskController extends BaseController
         Log::info($total);
         return response()->json([
             'total' => $total,
+            'total_duration' => $getdata['duration'],
             'currency' => $currency,
             'total_duration' => $getdata['duration'],
             'paid_distance' => $paid_distance,
