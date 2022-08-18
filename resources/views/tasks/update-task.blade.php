@@ -10,9 +10,16 @@ use Carbon\Carbon;
     <!-- Start Content-->
     <div class="container-fluid">
         <div class="row">
-            <div class="col-md-12">
+            <div class="col-md-6">
                 <div class="page-title-box">
                     <h4 class="page-title">{{__('Edit Route')}}</h4>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="page-title-box text-right">
+                    <a href="{{ route('tasks.index') }}">
+                    <button type="button" class="btn btn-blue" title="Back To List" data-keyboard="false"><span><i class="mdi mdi-chevron-double-left mr-1"></i> Back</span></button>
+                    </a>
                 </div>
             </div>
         </div>
