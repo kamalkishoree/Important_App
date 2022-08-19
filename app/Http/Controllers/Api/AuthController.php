@@ -414,6 +414,7 @@ class AuthController extends BaseController
             'name' => 'required',
             'phone_number' => 'required|min:9',
             'type' => 'required',
+            'otp' => 'required'
             // 'vehicle_type_id' => 'required'
         ]);
         if ($validator->fails()) {
@@ -422,8 +423,22 @@ class AuthController extends BaseController
 
         $agent = Agent::where('phone_number', $request->phone_number)->first();
         if (!empty($agent)) {
-            return response()->json(['message' => 'User already register. Please login'], 422);
+            return response()->json(['message' => 'User already registered. Please login'], 422);
         }
+
+        // otp verification starts
+        $otp = Otp::where('phone', $request->phone_number)->where('opt', $request->otp)->orderBy('id', 'DESC')->first();
+        $currentTime = Carbon::now()->toDateTimeString();
+
+        if (!$otp) {
+            return $this->error(__('Please enter a valid OTP'), 422);
+        }
+        if ($currentTime > $otp->valid_till) {
+            return $this->error(__('Your OTP has been expired. Please try again.'), 422);
+        }
+        $otp->is_verified = 1;
+        $otp->update();
+        // otp verification ends
 
         $clientDetail = Client::with(['getPreference'])->first();
         if($clientDetail->getPreference->verify_phone_for_driver_registration == 1){
