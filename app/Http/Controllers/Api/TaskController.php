@@ -665,6 +665,7 @@ class TaskController extends BaseController
         $header = $request->header();
         $client_details = Client::where('database_name', $header['client'][0])->first();
         $percentage = 0;
+        $agent_id =  $request->driver_id  ? $request->driver_id : null;
 
         $unassignedorder_data = Order::where('id', $request->order_id)->where('status', 'unassigned')->first();
         if(empty($unassignedorder_data)){
@@ -719,7 +720,7 @@ class TaskController extends BaseController
 
             $batchNo = $request->order_id;
             $this->dispatchNow(new RosterDelete($request->order_id,'B'));
-          
+            
 
             BatchAllocation::where(['batch_no'=>$request->order_id])->update(['agent_id' => $agent_id]);
             BatchAllocationDetail::where(['batch_no'=>$request->order_id])->update(['agent_id' => $agent_id]);
@@ -801,7 +802,7 @@ class TaskController extends BaseController
                 // $agent_id =  isset($request->allocation_type) && $request->allocation_type == 'm' ? $request->driver_id : null;
     
                 if ($task_id->driver_cost <= 0.00) {
-                    // $agent_details = Agent::where('id', $agent_id)->first();
+                    $agent_details = Agent::where('id', $agent_id)->first();
                     if ($agent_details->type == 'Employee') {
                         $percentage = $agent_commission_fixed + (($task_id->order_cost / 100) * $agent_commission_percentage);
                     } else {
