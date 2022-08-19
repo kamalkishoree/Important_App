@@ -573,7 +573,7 @@ class AuthController extends BaseController
                     ]);
                 $agent->delete();
                 DB::commit(); //Commit transaction after all the operations
-                return response()->json(['massage' => __('Agent Deleted Successfully')], 200);
+                return response()->json(['massage' => __('Account Deleted Successfully')], 200);
                 //code...
             } catch (Exception $e) {
                 DB::rollBack();
