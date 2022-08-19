@@ -137,13 +137,18 @@ $clientData = \App\Model\Client::select('id', 'logo','custom_domain','code')->wi
                     <i class="mdi mdi-chevron-down"></i>
                 </a>
                 <div class="dropdown-menu">
-                    <a href="/switch/language?lang=en" class="dropdown-item" langid="1">English</a>
-                    <a href="/switch/language?lang=es" class="dropdown-item" langid="1">Spanish</a>
                     <a href="/switch/language?lang=ar" class="dropdown-item" langid="1">Arabic</a>
+                    <a href="/switch/language?lang=zh" class="dropdown-item" langid="1">Chinese</a>
+                    <a href="/switch/language?lang=en" class="dropdown-item" langid="1">English</a>
                     <a href="/switch/language?lang=fr" class="dropdown-item" langid="1">French</a>
-                    <a href="/switch/language?lang=sv" class="dropdown-item" langid="1">Swedish</a>
-                    <a href="/switch/language?lang=vi" class="dropdown-item" langid="1">Vietnamese</a>
+                    <a href="/switch/language?lang=hi" class="dropdown-item" langid="1">Hindi</a>
+                    <a href="/switch/language?lang=it" class="dropdown-item" langid="1">Italian</a>
+                    <a href="/switch/language?lang=fa" class="dropdown-item" langid="1">Persian</a>
                     <a href="/switch/language?lang=ru" class="dropdown-item" langid="1">Russian</a>
+                    <a href="/switch/language?lang=es" class="dropdown-item" langid="1">Spanish</a>
+                    <a href="/switch/language?lang=sv" class="dropdown-item" langid="1">Swedish</a>
+                    <a href="/switch/language?lang=tr" class="dropdown-item" langid="1">Turkish</a>
+                    <a href="/switch/language?lang=vi" class="dropdown-item" langid="1">Vietnamese</a>
                     <div class="dropdown-divider"></div>
                 </div>
             </li>
