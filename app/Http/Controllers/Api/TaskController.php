@@ -665,6 +665,7 @@ class TaskController extends BaseController
         $header = $request->header();
         $client_details = Client::where('database_name', $header['client'][0])->first();
         $percentage = 0;
+        $agent_id =  $request->driver_id  ? $request->driver_id : null;
 
         $unassignedorder_data = Order::where('id', $request->order_id)->where('status', 'unassigned')->first();
         if(empty($unassignedorder_data)){
@@ -719,7 +720,7 @@ class TaskController extends BaseController
 
             $batchNo = $request->order_id;
             $this->dispatchNow(new RosterDelete($request->order_id,'B'));
-          
+            
 
             BatchAllocation::where(['batch_no'=>$request->order_id])->update(['agent_id' => $agent_id]);
             BatchAllocationDetail::where(['batch_no'=>$request->order_id])->update(['agent_id' => $agent_id]);
