@@ -543,23 +543,28 @@ class AuthController extends BaseController
             $clientEmail = $clientContact->contact_email;
             $mailFrom    = $smtp->from_address;
 
-            $emailTemplate = EmailTemplate::where('slug', 'new-agent-signup')->first()->content;
-            $emailTemplate = str_replace("{agent_name}", $request->name, $emailTemplate);
-            $emailTemplate = str_replace("{phone_no}", $request->phone_number, $emailTemplate);
-            if(!empty($request->team_id)){
-                $team = Team::where('id', $request->team_id)->first()->name;
-                $emailTemplate = str_replace("{team}", $team, $emailTemplate);
-            }
+            $emailTemplateData = EmailTemplate::where('slug', 'new-agent-signup')->first();
+            if($emailTemplateData){
+                $emailTemplate = $emailTemplateData->content ?? null;
+                if($emailTemplate){
+                    $emailTemplate = str_replace("{agent_name}", $request->name, $emailTemplate);
+                    $emailTemplate = str_replace("{phone_no}", $request->phone_number, $emailTemplate);
+                    if(!empty($request->team_id)){
+                        $team = Team::where('id', $request->team_id)->first()->name;
+                        $emailTemplate = str_replace("{team}", $team, $emailTemplate);
+                    }
 
-            Mail::send([], [],
-                function ($message) use($clientEmail, $clientName, $mailFrom, $emailTemplate) {
-                    $message->from($mailFrom, $clientName);
-                    $message->to($clientEmail)->subject('Agent SignUp');
-                    $message->setBody($emailTemplate, 'text/html'); // for HTML rich messages
-                });
-            Log::info('send vendor sign up email to admin--');
-            Log::info(count(Mail::failures()));
-            Log::info('send vendor sign up email to admin--');
+                    Mail::send([], [],
+                        function ($message) use($clientEmail, $clientName, $mailFrom, $emailTemplate) {
+                            $message->from($mailFrom, $clientName);
+                            $message->to($clientEmail)->subject('Agent SignUp');
+                            $message->setBody($emailTemplate, 'text/html'); // for HTML rich messages
+                        });
+                    Log::info('send vendor sign up email to admin--');
+                    Log::info(count(Mail::failures()));
+                    Log::info('send vendor sign up email to admin--');
+                }
+            }
         }
 
         if ($agent->wasRecentlyCreated ) {
@@ -588,7 +593,7 @@ class AuthController extends BaseController
                     ]);
                 $agent->delete();
                 DB::commit(); //Commit transaction after all the operations
-                return response()->json(['massage' => __('Agent Deleted Successfully')], 200);
+                return response()->json(['massage' => __('Account Deleted Successfully')], 200);
                 //code...
             } catch (Exception $e) {
                 DB::rollBack();
