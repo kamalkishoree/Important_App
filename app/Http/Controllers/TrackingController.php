@@ -163,7 +163,6 @@ class TrackingController extends Controller
                 $img = 'https://imgproxy.royodispatch.com/insecure/fit/300/100/sm/0/plain/' . Storage::disk('s3')->url($order->profile_picture ?? 'assets/client_00000051/agents605b6deb82d1b.png/XY5GF0B3rXvZlucZMiRQjGBQaWSFhcaIpIM5Jzlv.jpg');
                 $base_url = 'https://royodelivery-assets.s3.us-west-2.amazonaws.com';
 
-                $db_name = DB::connection($respnse['database'])->table('clients')->select('database_name')->first()->database_name;
                 return response()->json([
                     'message' => 'Successfully',
                     'tasks' => $tasks,
@@ -173,7 +172,7 @@ class TrackingController extends Controller
                     'total_order_by_agent'  => $total_order_by_agent,
                     'avgrating'  => $avgrating,
                     'base_url' => $base_url,
-                    'agent_dbname'  => $db_name
+                    'agent_dbname'  => $respnse['database']
                 ], 200);
 
                 return view('tracking/tracking', compact('tasks', 'order', 'agent_location'));
