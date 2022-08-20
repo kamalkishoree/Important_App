@@ -2703,11 +2703,12 @@ class TaskController extends BaseController
                 $order->order_cost = $order->cash_to_be_collected ?? $order->order_cost;
                  $tasks = DB::table('tasks')->where('order_id', $order->id)->leftJoin('locations', 'tasks.location_id', '=', 'locations.id')
                      ->select('tasks.*', 'locations.latitude', 'locations.longitude', 'locations.short_name', 'locations.address')->orderBy('task_order')->get();
-
+                $db_name = client::select('database_name')->where('id', 1)->first()->database_name;
                  return response()->json([
                      'message' => 'Successfully',
                      'tasks' => $tasks,
-                     'order'  => $order
+                     'order'  => $order,
+                     'agent_dbname'  =>$db_name
                  ], 200);
 
             } else {
