@@ -162,7 +162,8 @@ class TrackingController extends Controller
 
                 $img = 'https://imgproxy.royodispatch.com/insecure/fit/300/100/sm/0/plain/' . Storage::disk('s3')->url($order->profile_picture ?? 'assets/client_00000051/agents605b6deb82d1b.png/XY5GF0B3rXvZlucZMiRQjGBQaWSFhcaIpIM5Jzlv.jpg');
                 $base_url = 'https://royodelivery-assets.s3.us-west-2.amazonaws.com';
-                $db_name = client::select('database_name')->where('id', 1)->first()->database_name;
+
+                $db_name = DB::connection($respnse['database'])->table('clients')->select('database_name')->first()->database_name;
                 return response()->json([
                     'message' => 'Successfully',
                     'tasks' => $tasks,
