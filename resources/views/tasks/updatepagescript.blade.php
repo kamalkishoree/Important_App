@@ -18,6 +18,7 @@ $(document).ready(function(){
     loadMap(autocompletesWraps);
 });
     $(document).ready(function() {
+        $('.dropify').dropify();
         $(".shows").hide();
         $(".addspan").hide();
         $(".tagspan").hide();
@@ -120,23 +121,14 @@ $(document).ready(function(){
             countEdit = countEdit + 1;
             var abc = "{{ isset($maincount)?$maincount:0 }}";
             var newcount = $('#newcount').val();
-            //   alert(newcount);
-            //    if(a == 0){
-            //      a = abc;
-            //      post_count = parseInt(newcount) + 1;
-            //    }
+            
             post_count = parseInt(newcount) + 1;
           
             a++;
-           // alert(abc);
-            
-            // var direction = this.defaultValue < this.value
-            // this.defaultValue = this.value;
-            // if (direction)
-            // {
+           
                     var newids = null;
                     
-                    var $div = $('div[class^="copyin check-validation"]:last');
+                    var $div = $('div[class^="alTaskType copyin check-validation"]:last');
                     var newcheck = $div.find('.redio');
                     $.each(newcheck, function(index, elem){
                         var jElem = $(elem); // jQuery element
@@ -145,22 +137,15 @@ $(document).ready(function(){
                         if(name == true){
                           newids = id;
                         }
-                        
-                        
-                        // remove the number
-                        //name = name.replace(/\d+/g, '');
-                        //name += a;
-                        //jElem.prop('name', name);
-                        //count0++;
                     });
-                   // console.log(newcheck);
+                   
                     var num = parseInt( $div.prop("id").match(/\d+/g), 10 ) +1;
-                    var $clone = $div.clone().prop('class', 'copyin check-validation')
-                    $clone.insertAfter('[class^="copyin check-validation"]:last');
+                    var $clone = $div.clone().prop('class', 'alTaskType copyin check-validation');
+                    $clone.insertAfter('[class^="alTaskType copyin check-validation"]:last');
                     // get all the inputs inside the clone
                     var inputs = $clone.find('.redio');
 
-                    $clone.find('.cust1_add_div').prop('id', 'add' + countEdit);
+                    $clone.find('.mainaddress').prop('id', 'add' + countEdit);
                     $clone.find('.cust1_add').prop('id', 'add' + countEdit +'-input');
                     $clone.find('.cust1_btn').prop('num', 'add' + countEdit);
                     $clone.find('.cust1_btn').prop('id', 'add' + countEdit);

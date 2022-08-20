@@ -20,7 +20,7 @@
                     <div class="row mb-3 datenow">
                         <div class="col-md-12">
                             <input type="text"  name="schedule_time"
-                            class="form-control opendatepicker upside datetime-datepicker" placeholder={{__("Date Time")}}>
+                            class="form-control opendatepicker upside datetime-datepicker" placeholder='{{__("Date Time")}}'>
                             <button type="button" class="cstmbtn check_btn btn btn-info"><i class="fa fa-check" aria-hidden="true"></i></button>
                         </div>
                     </div>
@@ -108,7 +108,7 @@
                     </div>
                     <div class="row mb-3">
                         <div class="col-md-12" id="cash_to_be_collectedInput">
-                            <input class="form-control" type="text" placeholder={{__("Cash to be collected")}} name="cash_to_be_collected">
+                            <input class="form-control" type="text" placeholder='{{__("Cash to be collected")}}' name="cash_to_be_collected">
                             <span class="invalid-feedback" role="alert">
                                 <strong></strong>
                             </span>
