@@ -29,7 +29,7 @@ use Carbon\Carbon;
         {{ method_field('PATCH') }}
         @csrf
         <div class="row">
-            <div class="col-md-12">
+            <div class="col-md-9">
                 <div class="card-box p-3">            
                     <div class="row d-flex">
                         <div class="col-md-4" style="border-right: 1px solid #ccc;">
@@ -47,14 +47,15 @@ use Carbon\Carbon;
                                 </div>
                             </div>
                             @php
+                            
                                 $order = Carbon::createFromFormat('Y-m-d H:i:s', $task->order_time, 'UTC');
                                 // $order->setTimezone(isset(Auth::user()->timezone) ? Auth::user()->timezone : 'Asia/Kolkata');
                                 $order->setTimezone($client_timezone);
-                                $scheduletime = date('Y-m-d H:i:a', strtotime($order));
+                                $scheduletime = date('Y-m-d H:i:s', strtotime($order));
                             @endphp
                             <div class="row mb-3 datenow">
                                 <div class="col-md-12">
-                                    <input type="text" name="schedule_time" class="form-control opendatepicker upside datetime-datepicker" placeholder="{{__('Date Time')}}" value="{{ $scheduletime }}">
+                                    <input type="text" id='datetime-datepicker' name="schedule_time" class="form-control upside opendatepicker" placeholder="{{__('Date Time')}}" value="{{ $scheduletime }}">
                                     <button type="button" class="cstmbtn check_btn btn btn-info"><i class="fa fa-check" aria-hidden="true"></i></button>
                                 </div>
                             </div>
@@ -283,7 +284,7 @@ use Carbon\Carbon;
                                                                     {!! Form::text('short_name[]', null, ['class' => 'form-control address', 'placeholder' => __('Short Name')]) !!}
                                                                 </div>
                                                                 <div class="form-group col-6 mb-1">
-                                                                    {!! Form::text('flat_no[]', null, ['class' => 'form-control address flat_no','placeholder' => __('House/Apartment/Flat no'),'id'=>'addHeader1-flat_no']) !!}
+                                                                    {!! Form::text('flat_no[]', null, ['class' => 'form-control address flat_no','placeholder' => __('House/Apartment/Flat no'),'id'=>'add'.$newcount.'-flat_no']) !!}
                                                                 </div>
                                                                 <div class="input-group form-group col-6 mb-2">
                                                                     <input type="text" id="add{{ $newcount }}-input" name="address[]" class="form-control address cust1_add" placeholder='{{__("Location")}}'>
@@ -292,9 +293,9 @@ use Carbon\Carbon;
                                                                     </div>
                                                                 </div>
                                                                 <div class="form-group col-6 mb-1">
-                                                                    <input type="hidden" name="latitude[]" id="add{{ $newcount }}-latitude" value="0" class="cust_latitude" />
-                                                                    <input type="hidden" name="longitude[]" id="add{{ $newcount }}-longitude" value="0" class="cust_longitude" />
-                                                                    {!! Form::text('post_code[]', null, ['class' => 'form-control address postcode','placeholder' => __('Post Code'),'id'=>'addHeader1-postcode']) !!}
+                                                                <input type="hidden" name="latitude[]" id="add{{ $newcount }}-latitude" class="cust1_latitude" value="0" />
+                                                            <input type="hidden" name="longitude[]" id="add{{ $newcount }}-longitude" class="cust1_longitude" value="0" />
+                                                                    {!! Form::text('post_code[]', null, ['class' => 'form-control address postcode','placeholder' => __('Post Code'),'id'=>'add'.$newcount.'-postcode']) !!}
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -305,10 +306,10 @@ use Carbon\Carbon;
                                                                     <h6>Contact Details</h6>
                                                                     <div class="row">
                                                                         <div class="form-group mb-1 col-12">
-                                                                            {!! Form::text('address_email[]', null, ['class' => 'form-control address address_email','placeholder' => __('Email'),'id'=>'addHeader1-address_email']) !!}
+                                                                            {!! Form::text('address_email[]', null, ['class' => 'form-control address address_email','placeholder' => __('Email'),'id'=>'add'.$newcount.'-address_email']) !!}
                                                                         </div>
                                                                         <div class="form-group mb-1 col-12">
-                                                                            {!! Form::text('address_phone_number[]', null, ['class' => 'form-control address address_phone_number','placeholder' => __('Phone Number'),'id'=>'addHeader1-address_phone_number']) !!}
+                                                                            {!! Form::text('address_phone_number[]', null, ['class' => 'form-control address address_phone_number','placeholder' => __('Phone Number'),'id'=>'add'.$newcount.'-address_phone_number']) !!}
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -316,10 +317,10 @@ use Carbon\Carbon;
                                                                     <h6>Other Details</h6>
                                                                     <div class="row">
                                                                         <div class="form-group mb-1 col-12">
-                                                                            {!! Form::text('barcode[]', null, ['class' => 'form-control barcode','placeholder' => __('Task Barcode')]) !!}
+                                                                            {!! Form::text('barcode[]', $item->barcode, ['class' => 'form-control barcode','placeholder' => __('Task Barcode')]) !!}
                                                                         </div>
                                                                         <div class="form-group mb-1 col-12">
-                                                                            {!! Form::text('quantity[]', null, ['class' => 'form-control quantity onlynumber','placeholder' => __('Quantity')]) !!}
+                                                                            {!! Form::text('quantity[]', $item->quantity, ['class' => 'form-control quantity onlynumber','placeholder' => __('Quantity')]) !!}
                                                                         </div>
                                                                         <span class="span1 pickup-barcode-error">{{__("Task Barcode is required for pickup")}}</span>
                                                                         <span class="span1 drop-barcode-error">{{__("Task Barcode is required for drop")}}</span>

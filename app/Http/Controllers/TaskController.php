@@ -2376,8 +2376,7 @@ class TaskController extends BaseController
         }
 
         $settime = ($request->task_type=="schedule") ? $request->schedule_time : Carbon::now()->toDateTimeString();
-        $notification_time = ($request->task_type=="schedule")? Carbon::parse($settime . $auth->timezone ?? 'UTC')->tz('UTC') : Carbon::now()->toDateTimeString();
-
+        $notification_time = ($request->task_type=="schedule")? Carbon::parse($settime .' '. $auth->timezone ?? 'UTC')->tz('UTC') : Carbon::now()->toDateTimeString();
         $order = [
             'customer_id'                => $cus_id,
             'recipient_phone'            => $request->recipient_phone,
@@ -2388,6 +2387,7 @@ class TaskController extends BaseController
             'order_time'                 => $notification_time,
             'auto_alloction'             => $request->allocation_type,
             'cash_to_be_collected'       => $request->cash_to_be_collected,
+            'call_back_url'              => $request->call_back_url,
             'status'                     => $assign,
             'driver_cost'                => $percentage,
         ];
