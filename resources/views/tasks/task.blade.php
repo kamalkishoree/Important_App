@@ -105,7 +105,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                         <i class="fas fa-money-check-alt text-primary"></i>
                                         <span data-plugin="counterup" id="total_delivery_fees">{{$agentsCount}}</span>
                                     </h3>
-                                    <p class="text-muted font-15 mb-0">{{__("Active") .' ' . __('Agents')}}</p>
+                                    <p class="text-muted font-15 mb-0">{{__("Active")}} {{ Session::get('agent_name') ? Session::get('agent_name') : __('Agent') }}</p>
                                 </div>
                             </div>
                         </div>
@@ -126,6 +126,17 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                     @if (\Session::has('success'))
                                         <div class="alert alert-success">
                                             <span>{!! \Session::get('success') !!}</span>
+                                            @php
+                                                \Session::forget('success')
+                                            @endphp
+                                        </div>
+                                    @endif
+                                    @if (\Session::has('error'))
+                                        <div class="alert alert-danger">
+                                            <span>{!! \Session::get('error') !!}</span>
+                                            @php
+                                                \Session::forget('error')
+                                            @endphp
                                         </div>
                                     @endif
                                 </div>
@@ -167,12 +178,15 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                     </div>
                                 </form>
                             </div>
+                            <a href="{{route('batch.list')}}"><button type="button" class="btn btn-info" >All Batchs</button></a>
                             <!-- @if (isset($status) && $status == 'unassigned' && $panding_count != 0 ) -->
                                 <div class="col-sm-4 assign-toggle assign-show ">
                                     <button type="button" class="btn btn-info assign_agent" data-toggle="modal" data-target="#add-assgin-agent-model" data-backdrop="static" data-keyboard="false">{{__("Assign")}}</button> 
                                     <button type="button" class="btn btn-info assign_date" data-toggle="modal" data-target="#add-assgin-date-model" data-backdrop="static" data-keyboard="false">{{__("Change Date")}}/{{__("Time")}}</button> 
                                 </div>
                             <!-- @endif -->
+
+                           
                         </div>
                         <input type="hidden" id="routes-listing-status" value="unassigned">
                         <div class="table-responsive mn-4">
@@ -187,7 +201,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                         <th class="sort-icon">{{__("Order Number")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                         <th class="sort-icon">{{__("Customer")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                         <th class="sort-icon">{{__("Phone.No")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
-                                        <th class="sort-icon">{{__("Driver")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
+                                        <th class="sort-icon">{{ Session::get('agent_name') ? Session::get('agent_name') : __('Agent') }} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                         <th class="sort-icon">{{__("Due Time")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                         <th class="routes-head">{{__("Routes")}}</th>
                                         <th>{{__("Tracking URL")}}</th>

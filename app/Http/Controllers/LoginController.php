@@ -37,6 +37,7 @@ class LoginController extends Controller
                     Auth::logout();
                     return redirect()->back()->with('Error', 'Your account in In-Active. Please contact administration.');
                 }
+                $request->session()->put('agent_name', $client->getPreference->agent_name);
                 return redirect()->route('index');
             }
        

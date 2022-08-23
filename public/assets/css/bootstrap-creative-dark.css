@@ -5743,13 +5743,20 @@ a.close.disabled {
 }
 @media (min-width: 992px) {
   .modal-lg,
-.modal-xl {
+  .modal-xl {
     max-width: 800px;
+  }
+  .modal-xxl {
+    max-width: 900px;
   }
 }
 @media (min-width: 1367px) {
   .modal-xl {
     max-width: 1140px;
+  }
+
+  .modal-xxl {
+    max-width: 1350px;
   }
 }
 .tooltip {

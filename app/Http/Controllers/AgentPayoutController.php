@@ -105,10 +105,9 @@ class AgentPayoutController extends BaseController{
         $completed_payout_count = $completed_payouts->count();
         $failed_payout_count = $failed_payouts->count();
         $payout_options = PayoutOption::where('status', 1)->get();
-        $preferences = ClientPreference::with('currency')->select('currency_id')->where('id', 1)->first();
+        $preferences = ClientPreference::with('currency')->where('id', 1)->first();
         $currency_symbol = $preferences->currency->symbol ?? '$';
-
-        return view('agent.payout-requests')->with(['total_order_value' => number_format($total_order_value, 2), 'pending_payout_value'=>$pending_payout_value, 'completed_payout_value'=>$completed_payout_value, 'pending_payout_count'=>$pending_payout_count, 'completed_payout_count'=>$completed_payout_count, 'failed_payout_count'=>$failed_payout_count, 'payout_options'=>$payout_options, 'currency_symbol'=>$currency_symbol]);
+        return view('agent.payout-requests')->with(['total_order_value' => number_format($total_order_value, 2), 'preferences' => $preferences, 'pending_payout_value'=>$pending_payout_value, 'completed_payout_value'=>$completed_payout_value, 'pending_payout_count'=>$pending_payout_count, 'completed_payout_count'=>$completed_payout_count, 'failed_payout_count'=>$failed_payout_count, 'payout_options'=>$payout_options, 'currency_symbol'=>$currency_symbol]);
     }
 
     public function agentPayoutRequestsFilter(Request $request){
