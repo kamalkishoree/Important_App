@@ -15,36 +15,31 @@ $sms_crendential = json_decode($preference->sms_credentials);
     <!-- Start Content-->
     <div class="container-fluid">
 
-        <!-- start page title -->
-        <div class="row">
-            <div class="col-12">
-                <div class="page-title-box">
-                    <h4 class="page-title">{{ __('Configure') }}</h4>
-                </div>
-            </div>
-        </div>
-        <!-- end page title -->
         @if (\Session::has('success'))
             <div class="alert alert-success">
                 <span>{!! \Session::get('success') !!}</span>
             </div>
         @endif
+        <!-- start page title -->
         <div class="row">
-            <div class="col-md-3">
-                <form method="POST" action="{{ route('preference', Auth::user()->code) }}">
+            <div class="col-12">
+                <div class="page-title-box">
+                    <h4 class="page-title">{{ __('MAP, SMS and EMAILS') }}</h4>
+                </div>
+            </div>
+        </div>
+        <!-- end page title -->
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <form method="POST" class="h-100" action="{{ route('preference', Auth::user()->code) }}">
                     @csrf
-                    <div class="card-box">
-                        <h4 class="header-title">{{ __('Map Configuration') }}</h4>
-                        <p class="sub-header">
-                            {{ __("View and update your Map type and it's API key.") }}
-                        </p>
-                        <div class="row mb-2">
-                            <div class="col-sm-8">
-                                <div class="text-sm-left">
-
-                                </div>
-                            </div>
+                    <div class="card-box h-100">
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                            <h4 class="header-title mb-0">{{__("Map Configuration")}}</h4>
+                            <button class="btn btn-outline-info d-block" type="submit"> Save </button>
                         </div>
+                        <p class="sub-header">{{ __("View and update your Map type and it's API key.") }}</p>
+                        
                         <div class="row mb-2">
                             <div class="col-md-12">
                                 <div class="form-group mb-3">
@@ -75,25 +70,18 @@ $sms_crendential = json_decode($preference->sms_credentials);
                                 </div>
                             </div>
                         </div>
-
-                        <div class="row mb-2">
-                            <div class="col-12">
-                                <div class="form-group mb-0 text-center">
-                                    <button class="btn btn-blue btn-block" type="submit"> {{ __('Update') }} </button>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </form>
             </div>
-            <div class="col-md-3">
-                <form method="POST" action="{{ route('preference', Auth::user()->code) }}">
+            <div class="col-md-4 mb-3">
+                <form method="POST" class="h-100" action="{{ route('preference', Auth::user()->code) }}">
                     @csrf
-                    <div class="card-box same-size">
-                        <h4 class="header-title">{{ __('SMS') }}</h4>
-                        <p class="sub-header">
-                            {{ __("View and update your SMS Gateway and it's API keys.") }}
-                        </p>
+                    <div class="card-box h-100">
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                            <h4 class="header-title mb-0">{{__("SMS")}}</h4>
+                            <button class="btn btn-outline-info d-block" type="submit"> Save </button>
+                        </div>
+                        <p class="sub-header">{{ __("View and update your SMS Gateway and it's API keys.") }}</p>
                         <div class="row mb-2">
                             <div class="col-md-12">
                                 <div class="form-group mb-3">
@@ -337,23 +325,17 @@ $sms_crendential = json_decode($preference->sms_credentials);
                                 </div>
                             </div>
                         </div>
-
-
-                        <div class="row mb-2">
-                            <div class="col-12">
-                                <div class="form-group mb-0 text-center">
-                                    <button class="btn btn-blue btn-block" type="submit"> {{ __('Update') }} </button>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </form>
             </div>
-            <div class="col-md-4">
-                <form method="POST" action="{{ route('smtp') }}">
+            <div class="col-md-4 mb-3">
+                <form method="POST" class="h-100" action="{{ route('smtp') }}">
                     @csrf
-                    <div class="card-box same-size">
-                        <h4 class="header-title mb-md-1">{{ __('Email') }} (SMTP)</h4>
+                    <div class="card-box h-100">
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                            <h4 class="header-title mb-0">{{__("Email")}} (SMTP)</h4>
+                            <button class="btn btn-outline-info d-block" type="submit"> Save </button>
+                        </div>
                         <p class="sub-header">{{ __('View and update your SMTP credentials.') }}</p>
                         <div class="row mb-2">
 
@@ -453,95 +435,27 @@ $sms_crendential = json_decode($preference->sms_credentials);
                                 </div>
                             </div>
                         </div>
-                        <div class="row mb-2">
-                            <div class="col-12">
-                                <div class="form-group mb-0 text-center">
-                                    <button class="btn btn-blue btn-block" type="submit"> {{ __('Update') }} </button>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </form>
             </div>
+        </div>
 
-            <div class="col-md-2">
-                <form method="POST" action="{{ route('preference', Auth::user()->code) }}">
-                    @csrf
-                    <div class="card-box">
-                        <h4 class="header-title">{{ __('Customer Support') }}</h4>
-                        <p class="sub-header">
-                            {{ __("View and update your Customer Support, it's API key and Application ID") }}
-                        </p>
-                        <div class="row mb-2">
-                            <div class="col-sm-8">
-                                <div class="text-sm-left">
-
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row mb-2">
-                            <div class="col-md-12">
-                                <div class="form-group mb-3">
-                                    <label for="currency">{{ __('Customer Support') }}</label>
-                                    <select class="form-control" id="customer_support" name="customer_support">
-                                        <option value="zen_desk"
-                                            {{ isset($preference) && $preference->customer_support == 'zen_desk' ? 'selected' : '' }}>
-                                            {{ __('Zen Desk') }}
-                                        </option>
-                                    </select>
-                                    @if ($errors->has('customer_support'))
-                                        <span class="text-danger" role="alert">
-                                            <strong>{{ $errors->first('customer_support') }}</strong>
-                                        </span>
-                                    @endif
-                                </div>
-                            </div>
-                            <div class="col-md-12">
-                                <div class="form-group mb-3">
-                                    <label for="map_key_1">{{ __('API Key') }}</label>
-                                    <input type="password" name="customer_support_key" id="customer_support_key"
-                                        placeholder="{{ __('Please enter key') }}" class="form-control"
-                                        value="{{ old('customer_support_key', $preference->customer_support_key ?? '') }}">
-                                    @if ($errors->has('customer_support_key'))
-                                        <span class="text-danger" role="alert">
-                                            <strong>{{ $errors->first('customer_support_key') }}</strong>
-                                        </span>
-                                    @endif
-                                </div>
-                            </div>
-                            <div class="col-md-12">
-                                <div class="form-group mb-3">
-                                    <label for="customer_support_application_id">{{ __('Application ID') }}</label>
-                                    <input type="password" name="customer_support_application_id"
-                                        id="customer_support_application_id"
-                                        placeholder="{{ __('Please enter application ID') }}" class="form-control"
-                                        value="{{ old('customer_support_application_id', $preference->customer_support_application_id ?? '') }}">
-                                    @if ($errors->has('customer_support_application_id'))
-                                        <span class="text-danger" role="alert">
-                                            <strong>{{ $errors->first('customer_support_application_id') }}</strong>
-                                        </span>
-                                    @endif
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row mb-2">
-                            <div class="col-12">
-                                <div class="form-group mb-0 text-center">
-                                    <button class="btn btn-blue btn-block" type="submit"> {{ __('Update') }} </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </form>
+        <div class="row">
+            <div class="col-12">
+                <div class="page-title-box">
+                    <h4 class="page-title">{{ __('FCM, API ACCESS TOKEN and CUSTOM DOMAIN') }}</h4>
+                </div>
             </div>
-
-
-            <div class="col-md-3">
-                <form method="POST" action="{{ route('preference', Auth::user()->code) }}">
+        </div>
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <form method="POST" class="h-100" action="{{ route('preference', Auth::user()->code) }}">
                     @csrf
-                    <div class="card-box same-size">
-                        <h4 class="header-title">{{ __('Personal Access Token') }}</h4>
+                    <div class="card-box h-100">
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                            <h4 class="header-title mb-0">{{__("Personal Access Token")}}</h4>
+                            <button class="btn btn-outline-info d-block" type="submit"> Save </button>
+                        </div>
                         <p class="sub-header">
                             {{ __('View and Generate API keys.') }}
                         </p>
@@ -565,28 +479,22 @@ $sms_crendential = json_decode($preference->sms_credentials);
                                     @endif
                                 </div>
                             </div>
-
-                        </div>
-
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="form-group mb-0 text-center">
-                                    <button class="btn btn-blue btn-block" type="submit"> {{ __('Update') }} </button>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </form>
             </div>
-            <div class="col-md-3">
-                <form method="POST" action="{{ route('preference', Auth::user()->code) }}">
+            <div class="col-md-4 mb-3">
+                <form method="POST" class="h-100" action="{{ route('preference', Auth::user()->code) }}">
                     @csrf
-                    <div class="card-box same-size">
-                        <h4 class="header-title">{{ __('Custom Domain') }}</h4>
+                    <div class="card-box h-100">
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                            <h4 class="header-title mb-0">{{__("Custom Domain")}}</h4>
+                            <button class="btn btn-outline-info d-block" type="submit"> Save </button>
+                        </div>
                         <p class="sub-header">
                             {{ __('View and update your Domain.') }}
                         </p>
-                        <div class="row mb-3">
+                        <div class="row">
                             <div class="col-12">
                                 <label for="custom_domain">{{ __('Custom Domain') }}</label>
                                 *{{ __('Make sure you already pointed to IP') }} ({{ \env('IP') }})
@@ -604,21 +512,12 @@ $sms_crendential = json_decode($preference->sms_credentials);
                                 @endif
                             </div>
                         </div>
-
-
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="form-group mb-0 text-center">
-                                    <button class="btn btn-blue btn-block" type="submit"> {{ __('Update') }} </button>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </form>
             </div>
 
 
-            <div class="col-md-3">
+            <!-- <div class="col-md-3">
                 <form method="POST" action="{{ route('preference', Auth::user()->code) }}">
                     @csrf
                     <div class="card-box same-size">
@@ -654,20 +553,23 @@ $sms_crendential = json_decode($preference->sms_credentials);
                         </div>
                     </div>
                 </form>
-            </div>
+            </div> -->
 
-            <div class="col-md-3">
-                <form method="POST" action="{{ route('preference', Auth::user()->code) }}">
+            <div class="col-md-4 mb-3">
+                <form method="POST" class="h-100" action="{{ route('preference', Auth::user()->code) }}">
                     @csrf
-                    <div class="card-box same-size">
-                        <h4 class="header-title">{{ __('FCM Server Key') }}</h4>
+                    <div class="card-box h-100">
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                            <h4 class="header-title mb-0">{{__("FCM Server Key")}}</h4>
+                            <button class="btn btn-outline-info d-block" type="submit"> Save </button>
+                        </div>
                         <p class="sub-header">
                             {{ __('View and Update FCM key.') }}
                         </p>
                         <div class="row">
 
                             <div class="col-12">
-                                <div class="form-group mb-3">
+                                <div class="form-group">
                                     <div class="domain-outer border-0 d-flex align-items-center justify-content-between">
                                         <label for="personal_access_token_v1">{{ __('FCM Key') }}</label>
                                     </div>
@@ -681,15 +583,6 @@ $sms_crendential = json_decode($preference->sms_credentials);
                                     @endif
                                 </div>
                             </div>
-
-                        </div>
-
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="form-group mb-0 text-center">
-                                    <button class="btn btn-blue btn-block" type="submit"> {{ __('Update') }} </button>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </form>
@@ -697,16 +590,27 @@ $sms_crendential = json_decode($preference->sms_credentials);
         </div>
 
         <div class="row">
-            <div class="col-md-4">
-                <div class="card-box pb-2">
-                    <form method="POST" action="{{ route('preference', Auth::user()->code) }}">
+            <div class="col-12">
+                <div class="page-title-box">
+                    <h4 class="page-title">{{ Session::get('agent_name') ? Session::get('agent_name') : 'Agent' }}</h4>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <div class="card-box h-100">
+                    <form method="POST" class="h-100" action="{{ route('preference', Auth::user()->code) }}">
                         @csrf
-                        <input type="hidden" name="cancel_order_config" value="1">
+                        <input type="hidden" name="cancel_verify_edit_order_config" value="1">
                         <div class="row">
                             <div class="col-12">
-                                <h4 class="header-title">{{ __('Cancel Order By Driver') }}</h4>
+                                <div class="d-flex align-items-center justify-content-between mb-2">
+                                    <h4 class="header-title mb-0"></h4>
+                                    <button class="btn btn-outline-info d-block" type="submit"> Save </button>
+                                </div>
                                 <div class="d-flex align-items-center justify-content-between mt-3 mb-2">
-                                    <h5 class="font-weight-normal m-0">{{ __('Enable') }}</h5>
+                                    <h5 class="font-weight-normal m-0">{{ __('Cancel Order By') }} {{ Session::get('agent_name') ? Session::get('agent_name') : 'Agent' }}</h5>
                                     <div class="custom-control custom-switch">
                                         <input type="checkbox" class="custom-control-input"
                                             id="cancelOrderCustomSwitch_{{ $preference->is_cancel_order_driver }}"
@@ -720,24 +624,8 @@ $sms_crendential = json_decode($preference->sms_credentials);
                         </div>
                         <div class="row">
                             <div class="col-12">
-                                <div class="form-group mb-0 text-center">
-                                    <button class="btn btn-blue btn-block" type="submit"> {{ __('Update') }} </button>
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card-box pb-2">
-                    <form method="POST" action="{{ route('preference', Auth::user()->code) }}">
-                        @csrf
-                        <input type="hidden" name="driver_phone_verify_config" value="1">
-                        <div class="row">
-                            <div class="col-12">
-                                <h4 class="header-title">{{ __('Driver Registration Phone Verification') }}</h4>
                                 <div class="d-flex align-items-center justify-content-between mt-3 mb-2">
-                                    <h5 class="font-weight-normal m-0">{{ __('Enable') }}</h5>
+                                    <h5 class="font-weight-normal m-0">{{ Session::get('agent_name') ? Session::get('agent_name') : 'Agent' }} {{ __('Registration Phone Verification') }}</h5>
                                     <div class="custom-control custom-switch">
                                         <input type="checkbox" class="custom-control-input event_type"
                                             id="customSwitch_{{ $preference->verify_phone_for_driver_registration }}"
@@ -751,24 +639,8 @@ $sms_crendential = json_decode($preference->sms_credentials);
                         </div>
                         <div class="row">
                             <div class="col-12">
-                                <div class="form-group mb-0 text-center">
-                                    <button class="btn btn-blue btn-block" type="submit"> {{ __('Update') }} </button>
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card-box pb-2">
-                    <form method="POST" action="{{ route('preference', Auth::user()->code) }}">
-                        @csrf
-                        <input type="hidden" name="edit_order_config" value="1">
-                        <div class="row">
-                            <div class="col-12">
-                                <h4 class="header-title">{{ __('Edit Order By Driver') }}</h4>
                                 <div class="d-flex align-items-center justify-content-between mt-3 mb-2">
-                                    <h5 class="font-weight-normal m-0">{{ __('Enable') }}</h5>
+                                    <h5 class="font-weight-normal m-0">{{ __('Edit Order By') }} {{ Session::get('agent_name') ? Session::get('agent_name') : 'Agent' }}</h5>
                                     <div class="custom-control custom-switch">
                                         <input type="checkbox" class="custom-control-input"
                                             id="editOrderCustomSwitch_{{ $preference->is_edit_order_driver }}"
@@ -780,223 +652,198 @@ $sms_crendential = json_decode($preference->sms_credentials);
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="form-group mb-0 text-center">
-                                    <button class="btn btn-blue btn-block" type="submit"> {{ __('Update') }} </button>
-                                </div>
-                            </div>
-                        </div>
                     </form>
                 </div>
             </div>
-            <div class="col-md-4">
-                {{-- <div class="page-title-box">
-                <h4 class="page-title text-uppercase">{{__('Driver')}}</h4>
-            </div> --}}
-                <div class="card-box pb-2">
-                    <h4 class="header-title text-uppercase">{{__('Driver Registration Documents')}}</h4>
-                    <div class="d-flex align-items-center justify-content-end mt-2">
-                        <a class="btn btn-info d-block" id="add_driver_registration_document_modal_btn">
-                            <i class="mdi mdi-plus-circle mr-1"></i>{{__('Add')}}
-                        </a>
-                    </div>
-                    <div class="table-responsive mt-3 mb-1">
-                        <table class="table table-centered table-nowrap table-striped" id="promo-datatable">
-                            <thead>
-                                <tr>
-                                    <th>{{__('Name')}}</th>
-                                    <th>{{__('Type')}}</th>
-                                    <th>{{__('Required?')}}</th>
-                                    <th>{{__('Action')}}</th>
-                                </tr>
-                            </thead>
-                            <tbody id="post_list">
-                                @forelse($agent_docs as $agent_doc)
-                                    <tr>
-                                        <td>
-                                            <a class="edit_driver_registration_document_btn"
-                                                data-driver_registration_document_id="{{ $agent_doc->id }}"
-                                                href="javascript:void(0)">
-                                                {{ $agent_doc->name ? $agent_doc->name : '' }}
-                                            </a>
-                                        </td>
-                                        <td>{{ $agent_doc->file_type == 'Pdf' ? 'PDF' : $agent_doc->file_type }}</td>
-                                        <td>{{ $agent_doc->is_required ? 'Yes' : 'No' }}</td>
-                                        <td>
-                                            <div>
-                                                <div class="inner-div" style="float: left;">
-                                                    <a class="action-icon edit_driver_registration_document_btn"
-                                                        data-driver_registration_document_id="{{ $agent_doc->id }}"
-                                                        href="javascript:void(0)">
-                                                        <i class="mdi mdi-square-edit-outline"></i>
-                                                    </a>
-                                                </div>
-                                                <div class="inner-div">
-                                                    <button type="button"
-                                                        class="btn btn-primary-outline action-icon delete_driver_registration_document_btn"
-                                                        data-driver_registration_document_id="{{ $agent_doc->id }}">
-                                                        <i class="mdi mdi-delete"></i>
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                @empty
-                                    <tr align="center">
-                                        <td colspan="4" style="padding: 20px 0">{{__('Result not found.')}}</td>
-                                    </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card-box pb-2">
+            
+            <div class="col-md-4 mb-3">
+                <div class="card-box h-100">
                     <form method="POST" class="h-100" action="{{ route('preference', Auth::user()->code) }}">
                         @csrf
-                        <input type="hidden" name="refer_and_earn" value="1">
+                        <input type="hidden" name="cancel_order_config" value="1">
                         <div class="row">
                             <div class="col-12">
-                                <h4 class="header-title">{{ __('Refer And Earn') }}</h4>
-                                <div class="col-xl-12 my-2" id="addCur-160">
-                                    <label class="primaryCurText">{{ __('Referred To Amount') }}</label>
-                                    <input class="form-control" type="number" id="reffered_to_amount"
-                                        name="reffered_to_amount"
-                                        value="{{ old('reffered_to_amount', $preference->reffered_to_amount ?? '0') }}"
-                                        min="0">
+                                <div class="d-flex align-items-center justify-content-between mb-2">
+                                    <h4 class="header-title text-uppercase mb-0">{{ Session::get('agent_name') ? Session::get('agent_name') : 'Agent' }} {{__('Registration Documents')}}</h4>
+                                    <button class="btn btn-outline-info d-block" id="add_driver_registration_document_modal_btn" type="button"> {{__('Add')}} </button>
                                 </div>
-                                <div class="col-xl-12 mb-2 mt-3" id="addCur-160">
-                                    <label class="primaryCurText">{{ __('Referred By Amount') }}</label>
-                                    <input class="form-control" type="number" name="reffered_by_amount"
-                                        id="reffered_by_amount"
-                                        value="{{ old('reffered_by_amount', $preference->reffered_by_amount ?? '0') }}"
-                                        min="0">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="form-group mb-0 text-center">
-                                    <button class="btn btn-blue btn-block" type="submit"> {{ __('Update') }} </button>
+                                <div class="table-responsive mt-3 mb-1">
+                                    <table class="table table-centered table-nowrap table-striped" id="promo-datatable">
+                                        <thead>
+                                            <tr>
+                                                <th>{{__('Name')}}</th>
+                                                <th>{{__('Type')}}</th>
+                                                <th>{{__('Required?')}}</th>
+                                                <th>{{__('Action')}}</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="post_list">
+                                            @forelse($agent_docs as $agent_doc)
+                                                <tr>
+                                                    <td>
+                                                        <a class="edit_driver_registration_document_btn"
+                                                            data-driver_registration_document_id="{{ $agent_doc->id }}"
+                                                            href="javascript:void(0)">
+                                                            {{ $agent_doc->name ? $agent_doc->name : '' }}
+                                                        </a>
+                                                    </td>
+                                                    <td>{{ $agent_doc->file_type == 'Pdf' ? 'PDF' : $agent_doc->file_type }}</td>
+                                                    <td>{{ $agent_doc->is_required ? 'Yes' : 'No' }}</td>
+                                                    <td>
+                                                        <div>
+                                                            <div class="inner-div" style="float: left;">
+                                                                <a class="action-icon edit_driver_registration_document_btn"
+                                                                    data-driver_registration_document_id="{{ $agent_doc->id }}"
+                                                                    href="javascript:void(0)">
+                                                                    <i class="mdi mdi-square-edit-outline"></i>
+                                                                </a>
+                                                            </div>
+                                                            <div class="inner-div">
+                                                                <button type="button"
+                                                                    class="btn btn-primary-outline action-icon delete_driver_registration_document_btn"
+                                                                    data-driver_registration_document_id="{{ $agent_doc->id }}">
+                                                                    <i class="mdi mdi-delete"></i>
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            @empty
+                                                <tr align="center">
+                                                    <td colspan="4" style="padding: 20px 0">{{__('Result not found.')}}</td>
+                                                </tr>
+                                            @endforelse
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
                         </div>
                     </form>
                 </div>
             </div>
-            <div class="col-md-4">
-                <div class="card-box pb-2">
-                    <form method="POST" class="h-100" enctype="multipart/form-data"
-                        action="{{ route('favicon') }}">
+            <div class="col-md-4 mb-3">
+                <div class="card-box h-100">
+                    <form method="POST" class="h-100" action="{{ route('preference', Auth::user()->code) }}">
                         @csrf
-
+                        <input type="hidden" name="edit_order_config" value="1">
                         <div class="row">
                             <div class="col-12">
-                                <h4 class="header-title">{{ __('Favicon') }}</h4>
-                                <div class="col-xl-12 my-2" id="addCur-160">
-                                    <div class="">
-                                        <input type="file" class="dropify" data-plugins="dropify" name="favicon"
-                                            data-default-file="{{ isset($preference->favicon) ? Storage::disk('s3')->url($preference->favicon) : '' }}" />
-                                        <p class="text-muted text-center mt-2 mb-0">{{ __('Upload favicon') }} </p>
+                                <div class="d-flex align-items-center justify-content-between mb-2">
+                                <h4 class="header-title mb-0">{{ __('Refer And Earn') }}</h4>
+                                    <button class="btn btn-outline-info d-block" type="submit"> Save </button>
+                                </div>
+                                <div class="row">
+                                    <div class="col-xl-12 my-2" id="addCur-160">
+                                        <label class="primaryCurText">{{ __('Referred To Amount') }}</label>
+                                        <input class="form-control" type="number" id="reffered_to_amount"
+                                            name="reffered_to_amount"
+                                            value="{{ old('reffered_to_amount', $preference->reffered_to_amount ?? '0') }}"
+                                            min="0">
+                                    </div>
+                                    <div class="col-xl-12 mb-2 mt-3" id="addCur-160">
+                                        <label class="primaryCurText">{{ __('Referred By Amount') }}</label>
+                                        <input class="form-control" type="number" name="reffered_by_amount"
+                                            id="reffered_by_amount"
+                                            value="{{ old('reffered_by_amount', $preference->reffered_by_amount ?? '0') }}"
+                                            min="0">
                                     </div>
                                 </div>
-
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="form-group mb-0 text-center">
-                                    <button class="btn btn-blue btn-block" type="submit"> {{ __('Update') }} </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <div class="page-title-box">
+                    <h4 class="page-title">Miscellaneous</h4>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <div class="card-box h-100">
+                    <form method="POST" class="h-100" action="{{ route('preference', Auth::user()->code) }}">
+                        @csrf
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                            <h4 class="header-title mb-0">{{ __('Customer Support') }}</h4>
+                            <button class="btn btn-outline-info d-block" type="submit"> Save </button>
+                        </div>
+                        <p class="sub-header">
+                            {{ __("View and update your Customer Support, it's API key and Application ID") }}
+                        </p>
+                        <div class="row mb-2">
+                            <div class="col-sm-8">
+                                <div class="text-sm-left">
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label for="currency">{{ __('Customer Support') }}</label>
+                                    <select class="form-control" id="customer_support" name="customer_support">
+                                        <option value="zen_desk"
+                                            {{ isset($preference) && $preference->customer_support == 'zen_desk' ? 'selected' : '' }}>
+                                            {{ __('Zen Desk') }}
+                                        </option>
+                                    </select>
+                                    @if ($errors->has('customer_support'))
+                                        <span class="text-danger" role="alert">
+                                            <strong>{{ $errors->first('customer_support') }}</strong>
+                                        </span>
+                                    @endif
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label for="map_key_1">{{ __('API Key') }}</label>
+                                    <input type="password" name="customer_support_key" id="customer_support_key"
+                                        placeholder="{{ __('Please enter key') }}" class="form-control"
+                                        value="{{ old('customer_support_key', $preference->customer_support_key ?? '') }}">
+                                    @if ($errors->has('customer_support_key'))
+                                        <span class="text-danger" role="alert">
+                                            <strong>{{ $errors->first('customer_support_key') }}</strong>
+                                        </span>
+                                    @endif
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label for="customer_support_application_id">{{ __('Application ID') }}</label>
+                                    <input type="password" name="customer_support_application_id"
+                                        id="customer_support_application_id"
+                                        placeholder="{{ __('Please enter application ID') }}" class="form-control"
+                                        value="{{ old('customer_support_application_id', $preference->customer_support_application_id ?? '') }}">
+                                    @if ($errors->has('customer_support_application_id'))
+                                        <span class="text-danger" role="alert">
+                                            <strong>{{ $errors->first('customer_support_application_id') }}</strong>
+                                        </span>
+                                    @endif
                                 </div>
                             </div>
                         </div>
                     </form>
                 </div>
             </div>
-            {{-- <div class="col-md-6 col-xl-3">
-            <div class="card card-box">
-                <div class="row">
-                    <div class="col-5">
-                        <h4 class="header-title">{{ __("Favicon") }}</h4>
-                        <div class="mb-0">
-
-                            <label>{{ __("Upload Favicon") }}</label>
-                            <input type="file" accept="image/*" data-default-file="{{$preference->favicon ? $preference->favicon['proxy_url'].'600/400'.$client_preferences->favicon['image_path'] : ''}}" data-plugins="dropify" name="favicon" class="dropify" id="image" />
-                            <label class="logo-size d-block text-right mt-1">{{ __("Icon Size") }} 32x32</label>
-                            <span class="invalid-feedback" role="alert">
-                                <strong></strong>
-                            </span>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-        </div> --}}
-            {{-- <div class="col-md-3">
-            <form method="POST" action="{{ route('route.create.configure', Auth::user()->code) }}">
-                @csrf
-                <div class="card-box same-size">
-                    <h4 class="header-title">{{__("Routes")}}</h4>
-                    <!-- <p class="sub-header">
-                        {{__("View and update your Domain.")}}
-                    </p> -->
-                    <div class="row">
-                        <div class="col-12 my-2">
-                            <div class="custom-switch redio-all">
-                                <input type="checkbox" value="1" class="custom-control-input large-icon" id="route_flat_input" name="route_flat_input" {{ isset($preference) && $preference->route_flat_input == 1 ? 'checked' : '' }}>
-                                <label class="custom-control-label checkss" for="route_flat_input">{{__("Show flat number field on route create & update.")}}</label>
-                                <div class="col-sm-4 text-right">
-                                    @if ($errors->has('route_flat_input'))
-                                    <span class="text-danger" role="alert">
-                                        <strong>{{ $errors->first('route_flat_input') }}</strong>
-                                    </span>
-                                    @endif
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-12 mb-2">
-                            <div class="custom-switch redio-all">
-                                <input type="checkbox" value="1" class="custom-control-input large-icon" id="route_alcoholic_input" name="route_alcoholic_input" {{ isset($preference) && $preference->route_alcoholic_input == 1 ? 'checked' : '' }}>
-                                <label class="custom-control-label checkss" for="route_alcoholic_input">{{__("Show alcoholic item radio button on create & update.")}}</label>
-                                <div class="col-sm-4 text-right">
-                                    @if ($errors->has('route_alcoholic_input'))
-                                    <span class="text-danger" role="alert">
-                                        <strong>{{ $errors->first('route_alcoholic_input') }}</strong>
-                                    </span>
-                                    @endif
-                                </div>
-                            </div>
-                        </div>
-
-
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="form-group mb-0 text-center">
-                                    <button class="btn btn-blue btn-block" type="submit"> {{__("Update")}} </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-            </form>
-        </div> --}}
-
-        </div>
-        <div class="row">
-            <div class="col-md-12">
+            
+            <div class="col-md-4 mb-3">
                 <!-- Custom Mods start -->
-                <form method="POST" action="{{ route('preference', Auth::user()->code) }}">
+                <form method="POST" class="h-100" action="{{ route('preference', Auth::user()->code) }}">
                     @csrf          
                     <input type="hidden" name="custom_mode" value="1">
-                    <div class="card-box h-100 h-100">
+                    <div class="card-box h-100">
                         <div class="d-flex align-items-center justify-content-between mb-3">
                             <h4 class="header-title text-uppercase mb-0">{{__("Custom Mods")}}</h4>
-                            <button class="btn btn-info d-block" type="submit"> Save </button>
+                            <button class="btn btn-outline-info d-block" type="submit"> Save </button>
                         </div>
 
                         <div class="row align-items-start">
-                            <div class="col-md-4">
+                            <div class="col-md-12">
                                 <div class="form-group d-flex justify-content-between mb-3">
                                 <label for="pharmacy_check" class="mr-2 mb-0">{{__("Customer Notification Per Distance")}} <small class="d-block pr-5">Enable to show customer notification per distance from notifications.</small></label>
                                 <div class="d-flex align-items-center justify-content-between mt-3 mb-2">
@@ -1012,22 +859,19 @@ $sms_crendential = json_decode($preference->sms_credentials);
                 </form>
                 <!-- Custom Mods start -->
             </div>
-        </div>
-
-        <div class="row">
-            <div class="col-md-12">
+        
+            <div class="col-md-4 mb-3">
                 <!-- Custom Mods start -->
-                <form method="POST" action="{{ route('preference', Auth::user()->code) }}">
+                <form method="POST" class="h-100" action="{{ route('preference', Auth::user()->code) }}">
                     @csrf          
                     <input type="hidden" name="mybatch" value="1">
-                    <div class="card-box h-100 h-100">
+                    <div class="card-box h-100">
                         <div class="d-flex align-items-center justify-content-between mb-3">
                             <h4 class="header-title text-uppercase mb-0">{{__("Batch Allocation")}}</h4>
-                            <button class="btn btn-info d-block" type="submit"> Save </button>
+                            <button class="btn btn-outline-info d-block" type="submit"> Save </button>
                         </div>
-
                         <div class="row align-items-start">
-                            <div class="col-md-4"> 
+                            <div class="col-md-12"> 
                                 <div class="form-group d-flex justify-content-between mb-3">
                                 <label for="" class="mr-2 mb-0">{{__("Enable Batch Allocation")}} </label>
                                 <div class="d-flex align-items-center justify-content-between mb-2">
@@ -1041,8 +885,7 @@ $sms_crendential = json_decode($preference->sms_credentials);
                         </div>
 
                         <div class="row align-items-start batch-allocation" style="display:{{ (!empty($preference->create_batch_hours) && $preference->create_batch_hours > 0) ? '':'none'}}" >
-
-                            <div class="col-md-4"> 
+                            <div class="col-md-12"> 
                                 <div class="form-group d-flex justify-content-between mb-3">
                                 <label for="" class="mr-2 mb-0">{{__("Enable this to specify Job consist of pickup or delivery.")}} </label>
                                 <div class="d-flex align-items-center justify-content-between mb-2">
@@ -1053,8 +896,10 @@ $sms_crendential = json_decode($preference->sms_credentials);
                                     </div>
                                 </div>
                             </div>
-                            
-                            <div class="col-md-4"> 
+                        </div>
+
+                        <div class="row align-items-start batch-allocation" style="display:{{ (!empty($preference->create_batch_hours) && $preference->create_batch_hours > 0) ? '':'none'}}" >
+                            <div class="col-md-12"> 
                                 <div class="form-group d-flex justify-content-between mb-3">
                                 <label for="" class="mr-2 mb-0">{{__("Create batch on every hours")}} </label>
                                 <div class="d-flex align-items-center justify-content-between mb-2">
@@ -1070,7 +915,10 @@ $sms_crendential = json_decode($preference->sms_credentials);
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-4"> 
+                        </div>
+
+                        <div class="row align-items-start batch-allocation" style="display:{{ (!empty($preference->create_batch_hours) && $preference->create_batch_hours > 0) ? '':'none'}}" >
+                            <div class="col-md-12"> 
                                 <div class="form-group d-flex justify-content-between mb-3">
                                 <label for="" class="mr-2 mb-0">{{__("Maximum Route/Job per Geo Fence")}} </label>
                                 <div class="d-flex align-items-center justify-content-between mb-2">
@@ -1113,7 +961,7 @@ $sms_crendential = json_decode($preference->sms_credentials);
                             <div class="row mb-0">
 
                                 <div class="col-md-6">
-                                    <div class="form-group mb-3">
+                                    <div class="form-group">
                                         <label for="email_plan">{{ __('CURRENT SELECTION') }}</label>
                                         <select class="form-control" id="email_plan" name="email_plan">
                                             <option>{{ __('Select Plan') }}</option>
@@ -1264,7 +1112,7 @@ $sms_crendential = json_decode($preference->sms_credentials);
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header border-bottom">
-                        <h4 class="modal-title" id="standard-modalLabel">Add Driver Registration Document</h4>
+                        <h4 class="modal-title" id="standard-modalLabel">Add {{ Session::get('agent_name') ? Session::get('agent_name') : 'Agent' }} Registration Document</h4>
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                     </div>
                     <div class="modal-body">

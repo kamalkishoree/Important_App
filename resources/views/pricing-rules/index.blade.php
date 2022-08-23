@@ -222,9 +222,9 @@
 
 <script>
 
-    $(document).on('click', '.selectpicker', function( event ) {
+    /* $(document).on('click', '.selectpicker', function( event ) {
         event.stopPropagation();
-    }); 
+    });  */
 
 
     $(document).ready(function() {
@@ -254,7 +254,7 @@
         $('.digital-clock1').text("Current Time: "+date) 
     }
 
-    function runPicker(){
+    function runPicker1(){
         $('#geo_id, #team_id, #team_tag_id, #driver_tag_id, #geo_id_edit, #team_id_edit, #team_tag_id_edit, #driver_tag_id_edit').select2({
             placeholder: "Select an option",
             allowClear: true
@@ -334,7 +334,7 @@
             backdrop: 'static',
             keyboard: false
         });
-        runPicker();
+        runPicker1();
     });
 
     // click event of add new time frame button
@@ -417,7 +417,7 @@
                     elems.forEach(function(html) {
                     var switchery =new Switchery(html);
                 });
-                runPicker();
+                runPicker1();
 
                 $(document).on('click', '.add_edit_sub_pricing_row', function(){
                     var rowid = $(this).attr("data-id");

@@ -38,7 +38,7 @@
         }
 
         function initDataTable(table, status) {
-            // console.log(table);
+            var edit_agent_route = "{{ route('agent.edit', ':id') }}";
             var geo_filter = $("#geo_filter").val();
             var tag_filter = $("#tag_filter").val();
             var columnsDynamic =   [{
@@ -72,7 +72,7 @@
                     orderable: true,
                     searchable: false,
                     "mRender": function(data, type, full) {
-                        return full.name;
+                        return '<div class="edit-icon-div"><a href="'+edit_agent_route.replace(":id", full.id)+'" class="child-name editIcon" agentId="'+full.id+'">'+full.name+'</a><a href="'+edit_agent_route.replace(":id", full.id)+'" class="child-icon editIcon d-none"  agentId="'+full.id+'"> <i class="mdi mdi-square-edit-outline"></i></a></div>';
                     }
                 },
                 {
@@ -129,6 +129,18 @@
                 {
                     data: 'pay_to_driver',
                     name: 'pay_to_driver',
+                    orderable: true,
+                    searchable: false
+                },
+                {
+                    data: 'subscription_plan',
+                    name: 'subscription_plan',
+                    orderable: true,
+                    searchable: false
+                },
+                {
+                    data: 'subscription_expiry',
+                    name: 'subscription_expiry',
                     orderable: true,
                     searchable: false
                 },

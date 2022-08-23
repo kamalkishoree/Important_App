@@ -116,6 +116,15 @@
                 </li>
                 @endif
 
+                @if(in_array('Subscription',$allowed) || Auth::user()->is_superadmin == 1)
+                <li>
+                    <a href="{{route('subscription.plans.driver')}}">
+                        <i class="fa fa-rocket"></i>
+                        <span>{{ __('Subscription') }}</span>
+                    </a>
+                </li>
+                @endif
+
                 @if(in_array('Payout Requests',$allowed) || Auth::user()->is_superadmin == 1)
                 <li>
                     <a href="{{route('agent.payout.requests')}}">

@@ -15,7 +15,12 @@ class BatchAllocation extends Model
     }
 
     public function batchDetails(){
-        return $this->hasMany('App\Model\BatchAllocationDetail');
+        return $this->hasMany('App\Model\BatchAllocationDetail','batch_no', 'batch_no');
+    }
+
+    public function agent(){
+        return $this->belongsTo('App\Model\Agent', 'agent_id', 'id')->select('id', 'team_id', 'name', 'type', 'phone_number','make_model', 'plate_number', 'profile_picture', 'vehicle_type_id','color');
+        
     }
 
 }
