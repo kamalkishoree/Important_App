@@ -2587,7 +2587,6 @@ class TaskController extends BaseController
             'total' => $total,
             'total_duration' => $getdata['duration'],
             'currency' => $currency,
-            'total_duration' => $getdata['duration'],
             'paid_distance' => $paid_distance,
             'paid_duration' => $paid_duration,
             'message' => __('success')
