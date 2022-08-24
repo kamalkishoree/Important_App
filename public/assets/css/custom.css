@@ -473,7 +473,7 @@ overflow:scroll !important;
 }
 
 .copyin1 {
-    background-color: #F7F8FA;
+    background-color: #F4F3FD;
 }
 
 hr.new3 {
@@ -954,7 +954,7 @@ body[data-sidebar-size=condensed] .left-side-menu #sidebar-menu>ul>li:hover>a {
 .dshboard .content-page {
     margin-left: 240px;
     overflow: hidden;
-    padding: 70px 0 0 15px !important;
+    padding: 60px 0 0 15px !important;
     height: 100vh !important;
     margin-top: 0 !important;
     min-height: auto !important;
@@ -1055,7 +1055,7 @@ background-color: #F5F5F5;
     width: 240px;
     float: left;
     transition: all 0.1s ease-out;
-    height: 70px;
+    height: 60px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -1302,7 +1302,7 @@ body.dark .tagsinput{
 .light .btn-info {
     color: #fff;
     background-color: #6658dd;
-    border-color: #6658dd;
+    border-color: #43bee1;
 }
 
 #phone_numberInput .iti {
@@ -1844,4 +1844,134 @@ body[dir="rtl"] .agent-listing tbody td{ padding: 15px 10px 10px 15px;}
         height: 18px;
         margin-left: 6px;
     }
+}
+
+
+.altoggle {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 40px;
+    height: 20px;
+    background: #eee;
+    border-radius: 50px;
+    border: solid 0px transparent;
+    background-clip: padding-box;
+    cursor: pointer;
+    margin: 0;
+  }
+  .toggle__bg {
+    width: 34px;
+    height: 16px;
+    background: #fff;
+    background: linear-gradient(to right, #fff 50%, #777 50% 100%);
+    background-size: 200% 100%;
+    background-position: 100%;
+    border-radius: 50px;
+    border: solid 0px transparent;
+    background-clip: padding-box;
+    box-shadow: inset 0px 2px 5px 1px hsl(0deg 0% 0% / 30%);
+    -webkit-transition: all 0s ease-in-out;
+    transition: all 0s ease-in-out;
+  }
+.webhook_url{
+  font-size: 11px;
+  word-break: break-all;
+}
+  .toggle__sphere {
+    position: relative;
+    height: 15px;
+    width: 15px;
+    background: #777;
+    background: linear-gradient(to right, #fff 50%, #777 50% 100%);
+    border-radius: 50%;
+    transform-origin: top left;
+    transform: translateY(0px);
+    /*box-shadow: 2px 0px 5px 1px hsla(18, 77%, 15%, 0.05),
+      0px 5px 5px 1px hsla(18, 77%, 15%, 0.2),
+      -3px 0px 3px 1px hsla(0, 0%, 0%, 0.2);*/
+    -webkit-transition: all 0.2s ease-in-out;
+    transition: all 0.2s ease-in-out;
+  }
+
+  .toggle__sphere-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    border-radius: 50%;
+    box-shadow: inset 0px -20px 20px 10px hsla(0, 0%, 0%, 0)
+  }
+
+  .toggle__sphere-bg {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+    border-radius: 50%;
+    -webkit-transition: transform 0s ease-in-out;
+    transition: transform 0s ease-in-out;
+  }
+
+  .toggle__sphere-bg:before,
+  .toggle__sphere-bg:after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+  }
+
+  .toggle__sphere-bg:before {
+    background-color: #fff;
+    border-radius: 50%;
+    background-image: url( "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='Black'  viewBox='0 0 20 20'%3E%3Cpath d='M8 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm0 1a4 4 0 1 0 0-8 4 4 0 0 0 0 8zm.5-9.5a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0zm0 11a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0zm5-5a.5.5 0 1 1 0-1 .5.5 0 0 1 0 1zm-11 0a.5.5 0 1 1 0-1 .5.5 0 0 1 0 1zm9.743-4.036a.5.5 0 1 1-.707-.707.5.5 0 0 1 .707.707zm-7.779 7.779a.5.5 0 1 1-.707-.707.5.5 0 0 1 .707.707zm7.072 0a.5.5 0 1 1 .707-.707.5.5 0 0 1-.707.707zM3.757 4.464a.5.5 0 1 1 .707-.707.5.5 0 0 1-.707.707z'/%3E%3C/svg%3E" );
+    background-size: 123%;
+  }
+
+  .toggle__sphere-bg:after {
+    background-color: #fff;
+    transform: rotateY(180deg);
+    border-radius: 50%;
+    background-image: url( "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='Black' viewBox='0 0 20 20'%3E%3Cpath d='M6 .278a.768.768 0 0 1 .08.858 7.208 7.208 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277.527 0 1.04-.055 1.533-.16a.787.787 0 0 1 .81.316.733.733 0 0 1-.031.893A8.349 8.349 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71 0 4.266 2.114 1.312 5.124.06A.752.752 0 0 1 6 .278zM4.858 1.311A7.269 7.269 0 0 0 1.025 7.71c0 4.02 3.279 7.276 7.319 7.276a7.316 7.316 0 0 0 5.205-2.162c-.337.042-.68.063-1.029.063-4.61 0-8.343-3.714-8.343-8.29 0-1.167.242-2.278.681-3.286z'/%3E%3C/svg%3E");
+    background-position: 3px 2px;
+    background-repeat: no-repeat;
+  }
+
+  .altoggle input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+    position: absolute;
+  }
+
+  .altoggle input:checked + .toggle__bg {
+    background-position: 15%;
+  }
+
+  .altoggle input:checked + .toggle__bg .toggle__sphere {
+    -webkit-transform: translateX(20px) translateY(0px);
+    transform: translateX(20px) translateY(0px);
+    box-shadow:
+      -2px 0px 5px 1px hsla(18, 77%, 15%, 0.05),
+      0px 5px 5px 1px hsla(18, 77%, 15%, 0.2),
+      3px 0px 3px 0px hsla(0, 0%, 0%, 0.2);
+  }
+  .toggle__sphere-bg svg path{height: 20px;width: 20px}
+  .toggle__sphere-bg svg {
+      position: absolute;
+      top: 2px;
+      left: 2px;
+  }
+  .altoggle input:checked + .toggle__bg .toggle__sphere-bg {
+    -webkit-transform: rotateY(180deg);
+    transform: rotateY(180deg);
+  }
+
+
+.h-100 {
+    height: 100% !important;
 }

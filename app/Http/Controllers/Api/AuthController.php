@@ -22,7 +22,7 @@ use Illuminate\Support\Facades\Hash;
 use Twilio\Rest\Client as TwilioClient;
 use Faker\Generator as Faker;
 use Illuminate\Support\Facades\Storage;
-use App\Model\{User, Agent, AgentDocs, AllocationRule, AgentSmsTemplate, Client, SmtpDetail, ClientPreference, BlockedToken, Otp, TaskProof, TagsForTeam, SubAdminTeamPermissions, SubAdminPermissions, TagsForAgent, Team};
+use App\Model\{User, Agent, AgentDocs, AllocationRule, AgentSmsTemplate, Client, EmailTemplate, SmtpDetail, ClientPreference, BlockedToken, Otp, TaskProof, TagsForTeam, SubAdminTeamPermissions, SubAdminPermissions, TagsForAgent, Team};
 
 
 class AuthController extends BaseController
@@ -414,6 +414,7 @@ class AuthController extends BaseController
             'name' => 'required',
             'phone_number' => 'required|min:9',
             'type' => 'required',
+            'otp' => 'required'
             // 'vehicle_type_id' => 'required'
         ]);
         if ($validator->fails()) {
@@ -422,8 +423,22 @@ class AuthController extends BaseController
 
         $agent = Agent::where('phone_number', $request->phone_number)->first();
         if (!empty($agent)) {
-            return response()->json(['message' => 'User already register. Please login'], 422);
+            return response()->json(['message' => 'User already registered. Please login'], 422);
         }
+
+        // otp verification starts
+        $otp = Otp::where('phone', $request->phone_number)->where('opt', $request->otp)->orderBy('id', 'DESC')->first();
+        $currentTime = Carbon::now()->toDateTimeString();
+
+        if (!$otp) {
+            return $this->error(__('Please enter a valid OTP'), 422);
+        }
+        if ($currentTime > $otp->valid_till) {
+            return $this->error(__('Your OTP has been expired. Please try again.'), 422);
+        }
+        $otp->is_verified = 1;
+        $otp->update();
+        // otp verification ends
 
         $clientDetail = Client::with(['getPreference'])->first();
         if($clientDetail->getPreference->verify_phone_for_driver_registration == 1){
@@ -528,23 +543,28 @@ class AuthController extends BaseController
             $clientEmail = $clientContact->contact_email;
             $mailFrom    = $smtp->from_address;
 
-            $emailTemplate = EmailTemplate::where('slug', 'new-agent-signup')->first()->content;
-            $emailTemplate = str_replace("{agent_name}", $request->name, $emailTemplate);
-            $emailTemplate = str_replace("{phone_no}", $request->phone_number, $emailTemplate);
-            if(!empty($request->team_id)){
-                $team = Team::where('id', $request->team_id)->first()->name;
-                $emailTemplate = str_replace("{team}", $team, $emailTemplate);
-            }
+            $emailTemplateData = EmailTemplate::where('slug', 'new-agent-signup')->first();
+            if($emailTemplateData){
+                $emailTemplate = $emailTemplateData->content ?? null;
+                if($emailTemplate){
+                    $emailTemplate = str_replace("{agent_name}", $request->name, $emailTemplate);
+                    $emailTemplate = str_replace("{phone_no}", $request->phone_number, $emailTemplate);
+                    if(!empty($request->team_id)){
+                        $team = Team::where('id', $request->team_id)->first()->name;
+                        $emailTemplate = str_replace("{team}", $team, $emailTemplate);
+                    }
 
-            Mail::send([], [],
-                function ($message) use($clientEmail, $clientName, $mailFrom, $emailTemplate) {
-                    $message->from($mailFrom, $clientName);
-                    $message->to($clientEmail)->subject('Agent SignUp');
-                    $message->setBody($emailTemplate, 'text/html'); // for HTML rich messages
-                });
-            Log::info('send vendor sign up email to admin--');
-            Log::info(count(Mail::failures()));
-            Log::info('send vendor sign up email to admin--');
+                    Mail::send([], [],
+                        function ($message) use($clientEmail, $clientName, $mailFrom, $emailTemplate) {
+                            $message->from($mailFrom, $clientName);
+                            $message->to($clientEmail)->subject('Agent SignUp');
+                            $message->setBody($emailTemplate, 'text/html'); // for HTML rich messages
+                        });
+                    Log::info('send vendor sign up email to admin--');
+                    Log::info(count(Mail::failures()));
+                    Log::info('send vendor sign up email to admin--');
+                }
+            }
         }
 
         if ($agent->wasRecentlyCreated ) {
@@ -573,7 +593,7 @@ class AuthController extends BaseController
                     ]);
                 $agent->delete();
                 DB::commit(); //Commit transaction after all the operations
-                return response()->json(['massage' => __('Agent Deleted Successfully')], 200);
+                return response()->json(['massage' => __('Account Deleted Successfully')], 200);
                 //code...
             } catch (Exception $e) {
                 DB::rollBack();

@@ -665,6 +665,7 @@ class TaskController extends BaseController
         $header = $request->header();
         $client_details = Client::where('database_name', $header['client'][0])->first();
         $percentage = 0;
+        $agent_id =  $request->driver_id  ? $request->driver_id : null;
 
         $unassignedorder_data = Order::where('id', $request->order_id)->where('status', 'unassigned')->first();
         if(empty($unassignedorder_data)){
@@ -719,7 +720,7 @@ class TaskController extends BaseController
 
             $batchNo = $request->order_id;
             $this->dispatchNow(new RosterDelete($request->order_id,'B'));
-          
+            
 
             BatchAllocation::where(['batch_no'=>$request->order_id])->update(['agent_id' => $agent_id]);
             BatchAllocationDetail::where(['batch_no'=>$request->order_id])->update(['agent_id' => $agent_id]);
@@ -801,7 +802,7 @@ class TaskController extends BaseController
                 // $agent_id =  isset($request->allocation_type) && $request->allocation_type == 'm' ? $request->driver_id : null;
     
                 if ($task_id->driver_cost <= 0.00) {
-                    // $agent_details = Agent::where('id', $agent_id)->first();
+                    $agent_details = Agent::where('id', $agent_id)->first();
                     if ($agent_details->type == 'Employee') {
                         $percentage = $agent_commission_fixed + (($task_id->order_cost / 100) * $agent_commission_percentage);
                     } else {
@@ -1060,7 +1061,7 @@ class TaskController extends BaseController
                         'phone_number'=> $value['phone_number']??null,
                         ];
 
-                  //  $Loction = Location::create($loc);
+                    //  $Loction = Location::create($loc);
                     $Loction = Location::updateOrCreate(
                         $loc,
                         $loc_update
@@ -1110,7 +1111,7 @@ class TaskController extends BaseController
             //get pricing rule  for save with every order based on geo fence and agent tags
 
             $dayname = Carbon::parse($notification_time)->format('l');
-            $time    = Carbon::parse($notification_time)->format('H:i:s');
+            $time    = Carbon::parse($notification_time)->format('H:i');
 
             
             if((isset($request->order_agent_tag) && !empty($request->order_agent_tag)) && $geoid!=''):
@@ -2527,8 +2528,10 @@ class TaskController extends BaseController
             return response()->json(['message' => 'Pickup and Dropoff location required.',], 404);
             array_push($latitude, $value['latitude']??0.0000);
             array_push($longitude, $value['longitude']??0.0000);
-            $lat  = $value['latitude']??0.0000;
-            $long = $value['longitude']??0.0000;
+            if($lat=='' && $long==''):
+                $lat  = $value['latitude']??0.0000;
+                $long = $value['longitude']??0.0000;
+            endif;
         }
         
         //get geoid based on customer location
@@ -2546,7 +2549,7 @@ class TaskController extends BaseController
             $order_datetime = Carbon::now()->timezone($timezone)->toDateTimeString();
         endif;
         $dayname = Carbon::parse($order_datetime)->format('l');
-        $time    = Carbon::parse($order_datetime)->format('H:i:s');
+        $time    = Carbon::parse($order_datetime)->format('H:i');
 
         
         if((isset($request->agent_tag) && !empty($request->agent_tag)) && $geoid!=''):
@@ -2582,6 +2585,7 @@ class TaskController extends BaseController
         Log::info($total);
         return response()->json([
             'total' => $total,
+            'total_duration' => $getdata['duration'],
             'currency' => $currency,
             'total_duration' => $getdata['duration'],
             'paid_distance' => $paid_distance,
@@ -2698,11 +2702,12 @@ class TaskController extends BaseController
                 $order->order_cost = $order->cash_to_be_collected ?? $order->order_cost;
                  $tasks = DB::table('tasks')->where('order_id', $order->id)->leftJoin('locations', 'tasks.location_id', '=', 'locations.id')
                      ->select('tasks.*', 'locations.latitude', 'locations.longitude', 'locations.short_name', 'locations.address')->orderBy('task_order')->get();
-
+                $db_name = client::select('database_name')->where('id', 1)->first()->database_name;
                  return response()->json([
                      'message' => 'Successfully',
                      'tasks' => $tasks,
-                     'order'  => $order
+                     'order'  => $order,
+                     'agent_dbname'  =>$db_name
                  ], 200);
 
             } else {
