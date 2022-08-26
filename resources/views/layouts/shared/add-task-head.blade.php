@@ -336,7 +336,6 @@
     var longitude = [];
 
     $(".addTaskModalHeader").click(function (e) {
-
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
@@ -369,7 +368,7 @@
                 $(".addspan").hide();
                 $(".tagspan").hide();
                 $(".tagspan2").hide();
-                
+                $(".searchspan").hide();
                 $(".datenow").hide();
 
                 $(".pickup-barcode-error").hide();
@@ -459,7 +458,16 @@
                   id: ids
               },
               success: function(data) {
-                  var array = data;
+                  var customerdata = data.customer;
+                  var array = data.location;
+                  if(customerdata.dial_code!=null)
+                  {
+                     $(".searchshow").find("input[name='phone_existing']").val("+"+customerdata.dial_code+""+customerdata.phone_number);
+                  }else{
+                     $(".searchshow").find("input[name='phone_existing']").val(customerdata.phone_number);
+                  }
+                  $(".searchshow").find("input[name='email_existing']").val(customerdata.email);
+
                   $('.withradio .append').remove();
                   jQuery.each(array, function(i, val) {
                     var countz = '';
@@ -472,10 +480,6 @@
                           '</label></div></div>');
                         countz = count + 1;
                     });
-                      /* $(".withradio").append(
-                          '<div class="append"><div class="custom-control custom-radio count"><input type="radio" id="' + val.id + '" name="old_address_id" value="' + val.id + '" class="custom-control-input redio old-select-address callradio" data-srtadd="'+ val.short_name +'" data-flat_no="'+ val.flat_no +'"  data-adr="'+ val.address +'" data-lat="'+ val.latitude +'" data-long="'+ val.longitude +'" data-pstcd="'+ val.post_code +'" data-emil="'+ val.email +'" data-ph="'+ val.phone_number +'"><label class="custom-control-label" for="' + val.id + '"><span class="spanbold">' + val.short_name +
-                          '</span>-' + val.address +
-                          '</label></div></div>'); */
                   });
 
               }
@@ -565,7 +569,7 @@
 
           var postcode1 = $clone.find('.postcode');
           $.each(postcode1, function(index, elem){
-            var jElem = $(elem)
+            var jElem = $(elem);
             var name = jElem.prop('id');
             name = name.replace(/\d+/g, '');
             name = 'addHeader'+post_count+'-postcode';
@@ -576,10 +580,12 @@
 
         $clone.find('.appoint').hide();
         $(document).find('#addSubFields').before($clone);
-        $('#addHeader'+countZ+' input[type="text"]').val('');
+        $clone.find('input[type="text"]').val('');
         autoWrap.indexOf('addHeader'+countZ) === -1 ? autoWrap.push('addHeader'+countZ) : console.log("exists");
           loadMapHeader(autoWrap);
           $clone.find('input').click();
+          $clone.find('input[type="radio"]').prop('checked', false);
+          $clone.find('input[type="text"]').val('');
     });
 
     function loadMapHeader(autoWrap){
@@ -709,11 +715,13 @@
 
         if (cus_id == '') {
             if (name != '' && email != '' && phone_no != '') {
-
+                $(".searchspan").hide();
             } else {  err = 1;
                 $(".searchspan").show();
                 return false;
             }
+        }else{
+            $(".searchspan").hide();
         }
         var s_name = $("input[name='short_name[]']").val();
         var s_address = $("input[name='address[]']").val();

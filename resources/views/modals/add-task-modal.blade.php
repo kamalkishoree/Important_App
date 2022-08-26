@@ -47,9 +47,25 @@
                             <input type="hidden" id='cusid' name="ids" readonly>
                             </div>
                         </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                {!! Form::text('email_existing', null, ['class' => 'form-control', 'placeholder' => __('Email'), 'id'=>'email_existing', 'readonly'=>'true']) !!}
+                                <span class="invalid-feedback" role="alert">
+                                    <strong></strong>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                {!! Form::text('phone_existing', null, ['class' => 'form-control', 'placeholder' => __('Phone Number'),'id'=> 'phone_existing' , 'readonly'=> 'true']) !!}
+                                <span class="invalid-feedback" role="alert">
+                                    <strong></strong>
+                                </span>
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="row mb-2 newcustomer">
+                    <div class="row mb-1 newcustomer">
                         <div class="col-md-12">
                             <div class="form-group" id="nameInput">
                                 {!! Form::text('name', null, ['class' => 'form-control', 'placeholder' => __('Name'),'id'=>'name_new']) !!}
@@ -193,7 +209,7 @@
                                     <div class="row firstclone1">
                                         <div class="col-md-6">
                                             <div class="form-group mb-1">
-                                                <select class="form-control selecttype mt-1" id="task_type"  name="task_type_id[]" required>
+                                                <select class="selecttype mt-1" id="task_type"  name="task_type_id[]" required>
                                                     <option value="1">{{__("Pickup Task")}}</option>
                                                     <option value="2">{{__("Drop Off Task")}}</option>
                                                     <option value="3">{{__("Appointment")}}</option>
@@ -221,14 +237,14 @@
                                                         <div class="form-group col-6 mb-1">
                                                             {!! Form::text('short_name[]', null, ['class' => 'form-control address', 'placeholder' => __('Short Name')]) !!}
                                                         </div>
-                                                        <div class="form-group col-6 mb-1">
-                                                            {!! Form::text('flat_no[]', null, ['class' => 'form-control address flat_no','placeholder' => __('House/Apartment/Flat no'),'id'=>'addHeader1-flat_no']) !!}
-                                                        </div>
                                                         <div class="input-group form-group col-6 mb-2">
                                                             <input type="text" id="addHeader1-input" name="address[]" class="form-control address cust_add" placeholder='{{__("Location")}}'>
                                                             <div class="input-group-append">
                                                                 <button class="btn btn-xs btn-dark waves-effect waves-light showMapHeader cust_btn" type="button" num="addHeader1"> <i class="mdi mdi-map-marker-radius"></i></button>
                                                             </div>
+                                                        </div>
+                                                        <div class="form-group col-6 mb-1">
+                                                            {!! Form::text('flat_no[]', null, ['class' => 'form-control address flat_no','placeholder' => __('House/Apartment/Flat no'),'id'=>'addHeader1-flat_no']) !!}
                                                         </div>
                                                         <div class="form-group col-6 mb-1">
                                                             <input type="hidden" name="latitude[]" id="addHeader1-latitude" value="0" class="cust_latitude" />

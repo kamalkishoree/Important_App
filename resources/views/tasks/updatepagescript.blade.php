@@ -393,7 +393,7 @@ $(document).ready(function(){
 
         $(".tags").hide();
         $(".drivers").hide();
-        $("input[type='radio'].check").click(function() {
+        $("input[type='radio'].assignRadio").click(function() {
             var radioValue = $("#rediodiv input[type='radio']:checked").val();
             if (radioValue == 'a') {
                 $(".tags").show();
@@ -530,7 +530,16 @@ $(document).ready(function(){
                     id: ids
                 },
                 success: function(data) {
-                    var array = data;
+                    var customerdata = data.customer;
+                    var array = data.location;
+                    if(customerdata.dial_code!=null)
+                    {
+                        $(".searchshow").find("input[name='phone_existing']").val("+"+customerdata.dial_code+""+customerdata.phone_number);
+                    }else{
+                        $(".searchshow").find("input[name='phone_existing']").val(customerdata.phone_number);
+                    }
+                    $(".searchshow").find("input[name='email_existing']").val(customerdata.email);
+                    $('.withradio .append').remove();
                     jQuery.each(array, function(i, val) {
                         $(".withradio").append(
                           '<div class="append"><div class="custom-control custom-radio count"><input type="radio" id="' + val.id + '" name="old_address_id" value="' + val.id + '" class="custom-control-input redio old-select-address callradio" data-srtadd="'+ val.short_name +'" data-adr="'+ val.address +'" data-lat="'+ val.latitude +'" data-long="'+ val.longitude +'" data-pstcd="'+ val.post_code +'" data-emil="'+ val.email +'" data-ph="'+ val.phone_number +'"><label class="custom-control-label" for="' + val.id + '"><span class="spanbold">' + val.short_name +
@@ -555,7 +564,7 @@ $(document).ready(function(){
 
             if (cus_id == '') {
                 if (name != '' && email != '' && phone_no != '') {
-
+                    $(".searchspan").hide();
                 } else {
                     $(".searchspan").show();
                     return false;

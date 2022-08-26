@@ -253,7 +253,7 @@ use Carbon\Carbon;
                                             <div class="row firstclone1">
                                                 <div class="col-md-6">
                                                     <div class="form-group mb-1">
-                                                        <select class="form-control selecttype mt-1" id="task_type"  name="task_type_id[]" required>
+                                                        <select class=" selecttype mt-1" id="task_type"  name="task_type_id[]" required>
                                                             <option value="1" {{ $item->task_type_id == 1 ? 'selected' : '' }}>
                                                             {{__('Pickup Task')}}</option>
                                                             <option value="2" {{ $item->task_type_id == 2 ? 'selected' : '' }}>{{__('Drop Off Task')}}</option>
@@ -283,14 +283,14 @@ use Carbon\Carbon;
                                                                 <div class="form-group col-6 mb-1">
                                                                     {!! Form::text('short_name[]', null, ['class' => 'form-control address', 'placeholder' => __('Short Name')]) !!}
                                                                 </div>
-                                                                <div class="form-group col-6 mb-1">
-                                                                    {!! Form::text('flat_no[]', null, ['class' => 'form-control address flat_no','placeholder' => __('House/Apartment/Flat no'),'id'=>'add'.$newcount.'-flat_no']) !!}
-                                                                </div>
                                                                 <div class="input-group form-group col-6 mb-2">
                                                                     <input type="text" id="add{{ $newcount }}-input" name="address[]" class="form-control address cust1_add" placeholder='{{__("Location")}}'>
                                                                     <div class="input-group-append">
                                                                         <button class="btn btn-xs btn-dark waves-effect waves-light showMapHeader cust1_btn" type="button" num="add{{ $newcount }}"> <i class="mdi mdi-map-marker-radius"></i></button>
                                                                     </div>
+                                                                </div>
+                                                                <div class="form-group col-6 mb-1">
+                                                                    {!! Form::text('flat_no[]', null, ['class' => 'form-control address flat_no','placeholder' => __('House/Apartment/Flat no'),'id'=>'add'.$newcount.'-flat_no']) !!}
                                                                 </div>
                                                                 <div class="form-group col-6 mb-1">
                                                                 <input type="hidden" name="latitude[]" id="add{{ $newcount }}-latitude" class="cust1_latitude" value="0" />

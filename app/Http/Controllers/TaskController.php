@@ -2614,7 +2614,8 @@ class TaskController extends BaseController
             return response()->json($response);
         } else {
             $id = $request->id;
-            $address_preference  = ClientPreference::where('id', 1)->first(['allow_all_location','show_limited_address']);
+            $customer = Customer::select('id', 'email', 'phone_number', 'dial_code')->where('id', $id)->where('status', 'Active')->first();
+            $address_preference  = ClientPreference::where('id', 1)->first(['allow_all_location', 'show_limited_address']);
             if ($address_preference->allow_all_location==1) { 
                 if($address_preference->show_limited_address ==1 ){
                      // show all address
@@ -2623,23 +2624,23 @@ class TaskController extends BaseController
                
                 $allloctions = Location::where('customer_id', '!=', $id)->where('short_name', '!=', null)->where('location_status', 1)->orderBy('short_name','asc')->orderBy('address','asc')->limit(5)->get();
                 $loction = array_merge($myloctions->toArray(), $allloctions->toArray());
-                return response()->json($loction);
+                return response()->json(array('customer'=>$customer, 'location'=>$loction));
                 }else{
                     $myloctions = Location::where('customer_id', $id)->where('short_name', '!=', null)->where('location_status', 1)->orderBy('short_name','asc')->orderBy('address','asc')->get();
                     $allloctions = Location::where('customer_id', '!=', $id)->where('short_name', '!=', null)->where('location_status', 1)->orderBy('short_name','asc')->orderBy('address','asc')->get();
                     $loction = array_merge($myloctions->toArray(), $allloctions->toArray());
-                    return response()->json($loction);
+                    return response()->json(array('customer'=>$customer, 'location'=>$loction));
                 }
             } else {
                 if($address_preference->show_limited_address ==1 ){
                     
                 $loction = Location::where('customer_id', $id)->where('short_name', '!=', null)->where('location_status', 1)->orderBy('short_name','asc')->orderBy('address','asc')->limit(5)->get();
-                //pr($loction);  
+                
             }else{
                     $loction = Location::where('customer_id', $id)->where('short_name', '!=', null)->where('location_status', 1)->orderBy('short_name','asc')->orderBy('address','asc')->get();
                  
                 }
-                return response()->json($loction);
+                return response()->json(array('customer'=>$customer, 'location'=>$loction));
             }
         }
     }
