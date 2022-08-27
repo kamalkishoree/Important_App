@@ -1,6 +1,6 @@
 <div class="row">
     <div class="col-md-12">
-        <div class="card-box pt-0 pb-0">            
+        <div class="card-box pb-0 pt-0 mb-1">            
             <div class="row d-flex">
                 <div class="col-md-4" style="border-right: 1px solid #ccc;">
                     @csrf
@@ -47,22 +47,6 @@
                             <input type="hidden" id='cusid' name="ids" readonly>
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                {!! Form::text('email_existing', null, ['class' => 'form-control', 'placeholder' => __('Email'), 'id'=>'email_existing', 'readonly'=>'true']) !!}
-                                <span class="invalid-feedback" role="alert">
-                                    <strong></strong>
-                                </span>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                {!! Form::text('phone_existing', null, ['class' => 'form-control', 'placeholder' => __('Phone Number'),'id'=> 'phone_existing' , 'readonly'=> 'true']) !!}
-                                <span class="invalid-feedback" role="alert">
-                                    <strong></strong>
-                                </span>
-                            </div>
-                        </div>
                     </div>
 
                     <div class="row mb-1 newcustomer">
@@ -74,18 +58,24 @@
                                 </span>
                             </div>
                         </div>
-                        <div class="col-md-6">
+                    </div>
+
+                    <div class="row mb-1">
+                        <div class="col-md-12">
                             <div class="form-group" id="emailInput">
-                                {!! Form::text('email', null, ['class' => 'form-control', 'placeholder' => __('Email'),'id'=>'email_new']) !!}
+                                {!! Form::text('email', null, ['class' => 'form-control', 'placeholder' => __('Email'),'id'=>'email']) !!}
                                 <span class="invalid-feedback" role="alert">
                                     <strong></strong>
                                 </span>
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-12">
                             <div class="form-group" id="phone_numberInput">
-                                {!! Form::text('phone_number', null, ['class' => 'form-control', 'placeholder' => __('Phone Number'),'id'=> 'phone_new'
-                                ]) !!}
+                                <div class="input-group">
+                                    <input type="text" name="phone_number" class="form-control phone_number" id="phone_number" placeholder={{__("Enter mobile number")}} maxlength="14">
+                                    <input type="hidden" id="countryData" name="countryData" value="us">
+                                    <input type="hidden" id="dialCode" name="dialCode" value="+1">
+                                </div>
                                 <span class="invalid-feedback" role="alert">
                                     <strong></strong>
                                 </span>

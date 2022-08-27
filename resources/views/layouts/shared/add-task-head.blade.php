@@ -194,7 +194,7 @@
 
                 </div>
                 <span class="show_all_error invalid-feedback"></span>
-                <div class="modal-footer justify-content-center">
+                <div class="modal-footer justify-content-center p-0">
                      <a href="javascript: void(0);" class="btn btn-blue waves-effect waves-light submitTaskHeader"><span class="spinner-border spinner-border-sm submitTaskHeaderLoader" style="display:none;" role="status" aria-hidden="true"></span> <span id="submitTaskHeaderText">{{__("Submit")}}</span></a>
                 </div>
             </form>
@@ -284,7 +284,7 @@
 <script src="{{asset('assets/libs/dropzone/dropzone.min.js')}}"></script>
 <script src="{{asset('assets/libs/dropify/dropify.min.js')}}"></script>
 <!-- Page js-->
-<script src="{{asset('assets/js/pages/form-pickers.init.js')}}"></script>
+
 <script>
     var theme      = {!!json_encode($theme)!!};
 
@@ -359,6 +359,7 @@
 
                 $('#task-modal-header').find('.selectizeInput').selectize();
 
+                
                 $('.dropify').dropify();
                 $(".newcustomer").hide();
                 $(".searchshow").show();
@@ -384,12 +385,22 @@
                     keyboard: false
                 });
 
+                phoneInput();
                 runPicker();
             },
             error: function (data) {
             }
         });
     });
+
+    function phoneInput() {
+        $("#phone_number").intlTelInput({
+            nationalMode: false,
+            formatOnDisplay: true,
+            utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/8.4.6/js/utils.js"
+        });
+        $('.intl-tel-input').css('width', '100%');      
+    }
 
     var CSRF_TOKEN = $("input[name=_token]").val();
 
@@ -1199,7 +1210,6 @@
     $('.onlynumber').keyup(function ()
         {
         this.value = this.value.replace(/[^0-9\.]/g,'');
-        });
-
+    });
 
 </script>

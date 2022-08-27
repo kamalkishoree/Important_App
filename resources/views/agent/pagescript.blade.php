@@ -390,9 +390,7 @@
         });
 
         /* add Team using ajax*/
-        // $("#add-agent-modal #submitAgent").submit(function(e) {
-
-        // });
+        
         $(document).on("submit", "#submitAgent", function(e) {
             e.preventDefault();
             // $(document).on('click', '.submitAgentForm', function() {
