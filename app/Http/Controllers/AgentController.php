@@ -722,9 +722,9 @@ class AgentController extends Controller
             AgentLog::where('agent_id',$request->id)->update(['is_active' => $is_active]);
 
             $slug = ($request->status == 1)? 'driver-accepted' : 'driver-rejected';
-            $sms_body = AgentSmsTemplate::where('slug', $slug)->first()->content;
+            $sms_body = AgentSmsTemplate::where('slug', $slug)->first();
             if(!empty($sms_body)){
-                $send = $this->sendSms2($agent_approval->phone_number, $sms_body)->getData();
+                $send = $this->sendSms2($agent_approval->phone_number, $sms_body->content)->getData();
             }
             return response()->json(['status' => 1, 'message' => 'Status change successfully.']);
         } catch (Exception $e) {

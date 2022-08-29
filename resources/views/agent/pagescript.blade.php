@@ -533,6 +533,10 @@
                             setTimeout(function() {
                                 $('#' + activeTabDetail).DataTable().ajax.reload();
                             }, 100);
+                            setTimeout(function() {
+                                location.reload();
+                            }, 50);
+                            
                         }
                     }
                 });
