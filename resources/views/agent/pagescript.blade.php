@@ -530,9 +530,9 @@
                     success: function(data) {
                         if (data.status == 1) {
                             $.NotificationApp.send("", data.message, "top-right", "#5ba035", "success");
-                            setTimeout(function() {
-                                $('#' + activeTabDetail).DataTable().ajax.reload();
-                            }, 100);
+                            // setTimeout(function() {
+                            //     $('#' + activeTabDetail).DataTable().ajax.reload();
+                            // }, 100);
                             setTimeout(function() {
                                 location.reload();
                             }, 50);
