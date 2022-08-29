@@ -535,7 +535,7 @@
                             // }, 100);
                             setTimeout(function() {
                                 location.reload();
-                            }, 50);
+                            }, 100);
                             
                         }
                     }
