@@ -187,13 +187,13 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" id="awaiting-vendor" data-toggle="tab" href="#awaiting_vendor" role="tab" aria-selected="true" data-rel="awaiting_approval_agent_datatable" data-status="0">
-                                <i class="icofont icofont-ui-home"></i>{{ __('Awaiting Approval') }}<sup class="total-items">({{$agentNotApproved}})</sup>
+                                <i class="icofont icofont-ui-home"></i>{{ __('Awaiting Approval') }}<sup class="total-items" id="awaiting_vendor_count">({{$agentNotApproved}})</sup>
                             </a>
                             <div class="material-border"></div>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" id="block-vendor" data-toggle="tab" href="#block_vendor" role="tab" aria-selected="false" data-rel="blocked_agent_datatable" data-status="2">
-                                <i class="icofont icofont-man-in-glasses"></i>{{ __('Blocked') }}<sup class="total-items">({{$agentRejected}})</sup>
+                                <i class="icofont icofont-man-in-glasses"></i>{{ __('Blocked') }}<sup class="total-items" id="blocked_vendor_count">({{$agentRejected}})</sup>
                             </a>
                             <div class="material-border"></div>
                         </li>
