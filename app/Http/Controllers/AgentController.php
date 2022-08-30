@@ -726,7 +726,21 @@ class AgentController extends Controller
             if(!empty($sms_body)){
                 $send = $this->sendSms2($agent_approval->phone_number, $sms_body->content)->getData();
             }
-            return response()->json(['status' => 1, 'message' => 'Status change successfully.']);
+
+            $agents            = Agent::get();
+            $agentsCount       = count($agents);
+            $employeesCount    = count($agents->where('type', 'Employee'));
+            $freelancerCount   = count($agents->where('type', 'Freelancer'));
+            $agentActive       = count($agents->where('is_activated', 1));
+            $agentInActive     = count($agents->where('is_activated', 0));
+            $agentIsAvailable  = count($agents->where('is_available', 1));
+            $agentNotAvailable = count($agents->where('is_available', 0));
+            $agentIsApproved   = count($agents->where('is_approved', 1));
+            $agentNotApproved  = count($agents->where('is_approved', 0));
+            $agentRejected     = count($agents->where('is_approved', 2));
+
+
+            return response()->json(['status' => 1, 'agentIsApproved'=>$agentIsApproved, 'agentNotApproved'=>$agentNotApproved, 'agentRejected'=>$agentRejected, 'message' => 'Status change successfully.']);
         } catch (Exception $e) {
             return response()->json(['status' => 0, 'message' => $e->getMessage()]);
         }

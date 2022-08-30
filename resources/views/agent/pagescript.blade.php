@@ -529,12 +529,12 @@
                     },
                     success: function(data) {
                         if (data.status == 1) {
+                            $('#active_vendor_count').text('('+data.agentIsApproved+')');
+                            $('#awaiting_vendor_count').text('('+data.agentNotApproved+')');
+                            $('#blocked_vendor_count').text('('+data.agentRejected+')');
                             $.NotificationApp.send("", data.message, "top-right", "#5ba035", "success");
-                            // setTimeout(function() {
-                            //     $('#' + activeTabDetail).DataTable().ajax.reload();
-                            // }, 100);
                             setTimeout(function() {
-                                location.reload();
+                                $('#' + activeTabDetail).DataTable().ajax.reload();
                             }, 100);
                             
                         }
