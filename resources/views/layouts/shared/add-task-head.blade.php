@@ -393,7 +393,8 @@
     });
 
     function phoneInput() {
-        var phone_number_intlTel = window.intlTelInput(document.querySelector("#taskFormHeader .phone_number"),{
+        //initialize intlTelInput
+        let phone_number_intltel = window.intlTelInput(document.querySelector("#taskFormHeader .phone_number"),{
             separateDialCode: true,
             preferredCountries:["{{getCountryCode()}}"],
             initialCountry:"{{getCountryCode()}}",
@@ -402,7 +403,7 @@
         });
 
         document.querySelector("#taskFormHeader .phone_number").addEventListener("countrychange", function() {
-            $("#taskFormHeader #dialCode").val(phone_number_intlTel.getSelectedCountryData().dialCode);
+            $("#taskFormHeader #dialCode").val(phone_number_intltel.getSelectedCountryData().dialCode);
         });
     }
 
@@ -456,7 +457,6 @@
                 // Set selection
                 $('#task-modal-header #searchDriver').val(ui.item.label); // display the selected text
                 $('#task-modal-header #agentid').val(ui.item.value); // save selected id to input
-                // $(".oldhide").hide();
                 return false;
             }
         });
@@ -479,19 +479,11 @@
                     var countrycode = customerdata.countrycode;
                     $("#taskFormHeader").find("input[name='phone_number']").val(customerdata.phone_number);
                     $("#taskFormHeader #dialCode").val(customerdata.dial_code);
-                    $("#taskFormHeader .phone_number").val('');
-                    //phone_number_intlTel.intlTelInput('destroy');
                     
-                    var phone_number = window.intlTelInput(document.querySelector("#taskFormHeader .phone_number"),{
-                        separateDialCode: true,
-                        initialCountry:countrycode,
-                        hiddenInput: "full_number",
-                        utilsScript: "//cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.3/js/utils.js"
-                    });
-
-                    document.querySelector("#taskFormHeader .phone_number").addEventListener("countrychange", function() {
-                        $("#taskFormHeader #dialCode").val(phone_number.getSelectedCountryData().dialCode);
-                    });
+                    //getting instance of intlTelInput
+                    var input = document.querySelector("#taskFormHeader .phone_number");
+                    var iti = window.intlTelInputGlobals.getInstance(input);
+                    iti.setCountry(countrycode);
 
                     $("#taskFormHeader").find("input[name='email']").val(customerdata.email);
 
@@ -649,13 +641,6 @@
         $(this).closest(".copyin").remove();
     });
 
-    /*$(document).on('click', ".onedelete", function() {
-
-        $(this).closest(".copyin").remove();
-    });
-
-    subTaskHeader*/
-
     $(document).on("click", "input[type='radio'].checkcustomer", function() {
 
         var customerredio = $("#customerradio input[type='radio']:checked").val();
@@ -663,16 +648,17 @@
             $(".newcustomer").hide();
             $(".searchshow").show();
             $(".append").show();
-            $('.copyin').remove();
+            
             autoWrap = ['addHeader0', 'addHeader1'];
             countZ = 1;
         }else{
             $(".newcustomer").show();
             $(".append").hide();
             $(".searchshow").hide();
-            $('input[name=ids').val('');
-            $('input[name=search').val('');
-            $('.copyin').remove();
+            $('input[name=ids]').val('');
+            $('#taskFormHeader .phone_number').val('');
+            $('input[name=search]').val('');
+            $('#taskFormHeader .email').val('');
             autoWrap = ['addHeader0', 'addHeader1'];
             countZ = 1;
         }
@@ -778,21 +764,14 @@
                 err = 1;
                 return false;
             }
-            // else{
-            //     $(this).closest('.check-validation').find('.pickup-barcode-error').hide();
-            //     $(this).closest('.check-validation').find('.drop-barcode-error').hide();
-            //     $(this).closest('.check-validation').find('.appointment-barcode-error').hide();
-            //     return true;
-            // }
+            
         });
 
 
-
-       //return false;
         var selectedVal = "";
         var selected = $("#typeInputss input[type='radio']:checked");
         selectedVal = selected.val();
-        //console.log(selectedVal);
+
         if (typeof(selectedVal) == "undefined") {
             var short_name = $("#task-modal-header input[name='short_name[]']").val();
             var address = $("#task-modal-header input[name='address[]']").val();
@@ -812,7 +791,6 @@
 
             if( err == 0){
                 $('.submitTaskHeaderLoader').css('display', 'inline-block');
-                // $('#submitTaskHeaderText').text('Done');
                 $('.submitTaskHeader').addClass("inactiveLink");
 
                 var formData = new FormData(document.querySelector("#taskFormHeader"));
@@ -823,7 +801,6 @@
 
 
     function TaskSubmit(data, method, url, modals) {
-    //alert(data);
     $.ajax({
         method: method,
         headers: {
@@ -849,8 +826,8 @@
             position : 'top-right'      
             });
             if (response.status == 'Success') {
-                    //$("#task-modal-header .close").click();
-                    //location.reload();
+                    $("#task-modal-header .close").click();
+                    location.reload();
             } else {
                 $("#task-modal-header .show_all_error.invalid-feedback").show();
                 $("#task-modal-header .show_all_error.invalid-feedback").text(response.message);

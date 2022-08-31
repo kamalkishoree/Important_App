@@ -901,11 +901,11 @@ $sms_crendential = json_decode($preference->sms_credentials);
                         <div class="row align-items-start batch-allocation" style="display:{{ (!empty($preference->create_batch_hours) && $preference->create_batch_hours > 0) ? '':'none'}}" >
                             <div class="col-md-12"> 
                                 <div class="form-group d-flex justify-content-between mb-3">
-                                <label for="" class="mr-2 mb-0">{{__("Create batch on every hours")}} </label>
+                                <label for="" class="mr-2 mb-0">{{__("Create batch on every")}} </label>
                                 <div class="d-flex align-items-center justify-content-between mb-2">
                                     <div class="custom-control custom-switch">
                                             <select class="form-control" name="create_batch_hours">
-                                                <option value="">Select Hour to create job</option>
+                                                <option value="">Select interval to create job</option>
                                                 <option value="1" {{($preference->create_batch_hours == 1) ? 'selected' : '' }}>1 Hour</option>
                                                 <option value="2" {{($preference->create_batch_hours == 2) ? 'selected' : '' }}>2 Hour</option>
                                                 <option value="3" {{($preference->create_batch_hours == 3) ? 'selected' : '' }}>3 Hour</option>

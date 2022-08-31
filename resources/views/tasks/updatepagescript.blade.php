@@ -5,9 +5,7 @@
     var autocompletesWraps = [];
  editCount = 0;
 $(document).ready(function(){
-    // console.log(countEdit);
-   // autocompletesWraps.push('add1');
-
+    
     $('#selectize-optgroups').selectize();
     $('#selectize-optgroup').selectize();
 
@@ -16,10 +14,21 @@ $(document).ready(function(){
         loadMap(autocompletesWraps);
     }
     loadMap(autocompletesWraps);
+
+    let phone_number_intltel = window.intlTelInput(document.querySelector("#taskFormHeader .phone_number"),{
+        separateDialCode: true,
+        initialCountry:"{{$task->customer->countrycode}}",
+        hiddenInput: "full_number",
+        utilsScript: "//cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.3/js/utils.js"
+    });
+
+    document.querySelector("#taskFormHeader .phone_number").addEventListener("countrychange", function() {
+        $("#taskFormHeader #dialCode").val(phone_number_intltel.getSelectedCountryData().dialCode);
+    });
 });
     $(document).ready(function() {
         $('.dropify').dropify();
-        $(".shows").hide();
+        $(".newcustomer").hide();
         $(".addspan").hide();
         $(".tagspan").hide();
         $(".tagspan2").hide();
@@ -36,7 +45,6 @@ $(document).ready(function(){
             $(".searchshow").hide();
             $('input[name=ids').val('');
             $('input[name=search').val('');
-            $('.copyin').remove();
             autoWrap = ['add1'];
             countEdit = 1;
 
@@ -45,7 +53,6 @@ $(document).ready(function(){
             $(".shows").hide();
             $(".append").hide();
             $(".searchshow").show();
-            $('.copyin').remove();
             autoWrap = ['add1'];
             countEdit = 1;
 
@@ -56,22 +63,16 @@ $(document).ready(function(){
             $(".oldhide").show();
             $(".append").hide();
             $('input[name=ids').val('');
-            $('.copyin').remove();
             autoWrap = ['add1'];
             countEdit = 1;
 
         });
-        // $("#file").click(function() {
-        //     $('.imagepri').remove();
-            
-        // });
         
         $(document).on('click', ".span1", function() {
             var task_id = $(this).attr("data-taskid");
             if(task_id != undefined && task_id > 0){   
-                $(this).closest(".copyin").remove();       ////// while update the task in dispatch 
+                $(this).closest(".copyin").remove();       // while update the task in dispatch 
                 var status = TaskDeleteSingle(task_id);
-               
             }else{
                 $(this).closest(".copyin").remove();
             }
@@ -82,38 +83,36 @@ $(document).ready(function(){
         ///////////////////// ****************              delete single task ********************* //////////////////////////////
 
         function TaskDeleteSingle(task_id) {
-    //alert(data);
-    var CSRF_TOKEN = $("input[name=_token]").val();
-    $.ajax({
-        method: 'post',
-        headers: {
-            Accept: "application/json"
-        },
-        url: "{{route('tasks.single.destroy')}}",
-        data: {_token: CSRF_TOKEN,task_id:task_id},
-        success: function(response) {
-            //alert(response)
-            if (response) {
-                if(response.count == 1)
-                window.location.href = response.url;
-                else
-                return 1;
-               // window.location.href = response.url;
-            } else {
-                return 2;
-            }
-            //return response;
-        },
-        error: function(response) {
-            return 2;
+            var CSRF_TOKEN = $("input[name=_token]").val();
+            $.ajax({
+                method: 'post',
+                headers: {
+                    Accept: "application/json"
+                },
+                url: "{{route('tasks.single.destroy')}}",
+                data: {_token: CSRF_TOKEN,task_id:task_id},
+                success: function(response) {
+                    
+                    if (response) {
+                        if(response.count == 1)
+                        window.location.href = response.url;
+                        else
+                        return 1;
+                    
+                    } else {
+                        return 2;
+                    }
+                    //return response;
+                },
+                error: function(response) {
+                    return 2;
+                }
+            });
         }
-    });
-}
 
 
         //////////////////// ************************** end delete single task ************************* ///////////////////////////
         
-        //var a = 0;
         var a = totalcountEdit-1;
         var post_count = 1;
         $('#adds a').click(function() {
@@ -159,11 +158,11 @@ $(document).ready(function(){
                     $.each(inputs, function(index, elem){
                         var jElem = $(elem); // jQuery element
                         var name = jElem.prop('name');
-                       // alert(name);
+                       
                         // remove the number
                         name = name.replace(/\d+/g, '');
                         name += a;
-                       // alert(name);
+                       
                         jElem.prop('name', name);
                         count0++;
                     });
@@ -225,7 +224,6 @@ $(document).ready(function(){
                     $.each(flat_no, function(index, elem){
                         var jElem = $(elem)
                         var name = jElem.prop('id');
-                        // console.log(name);
                         name = name.replace(/\d+/g, '');
                         name = 'add'+post_count+'-flat_no';
                         jElem.prop('id', name);
@@ -254,26 +252,15 @@ $(document).ready(function(){
                     $.each(postcode1, function(index, elem){
                         var jElem = $(elem)
                         var name = jElem.prop('id');
-                        // console.log(name);
                         name = name.replace(/\d+/g, '');
                         name = 'add'+post_count+'-postcode';
                         jElem.prop('id', name);
-                        //   var jElem = $(elem); // jQuery element
-                        //jElem.prop('required', true);
                         post_count++;
-                        // console.log(post_count);
                     });
 
 
                     $('input[id='+newids+']').prop("checked",true);
-                   // $("input[type='radio'][name='userRadionButtonName']").prop('checked', true);
-                    //var everycheck = document.getElementById("#"+newids);
                    
-                    //everycheck.prop('checked',true);
-                    // $(".taskrepet").fadeOut();
-                    // $(".taskrepet").fadeIn();
-            // }
-            // else $('[id^="newadd"]:last').remove();
 
             autocompletesWraps.indexOf('add'+countEdit) === -1 ? autocompletesWraps.push('add'+countEdit) : console.log("exists");
             loadMap(autocompletesWraps);
@@ -284,15 +271,6 @@ $(document).ready(function(){
             e.preventDefault();
             var err = 0;
             
-            // $("input[name='short_name[]']").each(function(){
-            //     var shortName = $(this).val();
-            //     if(shortName == ''){
-            //         err = 1;
-            //         $(this).closest('.check-validation').find('.addspan').show();
-            //         return false;
-            //     }
-            // });
-            
             $("input[name='address[]']").each(function(){
                 var address = $(this).val();
                 if(address == ''){
@@ -302,27 +280,6 @@ $(document).ready(function(){
                 }
             });
 
-            // $(".selecttype").each(function(){
-            //     var taskselect              = $(this).val();
-            //     var checkPickupBarcode      = $('#check-pickup-barcode').val();
-            //     var checkDropBarcode        = $('#check-drop-barcode').val();
-            //     var checkAppointmentBarcode = $('#check-appointment-barcode').val();
-            //     var barcode                 = $(this).closest('.check-validation').find('.barcode').val();
-            //     if(taskselect == 1 && checkPickupBarcode == 1 && barcode == ''){
-            //         $(this).closest('.check-validation').find('.pickup-barcode-error').show();
-            //         err = 1;
-            //         return false;
-            //     }else if(taskselect == 2 && checkDropBarcode == 1 && barcode == ''){
-            //         $(this).closest('.check-validation').find('.drop-barcode-error').show();
-            //         err = 1;
-            //         return false;
-            //     }else if(taskselect == 3 && checkAppointmentBarcode == 1 && barcode == ''){
-            //         $(this).closest('.check-validation').find('.appointment-barcode-error').show();
-            //         err = 1;
-            //         return false;
-            //     }
-            // });
-
             if(err == 1){
                 return false;
             }else if(err == 0){
@@ -331,10 +288,6 @@ $(document).ready(function(){
                 $(".appointment-barcode-error").hide();
                 var id       = $("#order-id").val();
                 var formData = new FormData(document.querySelector("#taskFormHeader"));
-                // for (var [key, value] of formData.entries()) { 
-                //     console.log(key, value);
-                // }
-                // console.log(formData);
                 updateTaskSubmit(formData, 'POST', '/updatetasks/tasks/'+id);
             }
         });
@@ -353,7 +306,23 @@ $(document).ready(function(){
                 contentType: false,
                 processData: false,
                 success: function(response) {
-                    window.location.href = '/tasks';
+                    if(response.status == 'Success')
+                    {var color = 'green';var heading="Success!";}else{var color = 'red';var heading="Error!";}
+                    $.toast({ 
+                    heading:heading,
+                    text : response.message, 
+                    showHideTransition : 'slide', 
+                    bgColor : color,              
+                    textColor : '#eee',            
+                    allowToastClose : true,      
+                    hideAfter : 5000,            
+                    stack : 5,                   
+                    textAlign : 'left',         
+                    position : 'top-right'      
+                    });
+                    if (response.status == 'Success') {
+                            window.location.href = '/tasks';
+                    } 
                 },
                 error: function(response) {
                     
@@ -361,13 +330,11 @@ $(document).ready(function(){
             });
         }
 
-        //$("#myselect").val();
         $(document).on('change', ".selecttype", function() {
         
             
             if (this.value == 3){
                $span = $(this).closest(".firstclone1").find(".appoint").show();
-            //    console.log($span); 
             }   
             else{
                 $(this).closest(".firstclone1").find(".appoint").hide();
@@ -380,15 +347,11 @@ $(document).ready(function(){
 
             if ($(this).is(":checked")) { 
               $span = $(this).closest(".requried").find(".alladdress");
-            //   console.log($span);
               $(this).parent().css("border", "2px solid black"); 
             }
         });
         $(document).on("click", "input[type='radio']", function () {
-        // var element = $(this);
-        // alert(element.closest("div").find("img").attr("src"));
-        $span = $(this).closest(".requried").find(".address").removeAttr("required");
-        // $('#edit-submitted-first-name').removeAttr('required');
+            $span = $(this).closest(".requried").find(".address").removeAttr("required");
         });
 
         $(".tags").hide();
@@ -532,19 +495,36 @@ $(document).ready(function(){
                 success: function(data) {
                     var customerdata = data.customer;
                     var array = data.location;
-                    if(customerdata.dial_code!=null)
-                    {
-                        $(".searchshow").find("input[name='phone_existing']").val("+"+customerdata.dial_code+""+customerdata.phone_number);
-                    }else{
-                        $(".searchshow").find("input[name='phone_existing']").val(customerdata.phone_number);
-                    }
-                    $(".searchshow").find("input[name='email_existing']").val(customerdata.email);
-                    $('.withradio .append').remove();
+                    var countrycode = customerdata.countrycode;
+                    $("#taskFormHeader").find("input[name='phone_number']").val(customerdata.phone_number);
+                    $("#taskFormHeader #dialCode").val(customerdata.dial_code);
+                    
+                    //getting instance of intlTelInput
+                    var input = document.querySelector("#taskFormHeader .phone_number");
+                    var iti = window.intlTelInputGlobals.getInstance(input);
+                    iti.setCountry(countrycode);
+
+                    $("#taskFormHeader").find("input[name='email']").val(customerdata.email);
+
+                    /* $('.withradio .append').remove();
                     jQuery.each(array, function(i, val) {
                         $(".withradio").append(
                           '<div class="append"><div class="custom-control custom-radio count"><input type="radio" id="' + val.id + '" name="old_address_id" value="' + val.id + '" class="custom-control-input redio old-select-address callradio" data-srtadd="'+ val.short_name +'" data-adr="'+ val.address +'" data-lat="'+ val.latitude +'" data-long="'+ val.longitude +'" data-pstcd="'+ val.post_code +'" data-emil="'+ val.email +'" data-ph="'+ val.phone_number +'"><label class="custom-control-label" for="' + val.id + '"><span class="spanbold">' + val.short_name +
                           '</span>-' + val.address +
                           '</label></div></div>');
+                    }); */
+                    $('.editwithradio .append').remove();
+                    jQuery.each(array, function(i, val) {
+                        var countz = '';
+                        var rand =  Math.random().toString(36).substring(7);
+                        $(".editwithradio").each(function(){
+                            var count = parseInt(countz);if(isNaN(count)){count = 0;}
+                            $(this).append(
+                            '<div class="append"><div class="custom-control custom-radio count"><input type="radio" id="' + (rand + count) + '" name="old_address_id' + countz + '" value="' + val.id + '" class="custom-control-input redio old-select-address callradio" data-srtadd="'+ val.short_name +'" data-flat_no="'+ val.flat_no +'"  data-adr="'+ val.address +'" data-lat="'+ val.latitude +'" data-long="'+ val.longitude +'" data-pstcd="'+ val.post_code +'" data-emil="'+ val.email +'" data-ph="'+ val.phone_number +'"><label class="custom-control-label" for="' + (rand + count) + '"><span class="spanbold">' + val.short_name +
+                            '</span>-' + val.address +
+                            '</label></div></div>');
+                            countz = count + 1;
+                        });
                     });
 
                 }
@@ -574,7 +554,7 @@ $(document).ready(function(){
             var selectedVal = "";
             var selected = $("#typeInputss input[type='radio']:checked");
             selectedVal = selected.val();
-            // console.log(selectedVal);
+            
             if (typeof(selectedVal) == "undefined") {
                 var short_name = $("input[name=short_name]").val();
                 var address = $("input[name=address]").val();
@@ -606,25 +586,6 @@ $(document).ready(function(){
 
 
         });
-
-        // var inputLocalFont = document.getElementById("file");
-        //  inputLocalFont.addEventListener("change",previewImages,false);
-
-        //  function previewImages(){
-        //   var fileList = this.files;
-
-        //   var anyWindow = window.URL || window.webkitURL;
-
-        //   for(var i = 0; i < fileList.length; i++){
-        //    var objectUrl = anyWindow.createObjectURL(fileList[i]);
-        //    $('#imagePreview').append('<img src="' + objectUrl + '" class="imagepri" />');
-        //    window.URL.revokeObjectURL(fileList[i]);
-        //    }
-
-
-        // }
-
-
     });
 
 function loadMap(autocompletesWraps){
@@ -726,17 +687,13 @@ $(document).on('click', '.showMapTask', function(){
         //marker drag event end
         {{-- google.maps.event.addListener(marker,'dragend',function(event) {
             var zx =JSON.stringify(event);
-            // console.log(zx);
-
 
             document.getElementById('lat_map').value = event.latLng.lat();
             document.getElementById('lng_map').value = event.latLng.lng();
-            //alert("lat=>"+event.latLng.lat());
-            //alert("long=>"+event.latLng.lng());
+           
         }); --}}
         $('#add-customer-modal').addClass('fadeIn');
     $('#show-map-modal').modal({
-        //backdrop: 'static',
         keyboard: false
     });
 
@@ -748,7 +705,7 @@ $(document).on('click', '.selectMapLocation', function () {
     var mapLlng = document.getElementById('lng_map').value;
     var mapFor = document.getElementById('map_for').value;
     var addredd_map = document.getElementById('addredd_map').value;
-    // console.log(mapLat+'-'+mapLlng+'-'+mapFor);
+    
     document.getElementById(mapFor + '-latitude').value = mapLat;
     document.getElementById(mapFor + '-longitude').value = mapLlng;
     document.getElementById(mapFor + '-input').value = addredd_map;

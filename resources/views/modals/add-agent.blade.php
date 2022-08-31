@@ -84,7 +84,7 @@
                     <div class="row ">
                         <div class="col-md-12">
                             <div class="form-group" id="vehicle_type_idInput">
-                                <p class="text-muted mt-3 mb-2">{{__("TRANSPORT TYPE")}}</p>
+                                <p class="text-muted mt-3 mb-2">{{__("TRANSPORT ICON")}}</p>
                                 <div class="radio radio-blue form-check-inline click cursors">
                                     <input type="radio" id="onfoot" value="onfoot" name="vehicle_type_id" checked>
                                     <img id="foot" src="{{asset('assets/icons/walk.png')}}"> 

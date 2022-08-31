@@ -63,7 +63,7 @@
                     <div class="row mb-1">
                         <div class="col-md-12">
                             <div class="form-group" id="emailInput">
-                                {!! Form::text('email', null, ['class' => 'form-control', 'placeholder' => __('Email'),'id'=>'email']) !!}
+                                {!! Form::text('email', null, ['class' => 'form-control email', 'placeholder' => __('Email'),'id'=>'email']) !!}
                                 <span class="invalid-feedback" role="alert">
                                     <strong></strong>
                                 </span>
@@ -198,7 +198,7 @@
                                     <div class="row firstclone1">
                                         <div class="col-md-6">
                                             <div class="form-group mb-1">
-                                                <select class="selecttype mt-1" id="task_type"  name="task_type_id[]" required>
+                                                <select class="selecttype mt-1" id="task_type"  name="task_type_id[]" style="width:100%;" required>
                                                     <option value="1">{{__("Pickup Task")}}</option>
                                                     <option value="2">{{__("Drop Off Task")}}</option>
                                                     <option value="3">{{__("Appointment")}}</option>

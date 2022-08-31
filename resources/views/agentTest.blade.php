@@ -90,7 +90,7 @@
                                         <th>Phone</th>
                                         <th>Type</th>
                                         <th>Team</th>
-                                        <th>Transport Type</th>
+                                        <th>Transport Icon</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>

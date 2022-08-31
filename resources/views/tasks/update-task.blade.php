@@ -75,7 +75,7 @@ use Carbon\Carbon;
                                 </div>
                             </div>
                             <span class="span1 searchspan">{{__("Please search a customer or add a customer")}}</span>
-                            <div class="row mb-1 searchshow">
+                            <div class="row searchshow">
                                 <div class="col-md-12">
                                     <div class="form-group" id="nameInput">
                                         <input type="text" id='search' class="form-control" name="search"
@@ -85,8 +85,8 @@ use Carbon\Carbon;
                                 </div>
                             </div>
 
-                            <div class="newcus shows">
-                                <div class="row mb-2">
+                            <div class="newcustomer">
+                                <div class="row">
                                     <div class="col-md-12">
                                         <div class="form-group" id="">
                                             {!! Form::text('name', null, ['class' => 'form-control', 'placeholder' => __('Name'),'id'=>'name_new']) !!}
@@ -95,28 +95,35 @@ use Carbon\Carbon;
                                             </span>
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group" id="">
-                                            {!! Form::text('email', null, ['class' => 'form-control', 'placeholder' => __('Email'),'id'=>'email_new']) !!}
-                                            <span class="invalid-feedback" role="alert">
-                                                <strong></strong>
-                                            </span>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group" id="">
-                                            {!! Form::text('phone_number', null, ['class' => 'form-control', 'placeholder' => __('Phone Number'),'id'=> 'phone_new'
-                                            ]) !!}
-                                            <span class="invalid-feedback" role="alert">
-                                                <strong></strong>
-                                            </span>
-                                        </div>
-                                    </div>
-                                    <input type="hidden" id="check-pickup-barcode" value="{{ (!empty($task_proofs[0]->barcode_requried) ? $task_proofs[0]->barcode_requried : 0)}}">
-                                    <input type="hidden" id="check-drop-barcode" value="{{ (!empty($task_proofs[1]->barcode_requried) ? $task_proofs[1]->barcode_requried : 0)}}">
-                                    <input type="hidden" id="check-appointment-barcode" value="{{ (!empty($task_proofs[2]->barcode_requried) ? $task_proofs[2]->barcode_requried : 0)}}">
                                 </div>
                             </div>
+
+                            <div class="row mb-2">
+                                <div class="col-md-12">
+                                    <div class="form-group" id="">
+                                        {!! Form::text('email', isset($task->customer->email)?$task->customer->email:'', ['class' => 'form-control email', 'placeholder' => __('Email'),'id'=>'email_new']) !!}
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong></strong>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-group" id="phone_numberInput">
+                                        <div class="input-group">
+                                        {!! Form::text('phone_number', isset($task->customer->phone_number)?$task->customer->phone_number:'', ['class' => 'form-control phone_number', 'placeholder' => __('Phone Number'),'id'=> 'phone_new'
+                                        ]) !!}
+                                        <input type="hidden" id="dialCode" name="dialCode" value="{{isset($task->customer->dial_code)?$task->customer->dial_code:''}}">
+                                        </div>
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong></strong>
+                                        </span>
+                                    </div>
+                                </div>
+                                <input type="hidden" id="check-pickup-barcode" value="{{ (!empty($task_proofs[0]->barcode_requried) ? $task_proofs[0]->barcode_requried : 0)}}">
+                                <input type="hidden" id="check-drop-barcode" value="{{ (!empty($task_proofs[1]->barcode_requried) ? $task_proofs[1]->barcode_requried : 0)}}">
+                                <input type="hidden" id="check-appointment-barcode" value="{{ (!empty($task_proofs[2]->barcode_requried) ? $task_proofs[2]->barcode_requried : 0)}}">
+                            </div>
+                            
 
                             <h4 class="header-title mb-2">{{__("Meta Data")}}</h4>
                             <div class="row mb-2">
@@ -253,7 +260,7 @@ use Carbon\Carbon;
                                             <div class="row firstclone1">
                                                 <div class="col-md-6">
                                                     <div class="form-group mb-1">
-                                                        <select class=" selecttype mt-1" id="task_type"  name="task_type_id[]" required>
+                                                        <select class=" selecttype mt-1" id="task_type"  name="task_type_id[]" style="width:100%;" required>
                                                             <option value="1" {{ $item->task_type_id == 1 ? 'selected' : '' }}>
                                                             {{__('Pickup Task')}}</option>
                                                             <option value="2" {{ $item->task_type_id == 2 ? 'selected' : '' }}>{{__('Drop Off Task')}}</option>
@@ -333,7 +340,7 @@ use Carbon\Carbon;
                                                 </div>
                                                 <div class="col-4 alsavedaddress" id="alsavedaddress" style="display:none;">
                                                     <h6>Saved Addresses</h6>
-                                                    <div class="form-group withradio" id="typeInputss">
+                                                    <div class="form-group editwithradio" id="typeInputss">
                                                         <div class="oldhide text-center">
                                                             <img class="showsimage" src="{{url('assets/images/ic_location_placeholder.png')}}" alt="">
                                                         </div>
@@ -350,9 +357,6 @@ use Carbon\Carbon;
                                                                 }
                                                             }
                                                             $finallocationarray = array_merge($locationarray1,$locationarray2);
-                                                        
-
-
 
                                                             ?>
                                                             @foreach ($finallocationarray as $key => $items)
@@ -420,10 +424,76 @@ use Carbon\Carbon;
                             </div>
                         </div>
                     </div>
-
+                    @if($task->status!='completed')
                     <div class="row">
                         <div class="col-md-12">
                             <button type="submit" class="btn btn-block btn-lg btn-blue waves-effect waves-light submitUpdateTaskHeader">{{__('Submit')}}</button>
+                        </div>
+                    </div>
+                    @endif
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card-box p-3">            
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h4 class="header-title mb-2">{{__("Route Proofs")}}</h4>
+                            <div class="row">
+                                @foreach($task->task as $keys => $item)
+                                <div class="col-md-12 all-remove">
+                                    <div class="task-card">
+                                        <div class="assigned-block bg-transparent"><h5>      
+                                @if($item->task_type_id == 1)    
+                                {{__('Pickup Task')}}
+                                @elseif($item->task_type_id == 2)
+                                {{__('Drop Off Task')}}
+                                @else
+                                {{__('Appointment')}}
+                                @endif
+                                        </h5>
+                                        </div>
+                                        <div class="row">
+                                        @if(($item->proof_image != '' && $item->proof_image != NULL) || ($item->proof_signature != '' && $item->proof_signature != NULL) || ($item->note != '' && $item->note != NULL))  
+                                            
+                                            @if($item->proof_image != '' && $item->proof_image != NULL)
+                                            <div class="col-md-12">
+                                                <label class="mb-1">{{__('Image')}}</label>
+                                                <div class="status-wrap-block">
+                                                    <div class="image-wrap-sign">
+                                                        <a data-fancybox="images" href="{{$item->proof_image}}"><img src="https://imgproxy.royodispatch.com/insecure/fit/400/400/sm/0/plain/{{$item->proof_image}}" alt=""></a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            @endif
+
+                                            @if($item->proof_signature != '' && $item->proof_signature != NULL)
+                                            <div class="col-md-12">
+                                                <label class="mb-1">{{__('Signature')}}</label>
+                                                <div class="status-wrap-block">
+                                                    <div class="image-wrap-sign">
+                                                        <a data-fancybox="images" href="{{$item->proof_signature}}"><img src="https://imgproxy.royodispatch.com/insecure/fit/400/400/sm/0/plain/{{$item->proof_signature}}" alt=""></a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            @endif
+
+                                            @if($item->note != '' && $item->note != NULL)
+                                            <div class="col-md-12">
+                                                <label class="mb-1">{{__('Notes')}}</label>
+                                                <div class="status-wrap-block">
+                                                    <div class="image-wrap-sign">
+                                                    <span>{{$item->note}}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            @endif
+                                        @else
+                                            <div class="col-12 text-center"><h5>{{__('No Proof Found')}}</h5></div>
+                                        @endif
+                                    </div>
+                                </div>
+                            @endforeach
+                            </div>
                         </div>
                     </div>
                 </div>

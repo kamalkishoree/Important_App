@@ -217,12 +217,6 @@ class TaskController extends BaseController
         $user = Auth::user();
         $timezone = $user->timezone ?? 251;
 
-        // $count_filter = 0;
-        // $start = ($request->start) ? $request->start : '0';
-        // $pageSize = ($request->length) ? $request->length : '10';
-        // $pageNo = ceil($start / $pageSize);
-        // $offset = $pageNo * $pageSize;
-        
         $team_tags = TeamTag::whereHas('team', function($q) use($user){
             $q->where('manager_id', $user->id);
         })->pluck('tag_id');
@@ -245,28 +239,11 @@ class TaskController extends BaseController
         }
 
         $orders = $orders->where('status', $request->routesListingType)->where('status', '!=', null)->orderBy('updated_at', 'desc');
-        // $count_total = $orders->count();
-        // $orders = $orders->skip($start)->take($pageSize)->get();
-        // $count_filter = $orders->count();
 
         $preference = ClientPreference::where('id', 1)->first(['theme','date_format','time_format']);
 
         return Datatables::of($orders)
-                // ->editColumn('order_number', function ($orders) use ($request) {
-                //     if(!empty($orders->call_back_url)){
-                //         $client = new GClient(['content-type' => 'application/json']);
-                //         $url = $orders->call_back_url;
-                //         if (stripos('dispatch-pickup-delivery', $url) !== 0){
-                //             $dispatch_order_detail_url = str_replace('dispatch-pickup-delivery', 'dispatch-order-status-update-details', $url);
-                //             $res = $client->get($dispatch_order_detail_url);
-                //             $response = json_decode($res->getBody(), true);
-                //             if($response){
-                //                 return $response['data']['order_number'];
-                //             }
-                //         }
-                //     }
-                //     return '';
-                // })
+                
                 ->addColumn('customer_id', function ($orders) use ($request) {
                     $customerID = !empty($orders->customer->id)? $orders->customer->id : '';
                     $length = strlen($customerID);
@@ -359,8 +336,9 @@ class TaskController extends BaseController
                                                 <i class="fe-eye"></i>
                                             </a>
                                         </div>
-                                    </div>
-                                    <div class="inner-div">
+                                    </div>';
+                        if($orders->status!='completed'):
+                         $action.='<div class="inner-div">
                                         <form class="mb-0" id="taskdelete'.$orders->id.'" method="POST" action="'.route('tasks.destroy', $orders->id).'">
                                             <input type="hidden" name="_token" value="'.csrf_token().'" />
                                             <input type="hidden" name="_method" value="DELETE">
@@ -368,21 +346,14 @@ class TaskController extends BaseController
                                                 <button type="button" class="btn btn-primary-outline action-icon"> <i class="mdi mdi-delete" taskid="'.$orders->id.'"></i></button>
                                             </div>
                                         </form>
-                                    </div>
-                                </div>';
+                                    </div>';
+                        endif;
+                        $action.='</div>';
                     return $action;
                 })
                 ->filter(function ($instance) use ($request) {
                     if (!empty($request->get('search'))) {
-                        // $instance->collection = $instance->collection->filter(function ($row) use ($request){
-                        //     if(!empty($row['customer']['name']) && Str::contains(Str::lower($row['customer']['name']), Str::lower($request->search))){
-                        //         return true;
-                        //     }else if (!empty($row['customer']['phone_number']) && Str::contains(Str::lower($row['customer']['phone_number']), Str::lower($request->search))) {
-                        //         return true;
-                        //     }
-                        //     return false;
-                        // });
-                        
+                       
                         $search = $request->get('search');
                         $instance->where(function($query) use($search){
                             $query->where('order_number', 'Like', '%'.$search.'%')
@@ -396,12 +367,7 @@ class TaskController extends BaseController
                         });
                     }
                 }, true)
-                // ->with([
-                //     "recordsTotal" => $count_total,
-                //     "recordsFiltered" => $count_total,
-                // ])
-                // ->setTotalRecords($count_total)
-                // ->setOffset($start)
+                
                 ->make(true);
     }
 
@@ -553,7 +519,6 @@ class TaskController extends BaseController
             }
 
             //create new customer for task or get id of old customer
-pr($request);
             if (!isset($request->ids)) {
                 $customer = Customer::where('email', '=', $request->email)->first();
                 if (isset($customer->id)) {
@@ -563,11 +528,18 @@ pr($request);
                         'name' => $request->name,
                         'email' => $request->email,
                         'phone_number' => $request->phone_number,
+                        'dial_code' => $request->dialCode,
                     ];
                     $customer = Customer::create($cus);
                     $cus_id = $customer->id;
                 }
             } else {
+                $cus = [
+                    'email' => $request->email,
+                    'phone_number' => $request->phone_number,
+                    'dial_code' => $request->dialCode,
+                ];
+                $customerupdate = Customer::where('id', $request->ids)->update($cus);
                 $cus_id = $request->ids;
                 $customer = Customer::where('id', $request->ids)->first();
             }
@@ -1196,11 +1168,18 @@ pr($request);
                     'name' => $request->name,
                     'email' => $request->email,
                     'phone_number' => $request->phone_number,
+                    'dial_code' => $request->dialCode,
                 ];
                 $customer = Customer::create($cus);
                 $cus_id = $customer->id;
             }
         } else {
+            $cus = [
+                'email' => $request->email,
+                'phone_number' => $request->phone_number,
+                'dial_code' => $request->dialCode,
+            ];
+            $customerupdate = Customer::where('id', $request->ids)->update($cus);
             $cus_id = $request->ids;
             $customer = Customer::where('id', $request->ids)->first();
         }
@@ -2283,6 +2262,7 @@ pr($request);
         $task_proofs = TaskProof::all();
         $preference  = ClientPreference::where('id', 1)->first(['route_flat_input','route_alcoholic_input']);
 
+        $task->customer->countrycode = getCountryCode($task->customer->dial_code);
         return view('tasks/update-task')->with(['task' => $task, 'task_proofs' => $task_proofs, 'preference' => $preference, 'teamTag' => $teamTag, 'agentTag' => $agentTag, 'agents' => $agents, 'images' => $array, 'savedrivertag' => $savedrivertag, 'saveteamtag' => $saveteamtag, 'main' => $lastbaseurl,'alllocations'=>$all_locations,'client_timezone'=>$client_timezone]);
     }
 
@@ -2295,218 +2275,224 @@ pr($request);
      */
     public function update(Request $request, $domain = '', $id)
     {
-        $iinputs = $request->toArray();
-        $old_address_ids = array();
-        foreach ($iinputs as $key => $value) {
-            if (substr_count($key, "old_address_id") == 1) {
-                $old_address_ids[] = $key;
+        try {
+            DB::beginTransaction();
+            $iinputs = $request->toArray();
+            $old_address_ids = array();
+            foreach ($iinputs as $key => $value) {
+                if (substr_count($key, "old_address_id") == 1) {
+                    $old_address_ids[] = $key;
+                }
             }
-        }
 
-        $task_id = Order::find($id);
-        $validator = $this->validator($request->all())->validate();
-        $loc_id = 0;
-        $cus_id = 0;
-        $percentage = 0;
+            $task_id = Order::find($id);
+            $validator = $this->validator($request->all())->validate();
+            $loc_id = 0;
+            $cus_id = 0;
+            $percentage = 0;
 
-        $images = [];
-        $last = '';
-        $auth = Client::where('code', Auth::user()->code)->with(['getAllocation', 'getPreference'])->first();
+            $images = [];
+            $last = '';
+            $auth = Client::where('code', Auth::user()->code)->with(['getAllocation', 'getPreference'])->first();
 
-        //setting timezone from id
-        $tz = new Timezone();
-        $auth->timezone = $tz->timezone_name(Auth::user()->timezone);
+            //setting timezone from id
+            $tz = new Timezone();
+            $auth->timezone = $tz->timezone_name(Auth::user()->timezone);
 
-        if(isset($request->savedFiles) && (count($request->savedFiles) > 0)){
-            $update_saved = implode(",", $request->savedFiles);
-            $last .= $update_saved;
-        }
-
-        if (isset($request->file) && count($request->file) > 0) {
-            $folder = str_pad(Auth::user()->id, 8, '0', STR_PAD_LEFT);
-            $folder = 'client_' . $folder;
-            $files = $request->file('file');
-            foreach ($files as $key => $value) {
-                $file = $value;
-                $file_name = uniqid() . '.' .  $file->getClientOriginalExtension();
-
-                $s3filePath = '/assets/' . $folder . '/' . $file_name;
-                $path = Storage::disk('s3')->put($s3filePath, $file, 'public');
-                array_push($images, $path);
+            if(isset($request->savedFiles) && (count($request->savedFiles) > 0)){
+                $update_saved = implode(",", $request->savedFiles);
+                $last .= $update_saved;
             }
-            $file_paths = implode(",", $images);
-            if(!empty($last)){
-                $last .= ',' ;
-            }
-            $last .= $file_paths;
-        }
 
-        if (!isset($request->ids)) {
-            $customer = Customer::where('email', '=', $request->email)->first();
-            if (isset($customer->id)) {
-                $cus_id = $customer->id;
+            if (isset($request->file) && count($request->file) > 0) {
+                $folder = str_pad(Auth::user()->id, 8, '0', STR_PAD_LEFT);
+                $folder = 'client_' . $folder;
+                $files = $request->file('file');
+                foreach ($files as $key => $value) {
+                    $file = $value;
+                    $file_name = uniqid() . '.' .  $file->getClientOriginalExtension();
+
+                    $s3filePath = '/assets/' . $folder . '/' . $file_name;
+                    $path = Storage::disk('s3')->put($s3filePath, $file, 'public');
+                    array_push($images, $path);
+                }
+                $file_paths = implode(",", $images);
+                if(!empty($last)){
+                    $last .= ',' ;
+                }
+                $last .= $file_paths;
+            }
+
+            if (!isset($request->ids)) {
+                $customer = Customer::where('email', '=', $request->email)->first();
+                if (isset($customer->id)) {
+                    $cus_id = $customer->id;
+                } else {
+                    $cus = [
+                        'name' => $request->name,
+                        'email' => $request->email,
+                        'phone_number' => $request->phone_number,
+                        'dial_code' => $request->dialCode,
+                    ];
+                    $customer = Customer::create($cus);
+                    $cus_id = $customer->id;
+                }
             } else {
-                $cus = [
-                    'name' => $request->name,
+                $cusdata = [
                     'email' => $request->email,
                     'phone_number' => $request->phone_number,
+                    'dial_code' => $request->dialCode,
                 ];
-                $customer = Customer::create($cus);
-                $cus_id = $customer->id;
+                $customerupdate = Customer::where('id', $request->ids)->update($cusdata);
+                
+                $cus_id = $request->ids;
+                $customer = Customer::where('id', $request->ids)->first();
             }
-        } else {
-            $cus_id = $request->ids;
-            $customer = Customer::where('id', $request->ids)->first();
-        }
-        $assign = 'unassigned';
-        if ($request->allocation_type == 'm') {
-            $assign = 'assigned';
-        }
-        if ($task_id->status == 'completed') {
-            $assign = 'completed';
-        }
-
-        $pricingRule = PricingRule::where('id', 1)->first();
-        $agent_id =  isset($request->allocation_type) && $request->allocation_type == 'm' ? $request->agent : null;
-
-        if (isset($agent_id) && $task_id->driver_cost <= 0.00) {
-            $agent_details = Agent::where('id', $agent_id)->first();
-            if ($agent_details->type == 'Employee') {
-                $percentage = $task_id->agent_commission_fixed + (($task_id->order_cost / 100) * $task_id->agent_commission_percentage);
-            } else {
-                $percentage = $task_id->freelancer_commission_fixed + (($task_id->order_cost / 100) * $task_id->freelancer_commission_percentage);
+            $assign = 'unassigned';
+            if ($request->allocation_type == 'm') {
+                $assign = 'assigned';
             }
-            $this->MassAndEditNotification($id, $agent_id);
-        }
+            if ($task_id->status == 'completed') {
+                $assign = 'completed';
+            }
 
-        if ($task_id->driver_cost != 0.00) {
-            $percentage = $task_id->driver_cost;
-        }
+            $pricingRule = PricingRule::where('id', 1)->first();
+            
+            $agent_id =  isset($request->allocation_type) && $request->allocation_type == 'm' ? $request->agent : null;
 
-        $settime = ($request->task_type=="schedule") ? $request->schedule_time : Carbon::now()->toDateTimeString();
-        $notification_time = ($request->task_type=="schedule")? Carbon::parse($settime .' '. $auth->timezone ?? 'UTC')->tz('UTC') : Carbon::now()->toDateTimeString();
-        $order = [
-            'customer_id'                => $cus_id,
-            'recipient_phone'            => $request->recipient_phone,
-            'Recipient_email'            => $request->Recipient_email,
-            'task_description'           => $request->task_description,
-            'driver_id'                  => $agent_id,
-            'order_type'                 => $request->task_type,
-            'order_time'                 => $notification_time,
-            'auto_alloction'             => $request->allocation_type,
-            'cash_to_be_collected'       => $request->cash_to_be_collected,
-            'call_back_url'              => $request->call_back_url,
-            'status'                     => $assign,
-            'driver_cost'                => $percentage,
-        ];
-        $orders = Order::where('id', $id)->update($order);
-        if ($last != '') {
-            $orderimages = Order::where('id', $id)->update(['images_array' => $last]);
-        }
-
-        Task::where('order_id', $id)->delete();
-        $dep_id = null;
-        foreach ($request->task_type_id as $key => $value) {
-            if (isset($request->short_name[$key])) {
-                $loc = [
-                    'short_name'    => $request->short_name[$key],
-                    'post_code'     => $request->post_code[$key],
-                    'flat_no'       => !empty($request->flat_no[$key])? $request->flat_no[$key] : '',
-                    'email'         => $request->address_email[$key],
-                    'phone_number'  => $request->address_phone_number[$key],
-                 ];
-
-              //  $Loction = Location::create($loc);
-                $Loction = Location::updateOrCreate(
-                    ['latitude' => $request->latitude[$key], 'longitude' => $request->longitude[$key], 'address' => $request->address[$key],'customer_id' => $cus_id],
-                    $loc
-                );
-                $loc_id = $Loction->id;
-            } else {
-                if ($key == 0) {
-                    $loc_id = $request->old_address_id;
+            if (isset($agent_id) && $task_id->driver_cost <= 0.00) {
+                $agent_details = Agent::where('id', $agent_id)->first();
+                if ($agent_details->type == 'Employee') {
+                    $percentage = $task_id->agent_commission_fixed + (($task_id->order_cost / 100) * $task_id->agent_commission_percentage);
                 } else {
-                    $loc_id = $request->input($old_address_ids[$key]);
+                    $percentage = $task_id->freelancer_commission_fixed + (($task_id->order_cost / 100) * $task_id->freelancer_commission_percentage);
                 }
+                $this->MassAndEditNotification($id, $agent_id);
+            }
 
-                $location = Location::where('id', $loc_id)->first();
-                if ($location->customer_id != $cus_id) {
-                    $newloc = [
-                        'short_name'     => $location->short_name,
-                        'post_code'      => $location->post_code,
-                        'flat_no'        => $location->flat_no,
-                        'alcoholic_item' => $location->alcoholic_item,
-                        'email'          => $location->address_email,
-                        'phone_number'   => $location->address_phone_number
+            if ($task_id->driver_cost != 0.00) {
+                $percentage = $task_id->driver_cost;
+            }
+
+            $settime = ($request->task_type=="schedule") ? $request->schedule_time : Carbon::now()->toDateTimeString();
+            $notification_time = ($request->task_type=="schedule")? Carbon::parse($settime .' '. $auth->timezone ?? 'UTC')->tz('UTC') : Carbon::now()->toDateTimeString();
+            $order = [
+                'customer_id'                => $cus_id,
+                'recipient_phone'            => $request->recipient_phone,
+                'Recipient_email'            => $request->Recipient_email,
+                'task_description'           => $request->task_description,
+                'driver_id'                  => $agent_id,
+                'order_type'                 => $request->task_type,
+                'order_time'                 => $notification_time,
+                'auto_alloction'             => $request->allocation_type,
+                'cash_to_be_collected'       => $request->cash_to_be_collected,
+                'call_back_url'              => $request->call_back_url,
+                'status'                     => $assign,
+                'driver_cost'                => $percentage,
+            ];
+            $orders = Order::where('id', $id)->update($order);
+            if ($last != '') {
+                $orderimages = Order::where('id', $id)->update(['images_array' => $last]);
+            }
+
+            Task::where('order_id', $id)->delete();
+            $dep_id = null;
+            foreach ($request->task_type_id as $key => $value) {
+                if (isset($request->short_name[$key])) {
+                    $loc = [
+                        'short_name'    => $request->short_name[$key],
+                        'post_code'     => $request->post_code[$key],
+                        'flat_no'       => !empty($request->flat_no[$key])? $request->flat_no[$key] : '',
+                        'email'         => $request->address_email[$key],
+                        'phone_number'  => $request->address_phone_number[$key],
                     ];
-                  //  $location = Location::create($newloc);
-                    $location = Location::updateOrCreate(
-                        ['latitude' => $location->latitude, 'longitude' => $location->longitude, 'address' => $location->address, 'customer_id' => $cus_id],
-                        $newloc
+
+                    $Loction = Location::updateOrCreate(
+                        ['latitude' => $request->latitude[$key], 'longitude' => $request->longitude[$key], 'address' => $request->address[$key],'customer_id' => $cus_id],
+                        $loc
                     );
+                    $loc_id = $Loction->id;
+                } else {
+                    if ($key == 0) {
+                        $loc_id = $request->old_address_id;
+                    } else {
+                        $loc_id = $request->input($old_address_ids[$key]);
+                    }
+
+                    $location = Location::where('id', $loc_id)->first();
+                    if ($location->customer_id != $cus_id) {
+                        $newloc = [
+                            'short_name'     => $location->short_name,
+                            'post_code'      => $location->post_code,
+                            'flat_no'        => $location->flat_no,
+                            'alcoholic_item' => $location->alcoholic_item,
+                            'email'          => $location->address_email,
+                            'phone_number'   => $location->address_phone_number
+                        ];
+                        $location = Location::updateOrCreate(
+                            ['latitude' => $location->latitude, 'longitude' => $location->longitude, 'address' => $location->address, 'customer_id' => $cus_id],
+                            $newloc
+                        );
+                    }
+                    $loc_id = $location->id;
                 }
-                $loc_id = $location->id;
+
+                $data = [
+                    'order_id'          => $id,
+                    'task_type_id'      => $value,
+                    'location_id'       => $loc_id,
+                    'allocation_type'   => $request->allocation_type,
+                    'dependent_task_id' => $dep_id,
+                    'task_status'       => isset($agent_id) ? 1 : 0,
+                    'barcode'           => $request->barcode[$key],
+                    'quantity'          => $request->quantity[$key],
+                    'assigned_time'     => $notification_time,
+                    'alcoholic_item'    => !empty($request->alcoholic_item[$key])? $request->alcoholic_item[$key] : '',
+                ];
+                $task = Task::create($data);
+                $dep_id = $task->id;
             }
 
-            $data = [
-                'order_id'          => $id,
-                'task_type_id'      => $value,
-                'location_id'       => $loc_id,
-                'allocation_type'   => $request->allocation_type,
-                'dependent_task_id' => $dep_id,
-                'task_status'       => isset($agent_id) ? 1 : 0,
-                'barcode'           => $request->barcode[$key],
-                'quantity'          => $request->quantity[$key],
-                'assigned_time'     => $notification_time,
-                'alcoholic_item'    => !empty($request->alcoholic_item[$key])? $request->alcoholic_item[$key] : '',
-            ];
-            $task = Task::create($data);
-            $dep_id = $task->id;
+            if (isset($request->allocation_type) && $request->allocation_type === 'a') {
+                if (isset($request->team_tag)) {
+                    $task_id->teamtags()->sync($request->team_tag);
+                }
+                if (isset($request->agent_tag)) {
+                    $task_id->drivertags()->sync($request->agent_tag);
+                }
+            }
+
+            //sending silent push notification
+            if ($agent_id!="") {
+                $allcation_type = 'silent';
+                $oneagent = Agent::where('id', $agent_id)->first();
+                $notification_data = [
+                    'title'               => 'Update Order',
+                    'body'                => 'Check All Details For This Request In App',
+                    'order_id'            => $id,
+                    'driver_id'           => $agent_id,
+                    'notification_time'   => Carbon::now()->toDateTimeString(),
+                    'type'                => $allcation_type,
+                    'client_code'         => Auth::user()->code,
+                    'created_at'          => Carbon::now()->toDateTimeString(),
+                    'updated_at'          => Carbon::now()->toDateTimeString(),
+                    'device_type'         => $oneagent->device_type,
+                    'device_token'        => $oneagent->device_token,
+                    'detail_id'           => '',
+                ];
+                $this->sendsilentnotification($notification_data);
+                $orders = Order::where('id', $id)->first();
+                if($orders && $orders->call_back_url){
+                    $call_web_hook = $this->updateStatusDataToOrder($orders,2,1);  # call web hook when order completed
+                }
+
+            }
+            DB::commit();
+            return response()->json(['status' => "Success", 'message' => 'Task Updated successfully!']);
+        } catch (Exception $e) {
+            DB::rollback();
+            return response()->json(['status' => "failure", 'message' => $e->getMessage()]);
         }
-
-        if (isset($request->allocation_type) && $request->allocation_type === 'a') {
-            if (isset($request->team_tag)) {
-                $task_id->teamtags()->sync($request->team_tag);
-            }
-            if (isset($request->agent_tag)) {
-                $task_id->drivertags()->sync($request->agent_tag);
-            }
-        }
-        // else {
-        //     $teamTag = [];
-        //     $drivertag = [];
-        //     $task_id->teamtags()->sync($teamTag);
-        //     $task_id->drivertags()->sync($drivertag);
-        // }
-
-        //sending silent push notification
-        if ($agent_id!="") {
-            $allcation_type = 'silent';
-            //$randem     = rand(11111111, 99999999);
-            $oneagent = Agent::where('id', $agent_id)->first();
-            $notification_data = [
-                'title'               => 'Update Order',
-                'body'                => 'Check All Details For This Request In App',
-                'order_id'            => $id,
-                'driver_id'           => $agent_id,
-                'notification_time'   => Carbon::now()->toDateTimeString(),
-                'type'                => $allcation_type,
-                'client_code'         => Auth::user()->code,
-                'created_at'          => Carbon::now()->toDateTimeString(),
-                'updated_at'          => Carbon::now()->toDateTimeString(),
-                'device_type'         => $oneagent->device_type,
-                'device_token'        => $oneagent->device_token,
-                'detail_id'           => '',
-            ];
-            $this->sendsilentnotification($notification_data);
-            $orders = Order::where('id', $id)->first();
-            if($orders && $orders->call_back_url){
-                $call_web_hook = $this->updateStatusDataToOrder($orders,2,1);  # call web hook when order completed
-            }
-
-        }
-
-        return redirect()->route('tasks.index')->with('success', 'Task Updated successfully!');
     }
 
     /////////////////// **********************   update status in order panel also **********************************  ///////////////////////
@@ -2566,30 +2552,26 @@ pr($request);
     public function deleteSingleTask(Request $request, $domain = '')
     {
         try {
-        $order = Task::find($request->task_id);
+            $order = Task::find($request->task_id);
 
-        $ordercount = Task::where('order_id',$order->order_id)->count();
+            $ordercount = Task::where('order_id',$order->order_id)->count();
 
-        if($ordercount == 1){
-            $delorder = Order::where('id',$order->order_id)->delete();
-            $route = route('tasks.index');
+            if($ordercount == 1){
+                $delorder = Order::where('id',$order->order_id)->delete();
+                $route = route('tasks.index');
+            }
+            else
+            {
+            $update_dep = Task::where('dependent_task_id',$request->task_id)->update(['dependent_task_id' => $order->dependent_task_id ]);
+            $del = Task::where('id',$request->task_id)->delete();
+            $route = route('tasks.edit',$order->order_id);
+            }
 
-        }
-        else
-        {
-         $update_dep = Task::where('dependent_task_id',$request->task_id)->update(['dependent_task_id' => $order->dependent_task_id ]);
-         $del = Task::where('id',$request->task_id)->delete();
-         $route = route('tasks.edit',$order->order_id);
-
-        }
-
-
-
-        return response()->json([
-            'message' => __('Task Delete Successfully'),
-            'count' => $ordercount,
-            'url' => $route
-        ], 200);
+            return response()->json([
+                'message' => __('Task Delete Successfully'),
+                'count' => $ordercount,
+                'url' => $route
+            ], 200);
         } catch (Exception $e) {
             return response()->json([
                 'message' => $e->getMessage()
