@@ -39,8 +39,11 @@
                                     </div>
                                     <div class="col-lg-4 col-sm-6 mb-lg-0 mb-3">
                                         <div class="form-group" id="phone_numberInput">
-                                            {!! Form::label('title', __('Phone Number'),['class' => 'control-label']) !!}
-                                            {!! Form::text('phone_number', null, ['class' => 'form-control']) !!}
+                                            {!! Form::label('title', __('Phone Number'),['class' => 'control-label']) !!}<br/>
+                                            <div class="input-group">
+                                                {!! Form::text('phone_number', null, ['class' => 'form-control phone_number', 'id'=>'phone_number']) !!}
+                                                <input type="hidden" id="dialCode" name="dialCode" value="{{getCountryPhoneCode()}}">
+                                            </div>
                                             <span class="invalid-feedback" role="alert">
                                                 <strong></strong>
                                             </span>

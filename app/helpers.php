@@ -123,11 +123,27 @@ function helper_number_formet($number){
     return number_format($number,2);
 }
 
-function getCountryCode(){
-    $clientData = ClientData::select('country_id')->first();
-    $getAdminCurrentCountry = Countries::where('id', '=', $clientData->country_id)->first();
+function getCountryCode($dial_code=''){
+    if($dial_code==''):
+        $clientData = ClientData::select('country_id')->first();
+        $getAdminCurrentCountry = Countries::where('id', '=', $clientData->country_id)->select('id', 'code')->first();
+    else:
+        $getAdminCurrentCountry = Countries::where('phonecode', '=', $dial_code)->select('id', 'code')->first();
+    endif;
+
     if (!empty($getAdminCurrentCountry)) {
         $countryCode = $getAdminCurrentCountry->code;
+    } else {
+        $countryCode = '';
+    }
+    return $countryCode;
+}
+
+function getCountryPhoneCode(){
+    $clientData = ClientData::select('country_id')->first();
+    $getAdminCurrentCountry = Countries::where('id', '=', $clientData->country_id)->select('id', 'phonecode')->first();
+    if (!empty($getAdminCurrentCountry)) {
+        $countryCode = $getAdminCurrentCountry->phonecode;
     } else {
         $countryCode = '';
     }

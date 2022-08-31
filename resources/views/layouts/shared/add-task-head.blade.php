@@ -334,7 +334,6 @@
 
     var latitudes = [];
     var longitude = [];
-
     $(".addTaskModalHeader").click(function (e) {
         $.ajaxSetup({
             headers: {
@@ -394,12 +393,17 @@
     });
 
     function phoneInput() {
-        $("#phone_number").intlTelInput({
-            nationalMode: false,
-            formatOnDisplay: true,
-            utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/8.4.6/js/utils.js"
+        var phone_number_intlTel = window.intlTelInput(document.querySelector("#taskFormHeader .phone_number"),{
+            separateDialCode: true,
+            preferredCountries:["{{getCountryCode()}}"],
+            initialCountry:"{{getCountryCode()}}",
+            hiddenInput: "full_number",
+            utilsScript: "//cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.3/js/utils.js"
         });
-        $('.intl-tel-input').css('width', '100%');      
+
+        document.querySelector("#taskFormHeader .phone_number").addEventListener("countrychange", function() {
+            $("#taskFormHeader #dialCode").val(phone_number_intlTel.getSelectedCountryData().dialCode);
+        });
     }
 
     var CSRF_TOKEN = $("input[name=_token]").val();
@@ -469,18 +473,30 @@
                   id: ids
               },
               success: function(data) {
-                  var customerdata = data.customer;
-                  var array = data.location;
-                  if(customerdata.dial_code!=null)
-                  {
-                     $(".searchshow").find("input[name='phone_existing']").val("+"+customerdata.dial_code+""+customerdata.phone_number);
-                  }else{
-                     $(".searchshow").find("input[name='phone_existing']").val(customerdata.phone_number);
-                  }
-                  $(".searchshow").find("input[name='email_existing']").val(customerdata.email);
+                    var customerdata = data.customer;
+                    var array = data.location;
 
-                  $('.withradio .append').remove();
-                  jQuery.each(array, function(i, val) {
+                    var countrycode = customerdata.countrycode;
+                    $("#taskFormHeader").find("input[name='phone_number']").val(customerdata.phone_number);
+                    $("#taskFormHeader #dialCode").val(customerdata.dial_code);
+                    $("#taskFormHeader .phone_number").val('');
+                    //phone_number_intlTel.intlTelInput('destroy');
+                    
+                    var phone_number = window.intlTelInput(document.querySelector("#taskFormHeader .phone_number"),{
+                        separateDialCode: true,
+                        initialCountry:countrycode,
+                        hiddenInput: "full_number",
+                        utilsScript: "//cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.3/js/utils.js"
+                    });
+
+                    document.querySelector("#taskFormHeader .phone_number").addEventListener("countrychange", function() {
+                        $("#taskFormHeader #dialCode").val(phone_number.getSelectedCountryData().dialCode);
+                    });
+
+                    $("#taskFormHeader").find("input[name='email']").val(customerdata.email);
+
+                    $('.withradio .append').remove();
+                    jQuery.each(array, function(i, val) {
                     var countz = '';
                     var rand =  Math.random().toString(36).substring(7);
                     $(".withradio").each(function(){
@@ -833,8 +849,8 @@
             position : 'top-right'      
             });
             if (response.status == 'Success') {
-                    $("#task-modal-header .close").click();
-                    location.reload();
+                    //$("#task-modal-header .close").click();
+                    //location.reload();
             } else {
                 $("#task-modal-header .show_all_error.invalid-feedback").show();
                 $("#task-modal-header .show_all_error.invalid-feedback").text(response.message);
