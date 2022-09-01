@@ -246,17 +246,11 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 			Route::resource('subadmins', 'SubAdminController');
 
 
-			// Route::get('/order/tracking/{clientcode}/{order_id}','TrackingController@OrderTracking')->name('order.tracking');
-
 			Route::get('/order/feedback/{clientcode}/{order_id}', 'TrackingController@OrderFeedback')->name('order.feedback');
 
 			Route::post('/feedback/save', 'TrackingController@SaveFeedback')->name('feedbackSave');
 
-			//for testing
-			//Route::get('testing','DashBoardController@ExportPdfPath');
-			//Route::get('testing','DashBoardController@GetRouteDirection');
-
-
+			
 			Route::get('demo/page', 'GeoFenceController@newDemo')->name('new.demo');
 
 			Route::resource('payoption', 'PaymentOptionController');

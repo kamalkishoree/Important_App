@@ -1010,8 +1010,8 @@ body[data-sidebar-size=condensed] .left-side-menu #sidebar-menu>ul>li:hover>a {
 
 
     .dragable_tasks {
-    border: 1px solid #c0c2c49c;
-    margin: 0 0 5px;
+    /* border: 1px solid #c0c2c49c;
+    margin: 0 0 5px; */
     }
 
     .assigned-block {
