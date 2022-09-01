@@ -84,7 +84,7 @@
 
 
         }
-        
+
         hr.new3 {
          border-top: 1px dashed white;
          margin: 0 0 .5rem 0;
@@ -146,11 +146,12 @@
 
     .alTaskType{background-color: #F4F3FD; border: 1px solid transparent;border-radius: 7px;}
     .alTaskType.active{background-color: #FEE9DB;border: 1px solid #FA6400;}
-    .alTaskType input{background-color: transparent;padding: 10px;border:1px solid #d1d1d1;border-radius: 5px;}
-    .alTaskType select{background-color: transparent;padding: 10px;border:1px solid #d1d1d1;border-radius: 5px;}
-    .alTaskType textarea{background-color: transparent;padding: 10px;border:1px solid #d1d1d1;border-radius: 5px;}
+    .alTaskType input,
+    .alTaskType textarea,
+    .alTaskType select{background-color: transparent;padding: 6px 10px;border:1px solid #d1d1d1;border-radius: 5px;}
+
     .border-right{border-right: 1px dashed #d1d1d1 !important;}
-    .alCol-12{-ms-flex: 0 0 100%;flex: 0 0 100%;max-width: 100%;}    
+    .alCol-12{-ms-flex: 0 0 100%;flex: 0 0 100%;max-width: 100%;}
     .alCol-6{-ms-flex: 0 0 50%;flex: 0 0 50%;max-width: 50%;}
     .alCol-12.mainaddress.col-8 .addressDetails .form-group.col-6{-ms-flex: 0 0 50%;flex: 0 0 50%;max-width: 50%;}
     .mainaddress.col-8 .addressDetails .form-group.col-6{-ms-flex: 0 0 100%;flex: 0 0 100%;max-width: 100%;}
@@ -168,17 +169,17 @@
 
     /* Track */
     ::-webkit-scrollbar-track {
-    background: #f1f1f1; 
+    background: #f1f1f1;
     }
-    
+
     /* Handle */
     ::-webkit-scrollbar-thumb {
-    background: #888; 
+    background: #888;
     }
 
     /* Handle on hover */
     ::-webkit-scrollbar-thumb:hover {
-    background: #555; 
+    background: #555;
     }
 </style>
 <div id="task-modal-header" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;font-size: 14px;">
@@ -374,7 +375,7 @@
                 $(".pickup-barcode-error").hide();
                 $(".drop-barcode-error").hide();
                 $(".appointment-barcode-error").hide();
-                
+
                 $('.appoint').hide();
 
                 loadMapHeader(autoWrap);
@@ -663,8 +664,8 @@
             countZ = 1;
         }
     });
-    
-    
+
+
     $(document).on("click", "input[type='radio'].checkschedule", function() {
         var dateredio = $("#dateredio input[type='radio']:checked").val();
         if (dateredio == 'schedule') {
@@ -813,17 +814,17 @@
         success: function(response) {
             if(response.status == 'Success')
             {var color = 'green';var heading="Success!";}else{var color = 'red';var heading="Error!";}
-            $.toast({ 
+            $.toast({
             heading:heading,
-            text : response.message, 
-            showHideTransition : 'slide', 
-            bgColor : color,              
-            textColor : '#eee',            
-            allowToastClose : true,      
-            hideAfter : 5000,            
-            stack : 5,                   
-            textAlign : 'left',         
-            position : 'top-right'      
+            text : response.message,
+            showHideTransition : 'slide',
+            bgColor : color,
+            textColor : '#eee',
+            allowToastClose : true,
+            hideAfter : 5000,
+            stack : 5,
+            textAlign : 'left',
+            position : 'top-right'
             });
             if (response.status == 'Success') {
                     $("#task-modal-header .close").click();
@@ -900,8 +901,8 @@
     }
 
     function insertArrayToFiles(routefileListArray){
-        const dT = new ClipboardEvent('').clipboardData || new DataTransfer(); 
-        for (let file of routefileListArray) { 
+        const dT = new ClipboardEvent('').clipboardData || new DataTransfer();
+        for (let file of routefileListArray) {
             dT.items.add(file);
         }
         $('#file').prop("files",dT.files);
@@ -931,7 +932,7 @@
             $('#imagePreview').append('<div class="imagepri_wrap mb-2" data-id="'+i+'"><img src="' + objectUrl + '" class="imagepri mr-2" /><button type="button" class="close imagepri_close" aria-hidden="true">×</button></div>');
             window.URL.revokeObjectURL(fileList[i]);
         }
-        
+
         reArrangeFileWrapIndexes();
     }
 
@@ -1087,7 +1088,7 @@
         $(this).closest('.alTaskType').find(".mainaddress").removeClass("alCol-12");
         $(this).closest('.alTaskType').addClass("active");
         $(this).closest('.alTaskType').find(".alsavedaddress").show();
-        
+
     });
 
 
