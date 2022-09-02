@@ -25,6 +25,10 @@ $(document).ready(function(){
     document.querySelector("#taskFormHeader .phone_number").addEventListener("countrychange", function() {
         $("#taskFormHeader #dialCode").val(phone_number_intltel.getSelectedCountryData().dialCode);
     });
+
+    $('#taskFormHeader .edit-icon-float-right').on('click', function() {
+        $('#taskFormHeader .task_desc_div').toggle();
+    });
 });
     $(document).ready(function() {
         $('.dropify').dropify();

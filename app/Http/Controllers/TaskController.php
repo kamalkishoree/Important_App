@@ -2203,7 +2203,6 @@ class TaskController extends BaseController
         $tz = new Timezone();
         $client_timezone = $tz->timezone_name(Auth::user()->timezone);
 
-        //=> function($o){$o->where('short_name','!=',null);}
         $task            = Order::where('id', $id)->with(['task','agent','customer.location'])->first();
         $fatchdrivertag  = TaskDriverTag::where('task_id', $id)->get('tag_id');
         $fatchteamtag    = TaskTeamTag::where('task_id', $id)->get('tag_id');
@@ -2262,8 +2261,20 @@ class TaskController extends BaseController
         $task_proofs = TaskProof::all();
         $preference  = ClientPreference::where('id', 1)->first(['route_flat_input','route_alcoholic_input']);
 
+        $task_locations = Task::where('order_id', $id)->leftJoin('locations', 'tasks.location_id', '=', 'locations.id')
+        ->select('tasks.*', 'locations.latitude', 'locations.longitude', 'locations.short_name', 'locations.address')->orderBy('task_order')->get();
+        $orderc = Order::where('id', $id)->where('status','completed')->count();
+        if($orderc == 0){
+            $agent_location = AgentLog::where('agent_id', $task->driver_id)->latest()->first();
+        }
+        else{
+            $agent_location = [];
+            $lastElement = $task_locations->last();
+            $agent_location['lat']  = $lastElement->latitude;
+            $agent_location['lng']  = $lastElement->longitude;
+        }
         $task->customer->countrycode = getCountryCode($task->customer->dial_code);
-        return view('tasks/update-task')->with(['task' => $task, 'task_proofs' => $task_proofs, 'preference' => $preference, 'teamTag' => $teamTag, 'agentTag' => $agentTag, 'agents' => $agents, 'images' => $array, 'savedrivertag' => $savedrivertag, 'saveteamtag' => $saveteamtag, 'main' => $lastbaseurl,'alllocations'=>$all_locations,'client_timezone'=>$client_timezone]);
+        return view('tasks/update-task')->with(['task' => $task, 'agent_location' => $agent_location, 'task_locations' => $task_locations, 'task_proofs' => $task_proofs, 'preference' => $preference, 'teamTag' => $teamTag, 'agentTag' => $agentTag, 'agents' => $agents, 'images' => $array, 'savedrivertag' => $savedrivertag, 'saveteamtag' => $saveteamtag, 'main' => $lastbaseurl,'alllocations'=>$all_locations,'client_timezone'=>$client_timezone]);
     }
 
     /**

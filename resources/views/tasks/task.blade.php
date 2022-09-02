@@ -178,7 +178,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                     </div>
                                 </form>
                             </div>
-                            <a href="{{route('batch.list')}}"><button type="button" class="btn btn-info" >All Batchs</button></a>
+                            <a href="{{route('batch.list')}}"><button type="button" class="btn btn-info" >All Batches</button></a>
                             <!-- @if (isset($status) && $status == 'unassigned' && $panding_count != 0 ) -->
                                 <div class="col-sm-4 assign-toggle assign-show ">
                                     <button type="button" class="btn btn-info assign_agent" data-toggle="modal" data-target="#add-assgin-agent-model" data-backdrop="static" data-keyboard="false">{{__("Assign")}}</button> 

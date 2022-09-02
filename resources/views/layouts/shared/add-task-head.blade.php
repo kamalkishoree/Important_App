@@ -204,7 +204,7 @@
 </div>
 
 <div id="show-map-Header" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
-    <div class="modal-dialog modal-full-width">
+    <div class="modal-dialog modal-xl">
         <div class="modal-content">
 
             <div class="modal-header border-0">
@@ -387,6 +387,10 @@
 
                 phoneInput();
                 runPicker();
+
+                $('#task-modal-header .edit-icon-float-right').on('click', function() {
+                    $('#task-modal-header .task_desc_div').toggle();
+                });
             },
             error: function (data) {
             }

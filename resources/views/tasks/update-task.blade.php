@@ -1,9 +1,14 @@
 @extends('layouts.vertical', ['title' => __('Routes')])
 @section('css')
 <link href="{{ asset('assets/libs/selectize/selectize.min.css') }}" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" href="{{ asset('tracking/css/bootstrap.css') }}">
+<link rel="stylesheet" href="{{ asset('tracking/css/style.css') }}">
+<link rel="stylesheet" href="{{ asset('tracking/css/responsive.css') }}">
 @endsection
 @php
 use Carbon\Carbon;
+
+$task_type_array = [__('Pickup'), __('Drop-Off'), __('Appointment')];
 @endphp
 @section('content')
 <style> .addTaskModalHeader{display: none;}</style>
@@ -125,12 +130,9 @@ use Carbon\Carbon;
                             </div>
                             
 
-                            <h4 class="header-title mb-2">{{__("Meta Data")}}</h4>
-                            <div class="row mb-2">
-                                <div class="col-md-6">
-                                    <input type="file" data-plugins="dropify" class="dropify" name="file[]" multiple data-height="300" accept="image/*"/>
-                                </div>
-                                <div class="col-md-6" id="make_modelInput">
+                            <h4 class="header-title mb-2">{{__("Meta Data")}} <a href="#edit_desc" class="edit-icon-float-right"> <i class="mdi mdi-square-edit-outline"></i></a></h4>
+                            <div class="row mb-2 task_desc_div" style="display:{{($task->task_description!='')?'block':'none'}};">
+                                <div class="col-md-12" id="make_modelInput">
                                     {!! Form::hidden('recipient_phone', null, ['class' => 'form-control rec', 'placeholder' =>
                                     __('Recipient Phone')]) !!}
                                     {!! Form::hidden('Recipient_email', null, ['class' => 'form-control rec', 'placeholder' =>
@@ -138,12 +140,18 @@ use Carbon\Carbon;
                                     {{-- {!! Form::textarea('task_description', null, ['class' => 'form-control', 'placeholder' =>
                                     'Task Description', 'rows' => 2, 'cols' => 40]) !!} --}}
 
-                                    <textarea class='form-control' placeholder="{{__('Please enter task description')}}" rows='5' cols='40' name="task_description">{{$task->task_description}}</textarea>
+                                    <textarea class='form-control' placeholder="{{__('Please enter task description')}}" rows='3' cols='40' name="task_description">{{$task->task_description}}</textarea>
                                     {!! Form::hidden('net_quantity', null, ['class' => 'form-control rec mt-1', 'placeholder' =>
                                     __('Net Quantity')]) !!}
                                     <span class="invalid-feedback" role="alert">
                                         <strong></strong>
                                     </span>
+                                </div>
+                            </div>
+                            
+                            <div class="row mb-2">
+                                <div class="col-md-12">
+                                    <input type="file" data-plugins="dropify" class="dropify" name="file[]" multiple data-height="300" accept="image/*"/>
                                 </div>
                             </div>
 
@@ -492,10 +500,75 @@ use Carbon\Carbon;
                                         @endif
                                     </div>
                                 </div>
+                                </div>
                             @endforeach
                             </div>
                         </div>
                     </div>
+                </div>
+
+                <div class="card-box p-3">            
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h4 class="header-title mb-2">{{__("Order Tracking")}}</h4>
+                                                         
+                            <div class="row no-gutters">
+                                <div class="col-12">
+                                    <div class="map_box">
+                                        <div style="width: 100%">
+                                            <div id="map_canvas"></div>
+                                        </div>
+                                        {{-- <iframe
+                                    src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d109782.78861272808!2d76.95784163044429!3d30.698374220997263!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2sin!4v1615288788406!5m2!1sen!2sin"
+                                    width="100%" style="border:0;" allowfullscreen="" loading="lazy"  scrolling="no"></iframe> --}}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="location_box position-relative get_div_height">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <i class="fas fa-chevron-up detail_btn d-lg-none d-block show_attr_classes"></i>
+                                        <div class="row no-gutters align-items-center">
+                                            <div class="col-lg-12 padd-left mb-4">
+                                                <div class="left-icon">
+                                                    <img src="{{ 'https://imgproxy.royodispatch.com/insecure/fit/300/100/sm/0/plain/' . Storage::disk('s3')->url($order->profile_picture ?? 'assets/client_00000051/agents605b6deb82d1b.png/XY5GF0B3rXvZlucZMiRQjGBQaWSFhcaIpIM5Jzlv.jpg') }}"
+                                                        alt="" />
+                                                </div>
+                                                <h4>{{ isset($task->name) ? $order->name :__('Driver not assigned yet') }}</h4>
+                                                <p>{{ $task->phone_number }}</p>
+                                            </div>
+                                            <span class="col-lg-12 attrbute_classes">
+                                                <div class="row align-items-center">
+                                                    @foreach ($task->task as $item)
+                                                        <div class="col-lg-6 d-flex align-items-center address_box mb-3">
+                                                            <i class="fas fa-map-marker-alt"></i>
+                                                            <div class="right_text">
+                                                                <h4>{{ $task_type_array[$item->task_type_id - 1] }}</h4>
+                                                                <p>{{ $item->address }}</p>
+                                                            </div>
+                                                        </div>
+                                                    @endforeach
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row no-gutters">
+                                <div class="col-sm-12 btn_group d-flex align-items-center justify-content-between">
+                                    <a class="btn pink_btn" href="tel:{{ $task->phone_number }}"><i
+                                            class="fas fa-phone-alt position-absolute"></i><span>{{__('Call')}}</span></a>
+                                    <a class="btn pink_btn" href="sms:{{ $task->phone_number }}"><i
+                                            class="fas fa-comment position-absolute"></i><span>{{__('Message')}}</span></a>
+                                </div>
+                            </div>
+                             
+                        </div>
+                    </div>
+
+                    
+                            
+                        
                 </div>
             </div>
         </div>
@@ -507,7 +580,7 @@ use Carbon\Carbon;
 
     <div id="show-map-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
         aria-hidden="true" style="display: none;">
-        <div class="modal-dialog modal-full-width">
+        <div class="modal-dialog modal-xl">
             <div class="modal-content">
 
                 <div class="modal-header border-0">
@@ -542,10 +615,10 @@ use Carbon\Carbon;
     {{-- <script src="{{ asset('assets/js/pages/form-advanced2.init.js') }}"></script>
     <script src="{{ asset('assets/js/pages/form-advanced.init.js') }}"></script> --}}
     <script src="{{ asset('assets/libs/selectize/selectize.min.js') }}"></script>
-    
+    <script src="{{ asset('tracking/js/common.js') }}"></script>
     <script>
         var savedFileListArray = {!! json_encode($images) !!};
     </script>
     @include('tasks.updatepagescript')
-    
+    @include('tasks.tracking_url_script')
 @endsection

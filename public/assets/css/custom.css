@@ -1982,3 +1982,23 @@ body[dir="rtl"] .agent-listing tbody td{ padding: 15px 10px 10px 15px;}
 .iti__country-list{
     z-index:999;
 }
+
+.edit-icon-float-right {
+   
+    float: right;
+    border-radius: 2px;
+    background: #6658ddf0;
+    color: #fff;
+    font-size: 14px;
+    padding: 3px 3px;
+}
+
+.edit-icon-float-right:hover {
+   
+    float: right;
+    border-radius: 2px;
+    background: #7a6fe0f0;
+    color: #fff;
+    font-size: 14px;
+    padding: 3px 3px;
+}
