@@ -423,7 +423,7 @@ $sms_crendential = json_decode($preference->sms_credentials);
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group mb-3">
-                                    <label for="from_address">{{ __('Form Address') }}</label>
+                                    <label for="from_address">{{ __('From Address') }}</label>
                                     <input type="text" name="from_address" id="from_address" placeholder="user@gmail.com"
                                         class="form-control"
                                         value="{{ old('from_address', $smtp_details->from_address ?? '') }}" required>

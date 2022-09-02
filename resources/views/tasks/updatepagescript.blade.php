@@ -510,13 +510,6 @@ $(document).ready(function(){
 
                     $("#taskFormHeader").find("input[name='email']").val(customerdata.email);
 
-                    /* $('.withradio .append').remove();
-                    jQuery.each(array, function(i, val) {
-                        $(".withradio").append(
-                          '<div class="append"><div class="custom-control custom-radio count"><input type="radio" id="' + val.id + '" name="old_address_id" value="' + val.id + '" class="custom-control-input redio old-select-address callradio" data-srtadd="'+ val.short_name +'" data-adr="'+ val.address +'" data-lat="'+ val.latitude +'" data-long="'+ val.longitude +'" data-pstcd="'+ val.post_code +'" data-emil="'+ val.email +'" data-ph="'+ val.phone_number +'"><label class="custom-control-label" for="' + val.id + '"><span class="spanbold">' + val.short_name +
-                          '</span>-' + val.address +
-                          '</label></div></div>');
-                    }); */
                     $('.editwithradio .append').remove();
                     jQuery.each(array, function(i, val) {
                         var countz = '';
@@ -594,20 +587,17 @@ $(document).ready(function(){
 
 function loadMap(autocompletesWraps){
 
-    // console.log(autocompletesWraps);
     $.each(autocompletesWraps, function(index, name) {
         const geocoder = new google.maps.Geocoder; 
 
         if($('#'+name).length == 0) {
             return;
         }
-        //autocomplete[name] = new google.maps.places.Autocomplete(('.form-control')[0], { types: ['geocode'] }); console.log('hello');
         autocomplete[name] = new google.maps.places.Autocomplete(document.getElementById(name+'-input'), { types: ['geocode'] });
         google.maps.event.addListener(autocomplete[name], 'place_changed', function() {
             
             var place = autocomplete[name].getPlace();
             
-            // console.log('autocomplete[name]', autocomplete[name]);
             geocoder.geocode({'placeId': place.place_id}, function (results, status) {
                 
                 if (status === google.maps.GeocoderStatus.OK) {
@@ -629,7 +619,7 @@ function loadMap(autocompletesWraps){
 
 $(document).on('click', '.showMapTask', function(){
     var no = $(this).attr('id') ??  $(this).attr('num') ;
-    // console.log(no);
+    
     var lats = document.getElementById(no+'-latitude').value;
     var lngs = document.getElementById(no+'-longitude').value;
     var address = document.getElementById(no+'-input').value;
@@ -727,7 +717,6 @@ $('.onlynumber').keyup(function ()
 
 $(document).on('click', '.mdi-delete-single-task', function() {            
             var r = confirm("{{__('Are you sure?')}}");
-            // console.log($(this).attr('taskid'));
             if (r == true) {
                var taskid = $(this).attr('taskid');
                $('form#taskdeletesingle'+taskid).submit();

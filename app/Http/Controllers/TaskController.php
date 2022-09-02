@@ -92,7 +92,7 @@ class TaskController extends BaseController
         $pending  =  count($all->where('status', 'unassigned'));
         $history  =  count($all->where('status', 'completed'));
         $failed   =  count($all->where('status', 'failed'));
-        $preference  = ClientPreference::where('id', 1)->first(['theme','date_format','time_format']);
+        $preference  = ClientPreference::where('id', 1)->first(['theme','date_format','time_format', 'create_batch_hours']);
 
         $teamTag   = TagsForTeam::OrderBy('id','asc');
         if ($user->is_superadmin == 0 && $user->all_team_access == 0) {
