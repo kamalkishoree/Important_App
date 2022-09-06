@@ -1,19 +1,19 @@
 <!-- bundle -->
 <!-- Vendor js -->
 {{-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script> --}}
+@include('modal.modalPopup')
 
+<div class="nb-spinner-main">
+    <div class="nb-spinner"></div>
+</div>
 <script src="{{asset('assets/js/waitMe.min.js')}}"></script>
-
-
-
-
 <script src="{{asset('assets/js/waitMe.min.js')}}"></script>
 
 <script>
  $(".remove-modal-open").click(function (e) {
        // alert("hello");
         $('body').addClass('modal-opensag');
-    });
+});
 
 
 
@@ -85,3 +85,4 @@ $('.showpassword').click(function(){
 <script src="{{asset('assets/js/pages/toastr.init.js')}}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
 @yield('script-bottom')
+@yield('popup-js')

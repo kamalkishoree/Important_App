@@ -226,6 +226,7 @@
                 notification_type : notification_type,
                 _token : "{{ csrf_token() }}"
             };
+            spinnerJS.showSpinner();
             //startLoader('body');
             $.ajax({
                 method: "POST",
@@ -235,14 +236,17 @@
                 url: "/notification_update",
                 data: formData,
                 success: function(response) {
+                    
                     if (response.status == 'success') {
 
                     } else {
                         $(".show_all_error.invalid-feedback").show();
                         $(".show_all_error.invalid-feedback").text(response.message);
                     }
+                    spinnerJS.hideSpinner();
                 },
                 error: function(response) {
+                    spinnerJS.hideSpinner();
                     if (response.status === 422) {
                         let errors = response.responseJSON.errors;
                         Object.keys(errors).forEach(function(key) {

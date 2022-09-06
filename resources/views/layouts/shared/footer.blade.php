@@ -2,13 +2,11 @@
     $image = App\Model\Client::first();
    // $image->name = 'Royo';
 @endphp
-@include('modal.modalPopup')
 
-@yield('popup-js')
 <!-- spinner Start --> 
-<div class="nb-spinner-main">
+{{-- <div class="nb-spinner-main">
     <div class="nb-spinner"></div>
-</div>
+</div> --}}
 <!-- spinner Start --> 
 <!-- Footer Start --> 
 <footer class="footer">

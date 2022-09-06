@@ -11,3 +11,12 @@ const spinnerJS = {
         },800);
     }
 }
+
+document.onreadystatechange = function () {
+    var state = document.readyState
+    if (state == 'interactive') {
+        spinnerJS.showSpinner();
+    } else if (state == 'complete') {
+        spinnerJS.hideSpinner();
+    }
+}

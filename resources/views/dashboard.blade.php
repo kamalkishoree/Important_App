@@ -16,12 +16,12 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
 {{-- <section class="bannar header-setting"> --}}
 <div class="container-fluid p-0">
 <div class="row coolcheck no-gutters">
-    <div class="pageloader" style="display: none;">
+    {{-- <div class="pageloader" style="display: none;">
         <div class="box">
             <h4 class="routetext"></h4>
             <div class="spinner-border avatar-lg text-primary m-2" role="status"></div>
         </div>
-    </div>
+    </div> --}}
     <div id="scrollbar" class="col-md-4 col-xl-3 left-sidebar pt-3">
         <div class="side_head d-flex justify-content-between align-items-center mb-2">
             <i class="mdi mdi-sync mr-1" onclick="reloadData()" aria-hidden="true"></i>
@@ -844,7 +844,8 @@ $('.submitoptimizeForm').click(function(){
     {
         $('.routetext').text('Optimizing Route');
         $('#optimize-route-modal').modal('hide');
-        $('.pageloader').css('display','block');
+        //$('.pageloader').css('display','block');
+        spinnerJS.showSpinner()
         var formdata =$('form#optimizerouteform').serialize();
         if(sortingtype=='optimize')
         {
@@ -936,11 +937,13 @@ $('.submitoptimizeForm').click(function(){
                         }
 
                         $('#optimizerouteform').trigger("reset");
-                        $('.pageloader').css('display','none');
+                        //$('.pageloader').css('display','none');
+                        spinnerJS.hideSpinner()
                         //location.reload();
                     }else{
                         alert(response);
-                        $('.pageloader').css('display','none');
+                        //$('.pageloader').css('display','none');
+                        spinnerJS.hideSpinner()
                     }
                 },
                 error: function(response) {
@@ -959,13 +962,15 @@ function cancleForm()
 // autoload dashbard
 function loadTeams(){
     $("#teams_container").empty();
-    $("#teams_container").html('<div class="spinner-border text-blue m-2" role="status"></div>');
+    //$("#teams_container").html('<div class="spinner-border text-blue m-2" role="status"></div>');
+    spinnerJS.showSpinner();
     var route_teams_data = "{{ route('dashboard.teamsdata', ':id') }}";
     var checkuserstatus = $('input[name="user_status"]:checked').val();
     route_teams_data = route_teams_data.replace(":id", checkuserstatus);
     $.get(route_teams_data, function(data) {
         $("#teams_container").empty();
         $("#teams_container").html(data);
+        spinnerJS.hideSpinner()
     });
 }
 
@@ -1166,7 +1171,8 @@ function reInitMap(allroutes) {
 $(".dragable_tasks").sortable({
     update : function(event, ui) {
         $('.routetext').text('Arranging Route');
-        $('.pageloader').css('display','block');
+        spinnerJS.showSpinner()
+        //$('.pageloader').css('display','block');
         var divid = $(this).attr('id');
         var params = $(this).attr('params');
         var agentid = $(this).attr('agentid');
@@ -1191,8 +1197,8 @@ $(".dragable_tasks").sortable({
                 $('.totdis'+agentid).html(data.total_distance);
                 var funperams = '<span class="optimize_btn" onclick="RouteOptimization('+params+')">Optimize</span>';
                 $('.optimizebtn'+agentid).html(funperams);
-                $('.pageloader').css('display','none');
-
+                //$('.pageloader').css('display','none');
+                spinnerJS.hideSpinner()
                 $('#routeTaskIds').val(taskorder);
                 $('#routeMatrix').val('');
                 $('#routeOptimize').val('');
@@ -1253,7 +1259,8 @@ $(".dragable_tasks").sortable({
             },
             error: function(response) {
                 alert('There is some issue. Try again later');
-                $('.pageloader').css('display','none');
+                //$('.pageloader').css('display','none');
+                spinnerJS.hideSpinner()
             }
         });
     }
@@ -1279,7 +1286,8 @@ function closeAllAccordian() {
 
 function NavigatePath(taskids,distancematrix,optimize,agentid,date) {
     $('.routetext').text('Exporting Pdf');
-    $('.pageloader').css('display','block');
+    //$('.pageloader').css('display','block');
+    spinnerJS.showSpinner()
 
         $.ajax({
             type: 'POST',
@@ -1294,11 +1302,12 @@ function NavigatePath(taskids,distancematrix,optimize,agentid,date) {
                 {
                     $('#pdfvalue').val(response);
                     $("#pdfgenerate").submit();
-
-                    $('.pageloader').css('display','none');
+                    spinnerJS.hideSpinner()
+                    //$('.pageloader').css('display','none');
                 }else{
                     alert(response);
-                    $('.pageloader').css('display','none');
+                    spinnerJS.hideSpinner()
+                    //$('.pageloader').css('display','none');
                 }
             },
             error: function(response) {
