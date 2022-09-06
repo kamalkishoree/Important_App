@@ -1,3 +1,4 @@
+<link href="{{asset('assets/js/fullcalendar/calendar_main-5.9.css')}}" rel="stylesheet" type="text/css" />
 @section('popup-id','agentTablePopup')
 <style>
     #scheduleTablePopup .dt-buttons.btn-group.flex-wrap {right: inherit;}
@@ -36,5 +37,6 @@ Agent schedule slots:<p class="sku-name pl-1"></p>
 @endsection
 
 @section('popup-js')
+    <script src="{{asset('assets/js/fullcalendar/calendar_main-5.9.js')}}"></script>
     <script src="{{ asset('assets/js/agent/agentSlot.js')}}"></script>
 @endsection
