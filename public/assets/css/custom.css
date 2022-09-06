@@ -2002,3 +2002,7 @@ body[dir="rtl"] .agent-listing tbody td{ padding: 15px 10px 10px 15px;}
     font-size: 14px;
     padding: 3px 3px;
 }
+/* 6/9/22 */
+.alNavTopMinus {
+    margin-top: -35px;
+}
