@@ -60,6 +60,7 @@ class TaskController extends BaseController
     public function updateTaskStatus(Request $request)
     {
         $header = $request->header();
+        $tasks = null;
         $client_details = Client::where('database_name', $header['client'][0])->first();
         $proof_image = '';
         $proof_face = '';
@@ -221,6 +222,23 @@ class TaskController extends BaseController
                    $codeVendor = $this->checkQrcodeStatusDataToOrderPanel($order_details,$request->qr_code,5);
                 }
             }
+            //Send Next Dependent task details
+            $tasks = Task::where('dependent_task_id', $orderId->id)->where('task_status', '!=', 4)->Where('task_status', '!=', 5)
+            ->with(['location','tasktype','order.customer','order.customer.resources','order.task.location'])->orderBy("order_id", "DESC")
+            ->orderBy("id","ASC")
+            ->get();
+            if (count($tasks) > 0) {
+                //sort according to task_order
+                $tasks = $tasks->toArray();
+                if ($tasks[0]['task_order'] !=0) {
+                    usort($tasks, function ($a, $b) {
+                        return $a['task_order'] <=> $b['task_order'];
+                    });
+                }
+            }
+
+
+
         } elseif ($request->task_status == 5) {
             if ($checkfailed == 1) {
                 $Order  = Order::where('id', $orderId->order_id)->update(['status' => $task_type ]);
@@ -423,6 +441,8 @@ class TaskController extends BaseController
         $newDetails['otpEnabled'] = $otpEnabled;
         $newDetails['otpRequired'] = $otpRequired;
         $newDetails['qrCodeVendor'] = $codeVendor??null;
+        $newDetails['nextTask'] = $tasks??null;
+
 
         return response()->json([
             'data' => $newDetails,
