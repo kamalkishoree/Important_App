@@ -341,6 +341,9 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
 
 @include('agent.modals')
 @include('modals.pay-receive')
+@if(getClientPreferenceDetail()->is_driver_slot == 1)
+    @include('agent.modal-popup.agentSlotTableRows')
+@endif
 @endsection
 
 @section('script')
@@ -357,7 +360,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
 <link rel="stylesheet" href="{{ asset('assets/css/jquery.tagsinput-revisited.css') }}" />
 @if(getClientPreferenceDetail()->is_driver_slot == 1)
 <script src="{{ asset('assets/js/AgentSlot/slot.js') }}"></script>
-@endIf
+@endif
 
 <script>
     $('#selectAgent').on('change', function(e) {

@@ -2006,3 +2006,52 @@ body[dir="rtl"] .agent-listing tbody td{ padding: 15px 10px 10px 15px;}
     font-size: 14px;
     padding: 3px 3px;
 }
+
+
+
+/**common popup  */
+
+.commonModal .modal-dialog.modal-dialog-centered.modal-lg {
+    max-width: 1170px;
+  }
+  /* width */
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  /* Track */
+  ::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+  
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: #43bee1;
+  }
+  
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
+  
+  /*custom popup*/
+  table.dataTable {
+    width: 100% !important;
+  }
+  .dataTables_scrollFootInner{
+    width: 100% !important;
+  }
+  .dataTables_scrollFoot{
+    width: 100% !important;
+  }
+  .dataTables_scrollHeadInner{
+    width: 100% !important;
+  }
+  .dataTable{
+    width: 100% !important;
+  }
+  
+  .commonModalLabel{
+    display: flex;
+  }
+/**end */

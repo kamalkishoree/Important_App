@@ -2,6 +2,9 @@
     $image = App\Model\Client::first();
    // $image->name = 'Royo';
 @endphp
+@include('modal.modalPopup')
+
+@yield('popup-js')
 <!-- Footer Start --> 
 <footer class="footer">
     <div class="container-fluid">
