@@ -59,7 +59,7 @@ class PricingRulesController extends Controller
         $teams      = $teams->get()->pluck('name', 'id');
         $team_tag   = TagsForTeam::OrderBy('id','asc');
         if (Auth::user()->is_superadmin == 0 && Auth::user()->all_team_access == 0) {
-            $team_tag = $team_tag->whereHas('assignTeams.team.permissionToManager', function ($query) {
+            $team_tag = $team_tag->whereHas('priceRuleTags.team.permissionToManager', function ($query) {
                 $query->where('sub_admin_id', Auth::user()->id);
             });
         } 
@@ -67,7 +67,7 @@ class PricingRulesController extends Controller
         $team_tag = $team_tag->get()->pluck('name', 'id');
         $driver_tag = TagsForAgent::OrderBy('id','asc');
         if (Auth::user()->is_superadmin == 0 && Auth::user()->all_team_access == 0) {
-            $driver_tag = $driver_tag->whereHas('assignTags.agent.team.permissionToManager', function ($query) {
+            $driver_tag = $driver_tag->whereHas('priceRuleTags.tagsForAgent.team.permissionToManager', function ($query) {
                 $query->where('sub_admin_id', Auth::user()->id);
             });
         }

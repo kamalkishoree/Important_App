@@ -85,7 +85,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
 <div class="row">
     <div class="col-md-12">
         <div class="form-group" id="vehicle_type_idInputEdit">
-            <p class="text-muted mt-3 mb-2">{{__("TRANSPORT TYPE")}}</p>
+            <p class="text-muted mt-3 mb-2">{{__("TRANSPORT ICON")}}</p>
             <div class="radio radio-blue form-check-inline click cursors">
                 <input type="radio" id="onfoot" value="1" act="edit" name="vehicle_type_id" @if ($agent->vehicle_type_id == '1') checked
                 @endif>

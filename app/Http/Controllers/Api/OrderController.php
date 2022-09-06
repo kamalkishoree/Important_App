@@ -68,24 +68,31 @@ class OrderController extends BaseController
      */
     public function rescheduleOrder(Request $request)
     {
+
         // Get Client Timezone
         $auth =  Client::with(['getAllocation', 'getPreference'])->first();
         $tz = new Timezone();
         $auth->timezone = $tz->timezone_name($auth->timezone);
       
-        // Convert Time To UTC
-        $schedule_dropoff = Carbon::parse($request->schedule_dropoff . $auth->timezone ?? 'UTC')->tz('UTC');
-        $schedule_pickup  = Carbon::parse($request->schedule_pickup . $auth->timezone ?? 'UTC')->tz('UTC');
+        if(!empty($request->schedule_dropoff))
+        {
+            // Convert Time To UTC
+            // Get Dropoff Order
+            $schedule_dropoff = Carbon::parse($request->schedule_dropoff . $auth->timezone ?? 'UTC')->tz('UTC');
+            $dropoffOrder = Order::where('order_number', $request->order_number)->where('unique_id', $request->order_unique_id)->first();
+            $dropoffOrder->order_time = $schedule_dropoff;
+            $dropoffOrder->save();
+        }
 
-        // Get Dropoff Order
-        $dropoffOrder = Order::where('order_number', $request->order_number)->where('unique_id', $request->order_unique_id)->where('status', '!=', 'completed')->first();
-        $dropoffOrder->order_time = $schedule_dropoff;
-        $dropoffOrder->save();
-
-        // Get Pickup Order
-        $pickupOrder = Order::where('id', '<', $dropoffOrder->id)->where('order_number', $request->order_number)->where('status', '!=', 'completed')->orderBy('id','DESC')->first();
-        $pickupOrder->order_time = $schedule_pickup;
-        $pickupOrder->save();
+        if(!empty($request->schedule_pickup))
+        {
+            // Get Pickup Order
+            // Convert Time To UTC
+            $schedule_pickup  = Carbon::parse($request->schedule_pickup . $auth->timezone ?? 'UTC')->tz('UTC');
+            $pickupOrder = Order::where('id', '<', $dropoffOrder->id)->where('order_number', $request->order_number)->orderBy('id','DESC')->first();
+            $pickupOrder->order_time = $schedule_pickup;
+            $pickupOrder->save();
+        }
 
         $title = 'Schedule Timing Modified';
         $body  = 'The schedule timing of order number #'.$request->order_number.' has been modified by the customer.';
