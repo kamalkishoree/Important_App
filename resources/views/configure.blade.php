@@ -652,6 +652,21 @@ $sms_crendential = json_decode($preference->sms_credentials);
                                 </div>
                             </div>
                         </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="d-flex align-items-center justify-content-between mt-3 mb-2">
+                                    <h5 class="font-weight-normal m-0">{{ Session::get('agent_name') ? Session::get('agent_name') : 'Agent' }} {{ __('working hours') }} </h5>
+                                    <div class="custom-control custom-switch">
+                                        <input type="checkbox" class="custom-control-input"
+                                            id="editDriverSlotCustomSwitch_{{ $preference->is_driver_slot }}"
+                                            name="is_driver_slot"
+                                            {{ $preference->is_driver_slot == 1 ? 'checked' : '' }}>
+                                        <label class="custom-control-label"
+                                            for="editDriverSlotCustomSwitch_{{ $preference->is_driver_slot }}"></label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </form>
                 </div>
             </div>

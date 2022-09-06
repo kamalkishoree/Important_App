@@ -9,7 +9,11 @@
     font-style: normal;
     font-display: block;
   }
-
+  button[type="submit"]:hover {
+    background-color: transparent;
+    border-color: transparent;
+    cursor: pointer;
+}
   [class^="icon-"], [class*=" icon-"] {
     /* use !important to prevent issues with browser extensions that change fonts */
     font-family: 'icomoon' !important;
