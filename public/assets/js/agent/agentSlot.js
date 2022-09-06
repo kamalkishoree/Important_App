@@ -355,7 +355,7 @@ $(function(){
 
             events: function(info, successCallback, failureCallback) {
                 $.ajax({
-                    url: "{{route('vendor.calender.data', $vendor->id)}}",
+                    url: "{{route('agent.calender.data', $vendor->id)}}",
                     type: "GET",
                     data: "start="+info.startStr+"&end="+info.endStr,
                     dataType:'json',

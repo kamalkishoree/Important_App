@@ -154,6 +154,14 @@ class AgentSlotController extends Controller
     }
 
     /**
+     * create slot 
+     */
+    public function create(Request $request, $domain = '', $id){
+        $agent = Agent::where('id', $id)->firstOrFail();
+        $returnHTML = view('agent.modal-popup.slotPopup')->with(['agent' => $agent])->render();
+        return response()->json(array('success' => true, 'html' => $returnHTML));
+    }
+    /**
      * Remove the specified resource from storage.
      *
      * @param  \App\VendorSlot  $vendorSlot
