@@ -17,7 +17,7 @@ use Illuminate\Support\Str;
 use App\Traits\ApiResponser;
 
 use Doctrine\DBAL\Driver\DrizzlePDOMySql\Driver;
-use App\Model\{Agent};
+use App\Model\{Agent,AgentSlot,AgentSlotDate,SlotDay};
 
 
 class AgentSlotController extends Controller
