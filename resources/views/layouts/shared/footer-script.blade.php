@@ -6,7 +6,9 @@
 <div class="nb-spinner-main">
     <div class="nb-spinner"></div>
 </div>
-<script src="{{asset('assets/js/waitMe.min.js')}}"></script>
+
+<script type="text/javascript" src="{{asset('assets/js/axios.min.js')}}"></script>
+
 <script src="{{asset('assets/js/waitMe.min.js')}}"></script>
 
 <script>

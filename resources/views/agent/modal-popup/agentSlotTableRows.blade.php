@@ -37,6 +37,12 @@ Agent schedule slots:<p class="sku-name pl-1"></p>
 @endsection
 
 @section('popup-js')
+<script>
+    var Agent_calender_url =`{{route('agent.calender.data',':id')}}`;
+    //Agent_calender_url.replace(":id", category);
+    
+</script>
+<script src="{{asset('assets/libs/moment/moment.min.js')}}"></script>
     <script src="{{asset('assets/js/fullcalendar/calendar_main-5.9.js')}}"></script>
     <script src="{{ asset('assets/js/agent/agentSlot.js')}}"></script>
 @endsection

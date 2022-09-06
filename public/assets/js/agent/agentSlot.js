@@ -1,14 +1,15 @@
 $(function(){
-    var product_id = vendor_id = title = block = appoin = calendar='';
+    var product_id = vendor_id = title = block = appoin=agent_id = calendar='' ;
     var calendarEl = document.getElementById('calendar');
     $(document).on('click', '.agent_slot_button', function() {
-            spinnerJS.showSpinner();
-            $('#agentTablePopup').modal('show'); 
-            fullCalendarInt();
+        agent_id = $(this).data('agent_id');
+        spinnerJS.showSpinner();
+        $('#agentTablePopup').modal('show'); 
+        fullCalendarInt(agent_id);
     });
 
 
-   async function fullCalendarInt(){
+   async function fullCalendarInt(agent_id){
         if($('#calendar').length > 0){
             calendar = new FullCalendar.Calendar(calendarEl, {
                 initialView: 'timeGridWeek',
@@ -37,41 +38,73 @@ $(function(){
                 nowIndicator: true,
                 eventMaxStack: 1,
                 select: function(arg) {
+                    var save_slot_url = `/agent/slot/${agent_id}`
+                    $('#add-slot-modal').modal({
+                                    //backdrop: 'static',
+                                    keyboard: false
+                                });
+                    // axios.get(`/agent/slot/create/${agent_id}`)
+                    // .then(async response => {
+                    //  console.log(response);
+                    //     if(response.data.success){
+                           
+                    //         $('#add_slot_form').html(response.data.html)
+                    //         $('#add-slot-modal').modal({
+                    //             //backdrop: 'static',
+                    //             keyboard: false
+                    //         });
+                    //     } else{
+                    //         Swal.fire({
+                    //             icon: 'error',
+                    //             title: 'Oops',
+                    //             text: 'This slot is already booked, Please try other.',
+                    //             //footer: '<a href="">Why do I have this issue?</a>'
+                    //         })
+                    //     }
+                    // })
+                    // .catch(e => {
+                    //     Swal.fire({
+                    //         icon: 'error',
+                    //         title: 'Oops...',
+                    //         text: 'Something went wrong, try again later!',
+                    //     })
+                    // })    
                     // calendar.addEvent({
                     //     title: '',
                     //     start: arg.start,
                     //     end: arg.end,
                     //     allDay: arg.allDay
                     // })
-                    $('#standard-modal').modal({
-                        //backdrop: 'static',
-                        keyboard: false
-                    });
-                    var day = arg.start.getDay() + 1;
-                    $('#day_' + day).prop('checked', true);
+                    // $('#standard-modal').modal({
+                    //     //backdrop: 'static',
+                    //     keyboard: false
+                    // });
+                    // var day = arg.start.getDay() + 1;
+                    // $('#day_' + day).prop('checked', true);
     
-                    if (arg.allDay == true) {
-                        document.getElementById('start_time').value = "00:00";
-                        document.getElementById('end_time').value = "23:59";
-                    } else {
-                        var startTime = ("0" + arg.start.getHours()).slice(-2) + ":" + ("0" + arg.start.getMinutes()).slice(-2);
-                        var EndTime = ("0" + arg.end.getHours()).slice(-2) + ":" + ("0" + arg.end.getMinutes()).slice(-2);
+                    // if (arg.allDay == true) {
+                    //     document.getElementById('start_time').value = "00:00";
+                    //     document.getElementById('end_time').value = "23:59";
+                    // } else {
+                    //     var startTime = ("0" + arg.start.getHours()).slice(-2) + ":" + ("0" + arg.start.getMinutes()).slice(-2);
+                    //     var EndTime = ("0" + arg.end.getHours()).slice(-2) + ":" + ("0" + arg.end.getMinutes()).slice(-2);
     
-                        document.getElementById('start_time').value = startTime;
-                        document.getElementById('end_time').value = EndTime;
-                    }
+                    //     document.getElementById('start_time').value = startTime;
+                    //     document.getElementById('end_time').value = EndTime;
+                    // }
     
     
-                    $('#slot_date').flatpickr({
-                        minDate: "today",
-                        defaultDate: arg.start
-                    });
+                    // $('#slot_date').flatpickr({
+                    //     minDate: "today",
+                    //     defaultDate: arg.start
+                    // });
                 },
                
     
                 events: function(info, successCallback, failureCallback) {
+                    var calender_data_url  = Agent_calender_url.replace(":id", agent_id) 
                     $.ajax({
-                        url: "{{route('vendor.calender.data', $vendor->id)}}",
+                        url: calender_data_url,
                         type: "GET",
                         data: "start="+info.startStr+"&end="+info.endStr,
                         dataType:'json',

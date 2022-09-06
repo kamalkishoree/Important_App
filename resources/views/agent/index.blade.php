@@ -341,6 +341,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
 @include('modals.pay-receive')
 @if(getClientPreferenceDetail()->is_driver_slot == 1)
     @include('agent.modal-popup.agentSlotTableRows')
+    @include('agent.modal-popup.slotPopup')
 @endif
 @endsection
 
