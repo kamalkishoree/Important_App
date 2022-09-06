@@ -998,7 +998,6 @@ function autoloadmap(){
                 var agent_count = teams[j]['agents_count'];
                 var team_online_agent_count = teams[j]['online_agents'];
                 var team_offline_agent_count = teams[j]['offline_agents'];
-                //  console.log(agent_count);
 
                 $("#team_agent_"+ teams[j]['id']).text(agent_count);
                 $("#team_online_agent_"+ teams[j]['id']).text(team_online_agent_count);
@@ -1136,33 +1135,32 @@ function reInitMap(allroutes) {
 
     //agents markers
     for (let i = 0; i < allagent.length; i++) {
-            displayagent = allagent[i];
+        displayagent = allagent[i];
 
-            if(displayagent.agentlog != null && displayagent.agentlog['lat'] != "0.00000000" && displayagent.agentlog['long'] != "0.00000000" ){
-                        if (displayagent['is_available'] == 1) {
-                            images = url+'/demo/images/location.png';
-                        }else {
-                            images = url+'/demo/images/location_grey.png';
-                        }
-                        var image = {
-                        url: images, // url
-                        scaledSize: new google.maps.Size(50, 50), // scaled size
-                        origin: new google.maps.Point(0,0), // origin
-                        anchor: new google.maps.Point(22,22) // anchor
-                        };
-                        send = null;
-                        type = 2;
+        if(displayagent.agentlog != null && displayagent.agentlog['lat'] != "0.00000000" && displayagent.agentlog['long'] != "0.00000000" ){
+                    if (displayagent['is_available'] == 1) {
+                        images = url+'/demo/images/location.png';
+                    }else {
+                        images = url+'/demo/images/location_grey.png';
+                    }
+                    var image = {
+                    url: images, // url
+                    scaledSize: new google.maps.Size(50, 50), // scaled size
+                    origin: new google.maps.Point(0,0), // origin
+                    anchor: new google.maps.Point(22,22) // anchor
+                    };
+                    send = null;
+                    type = 2;
 
-                        addMarker({lat: parseFloat(displayagent.agentlog['lat']),
-                        lng:  parseFloat(displayagent.agentlog['long'])
-                        }, send, image,displayagent,type);
-            }
+                    addMarker({lat: parseFloat(displayagent.agentlog['lat']),
+                    lng:  parseFloat(displayagent.agentlog['long'])
+                    }, send, image,displayagent,type);
+        }
 
     }
 }
 
 //for drag drop functionality
-// jQuery(".dragable_tasks").sortable();
 $(".dragable_tasks").sortable({
     update : function(event, ui) {
         $('.routetext').text('Arranging Route');
@@ -1204,45 +1202,7 @@ $(".dragable_tasks").sortable({
                 $('#addressTaskBlock').css('display','none');
                 $('#selectedtasklocations').html('');
                 $('.selecttask').css('display','none');
-                // $.ajax({
-                //     type: 'POST',
-                //     url: '{{url("/get-tasks")}}',
-                //     headers: {
-                //         'X-CSRF-Token': '{{ csrf_token() }}',
-                //     },
-                //     data: {'taskids':taskorder},
-
-                //     success: function(response) {
-
-                //         var data = $.parseJSON(response);
-
-                //         for (var i = 0; i < data.length; i++) {
-                //             var object = data[i];
-                //             var task_id =  object['id'];
-                //             var tasktypeid = object['task_type_id'];
-                //             if(tasktypeid==1)
-                //             {
-                //                 tasktype = "Pickup";
-                //             }else if(tasktypeid==2)
-                //             {
-                //                 tasktype = "Dropoff";
-                //             }else{
-                //                 tasktype = "Appointment";
-                //             }
-
-                //             var location_address =  object['location']['address'];
-                //             var shortname =  object['location']['short_name'];
-
-
-                //             var option   = '<option value="'+task_id+'">'+tasktype+' - '+shortname+' - '+location_address+'</option>';
-                //             $('#selectedtasklocations').append(option);
-                //         }
-                //     },
-                //     error: function(response) {
-                //         // alert('There is some issue. Try again later');
-                //         // $('.pageloader').css('display','none');
-                //     }
-                // });
+                
                 if(data.current_location == 0)
                 {
                     $("input[type=radio][name=driver_start_location][value='current']").remove();
