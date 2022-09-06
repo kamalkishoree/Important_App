@@ -667,8 +667,9 @@ class TaskController extends BaseController
         $percentage = 0;
         $agent_id =  $request->driver_id  ? $request->driver_id : null;
 
+        $assignedorder_data = Order::where('id', $request->order_id)->where('driver_id', '!=', $agent_id)->where('status', 'assigned')->first();
         $unassignedorder_data = Order::where('id', $request->order_id)->where('status', 'unassigned')->first();
-        if(empty($unassignedorder_data)){
+        if(empty($unassignedorder_data) && empty($assignedorder_data)){
             return response()->json([
                 'message' => __('This task has already been accepted.'),
             ], 404);

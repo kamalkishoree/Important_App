@@ -83,4 +83,5 @@ $('.showpassword').click(function(){
 <script src="{{asset('assets/js/app.min.js')}}"></script>
 <script src="{{asset('assets/libs/jquery-toast-plugin/jquery-toast-plugin.min.js')}}"></script>
 <script src="{{asset('assets/js/pages/toastr.init.js')}}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
 @yield('script-bottom')

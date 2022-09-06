@@ -31,7 +31,12 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
     <div class="row">
         <div class="col-12">
             <div class="page-title-box">
-                <h4 class="page-title">{{__('Route')}} #{{$task->id}}</h4>
+                <h4 class="page-title">{{__('Route')}} #{{$task->id}} 
+
+                <a href="{{ route('tasks.index') }}" class="float-right">
+                    <button type="button" class="btn btn-blue" title="Back To List" data-keyboard="false"><span><i class="mdi mdi-chevron-double-left mr-1"></i> Back</span></button>
+                </a>
+                </h4>
             </div>
         </div>
     </div>

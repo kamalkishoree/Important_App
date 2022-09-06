@@ -97,7 +97,7 @@
                                         <th>Phone</th>
                                         <th>Type</th>
                                         <th>Team</th>
-                                        <th>Transport Type</th>
+                                        <th>Transport Icon</th>
                                         <th>Order Earning</th>
                                         <th>Cash Collected</th>
                                         <th>Final Balance</th>
@@ -261,7 +261,7 @@
                     <div class="row ">
                         <div class="col-md-12">
                             <div class="form-group" id="vehicle_type_idInput">
-                                <p class="text-muted mt-3 mb-2">TRANSPORT TYPE</p>
+                                <p class="text-muted mt-3 mb-2">TRANSPORT ICON</p>
                                 <div class="radio radio-blue form-check-inline click cursors">
                                     <input type="radio" id="onfoot" value="onfoot" name="vehicle_type_id" checked>
                                     <img id="foot" src="{{asset('assets/icons/walk.png')}}"> 

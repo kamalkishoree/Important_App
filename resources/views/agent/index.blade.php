@@ -90,7 +90,7 @@
 }
 .edit-icon-div:hover .child-icon.editIcon {
     display: block !important;
-    left: -20px;
+    right: -5px;
     position: absolute;
     top: 0;
     border-radius: 2px;

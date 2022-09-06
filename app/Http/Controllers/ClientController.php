@@ -94,7 +94,7 @@ class ClientController extends Controller
         //Batch Allocation Code
         if($request->has('mybatch')){
             if($request->has('batch_allocation')){
-                DB::table('royodelivery_db.clients')->where('code',$id)->update([
+                DB::table('clients')->where('code',$id)->update([
                     'batch_allocation' => 1
                 ]);
 

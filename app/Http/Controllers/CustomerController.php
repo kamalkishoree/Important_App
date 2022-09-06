@@ -55,6 +55,8 @@ class CustomerController extends Controller
                                 return true;
                             }else if (!empty($row['email']) && Str::contains(Str::lower($row['email']), Str::lower($request->get('search')))) {
                                 return true;
+                            }else if (!empty($row['dial_code']) && Str::contains(Str::lower($row['dial_code']), Str::lower($request->get('search')))) {
+                                return true;
                             }else if (!empty($row['phone_number']) && Str::contains(Str::lower($row['phone_number']), Str::lower($request->get('search')))) {
                                 return true;
                             }
@@ -135,10 +137,12 @@ class CustomerController extends Controller
         $rule = $this->validationRules();
         $validation  = Validator::make($request->all(), $rule)->validate();
 
+        //pr($request);
         $data = [
             'name' => $request->name,
             'email' => $request->email,
             'phone_number' => $request->phone_number,
+            'dial_code' => $request->dialCode,
         ];
 
 
@@ -215,6 +219,7 @@ class CustomerController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'phone_number' => $request->phone_number,
+            'dial_code' => $request->dialCode,
         ];
 
         $customer->update($data);

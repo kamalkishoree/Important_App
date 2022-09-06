@@ -312,18 +312,6 @@ class AgentController extends Controller
     {
         $validator = $this->validator($request->all())->validate();
         $getFileName = null;
-        // $full_number = '+'.$request->country_code.$request->phone_number;
-        // if(isset($full_number) && !empty($full_number)){
-        //     $already = Agent::where('phone_number',$full_number)->count();
-        //     if($already > 0){
-        //         return response()->json([
-        //             'status'=>'error',
-        //             'message' => 'The Phone number is already exist!',
-        //             'data' => []
-        //         ]);
-        //     }
-
-        // }
 
 
 
