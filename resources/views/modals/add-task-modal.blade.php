@@ -293,7 +293,7 @@
                         <div id="addSubFields" style="width:100%;height:400px; display: none;">&nbsp;</div>
                         <div class="row">
                             <div class="col-md-12 mt-2" id="adds">
-                                <a href="#" class="add-sub-task-btn waves-effect waves-light subTaskHeader">{{__("Add Sub Task")}}</a>
+                                <a href="javascript:void(0)" class="add-sub-task-btn waves-effect waves-light subTaskHeader">{{__("Add Sub Task")}}</a>
                             </div>
                         </div>
                     </div>

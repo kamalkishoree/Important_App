@@ -1506,7 +1506,7 @@ class DashBoardController extends Controller
                     'agents' => function ($query) use ($userstatus, $startdate, $enddate) {
                         $query->where('is_available', '=', $userstatus)
                             ->with(['order'  => function ($q) use ($startdate, $enddate){
-                                $q->where('order_time', '>=', $startdate)->where('order_time', '<=', $enddate)->with('customer')->with('task.location');
+                                $q->where('order_time', '>=', $startdate)->where('order_time', '<=', $enddate)->with(['customer', 'task.location']);
                                 }
                             ]
                         );
@@ -1517,12 +1517,12 @@ class DashBoardController extends Controller
             $teams  = Team::with(
                 [
                     'agents.order' => function ($o) use ($startdate, $enddate) {
-                        $o->where('order_time', '>=', $startdate)->where('order_time', '<=', $enddate)->with('customer')->with('task.location');
+                        $o->where('order_time', '>=', $startdate)->where('order_time', '<=', $enddate)->with(['customer', 'task.location']);
                     },
                 ]
             );
         endif;
-
+        
         if(isset($request->userstatus) && $request->userstatus!=2):
             $teams->withCount(['agents' => function ($query) use ($userstatus) {
                 $query->where('is_available', '=', $userstatus);
@@ -1566,7 +1566,7 @@ class DashBoardController extends Controller
 
         //left side bar list for display unassigned team
         $unassigned = Agent::where('team_id', null)->with(['order' => function ($o) use ($startdate, $enddate) {
-            $o->where('order_time', '>=', $startdate)->where('order_time', '<=', $enddate)->with('customer')->with('task.location');
+            $o->where('order_time', '>=', $startdate)->where('order_time', '<=', $enddate)->with(['customer', 'task.location']);
         }])->get();
 
         $online  = 0;
@@ -1851,7 +1851,7 @@ class DashBoardController extends Controller
                     'agents' => function ($query) use ($userstatus, $startdate, $enddate) {
                         $query->where('is_available', '=', $userstatus)
                             ->with(['order'  => function ($q) use ($startdate, $enddate){
-                                $q->where('order_time', '>=', $startdate)->where('order_time', '<=', $enddate)->with('customer')->with('task.location');
+                                $q->where('order_time', '>=', $startdate)->where('order_time', '<=', $enddate)->with(['customer', 'task.location']);
                                 }
                             ]
                         );
@@ -1862,7 +1862,7 @@ class DashBoardController extends Controller
             $teams  = Team::with(
                 [
                     'agents.order' => function ($o) use ($startdate, $enddate) {
-                        $o->where('order_time', '>=', $startdate)->where('order_time', '<=', $enddate)->with('customer')->with('task.location');
+                        $o->where('order_time', '>=', $startdate)->where('order_time', '<=', $enddate)->with(['customer', 'task.location']);
                     },
                 ]
             );
@@ -1911,7 +1911,7 @@ class DashBoardController extends Controller
 
         //left side bar list for display unassigned team
         $unassigned = Agent::where('team_id', null)->with(['order' => function ($o) use ($startdate, $enddate) {
-            $o->where('order_time', '>=', $startdate)->where('order_time', '<=', $enddate)->with('customer')->with('task.location');
+            $o->where('order_time', '>=', $startdate)->where('order_time', '<=', $enddate)->with(['customer', 'task.location']);
         }])->get();
 
         $online  = 0;

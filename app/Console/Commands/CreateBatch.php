@@ -120,6 +120,7 @@ class CreateBatch extends Command
                 $timeStempBatch =  $now_time-1;
             }
             //Check Last Batch Created Time for next Create Batch  
+            \Log::info($now_time.' <= '.$timeStempBatch);
             if($now_time<=$timeStempBatch){
                 return false;
             }else{
