@@ -4,31 +4,31 @@ $(function(){
     var title = '';
     var block='';
     var appoin='';
-    $(document).on('click', '.getScheduledTable', function() {
-        var psku = $('#sku').val();
-        var pid = $(this).attr('data-product_id');
-        var vid = $(this).attr('data-varient_id');
-        product_id = pid;
-        vendor_id  = vid;
-        title = $(this).attr('data-variant_title');
-            $("#scheduleTable").dataTable().fnDestroy()
-            appoin =  $('#scheduleTable').DataTable({
-                processing: true,
-                scrollY: '200px',
-                scrollCollapse: true,   
-                responsive: true,
-                ajax: `/client/getScheduleTableData?variant_id=${vid}&product_id=${pid}`,
-                columns: [
-                    { data: 'id' },
-                    { data: 'user_name' },
-                    { data: 'start_date_time' },
-                    { data: 'end_date_time' },
-                    // { data: 'hr.salary' },
-                ],
-            });
+    $(document).on('click', '.agent_slot_button', function() {
+        // var psku = $('#sku').val();
+        // var pid = $(this).attr('data-product_id');
+        // var vid = $(this).attr('data-varient_id');
+        // product_id = pid;
+        // vendor_id  = vid;
+        // title = $(this).attr('data-variant_title');
+            //$("#agentTablePopup").dataTable().fnDestroy()
+            // appoin =  $('#scheduleTable').DataTable({
+            //     processing: true,
+            //     scrollY: '200px',
+            //     scrollCollapse: true,   
+            //     responsive: true,
+            //     ajax: `/client/getScheduleTableData?variant_id=${vid}&product_id=${pid}`,
+            //     columns: [
+            //         { data: 'id' },
+            //         { data: 'user_name' },
+            //         { data: 'start_date_time' },
+            //         { data: 'end_date_time' },
+            //         // { data: 'hr.salary' },
+            //     ],
+            // });
             //blockDataTable();
             //$('.sku-name').html(`(${title})`);
-            $('#scheduleTablePopup').modal('show'); 
+            $('#agentTablePopup').modal('show'); 
             
         
     });
