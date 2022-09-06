@@ -1519,9 +1519,7 @@ class TaskController extends BaseController
                     'device_token'        => $oneagent->device_token,
                     'detail_id'           => $randem,
                 ];
-                // Log::info('finalRoster-single');
-                // Log::info($data);
-                // Log::info('finalRoster-single');
+                
                 $this->dispatch(new RosterCreate($data, $extraData)); //this job is for create roster in main database for send the notification  in manual alloction
             }
         } else {

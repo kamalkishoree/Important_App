@@ -9,9 +9,12 @@ use App\Model\{Client, Order,DriverRegistrationDocument};
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Traits\sendCustomNotification;
 
 class TrackingController extends Controller
 {
+    use sendCustomNotification;
+
     public function OrderTracking($domain = '', $user, $id)
     {
         $respnse = $this->connection($user);
@@ -253,6 +256,24 @@ class TrackingController extends Controller
                     ];
                     $order_reject = DB::connection($respnse['database'])->table('task_rejects')->insert($data);
 
+                    if(!empty($order->driver_id)){
+                        $client_preferences = DB::connection($respnse['database'])->table('client_preferences')->first();
+                        $oneagent = DB::connection($respnse['database'])->table('agents')->where('id', $order->driver_id)->first();
+                        $notificationdata = [
+                            'order_id'            => $order->id,
+                            'batch_no'            => '',
+                            'driver_id'           => $order->driver_id,
+                            'notification_time'   => Carbon::now()->addSeconds(2)->format('Y-m-d H:i:s'),
+                            'notificationType'    => 'ACK',
+                            'created_at'          => Carbon::now()->toDateTimeString(),
+                            'updated_at'          => Carbon::now()->toDateTimeString(),
+                            'device_type'         => $oneagent->device_type,
+                            'device_token'        => $oneagent->device_token,
+                            'detail_id'           => rand(11111111, 99999999),
+                        ];
+                        $this->sendnotification($notificationdata, $client_preferences);
+                    }
+                    
                     DB::connection($respnse['database'])->commit();
                     return response()->json([
                         'status' => 'Success',
