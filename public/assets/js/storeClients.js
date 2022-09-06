@@ -5,7 +5,7 @@
 $("#submitForm").submit(function(e) {
     e.preventDefault();
     let formData = $(this).serializeArray();
-    startLoader('body');
+    //startLoader('body');
     $.ajax({
         method: "POST",
         headers: {

@@ -157,8 +157,8 @@ class AgentSlotController extends Controller
      * create slot 
      */
     public function create(Request $request, $domain = '', $id){
-        $agent = Agent::where('id', $id)->firstOrFail();
-        $returnHTML = view('agent.modal-popup.slotPopup')->with(['agent' => $agent])->render();
+        $agent      = Agent::where('id', $id)->firstOrFail();
+        $returnHTML = view('agent.modal-popup.addSlotForm')->with(['agent' => $agent])->render();
         return response()->json(array('success' => true, 'html' => $returnHTML));
     }
     /**
@@ -195,6 +195,7 @@ class AgentSlotController extends Controller
 
     public function returnJson(Request $request, $domain = '', $id)
     {
+        
         $Agent = Agent::findOrFail($id);
         $date = $day = array();
 
@@ -228,7 +229,7 @@ class AgentSlotController extends Controller
         }
 
         $lst = count($date) - 1;
-        $slot = AgentSlot::select('agent_slots.*', 'slot_days.id as slot_day_id', 'slot_days.slot_id', 'slot_days.day')->join('slot_days', 'slot_days.slot_id', 'agent_slots.id')->where('vendor_id', $id)->orderBy('slot_days.day', 'asc')->get();
+        $slot = AgentSlot::select('agent_slots.*', 'slot_days.id as slot_day_id', 'slot_days.slot_id', 'slot_days.day')->join('slot_days', 'slot_days.slot_id', 'agent_slots.id')->where('agent_id', $id)->orderBy('slot_days.day', 'asc')->get();
         
         $slotDate = AgentSlotDate::whereBetween('specific_date', [$date[0], $date[$lst]])->orderBy('specific_date','asc')->get();
 

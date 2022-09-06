@@ -226,7 +226,7 @@
                 notification_type : notification_type,
                 _token : "{{ csrf_token() }}"
             };
-            startLoader('body');
+            //startLoader('body');
             $.ajax({
                 method: "POST",
                 headers: {

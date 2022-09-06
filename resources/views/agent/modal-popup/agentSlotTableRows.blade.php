@@ -42,6 +42,7 @@ Agent schedule slots:<p class="sku-name pl-1"></p>
     //Agent_calender_url.replace(":id", category);
     
 </script>
+<script src="{{asset('assets/libs/moment/moment.min.js')}}"></script>
     <script src="{{asset('assets/js/fullcalendar/calendar_main-5.9.js')}}"></script>
     <script src="{{ asset('assets/js/agent/agentSlot.js')}}"></script>
 @endsection

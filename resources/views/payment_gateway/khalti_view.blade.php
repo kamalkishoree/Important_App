@@ -96,7 +96,7 @@
         "productUrl": "https://www.yohopartner.com/",
         "eventHandler": {
             onSuccess (payload) {
-                startLoader('body','We are processing your transaction...');
+                //startLoader('body','We are processing your transaction...');
                 console.log(payload,'payload');
                 console.log(ajaxData,'ajaxData');
                 // hit merchant api for initiating verfication
