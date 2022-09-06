@@ -69,7 +69,7 @@
         </div>
 
         <div class="timetable_div">
-        <h5><span class="digital-clock1" style="float:right;color: rgb(183 33 33);text-shadow:0 0 6px #ff0;">00:00:00</span></h5>
+        <h5><span class="digital-clock1" style="float:right;color: rgb(183 33 33);">00:00:00</span></h5>
 
             <div class="table-responsive">
                 <table class="table table-striped dt-responsive nowrap w-100">

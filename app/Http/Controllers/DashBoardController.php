@@ -338,7 +338,6 @@ class DashBoardController extends Controller
                         } else {
                             $matrixarray[$i][$k] = $matrixarray[$k][$i];
                         }
-                        // $matrixarray[$i][$k] = $matrixarray[$k][$i];
                     } else {
                         $distance = $this->GoogleDistanceMatrix($pointarray[$i][0], $pointarray[$i][1], $pointarray[$k][0], $pointarray[$k][1]);
                         $matrixarray[$i][$k] = $distance;
@@ -1480,6 +1479,7 @@ class DashBoardController extends Controller
     }
     //This function is for dashboard map data
     public function dashboardData(Request $request){
+        $userstatus = $request->userstatus;
         $auth = Client::where('code', Auth::user()->code)->with(['getAllocation', 'getPreference'])->first();
 
         //setting timezone from id
@@ -1500,21 +1500,43 @@ class DashBoardController extends Controller
 
         //left side bar list for display all teams
 
-        $teams  = Team::with(
-            [
-                'agents.order' => function ($o) use ($startdate, $enddate) {
-                    $o->where('order_time', '>=', $startdate)->where('order_time', '<=', $enddate)->with('customer')->with('task.location');
+        if(isset($request->userstatus) && $request->userstatus!=2):
+            $teams  = Team::with(
+                [
+                    'agents' => function ($query) use ($userstatus, $startdate, $enddate) {
+                        $query->where('is_available', '=', $userstatus)
+                            ->with(['order'  => function ($q) use ($startdate, $enddate){
+                                $q->where('order_time', '>=', $startdate)->where('order_time', '<=', $enddate)->with('customer')->with('task.location');
+                                }
+                            ]
+                        );
+                    },
+                ]
+            );
+        else:
+            $teams  = Team::with(
+                [
+                    'agents.order' => function ($o) use ($startdate, $enddate) {
+                        $o->where('order_time', '>=', $startdate)->where('order_time', '<=', $enddate)->with('customer')->with('task.location');
+                    },
+                ]
+            );
+        endif;
 
-                },
-            ]
-        );
-       // $teams->withCount('agents.order');
-        $teams->withCount('agents');
+        if(isset($request->userstatus) && $request->userstatus!=2):
+            $teams->withCount(['agents' => function ($query) use ($userstatus) {
+                $query->where('is_available', '=', $userstatus);
+            }]);
+        else:
+            $teams->withCount('agents');
+        endif;
+
         if (Auth::user()->is_superadmin == 0 && Auth::user()->all_team_access == 0) {
             $teams = $teams->whereHas('permissionToManager', function ($query) {
                 $query->where('sub_admin_id', Auth::user()->id);
             });
         }
+
         $teams = $teams->get();
 
         foreach ($teams as $team) {
@@ -1605,7 +1627,11 @@ class DashBoardController extends Controller
         $unassigned->toArray();
         $teams->toArray();
 
-        $agents = Agent::with('agentlog')->get()->toArray();
+        $agents = Agent::with('agentlog');
+        if(isset($request->userstatus) && $request->userstatus!=2):
+            $agents->where('is_available', $userstatus);
+        endif;
+        $agents = $agents->get()->toArray();
         $preference  = ClientPreference::where('id', 1)->first(['theme','date_format','time_format']);
 
         $uniquedrivers = array();
@@ -1787,9 +1813,6 @@ class DashBoardController extends Controller
         $data['map_key'] = $googleapikey;
         $data['client_timezone'] = $auth->timezone;
 
-
-
-
         return response()->json([
             'status' => 'success',
             'message' => 'Dashboard data get Successfully!',
@@ -1797,5 +1820,265 @@ class DashBoardController extends Controller
         ]);
 
 
+    }
+
+
+    public function dashboardTeamData(Request $request){
+        $userstatus = $request->userstatus;
+        $auth = Client::where('code', Auth::user()->code)->with(['getAllocation', 'getPreference'])->first();
+
+        //setting timezone from id
+        $tz = new Timezone();
+        $auth->timezone = $tz->timezone_name(Auth::user()->timezone);
+
+        if (isset($request->date)) {
+            $date = Carbon::parse(strtotime($request->date))->format('Y-m-d');
+        } else {
+            $date = date('Y-m-d');
+        }
+        $startdate = date("Y-m-d 00:00:00", strtotime($date));
+        $enddate = date("Y-m-d 23:59:59", strtotime($date));
+
+
+        $startdate = Carbon::parse($startdate . @$auth->timezone ?? 'UTC')->tz('UTC');
+        $enddate = Carbon::parse($enddate . @$auth->timezone ?? 'UTC')->tz('UTC');
+
+        //left side bar list for display all teams
+
+        if(isset($request->userstatus) && $request->userstatus!=2):
+            $teams  = Team::with(
+                [
+                    'agents' => function ($query) use ($userstatus, $startdate, $enddate) {
+                        $query->where('is_available', '=', $userstatus)
+                            ->with(['order'  => function ($q) use ($startdate, $enddate){
+                                $q->where('order_time', '>=', $startdate)->where('order_time', '<=', $enddate)->with('customer')->with('task.location');
+                                }
+                            ]
+                        );
+                    },
+                ]
+            );
+        else:
+            $teams  = Team::with(
+                [
+                    'agents.order' => function ($o) use ($startdate, $enddate) {
+                        $o->where('order_time', '>=', $startdate)->where('order_time', '<=', $enddate)->with('customer')->with('task.location');
+                    },
+                ]
+            );
+        endif;
+        
+        if(isset($request->userstatus) && $request->userstatus!=2):
+            $teams->withCount(['agents' => function ($query) use ($userstatus) {
+                $query->where('is_available', '=', $userstatus);
+            }]);
+        else:
+            $teams->withCount('agents');
+        endif;
+
+        if (Auth::user()->is_superadmin == 0 && Auth::user()->all_team_access == 0) {
+            $teams = $teams->whereHas('permissionToManager', function ($query) {
+                $query->where('sub_admin_id', Auth::user()->id);
+            });
+        }
+
+        $teams = $teams->get();
+
+        foreach ($teams as $team) {
+            $online  = 0;
+            $offline = 0;
+            $count   = 0;
+            foreach ($team->agents as $agent) {
+                $agent_task_count = 0;
+                foreach ($agent->order as $tasks) {
+                    $agent_task_count = $agent_task_count + count($tasks->task);
+                }
+                if ($agent->is_available == 1) {
+                    $online++;
+                } else {
+                    $offline++;
+                }
+                $count++;
+                $agent['agent_order_count'] = count($agent->order);
+                $agent['free'] = count($agent->order) > 0 ? 'Busy' : 'Free';
+                $agent['agent_task_count'] = $agent_task_count;
+            }
+
+            $team['online_agents']  = $online;
+            $team['offline_agents'] = $offline;
+            $agent['agent_count']   = $count;
+        }
+
+        //left side bar list for display unassigned team
+        $unassigned = Agent::where('team_id', null)->with(['order' => function ($o) use ($startdate, $enddate) {
+            $o->where('order_time', '>=', $startdate)->where('order_time', '<=', $enddate)->with('customer')->with('task.location');
+        }])->get();
+
+        $online  = 0;
+        $offline = 0;
+        $count   = 0;
+
+        foreach ($unassigned as $agent) {
+            $agent_task_count = 0;
+            foreach ($agent->order as $tasks) {
+                $agent_task_count = $agent_task_count + count($tasks->task);
+            }
+
+            if ($agent->is_available == 1) {
+                $online++;
+            } else {
+                $offline++;
+            }
+            $count++;
+
+            $agent['free'] = count($agent->order) > 0 ? 'Busy' : 'Free';
+            $agent['online_agents']    = $online;
+            $agent['offline_agents']   = $offline;
+            $agent['agent_count']      = $count;
+            $agent['agent_task_count'] = $agent_task_count;
+        }
+
+        //create array for map marker
+        $allTasks = Order::where('order_time', '>=', $startdate)->where('order_time', '<=', $enddate)->with(['customer', 'task.location', 'agent.team'])->get();
+        $newmarker = [];
+
+        foreach ($allTasks as $key => $tasks) {
+            $append = [];
+            foreach ($tasks->task as $task) {
+                if ($task->task_type_id == 1) {
+                    $name = 'Pickup';
+                } elseif ($task->task_type_id == 2) {
+                    $name = 'DropOff';
+                } else {
+                    $name = 'Appointment';
+                }
+                $append['task_type']             = $name;
+                $append['task_id']               = $task->id;
+                $append['latitude']              = isset($task->location->latitude) ? floatval($task->location->latitude):0.00;
+                $append['longitude']             = isset($task->location->longitude) ? floatval($task->location->longitude): 0.00;
+                $append['address']               = isset($task->location->address) ? $task->location->address : '';
+                $append['task_type_id']          = isset($task->task_type_id) ? $task->task_type_id : '';
+                $append['task_status']           = (int)$task->task_status;
+                $append['team_id']               = isset($tasks->driver_id) ? $tasks->agent->team_id : 0;
+                $append['driver_name']           = isset($tasks->driver_id) ? $tasks->agent->name : '';
+                $append['driver_id']             = isset($tasks->driver_id) ? $tasks->driver_id : '';
+                $append['customer_name']         = isset($tasks->customer->name)?$tasks->customer->name:'';
+                $append['customer_phone_number'] = isset($tasks->customer->phone_number)?$tasks->customer->phone_number:'';
+                $append['task_order']            = isset($task->task_order)?$task->task_order:0;
+                array_push($newmarker, $append);
+            }
+        }
+
+        $unassigned->toArray();
+        $teams->toArray();
+
+        $agents = Agent::with('agentlog');
+        if(isset($request->userstatus) && $request->userstatus!=2):
+            $agents->where('is_available', $userstatus);
+        endif;
+        $agents = $agents->get()->toArray();
+        $preference  = ClientPreference::where('id', 1)->first(['theme','date_format','time_format']);
+
+        $uniquedrivers = array();
+        $j = 0;
+        foreach ($agents as $singleagent) {
+            if(empty($singleagent['agentlog'])){
+                $singleagent['agentlog']['id'] = null;
+                $singleagent['agentlog']['agent_id'] = $singleagent['id'];
+                $singleagent['agentlog']['current_task_id'] = null;
+                $singleagent['agentlog']['lat'] = null;
+                $singleagent['agentlog']['long'] = null;
+                $singleagent['agentlog']['battery_level'] = null;
+                $singleagent['agentlog']['os_version'] = null;
+                $singleagent['agentlog']['app_version'] = null;
+                $singleagent['agentlog']['current_speed'] = null;
+                $singleagent['agentlog']['on_route '] = null;
+                $singleagent['agentlog']['app_version'] = null;
+            }
+            if (is_array($singleagent['agentlog'])) {
+                $taskarray = array();
+                foreach ($newmarker as $singlemark) {
+                    if ($singlemark['driver_id'] == $singleagent['agentlog']['agent_id']) {
+                        $taskarray[] = $singlemark;
+                    }
+                }
+                if (!empty($taskarray)) {
+                    usort($taskarray, function ($a, $b) {
+                        return $a['task_order'] <=> $b['task_order'];
+                    });
+                    if ($date != date('Y-m-d')) {
+                        $singleagent['agentlog']['lat'] = $taskarray[0]['latitude'];
+                        $singleagent['agentlog']['long'] = $taskarray[0]['longitude'];
+                    }
+                    $uniquedrivers[$j]['driver_detail'] = $singleagent['agentlog'];
+                    $uniquedrivers[$j]['task_details'] = $taskarray;
+                    $j++;
+                }
+            }else{
+
+            }
+        }
+
+        //for route optimization
+        $routeoptimization = array();
+        $taskarray = array();
+        foreach ($uniquedrivers as $singledriver) {
+            if (count($singledriver['task_details'])>1) {
+                $points = array();
+                $points[] = array(floatval($singledriver['driver_detail']['lat']),floatval($singledriver['driver_detail']['long']));
+                $taskids = array();
+                foreach ($singledriver['task_details'] as $singletask) {
+                    $points[] = array(floatval($singletask['latitude']),floatval($singletask['longitude']));
+                    $taskids[] = $singletask['task_id'];
+                }
+
+                $taskarray[$singledriver['driver_detail']['agent_id']] = implode(',', $taskids);
+                $routeoptimization[$singledriver['driver_detail']['agent_id']] = $points;
+            }
+        }
+
+        //create distance matrix
+        $distancematrix = array();
+        foreach ($routeoptimization as $key=>$value) {
+            $distancematrix[$key]['tasks'] = $taskarray[$key];
+            $distancematrix[$key]['distance'] = $routeoptimization[$key];
+        }
+
+        $teamdata = $teams->toArray();
+
+        foreach ($teamdata as $k1=>$singleteam) {
+            foreach ($singleteam['agents'] as $k2=>$singleagent) {
+                $teamdata[$k1]['agents'][$k2]['taskids']  = [];
+                $teamdata[$k1]['agents'][$k2]['total_distance']  = '';
+                if (count($singleagent['order'])>0) {
+                    //for calculating total distance
+                    $sorted_orders = $this->splitOrder($singleagent['order']);
+                    if (!empty($sorted_orders)) {
+                        $tasklistids = [];
+                        foreach ($sorted_orders as $singlesort) {
+                            $tasklistids[] = $singlesort['task'][0]['id'];
+                        }
+                        $teamdata[$k1]['agents'][$k2]['taskids'] = $tasklistids;
+                        $driverlocation = [];
+                        if ($singleagent['is_available']==1 || $singleagent['is_available']==0) {
+                            $singleagentdetail = Agent::where('id', $singleagent['id'])->with('agentlog')->first();
+                            $driverlocation['lat'] = $singleagentdetail->agentlog->lat??$singleagentdetail->order[0]['task'][0]['location']['latitude']??'0.000';
+                            $driverlocation['long'] = $singleagentdetail->agentlog->long??$singleagentdetail->order[0]['task'][0]['location']['longitude']??'0.000';
+                        }
+                        $gettotal_distance = $this->getTotalDistance($tasklistids, $driverlocation);
+                        $clientPreference  = ClientPreference::where('id', 1)->first();
+                        $teamdata[$k1]['agents'][$k2]['total_distance'] = ($clientPreference->distance_unit == 'metric')? $gettotal_distance['total_distance_km'] : $gettotal_distance['total_distance_miles'];
+                    }
+                    $teamdata[$k1]['agents'][$k2]['order'] = $sorted_orders;
+                }
+            }
+        }
+
+        $preference  = ClientPreference::where('id', 1)->first(['theme','date_format','time_format']);
+
+        $data['teams'] = $teamdata;
+
+        $html = view('dashboard_task_html')->with(['teamdata' => $teamdata, 'preference' => $preference, 'client_timezone'=>$auth->timezone])->render();
+        return $html;
     }
 }

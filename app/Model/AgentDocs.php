@@ -17,8 +17,6 @@ class AgentDocs extends Model
     public function getImageUrlAttribute(){
         $secret = '';
         $server = 'http://192.168.100.211:8888';
-        //$new    = \Thumbor\Url\Builder::construct($server, $secret, 'http://images.example.com/llamas.jpg')->fitIn(90,50);
         return    \Storage::disk("s3")->url($this->file_name);
-        ///return $new; 
       }
 }
