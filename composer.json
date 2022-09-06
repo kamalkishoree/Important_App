@@ -12,7 +12,7 @@
         "artisangang/jwt": "^0.2.0",
         "barryvdh/laravel-dompdf": "^0.9.0",
         "bavix/laravel-wallet": "^7.3",
-        "beyondcode/laravel-websockets": "^1.13",
+        "beyondcode/laravel-websockets": "^1.11",
         "darkaonline/l5-swagger": "^8.0",
         "doctrine/dbal": "^2.10",
         "fideloper/proxy": "^4.2",
