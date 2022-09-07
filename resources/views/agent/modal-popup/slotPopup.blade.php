@@ -1,4 +1,4 @@
-<div class="modal fade standard_modal" id="add-slot-modal" tabindex="-1">
+<div class="modal fade standard_modal" id="add-slot-modal" >
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header py-3 px-3 border-bottom-0 d-block">

@@ -84,6 +84,7 @@
         overflow-y: hidden!important;
     }
 
+
 /* agent page css here */
 .edit-icon-div {
     position: relative;
@@ -99,8 +100,104 @@
     font-size: 14px;
     padding: 0px 2px;
 }
-
-
+.swal2-popup.swal2-modal.swal2-show {
+    max-width: 300px;
+}
+p.custom-radio-design {
+    display: inline-block;
+    vertical-align: middle;
+    margin-bottom: 0 !important;
+    width: 49%;
+}
+p.custom-radio-design input {
+    height: 20px;
+}
+p.custom-radio-design label {
+    vertical-align: top;
+    margin-bottom: 0 !important;
+}
+.slotForDiv, .weekDays {
+    text-align: left;
+}
+.needs-validation label.control-label {
+    text-align: left;
+    width: 100%;
+    font-size: 14px;
+    color: #777;
+}
+/* 
+.custom-radio-design [type="radio"]:checked,
+.custom-radio-design [type="radio"]:not(:checked) {
+    position: absolute;
+    left: -9999px;
+}
+.custom-radio-design [type="radio"]:checked + label,
+.custom-radio-design [type="radio"]:not(:checked) + label
+{
+    position: relative;
+    padding-left: 28px;
+    cursor: pointer;
+    line-height: 20px;
+    display: inline-block;
+    color: #666;
+}
+.custom-radio-design [type="radio"]:checked + label:before,
+.custom-radio-design [type="radio"]:not(:checked) + label:before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 18px;
+    height: 18px;
+    border: 1px solid #ddd;
+    border-radius: 100%;
+    background: #fff;
+}
+.custom-radio-design [type="radio"]:checked + label:after,
+.custom-radio-design [type="radio"]:not(:checked) + label:after {
+    content: '';
+    width: 12px;
+    height: 12px;
+    background: #43bee1;
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    border-radius: 100%;
+    -webkit-transition: all 0.2s ease;
+    transition: all 0.2s ease;
+}
+.custom-radio-design [type="radio"]:not(:checked) + label:after {
+    opacity: 0;
+    -webkit-transform: scale(0);
+    transform: scale(0);
+}
+.custom-radio-design [type="radio"]:checked + label:after {
+    opacity: 1;
+    -webkit-transform: scale(1);
+    transform: scale(1);
+} */
+p.custom-radio-design {
+    position: relative;
+    text-align: left;
+}
+.weekDays .checkbox label {
+    padding-left: 22px;
+}
+.weekDays .checkbox input[type=checkbox] {
+    position: absolute;
+    left: 0;
+}
+.weekDays .checkbox label::before {
+    margin-left: 0;
+}
+.weekDays .checkbox input[type=checkbox]:checked + label::after {
+    left: 24px;
+}
+.checkbox.checkbox-success.form-check.pl-0.mb-1 {
+    width: 49%;
+    text-align: left;
+    display: inline-block;
+}
 </style>
 @endsection
 @php
@@ -324,14 +421,20 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                             <th>{{__("Action")}}</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
+                                    <tbody>.swal2-popup.swal2-modal.swal2-show {
+                                        max-width: 300px;
+                                    }
+                                    
 
                                     </tbody>
                                 </table>
                             </div>
                         </div>
                     </div> <!-- end card-body-->
-                </div> <!-- end card-->
+                </div> <!-- end card-->.swal2-popup.swal2-modal.swal2-show {
+                    max-width: 300px;
+                }
+                
             </div> <!-- end col -->
         </div>
     </div>
@@ -342,6 +445,92 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
 @if(getClientPreferenceDetail()->is_driver_slot == 1)
     @include('agent.modal-popup.agentSlotTableRows')
     @include('agent.modal-popup.slotPopup')
+    <script>
+        var slotHtml = `<form class="needs-validation" name="slot-form" id="slot-event" action="" method="post">
+                    @csrf
+                    <div class="row mb-2">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="control-label">{{ __("Start Time(24 hours format)") }}</label>
+                                <input class="form-control" placeholder="Start Time" type="text" name="start_time" id="start_time" required />
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="control-label">{{ __("End Time(24 hours format)") }}</label>
+                                <input class="form-control" placeholder="End Time" type="text" name="end_time" id="end_time" required />
+                            </div>
+                        </div>
+                
+                        <div class="col-md-12 slotForDiv">
+                            {!! Form::label('title', 'Slot For',['class' => 'control-label']) !!}
+                            <div class="form-group">
+                                <div class="list-inline">
+                                    <p class="custom-radio-design">
+                                        <input type="radio" name="radio-group" id="slotDay" name="stot_type" value="day" checked>
+                                        <label for="slotDay">{{ __('Days') }}</label>
+                                    </p>
+                                    <p class="custom-radio-design">
+                                        <input type="radio" name="radio-group" id="slotDate" name="stot_type" value="date">
+                                        <label for="slotDate">{{ __('Date') }}</label>
+                                    </p>                                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-2 weekDays">
+                        <div class="col-md-12">
+                            <div class="">
+                            {!! Form::label('title', __('Select days of week'),['class' => 'control-label']) !!}
+                            </div>
+                            <div class="checkbox checkbox-success form-check pl-0 mb-1">
+                                <input name="week_day[]" type="checkbox" id="day_1" value="1">
+                                <label for="day_1"> {{ __("Sunday") }} </label>
+                            </div>
+                            <div class="checkbox checkbox-success form-check pl-0 mb-1">
+                                <input name="week_day[]" type="checkbox" id="day_2" value="2">
+                                <label for="day_2"> {{ __('Monday') }} </label>
+                            </div>
+                            <div class="checkbox checkbox-success form-check pl-0 mb-1">
+                                <input name="week_day[]" type="checkbox" id="day_3" value="3">
+                                <label for="day_3"> {{ __("Tuesday") }} </label>
+                            </div>
+                            <div class="checkbox checkbox-success form-check pl-0 mb-1">
+                                <input name="week_day[]" type="checkbox" id="day_4" value="4">
+                                <label for="day_4"> {{ __("Wednesday") }} </label>
+                            </div>
+                            <div class="checkbox checkbox-success form-check pl-0 mb-1">
+                                <input name="week_day[]" type="checkbox" id="day_5" value="5">
+                                <label for="day_5"> {{ __('Thursday') }} </label>
+                            </div>
+                            <div class="checkbox checkbox-success form-check pl-0 mb-1">
+                                <input name="week_day[]" type="checkbox" id="day_6" value="6">
+                                <label for="day_6"> {{ __('Friday') }} </label>
+                            </div>
+                            <div class="checkbox checkbox-success form-check pl-0 mb-1">
+                                <input name="week_day[]" type="checkbox" id="day_7" value="7">
+                                <label for="day_7"> {{ __('Saturday') }} </label>
+                            </div>
+                        </div>
+                    </div>
+                
+                    <div class="row forDate" style="display: none;">
+                        <div class="col-md-12" >
+                            <div class="form-group">
+                                <label class="control-label">{{ __("Slot Date") }}</label>
+                                <input class="form-control date-datepicker" placeholder={{ __("Select Date") }} type="text" name="slot_date" id="slot_date" required />
+                            </div>
+                        </div>
+                
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-12 d-sm-flex justify-content-between">
+                            <button type="button" class="btn btn-light mr-1" data-dismiss="modal">{{ __('Close') }}</button>
+                            <button type="submit" class="btn btn-info" id="btn-save-slot">{{ __('Save') }}</button>
+                        </div>
+                    </div>
+                </form>`;
+    </script>
 @endif
 @endsection
 

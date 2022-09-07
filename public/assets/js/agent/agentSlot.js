@@ -38,6 +38,26 @@ $(function(){
                 nowIndicator: true,
                 eventMaxStack: 1,
                 select: function(arg) {
+                    Swal.fire({
+                        title: 'Add Manual Time',
+                        html: slotHtml,
+                        confirmButtonText: 'Submit',
+                        focusConfirm: false,
+                        preConfirm: () => {
+                         
+                        },onOpen: function() {
+                            var save_slot_url = `/agent/slot/${agent_id}`
+                            $('#slot-event').setAttribute('action',save_slot_url);
+                        }
+                      }).then(async (result) => {
+                        
+                       
+                        // Swal.fire(`
+                        // blocktime: ${result.value.blocktime}
+                        //   memo: ${result.value.memo}
+                        // `.trim())
+                      })
+                  
                     var save_slot_url = `/agent/slot/${agent_id}`
                     $('#add-slot-modal').modal({
                                     //backdrop: 'static',
