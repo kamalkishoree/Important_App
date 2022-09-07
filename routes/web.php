@@ -282,8 +282,9 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 		
 			// agent slot
 			Route::get('calender/data/{id}', 'AgentSlotController@returnJson')->name('agent.calender.data');
-			Route::post('agent/slot/{id}', 'AgentSlotController@store')->name('agent.saveSlot');
+			Route::post('agent/slot', 'AgentSlotController@store')->name('agent.saveSlot');
 			Route::get('agent/slot/create/{id}', 'AgentSlotController@create')->name('agent.create');
+			Route::post('agent/slot/delete', 'AgentSlotController@destroy')->name('agent.destroy');
 		});
 	});
 

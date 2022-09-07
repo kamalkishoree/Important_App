@@ -198,6 +198,9 @@ p.custom-radio-design {
     text-align: left;
     display: inline-block;
 }
+.swal2-styled.swal2-confirm{
+    height: auto;
+}
 </style>
 @endsection
 @php
@@ -444,93 +447,146 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
 @include('modals.pay-receive')
 @if(getClientPreferenceDetail()->is_driver_slot == 1)
     @include('agent.modal-popup.agentSlotTableRows')
-    @include('agent.modal-popup.slotPopup')
-    <script>
-        var slotHtml = `<form class="needs-validation" name="slot-form" id="slot-event" action="" method="post">
-                    @csrf
-                    <div class="row mb-2">
-                        <div class="col-md-12">
-                            <div class="form-group">
-                                <label class="control-label">{{ __("Start Time(24 hours format)") }}</label>
-                                <input class="form-control" placeholder="Start Time" type="text" name="start_time" id="start_time" required />
-                            </div>
-                        </div>
-                        <div class="col-md-12">
-                            <div class="form-group">
-                                <label class="control-label">{{ __("End Time(24 hours format)") }}</label>
-                                <input class="form-control" placeholder="End Time" type="text" name="end_time" id="end_time" required />
-                            </div>
-                        </div>
-                
-                        <div class="col-md-12 slotForDiv">
-                            {!! Form::label('title', 'Slot For',['class' => 'control-label']) !!}
-                            <div class="form-group">
-                                <div class="list-inline">
-                                    <p class="custom-radio-design">
-                                        <input type="radio" name="radio-group" id="slotDay" name="stot_type" value="day" checked>
-                                        <label for="slotDay">{{ __('Days') }}</label>
-                                    </p>
-                                    <p class="custom-radio-design">
-                                        <input type="radio" name="radio-group" id="slotDate" name="stot_type" value="date">
-                                        <label for="slotDate">{{ __('Date') }}</label>
-                                    </p>                                    
+    {{-- @include('agent.modal-popup.slotPopup') --}}
+<script>
+    var AddSlotHtml = `<form class="needs-validation" name="slot-form" id="slot-event" action="" method="post">
+                            @csrf
+                            <div class="row mb-2">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label class="control-label">{{ __("Start Time(24 hours format)") }}</label>
+                                        <input class="form-control" placeholder="Start Time" type="time" name="start_time" id="start_time" required />
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label class="control-label">{{ __("End Time(24 hours format)") }}</label>
+                                        <input class="form-control" placeholder="End Time" type="time" name="end_time" id="end_time" required />
+                                    </div>
+                                </div>
+                        
+                                <div class="col-md-12 slotForDiv">
+                                    {!! Form::label('title', 'Slot For',['class' => 'control-label']) !!}
+                                    <div class="form-group">
+                                        <div class="list-inline">
+                                            <p class="custom-radio-design">
+                                                <input type="radio" name="radio-group" id="slotDay" name="stot_type" value="day" checked>
+                                                <label for="slotDay">{{ __('Days') }}</label>
+                                            </p>
+                                            <p class="custom-radio-design">
+                                                <input type="radio" name="radio-group" id="slotDate" name="stot_type" value="date">
+                                                <label for="slotDate">{{ __('Date') }}</label>
+                                            </p>                                    
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
+                            <div class="row mb-2 weekDays">
+                                <div class="col-md-12">
+                                    <div class="">
+                                    {!! Form::label('title', __('Select days of week'),['class' => 'control-label']) !!}
+                                    </div>
+                                    <div class="checkbox checkbox-success form-check pl-0 mb-1">
+                                        <input name="week_day[]" type="checkbox" id="day_1" value="1">
+                                        <label for="day_1"> {{ __("Sunday") }} </label>
+                                    </div>
+                                    <div class="checkbox checkbox-success form-check pl-0 mb-1">
+                                        <input name="week_day[]" type="checkbox" id="day_2" value="2">
+                                        <label for="day_2"> {{ __('Monday') }} </label>
+                                    </div>
+                                    <div class="checkbox checkbox-success form-check pl-0 mb-1">
+                                        <input name="week_day[]" type="checkbox" id="day_3" value="3">
+                                        <label for="day_3"> {{ __("Tuesday") }} </label>
+                                    </div>
+                                    <div class="checkbox checkbox-success form-check pl-0 mb-1">
+                                        <input name="week_day[]" type="checkbox" id="day_4" value="4">
+                                        <label for="day_4"> {{ __("Wednesday") }} </label>
+                                    </div>
+                                    <div class="checkbox checkbox-success form-check pl-0 mb-1">
+                                        <input name="week_day[]" type="checkbox" id="day_5" value="5">
+                                        <label for="day_5"> {{ __('Thursday') }} </label>
+                                    </div>
+                                    <div class="checkbox checkbox-success form-check pl-0 mb-1">
+                                        <input name="week_day[]" type="checkbox" id="day_6" value="6">
+                                        <label for="day_6"> {{ __('Friday') }} </label>
+                                    </div>
+                                    <div class="checkbox checkbox-success form-check pl-0 mb-1">
+                                        <input name="week_day[]" type="checkbox" id="day_7" value="7">
+                                        <label for="day_7"> {{ __('Saturday') }} </label>
+                                    </div>
+                                </div>
+                            </div>
+                        
+                            <div class="row forDate" style="display: none;">
+                                <div class="col-md-12" >
+                                    <div class="form-group">
+                                        <label class="control-label">{{ __("Slot Date") }}</label>
+                                        <input class="form-control date-datepicker" placeholder={{ __("Select Date") }} type="text" name="slot_date" id="slot_date" required />
+                                    </div>
+                                </div>
+                        
+                            </div>
+                        
+                        </form>`;
+
+                    var EditSlotHtml = `<form class="needs-validation" name="slot-form" id="update-event" method="post">
+                    @csrf
+                        <input type="hidden" name="slot_day_id" id="deleteSlotDayid" value="" >
+                        <input type="hidden" name="slot_id" id="deleteSlotId" value="" >
+                        <input type="hidden" name="slot_type" id="deleteSlotType" value="" >
+                        <input type="hidden" name="old_slot_type" id="deleteSlotTypeOld" value="" >
+                        <input type="hidden" name="slot_date" id="deleteSlotDate" value="" >
+                    <div class="row mb-2">
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label class="control-label">{{ __("Start Time(24 hours format)") }}</label>
+                                <input class="form-control" placeholder={{ __("Start Time") }} type="text" name="start_time" id="edit_start_time" required />
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label class="control-label">{{ __("End Time(24 hours format)") }}</label>
+                                <input class="form-control" placeholder={{ __("End Time") }} type="text" name="end_time" id="edit_end_time" required />
+                            </div>
                         </div>
                     </div>
-                    <div class="row mb-2 weekDays">
-                        <div class="col-md-12">
-                            <div class="">
-                            {!! Form::label('title', __('Select days of week'),['class' => 'control-label']) !!}
-                            </div>
-                            <div class="checkbox checkbox-success form-check pl-0 mb-1">
-                                <input name="week_day[]" type="checkbox" id="day_1" value="1">
-                                <label for="day_1"> {{ __("Sunday") }} </label>
-                            </div>
-                            <div class="checkbox checkbox-success form-check pl-0 mb-1">
-                                <input name="week_day[]" type="checkbox" id="day_2" value="2">
-                                <label for="day_2"> {{ __('Monday') }} </label>
-                            </div>
-                            <div class="checkbox checkbox-success form-check pl-0 mb-1">
-                                <input name="week_day[]" type="checkbox" id="day_3" value="3">
-                                <label for="day_3"> {{ __("Tuesday") }} </label>
-                            </div>
-                            <div class="checkbox checkbox-success form-check pl-0 mb-1">
-                                <input name="week_day[]" type="checkbox" id="day_4" value="4">
-                                <label for="day_4"> {{ __("Wednesday") }} </label>
-                            </div>
-                            <div class="checkbox checkbox-success form-check pl-0 mb-1">
-                                <input name="week_day[]" type="checkbox" id="day_5" value="5">
-                                <label for="day_5"> {{ __('Thursday') }} </label>
-                            </div>
-                            <div class="checkbox checkbox-success form-check pl-0 mb-1">
-                                <input name="week_day[]" type="checkbox" id="day_6" value="6">
-                                <label for="day_6"> {{ __('Friday') }} </label>
-                            </div>
-                            <div class="checkbox checkbox-success form-check pl-0 mb-1">
-                                <input name="week_day[]" type="checkbox" id="day_7" value="7">
-                                <label for="day_7"> {{ __('Saturday') }} </label>
+                    <div class="row mb-2">
+                        <div class="col-12 slotForDiv">
+                            {!! Form::label('title', __('Slot For'),['class' => 'control-label']) !!}
+                            <div class="form-group">
+                                <ul class="list-inline">
+                                    <li class="d-block pl-1 ml-3 mb-1 custom-radio-design">
+                                        <input type="radio" class="custom-control-input check slotTypeEdit" id="edit_slotDay" name="slot_type_edit" value="day" checked="">
+                                        <label class="custom-control-label" id="edit_slotlabel" for="edit_slotDay">Days</label>
+                                    </li>
+                                    <li class="d-block pl-1 ml-1 mb-1 custom-radio-design"> &nbsp;&nbsp;&nbsp;&nbsp;
+                                        <input type="radio" class="custom-control-input check slotTypeEdit" id="edit_slotDate" name="slot_type_edit" value="date">
+                                        <label class="custom-control-label" for="edit_slotDate">Date</label>
+                                    </li>
+                                </ul>
+
                             </div>
                         </div>
                     </div>
-                
-                    <div class="row forDate" style="display: none;">
+
+                    <div class="row forDateEdit" style="display: none;">
                         <div class="col-md-12" >
                             <div class="form-group">
-                                <label class="control-label">{{ __("Slot Date") }}</label>
-                                <input class="form-control date-datepicker" placeholder={{ __("Select Date") }} type="text" name="slot_date" id="slot_date" required />
+                                <label class="control-label">{{ __('Slot Date') }}</label>
+                                <input class="form-control date-datepicker" placeholder="Select Date" type="text" name="slot_date" id="edit_slot_date" required />
                             </div>
+                            <input  name="edit_type" type="hidden" id="edit_type" value="">
+                            <input  name="edit_day" type="hidden" id="edit_day" value="">
+                            <input name="edit_type_id" type="hidden" id="edit_type_id" value="">
                         </div>
-                
                     </div>
                     <div class="row mt-2">
-                        <div class="col-12 d-sm-flex justify-content-between">
-                            <button type="button" class="btn btn-light mr-1" data-dismiss="modal">{{ __('Close') }}</button>
-                            <button type="submit" class="btn btn-info" id="btn-save-slot">{{ __('Save') }}</button>
+                        <div class="col-12 mb-2">
+                            <button type="button" class="btn btn-danger w-100" id="deleteSlotBtn">{{ __("Delete Slot") }}</button>
                         </div>
                     </div>
                 </form>`;
-    </script>
+</script>
 @endif
 @endsection
 

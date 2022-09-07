@@ -1,4 +1,9 @@
 $(function(){
+    localStorage.removeItem('deleteSlotDayid');
+    localStorage.removeItem('deleteSlotId');
+    localStorage.removeItem('deleteSlotType');
+    localStorage.removeItem('deleteSlotTypeOld');
+    localStorage.removeItem('deleteSlotDate');
     var product_id = vendor_id = title = block = appoin=agent_id = calendar='' ;
     var calendarEl = document.getElementById('calendar');
     $(document).on('click', '.agent_slot_button', function() {
@@ -8,8 +13,59 @@ $(function(){
         fullCalendarInt(agent_id);
     });
 
+    $(document).on('change','.slotTypeEdit',function(){
+        if($(this).val() == 'date') {
+            $(".forDateEdit").fadeIn(1000);
+        } else{
+            $(".forDateEdit").fadeOut(500);
+        }
+    })
+    
+    $(document).on('change', '#edit_slot_date', function() {
+        var edit_slot_date = $(this).val();
+        localStorage.setItem('deleteSlotDate',edit_slot_date);
+    });
+    $(document).on('click', '#deleteSlotBtn', function() {
+        var date = $('#edit_slot_date').val();
+        
+        $('#edit-slot-modal #deleteSlotDate').val(date);
+        Swal.fire({
+            title: 'Are you sure? You want to delete this slot.',
+            confirmButtonText: 'Yes',
+            focusConfirm: false,
+            preConfirm: () => {
+                const deleteSlotDayid    =  localStorage.getItem('deleteSlotDayid');
+                const deleteSlotId    = localStorage.getItem('deleteSlotId');
+                const deleteSlotType    =  localStorage.getItem('deleteSlotType');
+                const deleteSlotTypeOld    =  localStorage.getItem('deleteSlotTypeOld');
+                const deleteSlotDate    =  localStorage.getItem('deleteSlotDate');
+    
+               
+              return { deleteSlotDayid: deleteSlotDayid, deleteSlotId: deleteSlotId,deleteSlotType:deleteSlotType,deleteSlotTypeOld:deleteSlotTypeOld,deleteSlotDate:deleteSlotDate }
+            },onOpen: function() {
+            }
+          }).then(async (result) => {
+            var formData = {
+                slot_day_id:result.value.deleteSlotDayid,
+                slot_id:result.value.deleteSlotId,
+                slot_type:result.value.deleteSlotType,
+                old_slot_type:result.value.deleteSlotTypeOld,
+                slot_date:result.value.deleteSlotDate,
+                agent_id:agent_id
+            }
+            await deleteSlot(formData)
+            // Swal.fire(`
+            // blocktime: ${result.value.blocktime}
+            //   memo: ${result.value.memo}
+            // `.trim())
+          })
+        // if (confirm("Are you sure? You want to delete this slot.")) {
+        //    console.log('sadf');
+        // }
+        return false;
+    })
 
-   async function fullCalendarInt(agent_id){
+    async function fullCalendarInt(agent_id){
         if($('#calendar').length > 0){
             calendar = new FullCalendar.Calendar(calendarEl, {
                 initialView: 'timeGridWeek',
@@ -39,18 +95,39 @@ $(function(){
                 eventMaxStack: 1,
                 select: function(arg) {
                     Swal.fire({
-                        title: 'Add Manual Time',
-                        html: slotHtml,
+                        title: 'Add working hours',
+                        html: AddSlotHtml,
                         confirmButtonText: 'Submit',
                         focusConfirm: false,
                         preConfirm: () => {
-                         
+                            const start_time = Swal.getPopup().querySelector('#start_time').value
+                            const end_time = Swal.getPopup().querySelector('#end_time').value
+                            const slotDate = document.querySelector('input[name=radio-group]').value
+                            const week_day = [];
+                            $.each($("input:checkbox[name='week_day[]']:checked"), function () {
+                                week_day.push($(this).val());
+                            });
+                           
+                            
+                            if (!start_time || !end_time || (!week_day || week_day== undefined) ) {
+                              Swal.showValidationMessage(`All feilds are required!!`)
+                            }
+                            return { start_time: start_time, end_time: end_time,week_day:week_day , slotDate:slotDate}
                         },onOpen: function() {
-                            var save_slot_url = `/agent/slot/${agent_id}`
-                            $('#slot-event').setAttribute('action',save_slot_url);
+                            // var save_slot_url = `/agent/slot/${agent_id}`
+                            // $('#slot-event').setAttribute('action',save_slot_url);
                         }
                       }).then(async (result) => {
-                        
+                        var formData = {
+                            start_time:result.value.start_time,
+                            end_time:result.value.end_time,
+                            week_day:result.value.week_day,
+                            stot_type:result.value.slotDate,
+                            agent_id:agent_id
+                            
+                          }
+                          console.log(formData);
+                          await add_slot_time(formData)
                        
                         // Swal.fire(`
                         // blocktime: ${result.value.blocktime}
@@ -58,66 +135,41 @@ $(function(){
                         // `.trim())
                       })
                   
-                    var save_slot_url = `/agent/slot/${agent_id}`
-                    $('#add-slot-modal').modal({
-                                    //backdrop: 'static',
-                                    keyboard: false
-                                });
-                    // axios.get(`/agent/slot/create/${agent_id}`)
-                    // .then(async response => {
-                    //  console.log(response);
-                    //     if(response.data.success){
-                           
-                    //         $('#add_slot_form').html(response.data.html)
-                    //         $('#add-slot-modal').modal({
-                    //             //backdrop: 'static',
-                    //             keyboard: false
-                    //         });
-                    //     } else{
-                    //         Swal.fire({
-                    //             icon: 'error',
-                    //             title: 'Oops',
-                    //             text: 'This slot is already booked, Please try other.',
-                    //             //footer: '<a href="">Why do I have this issue?</a>'
-                    //         })
-                    //     }
-                    // })
-                    // .catch(e => {
-                    //     Swal.fire({
-                    //         icon: 'error',
-                    //         title: 'Oops...',
-                    //         text: 'Something went wrong, try again later!',
-                    //     })
-                    // })    
-                    // calendar.addEvent({
-                    //     title: '',
-                    //     start: arg.start,
-                    //     end: arg.end,
-                    //     allDay: arg.allDay
-                    // })
-                    // $('#standard-modal').modal({
-                    //     //backdrop: 'static',
-                    //     keyboard: false
-                    // });
-                    // var day = arg.start.getDay() + 1;
-                    // $('#day_' + day).prop('checked', true);
+                    // var save_slot_url = `/agent/slot/${agent_id}`
+                    // $('#add-slot-modal').modal({
+                    //                 //backdrop: 'static',
+                    //                 keyboard: false
+                    //             });
+                   
+                    calendar.addEvent({
+                        title: '',
+                        start: arg.start,
+                        end: arg.end,
+                        allDay: arg.allDay
+                    })
+                    $('#standard-modal').modal({
+                        //backdrop: 'static',
+                        keyboard: false
+                    });
+                    var day = arg.start.getDay() + 1;
+                    $('#day_' + day).prop('checked', true);
     
-                    // if (arg.allDay == true) {
-                    //     document.getElementById('start_time').value = "00:00";
-                    //     document.getElementById('end_time').value = "23:59";
-                    // } else {
-                    //     var startTime = ("0" + arg.start.getHours()).slice(-2) + ":" + ("0" + arg.start.getMinutes()).slice(-2);
-                    //     var EndTime = ("0" + arg.end.getHours()).slice(-2) + ":" + ("0" + arg.end.getMinutes()).slice(-2);
+                    if (arg.allDay == true) {
+                        document.getElementById('start_time').value = "00:00";
+                        document.getElementById('end_time').value = "23:59";
+                    } else {
+                        var startTime = ("0" + arg.start.getHours()).slice(-2) + ":" + ("0" + arg.start.getMinutes()).slice(-2);
+                        var EndTime = ("0" + arg.end.getHours()).slice(-2) + ":" + ("0" + arg.end.getMinutes()).slice(-2);
     
-                    //     document.getElementById('start_time').value = startTime;
-                    //     document.getElementById('end_time').value = EndTime;
-                    // }
+                        document.getElementById('start_time').value = startTime;
+                        document.getElementById('end_time').value = EndTime;
+                    }
     
     
-                    // $('#slot_date').flatpickr({
-                    //     minDate: "today",
-                    //     defaultDate: arg.start
-                    // });
+                    $('#slot_date').flatpickr({
+                        minDate: "today",
+                        defaultDate: arg.start
+                    });
                 },
                
     
@@ -175,10 +227,47 @@ $(function(){
                 eventResize: function(arg) {
                 },
                 eventClick: function(ev) {
-                    $('#edit-slot-modal').modal({
-                        //backdrop: 'static',
-                        keyboard: false
-                    });
+                    Swal.fire({
+                        title: 'Edit working hours',
+                        html: EditSlotHtml,
+                        confirmButtonText: 'Submit',
+                        focusConfirm: false,
+                        preConfirm: () => {
+                            const start_time = Swal.getPopup().querySelector('#start_time').value
+                            const end_time = Swal.getPopup().querySelector('#end_time').value
+                            const slotDate = document.querySelector('input[name=radio-group]').value
+                            const week_day = [];
+                            $.each($("input:checkbox[name='week_day[]']:checked"), function () {
+                                week_day.push($(this).val());
+                            });
+                           
+                            
+                            if (!start_time || !end_time || (!week_day || week_day== undefined) ) {
+                              Swal.showValidationMessage(`All feilds are required!!`)
+                            }
+                            return { start_time: start_time, end_time: end_time,week_day:week_day , slotDate:slotDate}
+                        },onOpen: function() {
+                            // var save_slot_url = `/agent/slot/${agent_id}`
+                            // $('#slot-event').setAttribute('action',save_slot_url);
+                        }
+                      }).then(async (result) => {
+                        var formData = {
+                            start_time:result.value.start_time,
+                            end_time:result.value.end_time,
+                            week_day:result.value.week_day,
+                            stot_type:result.value.slotDate,
+                            agent_id:agent_id
+                            
+                          }
+                          console.log(formData);
+                          await add_slot_time(formData)
+                       
+                        // Swal.fire(`
+                        // blocktime: ${result.value.blocktime}
+                        //   memo: ${result.value.memo}
+                        // `.trim())
+                      })
+                  
                     // console.log(ev.event.extendedProps);
                     var days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
                     var day = ev.event.start.getDay() + 1;
@@ -188,6 +277,10 @@ $(function(){
                     document.getElementById('edit_type_id').value = ev.event.extendedProps.type_id;
     
                     // Delete Slot Form
+                    localStorage.setItem('deleteSlotDayid',ev.event.extendedProps.type_id);
+                    localStorage.setItem('deleteSlotId',ev.event.extendedProps.slot_id);
+                    localStorage.setItem('deleteSlotType',ev.event.extendedProps.type);
+                    localStorage.setItem('deleteSlotTypeOld',ev.event.extendedProps.type);
                     document.getElementById('deleteSlotDayid').value = ev.event.extendedProps.type_id;
                     document.getElementById('deleteSlotId').value = ev.event.extendedProps.slot_id;
                     document.getElementById('deleteSlotType').value = ev.event.extendedProps.type;
@@ -195,10 +288,12 @@ $(function(){
     
                     if(ev.event.extendedProps.type == 'date'){
                         $("#edit_slotDate").prop("checked", true);
-                        $(".modal .forDateEdit").show();
+                        $(".forDateEdit").delay(1000).show(0);
+                        //$("#update-event .forDateEdit").show();
                     }else{
                         $("#edit_slotDay").prop("checked", true);
-                        $(".modal .forDateEdit").hide();
+                        //$("#update-event .forDateEdit").hide();
+                        $(".forDateEdit").delay(1000).hide(0);
                     }
     
                     if(ev.event.extendedProps.slot_delivery == 0){
@@ -211,16 +306,14 @@ $(function(){
                         $("#edit_dine_in").prop("checked", false);
                     }
                     
-                    // display selected service areas 
-                    var service_areas = ev.event.extendedProps.service_area;
-                    $("#edit_slot_service_area").val(service_areas).trigger('change');
+                   
     
                     $('#edit_slot_date').flatpickr({
                         minDate: "today",
                         defaultDate: (ev.event.extendedProps.type == 'date') ? ev.event.start : ev.event.start
                     });
     
-                    $('#edit-slot-modal #edit_slotlabel').text('Edit For All ' + days[day-1] + '   ');
+                    $('#edit_slotlabel').text('Edit For All ' + days[day-1] + '   ');
     
                     var startTime = ("0" + ev.event.start.getHours()).slice(-2) + ":" + ("0" + ev.event.start.getMinutes()).slice(-2);
                     document.getElementById('edit_start_time').value = startTime;
@@ -243,5 +336,76 @@ $(function(){
         }
 
     }
+    async function add_slot_time(formData){
+        
+        axios.post(`agent/slot`, formData)
+        .then(async response => {
+         console.log(response);
+            if(response.data.status == "Success"){
+                //blockDataTable();
+               // setInterval( function () {
+                    
+                //}, 30000 );
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success',
+                    text: response.data.message,
+                    //footer: '<a href="">Why do I have this issue?</a>'
+                })
+                block.ajax.reload();
+            } else{
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops',
+                    text: response.data.message,
+                    //footer: '<a href="">Why do I have this issue?</a>'
+                })
+            }
+        })
+        .catch(e => {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Something went wrong, try again later!',
+            })
+        })    
+    } 
+
+    async function deleteSlot(formData){
+        console.log(formData);
+        axios.post(`agent/slot/delete`, formData)
+        .then(async response => {
+         console.log(response.data.status);
+            if(response.data.status == "Success"){
+                
+                //blockDataTable();
+               // setInterval( function () {
+                    
+                //}, 30000 );
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success',
+                    text: response.data.message,
+                    //footer: '<a href="">Why do I have this issue?</a>'
+                })
+                fullCalendarInt(agent_id)
+            } else{
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops',
+                    text: response.data.message,
+                    //footer: '<a href="">Why do I have this issue?</a>'
+                })
+            }
+        })
+        .catch(e => {
+            console.log(e);
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Something went wrong, try again later!',
+            })
+        })    
+    } 
   
 })

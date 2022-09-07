@@ -43,6 +43,7 @@ Agent schedule slots:<p class="sku-name pl-1"></p>
     
 </script>
 <script src="{{ asset('assets/libs/sweetalert2/sweetalert2.min.js') }}"></script>
+
 <script src="{{asset('assets/libs/moment/moment.min.js')}}"></script>
     <script src="{{asset('assets/js/fullcalendar/calendar_main-5.9.js')}}"></script>
     <script src="{{ asset('assets/js/agent/agentSlot.js')}}"></script>

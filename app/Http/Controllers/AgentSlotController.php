@@ -30,36 +30,47 @@ class AgentSlotController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, $domain = '', $id)
+    public function store(Request $request)
     {
-        $agent = Agent::where('id', $id)->firstOrFail();
-
-        $slotData = array();
-      
-        if($request->stot_type == 'day'){
-            $slot = new AgentSlot();
-            $slot->agent_id     = $agent->id;
-            $slot->start_time   = $request->start_time;
-            $slot->end_time     = $request->end_time;
-            $slot->save();
-
-           
-            foreach ($request->week_day as $key => $value) {
-                $slotData['slot_id']    = $slot->id;
-                $slotData['day']        = $value;
-                SlotDay::insert($slotData);  
+        try {
+            DB::beginTransaction();
+            $agent = Agent::where('id', $request->agent_id)->firstOrFail();
+            if(!$agent){
+                $this->error('Agent not fount!',405);
             }
-        }else{
-            $slotDate = new AgentSlotDate();
-            $slotDate->agent_id          = $agent->id;
-            $slotDate->start_time         = $request->start_time;
-            $slotDate->end_time           = $request->end_time;
-            $slotDate->specific_date      = $request->slot_date;
-            $slotDate->working_today      = 1;
-            $slotDate->save();
-          
+         
+            $slotData = array();
+        
+            if($request->stot_type == 'day'){
+                $slot = new AgentSlot();
+                $slot->agent_id     = $agent->id;
+                $slot->start_time   = $request->start_time;
+                $slot->end_time     = $request->end_time;
+                $slot->save();
+
+            
+                foreach ($request->week_day as $key => $value) {
+                    $slotData['slot_id']    = $slot->id;
+                    $slotData['day']        = $value;
+                    SlotDay::insert($slotData);  
+                }
+            }else{
+                $slotDate = new AgentSlotDate();
+                $slotDate->agent_id          = $agent->id;
+                $slotDate->start_time         = $request->start_time;
+                $slotDate->end_time           = $request->end_time;
+                $slotDate->specific_date      = $request->slot_date;
+                $slotDate->working_today      = 1;
+                $slotDate->save();
+            
+            }
+            DB::commit(); //Commit transaction after all the operations
+         
+            return $this->success('', __('Slot saved successfully!'));
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json(array('success' => false, 'message'=>'Something went wrong.'));
         }
-        return redirect()->back()->with('success', 'Slot saved successfully!');
 
     }
 
@@ -167,30 +178,37 @@ class AgentSlotController extends Controller
      * @param  \App\VendorSlot  $vendorSlot
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Request $request, $domain = '', $id)
+    public function destroy(Request $request)
     {
-        if($request->slot_type == 'date'){
-            if($request->old_slot_type == 'day')
-            {
-                AgentSlotDate::updateOrCreate([
-                    'agent_id'=>$id,
-                    'specific_date' => $request->slot_date
-                ],[
-                    'working_today' => 0
-                ]);
-            }else{
-                $dateSlot = AgentSlotDate::find($request->slot_id);
-                $dateSlot->delete();
+        try {
+            DB::beginTransaction();
+            if($request->slot_type == 'date'){
+                if($request->old_slot_type == 'day')
+                {
+                    AgentSlotDate::updateOrCreate([
+                        'agent_id'=>$request->agent_id,
+                        'specific_date' => $request->slot_date
+                    ],[
+                        'working_today' => 0
+                    ]);
+                }else{
+                    $dateSlot = AgentSlotDate::find($request->slot_id);
+                    $dateSlot->delete();
+                }
+            } else {
+                $slotDay = SlotDay::where('slot_id', $request->slot_id)->get();
+                if($slotDay->count() == 1){
+                    $vendorSlot = AgentSlot::find($request->slot_id);
+                    $vendorSlot->delete();
+                }
+                $slot_day = SlotDay::where('id', $request->slot_day_id)->delete();
             }
-        } else {
-            $slotDay = SlotDay::where('slot_id', $request->slot_id)->get();
-            if($slotDay->count() == 1){
-                $vendorSlot = AgentSlot::find($request->slot_id);
-                $vendorSlot->delete();
-            }
-            $slot_day = SlotDay::where('id', $request->slot_day_id)->delete();
+            DB::commit(); //Commit transaction after all the operations
+            return $this->success('', __('Slot deleted successfully!'));
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json(array('success' => false, 'message'=>'Something went wrong.'));
         }
-        return redirect()->back()->with('success', 'Slot deleted successfully!');
     }
 
     public function returnJson(Request $request, $domain = '', $id)
