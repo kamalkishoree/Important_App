@@ -33,13 +33,13 @@ class AgentSMSTemplateSeeder extends Seeder
             [
               'slug' => 'driver-accepted',
               'tags' => '',
-              'label' => 'Driver Accepted',
+              'label' => getAgentNomenclature().' Accepted',
               'content' => '',
             ],
             [
               'slug' => 'driver-rejected',
               'tags' => '',
-              'label' => 'Driver Rejected',
+              'label' => getAgentNomenclature().' Rejected',
               'content' => '',
             ]
         );

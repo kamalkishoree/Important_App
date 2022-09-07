@@ -1,6 +1,6 @@
 <?php
 namespace App\Traits;
-use DB;
+use DB, Log;
 use Illuminate\Support\Collection;
 use App\Model\{Client, ClientPreference, User, Agent, Order, PaymentOption, PayoutOption, AgentPayout};
 use Kawankoding\Fcm\Fcm;
@@ -10,13 +10,10 @@ trait sendCustomNotification{
     //------------------------------Function created by surendra singh--------------------------//
     public function sendnotification($data, $client_preferences)
     {
-       
-        $data['title']     = 'Cancelled Request';
-        $data['body']      = 'Check All Details For This Request In App';
         $new = [];
 
         array_push($new, $data['device_token']);
-
+        Log::info($data);
         if(isset($new)){
             $fcm_server_key = !empty($client_preferences->fcm_server_key)? $client_preferences->fcm_server_key : 'null';
 
@@ -26,8 +23,8 @@ trait sendCustomNotification{
                             ->timeToLive(0)
                             ->data($data)
                             ->notification([
-                                'title'              => 'Pickup Request',
-                                'body'               => 'Check All Details For This Request In App',
+                                'title'              => (empty($data['title']))?'Pickup Request':$data['title'],
+                                'body'               => (empty($data['body']))?'Check All Details For This Request In App':$data['body'],
                                 'sound'              => 'notification.mp3',
                                 'android_channel_id' => 'Royo-Delivery',
                                 'soundPlay'          => true,

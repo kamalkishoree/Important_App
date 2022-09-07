@@ -41,7 +41,7 @@
                 <h4 class="header-title">Modals</h4>
                 <div class="button-list">
                     <button type="button" class="btn btn-outline-primary waves-effect waves-light" data-toggle="modal"
-                        data-target="#add-agent-modal" data-backdrop="static" data-keyboard="false">Add Agent</button>
+                        data-target="#add-agent-modal" data-backdrop="static" data-keyboard="false">Add {{getAgentNomenclature()}}</button>
                     <button type="button" class="btn btn-outline-success waves-effect waves-light" data-toggle="modal"
                         data-target="#add-card-modal">Add Card</button>
                     <button type="button" class="btn btn-outline-info waves-effect waves-light" data-toggle="modal"

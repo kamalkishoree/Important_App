@@ -377,7 +377,7 @@ class TaskController extends BaseController
                     'Sr. No.',
                     'Customer',
                     'Phone.No',
-                    'Driver',
+                    getAgentNomenclature(),
                     'Due Time',
                     'Routes',
                     'Status',
@@ -394,7 +394,7 @@ class TaskController extends BaseController
                     'Agent Commission Fixed',
                     'Freelancer Commission Percentage',
                     'Freelancer Commission Fixed',
-                    'Driver Cost',
+                    getAgentNomenclature().' Cost',
                     'Pricing'
                 ]
             ];
@@ -896,11 +896,11 @@ class TaskController extends BaseController
 
                     $this->MassAndEditNotification($order->id, $agent_id);
                 }
-                Session::put('success', __('Agent assigned successfully'));
-                return $this->success(__('Agent assigned successfully'), 400);
+                Session::put('success', __(getAgentNomenclature().' assigned successfully'));
+                return $this->success(__(getAgentNomenclature().' assigned successfully'), 400);
             }else{
-                Session::put('error', __('Invalid agent data'));
-                return $this->error(__('Invalid agent data'), 400);
+                Session::put('error', __('Invalid '.getAgentNomenclature().' data'));
+                return $this->error(__('Invalid '.getAgentNomenclature().' data'), 400);
             }
         }else{
 
@@ -1047,7 +1047,7 @@ class TaskController extends BaseController
         try{
             if(isset($order_details->type) && $order_details->type == 1 && strlen($order_details->friend_phone_number) > 8)
             {
-                $friend_sms_body = 'Hi '.($order_details->friend_name).', '.($order_details->customer->name??'Our customer').' have booked a ride for you. Driver '.($oneagent->name??'').' in our '.($oneagent->make_model ?? '').' with license plate '.($oneagent->plate_number??'').' has been assgined.';
+                $friend_sms_body = 'Hi '.($order_details->friend_name).', '.($order_details->customer->name??'Our customer').' have booked a ride for you. '.getAgentNomenclature().' '.($oneagent->name??'').' in our '.($oneagent->make_model ?? '').' with license plate '.($oneagent->plate_number??'').' has been assgined.';
                 $send = $this->sendSms2($order_details->friend_phone_number , $friend_sms_body);
             }
         }catch(\Exception $e){

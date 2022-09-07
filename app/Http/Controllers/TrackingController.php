@@ -264,12 +264,14 @@ class TrackingController extends Controller
                             'batch_no'            => '',
                             'driver_id'           => $order->driver_id,
                             'notification_time'   => Carbon::now()->addSeconds(2)->format('Y-m-d H:i:s'),
-                            'notificationType'    => 'ACK',
+                            'notificationType'    => 'CANCELLED',
                             'created_at'          => Carbon::now()->toDateTimeString(),
                             'updated_at'          => Carbon::now()->toDateTimeString(),
                             'device_type'         => $oneagent->device_type,
                             'device_token'        => $oneagent->device_token,
                             'detail_id'           => rand(11111111, 99999999),
+                            'title'               => 'Pickup Request Cancelled',
+                            'body'                => 'Check All Details For This Request In App',
                         ];
                         $this->sendnotification($notificationdata, $client_preferences);
                     }

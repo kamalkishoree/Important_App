@@ -81,7 +81,7 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group" id="typeInput">
-                                    {!! Form::label('title', 'Select Driver Tag',['class' => 'control-label']) !!}
+                                    {!! Form::label('title', 'Select '.getAgentNomenclature().' Tag',['class' => 'control-label']) !!}
                                     {!! Form::select('driver_tag_id',$driver_tag,null,['class' => 'selectpicker']) !!}
                                     <span class="invalid-feedback" role="alert">
                                         <strong></strong>
@@ -180,7 +180,7 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group" id="">
-                                    {!! Form::label('title', 'Agent Commission Percentage',['class' => 'control-label']) !!}
+                                    {!! Form::label('title', getAgentNomenclature().' Commission Percentage',['class' => 'control-label']) !!}
                                     {!! Form::text('agent_commission_percentage', null, ['class' => 'form-control','required' => 'required']) !!}
                                     <span class="invalid-feedback" role="alert">
                                         <strong></strong>
@@ -189,7 +189,7 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group" id="">
-                                    {!! Form::label('title', 'Agent Commission Fixed',['class' => 'control-label']) !!}
+                                    {!! Form::label('title', getAgentNomenclature().' Commission Fixed',['class' => 'control-label']) !!}
                                     {!! Form::text('agent_commission_fixed', null, ['class' => 'form-control','required' => 'required']) !!}
                                     <span class="invalid-feedback" role="alert">
                                         <strong></strong>

@@ -186,13 +186,13 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                     <div class="dropdown d-inline-block">
                         <button class="dropdown-toggle" type="button" id="dropdownMenuButton"
                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <img class="mr-1" src="{{ asset('demo/images/ic_time.png') }}">{{__('Drivers')}}
+                            <img class="mr-1" src="{{ asset('demo/images/ic_time.png') }}">{{__(getAgentNomenclature().'s')}}
                         </button>
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                             <div class="task-block pl-2 pr-2">
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <span>{{__('Drivers')}}</span>
+                                        <span>{{__(getAgentNomenclature().'s')}}</span>
                                     </div>
                                     <div class="col-md-6 text-right">
                                         <a href=""><span></span></a>
@@ -202,7 +202,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
 
                                 <div class="row mt-2">
                                     <div class="col-md-8">
-                                        <h6>{{__('All Drivers')}}</h6>
+                                        <h6>{{__('All '.getAgentNomenclature().'s')}}</h6>
                                     </div>
                                     <div class="col-md-4 text-right">
                                         <label class="">

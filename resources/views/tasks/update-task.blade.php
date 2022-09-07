@@ -204,7 +204,7 @@ $task_type_array = [__('Pickup'), __('Drop-Off'), __('Appointment')];
                                 </div>
                             </div>
                             
-                            <span class="span1 tagspan">{{__("Please select atlest one tag for driver and agent")}}</span>
+                            <span class="span1 tagspan">{{__("Please select atlest one tag for ".getAgentNomenclature())}}</span>
                             <div class="tags">
                                 <div class="row">
                                     <div class="col-md-12">
@@ -226,7 +226,7 @@ $task_type_array = [__('Pickup'), __('Drop-Off'), __('Appointment')];
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div class="form-group">
-                                            <label>{{__("Driver Tag")}}</label>
+                                            <label>{{__(getAgentNomenclature()." Tag")}}</label>
                                             <select name="agent_tag[]" id="selectize-optgroup" class="selectizeInput" multiple placeholder="{{__('Select tag...')}}">
                                                 <option value="">{{__("Select Tag...")}}</option>
                                                 @foreach ($agentTag as $item)
@@ -243,7 +243,7 @@ $task_type_array = [__('Pickup'), __('Drop-Off'), __('Appointment')];
                             <div class="row drivers hidealloction">
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <label>{{__("Drivers")}}</label>
+                                        <label>{{__(getAgentNomenclature()."s")}}</label>
                                         <select class="form-control" name="agent" id="location_accuracy">
                                             @foreach ($agents as $item)
                                                 <option value="{{ $item->id }}"
@@ -470,7 +470,7 @@ $task_type_array = [__('Pickup'), __('Drop-Off'), __('Appointment')];
                                                     <img src="{{ 'https://imgproxy.royodispatch.com/insecure/fit/300/100/sm/0/plain/' . Storage::disk('s3')->url($order->profile_picture ?? 'assets/client_00000051/agents605b6deb82d1b.png/XY5GF0B3rXvZlucZMiRQjGBQaWSFhcaIpIM5Jzlv.jpg') }}"
                                                         alt="" />
                                                 </div>
-                                                <h4>{{ isset($task->name) ? $order->name :__('Driver not assigned yet') }}</h4>
+                                                <h4>{{ isset($task->name) ? $order->name :__(getAgentNomenclature().' not assigned yet') }}</h4>
                                                 <p>{{ $task->phone_number }}</p>
                                             </div>
                                             <span class="col-lg-12 attrbute_classes">

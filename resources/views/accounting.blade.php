@@ -116,7 +116,7 @@
                         <div class="col-6">
                             <div class="text-right">
                                 <h3 class="text-dark mt-1"><span data-plugin="counterup">{{$totalagentearning}}</span></h3>
-                                <p class="text-muted mb-1 text-truncate">{{__("Agents's Earning")}}</p>
+                                <p class="text-muted mb-1 text-truncate">{{__(getAgentNomenclature()."s's Earning")}}</p>
                             </div>
                         </div>
                     </div> 
@@ -153,7 +153,7 @@
                         <div class="col-6">
                             <div class="text-right">
                                 <h3 class="text-dark mt-1"><span data-plugin="counterup">{{$totalagents}}</span></h3>
-                                <p class="text-muted mb-1 text-truncate">{{__("Agents")}}</p>
+                                <p class="text-muted mb-1 text-truncate">{{__(getAgentNomenclature()."s")}}</p>
                             </div>
                         </div>
                     </div> 
@@ -223,7 +223,7 @@
                         </div>
                     </div> --}}
 
-                    <h4 class="header-title mb-3">{{__("Agents")}}</h4>
+                    <h4 class="header-title mb-3">{{__(getAgentNomenclature()."s")}}</h4>
 
                     <div class="table-responsive">
                         <table class="table table-borderless table-hover table-nowrap table-centered m-0">

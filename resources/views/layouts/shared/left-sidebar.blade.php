@@ -112,7 +112,7 @@
                 <li>
                     <a href="{{route('agent.index')}}">
                         <i class="fe-user-check"></i>
-                        <span> {{ Session::get('agent_name') ? Session::get('agent_name') : __('Agent') }}</span>
+                        <span> {{ __(getAgentNomenclature()) }}</span>
                     </a>
                 </li>
                 @endif

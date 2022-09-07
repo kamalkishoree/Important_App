@@ -68,7 +68,7 @@ class Task extends Model
         switch ($dispatcher_status_option) {
             case 1:
                 if ($type == '1') {
-                    $status_data = __('Driver assigned');
+                    $status_data = __(getAgentNomenclature().' assigned');
                 } else {
                     $status_data = __('Pending');
                 }

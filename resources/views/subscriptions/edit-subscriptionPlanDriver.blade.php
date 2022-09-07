@@ -38,7 +38,7 @@
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="">{{ __("Agent Type") }}</label>
+                            <label for="">{{ __(getAgentNomenclature()." Type") }}</label>
                             <select class="form-control"  name="driver_type" id="driver_type">
                                 <option value="Employee" {{($plan->driver_type == "Employee") ? 'selected' : ''}}>{{__("Employee")}}</option>
                                 <option value="Freelancer" {{($plan->driver_type == "Freelancer") ? 'selected' : ''}}>{{__("Freelancer")}}</option>

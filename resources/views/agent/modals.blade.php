@@ -2,7 +2,7 @@
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-header border-0">
-                <h4 class="modal-title">{{__("Add")}} {{ Session::get('agent_name') }}</h4>
+                <h4 class="modal-title">{{__("Add")}} {{ getAgentNomenclature() }}</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
             </div>
 
@@ -240,7 +240,7 @@
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-header border-0">
-                <h4 class="modal-title">{{__("Edit")}} {{ Session::get('agent_name') }}</h4>
+                <h4 class="modal-title">{{__("Edit")}} {{ getAgentNomenclature() }}</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
             </div>
             <form id="UpdateAgent" method="post" enctype="multipart/form-data">
@@ -264,7 +264,7 @@
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-header border-0">
-                <h4 class="modal-title">{{__('View')}} {{ Session::get('agent_name') }}</h4>
+                <h4 class="modal-title">{{__('View')}} {{ getAgentNomenclature() }}</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
             </div>
          

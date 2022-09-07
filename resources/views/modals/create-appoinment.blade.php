@@ -62,7 +62,7 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="form-group">
-                            <p class="text-muted mt-3 mb-2">ASSIGN AGENT</p>
+                            <p class="text-muted mt-3 mb-2">ASSIGN {{strtoupper(getAgentNomenclature())}}</p>
                             <div class="row">
                                 <div class="col-md-5">
                                     <div class="card-box border p-1 rounded">
