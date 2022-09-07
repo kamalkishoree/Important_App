@@ -16,7 +16,7 @@ class PricePriority extends Seeder
         $type = array(
             array(
                 'id' => 1,
-                'first'  => 'Driver Tag',
+                'first'  => getAgentNomenclature().' Tag',
                 'second' => 'Team Tag',
                 'third'  => 'Geo Fence',
                 'fourth' => 'Team Id',

@@ -20,11 +20,11 @@
 
                                     <div class="col-lg-6 col-sm-6 mb-lg-0 mb-3">
                                         <div class="form-group" id="DriverStartTime">
-                                            {!! Form::label('title', __('Driver starts Day at'),['class' => 'control-label']) !!}
+                                            {!! Form::label('title', __(getAgentNomenclature().' starts Day at'),['class' => 'control-label']) !!}
                                             {!! Form::time('driver_start_time', '09:00', ['class' => 'form-control driverStartTime']) !!}
                                             
                                             <span class="invalid-feedback" role="alert">
-                                                <strong>{{__('Please enter the driver start time')}}</strong>
+                                                <strong>{{__('Please enter the '.getAgentNomenclature().' start time')}}</strong>
                                             </span>
                                         </div>
                                     </div>
@@ -39,26 +39,26 @@
                                     </div>
                                     <div class="col-lg-6 col-sm-6 mb-lg-0 mb-3">
                                         <div class="form-group" id="DriverBrakeStartTime">
-                                            {!! Form::label('title', __('Driver Break Start time'),['class' => 'control-label']) !!}
+                                            {!! Form::label('title', __(getAgentNomenclature().' Break Start time'),['class' => 'control-label']) !!}
                                             {!! Form::time('brake_start_time', '13:00', ['class' => 'form-control driverBrakeStartTime']) !!}
                                             <span class="invalid-feedback" role="alert">
-                                                <strong>{{__('Please enter the driver break start time')}}</strong>
+                                                <strong>{{__('Please enter the '.getAgentNomenclature().' break start time')}}</strong>
                                             </span>
                                         </div> 
                                     </div>
                                     <div class="col-lg-6 col-sm-6 mb-lg-0 mb-3">
                                         <div class="form-group" id="DriverBrakeEndTime">
-                                            {!! Form::label('title', 'Driver Break End time',['class' => 'control-label']) !!}
+                                            {!! Form::label('title', getAgentNomenclature().' Break End time',['class' => 'control-label']) !!}
                                             {!! Form::time('brake_end_time', '14:00', ['class' => 'form-control driverBrakeEndTime']) !!}
                                             <span class="invalid-feedback" role="alert">
-                                                <strong>Please enter the driver break end time</strong>
+                                                <strong>Please enter the {{getAgentNomenclature()}} break end time</strong>
                                             </span>
                                         </div> 
                                     </div>
 
                                     <div class="col-12 mb-lg-0 mb-3">
                                         <div class="form-group" id="">
-                                            {!! Form::label('title', __('Driver Start Location'),['class' => 'control-label d-block']) !!}
+                                            {!! Form::label('title', __(getAgentNomenclature().' Start Location'),['class' => 'control-label d-block']) !!}
                                             
                                             <input class="align-middle ml-2" type="radio" name="driver_start_location" value="select"> <span class="align-middle">{{__('Select Location')}}</span> 
                                             <input class="align-middle" type="radio" name="driver_start_location" value="current"> <span class="align-middle" id="radio-current-location-span">{{__('Current location')}}</span>

@@ -42,7 +42,7 @@
     $('.delete-team-form').on('submit', function() {
         team_agent_count = $(this).attr('data-team-agent-count');
         if (team_agent_count > 0) {
-            alert("Please assign other team to agents linked to this team before deleting");
+            alert("Please assign other team to ".getAgentNomenclature()."s linked to this team before deleting");
             return false;
         }
         delete_team_confirmation = confirm("Do you want to delete the team?");

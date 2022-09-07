@@ -58,7 +58,7 @@
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group" id="typeInput">
-                                            {!! Form::label('title', __('Select Driver Tag'),['class' => 'control-label']) !!} <span class="badge badge-primary float-right" id="select_driver_tag_all" style="cursor:pointer;">Select All</span>
+                                            {!! Form::label('title', __('Select '.getAgentNomenclature().' Tag'),['class' => 'control-label']) !!} <span class="badge badge-primary float-right" id="select_driver_tag_all" style="cursor:pointer;">Select All</span>
                                             {!! Form::select('driver_tag_id[]',$driver_tag,null,['id' => 'driver_tag_id','data-toggle' => 'select2', 'class' => 'form-control', 'multiple' => 'multiple', 'data-placeholder' => 'Choose ...']) !!}
                                             <span class="invalid-feedback" role="alert">
                                                 <strong></strong>

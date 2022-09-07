@@ -11,7 +11,12 @@ use Carbon\Carbon;
 $task_type_array = [__('Pickup'), __('Drop-Off'), __('Appointment')];
 @endphp
 @section('content')
-<style> .addTaskModalHeader{display: none;}</style>
+
+<style> .addTaskModalHeader{display: none;}
+.map_box #map_canvas{
+    height:300px;
+}
+</style>
     <!-- Start Content-->
     <div class="container-fluid">
         <div class="row">
@@ -199,7 +204,7 @@ $task_type_array = [__('Pickup'), __('Drop-Off'), __('Appointment')];
                                 </div>
                             </div>
                             
-                            <span class="span1 tagspan">{{__("Please select atlest one tag for driver and agent")}}</span>
+                            <span class="span1 tagspan">{{__("Please select atlest one tag for ".getAgentNomenclature())}}</span>
                             <div class="tags">
                                 <div class="row">
                                     <div class="col-md-12">
@@ -221,7 +226,7 @@ $task_type_array = [__('Pickup'), __('Drop-Off'), __('Appointment')];
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div class="form-group">
-                                            <label>{{__("Driver Tag")}}</label>
+                                            <label>{{__(getAgentNomenclature()." Tag")}}</label>
                                             <select name="agent_tag[]" id="selectize-optgroup" class="selectizeInput" multiple placeholder="{{__('Select tag...')}}">
                                                 <option value="">{{__("Select Tag...")}}</option>
                                                 @foreach ($agentTag as $item)
@@ -238,7 +243,7 @@ $task_type_array = [__('Pickup'), __('Drop-Off'), __('Appointment')];
                             <div class="row drivers hidealloction">
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <label>{{__("Drivers")}}</label>
+                                        <label>{{__(getAgentNomenclature()."s")}}</label>
                                         <select class="form-control" name="agent" id="location_accuracy">
                                             @foreach ($agents as $item)
                                                 <option value="{{ $item->id }}"
@@ -445,19 +450,76 @@ $task_type_array = [__('Pickup'), __('Drop-Off'), __('Appointment')];
                 <div class="card-box p-3">            
                     <div class="row">
                         <div class="col-md-12">
+                            <h4 class="header-title mb-2">{{__("Order Tracking")}}</h4>
+                                                         
+                            <div class="row no-gutters">
+                                <div class="col-12">
+                                    <div class="map_box">
+                                        <div id="map_canvas"></div>
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="location_box position-relative get_div_height">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <i class="fas fa-chevron-up detail_btn d-lg-none d-block show_attr_classes"></i>
+                                        <div class="row no-gutters align-items-center">
+                                            <div class="col-lg-12 padd-left mb-4">
+                                                <div class="left-icon">
+                                                    <img src="{{ 'https://imgproxy.royodispatch.com/insecure/fit/300/100/sm/0/plain/' . Storage::disk('s3')->url($order->profile_picture ?? 'assets/client_00000051/agents605b6deb82d1b.png/XY5GF0B3rXvZlucZMiRQjGBQaWSFhcaIpIM5Jzlv.jpg') }}"
+                                                        alt="" />
+                                                </div>
+                                                <h4>{{ isset($task->name) ? $order->name :__(getAgentNomenclature().' not assigned yet') }}</h4>
+                                                <p>{{ $task->phone_number }}</p>
+                                            </div>
+                                            <span class="col-lg-12 attrbute_classes">
+                                                <div class="row align-items-center">
+                                                    @foreach ($task->task as $item)
+                                                        <div class="col-lg-6 d-flex align-items-center address_box mb-3">
+                                                            <i class="fas fa-map-marker-alt"></i>
+                                                            <div class="right_text">
+                                                                <h4>{{ $task_type_array[$item->task_type_id - 1] }}</h4>
+                                                                <p>{{ $item->address }}</p>
+                                                            </div>
+                                                        </div>
+                                                    @endforeach
+                                                </div>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row no-gutters">
+                                <div class="col-sm-12 btn_group d-flex align-items-center justify-content-between">
+                                    <a class="btn pink_btn" href="tel:{{ $task->phone_number }}"><i
+                                            class="fas fa-phone-alt position-absolute"></i><span>{{__('Call')}}</span></a>
+                                    <a class="btn pink_btn" href="sms:{{ $task->phone_number }}"><i
+                                            class="fas fa-comment position-absolute"></i><span>{{__('Message')}}</span></a>
+                                </div>
+                            </div>
+                             
+                        </div>
+                    </div>   
+                </div>                                                
+
+                <div class="card-box p-3">            
+                    <div class="row">
+                        <div class="col-md-12">
                             <h4 class="header-title mb-2">{{__("Route Proofs")}}</h4>
                             <div class="row">
                                 @foreach($task->task as $keys => $item)
                                 <div class="col-md-12 all-remove">
                                     <div class="task-card">
                                         <div class="assigned-block bg-transparent"><h5>      
-                                @if($item->task_type_id == 1)    
-                                {{__('Pickup Task')}}
-                                @elseif($item->task_type_id == 2)
-                                {{__('Drop Off Task')}}
-                                @else
-                                {{__('Appointment')}}
-                                @endif
+                                        @if($item->task_type_id == 1)    
+                                        {{__('Pickup Task')}}
+                                        @elseif($item->task_type_id == 2)
+                                        {{__('Drop Off Task')}}
+                                        @else
+                                        {{__('Appointment')}}
+                                        @endif
                                         </h5>
                                         </div>
                                         <div class="row">
@@ -500,75 +562,10 @@ $task_type_array = [__('Pickup'), __('Drop-Off'), __('Appointment')];
                                         @endif
                                     </div>
                                 </div>
-                                </div>
-                            @endforeach
+                                @endforeach
                             </div>
                         </div>
                     </div>
-                </div>
-
-                <div class="card-box p-3">            
-                    <div class="row">
-                        <div class="col-md-12">
-                            <h4 class="header-title mb-2">{{__("Order Tracking")}}</h4>
-                                                         
-                            <div class="row no-gutters">
-                                <div class="col-12">
-                                    <div class="map_box">
-                                        <div style="width: 100%">
-                                            <div id="map_canvas"></div>
-                                        </div>
-                                        {{-- <iframe
-                                    src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d109782.78861272808!2d76.95784163044429!3d30.698374220997263!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2sin!4v1615288788406!5m2!1sen!2sin"
-                                    width="100%" style="border:0;" allowfullscreen="" loading="lazy"  scrolling="no"></iframe> --}}
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="location_box position-relative get_div_height">
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <i class="fas fa-chevron-up detail_btn d-lg-none d-block show_attr_classes"></i>
-                                        <div class="row no-gutters align-items-center">
-                                            <div class="col-lg-12 padd-left mb-4">
-                                                <div class="left-icon">
-                                                    <img src="{{ 'https://imgproxy.royodispatch.com/insecure/fit/300/100/sm/0/plain/' . Storage::disk('s3')->url($order->profile_picture ?? 'assets/client_00000051/agents605b6deb82d1b.png/XY5GF0B3rXvZlucZMiRQjGBQaWSFhcaIpIM5Jzlv.jpg') }}"
-                                                        alt="" />
-                                                </div>
-                                                <h4>{{ isset($task->name) ? $order->name :__('Driver not assigned yet') }}</h4>
-                                                <p>{{ $task->phone_number }}</p>
-                                            </div>
-                                            <span class="col-lg-12 attrbute_classes">
-                                                <div class="row align-items-center">
-                                                    @foreach ($task->task as $item)
-                                                        <div class="col-lg-6 d-flex align-items-center address_box mb-3">
-                                                            <i class="fas fa-map-marker-alt"></i>
-                                                            <div class="right_text">
-                                                                <h4>{{ $task_type_array[$item->task_type_id - 1] }}</h4>
-                                                                <p>{{ $item->address }}</p>
-                                                            </div>
-                                                        </div>
-                                                    @endforeach
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row no-gutters">
-                                <div class="col-sm-12 btn_group d-flex align-items-center justify-content-between">
-                                    <a class="btn pink_btn" href="tel:{{ $task->phone_number }}"><i
-                                            class="fas fa-phone-alt position-absolute"></i><span>{{__('Call')}}</span></a>
-                                    <a class="btn pink_btn" href="sms:{{ $task->phone_number }}"><i
-                                            class="fas fa-comment position-absolute"></i><span>{{__('Message')}}</span></a>
-                                </div>
-                            </div>
-                             
-                        </div>
-                    </div>
-
-                    
-                            
-                        
                 </div>
             </div>
         </div>
