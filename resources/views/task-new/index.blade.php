@@ -243,7 +243,7 @@
                                     <th>Order Id</th>
                                     <th>Customer</th>
                                     {{-- <th>Order Id</th> --}}
-                                    <th>Driver</th>
+                                    <th>{{getAgentNomenclature()}}</th>
                                     <th>Create Time</th>
                                     <th>Pricing Rule</th>
                                     <th style="width: 85px;">Action</th>

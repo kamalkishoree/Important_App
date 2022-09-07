@@ -166,7 +166,7 @@ class AgentPayoutController extends BaseController{
             
             $agent = Agent::where('id', $payout->agent_id)->where('is_approved', 1)->first();
             if(!$agent){
-                return Redirect()->back()->with('error', __('This Agent is not approved!'));
+                return Redirect()->back()->with('error', __('This '.getAgentNomenclature().' is not approved!'));
             }
             
             $agent_account = $payout->payoutBankDetails->first() ? $payout->payoutBankDetails->first()->beneficiary_account_number : '';
@@ -176,7 +176,7 @@ class AgentPayoutController extends BaseController{
             $available_funds = agentEarningManager::getAgentEarning($payout->agent_id, 1);
 
             if($request->amount > $available_funds){
-                return Redirect()->back()->with('error', __('Payout amount is greater than agent available funds'));
+                return Redirect()->back()->with('error', __('Payout amount is greater than '.getAgentNomenclature().' available funds'));
             }
 
             $payout_option = '';

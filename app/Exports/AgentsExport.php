@@ -32,8 +32,8 @@ class AgentsExport implements FromCollection, WithMapping, WithHeadings{
             'Team',
             'Cash Collected',
             'Order Earning',
-            'Total Paid to Driver',
-            'Total Receive from Driver',
+            'Total Paid to '.getAgentNomenclature(),
+            'Total Receive from '.getAgentNomenclature(),
             'Final Balance'
         ];
     }

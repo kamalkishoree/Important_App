@@ -17,8 +17,8 @@ class EmailTemplateSeeder extends Seeder
         $options = [
             [
                 'slug' =>'new-agent-signup',
-                'label' =>'New Agent Signup',
-                'subject' =>'New Agent Signup',
+                'label' =>'New '.getAgentNomenclature().' Signup',
+                'subject' =>'New '.getAgentNomenclature().' Signup',
                 'tags' => '{agent_name}, {phone_no}, {team}', 
                 'content' => ''
             ]

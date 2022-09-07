@@ -467,7 +467,7 @@ use Carbon\Carbon;
                                 value="{{ isset($task->cash_to_be_collected) ? $task->cash_to_be_collected : '' }}">
                         </div>
                     </div>
-                    {{-- <span class="span1 tagspan">Please select atlest one tag for driver and agent</span> --}}
+                    {{-- <span class="span1 tagspan">Please select atlest one tag for {{getAgentNomenclature()}} and agent</span> --}}
                     <span class="span1 tagspan"></span>
                     <div class="tags">
                         <div class="row">
@@ -488,7 +488,7 @@ use Carbon\Carbon;
 
                             <div class="col-md-6">
                                 <div class="form-group mb-3">
-                                    <label>{{__('Driver Tag')}}</label>
+                                    <label>{{__(getAgentNomenclature().' Tag')}}</label>
                                     <select name="agent_tag[]" id="selectize-optgroup" multiple placeholder="Select tag...">
                                         <option value="">{{__('Select Tag...')}}</option>
                                         @foreach ($agentTag as $item)
@@ -504,7 +504,7 @@ use Carbon\Carbon;
                     <div class="row drivers">
                         <div class="col-md-12">
                             <div class="form-group mb-3">
-                                <label>{{__('Drivers')}}</label>
+                                <label>{{__(getAgentNomenclature().'s')}}</label>
                                 <select class="form-control" name="agent" id="location_accuracy">
                                     @foreach ($agents as $item)
                                         <option value="{{ $item->id }}"
