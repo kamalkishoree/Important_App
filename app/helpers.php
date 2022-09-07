@@ -2,6 +2,7 @@
 use Carbon\Carbon;
 use App\Model\ClientPreference;
 use App\Model\Client as ClientData;
+use App\Model\Countries;
 use App\Model\PaymentOption;
 
 function pr($var) {
@@ -66,14 +67,11 @@ function convertDateTimeInTimeZone($date, $timezone, $format = 'Y-m-d H:i:s'){
 function getClientPreferenceDetail()
 {
     $client_preference_detail = ClientPreference::first();
-    // list($r, $g, $b) = sscanf($client_preference_detail->web_color, "#%02x%02x%02x");
-    // $client_preference_detail->wb_color_rgb = "rgb(".$r.", ".$g.", ".$b.")";
     return $client_preference_detail;
 }
 function getClientDetail()
 {
     $clientData = ClientData::first();
-    // $clientData->logo_image_url = $clientData ? $clientData->logo['image_fit'].'150/92'.$clientData->logo['image_path'] : " ";
     return $clientData;
 }
 function getRazorPayApiKey()
@@ -120,4 +118,37 @@ function dateTimeInUserTimeZone($date, $timezone, $showDate=true, $showTime=true
 
 function helper_number_formet($number){
     return number_format($number,2);
+}
+
+function getCountryCode($dial_code=''){
+    if($dial_code==''):
+        $clientData = ClientData::select('country_id')->first();
+        $getAdminCurrentCountry = Countries::where('id', '=', $clientData->country_id)->select('id', 'code')->first();
+    else:
+        $getAdminCurrentCountry = Countries::where('phonecode', '=', $dial_code)->select('id', 'code')->first();
+    endif;
+
+    if (!empty($getAdminCurrentCountry)) {
+        $countryCode = $getAdminCurrentCountry->code;
+    } else {
+        $countryCode = '';
+    }
+    return $countryCode;
+}
+
+function getCountryPhoneCode(){
+    $clientData = ClientData::select('country_id')->first();
+    $getAdminCurrentCountry = Countries::where('id', '=', $clientData->country_id)->select('id', 'phonecode')->first();
+    if (!empty($getAdminCurrentCountry)) {
+        $countryCode = $getAdminCurrentCountry->phonecode;
+    } else {
+        $countryCode = '';
+    }
+    return $countryCode;
+}
+
+function getAgentNomenclature()
+{
+    $agent_name = ClientPreference::first()->agent_name;
+    return (empty($agent_name))?'Agent':$agent_name;
 }

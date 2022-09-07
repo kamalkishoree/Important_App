@@ -36,7 +36,7 @@
                         <img src="https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain/https://royodelivery-assets.s3.us-west-2.amazonaws.com/assets/client_00000051/agents5fedb209f1eea.jpeg/Ec9WxFN1qAgIGdU2lCcatJN5F8UuFMyQvvb4Byar.jpg" alt="contact-img" title="contact-img" class="rounded-circle avatar-sm">
                     </div>
                     <div class="col-9 pl-1">
-                        <h5 class="m-0 font-weight-normal">new agent</h5>
+                        <h5 class="m-0 font-weight-normal">new {{getAgentNomenclature()}}</h5>
                     </div>
                 </div>
                 <div class="row">
@@ -53,7 +53,7 @@
                 </div>
             </div>
             <div class="card-box">
-                <h4 class="header-title mb-2">Driver Details</h4>
+                <h4 class="header-title mb-2">{{getAgentNomenclature()}} Details</h4>
                 <div class="row">
                     <div class="col-xl-12">
                         <div class="row align-items-center mb-3">
@@ -61,7 +61,7 @@
                                 <img src="https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain/https://royodelivery-assets.s3.us-west-2.amazonaws.com/assets/client_00000051/agents5fedb209f1eea.jpeg/Ec9WxFN1qAgIGdU2lCcatJN5F8UuFMyQvvb4Byar.jpg" alt="contact-img" title="contact-img" class="rounded-circle avatar-sm">
                             </div>
                             <div class="col-9 pl-1">
-                                <h5 class="m-0 font-weight-normal">new agent</h5>
+                                <h5 class="m-0 font-weight-normal">new {{getAgentNomenclature()}}</h5>
                             </div>
                         </div>
                     </div>
@@ -114,7 +114,7 @@
                         <img src="https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain/https://royodelivery-assets.s3.us-west-2.amazonaws.com/assets/client_00000051/agents5fedb209f1eea.jpeg/Ec9WxFN1qAgIGdU2lCcatJN5F8UuFMyQvvb4Byar.jpg" alt="contact-img" title="contact-img" class="rounded-circle avatar-sm">
                     </div>
                     <div class="col-10 pl-1">
-                        <h5 class="m-0 font-weight-normal">new agent</h5>
+                        <h5 class="m-0 font-weight-normal">new {{getAgentNomenclature()}}</h5>
                     </div>
                 </div>
                 <div class="row">
@@ -188,7 +188,7 @@
                                     </div>
                                     <div class="col-md-3">
                                         <div class="form-group pay-detail-box copyin1" id="">
-                                            <label class="control-label">Agent Type</label> <br>
+                                            <label class="control-label">{{getAgentNomenclature()}} Type</label> <br>
                                             
                                             <span id="driver_type"></span>
                                         </div>
@@ -267,7 +267,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group pay-detail-box copyin1" id="">
-                                        <label for="title" class="control-label">Driver Cost</label>
+                                        <label for="title" class="control-label">{{getAgentNomenclature()}} Cost</label>
                                         <h5 id="driver_cost">0.00</h5>
                                     </div>
                                 </div>
@@ -276,13 +276,13 @@
                             <div class="row">
                                 <div class="col-md-3">
                                     <div class="form-group pay-detail-box copyin1" id="">
-                                        <label for="title" class="control-label">Agent Commission %</label> <br>
+                                        <label for="title" class="control-label">{{getAgentNomenclature()}} Commission %</label> <br>
                                         <span id="agent_commission_percentage">5</span>
                                     </div>
                                 </div>
                                 <div class="col-md-3">
                                     <div class="form-group pay-detail-box copyin1" id=""> 
-                                        <label for="title" class="control-label">Agent Commission Fixed</label> <br>
+                                        <label for="title" class="control-label">{{getAgentNomenclature()}} Commission Fixed</label> <br>
                                         <span id="agent_commission_fixed">8</span>
                                     </div>
                                 </div>

@@ -133,7 +133,7 @@
                         </div>
                     </div>
                     
-                    <span class="span1 tagspan">{{__("Please select atlest one tag for driver and agent")}}</span>
+                    <span class="span1 tagspan">{{__("Please select atlest one tag for ".getAgentNomenclature())}}</span>
                     <div class="tags {{ $allcation->manual_allocation == 0 ? "hidealloction":""}}">
                         <div class="row">
                             <div class="col-md-12">
@@ -153,7 +153,7 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="form-group">
-                                    <label>{{__("Driver Tag")}}</label>
+                                    <label>{{__(getAgentNomenclature()." Tag")}}</label>
                                     <select name="agent_tag[]" id="selectize-optgroup" class="selectizeInput" multiple placeholder="{{__('Select tag...')}}">
                                         <option value="">{{__("Select Tag...")}}</option>
                                         @foreach ($agentTag as $item)
@@ -168,8 +168,8 @@
                     <div class="row drivers hidealloction">
                         <div class="col-md-12">
                             <div class="form-group">
-                                <label>{{__("Drivers")}}</label>
-                                {!! Form::text('searchDriver', null, ['class' => 'form-control', 'placeholder' => __('Search Driver'), 'id' => 'searchDriver']) !!}
+                                <label>{{__(getAgentNomenclature()."s")}}</label>
+                                {!! Form::text('searchDriver', null, ['class' => 'form-control', 'placeholder' => __('Search '.getAgentNomenclature()), 'id' => 'searchDriver']) !!}
                                 <input type="hidden" id='agentid' name="agent" readonly>
                                 {{-- <select class="form-control selectpicker" name="agent" id="driverselect">
                                     @foreach ($agents as $item)

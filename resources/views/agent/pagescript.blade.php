@@ -200,7 +200,7 @@
                         previous: "<i class='mdi mdi-chevron-left'>",
                         next: "<i class='mdi mdi-chevron-right'>"
                     },
-                    searchPlaceholder: "{{__('Search Agent')}}",
+                    searchPlaceholder: "{{__('Search '.getAgentNomenclature())}}",
                     'loadingRecords': '&nbsp;',
                     'processing': '<div class="spinner"></div>'
                 },
@@ -390,9 +390,7 @@
         });
 
         /* add Team using ajax*/
-        // $("#add-agent-modal #submitAgent").submit(function(e) {
-
-        // });
+        
         $(document).on("submit", "#submitAgent", function(e) {
             e.preventDefault();
             // $(document).on('click', '.submitAgentForm', function() {

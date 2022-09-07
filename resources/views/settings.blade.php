@@ -111,7 +111,7 @@
 
                                     <tr>
                                         <td>
-                                            <h5 class="m-0 font-weight-normal">Agent Started</h5>
+                                            <h5 class="m-0 font-weight-normal">{{getAgentNomenclature()}} Started</h5>
                                         </td>
 
                                         <td>
@@ -144,7 +144,7 @@
 
                                     <tr>
                                         <td>
-                                            <h5 class="m-0 font-weight-normal">Agent Arrived</h5>
+                                            <h5 class="m-0 font-weight-normal">{{getAgentNomenclature()}} Arrived</h5>
                                         </td>
 
                                         <td>
@@ -309,7 +309,7 @@
 
                                     <tr>
                                         <td>
-                                            <h5 class="m-0 font-weight-normal">Agent Started</h5>
+                                            <h5 class="m-0 font-weight-normal">{{getAgentNomenclature()}} Started</h5>
                                         </td>
 
                                         <td>
@@ -342,7 +342,7 @@
 
                                     <tr>
                                         <td>
-                                            <h5 class="m-0 font-weight-normal">Agent Arrived</h5>
+                                            <h5 class="m-0 font-weight-normal">{{getAgentNomenclature()}} Arrived</h5>
                                         </td>
 
                                         <td>

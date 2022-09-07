@@ -105,7 +105,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                         <i class="fas fa-money-check-alt text-primary"></i>
                                         <span data-plugin="counterup" id="total_delivery_fees">{{$agentsCount}}</span>
                                     </h3>
-                                    <p class="text-muted font-15 mb-0">{{__("Active")}} {{ Session::get('agent_name') ? Session::get('agent_name') : __('Agent') }}</p>
+                                    <p class="text-muted font-15 mb-0">{{__("Active")}} {{__(getAgentNomenclature()) }}</p>
                                 </div>
                             </div>
                         </div>
@@ -178,13 +178,15 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                     </div>
                                 </form>
                             </div>
-                            <a href="{{route('batch.list')}}"><button type="button" class="btn btn-info" >All Batchs</button></a>
-                            <!-- @if (isset($status) && $status == 'unassigned' && $panding_count != 0 ) -->
-                                <div class="col-sm-4 assign-toggle assign-show ">
-                                    <button type="button" class="btn btn-info assign_agent" data-toggle="modal" data-target="#add-assgin-agent-model" data-backdrop="static" data-keyboard="false">{{__("Assign")}}</button> 
-                                    <button type="button" class="btn btn-info assign_date" data-toggle="modal" data-target="#add-assgin-date-model" data-backdrop="static" data-keyboard="false">{{__("Change Date")}}/{{__("Time")}}</button> 
-                                </div>
-                            <!-- @endif -->
+                            @if(!empty($preference->create_batch_hours) && $preference->create_batch_hours > 0)
+                            <a href="{{route('batch.list')}}"><button type="button" class="btn btn-info" >All Batches</button></a>
+                            @endif
+                            
+                            <div class="col-sm-4 assign-toggle assign-show ">
+                                <button type="button" class="btn btn-info assign_agent" data-toggle="modal" data-target="#add-assgin-agent-model" data-backdrop="static" data-keyboard="false">{{__("Assign")}}</button> 
+                                <button type="button" class="btn btn-info assign_date" data-toggle="modal" data-target="#add-assgin-date-model" data-backdrop="static" data-keyboard="false">{{__("Change Date")}}/{{__("Time")}}</button> 
+                            </div>
+                          
 
                            
                         </div>
@@ -201,11 +203,11 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                         <th class="sort-icon">{{__("Order Number")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                         <th class="sort-icon">{{__("Customer")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                         <th class="sort-icon">{{__("Phone.No")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
-                                        <th class="sort-icon">{{ Session::get('agent_name') ? Session::get('agent_name') : __('Agent') }} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
+                                        <th class="sort-icon">{{__(getAgentNomenclature()) }} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                         <th class="sort-icon">{{__("Due Time")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                         <th class="routes-head">{{__("Routes")}}</th>
-                                        <th>{{__("Tracking URL")}}</th>
-                                        <th>{{__("Route Proofs")}}</th>
+                                        <!-- <th>{{__("Tracking URL")}}</th>
+                                         <th>{{__("Route Proofs")}}</th> -->
                                         <th>{{__("Pricing")}}</th>
                                         <th>{{__("Updated At")}}</th>
                                         <th style="width: 85px;">{{__("Action")}}</th>

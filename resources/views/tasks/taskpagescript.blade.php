@@ -11,7 +11,6 @@
 
         initializeRouteListing();
         function initializeRouteListing(){
-
             $('.agents-datatable').DataTable({
                 "dom": '<"toolbar">Bfrtip',
                 "destroy": true,
@@ -23,7 +22,6 @@
                 "paging": true,
                 "lengthChange" : true,
                 "searching": true,
-                // "ordering": true,
                 language: {
                             search: "",
                             paginate: { previous: "<i class='mdi mdi-chevron-left'>", next: "<i class='mdi mdi-chevron-right'>" },
@@ -43,7 +41,6 @@
                 }],
                 ajax: {
                     url: "{{url('task/filter')}}",
-                    // "dataSrc": "",
                     headers: {
                         'X-CSRF-Token': '{{ csrf_token() }}',
                     },
@@ -53,7 +50,6 @@
                         d.imgproxyurl = '{{$imgproxyurl}}';
                     }
                 },
-               // order: dataTableColumnSort(),
                 columns: dataTableColumn(),
             });
         }
@@ -74,7 +70,7 @@
                     {data: 'id', name: 'id', orderable: false, searchable: false, "mRender": function ( data, type, full ) {
                         return '<input type="checkbox" class="single_driver_check" name="driver_id[]" id="single_driver" value="'+full.id+'">';
                     }},
-                    // {data: 'order_number', name: 'order_number', orderable: true, searchable: false},
+                    
                     {data: 'customer_id', name: 'customer_id', orderable: true, searchable: false},
                     {data: 'order_number', name: 'order_number', orderable: true, searchable: false , "mRender": function ( data, type, full ) {
                         if(full.request_type=='D')
@@ -95,13 +91,13 @@
                         });
                         return routes;
                     }},
-                    {data: 'track_url', name: 'track_url', orderable: false, searchable: false, "mRender": function ( data, type, full ) {
+                    /*{data: 'track_url', name: 'track_url', orderable: false, searchable: false, "mRender": function ( data, type, full ) {
                         var trackUrl = full.track_url;
                         return '<a onclick="window.open(this.href,"_blank");return false;" href="'+trackUrl+'">'+'{{__("Track")}}'+'</a>';
                     }},
-                    {data: 'track_url', name: 'track_url', orderable: false, searchable: false, "mRender": function ( data, type, full ) {
+                     {data: 'track_url', name: 'track_url', orderable: false, searchable: false, "mRender": function ( data, type, full ) {
                         return '<button class="showTaskProofs btn btn-primary-outline action-icon" value="'+full.id+'"><i class="fe-layers"></i></button>';
-                    }},
+                    }}, */
                     {data: 'order_cost', name: 'order_cost', orderable: false, searchable: false, "mRender": function ( data, type, full ) {
                         return '<button class="showaccounting btn btn-primary-outline action-icon setcolor" value="'+full.id+'">'+full.order_cost+'</button>';
                     }},
@@ -125,13 +121,7 @@
                         });
                         return routes;
                     }},
-                    {data: 'track_url', name: 'track_url', orderable: false, searchable: false, "mRender": function ( data, type, full ) {
-                        var trackUrl = full.track_url;
-                        return '<a onclick="window.open(this.href,"_blank");return false;" href="'+trackUrl+'">Track</a>';
-                    }},
-                    {data: 'track_url', name: 'track_url', orderable: false, searchable: false, "mRender": function ( data, type, full ) {
-                        return '<button class="showTaskProofs btn btn-primary-outline action-icon" value="'+full.id+'"><i class="fe-layers"></i></button>';
-                    }},
+                    
                     {data: 'order_cost', name: 'order_cost', orderable: false, searchable: false, "mRender": function ( data, type, full ) {
                         return '<button class="showaccounting btn btn-primary-outline action-icon setcolor" value="'+full.id+'">'+full.order_cost+'</button>';
                     }},
