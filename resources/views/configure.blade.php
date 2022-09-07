@@ -1192,7 +1192,7 @@ $sms_crendential = json_decode($preference->sms_credentials);
             $('#add_driver_registration_document_modal input[name=driver_registration_document_id]').val("");
             $('#add_driver_registration_document_modal').modal('show');
             $('#add_driver_registration_document_modal #standard-modalLabel').html(
-                'Add '.getAgentNomenclature().' Registration Document');
+                'Add {{getAgentNomenclature()}} Registration Document');
         });
         $(document).on("click", ".delete_driver_registration_document_btn", function() {
             var driver_registration_document_id = $(this).data('driver_registration_document_id');
@@ -1275,7 +1275,7 @@ $sms_crendential = json_decode($preference->sms_credentials);
                                 "checked", false);
                         }
                         $('#add_driver_registration_document_modal #standard-modalLabel').html(
-                            'Update '.getAgentNomenclature().' Registration Document');
+                            'Update {{getAgentNomenclature()}} Registration Document');
                         $('#add_driver_registration_document_modal').modal('show');
                     }
                 },
