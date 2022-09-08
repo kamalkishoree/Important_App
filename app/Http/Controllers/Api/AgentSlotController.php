@@ -20,6 +20,7 @@ class AgentSlotController extends BaseController
 {
     /**   get agent according to lat long  */
     function getAgentsSlotByTags(Request $request){
+        pr($request->all());
         try {
 
             $validator = Validator::make(request()->all(), [
@@ -33,12 +34,12 @@ class AgentSlotController extends BaseController
                 return $this->errorResponse($validator->messages(), 422);
             }
             $agentController = new AgentController();
-            $geoid = $this->findLocalityByLatLng($request->latitude, $request->longitude);
+            $geoid = $agentController->findLocalityByLatLng($request->latitude, $request->longitude);
             $geoagents_ids = DriverGeo::where('geo_id', $geoid)->pluck('driver_id');
-
+            pr($geoagents_ids);
             $tagId = '';
-            if(!empty($request->tag)){
-                $tag = TagsForAgent::where('name', $request->tag)->get()->first();
+            if(!empty($request->tags)){
+                $tag = TagsForAgent::where('name', $request->tags)->get()->first();
                 if(!empty($tag)){
                     $tagId = $tag->id;
                 }else{
