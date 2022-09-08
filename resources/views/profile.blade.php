@@ -161,9 +161,9 @@ width: 100%;
                                     </div>
                                 </div>
                                 <div class="col-md-5">
-                                    <div class="d-flex mb-2">
-                                        <a class="mr-2" href="https://apps.apple.com/us/app/royo-dispatcher/id1546990347" target="_blank"><img src="{{asset('assets/images/iosstore.png')}}" alt="image" > </a>
-                                        <a class="" href="https://play.google.com/store/apps/details?id=com.codebew.deliveryagent&hl=en_US&gl=US" target="_blank"><img src="{{asset('assets/images/playstore.png')}}" alt="image"  > </a>
+                                    <div class="row mb-2">
+                                        <a class="col-md-6" href="https://apps.apple.com/us/app/royo-dispatcher/id1546990347" target="_blank"><img class="w-100" src="{{asset('assets/images/iosstore.png')}}" alt="image" > </a>
+                                        <a class="col-md-6 " href="https://play.google.com/store/apps/details?id=com.codebew.deliveryagent&hl=en_US&gl=US" target="_blank"><img class="w-100" src="{{asset('assets/images/playstore.png')}}" alt="image"  > </a>
                                     </div>
                                     <div class="row">
                                         <label class="control-label col-12">{{__("Short Code")}}</label><br/>
