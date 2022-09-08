@@ -7,6 +7,7 @@
 
         <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
         <script src="{{asset('assets/libs/spinner/spinner.js')}}"></script>
+        <script src="{{ asset('assets/js/storage/dispatcherStorage.js')}}"></script>
         <script src="{{asset('assets/js/vendor.min.js')}}"></script>
 </head>
 @php $theme = \App\Model\ClientPreference::where(['id' => 1])->first('theme');@endphp

@@ -531,11 +531,11 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
 
                     var EditSlotHtml = `<form class="needs-validation" name="slot-form" id="update-event" method="post">
                     @csrf
-                        <input type="hidden" name="slot_day_id" id="deleteSlotDayid" value="" >
-                        <input type="hidden" name="slot_id" id="deleteSlotId" value="" >
-                        <input type="hidden" name="slot_type" id="deleteSlotType" value="" >
-                        <input type="hidden" name="old_slot_type" id="deleteSlotTypeOld" value="" >
-                        <input type="hidden" name="slot_date" id="deleteSlotDate" value="" >
+                        <input type="hidden" name="slot_day_id" id="SlotDayid" value="" >
+                        <input type="hidden" name="slot_id" id="SlotId" value="" >
+                        <input type="hidden" name="slot_type" id="SlotType" value="" >
+                        <input type="hidden" name="old_slot_type" id="SlotTypeOld" value="" >
+                        <input type="hidden" name="slot_date" id="SlotDate" value="" >
                     <div class="row mb-2">
                         <div class="col-12">
                             <div class="form-group">

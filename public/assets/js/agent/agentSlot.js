@@ -1,9 +1,5 @@
 $(function(){
-    localStorage.removeItem('deleteSlotDayid');
-    localStorage.removeItem('deleteSlotId');
-    localStorage.removeItem('deleteSlotType');
-    localStorage.removeItem('deleteSlotTypeOld');
-    localStorage.removeItem('deleteSlotDate');
+    dispatcherStorage.removeStorageAll();
     var product_id = vendor_id = title = block = appoin=agent_id = calendar='' ;
     var calendarEl = document.getElementById('calendar');
     $(document).on('click', '.agent_slot_button', function() {
@@ -14,7 +10,9 @@ $(function(){
     });
 
     $(document).on('change','.slotTypeEdit',function(){
-        if($(this).val() == 'date') {
+        var val = $(this).val();
+        dispatcherStorage.setStorageSingle('SlotType',val);
+        if(val == 'date') {
             $(".forDateEdit").fadeIn(1000);
         } else{
             $(".forDateEdit").fadeOut(500);
@@ -23,7 +21,7 @@ $(function(){
     
     $(document).on('change', '#edit_slot_date', function() {
         var edit_slot_date = $(this).val();
-        localStorage.setItem('deleteSlotDate',edit_slot_date);
+        dispatcherStorage.setStorageSingle('SlotDate',edit_slot_date);
     });
     $(document).on('click', '#deleteSlotBtn', function() {
         var date = $('#edit_slot_date').val();
@@ -34,11 +32,14 @@ $(function(){
             confirmButtonText: 'Yes',
             focusConfirm: false,
             preConfirm: () => {
-                const deleteSlotDayid   =  localStorage.getItem('deleteSlotDayid');
-                const deleteSlotId      =  localStorage.getItem('deleteSlotId');
-                const deleteSlotType    =  localStorage.getItem('deleteSlotType');
-                const deleteSlotTypeOld =  localStorage.getItem('deleteSlotTypeOld');
-                const deleteSlotDate    =  localStorage.getItem('deleteSlotDate');
+
+                const SlotDayid   =   dispatcherStorage.getStorage('SlotDayid');
+                const SlotId   =   dispatcherStorage.getStorage('SlotId');
+                const SlotType   =  dispatcherStorage.getStorage('SlotType');
+                const SlotTypeOld   =  dispatcherStorage.getStorage('SlotTypeOld');
+                const SlotDate   =  dispatcherStorage.getStorage('SlotDate');
+
+
 
                 const start_time = Swal.getPopup().querySelector('#edit_start_time').value
                 const end_time = Swal.getPopup().querySelector('#edit_end_time').value
@@ -47,16 +48,16 @@ $(function(){
                 const edit_slot_date = Swal.getPopup().querySelector('#edit_slot_date').value
     
                
-              return { deleteSlotDayid: deleteSlotDayid, deleteSlotId: deleteSlotId,deleteSlotType:deleteSlotType,deleteSlotTypeOld:deleteSlotTypeOld,deleteSlotDate:deleteSlotDate,start_time:start_time,end_time:end_time,slot_type_edit:slot_type_edit,edit_type_id:edit_type_id,edit_slot_date:edit_slot_date }
+              return { SlotDayid: SlotDayid, SlotId: SlotId,SlotType:SlotType,SlotTypeOld:SlotTypeOld,SlotDate:SlotDate,start_time:start_time,end_time:end_time,slot_type_edit:slot_type_edit,edit_type_id:edit_type_id,edit_slot_date:edit_slot_date }
             },onOpen: function() {
             }
           }).then(async (result) => {
             var formData = {
-                slot_day_id:result.value.deleteSlotDayid,
-                slot_id:result.value.deleteSlotId,
-                slot_type:result.value.deleteSlotType,
-                old_slot_type:result.value.deleteSlotTypeOld,
-                slot_date:result.value.deleteSlotDate,
+                slot_day_id:result.value.SlotDayid,
+                slot_id:result.value.SlotId,
+                slot_type:result.value.SlotType,
+                old_slot_type:result.value.SlotTypeOld,
+                slot_date:result.value.SlotDate,
                 agent_id:agent_id,
                 start_time:start_time,
                 end_time:end_time,
@@ -245,8 +246,8 @@ $(function(){
                         confirmButtonText: 'Submit',
                         focusConfirm: false,
                         preConfirm: () => {
-                            const start_time = Swal.getPopup().querySelector('#start_time').value
-                            const end_time = Swal.getPopup().querySelector('#end_time').value
+                            const start_time = Swal.getPopup().querySelector('#edit_start_time').value
+                            const end_time = Swal.getPopup().querySelector('#edit_end_time').value
                             const slotDate = document.querySelector('input[name=radio-group]').value
                             const week_day = [];
                             $.each($("input:checkbox[name='week_day[]']:checked"), function () {
@@ -289,14 +290,16 @@ $(function(){
                     document.getElementById('edit_type_id').value = ev.event.extendedProps.type_id;
     
                     // Delete Slot Form
-                    localStorage.setItem('deleteSlotDayid',ev.event.extendedProps.type_id);
-                    localStorage.setItem('deleteSlotId',ev.event.extendedProps.slot_id);
-                    localStorage.setItem('deleteSlotType',ev.event.extendedProps.type);
-                    localStorage.setItem('deleteSlotTypeOld',ev.event.extendedProps.type);
-                    document.getElementById('deleteSlotDayid').value = ev.event.extendedProps.type_id;
-                    document.getElementById('deleteSlotId').value = ev.event.extendedProps.slot_id;
-                    document.getElementById('deleteSlotType').value = ev.event.extendedProps.type;
-                    document.getElementById('deleteSlotTypeOld').value = ev.event.extendedProps.type;
+                    /**storage */
+                        dispatcherStorage.setStorageSingle('SlotDayid',ev.event.extendedProps.type_id)
+                        dispatcherStorage.setStorageSingle('SlotId',ev.event.extendedProps.slot_id);
+                        dispatcherStorage.setStorageSingle('SlotType',ev.event.extendedProps.type);
+                        dispatcherStorage.setStorageSingle('SlotTypeOld',ev.event.extendedProps.type);
+                    /**storage */
+                    document.getElementById('SlotDayid').value = ev.event.extendedProps.type_id;
+                    document.getElementById('SlotId').value = ev.event.extendedProps.slot_id;
+                    document.getElementById('SlotType').value = ev.event.extendedProps.type;
+                    document.getElementById('SlotTypeOld').value = ev.event.extendedProps.type;
     
                     if(ev.event.extendedProps.type == 'date'){
                         $("#edit_slotDate").prop("checked", true);
