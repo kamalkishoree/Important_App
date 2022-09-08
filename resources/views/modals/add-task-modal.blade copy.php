@@ -134,7 +134,7 @@
                     </div>
                     
                     <span class="span1 tagspan">{{__("Please select atlest one tag for ".getAgentNomenclature())}}</span>
-                    <div class="tags {{ $allcation->manual_allocation == 0 ? "hidealloction":""}}">
+                    <div class="tags {{ $allcation->manual_allocation == 0 ? 'hidealloction':''}}">
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="form-group">
