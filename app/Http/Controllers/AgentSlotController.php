@@ -56,7 +56,7 @@ class AgentSlotController extends Controller
                 }
             }else{
                 $slotDate = new AgentSlotDate();
-                $slotDate->agent_id          = $agent->id;
+                $slotDate->agent_id           = $agent->id;
                 $slotDate->start_time         = $request->start_time;
                 $slotDate->end_time           = $request->end_time;
                 $slotDate->specific_date      = $request->slot_date;
@@ -109,7 +109,7 @@ class AgentSlotController extends Controller
                     $dateSlot->working_today    = 1;
                     $dateSlot->save();
 
-                    return redirect()->back()->with('success', 'Slot saved successfully!');
+                    return redirect()->back()->with('success', __('Slot saved successfully!'));
                 }
             }
 

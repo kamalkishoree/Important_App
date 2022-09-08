@@ -120,6 +120,7 @@ Route::group(['middleware' => ['dbCheck', 'AppAuth','apiLocalization']], functio
 Route::group(['middleware' => 'dbCheck','prefix' => 'public'], function() {
     Route::post('task/create', 'Api\TaskController@CreateTask');
     Route::get('task/currentstatus', 'Api\TaskController@currentstatus');
+    Route::get('agent/check_slot', 'Api\TaskController@currentstatus');
 });
 
 
