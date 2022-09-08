@@ -540,13 +540,13 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                         <div class="col-12">
                             <div class="form-group">
                                 <label class="control-label">{{ __("Start Time(24 hours format)") }}</label>
-                                <input class="form-control" placeholder={{ __("Start Time") }} type="text" name="start_time" id="edit_start_time" required />
+                                <input class="form-control" placeholder={{ __("Start Time") }} type="time" name="start_time" id="edit_start_time" required />
                             </div>
                         </div>
                         <div class="col-12">
                             <div class="form-group">
                                 <label class="control-label">{{ __("End Time(24 hours format)") }}</label>
-                                <input class="form-control" placeholder={{ __("End Time") }} type="text" name="end_time" id="edit_end_time" required />
+                                <input class="form-control" placeholder={{ __("End Time") }} type="time" name="end_time" id="edit_end_time" required />
                             </div>
                         </div>
                     </div>

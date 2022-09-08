@@ -34,14 +34,20 @@ $(function(){
             confirmButtonText: 'Yes',
             focusConfirm: false,
             preConfirm: () => {
-                const deleteSlotDayid    =  localStorage.getItem('deleteSlotDayid');
-                const deleteSlotId    = localStorage.getItem('deleteSlotId');
+                const deleteSlotDayid   =  localStorage.getItem('deleteSlotDayid');
+                const deleteSlotId      =  localStorage.getItem('deleteSlotId');
                 const deleteSlotType    =  localStorage.getItem('deleteSlotType');
-                const deleteSlotTypeOld    =  localStorage.getItem('deleteSlotTypeOld');
+                const deleteSlotTypeOld =  localStorage.getItem('deleteSlotTypeOld');
                 const deleteSlotDate    =  localStorage.getItem('deleteSlotDate');
+
+                const start_time = Swal.getPopup().querySelector('#edit_start_time').value
+                const end_time = Swal.getPopup().querySelector('#edit_end_time').value
+                const slot_type_edit = document.querySelector('input[name=radio-group]').value 
+                const edit_type_id = Swal.getPopup().querySelector('#edit_type_id').value
+                const edit_slot_date = Swal.getPopup().querySelector('#edit_slot_date').value
     
                
-              return { deleteSlotDayid: deleteSlotDayid, deleteSlotId: deleteSlotId,deleteSlotType:deleteSlotType,deleteSlotTypeOld:deleteSlotTypeOld,deleteSlotDate:deleteSlotDate }
+              return { deleteSlotDayid: deleteSlotDayid, deleteSlotId: deleteSlotId,deleteSlotType:deleteSlotType,deleteSlotTypeOld:deleteSlotTypeOld,deleteSlotDate:deleteSlotDate,start_time:start_time,end_time:end_time,slot_type_edit:slot_type_edit,edit_type_id:edit_type_id,edit_slot_date:edit_slot_date }
             },onOpen: function() {
             }
           }).then(async (result) => {
@@ -51,9 +57,15 @@ $(function(){
                 slot_type:result.value.deleteSlotType,
                 old_slot_type:result.value.deleteSlotTypeOld,
                 slot_date:result.value.deleteSlotDate,
-                agent_id:agent_id
+                agent_id:agent_id,
+                start_time:start_time,
+                end_time:end_time,
+                slot_type_edit:slot_type_edit,
+                edit_type_id:edit_type_id,
+                edit_slot_date:edit_slot_date
             }
-            await deleteSlot(formData)
+            console.log(formData);
+           // await deleteSlot(formData)
             // Swal.fire(`
             // blocktime: ${result.value.blocktime}
             //   memo: ${result.value.memo}
