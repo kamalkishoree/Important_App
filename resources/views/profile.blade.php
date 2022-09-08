@@ -247,6 +247,25 @@ width: 100%;
                                         </span>
                                     </div>
                                 </div>
+                                <div class="col-md-4">
+                                    <div class="form-group mb-3" id="timezoneInput">
+                                        <label for="timezone">{{__("TIMEZONE")}}</label>
+                                        @if($errors->has('timezone'))
+                                        <span class="text-danger" role="alert">
+                                            <strong>{{ $errors->first('timezone') }}</strong>
+                                        </span>
+                                        @endif
+                                        <select class="form-control" id="timezone" name="timezone" value="{{ old('timezone', $client->timezone ?? '')}}" placeholder="{{__("Timezone")}}">
+                                            @foreach($tzlist as $tz)
+                                            {{-- <option value="{{ $tz }}" @if(Auth::user()->timezone == $tz) selected @endif>{{ $tz }}</option> --}}
+                                            <option value="{{ $tz->id }}" @if(Auth::user()->timezone == $tz->id) selected @endif  {{ $is_disabled }}>{{ $tz->timezone.' ('.$tz->diff_from_gtm.')' }}</option>
+                                            @endforeach
+                                        </select>
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong></strong>
+                                        </span>
+                                    </div>
+                                </div>
                                 <div class="col-md-12">
                                     <button type="submit" class="btn btn-blue waves-effect waves-light">{{__("Update")}}</button>
                                 </div>
@@ -354,13 +373,11 @@ width: 100%;
     var input = document.querySelector("#phone_number");
     var iti = window.intlTelInput(input, {
         separateDialCode:true,
+        preferredCountries:["{{getCountryCode()}}"],
+        initialCountry:"{{getCountryCode()}}",
         utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.18/js/utils.js",
     });
-    /* $("#phone_number").intlTelInput({
-        nationalMode: false,
-        formatOnDisplay: true,
-        utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.18/js/utils.js"
-    }); */
+    
     $('.intl-tel-input').css('width', '100%');
 
 
