@@ -149,6 +149,6 @@ function getCountryPhoneCode(){
 
 function getAgentNomenclature()
 {
-    $agent_name = ClientPreference::first()->agent_name;
-    return (empty($agent_name))?'Agent':$agent_name;
+    $reference = ClientPreference::first();
+    return (empty($reference))?'Agent':$reference->agent_name;
 }
