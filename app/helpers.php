@@ -150,5 +150,5 @@ function getCountryPhoneCode(){
 function getAgentNomenclature()
 {
     $reference = ClientPreference::first();
-    return (empty($reference))?'Agent':$reference->agent_name;
+    return (empty($reference))?'Agent': (!empty($reference->agent_name))?$reference->agent_name:'Agent';
 }
