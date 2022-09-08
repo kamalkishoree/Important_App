@@ -434,7 +434,7 @@
                                 </div>
                             </div> --}}
                         </div>
-                        <span class="span1 tagspan">Please select atlest one tag for driver and agent</span>
+                        <span class="span1 tagspan">Please select atlest one tag for {{getAgentNomenclature()}} and {{getAgentNomenclature()}}</span>
                         <div class="row tags">
                             <div class="col-md-6">
                                 <div class="form-group mb-3">
@@ -451,7 +451,7 @@
 
                             <div class="col-md-6">
                                 <div class="form-group mb-3">
-                                    <label>Driver Tag</label>
+                                    <label>{{getAgentNomenclature()}} Tag</label>
                                     <select name="agent_tag[]" id="selectize-optgroup" multiple placeholder="Select tag...">
                                         <option value="">Select Tag...</option>
                                         @foreach ($agentTag as $item)
@@ -465,7 +465,7 @@
                         <div class="row drivers">
                             <div class="col-md-12">
                                 <div class="form-group mb-3">
-                                    <label>Drivers</label>
+                                    <label>{{getAgentNomenclature()}}s</label>
                                     <select class="form-control" name="agent" id="driverselect">
                                         @foreach ($agents as $item)
                                             <option value="{{ $item->id }}">{{ $item->name }}</option>

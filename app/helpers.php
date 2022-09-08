@@ -67,14 +67,11 @@ function convertDateTimeInTimeZone($date, $timezone, $format = 'Y-m-d H:i:s'){
 function getClientPreferenceDetail()
 {
     $client_preference_detail = ClientPreference::first();
-    // list($r, $g, $b) = sscanf($client_preference_detail->web_color, "#%02x%02x%02x");
-    // $client_preference_detail->wb_color_rgb = "rgb(".$r.", ".$g.", ".$b.")";
     return $client_preference_detail;
 }
 function getClientDetail()
 {
     $clientData = ClientData::first();
-    // $clientData->logo_image_url = $clientData ? $clientData->logo['image_fit'].'150/92'.$clientData->logo['image_path'] : " ";
     return $clientData;
 }
 function getRazorPayApiKey()
@@ -148,4 +145,10 @@ function getCountryPhoneCode(){
         $countryCode = '';
     }
     return $countryCode;
+}
+
+function getAgentNomenclature()
+{
+    $reference = ClientPreference::first();
+    return (empty($reference))?'Agent':$reference->agent_name;
 }

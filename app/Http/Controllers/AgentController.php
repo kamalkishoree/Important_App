@@ -439,7 +439,7 @@ class AgentController extends Controller
             if (isset($otp)) {
                 $send_otp = $otp->opt;
             } else {
-                $send_otp = __('View OTP after Logging in the Driver App');
+                $send_otp = __('View OTP after Logging in the '.getAgentNomenclature().' App');
             }
             $agents_docs = AgentDocs::where('agent_id', $id)->get();
             $driver_registration_documents = DriverRegistrationDocument::get();
@@ -484,7 +484,7 @@ class AgentController extends Controller
         if (isset($otp)) {
             $send_otp = $otp->opt;
         } else {
-            $send_otp = __('View OTP after Logging in the Driver App');
+            $send_otp = __('View OTP after Logging in the '.getAgentNomenclature().' App');
         }
 
         $agents_docs = AgentDocs::where('agent_id', $id)->get();
@@ -600,7 +600,7 @@ class AgentController extends Controller
         if ($agent) {
             return response()->json([
                 'status' => 'success',
-                'message' => 'Agent updated Successfully!',
+                'message' => getAgentNomenclature().' updated Successfully!',
                 'data' => $agent
             ]);
         }
@@ -616,7 +616,7 @@ class AgentController extends Controller
     {
         DriverGeo::where('driver_id', $id)->delete();  // i have to fix it latter
         Agent::where('id', $id)->delete();
-        return redirect()->back()->with('success',__('Agent deleted successfully!'));
+        return redirect()->back()->with('success',__(getAgentNomenclature().' deleted successfully!'));
     }
 
     //----------------------------------function modified by surendra singh-------------------------------//
@@ -633,7 +633,7 @@ class AgentController extends Controller
                 }
                 elseif($request->payment_type == 2){
                     if($amount > $agent->balanceFloat){
-                        return $this->error(__('Amount is greater than agent available funds'), 422);
+                        return $this->error(__('Amount is greater than '.getAgentNomenclature().' available funds'), 422);
                     }
                     $wallet->withdrawFloat($amount, ['Wallet has been <b>Dedited</b>']);
                 }

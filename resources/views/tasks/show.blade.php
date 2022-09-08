@@ -74,7 +74,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                 </div>
             </div>
             <div class="card-box">
-                <h4 class="header-title mb-2">{{__('Driver')}}</h4>
+                <h4 class="header-title mb-2">{{__(getAgentNomenclature())}}</h4>
                 @if(empty($task->agent))
                 {{__('Unassigned')}}
                 @else

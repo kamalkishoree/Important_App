@@ -377,7 +377,7 @@ class TaskController extends BaseController
                     'Sr. No.',
                     'Customer',
                     'Phone.No',
-                    'Driver',
+                    getAgentNomenclature(),
                     'Due Time',
                     'Routes',
                     'Status',
@@ -394,7 +394,7 @@ class TaskController extends BaseController
                     'Agent Commission Fixed',
                     'Freelancer Commission Percentage',
                     'Freelancer Commission Fixed',
-                    'Driver Cost',
+                    getAgentNomenclature().' Cost',
                     'Pricing'
                 ]
             ];
@@ -846,125 +846,125 @@ class TaskController extends BaseController
     public function assignAgent(Request $request)
     {
         try{
-        if($request->type != 'B'){
-            $agent_id = $request->has('agent_id') ? $request->agent_id : null;
-            $agent_details = Agent::where('id', $agent_id)->where('is_approved', 1)->first();
-            if(!empty($agent_details)){
-                $orders = Order::find($request->orders_id);
-                foreach($orders as $order){
-                    $percentage = 0.00;
-                    $agent_commission_fixed = $order->agent_commission_fixed;
-                    $agent_commission_percentage = $order->agent_commission_percentage;
-                    $freelancer_commission_fixed = $order->freelancer_commission_fixed;
-                    $freelancer_commission_percentage = $order->freelancer_commission_percentage;
+            if($request->type != 'B'){
+                $agent_id = $request->has('agent_id') ? $request->agent_id : null;
+                $agent_details = Agent::where('id', $agent_id)->where('is_approved', 1)->first();
+                if(!empty($agent_details)){
+                    $orders = Order::find($request->orders_id);
+                    foreach($orders as $order){
+                        $percentage = 0.00;
+                        $agent_commission_fixed = $order->agent_commission_fixed;
+                        $agent_commission_percentage = $order->agent_commission_percentage;
+                        $freelancer_commission_fixed = $order->freelancer_commission_fixed;
+                        $freelancer_commission_percentage = $order->freelancer_commission_percentage;
 
-                    if ($agent_details->type == 'Employee'){
-                        $percentage = $agent_commission_fixed + (($order->order_cost / 100) * $agent_commission_percentage);
-                    }else{
-                        $percentage = $freelancer_commission_fixed + (($order->order_cost / 100) * $freelancer_commission_percentage);
-                    }
-                    
-                    $now = Carbon::now()->toDateString();
-                    $driver_subscription = SubscriptionInvoicesDriver::where('driver_id', $agent_id)->where('end_date', '>', $now)->orderBy('end_date', 'desc')->first();
-                    if($driver_subscription && ($driver_subscription->driver_type == $agent_details->type)){
-                        if ($driver_subscription->driver_type == 'Employee') {
-                            $agent_commission_fixed = $driver_subscription->driver_commission_fixed;
-                            $agent_commission_percentage = $driver_subscription->driver_commission_percentage;
-                            $freelancer_commission_fixed = null;
-                            $freelancer_commission_percentage = null;
-                        } else {
-                            $agent_commission_fixed = null;
-                            $agent_commission_percentage = null;
-                            $freelancer_commission_fixed = $driver_subscription->driver_commission_fixed;
-                            $freelancer_commission_percentage = $driver_subscription->driver_commission_percentage;
+                        if ($agent_details->type == 'Employee'){
+                            $percentage = $agent_commission_fixed + (($order->order_cost / 100) * $agent_commission_percentage);
+                        }else{
+                            $percentage = $freelancer_commission_fixed + (($order->order_cost / 100) * $freelancer_commission_percentage);
                         }
-                        $percentage = $driver_subscription->driver_commission_fixed + (($order->order_cost / 100) * $driver_subscription->driver_commission_percentage);
+                        
+                        $now = Carbon::now()->toDateString();
+                        $driver_subscription = SubscriptionInvoicesDriver::where('driver_id', $agent_id)->where('end_date', '>', $now)->orderBy('end_date', 'desc')->first();
+                        if($driver_subscription && ($driver_subscription->driver_type == $agent_details->type)){
+                            if ($driver_subscription->driver_type == 'Employee') {
+                                $agent_commission_fixed = $driver_subscription->driver_commission_fixed;
+                                $agent_commission_percentage = $driver_subscription->driver_commission_percentage;
+                                $freelancer_commission_fixed = null;
+                                $freelancer_commission_percentage = null;
+                            } else {
+                                $agent_commission_fixed = null;
+                                $agent_commission_percentage = null;
+                                $freelancer_commission_fixed = $driver_subscription->driver_commission_fixed;
+                                $freelancer_commission_percentage = $driver_subscription->driver_commission_percentage;
+                            }
+                            $percentage = $driver_subscription->driver_commission_fixed + (($order->order_cost / 100) * $driver_subscription->driver_commission_percentage);
+                        }
+
+                        $order_update = Order::where('id', $order->id)->update([
+                            'driver_id' => $agent_id, 
+                            'driver_cost' => $percentage, 
+                            'status' => 'assigned', 
+                            'auto_alloction' => 'm',
+                            'agent_commission_fixed' => $agent_commission_fixed,
+                            'agent_commission_percentage' => $agent_commission_percentage,
+                            'freelancer_commission_fixed' => $freelancer_commission_fixed,
+                            'freelancer_commission_percentage' => $freelancer_commission_percentage
+                        ]);
+
+                        $task = Task::where('order_id', $order->id)->update(['task_status'=>1]);
+
+                        $this->MassAndEditNotification($order->id, $agent_id);
+                    }
+                    Session::put('success', __(getAgentNomenclature().' assigned successfully'));
+                    return $this->success(__(getAgentNomenclature().' assigned successfully'), 400);
+                }else{
+                    Session::put('error', __('Invalid '.getAgentNomenclature().' data'));
+                    return $this->error(__('Invalid '.getAgentNomenclature().' data'), 400);
+                }
+            }else{
+
+            $batchs = BatchAllocation::with('batchDetails')->where('id',$request->batchId)->first();
+            //dd($batchs->batchDetails);
+            
+            foreach($batchs->batchDetails as  $k=> $batch)
+                {
+                    if(!empty($request->agent_id)){
+                        $task_id = Order::find($batch->order_id);
+                        $agent_details = Agent::where('id', $request->agent_id)->first();
+
+                        $agent_commission_fixed = $task_id->agent_commission_fixed;
+                        $agent_commission_percentage = $task_id->agent_commission_percentage;
+                        $freelancer_commission_fixed = $task_id->freelancer_commission_fixed;
+                        $freelancer_commission_percentage = $task_id->freelancer_commission_percentage;
+
+                        if ($agent_details->type == 'Employee'){
+                            $percentage = $task_id->agent_commission_fixed + (($task_id->order_cost / 100) * $task_id->agent_commission_percentage);
+                        }else{
+                            $percentage = $task_id->freelancer_commission_fixed + (($task_id->order_cost / 100) * $task_id->freelancer_commission_percentage);
+                        }
+
+                        $now = Carbon::now()->toDateString();
+                        $driver_subscription = SubscriptionInvoicesDriver::where('driver_id', $request->agent_id)->where('end_date', '>', $now)->orderBy('end_date', 'desc')->first();
+                        if($driver_subscription && ($driver_subscription->driver_type == $agent_details->type)){
+                            if ($driver_subscription->driver_type == 'Employee') {
+                                $agent_commission_fixed = $driver_subscription->driver_commission_fixed;
+                                $agent_commission_percentage = $driver_subscription->driver_commission_percentage;
+                                $freelancer_commission_fixed = null;
+                                $freelancer_commission_percentage = null;
+                            } else {
+                                $agent_commission_fixed = null;
+                                $agent_commission_percentage = null;
+                                $freelancer_commission_fixed = $driver_subscription->driver_commission_fixed;
+                                $freelancer_commission_percentage = $driver_subscription->driver_commission_percentage;
+                            }
+                            $percentage = $driver_subscription->driver_commission_fixed + (($task_id->order_cost / 100) * $driver_subscription->driver_commission_percentage);
+                        }
+                    }
+                    else{
+                        $percentage = 0.00;
                     }
 
-                    $order_update = Order::where('id', $order->id)->update([
-                        'driver_id' => $agent_id, 
-                        'driver_cost' => $percentage, 
-                        'status' => 'assigned', 
-                        'auto_alloction' => 'm',
+                    $order_update = Order::where('id', $batch->order_id)->update([
+                        'driver_id'=>$request->agent_id,
+                        'driver_cost'=>$percentage,
+                        'status'=>'assigned',
+                        'auto_alloction'=>'m',
                         'agent_commission_fixed' => $agent_commission_fixed,
                         'agent_commission_percentage' => $agent_commission_percentage,
                         'freelancer_commission_fixed' => $freelancer_commission_fixed,
                         'freelancer_commission_percentage' => $freelancer_commission_percentage
                     ]);
+                    $task         = Task::where('order_id', $batch->order_id)->update(['task_status'=>1]);
 
-                    $task = Task::where('order_id', $order->id)->update(['task_status'=>1]);
-
-                    $this->MassAndEditNotification($order->id, $agent_id);
+                    $batch    = BatchAllocationDetail::where('order_id', $batch->order_id)->update(['agent_id'=>$request->agent_id]);
+                
+                $batchs->agent_id =$request->agent_id;
+                $batchs->save();
                 }
-                Session::put('success', __('Agent assigned successfully'));
-                return $this->success(__('Agent assigned successfully'), 400);
-            }else{
-                Session::put('error', __('Invalid agent data'));
-                return $this->error(__('Invalid agent data'), 400);
+                $this->MassAndEditNotification($batchs->batchDetails[0]->order->id, $request->agent_id,$request->batchId);
+                return redirect()->back();
             }
-        }else{
-
-           $batchs = BatchAllocation::with('batchDetails')->where('id',$request->batchId)->first();
-           //dd($batchs->batchDetails);
-           
-           foreach($batchs->batchDetails as  $k=> $batch)
-            {
-                if(!empty($request->agent_id)){
-                    $task_id = Order::find($batch->order_id);
-                    $agent_details = Agent::where('id', $request->agent_id)->first();
-
-                    $agent_commission_fixed = $task_id->agent_commission_fixed;
-                    $agent_commission_percentage = $task_id->agent_commission_percentage;
-                    $freelancer_commission_fixed = $task_id->freelancer_commission_fixed;
-                    $freelancer_commission_percentage = $task_id->freelancer_commission_percentage;
-
-                    if ($agent_details->type == 'Employee'){
-                        $percentage = $task_id->agent_commission_fixed + (($task_id->order_cost / 100) * $task_id->agent_commission_percentage);
-                    }else{
-                        $percentage = $task_id->freelancer_commission_fixed + (($task_id->order_cost / 100) * $task_id->freelancer_commission_percentage);
-                    }
-
-                    $now = Carbon::now()->toDateString();
-                    $driver_subscription = SubscriptionInvoicesDriver::where('driver_id', $request->agent_id)->where('end_date', '>', $now)->orderBy('end_date', 'desc')->first();
-                    if($driver_subscription && ($driver_subscription->driver_type == $agent_details->type)){
-                        if ($driver_subscription->driver_type == 'Employee') {
-                            $agent_commission_fixed = $driver_subscription->driver_commission_fixed;
-                            $agent_commission_percentage = $driver_subscription->driver_commission_percentage;
-                            $freelancer_commission_fixed = null;
-                            $freelancer_commission_percentage = null;
-                        } else {
-                            $agent_commission_fixed = null;
-                            $agent_commission_percentage = null;
-                            $freelancer_commission_fixed = $driver_subscription->driver_commission_fixed;
-                            $freelancer_commission_percentage = $driver_subscription->driver_commission_percentage;
-                        }
-                        $percentage = $driver_subscription->driver_commission_fixed + (($task_id->order_cost / 100) * $driver_subscription->driver_commission_percentage);
-                    }
-                }
-                else{
-                    $percentage = 0.00;
-                }
-
-                $order_update = Order::where('id', $batch->order_id)->update([
-                    'driver_id'=>$request->agent_id,
-                    'driver_cost'=>$percentage,
-                    'status'=>'assigned',
-                    'auto_alloction'=>'m',
-                    'agent_commission_fixed' => $agent_commission_fixed,
-                    'agent_commission_percentage' => $agent_commission_percentage,
-                    'freelancer_commission_fixed' => $freelancer_commission_fixed,
-                    'freelancer_commission_percentage' => $freelancer_commission_percentage
-                ]);
-                $task         = Task::where('order_id', $batch->order_id)->update(['task_status'=>1]);
-
-                $batch    = BatchAllocationDetail::where('order_id', $batch->order_id)->update(['agent_id'=>$request->agent_id]);
-            
-            $batchs->agent_id =$request->agent_id;
-            $batchs->save();
-            }
-            $this->MassAndEditNotification($batchs->batchDetails[0]->order->id, $request->agent_id,$request->batchId);
-            return redirect()->back();
-        }
         }catch(\Exception $e)
         {
             dd($e->getMessage());
@@ -1047,7 +1047,7 @@ class TaskController extends BaseController
         try{
             if(isset($order_details->type) && $order_details->type == 1 && strlen($order_details->friend_phone_number) > 8)
             {
-                $friend_sms_body = 'Hi '.($order_details->friend_name).', '.($order_details->customer->name??'Our customer').' have booked a ride for you. Driver '.($oneagent->name??'').' in our '.($oneagent->make_model ?? '').' with license plate '.($oneagent->plate_number??'').' has been assgined.';
+                $friend_sms_body = 'Hi '.($order_details->friend_name).', '.($order_details->customer->name??'Our customer').' have booked a ride for you. '.getAgentNomenclature().' '.($oneagent->name??'').' in our '.($oneagent->make_model ?? '').' with license plate '.($oneagent->plate_number??'').' has been assgined.';
                 $send = $this->sendSms2($order_details->friend_phone_number , $friend_sms_body);
             }
         }catch(\Exception $e){
@@ -1480,13 +1480,18 @@ class TaskController extends BaseController
         $time       = $this->checkTimeDiffrence($notification_time, $beforetime); //this function is check the time diffrence and give the notification time
         $randem     = rand(11111111, 99999999);
         $rostersbeforetime       = $this->checkBeforeTimeDiffrence($notification_time, $beforetime);
+        $order_details = Order::find($orders_id);
 
-        if ($type == 'acceptreject') {
-            $allcation_type = 'AR';
-        } elseif ($type == 'acknowledge') {
+        if($order_details->auto_alloction !='m'){
+            if ($type == 'acceptreject') {
+                $allcation_type = 'AR';
+            } elseif ($type == 'acknowledge') {
+                $allcation_type = 'ACK';
+            } else {
+                $allcation_type = 'N';
+            }
+        }else{
             $allcation_type = 'ACK';
-        } else {
-            $allcation_type = 'N';
         }
 
         $extraData = [
@@ -1519,9 +1524,7 @@ class TaskController extends BaseController
                     'device_token'        => $oneagent->device_token,
                     'detail_id'           => $randem,
                 ];
-                // Log::info('finalRoster-single');
-                // Log::info($data);
-                // Log::info('finalRoster-single');
+                
                 $this->dispatch(new RosterCreate($data, $extraData)); //this job is for create roster in main database for send the notification  in manual alloction
             }
         } else {
@@ -1635,9 +1638,6 @@ class TaskController extends BaseController
                     break;
                 }
             }
-            // Log::info('finalRoster-all');
-            // Log::info($all);
-            // Log::info('finalRoster-all');
             $this->dispatch(new RosterCreate($all, $extraData)); // //this job is for create roster in main database for send the notification  in auto alloction
         }
     }
@@ -1684,15 +1684,19 @@ class TaskController extends BaseController
         $time              = $this->checkTimeDiffrence($notification_time, $beforetime);
         $randem            = rand(11111111, 99999999);
         $rostersbeforetime = $this->checkBeforeTimeDiffrence($notification_time, $beforetime);
-        $order_details = Order::find($orders_id);
+        $order_details     = Order::find($orders_id);
         $data = [];
 
-        if ($type == 'acceptreject') {
-            $allcation_type = 'AR';
-        } elseif ($type == 'acknowledge') {
+        if($order_details->auto_alloction !='m'){
+            if ($type == 'acceptreject') {
+                $allcation_type = 'AR';
+            } elseif ($type == 'acknowledge') {
+                $allcation_type = 'ACK';
+            } else {
+                $allcation_type = 'N';
+            }
+        }else{
             $allcation_type = 'ACK';
-        } else {
-            $allcation_type = 'N';
         }
        // Log::info($allcation_type);
         $extraData = [
@@ -1799,12 +1803,16 @@ class TaskController extends BaseController
         $order_details = Order::find($orders_id);
         $data = [];
 
-        if ($type == 'acceptreject') {
-            $allcation_type = 'AR';
-        } elseif ($type == 'acknowledge') {
+        if($order_details->auto_alloction !='m'){
+            if ($type == 'acceptreject') {
+                $allcation_type = 'AR';
+            } elseif ($type == 'acknowledge') {
+                $allcation_type = 'ACK';
+            } else {
+                $allcation_type = 'N';
+            }
+        }else{
             $allcation_type = 'ACK';
-        } else {
-            $allcation_type = 'N';
         }
 
         $extraData = [
@@ -1913,16 +1921,21 @@ class TaskController extends BaseController
         $time              = $this->checkTimeDiffrence($notification_time, $beforetime);
         $rostersbeforetime = $this->checkBeforeTimeDiffrence($notification_time, $beforetime);
         $randem            = rand(11111111, 99999999);
-        $order_details = Order::find($orders_id);
+        $order_details     = Order::find($orders_id);
         $data = [];
 
-        if ($type == 'acceptreject') {
-            $allcation_type = 'AR';
-        } elseif ($type == 'acknowledge') {
+        if($order_details->auto_alloction !='m'){
+            if ($type == 'acceptreject') {
+                $allcation_type = 'AR';
+            } elseif ($type == 'acknowledge') {
+                $allcation_type = 'ACK';
+            } else {
+                $allcation_type = 'N';
+            }
+        }else{
             $allcation_type = 'ACK';
-        } else {
-            $allcation_type = 'N';
         }
+        
 
         $extraData = [
             'customer_name'            => $customer->name,

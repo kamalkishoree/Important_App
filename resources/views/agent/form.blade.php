@@ -13,7 +13,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
     </div>
     <div class="offset-md-2 col_md-6">
         <span>{{__('Live OTP')}}</span>
-        <h4>{{isset($otp)?$otp: __('View OTP after Logging in the Driver App')}}</h4>
+        <h4>{{isset($otp)?$otp: __('View OTP after Logging in the '.getAgentNomenclature().' App')}}</h4>
     </div>
 </div>
 <span class="show_all_error invalid-feedback"></span>

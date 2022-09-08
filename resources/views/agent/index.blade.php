@@ -1,4 +1,4 @@
-@extends('layouts.vertical', ['title' => Session::get('agent_name') ])
+@extends('layouts.vertical', ['title' => getAgentNomenclature() ])
 
 @section('css')
 <link href="{{ asset('assets/libs/select2/select2.min.css') }}" rel="stylesheet" type="text/css" />
@@ -213,7 +213,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
     <div class="row">
         <div class="col-12">
             <div class="page-title-box">
-                <h4 class="page-title">{{ Session::get('agent_name') }}</h4>
+                <h4 class="page-title">{{ getAgentNomenclature() }}</h4>
             </div>
         </div>
     </div>
@@ -228,7 +228,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                     <i class="mdi mdi-storefront text-primary mdi-24px"></i>
                                     <span data-plugin="counterup" id="total_earnings_by_vendors">{{$agentsCount}}</span>
                                 </h3>
-                                <p class="text-muted font-15 mb-0">{{__('Total')}} {{ Session::get('agent_name') ? Session::get('agent_name') : __('Agent') }}</p>
+                                <p class="text-muted font-15 mb-0">{{__('Total')}} {{ __(getAgentNomenclature()) }}</p>
                             </div>
                         </div>
                         <div class="col-sm-6 col-md mb-3 mb-md-0">
@@ -255,7 +255,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                     <i class="fa fa-address-card text-primary"></i>
                                     <span data-plugin="counterup" id="total_delivery_fees">{{$agentIsApproved}}</span>
                                 </h3>
-                                <p class="text-muted font-15 mb-0">{{__('Approved')}} {{ Session::get('agent_name') ? Session::get('agent_name') : __('Agent') }}</p>
+                                <p class="text-muted font-15 mb-0">{{__('Approved')}} {{ __(getAgentNomenclature()) }}</p>
                             </div>
                         </div>
                         <div class="col-sm-6 col-md mb-3 mb-md-0">
@@ -264,7 +264,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                     <i class="fa fa-user-times text-primary"></i>
                                     <span data-plugin="counterup" id="total_delivery_fees">{{$agentNotApproved}}</span>
                                 </h3>
-                                <p class="text-muted font-15 mb-0">{{__('Unapproved')}} {{ Session::get('agent_name') ? Session::get('agent_name') : __('Agent') }}</p>
+                                <p class="text-muted font-15 mb-0">{{__('Unapproved')}} {{ __(getAgentNomenclature()) }}</p>
                             </div>
                         </div>
                     </div>
@@ -332,7 +332,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                     </div>
                                 </div>
                                 <div class="col-sm-4 btn-auto">
-                                    <button type="button" class="btn btn-blue waves-effect waves-light openModal" data-toggle="modal" data-target="" data-backdrop="static" data-keyboard="false"><i class="mdi mdi-plus-circle mr-1"></i> {{__("Add")}} {{ Session::get('agent_name') }}</button>
+                                    <button type="button" class="btn btn-blue waves-effect waves-light openModal" data-toggle="modal" data-target="" data-backdrop="static" data-keyboard="false"><i class="mdi mdi-plus-circle mr-1"></i> {{__("Add")}} {{ getAgentNomenclature() }}</button>
                                     <button type="button" class="btn btn-success waves-effect waves-light saveaccounting" data-toggle="modal" data-target="#pay-receive-modal" data-backdrop="static" data-keyboard="false">{{__("Pay")}} / {{__("Receive")}}</button>
                                 </div>
                             </div>
@@ -340,7 +340,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                 <table class="table table-striped dt-responsive nowrap w-100 all agent-listing" id="agent-listing">
                                     <thead>
                                         <tr>
-                                            <th class="sort-icon">{{__("Agent ID")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
+                                            <th class="sort-icon">{{__(getAgentNomenclature()." ID")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                             <th class="sort-icon">{{__("Profile")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                             <th class="sort-icon">{{__("Name")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                             <th class="sort-icon">{{__("Phone")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
@@ -348,8 +348,8 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                             <th class="sort-icon">{{__("Team")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                             <th class="sort-icon">{{__("Cash Collected")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                             <th class="sort-icon">{{__("Order Earning")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
-                                            <th class="sort-icon">{{__("Total Paid to Agent")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
-                                            <th class="sort-icon">{{__("Total Receive from Agent")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
+                                            <th class="sort-icon">{{__("Total Paid to ".getAgentNomenclature())}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
+                                            <th class="sort-icon">{{__("Total Receive from ".getAgentNomenclature())}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                             <th class="sort-icon">{{__("Final Balance")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                             <th class="sort-icon">{{__("Subscription Plan")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                             <th class="sort-icon">{{__("Subscription Expiry")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
@@ -371,7 +371,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                 <table class="table table-striped dt-responsive nowrap w-100 all agent-listing" id="awaiting_approval_agent_datatable">
                                     <thead>
                                         <tr>
-                                            <th class="sort-icon">{{__("Agent ID")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
+                                            <th class="sort-icon">{{__(getAgentNomenclature()." ID")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                             {{-- <th class="sort-icon">{{__("UID")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th> --}}
                                             <th class="sort-icon">{{__("Profile")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                             <th class="sort-icon">{{__("Name")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
@@ -381,8 +381,8 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                             {{-- <th class="sort-icon">{{__("Vehicle")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th> --}}
                                             <th class="sort-icon">{{__("Cash Collected")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                             <th class="sort-icon">{{__("Order Earning")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
-                                            <th class="sort-icon">{{__("Total Paid to Agent")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
-                                            <th class="sort-icon">{{__("Total Receive from Agent")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
+                                            <th class="sort-icon">{{__("Total Paid to ".getAgentNomenclature())}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
+                                            <th class="sort-icon">{{__("Total Receive from ".getAgentNomenclature())}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                             <th class="sort-icon">{{__("Final Balance")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                             <th class="sort-icon">{{__("Subscription Plan")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                             <th class="sort-icon">{{__("Subscription Expiry")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
@@ -404,7 +404,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                 <table class="table table-striped dt-responsive nowrap w-100 all agent-listing" id="blocked_agent_datatable">
                                     <thead>
                                         <tr>
-                                            <th class="sort-icon">{{__("Agent ID")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
+                                            <th class="sort-icon">{{__(getAgentNomenclature()." ID")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                             {{-- <th class="sort-icon">{{__("UID")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th> --}}
                                             <th class="sort-icon">{{__("Profile")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                             <th class="sort-icon">{{__("Name")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
@@ -414,8 +414,8 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                             {{-- <th class="sort-icon">{{__("Vehicle")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th> --}}
                                             <th class="sort-icon">{{__("Cash Collected")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                             <th class="sort-icon">{{__("Order Earning")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
-                                            <th class="sort-icon">{{__("Total Paid to Agent")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
-                                            <th class="sort-icon">{{__("Total Receive from Agent")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
+                                            <th class="sort-icon">{{__("Total Paid to ".getAgentNomenclature())}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
+                                            <th class="sort-icon">{{__("Total Receive from ".getAgentNomenclature())}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                             <th class="sort-icon">{{__("Final Balance")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                             <th class="sort-icon">{{__("Subscription Plan")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                             <th class="sort-icon">{{__("Subscription Expiry")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>

@@ -527,7 +527,7 @@ class ClientController extends Controller
             $driver_registration_document->is_required = (!empty($request->is_required))?1:0;
             $driver_registration_document->save();
             DB::commit();
-            return $this->successResponse($driver_registration_document, 'Driver Registration Document Added Successfully.');
+            return $this->successResponse($driver_registration_document, getAgentNomenclature().' Registration Document Added Successfully.');
         } catch (Exception $e) {
             DB::rollback();
             return $this->errorResponse([], $e->getMessage());
@@ -572,7 +572,7 @@ class ClientController extends Controller
             $driver_registration_document->save();
 
             DB::commit();
-            return $this->successResponse($driver_registration_document, 'Driver Registration Document Updated Successfully.');
+            return $this->successResponse($driver_registration_document, getAgentNomenclature().' Registration Document Updated Successfully.');
         } catch (Exception $e) {
             DB::rollback();
             return $this->errorResponse([], $e->getMessage());
@@ -617,7 +617,7 @@ class ClientController extends Controller
         try {
             DriverRegistrationDocument::where('id', $request->driver_registration_document_id)->delete();
 
-            return $this->successResponse([], 'Driver Registration Document Deleted Successfully.');
+            return $this->successResponse([], getAgentNomenclature().' Registration Document Deleted Successfully.');
         } catch (Exception $e) {
             return $this->errorResponse([], $e->getMessage());
         }

@@ -200,7 +200,7 @@
                         previous: "<i class='mdi mdi-chevron-left'>",
                         next: "<i class='mdi mdi-chevron-right'>"
                     },
-                    searchPlaceholder: "{{__('Search Agent')}}",
+                    searchPlaceholder: "{{__('Search '.getAgentNomenclature())}}",
                     'loadingRecords': '&nbsp;',
                     //'processing': '<div class="spinner"></div>'
                     'processing':function(){

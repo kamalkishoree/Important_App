@@ -39,7 +39,7 @@
                                         </div>
                                         <div class="col-md-3">
                                             <div class="form-group pay-detail-box copyin1" id="">
-                                                <label class="control-label">{{ Session::get('agent_name') ? Session::get('agent_name') : __('Agent') }} Type</label> <br>
+                                                <label class="control-label">{{ __(getAgentNomenclature()) }} Type</label> <br>
                                                 
                                                 <span id="driver_type"></span>
                                             </div>
@@ -119,7 +119,7 @@
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group pay-detail-box copyin1" id="">
-                                            {!! Form::label('title', __('Driver Cost'),['class' => 'control-label']) !!}
+                                            {!! Form::label('title', __(getAgentNomenclature().' Cost'),['class' => 'control-label']) !!}
                                             <h5 id="driver_cost"></h5>
                                         </div>
                                     </div>
