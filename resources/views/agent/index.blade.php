@@ -100,8 +100,8 @@
     font-size: 14px;
     padding: 0px 2px;
 }
-.swal2-popup.swal2-modal.swal2-show {
-    max-width: 300px;
+.edit-slot-agent {
+    max-width: 300px !important;
 }
 p.custom-radio-design {
     display: inline-block;
@@ -424,19 +424,12 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                             <th>{{__("Action")}}</th>
                                         </tr>
                                     </thead>
-                                    <tbody>.swal2-popup.swal2-modal.swal2-show {
-                                        max-width: 300px;
-                                    }
-                                    
-
-                                    </tbody>
+                                    <tbody>.</tbody>
                                 </table>
                             </div>
                         </div>
                     </div> <!-- end card-body-->
-                </div> <!-- end card-->.swal2-popup.swal2-modal.swal2-show {
-                    max-width: 300px;
-                }
+                </div> <!-- end card-->
                 
             </div> <!-- end col -->
         </div>

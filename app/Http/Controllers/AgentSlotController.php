@@ -41,7 +41,7 @@ class AgentSlotController extends Controller
          
             $slotData = array();
         
-            if($request->stot_type == 'day'){
+            if($request->slot_type == 'day'){
                 $slot = new AgentSlot();
                 $slot->agent_id     = $agent->id;
                 $slot->start_time   = $request->start_time;
@@ -81,10 +81,13 @@ class AgentSlotController extends Controller
      * @param  \App\VendorSlot  $vendorSlot
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $domain = '', $id)
+    public function update(Request $request)
     {
-        $agent = Agent::where('id', $id)->firstOrFail();
-    
+        
+        $agent = Agent::where('id', $request->agent_id)->firstOrFail();
+        if(!$agent){
+            $this->error('Agent not fount!',405);
+        }
         if($request->edit_type == 'day') {
             $slotDay = SlotDay::where('id', $request->edit_type_id)->where('day', $request->edit_day)->first();
             if(!$slotDay){
@@ -129,7 +132,7 @@ class AgentSlotController extends Controller
             }
             else{
                 if( $request->slot_type_edit == 'day' ){
-                    $agent_id = $agent_id->agent_id;
+                    $agent_id = $agent->id;
                     // delete date slot
                     $dateSlot->delete();
                     // delete day slot
@@ -152,7 +155,7 @@ class AgentSlotController extends Controller
                     return redirect()->back()->with('success', 'Slot saved successfully!');
                 }
             }
-            $dateSlot->agent_id        = $agent->id;
+            $dateSlot->agent_id         = $agent->id;
             $dateSlot->start_time       = $request->start_time;
             $dateSlot->end_time         = $request->end_time;
             $dateSlot->specific_date    = $request->slot_date;

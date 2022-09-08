@@ -115,7 +115,7 @@ $(function(){
                         preConfirm: () => {
                             const start_time = Swal.getPopup().querySelector('#start_time').value
                             const end_time = Swal.getPopup().querySelector('#end_time').value
-                            const slotDate = document.querySelector('input[name=radio-group]').value
+                            const slotType = dispatcherStorage.getStorage('SlotTypeOld')
                             const week_day = [];
                             $.each($("input:checkbox[name='week_day[]']:checked"), function () {
                                 week_day.push($(this).val());
@@ -125,7 +125,7 @@ $(function(){
                             if (!start_time || !end_time || (!week_day || week_day== undefined) ) {
                               Swal.showValidationMessage(`All feilds are required!!`)
                             }
-                            return { start_time: start_time, end_time: end_time,week_day:week_day , slotDate:slotDate}
+                            return { start_time: start_time, end_time: end_time,week_day:week_day , slotType:slotType}
                         },onOpen: function() {
                             // var save_slot_url = `/agent/slot/${agent_id}`
                             // $('#slot-event').setAttribute('action',save_slot_url);
@@ -135,7 +135,7 @@ $(function(){
                             start_time:result.value.start_time,
                             end_time:result.value.end_time,
                             week_day:result.value.week_day,
-                            stot_type:result.value.slotDate,
+                            slot_type:result.value.slotType,
                             agent_id:agent_id
                             
                           }
@@ -245,35 +245,40 @@ $(function(){
                         html: EditSlotHtml,
                         confirmButtonText: 'Submit',
                         focusConfirm: false,
+                        customClass: "edit-slot-agent",
                         preConfirm: () => {
                             const start_time = Swal.getPopup().querySelector('#edit_start_time').value
                             const end_time = Swal.getPopup().querySelector('#edit_end_time').value
-                            const slotDate = document.querySelector('input[name=radio-group]').value
+                            const slot_type_old = dispatcherStorage.getStorage('SlotTypeOld')
+                            const edit_type_id = Swal.getPopup().querySelector('#edit_type_id').value
+                            const edit_slot_date = Swal.getPopup().querySelector('#edit_slot_date').value
+                            const edit_type = Swal.getPopup().querySelector('#edit_type').value
                             const week_day = [];
                             $.each($("input:checkbox[name='week_day[]']:checked"), function () {
                                 week_day.push($(this).val());
                             });
-                           
-                            
                             if (!start_time || !end_time || (!week_day || week_day== undefined) ) {
                               Swal.showValidationMessage(`All feilds are required!!`)
                             }
-                            return { start_time: start_time, end_time: end_time,week_day:week_day , slotDate:slotDate}
+                            return { start_time: start_time, end_time: end_time,week_day:week_day , slot_type_old:slot_type_old,edit_type_id:edit_type_id,edit_slot_date:edit_slot_date,edit_type:edit_type}
                         },onOpen: function() {
                             // var save_slot_url = `/agent/slot/${agent_id}`
                             // $('#slot-event').setAttribute('action',save_slot_url);
                         }
                       }).then(async (result) => {
+                        
                         var formData = {
                             start_time:result.value.start_time,
                             end_time:result.value.end_time,
-                            week_day:result.value.week_day,
-                            stot_type:result.value.slotDate,
-                            agent_id:agent_id
+                            stot_type_old:result.value.slot_type_old,
+                            edit_type_id:result.value.edit_type_id,
+                            edit_slot_date:result.value.edit_slot_date,
+                            agent_id:agent_id,
+                            edit_type:edit_type
                             
                           }
                           console.log(formData);
-                          await add_slot_time(formData)
+                          await add_slot_time(formData,'edit')
                        
                         // Swal.fire(`
                         // blocktime: ${result.value.blocktime}
@@ -351,9 +356,9 @@ $(function(){
         }
 
     }
-    async function add_slot_time(formData){
-        
-        axios.post(`agent/slot`, formData)
+    async function add_slot_time(formData,action='add'){
+        var actionUrl = (action == 'add') ? 'add_slot' : 'update_slot';
+        axios.post(`agent/${actionUrl}`, formData)
         .then(async response => {
          console.log(response);
             if(response.data.status == "Success"){

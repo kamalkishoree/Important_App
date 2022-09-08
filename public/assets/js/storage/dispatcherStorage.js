@@ -16,6 +16,7 @@ const dispatcherStorage = {
         localStorage.removeItem(item);
     },
     getStorage(item){
-        return localStorage.getItem(String(item));
+        var returnValue = localStorage.getItem(String(item));
+        return (returnValue) ? returnValue :'';
     }
 }
