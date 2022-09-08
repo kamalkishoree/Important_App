@@ -13,9 +13,19 @@ $(function(){
         var val = $(this).val();
         dispatcherStorage.setStorageSingle('SlotType',val);
         if(val == 'date') {
-            $(".forDateEdit").fadeIn(1000);
+            if($('.forDate').length >0){
+                $(".forDate").fadeIn(1000);
+            }else{
+                $(".forDateEdit").fadeIn(1000);
+            }
+           
         } else{
-            $(".forDateEdit").fadeOut(500);
+            if($('.forDate').length >0){
+                $(".forDate").fadeOut(500);
+            }else{
+                $(".forDateEdit").fadeOut(500);
+            }
+            
         }
     })
     

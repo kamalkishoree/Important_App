@@ -470,11 +470,11 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                     <div class="form-group">
                                         <div class="list-inline">
                                             <p class="custom-radio-design">
-                                                <input type="radio" name="radio-group" id="slotDay" name="stot_type" value="day" checked>
+                                                <input type="radio" name="radio-group" id="slotDay" class="slotTypeEdit" name="stot_type" value="day" checked>
                                                 <label for="slotDay">{{ __('Days') }}</label>
                                             </p>
                                             <p class="custom-radio-design">
-                                                <input type="radio" name="radio-group" id="slotDate" name="stot_type" value="date">
+                                                <input type="radio" name="radio-group" id="slotDate" class="slotTypeEdit" name="stot_type" value="date">
                                                 <label for="slotDate">{{ __('Date') }}</label>
                                             </p>                                    
                                         </div>
