@@ -1,4 +1,7 @@
-<link href="{{asset('assets/js/fullcalendar/calendar_main-5.9.css')}}" rel="stylesheet" type="text/css" />
+@section('customcss')
+    <link href="{{asset('assets/js/fullcalendar/calendar_main-5.9.css')}}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('assets/libs/datetimepicker/daterangepicker.css') }}" rel="stylesheet" type="text/css" />
+@endsection
 @section('popup-id','agentTablePopup')
 <style>
     #scheduleTablePopup .dt-buttons.btn-group.flex-wrap {right: inherit;}
@@ -46,6 +49,7 @@ Agent schedule slots:<p class="sku-name pl-1"></p>
 
 <script src="{{asset('assets/libs/moment/moment.min.js')}}"></script>
 <script src="{{asset('assets/js/fullcalendar/calendar_main-5.9.js')}}"></script>
+<script src="{{asset('assets/libs/datetimepicker/daterangepicker.min.js')}}" ></script>
 <script src="{{ asset('assets/js/agent/agentSlot.js')}}"></script>
     
 @endsection

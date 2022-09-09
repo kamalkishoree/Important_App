@@ -1,4 +1,5 @@
 $(function(){
+    var week_day = [];
     dispatcherStorage.removeStorageAll();
     var product_id = vendor_id = title = block = appoin=agent_id = calendar='' ;
     var calendarEl = document.getElementById('calendar');
@@ -33,6 +34,17 @@ $(function(){
         var edit_slot_date = $(this).val();
         dispatcherStorage.setStorageSingle('SlotDate',edit_slot_date);
     });
+
+    $(document).on('change', '#recurring', function(e) {
+        if(e.target.checked){
+            $(".weekDays").fadeIn(1000);
+        }else{
+            $(".weekDays").fadeOut(1000);
+        }
+        dispatcherStorage.setStorageSingle('recurring',e.target.checked);
+    });
+
+
     $(document).on('click', '#deleteSlotBtn', function() {
         var date = $('#edit_slot_date').val();
         
@@ -125,18 +137,30 @@ $(function(){
                         preConfirm: () => {
                             const start_time = Swal.getPopup().querySelector('#start_time').value
                             const end_time = Swal.getPopup().querySelector('#end_time').value
-                            const slotType = dispatcherStorage.getStorage('SlotType')
-                            const week_day = [];
+                            const blocktime = Swal.getPopup().querySelector('#blocktime').value
+                            const recurring = dispatcherStorage.getStorage('recurring');
+
+                            //const slotType = dispatcherStorage.getStorage('SlotType')
+                           
                             $.each($("input:checkbox[name='week_day[]']:checked"), function () {
                                 week_day.push($(this).val());
                             });
                            
-                            
-                            if (!start_time || !end_time || (!week_day || week_day== undefined) ) {
-                              Swal.showValidationMessage(`All feilds are required!!`)
+                            if (start_time=='' && end_time=='' && blocktime=='' ) {
+                               Swal.showValidationMessage(`All feilds are required!!`)
+                               return false;
                             }
-                            return { start_time: start_time, end_time: end_time,week_day:week_day , slotType:slotType}
+                            if(recurring == 'true'){
+                                console.log(week_day);
+                                if (!week_day.length>0) {
+                                    Swal.showValidationMessage(`Please select days to recurring!!`)
+                                    return false;
+                                }
+                                
+                            }
+                            return { start_time: start_time, end_time: end_time,week_day:week_day,blocktime:blocktime,recurring:recurring}
                         },onOpen: function() {
+                            initDatetimeRangePicker();
                             // var save_slot_url = `/agent/slot/${agent_id}`
                             // $('#slot-event').setAttribute('action',save_slot_url);
                         }
@@ -145,12 +169,13 @@ $(function(){
                             start_time:result.value.start_time,
                             end_time:result.value.end_time,
                             week_day:result.value.week_day,
-                            slot_type:result.value.slotType,
+                            blocktime:result.value.blocktime,
+                            recurring:recurring,
                             agent_id:agent_id
                             
                           }
                           console.log(formData);
-                          await add_slot_time(formData)
+                         // await add_slot_time(formData)
                        
                         // Swal.fire(`
                         // blocktime: ${result.value.blocktime}
@@ -440,5 +465,19 @@ $(function(){
             })
         })    
     } 
+
+   function  initDatetimeRangePicker(){
+        $(function() {
+            $('#blocktime').daterangepicker({
+              //timePicker: true,
+              startDate: moment().startOf('hour'),
+              endDate: moment().startOf('hour').add(24, 'hour'),
+              minDate:new Date(),
+              locale: {
+                format: 'M/DD/YY'
+              }
+            });
+          });
+    }
   
 })

@@ -447,34 +447,42 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                             <div class="row mb-2">
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <label class="control-label">{{ __("Start Time(24 hours format)") }}</label>
-                                        <input class="form-control" placeholder="Start Time" type="time" name="start_time" id="start_time" required />
+                                        <label class="control-label">{{ __("Start/End Date") }}</label>
+
+                                        <input id="blocktime" class="form-control" autofocus>
                                     </div>
                                 </div>
                                 <div class="col-md-12">
-                                    <div class="form-group">
-                                        <label class="control-label">{{ __("End Time(24 hours format)") }}</label>
-                                        <input class="form-control" placeholder="End Time" type="time" name="end_time" id="end_time" required />
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="control-label">{{ __("Start Time(24 hours format)") }}</label>
+                                            <input class="form-control" placeholder="Start Time" type="time" name="start_time" id="start_time" required />
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="control-label">{{ __("End Time(24 hours format)") }}</label>
+                                            <input class="form-control" placeholder="End Time" type="time" name="end_time" id="end_time" required />
+                                        </div>
                                     </div>
                                 </div>
+                            
                         
                                 <div class="col-md-12 slotForDiv">
                                     {!! Form::label('title', 'Slot For',['class' => 'control-label']) !!}
                                     <div class="form-group">
-                                        <div class="list-inline">
-                                            <p class="custom-radio-design">
-                                                <input type="radio" name="radio-group" id="slotDay" class="slotTypeEdit" name="stot_type" value="day" checked>
-                                                <label for="slotDay">{{ __('Days') }}</label>
-                                            </p>
-                                            <p class="custom-radio-design">
-                                                <input type="radio" name="radio-group" id="slotDate" class="slotTypeEdit" name="stot_type" value="date">
-                                                <label for="slotDate">{{ __('Date') }}</label>
-                                            </p>                                    
-                                        </div>
+                                      
+                                        <ul class="list-inline">
+                                            <li class="d-block pl-1 ml-3 mb-1 custom-radio-design">
+                                                <input type="checkbox" class="custom-control-input check recurring" id="recurring" name="recurring">
+                                                <label class="custom-control-label" id="recurring" for="recurring">Recurring</label>
+                                            </li>
+                                        </ul>
                                     </div>
                                 </div>
                             </div>
-                            <div class="row mb-2 weekDays">
+                            <div class="row mb-2 weekDays" style="display:none">
                                 <div class="col-md-12">
                                     <div class="">
                                     {!! Form::label('title', __('Select days of week'),['class' => 'control-label']) !!}
