@@ -7,6 +7,7 @@ use Excel;
 use Exception;
 use DataTables;
 use Carbon\Carbon;
+use Carbon\CarbonPeriod;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
@@ -17,7 +18,7 @@ use Illuminate\Support\Str;
 use App\Traits\ApiResponser;
 
 use Doctrine\DBAL\Driver\DrizzlePDOMySql\Driver;
-use App\Model\{Agent,AgentSlot,AgentSlotDate,SlotDay};
+use App\Model\{Agent,AgentSlot,AgentSlotRoster,SlotDay};
 
 
 class AgentSlotController extends Controller
@@ -32,42 +33,58 @@ class AgentSlotController extends Controller
      */
     public function store(Request $request)
     {
+        // pr($request->all());
+
         try {
             DB::beginTransaction();
             $agent = Agent::where('id', $request->agent_id)->firstOrFail();
             if(!$agent){
                 $this->error('Agent not fount!',405);
             }
+          
             $dateNow = Carbon::now()->format('Y-m-d');
             $slotData = array();
-        
-            if($request->stot_type == 'day'){
-                $slot = new AgentSlot();
-                $slot->agent_id     = $agent->id;
-                $slot->start_time   = $request->start_time;
-                $slot->end_time     = $request->end_time;
-                $slot->save();
 
-            
-                foreach ($request->week_day as $key => $value) {
-                    $slotData['slot_id']    = $slot->id;
-                    $slotData['day']        = $value;
-                    SlotDay::insert($slotData);  
+            $block_time = explode('-', $request->blocktime);
+            $start_date = date("Y-m-d H:i:s",strtotime($block_time[0]));
+            $end_date   = date("Y-m-d H:i:s",strtotime($block_time[1]));
+        
+            $period   = CarbonPeriod::create($start_date, $end_date);
+            $weekdays = $request->recurring == 'true' ? $request->week_day  : [1,2,3,4,5,6,7]; 
+          
+            $slot = new AgentSlot();
+            $slot->agent_id     = $agent->id;
+            $slot->start_time   = $request->start_time;
+            $slot->end_time     = $request->end_time;
+            $slot->start_date   = $start_date;
+            $slot->end_date     = $end_date;
+            $slot->recurring    = $request->recurring;
+            $slot->save();
+
+            if(isset($slot->id)){
+                $AgentSlotData = [];
+                // Iterate over the period
+                foreach ($period as $key => $date) {
+                    $dayNumber = $date->dayOfWeek+1; // get day number 
+                    if(in_array($dayNumber, $weekdays)){
+                        $AgentSlotData[$key]['slot_id']        = $slot->id;
+                        $AgentSlotData[$key]['agent_id']       = $request->agent_id;
+                        $AgentSlotData[$key]['start_time']     = $request->start_time;
+                        $AgentSlotData[$key]['end_time']       = $request->end_time;
+                        $AgentSlotData[$key]['schedule_date']  = $date->format('Y-m-d H:i:s');
+                        $AgentSlotData[$key]['booking_type']   =  $request->booking_type ?? 'working_hours' ;
+                        $AgentSlotData[$key]['memo']           = $request->memo ?? __('Working Hours');
+                    }
                 }
-            }else{
-                $slotDate = new AgentSlotDate();
-                $slotDate->agent_id           = $agent->id;
-                $slotDate->start_time         = $request->start_time;
-                $slotDate->end_time           = $request->end_time;
-                $slotDate->specific_date      = $request->slot_date ?? $dateNow;
-                $slotDate->working_today      = 1;
-                $slotDate->save();
-            
             }
+            AgentSlotRoster::insert($AgentSlotData);
+           
+        
             DB::commit(); //Commit transaction after all the operations
          
              return $this->success('', __('Slot saved successfully!'));
         } catch (Exception $e) {
+            pr($e);
             DB::rollBack();
             return response()->json(array('success' => false, 'message'=>'Something went wrong.'));
         }

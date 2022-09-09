@@ -4,10 +4,10 @@ namespace App\Model;
 
 use Illuminate\Database\Eloquent\Model;
 
-class AgentSlotDate extends Model
+class AgentSlotRoster extends Model
 {
     //
-    protected $fillable = ['agent_id','start_time','end_time','specific_date','working_today'];
+    protected $fillable = ['agent_id','start_time','end_time','schedule_date','booking_type','memo'];
 
     public function deleteVendorSlotDates($agent_id)
     {
