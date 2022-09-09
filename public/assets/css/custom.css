@@ -1013,8 +1013,8 @@ body[data-sidebar-size=condensed] .left-side-menu #sidebar-menu>ul>li:hover>a {
 
 
     .dragable_tasks {
-    border: 1px solid #c0c2c49c;
-    margin: 0 0 5px;
+    /* border: 1px solid #c0c2c49c;
+    margin: 0 0 5px; */
     }
 
     .assigned-block {
@@ -1977,4 +1977,32 @@ body[dir="rtl"] .agent-listing tbody td{ padding: 15px 10px 10px 15px;}
 
 .h-100 {
     height: 100% !important;
+}
+
+.iti__country-list{
+    z-index:999;
+}
+
+.edit-icon-float-right {
+   
+    float: right;
+    border-radius: 2px;
+    background: #6658ddf0;
+    color: #fff;
+    font-size: 14px;
+    padding: 3px 3px;
+}
+
+.edit-icon-float-right:hover {
+   
+    float: right;
+    border-radius: 2px;
+    background: #7a6fe0f0;
+    color: #fff;
+    font-size: 14px;
+    padding: 3px 3px;
+}
+/* 6/9/22 */
+.alNavTopMinus {
+    margin-top: -35px;
 }

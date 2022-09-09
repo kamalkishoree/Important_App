@@ -361,7 +361,7 @@ class ClientController extends Controller
 
         try {
 
-        $client = Client::where('database_name', $databaseName)->first(['name', 'email', 'password', 'phone_number', 'password', 'database_path', 'database_name', 'database_username', 'database_password', 'logo', 'company_name', 'company_address', 'custom_domain', 'status', 'code','sub_domain','database_host'])->toarray();
+        $client = Client::where('database_name', $databaseName)->first(['name', 'email', 'password', 'phone_number', 'password', 'database_path', 'database_name', 'database_username', 'database_password', 'logo', 'dark_logo', 'company_name', 'company_address', 'custom_domain', 'status', 'code','sub_domain','database_host'])->toarray();
         $check_if_already = 0;
         $stage = $request->dump_into??'PROD';
         $data = $request->all();

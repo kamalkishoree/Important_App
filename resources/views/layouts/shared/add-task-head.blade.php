@@ -195,7 +195,7 @@
 
                 </div>
                 <span class="show_all_error invalid-feedback"></span>
-                <div class="modal-footer justify-content-center">
+                <div class="modal-footer justify-content-center p-0">
                      <a href="javascript: void(0);" class="btn btn-blue waves-effect waves-light submitTaskHeader"><span class="spinner-border spinner-border-sm submitTaskHeaderLoader" style="display:none;" role="status" aria-hidden="true"></span> <span id="submitTaskHeaderText">{{__("Submit")}}</span></a>
                 </div>
             </form>
@@ -204,7 +204,7 @@
 </div>
 
 <div id="show-map-Header" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
-    <div class="modal-dialog modal-full-width">
+    <div class="modal-dialog modal-xl">
         <div class="modal-content">
 
             <div class="modal-header border-0">
@@ -285,7 +285,7 @@
 <script src="{{asset('assets/libs/dropzone/dropzone.min.js')}}"></script>
 <script src="{{asset('assets/libs/dropify/dropify.min.js')}}"></script>
 <!-- Page js-->
-<script src="{{asset('assets/js/pages/form-pickers.init.js')}}"></script>
+
 <script>
     var theme      = {!!json_encode($theme)!!};
 
@@ -335,9 +335,7 @@
 
     var latitudes = [];
     var longitude = [];
-
     $(".addTaskModalHeader").click(function (e) {
-
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
@@ -361,6 +359,7 @@
 
                 $('#task-modal-header').find('.selectizeInput').selectize();
 
+                
                 $('.dropify').dropify();
                 $(".newcustomer").hide();
                 $(".searchshow").show();
@@ -370,7 +369,7 @@
                 $(".addspan").hide();
                 $(".tagspan").hide();
                 $(".tagspan2").hide();
-
+                $(".searchspan").hide();
                 $(".datenow").hide();
 
                 $(".pickup-barcode-error").hide();
@@ -386,12 +385,32 @@
                     keyboard: false
                 });
 
+                phoneInput();
                 runPicker();
+
+                $('#task-modal-header .edit-icon-float-right').on('click', function() {
+                    $('#task-modal-header .task_desc_div').toggle();
+                });
             },
             error: function (data) {
             }
         });
     });
+
+    function phoneInput() {
+        //initialize intlTelInput
+        let phone_number_intltel = window.intlTelInput(document.querySelector("#taskFormHeader .phone_number"),{
+            separateDialCode: true,
+            preferredCountries:["{{getCountryCode()}}"],
+            initialCountry:"{{getCountryCode()}}",
+            hiddenInput: "full_number",
+            utilsScript: "//cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.3/js/utils.js"
+        });
+
+        document.querySelector("#taskFormHeader .phone_number").addEventListener("countrychange", function() {
+            $("#taskFormHeader #dialCode").val(phone_number_intltel.getSelectedCountryData().dialCode);
+        });
+    }
 
     var CSRF_TOKEN = $("input[name=_token]").val();
 
@@ -443,7 +462,6 @@
                 // Set selection
                 $('#task-modal-header #searchDriver').val(ui.item.label); // display the selected text
                 $('#task-modal-header #agentid').val(ui.item.value); // save selected id to input
-                // $(".oldhide").hide();
                 return false;
             }
         });
@@ -460,9 +478,22 @@
                   id: ids
               },
               success: function(data) {
-                  var array = data;
-                  $('.withradio .append').remove();
-                  jQuery.each(array, function(i, val) {
+                    var customerdata = data.customer;
+                    var array = data.location;
+
+                    var countrycode = customerdata.countrycode;
+                    $("#taskFormHeader").find("input[name='phone_number']").val(customerdata.phone_number);
+                    $("#taskFormHeader #dialCode").val(customerdata.dial_code);
+                    
+                    //getting instance of intlTelInput
+                    var input = document.querySelector("#taskFormHeader .phone_number");
+                    var iti = window.intlTelInputGlobals.getInstance(input);
+                    iti.setCountry(countrycode);
+
+                    $("#taskFormHeader").find("input[name='email']").val(customerdata.email);
+
+                    $('.withradio .append').remove();
+                    jQuery.each(array, function(i, val) {
                     var countz = '';
                     var rand =  Math.random().toString(36).substring(7);
                     $(".withradio").each(function(){
@@ -473,10 +504,6 @@
                           '</label></div></div>');
                         countz = count + 1;
                     });
-                      /* $(".withradio").append(
-                          '<div class="append"><div class="custom-control custom-radio count"><input type="radio" id="' + val.id + '" name="old_address_id" value="' + val.id + '" class="custom-control-input redio old-select-address callradio" data-srtadd="'+ val.short_name +'" data-flat_no="'+ val.flat_no +'"  data-adr="'+ val.address +'" data-lat="'+ val.latitude +'" data-long="'+ val.longitude +'" data-pstcd="'+ val.post_code +'" data-emil="'+ val.email +'" data-ph="'+ val.phone_number +'"><label class="custom-control-label" for="' + val.id + '"><span class="spanbold">' + val.short_name +
-                          '</span>-' + val.address +
-                          '</label></div></div>'); */
                   });
 
               }
@@ -566,7 +593,7 @@
 
           var postcode1 = $clone.find('.postcode');
           $.each(postcode1, function(index, elem){
-            var jElem = $(elem)
+            var jElem = $(elem);
             var name = jElem.prop('id');
             name = name.replace(/\d+/g, '');
             name = 'addHeader'+post_count+'-postcode';
@@ -577,10 +604,12 @@
 
         $clone.find('.appoint').hide();
         $(document).find('#addSubFields').before($clone);
-        $('#addHeader'+countZ+' input[type="text"]').val('');
+        $clone.find('input[type="text"]').val('');
         autoWrap.indexOf('addHeader'+countZ) === -1 ? autoWrap.push('addHeader'+countZ) : console.log("exists");
           loadMapHeader(autoWrap);
           $clone.find('input').click();
+          $clone.find('input[type="radio"]').prop('checked', false);
+          $clone.find('input[type="text"]').val('');
     });
 
     function loadMapHeader(autoWrap){
@@ -617,13 +646,6 @@
         $(this).closest(".copyin").remove();
     });
 
-    /*$(document).on('click', ".onedelete", function() {
-
-        $(this).closest(".copyin").remove();
-    });
-
-    subTaskHeader*/
-
     $(document).on("click", "input[type='radio'].checkcustomer", function() {
 
         var customerredio = $("#customerradio input[type='radio']:checked").val();
@@ -631,16 +653,17 @@
             $(".newcustomer").hide();
             $(".searchshow").show();
             $(".append").show();
-            $('.copyin').remove();
+            
             autoWrap = ['addHeader0', 'addHeader1'];
             countZ = 1;
         }else{
             $(".newcustomer").show();
             $(".append").hide();
             $(".searchshow").hide();
-            $('input[name=ids').val('');
-            $('input[name=search').val('');
-            $('.copyin').remove();
+            $('input[name=ids]').val('');
+            $('#taskFormHeader .phone_number').val('');
+            $('input[name=search]').val('');
+            $('#taskFormHeader .email').val('');
             autoWrap = ['addHeader0', 'addHeader1'];
             countZ = 1;
         }
@@ -710,11 +733,13 @@
 
         if (cus_id == '') {
             if (name != '' && email != '' && phone_no != '') {
-
+                $(".searchspan").hide();
             } else {  err = 1;
                 $(".searchspan").show();
                 return false;
             }
+        }else{
+            $(".searchspan").hide();
         }
         var s_name = $("input[name='short_name[]']").val();
         var s_address = $("input[name='address[]']").val();
@@ -744,21 +769,14 @@
                 err = 1;
                 return false;
             }
-            // else{
-            //     $(this).closest('.check-validation').find('.pickup-barcode-error').hide();
-            //     $(this).closest('.check-validation').find('.drop-barcode-error').hide();
-            //     $(this).closest('.check-validation').find('.appointment-barcode-error').hide();
-            //     return true;
-            // }
+            
         });
 
 
-
-       //return false;
         var selectedVal = "";
         var selected = $("#typeInputss input[type='radio']:checked");
         selectedVal = selected.val();
-        //console.log(selectedVal);
+
         if (typeof(selectedVal) == "undefined") {
             var short_name = $("#task-modal-header input[name='short_name[]']").val();
             var address = $("#task-modal-header input[name='address[]']").val();
@@ -778,7 +796,6 @@
 
             if( err == 0){
                 $('.submitTaskHeaderLoader').css('display', 'inline-block');
-                // $('#submitTaskHeaderText').text('Done');
                 $('.submitTaskHeader').addClass("inactiveLink");
 
                 var formData = new FormData(document.querySelector("#taskFormHeader"));
@@ -789,7 +806,6 @@
 
 
     function TaskSubmit(data, method, url, modals) {
-    //alert(data);
     $.ajax({
         method: method,
         headers: {
@@ -1192,7 +1208,6 @@
     $('.onlynumber').keyup(function ()
         {
         this.value = this.value.replace(/[^0-9\.]/g,'');
-        });
-
+    });
 
 </script>

@@ -39,7 +39,7 @@
         <div class="row">
             <div class="col-12">
                 <div class="page-title-box">
-                    <h4 class="page-title">{{ Session::get('agent_name') }}</h4>
+                    <h4 class="page-title">{{ getAgentNomenclature() }}</h4>
                 </div>
             </div>
         </div>
@@ -144,7 +144,7 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="form-group" id="vehicle_type_idInput">
-                                        <p class="text-muted mt-3 mb-2">TRANSPORT TYPE</p>
+                                        <p class="text-muted mt-3 mb-2">TRANSPORT ICON</p>
                                         <div class="radio radio-blue form-check-inline click cursors">
                                             <input type="radio" id="onfoot" value="onfoot" name="vehicle_type_id" @if ($agent->vehicle_type_id == 'onfoot') checked
                                             @endif>

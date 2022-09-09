@@ -1,4 +1,4 @@
-@extends('layouts.vertical', ['title' => 'Agent'])
+@extends('layouts.vertical', ['title' => getAgentNomenclature()])
 
 @section('css')
     <link href="{{ asset('assets/libs/select2/select2.min.css') }}" rel="stylesheet" type="text/css" />
@@ -90,7 +90,7 @@
                                         <th>Phone</th>
                                         <th>Type</th>
                                         <th>Team</th>
-                                        <th>Transport Type</th>
+                                        <th>Transport Icon</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>

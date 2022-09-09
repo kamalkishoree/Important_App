@@ -200,7 +200,7 @@
                         previous: "<i class='mdi mdi-chevron-left'>",
                         next: "<i class='mdi mdi-chevron-right'>"
                     },
-                    searchPlaceholder: "{{__('Search Agent')}}",
+                    searchPlaceholder: "{{__('Search '.getAgentNomenclature())}}",
                     'loadingRecords': '&nbsp;',
                     'processing': '<div class="spinner"></div>'
                 },
@@ -390,9 +390,7 @@
         });
 
         /* add Team using ajax*/
-        // $("#add-agent-modal #submitAgent").submit(function(e) {
-
-        // });
+        
         $(document).on("submit", "#submitAgent", function(e) {
             e.preventDefault();
             // $(document).on('click', '.submitAgentForm', function() {
@@ -529,10 +527,14 @@
                     },
                     success: function(data) {
                         if (data.status == 1) {
+                            $('#active_vendor_count').text('('+data.agentIsApproved+')');
+                            $('#awaiting_vendor_count').text('('+data.agentNotApproved+')');
+                            $('#blocked_vendor_count').text('('+data.agentRejected+')');
                             $.NotificationApp.send("", data.message, "top-right", "#5ba035", "success");
                             setTimeout(function() {
                                 $('#' + activeTabDetail).DataTable().ajax.reload();
                             }, 100);
+                            
                         }
                     }
                 });

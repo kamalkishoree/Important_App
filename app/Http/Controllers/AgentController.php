@@ -312,18 +312,6 @@ class AgentController extends Controller
     {
         $validator = $this->validator($request->all())->validate();
         $getFileName = null;
-        // $full_number = '+'.$request->country_code.$request->phone_number;
-        // if(isset($full_number) && !empty($full_number)){
-        //     $already = Agent::where('phone_number',$full_number)->count();
-        //     if($already > 0){
-        //         return response()->json([
-        //             'status'=>'error',
-        //             'message' => 'The Phone number is already exist!',
-        //             'data' => []
-        //         ]);
-        //     }
-
-        // }
 
 
 
@@ -443,7 +431,7 @@ class AgentController extends Controller
             if (isset($otp)) {
                 $send_otp = $otp->opt;
             } else {
-                $send_otp = __('View OTP after Logging in the Driver App');
+                $send_otp = __('View OTP after Logging in the '.getAgentNomenclature().' App');
             }
             $agents_docs = AgentDocs::where('agent_id', $id)->get();
             $driver_registration_documents = DriverRegistrationDocument::get();
@@ -488,7 +476,7 @@ class AgentController extends Controller
         if (isset($otp)) {
             $send_otp = $otp->opt;
         } else {
-            $send_otp = __('View OTP after Logging in the Driver App');
+            $send_otp = __('View OTP after Logging in the '.getAgentNomenclature().' App');
         }
 
         $agents_docs = AgentDocs::where('agent_id', $id)->get();
@@ -604,7 +592,7 @@ class AgentController extends Controller
         if ($agent) {
             return response()->json([
                 'status' => 'success',
-                'message' => 'Agent updated Successfully!',
+                'message' => getAgentNomenclature().' updated Successfully!',
                 'data' => $agent
             ]);
         }
@@ -620,7 +608,7 @@ class AgentController extends Controller
     {
         DriverGeo::where('driver_id', $id)->delete();  // i have to fix it latter
         Agent::where('id', $id)->delete();
-        return redirect()->back()->with('success',__('Agent deleted successfully!'));
+        return redirect()->back()->with('success',__(getAgentNomenclature().' deleted successfully!'));
     }
 
     //----------------------------------function modified by surendra singh-------------------------------//
@@ -637,7 +625,7 @@ class AgentController extends Controller
                 }
                 elseif($request->payment_type == 2){
                     if($amount > $agent->balanceFloat){
-                        return $this->error(__('Amount is greater than agent available funds'), 422);
+                        return $this->error(__('Amount is greater than '.getAgentNomenclature().' available funds'), 422);
                     }
                     $wallet->withdrawFloat($amount, ['Wallet has been <b>Dedited</b>']);
                 }
@@ -722,11 +710,25 @@ class AgentController extends Controller
             AgentLog::where('agent_id',$request->id)->update(['is_active' => $is_active]);
 
             $slug = ($request->status == 1)? 'driver-accepted' : 'driver-rejected';
-            $sms_body = AgentSmsTemplate::where('slug', $slug)->first()->content;
+            $sms_body = AgentSmsTemplate::where('slug', $slug)->first();
             if(!empty($sms_body)){
-                $send = $this->sendSms2($agent_approval->phone_number, $sms_body)->getData();
+                $send = $this->sendSms2($agent_approval->phone_number, $sms_body->content)->getData();
             }
-            return response()->json(['status' => 1, 'message' => 'Status change successfully.']);
+
+            $agents            = Agent::get();
+            $agentsCount       = count($agents);
+            $employeesCount    = count($agents->where('type', 'Employee'));
+            $freelancerCount   = count($agents->where('type', 'Freelancer'));
+            $agentActive       = count($agents->where('is_activated', 1));
+            $agentInActive     = count($agents->where('is_activated', 0));
+            $agentIsAvailable  = count($agents->where('is_available', 1));
+            $agentNotAvailable = count($agents->where('is_available', 0));
+            $agentIsApproved   = count($agents->where('is_approved', 1));
+            $agentNotApproved  = count($agents->where('is_approved', 0));
+            $agentRejected     = count($agents->where('is_approved', 2));
+
+
+            return response()->json(['status' => 1, 'agentIsApproved'=>$agentIsApproved, 'agentNotApproved'=>$agentNotApproved, 'agentRejected'=>$agentRejected, 'message' => 'Status change successfully.']);
         } catch (Exception $e) {
             return response()->json(['status' => 0, 'message' => $e->getMessage()]);
         }

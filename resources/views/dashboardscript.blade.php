@@ -15,9 +15,7 @@
     let markers = [];
     
     var url = window.location.origin;
-    // $("#abc").click(function() {
-    //     $(this).data('id');
-    // });
+    
     var olddata  = {!!json_encode($newmarker)!!};
     var allagent = {!!json_encode($agents)!!};
     var theme    = {!!json_encode($theme->theme)!!};
@@ -350,7 +348,6 @@
         "</div>";
     }else{
         img = data['image_url'];
-        //console.log(img);
         contentString =
         '<div style="float:left">'+
         '<img src="{{\Phumbor::url(\Storage::disk("s3")->url("assets/client_00000125/agents5fc76c71abdb3.png/A9B2zHkr5thbcyTKHivaYm4kNYrSXOiov6USdFpV.png"))->fitIn(90,50)}}">'+

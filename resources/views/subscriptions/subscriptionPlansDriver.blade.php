@@ -75,7 +75,7 @@
             <div class="row align-items-center">
                 <div class="col-sm-6">
                     <div class="page-title-box">
-                        <h4 class="page-title">{{ __('Driver Subscription Plans') }}</h4>
+                        <h4 class="page-title">{{ __(getAgentNomenclature().' Subscription Plans') }}</h4>
                     </div>
                 </div>
                 <div class="col-sm-6 text-sm-right">
@@ -123,7 +123,7 @@
                                             <i class="mdi mdi-account-multiple-plus text-primary mdi-24px"></i>
                                             <span data-plugin="counterup" id="total_subscribed_users_count">{{ $subscribed_users_count }}</span>
                                         </h3>
-                                        <p class="text-muted font-15 mb-0">{{ __('Total Subscribed Drivers') }}</p>
+                                        <p class="text-muted font-15 mb-0">{{ __('Total Subscribed '.getAgentNomenclature().'s') }}</p>
                                     </div>
                                 </div>
                                 <div class="col-sm-6 col-md-6 mb-3 mb-md-0">
@@ -132,7 +132,7 @@
                                             <i class="mdi mdi-account-multiple-plus text-primary mdi-24px"></i>
                                             <span data-plugin="counterup" id="total_subscribed_users_percentage">{{ $subscribed_users_percentage }}</span>
                                         </h3>
-                                        <p class="text-muted font-15 mb-0">{{ __("Total Subscribed Drivers") }} (%)</p>
+                                        <p class="text-muted font-15 mb-0">{{ __("Total Subscribed ".getAgentNomenclature()."s") }} (%)</p>
                                     </div>
                                 </div>
                             </div>
@@ -184,7 +184,7 @@
                                                 <th>{{ __("Description") }}</th>
                                                 <th>{{ __("Price") }}</th>
                                                 <th>{{ __("Frequency") }}</th>
-                                                <th>{{ __("Driver Type") }}</th>
+                                                <th>{{ __(getAgentNomenclature()." Type") }}</th>
                                                 <th>{{ __("Fixed Commission") }}</th>
                                                 <th>{{ __("Percentage Commission") }}</th>
                                                 <th>{{ __("Status") }}</th>
@@ -280,7 +280,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="">{{ __("Agent Type") }}</label>
+                                        <label for="">{{ __(getAgentNomenclature()." Type") }}</label>
                                         <select class="selectpicker" data-style="btn-light" name="driver_type" id="driver_type">
                                             <option value="Employee">{{__("Employee")}}</option>
                                             <option value="Freelancer">{{__("Freelancer")}}</option>
