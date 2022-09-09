@@ -78,8 +78,6 @@ class AgentSlotController extends Controller
                 }
             }
             AgentSlotRoster::insert($AgentSlotData);
-           
-        
             DB::commit(); //Commit transaction after all the operations
          
              return $this->success('', __('Slot saved successfully!'));
@@ -183,14 +181,7 @@ class AgentSlotController extends Controller
 
     }
 
-    /**
-     * create slot 
-     */
-    public function create(Request $request, $domain = '', $id){
-        $agent      = Agent::where('id', $id)->firstOrFail();
-        $returnHTML = view('agent.modal-popup.addSlotForm')->with(['agent' => $agent])->render();
-        return response()->json(array('success' => true, 'html' => $returnHTML));
-    }
+    
     /**
      * Remove the specified resource from storage.
      *
@@ -232,6 +223,92 @@ class AgentSlotController extends Controller
     }
 
     public function returnJson(Request $request, $domain = '', $id)
+    {
+        
+        $Agent = Agent::findOrFail($id);
+        $date = $day = array();
+
+        if($request->has('start')){
+            $start = explode('T', $request->start);
+            $end = explode('T', $request->end);
+
+            $startDate = date('Y-m-d', strtotime($start[0])); 
+            $endDate = date('Y-m-d', strtotime($end[0]));
+
+            $datetime1 = new \DateTime($startDate);
+            $datetime2 = new \DateTime($endDate);
+
+            $interval = $datetime2->diff($datetime1);
+            $days = $interval->format('%a');
+
+            $date[] = $startDate;
+            $day[] = 1;
+
+            for ($i = 1; $i < $days; $i++) {
+                $date[] = date('Y-m-d', strtotime('+'.$i.' day', strtotime($startDate)));
+                $day[] = $i + 1;
+            }
+        }else{
+            $dayArray = array('sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday');
+            foreach ($dayArray as $key => $value) {
+                $th = ($value == 'sunday') ? 'previous sunday' : $value.' this week';
+                $date[] =  date( 'Y-m-d', strtotime($th));
+                $day[] = $key + 1;
+            }
+        }
+
+        $lst = count($date) - 1;
+        // $slot = AgentSlot::select('agent_slots.*', 'slot_days.id as slot_day_id', 'slot_days.slot_id', 'slot_days.day')->join('slot_days', 'slot_days.slot_id', 'agent_slots.id')->where('agent_id', $id)->orderBy('slot_days.day', 'asc')->get();
+        
+        $slotDate = AgentSlotRoster::whereBetween('specific_date', [$date[0], $date[$lst]])->orderBy('specific_date','asc')->get();
+
+        $showData = array();
+        $count = 0;
+
+        foreach ($day as $key => $value) {
+            $exist = 0;
+            $start = $end = $color = '';
+
+            if($slotDate){
+                foreach ($slotDate as $k => $v) {
+                    $title = '';
+                    if($date[$key] == $v->specific_date){
+                        $exist = 1;
+                       
+
+                        $showData[$count]['title'] = trim($title);
+                        $showData[$count]['start'] = $date[$key].'T'.$v->start_time;
+                        $showData[$count]['end'] = $date[$key].'T'.$v->end_time;
+                        $showData[$count]['color'] = ($v->working_today == 0) ? '#43bee1' : '';
+                        $showData[$count]['type'] = 'date';
+                        $showData[$count]['type_id'] = $v->id;
+                        $showData[$count]['slot_id'] = $v->id;
+                        $count++;
+                    }
+                }
+            }
+
+            if($exist == 0){
+                foreach ($slot as $k => $v) {
+                    $title = '';
+                    if($value == $v->day){
+
+                        $showData[$count]['title'] = trim($title);
+                        $showData[$count]['start'] = $date[$key].'T'.$v->start_time;
+                        $showData[$count]['end'] = $date[$key].'T'.$v->end_time;
+                        $showData[$count]['type'] = 'day';
+                        $showData[$count]['color'] = ($v->working_today == 0) ? '#43bee1' : '';
+                        $showData[$count]['type_id'] = $v->slot_day_id;
+                        $showData[$count]['slot_id'] = $v->slot_id;
+                        $count++;
+                    }
+                }
+            } 
+        }
+        echo $json  = json_encode($showData);
+    }
+
+    public function returnJsonOld(Request $request, $domain = '', $id)
     {
         
         $Agent = Agent::findOrFail($id);
