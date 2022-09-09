@@ -134,11 +134,14 @@ $(function(){
                         html: AddSlotHtml,
                         confirmButtonText: 'Submit',
                         focusConfirm: false,
+                        customClass: "edit-slot-agent",
                         preConfirm: () => {
                             const start_time = Swal.getPopup().querySelector('#start_time').value
                             const end_time = Swal.getPopup().querySelector('#end_time').value
                             const blocktime = Swal.getPopup().querySelector('#blocktime').value
                             const recurring = dispatcherStorage.getStorage('recurring');
+                            const memo = dispatcherStorage.getStorage('memo');
+                            const booking_type = Swal.getPopup().querySelector('#booking_type').value
 
                             //const slotType = dispatcherStorage.getStorage('SlotType')
                            
@@ -146,7 +149,7 @@ $(function(){
                                 week_day.push($(this).val());
                             });
                            
-                            if (start_time=='' && end_time=='' && blocktime=='' ) {
+                            if (start_time=='' && end_time=='' && blocktime=='' && memo=='' && booking_type=='') {
                                Swal.showValidationMessage(`All feilds are required!!`)
                                return false;
                             }
@@ -158,7 +161,7 @@ $(function(){
                                 }
                                 
                             }
-                            return { start_time: start_time, end_time: end_time,week_day:week_day,blocktime:blocktime,recurring:recurring}
+                            return { start_time: start_time, end_time: end_time,week_day:week_day,blocktime:blocktime,recurring:recurring,booking_type:booking_type,memo:memo}
                         },onOpen: function() {
                             initDatetimeRangePicker();
                             // var save_slot_url = `/agent/slot/${agent_id}`
@@ -171,7 +174,9 @@ $(function(){
                             week_day:result.value.week_day,
                             blocktime:result.value.blocktime,
                             recurring:recurring,
-                            agent_id:agent_id
+                            agent_id:agent_id,
+                            booking_type:booking_type,
+                            memo:memo
                             
                           }
                           console.log(formData);

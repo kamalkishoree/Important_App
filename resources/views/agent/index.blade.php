@@ -101,8 +101,26 @@
     padding: 0px 2px;
 }
 .edit-slot-agent {
-    max-width: 300px !important;
+    max-width: 380px !important;
 }
+.edit-slot-agent .custom-control-input:checked ~ .custom-control-label::before{
+    border-color: #44cf9c !important;
+    background-color: #44cf9c !important;
+}
+.edit-slot-agent .custom-control-input:checked ~ .custom-control-label::after{
+    content: "";
+    position: absolute;
+    top: 6px;
+    left: -18px;
+    display: table;
+    width: 4px;
+    height: 8px;
+    border: 2px solid #fff;
+    border-top-width: 0;
+    border-left-width: 0;
+    transform: rotate(45deg);
+}
+
 p.custom-radio-design {
     display: inline-block;
     vertical-align: middle;
@@ -189,6 +207,37 @@ p.custom-radio-design {
 }
 .weekDays .checkbox label::before {
     margin-left: 0;
+}
+.memo label{
+    text-align: left;
+    width: 100%;
+    font-size: 14px;
+    color: #777;
+}
+.slot_type select{
+    width:100%;
+    border: 1px solid #ced4da;
+    border-radius: 0.2rem;
+}
+.memo textarea{
+    width:100%;
+    border: 1px solid #ced4da;
+    border-radius: 0.2rem;
+    padding: 5px 5px;
+    font-size: 0.875rem;
+}
+.memo textarea:focus{outline: none;}.memo select:focus{outline: none;}
+.memo textarea::placeholder{
+    font-size: 0.875rem;
+    font-weight: 400;
+    padding:2px 10px;
+    color: #6c757d;
+}
+.memo select{
+    font-size: 0.875rem;
+    font-weight: 400;
+    padding:2px 10px;
+    color: #6c757d;
 }
 .weekDays .checkbox input[type=checkbox]:checked + label::after {
     left: 24px;
@@ -452,7 +501,9 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                         <input id="blocktime" class="form-control" autofocus>
                                     </div>
                                 </div>
-                                <div class="col-md-12">
+                                
+                                </div>
+                                <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label class="control-label">{{ __("Start Time(24 hours format)") }}</label>
@@ -466,22 +517,40 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                             <input class="form-control" placeholder="End Time" type="time" name="end_time" id="end_time" required />
                                         </div>
                                     </div>
-                                </div>
+                                
                             
-                        
-                                <div class="col-md-12 slotForDiv">
-                                    {!! Form::label('title', 'Slot For',['class' => 'control-label']) !!}
+                                </div>
+                                <div class="row memo">
+                                    <div class="col-md-6 slot_type">
+                                        <label class="d-block">Slot Type</label>
+                                            <select id="booking_type">
+                                                <option selected value="working_hours">Working hours</option>
+                                                <option value="blocked">Block</option>
+                                            </select>
+                                    </div>
+                                    <div class="col-md-6 slotForDiv">
+                                        {!! Form::label('title', 'Recurring',['class' => 'control-label']) !!}
                                     <div class="form-group">
                                       
                                         <ul class="list-inline">
                                             <li class="d-block pl-1 ml-3 mb-1 custom-radio-design">
                                                 <input type="checkbox" class="custom-control-input check recurring" id="recurring" name="recurring">
-                                                <label class="custom-control-label" id="recurring" for="recurring">Recurring</label>
+                                                <label class="custom-control-label" id="recurring" for="recurring">Yes</label>
                                             </li>
                                         </ul>
                                     </div>
+                                    </div>
                                 </div>
-                            </div>
+
+                                <div class="row memo">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label class="d-block pt-2">Memo</label>
+                                            <textarea placeholder="" class="class="form-control"></textarea>
+                                         </div>
+                                    </div>
+                                </div>
+                             
                             <div class="row mb-2 weekDays" style="display:none">
                                 <div class="col-md-12">
                                     <div class="">
@@ -551,7 +620,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                             </div>
                         </div>
                     </div>
-                    <div class="row mb-2">
+                    <div class="row mb-2 ">
                         <div class="col-12 slotForDiv">
                             {!! Form::label('title', __('Slot For'),['class' => 'control-label']) !!}
                             <div class="form-group">
