@@ -6,7 +6,7 @@ use App\Http\Controllers\Api\BaseController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
-use App\Model\{Agent, AgentLog, AllocationRule, Client, ClientPreference, Cms, Order, Task, TaskProof, Timezone, User, DriverGeo, Geo, TagsForAgent};
+use App\Model\{Agent, AgentSlot,AgentLog, AllocationRule, Client, ClientPreference, Cms, Order, Task, TaskProof, Timezone, User, DriverGeo, Geo, TagsForAgent};
 use Validator;
 use DB;
 use Illuminate\Support\Facades\Storage;
@@ -20,8 +20,9 @@ class AgentSlotController extends BaseController
 {
     /**   get agent according to lat long  */
     function getAgentsSlotByTags(Request $request){
-        pr($request->all());
-        try {
+       
+        //pr($request->all());
+        // try {
 
             $validator = Validator::make(request()->all(), [
                 'latitude'  => 'required',
@@ -36,7 +37,7 @@ class AgentSlotController extends BaseController
             $agentController = new AgentController();
             $geoid = $agentController->findLocalityByLatLng($request->latitude, $request->longitude);
             $geoagents_ids = DriverGeo::where('geo_id', $geoid)->pluck('driver_id');
-            pr($geoagents_ids);
+          //  pr($geoagents_ids);
             $tagId = '';
             if(!empty($request->tags)){
                 $tag = TagsForAgent::where('name', $request->tags)->get()->first();
@@ -51,7 +52,8 @@ class AgentSlotController extends BaseController
                 }
 
             }
-
+           
+            $tagId = '';
             $geoagents = Agent::with(['agentlog','vehicle_type']);
 
             if(!empty($tagId)){
@@ -59,54 +61,47 @@ class AgentSlotController extends BaseController
                     $q->where('tag_id', $tagId);
                 });
             }
+         
+            // if($request->schedule_date){
+            //     $myDate = Carbon::createFromFormat('Y-m-d', $request->schedule_date);
+            //     $dayNumber = $myDate->dayOfWeek+1;
+            //     $geoagents->whereHas('slots', function($q) use($myDate , $dayNumber){
+            //         $q->whereHas('days', $dayNumber);
+            //     });
+            // }
+            
 
             $geoagents = $geoagents->whereIn('id', $geoagents_ids)->where(["is_available" => 1, "is_approved" => 1])->orderBy('id', 'DESC')->get();
             // $preferences = ClientPreference::with('currency')->first();
             // $clientPreference = json_decode($preferences->customer_notification_per_distance);
-            
-            $finalAgents = [];
-            foreach($geoagents as $geoagent){
-                $agentLat = $geoagent->agentlog->lat;
-                $agentLong = $geoagent->agentlog->long;
-
-                $getDistance = $this->getLatLongDistance($agentLat, $agentLong, $request->latitude, $request->longitude, 'km');
-                
-                //get agent under 5 km
-                if($getDistance < 6){
-                    $geoagent->distance = $getDistance;
-                    $geoagent->distance_type = 'km';
-                    $finalAgents[] = $geoagent;
-                }
-
-                $getArrivalTime = $this->getLatLongDistance($agentLat, $agentLong, $request->latitude, $request->longitude, 'minutes');
-                $geoagent->arrival_time = $getArrivalTime;
-                
+            foreach( $geoagents as $agent){
+                echo $agent->id;
+                $myDate = Carbon::createFromFormat('Y-m-d', $request->schedule_date);
+                $dayNumber = $myDate->dayOfWeek+1;
+                $slots = AgentSlot::where('agent_id', $agent->id)
+                                    ->whereHas('days', function ($q) use ($dayNumber) {
+                                        return $q->where('day', $dayNumber);
+                                    })
+                                    ->get();
+                pr($slots);                    
             }
-
-            $distance = array_column($finalAgents, 'distance');
-            array_multisort($distance, SORT_ASC, $finalAgents);
+            
+            pr( $geoagents);
 
             return response()->json([
-                'data' => $finalAgents,
+                'data' => $geoagents,
                 'status' => 200,
                 'message' => __('success')
             ], 200);
 
-        } catch (Exception $e) {
-            return response()->json([
-                'message' => $e->getMessage()
-            ], 400);
-        }
+        // } catch (Exception $e) {
+        //     return response()->json([
+        //         'message' => $e->getMessage()
+        //     ], 400);
+        // }
 
     }
 
-        $i = $j = $c = 0;
-        for ($i = 0, $j = $points_polygon; $i < $points_polygon; $j = $i++) {
-            if ((($vertices_y[$i]  >  $latitude_y != ($vertices_y[$j] > $latitude_y)) &&
-                ($longitude_x < ($vertices_x[$j] - $vertices_x[$i]) * ($latitude_y - $vertices_y[$i]) / ($vertices_y[$j] - $vertices_y[$i]) + $vertices_x[$i]))) {
-                $c = !$c;
-            }
-        }
-        return $c;
+       
    
 }
