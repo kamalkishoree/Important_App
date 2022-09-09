@@ -51,14 +51,14 @@ $(function(){
 
 
 
-                const start_time = Swal.getPopup().querySelector('#edit_start_time').value
-                const end_time = Swal.getPopup().querySelector('#edit_end_time').value
-                const slot_type_edit = document.querySelector('input[name=radio-group]').value 
-                const edit_type_id = Swal.getPopup().querySelector('#edit_type_id').value
-                const edit_slot_date = Swal.getPopup().querySelector('#edit_slot_date').value
-    
+                // const start_time = Swal.getPopup().querySelector('#edit_start_time').value
+                // const end_time = Swal.getPopup().querySelector('#edit_end_time').value
+                // const slot_type_edit = document.querySelector('input[name=radio-group]').value 
+                // const edit_type_id = Swal.getPopup().querySelector('#edit_type_id').value
+                // const edit_slot_date = Swal.getPopup().querySelector('#edit_slot_date').value
+    //,start_time:start_time,end_time:end_time,slot_type_edit:slot_type_edit,edit_type_id:edit_type_id,edit_slot_date:edit_slot_date
                
-              return { SlotDayid: SlotDayid, SlotId: SlotId,SlotType:SlotType,SlotTypeOld:SlotTypeOld,SlotDate:SlotDate,start_time:start_time,end_time:end_time,slot_type_edit:slot_type_edit,edit_type_id:edit_type_id,edit_slot_date:edit_slot_date }
+              return { SlotDayid: SlotDayid, SlotId: SlotId,SlotType:SlotType,SlotTypeOld:SlotTypeOld,SlotDate:SlotDate }
             },onOpen: function() {
             }
           }).then(async (result) => {
@@ -68,15 +68,15 @@ $(function(){
                 slot_type:result.value.SlotType,
                 old_slot_type:result.value.SlotTypeOld,
                 slot_date:result.value.SlotDate,
-                agent_id:agent_id,
-                start_time:start_time,
-                end_time:end_time,
-                slot_type_edit:slot_type_edit,
-                edit_type_id:edit_type_id,
-                edit_slot_date:edit_slot_date
+                agent_id:agent_id
+                // start_time:start_time,
+                // end_time:end_time,
+                // slot_type_edit:slot_type_edit,
+                // edit_type_id:edit_type_id,
+                // edit_slot_date:edit_slot_date
             }
-            console.log(formData);
-           // await deleteSlot(formData)
+            //console.log(formData);
+            await deleteSlot(formData)
             // Swal.fire(`
             // blocktime: ${result.value.blocktime}
             //   memo: ${result.value.memo}
@@ -125,7 +125,7 @@ $(function(){
                         preConfirm: () => {
                             const start_time = Swal.getPopup().querySelector('#start_time').value
                             const end_time = Swal.getPopup().querySelector('#end_time').value
-                            const slotType = dispatcherStorage.getStorage('SlotTypeOld')
+                            const slotType = dispatcherStorage.getStorage('SlotType')
                             const week_day = [];
                             $.each($("input:checkbox[name='week_day[]']:checked"), function () {
                                 week_day.push($(this).val());
@@ -263,31 +263,29 @@ $(function(){
                             const edit_type_id = Swal.getPopup().querySelector('#edit_type_id').value
                             const edit_slot_date = Swal.getPopup().querySelector('#edit_slot_date').value
                             const edit_type = Swal.getPopup().querySelector('#edit_type').value
-                            const week_day = [];
-                            $.each($("input:checkbox[name='week_day[]']:checked"), function () {
-                                week_day.push($(this).val());
-                            });
-                            if (!start_time || !end_time || (!week_day || week_day== undefined) ) {
+                          
+                          
+                            if (!start_time || !end_time  ) {
                               Swal.showValidationMessage(`All feilds are required!!`)
                             }
-                            return { start_time: start_time, end_time: end_time,week_day:week_day , slot_type_old:slot_type_old,edit_type_id:edit_type_id,edit_slot_date:edit_slot_date,edit_type:edit_type}
+                            return { start_time: start_time, end_time: end_time, edit_slot_date:edit_slot_date}
                         },onOpen: function() {
                             // var save_slot_url = `/agent/slot/${agent_id}`
                             // $('#slot-event').setAttribute('action',save_slot_url);
                         }
                       }).then(async (result) => {
-                        
                         var formData = {
                             start_time:result.value.start_time,
                             end_time:result.value.end_time,
-                            stot_type_old:result.value.slot_type_old,
-                            edit_type_id:result.value.edit_type_id,
+                            edit_type:dispatcherStorage.getStorage('edit_type'),
+                            edit_type_id:dispatcherStorage.getStorage('edit_type_id'),
+                            edit_day:dispatcherStorage.getStorage('edit_day'),
                             edit_slot_date:result.value.edit_slot_date,
                             agent_id:agent_id,
-                            edit_type:edit_type
+                            slot_type_edit:dispatcherStorage.getStorage('SlotType'),
                             
                           }
-                          console.log(formData);
+                         
                           await add_slot_time(formData,'edit')
                        
                         // Swal.fire(`
@@ -300,9 +298,9 @@ $(function(){
                     var days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
                     var day = ev.event.start.getDay() + 1;
     
-                    document.getElementById('edit_type').value = ev.event.extendedProps.type;
-                    document.getElementById('edit_day').value = day;
-                    document.getElementById('edit_type_id').value = ev.event.extendedProps.type_id;
+                    // document.getElementById('edit_type').value = ev.event.extendedProps.type;
+                    // document.getElementById('edit_day').value = day;
+                    // document.getElementById('edit_type_id').value = ev.event.extendedProps.type_id;
     
                     // Delete Slot Form
                     /**storage */
@@ -310,6 +308,9 @@ $(function(){
                         dispatcherStorage.setStorageSingle('SlotId',ev.event.extendedProps.slot_id);
                         dispatcherStorage.setStorageSingle('SlotType',ev.event.extendedProps.type);
                         dispatcherStorage.setStorageSingle('SlotTypeOld',ev.event.extendedProps.type);
+                        dispatcherStorage.setStorageSingle('edit_type',ev.event.extendedProps.type);
+                        dispatcherStorage.setStorageSingle('edit_day',day);
+                        dispatcherStorage.setStorageSingle('edit_type_id',ev.event.extendedProps.type_id);
                     /**storage */
                     document.getElementById('SlotDayid').value = ev.event.extendedProps.type_id;
                     document.getElementById('SlotId').value = ev.event.extendedProps.slot_id;
@@ -382,7 +383,8 @@ $(function(){
                     text: response.data.message,
                     //footer: '<a href="">Why do I have this issue?</a>'
                 })
-                block.ajax.reload();
+                fullCalendarInt(agent_id)
+             
             } else{
                 Swal.fire({
                     icon: 'error',
@@ -393,11 +395,12 @@ $(function(){
             }
         })
         .catch(e => {
-            Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: 'Something went wrong, try again later!',
-            })
+            console.log(e);
+            // Swal.fire({
+            //     icon: 'error',
+            //     title: 'Oops...',
+            //     text: 'Something went wrong, try again later!',
+            // })
         })    
     } 
 

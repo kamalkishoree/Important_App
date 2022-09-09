@@ -38,10 +38,10 @@ class AgentSlotController extends Controller
             if(!$agent){
                 $this->error('Agent not fount!',405);
             }
-         
+            $dateNow = Carbon::now()->format('Y-m-d');
             $slotData = array();
         
-            if($request->slot_type == 'day'){
+            if($request->stot_type == 'day'){
                 $slot = new AgentSlot();
                 $slot->agent_id     = $agent->id;
                 $slot->start_time   = $request->start_time;
@@ -59,14 +59,14 @@ class AgentSlotController extends Controller
                 $slotDate->agent_id           = $agent->id;
                 $slotDate->start_time         = $request->start_time;
                 $slotDate->end_time           = $request->end_time;
-                $slotDate->specific_date      = $request->slot_date;
+                $slotDate->specific_date      = $request->slot_date ?? $dateNow;
                 $slotDate->working_today      = 1;
                 $slotDate->save();
             
             }
             DB::commit(); //Commit transaction after all the operations
          
-            return $this->success('', __('Slot saved successfully!'));
+             return $this->success('', __('Slot saved successfully!'));
         } catch (Exception $e) {
             DB::rollBack();
             return response()->json(array('success' => false, 'message'=>'Something went wrong.'));
@@ -83,11 +83,10 @@ class AgentSlotController extends Controller
      */
     public function update(Request $request)
     {
-        
+      
+        $dateNow = Carbon::now()->format('Y-m-d');
         $agent = Agent::where('id', $request->agent_id)->firstOrFail();
-        if(!$agent){
-            $this->error('Agent not fount!',405);
-        }
+    
         if($request->edit_type == 'day') {
             $slotDay = SlotDay::where('id', $request->edit_type_id)->where('day', $request->edit_day)->first();
             if(!$slotDay){
@@ -103,16 +102,16 @@ class AgentSlotController extends Controller
                     $slotDay->delete();
                     // delete vendor slot
                     // $slot->delete();
-
+                   
                     $dateSlot = new AgentSlotDate();
-                    $dateSlot->agent_id        = $agent->id;
+                    $dateSlot->agent_id         = $agent->id;
                     $dateSlot->start_time       = $request->start_time;
                     $dateSlot->end_time         = $request->end_time;
-                    $dateSlot->specific_date    = $request->slot_date;
+                    $dateSlot->specific_date    = $request->slot_date ?? $dateNow;
                     $dateSlot->working_today    = 1;
                     $dateSlot->save();
-
-                    return redirect()->back()->with('success', __('Slot saved successfully!'));
+                    return $this->success('', __('Slot saved successfully!'));
+                    
                 }
             }
 
@@ -152,7 +151,7 @@ class AgentSlotController extends Controller
                     $sday->slot_id =  $slot->id;
                     $sday->day = $request->edit_day;
                     $sday->save();
-                    return redirect()->back()->with('success', 'Slot saved successfully!');
+                    return $this->success('', __('Slot saved successfully!'));
                 }
             }
             $dateSlot->agent_id         = $agent->id;
@@ -163,7 +162,7 @@ class AgentSlotController extends Controller
             $dateSlot->save();
 
         }
-        return redirect()->back()->with('success', 'Slot saved successfully!');
+        return $this->success('', __('Slot saved successfully!'));
 
     }
 
@@ -185,12 +184,13 @@ class AgentSlotController extends Controller
     {
         try {
             DB::beginTransaction();
+            $dateNow = Carbon::now()->format('Y-m-d');
             if($request->slot_type == 'date'){
                 if($request->old_slot_type == 'day')
                 {
                     AgentSlotDate::updateOrCreate([
                         'agent_id'=>$request->agent_id,
-                        'specific_date' => $request->slot_date
+                        'specific_date' => $request->slot_date ?? $dateNow  
                     ],[
                         'working_today' => 0
                     ]);
