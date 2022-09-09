@@ -1,5 +1,5 @@
 $(function(){
-    var week_day = [];
+    
     dispatcherStorage.removeStorageAll();
     var product_id = vendor_id = title = block = appoin=agent_id = calendar='' ;
     var calendarEl = document.getElementById('calendar');
@@ -140,8 +140,12 @@ $(function(){
                             const end_time = Swal.getPopup().querySelector('#end_time').value
                             const blocktime = Swal.getPopup().querySelector('#blocktime').value
                             const recurring = dispatcherStorage.getStorage('recurring');
+
                             const memo = dispatcherStorage.getStorage('memo');
                             const booking_type = Swal.getPopup().querySelector('#booking_type').value
+
+
+                            var week_day = [];
 
                             //const slotType = dispatcherStorage.getStorage('SlotType')
                            
@@ -173,14 +177,16 @@ $(function(){
                             end_time:result.value.end_time,
                             week_day:result.value.week_day,
                             blocktime:result.value.blocktime,
-                            recurring:recurring,
+                            recurring:result.value.recurring,
                             agent_id:agent_id,
-                            booking_type:booking_type,
+                            booking_type:result.value.booking_type,
                             memo:memo
+
+
                             
                           }
                           console.log(formData);
-                         // await add_slot_time(formData)
+                          await add_slot_time(formData)
                        
                         // Swal.fire(`
                         // blocktime: ${result.value.blocktime}
