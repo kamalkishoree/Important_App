@@ -28,8 +28,14 @@ class Agent extends Authenticatable implements  Wallet, WalletFloat
     ];
 
     protected $appends = ['image_url', 'agent_cash_at_hand'];
-    
-    
+
+    public function day(){
+        $mytime = Carbon::now();
+        return $this->hasMany('App\Models\SlotDay', 'slot_id', 'id')->where('day', $mytime->dayOfWeek+1); 
+    }
+    public function days(){
+        return $this->hasOne('App\Models\SlotDay', 'slot_id', 'id'); 
+    }
     public function getImageUrlAttribute()
     {
         $secret = '';
@@ -39,6 +45,9 @@ class Agent extends Authenticatable implements  Wallet, WalletFloat
         ///return $new; 
 
     }
+    public function slots(){
+        return $this->hasMany('App\Model\AgentSlot', 'agent_id', 'id');
+      }
 
     // public function build()
     // {
