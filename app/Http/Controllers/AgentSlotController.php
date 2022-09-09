@@ -36,7 +36,6 @@ class AgentSlotController extends Controller
      */
     public function store(Request $request)
     {
-        // pr($request->all());
 
         try {
             DB::beginTransaction();
@@ -75,7 +74,7 @@ class AgentSlotController extends Controller
                         $AgentSlotData[$key]['start_time']     = $request->start_time;
                         $AgentSlotData[$key]['end_time']       = $request->end_time;
                         $AgentSlotData[$key]['schedule_date']  = $date->format('Y-m-d H:i:s');
-                        $AgentSlotData[$key]['booking_type']   =  $request->booking_type ?? 'working_hours' ;
+                        $AgentSlotData[$key]['booking_type']   = $request->booking_type ?? 'working_hours' ;
                         $AgentSlotData[$key]['memo']           = $request->memo ?? __('Working Hours');
                     }
                 }
@@ -264,13 +263,10 @@ class AgentSlotController extends Controller
         $showData = array();
         $count = 0;
 
-        foreach ($day as $key => $value) {
-            $exist = 0;
-            $start = $end = $color = '';
 
             if($AgentRoster){
                 foreach ($AgentRoster as $k => $v) {
-                 
+                    $a_date = date('Y-m-d', strtotime($v->schedule_date));
                     $title = $v->memo ? $v->memo :'';
                     $color = $this->workingColor;
                     if($v->booking_type == 'blocked'){
@@ -280,8 +276,8 @@ class AgentSlotController extends Controller
                     }
                     
                     $showData[$count]['title'] = trim($title);
-                    $showData[$count]['start'] = $date[$key].'T'.$v->start_time;
-                    $showData[$count]['end'] = $date[$key].'T'.$v->end_time;
+                    $showData[$count]['start'] = $a_date.'T'.$v->start_time;
+                    $showData[$count]['end'] = $a_date.'T'.$v->end_time;
                     $showData[$count]['color'] = $color;
                     $showData[$count]['type'] = 'date';
                     $showData[$count]['roster_id'] = $v->id;
@@ -291,7 +287,7 @@ class AgentSlotController extends Controller
                 }
             }
 
-        }
+        
         echo $json  = json_encode($showData);
     }
 

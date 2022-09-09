@@ -546,7 +546,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                     <div class="col-md-12">
                                         <div class="form-group">
                                             <label class="d-block pt-2">Memo</label>
-                                            <textarea placeholder="" class="class="form-control"></textarea>
+                                            <textarea placeholder="" id="memo" class="form-control memo"></textarea>
                                          </div>
                                     </div>
                                 </div>

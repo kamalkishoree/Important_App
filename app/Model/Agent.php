@@ -46,7 +46,7 @@ class Agent extends Authenticatable implements  Wallet, WalletFloat
 
     }
     public function slots(){
-        return $this->hasMany('App\Model\AgentSlot', 'agent_id', 'id');
+        return $this->hasMany('App\Model\AgentSlotRoster', 'agent_id', 'id');
       }
 
     // public function build()

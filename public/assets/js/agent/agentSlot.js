@@ -104,6 +104,7 @@ $(function(){
         if($('#calendar').length > 0){
             calendar = new FullCalendar.Calendar(calendarEl, {
                 initialView: 'timeGridWeek',
+                disableDragging: true,
                 headerToolbar: {
                     left: 'prev,next',
                     center: 'title',
@@ -129,6 +130,7 @@ $(function(){
                 nowIndicator: true,
                 eventMaxStack: 1,
                 select: function(arg) {
+                    dispatcherStorage.removeStorageSingle('recurring');
                     Swal.fire({
                         title: 'Add working hours',
                         html: AddSlotHtml,
@@ -140,8 +142,7 @@ $(function(){
                             const end_time = Swal.getPopup().querySelector('#end_time').value
                             const blocktime = Swal.getPopup().querySelector('#blocktime').value
                             const recurring = dispatcherStorage.getStorage('recurring');
-
-                            const memo = dispatcherStorage.getStorage('memo');
+                            const memo = Swal.getPopup().querySelector('#memo').value;
                             const booking_type = Swal.getPopup().querySelector('#booking_type').value
 
 
@@ -479,7 +480,7 @@ $(function(){
             $('#blocktime').daterangepicker({
               //timePicker: true,
               startDate: moment().startOf('hour'),
-              endDate: moment().startOf('hour').add(24, 'hour'),
+              endDate: moment().startOf('hour'),
               minDate:new Date(),
               locale: {
                 format: 'M/DD/YY'
