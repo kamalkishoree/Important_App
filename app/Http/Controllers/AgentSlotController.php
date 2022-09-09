@@ -24,6 +24,9 @@ use App\Model\{Agent,AgentSlot,AgentSlotRoster,SlotDay};
 class AgentSlotController extends Controller
 {
     use ApiResponser;
+    public $blockColor = '#d71717';
+    public $workingColor = '#43bee1';
+    public $Blockedslots = '#8d6464';
 
     /**
      * Store a newly created resource in storage.
@@ -58,7 +61,7 @@ class AgentSlotController extends Controller
             $slot->end_time     = $request->end_time;
             $slot->start_date   = $start_date;
             $slot->end_date     = $end_date;
-            $slot->recurring    = $request->recurring;
+            $slot->recurring    =$request->recurring == 'true' ? 1 : 0;
             $slot->save();
 
             if(isset($slot->id)){
@@ -82,7 +85,7 @@ class AgentSlotController extends Controller
          
              return $this->success('', __('Slot saved successfully!'));
         } catch (Exception $e) {
-            pr($e);
+           
             DB::rollBack();
             return response()->json(array('success' => false, 'message'=>'Something went wrong.'));
         }
@@ -230,7 +233,7 @@ class AgentSlotController extends Controller
 
         if($request->has('start')){
             $start = explode('T', $request->start);
-            $end = explode('T', $request->end);
+            $end  = explode('T', $request->end);
 
             $startDate = date('Y-m-d', strtotime($start[0])); 
             $endDate = date('Y-m-d', strtotime($end[0]));
@@ -249,18 +252,14 @@ class AgentSlotController extends Controller
                 $day[] = $i + 1;
             }
         }else{
-            $dayArray = array('sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday');
-            foreach ($dayArray as $key => $value) {
-                $th = ($value == 'sunday') ? 'previous sunday' : $value.' this week';
-                $date[] =  date( 'Y-m-d', strtotime($th));
-                $day[] = $key + 1;
-            }
+            $startDate = '';
+            $endDate ='';
         }
 
         $lst = count($date) - 1;
         // $slot = AgentSlot::select('agent_slots.*', 'slot_days.id as slot_day_id', 'slot_days.slot_id', 'slot_days.day')->join('slot_days', 'slot_days.slot_id', 'agent_slots.id')->where('agent_id', $id)->orderBy('slot_days.day', 'asc')->get();
-        
-        $slotDate = AgentSlotRoster::whereBetween('specific_date', [$date[0], $date[$lst]])->orderBy('specific_date','asc')->get();
+     
+        $AgentRoster = AgentSlotRoster::where('agent_id',$Agent->id)->whereBetween('schedule_date', [$startDate, $endDate])->orderBy('schedule_date','asc')->get();
 
         $showData = array();
         $count = 0;
@@ -269,41 +268,29 @@ class AgentSlotController extends Controller
             $exist = 0;
             $start = $end = $color = '';
 
-            if($slotDate){
-                foreach ($slotDate as $k => $v) {
-                    $title = '';
-                    if($date[$key] == $v->specific_date){
-                        $exist = 1;
-                       
-
-                        $showData[$count]['title'] = trim($title);
-                        $showData[$count]['start'] = $date[$key].'T'.$v->start_time;
-                        $showData[$count]['end'] = $date[$key].'T'.$v->end_time;
-                        $showData[$count]['color'] = ($v->working_today == 0) ? '#43bee1' : '';
-                        $showData[$count]['type'] = 'date';
-                        $showData[$count]['type_id'] = $v->id;
-                        $showData[$count]['slot_id'] = $v->id;
-                        $count++;
+            if($AgentRoster){
+                foreach ($AgentRoster as $k => $v) {
+                 
+                    $title = $v->memo ? $v->memo :'';
+                    $color = $this->workingColor;
+                    if($v->booking_type == 'blocked'){
+                        $color = $this->Blockedslots;
+                    }else if($v->booking_type == 'new_booking'){
+                        $color = $this->workingColor;
                     }
+                    
+                    $showData[$count]['title'] = trim($title);
+                    $showData[$count]['start'] = $date[$key].'T'.$v->start_time;
+                    $showData[$count]['end'] = $date[$key].'T'.$v->end_time;
+                    $showData[$count]['color'] = $color;
+                    $showData[$count]['type'] = 'date';
+                    $showData[$count]['roster_id'] = $v->id;
+                    $showData[$count]['slot_id'] = $v->slot_id;
+                    $count++;
+                    
                 }
             }
 
-            if($exist == 0){
-                foreach ($slot as $k => $v) {
-                    $title = '';
-                    if($value == $v->day){
-
-                        $showData[$count]['title'] = trim($title);
-                        $showData[$count]['start'] = $date[$key].'T'.$v->start_time;
-                        $showData[$count]['end'] = $date[$key].'T'.$v->end_time;
-                        $showData[$count]['type'] = 'day';
-                        $showData[$count]['color'] = ($v->working_today == 0) ? '#43bee1' : '';
-                        $showData[$count]['type_id'] = $v->slot_day_id;
-                        $showData[$count]['slot_id'] = $v->slot_id;
-                        $count++;
-                    }
-                }
-            } 
         }
         echo $json  = json_encode($showData);
     }

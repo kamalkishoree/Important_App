@@ -180,10 +180,7 @@ $(function(){
                             recurring:result.value.recurring,
                             agent_id:agent_id,
                             booking_type:result.value.booking_type,
-                            memo:memo
-
-
-                            
+                            memo:result.value.memo
                           }
                           console.log(formData);
                           await add_slot_time(formData)
