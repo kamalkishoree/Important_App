@@ -200,7 +200,7 @@
                         previous: "<i class='mdi mdi-chevron-left'>",
                         next: "<i class='mdi mdi-chevron-right'>"
                     },
-                    searchPlaceholder: "{{__('Search Agent')}}",
+                    searchPlaceholder: "{{__('Search '.getAgentNomenclature())}}",
                     'loadingRecords': '&nbsp;',
                     'processing': '<div class="spinner"></div>'
                 },
@@ -239,14 +239,12 @@
         }
         var mobile_number = '';
 
-        // $('#add-agent-modal .xyz').val(mobile_number.getSelectedCountryData().dialCode);
         $(document).on("change", "#add-agent-modal .xyz", function(e) {
             var phonevalue = $('.xyz').val();
             $("#countryCode").val(mobile_number.getSelectedCountryData().dialCode);
         });
 
         function phoneInput() {
-            // console.log('phone working');
             var input = document.querySelector(".xyz");
 
             var mobile_number_input = document.querySelector(".xyz");
@@ -271,7 +269,7 @@
 
         jQuery('#onfoot').click();
 
-        $(document).on('click', '.click', function() { //alert('a');
+        $(document).on('click', '.click', function() {
             var radi = $(this).find('input[type="radio"]');
             radi.prop('checked', true);
             var check = radi.val();
@@ -390,9 +388,7 @@
         });
 
         /* add Team using ajax*/
-        // $("#add-agent-modal #submitAgent").submit(function(e) {
-
-        // });
+        
         $(document).on("submit", "#submitAgent", function(e) {
             e.preventDefault();
             // $(document).on('click', '.submitAgentForm', function() {
@@ -529,10 +525,14 @@
                     },
                     success: function(data) {
                         if (data.status == 1) {
+                            $('#active_vendor_count').text('('+data.agentIsApproved+')');
+                            $('#awaiting_vendor_count').text('('+data.agentNotApproved+')');
+                            $('#blocked_vendor_count').text('('+data.agentRejected+')');
                             $.NotificationApp.send("", data.message, "top-right", "#5ba035", "success");
                             setTimeout(function() {
                                 $('#' + activeTabDetail).DataTable().ajax.reload();
                             }, 100);
+                            
                         }
                     }
                 });

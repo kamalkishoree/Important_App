@@ -165,7 +165,8 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 			Route::get('analytics', 'AccountingController@index')->name('accounting');
 			Route::get('profileImg', 'ProfileController@displayImage');
 			Route::get('', 'DashBoardController@index')->name('index');
-            Route::get('dashboard/data', 'DashBoardController@dashboardData')->name('dashboard.data');
+            Route::get('dashboard/data/{userstatus}', 'DashBoardController@dashboardData')->name('dashboard.data');
+			Route::get('dashboard/teamsdata/{userstatus}', 'DashBoardController@dashboardTeamData')->name('dashboard.teamsdata');
 			Route::get('customize', 'ClientController@ShowPreference')->name('preference.show');
 			Route::post('save/cms/{id}', 'ClientController@cmsSave')->name('cms.save');
 			Route::post('client_preference/{id}', 'ClientController@storePreference')->name('preference');
@@ -246,17 +247,11 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 			Route::resource('subadmins', 'SubAdminController');
 
 
-			// Route::get('/order/tracking/{clientcode}/{order_id}','TrackingController@OrderTracking')->name('order.tracking');
-
 			Route::get('/order/feedback/{clientcode}/{order_id}', 'TrackingController@OrderFeedback')->name('order.feedback');
 
 			Route::post('/feedback/save', 'TrackingController@SaveFeedback')->name('feedbackSave');
 
-			//for testing
-			//Route::get('testing','DashBoardController@ExportPdfPath');
-			//Route::get('testing','DashBoardController@GetRouteDirection');
-
-
+			
 			Route::get('demo/page', 'GeoFenceController@newDemo')->name('new.demo');
 
 			Route::resource('payoption', 'PaymentOptionController');

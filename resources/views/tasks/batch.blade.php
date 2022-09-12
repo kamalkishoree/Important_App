@@ -93,7 +93,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                     <tr>
                                         <th class="sort-icon">{{__("Sr.no")}} </th>
                                         <th class="sort-icon">{{__("Batch Number")}}</th>
-                                        <th class="sort-icon">{{__("Agent Name")}}</th>
+                                        <th class="sort-icon">{{__(getAgentNomenclature()." Name")}}</th>
                                         <th class="sort-icon">{{__("Batch Time")}}</th>
                                         <th >{{__("Action")}}</th>
                                     </tr>

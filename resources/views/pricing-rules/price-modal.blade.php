@@ -58,7 +58,7 @@
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group" id="typeInput">
-                                            {!! Form::label('title', __('Select Driver Tag'),['class' => 'control-label']) !!} <span class="badge badge-primary float-right" id="select_driver_tag_all" style="cursor:pointer;">Select All</span>
+                                            {!! Form::label('title', __('Select '.getAgentNomenclature().' Tag'),['class' => 'control-label']) !!} <span class="badge badge-primary float-right" id="select_driver_tag_all" style="cursor:pointer;">Select All</span>
                                             {!! Form::select('driver_tag_id[]',$driver_tag,null,['id' => 'driver_tag_id','data-toggle' => 'select2', 'class' => 'form-control', 'multiple' => 'multiple', 'data-placeholder' => 'Choose ...']) !!}
                                             <span class="invalid-feedback" role="alert">
                                                 <strong></strong>
@@ -72,14 +72,14 @@
                                         <div class="form-group">
                                             {!! Form::label('title', __('Apply Timetable'),['class' => 'control-label']) !!}
                                             <div class="mt-md-1">
-                                                <input type="checkbox" data-plugin="switchery" name="apply_timetable" class="form-control apply_timetable" data-color="#43bee1" checked='checked'>
+                                                <input type="checkbox" data-plugin="switchery" name="apply_timetable" class="form-control apply_timetable" data-color="#43bee1">
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                                 
-                                <div class="timetable_div">
-                                    <h5><span class="digital-clock1" style="float:right;color: rgb(183 33 33);text-shadow:0 0 6px #ff0;">00:00:00</span></h5>
+                                <div class="timetable_div" style="display:none;">
+                                    <h5><span class="digital-clock1" style="float:right;color: rgb(183 33 33);">00:00:00</span></h5>
                                     
                                     <div class="table-responsive">
                                         <table class="table table-striped dt-responsive nowrap w-100">

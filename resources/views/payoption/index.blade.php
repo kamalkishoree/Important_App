@@ -87,7 +87,12 @@
 
                 <div class="card-box h-100">
                     <div class="d-flex align-items-center justify-content-between mb-2">
-                        <h4 class="header-title mb-0">{{__($opt->title)}}</h4>
+                        <h4 class="header-title mb-0">
+                            <span class="alPaymentImage" style="height:24px;width:24px;display:inline-block;">
+                                <img style="width:100%;" src="{{asset('paymentsLogo/'.$opt->code.'.png')}}" alt="">
+                            </span>
+                            {{__($opt->title)}}
+                        </h4>
                     </div>
                     <div class="row">
                         <div class="col-6">
@@ -440,7 +445,9 @@
             <div class="col-sm-8">
                 <div class="text-sm-left">
                     <div class="page-title-box">
-                        <h4 class="page-title">{{ __("Payout Options") }}</h4>
+                        <h4 class="page-title">
+                            {{ __("Payout Options") }}
+                        </h4>
                     </div>
                 </div>
             </div>
@@ -465,7 +472,11 @@
 
                 <div class="card-box h-100">
                     <div class="d-flex align-items-center justify-content-between mb-2">
-                        <h4 class="header-title mb-0">{{__($opt->title)}}</h4>
+                        <h4 class="header-title mb-0">
+                            <span class="alPaymentImage" style="height:24px;width:24px;display:inline-block;">
+                                <img style="width:100%;" src="{{asset('paymentsLogo/'.$opt->code.'.png')}}" alt="">
+                            </span>    
+                        {{__($opt->title)}}</h4>
                     </div>
                     <div class="row">
                         <div class="col-6">

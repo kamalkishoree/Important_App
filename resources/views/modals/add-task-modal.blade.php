@@ -1,6 +1,6 @@
 <div class="row">
     <div class="col-md-12">
-        <div class="card-box pt-0 pb-0">            
+        <div class="card-box pb-0 pt-0 mb-1">            
             <div class="row d-flex">
                 <div class="col-md-4" style="border-right: 1px solid #ccc;">
                     @csrf
@@ -20,7 +20,7 @@
                     <div class="row mb-3 datenow">
                         <div class="col-md-12">
                             <input type="text"  name="schedule_time"
-                            class="form-control opendatepicker upside datetime-datepicker" placeholder={{__("Date Time")}}>
+                            class="form-control opendatepicker upside datetime-datepicker" placeholder='{{__("Date Time")}}'>
                             <button type="button" class="cstmbtn check_btn btn btn-info"><i class="fa fa-check" aria-hidden="true"></i></button>
                         </div>
                     </div>
@@ -49,7 +49,7 @@
                         </div>
                     </div>
 
-                    <div class="row mb-2 newcustomer">
+                    <div class="row mb-1 newcustomer">
                         <div class="col-md-12">
                             <div class="form-group" id="nameInput">
                                 {!! Form::text('name', null, ['class' => 'form-control', 'placeholder' => __('Name'),'id'=>'name_new']) !!}
@@ -58,18 +58,23 @@
                                 </span>
                             </div>
                         </div>
-                        <div class="col-md-6">
+                    </div>
+
+                    <div class="row mb-1">
+                        <div class="col-md-12">
                             <div class="form-group" id="emailInput">
-                                {!! Form::text('email', null, ['class' => 'form-control', 'placeholder' => __('Email'),'id'=>'email_new']) !!}
+                                {!! Form::text('email', null, ['class' => 'form-control email', 'placeholder' => __('Email'),'id'=>'email']) !!}
                                 <span class="invalid-feedback" role="alert">
                                     <strong></strong>
                                 </span>
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-12">
                             <div class="form-group" id="phone_numberInput">
-                                {!! Form::text('phone_number', null, ['class' => 'form-control', 'placeholder' => __('Phone Number'),'id'=> 'phone_new'
-                                ]) !!}
+                                <div class="input-group">
+                                    <input type="text" name="phone_number" class="form-control phone_number" id="phone_number" placeholder="{{__('Enter mobile number')}}" maxlength="14">
+                                    <input type="hidden" id="dialCode" name="dialCode" value="{{getCountryPhoneCode()}}">
+                                </div>
                                 <span class="invalid-feedback" role="alert">
                                     <strong></strong>
                                 </span>
@@ -80,27 +85,33 @@
                         <input type="hidden" id="check-appointment-barcode" value="{{ (!empty($task_proofs[2]->barcode_requried) ? $task_proofs[2]->barcode_requried : 0)}}">
                     </div>
 
-                    <h4 class="header-title mb-2">{{__("Meta Data")}}</h4>
-                    <div class="row mb-2">
-                        <div class="col-md-6">
-                            <input type="file" data-plugins="dropify" class="dropify" name="file[]" multiple data-height="300" accept="image/*"/>
-                        </div>
-                        <div class="col-md-6" id="make_modelInput">
-                            {!! Form::hidden('recipient_phone', null, ['class' => 'form-control rec', 'placeholder' =>
-                            __('Recipient Phone'), 'required' => 'required']) !!}
-                            {!! Form::hidden('recipient_email', null, ['class' => 'form-control rec', 'placeholder'
-                            => __('Recipient Email'), 'required' => 'required']) !!}
-                            {!! Form::textarea('task_description', null, ['class' => 'form-control',
-                            'placeholder' => __('Please enter task description'), 'rows' => 5, 'cols' => 40]) !!}
-                            <span class="invalid-feedback" role="alert">
-                                <strong></strong>
-                            </span>
+                    <h4 class="header-title mb-2">{{__("Meta Data")}} <a href="#edit_desc" class="edit-icon-float-right"> <i class="mdi mdi-square-edit-outline"></i></a></h4>
+                    <div class="meta_data_task_div" style="display:none;">
+                        <div class="row mb-2">
+                            <div class="col-md-12" id="make_modelInput">
+                                {!! Form::hidden('recipient_phone', null, ['class' => 'form-control rec', 'placeholder' =>
+                                __('Recipient Phone'), 'required' => 'required']) !!}
+                                {!! Form::hidden('recipient_email', null, ['class' => 'form-control rec', 'placeholder'
+                                => __('Recipient Email'), 'required' => 'required']) !!}
+                                {!! Form::textarea('task_description', null, ['class' => 'form-control',
+                                'placeholder' => __('Please enter task description'), 'rows' => 3, 'cols' => 40]) !!}
+                                <span class="invalid-feedback" role="alert">
+                                    <strong></strong>
+                                </span>
 
-                            <span class="invalid-feedback" role="alert">
-                                <strong></strong>
-                            </span>
+                                <span class="invalid-feedback" role="alert">
+                                    <strong></strong>
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-2">
+                            <div class="col-md-12">
+                                <input type="file" data-plugins="dropify" class="dropify" name="file[]" data-height="300" multiple accept="image/*"/>
+                            </div>
                         </div>
                     </div>
+                    
                     <div class="row mb-2">
                         <div class="col-md-12"  id="make_modelInput">
                             {!! Form::text('call_back_url', null, ['class' => 'form-control rec', 'placeholder' => __('Call Back URL')]) !!}
@@ -108,7 +119,7 @@
                     </div>
                     <div class="row mb-3">
                         <div class="col-md-12" id="cash_to_be_collectedInput">
-                            <input class="form-control" type="text" placeholder={{__("Cash to be collected")}} name="cash_to_be_collected">
+                            <input class="form-control" type="text" placeholder='{{__("Cash to be collected")}}' name="cash_to_be_collected">
                             <span class="invalid-feedback" role="alert">
                                 <strong></strong>
                             </span>
@@ -133,8 +144,8 @@
                         </div>
                     </div>
                     
-                    <span class="span1 tagspan">{{__("Please select atlest one tag for driver and agent")}}</span>
-                    <div class="tags {{ $allcation->manual_allocation == 0 ? "hidealloction":""}}">
+                    <span class="span1 tagspan">{{__("Please select atlest one tag for ".getAgentNomenclature())}}</span>
+                    <div class="tags {{ $allcation->manual_allocation == 0 ? 'hidealloction':''}}">
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="form-group">
@@ -153,7 +164,7 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="form-group">
-                                    <label>{{__("Driver Tag")}}</label>
+                                    <label>{{__(getAgentNomenclature()." Tag")}}</label>
                                     <select name="agent_tag[]" id="selectize-optgroup" class="selectizeInput" multiple placeholder="{{__('Select tag...')}}">
                                         <option value="">{{__("Select Tag...")}}</option>
                                         @foreach ($agentTag as $item)
@@ -168,8 +179,8 @@
                     <div class="row drivers hidealloction">
                         <div class="col-md-12">
                             <div class="form-group">
-                                <label>{{__("Drivers")}}</label>
-                                {!! Form::text('searchDriver', null, ['class' => 'form-control', 'placeholder' => __('Search Driver'), 'id' => 'searchDriver']) !!}
+                                <label>{{__(getAgentNomenclature()."s")}}</label>
+                                {!! Form::text('searchDriver', null, ['class' => 'form-control', 'placeholder' => __('Search '.getAgentNomenclature()), 'id' => 'searchDriver']) !!}
                                 <input type="hidden" id='agentid' name="agent" readonly>
                                 {{-- <select class="form-control selectpicker" name="agent" id="driverselect">
                                     @foreach ($agents as $item)
@@ -193,7 +204,7 @@
                                     <div class="row firstclone1">
                                         <div class="col-md-6">
                                             <div class="form-group mb-1">
-                                                <select class="form-control selecttype mt-1" id="task_type"  name="task_type_id[]" required>
+                                                <select class="selecttype mt-1" id="task_type"  name="task_type_id[]" style="width:100%;" required>
                                                     <option value="1">{{__("Pickup Task")}}</option>
                                                     <option value="2">{{__("Drop Off Task")}}</option>
                                                     <option value="3">{{__("Appointment")}}</option>
@@ -221,14 +232,14 @@
                                                         <div class="form-group col-6 mb-1">
                                                             {!! Form::text('short_name[]', null, ['class' => 'form-control address', 'placeholder' => __('Short Name')]) !!}
                                                         </div>
-                                                        <div class="form-group col-6 mb-1">
-                                                            {!! Form::text('flat_no[]', null, ['class' => 'form-control address flat_no','placeholder' => __('House/Apartment/Flat no'),'id'=>'addHeader1-flat_no']) !!}
-                                                        </div>
                                                         <div class="input-group form-group col-6 mb-2">
                                                             <input type="text" id="addHeader1-input" name="address[]" class="form-control address cust_add" placeholder='{{__("Location")}}'>
                                                             <div class="input-group-append">
                                                                 <button class="btn btn-xs btn-dark waves-effect waves-light showMapHeader cust_btn" type="button" num="addHeader1"> <i class="mdi mdi-map-marker-radius"></i></button>
                                                             </div>
+                                                        </div>
+                                                        <div class="form-group col-6 mb-1">
+                                                            {!! Form::text('flat_no[]', null, ['class' => 'form-control address flat_no','placeholder' => __('House/Apartment/Flat no'),'id'=>'addHeader1-flat_no']) !!}
                                                         </div>
                                                         <div class="form-group col-6 mb-1">
                                                             <input type="hidden" name="latitude[]" id="addHeader1-latitude" value="0" class="cust_latitude" />
@@ -284,7 +295,7 @@
                         <div id="addSubFields" style="width:100%;height:400px; display: none;">&nbsp;</div>
                         <div class="row">
                             <div class="col-md-12 mt-2" id="adds">
-                                <a href="#" class="add-sub-task-btn waves-effect waves-light subTaskHeader">{{__("Add Sub Task")}}</a>
+                                <a href="javascript:void(0)" class="add-sub-task-btn waves-effect waves-light subTaskHeader">{{__("Add Sub Task")}}</a>
                             </div>
                         </div>
                     </div>

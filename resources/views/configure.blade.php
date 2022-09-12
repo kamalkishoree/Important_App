@@ -423,7 +423,7 @@ $sms_crendential = json_decode($preference->sms_credentials);
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group mb-3">
-                                    <label for="from_address">{{ __('Form Address') }}</label>
+                                    <label for="from_address">{{ __('From Address') }}</label>
                                     <input type="text" name="from_address" id="from_address" placeholder="user@gmail.com"
                                         class="form-control"
                                         value="{{ old('from_address', $smtp_details->from_address ?? '') }}" required>
@@ -592,7 +592,7 @@ $sms_crendential = json_decode($preference->sms_credentials);
         <div class="row">
             <div class="col-12">
                 <div class="page-title-box">
-                    <h4 class="page-title">{{ Session::get('agent_name') ? Session::get('agent_name') : 'Agent' }}</h4>
+                    <h4 class="page-title">{{ getAgentNomenclature() }}</h4>
                 </div>
             </div>
         </div>
@@ -610,7 +610,7 @@ $sms_crendential = json_decode($preference->sms_credentials);
                                     <button class="btn btn-outline-info d-block" type="submit"> Save </button>
                                 </div>
                                 <div class="d-flex align-items-center justify-content-between mt-3 mb-2">
-                                    <h5 class="font-weight-normal m-0">{{ __('Cancel Order By') }} {{ Session::get('agent_name') ? Session::get('agent_name') : 'Agent' }}</h5>
+                                    <h5 class="font-weight-normal m-0">{{ __('Cancel Order By') }} {{ getAgentNomenclature() }}</h5>
                                     <div class="custom-control custom-switch">
                                         <input type="checkbox" class="custom-control-input"
                                             id="cancelOrderCustomSwitch_{{ $preference->is_cancel_order_driver }}"
@@ -625,7 +625,7 @@ $sms_crendential = json_decode($preference->sms_credentials);
                         <div class="row">
                             <div class="col-12">
                                 <div class="d-flex align-items-center justify-content-between mt-3 mb-2">
-                                    <h5 class="font-weight-normal m-0">{{ Session::get('agent_name') ? Session::get('agent_name') : 'Agent' }} {{ __('Registration Phone Verification') }}</h5>
+                                    <h5 class="font-weight-normal m-0">{{ getAgentNomenclature() }} {{ __('Registration Phone Verification') }}</h5>
                                     <div class="custom-control custom-switch">
                                         <input type="checkbox" class="custom-control-input event_type"
                                             id="customSwitch_{{ $preference->verify_phone_for_driver_registration }}"
@@ -640,7 +640,7 @@ $sms_crendential = json_decode($preference->sms_credentials);
                         <div class="row">
                             <div class="col-12">
                                 <div class="d-flex align-items-center justify-content-between mt-3 mb-2">
-                                    <h5 class="font-weight-normal m-0">{{ __('Edit Order By') }} {{ Session::get('agent_name') ? Session::get('agent_name') : 'Agent' }}</h5>
+                                    <h5 class="font-weight-normal m-0">{{ __('Edit Order By') }} {{ getAgentNomenclature() }}</h5>
                                     <div class="custom-control custom-switch">
                                         <input type="checkbox" class="custom-control-input"
                                             id="editOrderCustomSwitch_{{ $preference->is_edit_order_driver }}"
@@ -664,7 +664,7 @@ $sms_crendential = json_decode($preference->sms_credentials);
                         <div class="row">
                             <div class="col-12">
                                 <div class="d-flex align-items-center justify-content-between mb-2">
-                                    <h4 class="header-title text-uppercase mb-0">{{ Session::get('agent_name') ? Session::get('agent_name') : 'Agent' }} {{__('Registration Documents')}}</h4>
+                                    <h4 class="header-title text-uppercase mb-0">{{ getAgentNomenclature() }} {{__('Registration Documents')}}</h4>
                                     <button class="btn btn-outline-info d-block" id="add_driver_registration_document_modal_btn" type="button"> {{__('Add')}} </button>
                                 </div>
                                 <div class="table-responsive mt-3 mb-1">
@@ -901,11 +901,11 @@ $sms_crendential = json_decode($preference->sms_credentials);
                         <div class="row align-items-start batch-allocation" style="display:{{ (!empty($preference->create_batch_hours) && $preference->create_batch_hours > 0) ? '':'none'}}" >
                             <div class="col-md-12"> 
                                 <div class="form-group d-flex justify-content-between mb-3">
-                                <label for="" class="mr-2 mb-0">{{__("Create batch on every hours")}} </label>
+                                <label for="" class="mr-2 mb-0">{{__("Create batch on every")}} </label>
                                 <div class="d-flex align-items-center justify-content-between mb-2">
                                     <div class="custom-control custom-switch">
                                             <select class="form-control" name="create_batch_hours">
-                                                <option value="">Select Hour to create job</option>
+                                                <option value="">Select interval to create job</option>
                                                 <option value="1" {{($preference->create_batch_hours == 1) ? 'selected' : '' }}>1 Hour</option>
                                                 <option value="2" {{($preference->create_batch_hours == 2) ? 'selected' : '' }}>2 Hour</option>
                                                 <option value="3" {{($preference->create_batch_hours == 3) ? 'selected' : '' }}>3 Hour</option>
@@ -1112,7 +1112,7 @@ $sms_crendential = json_decode($preference->sms_credentials);
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header border-bottom">
-                        <h4 class="modal-title" id="standard-modalLabel">Add {{ Session::get('agent_name') ? Session::get('agent_name') : 'Agent' }} Registration Document</h4>
+                        <h4 class="modal-title" id="standard-modalLabel">Add {{ getAgentNomenclature() }} Registration Document</h4>
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                     </div>
                     <div class="modal-body">
@@ -1192,7 +1192,7 @@ $sms_crendential = json_decode($preference->sms_credentials);
             $('#add_driver_registration_document_modal input[name=driver_registration_document_id]').val("");
             $('#add_driver_registration_document_modal').modal('show');
             $('#add_driver_registration_document_modal #standard-modalLabel').html(
-                'Add Driver Registration Document');
+                'Add {{getAgentNomenclature()}} Registration Document');
         });
         $(document).on("click", ".delete_driver_registration_document_btn", function() {
             var driver_registration_document_id = $(this).data('driver_registration_document_id');
@@ -1275,7 +1275,7 @@ $sms_crendential = json_decode($preference->sms_credentials);
                                 "checked", false);
                         }
                         $('#add_driver_registration_document_modal #standard-modalLabel').html(
-                            'Update Driver Registration Document');
+                            'Update {{getAgentNomenclature()}} Registration Document');
                         $('#add_driver_registration_document_modal').modal('show');
                     }
                 },
