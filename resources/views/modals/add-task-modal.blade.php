@@ -86,30 +86,32 @@
                     </div>
 
                     <h4 class="header-title mb-2">{{__("Meta Data")}} <a href="#edit_desc" class="edit-icon-float-right"> <i class="mdi mdi-square-edit-outline"></i></a></h4>
-                    <div class="row mb-2 task_desc_div" style="display:none;">
-                        <div class="col-md-12" id="make_modelInput">
-                            {!! Form::hidden('recipient_phone', null, ['class' => 'form-control rec', 'placeholder' =>
-                            __('Recipient Phone'), 'required' => 'required']) !!}
-                            {!! Form::hidden('recipient_email', null, ['class' => 'form-control rec', 'placeholder'
-                            => __('Recipient Email'), 'required' => 'required']) !!}
-                            {!! Form::textarea('task_description', null, ['class' => 'form-control',
-                            'placeholder' => __('Please enter task description'), 'rows' => 3, 'cols' => 40]) !!}
-                            <span class="invalid-feedback" role="alert">
-                                <strong></strong>
-                            </span>
+                    <div class="meta_data_task_div" style="display:none;">
+                        <div class="row mb-2">
+                            <div class="col-md-12" id="make_modelInput">
+                                {!! Form::hidden('recipient_phone', null, ['class' => 'form-control rec', 'placeholder' =>
+                                __('Recipient Phone'), 'required' => 'required']) !!}
+                                {!! Form::hidden('recipient_email', null, ['class' => 'form-control rec', 'placeholder'
+                                => __('Recipient Email'), 'required' => 'required']) !!}
+                                {!! Form::textarea('task_description', null, ['class' => 'form-control',
+                                'placeholder' => __('Please enter task description'), 'rows' => 3, 'cols' => 40]) !!}
+                                <span class="invalid-feedback" role="alert">
+                                    <strong></strong>
+                                </span>
 
-                            <span class="invalid-feedback" role="alert">
-                                <strong></strong>
-                            </span>
+                                <span class="invalid-feedback" role="alert">
+                                    <strong></strong>
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-2">
+                            <div class="col-md-12">
+                                <input type="file" data-plugins="dropify" class="dropify" name="file[]" data-height="300" multiple accept="image/*"/>
+                            </div>
                         </div>
                     </div>
                     
-                    <div class="row mb-2">
-                        <div class="col-md-12">
-                            <input type="file" data-plugins="dropify" class="dropify" name="file[]" data-height="300" multiple accept="image/*"/>
-                        </div>
-                    </div>
-
                     <div class="row mb-2">
                         <div class="col-md-12"  id="make_modelInput">
                             {!! Form::text('call_back_url', null, ['class' => 'form-control rec', 'placeholder' => __('Call Back URL')]) !!}
