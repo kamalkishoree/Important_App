@@ -46,8 +46,8 @@
                             <div class="row mb-2">
                                 <div class="col-md-6">
                                     <div class="form-group mb-3">
-                                        <label for="agent_type">{{__("AGENT NAME")}}</label>
-                                        <input type="text" name="agent_name" id="agent_type" placeholder="e.g {{ __('Driver')}}" class="form-control" value="{{ old('agent_type', $preference->agent_name ?? '')}}">
+                                        <label for="agent_type">{{__(strtoupper(getAgentNomenclature())." NAME")}}</label>
+                                        <input type="text" name="agent_name" id="agent_type" placeholder="e.g {{ __(getAgentNomenclature())}}" class="form-control" value="{{ old('agent_type', $preference->agent_name ?? '')}}">
                                         @if($errors->has('agent_name'))
                                         <span class="text-danger" role="alert">
                                             <strong>{{ $errors->first('agent_name') }}</strong>

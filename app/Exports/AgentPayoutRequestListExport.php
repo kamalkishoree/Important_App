@@ -20,7 +20,7 @@ class AgentPayoutRequestListExport implements FromCollection, WithMapping, WithH
     }
     public function headings(): array{
         return [
-            'Agent Name',
+            getAgentNomenclature().' Name',
             'Amount',
             'Payout Type',
             'Account holder Name',

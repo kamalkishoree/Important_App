@@ -25,6 +25,23 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
     <div id="scrollbar" class="col-md-4 col-xl-3 left-sidebar pt-3">
         <div class="side_head d-flex justify-content-between align-items-center mb-2">
             <i class="mdi mdi-sync mr-1" onclick="reloadData()" aria-hidden="true"></i>
+            <div>
+                <div class="radio radio-primary form-check-inline ml-3 mr-2">
+                    <input type="radio" id="user_status_all" value="2" name="user_status" class="checkUserStatus" checked>
+                    <label for="user_status_all"> {{__("All")}} </label>
+                </div>
+                
+                <div class="radio radio-primary form-check-inline">
+                    <input type="radio" id="user_status_online" value="1" name="user_status" class="checkUserStatus">
+                    <label for="user_status_online"> {{__("Online")}} </label>
+                </div>
+
+                <div class="radio radio-info form-check-inline mr-2">
+                    <input type="radio" id="user_status_offline" value="0" name="user_status" class="checkUserStatus">
+                    <label for="user_status_offline"> {{__("Offline")}} </label>
+                </div>
+            </div>
+
             <span class="allAccordian"><span class="" onclick="openAllAccordian()">{{__('Open All')}}</span></span>
         </div>
         <div id="accordion" class="overflow-hidden">
@@ -76,7 +93,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                             </div>
                                             <div class="col-md-10 col-10">
                                                 <h6 class="mb-0 header-title scnd">{{__("Unassigned Tasks")}}<div  class="optimizebtn0">{!! $optimize0 !!} </div><div class="exportbtn0">{!! $turnbyturn0 !!} </div></h6>
-                                                <p class="mb-0"> <span>{{ count($unassigned_orders) }} {{__("Tasks")}}</span> {!! $unassigned_distance==''?'':' <i class="fas fa-route"></i> '!!}<span class="dist_sec totdis0">{{ $unassigned_distance }}</span></p>
+                                                <p class="mb-0"> <span>{{ count($unassigned_orders) }} {{__("Tasks")}}</span> {!! $unassigned_distance==''?'':' <i class="fas fa-route"></i> '!!}<span class="dist_sec totdis0 ml-1">{{ $unassigned_distance }}</span></p>
                                             </div>
                                         </div>
                                     </a>
@@ -143,218 +160,10 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                 </div>
 
             </div>
-            <div class="card no-border-radius">
+            <div class="card no-border-radius" id="teams_container">
 
 
-                @foreach ($teams as $item)
-
-
-                    <div class="card-header" id="heading-1">
-                            <a role="button" data-toggle="collapse" href="#collapse-{{ $item['id'] }}"
-                                aria-expanded="false" aria-controls="collapse-{{ $item['id'] }}">
-                                <div class="newcheckit">
-                                    <div class="row d-flex align-items-center" class="mb-0">
-                                        <div class="col-md-3 col-xl-2 col-2">
-                                            <span class="profile-circle {{$color[rand(0,7)]}}">{{ ucfirst($item['name'][0]) }}</span>
-                                        </div>
-                                        <div class="col-md-9 col-xl-10 col-10">
-                                                <h6 class="header-title">{{ ucfirst($item['name']) }}</h6>
-                                                <p class="mb-0">
-                                                    <span class="team_agent_{{ $item['id'] }}" id="team_agent_{{ $item['id'] }}">{{ count($item['agents']) }}</span>
-                                                     {{ __('Agents') }}
-                                                    : <span>
-                                                        <span class="team_online_agent_{{ $item['id'] }}" id="team_online_agent_{{ $item['id'] }}"">{{ $item['online_agents'] }}</span>
-                                                         {{ __('Online') }} ・
-                                                    <span class="team_offline_agent_{{ $item['id'] }}" id="team_offline_agent_{{ $item['id'] }}">{{ $item['offline_agents'] }}</span>
-                                                     {{ __('Offline') }}
-                                                    </span>
-                                                </p>
-                                                {{-- <p class="mb-0">{{count($item['agents'])}} {{__('Agents')}} :
-                                                    <span>{{$item['online_agents']}} {{__('Online')}} ・ {{$item['offline_agents']}}
-                                                        {{__('Offline')}}</span
-                                                        ></p> --}}
-
-                                        </div>
-                                    </div>
-                                </div>
-                            </a>
-                    </div>
-
-                    <div id="collapse-{{ $item['id'] }}" class="collapse" data-parent="#accordion"
-                        aria-labelledby="heading-1">
-                        <div class="card-body">
-                            <?php //echo "<pre>";
-                               // print_r($item['agents']); die;?>
-                            @foreach ($item['agents'] as $agent)
-
-                                <?php
-
-                                    //print_r($distance_matrix[$agent['id']]); die;
-
-                                if(isset($distance_matrix[$agent['id']]))
-                                {
-                                    if($agent['order'][0]['task_order']==0){
-                                        $opti = "yes";
-                                    }else{
-                                        $opti = "";
-                                    }
-
-                                    //print_r($distance_matrix[$agent['id']]);
-                                    $routeperams = "'".$distance_matrix[$agent['id']]['tasks']."','".json_encode($distance_matrix[$agent['id']]['distance'])."','".$opti."',".$agent['id'].",'".$date."'";
-
-                                    $optimize = '<span class="optimize_btn" onclick="RouteOptimization('.$routeperams.')">'.__("Optimize").'</span>';
-                                    $params = "'".$distance_matrix[$agent['id']]['tasks']."','".json_encode($distance_matrix[$agent['id']]['distance'])."','yes',".$agent['id'].",'".$date."'";
-
-                                    $turnbyturn = '<span class="navigation_btn optimize_btn" onclick="NavigatePath('.$routeperams.')">'.__("Export").'</span>';
-                                   //$turnbyturn = "";
-                                }else{
-                                    $optimize="";
-                                    $params = "";
-                                    $turnbyturn = "";
-                                }
-
-                                //for exporting path
-                                if(count($agent['order'])==1)
-                                {
-                                    if($agent['is_available']==1)
-                                    {
-                                        $pdfperams = "'".$agent['order'][0]['task'][0]['id']."','','',".$agent['id'].",'".$date."'";
-                                        $turnbyturn = '<span class="navigation_btn optimize_btn" onclick="NavigatePath('.$pdfperams.')">'.__("Export").'</span>';
-                                    }else{
-                                        $pdfperams = "";
-                                        $turnbyturn = "";
-                                    }
-                                }
-
-                                ?>
-
-                                <div id="accordion-{{ $agent['id'] }}">
-                                    <div class="card no-border-radius">
-                                        <div class="card-header ml-2" id="by{{ $agent['id'] }}">
-
-                                                <a class="profile-block collapsed" role="button"
-                                                    data-toggle="collapse" href="#collapse{{ $agent['id'] }}"
-                                                    aria-expanded="false"
-                                                    aria-controls="collapse{{ $agent['id'] }}">
-                                                    <div class="row">
-                                                        <div class="col-md-2 col-2">
-                                                            <img class="profile-circle"
-                                                                src="{{isset($agent['profile_picture']) ? $imgproxyurl.Storage::disk('s3')->url($agent['profile_picture']):'https://dummyimage.com/36x36/ccc/fff'}}">
-                                                        </div>
-                                                        <div class="col-md-10 col-10">
-                                                        @php
-                                                            $checkAgentActive = ($agent['is_available'] == 1)? ' ('.__('Online').')' : ' ('.__('Offline').')';
-                                                        @endphp
-
-                                                        <h6 class="mb-0 header-title scnd">
-                                                            {{ ucfirst($agent['name']) }}
-                                                            <span class="tram_agent_online_status_{{ $agent['id'] }}" id="tram_agent_online_status_{{ $agent['id'] }}">
-                                                                {{ $checkAgentActive }}
-                                                            </span>
-                                                            <div class="optimizebtn{{ $agent['id'] }}">
-                                                                {!! $optimize !!}
-                                                            </div>
-                                                            <div class="exportbtn{{ $agent['id'] }}">
-                                                                {!! $turnbyturn !!}
-                                                            </div></h6>
-                                                        <p class="mb-0">{{count($agent['order'])>0?__('Busy '):__('Free ')}}<span>{{$agent['agent_task_count']}} {{__('Tasks')}}</span> {!!$agent['total_distance']==''?'':' <i class="fas fa-route"></i>'!!}<span class="dist_sec totdis{{ $agent['id'] }}">{{ $agent['total_distance'] }}</span></p>
-                                                        </div>
-                                                    </div>
-                                                </a>
-                                        </div>
-                                        <div id="collapse{{ $agent['id'] }}" class="collapse"
-                                            data-parent="#accordion-{{ $agent['id'] }}"
-                                            aria-labelledby="by{{ $agent['id'] }}">
-                                            <div id="handle-dragula-left{{ $agent['id'] }}" class="dragable_tasks" agentid="{{ $agent['id'] }}"  params="{{ $params }}" date="{{ $date }}">
-
-                                            @foreach ($agent['order'] as $orders)
-
-                                                @foreach ($orders['task'] as $tasks)
-
-                                                    <div class="card-body" task_id ="{{ $tasks['id'] }}">
-                                                        <div class="p-2 assigned-block">
-
-                                                            @php
-                                                                    if($tasks['task_status']==1)
-                                                                    {
-                                                                    $st = "Assigned";
-                                                                    $color_class = "assign_";
-                                                                    }elseif($tasks['task_status']==2)
-                                                                    {
-                                                                    $st = "Started";
-                                                                    $color_class = "yellow_";
-                                                                    }elseif($tasks['task_status']==3)
-                                                                    {
-                                                                    $st = "Arrived";
-                                                                    $color_class = "light_green";
-                                                                    }elseif($tasks['task_status']==4)
-                                                                    {
-                                                                    $st = "Completed";
-                                                                    $color_class = "green_";
-                                                                    }else{
-                                                                    $st = "Failed";
-                                                                    $color_class = "red_";
-                                                                    }
-
-                                                                    if($tasks['task_type_id']==1)
-                                                                    {
-                                                                        $tasktype = "Pickup";
-                                                                        $pickup_class = "yellow_";
-                                                                    }elseif($tasks['task_type_id']==2)
-                                                                    {
-                                                                        $tasktype = "Dropoff";
-                                                                        $pickup_class = "green_";
-                                                                    }else{
-                                                                        $tasktype = "Appointment";
-                                                                        $pickup_class = "assign_";
-                                                                    }
-                                                            @endphp
-                                                            <div>
-
-                                                                @php
-                                                                        if($tasks['assigned_time']=="")
-                                                                        {
-                                                                            $tasks['assigned_time'] = date('Y-m-d H:i:s');
-                                                                        }
-                                                                            $timeformat = $preference->time_format == '24' ? 'H:i:s':'g:i a';
-                                                                            $order = Carbon::createFromFormat('Y-m-d H:i:s', $tasks['assigned_time'], 'UTC');
-
-                                                                            //$order->setTimezone(isset(Auth::user()->timezone) ? Auth::user()->timezone : 'Asia/Kolkata');
-                                                                            $order->setTimezone($client_timezone);
-                                                                        @endphp
-
-
-                                                                <div class="row no-gutters align-items-center">
-                                                                    <div class="col-9 d-flex">
-                                                                        <h5 class="d-inline-flex align-items-center justify-content-between"><i class="fas fa-bars"></i> <span>{{date(''.$timeformat.'', strtotime($order))}}</span></h5>
-                                                                        <h6 class="d-inline"><img class="vt-top"
-                                                                            src="{{ asset('demo/images/ic_location_blue_1.png') }}"> {{ isset($tasks['location']['address'])? $tasks['location']['address']:'' }} <span class="d-block">{{ isset($tasks['location']['short_name'])? $tasks['location']['short_name']:'' }}</span></h6>
-
-                                                                    </div>
-                                                                    <div class="col-3">
-                                                                        <button class="assigned-btn float-right mb-2 {{$pickup_class}}">{{__($tasktype)}}</button>
-                                                                        <button class="assigned-btn float-right {{$color_class}}">{{__($st)}}</button>
-                                                                    </div>
-                                                                </div>
-
-                                                            </div>
-                                                        </div>
-
-                                                    </div>
-
-
-                                                @endforeach
-
-                                            @endforeach
-                                        </div>
-                                        </div>
-
-                                    </div>
-                                </div>
-                            @endforeach
-                        </div>
-                    </div>
-                @endforeach
+                
             </div>
         </div>
 
@@ -377,13 +186,13 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                     <div class="dropdown d-inline-block">
                         <button class="dropdown-toggle" type="button" id="dropdownMenuButton"
                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <img class="mr-1" src="{{ asset('demo/images/ic_time.png') }}">{{__('Drivers')}}
+                            <img class="mr-1" src="{{ asset('demo/images/ic_time.png') }}">{{__(getAgentNomenclature().'s')}}
                         </button>
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                             <div class="task-block pl-2 pr-2">
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <span>{{__('Drivers')}}</span>
+                                        <span>{{__(getAgentNomenclature().'s')}}</span>
                                     </div>
                                     <div class="col-md-6 text-right">
                                         <a href=""><span></span></a>
@@ -393,7 +202,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
 
                                 <div class="row mt-2">
                                     <div class="col-md-8">
-                                        <h6>{{__('All Drivers')}}</h6>
+                                        <h6>{{__('All '.getAgentNomenclature().'s')}}</h6>
                                     </div>
                                     <div class="col-md-4 text-right">
                                         <label class="">
@@ -478,12 +287,17 @@ $('.agentcheck').on('change', function() {
 
 $(document).ready(function() {
 
-$('#wrapper').addClass('dshboard');
+    $('#wrapper').addClass('dshboard');
 
-initMap();
-//setInterval(autoloadmap, 5000);
-$('#shortclick').trigger('click');
-$(".timeago").timeago();
+    initMap();
+
+    $('#shortclick').trigger('click');
+    $(".timeago").timeago();
+
+    $('.checkUserStatus').click(function() {
+        loadTeams();
+    });
+    loadTeams();
 });
 
 function gm_authFailure() {
@@ -535,8 +349,7 @@ setMapOnAll(null);
 for (let i = 0; i < olddata.length; i++) {
     checkdata = olddata[i];
     var info = []
-    //alert(val);
-    // addMarker({ lat: checkdata[3], lng: checkdata[4] });
+    
     if ($.inArray(checkdata['team_id'], val) != -1 || $.inArray(-1, val) != -1) {
 
         var urlnewcreate = '';
@@ -624,7 +437,7 @@ for (let i = 0; i < olddata.length; i++) {
 
 });
 
-//$('.taskchecks').click(function() {
+
 $('.taskchecks_old').click(function() {
 var taskval = [];
 $('.taskchecks:checkbox:checked').each(function(i) {
@@ -680,7 +493,7 @@ $('.agentdisplay_old').click(function() {
 
     for (let i = 0; i < allagent.length; i++) {
         checkdata = allagent[i];
-        // addMarker({ lat: checkdata[3], lng: checkdata[4] });
+        
         if ($.inArray(checkdata['is_available'], agentval) != -1 || $.inArray(2, agentval) != -1) {
             if (checkdata['is_available'] == 1) {
                 images = url+'/demo/images/location.png';
@@ -705,23 +518,6 @@ function initMap() {
         lat: allagent.length != 0 && allagent[0].agentlog && allagent[0].agentlog['lat']  != "0.00000000" ? parseFloat(allagent[0].agentlog['lat']): defaultlat,
         lng: allagent.length != 0 && allagent[0].agentlog && allagent[0].agentlog['long'] != "0.00000000" ? parseFloat(allagent[0].agentlog['long']):defaultlong
     };
-
-    // const geocoder = new google.maps.Geocoder;
-    // var address = '';
-    // geocoder.geocode( { 'address' : address }, function( results, status ) {
-    //     if (status === google.maps.GeocoderStatus.OK) {
-    //         const haightAshbury = {
-    //                     lat: results[0].geometry.location.lat(),
-    //                     lng: results[0].geometry.location.lng()
-    //         };
-    //         map = new google.maps.Map(document.getElementById("map_canvas"), {
-    //             zoom: 12,
-    //             center: haightAshbury,
-    //             mapTypeId: "roadmap",
-    //             styles: themeType,
-    //         });
-    //     }
-    // });
 
     map = new google.maps.Map(document.getElementById("map_canvas"), {
         zoom: 12,
@@ -944,7 +740,7 @@ function deleteMarkers() {
 
 
 $(".datetime").on('change', function postinput(){
-    var matchvalue = $(this).val(); // this.value
+    var matchvalue = $(this).val(); 
     newabc =  url+'?date='+matchvalue;
     window.location.href = newabc;
 });
@@ -1002,13 +798,10 @@ function RouteOptimization(taskids,distancematrix,optimize,agentid,date) {
 
 
                     var option   = '<option value="'+task_id+'">'+tasktype+' - '+shortname+' - '+location_address+'</option>';
-                    //$('#collapse'+agentid).append(sidebarhtml);
                     $('#selectedtasklocations').append(option);
                 }
             },
             error: function(response) {
-                // alert('There is some issue. Try again later');
-                // $('.pageloader').css('display','none');
             }
         });
 
@@ -1164,12 +957,23 @@ function cancleForm()
     $('#optimize-route-modal').modal('hide');
 }
 // autoload dashbard
+function loadTeams(){
+    $("#teams_container").empty();
+    $("#teams_container").html('<div class="spinner-border text-blue m-2" role="status"></div>');
+    var route_teams_data = "{{ route('dashboard.teamsdata', ':id') }}";
+    var checkuserstatus = $('input[name="user_status"]:checked').val();
+    route_teams_data = route_teams_data.replace(":id", checkuserstatus);
+    $.get(route_teams_data, function(data) {
+        $("#teams_container").empty();
+        $("#teams_container").html(data);
+    });
+}
+
 function autoloadmap(){
-    //setMapOnAll(map)
-
-    // setMapOnAll(null);
-
-    $.get("{{ route('dashboard.data') }}", function(data) {
+    var route_dashboard_data = "{{ route('dashboard.data', ':id') }}";
+    var checkuserstatus = $('input[name="user_status"]:checked').val();
+    route_dashboard_data = route_dashboard_data.replace(":id", checkuserstatus);
+    $.get(route_dashboard_data, function(data) {
 
         allagent = data.data.agents;
         allroutes = data.data.routedata;
@@ -1194,7 +998,6 @@ function autoloadmap(){
                 var agent_count = teams[j]['agents_count'];
                 var team_online_agent_count = teams[j]['online_agents'];
                 var team_offline_agent_count = teams[j]['offline_agents'];
-                //  console.log(agent_count);
 
                 $("#team_agent_"+ teams[j]['id']).text(agent_count);
                 $("#team_online_agent_"+ teams[j]['id']).text(team_online_agent_count);
@@ -1217,7 +1020,7 @@ function autoloadmap(){
 
             if (displayagent.agentlog != null && displayagent.agentlog['lat'] != "0.00000000" && displayagent.agentlog[
                     'long'] != "0.00000000") {
-                // console.log(displayagent.agentlog);
+                
                 if (displayagent['is_available'] == 1) {
                     images = url + '/demo/images/location.png';
                 } else {
@@ -1332,33 +1135,32 @@ function reInitMap(allroutes) {
 
     //agents markers
     for (let i = 0; i < allagent.length; i++) {
-            displayagent = allagent[i];
+        displayagent = allagent[i];
 
-            if(displayagent.agentlog != null && displayagent.agentlog['lat'] != "0.00000000" && displayagent.agentlog['long'] != "0.00000000" ){
-                        if (displayagent['is_available'] == 1) {
-                            images = url+'/demo/images/location.png';
-                        }else {
-                            images = url+'/demo/images/location_grey.png';
-                        }
-                        var image = {
-                        url: images, // url
-                        scaledSize: new google.maps.Size(50, 50), // scaled size
-                        origin: new google.maps.Point(0,0), // origin
-                        anchor: new google.maps.Point(22,22) // anchor
-                        };
-                        send = null;
-                        type = 2;
+        if(displayagent.agentlog != null && displayagent.agentlog['lat'] != "0.00000000" && displayagent.agentlog['long'] != "0.00000000" ){
+                    if (displayagent['is_available'] == 1) {
+                        images = url+'/demo/images/location.png';
+                    }else {
+                        images = url+'/demo/images/location_grey.png';
+                    }
+                    var image = {
+                    url: images, // url
+                    scaledSize: new google.maps.Size(50, 50), // scaled size
+                    origin: new google.maps.Point(0,0), // origin
+                    anchor: new google.maps.Point(22,22) // anchor
+                    };
+                    send = null;
+                    type = 2;
 
-                        addMarker({lat: parseFloat(displayagent.agentlog['lat']),
-                        lng:  parseFloat(displayagent.agentlog['long'])
-                        }, send, image,displayagent,type);
-            }
+                    addMarker({lat: parseFloat(displayagent.agentlog['lat']),
+                    lng:  parseFloat(displayagent.agentlog['long'])
+                    }, send, image,displayagent,type);
+        }
 
     }
 }
 
 //for drag drop functionality
-// jQuery(".dragable_tasks").sortable();
 $(".dragable_tasks").sortable({
     update : function(event, ui) {
         $('.routetext').text('Arranging Route');
@@ -1400,45 +1202,7 @@ $(".dragable_tasks").sortable({
                 $('#addressTaskBlock').css('display','none');
                 $('#selectedtasklocations').html('');
                 $('.selecttask').css('display','none');
-                // $.ajax({
-                //     type: 'POST',
-                //     url: '{{url("/get-tasks")}}',
-                //     headers: {
-                //         'X-CSRF-Token': '{{ csrf_token() }}',
-                //     },
-                //     data: {'taskids':taskorder},
-
-                //     success: function(response) {
-
-                //         var data = $.parseJSON(response);
-
-                //         for (var i = 0; i < data.length; i++) {
-                //             var object = data[i];
-                //             var task_id =  object['id'];
-                //             var tasktypeid = object['task_type_id'];
-                //             if(tasktypeid==1)
-                //             {
-                //                 tasktype = "Pickup";
-                //             }else if(tasktypeid==2)
-                //             {
-                //                 tasktype = "Dropoff";
-                //             }else{
-                //                 tasktype = "Appointment";
-                //             }
-
-                //             var location_address =  object['location']['address'];
-                //             var shortname =  object['location']['short_name'];
-
-
-                //             var option   = '<option value="'+task_id+'">'+tasktype+' - '+shortname+' - '+location_address+'</option>';
-                //             $('#selectedtasklocations').append(option);
-                //         }
-                //     },
-                //     error: function(response) {
-                //         // alert('There is some issue. Try again later');
-                //         // $('.pageloader').css('display','none');
-                //     }
-                // });
+                
                 if(data.current_location == 0)
                 {
                     $("input[type=radio][name=driver_start_location][value='current']").remove();
