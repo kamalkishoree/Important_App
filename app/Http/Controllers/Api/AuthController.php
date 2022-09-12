@@ -17,11 +17,12 @@ use App\Traits\ApiResponser;
 use App\Traits\smsManager;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Hash;
 use Twilio\Rest\Client as TwilioClient;
 use Faker\Generator as Faker;
 use Illuminate\Support\Facades\Storage;
-use App\Model\{User, Agent, AgentDocs, AllocationRule, AgentSmsTemplate, Client, ClientPreference, BlockedToken, Otp, TaskProof, TagsForTeam, SubAdminTeamPermissions, SubAdminPermissions, TagsForAgent, Team};
+use App\Model\{User, Agent, AgentDocs, AllocationRule, AgentSmsTemplate, Client, EmailTemplate, SmtpDetail, ClientPreference, BlockedToken, Otp, TaskProof, TagsForTeam, SubAdminTeamPermissions, SubAdminPermissions, TagsForAgent, Team};
 
 
 class AuthController extends BaseController
@@ -293,9 +294,14 @@ class AuthController extends BaseController
     {
         DB::beginTransaction();
         try {
-            if (isset($request->email))
+            if (isset($request->email)){
                 $subdmin = Client::where('email', $request->email)->first();
+            }
             $password = $request->public_session;
+
+            $superadmin_data = Client::select('country_id', 'timezone', 'custom_domain', 'is_deleted', 'is_blocked', 'database_path', 'database_name', 'database_username', 'database_password', 'logo', 'company_name', 'company_address', 'code', 'sub_domain')->where('is_superadmin', 1)->first()->toArray();
+            $clientcode = $superadmin_data['code'];
+
             if (empty($subdmin)) {
                 $data = [
                     'name' => $request->name,
@@ -309,10 +315,6 @@ class AuthController extends BaseController
                     'public_login_session' => $request->public_login_session
                 ];
 
-                $superadmin_data = Client::select('country_id', 'timezone', 'custom_domain', 'is_deleted', 'is_blocked', 'database_path', 'database_name', 'database_username', 'database_password', 'logo', 'company_name', 'company_address', 'code', 'sub_domain')
-                    ->where('is_superadmin', 1)
-                    ->first()->toArray();
-                $clientcode = $superadmin_data['code'];
                 $superadmin_data['code'] = "";
 
                 $finaldata = array_merge($data, $superadmin_data);
@@ -349,6 +351,7 @@ class AuthController extends BaseController
                     SubAdminTeamPermissions::insert($addteampermission);
                 }
             } else {
+                $team = $this->createTeamFromManager($request, $clientcode, $subdmin->id);
             }
 
             $update_token = Client::where('id', $subdmin->id)->update(['password' => Hash::make($request->public_session), 'public_login_session' => $request->public_session]);
@@ -375,12 +378,7 @@ class AuthController extends BaseController
     public function createTeamFromManager($request, $clientcode, $manager_id)
     {
         $value = $request->team_tag;
-        $tag_id = [];
-        if (!empty($value)) {
-            $check = TagsForTeam::firstOrCreate(['name' => $value]);
-            array_push($tag_id, $check->id);
-        }
-
+        
         $data = [
             'manager_id'    => $manager_id,
             'name'          => $request->name . " Team",
@@ -389,7 +387,17 @@ class AuthController extends BaseController
             'location_frequency' => $request->location_frequency ?? 1
         ];
 
-        $team = Team::create($data);
+        $team = Team::updateOrCreate($data);
+        
+        $tag_id = [];
+        $default_tag_exists = TagsForTeam::where('name', $value)->first();
+        if (!$default_tag_exists && !empty($value)) {
+            $check = TagsForTeam::firstOrCreate(['name' => $value]);
+            array_push($tag_id, $check->id);
+        }else{
+            $tag_id = $team->tags()->pluck('tag_id');
+            $tag_id[] = $default_tag_exists->id;
+        }
         $team->tags()->sync($tag_id);
 
         if ($team->wasRecentlyCreated) {
@@ -406,6 +414,7 @@ class AuthController extends BaseController
             'name' => 'required',
             'phone_number' => 'required|min:9',
             'type' => 'required',
+            'otp' => 'required'
             // 'vehicle_type_id' => 'required'
         ]);
         if ($validator->fails()) {
@@ -414,8 +423,22 @@ class AuthController extends BaseController
 
         $agent = Agent::where('phone_number', $request->phone_number)->first();
         if (!empty($agent)) {
-            return response()->json(['message' => 'User already register. Please login'], 422);
+            return response()->json(['message' => 'User already registered. Please login'], 422);
         }
+
+        // otp verification starts
+        $otp = Otp::where('phone', $request->phone_number)->where('opt', $request->otp)->orderBy('id', 'DESC')->first();
+        $currentTime = Carbon::now()->toDateTimeString();
+
+        if (!$otp) {
+            return $this->error(__('Please enter a valid OTP'), 422);
+        }
+        if ($currentTime > $otp->valid_till) {
+            return $this->error(__('Your OTP has been expired. Please try again.'), 422);
+        }
+        $otp->is_verified = 1;
+        $otp->update();
+        // otp verification ends
 
         $clientDetail = Client::with(['getPreference'])->first();
         if($clientDetail->getPreference->verify_phone_for_driver_registration == 1){
@@ -511,6 +534,39 @@ class AuthController extends BaseController
             }
         }
 
+        $clientContact = Client::first();
+        $emailSmtpDetail = SmtpDetail::where('id', 1)->first();
+        $smtp = SmtpDetail::where('id', 1)->first();
+        if(!empty($smtp) && !empty($clientContact->contact_email))
+        {
+            $clientName  = $clientContact->name;
+            $clientEmail = $clientContact->contact_email;
+            $mailFrom    = $smtp->from_address;
+
+            $emailTemplateData = EmailTemplate::where('slug', 'new-agent-signup')->first();
+            if($emailTemplateData){
+                $emailTemplate = $emailTemplateData->content ?? null;
+                if($emailTemplate){
+                    $emailTemplate = str_replace("{agent_name}", $request->name, $emailTemplate);
+                    $emailTemplate = str_replace("{phone_no}", $request->phone_number, $emailTemplate);
+                    if(!empty($request->team_id)){
+                        $team = Team::where('id', $request->team_id)->first()->name;
+                        $emailTemplate = str_replace("{team}", $team, $emailTemplate);
+                    }
+
+                    Mail::send([], [],
+                        function ($message) use($clientEmail, $clientName, $mailFrom, $emailTemplate) {
+                            $message->from($mailFrom, $clientName);
+                            $message->to($clientEmail)->subject('Agent SignUp');
+                            $message->setBody($emailTemplate, 'text/html'); // for HTML rich messages
+                        });
+                    Log::info('send vendor sign up email to admin--');
+                    Log::info(count(Mail::failures()));
+                    Log::info('send vendor sign up email to admin--');
+                }
+            }
+        }
+
         if ($agent->wasRecentlyCreated ) {
             return response()->json(['status' => 200, 'message' => 'Your account created successfully. Please login'], 200);
         } else {
@@ -519,5 +575,30 @@ class AuthController extends BaseController
                 'message' => 'Error while creating your account!!!'
             ]);
         }
+    }
+
+
+    public function deleteAgent(Request $request){
+        try {
+            DB::beginTransaction(); //Initiate transaction
+                $agent = Auth::user();
+                if(!$agent){
+                    return response()->json(['massage' => __('User not found!')], 200);
+                }
+                Agent::where('id', $agent->id)->update([
+                    'phone_number' => $agent->phone_number.'_'.$agent->id."_D",  
+                    'device_token' =>'',  
+                    'device_type' =>'',  
+                    'access_token' => ''
+                    ]);
+                $agent->delete();
+                DB::commit(); //Commit transaction after all the operations
+                return response()->json(['massage' => __('Account Deleted Successfully')], 200);
+                //code...
+            } catch (Exception $e) {
+                DB::rollBack();
+                return response()->json(['massage' => __('Something went wrong!')], 400);
+               
+            }
     }
 }

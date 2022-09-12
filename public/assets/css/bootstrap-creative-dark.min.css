@@ -5746,10 +5746,18 @@ a.close.disabled {
 .modal-xl {
     max-width: 800px;
   }
+
+  .modal-xxl {
+    max-width: 900px;
+  }
 }
 @media (min-width: 1367px) {
   .modal-xl {
     max-width: 1140px;
+  }
+
+  .modal-xxl {
+    max-width: 1350px;
   }
 }
 .tooltip {
@@ -6327,6 +6335,10 @@ button.bg-danger:focus {
 
 .bg-light {
   background-color: #424e5a !important;
+}
+
+.bg-light-yellopink {
+  background-color: #ccab574a !important;
 }
 
 a.bg-light:hover, a.bg-light:focus,

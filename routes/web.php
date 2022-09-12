@@ -86,6 +86,18 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 			Route::resource('currency', 'Godpanel\CurrencyController');
 			
 			Route::post('exportDb/{dbname}', 'Godpanel\ClientController@exportDb')->name('client.exportdb');
+
+
+			Route::post('socketUpdate/{id}', 'Godpanel\ClientController@socketUrl')->name('client.socketUpdate');
+			Route::post('socketUpdateAction/{id}', 'Godpanel\ClientController@socketUpdateAction')->name('client.socketUpdateAction');
+
+			
+			Route::get('chatsocket', 'Godpanel\chatSocketController@chatsocket')->name('chatsocket');
+			Route::post('chatsocket/save/{id?}', 'Godpanel\chatSocketController@chatsocketSave')->name('chatsocket.save');
+			Route::get('chatsocket/edit/{id}', 'Godpanel\chatSocketController@editchatsocket')->name('chatsocket.edit');
+			Route::post('chatsocket/upDateSocket/{id}', 'Godpanel\chatSocketController@upDateSocket')->name('chatsocket.upDateSocket');
+			Route::post('chatsocket/upDateSocketStatus/{id}', 'Godpanel\chatSocketController@upDateSocketStatus')->name('chatsocket.upDateSocketStatus');
+			Route::get('chatsocket/deleteSocketUrl/{id}', 'Godpanel\chatSocketController@deleteSocketUrl')->name('chatsocket.delete');
 		});
 	});
 	
@@ -117,6 +129,12 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 			Route::get('client/verify/oauth/token/stripe', 'StripeGatewayController@verifyOAuthToken')->name('verify.oauth.token.stripe');
 			
 			//Route::get('payment/gateway/connect/response', 'BaseController@getGatewayConnectResponse')->name('payment.gateway.connect.response');
+
+			// Payment Gateway Routes
+			Route::get('payment/gateway/returnResponse', 'PaymentOptionController@getGatewayReturnResponse')->name('payment.gateway.return.response');
+			Route::post('payment/khalti/verification', 'KhaltiGatewayController@khaltiVerification')->name('payment.khaltiVerification');
+			Route::post('payment/khalti/completePurchase/app', 'KhaltiGatewayController@khaltiCompletePurchaseApp')->name('payment.khaltiCompletePurchaseApp');
+			Route::get('payment/webview/khalti', 'KhaltiGatewayController@webView')->name('payment.khalti.webView');
 			
 		});
 		Route::any('payment/ccavenue/success', 'CcavenueController@successForm')->name('ccavenue.success');
@@ -124,6 +142,7 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 
 		Route::any('payment/vnpay/notify', 'VnpayController@VnpayNotify')->name('payment.vnpay.VnpayNotify'); // webhook
 		Route::any('payment/vnpay/api',    'VnpayController@vnpay_respontAPP')->name('vnpay_webview');
+		Route::get('driver/wallet/refreshBalance/{id?}', 'AgentController@refreshWalletbalance')->name('driver.wallet.refreshBalance');
 		
 		Route::group(['middleware' => ['auth:client'], 'prefix' => '/'], function () {
 
@@ -152,12 +171,14 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 			Route::post('client_preference/{id}', 'ClientController@storePreference')->name('preference');
 			Route::post('route-create-configure/{id}', 'ClientController@routeCreateConfigure')->name('route.create.configure');
 			Route::post('task/proof', 'ClientController@taskProof')->name('task.proof');
+			Route::post('update-contact-us', 'ClientController@updateContactUs')->name('update.contact.us');
 			Route::get('configure', 'ClientController@ShowConfiguration')->name('configure');
 			Route::post('smtp/save', 'ClientController@saveSmtp')->name('smtp');
             Route::post('fivcon/save', 'ClientController@faviconUoload')->name('favicon');
 			Route::get('options', 'ClientController@ShowOptions')->name('options');
 			Route::resource('agent', 'AgentController');
 			Route::get('agent/{id}/show', 'AgentController@show')->name('agent.show');
+			Route::post('agent/search', 'AgentController@search')->name('agent.search');
 			Route::post('pay/receive', 'AgentController@payreceive')->name('pay.receive');
 			Route::get('agent/paydetails/{id}', 'AgentController@agentPayDetails')->name('agent.paydetails');
 			Route::post('agent/approval_status', 'AgentController@approval_status')->name('agent/approval_status');
@@ -188,6 +209,8 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 			Route::post('set_message', 'ClientNotificationController@setmessage')->name('set.message');
 			Route::resource('manager', 'ManagerController');
 			Route::resource('plan-billing', 'PlanBillingController');
+			Route::get('batchs/', 'TaskController@batchlist')->name('batch.list');
+			Route::POST('batchDetails/', 'TaskController@batchDetails')->name('batchDetails');
 			Route::resource('tasks', 'TaskController');
 
 			Route::post('newtasks', 'TaskController@newtasks');
@@ -249,6 +272,19 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 			Route::get('cms/page/templates', 'CMS\PageTemplateController@index')->name('cms.page.templates');
 			Route::get('cms/page/template/{id}', 'CMS\PageTemplateController@show')->name('cms.page.template.show');
 			Route::post('cms/page/template/update', 'CMS\PageTemplateController@update')->name('cms.page.template.update');
+
+			Route::get('cms/email/templates', 'CMS\EmailTemplateController@index')->name('cms.email.templates');
+			Route::get('cms/email/template/{id}', 'CMS\EmailTemplateController@show')->name('cms.email.template.show');
+			Route::post('cms/email/template/update', 'CMS\EmailTemplateController@update')->name('cms.email.template.update');
+
+			// Subscription module
+			Route::get('subscription/plans/driver', 'SubscriptionPlansDriverController@getSubscriptionPlans')->name('subscription.plans.driver');
+			Route::post('subscription/plan/save/driver/{slug?}', 'SubscriptionPlansDriverController@saveSubscriptionPlan')->name('subscription.plan.save.driver');
+			Route::get('subscription/plan/edit/driver/{slug}', 'SubscriptionPlansDriverController@editSubscriptionPlan')->name('subscription.plan.edit.driver');
+			Route::get('subscription/plan/delete/driver/{slug}', 'SubscriptionPlansDriverController@deleteSubscriptionPlan')->name('subscription.plan.delete.driver');
+			Route::post('subscription/plan/updateStatus/driver/{slug}', 'SubscriptionPlansDriverController@updateSubscriptionPlanStatus')->name('subscription.plan.updateStatus.driver');
+			Route::post('show/subscription/plan/driver', 'SubscriptionPlansDriverController@showSubscriptionPlanDriver')->name('show.subscription.plan.driver');
+			
 		});
 	});
 

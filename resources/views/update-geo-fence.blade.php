@@ -81,15 +81,13 @@
         <div class="row">
             <div class="col-6">
                 <div class="page-title-box">
-                    <a href="{{ route('geo.fence.list') }}">
-                        <h4 class="page-title">Back</h4>
-                    </a>
+                    <h4 class="page-title">Edit Geofence</h4>
                 </div>
             </div>
             <div class="col-6">
-                <div class="page-title-box">
+                <div class="page-title-box text-right">
                     <a href="{{ route('geo.fence.list') }}">
-                        <h4 class="page-title"></h4>
+                    <button type="button" class="btn btn-blue" title="Back To List" data-keyboard="false"><span><i class="mdi mdi-chevron-double-left mr-1"></i> Back</span></button>
                     </a>
                 </div>
             </div>
@@ -103,7 +101,6 @@
             <div class="row">
                 <div class="col-lg-5">
                     <div class="card-box mb-0">
-                        <h4 class="header-title mb-3">Edit Geofence</h4>
                         <div class="top_items">
                             <div class="row mb-2">
                                 <div class="col-md-12">
@@ -209,10 +206,10 @@
 
                         <div class="geo_bottom_btns">
                             <div class="row">
-                                <div class="col-md-6 mb-2 mb-md-0">
+                                {{--<div class="col-md-6 mb-2 mb-md-0">
                                     <button type="button"
                                         class="btn btn-block btn-outline-primary waves-effect waves-light mb-0">Cancel</button>
-                                </div>
+                                </div>--}}
                                 <div class="col-md-6">
                                     <button type="submit"
                                         class="btn btn-block btn-primary waves-effect waves-light">Save</button>

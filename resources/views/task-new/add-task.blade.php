@@ -102,10 +102,10 @@
             
  
         }
-        .copyin1 {
+        /* .copyin1 {
             background-color: rgb(148 148 148 / 11%);
            
-        }
+        } */
         hr.new3 {
          border-top: 1px dashed white;
          margin: 0 0 .5rem 0;

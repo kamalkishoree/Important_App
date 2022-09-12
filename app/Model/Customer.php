@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Customer extends Model
 {
     protected $fillable = [
-        'name', 'email', 'address', 'phone_number','status'
+        'name', 'email', 'address', 'phone_number', 'dial_code', 'status', 'sync_customer_id', 'user_icon'
     ];
     public function location(){
         $clientPreference =  getClientPreferenceDetail();
@@ -19,5 +19,9 @@ class Customer extends Model
 
     public function orders(){
         return $this->hasMany('App\Model\Order','customer_id', 'id');
+    }
+    public function resources()
+    {
+        return $this->hasOne('App\Model\CustomerVerificationResource','customer_id','id');  
     }
 }

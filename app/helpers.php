@@ -54,6 +54,10 @@ function generateOrderNo($length = 8){
     } while (!empty(\DB::table('orders')->where('order_number', $number)->first(['order_number'])) );
     return $number;
 }
+function generateUniqueTransactionID(){
+    $ref = 'txn_'.uniqid(time());
+    return $ref;
+}
 function convertDateTimeInTimeZone($date, $timezone, $format = 'Y-m-d H:i:s'){
     $date = Carbon::parse($date, 'UTC');
     $date->setTimezone($timezone);
@@ -69,7 +73,7 @@ function getClientPreferenceDetail()
 function getClientDetail()
 {
     $clientData = ClientData::first();
-    $clientData->logo_image_url = $clientData ? $clientData->logo['image_fit'].'150/92'.$clientData->logo['image_path'] : " ";
+    // $clientData->logo_image_url = $clientData ? $clientData->logo['image_fit'].'150/92'.$clientData->logo['image_path'] : " ";
     return $clientData;
 }
 function getRazorPayApiKey()

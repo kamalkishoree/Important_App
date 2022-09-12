@@ -14,10 +14,11 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Str;
 use GuzzleHttp\Client as GCLIENT;
+use Twilio\Rest\Client as TwilioClient;
 use App\Traits\ApiResponser;
 use App\Exports\AgentsExport;
 use Doctrine\DBAL\Driver\DrizzlePDOMySql\Driver;
-use App\Model\{Agent, AgentDocs, AgentPayment, DriverGeo, Order, Otp, Team, TagsForAgent, TagsForTeam, Countries, Client, ClientPreferences, DriverRegistrationDocument, Geo, Timezone};
+use App\Model\{Agent, AgentDocs, AgentPayment, AgentLog, DriverGeo, Order, Otp, Team, TagsForAgent, TagsForTeam, Countries, Client, ClientPreferences, DriverRegistrationDocument, Geo, Timezone, AgentSmsTemplate};
 use Kawankoding\Fcm\Fcm;
 use App\Traits\agentEarningManager;
 
@@ -167,11 +168,11 @@ class AgentController extends Controller
                     return __($agents->type);
                 })
                 ->editColumn('cash_to_be_collected', function ($agents) use ($request) {
-                    $cash = $agents->order->sum('cash_to_be_collected');
+                    $cash = $agents->order->where('status', 'completed')->sum('cash_to_be_collected');
                     return number_format((float)$cash, 2, '.', '');
                 })
                 ->editColumn('driver_cost', function ($agents) use ($request) {
-                    $orders = $agents->order->sum('driver_cost');
+                    $orders = $agents->order->where('status', 'completed')->sum('driver_cost');
                     return number_format((float)$orders, 2, '.', '');
                 })
                 ->editColumn('cr', function ($agents) use ($request) {
@@ -183,13 +184,19 @@ class AgentController extends Controller
                     return number_format((float)$pay, 2, '.', '');
                 })
                 ->editColumn('pay_to_driver', function ($agents) use ($request) {
-                    $cash        = $agents->order->sum('cash_to_be_collected');
-                    $orders      = $agents->order->sum('driver_cost');
+                    $cash        = $agents->order->where('status', 'completed')->sum('cash_to_be_collected');
+                    $orders      = $agents->order->where('status', 'completed')->sum('driver_cost');
                     $receive     = $agents->agentPayment->sum('cr');
                     $pay         = $agents->agentPayment->sum('dr');
-                    //$payToDriver = $agents->balanceFloat + ($pay - $receive) - ($cash - $orders);
+                    
                     $payToDriver = ($pay - $receive) - ($cash - $orders);
                     return number_format((float)$payToDriver, 2, '.', '');
+                })
+                ->addColumn('subscription_plan', function ($agents) use ($request) {
+                    return $agents->subscriptionPlan ? $agents->subscriptionPlan->plan->title : '';
+                })
+                ->addColumn('subscription_expiry', function ($agents) use ($request, $timezone) {
+                    return $agents->subscriptionPlan ? convertDateTimeInTimeZone($agents->subscriptionPlan->end_date, $timezone) : '';
                 })
                 ->editColumn('created_at', function ($agents) use ($request, $timezone) {
                     return convertDateTimeInTimeZone($agents->created_at, $timezone);
@@ -201,14 +208,13 @@ class AgentController extends Controller
                     if($request->status == 1){
                         $approve_action = '<div class="inner-div agent_approval_button" data-agent_id="'.$agents->id.'" data-status="2" title="Reject"><i class="fa fa-user-times" style="color: red; cursor:pointer;"></i></div>';
                     } else if($request->status == 0){
-                        $approve_action = '<div class="inner-div agent_approval_button" data-agent_id="'.$agents->id.'" data-status="1" title="Approve"><i class="fas fa-user-check" style="color: green; cursor:pointer;"></i></div><div class="inner-div agent_approval_button" data-agent_id="'.$agents->id.'" data-status="2" title="Reject"><i class="fa fa-user-times" style="color: red; cursor:pointer;"></i></div>';
+                        $approve_action = '<div class="inner-div agent_approval_button" data-agent_id="'.$agents->id.'" data-status="1" title="Approve"><i class="fas fa-user-check" style="color: green; cursor:pointer;"></i></div><div class="inner-div ml-1 agent_approval_button" data-agent_id="'.$agents->id.'" data-status="2" title="Reject"><i class="fa fa-user-times" style="color: red; cursor:pointer;"></i></div>';
                     } else if($request->status == 2){
                         $approve_action = '<div class="inner-div agent_approval_button" data-agent_id="'.$agents->id.'" data-status="1" title="Approve"><i class="fas fa-user-check" style="color: green; cursor:pointer;"></i></div>';
                     }
-                    $action = '<div class="form-ul">'.$approve_action.'
-                                    <div class="inner-div"> <a href="' . route('agent.show', $agents->id) . '" class="action-icon viewIcon" agentId="' . $agents->id . '"> <i class="fa fa-eye"></i></a></div>
-                                    <div class="inner-div"> <a href="' . route('agent.edit', $agents->id) . '" class="action-icon editIcon" agentId="' . $agents->id . '"> <i class="mdi mdi-square-edit-outline"></i></a></div>
-                                    <div class="inner-div">
+                    $action = ''.$approve_action.'
+                               <!-- <div class="inner-div"> <a href="' . route('agent.edit', $agents->id) . '" class="action-icon editIcon" agentId="' . $agents->id . '"> <i class="mdi mdi-square-edit-outline"></i></a></div>-->
+                                    <div class="inner-div ml-1">
                                         <form id="agentdelete'.$agents->id.'" method="POST" action="' . route('agent.destroy', $agents->id) . '">
                                             <input type="hidden" name="_token" value="' . csrf_token() . '" />
                                             <input type="hidden" name="_method" value="DELETE">
@@ -217,7 +223,7 @@ class AgentController extends Controller
                                             </div>
                                         </form>
                                     </div>
-                                </div>';
+                               ';
                     return $action;
                 })
                 ->filter(function ($instance) use ($request) {
@@ -704,16 +710,115 @@ class AgentController extends Controller
 
     /* Change Agent approval status */
 
-    public function change_approval_status(Request $request)
+    public function change_approval_status(Request $request) 
     {
         try {
             $agent_approval = Agent::find($request->id);
             $agent_approval->is_approved = $request->status;
             $agent_approval->save();
+
+            // Updtae log also
+            $is_active = ($request->status == 1)? 1 : 0;
+            AgentLog::where('agent_id',$request->id)->update(['is_active' => $is_active]);
+
+            $slug = ($request->status == 1)? 'driver-accepted' : 'driver-rejected';
+            $sms_body = AgentSmsTemplate::where('slug', $slug)->first()->content;
+            if(!empty($sms_body)){
+                $send = $this->sendSms2($agent_approval->phone_number, $sms_body)->getData();
+            }
             return response()->json(['status' => 1, 'message' => 'Status change successfully.']);
         } catch (Exception $e) {
             return response()->json(['status' => 0, 'message' => $e->getMessage()]);
         }
+    }
+
+    public function search(Request $request, $domain = '')
+    {
+        $search = $request->search;
+        if (isset($search)) {
+            if ($search == '') {
+                $drivers = Agent::orderby('name', 'asc')->select('id', 'name', 'phone_number')->where('is_approved', 1)->limit(10)->get();
+            } else {
+                $drivers = Agent::orderby('name', 'asc')->select('id', 'name', 'phone_number')
+                                    ->where('is_approved', 1)
+                                    ->where('name', 'like', '%' . $search . '%')
+                                    ->limit(10)->get();
+            }
+            $response = array();
+            foreach ($drivers as $driver) {
+                $response[] = array("value" => $driver->id, "label" => $driver->name.'('.$driver->phone_number.')');
+            }
+
+            return response()->json($response);
+        } else {
+            return response()->json([]);
+        }
+    }
+
+    protected function sendSms2($to, $body){
+        try{
+            $client_preference =  getClientPreferenceDetail();
+
+            if($client_preference->sms_provider == 1)
+            {
+                $credentials = json_decode($client_preference->sms_credentials);
+                $sms_key = (isset($credentials->sms_key)) ? $credentials->sms_key : $client_preference->sms_provider_key_1;
+                $sms_secret = (isset($credentials->sms_secret)) ? $credentials->sms_secret : $client_preference->sms_provider_key_2;
+                $sms_from  = (isset($credentials->sms_from)) ? $credentials->sms_from : $client_preference->sms_provider_number;
+
+                $client = new TwilioClient($sms_key, $sms_secret);
+                $client->messages->create($to, ['from' => $sms_from, 'body' => $body]);
+            }elseif($client_preference->sms_provider == 2) //for mtalkz gateway
+            {
+                $credentials = json_decode($client_preference->sms_credentials);
+                $send = $this->mTalkz_sms($to,$body,$credentials);
+            }elseif($client_preference->sms_provider == 3) //for mazinhost gateway
+            {
+                $credentials = json_decode($client_preference->sms_credentials);
+                $send = $this->mazinhost_sms($to,$body,$credentials);
+            }elseif($client_preference->sms_provider == 4) //for unifonic gateway
+            {
+                $crendentials = json_decode($client_preference->sms_credentials);
+                $send = $this->unifonic($to,$body,$crendentials);
+            }
+            elseif($client_preference->sms_provider == 5) //for arkesel_sms gateway
+            {
+                $crendentials = json_decode($client_preference->sms_credentials);
+                $send = $this->arkesel_sms($to,$body,$crendentials);
+                if( isset($send->code) && $send->code != 'ok'){
+                    return $this->error($send->message, 404);
+                }
+
+            }else{
+                $credentials = json_decode($client_preference->sms_credentials);
+                $sms_key = (isset($credentials->sms_key)) ? $credentials->sms_key : $client_preference->sms_provider_key_1;
+                $sms_secret = (isset($credentials->sms_secret)) ? $credentials->sms_secret : $client_preference->sms_provider_key_2;
+                $sms_from  = (isset($credentials->sms_from)) ? $credentials->sms_from : $client_preference->sms_provider_number;
+                $client = new TwilioClient($sms_key, $sms_secret);
+                $client->messages->create($to, ['from' => $sms_from, 'body' => $body]);
+            }
+        }
+        catch(\Exception $e){
+            \Log::info($e->getMessage());
+            // return $this->error(__('Provider service is not configured. Please contact administration.'), 404);
+            return $this->error($e->getMessage(), $e->getCode());
+        }
+        return $this->success([], __('An otp has been sent to your phone. Please check.'), 200);
+	}
+
+    public function refreshWalletbalance(Request $request, $domain='', $id=''){
+        if(!empty($id)){
+            $user = Agent::find($id);
+            if($user){
+                if($user->wallet){
+                    $user->wallet->refreshBalance();
+                }
+            }
+        }
+
+        echo '<pre>';
+        echo 'Successfully Done';
+        echo '</pre>';
     }
 
 }

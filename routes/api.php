@@ -20,11 +20,12 @@ use Illuminate\Support\Facades\Route;
     return $request->user();
 });*/
 
-Route::group(['middleware' => ['apilogger']], function() {
+Route::group(['middleware' => []], function() {
 Route::post('otp_test', 'Api\TaskController@smstest')->middleware('ConnectDbFromOrder');
 Route::post('check-dispatcher-keys', 'Api\TaskController@checkDispatcherKeys')->middleware('ConnectDbFromOrder');
 Route::post('get-delivery-fee', 'Api\TaskController@getDeliveryFee')->middleware('ConnectDbFromOrder');
 Route::post('task/create', 'Api\TaskController@CreateTask')->middleware('ConnectDbFromOrder');
+Route::post('get/agents', 'Api\AgentController@getAgents')->middleware('ConnectDbFromOrder');
 Route::post('task/lims/create', 'Api\TaskController@CreateLimsTask')->middleware('ConnectDbFromOrder');
 Route::post('agent/create', 'Api\DriverRegistrationController@storeAgent')->middleware('ConnectDbFromOrder');
 Route::post('send-documents','Api\DriverRegistrationController@sendDocuments')->middleware('ConnectDbFromOrder');
@@ -44,6 +45,9 @@ Route::get('importCustomer', 'Api\ImportThirdPartyUserController@importCustomer'
 
 // routes for edit order
 Route::post('edit-order/driver/notify', 'Api\TaskController@editOrderNotification')->middleware('ConnectDbFromOrder');
+
+//route for reschedule order
+Route::post('order/reschedule', 'Api\OrderController@rescheduleOrder')->middleware('ConnectDbFromOrder');
 
 // route for cancel order request status
 Route::post('cancel-order-request-status/driver/notify', 'Api\TaskController@cancelOrderRequestStatusNotification')->middleware('ConnectDbFromOrder');
@@ -74,6 +78,7 @@ Route::group(['prefix' => 'auth'], function () {
 
 Route::group(['middleware' => ['dbCheck', 'AppAuth','apiLocalization']], function() {
     Route::get('user', 'Api\AuthController@user');
+    Route::post('agent/delete', 'Api\AuthController@deleteAgent');
     
     Route::get('taskList', 'Api\ActivityController@tasks');                    // api for task list
     Route::get('updateStatus', 'Api\ActivityController@updateDriverStatus');   // api for chnage driver status active ,in-active
@@ -90,10 +95,22 @@ Route::group(['middleware' => ['dbCheck', 'AppAuth','apiLocalization']], functio
     Route::get('agent/bank/details', 'Api\AgentPayoutController@agentBankDetails'); // api for getting agent bank details
     Route::get('agent/payout/details', 'Api\AgentPayoutController@agentPayoutDetails'); // api for agent payout details
     Route::post('agent/payout/request/create/{id}', 'Api\AgentPayoutController@agentPayoutRequestCreate'); // api for creating agent payout request
-
+    Route::post('chat/startChat',      'Api\ChatController@startChat');
+    Route::post('chat/userAgentChatRoom',      'Api\ChatController@userAgentChatRoom');
+    //Route::post('chat/userAgentChatRoom',      'Api\ChatController@startChat');
+    
     // Order routes
     Route::post('order/cancel/request/create/{id}', 'Api\OrderController@createOrderCancelRequest'); // api for creating order cancel request by driver
     Route::get('order/cancel/reasons', 'Api\OrderController@getOrderCancelReasons'); // api for creating order cancel request by driver
+
+    // Driver subscription
+    Route::group(['prefix' => 'driver/subscription'], function () {
+        Route::get('plans', 'Api\DriverSubscriptionController@getSubscriptionPlans');
+        Route::get('selectPlan/{slug}', 'Api\DriverSubscriptionController@selectSubscriptionPlan');
+        Route::post('purchase/{slug}', 'Api\DriverSubscriptionController@purchaseSubscriptionPlan');
+        Route::post('cancel/{slug}', 'Api\DriverSubscriptionController@cancelSubscriptionPlan');
+        Route::get('checkActivePlan/{slug}', 'Api\DriverSubscriptionController@checkActiveSubscriptionPlan');
+    });
 
     // All Payment gateways
     Route::get('payment/{gateway}', 'Api\PaymentOptionController@postPayment');

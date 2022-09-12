@@ -84,8 +84,44 @@ class ClientController extends Controller
             return redirect()->back()->with('success', 'Preference updated successfully!');
         }
 
-        if($request->has('autopay_submit')){
-            $auto_payout = (!empty($request->auto_payout))? 1 : 0;
+        if(!empty($request->fcm_server_key)){
+            $data = ['fcm_server_key'=>$request->fcm_server_key];
+            ClientPreference::where('client_id', $id)->update($data);
+
+            return redirect()->back()->with('success', 'Preference updated successfully!');
+        }
+
+        //Batch Allocation Code
+        if($request->has('mybatch')){
+            if($request->has('batch_allocation')){
+                DB::table('royodelivery_db.clients')->where('code',$id)->update([
+                    'batch_allocation' => 1
+                ]);
+
+                $data = [
+                    'create_batch_hours'=>$request->create_batch_hours,
+                    'maximum_route_per_job'=>$request->maximum_route_per_job,
+                    'job_consist_of_pickup_or_delivery'=>$request->has('job_consist_of_pickup_or_delivery')?'1':0
+                ];
+                ClientPreference::where('client_id', $id)->update($data);
+                return redirect()->back()->with('success', 'Preference updated successfully!');
+            }else{
+                DB::table('royodelivery_db.clients')->where('code',$id)->update([
+                    'batch_allocation' => 0
+                ]);
+
+                $data = [
+                    'create_batch_hours'=>null,
+                    'maximum_route_per_job'=>null,
+                    'job_consist_of_pickup_or_delivery'=>0
+                ];
+                ClientPreference::where('client_id', $id)->update($data);
+                return redirect()->back()->with('success', 'Preference updated successfully!');
+            }
+        }
+
+        if($request->has('autopay_submit')){//dd($request->auto_payout);
+            $auto_payout = !empty($request->auto_payout)?(($request->auto_payout == "on")?1:0):0;
             $data = ['auto_payout'=>$auto_payout];
             ClientPreference::where('client_id', $id)->update($data);
             return redirect()->back()->with('success', 'Preference updated successfully!');
@@ -233,15 +269,9 @@ class ClientController extends Controller
         unset($request['arkesel_api_key']);
         unset($request['arkesel_sender_id']);
 
-        if($request->has('driver_phone_verify_config')){
+        if($request->has('cancel_verify_edit_order_config')){
             $request->request->add(['verify_phone_for_driver_registration' => ($request->has('verify_phone_for_driver_registration') && $request->verify_phone_for_driver_registration == 'on') ? 1 : 0]);
-        }
-
-        if($request->has('edit_order_config')){
             $request->request->add(['is_edit_order_driver' => ($request->has('is_edit_order_driver') && $request->is_edit_order_driver == 'on') ? 1 : 0]);
-        }
-
-        if($request->has('cancel_order_config')){
             $request->request->add(['is_cancel_order_driver' => ($request->has('is_cancel_order_driver') && $request->is_cancel_order_driver == 'on') ? 1 : 0]);
         }
 
@@ -249,10 +279,10 @@ class ClientController extends Controller
             $request->request->add(['reffered_by_amount' => ($request->has('reffered_by_amount') && $request->reffered_by_amount > 0) ? $request->reffered_by_amount : 0]);
             $request->request->add(['reffered_to_amount' => ($request->has('reffered_to_amount') && $request->reffered_to_amount > 0) ? $request->reffered_to_amount : 0]);
         }
-        $show_limited_address = ($request->has('show_limited_address') && $request->show_limited_address == 'on') ? 1 : 0;
-       // if(!$request->show_limited_address){
-            $request->merge(['show_limited_address'=>$show_limited_address]);
-        //}
+        if($request->has('address_limit_order_config')){
+            $request->request->add(['show_limited_address' => ($request->has('show_limited_address') && $request->show_limited_address == 'on') ? 1 : 0]);
+        }
+        
         
         //pr($request->all());
         $updatePreference = ClientPreference::updateOrCreate([
@@ -350,11 +380,28 @@ class ClientController extends Controller
         $cms         = Cms::all('content');
         $task_proofs = TaskProof::where('type', '!=', 0)->get();
         $task_list   = TaskType::all();
-        //print_r($task_list); die;
+        $user        = Auth::user();
+        $client      = Client::where('code', $user->code)->first();
         $subClients  = SubClient::all();
-        return view('customize')->with(['preference' => $preference, 'currencies' => $currencies,'cms'=>$cms,'task_proofs' => $task_proofs,'task_list' => $task_list]);
+        return view('customize')->with(['clientContact'=>$client, 'preference' => $preference, 'currencies' => $currencies,'cms'=>$cms,'task_proofs' => $task_proofs,'task_list' => $task_list]);
     }
 
+    public function updateContactUs(Request $request){
+        $rules = array(
+            'contact_phone_number' => 'required|min:7|max:15'
+        );
+        $validation  = Validator::make($request->all(), $rules);
+        if ($validation->fails()) {
+            return redirect()->back()->withInput()->withErrors($validation);
+        }
+        $user = Auth::user();
+        $client = Client::where('code', $user->code)->first();
+        $client->contact_address =  $request->contact_address ;
+        $client->contact_phone_number =  $request->contact_phone_number ;
+        $client->contact_email =  $request->contact_email ;
+        $client->save();
+        return redirect()->back()->with('success', 'Contact Us Updated successfully!');
+    }
 
     /**
      * Show Configuration page
@@ -435,6 +482,8 @@ class ClientController extends Controller
             $update->otp_requried       = isset($request['otp_requried_'.$i])? 1 : 0 ;
             $update->face               = isset($request['face_'.$i])? 1 : 0 ;
             $update->face_requried      = isset($request['face_requried_'.$i])? 1 : 0 ;
+            $update->qrcode             = isset($request['qrcode_'.$i])? 1 : 0 ;
+            $update->qrcode_requried    = isset($request['qrcode_requried_'.$i])? 1 : 0 ;
             $update->save();
         }
 

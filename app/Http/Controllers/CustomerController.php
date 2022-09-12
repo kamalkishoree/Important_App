@@ -34,18 +34,18 @@ class CustomerController extends Controller
         return Datatables::of($customers)
                 ->editColumn('action', function ($customers) use ($request) {
                     $action = '<div class="form-ul" style="width: 60px;">
-                                <div class="inner-div"> <a href="javascript:void(0)" userId="'.$customers->id.'" class="action-icon editIcon"> <i class="mdi mdi-square-edit-outline"></i></a></div>
-                                <div class="inner-div">
-                                    <form id="customerdelete'.$customers->id.'" method="POST" action="'.route('customer.destroy', $customers->id).'">
-                                        <input type="hidden" name="_token" value="'.csrf_token().'" />
-                                        <input type="hidden" name="_method" value="DELETE">
-                                        <div class="form-group">
-                                            <button type="button" class="btn btn-primary-outline action-icon"> <i class="mdi mdi-delete" customerid="'.$customers->id.'"></i></button>
+                                <div class="inner-div"> <a href="javascript:void(0)" userId="'.$customers->id.'" class="action-icon editIcon"> <i class="mdi mdi-square-edit-outline"></i></a></div>';
+                                // <div class="inner-div">
+                                //     <form id="customerdelete'.$customers->id.'" method="POST" action="'.route('customer.destroy', $customers->id).'">
+                                //         <input type="hidden" name="_token" value="'.csrf_token().'" />
+                                //         <input type="hidden" name="_method" value="DELETE">
+                                //         <div class="form-group">
+                                //             <button type="button" class="btn btn-primary-outline action-icon"> <i class="mdi mdi-delete" customerid="'.$customers->id.'"></i></button>
 
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>';
+                                //         </div>
+                                //     </form>
+                                // </div>
+                    $action .='</div>';
                     return $action;
                 })
                 ->filter(function ($instance) use ($request) {
@@ -167,7 +167,7 @@ class CustomerController extends Controller
         if ($customer->wasRecentlyCreated) {
             return response()->json([
                 'status' => 'success',
-                'message' => 'Customer created Successfully!',
+                'message' => __('Customer created Successfully!'),
                 'data' => $customer
             ]);
         }
@@ -263,7 +263,7 @@ class CustomerController extends Controller
         if ($customer) {
             return response()->json([
                 'status' => 'success',
-                'message' => 'Customer updated Successfully!',
+                'message' => __('Customer updated Successfully!'),
                 'data' => $customer
             ]);
         }
@@ -290,7 +290,7 @@ class CustomerController extends Controller
         $customer = Customer::find($request->id);
         $customer->status = $request->status;
         $customer->save();
-        return response()->json(['success' => 'Status change successfully.']);
+        return response()->json(['success' => __('Status change successfully.')]);
     }
 
     public function changeLocation(Request $request)

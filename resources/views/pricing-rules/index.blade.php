@@ -203,10 +203,6 @@
 <script src="{{ asset('assets/libs/flatpickr/flatpickr.min.js') }}"></script> 
 <script src="{{asset('assets/libs/bootstrap-datepicker/bootstrap-datepicker.min.js')}}"></script>
 
-<script src="{{asset('assets/js/pages/form-pickers.init.js')}}"></script>
-
-<script src="{{ asset('assets/js/pages/form-advanced.init.js') }}"></script>
-<script src="{{ asset('assets/js/pages/form-pickers.init.js') }}"></script>
 <script src="{{ asset('assets/libs/select2/select2.min.js') }}"></script>
 <script src="{{ asset('assets/libs/bootstrap-select/bootstrap-select.min.js') }}"></script>
 
@@ -215,21 +211,26 @@
 <script src="{{ asset('assets/libs/dropify/dropify.min.js') }}"></script>
 <script src="{{ asset('assets/js/pages/form-fileuploads.init.js') }}"></script>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/8.4.7/js/intlTelInput.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/9.0.10/js/intlTelInput.js"></script>
 
+<script src="{{asset('assets/libs/mohithg-switchery/mohithg-switchery.min.js')}}"></script>
 <script src="{{ asset('assets/libs/datatables/datatables.min.js') }}"></script>
 <script src="{{ asset('assets/libs/sweetalert2/sweetalert2.min.js') }}"></script>
-<script src="{{ asset('assets/libs/nestable2/nestable2.min.js') }}"></script>
-<script src="{{ asset('assets/js/pages/nestable.init.js') }}"></script>
+<script src="{{ asset('assets/js/pages/form-advanced.init.js') }}"></script>
+<script src="{{ asset('assets/js/pages/form-pickers.init.js') }}"></script>
+
 
 <script>
 
-    $(document).on('click', '.selectpicker', function( event ) {
+    /* $(document).on('click', '.selectpicker', function( event ) {
         event.stopPropagation();
-    }); 
+    });  */
 
 
     $(document).ready(function() {
+        clockUpdate();
+        setInterval(clockUpdate, 1000);
+
         $('#pricing-datatable').DataTable({
             language: {
                     search: "",
@@ -244,13 +245,88 @@
             });
     });
 
-    function runPicker(){
-        $('.datetime-datepicker').flatpickr({
-            enableTime: true,
-            dateFormat: "Y-m-d H:i"
+    function clockUpdate() {
+        @if($client->getPreference->time_format == 12)
+            var date = new Date().toLocaleString('en-US', { timeZone: '{{$timezone}}', hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: true});
+        @else
+            var date = new Date().toLocaleString('en-US', { timeZone: '{{$timezone}}', hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: false});
+        @endif
+        $('.digital-clock1').text("Current Time: "+date) 
+    }
+
+    function runPicker1(){
+        $('#geo_id, #team_id, #team_tag_id, #driver_tag_id, #geo_id_edit, #team_id_edit, #team_tag_id_edit, #driver_tag_id_edit').select2({
+            placeholder: "Select an option",
+            allowClear: true
+        });
+        
+        @if($client->getPreference->time_format == 12)
+            $("[id^='price_starttime_'], [id^='price_endtime_'], [id^='edit_price_starttime_'], [id^='edit_price_endtime_']").flatpickr({enableTime:!0,noCalendar:!0,dateFormat:"H:i", static: true});
+        @else
+            $("[id^='price_starttime_'], [id^='price_endtime_'], [id^='edit_price_starttime_'], [id^='edit_price_endtime_']").flatpickr({enableTime:!0,noCalendar:!0,dateFormat:"H:i",time_24hr:!0, static: true});
+        @endif
+
+        // select all for add form
+        $(document).on('click', '#select_geo_all', function(){
+            $("#geo_id").find('option').prop("selected",true);
+            $("#geo_id").trigger('change');
         });
 
-        $('.selectpicker').selectpicker();
+        $(document).on('click', '#select_team_all', function(){
+            $("#team_id").find('option').prop("selected",true);
+            $("#team_id").trigger('change');
+        });
+
+        $(document).on('click', '#select_team_tag_all', function(){
+            $("#team_tag_id").find('option').prop("selected",true);
+            $("#team_tag_id").trigger('change');
+        });
+
+        $(document).on('click', '#select_driver_tag_all', function(){
+            $("#driver_tag_id").find('option').prop("selected",true);
+            $("#driver_tag_id").trigger('change');
+        });
+
+        // select all for edit form
+        $(document).on('click', '#select_geo_edit_all', function(){
+            $("#geo_id_edit").find('option').prop("selected",true);
+            $("#geo_id_edit").trigger('change');
+        });
+
+        $(document).on('click', '#select_team_edit_all', function(){
+            $("#team_id_edit").find('option').prop("selected",true);
+            $("#team_id_edit").trigger('change');
+        });
+
+        $(document).on('click', '#select_team_tag_edit_all', function(){
+            $("#team_tag_id_edit").find('option').prop("selected",true);
+            $("#team_tag_id_edit").trigger('change');
+        });
+
+        $(document).on('click', '#select_driver_tag_edit_all', function(){
+            $("#driver_tag_id_edit").find('option').prop("selected",true);
+            $("#driver_tag_id_edit").trigger('change');
+        });
+
+        $("#add-pricing-modal .apply_timetable").on("change", function() {
+            if($(this).is(":checked")){
+                $("#add-pricing-modal .timetable_div").show();
+            }else{
+                $("#add-pricing-modal .timetable_div").hide();
+            }
+        });
+
+        $("#editCardBox .apply_timetable1").on("change", function() {
+            if($(this).is(":checked")){
+                $("#editCardBox .timetable_div").show();
+            }else{
+                $("#editCardBox .timetable_div").hide();
+            }
+        });
+
+        
+        $("#edit-pricing-modal .apply_timetable").change();
+        $("#editCardBox .apply_timetable1").change();
     }
 
     $('.openModal').click(function(){
@@ -258,7 +334,57 @@
             backdrop: 'static',
             keyboard: false
         });
-        runPicker();
+        runPicker1();
+    });
+
+    // click event of add new time frame button
+    $(document).on('click', '.add_sub_pricing_row', function(){
+        var rowid = $(this).attr("data-id");
+        var id = $("#no_of_time_"+rowid).val();
+        if($("#price_starttime_"+rowid+"_"+id).val()!='' && $("#price_endtime_"+rowid+"_"+id).val()!='')
+        {
+            id = parseInt(id) + 1;
+            //new time frame row creation below day row
+            $("#timeframe_tbody_"+rowid).append('<tr id="timeframe_row_'+rowid+'_'+id+'"><td></td><td><input id="price_starttime_'+rowid+'_'+id+'" class="form-control" autocomplete="off" placeholder="00:00" name="price_starttime_'+rowid+'_'+id+'" type="text" readonly="readonly"></td><td><input id="price_endtime_'+rowid+'_'+id+'" class="form-control" autocomplete="off" placeholder="00:00" name="price_endtime_'+rowid+'_'+id+'" type="text" readonly="readonly"></td><td style="text-align:center;"><span data-id="pricruledelspan_'+rowid+'_'+id+'" class="del_pricrule_span"><img style="filter: grayscale(.5);" src="{{asset("assets/images/ic_delete.png")}}"  alt=""></span></td></tr>');
+            $("#no_of_time_"+rowid).val(id);
+            @if($client->getPreference->time_format == 12)
+                $("#price_starttime_"+rowid+"_"+id+", #price_endtime_"+rowid+"_"+id).flatpickr({enableTime:!0,noCalendar:!0,dateFormat:"H:i", static: true});
+            @else
+                $("#price_starttime_"+rowid+"_"+id+", #price_endtime_"+rowid+"_"+id).flatpickr({enableTime:!0,noCalendar:!0,dateFormat:"H:i",time_24hr:!0, static: true});
+            @endif
+        }else{
+            //empty previous row fields warning
+            var color = 'orange';var heading="Warning!";
+            $.toast({ 
+            heading:heading,
+            text : "Please fill previous data first.", 
+            showHideTransition : 'slide', 
+            bgColor : color,              
+            textColor : '#eee',            
+            allowToastClose : true,      
+            hideAfter : 5000,            
+            stack : 5,                   
+            textAlign : 'left',         
+            position : 'top-right'      
+            });
+        }
+    });
+
+    
+
+    $(document).on('click', '.del_pricrule_span', function(){
+        Swal.fire({
+                title: "Are you sure?",
+                text:"You want to delete this row ?.",
+                showCancelButton: true,
+                confirmButtonText: 'Ok',
+            }).then((result) => {
+                if(result.value)
+                {
+                    $(this).closest("tr").remove();
+                }
+                
+            });
     });
 
     $(".editIcon").click(function (e) {
@@ -280,20 +406,65 @@
             success: function (data) {
 
                 console.log('data');
-        
-                $('.datetime-datepicker').flatpickr({
-                    enableTime: true,
-                    dateFormat: "Y-m-d H:i"
-                });
 
                 $('#edit-price-modal #editCardBox').html(data.html);
                 $('#edit-price-modal').modal({
                     backdrop: 'static',
                     keyboard: false
                 });
+                
+                var elems = Array.prototype.slice.call(document.querySelectorAll('.apply_timetable1'));
+                    elems.forEach(function(html) {
+                    var switchery =new Switchery(html);
+                });
+                runPicker1();
 
-                runPicker();
-                ('.custom-switch').switch();
+                $(document).on('click', '.add_edit_sub_pricing_row', function(){
+                    var rowid = $(this).attr("data-id");
+                    var id = $("#edit_no_of_time_"+rowid).val();
+                    if($("#edit_price_starttime_"+rowid+"_"+id).val()!='' && $("#edit_price_endtime_"+rowid+"_"+id).val()!='')
+                    {
+                        id = parseInt(id) + 1;
+                        //new time frame row creation below day row
+                        $("#timeframe_edit_tbody_"+rowid).append('<tr id="timeframe_edit_row_'+rowid+'_'+id+'"><td></td><td><input id="edit_price_starttime_'+rowid+'_'+id+'" class="form-control" autocomplete="off" placeholder="00:00" name="edit_price_starttime_'+rowid+'_'+id+'" type="text" readonly="readonly"></td><td><input id="edit_price_endtime_'+rowid+'_'+id+'" class="form-control" autocomplete="off" placeholder="00:00" name="edit_price_endtime_'+rowid+'_'+id+'" type="text" readonly="readonly"></td><td style="text-align:center;"><span data-id="pricruledelspan_'+rowid+'_'+id+'" class="del_edit_pricrule_span"><img style="filter: grayscale(.5);" src="{{asset("assets/images/ic_delete.png")}}"  alt=""></span></td></tr>');
+                        $("#edit_no_of_time_"+rowid).val(id);
+                        @if($client->getPreference->time_format == 12)
+                            $("#edit_price_starttime_"+rowid+"_"+id+", #edit_price_endtime_"+rowid+"_"+id).flatpickr({enableTime:!0,noCalendar:!0,dateFormat:"H:i", static: true});
+                        @else
+                            $("#edit_price_starttime_"+rowid+"_"+id+", #edit_price_endtime_"+rowid+"_"+id).flatpickr({enableTime:!0,noCalendar:!0,dateFormat:"H:i",time_24hr:!0, static: true});
+                        @endif
+                    }else{
+                        //empty previous row fields warning
+                        var color = 'orange';var heading="Warning!";
+                        $.toast({ 
+                        heading:heading,
+                        text : "Please fill previous data first.", 
+                        showHideTransition : 'slide', 
+                        bgColor : color,              
+                        textColor : '#eee',            
+                        allowToastClose : true,      
+                        hideAfter : 5000,            
+                        stack : 5,                   
+                        textAlign : 'left',         
+                        position : 'top-right'      
+                        });
+                    }
+                });
+
+                $(document).on('click', '.del_edit_pricrule_span', function(){
+                    Swal.fire({
+                            title: "Are you sure?",
+                            text:"You want to delete this row ?.",
+                            showCancelButton: true,
+                            confirmButtonText: 'Ok',
+                        }).then((result) => {
+                            if(result.value)
+                            {
+                                $(this).closest("tr").remove();
+                            }
+                            
+                        });
+                });
 
             },
             error: function (data) {
@@ -305,52 +476,6 @@
     $(document).on('click', '.submitEditForm', function(){ console.log('ad');
         document.getElementById("edit_price").submit();
     });
-
-    !function($) {
-        "use strict";
-        
-        var Nestable = function() {};
-        Nestable.prototype.updateOutput = function(e) {
-                var list = e.length ? e : $(e.target),
-                    output = list.data('output');
-                if (window.JSON) {
-                   output.val(window.JSON.stringify(list.nestable('serialize'))); //, null, 2));
-                } else {
-                    output.val('JSON browser support required for this demo.');
-                }
-            },
-            //init
-            Nestable.prototype.init = function() {
-                
-                $('#nestable_list_2').nestable({
-                    group: 1
-                }).on('change', this.updateOutput);
-
-                // output initial serialised data                
-                this.updateOutput($('#nestable_list_2').data('output', data));
-
-                $('#nestable_list_menu').on('click', function(e) {
-                    var target = $(e.target),
-                        action = target.data('action');
-                    if (action === 'expand-all') {
-                        $('.dd').nestable('expandAll');
-                    }
-                    if (action === 'collapse-all') {
-                        $('.dd').nestable('collapseAll');
-                    }
-                });
-
-                $('#nestable_list_3').nestable();
-            },
-            //init
-            $.Nestable = new Nestable, $.Nestable.Constructor = Nestable
-    }(window.jQuery),
-
-    //initializing 
-    function($) {
-        "use strict";
-        $.Nestable.init()
-    }(window.jQuery);
 
 </script>
 

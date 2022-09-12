@@ -1,9 +1,7 @@
 @extends('layouts.vertical', ['title' => 'Profile'])
 
 @section('css')
-<link href="{{asset('assets/libs/dropzone/dropzone.min.css')}}" rel="stylesheet" type="text/css" />
-<link href="{{asset('assets/libs/dropify/dropify.min.css')}}" rel="stylesheet" type="text/css" />
-<link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/8.4.6/css/intlTelInput.css'>
+<link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.18/css/intlTelInput.css'>
 @endsection
 @php
     $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain/';
@@ -134,25 +132,39 @@
                         @method('PUT')
                         @csrf
                         <div class="row mb-2 d-flex align-items-center">
-                            <div class="col-md-3 upload_box">
-                                <input type="file" data-plugins="dropify" name="logo" data-default-file="{{isset(Auth::user()->logo) ? Storage::disk('s3')->url(Auth::user()->logo) : ''}}" />
-                                <p class="text-muted text-center mt-2 mb-0">{{__("Upload Logo")}} </p>
-                            </div>
-                            <div class="col-md-3"></div>
-                            <div class="col-md-3 mb-4">
-                                <label class="control-label">{{__("Short Code")}}</label><br/>
-                                <h1 class="control-label" style="font-size: 4rem;">{{Auth::user()->code}}</h1>
-
-                            </div>
-                            <div class="col-md-3 mb-4">
-                                <div class="text-center mb-3">
-                                    <a href="https://apps.apple.com/us/app/royo-dispatcher/id1546990347" target="_blank"><img src="{{asset('assets/images/iosstore.png')}}" alt="image" > </a>
-                                </div>
-                                <div class="text-center">
-                                <a href="https://play.google.com/store/apps/details?id=com.codebew.deliveryagent&hl=en_US&gl=US" target="_blank"><img src="{{asset('assets/images/playstore.png')}}" alt="image"  > </a>
+                            <div class="col-md-7">
+                                <div class="row">
+                                    <div class="col-md-4 upload_box">
+                                        <input type="file" data-plugins="dropify" name="logo" data-default-file="{{isset(Auth::user()->logo) ? Storage::disk('s3')->url(Auth::user()->logo) : ''}}" />
+                                        <p class="text-muted text-center mt-2 mb-0">{{__("Upload Light Logo")}} </p>
+                                    </div>
+                                    <div class="col-md-4 upload_box">
+                                        <input type="file" data-plugins="dropify" name="dark_logo" data-default-file="{{isset(Auth::user()->dark_logo) ? Storage::disk('s3')->url(Auth::user()->dark_logo) : ''}}" />
+                                        <p class="text-muted text-center mt-2 mb-0">{{__("Upload Dark Logo")}} </p>
+                                    </div>
+                                    <div class="col-md-4 upload_box">
+                                        <input type="file" class="dropify" data-plugins="dropify" name="favicon" data-default-file="{{ isset($preference->favicon) ? Storage::disk('s3')->url($preference->favicon) : '' }}" />
+                                        <p class="text-muted text-center mt-2 mb-0">{{__("Upload favicon")}} </p>
+                                    </div>
                                 </div>
                             </div>
 
+                            <div class="col-md-5">
+                                <div class="row">
+                                    <div class="col-md-6 mb-4 pl-3">
+                                        <label class="control-label">{{__("Short Code")}}</label><br/>
+                                        <h1 class="control-label" style="font-size: 4rem;">{{Auth::user()->code}}</h1>
+                                    </div>
+                                    <div class="col-md-6 mb-4">
+                                        <div class="text-center mb-3">
+                                            <a href="https://apps.apple.com/us/app/royo-dispatcher/id1546990347" target="_blank"><img src="{{asset('assets/images/iosstore.png')}}" alt="image" > </a>
+                                        </div>
+                                        <div class="text-center">
+                                        <a href="https://play.google.com/store/apps/details?id=com.codebew.deliveryagent&hl=en_US&gl=US" target="_blank"><img src="{{asset('assets/images/playstore.png')}}" alt="image"  > </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
                         <div class=" row">
@@ -197,7 +209,7 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="company_address" class="control-label">{{__("COMPANY ADDRESS")}}</label>
-                                    <input type="text" class="form-control" id="company_address" name="company_address" value="{{ old('company_address', Auth::user()->company_address ?? '')}}" placeholder="{{__("Enter company address")}}" {{ $is_readonly }}>
+                                    <input type="text" class="form-control" id="company_address" name="company_address" value="{{ old('company_address', Auth::user()->company_address ?? '')}}" placeholder="{{__("Enter company address")}}">
                                     @if($errors->has('company_address'))
                                     <span class="text-danger" role="alert">
                                         <strong>{{ $errors->first('company_address') }}</strong>
@@ -375,14 +387,19 @@
 <script src="{{asset('assets/js/pages/form-fileuploads.init.js')}}"></script>
 <script src="{{asset('assets/js/storeClients.js')}}"></script>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/8.4.7/js/intlTelInput.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.18/js/intlTelInput.min.js"></script>
 
 <script>
-    $("#phone_number").intlTelInput({
+    var input = document.querySelector("#phone_number");
+    var iti = window.intlTelInput(input, {
+        separateDialCode:true,
+        utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.18/js/utils.js",
+    });
+    /* $("#phone_number").intlTelInput({
         nationalMode: false,
         formatOnDisplay: true,
-        utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/8.4.6/js/utils.js"
-    });
+        utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.18/js/utils.js"
+    }); */
     $('.intl-tel-input').css('width', '100%');
 
 
