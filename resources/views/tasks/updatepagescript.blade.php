@@ -27,7 +27,7 @@ $(document).ready(function(){
     });
 
     $('#taskFormHeader .edit-icon-float-right').on('click', function() {
-        $('#taskFormHeader .task_desc_div').toggle();
+        $('#taskFormHeader .meta_data_task_div').toggle();
     });
 });
     $(document).ready(function() {
