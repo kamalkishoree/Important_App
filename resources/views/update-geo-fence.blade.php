@@ -145,12 +145,12 @@
                                                 <div class="custom-control custom-checkbox select_all" id="old_show">
                                                     <input type="checkbox" class="custom-control-input all" id="checkmeout0">
                                                     <label class="custom-control-label select_all" for="checkmeout0">Select All
-                                                        {{ Session::get('agent_name') ? Session::get('agent_name') : 'Agent' }}</label>
+                                                        {{ getAgentNomenclature() }}</label>
                                                 </div>
                                                 <div class="custom-control custom-checkbox show_alls" id="new_show">
                                                     <input type="checkbox" class="custom-control-input" id="show_all">
                                                     <label class="custom-control-label" for="show_all">Show All
-                                                        {{ Session::get('agent_name') ? Session::get('agent_name') : 'Agent' }}</label>
+                                                        {{ getAgentNomenclature() }}</label>
                                                 </div>
                                             </div>
                                             <div class="col-md-6">

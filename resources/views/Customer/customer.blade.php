@@ -127,6 +127,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                 <tr>
                                     <th>{{__("Name")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                     <th>{{__("Email")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
+                                    <th>{{__("Dial Code")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                     <th>{{__("Phone number")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                     <th>{{__("Status")}}</th>
                                     <th style="width: 85px;">{{__("Action")}}</th>

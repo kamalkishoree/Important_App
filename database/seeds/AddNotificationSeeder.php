@@ -17,7 +17,7 @@ class AddNotificationSeeder extends Seeder
         ]);
 
         $notification_types_d->notification_events()->createMany([
-            ['name' => 'Delivery OTP','message'=>'We have delivered your order number "order_number" please provide your OTP "deliver_otp" to your agent to order delivery'],
+            ['name' => 'Delivery OTP','message'=>'We have delivered your order number "order_number" please provide your OTP "deliver_otp" to your '.getAgentNomenclature().' to order delivery'],
         ]);
     }
 }

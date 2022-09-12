@@ -74,7 +74,7 @@
                             <div class="card-box">
                                 <h4 class="header-title">{{__("Acknowledgement Type")}}</h4>
                                 <p class="sub-header">
-                                    {{__("Agent can either acknowledge the receipt of the task or accept/decline a Task based on your selection below.")}}
+                                    {{__(getAgentNomenclature()." can either acknowledge the receipt of the task or accept/decline a Task based on your selection below.")}}
                                 </p>
                                 {{-- @php
                                 dd($preference->);
@@ -119,7 +119,7 @@
                             <input type="checkbox" value="1" class="custom-control-input large-icon" id="manual_allocation"
                                 name="manual_allocation"
                                 {{ isset($allocation) && $allocation->manual_allocation == 1 ? 'checked' : '' }}>
-                            <label class="custom-control-label checkss" for="manual_allocation">{{__("Enable this option to automatically assign Task to your agent.")}}</label>
+                            <label class="custom-control-label checkss" for="manual_allocation">{{__("Enable this option to automatically assign Task to your ".getAgentNomenclature().".")}}</label>
 
                             <div class="col-sm-4 text-right">
 

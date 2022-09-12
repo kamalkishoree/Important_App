@@ -84,7 +84,7 @@
 
 
         }
-        
+
         hr.new3 {
          border-top: 1px dashed white;
          margin: 0 0 .5rem 0;
@@ -146,11 +146,12 @@
 
     .alTaskType{background-color: #F4F3FD; border: 1px solid transparent;border-radius: 7px;}
     .alTaskType.active{background-color: #FEE9DB;border: 1px solid #FA6400;}
-    .alTaskType input{background-color: transparent;padding: 10px;border:1px solid #d1d1d1;border-radius: 5px;}
-    .alTaskType select{background-color: transparent;padding: 10px;border:1px solid #d1d1d1;border-radius: 5px;}
-    .alTaskType textarea{background-color: transparent;padding: 10px;border:1px solid #d1d1d1;border-radius: 5px;}
+    .alTaskType input,
+    .alTaskType textarea,
+    .alTaskType select{background-color: transparent;padding: 6px 10px;border:1px solid #d1d1d1;border-radius: 5px;}
+
     .border-right{border-right: 1px dashed #d1d1d1 !important;}
-    .alCol-12{-ms-flex: 0 0 100%;flex: 0 0 100%;max-width: 100%;}    
+    .alCol-12{-ms-flex: 0 0 100%;flex: 0 0 100%;max-width: 100%;}
     .alCol-6{-ms-flex: 0 0 50%;flex: 0 0 50%;max-width: 50%;}
     .alCol-12.mainaddress.col-8 .addressDetails .form-group.col-6{-ms-flex: 0 0 50%;flex: 0 0 50%;max-width: 50%;}
     .mainaddress.col-8 .addressDetails .form-group.col-6{-ms-flex: 0 0 100%;flex: 0 0 100%;max-width: 100%;}
@@ -168,17 +169,17 @@
 
     /* Track */
     ::-webkit-scrollbar-track {
-    background: #f1f1f1; 
+    background: #f1f1f1;
     }
-    
+
     /* Handle */
     ::-webkit-scrollbar-thumb {
-    background: #888; 
+    background: #888;
     }
 
     /* Handle on hover */
     ::-webkit-scrollbar-thumb:hover {
-    background: #555; 
+    background: #555;
     }
 </style>
 <div id="task-modal-header" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;font-size: 14px;">
@@ -194,7 +195,7 @@
 
                 </div>
                 <span class="show_all_error invalid-feedback"></span>
-                <div class="modal-footer justify-content-center">
+                <div class="modal-footer justify-content-center p-0">
                      <a href="javascript: void(0);" class="btn btn-blue waves-effect waves-light submitTaskHeader"><span class="spinner-border spinner-border-sm submitTaskHeaderLoader" style="display:none;" role="status" aria-hidden="true"></span> <span id="submitTaskHeaderText">{{__("Submit")}}</span></a>
                 </div>
             </form>
@@ -203,7 +204,7 @@
 </div>
 
 <div id="show-map-Header" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
-    <div class="modal-dialog modal-full-width">
+    <div class="modal-dialog modal-xl">
         <div class="modal-content">
 
             <div class="modal-header border-0">
@@ -284,7 +285,7 @@
 <script src="{{asset('assets/libs/dropzone/dropzone.min.js')}}"></script>
 <script src="{{asset('assets/libs/dropify/dropify.min.js')}}"></script>
 <!-- Page js-->
-<script src="{{asset('assets/js/pages/form-pickers.init.js')}}"></script>
+
 <script>
     var theme      = {!!json_encode($theme)!!};
 
@@ -334,9 +335,7 @@
 
     var latitudes = [];
     var longitude = [];
-
     $(".addTaskModalHeader").click(function (e) {
-
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
@@ -360,6 +359,7 @@
 
                 $('#task-modal-header').find('.selectizeInput').selectize();
 
+                
                 $('.dropify').dropify();
                 $(".newcustomer").hide();
                 $(".searchshow").show();
@@ -369,13 +369,13 @@
                 $(".addspan").hide();
                 $(".tagspan").hide();
                 $(".tagspan2").hide();
-                
+                $(".searchspan").hide();
                 $(".datenow").hide();
 
                 $(".pickup-barcode-error").hide();
                 $(".drop-barcode-error").hide();
                 $(".appointment-barcode-error").hide();
-                
+
                 $('.appoint').hide();
 
                 loadMapHeader(autoWrap);
@@ -385,12 +385,32 @@
                     keyboard: false
                 });
 
+                phoneInput();
                 runPicker();
+
+                $('#task-modal-header .edit-icon-float-right').on('click', function() {
+                    $('#task-modal-header .meta_data_task_div').toggle();
+                });
             },
             error: function (data) {
             }
         });
     });
+
+    function phoneInput() {
+        //initialize intlTelInput
+        let phone_number_intltel = window.intlTelInput(document.querySelector("#taskFormHeader .phone_number"),{
+            separateDialCode: true,
+            preferredCountries:["{{getCountryCode()}}"],
+            initialCountry:"{{getCountryCode()}}",
+            hiddenInput: "full_number",
+            utilsScript: "//cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.3/js/utils.js"
+        });
+
+        document.querySelector("#taskFormHeader .phone_number").addEventListener("countrychange", function() {
+            $("#taskFormHeader #dialCode").val(phone_number_intltel.getSelectedCountryData().dialCode);
+        });
+    }
 
     var CSRF_TOKEN = $("input[name=_token]").val();
 
@@ -442,7 +462,6 @@
                 // Set selection
                 $('#task-modal-header #searchDriver').val(ui.item.label); // display the selected text
                 $('#task-modal-header #agentid').val(ui.item.value); // save selected id to input
-                // $(".oldhide").hide();
                 return false;
             }
         });
@@ -459,9 +478,22 @@
                   id: ids
               },
               success: function(data) {
-                  var array = data;
-                  $('.withradio .append').remove();
-                  jQuery.each(array, function(i, val) {
+                    var customerdata = data.customer;
+                    var array = data.location;
+
+                    var countrycode = customerdata.countrycode;
+                    $("#taskFormHeader").find("input[name='phone_number']").val(customerdata.phone_number);
+                    $("#taskFormHeader #dialCode").val(customerdata.dial_code);
+                    
+                    //getting instance of intlTelInput
+                    var input = document.querySelector("#taskFormHeader .phone_number");
+                    var iti = window.intlTelInputGlobals.getInstance(input);
+                    iti.setCountry(countrycode);
+
+                    $("#taskFormHeader").find("input[name='email']").val(customerdata.email);
+
+                    $('.withradio .append').remove();
+                    jQuery.each(array, function(i, val) {
                     var countz = '';
                     var rand =  Math.random().toString(36).substring(7);
                     $(".withradio").each(function(){
@@ -472,10 +504,6 @@
                           '</label></div></div>');
                         countz = count + 1;
                     });
-                      /* $(".withradio").append(
-                          '<div class="append"><div class="custom-control custom-radio count"><input type="radio" id="' + val.id + '" name="old_address_id" value="' + val.id + '" class="custom-control-input redio old-select-address callradio" data-srtadd="'+ val.short_name +'" data-flat_no="'+ val.flat_no +'"  data-adr="'+ val.address +'" data-lat="'+ val.latitude +'" data-long="'+ val.longitude +'" data-pstcd="'+ val.post_code +'" data-emil="'+ val.email +'" data-ph="'+ val.phone_number +'"><label class="custom-control-label" for="' + val.id + '"><span class="spanbold">' + val.short_name +
-                          '</span>-' + val.address +
-                          '</label></div></div>'); */
                   });
 
               }
@@ -565,7 +593,7 @@
 
           var postcode1 = $clone.find('.postcode');
           $.each(postcode1, function(index, elem){
-            var jElem = $(elem)
+            var jElem = $(elem);
             var name = jElem.prop('id');
             name = name.replace(/\d+/g, '');
             name = 'addHeader'+post_count+'-postcode';
@@ -576,10 +604,12 @@
 
         $clone.find('.appoint').hide();
         $(document).find('#addSubFields').before($clone);
-        $('#addHeader'+countZ+' input[type="text"]').val('');
+        $clone.find('input[type="text"]').val('');
         autoWrap.indexOf('addHeader'+countZ) === -1 ? autoWrap.push('addHeader'+countZ) : console.log("exists");
           loadMapHeader(autoWrap);
           $clone.find('input').click();
+          $clone.find('input[type="radio"]').prop('checked', false);
+          $clone.find('input[type="text"]').val('');
     });
 
     function loadMapHeader(autoWrap){
@@ -616,13 +646,6 @@
         $(this).closest(".copyin").remove();
     });
 
-    /*$(document).on('click', ".onedelete", function() {
-
-        $(this).closest(".copyin").remove();
-    });
-
-    subTaskHeader*/
-
     $(document).on("click", "input[type='radio'].checkcustomer", function() {
 
         var customerredio = $("#customerradio input[type='radio']:checked").val();
@@ -630,22 +653,23 @@
             $(".newcustomer").hide();
             $(".searchshow").show();
             $(".append").show();
-            $('.copyin').remove();
+            
             autoWrap = ['addHeader0', 'addHeader1'];
             countZ = 1;
         }else{
             $(".newcustomer").show();
             $(".append").hide();
             $(".searchshow").hide();
-            $('input[name=ids').val('');
-            $('input[name=search').val('');
-            $('.copyin').remove();
+            $('input[name=ids]').val('');
+            $('#taskFormHeader .phone_number').val('');
+            $('input[name=search]').val('');
+            $('#taskFormHeader .email').val('');
             autoWrap = ['addHeader0', 'addHeader1'];
             countZ = 1;
         }
     });
-    
-    
+
+
     $(document).on("click", "input[type='radio'].checkschedule", function() {
         var dateredio = $("#dateredio input[type='radio']:checked").val();
         if (dateredio == 'schedule') {
@@ -709,11 +733,13 @@
 
         if (cus_id == '') {
             if (name != '' && email != '' && phone_no != '') {
-
+                $(".searchspan").hide();
             } else {  err = 1;
                 $(".searchspan").show();
                 return false;
             }
+        }else{
+            $(".searchspan").hide();
         }
         var s_name = $("input[name='short_name[]']").val();
         var s_address = $("input[name='address[]']").val();
@@ -743,21 +769,14 @@
                 err = 1;
                 return false;
             }
-            // else{
-            //     $(this).closest('.check-validation').find('.pickup-barcode-error').hide();
-            //     $(this).closest('.check-validation').find('.drop-barcode-error').hide();
-            //     $(this).closest('.check-validation').find('.appointment-barcode-error').hide();
-            //     return true;
-            // }
+            
         });
 
 
-
-       //return false;
         var selectedVal = "";
         var selected = $("#typeInputss input[type='radio']:checked");
         selectedVal = selected.val();
-        //console.log(selectedVal);
+
         if (typeof(selectedVal) == "undefined") {
             var short_name = $("#task-modal-header input[name='short_name[]']").val();
             var address = $("#task-modal-header input[name='address[]']").val();
@@ -777,7 +796,6 @@
 
             if( err == 0){
                 $('.submitTaskHeaderLoader').css('display', 'inline-block');
-                // $('#submitTaskHeaderText').text('Done');
                 $('.submitTaskHeader').addClass("inactiveLink");
 
                 var formData = new FormData(document.querySelector("#taskFormHeader"));
@@ -788,7 +806,6 @@
 
 
     function TaskSubmit(data, method, url, modals) {
-    //alert(data);
     $.ajax({
         method: method,
         headers: {
@@ -801,17 +818,17 @@
         success: function(response) {
             if(response.status == 'Success')
             {var color = 'green';var heading="Success!";}else{var color = 'red';var heading="Error!";}
-            $.toast({ 
+            $.toast({
             heading:heading,
-            text : response.message, 
-            showHideTransition : 'slide', 
-            bgColor : color,              
-            textColor : '#eee',            
-            allowToastClose : true,      
-            hideAfter : 5000,            
-            stack : 5,                   
-            textAlign : 'left',         
-            position : 'top-right'      
+            text : response.message,
+            showHideTransition : 'slide',
+            bgColor : color,
+            textColor : '#eee',
+            allowToastClose : true,
+            hideAfter : 5000,
+            stack : 5,
+            textAlign : 'left',
+            position : 'top-right'
             });
             if (response.status == 'Success') {
                     $("#task-modal-header .close").click();
@@ -888,8 +905,8 @@
     }
 
     function insertArrayToFiles(routefileListArray){
-        const dT = new ClipboardEvent('').clipboardData || new DataTransfer(); 
-        for (let file of routefileListArray) { 
+        const dT = new ClipboardEvent('').clipboardData || new DataTransfer();
+        for (let file of routefileListArray) {
             dT.items.add(file);
         }
         $('#file').prop("files",dT.files);
@@ -919,7 +936,7 @@
             $('#imagePreview').append('<div class="imagepri_wrap mb-2" data-id="'+i+'"><img src="' + objectUrl + '" class="imagepri mr-2" /><button type="button" class="close imagepri_close" aria-hidden="true">×</button></div>');
             window.URL.revokeObjectURL(fileList[i]);
         }
-        
+
         reArrangeFileWrapIndexes();
     }
 
@@ -1075,7 +1092,7 @@
         $(this).closest('.alTaskType').find(".mainaddress").removeClass("alCol-12");
         $(this).closest('.alTaskType').addClass("active");
         $(this).closest('.alTaskType').find(".alsavedaddress").show();
-        
+
     });
 
 
@@ -1191,7 +1208,6 @@
     $('.onlynumber').keyup(function ()
         {
         this.value = this.value.replace(/[^0-9\.]/g,'');
-        });
-
+    });
 
 </script>

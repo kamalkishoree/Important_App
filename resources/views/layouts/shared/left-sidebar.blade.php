@@ -1,6 +1,6 @@
 <!-- ========== Left Sidebar Start ========== -->
 <div class="left-side-menu">
- 
+
     <div class="h-100" data-simplebar>
 
         <!-- User box -->
@@ -27,9 +27,9 @@
                 </div>
             </div>
             <p class="text-muted">{{__('Admin Head')}}</p>
-        </div> 
+        </div>
 
-                        <?php 
+                        <?php
                         $allowed = [];
                         if(Auth::user()->is_superadmin == 0){
                            // if(Session::get('usertype') == 'manager'){
@@ -41,24 +41,25 @@
                             array_push($allowed,'99999');
                         }
                         ?>
-     
+
         <!--- Sidemenu -->
         <div id="sidebar-menu">
 
             <ul id="side-menu">
 
                 <li class="menu-title mt-2">{{__('Home')}}</li>
-                @if(in_array('Dashboard',$allowed) || Auth::user()->is_superadmin == 1) 
+                @if(in_array('Dashboard',$allowed) || Auth::user()->is_superadmin == 1)
                 <li>
                     <a href="{{route('index')}}">
-                        <i data-feather="airplay"></i>
+                        <i class="fe-airplay" ></i>
+                        <!-- data-feather="airplay" -->
                         <span> {{__('Dashboard')}} </span>
                     </a>
-                </li> 
+                </li>
                 @endif
 
                 @if(in_array('Customers',$allowed) || Auth::user()->is_superadmin == 1)
-                <li>   
+                <li>
                     <a href="{{route('customer.index')}}">
                         <i class="fe-user-plus"></i>
                         <span> {{__('Customers')}} </span>
@@ -67,23 +68,23 @@
                 @endif
 
                 @if(in_array('Routes',$allowed) || Auth::user()->is_superadmin == 1)
-                <li>   
+                <li>
                     <a href="{{route('tasks.index')}}">
-                        <i data-feather="package"></i>
+                        <i class="fe-package"></i>
                         <span> {{__('Routes')}} </span>
                     </a>
-                </li>    
+                </li>
                 @endif
 
 
-                
+
 
                 <li class="menu-title mt-2">{{__('Settings')}}</li>
 
                 @if(in_array('Profile',$allowed) || Auth::user()->is_superadmin == 1)
                 <li>
                     <a href="{{route('profile.index')}}">
-                        <i data-feather="user"></i>
+                        <i class="fe-user"></i>
                         <span> {{__('Profile')}} </span>
                     </a>
                 </li>
@@ -101,7 +102,7 @@
                 @if(in_array('Teams',$allowed) || Auth::user()->is_superadmin == 1)
                 <li>
                     <a href="{{route('team.index')}}">
-                        <i data-feather="users"></i>
+                        <i class="fe-users"></i>
                         <span> {{__('Teams')}} </span>
                     </a>
                 </li>
@@ -111,7 +112,7 @@
                 <li>
                     <a href="{{route('agent.index')}}">
                         <i class="fe-user-check"></i>
-                        <span> {{ Session::get('agent_name') ? Session::get('agent_name') : __('Agent') }}</span>
+                        <span> {{ __(getAgentNomenclature()) }}</span>
                     </a>
                 </li>
                 @endif
@@ -119,7 +120,7 @@
                 @if(in_array('Subscription',$allowed) || Auth::user()->is_superadmin == 1)
                 <li>
                     <a href="{{route('subscription.plans.driver')}}">
-                        <i class="fa fa-rocket"></i>
+                        <i class="fe-credit-card"></i>
                         <span>{{ __('Subscription') }}</span>
                     </a>
                 </li>
@@ -128,7 +129,7 @@
                 @if(in_array('Payout Requests',$allowed) || Auth::user()->is_superadmin == 1)
                 <li>
                     <a href="{{route('agent.payout.requests')}}">
-                        <i class="fa fa-search-dollar"></i>
+                        <i class="fe-dollar-sign"></i>
                         <span> {{ __('Payout Requests') }}</span>
                     </a>
                 </li>
@@ -156,7 +157,7 @@
                 @if(in_array('Auto Allocation',$allowed) || Auth::user()->is_superadmin == 1)
                 <li>
                     <a href="{{route('auto-allocation.index')}}">
-                        <i data-feather="git-branch"></i>
+                        <i class="fe-git-branch"></i>
                         <span> {{__('Auto Allocation')}} </span>
                     </a>
                 </li>
@@ -182,7 +183,7 @@
                 @if(in_array('Configure',$allowed) || Auth::user()->is_superadmin == 1)
                 <li>
                     <a href="#sidebarcms" data-toggle="collapse">
-                        <i class="fa fa-file-code"></i>
+                        <i class="fe-file-text"></i>
                         <span>{{ __("CMS") }}</span>
                     </a>
                     <div class="collapse" id="sidebarcms">
@@ -203,7 +204,7 @@
                                 </li>
                             @endif
 
-                            
+
                         </ul>
                     </div>
                 </li>
@@ -227,23 +228,23 @@
                 @if(in_array('Notifications',$allowed) || Auth::user()->is_superadmin == 1)
                  <li>
                     <a href="{{route('notifications.index')}}">
-                        <i data-feather="bell"></i>
+                        <i class="fe-bell"></i>
                         <span> {{__('Notifications')}} </span>
                     </a>
-                </li>  
+                </li>
                 @endif
-                
+
                 @if(in_array('ACL',$allowed) || Auth::user()->is_superadmin == 1)
                 <li>
                     <a href="{{route('subadmins.index')}}">
-                        <i data-feather="users"></i>
+                        <i class="fe-users"></i>
                         <span> {{__('Managers')}} </span>
                     </a>
                 </li>
                 @endif
-                </li> 
+                </li>
 
-              
+
 
               {{-- <li>
                     <a href="#">
@@ -251,34 +252,34 @@
                         <span> Tasks </span>
                     </a>
                 </li>
-                
+
                 <li>
                     <a href="{{route('tag.index')}}">
                         <i data-feather="rss"></i>
                         <span> Tags </span>
                     </a>
                 </li>
-                
+
                 <li>
                     <a href="{{route('manager.index')}}">
                         <i data-feather="users"></i>
                         <span> Managers </span>
                     </a>
-                </li> 
-                
+                </li>
+
                 <li>
                     <a href="{{url('modals')}}">
                         <i data-feather="users"></i>
                         <span> Modals </span>
                     </a>
                 </li> --}}
-                
+
             {{-- @if(env('APP_DEBUG'))
                 <li class="menu-title mt-5">Other Pages</li>
 
                 <li>
                     <a href="{{route('second', ['apps', 'calendar'])}}">
-                        <i data-feather="calendar"></i>
+                        <i class="fe-calendar"></i>
                         <span> Calendar </span>
                     </a>
                 </li>
@@ -329,7 +330,7 @@
                                 <a href="{{route('second', ['ecommerce', 'checkout'])}}">Checkout</a>
                             </li>
                         </ul>
-                    </div> 
+                    </div>
                  </li> --}}
 
                 {{-- <li>
@@ -594,7 +595,7 @@
                             </li>
                         </ul>
                     </div>
-                </li> 
+                </li>
 
                 <li>
                     <a href="#sidebarLayouts" data-toggle="collapse">
@@ -735,7 +736,7 @@
                         <i data-feather="gift"></i>
                         <span> Widgets </span>
                     </a>
-                </li> 
+                </li>
 
                 <li>
                     <a href="#sidebarIcons" data-toggle="collapse">
@@ -771,8 +772,8 @@
                             </li>
                         </ul>
                     </div>
-                </li> 
-                
+                </li>
+
                 <li>
                     <a href="#sidebarForms" data-toggle="collapse">
                         <i data-feather="bookmark"></i>
