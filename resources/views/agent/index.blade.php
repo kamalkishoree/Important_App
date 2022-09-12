@@ -599,63 +599,128 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                         
                         </form>`;
 
-                    var EditSlotHtml = `<form class="needs-validation" name="slot-form" id="update-event" method="post">
-                    @csrf
-                        <input type="hidden" name="slot_day_id" id="SlotDayid" value="" >
-                        <input type="hidden" name="slot_id" id="SlotId" value="" >
-                        <input type="hidden" name="slot_type" id="SlotType" value="" >
-                        <input type="hidden" name="old_slot_type" id="SlotTypeOld" value="" >
-                        <input type="hidden" name="slot_date" id="SlotDate" value="" >
-                    <div class="row mb-2">
-                        <div class="col-12">
-                            <div class="form-group">
-                                <label class="control-label">{{ __("Start Time(24 hours format)") }}</label>
-                                <input class="form-control" placeholder={{ __("Start Time") }} type="time" name="start_time" id="edit_start_time" required />
-                            </div>
-                        </div>
-                        <div class="col-12">
-                            <div class="form-group">
-                                <label class="control-label">{{ __("End Time(24 hours format)") }}</label>
-                                <input class="form-control" placeholder={{ __("End Time") }} type="time" name="end_time" id="edit_end_time" required />
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row mb-2 ">
-                        <div class="col-12 slotForDiv">
-                            {!! Form::label('title', __('Slot For'),['class' => 'control-label']) !!}
-                            <div class="form-group">
-                                <ul class="list-inline">
-                                    <li class="d-block pl-1 ml-3 mb-1 custom-radio-design">
-                                        <input type="radio" class="custom-control-input check slotTypeEdit" id="edit_slotDay" name="slot_type_edit" value="day" checked="">
-                                        <label class="custom-control-label" id="edit_slotlabel" for="edit_slotDay">Days</label>
-                                    </li>
-                                    <li class="d-block pl-1 ml-1 mb-1 custom-radio-design"> &nbsp;&nbsp;&nbsp;&nbsp;
-                                        <input type="radio" class="custom-control-input check slotTypeEdit" id="edit_slotDate" name="slot_type_edit" value="date">
-                                        <label class="custom-control-label" for="edit_slotDate">Date</label>
-                                    </li>
-                                </ul>
+                    var EditSlotHtml = `<form class="needs-validation" name="slot-form" id="update-event" action="" method="post">
+                            @csrf
+                            <input type="hidden" name="slot_day_id" id="slot_day_id" value="" >
+                            <input type="hidden" name="slot_id" id="edit_slot_id" value="" >
+                            <input type="hidden" name="edit_booking_type" id="edit_booking_type" value="" >
+                            <input type="hidden" name="old_slot_type" id="edit_slot_type_old" value="" >
+                            <input type="hidden" name="slot_date" id="edit_slot_date" value="" >
+                            <input type="hidden" name="blocktime" id="edit_blocktime" value="" >
+                            <input type="hidden" name="blocktime" id="edit_recurring" value="" >
+                            <div class="row mb-2">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label class="control-label">{{ __("Start/End Date") }}</label>
 
-                            </div>
-                        </div>
-                    </div>
+                                        <input id="blocktime" class="form-control" autofocus>
+                                    </div>
+                                </div>
+                                
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="control-label">{{ __("Start Time(24 hours format)") }}</label>
+                                            <input class="form-control" placeholder="Start Time" type="time" name="start_time" id="edit_start_time" required />
+                                        </div>
+                                    </div>
 
-                    <div class="row forDateEdit" style="display: none;">
-                        <div class="col-md-12" >
-                            <div class="form-group">
-                                <label class="control-label">{{ __('Slot Date') }}</label>
-                                <input class="form-control date-datepicker" placeholder="Select Date" type="text" name="slot_date" id="edit_slot_date" required />
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="control-label">{{ __("End Time(24 hours format)") }}</label>
+                                            <input class="form-control" placeholder="End Time" type="time" name="end_time" id="edit_end_time" required />
+                                        </div>
+                                    </div>
+                                
+                            
+                                </div>
+                                <div class="row memo">
+                                    <div class="col-md-6 slot_type">
+                                        <label class="d-block">Slot Type</label>
+                                            <select id="edit_booking_type">
+                                                <option selected value="working_hours">Working hours</option>
+                                                <option value="blocked">Block</option>
+                                            </select>
+                                    </div>
+                                    <div class="col-md-6 slotForDiv">
+                                        {!! Form::label('title', 'Recurring',['class' => 'control-label']) !!}
+                                    <div class="form-group">
+                                      
+                                        <ul class="list-inline">
+                                            <li class="d-block pl-1 ml-3 mb-1 custom-radio-design">
+                                                <input type="checkbox" class="custom-control-input check recurring" id="recurring" name="recurring">
+                                                <label class="custom-control-label" id="recurring" for="recurring">Yes</label>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    </div>
+                                </div>
+
+                                <div class="row memo">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label class="d-block pt-2">Memo</label>
+                                            <textarea placeholder="" id="edit_memo" class="form-control memo"></textarea>
+                                         </div>
+                                    </div>
+                                </div>
+                             
+                            <div class="row mb-2 weekDays" style="display:none">
+                                <div class="col-md-12">
+                                    <div class="">
+                                    {!! Form::label('title', __('Select days of week'),['class' => 'control-label']) !!}
+                                    </div>
+                                    <div class="checkbox checkbox-success form-check pl-0 mb-1">
+                                        <input name="week_day[]" type="checkbox" id="day_1" value="1">
+                                        <label for="day_1"> {{ __("Sunday") }} </label>
+                                    </div>
+                                    <div class="checkbox checkbox-success form-check pl-0 mb-1">
+                                        <input name="week_day[]" type="checkbox" id="day_2" value="2">
+                                        <label for="day_2"> {{ __('Monday') }} </label>
+                                    </div>
+                                    <div class="checkbox checkbox-success form-check pl-0 mb-1">
+                                        <input name="week_day[]" type="checkbox" id="day_3" value="3">
+                                        <label for="day_3"> {{ __("Tuesday") }} </label>
+                                    </div>
+                                    <div class="checkbox checkbox-success form-check pl-0 mb-1">
+                                        <input name="week_day[]" type="checkbox" id="day_4" value="4">
+                                        <label for="day_4"> {{ __("Wednesday") }} </label>
+                                    </div>
+                                    <div class="checkbox checkbox-success form-check pl-0 mb-1">
+                                        <input name="week_day[]" type="checkbox" id="day_5" value="5">
+                                        <label for="day_5"> {{ __('Thursday') }} </label>
+                                    </div>
+                                    <div class="checkbox checkbox-success form-check pl-0 mb-1">
+                                        <input name="week_day[]" type="checkbox" id="day_6" value="6">
+                                        <label for="day_6"> {{ __('Friday') }} </label>
+                                    </div>
+                                    <div class="checkbox checkbox-success form-check pl-0 mb-1">
+                                        <input name="week_day[]" type="checkbox" id="day_7" value="7">
+                                        <label for="day_7"> {{ __('Saturday') }} </label>
+                                    </div>
+                                </div>
+                            </div>
+                        
+                            <div class="row forDate" style="display: none;">
+                                <div class="col-md-12" >
+                                    <div class="form-group">
+                                        <label class="control-label">{{ __("Slot Date") }}</label>
+                                        <input class="form-control date-datepicker" placeholder={{ __("Select Date") }} type="text" name="slot_date" id="slot_date" required />
+                                    </div>
+                                </div>
+                        
                             </div>
                             <input  name="edit_type" type="hidden" id="edit_type" value="">
                             <input  name="edit_day" type="hidden" id="edit_day" value="">
                             <input name="edit_type_id" type="hidden" id="edit_type_id" value="">
-                        </div>
-                    </div>
-                    <div class="row mt-2">
-                        <div class="col-12 mb-2">
-                            <button type="button" class="btn btn-danger w-100" id="deleteSlotBtn">{{ __("Delete Slot") }}</button>
-                        </div>
-                    </div>
-                </form>`;
+                            <div class="row mt-2">
+                                <div class="col-12 mb-2">
+                                    <button type="button" class="btn btn-danger w-100" id="deleteSlotBtn">{{ __("Delete Slot") }}</button>
+                                </div>
+                            </div>
+                        
+                        </form>`;
 </script>
 @endif
 @endsection
