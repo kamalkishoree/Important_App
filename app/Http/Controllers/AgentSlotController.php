@@ -263,7 +263,6 @@ class AgentSlotController extends Controller
         $showData = array();
         $count = 0;
 
-
             if($AgentRoster){
                 foreach ($AgentRoster as $k => $v) {
                     $a_date = date('Y-m-d', strtotime($v->schedule_date));
@@ -282,6 +281,10 @@ class AgentSlotController extends Controller
                     $showData[$count]['type'] = 'date';
                     $showData[$count]['roster_id'] = $v->id;
                     $showData[$count]['slot_id'] = $v->slot_id;
+                    $showData[$count]['schedule_date'] = $v->schedule_date;
+                    $showData[$count]['memo'] = $v->memo;
+                    $showData[$count]['booking_type'] = $v->booking_type;
+                    $showData[$count]['agent_id'] = $v->agent_id;
                     $count++;
                     
                 }

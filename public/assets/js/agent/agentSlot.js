@@ -245,6 +245,7 @@ $(function(){
                             var days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
                             var slotDayList = [];
                             var events = [];
+                            console.log(response);
                             $.each(response, function(index, data){
                                 var slotDay = parseInt(moment(data.start).format('d')) + 1;
                                     var slotStartTime = moment(data.start).format('h:mm A');
@@ -271,10 +272,14 @@ $(function(){
                                     color: data.color,
                                     type_id: data.type_id,
                                     slot_id: data.slot_id,
-                                    slot_dine_in: data.slot_dine_in,
-                                    slot_takeaway: data.slot_takeaway,
-                                    slot_delivery: data.slot_delivery,
-                                    service_area: data.service_area,
+                                    schedule_date: data.memo,
+                                    memo:data.memo,
+                                    booking_type:data.booking_type,
+                                    agent_id:agent_id
+                                   // slot_dine_in: data.slot_dine_in,
+                                    // slot_takeaway: data.slot_takeaway,
+                                    // slot_delivery: data.slot_delivery,
+                                    // service_area: data.service_area,
                                 });
                             });
                             successCallback(events);
@@ -304,10 +309,12 @@ $(function(){
                             }
                             return { start_time: start_time, end_time: end_time, edit_slot_date:edit_slot_date}
                         },onOpen: function() {
+                            initDatetimeRangePicker();
                             // var save_slot_url = `/agent/slot/${agent_id}`
                             // $('#slot-event').setAttribute('action',save_slot_url);
                         }
                       }).then(async (result) => {
+                        console.log(result);
                         var formData = {
                             start_time:result.value.start_time,
                             end_time:result.value.end_time,
@@ -338,15 +345,26 @@ $(function(){
     
                     // Delete Slot Form
                     /**storage */
-                        dispatcherStorage.setStorageSingle('SlotDayid',ev.event.extendedProps.type_id)
-                        dispatcherStorage.setStorageSingle('SlotId',ev.event.extendedProps.slot_id);
-                        dispatcherStorage.setStorageSingle('SlotType',ev.event.extendedProps.type);
-                        dispatcherStorage.setStorageSingle('SlotTypeOld',ev.event.extendedProps.type);
-                        dispatcherStorage.setStorageSingle('edit_type',ev.event.extendedProps.type);
-                        dispatcherStorage.setStorageSingle('edit_day',day);
+                    console.log(ev.event);
+                        dispatcherStorage.setStorageSingle('slot_day_id',ev.event.extendedProps.type_id)
+                        dispatcherStorage.setStorageSingle('edit_slot_id',ev.event.extendedProps.slot_id);
+                        dispatcherStorage.setStorageSingle('edit_booking_type',ev.event.extendedProps.booking_type);
+                        //dispatcherStorage.setStorageSingle('edit_slot_date',ev.event.extendedProps.type);
+                        dispatcherStorage.setStorageSingle('edit_blocktime',ev.event.extendedProps.blocktime);
+                        dispatcherStorage.setStorageSingle('edit_recurring',ev.event.extendedProps.recurring);
                         dispatcherStorage.setStorageSingle('edit_type_id',ev.event.extendedProps.type_id);
+                        dispatcherStorage.setStorageSingle('edit_slot_type_old',ev.event.extendedProps.type);
+
+
+                        // <input type="hidden" name="slot_day_id" id="slot_day_id" value="" >
+                        // <input type="hidden" name="slot_id" id="edit_slot_id" value="" >
+                        // <input type="hidden" name="edit_booking_type" id="edit_booking_type" value="" >
+                        // <input type="hidden" name="old_slot_type" id="edit_slot_type_old" value="" >
+                        // <input type="hidden" name="slot_date" id="edit_slot_date" value="" >
+                        // <input type="hidden" name="blocktime" id="edit_blocktime" value="" >
+                        // <input type="hidden" name="blocktime" id="edit_recurring" value="" >
                     /**storage */
-                    document.getElementById('SlotDayid').value = ev.event.extendedProps.type_id;
+                    document.getElementById('slot_day_id').value = ev.event.extendedProps.type_id;
                     document.getElementById('SlotId').value = ev.event.extendedProps.slot_id;
                     document.getElementById('SlotType').value = ev.event.extendedProps.type;
                     document.getElementById('SlotTypeOld').value = ev.event.extendedProps.type;
