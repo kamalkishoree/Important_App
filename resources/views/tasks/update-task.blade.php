@@ -454,7 +454,17 @@ $task_type_array = [__('Pickup'), __('Drop-Off'), __('Appointment')];
                     <div class="row">
                         <div class="col-md-12">
                             <h4 class="header-title mb-2">{{__("Order Tracking")}}</h4>
-                                                         
+                            <div class="row no-gutters">
+                                <div class="col-12 mb-2">
+                                <div class="site_link position-relative">
+                                    <a href="{{url('/order/tracking/'.Auth::user()->code.'/'.$task->unique_id.'')}}" target="_blank"><span id="pwd_spn" class="password-span">{{url('/order/tracking/'.Auth::user()->code.'/'.$task->unique_id.'')}}</span></a>
+                                    <label class="copy_link float-right" id="cp_btn" title="copy">
+                                        <img src="{{ URL::to('/assets/icons/domain_copy_icon.svg') }}" alt="">
+                                        <span class="copied_txt" id="show_copy_msg_on_click_copy" style="display:none;">{{__('Copied')}}</span>
+                                    </label>
+                                </div>
+                                </div>
+                            </div>                  
                             <div class="row no-gutters">
                                 <div class="col-12">
                                     <div class="map_box">

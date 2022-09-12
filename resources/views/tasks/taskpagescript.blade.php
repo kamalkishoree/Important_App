@@ -9,6 +9,16 @@
             $('#routes-listing-status').val('unassigned');
         }
 
+        $(document).on('click', '.cp_btn', function() {
+            var copyText = document.getElementById("pwd_spn");
+            // Select the text field
+            copyText.select();
+            copyText.setSelectionRange(0, 99999); // For mobile devices
+
+            // Copy the text inside the text field
+            navigator.clipboard.writeText(copyText.text);
+        })
+
         initializeRouteListing();
         function initializeRouteListing(){
             $('.agents-datatable').DataTable({
@@ -91,13 +101,6 @@
                         });
                         return routes;
                     }},
-                    /*{data: 'track_url', name: 'track_url', orderable: false, searchable: false, "mRender": function ( data, type, full ) {
-                        var trackUrl = full.track_url;
-                        return '<a onclick="window.open(this.href,"_blank");return false;" href="'+trackUrl+'">'+'{{__("Track")}}'+'</a>';
-                    }},
-                     {data: 'track_url', name: 'track_url', orderable: false, searchable: false, "mRender": function ( data, type, full ) {
-                        return '<button class="showTaskProofs btn btn-primary-outline action-icon" value="'+full.id+'"><i class="fe-layers"></i></button>';
-                    }}, */
                     {data: 'order_cost', name: 'order_cost', orderable: false, searchable: false, "mRender": function ( data, type, full ) {
                         return '<button class="showaccounting btn btn-primary-outline action-icon setcolor" value="'+full.id+'">'+full.order_cost+'</button>';
                     }},
@@ -106,7 +109,6 @@
                 ];
             }else{
                 return [
-                    // {data: 'order_number', name: 'order_number', orderable: true, searchable: false},
                     {data: 'customer_id', name: 'customer_id', orderable: true, searchable: false},
                     {data: 'order_number', name: 'order_number', orderable: true, searchable: false},
                     {data: 'customer_name', name: 'customer_name', orderable: true, searchable: false},
