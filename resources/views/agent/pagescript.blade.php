@@ -239,14 +239,12 @@
         }
         var mobile_number = '';
 
-        // $('#add-agent-modal .xyz').val(mobile_number.getSelectedCountryData().dialCode);
         $(document).on("change", "#add-agent-modal .xyz", function(e) {
             var phonevalue = $('.xyz').val();
             $("#countryCode").val(mobile_number.getSelectedCountryData().dialCode);
         });
 
         function phoneInput() {
-            // console.log('phone working');
             var input = document.querySelector(".xyz");
 
             var mobile_number_input = document.querySelector(".xyz");
@@ -271,7 +269,7 @@
 
         jQuery('#onfoot').click();
 
-        $(document).on('click', '.click', function() { //alert('a');
+        $(document).on('click', '.click', function() {
             var radi = $(this).find('input[type="radio"]');
             radi.prop('checked', true);
             var check = radi.val();
