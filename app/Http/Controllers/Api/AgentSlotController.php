@@ -2,18 +2,19 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Api\BaseController;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Carbon\Carbon;
-use App\Model\{Agent, AgentSlot,AgentSlotRoster,AgentLog, AllocationRule, Client, ClientPreference, Cms, Order, Task, TaskProof, Timezone, User, DriverGeo, Geo, TagsForAgent};
-use Validator;
 use DB;
-use Illuminate\Support\Facades\Storage;
-use App\Model\Roster;
 use Config;
-use Illuminate\Support\Facades\URL;
+use Validator;
+use Carbon\Carbon;
+use App\Model\Roster;
+use Illuminate\Http\Request;
 use GuzzleHttp\Client as GClient;
+use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
+use App\Http\Controllers\Api\BaseController;
+use App\Model\{Agent, AgentSlot,AgentSlotRoster,AgentLog, AllocationRule, Client, ClientPreference, Cms, Order, Task, TaskProof, Timezone, User, DriverGeo, Geo, TagsForAgent};
+
 use App\Http\Controllers\Api\AgentController;
 
 class AgentSlotController extends BaseController
@@ -76,7 +77,11 @@ class AgentSlotController extends BaseController
             $geoagents = $geoagents->whereIn('id', $geoagents_ids)->where(["is_available" => 1, "is_approved" => 1])->orderBy('id', 'DESC')->get();
        
             foreach( $geoagents as $agent){
-               pr( $agent->slots->first());
+                $StartTime = $agent->slots->first() ? $agent->slots->first()->start_time : '';
+                $EndTime   = $agent->slots->first() ? $agent->slots->first()->end_time : '';
+                $Duration  = $request->service_time ?? 60;
+                $slots =  $this->SplitTime($myDate, $StartTime, $EndTime, $Duration, $delayMin = 0);
+                pr($slots);
             }
             
             pr( $geoagents->toArray());
@@ -93,6 +98,43 @@ class AgentSlotController extends BaseController
         //     ], 400);
         // }
 
+    }
+    public function SplitTime($myDate, $StartTime, $EndTime, $Duration="60", $delayMin = 0)
+    {
+        $Duration = (($Duration==0)?'60':$Duration);
+
+        $timezoneset = 'Asia/Kolkata';
+        $cr = Carbon::now()->addMinutes($delayMin);
+      
+      
+        $nowT = strtotime($cr);
+        $nowA = Carbon::createFromFormat('Y-m-d H:i:s', $myDate.' '.$StartTime);
+        $nowS = Carbon::createFromFormat('Y-m-d H:i:s', $nowA)->timestamp;
+        $nowE = Carbon::createFromFormat('Y-m-d H:i:s', $myDate.' '.$EndTime)->timestamp;
+        if ($nowT > $nowE) {
+            return [];
+        } elseif ($nowT>$nowS) {
+            $StartTime = date('H:i', strtotime($now));
+        } else {
+            $StartTime = date('H:i', strtotime($nowA));
+        }
+    
+        $ReturnArray = array();
+        $StartTime = strtotime($StartTime); //Get Timestamp
+        $EndTime = strtotime($EndTime); //Get Timestamp
+        $AddMins = $Duration * 60;
+        $endtm = 0;
+    
+        while ($StartTime <= $EndTime) {
+            $endtm = $StartTime + $AddMins;
+            if ($endtm>$EndTime) {
+                $endtm = $EndTime;
+            }
+            $ReturnArray[] = date("G:i", $StartTime).' - '.date("G:i", $endtm);
+            $StartTime += $AddMins;
+            $endtm = 0;
+        }
+        return $ReturnArray;
     }
 
        
