@@ -1984,7 +1984,7 @@ body[dir="rtl"] .agent-listing tbody td{ padding: 15px 10px 10px 15px;}
 }
 
 .edit-icon-float-right {
-   
+
     float: right;
     border-radius: 2px;
     background: #6658ddf0;
@@ -1994,7 +1994,7 @@ body[dir="rtl"] .agent-listing tbody td{ padding: 15px 10px 10px 15px;}
 }
 
 .edit-icon-float-right:hover {
-   
+
     float: right;
     border-radius: 2px;
     background: #7a6fe0f0;
@@ -2005,4 +2005,12 @@ body[dir="rtl"] .agent-listing tbody td{ padding: 15px 10px 10px 15px;}
 /* 6/9/22 */
 .alNavTopMinus {
     margin-top: -35px;
+}
+@media(max-width: 767px){
+    .alNavTopMinus {
+        margin-top: 10px;
+    }
+    .card-body .table-responsive #agent-listing_wrapper {
+        padding: 50px 0 0 0 !important;
+    }
 }
