@@ -80,7 +80,7 @@
                         if(full.status=='unassigned')
                         {
                             var selectbox= '<select name="agent_name_id" id="agent_name_id" data-id="'+full.id+'" class="form-control select_agent">';
-                            selectbox+='<option value="">---Select {{__(getAgentNomenclature()) }}---</option>';
+                            selectbox+='<option value=""> Select {{__(getAgentNomenclature()) }} </option>';
                             @foreach ($agents as $item)
                             @php
                                 $checkAgentActive = ($item->is_available == 1) ? ' ('.__('Online').')' : ' ('.__('Offline').')';
