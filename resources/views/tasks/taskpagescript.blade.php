@@ -9,16 +9,6 @@
             $('#routes-listing-status').val('unassigned');
         }
 
-        $(document).on('click', '.cp_btn', function() {
-            var copyText = document.getElementById("pwd_spn");
-            // Select the text field
-            copyText.select();
-            copyText.setSelectionRange(0, 99999); // For mobile devices
-
-            // Copy the text inside the text field
-            navigator.clipboard.writeText(copyText.text);
-        })
-
         initializeRouteListing();
         function initializeRouteListing(){
             $('.agents-datatable').DataTable({
@@ -81,18 +71,20 @@
                         return '<input type="checkbox" class="single_driver_check" name="driver_id[]" id="single_driver" value="'+full.id+'">';
                     }},
                     
-                    {data: 'customer_id', name: 'customer_id', orderable: true, searchable: false},
                     {data: 'order_number', name: 'order_number', orderable: true, searchable: false , "mRender": function ( data, type, full ) {
-                        if(full.request_type=='D')
-                        return full.order_number+' (Delivery)';
+                        //if(full.request_type=='D')
+                        return full.order_number;//+' (Delivery)';
                         
-                        return full.order_number+' (Pickup)';
-
+                        //return full.order_number+' (Pickup)';
                     }},
+                    {data: 'customer_id', name: 'customer_id', orderable: true, searchable: false},
                     {data: 'customer_name', name: 'customer_name', orderable: true, searchable: false},
                     {data: 'phone_number', name: 'phone_number', orderable: true, searchable: false},
                     {data: 'agent_name', name: 'agent_name', orderable: true, searchable: false},
-                    {data: 'order_time', name: 'order_time', orderable: true, searchable: false},
+                    {data: 'order_time', name: 'order_time', orderable: true, searchable: false, "mRender": function ( data, type, full ) {
+                        
+                        return '<div class="datetime_div"><i class="mdi mdi-av-timer"></i> '+full.order_time+'</div>';
+                    }},
                     {data: 'short_name', name: 'short_name', orderable: false, searchable: false, "mRender": function ( data, type, full ) {
                         var shortName = JSON.parse(full.short_name.replace(/&quot;/g,'"'));
                         var routes = '';

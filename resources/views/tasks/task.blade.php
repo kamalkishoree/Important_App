@@ -51,6 +51,17 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
     .btn-label,.btn-label:focus,.btn-label:active {
         background-color: rgb(102 88 221) !important;
     }
+    .datetime_div{
+    display:flex;
+    align-items: center;
+    min-width:162px;
+    }
+
+    .datetime_div i{
+    font-size:23px;
+    padding-right:5px;
+    }
+    
 </style>
 <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
@@ -198,9 +209,8 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                         @if (!isset($status) || $status == 'unassigned')
                                         <th><input type="checkbox" class="all-driver_check" name="all_driver_id" id="all-driver_check"></th>
                                         @endif
-                                        {{-- <th class="sort-icon">{{__("Order ID")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th> --}}
-                                        <th class="sort-icon">{{__("Customer ID")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                         <th class="sort-icon">{{__("Order Number")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
+                                        <th class="sort-icon">{{__("Customer ID")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                         <th class="sort-icon">{{__("Customer")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                         <th class="sort-icon">{{__("Phone.No")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                         <th class="sort-icon">{{__(getAgentNomenclature()) }} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>

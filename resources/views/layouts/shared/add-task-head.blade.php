@@ -390,7 +390,16 @@
 
                 $('#task-modal-header .edit-icon-float-right').on('click', function() {
                     $('#task-modal-header .meta_data_task_div').toggle();
+                    if($(this).find('i').hasClass('mdi mdi-chevron-down')){
+                        $(this).find('i').removeClass('mdi mdi-chevron-down');
+                        $(this).find('i').addClass('mdi mdi-chevron-up');
+                    }else{
+                        $(this).find('i').removeClass('mdi mdi-chevron-up');
+                        $(this).find('i').addClass('mdi mdi-chevron-down');
+                    }
                 });
+
+                
             },
             error: function (data) {
             }

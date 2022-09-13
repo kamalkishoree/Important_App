@@ -243,7 +243,6 @@ class TaskController extends BaseController
         $preference = ClientPreference::where('id', 1)->first(['theme','date_format','time_format']);
 
         return Datatables::of($orders)
-                
                 ->addColumn('customer_id', function ($orders) use ($request) {
                     $customerID = !empty($orders->customer->id)? $orders->customer->id : '';
                     $length = strlen($customerID);
@@ -265,6 +264,9 @@ class TaskController extends BaseController
                     $agentName   = !empty($orders->agent->name)? $orders->agent->name.$checkActive : '';
                     return $agentName;
                 })
+                ->addColumn('order_number', function ($orders) use ($request) {
+                    return '<a href="'.route('tasks.edit', $orders->id).'" title="Edit Route">'.$orders->order_number.'</a>';
+                })
                 ->addColumn('order_time', function ($orders) use ($request, $timezone, $preference) {
                     $tz              = new Timezone();
                     $client_timezone = $tz->timezone_name($timezone);
@@ -274,7 +276,8 @@ class TaskController extends BaseController
                         
                         $order->setTimezone($client_timezone);
                         $preference->date_format = $preference->date_format ?? 'm/d/Y';
-                        return date(''.$preference->date_format.' '.$timeformat.'', strtotime($order));
+                        $convertabledate = date(''.$preference->date_format.' '.$timeformat.'', strtotime($order));
+                        return $convertabledate.'<br/>'.$order->diffForHumans();
                     else:
                         return '';
                     endif;
@@ -308,10 +311,7 @@ class TaskController extends BaseController
                     }
                     return json_encode($routes, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_UNESCAPED_UNICODE);
                 })
-                ->editColumn('track_url', function ($orders) use ($request, $user) {
-                    $trackUrl = url('/order/tracking/'.$user->code.'/'.$orders->unique_id.'');
-                    return $trackUrl;
-                })
+                
                 ->editColumn('updated_at', function ($orders) use ($request, $timezone, $preference) {
                     $tz              = new Timezone();
                     $client_timezone = $tz->timezone_name($timezone);
@@ -327,13 +327,6 @@ class TaskController extends BaseController
                                         <div class="set-size">
                                             <a href1="#" href="'.route('tasks.edit', $orders->id).'" class="action-icon editIconBtn mr-2" title="Edit Route">
                                                 <i class="mdi mdi-square-edit-outline"></i>
-                                            </a>
-                                        </div>
-                                    </div>
-                                    <div class="inner-div">
-                                        <div class="set-size">
-                                            <a href1="#" href="'.route('tasks.show', $orders->id).'" class="action-icon editIconBtn mr-2" title="Route Detail">
-                                                <i class="fe-eye"></i>
                                             </a>
                                         </div>
                                     </div>';
@@ -367,7 +360,7 @@ class TaskController extends BaseController
                         });
                     }
                 }, true)
-                
+                ->rawColumns(['action', 'order_number', 'order_time'])
                 ->make(true);
     }
 
@@ -547,7 +540,6 @@ class TaskController extends BaseController
             $settime = ($request->task_type=="schedule") ? $request->schedule_time : Carbon::now()->toDateTimeString();
             $notification_time = ($request->task_type=="schedule")? Carbon::parse($settime . $auth->timezone ?? 'UTC')->tz('UTC') : Carbon::now()->toDateTimeString();
 
-            
 
             //here order save code is started
 
@@ -621,7 +613,6 @@ class TaskController extends BaseController
                         ['latitude' => $location->latitude, 'longitude' => $location->longitude, 'address' => $location->address,'customer_id'  => $cus_id],
                         $newloc
                     );
-                // $location = Location::create($newloc);
                 }
 
                 $loc_id = $location->id;
@@ -808,6 +799,7 @@ class TaskController extends BaseController
                     $schduledata['allocation']        = $allocation;
                     $schduledata['database']          = $auth;
                     scheduleNotification::dispatch($schduledata)->delay(now()->addMinutes($finaldelay));
+                    DB::commit();
                     return response()->json(['status' => "Success", 'message' => 'Route created Successfully']);
                 }
             }

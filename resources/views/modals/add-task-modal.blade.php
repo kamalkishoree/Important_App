@@ -85,7 +85,7 @@
                         <input type="hidden" id="check-appointment-barcode" value="{{ (!empty($task_proofs[2]->barcode_requried) ? $task_proofs[2]->barcode_requried : 0)}}">
                     </div>
 
-                    <h4 class="header-title mb-2">{{__("Meta Data")}} <a href="#edit_desc" class="edit-icon-float-right"> <i class="mdi mdi-square-edit-outline"></i></a></h4>
+                    <h4 class="header-title mb-2">{{__("Meta Data")}} <a href="javascript:void(0)" class="edit-icon-float-right"> <i class="mdi mdi-chevron-down"></i></a></h4>
                     <div class="meta_data_task_div" style="display:none;">
                         <div class="row mb-2">
                             <div class="col-md-12" id="make_modelInput">

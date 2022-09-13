@@ -7,7 +7,7 @@
 @endsection
 @php
 use Carbon\Carbon;
-
+$imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain/';
 $task_type_array = [__('Pickup'), __('Drop-Off'), __('Appointment')];
 @endphp
 @section('content')
@@ -135,8 +135,8 @@ $task_type_array = [__('Pickup'), __('Drop-Off'), __('Appointment')];
                             </div>
                             
 
-                            <h4 class="header-title mb-2">{{__("Meta Data")}} <a href="#edit_desc" class="edit-icon-float-right"> <i class="mdi mdi-square-edit-outline"></i></a></h4>
-                            <div class="meta_data_task_div" style="display:{{($task->task_description!='' || count($images) > 0)?'block':'none'}};">
+                            <h4 class="header-title mb-2">{{__("Meta Data")}} <a href="javascript:void(0)" class="edit-icon-float-right"> <i class="mdi mdi-chevron-down"></i></a></h4>
+                            <div class="meta_data_task_div" style="display:{{($task->task_description!='' || $task->images_array!='' > 0)?'block':'none'}};">
                                 <div class="row mb-2">
                                     <div class="col-md-12" id="make_modelInput">
                                         {!! Form::hidden('recipient_phone', null, ['class' => 'form-control rec', 'placeholder' =>
@@ -455,7 +455,7 @@ $task_type_array = [__('Pickup'), __('Drop-Off'), __('Appointment')];
                         <div class="col-md-12">
                             <h4 class="header-title mb-2">{{__("Order Tracking")}}</h4>
                             <div class="row no-gutters">
-                                <div class="col-12 mb-2">
+                                <div class="col-12 mb-4">
                                 <div class="site_link position-relative">
                                     <a href="{{url('/order/tracking/'.Auth::user()->code.'/'.$task->unique_id.'')}}" target="_blank"><span id="pwd_spn" class="password-span">{{url('/order/tracking/'.Auth::user()->code.'/'.$task->unique_id.'')}}</span></a>
                                     <label class="copy_link float-right" id="cp_btn" title="copy">
@@ -483,7 +483,7 @@ $task_type_array = [__('Pickup'), __('Drop-Off'), __('Appointment')];
                                                     <img src="{{ 'https://imgproxy.royodispatch.com/insecure/fit/300/100/sm/0/plain/' . Storage::disk('s3')->url($order->profile_picture ?? 'assets/client_00000051/agents605b6deb82d1b.png/XY5GF0B3rXvZlucZMiRQjGBQaWSFhcaIpIM5Jzlv.jpg') }}"
                                                         alt="" />
                                                 </div>
-                                                <h4>{{ isset($task->name) ? $order->name :__(getAgentNomenclature().' not assigned yet') }}</h4>
+                                                <h5>{{ isset($task->name) ? $order->name :__(getAgentNomenclature().' not assigned yet') }}</h5>
                                                 <p>{{ $task->phone_number }}</p>
                                             </div>
                                             <span class="col-lg-12 attrbute_classes">
@@ -571,14 +571,45 @@ $task_type_array = [__('Pickup'), __('Drop-Off'), __('Appointment')];
                                             </div>
                                             @endif
                                         @else
-                                            <div class="col-12 text-center"><h5>{{__('No Proof Found')}}</h5></div>
+                                            <div class="col-12 text-center">{{__('No Proof Found')}}</div>
                                         @endif
+                                        </div>
                                     </div>
                                 </div>
                                 @endforeach
                             </div>
                         </div>
                     </div>
+                </div>
+
+
+                <div class="card-box rejection-box style-4">
+                    <h4 class="header-title mb-2">{{__('Rejections')}}</h4>
+                    @if(!empty($task->task_rejects) && count($task->task_rejects) > 0)
+                    @php
+                    $timeformat = $preference->time_format == '24' ? 'H:i:s':'g:i a';
+                    $preference->date_format = $preference->date_format ?? 'd-M-Y';
+                    @endphp
+
+                    @foreach($task->task_rejects as $task_reject)
+                    @php
+                    $rejection_time = Carbon::createFromFormat('Y-m-d H:i:s', $task_reject->created_at, 'UTC');
+                    $rejection_time->setTimezone($client_timezone);
+                    @endphp
+                    <div class="row align-items-center mb-2">
+                        <div class="col-2 pr-0 pic-left">
+                            <img src="{{ !empty($task_reject->agent->profile_picture) ? $imgproxyurl.Storage::disk('s3')->url($task_reject->agent->profile_picture) : URL::to('/assets/images/user_dummy.jpg') }}" alt="{{__('contact-img')}}" title="{{__('contact-img')}}" class="rounded-circle avatar-sm">
+                        </div>
+                        <div class="col-10 pl-1">
+                            <h5 class="mb-1  mt-0 font-weight-normal">{{ (isset($task_reject->agent->name))?$task_reject->agent->name:'' }}</h5>
+                            <p class="mb-0">{{date(''.$preference->date_format.' '.$timeformat.'', strtotime($rejection_time))}}</p>
+                        </div>
+                    </div>
+
+                    @endforeach
+                    @else
+                    {{__('No rejection found')}}
+                    @endif
                 </div>
             </div>
         </div>
