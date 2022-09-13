@@ -70,17 +70,30 @@
                     {data: 'id', name: 'id', orderable: false, searchable: false, "mRender": function ( data, type, full ) {
                         return '<input type="checkbox" class="single_driver_check" name="driver_id[]" id="single_driver" value="'+full.id+'">';
                     }},
-                    
                     {data: 'order_number', name: 'order_number', orderable: true, searchable: false , "mRender": function ( data, type, full ) {
-                        //if(full.request_type=='D')
-                        return full.order_number;//+' (Delivery)';
-                        
-                        //return full.order_number+' (Pickup)';
+                        return full.order_number;
                     }},
                     {data: 'customer_id', name: 'customer_id', orderable: true, searchable: false},
                     {data: 'customer_name', name: 'customer_name', orderable: true, searchable: false},
                     {data: 'phone_number', name: 'phone_number', orderable: true, searchable: false},
-                    {data: 'agent_name', name: 'agent_name', orderable: true, searchable: false},
+                    {data: 'agent_name', name: 'agent_name', orderable: true, searchable: false, "mRender": function ( data, type, full ) {
+                        if(full.status=='unassigned')
+                        {
+                            var selectbox= '<select name="agent_name_id" id="agent_name_id" data-id="'+full.id+'" class="form-control select_agent">';
+                            selectbox+='<option value="">---Select {{__(getAgentNomenclature()) }}---</option>';
+                            @foreach ($agents as $item)
+                            @php
+                                $checkAgentActive = ($item->is_available == 1) ? ' ('.__('Online').')' : ' ('.__('Offline').')';
+                            @endphp
+                            selectbox+='<option value="{{$item->id}}">{{ ucfirst($item->name). $checkAgentActive}}</option>';
+                            @endforeach
+                            selectbox+='</select>';
+                            return selectbox;
+
+                        }else{
+                            return full.order_number;
+                        }
+                    }},
                     {data: 'order_time', name: 'order_time', orderable: true, searchable: false, "mRender": function ( data, type, full ) {
                         
                         return '<div class="datetime_div"><i class="mdi mdi-av-timer"></i> '+full.order_time+'</div>';
@@ -101,8 +114,10 @@
                 ];
             }else{
                 return [
+                    {data: 'order_number', name: 'order_number', orderable: true, searchable: false , "mRender": function ( data, type, full ) {
+                        return full.order_number;
+                    }},
                     {data: 'customer_id', name: 'customer_id', orderable: true, searchable: false},
-                    {data: 'order_number', name: 'order_number', orderable: true, searchable: false},
                     {data: 'customer_name', name: 'customer_name', orderable: true, searchable: false},
                     {data: 'phone_number', name: 'phone_number', orderable: true, searchable: false},
                     {data: 'agent_name', name: 'agent_name', orderable: true, searchable: false},
@@ -131,6 +146,48 @@
     function handleClick(myRadio) {
         $('#getTask').submit();
     }
+
+    $(document).on('change', '.select_agent', function() {
+        if($(this).val()!='')
+        {
+            var order_id = Array($(this).attr('data-id'));
+            $.ajax({
+                type: "POST",
+                url: '{{route("assign.agent")}}',
+                data: {_token: CSRF_TOKEN, orders_id: order_id, agent_id: $(this).val()},
+                success: function( msg ) {
+                    $.toast({ 
+                    heading:"Success!",
+                    text : "{{__(getAgentNomenclature()) }} assigned successfully.", 
+                    showHideTransition : 'slide', 
+                    bgColor : 'green',              
+                    textColor : '#eee',            
+                    allowToastClose : true,      
+                    hideAfter : 5000,            
+                    stack : 5,                   
+                    textAlign : 'left',         
+                    position : 'top-right'      
+                    });
+                    location.reload();
+                },
+                error: function(errors){
+                    $.toast({ 
+                    heading:"Error!",
+                    text : "{{__(getAgentNomenclature()) }} can not be assigned.", 
+                    showHideTransition : 'slide', 
+                    bgColor : 'red',              
+                    textColor : '#eee',            
+                    allowToastClose : true,      
+                    hideAfter : 5000,            
+                    stack : 5,                   
+                    textAlign : 'left',         
+                    position : 'top-right'      
+                    });
+                    location.reload();
+                }
+            });
+        }
+    });
 
     //this is for task detail pop-up
     $(document).on('click', '.showtasks', function() {
@@ -354,6 +411,7 @@
     $(document).on('click', '.showaccounting', function() {
         $('#assign_agent').modal('show');
     });
+
     function round(value, exp) {
         if (typeof exp === 'undefined' || +exp === 0)
             return Math.round(value);
