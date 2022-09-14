@@ -14,7 +14,11 @@
         cursor: move;
         margin-right: 0rem !important;
     }
-
+    .alFilterLocation button.btn.btn-blue.waves-effect.waves-light.openModal.mr-1 {
+        width: auto;
+        min-width: auto;
+        max-width: inherit;
+    }
     .table th,
     .table td,
     .table td {
