@@ -32,7 +32,7 @@
     </div>
     <!-- end Section title -->
     <div class="row mb-3">
-        <div class="col-md-4">
+        <div class="col-xl-3 col-md-4">
             <div class="card-box h-100">
                 <div class="row">
                     <div class="col-md-12">
@@ -150,7 +150,7 @@
             </div>
         </div>
         
-        <div class="col-md-4">
+        <div class="col-xl-3 col-md-4">
             <div class="card-box h-100">
                 <form method="POST" class="h-100" action="{{route('preference', Auth::user()->code)}}">
                     @csrf
@@ -187,7 +187,7 @@
                 </form>
             </div>
         </div>
-        <div class="col-md-4">
+        <div class="col-xl-3 col-md-4">
             <div class="card-box h-100">
                 <form method="POST" class="h-100" action="{{route('update.contact.us', Auth::user()->code)}}">
                     <div class="d-flex align-items-center justify-content-between mb-2">
@@ -237,7 +237,7 @@
         <form method="POST" action="{{route('task.proof')}}">
         @csrf
         <div class="row">
-            <div class="col-xl-12">
+            <div class="col-xl-9 col-md-12">
                 <div class="card-box">
                     <div class="d-flex align-items-center justify-content-between mb-2">
                         <h4 class="header-title mb-0">{{__('Task Completion Proofs')}}</h4>

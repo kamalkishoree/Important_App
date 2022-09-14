@@ -18,7 +18,7 @@
                 "processing": true,
                 "serverSide": true,
                 "responsive": true,
-                "iDisplayLength": 10,
+                "iDisplayLength": 20,
                 "paging": true,
                 "lengthChange" : true,
                 "searching": true,

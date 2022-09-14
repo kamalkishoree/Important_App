@@ -155,8 +155,10 @@ width: 100%;
                                             <p class="text-muted text-center mt-2 mb-0">{{__("Upload Dark Logo")}} </p>
                                         </div>
                                         <div class="col-md-4 upload_box">
-                                            <input type="file" class="dropify" data-plugins="dropify" name="favicon" data-default-file="{{ isset($preference->favicon) ? Storage::disk('s3')->url($preference->favicon) : '' }}" />
-                                            <p class="text-muted text-center mt-2 mb-0">{{__("Upload favicon")}} </p>
+                                            <div id="favicon_container">
+                                                <input type="file" class="dropify" data-plugins="dropify" name="favicon" data-default-file="{{ isset($preference->favicon) ? Storage::disk('s3')->url($preference->favicon) : '' }}" />
+                                                <p class="text-muted text-center mt-2 mb-0">{{__("Upload favicon")}} </p>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -385,6 +387,10 @@ width: 100%;
         $('#phone_number').focus(function() {
             $('#phone_number').css('color', '#6c757d');
         });
+    });
+    $(function() {
+        var height = $('#favicon_container').height();
+        $('#favicon_container').css('width', height+'px');
     });
 </script>
 @endsection

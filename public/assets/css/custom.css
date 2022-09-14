@@ -1182,8 +1182,7 @@ body .tagsinput .tag {
 
 
 .geo_middle {
-    /* height: calc(100vh - 400px); */
-    max-height: 200px;
+    max-height: 500px;
     overflow-y: auto;
     overflow-x: hidden;
     margin: 0 0 20px;

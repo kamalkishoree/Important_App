@@ -60,6 +60,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
     .datetime_div i{
     font-size:23px;
     padding-right:5px;
+    color:#3283f6;
     }
     
 </style>
