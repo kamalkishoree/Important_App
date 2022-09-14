@@ -52,7 +52,7 @@ class AgentSlotController extends Controller
             $end_date   = date("Y-m-d H:i:s",strtotime($block_time[1]));
         
             $period   = CarbonPeriod::create($start_date, $end_date);
-            $weekdays = $request->recurring == 'true' ? $request->week_day  : [1,2,3,4,5,6,7]; 
+            $weekdays = $request->recurring == 1 ? $request->week_day  : [1,2,3,4,5,6,7]; 
           
             $slot = new AgentSlot();
             $slot->agent_id     = $agent->id;
@@ -60,10 +60,15 @@ class AgentSlotController extends Controller
             $slot->end_time     = $request->end_time;
             $slot->start_date   = $start_date;
             $slot->end_date     = $end_date;
-            $slot->recurring    =$request->recurring == 'true' ? 1 : 0;
+            $slot->recurring    = $request->recurring;
             $slot->save();
-
+            
             if(isset($slot->id)){
+                foreach ($weekdays as $k => $day) {
+                    $slotData['slot_id']    = $slot->id;
+                    $slotData['day']        = $day;
+                    SlotDay::insert($slotData); 
+                }
                 $AgentSlotData = [];
                 // Iterate over the period
                 foreach ($period as $key => $date) {
@@ -100,86 +105,88 @@ class AgentSlotController extends Controller
      */
     public function update(Request $request)
     {
-      
-        $dateNow = Carbon::now()->format('Y-m-d');
-        $agent = Agent::where('id', $request->agent_id)->firstOrFail();
-    
-        if($request->edit_type == 'day') {
-            $slotDay = SlotDay::where('id', $request->edit_type_id)->where('day', $request->edit_day)->first();
-            if(!$slotDay){
-                $slotDay = new SlotDay();
-                $slot = new AgentSlot();
+     
+        try {
+            DB::beginTransaction();
+            $AgentSlot = AgentSlot::where('id', $request->slot_id)->firstOrFail();
+            if(!$AgentSlot){
+                $this->error('Slot not fount!',405);
             }
-            else{
-                $slot_id = $slotDay->slot_id;
-                $slot = AgentSlot::where('id', $slot_id)->first();
+          
+            $dateNow = Carbon::now()->format('Y-m-d');
+            $slotData = array();
+
+            $block_time = explode('-', $request->blocktime);
+            $start_date = date("Y-m-d H:i:s",strtotime($block_time[0]));
+            $end_date   = date("Y-m-d H:i:s",strtotime($block_time[1]));
+        
+            $period   = CarbonPeriod::create($start_date, $end_date);
+            $weekdays = $request->recurring == 1 ? $request->week_day  : [1,2,3,4,5,6,7]; 
+            //for particular date
+            if($request->recurring ==0){
+                $seleted_date =Carbon::parse($request->edit_slot_date)->format('Y-m-d'); ;
+                if( $seleted_date < $dateNow){
+                    return response()->json(array('success' => false, 'message'=>__('Inveled date.')));
+                }
+                $slot_roster = AgentSlotRoster::where(['slot_id'=>$AgentSlot->id,'agent_id'=>$request->agent_id])->whereDate('schedule_date', $seleted_date)->first() ?? new AgentSlotRoster();
+                $slot_roster->slot_id        = $AgentSlot->id;
+                $slot_roster->agent_id       = $request->agent_id;
+                $slot_roster->start_time     = $request->start_time;
+                $slot_roster->end_time       = $request->end_time;
+                $slot_roster->schedule_date  = $seleted_date;
+                $slot_roster->booking_type   = $request->booking_type ?? 'working_hours' ;
+                $slot_roster->memo           = $request->memo ?? __('Working Hours');
+                $slot_roster->save();
+               
+                DB::commit(); //Commit transaction after all the operations
+         
+                return $this->success('', __('Slot saved successfully!'));
+            }
+            $AgentSlot->start_time   = $request->start_time;
+            $AgentSlot->end_time     = $request->end_time;
+            $AgentSlot->start_date   = $start_date;
+            $AgentSlot->end_date     = $end_date;
+            $AgentSlot->recurring    = $request->recurring == 'true' ? 1 : 0;
+            $AgentSlot->save();
+            
+            if(isset($AgentSlot->id)){
+                $SlotDayID = [];
+                foreach ($weekdays as $k => $day) {
+                    $slotData = SlotDay::where(['slot_id'=>$AgentSlot->id,'day'=>$day])->first() ?? new SlotDay();
                 
-                if($request->slot_type_edit == 'date'){
-                    // delete slot day
-                    $slotDay->delete();
-                    // delete vendor slot
-                    // $slot->delete();
-                   
-                    $dateSlot = new AgentSlotDate();
-                    $dateSlot->agent_id         = $agent->id;
-                    $dateSlot->start_time       = $request->start_time;
-                    $dateSlot->end_time         = $request->end_time;
-                    $dateSlot->specific_date    = $request->slot_date ?? $dateNow;
-                    $dateSlot->working_today    = 1;
-                    $dateSlot->save();
-                    return $this->success('', __('Slot saved successfully!'));
-                    
+                    $slotData->slot_id = $AgentSlot->id;
+                    $slotData->day = $day;
+                    $slotData->save();
+                    $SlotDayID[]=$slotData->id;
                 }
-            }
-
-            $slot->agent_id     = $agent->id;
-            $slot->start_time   = $request->start_time;
-            $slot->end_time     = $request->end_time;
-            $slot->save();
-            $slotDay->slot_id =  $slot->id;
-            $slotDay->day = $request->edit_day;
-            $slotDay->save();
-
-        }else{
-            $dateSlot = AgentSlotDate::where('id', $request->edit_type_id)->first();
-
-            if(!$dateSlot){
-                $dateSlot = new AgentSlotDate();
-            }
-            else{
-                if( $request->slot_type_edit == 'day' ){
-                    $agent_id = $agent->id;
-                    // delete date slot
-                    $dateSlot->delete();
-                    // delete day slot
-                    $agent_slot_day = SlotDay::whereHas('agent_slot', function($q) use($agent_id){
-                        $q->where('vendor_slots.agent_id', $agent_id);
-                    })->where('day', $request->edit_day)->delete();
-
-                    $slot = new AgentSlot();
-                    $slot->agent_id     = $agent->id;
-                    $slot->start_time   = $request->start_time;
-                    $slot->end_time     = $request->end_time;
-                    $slot->save();
-
-                  
-
-                    $sday = new SlotDay();
-                    $sday->slot_id =  $slot->id;
-                    $sday->day = $request->edit_day;
-                    $sday->save();
-                    return $this->success('', __('Slot saved successfully!'));
+                SlotDay::where('slot_id',$AgentSlot->id)->whereNotIn('id',$SlotDayID)->delete();
+                $AgentSlotDataId= [];
+                // Iterate over the period
+                foreach ($period as $key => $date) {
+                    $dayNumber = $date->dayOfWeek+1; // get day number 
+                    if(in_array($dayNumber, $weekdays)){
+                        $slot_roster = AgentSlotRoster::where(['slot_id'=>$AgentSlot->id,'agent_id'=>$request->agent_id])->whereDate('schedule_date', $date->format('Y-m-d'))->first() ?? new AgentSlotRoster();
+                        $slot_roster->slot_id        = $AgentSlot->id;
+                        $slot_roster->agent_id       = $request->agent_id;
+                        $slot_roster->start_time     = $request->start_time;
+                        $slot_roster->end_time       = $request->end_time;
+                        $slot_roster->schedule_date  = $date->format('Y-m-d H:i:s');
+                        $slot_roster->booking_type   = $request->booking_type ?? 'working_hours' ;
+                        $slot_roster->memo           = $request->memo ?? __('Working Hours');
+                        $slot_roster->save();
+                        $AgentSlotDataId[] = $slot_roster->id;
+                    }
                 }
-            }
-            $dateSlot->agent_id         = $agent->id;
-            $dateSlot->start_time       = $request->start_time;
-            $dateSlot->end_time         = $request->end_time;
-            $dateSlot->specific_date    = $request->slot_date;
-            $dateSlot->working_today    = 1;
-            $dateSlot->save();
-
+            } 
+            AgentSlotRoster::where('slot_id',$AgentSlot->id)->whereNotIn('id',$AgentSlotDataId)->delete();
+            DB::commit(); //Commit transaction after all the operations
+         
+             return $this->success('', __('Slot saved successfully!'));
+        } catch (Exception $e) {
+           //pr($e->getMessage());
+            DB::rollBack();
+            return response()->json(array('success' => false, 'message'=>__('Something went wrong.')));
         }
-        return $this->success('', __('Slot saved successfully!'));
 
     }
 
@@ -192,36 +199,46 @@ class AgentSlotController extends Controller
      */
     public function destroy(Request $request)
     {
-        try {
-            DB::beginTransaction();
+      
+        // try {
+        //     DB::beginTransaction();
             $dateNow = Carbon::now()->format('Y-m-d');
-            if($request->slot_type == 'date'){
-                if($request->old_slot_type == 'day')
-                {
-                    AgentSlotDate::updateOrCreate([
-                        'agent_id'=>$request->agent_id,
-                        'specific_date' => $request->slot_date ?? $dateNow  
-                    ],[
-                        'working_today' => 0
-                    ]);
-                }else{
-                    $dateSlot = AgentSlotDate::find($request->slot_id);
-                    $dateSlot->delete();
+            
+            if($request->recurring==0){
+                $slot_date = $request->has('slot_date') ? $request->slot_date :  Carbon::now(); ;
+                $seleted_date = Carbon::parse($slot_date)->format('Y-m-d');
+                if( $seleted_date < $dateNow){
+                    return response()->json(array('success' => false, 'message'=>__('Inveled date.')));
                 }
-            } else {
-                $slotDay = SlotDay::where('slot_id', $request->slot_id)->get();
-                if($slotDay->count() == 1){
-                    $vendorSlot = AgentSlot::find($request->slot_id);
-                    $vendorSlot->delete();
-                }
-                $slot_day = SlotDay::where('id', $request->slot_day_id)->delete();
+                AgentSlotRoster::where(['slot_id'=>$request->slot_id,'agent_id'=>$request->agent_id])->whereDate('schedule_date', $seleted_date)->delete();
+                DB::commit(); //Commit transaction after all the operations
+                return $this->success('', __('Slot deleted successfully!'));
             }
+
+            $weekdays = $request->week_day;
+            $block_time = explode('-', $request->blocktime);
+            $start_date = date("Y-m-d H:i:s",strtotime($block_time[0]));
+            $end_date   = date("Y-m-d H:i:s",strtotime($block_time[1]));
+            $period     = CarbonPeriod::create($start_date, $end_date);
+
+            foreach ($period as $key => $date) {
+             
+                $dayNumber = $date->dayOfWeek+1; // get day number //
+                if(in_array($dayNumber, $weekdays) && (  strtotime($dateNow) <= strtotime($date->format('Y-m-d')))  ){
+                    AgentSlotRoster::where(['slot_id'=>$request->slot_id,'agent_id'=>$request->agent_id])->whereDate('schedule_date', $date->format('Y-m-d'))->delete();
+                }
+            }
+            foreach ($weekdays as $k => $day) {
+                SlotDay::where(['slot_id'=>$request->slot_id,'day'=>$day])->delete();
+            }
+            
+            
             DB::commit(); //Commit transaction after all the operations
             return $this->success('', __('Slot deleted successfully!'));
-        } catch (Exception $e) {
-            DB::rollBack();
-            return response()->json(array('success' => false, 'message'=>'Something went wrong.'));
-        }
+        // } catch (Exception $e) {
+        //     DB::rollBack();
+        //     return response()->json(array('success' => false, 'message'=>'Something went wrong.'));
+        // }
     }
 
     public function returnJson(Request $request, $domain = '', $id)
@@ -258,13 +275,15 @@ class AgentSlotController extends Controller
         $lst = count($date) - 1;
         // $slot = AgentSlot::select('agent_slots.*', 'slot_days.id as slot_day_id', 'slot_days.slot_id', 'slot_days.day')->join('slot_days', 'slot_days.slot_id', 'agent_slots.id')->where('agent_id', $id)->orderBy('slot_days.day', 'asc')->get();
      
-        $AgentRoster = AgentSlotRoster::where('agent_id',$Agent->id)->whereBetween('schedule_date', [$startDate, $endDate])->orderBy('schedule_date','asc')->get();
+        $AgentRoster = AgentSlotRoster::with('agentSlot','days')->where('agent_id',$Agent->id)->whereBetween('schedule_date', [$startDate, $endDate])->orderBy('schedule_date','asc')->get();
 
         $showData = array();
         $count = 0;
 
             if($AgentRoster){
                 foreach ($AgentRoster as $k => $v) {
+                    
+                    $days= $v->days->pluck('day');
                     $a_date = date('Y-m-d', strtotime($v->schedule_date));
                     $title = $v->memo ? $v->memo :'';
                     $color = $this->workingColor;
@@ -277,6 +296,8 @@ class AgentSlotController extends Controller
                     $showData[$count]['title'] = trim($title);
                     $showData[$count]['start'] = $a_date.'T'.$v->start_time;
                     $showData[$count]['end'] = $a_date.'T'.$v->end_time;
+                    $showData[$count]['start_time'] = $v->start_time;
+                    $showData[$count]['end_time'] = $v->end_time;
                     $showData[$count]['color'] = $color;
                     $showData[$count]['type'] = 'date';
                     $showData[$count]['roster_id'] = $v->id;
@@ -284,7 +305,11 @@ class AgentSlotController extends Controller
                     $showData[$count]['schedule_date'] = $v->schedule_date;
                     $showData[$count]['memo'] = $v->memo;
                     $showData[$count]['booking_type'] = $v->booking_type;
+                    $showData[$count]['recurring'] = $v->agentSlot ? $v->agentSlot->recurring : 0;
+                    $showData[$count]['start_date'] = $v->agentSlot ? $v->agentSlot->start_date : 0;
+                    $showData[$count]['end_date'] = $v->agentSlot ? $v->agentSlot->end_date : 0;
                     $showData[$count]['agent_id'] = $v->agent_id;
+                    $showData[$count]['days'] = $days;
                     $count++;
                     
                 }
@@ -294,91 +319,7 @@ class AgentSlotController extends Controller
         echo $json  = json_encode($showData);
     }
 
-    public function returnJsonOld(Request $request, $domain = '', $id)
-    {
-        
-        $Agent = Agent::findOrFail($id);
-        $date = $day = array();
-
-        if($request->has('start')){
-            $start = explode('T', $request->start);
-            $end = explode('T', $request->end);
-
-            $startDate = date('Y-m-d', strtotime($start[0])); 
-            $endDate = date('Y-m-d', strtotime($end[0]));
-
-            $datetime1 = new \DateTime($startDate);
-            $datetime2 = new \DateTime($endDate);
-
-            $interval = $datetime2->diff($datetime1);
-            $days = $interval->format('%a');
-
-            $date[] = $startDate;
-            $day[] = 1;
-
-            for ($i = 1; $i < $days; $i++) {
-                $date[] = date('Y-m-d', strtotime('+'.$i.' day', strtotime($startDate)));
-                $day[] = $i + 1;
-            }
-        }else{
-            $dayArray = array('sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday');
-            foreach ($dayArray as $key => $value) {
-                $th = ($value == 'sunday') ? 'previous sunday' : $value.' this week';
-                $date[] =  date( 'Y-m-d', strtotime($th));
-                $day[] = $key + 1;
-            }
-        }
-
-        $lst = count($date) - 1;
-        $slot = AgentSlot::select('agent_slots.*', 'slot_days.id as slot_day_id', 'slot_days.slot_id', 'slot_days.day')->join('slot_days', 'slot_days.slot_id', 'agent_slots.id')->where('agent_id', $id)->orderBy('slot_days.day', 'asc')->get();
-        
-        $slotDate = AgentSlotDate::whereBetween('specific_date', [$date[0], $date[$lst]])->orderBy('specific_date','asc')->get();
-
-        $showData = array();
-        $count = 0;
-
-        foreach ($day as $key => $value) {
-            $exist = 0;
-            $start = $end = $color = '';
-
-            if($slotDate){
-                foreach ($slotDate as $k => $v) {
-                    $title = '';
-                    if($date[$key] == $v->specific_date){
-                        $exist = 1;
-                       
-
-                        $showData[$count]['title'] = trim($title);
-                        $showData[$count]['start'] = $date[$key].'T'.$v->start_time;
-                        $showData[$count]['end'] = $date[$key].'T'.$v->end_time;
-                        $showData[$count]['color'] = ($v->working_today == 0) ? '#43bee1' : '';
-                        $showData[$count]['type'] = 'date';
-                        $showData[$count]['type_id'] = $v->id;
-                        $showData[$count]['slot_id'] = $v->id;
-                        $count++;
-                    }
-                }
-            }
-
-            if($exist == 0){
-                foreach ($slot as $k => $v) {
-                    $title = '';
-                    if($value == $v->day){
-
-                        $showData[$count]['title'] = trim($title);
-                        $showData[$count]['start'] = $date[$key].'T'.$v->start_time;
-                        $showData[$count]['end'] = $date[$key].'T'.$v->end_time;
-                        $showData[$count]['type'] = 'day';
-                        $showData[$count]['color'] = ($v->working_today == 0) ? '#43bee1' : '';
-                        $showData[$count]['type_id'] = $v->slot_day_id;
-                        $showData[$count]['slot_id'] = $v->slot_id;
-                        $count++;
-                    }
-                }
-            } 
-        }
-        echo $json  = json_encode($showData);
-    }
+   
    
 
 }

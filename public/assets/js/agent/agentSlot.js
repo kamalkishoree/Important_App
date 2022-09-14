@@ -32,67 +32,74 @@ $(function(){
     
     $(document).on('change', '#edit_slot_date', function() {
         var edit_slot_date = $(this).val();
-        dispatcherStorage.setStorageSingle('SlotDate',edit_slot_date);
+        dispatcherStorage.setStorageSingle('EditSlotDate',edit_slot_date);
     });
 
     $(document).on('change', '#recurring', function(e) {
+        var edit = $("#recurring").hasClass("edit_recurring") ? 1 : 0;
         if(e.target.checked){
+            dispatcherStorage.setStorageSingle('recurring_val',1)
             $(".weekDays").fadeIn(1000);
+            if(edit==1){
+                document.getElementById("blocktime").disabled = false; 
+                $(".forDate").fadeOut(1000);
+            }
+            
         }else{
+            dispatcherStorage.setStorageSingle('recurring_val',0)
             $(".weekDays").fadeOut(1000);
+            if(edit==1){
+                $(".forDate").fadeIn(1000);
+                document.getElementById("blocktime").disabled = true; 
+            }
         }
+            
         dispatcherStorage.setStorageSingle('recurring',e.target.checked);
     });
 
 
     $(document).on('click', '#deleteSlotBtn', function() {
-        var date = $('#edit_slot_date').val();
-        
-        $('#edit-slot-modal #deleteSlotDate').val(date);
+        var slot_date = $('#edit_slot_date').val();
+        var slot_id = $('#edit_slot_id').val();
+        var recurring = dispatcherStorage.getStorage('recurring_val')
+        var blocktime = $('#blocktime').val();
+        var week_day = [];
+
+        //const slotType = dispatcherStorage.getStorage('SlotType')
+       
+        $.each($("input:checkbox[name='week_day[]']:checked"), function () {
+            week_day.push($(this).val());
+        });
+        var formData = {
+            slot_date:slot_date,
+            slot_id:slot_id,
+            week_day:week_day,
+            blocktime:blocktime,
+            recurring:recurring,
+            agent_id:agent_id,
+          }
+        //  console.log(formData);
+          //return false;
+       // $('#edit-slot-modal #deleteSlotDate').val(date);
         Swal.fire({
             title: 'Are you sure? You want to delete this slot.',
             confirmButtonText: 'Yes',
             focusConfirm: false,
             preConfirm: () => {
-
-                const SlotDayid   =   dispatcherStorage.getStorage('SlotDayid');
-                const SlotId   =   dispatcherStorage.getStorage('SlotId');
-                const SlotType   =  dispatcherStorage.getStorage('SlotType');
-                const SlotTypeOld   =  dispatcherStorage.getStorage('SlotTypeOld');
-                const SlotDate   =  dispatcherStorage.getStorage('SlotDate');
-
-
-
-                // const start_time = Swal.getPopup().querySelector('#edit_start_time').value
-                // const end_time = Swal.getPopup().querySelector('#edit_end_time').value
-                // const slot_type_edit = document.querySelector('input[name=radio-group]').value 
-                // const edit_type_id = Swal.getPopup().querySelector('#edit_type_id').value
-                // const edit_slot_date = Swal.getPopup().querySelector('#edit_slot_date').value
-    //,start_time:start_time,end_time:end_time,slot_type_edit:slot_type_edit,edit_type_id:edit_type_id,edit_slot_date:edit_slot_date
-               
-              return { SlotDayid: SlotDayid, SlotId: SlotId,SlotType:SlotType,SlotTypeOld:SlotTypeOld,SlotDate:SlotDate }
+            //     const SlotId      =  dispatcherStorage.getStorage('edit_slot_id');
+             
+            //     const EditSlotDate    =  dispatcherStorage.getStorage('EditSlotDate');
+            //   return {  SlotId: SlotId,EditSlotDate:EditSlotDate }
             },onOpen: function() {
             }
           }).then(async (result) => {
-            var formData = {
-                slot_day_id:result.value.SlotDayid,
-                slot_id:result.value.SlotId,
-                slot_type:result.value.SlotType,
-                old_slot_type:result.value.SlotTypeOld,
-                slot_date:result.value.SlotDate,
-                agent_id:agent_id
-                // start_time:start_time,
-                // end_time:end_time,
-                // slot_type_edit:slot_type_edit,
-                // edit_type_id:edit_type_id,
-                // edit_slot_date:edit_slot_date
-            }
-            //console.log(formData);
+            // var formData = {
+            //     slot_id:result.value.SlotId,
+            //     slot_date:result.value.EditSlotDate,
+            //     agent_id:agent_id
+            // }
+            console.log(formData);
             await deleteSlot(formData)
-            // Swal.fire(`
-            // blocktime: ${result.value.blocktime}
-            //   memo: ${result.value.memo}
-            // `.trim())
           })
         // if (confirm("Are you sure? You want to delete this slot.")) {
         //    console.log('sadf');
@@ -141,7 +148,7 @@ $(function(){
                             const start_time = Swal.getPopup().querySelector('#start_time').value
                             const end_time = Swal.getPopup().querySelector('#end_time').value
                             const blocktime = Swal.getPopup().querySelector('#blocktime').value
-                            const recurring = dispatcherStorage.getStorage('recurring');
+                            const recurring = dispatcherStorage.getStorage('recurring_val');
                             const memo = Swal.getPopup().querySelector('#memo').value;
                             const booking_type = Swal.getPopup().querySelector('#booking_type').value
 
@@ -169,8 +176,7 @@ $(function(){
                             return { start_time: start_time, end_time: end_time,week_day:week_day,blocktime:blocktime,recurring:recurring,booking_type:booking_type,memo:memo}
                         },onOpen: function() {
                             initDatetimeRangePicker();
-                            // var save_slot_url = `/agent/slot/${agent_id}`
-                            // $('#slot-event').setAttribute('action',save_slot_url);
+                        
                         }
                       }).then(async (result) => {
                         var formData = {
@@ -185,19 +191,10 @@ $(function(){
                           }
                           console.log(formData);
                           await add_slot_time(formData)
-                       
-                        // Swal.fire(`
-                        // blocktime: ${result.value.blocktime}
-                        //   memo: ${result.value.memo}
-                        // `.trim())
+                      
                       })
                   
-                    // var save_slot_url = `/agent/slot/${agent_id}`
-                    // $('#add-slot-modal').modal({
-                    //                 //backdrop: 'static',
-                    //                 keyboard: false
-                    //             });
-                   
+              
                     calendar.addEvent({
                         title: '',
                         start: arg.start,
@@ -221,13 +218,7 @@ $(function(){
                         document.getElementById('start_time').value = startTime;
                         document.getElementById('end_time').value = EndTime;
                     }
-    
-    
-                    $('#slot_date').flatpickr({
-                        minDate: "today",
-                        defaultDate: arg.start
-                    });
-                },
+                 },
                
     
                 events: function(info, successCallback, failureCallback) {
@@ -275,9 +266,14 @@ $(function(){
                                     schedule_date: data.memo,
                                     memo:data.memo,
                                     booking_type:data.booking_type,
-                                    agent_id:agent_id
-                                   // slot_dine_in: data.slot_dine_in,
-                                    // slot_takeaway: data.slot_takeaway,
+                                    schedule_date: data.memo,
+                                    start_time:data.start_time,
+                                    end_time:data.end_time,
+                                    start_date:data.start_date,
+                                    end_date:data.end_date,
+                                    agent_id:agent_id,
+                                    recurring: data.recurring,
+                                    days: data.days
                                     // slot_delivery: data.slot_delivery,
                                     // service_area: data.service_area,
                                 });
@@ -298,32 +294,53 @@ $(function(){
                         preConfirm: () => {
                             const start_time = Swal.getPopup().querySelector('#edit_start_time').value
                             const end_time = Swal.getPopup().querySelector('#edit_end_time').value
-                            const slot_type_old = dispatcherStorage.getStorage('SlotTypeOld')
-                            const edit_type_id = Swal.getPopup().querySelector('#edit_type_id').value
                             const edit_slot_date = Swal.getPopup().querySelector('#edit_slot_date').value
-                            const edit_type = Swal.getPopup().querySelector('#edit_type').value
+                            const edit_slot_id = Swal.getPopup().querySelector('#edit_slot_id').value
+                            const blocktime = Swal.getPopup().querySelector('#blocktime').value
+                            const recurring =   dispatcherStorage.getStorage('recurring_val')
+                            const memo = Swal.getPopup().querySelector('#edit_memo').value;
+                            const booking_type =  Swal.getPopup().querySelector('#edit_booking_type').value
+                            var week_day = [];
+
+                            //const slotType = dispatcherStorage.getStorage('SlotType')
+                           
+                            $.each($("input:checkbox[name='week_day[]']:checked"), function () {
+                                week_day.push($(this).val());
+                            });
                           
-                          
-                            if (!start_time || !end_time  ) {
-                              Swal.showValidationMessage(`All feilds are required!!`)
-                            }
-                            return { start_time: start_time, end_time: end_time, edit_slot_date:edit_slot_date}
+                            if (start_time=='' && end_time=='' && blocktime=='' && memo=='' && booking_type=='') {
+                                Swal.showValidationMessage(`All feilds are required!!`)
+                                return false;
+                             }
+                             if(recurring == 'true'){
+                                 console.log(week_day);
+                                 if (!week_day.length>0) {
+                                     Swal.showValidationMessage(`Please select days to recurring!!`)
+                                     return false;
+                                 }
+                                 
+                             }
+                             
+                             return  { start_time : start_time, end_time: end_time,week_day:week_day,blocktime:blocktime,recurring:recurring,booking_type:booking_type,memo:memo,edit_slot_id:edit_slot_id,edit_slot_date:edit_slot_date}
                         },onOpen: function() {
-                            initDatetimeRangePicker();
+                            //initDatetimeRangePicker();
                             // var save_slot_url = `/agent/slot/${agent_id}`
                             // $('#slot-event').setAttribute('action',save_slot_url);
                         }
                       }).then(async (result) => {
                         console.log(result);
                         var formData = {
+                            week_day:result.value.week_day,
+                            blocktime:result.value.blocktime,
+                            recurring:result.value.recurring,
+                            booking_type:result.value.booking_type,
+                            memo:result.value.memo,
                             start_time:result.value.start_time,
                             end_time:result.value.end_time,
-                            edit_type:dispatcherStorage.getStorage('edit_type'),
-                            edit_type_id:dispatcherStorage.getStorage('edit_type_id'),
-                            edit_day:dispatcherStorage.getStorage('edit_day'),
+                            slot_id:result.value.edit_slot_id,
                             edit_slot_date:result.value.edit_slot_date,
-                            agent_id:agent_id,
-                            slot_type_edit:dispatcherStorage.getStorage('SlotType'),
+                            agent_id:agent_id
+                           
                             
                           }
                          
@@ -335,18 +352,12 @@ $(function(){
                         // `.trim())
                       })
                   
-                    // console.log(ev.event.extendedProps);
-                    var days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
-                    var day = ev.event.start.getDay() + 1;
-    
-                    // document.getElementById('edit_type').value = ev.event.extendedProps.type;
-                    // document.getElementById('edit_day').value = day;
-                    // document.getElementById('edit_type_id').value = ev.event.extendedProps.type_id;
-    
+                    
                     // Delete Slot Form
                     /**storage */
-                    console.log(ev.event);
-                        dispatcherStorage.setStorageSingle('slot_day_id',ev.event.extendedProps.type_id)
+                    // console.log(ev.event);
+                       console.log(ev.event.extendedProps);
+                        dispatcherStorage.setStorageSingle('slot_id',ev.event.extendedProps.type_id)
                         dispatcherStorage.setStorageSingle('edit_slot_id',ev.event.extendedProps.slot_id);
                         dispatcherStorage.setStorageSingle('edit_booking_type',ev.event.extendedProps.booking_type);
                         //dispatcherStorage.setStorageSingle('edit_slot_date',ev.event.extendedProps.type);
@@ -354,59 +365,36 @@ $(function(){
                         dispatcherStorage.setStorageSingle('edit_recurring',ev.event.extendedProps.recurring);
                         dispatcherStorage.setStorageSingle('edit_type_id',ev.event.extendedProps.type_id);
                         dispatcherStorage.setStorageSingle('edit_slot_type_old',ev.event.extendedProps.type);
-
-
-                        // <input type="hidden" name="slot_day_id" id="slot_day_id" value="" >
-                        // <input type="hidden" name="slot_id" id="edit_slot_id" value="" >
-                        // <input type="hidden" name="edit_booking_type" id="edit_booking_type" value="" >
-                        // <input type="hidden" name="old_slot_type" id="edit_slot_type_old" value="" >
-                        // <input type="hidden" name="slot_date" id="edit_slot_date" value="" >
-                        // <input type="hidden" name="blocktime" id="edit_blocktime" value="" >
-                        // <input type="hidden" name="blocktime" id="edit_recurring" value="" >
+                        if(ev.event.extendedProps.recurring == 1){
+                            dispatcherStorage.setStorageSingle('recurring_val',1)
+                            document.getElementById("recurring").checked = true;
+                            $(".weekDays").fadeIn(1000);
+                            $.each(ev.event.extendedProps.days, function(key,val) {
+                                document.getElementById("day_"+val).checked = true;
+                            });
+                            document.getElementById("blocktime").disabled = false; 
+                        }else
+                        {
+                            dispatcherStorage.setStorageSingle('recurring_val',0)
+                            document.getElementById("blocktime").disabled = true; 
+                            $(".forDate").fadeIn(1000);
+                        }
+                        initDatetimeRangePicker(ev.event.extendedProps.start_date,ev.event.extendedProps.end_date);
+                        $('#edit_slot_date').flatpickr({
+                            minDate: new Date(ev.event.startStr),
+                            defaultDate:new Date(ev.event.startStr)
+                        });
+                      
                     /**storage */
-                    document.getElementById('slot_day_id').value = ev.event.extendedProps.type_id;
-                    document.getElementById('SlotId').value = ev.event.extendedProps.slot_id;
-                    document.getElementById('SlotType').value = ev.event.extendedProps.type;
-                    document.getElementById('SlotTypeOld').value = ev.event.extendedProps.type;
-    
-                    if(ev.event.extendedProps.type == 'date'){
-                        $("#edit_slotDate").prop("checked", true);
-                        $(".forDateEdit").delay(1000).show(0);
-                        //$("#update-event .forDateEdit").show();
-                    }else{
-                        $("#edit_slotDay").prop("checked", true);
-                        //$("#update-event .forDateEdit").hide();
-                        $(".forDateEdit").delay(1000).hide(0);
-                    }
-    
-                    if(ev.event.extendedProps.slot_delivery == 0){
-                        $("#edit_delivery").prop("checked", false);
-                    }
-                    if(ev.event.extendedProps.slot_takeaway == 0){
-                        $("#edit_takeaway").prop("checked", false);
-                    }
-                    if(ev.event.extendedProps.slot_dine_in == 0){
-                        $("#edit_dine_in").prop("checked", false);
-                    }
+                   // document.getElementById('slot_day_id').value = ev.event.extendedProps.type_id;
+                     document.getElementById('edit_slot_id').value = ev.event.extendedProps.slot_id;
+                   // document.getElementById('SlotType').value = ev.event.extendedProps.type;
+                   // document.getElementById('SlotTypeOld').value = ev.event.extendedProps.type;
+                     
+                    document.getElementById('edit_start_time').value = ev.event.extendedProps.start_time;
+                    document.getElementById('edit_end_time').value = ev.event.extendedProps.end_time;
+                    document.getElementById('edit_memo').value = ev.event.extendedProps.memo;
                     
-                   
-    
-                    $('#edit_slot_date').flatpickr({
-                        minDate: "today",
-                        defaultDate: (ev.event.extendedProps.type == 'date') ? ev.event.start : ev.event.start
-                    });
-    
-                    $('#edit_slotlabel').text('Edit For All ' + days[day-1] + '   ');
-    
-                    var startTime = ("0" + ev.event.start.getHours()).slice(-2) + ":" + ("0" + ev.event.start.getMinutes()).slice(-2);
-                    document.getElementById('edit_start_time').value = startTime;
-    
-                    var EndTime = '';
-    
-                    if (ev.event.end) {
-                        EndTime = ("0" + ev.event.end.getHours()).slice(-2) + ":" + ("0" + ev.event.end.getMinutes()).slice(-2);
-                    }
-                    document.getElementById('edit_end_time').value = EndTime;
     
                 }
             });
@@ -492,19 +480,21 @@ $(function(){
             })
         })    
     } 
+  
 
-   function  initDatetimeRangePicker(){
+   function  initDatetimeRangePicker(start_date="",end_date=""){
+     //$('#blocktime').val(start_date+'-'+end_date)
         $(function() {
             $('#blocktime').daterangepicker({
               //timePicker: true,
-              startDate: moment().startOf('hour'),
-              endDate: moment().startOf('hour'),
-              minDate:new Date(),
+              startDate: (start_date!='') ?  moment(start_date).startOf('hour') : moment().startOf('hour'),
+              endDate: (end_date!='') ? moment(end_date).startOf('hour') : moment().startOf('hour'),
+              minDate:(start_date!='') ? moment(start_date).startOf('hour') :new Date() ,
               locale: {
                 format: 'M/DD/YY'
               }
             });
-          });
+        });
     }
   
 })

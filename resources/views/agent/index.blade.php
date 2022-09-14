@@ -535,7 +535,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                         <ul class="list-inline">
                                             <li class="d-block pl-1 ml-3 mb-1 custom-radio-design">
                                                 <input type="checkbox" class="custom-control-input check recurring" id="recurring" name="recurring">
-                                                <label class="custom-control-label" id="recurring" for="recurring">Yes</label>
+                                                <label class="custom-control-label"  for="recurring">Yes</label>
                                             </li>
                                         </ul>
                                     </div>
@@ -603,9 +603,9 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                             @csrf
                             <input type="hidden" name="slot_day_id" id="slot_day_id" value="" >
                             <input type="hidden" name="slot_id" id="edit_slot_id" value="" >
-                            <input type="hidden" name="edit_booking_type" id="edit_booking_type" value="" >
+                            <input type="hidden" name="edit_booking_type_old" id="edit_booking_type_old" value="" >
                             <input type="hidden" name="old_slot_type" id="edit_slot_type_old" value="" >
-                            <input type="hidden" name="slot_date" id="edit_slot_date" value="" >
+                            <input type="hidden" name="slot_date" id="edit_slot_date_D" value="" >
                             <input type="hidden" name="blocktime" id="edit_blocktime" value="" >
                             <input type="hidden" name="blocktime" id="edit_recurring" value="" >
                             <div class="row mb-2">
@@ -613,7 +613,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                     <div class="form-group">
                                         <label class="control-label">{{ __("Start/End Date") }}</label>
 
-                                        <input id="blocktime" class="form-control" autofocus>
+                                        <input id="blocktime" class="form-control"  autofocus>
                                     </div>
                                 </div>
                                 
@@ -649,8 +649,8 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                       
                                         <ul class="list-inline">
                                             <li class="d-block pl-1 ml-3 mb-1 custom-radio-design">
-                                                <input type="checkbox" class="custom-control-input check recurring" id="recurring" name="recurring">
-                                                <label class="custom-control-label" id="recurring" for="recurring">Yes</label>
+                                                <input type="checkbox" class="custom-control-input check edit_recurring recurring" id="recurring" name="recurring">
+                                                <label class="custom-control-label"  for="recurring">Yes</label>
                                             </li>
                                         </ul>
                                     </div>
@@ -706,7 +706,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                 <div class="col-md-12" >
                                     <div class="form-group">
                                         <label class="control-label">{{ __("Slot Date") }}</label>
-                                        <input class="form-control date-datepicker" placeholder={{ __("Select Date") }} type="text" name="slot_date" id="slot_date" required />
+                                        <input class="form-control date-datepicker" placeholder={{ __("Select Date") }} type="text" name="slot_date" id="edit_slot_date" required />
                                     </div>
                                 </div>
                         
