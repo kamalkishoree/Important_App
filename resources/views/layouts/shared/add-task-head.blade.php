@@ -389,7 +389,7 @@
                 runPicker();
 
                 $('#task-modal-header .edit-icon-float-right').on('click', function() {
-                    $('#task-modal-header .task_desc_div').toggle();
+                    $('#task-modal-header .meta_data_task_div').toggle();
                 });
             },
             error: function (data) {

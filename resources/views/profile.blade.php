@@ -161,9 +161,9 @@ width: 100%;
                                     </div>
                                 </div>
                                 <div class="col-md-5">
-                                    <div class="d-flex mb-2">
-                                        <a class="mr-2" href="https://apps.apple.com/us/app/royo-dispatcher/id1546990347" target="_blank"><img src="{{asset('assets/images/iosstore.png')}}" alt="image" > </a>
-                                        <a class="" href="https://play.google.com/store/apps/details?id=com.codebew.deliveryagent&hl=en_US&gl=US" target="_blank"><img src="{{asset('assets/images/playstore.png')}}" alt="image"  > </a>
+                                    <div class="row mb-2">
+                                        <a class="col-md-6" href="https://apps.apple.com/us/app/royo-dispatcher/id1546990347" target="_blank"><img class="w-100" src="{{asset('assets/images/iosstore.png')}}" alt="image" > </a>
+                                        <a class="col-md-6 " href="https://play.google.com/store/apps/details?id=com.codebew.deliveryagent&hl=en_US&gl=US" target="_blank"><img class="w-100" src="{{asset('assets/images/playstore.png')}}" alt="image"  > </a>
                                     </div>
                                     <div class="row">
                                         <label class="control-label col-12">{{__("Short Code")}}</label><br/>
@@ -240,6 +240,25 @@ width: 100%;
                                         <select class="form-control" id="country" name="country" value="{{ old('country', $client->id ?? '')}}" placeholder="{{__("Country")}}">
                                             @foreach($countries as $code=>$country)
                                             <option value="{{ $country->id }}" @if(Auth::user()->country_id == $country->id) selected @endif  {{ $is_disabled }}>{{ $country->name }}</option>
+                                            @endforeach
+                                        </select>
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong></strong>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group mb-3" id="timezoneInput">
+                                        <label for="timezone">{{__("TIMEZONE")}}</label>
+                                        @if($errors->has('timezone'))
+                                        <span class="text-danger" role="alert">
+                                            <strong>{{ $errors->first('timezone') }}</strong>
+                                        </span>
+                                        @endif
+                                        <select class="form-control" id="timezone" name="timezone" value="{{ old('timezone', $client->timezone ?? '')}}" placeholder="{{__("Timezone")}}">
+                                            @foreach($tzlist as $tz)
+                                            {{-- <option value="{{ $tz }}" @if(Auth::user()->timezone == $tz) selected @endif>{{ $tz }}</option> --}}
+                                            <option value="{{ $tz->id }}" @if(Auth::user()->timezone == $tz->id) selected @endif  {{ $is_disabled }}>{{ $tz->timezone.' ('.$tz->diff_from_gtm.')' }}</option>
                                             @endforeach
                                         </select>
                                         <span class="invalid-feedback" role="alert">
@@ -354,13 +373,11 @@ width: 100%;
     var input = document.querySelector("#phone_number");
     var iti = window.intlTelInput(input, {
         separateDialCode:true,
+        preferredCountries:["{{getCountryCode()}}"],
+        initialCountry:"{{getCountryCode()}}",
         utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.18/js/utils.js",
     });
-    /* $("#phone_number").intlTelInput({
-        nationalMode: false,
-        formatOnDisplay: true,
-        utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.18/js/utils.js"
-    }); */
+    
     $('.intl-tel-input').css('width', '100%');
 
 
