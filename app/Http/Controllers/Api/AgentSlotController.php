@@ -58,7 +58,7 @@ class AgentSlotController extends BaseController
             $tagId = '';
             $myDate = date('Y-m-d',strtotime( $request->schedule_date));
            
-            $geoagents = Agent::with(['agentlog','vehicle_type','slots' => function($q) use($myDate){
+            $geoagents = Agent::with(['slots' => function($q) use($myDate){
                 $q->whereDate('schedule_date', $myDate);
             }]);
 
@@ -76,9 +76,12 @@ class AgentSlotController extends BaseController
             
 
             $geoagents = $geoagents->whereIn('id', $geoagents_ids)->where(["is_available" => 1, "is_approved" => 1])->orderBy('id', 'DESC')->get();
-       
+            $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain/';
             foreach( $geoagents as $agent){
+                $agent->image_url =  isset($agent->profile_picture) ? $imgproxyurl.Storage::disk('s3')->url($agent->profile_picture) : Phumbor::url(URL::to('/asset/images/no-image.png'));
+              
                 $slotss = [];
+                $mergeArray = [];
                 $Duration  = $request->service_time ?? 60;
                 foreach ($agent->slots as $slott) {
                 
@@ -86,12 +89,27 @@ class AgentSlotController extends BaseController
                       
                         if (!in_array($new_slot, $slotss) && (count( $new_slot) > 0) ) {
                             $slotss[] = $new_slot;
+                            //$mergeArray=  array_merge($slotss,$new_slot);
                         }
                     
                 }
-             
-                $agent->slotCount = count( $slotss);
-                $agent->slotings = $slotss;
+                $arr = array();
+                $count = count($slotss);
+                for ($i=0;$i<$count;$i++) {
+                    $arr = array_merge($arr, $slotss[$i]);
+                }
+    
+                if (isset($arr)) {
+                    foreach ($arr as $k=> $slt) {
+                        $sl = explode(' - ', $slt);
+                        $viewSlot[$k]['name'] = date('h:i:A', strtotime($sl[0])).' - '.date('h:i:A', strtotime($sl[1]));
+                        $viewSlot[$k]['value'] = $slt;
+                    }
+                }
+                // pr($viewSlot);
+                $agent->slotCount = count( $viewSlot);
+                $agent->slotings = $viewSlot;
+               
             }
             
            
