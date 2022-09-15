@@ -136,42 +136,45 @@ $task_type_array = [__('Pickup'), __('Drop-Off'), __('Appointment')];
                             
 
                             <h4 class="header-title mb-2">{{__("Meta Data")}} <a href="#edit_desc" class="edit-icon-float-right"> <i class="mdi mdi-square-edit-outline"></i></a></h4>
-                            <div class="row mb-2 task_desc_div" style="display:{{($task->task_description!='')?'block':'none'}};">
-                                <div class="col-md-12" id="make_modelInput">
-                                    {!! Form::hidden('recipient_phone', null, ['class' => 'form-control rec', 'placeholder' =>
-                                    __('Recipient Phone')]) !!}
-                                    {!! Form::hidden('Recipient_email', null, ['class' => 'form-control rec', 'placeholder' =>
-                                    __('Recipient Email')]) !!}
-                                    {{-- {!! Form::textarea('task_description', null, ['class' => 'form-control', 'placeholder' =>
-                                    'Task Description', 'rows' => 2, 'cols' => 40]) !!} --}}
+                            <div class="meta_data_task_div" style="display:{{($task->task_description!='' || count($images) > 0)?'block':'none'}};">
+                                <div class="row mb-2">
+                                    <div class="col-md-12" id="make_modelInput">
+                                        {!! Form::hidden('recipient_phone', null, ['class' => 'form-control rec', 'placeholder' =>
+                                        __('Recipient Phone')]) !!}
+                                        {!! Form::hidden('Recipient_email', null, ['class' => 'form-control rec', 'placeholder' =>
+                                        __('Recipient Email')]) !!}
+                                        {{-- {!! Form::textarea('task_description', null, ['class' => 'form-control', 'placeholder' =>
+                                        'Task Description', 'rows' => 2, 'cols' => 40]) !!} --}}
 
-                                    <textarea class='form-control' placeholder="{{__('Please enter task description')}}" rows='3' cols='40' name="task_description">{{$task->task_description}}</textarea>
-                                    {!! Form::hidden('net_quantity', null, ['class' => 'form-control rec mt-1', 'placeholder' =>
-                                    __('Net Quantity')]) !!}
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong></strong>
-                                    </span>
+                                        <textarea class='form-control' placeholder="{{__('Please enter task description')}}" rows='3' cols='40' name="task_description">{{$task->task_description}}</textarea>
+                                        {!! Form::hidden('net_quantity', null, ['class' => 'form-control rec mt-1', 'placeholder' =>
+                                        __('Net Quantity')]) !!}
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong></strong>
+                                        </span>
+                                    </div>
+                                </div>
+                                
+                                <div class="row mb-2">
+                                    <div class="col-md-12">
+                                        <input type="file" data-plugins="dropify" class="dropify" name="file[]" multiple data-height="300" accept="image/*"/>
+                                    </div>
+                                </div>
+
+                                <div class="allimages">
+                                    <div id="imagePreview" class="privewcheck d-flex justify-content-center flex-wrap">
+                                        @if (count($images) > 0 && $images[0] != '')
+                                            @foreach ($images as $i => $item)
+                                                <div class="imagepri_wrap mb-2 saved" data-id="{{ $i }}">
+                                                    <img src="{{ $main }}{{ $item }}" class="imagepri mr-2" />
+                                                    <button type="button" class="close imagepri_close saved" aria-hidden="true">×</button>
+                                                </div>
+                                            @endforeach
+                                        @endif
+                                    </div>
                                 </div>
                             </div>
                             
-                            <div class="row mb-2">
-                                <div class="col-md-12">
-                                    <input type="file" data-plugins="dropify" class="dropify" name="file[]" multiple data-height="300" accept="image/*"/>
-                                </div>
-                            </div>
-
-                            <div class="allimages">
-                                <div id="imagePreview" class="privewcheck d-flex justify-content-center flex-wrap">
-                                    @if (count($images) > 0 && $images[0] != '')
-                                        @foreach ($images as $i => $item)
-                                            <div class="imagepri_wrap mb-2 saved" data-id="{{ $i }}">
-                                                <img src="{{ $main }}{{ $item }}" class="imagepri mr-2" />
-                                                <button type="button" class="close imagepri_close saved" aria-hidden="true">×</button>
-                                            </div>
-                                        @endforeach
-                                    @endif
-                                </div>
-                            </div>
                             <div class="row mb-2">
                                 <div class="col-md-12"  id="make_modelInput">
                                     {!! Form::text('call_back_url', $task->call_back_url, ['class' => 'form-control rec', 'placeholder' => __('Call Back URL')]) !!}
