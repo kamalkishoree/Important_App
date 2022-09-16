@@ -21,6 +21,7 @@ use App\Model\Roster;
 use App\Model\TaskProof;
 use App\Model\Geo;
 use App\Model\Order;
+use App\Model\csvOrderImport;
 use App\Model\Timezone;
 use App\Model\AgentLog;
 use App\Model\{BatchAllocation, BatchAllocationDetail, Team,TeamTag, SubscriptionInvoicesDriver};
@@ -40,6 +41,7 @@ use Excel;
 use GuzzleHttp\Client as Gclient;
 use App\Http\Controllers\Api\BaseController;
 use App\Traits\ApiResponser;
+use App\Imports\OrderImport;
 
 class TaskController extends BaseController
 {
@@ -126,8 +128,8 @@ class TaskController extends BaseController
         $employees      = Customer::orderby('name', 'asc')->where('status','Active')->select('id', 'name')->get();
         $employeesCount = count($employees);
         $agentsCount    = count($agents->where('is_approved', 1));
-
-        return view('tasks/task')->with([ 'status' => $request->status, 'agentsCount'=>$agentsCount, 'employeesCount'=>$employeesCount, 'active_count' => $active, 'panding_count' => $pending, 'history_count' => $history, 'status' => $check,'preference' => $preference,'agents'=>$agents,'failed_count'=>$failed,'client_timezone'=>$client_timezone]);
+        $csvRoutes = csvOrderImport::orderBy('id','DESC')->limit(15)->get();
+        return view('tasks/task')->with([ 'status' => $request->status, 'agentsCount'=>$agentsCount, 'employeesCount'=>$employeesCount, 'active_count' => $active, 'panding_count' => $pending, 'history_count' => $history, 'status' => $check,'preference' => $preference,'agents'=>$agents,'failed_count'=>$failed,'client_timezone'=>$client_timezone, 'csvRoutes'=>$csvRoutes]);
     }
 
 
@@ -2666,5 +2668,22 @@ class TaskController extends BaseController
         return response()->json($task);
     }
 
+    function importCsv(Request $request)
+    {
+        $fileModel = new csvOrderImport;
+        if($request->file('bulk_upload_file')) {
+            $fileName = time().'_'.$request->file('bulk_upload_file')->getClientOriginalName();
+            $filePath = $request->file('bulk_upload_file')->storeAs('routes', $fileName, 'public');
+            $fileModel->name = $fileName;
+            $fileModel->path = '/storage/' . $filePath;
+            $fileModel->status = 1;
+            $fileModel->save();
+            $data = Excel::import(new OrderImport($fileModel->id), $request->file('bulk_upload_file'));
+            return response()->json([
+                'status' => 'Success',
+                'message' => 'Route Created successfully!'
+            ]);
+        }
+    }
 
 }

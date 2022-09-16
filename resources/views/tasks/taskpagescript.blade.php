@@ -524,5 +524,60 @@
             }
         });
 
+        function submitProductImportForm() {
+            var form = document.getElementById('submit_bulk_upload_task');
+            var formData = new FormData(form);
+            var data_uri = "{{route('tasks.importCSV')}}";
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            $.ajax({
+                type: "post",
+                headers: {
+                    Accept: "application/json"
+                },
+                url: data_uri,
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function(response) {
+                    if(response.status == 'Success')
+                    {var color = 'green';var heading="Success!";}else{var color = 'red';var heading="Error!";}
+                    $.toast({ 
+                    heading:heading,
+                    text : response.message, 
+                    showHideTransition : 'slide', 
+                    bgColor : color,              
+                    textColor : '#eee',            
+                    allowToastClose : true,      
+                    hideAfter : 5000,            
+                    stack : 5,                   
+                    textAlign : 'left',         
+                    position : 'top-right'      
+                    });
+                    if (response.status == 'Success') {
+                            $("#upload-bulk-tasks .close").click();
+                            location.reload();
+                    } else {
+                        $("#upload-bulk-tasks .show_all_error.invalid-feedback").show();
+                        $("#upload-bulk-tasks .show_all_error.invalid-feedback").text(response.message);
+                    }
+                },
+                beforeSend: function() {
+
+                    $(".loader_box").show();
+                },
+                complete: function() {
+                    $(".loader_box").hide();
+                    setTimeout(function() {
+                        location.reload();
+                    }, 2000);
+                
+                }
+            });
+        }
+
 </script>
 

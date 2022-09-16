@@ -154,7 +154,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                 </div>
                             </div>
                             @csrf
-                            <div class="col-sm-5">
+                            <div class="col-md-5">
                                 <form class="mb-0" name="getTask" id="getTask" method="get" action="{{ route('tasks.index') }}">
                                     <div class="login-form">
                                         <ul class="list-inline mb-0">
@@ -185,16 +185,19 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                                 <label for="failed">{{__("Failed")}}<span
                                                         class="showspan">{{ ' (' . $failed_count . ')' }}</span></label>
                                             </li>
-
+                                            <li class="d-inline-block mr-2">
+                                                <button type="button" class="btn btn-info bulkupload" data-toggle="modal" data-target="#upload-bulk-tasks" data-backdrop="static" data-keyboard="false"><i class="mdi mdi-cloud-upload mr-1"></i> {{__("Upload")}}</button> 
+                                            </li>
                                         </ul>
                                     </div>
                                 </form>
                             </div>
+
                             @if(!empty($preference->create_batch_hours) && $preference->create_batch_hours > 0)
                             <a href="{{route('batch.list')}}"><button type="button" class="btn btn-info" >All Batches</button></a>
                             @endif
                             
-                            <div class="col-sm-4 assign-toggle assign-show ">
+                            <div class="col-md-4 assign-toggle assign-show ">
                                 <button type="button" class="btn btn-info assign_agent" data-toggle="modal" data-target="#add-assgin-agent-model" data-backdrop="static" data-keyboard="false">{{__("Assign")}}</button> 
                                 <button type="button" class="btn btn-info assign_date" data-toggle="modal" data-target="#add-assgin-date-model" data-backdrop="static" data-keyboard="false">{{__("Change Date")}}/{{__("Time")}}</button> 
                             </div>
@@ -242,12 +245,15 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
     @include('modals.task-proofs')
     @include('modals.assgin_task_agent')
     @include('modals.assgin_task_date')
+    @include('modals.upload_bulk_tasks')
 @endsection
 
 @section('script')
     <script src="{{asset('assets/libs/select2/select2.min.js')}}"></script>
     <script src="{{asset('assets/libs/bootstrap-select/bootstrap-select.min.js')}}"></script>
     <script src="{{ asset('assets/libs/datatables/datatables.min.js') }}"></script>
+    <script src="{{ asset('assets/libs/dropify/dropify.min.js') }}"></script>
+    <script src="{{ asset('assets/js/pages/form-fileuploads.init.js') }}"></script>
     @include('tasks.taskpagescript')
 
 
