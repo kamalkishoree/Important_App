@@ -2,7 +2,7 @@
     <div class="col-md-12">
         <div class="card-box pb-0 pt-0 mb-1">            
             <div class="row d-flex">
-                <div class="col-md-4" style="border-right: 1px solid #ccc;">
+                <div class="col-sm-12 col-xl-4 col-md-12" style="border-right: 1px solid #ccc;">
                     @csrf
                     <div class="row mb-2" id="dateredio">
                         <div class="col-md-12">
@@ -194,7 +194,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-8">
+                <div class="col-sm-12 col-xl-8 col-md-12">
                     <h4 class="header-title mb-2">{{__("Tasks")}}</h4>
                     <span class="span1 addspan">{{__("Please select a address or create new")}}</span>
                     <div class="cust_add_div" id="addHeader1">
@@ -202,7 +202,7 @@
                             <div class="alFormTaskType row m-0">
                                 <div class="col-md-12">
                                     <div class="row firstclone1">
-                                        <div class="col-md-6">
+                                        <div class="col-10 col-md-6">
                                             <div class="form-group mb-1">
                                                 <select class="selecttype mt-1" id="task_type"  name="task_type_id[]" style="width:100%;" required>
                                                     <option value="1">{{__("Pickup Task")}}</option>
@@ -211,7 +211,7 @@
                                                 </select>
                                             </div>
                                         </div>
-                                        <div class="col-md-5">
+                                        <div class="col-10 col-md-5">
                                             <div class="form-group appoint mt-1 mb-1">
                                                 {!! Form::text('appointment_date[]', null, ['class' => 'form-control appointment_date', 'placeholder' => __('Duration (In Min)')]) !!}
                                                 <span class="invalid-feedback" role="alert">

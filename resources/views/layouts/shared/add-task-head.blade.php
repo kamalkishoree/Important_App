@@ -1094,17 +1094,19 @@
 
 
     $(document).on('click', '.alFormTaskType', function () {
-
         $(".alTaskType").removeClass("active");
         $(".mainaddress").addClass("alCol-12");
         $(".alsavedaddress").hide();
         $(this).closest('.alTaskType').find(".mainaddress").removeClass("alCol-12");
         $(this).closest('.alTaskType').addClass("active");
         $(this).closest('.alTaskType').find(".alsavedaddress").show();
-
     });
 
-
+    /* $(window).resize(function () {
+        
+        var width = $(window).width();
+        
+    }); */
 
     if(theme['theme'] == 'dark'){
 

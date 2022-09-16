@@ -39,10 +39,10 @@ $task_type_array = [__('Pickup'), __('Drop-Off'), __('Appointment')];
         {{ method_field('PATCH') }}
         @csrf
         <div class="row">
-            <div class="col-md-9">
+            <div class="col-sm-12 col-xl-9 col-md-7">
                 <div class="card-box p-3">            
                     <div class="row d-flex">
-                        <div class="col-md-4" style="border-right: 1px solid #ccc;">
+                        <div class="col-sm-12 col-xl-4 col-md-12" style="border-right: 1px solid #ccc;">
                             @csrf
                             <div class="row mb-2" id="dateredio">
                                 <div class="col-md-12">
@@ -261,7 +261,7 @@ $task_type_array = [__('Pickup'), __('Drop-Off'), __('Appointment')];
                         @php
                             $newcount = 0;
                         @endphp
-                        <div class="col-md-8">
+                        <div class="col-sm-12 col-xl-8 col-md-12">
                             <h4 class="header-title mb-2">{{__("Tasks")}}</h4>
                             <span class="span1 addspan">{{__("Please select a address or create new")}}</span>
                             <div class="taskrepet" id="newadd">
@@ -272,7 +272,7 @@ $task_type_array = [__('Pickup'), __('Drop-Off'), __('Appointment')];
                                 @endphp
                                 <div class="alTaskType copyin check-validation" id="copyin1">
                                     <div class="alFormTaskType row m-0 pt-1 pb-1">
-                                        <div class="col-md-12">
+                                        <div class="col-sm-10 col-md-12">
                                             <div class="row firstclone1">
                                                 <div class="col-md-6">
                                                     <div class="form-group mb-1">
@@ -449,7 +449,7 @@ $task_type_array = [__('Pickup'), __('Drop-Off'), __('Appointment')];
                     @endif
                 </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-sm-12 col-xl-3 col-md-5">
                 <div class="card-box p-3">            
                     <div class="row">
                         <div class="col-md-12">
