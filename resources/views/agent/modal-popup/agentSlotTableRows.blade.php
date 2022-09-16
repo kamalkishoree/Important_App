@@ -6,13 +6,13 @@
 <style>
     #scheduleTablePopup .dt-buttons.btn-group.flex-wrap {right: inherit;}
 </style>
-@section('popup-header')
-Agent schedule slots:<p class="sku-name pl-1"></p>
-@endsection
+{{-- @section('popup-header')
+{{ __('Agent Weekly hours') }}:<p class="sku-name pl-1"></p>
+@endsection --}}
 @section('popup-content')
 <div class="card-box">
     <div class="row">
-        <h4 class="mb-4 "> {{ __('Weekly Slot') }}</h4>
+        <h4 class="mb-4 "> {{ __('Weekly hours') }}</h4>
         <div class="col-md-12">
             <div class="row mb-2">
                 <div class="col-md-12 col-lg-4">

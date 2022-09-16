@@ -53,11 +53,12 @@ class AgentSlotController extends BaseController
                 }
 
             }
-           
+            $timezoneset = 'Asia/Kolkata';
+          
             $tagId = '';
-            $myDate = Carbon::createFromFormat('Y-m-d', $request->schedule_date);
-            
-            $geoagents = Agent::with(['agentlog','vehicle_type','slots' => function($q) use($myDate){
+            $myDate = date('Y-m-d',strtotime( $request->schedule_date));
+           
+            $geoagents = Agent::with(['slots' => function($q) use($myDate){
                 $q->whereDate('schedule_date', $myDate);
             }]);
 
@@ -75,16 +76,43 @@ class AgentSlotController extends BaseController
             
 
             $geoagents = $geoagents->whereIn('id', $geoagents_ids)->where(["is_available" => 1, "is_approved" => 1])->orderBy('id', 'DESC')->get();
-       
+            $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain/';
             foreach( $geoagents as $agent){
-                $StartTime = $agent->slots->first() ? $agent->slots->first()->start_time : '';
-                $EndTime   = $agent->slots->first() ? $agent->slots->first()->end_time : '';
+                $agent->image_url =  isset($agent->profile_picture) ? $imgproxyurl.Storage::disk('s3')->url($agent->profile_picture) : Phumbor::url(URL::to('/asset/images/no-image.png'));
+              
+                $slotss = [];
+                $mergeArray = [];
                 $Duration  = $request->service_time ?? 60;
-                $slots =  $this->SplitTime($myDate, $StartTime, $EndTime, $Duration, $delayMin = 0);
-                pr($slots);
+                foreach ($agent->slots as $slott) {
+                
+                        $new_slot = $this->SplitTime($myDate, $slott->start_time, $slott->end_time, $Duration,$timezoneset, $delayMin = 0);
+                      
+                        if (!in_array($new_slot, $slotss) && (count( $new_slot) > 0) ) {
+                            $slotss[] = $new_slot;
+                            //$mergeArray=  array_merge($slotss,$new_slot);
+                        }
+                    
+                }
+                $arr = array();
+                $count = count($slotss);
+                for ($i=0;$i<$count;$i++) {
+                    $arr = array_merge($arr, $slotss[$i]);
+                }
+    
+                if (isset($arr)) {
+                    foreach ($arr as $k=> $slt) {
+                        $sl = explode(' - ', $slt);
+                        $viewSlot[$k]['name'] = date('h:i:A', strtotime($sl[0])).' - '.date('h:i:A', strtotime($sl[1]));
+                        $viewSlot[$k]['value'] = $slt;
+                    }
+                }
+                // pr($viewSlot);
+                $agent->slotCount = count( $viewSlot);
+                $agent->slotings = $viewSlot;
+               
             }
             
-            pr( $geoagents->toArray());
+           
 
             return response()->json([
                 'data' => $geoagents,
@@ -99,16 +127,19 @@ class AgentSlotController extends BaseController
         // }
 
     }
-    public function SplitTime($myDate, $StartTime, $EndTime, $Duration="60", $delayMin = 0)
+    public function SplitTime($myDate, $StartTime, $EndTime, $Duration="60", $timezoneset,$delayMin = 0)
     {
         $Duration = (($Duration==0)?'60':$Duration);
 
-        $timezoneset = 'Asia/Kolkata';
         $cr = Carbon::now()->addMinutes($delayMin);
-      
-      
-        $nowT = strtotime($cr);
+        $date = Carbon::parse($cr, 'UTC');
+        $now = $date->setTimezone($timezoneset);
+
+       
+        $nowT = strtotime($now);
+        
         $nowA = Carbon::createFromFormat('Y-m-d H:i:s', $myDate.' '.$StartTime);
+        
         $nowS = Carbon::createFromFormat('Y-m-d H:i:s', $nowA)->timestamp;
         $nowE = Carbon::createFromFormat('Y-m-d H:i:s', $myDate.' '.$EndTime)->timestamp;
         if ($nowT > $nowE) {
@@ -118,7 +149,6 @@ class AgentSlotController extends BaseController
         } else {
             $StartTime = date('H:i', strtotime($nowA));
         }
-    
         $ReturnArray = array();
         $StartTime = strtotime($StartTime); //Get Timestamp
         $EndTime = strtotime($EndTime); //Get Timestamp
