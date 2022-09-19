@@ -528,6 +528,10 @@
                 "beyondcode",
                 "laravel-websockets"
             ],
+            "support": {
+                "issues": "https://github.com/beyondcode/laravel-websockets/issues",
+                "source": "https://github.com/beyondcode/laravel-websockets/tree/1.13.1"
+            },
             "time": "2022-03-03T08:41:47+00:00"
         },
         {
