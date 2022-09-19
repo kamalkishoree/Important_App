@@ -193,7 +193,7 @@
                 "serverSide": true,
                 "responsive": true,
                 "processing": true,
-                "iDisplayLength": 10,
+                "iDisplayLength": 20,
                 language: {
                     search: "",
                     paginate: {

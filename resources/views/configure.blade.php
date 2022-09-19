@@ -516,45 +516,6 @@ $sms_crendential = json_decode($preference->sms_credentials);
                 </form>
             </div>
 
-
-            <!-- <div class="col-md-3">
-                <form method="POST" action="{{ route('preference', Auth::user()->code) }}">
-                    @csrf
-                    <div class="card-box same-size">
-                        <h4 class="header-title">{{ __('Sub Domain') }}</h4>
-                        <p class="sub-header">
-                            {{ __('View and update your Sub Domain.') }}
-                        </p>
-                        <div class="col-md-12">
-
-                            <div class="form-group mb-3">
-                                <label for="sub_domain">{{ __('Sub Domain') }}</label>
-                                <div class="domain-outer d-flex align-items-center">
-                                    <div class="domain_name">https://</div>
-                                    <input type="text" name="sub_domain" id="sub_domain" placeholder="Sub Domain"
-                                        class="form-control"
-                                        value="{{ old('sub_domain', Auth::user()->sub_domain ?? '') }}">
-                                    <div class="domain_name">{{ \env('SUBDOMAIN') }}</div>
-                                </div>
-                                @if ($errors->has('sub_domain'))
-                                    <span class="text-danger" role="alert">
-                                        <strong>{{ $errors->first('sub_domain') }}</strong>
-                                    </span>
-                                @endif
-                            </div>
-
-                        </div>
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="form-group mb-0 text-center">
-                                    <button class="btn btn-blue btn-block" type="submit"> {{ __('Update') }} </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </form>
-            </div> -->
-
             <div class="col-md-4 mb-3">
                 <form method="POST" class="h-100" action="{{ route('preference', Auth::user()->code) }}">
                     @csrf

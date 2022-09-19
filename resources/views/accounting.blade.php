@@ -166,13 +166,15 @@
 
         <div class="row">
             <div class="col-lg-4">
-                <div >
-                    <div class="card-box" id="map"></div>
-                </div> 
+                <div class="card-box pb-0 h-100">
+                    <div >
+                        <div id="map"></div>
+                    </div> 
+                </div>
             </div> 
 
             <div class="col-lg-8">
-                <div class="card-box pb-2">
+                <div class="card-box pb-2 h-100">
                     <div class="row d-flex align-items-center">
                         <div class="col-md-6">
                             <h4 class="header-title mb-3">{{__("Analytics")}}</h4>
