@@ -11,7 +11,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
         </div>
         <p class="text-muted text-center mt-2 mb-0">{{__("Profile Pic")}}</p>
     </div>
-    <div class="offset-md-2 col_md-6">
+    <div class="col-md-8">
         <span>{{__('Live OTP')}}</span>
         <h4>{{isset($otp)?$otp: __('View OTP after Logging in the '.getAgentNomenclature().' App')}}</h4>
     </div>
