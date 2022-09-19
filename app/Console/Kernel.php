@@ -19,6 +19,7 @@ class Kernel extends ConsoleKernel
         Commands\NewChanges::class,
         Commands\SendPushNotification::class,
         Commands\RunSingleSeederCommand::class,
+        Commands\BulkUploadAllocationCron::class,
     ];
 
     /**
@@ -31,6 +32,7 @@ class Kernel extends ConsoleKernel
     {
         
            $schedule->command('create:batch')->everyFiveMinutes();
+           $schedule->command('BulkUploadAllocation:cron')->everyMinute();
         // $schedule->command('push:send')->everyMinute();
        //  $schedule->command('queue:restart')->everyMinute()
     }
