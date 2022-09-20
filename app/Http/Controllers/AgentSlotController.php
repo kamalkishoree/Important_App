@@ -271,11 +271,11 @@ class AgentSlotController extends Controller
             $startDate = '';
             $endDate ='';
         }
-
+        $booking_type = $request->has('eventType') ? $request->eventType : 'working_hours';
         $lst = count($date) - 1;
         // $slot = AgentSlot::select('agent_slots.*', 'slot_days.id as slot_day_id', 'slot_days.slot_id', 'slot_days.day')->join('slot_days', 'slot_days.slot_id', 'agent_slots.id')->where('agent_id', $id)->orderBy('slot_days.day', 'asc')->get();
      
-        $AgentRoster = AgentSlotRoster::with('agentSlot','days')->where('agent_id',$Agent->id)->whereBetween('schedule_date', [$startDate, $endDate])->orderBy('schedule_date','asc')->get();
+        $AgentRoster = AgentSlotRoster::with('agentSlot','days')->where('agent_id',$Agent->id)->whereBetween('schedule_date', [$startDate, $endDate])->orderBy('schedule_date','asc')->where('booking_type',$booking_type)->get();
 
         $showData = array();
         $count = 0;
