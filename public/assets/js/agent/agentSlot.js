@@ -132,12 +132,15 @@ $(function(){
                 navLinks: true,
                 selectable: true,
                 selectMirror: true,
+                selectOverlap:false,
                 height: 'auto',
                 editable: false,
                 nowIndicator: true,
                 eventMaxStack: 1,
                 select: function(arg) {
                     dispatcherStorage.removeStorageSingle('recurring');
+                    console.log(arg);
+                    initDatetimeRangePicker(arg.startStr,arg.endStr);
                     Swal.fire({
                         title: 'Add working hours',
                         html: AddSlotHtml,
@@ -175,7 +178,7 @@ $(function(){
                             }
                             return { start_time: start_time, end_time: end_time,week_day:week_day,blocktime:blocktime,recurring:recurring,booking_type:booking_type,memo:memo}
                         },onOpen: function() {
-                            initDatetimeRangePicker();
+                            
                         
                         }
                       }).then(async (result) => {
@@ -195,12 +198,12 @@ $(function(){
                       })
                   
               
-                    calendar.addEvent({
-                        title: '',
-                        start: arg.start,
-                        end: arg.end,
-                        allDay: arg.allDay
-                    })
+                    // calendar.addEvent({
+                    //     title: '',
+                    //     start: arg.start,
+                    //     end: arg.end,
+                    //     allDay: arg.allDay
+                    // })
                     $('#standard-modal').modal({
                         //backdrop: 'static',
                         keyboard: false

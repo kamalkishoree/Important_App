@@ -179,5 +179,60 @@ class AgentSlotController extends BaseController
     }
 
        
-   
+   /**   get agent according to lat long  */
+   function checkAgentsSlotavailablty(Request $request){
+       
+    //pr($request->all());
+    // try {
+
+        $validator = Validator::make(request()->all(), [
+            'agent_id' => 'required',
+            'schedule_date' => 'required',
+            'schedule_time' => 'required',
+        ]);
+
+        if($validator->fails()){
+            return $this->errorResponse($validator->messages(), 422);
+        }
+        $block_time = explode('-', $request->blocktime);
+        $start_time = date("H:i:s",strtotime( $block_time[0]));
+        $end_time = date("H:i:s",strtotime($block_time[1]));
+
+        $product_variant_data = array();
+        $product_variant_id =  ProductVariantSet::where(['variant_option_id'=>$request->variant_option_id,'product_id'=>$request->product_id])->pluck('product_variant_id');
+        $product_variant_id = $product_variant_id->toArray();
+        $ProductBooking  = ProductBooking::whereIn('variant_id',$product_variant_id)->where('product_id',$request->product_id)
+                            ->where(function ($query) use ($start_time , $end_time ){
+                                $query->where('start_date_time', '<=', $end_time)
+                                      ->where('end_date_time', '>=', $start_time);
+        $timezoneset = 'Asia/Kolkata';
+      
+        $tagId = '';
+        $myDate = date('Y-m-d',strtotime( $request->schedule_date));
+    
+        $AgentSlotRoster = AgentSlotRoster::whereDate('schedule_date', $myDate)->where(['agent_id' =>$request->agent_id])
+                                        ->where(function ($query) use ($start_time , $end_time ){
+                                            $query->where('start_date_time', '<=', $end_time)
+                                                ->where('end_date_time', '>=', $start_time);
+                                        })
+                                        ->where(function ($query) use ($start_time , $end_time ){
+                                            $query->where('booking_type', '!=', 'blocked')
+                                                ->whereOr('booking_type', '!=', 'new_booking');
+                                        })->first();
+
+        
+     
+        return response()->json([
+            'data' => $AgentSlotRoster,
+            'status' => 200,
+            'message' => __('success')
+        ], 200);
+
+    // } catch (Exception $e) {
+    //     return response()->json([
+    //         'message' => $e->getMessage()
+    //     ], 400);
+    // }
+
+}
 }
