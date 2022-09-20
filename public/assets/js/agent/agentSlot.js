@@ -82,29 +82,31 @@ $(function(){
         //  console.log(formData);
           //return false;
        // $('#edit-slot-modal #deleteSlotDate').val(date);
+       
         Swal.fire({
-            title: 'Are you sure? You want to delete this slot.',
-            confirmButtonText: 'Yes',
-            focusConfirm: false,
+            title: 'Are you sure? You want to delete slot.',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, delete all!',
+            cancelButtonText: 'Yes, delete single day!',
+            reverseButtons: true,
             preConfirm: () => {
-            //     const SlotId      =  dispatcherStorage.getStorage('edit_slot_id');
-             
-            //     const EditSlotDate    =  dispatcherStorage.getStorage('EditSlotDate');
-            //   return {  SlotId: SlotId,EditSlotDate:EditSlotDate }
+            
             },onOpen: function() {
             }
           }).then(async (result) => {
-            // var formData = {
-            //     slot_id:result.value.SlotId,
-            //     slot_date:result.value.EditSlotDate,
-            //     agent_id:agent_id
-            // }
+          
+            
+            if (result.isConfirmed) {
+                formData.delete_type = 'all'
+            } else if (result.dismiss === Swal.DismissReason.cancel) {
+                formData.delete_type = 'single'
+            }
             console.log(formData);
-            await deleteSlot(formData)
+               await deleteSlot(formData)
           })
-        // if (confirm("Are you sure? You want to delete this slot.")) {
-        //    console.log('sadf');
-        // }
+       
         return false;
     })
 
@@ -173,7 +175,7 @@ $(function(){
                             const start_time = Swal.getPopup().querySelector('#start_time').value
                             const end_time = Swal.getPopup().querySelector('#end_time').value
                             const blocktime = Swal.getPopup().querySelector('#blocktime').value
-                            const recurring = dispatcherStorage.getStorage('recurring_val');
+                            const recurring =  Swal.getPopup().querySelector('#recurring').value //dispatcherStorage.getStorage('recurring_val');
                             const memo = Swal.getPopup().querySelector('#memo').value;
                             const booking_type = Swal.getPopup().querySelector('#booking_type').value
 
@@ -366,6 +368,7 @@ $(function(){
                         }
                       }).then(async (result) => {
                         console.log(result);
+                        if(result.dismiss== undefined){
                         var formData = {
                             week_day:result.value.week_day,
                             blocktime:result.value.blocktime,
@@ -382,7 +385,7 @@ $(function(){
                           }
                          
                           await add_slot_time(formData,'edit')
-                       
+                        }
                         // Swal.fire(`
                         // blocktime: ${result.value.blocktime}
                         //   memo: ${result.value.memo}
@@ -479,7 +482,7 @@ $(function(){
     } 
 
     async function deleteSlot(formData){
-        console.log(formData);
+       
         axios.post(`agent/slot/delete`, formData)
         .then(async response => {
          console.log(response.data.status);

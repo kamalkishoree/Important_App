@@ -24,9 +24,9 @@ use App\Model\{Agent,AgentSlot,AgentSlotRoster,SlotDay};
 class AgentSlotController extends Controller
 {
     use ApiResponser;
-    public $blockColor = 'rgb(119 142 72)';
+    public $Blockedslots = 'rgb(119 142 72)';
     public $workingColor = '#43bee1';
-    public $Blockedslots = 'rgb(155 90 90)';
+    public $blockColor = 'rgb(155 90 90)';
 
     /**
      * Store a newly created resource in storage.
@@ -204,11 +204,11 @@ class AgentSlotController extends Controller
         //     DB::beginTransaction();
             $dateNow = Carbon::now()->format('Y-m-d');
             
-            if($request->recurring==0){
+            if($request->delete_type=='single'){
                 $slot_date = $request->has('slot_date') ? $request->slot_date :  Carbon::now(); ;
                 $seleted_date = Carbon::parse($slot_date)->format('Y-m-d');
                 if( $seleted_date < $dateNow){
-                    return response()->json(array('success' => false, 'message'=>__('Inveled date.')));
+                    return response()->json(array('success' => false, 'message'=>__("You can't delete past date.")));
                 }
                 AgentSlotRoster::where(['slot_id'=>$request->slot_id,'agent_id'=>$request->agent_id])->whereDate('schedule_date', $seleted_date)->delete();
                 DB::commit(); //Commit transaction after all the operations
@@ -220,17 +220,17 @@ class AgentSlotController extends Controller
             $start_date = date("Y-m-d H:i:s",strtotime($block_time[0]));
             $end_date   = date("Y-m-d H:i:s",strtotime($block_time[1]));
             $period     = CarbonPeriod::create($start_date, $end_date);
-
+            //pr($request->all());
             foreach ($period as $key => $date) {
              
-                $dayNumber = $date->dayOfWeek+1; // get day number //
-                if(in_array($dayNumber, $weekdays) && (  strtotime($dateNow) <= strtotime($date->format('Y-m-d')))  ){
+                $dayNumber = $date->dayOfWeek+1; // get day number //in_array($dayNumber, $weekdays) &&
+                if( (  strtotime($dateNow) <= strtotime($date->format('Y-m-d')))  ){
                     AgentSlotRoster::where(['slot_id'=>$request->slot_id,'agent_id'=>$request->agent_id])->whereDate('schedule_date', $date->format('Y-m-d'))->delete();
                 }
             }
-            foreach ($weekdays as $k => $day) {
-                SlotDay::where(['slot_id'=>$request->slot_id,'day'=>$day])->delete();
-            }
+            // foreach ($weekdays as $k => $day) {
+            //     SlotDay::where(['slot_id'=>$request->slot_id,'day'=>$day])->delete();
+            // }
             
             
             DB::commit(); //Commit transaction after all the operations
@@ -279,10 +279,10 @@ class AgentSlotController extends Controller
 
         $showData = array();
         $count = 0;
-
+        
             if($AgentRoster){
                 foreach ($AgentRoster as $k => $v) {
-                    
+                    $order_url = '';
                     $days= $v->days->pluck('day');
                     $a_date = date('Y-m-d', strtotime($v->schedule_date));
                     $title = $v->memo ? $v->memo :'';
@@ -291,7 +291,9 @@ class AgentSlotController extends Controller
                         $color = $this->blockColor;
                     }else if($v->booking_type == 'new_booking'){
                         $color = $this->Blockedslots;
+                        $order_url = route('tasks.edit', $v->order_id);
                     }
+                    
                     
                     $showData[$count]['title'] = trim($title);
                     $showData[$count]['start'] = $a_date.'T'.$v->start_time;
@@ -310,6 +312,7 @@ class AgentSlotController extends Controller
                     $showData[$count]['end_date'] = $v->agentSlot ? $v->agentSlot->end_date : 0;
                     $showData[$count]['agent_id'] = $v->agent_id;
                     $showData[$count]['days'] = $days;
+                    $showData[$count]['order_url'] = $order_url;
                     $count++;
                     
                 }

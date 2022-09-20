@@ -14,7 +14,7 @@
 @section('popup-content')
 <div class="card-box pt-0">
     <div class="row">
-        <h4 class="mb-4 "> {{ __('Weekly hours') }}</h4>
+        <h4 class="mb-4 "> {{ __('Scheduled Hours') }}</h4>
         <div class="col-12 alWeeklyHourPopup">
 
             <ul class="nav nav-tabs" id="myTab" role="tablist">
