@@ -1,6 +1,7 @@
 $(function(){
     
     dispatcherStorage.removeStorageAll();
+    dispatcherStorage.setStorageSingle('eventType','working_hours');
     var product_id = vendor_id = title = block = appoin=agent_id = calendar='' ;
     var calendarEl = document.getElementById('calendar');
     $(document).on('click', '.agent_slot_button', function() {
@@ -108,13 +109,27 @@ $(function(){
     })
 
     $(document).on('click', '.get_event', function() {
-        var event = $(this).data('target');
+        var event = $(this).attr('data-eventType');
+        dispatcherStorage.setStorageSingle('eventType',event);
         spinnerJS.showSpinner();
         fullCalendarInt(agent_id,event);
     });
 
     async function fullCalendarInt(agent_id,eventType='working_hours'){
+        
+        var eventEnabled = true;
+        if(eventType == 'working_hours'){
+            eventEnabled = true;
+        } else if(eventType == 'new_booking'){
+            eventEnabled = false;
+        } else {
+            eventEnabled = true;
+        }
         if($('#calendar').length > 0){
+            if(calendar){
+                 calendar.destroy();
+            }
+            
             calendar = new FullCalendar.Calendar(calendarEl, {
                 initialView: 'timeGridWeek',
                 disableDragging: true,
@@ -136,14 +151,15 @@ $(function(){
                     hour12: ""
                 },
                 navLinks: true,
-                selectable: true,
+                selectable: eventEnabled,
                 selectMirror: true,
                 selectOverlap:false,
                 height: 'auto',
                 editable: false,
                 nowIndicator: true,
-                eventMaxStack: 1,
+                //eventMaxStack: 1,
                 select: function(arg) {
+                    
                     dispatcherStorage.removeStorageSingle('recurring');
                     console.log(arg);
                     initDatetimeRangePicker(arg.startStr,arg.endStr);
@@ -188,18 +204,25 @@ $(function(){
                         
                         }
                       }).then(async (result) => {
-                        var formData = {
-                            start_time:result.value.start_time,
-                            end_time:result.value.end_time,
-                            week_day:result.value.week_day,
-                            blocktime:result.value.blocktime,
-                            recurring:result.value.recurring,
-                            agent_id:agent_id,
-                            booking_type:result.value.booking_type,
-                            memo:result.value.memo
-                          }
-                          console.log(formData);
-                          await add_slot_time(formData)
+                     
+                        if(result.dismiss== undefined){
+                            var formData = {
+                                start_time:result.value.start_time,
+                                end_time:result.value.end_time,
+                                week_day:result.value.week_day,
+                                blocktime:result.value.blocktime,
+                                recurring:result.value.recurring,
+                                agent_id:agent_id,
+                                booking_type:result.value.booking_type,
+                                memo:result.value.memo
+                              }
+                              console.log(formData);
+                              await add_slot_time(formData)
+                        } else{
+                            //alert()
+                            //arg.remove()
+                        }
+                       
                       
                       })
                   
@@ -216,7 +239,7 @@ $(function(){
                     });
                     var day = arg.start.getDay() + 1;
                     $('#day_' + day).prop('checked', true);
-                 console.log(arg.start.getHours());
+                     console.log(arg.start.getHours());
              
                     initDatetimeRangePicker(  new Date( arg.start), new Date( arg.end));
                     if (arg.allDay == true) {
@@ -296,6 +319,9 @@ $(function(){
                 eventResize: function(arg) {
                 },
                 eventClick: function(ev) {
+                    if(!eventEnabled){
+                        return;
+                    }
                     Swal.fire({
                         title: 'Edit working hours',
                         html: EditSlotHtml,
@@ -419,22 +445,19 @@ $(function(){
 
     }
     async function add_slot_time(formData,action='add'){
+        var evttype= dispatcherStorage.getStorage('eventType');
         var actionUrl = (action == 'add') ? 'add_slot' : 'update_slot';
         axios.post(`agent/${actionUrl}`, formData)
         .then(async response => {
          console.log(response);
             if(response.data.status == "Success"){
-                //blockDataTable();
-               // setInterval( function () {
-                    
-                //}, 30000 );
                 Swal.fire({
                     icon: 'success',
                     title: 'Success',
                     text: response.data.message,
                     //footer: '<a href="">Why do I have this issue?</a>'
                 })
-                fullCalendarInt(agent_id)
+                fullCalendarInt(agent_id,evttype)
              
             } else{
                 Swal.fire({
@@ -447,11 +470,11 @@ $(function(){
         })
         .catch(e => {
             console.log(e);
-            // Swal.fire({
-            //     icon: 'error',
-            //     title: 'Oops...',
-            //     text: 'Something went wrong, try again later!',
-            // })
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Something went wrong, try again later!',
+            })
         })    
     } 
 
@@ -462,10 +485,6 @@ $(function(){
          console.log(response.data.status);
             if(response.data.status == "Success"){
                 
-                //blockDataTable();
-               // setInterval( function () {
-                    
-                //}, 30000 );
                 Swal.fire({
                     icon: 'success',
                     title: 'Success',
