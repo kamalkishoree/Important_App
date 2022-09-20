@@ -18,7 +18,7 @@
                 "processing": true,
                 "serverSide": true,
                 "responsive": true,
-                "iDisplayLength": 10,
+                "iDisplayLength": 20,
                 "paging": true,
                 "lengthChange" : true,
                 "searching": true,
@@ -74,19 +74,34 @@
                     {data: 'id', name: 'id', orderable: false, searchable: false, "mRender": function ( data, type, full ) {
                         return '<input type="checkbox" class="single_driver_check" name="driver_id[]" id="single_driver" value="'+full.id+'">';
                     }},
-                    
-                    {data: 'customer_id', name: 'customer_id', orderable: true, searchable: false},
                     {data: 'order_number', name: 'order_number', orderable: true, searchable: false , "mRender": function ( data, type, full ) {
-                        if(full.request_type=='D')
-                        return full.order_number+' (Delivery)';
-                        
-                        return full.order_number+' (Pickup)';
-
+                        return full.order_number;
                     }},
+                    {data: 'customer_id', name: 'customer_id', orderable: true, searchable: false},
                     {data: 'customer_name', name: 'customer_name', orderable: true, searchable: false},
                     {data: 'phone_number', name: 'phone_number', orderable: true, searchable: false},
-                    {data: 'agent_name', name: 'agent_name', orderable: true, searchable: false},
-                    {data: 'order_time', name: 'order_time', orderable: true, searchable: false},
+                    {data: 'agent_name', name: 'agent_name', orderable: true, searchable: false, "mRender": function ( data, type, full ) {
+                        if(full.status=='unassigned')
+                        {
+                            var selectbox= '<select name="agent_name_id" id="agent_name_id" data-id="'+full.id+'" class="form-control select_agent">';
+                            selectbox+='<option value=""> Select {{__(getAgentNomenclature()) }} </option>';
+                            @foreach ($agents as $item)
+                            @php
+                                $checkAgentActive = ($item->is_available == 1) ? ' ('.__('Online').')' : ' ('.__('Offline').')';
+                            @endphp
+                            selectbox+='<option value="{{$item->id}}">{{ ucfirst($item->name). $checkAgentActive}}</option>';
+                            @endforeach
+                            selectbox+='</select>';
+                            return selectbox;
+
+                        }else{
+                            return full.order_number;
+                        }
+                    }},
+                    {data: 'order_time', name: 'order_time', orderable: true, searchable: false, "mRender": function ( data, type, full ) {
+                        
+                        return '<div class="datetime_div"><i class="mdi mdi-av-timer"></i> '+full.order_time+'</div>';
+                    }},
                     {data: 'short_name', name: 'short_name', orderable: false, searchable: false, "mRender": function ( data, type, full ) {
                         var shortName = JSON.parse(full.short_name.replace(/&quot;/g,'"'));
                         var routes = '';
@@ -95,13 +110,6 @@
                         });
                         return routes;
                     }},
-                    /*{data: 'track_url', name: 'track_url', orderable: false, searchable: false, "mRender": function ( data, type, full ) {
-                        var trackUrl = full.track_url;
-                        return '<a onclick="window.open(this.href,"_blank");return false;" href="'+trackUrl+'">'+'{{__("Track")}}'+'</a>';
-                    }},
-                     {data: 'track_url', name: 'track_url', orderable: false, searchable: false, "mRender": function ( data, type, full ) {
-                        return '<button class="showTaskProofs btn btn-primary-outline action-icon" value="'+full.id+'"><i class="fe-layers"></i></button>';
-                    }}, */
                     {data: 'order_cost', name: 'order_cost', orderable: false, searchable: false, "mRender": function ( data, type, full ) {
                         return '<button class="showaccounting btn btn-primary-outline action-icon setcolor" value="'+full.id+'">'+full.order_cost+'</button>';
                     }},
@@ -110,9 +118,10 @@
                 ];
             }else{
                 return [
-                    // {data: 'order_number', name: 'order_number', orderable: true, searchable: false},
+                    {data: 'order_number', name: 'order_number', orderable: true, searchable: false , "mRender": function ( data, type, full ) {
+                        return full.order_number;
+                    }},
                     {data: 'customer_id', name: 'customer_id', orderable: true, searchable: false},
-                    {data: 'order_number', name: 'order_number', orderable: true, searchable: false},
                     {data: 'customer_name', name: 'customer_name', orderable: true, searchable: false},
                     {data: 'phone_number', name: 'phone_number', orderable: true, searchable: false},
                     {data: 'agent_name', name: 'agent_name', orderable: true, searchable: false},
@@ -141,6 +150,48 @@
     function handleClick(myRadio) {
         $('#getTask').submit();
     }
+
+    $(document).on('change', '.select_agent', function() {
+        if($(this).val()!='')
+        {
+            var order_id = Array($(this).attr('data-id'));
+            $.ajax({
+                type: "POST",
+                url: '{{route("assign.agent")}}',
+                data: {_token: CSRF_TOKEN, orders_id: order_id, agent_id: $(this).val()},
+                success: function( msg ) {
+                    $.toast({ 
+                    heading:"Success!",
+                    text : "{{__(getAgentNomenclature()) }} assigned successfully.", 
+                    showHideTransition : 'slide', 
+                    bgColor : 'green',              
+                    textColor : '#eee',            
+                    allowToastClose : true,      
+                    hideAfter : 5000,            
+                    stack : 5,                   
+                    textAlign : 'left',         
+                    position : 'top-right'      
+                    });
+                    location.reload();
+                },
+                error: function(errors){
+                    $.toast({ 
+                    heading:"Error!",
+                    text : "{{__(getAgentNomenclature()) }} can not be assigned.", 
+                    showHideTransition : 'slide', 
+                    bgColor : 'red',              
+                    textColor : '#eee',            
+                    allowToastClose : true,      
+                    hideAfter : 5000,            
+                    stack : 5,                   
+                    textAlign : 'left',         
+                    position : 'top-right'      
+                    });
+                    location.reload();
+                }
+            });
+        }
+    });
 
     //this is for task detail pop-up
     $(document).on('click', '.showtasks', function() {
@@ -364,6 +415,7 @@
     $(document).on('click', '.showaccounting', function() {
         $('#assign_agent').modal('show');
     });
+
     function round(value, exp) {
         if (typeof exp === 'undefined' || +exp === 0)
             return Math.round(value);
@@ -475,6 +527,61 @@
 
             }
         });
+
+        function submitProductImportForm() {
+            var form = document.getElementById('submit_bulk_upload_task');
+            var formData = new FormData(form);
+            var data_uri = "{{route('tasks.importCSV')}}";
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            $.ajax({
+                type: "post",
+                headers: {
+                    Accept: "application/json"
+                },
+                url: data_uri,
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function(response) {
+                    if(response.status == 'Success')
+                    {var color = 'green';var heading="Success!";}else{var color = 'red';var heading="Error!";}
+                    $.toast({ 
+                    heading:heading,
+                    text : response.message, 
+                    showHideTransition : 'slide', 
+                    bgColor : color,              
+                    textColor : '#eee',            
+                    allowToastClose : true,      
+                    hideAfter : 5000,            
+                    stack : 5,                   
+                    textAlign : 'left',         
+                    position : 'top-right'      
+                    });
+                    if (response.status == 'Success') {
+                            $("#upload-bulk-tasks .close").click();
+                            location.reload();
+                    } else {
+                        $("#upload-bulk-tasks .show_all_error.invalid-feedback").show();
+                        $("#upload-bulk-tasks .show_all_error.invalid-feedback").text(response.message);
+                    }
+                },
+                beforeSend: function() {
+
+                    $(".loader_box").show();
+                },
+                complete: function() {
+                    $(".loader_box").hide();
+                    setTimeout(function() {
+                        location.reload();
+                    }, 2000);
+                
+                }
+            });
+        }
 
 </script>
 
