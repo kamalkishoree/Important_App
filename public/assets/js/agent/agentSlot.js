@@ -216,7 +216,9 @@ $(function(){
                     });
                     var day = arg.start.getDay() + 1;
                     $('#day_' + day).prop('checked', true);
-    
+                 console.log(arg.start.getHours());
+             
+                    initDatetimeRangePicker(  new Date( arg.start), new Date( arg.end));
                     if (arg.allDay == true) {
                         document.getElementById('start_time').value = "00:00";
                         document.getElementById('end_time').value = "23:59";

@@ -24,9 +24,9 @@ use App\Model\{Agent,AgentSlot,AgentSlotRoster,SlotDay};
 class AgentSlotController extends Controller
 {
     use ApiResponser;
-    public $blockColor = '#d71717';
+    public $blockColor = 'rgb(119 142 72)';
     public $workingColor = '#43bee1';
-    public $Blockedslots = '#8d6464';
+    public $Blockedslots = 'rgb(155 90 90)';
 
     /**
      * Store a newly created resource in storage.
@@ -271,11 +271,11 @@ class AgentSlotController extends Controller
             $startDate = '';
             $endDate ='';
         }
-
+        $booking_type = $request->has('eventType') ? $request->eventType : 'working_hours';
         $lst = count($date) - 1;
         // $slot = AgentSlot::select('agent_slots.*', 'slot_days.id as slot_day_id', 'slot_days.slot_id', 'slot_days.day')->join('slot_days', 'slot_days.slot_id', 'agent_slots.id')->where('agent_id', $id)->orderBy('slot_days.day', 'asc')->get();
      
-        $AgentRoster = AgentSlotRoster::with('agentSlot','days')->where('agent_id',$Agent->id)->whereBetween('schedule_date', [$startDate, $endDate])->orderBy('schedule_date','asc')->get();
+        $AgentRoster = AgentSlotRoster::with('agentSlot','days')->where('agent_id',$Agent->id)->whereBetween('schedule_date', [$startDate, $endDate])->orderBy('schedule_date','asc')->where('booking_type',$booking_type)->get();
 
         $showData = array();
         $count = 0;
@@ -288,9 +288,9 @@ class AgentSlotController extends Controller
                     $title = $v->memo ? $v->memo :'';
                     $color = $this->workingColor;
                     if($v->booking_type == 'blocked'){
-                        $color = $this->Blockedslots;
+                        $color = $this->blockColor;
                     }else if($v->booking_type == 'new_booking'){
-                        $color = $this->workingColor;
+                        $color = $this->Blockedslots;
                     }
                     
                     $showData[$count]['title'] = trim($title);

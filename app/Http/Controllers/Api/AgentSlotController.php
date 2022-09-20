@@ -23,8 +23,15 @@ class AgentSlotController extends BaseController
     function getAgentsSlotByTags(Request $request){
        
         //pr($request->all());
-        // try {
-
+         try {
+            $preference =  ClientPreference::first();
+            if($preference->is_driver_slot != 1){
+                return response()->json([
+                    'data' => [],
+                    'status' => 200,
+                    'message' => __('Slotting Not active!')
+                ], 200);
+            }
             $validator = Validator::make(request()->all(), [
                 'latitude'  => 'required',
                 'longitude' => 'required',
@@ -77,6 +84,7 @@ class AgentSlotController extends BaseController
 
             $geoagents = $geoagents->whereIn('id', $geoagents_ids)->where(["is_available" => 1, "is_approved" => 1])->orderBy('id', 'DESC')->get();
             $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain/';
+            $agents=[];
             foreach( $geoagents as $agent){
                 $agent->image_url =  isset($agent->profile_picture) ? $imgproxyurl.Storage::disk('s3')->url($agent->profile_picture) : Phumbor::url(URL::to('/asset/images/no-image.png'));
               
@@ -98,33 +106,36 @@ class AgentSlotController extends BaseController
                 for ($i=0;$i<$count;$i++) {
                     $arr = array_merge($arr, $slotss[$i]);
                 }
-    
+                $viewSlot = [];
                 if (isset($arr)) {
                     foreach ($arr as $k=> $slt) {
                         $sl = explode(' - ', $slt);
-                        $viewSlot[$k]['name'] = date('h:i:A', strtotime($sl[0])).' - '.date('h:i:A', strtotime($sl[1]));
+                        $viewSlot[$k]['name'] = date('h:i A', strtotime($sl[0])).' - '.date('h:i A', strtotime($sl[1]));
                         $viewSlot[$k]['value'] = $slt;
                     }
                 }
                 // pr($viewSlot);
                 $agent->slotCount = count( $viewSlot);
                 $agent->slotings = $viewSlot;
-               
+                if(count( $viewSlot) >0){
+                    $agents[] = $agent;
+                }
+                
             }
             
            
 
             return response()->json([
-                'data' => $geoagents,
+                'data' => $agents,
                 'status' => 200,
                 'message' => __('success')
             ], 200);
 
-        // } catch (Exception $e) {
-        //     return response()->json([
-        //         'message' => $e->getMessage()
-        //     ], 400);
-        // }
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => $e->getMessage()
+            ], 400);
+        }
 
     }
     public function SplitTime($myDate, $StartTime, $EndTime, $Duration="60", $timezoneset,$delayMin = 0)
@@ -145,7 +156,7 @@ class AgentSlotController extends BaseController
         if ($nowT > $nowE) {
             return [];
         } elseif ($nowT>$nowS) {
-            $StartTime = date('H:i', strtotime($now));
+            $StartTime = date('H:i', strtotime($now. ' +10 minutes'));
         } else {
             $StartTime = date('H:i', strtotime($nowA));
         }
