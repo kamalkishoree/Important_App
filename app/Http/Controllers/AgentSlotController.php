@@ -24,9 +24,9 @@ use App\Model\{Agent,AgentSlot,AgentSlotRoster,SlotDay};
 class AgentSlotController extends Controller
 {
     use ApiResponser;
-    public $blockColor = 'rgb(119 142 72)';
+    public $Blockedslots = 'rgb(119 142 72)';
     public $workingColor = '#43bee1';
-    public $Blockedslots = 'rgb(155 90 90)';
+    public $blockColor = 'rgb(155 90 90)';
 
     /**
      * Store a newly created resource in storage.
