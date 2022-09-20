@@ -107,7 +107,13 @@ $(function(){
         return false;
     })
 
-    async function fullCalendarInt(agent_id){
+    $(document).on('click', '.get_event', function() {
+        var event = $(this).data('target');
+        spinnerJS.showSpinner();
+        fullCalendarInt(agent_id,event);
+    });
+
+    async function fullCalendarInt(agent_id,eventType='working_hours'){
         if($('#calendar').length > 0){
             calendar = new FullCalendar.Calendar(calendarEl, {
                 initialView: 'timeGridWeek',
@@ -229,7 +235,7 @@ $(function(){
                     $.ajax({
                         url: calender_data_url,
                         type: "GET",
-                        data: "start="+info.startStr+"&end="+info.endStr,
+                        data: `start=${info.startStr}&end=${info.endStr}&eventType=${eventType}`,
                         dataType:'json',
                         success: function (response) {
                             var startDate = moment(info.start).format('MMM DD');
