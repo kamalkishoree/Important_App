@@ -24,9 +24,9 @@ use App\Model\{Agent,AgentSlot,AgentSlotRoster,SlotDay};
 class AgentSlotController extends Controller
 {
     use ApiResponser;
-    public $blockColor = '#d71717';
+    public $blockColor = 'rgb(119 142 72)';
     public $workingColor = '#43bee1';
-    public $Blockedslots = '#8d6464';
+    public $Blockedslots = 'rgb(155 90 90)';
 
     /**
      * Store a newly created resource in storage.
@@ -288,9 +288,9 @@ class AgentSlotController extends Controller
                     $title = $v->memo ? $v->memo :'';
                     $color = $this->workingColor;
                     if($v->booking_type == 'blocked'){
-                        $color = $this->Blockedslots;
+                        $color = $this->blockColor;
                     }else if($v->booking_type == 'new_booking'){
-                        $color = $this->workingColor;
+                        $color = $this->Blockedslots;
                     }
                     
                     $showData[$count]['title'] = trim($title);
