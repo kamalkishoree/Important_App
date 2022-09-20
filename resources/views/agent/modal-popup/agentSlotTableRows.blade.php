@@ -5,18 +5,40 @@
 @section('popup-id','agentTablePopup')
 <style>
     #scheduleTablePopup .dt-buttons.btn-group.flex-wrap {right: inherit;}
+    .alWeeklyHourPopup .nav-link{background-color: transparent; color: #777;}
+    #agentTablePopup .modal-body {padding-top: 0px;}
 </style>
 {{-- @section('popup-header')
 {{ __('Agent Weekly hours') }}:<p class="sku-name pl-1"></p>
 @endsection --}}
 @section('popup-content')
-<div class="card-box">
+<div class="card-box pt-0">
     <div class="row">
-        <h4 class="mb-4 "> {{ __('Weekly hours') }}</h4>
+        <h4 class="mb-4 "> {{ __('Scheduled Hours') }}</h4>
+        <div class="col-12 alWeeklyHourPopup">
+
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="get_event  nav-link active" id="workinghours-tab" data-toggle="tab" data-eventType="working_hours" data-target="#workinghours" type="button" role="tab" aria-controls="workinghours" aria-selected="true">Working hours</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="get_event nav-link" id="booking-tab" data-toggle="tab" data-eventType="new_booking" data-target="#booking" type="button" role="tab" aria-controls="booking" aria-selected="false">Bookings</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="get_event nav-link" id="blocked-tab" data-toggle="tab" data-eventType="blocked" data-target="#blocked" type="button" role="tab" aria-controls="blocked" aria-selected="false">Blocked</button>
+                </li>
+            </ul>
+            {{-- <div class="tab-content" id="myTabContent">
+                <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">1 11111...</div>
+                <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">2 22222...</div>
+            </div> --}}
+        </div>
+
         <div class="col-md-12">
             <div class="row mb-2">
                 <div class="col-md-12 col-lg-4">
                     <div id='calendar_slot_alldays'>
+
                         <table class="table table-centered table-nowrap table-striped" id="calendar_slot_alldays_table">
                             <thead>
                                 <tr>

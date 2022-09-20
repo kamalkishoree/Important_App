@@ -1,6 +1,7 @@
 $(function(){
     
     dispatcherStorage.removeStorageAll();
+    dispatcherStorage.setStorageSingle('eventType','working_hours');
     var product_id = vendor_id = title = block = appoin=agent_id = calendar='' ;
     var calendarEl = document.getElementById('calendar');
     $(document).on('click', '.agent_slot_button', function() {
@@ -81,34 +82,56 @@ $(function(){
         //  console.log(formData);
           //return false;
        // $('#edit-slot-modal #deleteSlotDate').val(date);
+       
         Swal.fire({
-            title: 'Are you sure? You want to delete this slot.',
-            confirmButtonText: 'Yes',
-            focusConfirm: false,
+            title: 'Are you sure? You want to delete slot.',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, delete all!',
+            cancelButtonText: 'Yes, delete single day!',
+            reverseButtons: true,
             preConfirm: () => {
-            //     const SlotId      =  dispatcherStorage.getStorage('edit_slot_id');
-             
-            //     const EditSlotDate    =  dispatcherStorage.getStorage('EditSlotDate');
-            //   return {  SlotId: SlotId,EditSlotDate:EditSlotDate }
+            
             },onOpen: function() {
             }
           }).then(async (result) => {
-            // var formData = {
-            //     slot_id:result.value.SlotId,
-            //     slot_date:result.value.EditSlotDate,
-            //     agent_id:agent_id
-            // }
+          
+            
+            if (result.isConfirmed) {
+                formData.delete_type = 'all'
+            } else if (result.dismiss === Swal.DismissReason.cancel) {
+                formData.delete_type = 'single'
+            }
             console.log(formData);
-            await deleteSlot(formData)
+               await deleteSlot(formData)
           })
-        // if (confirm("Are you sure? You want to delete this slot.")) {
-        //    console.log('sadf');
-        // }
+       
         return false;
     })
 
-    async function fullCalendarInt(agent_id){
+    $(document).on('click', '.get_event', function() {
+        var event = $(this).attr('data-eventType');
+        dispatcherStorage.setStorageSingle('eventType',event);
+        spinnerJS.showSpinner();
+        fullCalendarInt(agent_id,event);
+    });
+
+    async function fullCalendarInt(agent_id,eventType='working_hours'){
+        
+        var eventEnabled = true;
+        if(eventType == 'working_hours'){
+            eventEnabled = true;
+        } else if(eventType == 'new_booking'){
+            eventEnabled = false;
+        } else {
+            eventEnabled = true;
+        }
         if($('#calendar').length > 0){
+            if(calendar){
+                 calendar.destroy();
+            }
+            
             calendar = new FullCalendar.Calendar(calendarEl, {
                 initialView: 'timeGridWeek',
                 disableDragging: true,
@@ -130,14 +153,15 @@ $(function(){
                     hour12: ""
                 },
                 navLinks: true,
-                selectable: true,
+                selectable: eventEnabled,
                 selectMirror: true,
                 selectOverlap:false,
                 height: 'auto',
                 editable: false,
                 nowIndicator: true,
-                eventMaxStack: 1,
+                //eventMaxStack: 1,
                 select: function(arg) {
+                    
                     dispatcherStorage.removeStorageSingle('recurring');
                     console.log(arg);
                     initDatetimeRangePicker(arg.startStr,arg.endStr);
@@ -151,7 +175,7 @@ $(function(){
                             const start_time = Swal.getPopup().querySelector('#start_time').value
                             const end_time = Swal.getPopup().querySelector('#end_time').value
                             const blocktime = Swal.getPopup().querySelector('#blocktime').value
-                            const recurring = dispatcherStorage.getStorage('recurring_val');
+                            const recurring =  Swal.getPopup().querySelector('#recurring').value //dispatcherStorage.getStorage('recurring_val');
                             const memo = Swal.getPopup().querySelector('#memo').value;
                             const booking_type = Swal.getPopup().querySelector('#booking_type').value
 
@@ -182,18 +206,25 @@ $(function(){
                         
                         }
                       }).then(async (result) => {
-                        var formData = {
-                            start_time:result.value.start_time,
-                            end_time:result.value.end_time,
-                            week_day:result.value.week_day,
-                            blocktime:result.value.blocktime,
-                            recurring:result.value.recurring,
-                            agent_id:agent_id,
-                            booking_type:result.value.booking_type,
-                            memo:result.value.memo
-                          }
-                          console.log(formData);
-                          await add_slot_time(formData)
+                     
+                        if(result.dismiss== undefined){
+                            var formData = {
+                                start_time:result.value.start_time,
+                                end_time:result.value.end_time,
+                                week_day:result.value.week_day,
+                                blocktime:result.value.blocktime,
+                                recurring:result.value.recurring,
+                                agent_id:agent_id,
+                                booking_type:result.value.booking_type,
+                                memo:result.value.memo
+                              }
+                              console.log(formData);
+                              await add_slot_time(formData)
+                        } else{
+                            //alert()
+                            //arg.remove()
+                        }
+                       
                       
                       })
                   
@@ -210,7 +241,7 @@ $(function(){
                     });
                     var day = arg.start.getDay() + 1;
                     $('#day_' + day).prop('checked', true);
-                 console.log(arg.start.getHours());
+                     console.log(arg.start.getHours());
              
                     initDatetimeRangePicker(  new Date( arg.start), new Date( arg.end));
                     if (arg.allDay == true) {
@@ -231,7 +262,7 @@ $(function(){
                     $.ajax({
                         url: calender_data_url,
                         type: "GET",
-                        data: "start="+info.startStr+"&end="+info.endStr,
+                        data: `start=${info.startStr}&end=${info.endStr}&eventType=${eventType}`,
                         dataType:'json',
                         success: function (response) {
                             var startDate = moment(info.start).format('MMM DD');
@@ -290,6 +321,9 @@ $(function(){
                 eventResize: function(arg) {
                 },
                 eventClick: function(ev) {
+                    if(!eventEnabled){
+                        return;
+                    }
                     Swal.fire({
                         title: 'Edit working hours',
                         html: EditSlotHtml,
@@ -334,6 +368,7 @@ $(function(){
                         }
                       }).then(async (result) => {
                         console.log(result);
+                        if(result.dismiss== undefined){
                         var formData = {
                             week_day:result.value.week_day,
                             blocktime:result.value.blocktime,
@@ -350,7 +385,7 @@ $(function(){
                           }
                          
                           await add_slot_time(formData,'edit')
-                       
+                        }
                         // Swal.fire(`
                         // blocktime: ${result.value.blocktime}
                         //   memo: ${result.value.memo}
@@ -413,22 +448,19 @@ $(function(){
 
     }
     async function add_slot_time(formData,action='add'){
+        var evttype= dispatcherStorage.getStorage('eventType');
         var actionUrl = (action == 'add') ? 'add_slot' : 'update_slot';
         axios.post(`agent/${actionUrl}`, formData)
         .then(async response => {
          console.log(response);
             if(response.data.status == "Success"){
-                //blockDataTable();
-               // setInterval( function () {
-                    
-                //}, 30000 );
                 Swal.fire({
                     icon: 'success',
                     title: 'Success',
                     text: response.data.message,
                     //footer: '<a href="">Why do I have this issue?</a>'
                 })
-                fullCalendarInt(agent_id)
+                fullCalendarInt(agent_id,evttype)
              
             } else{
                 Swal.fire({
@@ -441,25 +473,21 @@ $(function(){
         })
         .catch(e => {
             console.log(e);
-            // Swal.fire({
-            //     icon: 'error',
-            //     title: 'Oops...',
-            //     text: 'Something went wrong, try again later!',
-            // })
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Something went wrong, try again later!',
+            })
         })    
     } 
 
     async function deleteSlot(formData){
-        console.log(formData);
+       
         axios.post(`agent/slot/delete`, formData)
         .then(async response => {
          console.log(response.data.status);
             if(response.data.status == "Success"){
                 
-                //blockDataTable();
-               // setInterval( function () {
-                    
-                //}, 30000 );
                 Swal.fire({
                     icon: 'success',
                     title: 'Success',

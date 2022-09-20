@@ -254,8 +254,12 @@ p.custom-radio-design {
     text-align: left;
     display: inline-block;
 }
-.swal2-styled.swal2-confirm{
+.swal2-styled{
     height: auto;
+}
+h2#swal2-title {
+    font-size: 18px;
+    font-weight: 400;
 }
 </style>
 @endsection
