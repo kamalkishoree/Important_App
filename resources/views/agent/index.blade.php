@@ -14,7 +14,11 @@
         cursor: move;
         margin-right: 0rem !important;
     }
-
+    .alFilterLocation button.btn.btn-blue.waves-effect.waves-light.openModal.mr-1 {
+        width: auto;
+        min-width: auto;
+        max-width: inherit;
+    }
     .table th,
     .table td,
     .table td {
@@ -24,7 +28,9 @@
     .footer {
         z-index: 3;
     }
-
+    .table thead th {
+    border-top: 0;
+}
     #agent-listing_processing {
         position: absolute !important;
         background: transparent !important;
@@ -42,15 +48,19 @@
 
     div#agent-listing_filter {
         padding-top: 5px;
+        display: block;
+        overflow: hidden;
     }
 
     .dataTables_filter label {
-        width: 25%;
+        width: auto;
     }
 
     .dataTables_filter label .form-control {
         height: 37px;
         font-size: 16px;
+        margin-left: auto;
+        width: auto;
     }
 
     .dt-buttons .btn.btn-secondary,
@@ -65,17 +75,14 @@
     .btn-label:active {
         background-color: rgb(102 88 221) !important;
     }
-
     .dataTables_scrollHead thead th {
         cursor: pointer;
     }
-    
     .agent-listing tbody td{
         position: relative;
     }
-
     .nagtive-margin {
-        margin-top: -57px;
+        margin-top: -45px;
     }
     .bootstrap-select .dropdown-menu > .inner{
         overflow-y: scroll!important;
@@ -328,24 +335,37 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
             <div class="card">
                 <div class="card-body">
                     <div class="alFilterLocation">
-                        <div class="row d-flex justify-content-end">
-                            <div class="col-sm-2">
-                                <select name="geo_filter" id="geo_filter" class="form-control">
-                                    <option value="">{{__('Filter by location')}}</option>
-                                    @foreach($geos as $geo)
-                                        <option value="{{$geo->id}}">{{$geo->name}}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <div class="col-sm-2">
-                                <select name="tag_filter" id="tag_filter" class="form-control">
-                                    <option value="">{{__('Filter by tags')}}</option>
-                                    @foreach($tags as $tag)
-                                        <option value="{{$tag->id}}">{{$tag->name}}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
+                        <ul class="p-0 d-flex justify-content-end">
+                                <li>
+                                    <div class="text-sm-left">
+                                        @if (\Session::has('success'))
+                                        <div class="alert alert-success">
+                                            <span>{!! \Session::get('success') !!}</span>
+                                        </div>
+                                        @endif
+                                    </div>
+                                </li>
+                                <li>
+                                    <select name="geo_filter" id="geo_filter" class="form-control">
+                                        <option value="">{{__('Filter by location')}}</option>
+                                        @foreach($geos as $geo)
+                                            <option value="{{$geo->id}}">{{$geo->name}}</option>
+                                        @endforeach
+                                    </select>
+                                </li>
+                                <li>
+                                    <select name="tag_filter" id="tag_filter" class="form-control">
+                                        <option value="">{{__('Filter by tags')}}</option>
+                                        @foreach($tags as $tag)
+                                            <option value="{{$tag->id}}">{{$tag->name}}</option>
+                                        @endforeach
+                                    </select>
+                                </li>
+                                <li class="d-flex">
+                                    <button type="button" class="btn btn-blue waves-effect waves-light openModal mr-1" data-toggle="modal" data-target="" data-backdrop="static" data-keyboard="false"><i class="mdi mdi-plus-circle mr-1"></i> {{__("Add")}} {{ getAgentNomenclature() }}</button>
+                                    <button type="button" class="btn btn-success waves-effect waves-light saveaccounting" data-toggle="modal" data-target="#pay-receive-modal" data-backdrop="static" data-keyboard="false">{{__("Pay")}} / {{__("Receive")}}</button>
+                                </li>
+                            </ul>
                     </div>
                     <ul class="nav nav-tabs nav-material alNavTopMinus" id="top-tab" role="tablist">
                         <li class="nav-item">
@@ -367,24 +387,10 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                             <div class="material-border"></div>
                         </li>
                     </ul>
-                    
+
                     <div class="tab-content nav-material pt-0" id="top-tabContent">
                         <div class="tab-pane fade past-order show active" id="active_vendor" role="tabpanel" aria-labelledby="active-vendor">
-                            <div class="row mb-2 mt-2">
-                                <div class="col-sm-12">
-                                    <div class="text-sm-left">
-                                        @if (\Session::has('success'))
-                                        <div class="alert alert-success">
-                                            <span>{!! \Session::get('success') !!}</span>
-                                        </div>
-                                        @endif
-                                    </div>
-                                </div>
-                                <div class="col-sm-4 btn-auto">
-                                    <button type="button" class="btn btn-blue waves-effect waves-light openModal" data-toggle="modal" data-target="" data-backdrop="static" data-keyboard="false"><i class="mdi mdi-plus-circle mr-1"></i> {{__("Add")}} {{ getAgentNomenclature() }}</button>
-                                    <button type="button" class="btn btn-success waves-effect waves-light saveaccounting" data-toggle="modal" data-target="#pay-receive-modal" data-backdrop="static" data-keyboard="false">{{__("Pay")}} / {{__("Receive")}}</button>
-                                </div>
-                            </div>
+
                             <div class="table-responsive nagtive-margin">
                                 <table class="table table-striped dt-responsive nowrap w-100 all agent-listing" id="agent-listing">
                                     <thead>

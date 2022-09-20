@@ -1186,8 +1186,7 @@ body .tagsinput .tag {
 
 
 .geo_middle {
-    /* height: calc(100vh - 400px); */
-    max-height: 200px;
+    max-height: 500px;
     overflow-y: auto;
     overflow-x: hidden;
     margin: 0 0 20px;
@@ -1552,7 +1551,7 @@ span.copied_txt {
     .repeated-block .span1.onedelete {
         position: absolute;
         right: 18px;
-        top: -55px;
+        top: -50px;
     }
 
     #typeInputss {
@@ -1988,23 +1987,17 @@ body[dir="rtl"] .agent-listing tbody td{ padding: 15px 10px 10px 15px;}
 }
 
 .edit-icon-float-right {
-
     float: right;
     border-radius: 2px;
-    background: #6658ddf0;
-    color: #fff;
-    font-size: 14px;
-    padding: 3px 3px;
+    color: #000; 
+    font-size: 24px;
 }
 
 .edit-icon-float-right:hover {
-
     float: right;
     border-radius: 2px;
-    background: #7a6fe0f0;
-    color: #fff;
-    font-size: 14px;
-    padding: 3px 3px;
+    color: #595555;
+    font-size: 24px;
 }
 
 
@@ -2056,13 +2049,27 @@ body[dir="rtl"] .agent-listing tbody td{ padding: 15px 10px 10px 15px;}
   }
 /**end */
 /* 6/9/22 */
-.alNavTopMinus {
+/* .alNavTopMinus {
     margin-top: -35px;
+} */
+
+.alNavTopMinus {
+    z-index: 1;
+    position: relative;
+}
+.alFilterLocation {
+    position: relative;
+    width: 100%;
+    z-index: 0;
+}
+.alFilterLocation li{
+list-style: none;
+margin-left: 10px;
 }
 @media(max-width: 767px){
-    .alNavTopMinus {
+    /* .alNavTopMinus {
         margin-top: 10px;
-    }
+    } */
     .card-body .table-responsive #agent-listing_wrapper {
         padding: 50px 0 0 0 !important;
     }

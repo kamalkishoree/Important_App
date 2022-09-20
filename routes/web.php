@@ -115,6 +115,9 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 		Route::get('/demo/page', function () {
 			return view('demo');
 		});
+
+		Route::get('file-download/{filename}', 'DownloadFileController@index')->name('file.download.index');
+		Route::get('file-uploaded-download/{filename}', 'DownloadFileController@downloadUploadedFile')->name('uploadeddownload');
 		
 		Route::post('/login/client', 'LoginController@clientLogin')->name('client.login');
 		Route::get('/wrong/url', 'LoginController@wrongurl')->name('wrong.client');
@@ -228,6 +231,8 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 			Route::post('search/customer', 'TaskController@search')->name('search');
 			Route::post('remove-location', 'CustomerController@changeLocation');
 			Route::post('get-tasks', 'DashBoardController@getTaskDetails');
+
+			Route::post('task/importCSV', 'TaskController@importCsv')->name('tasks.importCSV');
 
 			/* Store Client Information */
 			Route::post('submit_client', 'UserProfile@SaveRecord')->name('store_client');

@@ -37,7 +37,7 @@ class TeamController extends Controller
      */
     public function index()
     {
-        $agents = Agent::with(['team.manager'])->orderBy('created_at', 'DESC')->paginate(10);
+        $agents = Agent::with(['team.manager'])->orderBy('created_at', 'DESC')->paginate(20);
         
         $managers = Manager::where('client_id', auth()->user()->code)->orderBy('name')->get();
         $teams  = Team::with(['manager', 'tags', 'agents'])->where('client_id', auth()->user()->code);
@@ -46,7 +46,7 @@ class TeamController extends Controller
                 $query->where('sub_admin_id', Auth::user()->id);
             });
         }
-        $teams = $teams->orderBy('created_at', 'DESC')->with('permissionToManager')->paginate(10);
+        $teams = $teams->orderBy('created_at', 'DESC')->with('permissionToManager')->paginate(20);
 
         $tags   = TagsForTeam::all();
 
