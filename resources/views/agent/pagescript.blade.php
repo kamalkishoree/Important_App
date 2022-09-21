@@ -202,7 +202,11 @@
                     },
                     searchPlaceholder: "{{__('Search '.getAgentNomenclature())}}",
                     'loadingRecords': '&nbsp;',
-                    'processing': '<div class="spinner"></div>'
+                    //'processing': '<div class="spinner"></div>'
+                    'processing':function(){
+                        spinnerJS.showSpinner();
+                        spinnerJS.hideSpinner();
+                    }
                 },
                 drawCallback: function() {
                     $(".dataTables_paginate > .pagination").addClass("pagination-rounded");

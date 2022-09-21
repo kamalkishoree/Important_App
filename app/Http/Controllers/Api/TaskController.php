@@ -18,12 +18,13 @@ use App\Model\TaskProof;
 use App\Model\DriverGeo;
 use App\Model\TaskReject;
 use App\Model\SmtpDetail;
+use App\Traits\AgentSlotTrait;
 use App\Model\BatchAllocation;
-use App\Model\BatchAllocationDetail;
 use App\Model\AllocationRule;
 use App\Model\ClientPreference;
 use App\Model\NotificationType;
 use App\Traits\agentEarningManager;
+use App\Model\BatchAllocationDetail;
 use App\Model\{PricingRule, TagsForAgent, AgentPayout, TagsForTeam, Team, PaymentOption, PayoutOption, AgentConnectedAccount, CustomerVerificationResource, SubscriptionInvoicesDriver};
 
 use Illuminate\Http\Request;
@@ -53,6 +54,7 @@ use App\Http\Controllers\StripeGatewayController;
 
 class TaskController extends BaseController
 {
+    use AgentSlotTrait;
     public function smstest(Request $request){
       $res = $this->sendSms2($request->phone_number, $request->sms_body);
      // pr($res);
@@ -901,6 +903,7 @@ class TaskController extends BaseController
 
     public function CreateTask(CreateTaskRequest $request)
     {
+    
         try {
             $header = $request->header();
             if(isset($header['client'][0]))
@@ -919,7 +922,7 @@ class TaskController extends BaseController
 
             $auth =  Client::with(['getAllocation', 'getPreference'])->first();
             $tz = new Timezone();
-
+           
             if(isset($request->order_time_zone) && !empty($request->order_time_zone))
             $auth->timezone = $request->order_time_zone;
             else
@@ -1040,8 +1043,25 @@ class TaskController extends BaseController
                 'dbname'                          => $request->dbname,
                 'sync_order_id'                   => $request->order_id
             ];
-            $orders = Order::create($order);
+           
+            
+           
 
+            $orders = Order::create($order);
+             /**
+             * booking for appointment 
+             * task_type_id =3= appointment type
+             * is_driver_slot check slotting enabled or not
+             */
+            if(($request->has('task_type_id') && $request->task_type_id == 3) && $auth->getPreference->is_driver_slot == 1 ){
+                $data  = $request->all();
+                $data['order_id']=$orders->id;
+                $data['order_number']= $orders->order_number;
+                $data['booking_type'] = 'new_booking';
+                $data['memo'] = __("Booked for Order number:").$orders->order_number;
+                $bookingResponse =  $this->SlotBooking($data);
+                
+            }
             if($request->is_restricted == 1){
                 $add_resource = CustomerVerificationResource::updateOrCreate([
                     'customer_id' => $cus_id
@@ -1197,11 +1217,11 @@ class TaskController extends BaseController
 
             if (isset($request->allocation_type) && $request->allocation_type === 'a') {
                 // if (isset($request->team_tag)) {
-            //     $orders->teamtags()->sync($request->team_tag);
-            // }
-            // if (isset($request->agent_tag)) {
-            //     $orders->drivertags()->sync($request->agent_tag);
-            // }
+                //     $orders->teamtags()->sync($request->team_tag);
+                // }
+                // if (isset($request->agent_tag)) {
+                //     $orders->drivertags()->sync($request->agent_tag);
+                // }
             }
             if (isset($request->order_team_tag)) {
 

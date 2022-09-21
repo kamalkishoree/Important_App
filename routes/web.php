@@ -284,7 +284,13 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 			Route::get('subscription/plan/delete/driver/{slug}', 'SubscriptionPlansDriverController@deleteSubscriptionPlan')->name('subscription.plan.delete.driver');
 			Route::post('subscription/plan/updateStatus/driver/{slug}', 'SubscriptionPlansDriverController@updateSubscriptionPlanStatus')->name('subscription.plan.updateStatus.driver');
 			Route::post('show/subscription/plan/driver', 'SubscriptionPlansDriverController@showSubscriptionPlanDriver')->name('show.subscription.plan.driver');
-			
+		
+			// agent slot
+			Route::get('calender/data/{id}', 'AgentSlotController@returnJson')->name('agent.calender.data');
+			Route::post('agent/add_slot', 'AgentSlotController@store')->name('agent.saveSlot');
+			Route::post('agent/update_slot', 'AgentSlotController@update')->name('agent.slot.update');
+			Route::get('agent/slot/create/{id}', 'AgentSlotController@create')->name('agent.slot.create');
+			Route::post('agent/slot/delete', 'AgentSlotController@destroy')->name('agent.slot.destroy');
 		});
 	});
 
