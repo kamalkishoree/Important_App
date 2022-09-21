@@ -99,7 +99,11 @@
                         paginate: { previous: "<i class='mdi mdi-chevron-left'>", next: "<i class='mdi mdi-chevron-right'>" },
                         searchPlaceholder: "{{__('Search Customers')}}",
                         'loadingRecords': '&nbsp;',
-                        'processing': '<div class="spinner"></div>'
+                       // 'processing': '<div class="spinner"></div>'
+                       'processing':function(){
+                            spinnerJS.showSpinner();
+                            spinnerJS.hideSpinner();
+                        }
             },
             drawCallback: function () {
                 $(".dataTables_paginate > .pagination").addClass("pagination-rounded");
