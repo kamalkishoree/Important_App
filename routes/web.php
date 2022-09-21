@@ -16,7 +16,10 @@ use Illuminate\Http\Request;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
+Route::get('/fire', function () {
+    event(new \App\Events\TestEvent());
+    return 'ok';
+});
 //switch language route
 Route::get('/switch/language', function (Request $request) {
 	if ($request->lang) {
