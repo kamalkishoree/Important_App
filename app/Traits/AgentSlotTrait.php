@@ -13,7 +13,7 @@ trait AgentSlotTrait{
         try {
             $end_date =  $start_date = date("Y-m-d H:i:s",strtotime( $data['schedule_time']));
             $start_time = date("H:i:s",strtotime( $data['schedule_time']));
-            $end_time   = date("H:i:s", strtotime($data['schedule_time']."+".$data['service_time']." minutes"));
+            $end_time   = date("H:i:s", strtotime($data['schedule_time']."+".$data['appointment_duration']." minutes"));
         
             $AgentSlot = new AgentSlot();
         
