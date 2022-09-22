@@ -25,6 +25,7 @@ trait AgentSlotTrait{
             $AgentSlot->recurring    = 0;
             $AgentSlot->save();
             \Log::info('AgentSlot create');
+            \Log::info($data['agent']);
             if($AgentSlot){
                 $slot_roster  =   new AgentSlotRoster();
                 $slot_roster->slot_id        =  $AgentSlot->id;
