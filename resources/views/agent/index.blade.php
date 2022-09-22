@@ -645,7 +645,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                 
                             
                                 </div>
-                                <div class="row memo">
+                                <div class="row memo view_booking">
                                     <div class="col-md-6 slot_type">
                                         <label class="d-block">Slot Type</label>
                                             <select id="edit_booking_type">
@@ -676,7 +676,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                     </div>
                                 </div>
                              
-                            <div class="row mb-2 weekDays" style="display:none">
+                            <div class="row mb-2 weekDays view_booking" style="display:none">
                                 <div class="col-md-12">
                                     <div class="">
                                     {!! Form::label('title', __('Select days of week'),['class' => 'control-label']) !!}
@@ -724,9 +724,14 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                             <input  name="edit_type" type="hidden" id="edit_type" value="">
                             <input  name="edit_day" type="hidden" id="edit_day" value="">
                             <input name="edit_type_id" type="hidden" id="edit_type_id" value="">
-                            <div class="row mt-2">
+                            <div class="row mt-2 view_booking">
                                 <div class="col-12 mb-2">
                                     <button type="button" class="btn btn-danger w-100" id="deleteSlotBtn">{{ __("Delete Slot") }}</button>
+                                </div>
+                            </div>
+                            <div class="row mt-2 view_orderDetails" style="display: none;">
+                                <div class="col-12 mb-2">
+                                    <a  class="btn btn-info w-100" target="_blank" id="viewOrder">{{ __("View Order") }}</a>
                                 </div>
                             </div>
                         

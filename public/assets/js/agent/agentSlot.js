@@ -123,7 +123,7 @@ $(function(){
         if(eventType == 'working_hours'){
             eventEnabled = true;
         } else if(eventType == 'new_booking'){
-            eventEnabled = false;
+            eventEnabled = true;
         } else {
             eventEnabled = true;
         }
@@ -309,6 +309,7 @@ $(function(){
                                     end_date:data.end_date,
                                     agent_id:agent_id,
                                     recurring: data.recurring,
+                                    order_url: data.order_url,
                                     days: data.days
                                     // slot_delivery: data.slot_delivery,
                                     // service_area: data.service_area,
@@ -324,8 +325,12 @@ $(function(){
                     if(!eventEnabled){
                         return;
                     }
+                    if(ev.event.extendedProps.slot_id =='' && ev.event.extendedProps.slot_id ==undefined ){
+                        return;
+                    }
+                    let title = ev.event.extendedProps.booking_type == 'new_booking' ? 'View Booking' : 'Edit working hours';
                     Swal.fire({
-                        title: 'Edit working hours',
+                        title: title,
                         html: EditSlotHtml,
                         confirmButtonText: 'Submit',
                         focusConfirm: false,
@@ -362,41 +367,40 @@ $(function(){
                              
                              return  { start_time : start_time, end_time: end_time,week_day:week_day,blocktime:blocktime,recurring:recurring,booking_type:booking_type,memo:memo,edit_slot_id:edit_slot_id,edit_slot_date:edit_slot_date}
                         },onOpen: function() {
-                            //initDatetimeRangePicker();
-                            // var save_slot_url = `/agent/slot/${agent_id}`
-                            // $('#slot-event').setAttribute('action',save_slot_url);
+                            
                         }
                       }).then(async (result) => {
-                        console.log(result);
                         if(result.dismiss== undefined){
-                        var formData = {
-                            week_day:result.value.week_day,
-                            blocktime:result.value.blocktime,
-                            recurring:result.value.recurring,
-                            booking_type:result.value.booking_type,
-                            memo:result.value.memo,
-                            start_time:result.value.start_time,
-                            end_time:result.value.end_time,
-                            slot_id:result.value.edit_slot_id,
-                            edit_slot_date:result.value.edit_slot_date,
-                            agent_id:agent_id
-                           
+                            var formData = {
+                                week_day:result.value.week_day,
+                                blocktime:result.value.blocktime,
+                                recurring:result.value.recurring,
+                                booking_type:result.value.booking_type,
+                                memo:result.value.memo,
+                                start_time:result.value.start_time,
+                                end_time:result.value.end_time,
+                                slot_id:result.value.edit_slot_id,
+                                edit_slot_date:result.value.edit_slot_date,
+                                agent_id:agent_id
                             
-                          }
+                                
+                            }
                          
-                          await add_slot_time(formData,'edit')
+                            await add_slot_time(formData,'edit')
                         }
-                        // Swal.fire(`
-                        // blocktime: ${result.value.blocktime}
-                        //   memo: ${result.value.memo}
-                        // `.trim())
+                       
                       })
                   
-                    
+                    if(ev.event.extendedProps.booking_type == 'new_booking'){
+                        $('.view_booking').hide();
+                        $('.view_orderDetails').show();
+                        document.getElementById("viewOrder").href =ev.event.extendedProps.order_url ;
+                        $('.swal2-actions').hide();
+                    } 
                     // Delete Slot Form
                     /**storage */
                     // console.log(ev.event);
-                       console.log(ev.event.extendedProps);
+                        console.log(ev.event.extendedProps);
                         dispatcherStorage.setStorageSingle('slot_id',ev.event.extendedProps.type_id)
                         dispatcherStorage.setStorageSingle('edit_slot_id',ev.event.extendedProps.slot_id);
                         dispatcherStorage.setStorageSingle('edit_booking_type',ev.event.extendedProps.booking_type);
