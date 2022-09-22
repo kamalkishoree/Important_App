@@ -115,7 +115,7 @@ class TaskController extends BaseController
 
         $allCount       = Count($orderAll);
         $inProgress     = $orderAll->where('task_status', 2);
-        $lasttask       = count($orderAll->where('task_status', 4));
+        $lasttask       = count($orderAll->where('task_status', 4)->where('id', '!=', $request->task_id));
         $check          = $allCount - $lasttask;
         $lastfailedtask       = count($orderAll->where('task_status', 5));
         $checkfailed          = $allCount - $lastfailedtask;
