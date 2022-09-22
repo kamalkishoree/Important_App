@@ -158,7 +158,7 @@ class AgentSlotController extends BaseController
                 if(!$checkSlotAvailable)   {
                     $result[$AllSlot['value']]['name'] = $AllSlot['name'];
                     $result[$AllSlot['value']]['value'] = $AllSlot['value'];
-                    $result[$AllSlot['value']]['agent_id'] = isset($result[$AllSlot['value']]['agent_id'] )? $result[$AllSlot['value']]['agent_id'].','. $AllSlot['agent_id'] :$AllSlot['agent_id'] ;
+                    $result[$AllSlot['value']]['agent_id'][] = $AllSlot['agent_id']; //isset($result[$AllSlot['value']]['agent_id'] )? $result[$AllSlot['value']]['agent_id'].','. $AllSlot['agent_id'] :$AllSlot['agent_id'] ;
 
                 }                             
             }
