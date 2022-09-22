@@ -397,9 +397,9 @@ $(function(){
                         document.getElementById("viewOrder").href =ev.event.extendedProps.order_url ;
                         $('.swal2-actions').hide();
                     } 
-                    // Delete Slot Form
-                    /**storage */
-                    // console.log(ev.event);
+                        // Delete Slot Form
+                        /**storage */
+                        // console.log(ev.event);
                         console.log(ev.event.extendedProps);
                         dispatcherStorage.setStorageSingle('slot_id',ev.event.extendedProps.type_id)
                         dispatcherStorage.setStorageSingle('edit_slot_id',ev.event.extendedProps.slot_id);
