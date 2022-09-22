@@ -26,11 +26,16 @@ class AgentSlotController extends BaseController
          try {
             $preference =  ClientPreference::first();
             if($preference->is_driver_slot != 1){
+                $response = [
+                    'agents' =>  [],
+                    'slots' =>  [],
+                ];
                 return response()->json([
-                    'data' => [],
+                    'data' => $response,
                     'status' => 200,
-                    'message' => __('Slotting Not active!')
+                    'message' => __('success! slot Not active!')
                 ], 200);
+               
             }
             $validator = Validator::make(request()->all(), [
                 'latitude'  => 'required',
@@ -125,7 +130,7 @@ class AgentSlotController extends BaseController
                 $agent->slotCount = count( $viewSlot);
                 $agent->slotings = $viewSlot;
                
-                if(count( $viewSlot) >0){
+            if(count( $viewSlot) >0){
                     $agents[] = $agent;
                 }
                 
