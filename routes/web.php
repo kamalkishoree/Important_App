@@ -17,6 +17,12 @@ use Illuminate\Http\Request;
 |
 */
 //switch language route
+
+Route::get('/sendevent', function () {
+    event(new \App\Events\loadDashboardData('test data'));
+    dd('event run successfully');
+});
+
 Route::get('/switch/language', function (Request $request) {
 	if ($request->lang) {
 		session()->put("applocale", $request->lang);

@@ -619,7 +619,7 @@ function initMap() {
     }
 
     setTimeout(function() {
-            autoloadmap();
+            //autoloadmap();
     }, 5000);
 }
 
@@ -1293,7 +1293,15 @@ $('input[type=radio][name=driver_start_location]').change(function() {
     }
 });
 </script>
-
+<script src="{{ asset('js/app.js') }}"></script>
+<script>
+    Echo.channel('mydata')
+        .listen('loadDashboardData', (e) => {
+            //console.log(e.data);
+            //alert(e.data);
+            loadTeams();
+        })
+</script>
 
 <style>
     .gm-style-iw.gm-style-iw-c {
