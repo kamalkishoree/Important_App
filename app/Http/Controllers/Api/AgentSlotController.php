@@ -19,6 +19,22 @@ use App\Http\Controllers\Api\AgentController;
 
 class AgentSlotController extends BaseController
 {
+    public function successResponse($data, $message = null, $code = 200)
+	{
+		return response()->json([
+			'status' => 'Success',
+			'message' => $message,
+			'data' => $data
+		], $code);
+	}
+    public function errorResponse($message = null, $code, $data = null)
+	{
+		return response()->json([
+			'status' => 'Error',
+			'message' => $message,
+			'data' => $data
+		], $code);
+	}
     /**   get agent according to lat long  */
     function getAgentsSlotByTags(Request $request){
        
@@ -26,11 +42,16 @@ class AgentSlotController extends BaseController
          try {
             $preference =  ClientPreference::first();
             if($preference->is_driver_slot != 1){
+                $response = [
+                    'agents' =>  [],
+                    'slots' =>  [],
+                ];
                 return response()->json([
-                    'data' => [],
+                    'data' => $response,
                     'status' => 200,
-                    'message' => __('Slotting Not active!')
+                    'message' => __('success! slot Not active!')
                 ], 200);
+               
             }
             $validator = Validator::make(request()->all(), [
                 'latitude'  => 'required',
@@ -40,7 +61,16 @@ class AgentSlotController extends BaseController
             ]);
 
             if($validator->fails()){
-                return $this->errorResponse($validator->messages(), 422);
+                \Log::info($validator->messages());
+                $response = [
+                    'agents' =>  [],
+                    'slots' =>  [],
+                ];
+                return response()->json([
+                    'data' => $response,
+                    'status' => 200,
+                    'message' => __('success! slot Not active!')
+                ], 200);
             }
             $agentController = new AgentController();
             $geoid = $agentController->findLocalityByLatLng($request->latitude, $request->longitude);
@@ -67,6 +97,7 @@ class AgentSlotController extends BaseController
            
             $geoagents = Agent::with(['slots' => function($q) use($myDate){
                 $q->whereDate('schedule_date', $myDate);
+                $q->where('booking_type', 'working_hours');
             }]);
 
             if(!empty($tagId)){
@@ -82,9 +113,10 @@ class AgentSlotController extends BaseController
             }
             
 
-            $geoagents = $geoagents->whereIn('id', $geoagents_ids)->where(["is_available" => 1, "is_approved" => 1])->orderBy('id', 'DESC')->get();
+            $geoagents = $geoagents->whereIn('id', $geoagents_ids)->where([ "is_approved" => 1])->orderBy('id', 'DESC')->get();
             $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain/';
             $agents=[];
+            $commonSlot=[];
             foreach( $geoagents as $agent){
                 $agent->image_url =  isset($agent->profile_picture) ? $imgproxyurl.Storage::disk('s3')->url($agent->profile_picture) : Phumbor::url(URL::to('/asset/images/no-image.png'));
               
@@ -112,21 +144,56 @@ class AgentSlotController extends BaseController
                         $sl = explode(' - ', $slt);
                         $viewSlot[$k]['name'] = date('h:i A', strtotime($sl[0])).' - '.date('h:i A', strtotime($sl[1]));
                         $viewSlot[$k]['value'] = $slt;
+                        $viewSlot[$k]['agent_id'] = $agent->id;
+
+                        $commonSlot[$agent->id][$k]['name'] = date('h:i A', strtotime($sl[0])).' - '.date('h:i A', strtotime($sl[1]));
+                        $commonSlot[$agent->id][$k]['value'] = $slt;
+                        $commonSlot[$agent->id][$k]['agent_id'] = $agent->id;
                     }
                 }
                 // pr($viewSlot);
                 $agent->slotCount = count( $viewSlot);
                 $agent->slotings = $viewSlot;
-                if(count( $viewSlot) >0){
+               
+            if(count( $viewSlot) >0){
                     $agents[] = $agent;
                 }
                 
             }
-            
-           
 
+           $commonAllSlot=[];
+           
+            foreach( $commonSlot as $key=>$commonSlots){
+                $commonAllSlot = array_merge($commonAllSlot, $commonSlots);
+            }
+
+            // set all vendor slot  in one array
+            $result = array();
+            foreach( $commonAllSlot as $key=>$AllSlot){
+                $sl = explode(' - ', $AllSlot['value']);
+
+                $checkSlotAvailable = AgentSlotRoster::where(['agent_id'=>$AllSlot['agent_id']])
+                                                    ->whereIn('booking_type',['blocked','new_booking'])
+                                                    ->whereDate('schedule_date', $myDate)
+                                                    ->where(function ($query) use ($sl ){
+                                                        $query->where('start_time', '<=', $sl[1])
+                                                            ->where('end_time', '>=', $sl[0]);
+                                                    })->first();
+               
+                if(!$checkSlotAvailable)   {
+                    $result[$AllSlot['value']]['name'] = $AllSlot['name'];
+                    $result[$AllSlot['value']]['value'] = $AllSlot['value'];
+                    $result[$AllSlot['value']]['agent_id'][] = $AllSlot['agent_id']; //isset($result[$AllSlot['value']]['agent_id'] )? $result[$AllSlot['value']]['agent_id'].','. $AllSlot['agent_id'] :$AllSlot['agent_id'] ;
+
+                }                             
+            }
+            
+            $response = [
+                'agents' =>  $agents,
+                'slots' =>  $result,
+            ];
             return response()->json([
-                'data' => $agents,
+                'data' => $response,
                 'status' => 200,
                 'message' => __('success')
             ], 200);
@@ -191,7 +258,16 @@ class AgentSlotController extends BaseController
             ]);
 
             if($validator->fails()){
-                return $this->errorResponse($validator->messages(), 422);
+                \Log::info($validator->messages());
+                $response = [
+                    'agents' =>  [],
+                    'slots' =>  [],
+                ];
+                return response()->json([
+                    'data' => $response,
+                    'status' => 200,
+                    'message' => __('success! slot Not active!')
+                ], 200);
             }
             $block_time = explode('-', $request->blocktime);
             $start_time = date("H:i:s",strtotime( $block_time[0]));
