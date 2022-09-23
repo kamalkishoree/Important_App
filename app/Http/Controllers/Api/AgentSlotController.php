@@ -19,6 +19,22 @@ use App\Http\Controllers\Api\AgentController;
 
 class AgentSlotController extends BaseController
 {
+    protected function successResponse($data, $message = null, $code = 200)
+	{
+		return response()->json([
+			'status' => 'Success',
+			'message' => $message,
+			'data' => $data
+		], $code);
+	}
+    protected function errorResponse($message = null, $code, $data = null)
+	{
+		return response()->json([
+			'status' => 'Error',
+			'message' => $message,
+			'data' => $data
+		], $code);
+	}
     /**   get agent according to lat long  */
     function getAgentsSlotByTags(Request $request){
        
