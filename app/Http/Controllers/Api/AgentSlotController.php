@@ -61,7 +61,16 @@ class AgentSlotController extends BaseController
             ]);
 
             if($validator->fails()){
-                return $this->errorResponse($validator->messages(), 422);
+                \Log::info($validator->messages());
+                $response = [
+                    'agents' =>  [],
+                    'slots' =>  [],
+                ];
+                return response()->json([
+                    'data' => $response,
+                    'status' => 200,
+                    'message' => __('success! slot Not active!')
+                ], 200);
             }
             $agentController = new AgentController();
             $geoid = $agentController->findLocalityByLatLng($request->latitude, $request->longitude);
