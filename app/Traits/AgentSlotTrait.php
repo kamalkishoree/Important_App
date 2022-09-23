@@ -13,7 +13,7 @@ trait AgentSlotTrait{
         try {
             $end_date =  $start_date = date("Y-m-d H:i:s",strtotime( $data['schedule_time']));
             $start_time = date("H:i:s",strtotime( $data['schedule_time']));
-            $end_time   = date("H:i:s", strtotime($data['schedule_time']."+".$data['service_time']." minutes"));
+            $end_time   = date("H:i:s", strtotime($data['schedule_time']."+".$data['appointment_duration']." minutes"));
         
             $AgentSlot = new AgentSlot();
         
@@ -25,6 +25,7 @@ trait AgentSlotTrait{
             $AgentSlot->recurring    = 0;
             $AgentSlot->save();
             \Log::info('AgentSlot create');
+            \Log::info($data['agent']);
             if($AgentSlot){
                 $slot_roster  =   new AgentSlotRoster();
                 $slot_roster->slot_id        =  $AgentSlot->id;

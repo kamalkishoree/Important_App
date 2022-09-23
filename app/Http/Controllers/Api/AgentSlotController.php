@@ -19,6 +19,22 @@ use App\Http\Controllers\Api\AgentController;
 
 class AgentSlotController extends BaseController
 {
+    public function successResponse($data, $message = null, $code = 200)
+	{
+		return response()->json([
+			'status' => 'Success',
+			'message' => $message,
+			'data' => $data
+		], $code);
+	}
+    public function errorResponse($message = null, $code, $data = null)
+	{
+		return response()->json([
+			'status' => 'Error',
+			'message' => $message,
+			'data' => $data
+		], $code);
+	}
     /**   get agent according to lat long  */
     function getAgentsSlotByTags(Request $request){
        
@@ -26,11 +42,16 @@ class AgentSlotController extends BaseController
          try {
             $preference =  ClientPreference::first();
             if($preference->is_driver_slot != 1){
+                $response = [
+                    'agents' =>  [],
+                    'slots' =>  [],
+                ];
                 return response()->json([
-                    'data' => [],
+                    'data' => $response,
                     'status' => 200,
-                    'message' => __('Slotting Not active!')
+                    'message' => __('success! slot Not active!')
                 ], 200);
+               
             }
             $validator = Validator::make(request()->all(), [
                 'latitude'  => 'required',
@@ -40,7 +61,16 @@ class AgentSlotController extends BaseController
             ]);
 
             if($validator->fails()){
-                return $this->errorResponse($validator->messages(), 422);
+                \Log::info($validator->messages());
+                $response = [
+                    'agents' =>  [],
+                    'slots' =>  [],
+                ];
+                return response()->json([
+                    'data' => $response,
+                    'status' => 200,
+                    'message' => __('success! slot Not active!')
+                ], 200);
             }
             $agentController = new AgentController();
             $geoid = $agentController->findLocalityByLatLng($request->latitude, $request->longitude);
@@ -125,7 +155,7 @@ class AgentSlotController extends BaseController
                 $agent->slotCount = count( $viewSlot);
                 $agent->slotings = $viewSlot;
                
-                if(count( $viewSlot) >0){
+            if(count( $viewSlot) >0){
                     $agents[] = $agent;
                 }
                 
@@ -153,7 +183,7 @@ class AgentSlotController extends BaseController
                 if(!$checkSlotAvailable)   {
                     $result[$AllSlot['value']]['name'] = $AllSlot['name'];
                     $result[$AllSlot['value']]['value'] = $AllSlot['value'];
-                    $result[$AllSlot['value']]['agent_id'] = isset($result[$AllSlot['value']]['agent_id'] )? $result[$AllSlot['value']]['agent_id'].','. $AllSlot['agent_id'] :$AllSlot['agent_id'] ;
+                    $result[$AllSlot['value']]['agent_id'][] = $AllSlot['agent_id']; //isset($result[$AllSlot['value']]['agent_id'] )? $result[$AllSlot['value']]['agent_id'].','. $AllSlot['agent_id'] :$AllSlot['agent_id'] ;
 
                 }                             
             }
@@ -228,7 +258,16 @@ class AgentSlotController extends BaseController
             ]);
 
             if($validator->fails()){
-                return $this->errorResponse($validator->messages(), 422);
+                \Log::info($validator->messages());
+                $response = [
+                    'agents' =>  [],
+                    'slots' =>  [],
+                ];
+                return response()->json([
+                    'data' => $response,
+                    'status' => 200,
+                    'message' => __('success! slot Not active!')
+                ], 200);
             }
             $block_time = explode('-', $request->blocktime);
             $start_time = date("H:i:s",strtotime( $block_time[0]));

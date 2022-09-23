@@ -1059,6 +1059,7 @@ class TaskController extends BaseController
                 $data['order_number']= $orders->order_number;
                 $data['booking_type'] = 'new_booking';
                 $data['memo'] = __("Booked for Order number:").$orders->order_number;
+                
                 $bookingResponse =  $this->SlotBooking($data);
                 
             }
