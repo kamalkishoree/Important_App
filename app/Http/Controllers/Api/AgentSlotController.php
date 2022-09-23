@@ -19,7 +19,7 @@ use App\Http\Controllers\Api\AgentController;
 
 class AgentSlotController extends BaseController
 {
-    protected function successResponse($data, $message = null, $code = 200)
+    public function successResponse($data, $message = null, $code = 200)
 	{
 		return response()->json([
 			'status' => 'Success',
@@ -27,7 +27,7 @@ class AgentSlotController extends BaseController
 			'data' => $data
 		], $code);
 	}
-    protected function errorResponse($message = null, $code, $data = null)
+    public function errorResponse($message = null, $code, $data = null)
 	{
 		return response()->json([
 			'status' => 'Error',
@@ -61,7 +61,16 @@ class AgentSlotController extends BaseController
             ]);
 
             if($validator->fails()){
-                return $this->errorResponse($validator->messages(), 422);
+                \Log::info($validator->messages());
+                $response = [
+                    'agents' =>  [],
+                    'slots' =>  [],
+                ];
+                return response()->json([
+                    'data' => $response,
+                    'status' => 200,
+                    'message' => __('success! slot Not active!')
+                ], 200);
             }
             $agentController = new AgentController();
             $geoid = $agentController->findLocalityByLatLng($request->latitude, $request->longitude);
