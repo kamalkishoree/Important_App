@@ -93,7 +93,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                             </div>
                                             <div class="col-md-10 col-10">
                                                 <h6 class="mb-0 header-title scnd">{{__("Unassigned Tasks")}}<div  class="optimizebtn0">{!! $optimize0 !!} </div><div class="exportbtn0">{!! $turnbyturn0 !!} </div></h6>
-                                                <p class="mb-0"> <span>{{ count($unassigned_orders) }} {{__("Tasks")}}</span> {!! $unassigned_distance==''?'':' <i class="fas fa-route"></i> '!!}<span class="dist_sec totdis0 ml-1">{{ $unassigned_distance }}</span></p>
+                                                <p class="mb-0"> <span id="unassigned_count">{{ count($unassigned_orders) }}</span> <span>{{__("Tasks")}}</span> {!! $unassigned_distance==''?'':' <i class="fas fa-route"></i> '!!}<span class="dist_sec totdis0 ml-1">{{ $unassigned_distance }}</span></p>
                                             </div>
                                         </div>
                                     </a>
@@ -103,7 +103,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                     <div id="handle-dragula-left0" class="dragable_tasks" agentid="0"  params="{{ $params0 }}" date="{{ $date }}">
                                         @foreach($unassigned_orders as $orders)
                                             @foreach($orders['task'] as $tasks)
-                                                <div class="card-body" task_id ="{{ $tasks['id'] }}">
+                                                <div class="card-body" id="unassigned_tasks_{{ $tasks['order_id'] }}_{{ $tasks['id'] }}" task_id="{{ $tasks['id'] }}">
                                                     <div class="p-2 assigned-block">
                                                         @php
                                                             $st ="Unassigned";
@@ -119,7 +119,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                                             }else{
                                                                 $tasktype = "Appointment";
                                                                 $pickup_class = "assign_";
-                                                                }
+                                                            }
                                                         @endphp
 
                                                         <div>
@@ -1295,12 +1295,98 @@ $('input[type=radio][name=driver_start_location]').change(function() {
 </script>
 <script src="{{ asset('js/app.js') }}"></script>
 <script>
-    Echo.channel('orderdata.{{$client_code}}')
-        .listen('loadDashboardData', (e) => {
-            //console.log(e.data);
-            alert(e.orderid);
-            loadTeams();
-        })
+Echo.channel('orderdata.{{$client_code}}')
+    .listen('loadDashboardData', (e) => {
+        var heading = "";
+        var maggage = "";
+        var color = "";
+        if(typeof(e.order_data.id) != "undefined")
+        {
+            var task_count = '';
+            var tasks = e.order_data.task;
+            var sidebarhtml = '';
+            for (var i = 0; i < tasks.length; i++) {
+                var object = tasks[i];
+                var task_id =  tasks[i]['id'];
+                var location_address =  tasks[i]['location']['address'];
+                var shortname =  tasks[i]['location']['short_name'];
+                var tasktime = tasks[i]['task_time'];
+                var taskstatus = tasks[i]['task_status'];
+                var tasktypeid = tasks[i]['task_type_id'];
+                var classname = "";
+                var classtext = "";
+                var tasktype = "";
+                var pickupclass = "";
+                if(taskstatus==0)
+                {
+                    classtext = "Unassigned";
+                    classname = "assign_";
+                }else if(taskstatus==1)
+                {
+                    classtext = "Assigned";
+                    classname = "assign_";
+                }else if(taskstatus==2)
+                {
+                    classtext = "Started";
+                    classname = "yellow_";
+                }else if(taskstatus==3)
+                {
+                    classtext = "Arrived";
+                    classname = "light_green";
+                }else if(taskstatus==4)
+                {
+                    classtext = "Completed";
+                    classname = "green_";
+                }else{
+                    classtext = "Failed";
+                    classname = "red_";
+                }
+
+                if(tasktypeid==1)
+                {
+                    tasktype = "Pickup";
+                    pickupclass = "yellow_";
+                }else if(tasktypeid==2)
+                {
+                    tasktype = "Dropoff";
+                    pickupclass = "green_";
+                }else{
+                    tasktype = "Appointment";
+                    pickupclass = "assign_";
+                }
+                sidebarhtml+= '<div class="card-body ui-sortable-handle" task_id="'+task_id+'"><div class="p-2 assigned-block"><div><div class="row no-gutters align-items-center"><div class="col-9 d-flex"><h5 class="d-inline-flex align-items-center justify-content-between"><i class="fas fa-bars"></i><span>'+tasktime+'</span></h5><h6 class="d-inline"><img class="vt-top" src="{{ asset("demo/images/ic_location_blue_1.png") }}">'+location_address+'<span class="d-block">'+shortname+'</span></h6></div><div class="col-3"><button class="assigned-btn float-right mb-2 '+pickupclass+'">'+tasktype+'</button><button class="assigned-btn float-right '+classname+'">'+classtext+'</button></div></div></div></div></div>';
+            }
+
+            if(e.order_data.status == "unassigned")
+            {
+                heading = "Created";
+                meggage = "New Route Created.";
+                color = "green";
+            }else{
+                $('#handle-dragula-left'+agentid).append(sidebarhtml);
+            }
+        }
+        else
+        {
+            heading = "Deleted";
+            meggage = "Route Deleted.";
+            color = "red";
+        }
+
+        $.toast({ 
+            heading:heading,
+            text : meggage, 
+            showHideTransition : 'slide', 
+            bgColor : color,              
+            textColor : '#eee',            
+            allowToastClose : true,      
+            hideAfter : 5000,            
+            stack : 5,                   
+            textAlign : 'left',         
+            position : 'top-right'      
+        });
+        
+    })
 </script>
 
 <style>

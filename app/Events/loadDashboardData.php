@@ -9,6 +9,7 @@ use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use App\Model\Client;
+use App\Model\Order;
 use Illuminate\Queue\SerializesModels;
 use Log;
 
@@ -21,13 +22,15 @@ class loadDashboardData implements ShouldBroadcast
      *
      * @return void
      */
-    public $orderid;
+    public $order_data = [];
+    public $order_id;
     public $client_code;
     public function __construct($orderid)
     {
-        $this->orderid = $orderid;
-
-        $client_details = Client::first();
+        $order_data  = Order::with(['customer', 'task.location', 'agent.team'])->where('id', $orderid)->first();
+        $this->order_id  = $orderid;
+        $this->order_data = (!empty($order_data))?$order_data->toArray():[];
+        $client_details    = Client::first();
         $this->client_code = $client_details->code;
     }
 
@@ -40,4 +43,6 @@ class loadDashboardData implements ShouldBroadcast
     {
         return new Channel('orderdata.'.$this->client_code);
     }
+
+    
 }

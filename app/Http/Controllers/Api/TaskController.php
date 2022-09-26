@@ -706,10 +706,7 @@ class TaskController extends BaseController
                 $proof_face = $path;
             }
         }
-        // if(!empty($proof_face)){
-        //     Task::where('order_id', $request->order_id)->update(['proof_face' => $proof_face]);
-        // }
-
+        
 
         if (isset($check) && $check->driver_id != null) {
             if ($check && $check->call_back_url) {
@@ -796,6 +793,7 @@ class TaskController extends BaseController
                     'freelancer_commission_percentage' => $freelancer_commission_percentage
                 ]);
                 Task::where('order_id', $batch->order_id)->update(['task_status' => 1]);
+                event(new \App\Events\loadDashboardData($batch->order_id));
             }
             if ($check && $check->call_back_url) {
                 $call_web_hook = $this->updateStatusDataToOrder($check, 2,1);  # task accepted
@@ -1257,12 +1255,13 @@ class TaskController extends BaseController
                     $dispatch_traking_url = $client_url.'/order/tracking/'.$auth->code.'/'.$orders->unique_id;
 
                     DB::commit();
+                    event(new \App\Events\loadDashboardData($orders->id));
                     return response()->json([
-                    'message' => __('Task Added Successfully'),
-                    'task_id' => $orders->id,
-                    'status'  => $orders->status,
-                    'dispatch_traking_url'  => $dispatch_traking_url??null
-                ], 200);
+                        'message' => __('Task Added Successfully'),
+                        'task_id' => $orders->id,
+                        'status'  => $orders->status,
+                        'dispatch_traking_url'  => $dispatch_traking_url??null
+                    ], 200);
             }   
 
 
@@ -1293,6 +1292,7 @@ class TaskController extends BaseController
                 $from_time = strtotime($from);
                 if ($to_time >= $from_time) {
                     DB::commit();
+                    event(new \App\Events\loadDashboardData($orders->id));
                     return response()->json([
                         'message' => __('Task Added Successfully'),
                         'task_id' => $orders->id,
@@ -1332,6 +1332,7 @@ class TaskController extends BaseController
                     scheduleNotification::dispatch($schduledata)->delay(now()->addMinutes($finaldelay));
                     DB::commit();
 
+                    event(new \App\Events\loadDashboardData($orders->id));
 
                     return response()->json([
                         'message' => __('Task Added Successfully'),
@@ -1368,12 +1369,13 @@ class TaskController extends BaseController
             $dispatch_traking_url = $client_url.'/order/tracking/'.$auth->code.'/'.$orders->unique_id;
 
             DB::commit();
+            event(new \App\Events\loadDashboardData($orders->id));
             return response()->json([
-            'message' => __('Task Added Successfully'),
-            'task_id' => $orders->id,
-            'status'  => $orders->status,
-            'dispatch_traking_url'  => $dispatch_traking_url??null
-        ], 200);
+                'message' => __('Task Added Successfully'),
+                'task_id' => $orders->id,
+                'status'  => $orders->status,
+                'dispatch_traking_url'  => $dispatch_traking_url??null
+            ], 200);
         } catch (Exception $e) {
             DB::rollback();
             return response()->json([

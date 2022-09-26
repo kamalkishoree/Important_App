@@ -2566,6 +2566,7 @@ class TaskController extends BaseController
     public function destroy($domain = '', $id)
     {
         Order::where('id', $id)->delete();
+        event(new \App\Events\loadDashboardData($id));
         return redirect()->back()->with('success', 'Task deleted successfully!');
     }
 
