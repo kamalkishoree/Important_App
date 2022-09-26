@@ -19,7 +19,7 @@ use Illuminate\Http\Request;
 //switch language route
 
 Route::get('/sendevent', function () {
-    event(new \App\Events\loadDashboardData('test data'));
+    event(new \App\Events\loadDashboardData(1));
     dd('event run successfully');
 });
 

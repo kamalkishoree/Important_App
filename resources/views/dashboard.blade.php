@@ -1295,10 +1295,10 @@ $('input[type=radio][name=driver_start_location]').change(function() {
 </script>
 <script src="{{ asset('js/app.js') }}"></script>
 <script>
-    Echo.channel('mydata')
+    Echo.channel('orderdata.{{$client_code}}')
         .listen('loadDashboardData', (e) => {
             //console.log(e.data);
-            //alert(e.data);
+            alert(e.orderid);
             loadTeams();
         })
 </script>

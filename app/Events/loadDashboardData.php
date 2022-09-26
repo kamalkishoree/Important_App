@@ -8,6 +8,7 @@ use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
+use App\Model\Client;
 use Illuminate\Queue\SerializesModels;
 use Log;
 
@@ -20,11 +21,14 @@ class loadDashboardData implements ShouldBroadcast
      *
      * @return void
      */
-    public $data;
-    public function __construct()
+    public $orderid;
+    public $client_code;
+    public function __construct($orderid)
     {
-        $this->data = "This is test event";
-        //Log::info($message);
+        $this->orderid = $orderid;
+
+        $client_details = Client::first();
+        $this->client_code = $client_details->code;
     }
 
     /**
@@ -34,6 +38,6 @@ class loadDashboardData implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new Channel('mydata');
+        return new Channel('orderdata.'.$this->client_code);
     }
 }

@@ -314,7 +314,7 @@ class DashBoardController extends Controller
             $defaultCountryLatitude  = '';
             $defaultCountryLongitude  = '';
         }
-        return view('dashboard')->with(['teams' => $teamdata, 'defaultCountryLongitude' => $defaultCountryLongitude, 'defaultCountryLatitude' => $defaultCountryLatitude, 'newmarker' => $newmarker, 'unassigned' => $unassigned, 'agents' => $agents,'date'=> $date,'preference' =>$preference, 'routedata' => $uniquedrivers,'distance_matrix' => $distancematrix, 'unassigned_orders' => $unassigned_orders,'unassigned_distance' => $un_total_distance,'map_key'=>$googleapikey,'client_timezone'=>$auth->timezone]);
+        return view('dashboard')->with(['teams' => $teamdata, 'client_code' => Auth::user()->code, 'defaultCountryLongitude' => $defaultCountryLongitude, 'defaultCountryLatitude' => $defaultCountryLatitude, 'newmarker' => $newmarker, 'unassigned' => $unassigned, 'agents' => $agents,'date'=> $date,'preference' =>$preference, 'routedata' => $uniquedrivers,'distance_matrix' => $distancematrix, 'unassigned_orders' => $unassigned_orders,'unassigned_distance' => $un_total_distance,'map_key'=>$googleapikey,'client_timezone'=>$auth->timezone]);
     }
 
     //function to create distance matrix

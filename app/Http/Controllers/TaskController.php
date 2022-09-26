@@ -802,6 +802,7 @@ class TaskController extends BaseController
                     $schduledata['database']          = $auth;
                     scheduleNotification::dispatch($schduledata)->delay(now()->addMinutes($finaldelay));
                     DB::commit();
+                    event(new \App\Events\loadDashboardData($orders->id));
                     return response()->json(['status' => "Success", 'message' => 'Route created Successfully']);
                 }
             }
@@ -828,6 +829,7 @@ class TaskController extends BaseController
                 }
             }
             DB::commit();
+            event(new \App\Events\loadDashboardData($orders->id));
             return response()->json(['status' => "Success", 'message' => 'Route created Successfully']);
 
         } catch (Exception $e) {
