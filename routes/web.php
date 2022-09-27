@@ -174,7 +174,7 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 			Route::get('profileImg', 'ProfileController@displayImage');
 			Route::get('', 'DashBoardController@index')->name('index');
             Route::get('dashboard/data/{userstatus}', 'DashBoardController@dashboardData')->name('dashboard.data');
-			Route::get('dashboard/teamsdata/{userstatus}', 'DashBoardController@dashboardTeamData')->name('dashboard.teamsdata');
+			Route::post('dashboard/teamsdata', 'DashBoardController@dashboardTeamData')->name('dashboard.teamsdata');
 			Route::get('customize', 'ClientController@ShowPreference')->name('preference.show');
 			Route::post('save/cms/{id}', 'ClientController@cmsSave')->name('cms.save');
 			Route::post('client_preference/{id}', 'ClientController@storePreference')->name('preference');

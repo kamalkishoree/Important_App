@@ -11,11 +11,12 @@ use Illuminate\Foundation\Events\Dispatchable;
 use App\Model\Client;
 use App\Model\Order;
 use Illuminate\Queue\SerializesModels;
+use App\Traits\googleMapApiFunctions;
 use Log;
 
 class loadDashboardData implements ShouldBroadcast
 {
-    use Dispatchable, InteractsWithSockets, SerializesModels;
+    use Dispatchable, InteractsWithSockets, SerializesModels, googleMapApiFunctions;
 
     /**
      * Create a new event instance.
@@ -27,8 +28,9 @@ class loadDashboardData implements ShouldBroadcast
     public $client_code;
     public function __construct($orderid)
     {
-        $order_data  = Order::with(['customer', 'task.location', 'agent.team'])->where('id', $orderid)->first();
+        $order_data  = Order::select('id', 'status')->where('id', $orderid)->first();
         $this->order_id  = $orderid;
+
         $this->order_data = (!empty($order_data))?$order_data->toArray():[];
         $client_details    = Client::first();
         $this->client_code = $client_details->code;
