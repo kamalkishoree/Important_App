@@ -125,7 +125,7 @@ class AgentSlotController extends BaseController
                 $Duration  = $request->service_time ?? 60;
                 foreach ($agent->slots as $slott) {
                 
-                        $new_slot = $this->SplitTime($myDate, $slott->start_time, $slott->end_time, $Duration,$timezoneset, $delayMin = 0);
+                        $new_slot = $this->SplitTime($myDate, $slott->start_time, $slott->end_time, $Duration,$timezoneset, $delayMin = 0,$request->slot_start_time);
                       
                         if (!in_array($new_slot, $slotss) && (count( $new_slot) > 0) ) {
                             $slotss[] = $new_slot;
@@ -205,7 +205,7 @@ class AgentSlotController extends BaseController
         }
 
     }
-    public function SplitTime($myDate, $StartTime, $EndTime, $Duration="60", $timezoneset,$delayMin = 0)
+    public function SplitTime($myDate, $StartTime, $EndTime, $Duration="60", $timezoneset,$delayMin = 0,$slot_start_time)
     {
         $Duration = (($Duration==0)?'60':$Duration);
 
@@ -223,7 +223,11 @@ class AgentSlotController extends BaseController
         if ($nowT > $nowE) {
             return [];
         } elseif ($nowT>$nowS) {
+           
             $StartTime = date('H:i', strtotime($now. ' +10 minutes'));
+            if( $StartTime >= $slot_start_time){
+                $StartTime = $slot_start_time;
+            }
         } else {
             $StartTime = date('H:i', strtotime($nowA));
         }
