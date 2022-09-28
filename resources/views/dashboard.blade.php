@@ -44,9 +44,8 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
 
             <span class="allAccordian"><span class="" onclick="openAllAccordian()">{{__('Open All')}}</span></span>
         </div>
+        <div  id="teams_container">
 
-        <div id="task_container">
-            
         </div>
 
         <form id="pdfgenerate" method="post" enctype="multipart/form-data" action="{{ route('download.pdf') }}">
@@ -90,6 +89,8 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
         }
     }
 
+    // $defaultmaplocation['lat'] = 30.7046;
+    // $defaultmaplocation['long'] = 76.7179;
     $defaultmaplocation['lat'] = $defaultCountryLatitude;
     $defaultmaplocation['long'] = $defaultCountryLongitude;
     $agentslocations[] = $defaultmaplocation;
@@ -105,6 +106,10 @@ $('.teamchecks').on('change', function() {
 
 $('.taskchecks').on('change', function() {
     $('.taskchecks').not(this).prop('checked', false);
+});
+
+$('.agentcheck').on('change', function() {
+    $('.agentcheck').not(this).prop('checked', false);
 });
 
 $(document).ready(function() {
@@ -133,17 +138,222 @@ let markers = [];
 let driverMarkers = [];
 let privesRoute = [];
 
-var url = window.location.origin;
-var olddata  = {!!json_encode($newmarker)!!};
-var allagent = {!!json_encode($agents)!!};
+let url = window.location.origin;
+let olddata  = [];
+let allagent = [];
 
 // for getting default map location
-var defaultmaplocation = {!!json_encode($agentslocations)!!};
-var defaultlat = parseFloat(defaultmaplocation[0].lat);
-var defaultlong = parseFloat(defaultmaplocation[0].long);
+let defaultmaplocation = [];
+let defaultlat  = [];
+let defaultlong = [];
+let allroutes = [];
 
-var imgproxyurl         = {!!json_encode($imgproxyurl)!!};
-let color = [
+let imgproxyurl = {!!json_encode($imgproxyurl)!!};
+
+
+$('.filtercheck').click(function() {
+    $('.agentcheck').not(this).prop('checked', false);
+// for teams
+var val = [];
+$('.newchecks:checkbox:checked').each(function(i) {
+    val[i] = parseInt($(this).val());
+});
+
+//for tasks
+var taskval = [];
+$('.taskchecks:checkbox:checked').each(function(i) {
+    taskval[i] = parseInt($(this).val());
+});
+
+//for drivers
+var agentval = [];
+$('.agentdisplay:checkbox:checked').each(function(i) {
+    agentval[i] = parseInt($(this).val());
+});
+setMapOnAll(null);
+//main task markers
+for (let i = 0; i < olddata.length; i++) {
+    checkdata = olddata[i];
+    var info = []
+    
+    if ($.inArray(checkdata['team_id'], val) != -1 || $.inArray(-1, val) != -1) {
+
+        var urlnewcreate = '';
+            if(checkdata['task_status'] == 0){
+                urlnewcreate = 'unassigned';
+            }else if(checkdata['task_status'] == 1 || checkdata['task_status'] == 2){
+                urlnewcreate = 'assigned';
+            }else if(checkdata['task_status'] == 3){
+                urlnewcreate = 'complete';
+            }else{
+                urlnewcreate = 'faild';
+            }
+
+            if(checkdata['task_type_id'] == 1){
+                    urlnewcreate += '_P.png';
+            }else if(checkdata['task_type_id'] == 2){
+                    urlnewcreate +='_D.png';
+            }else{
+                    urlnewcreate +='_A.png';
+            }
+
+        image = '{{ asset('assets/newicons/') }}'+'/'+urlnewcreate;
+
+        send = null;
+        type = 1;
+
+        addMarker({
+            lat:  parseFloat(checkdata['latitude']),
+            lng:  parseFloat(checkdata['longitude'])
+        }, send, image,checkdata,type);
+    }
+
+    // for tasks
+        if($.inArray(checkdata['task_status'], taskval) !== -1 || $.inArray(5, taskval) != -1) {
+
+            var urlnewcreate = '';
+            if(checkdata['task_status'] == 0){
+                urlnewcreate = 'unassigned';
+            }else if(checkdata['task_status'] == 1 || checkdata['task_status'] == 2){
+                urlnewcreate = 'assigned';
+            }else if(checkdata['task_status'] == 3){
+                urlnewcreate = 'complete';
+            }else{
+                urlnewcreate = 'faild';
+            }
+
+                if(checkdata['task_type_id'] == 1){
+                    urlnewcreate += '_P.png';
+                }else if(checkdata['task_type_id'] == 2){
+                    urlnewcreate +='_D.png';
+                }else{
+                    urlnewcreate +='_A.png';
+                }
+
+                image = '{{ asset('assets/newicons/') }}'+'/'+urlnewcreate;
+
+                send = null;
+                type = 1;
+            addMarker({lat:parseFloat(checkdata['latitude']),lng:parseFloat(checkdata['longitude'])}, send,image,checkdata,type);
+        }
+}
+
+    //for agents
+    for (let i = 0; i < allagent.length; i++) {
+        checkdata = allagent[i];
+        //for agents
+        if ($.inArray(checkdata['is_available'], agentval) != -1 || $.inArray(2, agentval) != -1) {
+
+            if (checkdata['is_available'] == 1) {
+                images = url+'/demo/images/location.png';
+            }else {
+                images = url+'/demo/images/location_grey.png';
+            }
+            var image = {
+             url: images, // url
+             scaledSize: new google.maps.Size(50, 50), // scaled size
+             origin: new google.maps.Point(0,0), // origin
+             anchor: new google.maps.Point(22,22) // anchor
+            };
+            send = null;
+            type = 2;
+           addMarker({lat: parseFloat(checkdata.agentlog['lat']),lng:  parseFloat(checkdata.agentlog['long'])}, send, image,checkdata,type);
+        }
+    }
+
+});
+
+
+$('.taskchecks_old').click(function() {
+var taskval = [];
+$('.taskchecks:checkbox:checked').each(function(i) {
+    taskval[i] = parseInt($(this).val());
+});
+
+setMapOnAll(null);
+$(".newchecks").prop('checked', false);
+$(".agentdisplay").prop('checked', false);
+
+for (let i = 0; i < olddata.length; i++) {
+    checkdata = olddata[i];
+
+    if($.inArray(checkdata['task_status'], taskval) !== -1 || $.inArray(5, taskval) != -1) {
+
+        var urlnewcreate = '';
+        if(checkdata['task_status'] == 0){
+            urlnewcreate = 'unassigned';
+        }else if(checkdata['task_status'] == 1 || checkdata['task_status'] == 2){
+            urlnewcreate = 'assigned';
+        }else if(checkdata['task_status'] == 3){
+            urlnewcreate = 'complete';
+        }else{
+            urlnewcreate = 'faild';
+        }
+
+        if(checkdata['task_type_id'] == 1){
+            urlnewcreate += '_P.png';
+        }else if(checkdata['task_type_id'] == 2){
+            urlnewcreate +='_D.png';
+        }else{
+            urlnewcreate +='_A.png';
+        }
+
+        image = '{{ asset('assets/newicons/') }}'+'/'+urlnewcreate;
+
+        send = null;
+        type = 1;
+        addMarker({lat:parseFloat(checkdata['latitude']),lng:parseFloat(checkdata['longitude'])}, send,image,checkdata,type);
+    }
+}
+
+});
+
+$('.agentdisplay_old').click(function() {
+    var agentval = [];
+    $('.agentdisplay:checkbox:checked').each(function(i) {
+        agentval[i] = parseInt($(this).val());
+    });
+    setMapOnAll(null);
+    $(".taskchecks").prop('checked', false);
+    $(".newchecks").prop('checked', false);
+
+    for (let i = 0; i < allagent.length; i++) {
+        checkdata = allagent[i];
+        
+        if ($.inArray(checkdata['is_available'], agentval) != -1 || $.inArray(2, agentval) != -1) {
+            if (checkdata['is_available'] == 1) {
+                images = url+'/demo/images/location.png';
+            }else {
+                images = url+'/demo/images/location_grey.png';
+            }
+            var image = {
+            url: images, // url
+            scaledSize: new google.maps.Size(50, 50), // scaled size
+            origin: new google.maps.Point(0,0), // origin
+            anchor: new google.maps.Point(22,22) // anchor
+            };
+            send = null;
+            type = 2;
+        addMarker({lat: parseFloat(checkdata.agentlog['lat']),lng:  parseFloat(checkdata.agentlog['long'])}, send, image,checkdata,type);
+        }
+    }
+});
+
+function initMap() {
+    const haightAshbury = {
+        lat: allagent.length != 0 && allagent[0].agentlog && allagent[0].agentlog['lat']  != "0.00000000" ? parseFloat(allagent[0].agentlog['lat']): defaultlat,
+        lng: allagent.length != 0 && allagent[0].agentlog && allagent[0].agentlog['long'] != "0.00000000" ? parseFloat(allagent[0].agentlog['long']):defaultlong
+    };
+
+    map = new google.maps.Map(document.getElementById("map_canvas"), {
+        zoom: 12,
+        center: haightAshbury,
+        mapTypeId: "roadmap",
+        styles: themeType,
+    });
+
+    //new code for route
+    var color = [
         "blue",
         "green",
         "red",
@@ -153,16 +363,351 @@ let color = [
         "orange",
         ];
 
+    $.each(allroutes, function(i, item) {
+        const directionsService = new google.maps.DirectionsService();
+        const directionsRenderer = new google.maps.DirectionsRenderer({suppressMarkers: true});
+        if(i < color.length)
+        {
+            var routecolor = color[i];
+        }else{
+            var routecolor = "pink";
+        }
+        directionsRenderer.setOptions({
+            polylineOptions: {
+                strokeColor: routecolor
+            }
+        });
+        directionsRenderer.setMap(map);
+        var al_task = allroutes[i].task_details;
+        var agent_locatn = allroutes[i].driver_detail;
+        calculateAndDisplayRoute(directionsService, directionsRenderer,map,al_task,agent_locatn);
+    });
 
-$(".datetime").on('change', function postinput(){
-    var matchvalue = $(this).val(); 
+    // Adds a marker at the center of the map.
+    for (let i = 0; i < olddata.length; i++) {
+        checkdata = olddata[i];
+
+        var urlnewcreate = '';
+        if(checkdata['task_status'] == 0){
+            urlnewcreate = 'unassigned';
+        }else if(checkdata['task_status'] == 1 || checkdata['task_status'] == 2){
+            urlnewcreate = 'assigned';
+        }else if(checkdata['task_status'] == 3){
+            urlnewcreate = 'complete';
+        }else{
+            urlnewcreate = 'faild';
+        }
+
+        if(checkdata['task_type_id'] == 1){
+                urlnewcreate += '_P.png';
+        }else if(checkdata['task_type_id'] == 2){
+                urlnewcreate +='_D.png';
+        }else{
+                urlnewcreate +='_A.png';
+        }
+
+        img = '{{ asset('assets/newicons/') }}'+'/'+urlnewcreate;
+
+        send = null;
+            type = 1;
+        addMarker({
+            lat: parseFloat(checkdata['latitude']),
+            lng:  parseFloat(checkdata['longitude'])
+        }, send, img,checkdata,type);
+    }
+
+    //agents markers
+    for (let i = 0; i < allagent.length; i++) {
+            displayagent = allagent[i];
+
+            if(displayagent.agentlog != null && displayagent.agentlog['lat'] != "0.00000000" && displayagent.agentlog['long'] != "0.00000000" ){
+
+                    if (displayagent['is_available'] == 1) {
+                        images = url+'/demo/images/location.png';
+                    }else {
+                        images = url+'/demo/images/location_grey.png';
+                    }
+                    var image = {
+                    url: images, // url
+                    scaledSize: new google.maps.Size(50, 50), // scaled size
+                    origin: new google.maps.Point(0,0), // origin
+                    anchor: new google.maps.Point(22,22) // anchor
+                    };
+                    send = null;
+                    type = 2;
+
+                    addMarker({lat: parseFloat(displayagent.agentlog['lat']),
+                    lng:  parseFloat(displayagent.agentlog['long'])
+                    }, send, image,displayagent,type);
+            }
+
+    }
+
+    
+}
+
+// function for displaying route  on map
+function calculateAndDisplayRoute(directionsService, directionsRenderer,map,alltask,agent_location) {
+            const waypts = [];
+            const checkboxArray = document.getElementById("waypoints");
+
+            for (let i = 0; i < alltask.length; i++) {
+                if (i != alltask.length - 1 && alltask[i].task_status != 4 && alltask[i].task_status != 5 ) {
+                    waypts.push({
+                        location: new google.maps.LatLng(parseFloat(alltask[i].latitude), parseFloat(alltask[i]
+                            .longitude)),
+                        stopover: true,
+                    });
+
+                }
+                var image = url+'/assets/newicons/'+alltask[i].task_type_id+'.png';
+            }
+
+            directionsService.route({
+                    origin: new google.maps.LatLng(parseFloat(agent_location.lat), parseFloat(agent_location.long)),
+                    destination: new google.maps.LatLng(parseFloat(alltask[alltask.length - 1].latitude),
+                        parseFloat(alltask[alltask.length - 1].longitude)),
+                    waypoints: waypts,
+                    optimizeWaypoints: false,
+                    travelMode: google.maps.TravelMode.DRIVING,
+                },
+                (response, status) => {
+                    if (status === "OK" && response) {
+                        directionsRenderer.setDirections(response);
+
+                    } else {
+                        //window.alert("Directions request failed due to " + status);
+                    }
+                }
+            );
+        }
+
+
+// Adds a marker to the map and push to the array.
+function addMarker(location, lables, images,data,type) {
+    var contentString = '';
+    if(type == 1){
+        contentString =
+        '<div id="content">' +
+        '<div id="siteNotice">' +
+        "</div>" +
+        '<h5 id="firstHeading" class="firstHeading">'+data['driver_name']+'</h5>' +
+        '<h6 id="firstHeading" class="firstHeading">'+data['task_type']+'</h6>' +
+        '<div id="bodyContent">' +
+        "<p><b>Address :- </b> " +data['address']+ " " +
+        ".</p>" +
+        '<p><b>Customer: '+data['customer_name']+'</b>('+data['customer_phone_number']+') </p>' +
+        "</div>" +
+        "</div>";
+    }else{
+        img = data['image_url'];
+        contentString =
+        '<div class="row no-gutters align-items-center">'+
+            '<div class="col-sm-4">'+
+                '<div class="img_box mb-sm-0 mb-2"> <img src="https://imgproxy.royodispatch.com/insecure/fit/200/200/sm/0/plain/'+data["image_url"]+'"/></div> </div>'+
+            '<div class="col-sm-8 pl-2 user_info">'+
+                '<div class="user_name mb-2"><label class="d-block m-0">'+data["name"]+'</label><span> <i class="fas fa-phone-alt"></i>'+data["phone_number"]+'</span></div>'+
+                '<div><b class="d-block mb-2"><i class="far fa-clock"></i> <span> '+jQuery.timeago(new Date(data['agentlog']['created_at']))+
+                ' </span></b> <b><i class="fas fa-mobile-alt"></i> '+data['agentlog']['device_type']+'</b> <b class="ml-2"> <i class="fas fa-battery-half"></i>  '+data['agentlog']['battery_level']+'%</b> </div>'
+            '</div>'+
+        '</div>';
+    }
+
+    const infowindow = new google.maps.InfoWindow({
+        content: contentString,
+        minWidth: 250,
+        minheight: 250,
+    });
+
+    const marker = new google.maps.Marker({
+                    position: location,
+                    label: lables,
+                    icon: images,
+                    map: map,
+                    //animation: google.maps.Animation.DROP,
+                });
+    if (type == 2) {
+        driverMarkers.push(marker)
+    }
+
+     markers.push(marker);
+
+    marker.addListener("click", () => {
+    infowindow.open(map, marker);
+    });
+}
+
+// Sets the map on all markers in the array.
+function setMapOnAll(map) {
+
+    for (let i = 0; i < markers.length; i++) {
+        markers[i].setMap(null);
+    }
+}
+
+// Removes the markers from the map, but keeps them in the array.
+function clearMarkers() {
+    setMapOnAll(null);
+}
+
+// Shows any markers currently in the array.
+function showMarkers() {
+    setMapOnAll(map);
+}
+
+// Deletes all markers in the array by removing references to them.
+function deleteMarkers() {
+    clearMarkers();
+    markers = [];
+}
+
+
+$(".datetime").on('change', function(){
     loadTeams();
 });
 
+//function fot optimizing route
+function RouteOptimization(taskids,distancematrix,optimize,agentid,date) {
+    $('#routeTaskIds').val(taskids);
+    $('#routeMatrix').val(distancematrix);
+    $('#routeOptimize').val(optimize);
+    $('#routeAgentid').val(agentid);
+    $('#routeDate').val(date);
+    $('#optimizeType').val('optimize');
+    $("input[name='driver_start_location'][value='current']").prop("checked", true);
+    $('#addressBlock').css('display','none');
+    $('#addressTaskBlock').css('display','none');
+    $('#selectedtasklocations').html('');
+    $('.selecttask').css('display','');
+    $.ajax({
+            type: 'POST',
+            url: '{{url("/get-tasks")}}',
+            headers: {
+                'X-CSRF-Token': '{{ csrf_token() }}',
+            },
+            data: {'taskids':taskids},
+
+            success: function(response) {
+
+                var data = $.parseJSON(response);
+
+                for (var i = 0; i < data.length; i++) {
+                    var object = data[i];
+                    var task_id =  object['id'];
+                    var tasktypeid = object['task_type_id'];
+                    var current_location = object['current_location'];
+                    if(current_location == 0)
+                    {
+                        $('input[type=radio][name=driver_start_location]').prop('checked', false);
+                        $("input[type=radio][name=driver_start_location][value='current']").remove();
+                        $("#radio-current-location-span").remove();
+                        $("input[type=radio][name=driver_start_location][value='select']").click();
+                    }
+
+                    if(tasktypeid==1)
+                    {
+                        tasktype = "Pickup";
+                    }else if(tasktypeid==2)
+                    {
+                        tasktype = "Dropoff";
+                    }else{
+                        tasktype = "Appointment";
+                    }
+
+                    var location_address =  object['location']['address'];
+                    var shortname =  object['location']['short_name'];
+
+
+                    var option   = '<option value="'+task_id+'">'+tasktype+' - '+shortname+' - '+location_address+'</option>';
+                    $('#selectedtasklocations').append(option);
+                }
+            },
+            error: function(response) {
+            }
+        });
+
+        $('#optimize-route-modal').modal('show');
+}
+
+
+// on submiting optimization popup
+$('.submitoptimizeForm').click(function(){
+    var driverStartTime = $('.driverStartTime').val();
+    var driverTaskDuration = $('.driverTaskDuration').val();
+    var driverBrakeStartTime = $('.driverBrakeStartTime').val();
+    var driverBrakeEndTime = $('.driverBrakeEndTime').val();
+    var sortingtype = $('#optimizeType').val();
+    var err = 0;
+    if(driverStartTime=='')
+    {
+        $('#DriverStartTime span').css('display','block');
+        err = 1;
+    }
+
+    if(driverTaskDuration=='')
+    {
+        $('#DriverTaskDuration span').css('display','block');
+        err = 1;
+    }
+    if(driverBrakeStartTime=='')
+    {
+        $('#DriverBrakeStartTime span').css('display','block');
+        err = 1;
+    }
+
+    if(driverBrakeEndTime=='')
+    {
+        $('#DriverBrakeEndTime span').css('display','block');
+        err = 1;
+    }
+
+    if(err == 0)
+    {
+        $('.routetext').text('Optimizing Route');
+        $('#optimize-route-modal').modal('hide');
+        //$('.pageloader').css('display','block');
+        spinnerJS.showSpinner()
+        var formdata =$('form#optimizerouteform').serialize();
+        if(sortingtype=='optimize')
+        {
+            var formurl = '{{url("/optimize-route")}}';
+        }else{
+            var formurl = '{{url("/optimize-arrange-route")}}';
+        }
+        $.ajax({
+                type: 'POST',
+                url: formurl,
+                headers: {
+                    'X-CSRF-Token': '{{ csrf_token() }}',
+                },
+                data : formdata,
+                success: function(response) {
+                    if(response!="Try again later")
+                    {
+                        loadTeams();
+                    }else{
+                        alert(response);
+                        spinnerJS.hideSpinner()
+                    }
+                },
+                error: function(response) {
+
+                }
+            });
+    }
+
+});
+
+function cancleForm()
+{
+    $('#optimizerouteform').trigger("reset");
+    $('#optimize-route-modal').modal('hide');
+}
 
 // autoload dashbard
 function loadTeams(){
-    $("#task_container").empty();
+    closeAllAccordian();
+    $("#teams_container").empty();
     spinnerJS.showSpinner();
     var checkuserstatus = $('input[name="user_status"]:checked').val();
     $.ajax({
@@ -173,17 +718,38 @@ function loadTeams(){
         },
         data: {'userstatus':checkuserstatus, 'routedate':$("#basic-datepicker").val()},
         success: function(data) {
-            $("#task_container").empty();
-            $("#task_container").html(data);
+            $("#teams_container").empty();
+            $("#teams_container").html(data);
             spinnerJS.hideSpinner();
             initializeSortable();
+
+            olddata = allagent = defaultmaplocation = [];
+            if($("#newmarker_map_data").val()!=''){
+                olddata  = JSON.parse($("#newmarker_map_data").val());
+            }
+
+            if($("#agents_map_data").val()!=''){
+                allagent  = JSON.parse($("#agents_map_data").val());
+            }
+
+            if($("#uniquedrivers_map_data").val()!=''){
+                allroutes  = JSON.parse($("#uniquedrivers_map_data").val());
+            }
+
+            // for getting default map location
+            if($("#agentslocations_map_data").val()!=''){
+                defaultmaplocation = JSON.parse($("#agentslocations_map_data").val());
+                defaultlat = parseFloat(defaultmaplocation[0].lat);
+                defaultlong = parseFloat(defaultmaplocation[0].long);
+            }
+            
+            initMap();
         },
         error: function(data) {
             alert('There is some issue. Try again later');
             spinnerJS.hideSpinner()
         }
     });
-    
 }
 
 
@@ -213,8 +779,7 @@ function initializeSortable()
 
                 success: function(response) {
                     var data = $.parseJSON(response);
-                    //reInitMap(data.allroutedata);
-                    reInitMap();
+                    
                     $('.totdis'+agentid).html(data.total_distance);
                     var funperams = '<span class="optimize_btn" onclick="RouteOptimization('+params+')">Optimize</span>';
                     $('.optimizebtn'+agentid).html(funperams);
@@ -324,6 +889,7 @@ function autoloadmap(){
             }
 
         }
+        
     });
     
 }
@@ -333,101 +899,6 @@ function deleteAgentMarks() {
         driverMarkers[i].setMap(null);
     }
 }
-// for reinitializing map in ajax response during drag drop and optimization
-function reInitMap() {
-    const haightAshbury = {
-        lat: $("#initial_lotitude").val() != "0.00000000" ? parseFloat($("#initial_lotitude").val()): defaultlat,
-        lng: $("#initial_longitude").val() != "0.00000000" ? parseFloat($("#initial_longitude").val()):defaultlong
-    };
-    map = new google.maps.Map(document.getElementById("map_canvas"), {
-        zoom: 12,
-        center: haightAshbury,
-        mapTypeId: "roadmap",
-        styles: themeType,
-    });
-
-    //new code for route
-    $.each(allroutes, function(i, item) {
-        const directionsService = new google.maps.DirectionsService();
-        const directionsRenderer = new google.maps.DirectionsRenderer({suppressMarkers: true});
-        if(i < color.length)
-        {
-            var routecolor = color[i];
-        }else{
-            var routecolor = "pink";
-        }
-
-        directionsRenderer.setOptions({
-            polylineOptions: {
-                strokeColor: routecolor
-            }
-        });
-
-        directionsRenderer.setMap(map);
-        var al_task = allroutes[i].task_details;
-        var agent_locatn = allroutes[i].driver_detail;
-        calculateAndDisplayRoute(directionsService, directionsRenderer,map,al_task,agent_locatn);
-    });
-
-    // Adds a marker at the center of the map.
-    for (let i = 0; i < olddata.length; i++) {
-        checkdata = olddata[i];
-        var urlnewcreate = '';
-        if(checkdata['task_status'] == 0){
-            urlnewcreate = 'unassigned';
-        }else if(checkdata['task_status'] == 1 || checkdata['task_status'] == 2){
-            urlnewcreate = 'assigned';
-        }else if(checkdata['task_status'] == 3){
-            urlnewcreate = 'complete';
-        }else{
-            urlnewcreate = 'faild';
-        }
-
-        if(checkdata['task_type_id'] == 1){
-                urlnewcreate += '_P.png';
-        }else if(checkdata['task_type_id'] == 2){
-                urlnewcreate +='_D.png';
-        }else{
-                urlnewcreate +='_A.png';
-        }
-
-        img = '{{ asset('assets/newicons/') }}'+'/'+urlnewcreate;
-
-        send = null;
-            type = 1;
-        addMarker({
-            lat: parseFloat(checkdata['latitude']),
-            lng:  parseFloat(checkdata['longitude'])
-        }, send, img,checkdata,type);
-    }
-
-    //agents markers
-    for (let i = 0; i < allagent.length; i++) {
-        displayagent = allagent[i];
-
-        if(displayagent.agentlog != null && displayagent.agentlog['lat'] != "0.00000000" && displayagent.agentlog['long'] != "0.00000000" ){
-                    if (displayagent['is_available'] == 1) {
-                        images = url+'/demo/images/location.png';
-                    }else {
-                        images = url+'/demo/images/location_grey.png';
-                    }
-                    var image = {
-                    url: images, // url
-                    scaledSize: new google.maps.Size(50, 50), // scaled size
-                    origin: new google.maps.Point(0,0), // origin
-                    anchor: new google.maps.Point(22,22) // anchor
-                    };
-                    send = null;
-                    type = 2;
-
-                    addMarker({lat: parseFloat(displayagent.agentlog['lat']),
-                    lng:  parseFloat(displayagent.agentlog['long'])
-                    }, send, image,displayagent,type);
-        }
-
-    }
-}
-
 
 function reloadData() {
     location.reload();
@@ -496,19 +967,20 @@ $('input[type=radio][name=driver_start_location]').change(function() {
     }
 });
 </script>
-<!-- <script src="{{ asset('js/app.js') }}"></script> -->
+<script src="{{ asset('js/app.js') }}"></script>
 <script>
-/* Echo.channel('orderdata.{{$client_code}}')
+Echo.channel('orderdata.{{$client_code}}')
     .listen('loadDashboardData', (e) => {
         var heading = "";
         var message = "";
         var color = "";
+        var order_date = '';
         if(typeof(e.order_data.id) != "undefined")
         {
             if(e.order_data.status == "unassigned")
             {
                 heading = "Created";
-                message = "New Route Created.";
+                message = "Route Created/Updated.";
                 color = "green";
             }
             else if(e.order_data.status == "assigned")
@@ -521,8 +993,9 @@ $('input[type=radio][name=driver_start_location]').change(function() {
             {
                 heading = "Completed";
                 message = "Route Completed by {{__(getAgentNomenclature())}}.";
-                color = "orange";
+                color = "green";
             }
+            order_date = e.order_data.order_date;
         }
         else
         {
@@ -546,9 +1019,9 @@ $('input[type=radio][name=driver_start_location]').change(function() {
                 position : 'top-right'      
             });
 
-            autoloadmap();
+            loadTeams();
         }
-    }) */
+    })
 </script>
 
 <style>

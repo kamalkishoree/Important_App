@@ -889,7 +889,7 @@ class TaskController extends BaseController
                         ]);
 
                         $task = Task::where('order_id', $order->id)->update(['task_status'=>1]);
-
+                        event(new \App\Events\loadDashboardData($order->id));
                         $this->MassAndEditNotification($order->id, $agent_id);
                     }
                     Session::put('success', __(getAgentNomenclature().' assigned successfully'));
@@ -2507,6 +2507,7 @@ class TaskController extends BaseController
                 }
 
             }
+            event(new \App\Events\loadDashboardData($id));
             DB::commit();
             return response()->json(['status' => "Success", 'message' => 'Task Updated successfully!']);
         } catch (Exception $e) {

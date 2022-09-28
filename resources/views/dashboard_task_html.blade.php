@@ -3,8 +3,21 @@ $date = date('Y-m-d');
 $color = ['one','two','three','four','five','six','seven','eight'];
 $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain/';
 use Carbon\Carbon;
-@endphp
 
+$agentslocations = array();
+if(!empty($agents)){
+    foreach ($agents as $singleagent) {
+        if((!empty($singleagent['agentlog'])) && ($singleagent['agentlog']['lat']!=0) && ($singleagent['agentlog']['long']!=0))
+        {
+            $agentslocations[] = $singleagent['agentlog'];
+        }
+    }
+}
+
+$defaultmaplocation['lat'] = $defaultCountryLatitude;
+$defaultmaplocation['long'] = $defaultCountryLongitude;
+$agentslocations[] = $defaultmaplocation;
+@endphp
 
 <div id="accordion" class="overflow-hidden">
     <div class="card no-border-radius">
@@ -18,15 +31,18 @@ use Carbon\Carbon;
                         </div>
                         <div class="col-md-8 col-lg-9 col-xl-10 col-10">
                             <h6 class="header-title">{{__('Unassigned')}}</h6>
-                            <input type="hidden" id="initial_lotitude" value="{{$agents[0]['agentlog']['lat']}}"/>
-                            <input type="hidden" id="initial_longitude" value="{{$agents[0]['agentlog']['long']}}"/>
+                            <input type="hidden" id="newmarker_map_data" value="{{json_encode($newmarker)}}"/>
+                            <input type="hidden" id="agents_map_data" value="{{json_encode($agents)}}"/>
+                            <input type="hidden" id="agentslocations_map_data" value="{{json_encode($agentslocations)}}"/>
+                            <input type="hidden" id="uniquedrivers_map_data" value="{{json_encode($routedata)}}"/>
                         </div>
                     </div>
                 </div>
             </a>
         </div>
 
-        <div id="collapse-new" class="collapse" data-parent="#accordion" aria-labelledby="heading-1">
+        <div id="collapse-new" class="collapse" data-parent="#accordion"
+            aria-labelledby="heading-1">
             <div class="card-body">
                 <div id="accordion-0">
                     <div class="card no-border-radius">
@@ -56,7 +72,7 @@ use Carbon\Carbon;
                                     </div>
                                     <div class="col-md-10 col-10">
                                         <h6 class="mb-0 header-title scnd">{{__("Unassigned Tasks")}}<div  class="optimizebtn0">{!! $optimize0 !!} </div><div class="exportbtn0">{!! $turnbyturn0 !!} </div></h6>
-                                        <p class="mb-0"> <span id="unassigned_count">{{ count($unassigned_orders) }}</span> <span>{{__("Tasks")}}</span> {!! $unassigned_distance==''?'':' <i class="fas fa-route"></i> '!!}<span class="dist_sec totdis0 ml-1">{{ $unassigned_distance }}</span></p>
+                                        <p class="mb-0"> <span>{{ count($unassigned_orders) }} {{__("Tasks")}}</span> {!! $unassigned_distance==''?'':' <i class="fas fa-route"></i> '!!}<span class="dist_sec totdis0 ml-1">{{ $unassigned_distance }}</span></p>
                                     </div>
                                 </div>
                             </a>
@@ -66,7 +82,7 @@ use Carbon\Carbon;
                             <div id="handle-dragula-left0" class="dragable_tasks" agentid="0"  params="{{ $params0 }}" date="{{ $date }}">
                                 @foreach($unassigned_orders as $orders)
                                     @foreach($orders['task'] as $tasks)
-                                        <div class="card-body" id="task_div_{{$tasks['order_id']}}_{{$tasks['id']}}" task_id="{{ $tasks['id'] }}">
+                                        <div class="card-body" task_id ="{{ $tasks['id'] }}">
                                             <div class="p-2 assigned-block">
                                                 @php
                                                     $st ="Unassigned";
@@ -82,7 +98,7 @@ use Carbon\Carbon;
                                                     }else{
                                                         $tasktype = "Appointment";
                                                         $pickup_class = "assign_";
-                                                    }
+                                                        }
                                                 @endphp
 
                                                 <div>
@@ -124,14 +140,15 @@ use Carbon\Carbon;
 
     </div>
     <div class="card no-border-radius">
-        @foreach ($teamdata as $item)
+
+        @foreach ($teams as $item)
             <div class="card-header" id="heading-1">
                     <a role="button" data-toggle="collapse" href="#collapse-{{ $item['id'] }}"
                         aria-expanded="false" aria-controls="collapse-{{ $item['id'] }}">
                         <div class="newcheckit">
                             <div class="row d-flex align-items-center" class="mb-0">
                                 <div class="col-md-3 col-xl-2 col-2">
-                                    <span class="profile-circle {{$color[rand(0,7)]}}">{{ ucfirst($item['name']) }}</span>
+                                    <span class="profile-circle {{$color[rand(0,7)]}}">{{ substr(ucfirst($item['name']), 0, 2) }}</span>
                                 </div>
                                 <div class="col-md-9 col-xl-10 col-10">
                                     <h6 class="header-title">{{ ucfirst($item['name']) }}</h6>
@@ -154,6 +171,8 @@ use Carbon\Carbon;
             <div id="collapse-{{ $item['id'] }}" class="collapse" data-parent="#accordion"
                 aria-labelledby="heading-1">
                 <div class="card-body">
+                    <?php //echo "<pre>";
+                        // print_r($item['agents']); die;?>
                     @foreach ($item['agents'] as $agent)
 
                         <?php
@@ -196,7 +215,10 @@ use Carbon\Carbon;
                             <div class="card no-border-radius">
                                 <div class="card-header ml-2" id="by{{ $agent['id'] }}">
 
-                                        <a class="profile-block collapsed" role="button" data-toggle="collapse" href="#collapse{{ $agent['id'] }}" aria-expanded="false" aria-controls="collapse{{ $agent['id'] }}">
+                                        <a class="profile-block collapsed" role="button"
+                                            data-toggle="collapse" href="#collapse{{ $agent['id'] }}"
+                                            aria-expanded="false"
+                                            aria-controls="collapse{{ $agent['id'] }}">
                                             <div class="row">
                                                 <div class="col-md-2 col-2">
                                                     <img class="profile-circle"
@@ -223,14 +245,16 @@ use Carbon\Carbon;
                                             </div>
                                         </a>
                                 </div>
-                                <div id="collapse{{ $agent['id'] }}" class="collapse" data-parent="#accordion-{{ $agent['id'] }}" aria-labelledby="by{{ $agent['id'] }}">
-                                    <div id="handle-dragula-left{{ $agent['id'] }}" class="dragable_tasks" agentid="{{ $agent['id'] }}"  params="{{ $params }}" date="{{ $date }}" longitude="{{$agent['id']}}" latitude="{{$agent['id']}}">
-                                     
+                                <div id="collapse{{ $agent['id'] }}" class="collapse"
+                                    data-parent="#accordion-{{ $agent['id'] }}"
+                                    aria-labelledby="by{{ $agent['id'] }}">
+                                    <div id="handle-dragula-left{{ $agent['id'] }}" class="dragable_tasks" agentid="{{ $agent['id'] }}"  params="{{ $params }}" date="{{ $date }}">
+
                                     @foreach ($agent['order'] as $orders)
 
                                         @foreach ($orders['task'] as $tasks)
 
-                                            <div class="card-body" id="task_div_{{$tasks['order_id']}}_{{$tasks['id']}}" task_id ="{{ $tasks['id'] }}">
+                                            <div class="card-body" task_id ="{{ $tasks['id'] }}">
                                                 <div class="p-2 assigned-block">
 
                                                     @php
@@ -314,13 +338,7 @@ use Carbon\Carbon;
                 </div>
             </div>
         @endforeach
-
         
     </div>
 </div>
 
-
-
-
-
-            

@@ -28,9 +28,12 @@ class loadDashboardData implements ShouldBroadcast
     public $client_code;
     public function __construct($orderid)
     {
-        $order_data  = Order::select('id', 'status')->where('id', $orderid)->first();
+        $order_data  = Order::select('id', 'status', 'order_time')->where('id', $orderid)->first();
         $this->order_id  = $orderid;
-
+        if(!empty($order_data)):
+            $order_data->order_date = date('Y-m-d', strtotime($order_data->order_time));
+        endif;
+        
         $this->order_data = (!empty($order_data))?$order_data->toArray():[];
         $client_details    = Client::first();
         $this->client_code = $client_details->code;
