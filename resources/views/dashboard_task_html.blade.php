@@ -155,12 +155,14 @@ $agentslocations[] = $defaultmaplocation;
                                     <p class="mb-0">
                                         <span class="team_agent_{{ $item['id'] }}" id="team_agent_{{ $item['id'] }}">{{ count($item['agents']) }}</span>
                                             {{ __(getAgentNomenclature()) }}
-                                        : <span>
-                                            <span class="team_online_agent_{{ $item['id'] }}" id="team_online_agent_{{ $item['id'] }}">{{ $item['online_agents'] }}</span>
-                                                {{ __('Online') }} ・
-                                        <span class="team_offline_agent_{{ $item['id'] }}" id="team_offline_agent_{{ $item['id'] }}">{{ $item['offline_agents'] }}</span>
-                                            {{ __('Offline') }}
-                                        </span>
+                                        @if($userstatus == 2)
+                                            : <span>
+                                                <span class="team_online_agent_{{ $item['id'] }}" id="team_online_agent_{{ $item['id'] }}">{{ $item['online_agents'] }}</span>
+                                                    {{ __('Online') }} ・
+                                                <span class="team_offline_agent_{{ $item['id'] }}" id="team_offline_agent_{{ $item['id'] }}">{{ $item['offline_agents'] }}</span>
+                                                {{ __('Offline') }}
+                                            </span>
+                                        @endif
                                     </p>
                                 </div>
                             </div>

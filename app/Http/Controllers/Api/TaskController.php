@@ -214,7 +214,8 @@ class TaskController extends BaseController
                 if(isset($request->qr_code)){
                    $codeVendor = $this->checkQrcodeStatusDataToOrderPanel($order_details,$request->qr_code,5);
                 }
-                event(new \App\Events\loadDashboardData($orderId->order_id));
+                $orderdata = Order::select('id', 'order_time', 'status', 'driver_id')->with('agent')->where('id', $order_details->id)->first();
+                event(new \App\Events\loadDashboardData($orderdata));
             }
             //Send Next Dependent task details
             $tasks = Task::where('dependent_task_id', $orderId->id)->where('task_status', '!=', 4)->Where('task_status', '!=', 5)
@@ -785,7 +786,8 @@ class TaskController extends BaseController
                     'freelancer_commission_percentage' => $freelancer_commission_percentage
                 ]);
                 Task::where('order_id', $batch->order_id)->update(['task_status' => 1]);
-                event(new \App\Events\loadDashboardData($batch->order_id));
+                $orderdata = Order::select('id', 'order_time', 'status', 'driver_id')->with('agent')->where('id', $batch->order_id)->first();
+                event(new \App\Events\loadDashboardData($orderdata));
             }
             if ($check && $check->call_back_url) {
                 $call_web_hook = $this->updateStatusDataToOrder($check, 2,1);  # task accepted
@@ -1247,7 +1249,8 @@ class TaskController extends BaseController
                     $dispatch_traking_url = $client_url.'/order/tracking/'.$auth->code.'/'.$orders->unique_id;
 
                     DB::commit();
-                    event(new \App\Events\loadDashboardData($orders->id));
+                    $orderdata = Order::select('id', 'order_time', 'status', 'driver_id')->with('agent')->where('id', $orders->id)->first();
+                    event(new \App\Events\loadDashboardData($orderdata));
                     return response()->json([
                         'message' => __('Task Added Successfully'),
                         'task_id' => $orders->id,
@@ -1284,7 +1287,8 @@ class TaskController extends BaseController
                 $from_time = strtotime($from);
                 if ($to_time >= $from_time) {
                     DB::commit();
-                    event(new \App\Events\loadDashboardData($orders->id));
+                    $orderdata = Order::select('id', 'order_time', 'status', 'driver_id')->with('agent')->where('id', $orders->id)->first();
+                    event(new \App\Events\loadDashboardData($orderdata));
                     return response()->json([
                         'message' => __('Task Added Successfully'),
                         'task_id' => $orders->id,
@@ -1324,7 +1328,8 @@ class TaskController extends BaseController
                     scheduleNotification::dispatch($schduledata)->delay(now()->addMinutes($finaldelay));
                     DB::commit();
 
-                    event(new \App\Events\loadDashboardData($orders->id));
+                    $orderdata = Order::select('id', 'order_time', 'status', 'driver_id')->with('agent')->where('id', $orders->id)->first();
+                    event(new \App\Events\loadDashboardData($orderdata));
 
                     return response()->json([
                         'message' => __('Task Added Successfully'),
@@ -1361,7 +1366,8 @@ class TaskController extends BaseController
             $dispatch_traking_url = $client_url.'/order/tracking/'.$auth->code.'/'.$orders->unique_id;
 
             DB::commit();
-            event(new \App\Events\loadDashboardData($orders->id));
+            $orderdata = Order::select('id', 'order_time', 'status', 'driver_id')->with('agent')->where('id', $orders->id)->first();
+            event(new \App\Events\loadDashboardData($orderdata));
             return response()->json([
                 'message' => __('Task Added Successfully'),
                 'task_id' => $orders->id,

@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Events;
-
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
@@ -10,33 +9,41 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use App\Model\Client;
 use App\Model\Order;
+use Illuminate\Http\Request;
 use Illuminate\Queue\SerializesModels;
-use App\Traits\googleMapApiFunctions;
+use App\Http\Controllers\DashBoardController;
 use Log;
 
 class loadDashboardData implements ShouldBroadcast
 {
-    use Dispatchable, InteractsWithSockets, SerializesModels, googleMapApiFunctions;
+    use Dispatchable, InteractsWithSockets, SerializesModels;
 
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public $order_data = [];
-    public $order_id;
-    public $client_code;
-    public function __construct($orderid)
+    public $orderid;
+    public $order_status;
+    public $order_date;
+    public $agent_status;
+    public $htmldata;
+    public $channelname;
+    public function __construct($orderdata)
     {
-        $order_data  = Order::select('id', 'status', 'order_time')->where('id', $orderid)->first();
-        $this->order_id  = $orderid;
-        if(!empty($order_data)):
-            $order_data->order_date = date('Y-m-d', strtotime($order_data->order_time));
-        endif;
-        
-        $this->order_data = (!empty($order_data))?$order_data->toArray():[];
         $client_details    = Client::first();
-        $this->client_code = $client_details->code;
+       
+        $request = new Request([
+            'userstatus'   => !empty($orderdata->agent)?$orderdata->agent->is_available:2,
+            'routedate' => date('Y-m-d', strtotime($orderdata->order_time)),
+        ]);
+        $DashBoardController = new DashBoardController;
+        $this->htmldata      = $DashBoardController->dashboardTeamData($request);
+        $this->channelname   = "orderdata".$client_details->code."".date('Y-m-d', strtotime($orderdata->order_time));
+        $this->orderid       = $orderdata->id;
+        $this->order_date    = $orderdata->order_time;
+        $this->order_status  = $orderdata->status;
+        $this->agent_status  = !empty($orderdata->agent)?$orderdata->agent->is_available:'';
     }
 
     /**
@@ -46,7 +53,11 @@ class loadDashboardData implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new Channel('orderdata.'.$this->client_code);
+        if($this->agent_status==''):
+            return [new Channel($this->channelname.'2'), new Channel($this->channelname.'1'), new Channel($this->channelname.'0')];
+        else:
+            return [new Channel($this->channelname.'2'), new Channel($this->channelname.''.$this->agent_status)];
+        endif;
     }
 
     
