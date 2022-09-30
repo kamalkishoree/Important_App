@@ -105,9 +105,9 @@ $(document).ready(function() {
     $(".timeago").timeago();
 
     $('.checkUserStatus').click(function() {
-        loadTeams();
+        loadTeams(1);
     });
-    loadTeams();
+    loadTeams(1);
 });
 
 function gm_authFailure() {
@@ -129,37 +129,70 @@ let allagent = [];
 
 // for getting default map location
 let defaultmaplocation = [];
-let defaultlat  = [];
-let defaultlong = [];
+let defaultlat  = 0.000;
+let defaultlong = 0.000;
 let allroutes = [];
-let old_channelname = '';
-let channelname = "orderdata{{$client_code}}{{date('Y-m-d', time())}}2";
+let old_channelname = old_logchannelname = '';
+let channelname = "orderdata{{$client_code}}{{date('Y-m-d', time())}}";
+let logchannelname = "agentlog{{$client_code}}{{date('Y-m-d', time())}}";
 let imgproxyurl = {!!json_encode($imgproxyurl)!!};
+let directionsArray = [];
 
 
-function initMap() {
-    const haightAshbury = {
-        lat: allagent.length != 0 && allagent[0].agentlog && allagent[0].agentlog['lat']  != "0.00000000" ? parseFloat(allagent[0].agentlog['lat']): defaultlat,
-        lng: allagent.length != 0 && allagent[0].agentlog && allagent[0].agentlog['long'] != "0.00000000" ? parseFloat(allagent[0].agentlog['long']):defaultlong
-    };
-
-    map = new google.maps.Map(document.getElementById("map_canvas"), {
-        zoom: 12,
-        center: haightAshbury,
-        mapTypeId: "roadmap",
-        styles: themeType,
-    });
+function initMap(is_refresh) {
 
     //new code for route
-    var color = [
-        "blue",
-        "green",
-        "red",
-        "purple",
-        "skyblue",
-        "yellow",
-        "orange",
-        ];
+    var color = ["blue", "green", "red", "purple", "skyblue", "yellow", "orange"];
+    const haightAshbury = {
+            lat: allagent.length != 0 && allagent[0].agentlog && allagent[0].agentlog['lat']  != "0.00000000" ? parseFloat(allagent[0].agentlog['lat']):defaultlat,
+            lng: allagent.length != 0 && allagent[0].agentlog && allagent[0].agentlog['long'] != "0.00000000" ? parseFloat(allagent[0].agentlog['long']):defaultlong
+        };
+    if(is_refresh==1)
+    {
+        map = new google.maps.Map(document.getElementById("map_canvas"), {
+            zoom: 12,
+            center: haightAshbury,
+            mapTypeId: "roadmap",
+            styles: themeType,
+        });
+    
+        // Adds a marker at the center of the map.
+        for (let i = 0; i < olddata.length; i++) {
+            checkdata = olddata[i];
+
+            var urlnewcreate = '';
+            if(checkdata['task_status'] == 0){
+                urlnewcreate = 'unassigned';
+            }else if(checkdata['task_status'] == 1 || checkdata['task_status'] == 2){
+                urlnewcreate = 'assigned';
+            }else if(checkdata['task_status'] == 3){
+                urlnewcreate = 'complete';
+            }else{
+                urlnewcreate = 'faild';
+            }
+
+            if(checkdata['task_type_id'] == 1){
+                    urlnewcreate += '_P.png';
+            }else if(checkdata['task_type_id'] == 2){
+                    urlnewcreate +='_D.png';
+            }else{
+                    urlnewcreate +='_A.png';
+            }
+
+            img = '{{ asset('assets/newicons/') }}'+'/'+urlnewcreate;
+
+            send = null;
+                type = 1;
+            addMarker({
+                lat: parseFloat(checkdata['latitude']),
+                lng:  parseFloat(checkdata['longitude'])
+            }, send, img,checkdata,type);
+        }
+        
+    }else{
+        deleteAgentMarks();
+        clearRoutes();
+    }
 
     $.each(allroutes, function(i, item) {
         const directionsService = new google.maps.DirectionsService();
@@ -178,70 +211,42 @@ function initMap() {
         directionsRenderer.setMap(map);
         var al_task = allroutes[i].task_details;
         var agent_locatn = allroutes[i].driver_detail;
-        calculateAndDisplayRoute(directionsService, directionsRenderer,map,al_task,agent_locatn);
+        calculateAndDisplayRoute(directionsService, directionsRenderer, map, al_task, agent_locatn);
     });
-
-    // Adds a marker at the center of the map.
-    for (let i = 0; i < olddata.length; i++) {
-        checkdata = olddata[i];
-
-        var urlnewcreate = '';
-        if(checkdata['task_status'] == 0){
-            urlnewcreate = 'unassigned';
-        }else if(checkdata['task_status'] == 1 || checkdata['task_status'] == 2){
-            urlnewcreate = 'assigned';
-        }else if(checkdata['task_status'] == 3){
-            urlnewcreate = 'complete';
-        }else{
-            urlnewcreate = 'faild';
-        }
-
-        if(checkdata['task_type_id'] == 1){
-                urlnewcreate += '_P.png';
-        }else if(checkdata['task_type_id'] == 2){
-                urlnewcreate +='_D.png';
-        }else{
-                urlnewcreate +='_A.png';
-        }
-
-        img = '{{ asset('assets/newicons/') }}'+'/'+urlnewcreate;
-
-        send = null;
-            type = 1;
-        addMarker({
-            lat: parseFloat(checkdata['latitude']),
-            lng:  parseFloat(checkdata['longitude'])
-        }, send, img,checkdata,type);
-    }
 
     //agents markers
     for (let i = 0; i < allagent.length; i++) {
-            displayagent = allagent[i];
+        displayagent = allagent[i];
 
-            if(displayagent.agentlog != null && displayagent.agentlog['lat'] != "0.00000000" && displayagent.agentlog['long'] != "0.00000000" ){
+        if(displayagent.agentlog != null && displayagent.agentlog['lat'] != "0.00000000" && displayagent.agentlog['long'] != "0.00000000" ){
 
-                    if (displayagent['is_available'] == 1) {
-                        images = url+'/demo/images/location.png';
-                    }else {
-                        images = url+'/demo/images/location_grey.png';
-                    }
-                    var image = {
-                    url: images, // url
-                    scaledSize: new google.maps.Size(50, 50), // scaled size
-                    origin: new google.maps.Point(0,0), // origin
-                    anchor: new google.maps.Point(22,22) // anchor
-                    };
-                    send = null;
-                    type = 2;
-
-                    addMarker({lat: parseFloat(displayagent.agentlog['lat']),
-                    lng:  parseFloat(displayagent.agentlog['long'])
-                    }, send, image,displayagent,type);
+            if (displayagent['is_available'] == 1) {
+                images = url+'/demo/images/location.png';
+            }else {
+                images = url+'/demo/images/location_grey.png';
             }
+            var image = {
+                url: images, // url
+                scaledSize: new google.maps.Size(50, 50), // scaled size
+                origin: new google.maps.Point(0,0), // origin
+                anchor: new google.maps.Point(22,22) // anchor
+            };
+            send = null;
+            type = 2;
 
+            addMarker({lat: parseFloat(displayagent.agentlog['lat']),
+            lng:  parseFloat(displayagent.agentlog['long'])
+            }, send, image,displayagent, type);
+        }
     }
 
-    
+    map.setCenter(haightAshbury);
+}
+
+function deleteAgentMarks() {
+    for (let i = 0; i < driverMarkers.length; i++) {
+        driverMarkers[i].setMap(null);
+    }
 }
 
 // function for displaying route  on map
@@ -273,7 +278,7 @@ function calculateAndDisplayRoute(directionsService, directionsRenderer, map, al
         (response, status) => {
             if (status === "OK" && response) {
                 directionsRenderer.setDirections(response);
-
+                directionsArray.push(directionsRenderer);
             } else {
                 //window.alert("Directions request failed due to " + status);
             }
@@ -281,9 +286,25 @@ function calculateAndDisplayRoute(directionsService, directionsRenderer, map, al
     );
 }
 
+function clearRoutes() {
+    if (directionsArray.length <1 ) {
+        alert("No directions have been set to clear");
+        return;
+    }
+    else {
+        $('#directions').hide();
+        for (var i = 0;i< directionsArray.length; i ++) {
+            if (directionsArray [i] !== -1) {
+                directionsArray [i].setMap(null); 
+            }
+        }
+        directionsArray = [];
+        return;
+    }   
+}
 
 // Adds a marker to the map and push to the array.
-function addMarker(location, lables, images,data,type) {
+function addMarker(location, lables, images, data, type) {
     var contentString = '';
     if(type == 1){
         contentString =
@@ -362,8 +383,7 @@ function deleteMarkers() {
 
 
 $(".datetime").on('change', function(){
-    orderdata_channelname = "orderdata.{{$client_code}}."+$(this).val();
-    loadTeams();
+    loadTeams(1);
 });
 
 //function fot optimizing route
@@ -483,7 +503,7 @@ $('.submitoptimizeForm').click(function(){
                 success: function(response) {
                     if(response!="Try again later")
                     {
-                        loadTeams();
+                        loadTeams(1);
                         spinnerJS.hideSpinner();
                     }else{
                         alert(response);
@@ -505,14 +525,13 @@ function cancleForm()
 }
 
 // autoload dashbard
-function loadTeams()
+function loadTeams(is_load_html)
 {
-    old_channelname = channelname;
-    channelname = "orderdata{{$client_code}}"+$("#basic-datepicker").val()+""+$('input[name="user_status"]:checked').val();
-    ListenChannel();
     closeAllAccordian();
-    $("#teams_container").empty();
-    spinnerJS.showSpinner();
+    if(is_load_html == 1)
+    {
+        spinnerJS.showSpinner();
+    }
     var checkuserstatus = $('input[name="user_status"]:checked').val();
     $.ajax({
         type: 'POST',
@@ -520,38 +539,63 @@ function loadTeams()
         headers: {
             'X-CSRF-Token': '{{ csrf_token() }}',
         },
-        data: {'userstatus':checkuserstatus, 'routedate':$("#basic-datepicker").val()},
-        success: function(data) {
-            $("#teams_container").empty();
-            $("#teams_container").html(data);
-            spinnerJS.hideSpinner();
-            initializeSortable();
-
+        data: {'userstatus':checkuserstatus, 'is_load_html':is_load_html, 'routedate':$("#basic-datepicker").val()},
+        success: function(result) {
             olddata = allagent = defaultmaplocation = [];
-            if($("#newmarker_map_data").val()!=''){
-                olddata  = JSON.parse($("#newmarker_map_data").val());
-            }
+            //if Html is required to load or not, for agent's log it is not required
+            if(is_load_html == 1)
+            {
+                $("#teams_container").empty();
+                $("#teams_container").html(result);
+                spinnerJS.hideSpinner();
+                initializeSortable();
 
-            if($("#agents_map_data").val()!=''){
-                allagent  = JSON.parse($("#agents_map_data").val());
-            }
+                if($("#newmarker_map_data").val()!=''){
+                    olddata  = JSON.parse($("#newmarker_map_data").val());
+                }
 
-            if($("#uniquedrivers_map_data").val()!=''){
-                allroutes  = JSON.parse($("#uniquedrivers_map_data").val());
-            }
+                if($("#agents_map_data").val()!=''){
+                    allagent  = JSON.parse($("#agents_map_data").val());
+                }
 
-            // for getting default map location
-            if($("#agentslocations_map_data").val()!=''){
-                defaultmaplocation = JSON.parse($("#agentslocations_map_data").val());
-                defaultlat = parseFloat(defaultmaplocation[0].lat);
-                defaultlong = parseFloat(defaultmaplocation[0].long);
+                if($("#uniquedrivers_map_data").val()!=''){
+                    allroutes  = JSON.parse($("#uniquedrivers_map_data").val());
+                }
+
+                if($("#agentslocations_map_data").val()!=''){
+                    defaultmaplocation = JSON.parse($("#agentslocations_map_data").val());
+                    defaultlat = parseFloat(defaultmaplocation[0].lat);
+                    defaultlong = parseFloat(defaultmaplocation[0].long);
+                }
+            }else{
+                var data1 = JSON.parse(result);
+                if(data1['status'] == "success")
+                {// setting up required variables to refreshing the google map route
+                    olddata = data1['newmarker'];
+                    allagent = data1['agents'];
+                    allroutes = data1['routedata'];
+                    defaultlat = parseFloat(data1['defaultCountryLatitude']);
+                    defaultlong = parseFloat(data1['defaultCountryLongitude']);
+                }
             }
             
-            initMap();
+            initMap(is_load_html);
+            var old_channelname1 = channelname;
+            var old_logchannelname1 = logchannelname;
+            channelname = "orderdata{{$client_code}}"+$("#basic-datepicker").val();
+            if(is_load_html == 1 && old_channelname != channelname)
+            {
+                old_channelname = channelname;
+                old_logchannelname = logchannelname;
+                ListenChannel();
+            }
         },
         error: function(data) {
             alert('There is some issue. Try again later');
-            spinnerJS.hideSpinner()
+            if(is_load_html == 1)
+            {
+                spinnerJS.hideSpinner();
+            }
         }
     });
 }
@@ -615,92 +659,6 @@ function initializeSortable()
             });
         }
     });
-
-}
-
-function autoloadmap(){
-    var route_dashboard_data = "{{ route('dashboard.data', ':id') }}";
-    var checkuserstatus = $('input[name="user_status"]:checked').val();
-    route_dashboard_data = route_dashboard_data.replace(":id", checkuserstatus);
-    $.get(route_dashboard_data, function(data) {
-
-        allagent = data.data.agents;
-        allroutes = data.data.routedata;
-        olddata =  data.data.newmarker;
-        teams =  data.data.teams;
-
-
-        var color = [
-            "blue",
-            "green",
-            "red",
-            "purple",
-            "skyblue",
-            "yellow",
-            "orange",
-        ];
-
-
-        deleteAgentMarks();
-        //teamupdate markers
-        for (let j = 0; j < teams.length; j++) {
-                var agent_count = teams[j]['agents_count'];
-                var team_online_agent_count = teams[j]['online_agents'];
-                var team_offline_agent_count = teams[j]['offline_agents'];
-
-                $("#team_agent_"+ teams[j]['id']).text(agent_count);
-                $("#team_online_agent_"+ teams[j]['id']).text(team_online_agent_count);
-                $("#team_offline_agent_"+ teams[j]['id']).text(team_offline_agent_count);
-
-            let teamAgents = teams[j]['agents'];
-            for (let a = 0; a < teamAgents.length; a++) {
-
-                var agent_onlineStatus = ( teamAgents[a]['is_available']  == 1 ) ? ' ({{ __("Online") }})' : ' ({{__("Offline")}})' ;
-                    console.log("#tram_agent_online_status_"+ teamAgents[a]['id']);
-                    console.log(agent_onlineStatus);
-                    $("#tram_agent_online_status_"+teamAgents[a]['id']).text(agent_onlineStatus);
-            }
-
-
-        }
-
-        for (let i = 0; i < allagent.length; i++) {
-            displayagent = allagent[i];
-
-            if (displayagent.agentlog != null && displayagent.agentlog['lat'] != "0.00000000" && displayagent.agentlog[
-                    'long'] != "0.00000000") {
-                
-                if (displayagent['is_available'] == 1) {
-                    images = url + '/demo/images/location.png';
-                } else {
-                    images = url + '/demo/images/location_grey.png';
-                }
-                var image = {
-                    url: images, // url
-                    scaledSize: new google.maps.Size(50, 50), // scaled size
-                    origin: new google.
-                    maps.Point(0, 0), // origin
-                    anchor: new google.maps.Point(22, 22) // anchor
-                };
-                send = null;
-                type = 2;
-
-                addMarker({
-                    lat: parseFloat(displayagent.agentlog['lat']),
-                    lng: parseFloat(displayagent.agentlog['long'])
-                }, send, image, displayagent, type);
-            }
-
-        }
-        
-    });
-    
-}
-// delete agent marks
-function deleteAgentMarks() {
-    for (let i = 0; i < driverMarkers.length; i++) {
-        driverMarkers[i].setMap(null);
-    }
 }
 
 function reloadData() {
@@ -723,34 +681,31 @@ function closeAllAccordian() {
 
 function NavigatePath(taskids,distancematrix,optimize,agentid,date) {
     $('.routetext').text('Exporting Pdf');
-    //$('.pageloader').css('display','block');
     spinnerJS.showSpinner()
 
-        $.ajax({
-            type: 'POST',
-            url: '{{url("/export-path")}}',
-            headers: {
-                'X-CSRF-Token': '{{ csrf_token() }}',
-            },
-            data: {'taskids':taskids,'agentid':agentid,'date':date},
+    $.ajax({
+        type: 'POST',
+        url: '{{url("/export-path")}}',
+        headers: {
+            'X-CSRF-Token': '{{ csrf_token() }}',
+        },
+        data: {'taskids':taskids,'agentid':agentid,'date':date},
 
-            success: function(response) {
-                if(response!="Try again later")
-                {
-                    $('#pdfvalue').val(response);
-                    $("#pdfgenerate").submit();
-                    spinnerJS.hideSpinner()
-                }else{
-                    alert(response);
-                    spinnerJS.hideSpinner()
-                }
-            },
-            error: function(response) {
-
+        success: function(response) {
+            if(response!="Try again later")
+            {
+                $('#pdfvalue').val(response);
+                $("#pdfgenerate").submit();
+                spinnerJS.hideSpinner()
+            }else{
+                alert(response);
+                spinnerJS.hideSpinner()
             }
-        });
+        },
+        error: function(response) {
 
-
+        }
+    });
 }
 
 $('input[type=radio][name=driver_start_location]').change(function() {
@@ -770,13 +725,17 @@ $('input[type=radio][name=driver_start_location]').change(function() {
 </script>
 <script src="{{ asset('js/app.js') }}"></script>
 <script>
+//function to listen different channels of event of different dates and different agent status
 function ListenChannel()
 {
+    //leave/not listen previous channel in case filters have been changed
     if(old_channelname!=channelname)
     {
         Echo.leave(old_channelname);
+        Echo.leave(old_logchannelname);
     }
     
+    //listen route add/update/delete/assigned/completed event
     Echo.channel(channelname)
     .listen('loadDashboardData', (e) => {
         var heading = "";
@@ -818,6 +777,7 @@ function ListenChannel()
 
         if(heading!='')
         {
+            loadTeams(0);
             $.toast({ 
                 heading:heading,
                 text : message, 
@@ -830,37 +790,13 @@ function ListenChannel()
                 textAlign : 'left',         
                 position : 'top-right'      
             });
-
-            closeAllAccordian();
-
-            $("#teams_container").empty();
-            $("#teams_container").html(e.htmldata);
-            
-            initializeSortable();
-
-            olddata = allagent = defaultmaplocation = [];
-            if($("#newmarker_map_data").val()!=''){
-                olddata  = JSON.parse($("#newmarker_map_data").val());
-            }
-
-            if($("#agents_map_data").val()!=''){
-                allagent  = JSON.parse($("#agents_map_data").val());
-            }
-
-            if($("#uniquedrivers_map_data").val()!=''){
-                allroutes  = JSON.parse($("#uniquedrivers_map_data").val());
-            }
-
-            // for getting default map location
-            if($("#agentslocations_map_data").val()!=''){
-                defaultmaplocation = JSON.parse($("#agentslocations_map_data").val());
-                defaultlat = parseFloat(defaultmaplocation[0].lat);
-                defaultlong = parseFloat(defaultmaplocation[0].long);
-            }
-            
-            initMap();
-            //loadTeams();
         }
+    });
+
+    //listen agent log updation event
+    Echo.channel(logchannelname)
+    .listen('agentLogFetch', (e) => {
+        loadTeams(0);
     });
 }
 

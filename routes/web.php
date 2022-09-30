@@ -17,6 +17,10 @@ use Illuminate\Http\Request;
 |
 */
 //switch language route
+Route::get('hitevent', function (Request $request) {
+	event(new \App\Events\agentLogFetch());
+	dd("Event successfull");
+});
 
 Route::get('/switch/language', function (Request $request) {
 	if ($request->lang) {

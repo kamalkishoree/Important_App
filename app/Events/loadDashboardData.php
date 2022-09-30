@@ -11,7 +11,6 @@ use App\Model\Client;
 use App\Model\Order;
 use Illuminate\Http\Request;
 use Illuminate\Queue\SerializesModels;
-use App\Http\Controllers\DashBoardController;
 use Log;
 
 class loadDashboardData implements ShouldBroadcast
@@ -32,13 +31,10 @@ class loadDashboardData implements ShouldBroadcast
     public function __construct($orderdata)
     {
         $client_details    = Client::first();
-       
         $request = new Request([
             'userstatus'   => !empty($orderdata->agent)?$orderdata->agent->is_available:2,
             'routedate' => date('Y-m-d', strtotime($orderdata->order_time)),
         ]);
-        $DashBoardController = new DashBoardController;
-        $this->htmldata      = $DashBoardController->dashboardTeamData($request);
         $this->channelname   = "orderdata".$client_details->code."".date('Y-m-d', strtotime($orderdata->order_time));
         $this->orderid       = $orderdata->id;
         $this->order_date    = $orderdata->order_time;
@@ -53,11 +49,7 @@ class loadDashboardData implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        if($this->agent_status==''):
-            return [new Channel($this->channelname.'2'), new Channel($this->channelname.'1'), new Channel($this->channelname.'0')];
-        else:
-            return [new Channel($this->channelname.'2'), new Channel($this->channelname.''.$this->agent_status)];
-        endif;
+        return [new Channel($this->channelname)];
     }
 
     

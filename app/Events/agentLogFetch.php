@@ -9,6 +9,9 @@ use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Http\Request;
+use App\Model\Client;
+use Log;
 
 class agentLogFetch implements ShouldBroadcast
 {
@@ -19,9 +22,11 @@ class agentLogFetch implements ShouldBroadcast
      *
      * @return void
      */
+    public $channelname;
     public function __construct()
     {
-        
+        $client_details      = Client::first();
+        $this->channelname   = "agentlog".$client_details->code."".date('Y-m-d', time());
     }
 
     /**
@@ -31,6 +36,6 @@ class agentLogFetch implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new PrivateChannel('channel-name');
+        return new Channel($this->channelname);
     }
 }

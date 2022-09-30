@@ -886,9 +886,11 @@ class DashBoardController extends Controller
     }
 
 
+    //function to load latest order/route and agent data with or without html
     public function dashboardTeamData(Request $request)
     {
         $userstatus = isset($request->userstatus)?$request->userstatus:2;
+        $is_load_html = isset($request->is_load_html)?$request->is_load_html:1;
         $auth = Client::where('code', Auth::user()->code)->with(['getAllocation', 'getPreference'])->first();
 
         //setting timezone from id
@@ -908,7 +910,6 @@ class DashBoardController extends Controller
         $enddate = Carbon::parse($enddate . @$auth->timezone ?? 'UTC')->tz('UTC');
 
         //left side bar list for display all teams
-
         if($userstatus!=2):
             $teams  = Team::with(
                 [ 
@@ -1198,9 +1199,14 @@ class DashBoardController extends Controller
             $defaultCountryLatitude  = '';
             $defaultCountryLongitude  = '';
         }
-        $html = view('dashboard_task_html')->with(['teams' => $teamdata, 'userstatus' => $userstatus, 'client_code' => Auth::user()->code, 'defaultCountryLongitude' => $defaultCountryLongitude, 'defaultCountryLatitude' => $defaultCountryLatitude, 'newmarker' => $newmarker, 'unassigned' => $unassigned, 'agents' => $agents,'date'=> $date,'preference' =>$preference, 'routedata' => $uniquedrivers,'distance_matrix' => $distancematrix, 'unassigned_orders' => $unassigned_orders,'unassigned_distance' => $un_total_distance,'map_key'=>$googleapikey,'client_timezone'=>$auth->timezone])->render();
 
-        return $html;
+        $data = array('status' =>"success", 'teams' => $teamdata, 'userstatus' => $userstatus, 'client_code' => Auth::user()->code, 'defaultCountryLongitude' => $defaultCountryLongitude, 'defaultCountryLatitude' => $defaultCountryLatitude, 'newmarker' => $newmarker, 'unassigned' => $unassigned, 'agents' => $agents,'date'=> $date,'preference' =>$preference, 'routedata' => $uniquedrivers,'distance_matrix' => $distancematrix, 'unassigned_orders' => $unassigned_orders,'unassigned_distance' => $un_total_distance, 'map_key'=>$googleapikey, 'client_timezone'=>$auth->timezone);
+        if($is_load_html == 1)
+        {
+            return view('dashboard_task_html')->with($data)->render();
+        }else{
+            return json_encode($data);
+        }
     }
 
 }
