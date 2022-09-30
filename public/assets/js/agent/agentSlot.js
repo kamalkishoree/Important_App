@@ -8,6 +8,7 @@ $(function(){
         agent_id = $(this).data('agent_id');
         spinnerJS.showSpinner();
         $('#agentTablePopup').modal('show'); 
+        $('#agentTablePopup').find('.nav button:first').tab('show');
         fullCalendarInt(agent_id);
     });
 
