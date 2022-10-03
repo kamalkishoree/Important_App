@@ -97,25 +97,6 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
 @section('script')
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-timeago/1.6.3/jquery.timeago.js"></script>
 <script>
-$(document).ready(function() {
-
-    $('#wrapper').addClass('dshboard');
-
-    $('#shortclick').trigger('click');
-    $(".timeago").timeago();
-
-    $('.checkUserStatus').click(function() {
-        loadTeams(1);
-    });
-    loadTeams(1);
-});
-
-function gm_authFailure() {
-
-    $('.excetion_keys').append('<span><i class="mdi mdi-block-helper mr-2"></i> <strong>Google Map</strong> key is not valid</span><br/>');
-    $('.displaySettingsError').show();
-};
-
 // var marker;
 var show = [0];
 let map;
@@ -137,6 +118,27 @@ let channelname = "orderdata{{$client_code}}{{date('Y-m-d', time())}}";
 let logchannelname = "agentlog{{$client_code}}{{date('Y-m-d', time())}}";
 let imgproxyurl = {!!json_encode($imgproxyurl)!!};
 let directionsArray = [];
+
+$(document).ready(function() {
+
+    $('#wrapper').addClass('dshboard');
+
+    $('#shortclick').trigger('click');
+    $(".timeago").timeago();
+
+    $('.checkUserStatus').click(function() {
+        loadTeams(1);
+    });
+    loadTeams(1);
+    ListenDataChannel();
+    ListenAgentLogChannel();
+});
+
+function gm_authFailure() {
+
+    $('.excetion_keys').append('<span><i class="mdi mdi-block-helper mr-2"></i> <strong>Google Map</strong> key is not valid</span><br/>');
+    $('.displaySettingsError').show();
+};
 
 
 function initMap(is_refresh) {
@@ -288,7 +290,7 @@ function calculateAndDisplayRoute(directionsService, directionsRenderer, map, al
 
 function clearRoutes() {
     if (directionsArray.length <1 ) {
-        alert("No directions have been set to clear");
+        //alert("No directions have been set to clear");
         return;
     }
     else {
@@ -384,6 +386,15 @@ function deleteMarkers() {
 
 $(".datetime").on('change', function(){
     loadTeams(1);
+    old_channelname = channelname;
+    old_logchannelname = logchannelname;
+    channelname = "orderdata{{$client_code}}"+$(this).val();
+    logchannelname = "agentlog{{$client_code}}"+$(this).val();
+    if(old_channelname != channelname)
+    {
+        ListenDataChannel();
+        ListenAgentLogChannel();
+    }
 });
 
 //function fot optimizing route
@@ -580,15 +591,6 @@ function loadTeams(is_load_html)
             }
             
             initMap(is_load_html);
-            var old_channelname1 = channelname;
-            var old_logchannelname1 = logchannelname;
-            channelname = "orderdata{{$client_code}}"+$("#basic-datepicker").val();
-            if(is_load_html == 1 && old_channelname != channelname)
-            {
-                old_channelname = channelname;
-                old_logchannelname = logchannelname;
-                ListenChannel();
-            }
         },
         error: function(data) {
             alert('There is some issue. Try again later');
@@ -726,14 +728,10 @@ $('input[type=radio][name=driver_start_location]').change(function() {
 <script src="{{ asset('js/app.js') }}"></script>
 <script>
 //function to listen different channels of event of different dates and different agent status
-function ListenChannel()
+function ListenDataChannel()
 {
     //leave/not listen previous channel in case filters have been changed
-    if(old_channelname!=channelname)
-    {
-        Echo.leave(old_channelname);
-        Echo.leave(old_logchannelname);
-    }
+    Echo.leave(old_channelname);
     
     //listen route add/update/delete/assigned/completed event
     Echo.channel(channelname)
@@ -792,7 +790,11 @@ function ListenChannel()
             });
         }
     });
+}
 
+function ListenAgentLogChannel()
+{
+    Echo.leave(old_logchannelname);
     //listen agent log updation event
     Echo.channel(logchannelname)
     .listen('agentLogFetch', (e) => {

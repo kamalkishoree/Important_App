@@ -85,8 +85,13 @@ class TaskController extends BaseController
                 $q->whereIn('driver_id', $agentids)->orWhereNull('driver_id');
             });
 
-            $all = $all->wherehas('allteamtags', function($query) use($team_tags) {
-                $query->whereIn('tag_id', $team_tags);
+            $all = $all->where(function($q) use ($team_tags, $user){
+                $q->wherehas('allteamtags', function($query) use($team_tags) {
+                    $query->whereIn('tag_id', $team_tags);
+                })
+                ->orWhereHas('allteamtags.tag.assignTeams.team.permissionToManager', function($query) use ($user){
+                    $query->where('sub_admin_id', $user->id);
+                });
             });
         }
         $all = $all->get();
