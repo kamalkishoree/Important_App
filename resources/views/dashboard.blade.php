@@ -127,9 +127,9 @@ $(document).ready(function() {
     $(".timeago").timeago();
 
     $('.checkUserStatus').click(function() {
-        loadTeams(1);
+        loadTeams(1, 1);
     });
-    loadTeams(1);
+    loadTeams(1, 1);
     ListenDataChannel();
     ListenAgentLogChannel();
 });
@@ -385,7 +385,7 @@ function deleteMarkers() {
 
 
 $(".datetime").on('change', function(){
-    loadTeams(1);
+    loadTeams(1, 1);
     old_channelname = channelname;
     old_logchannelname = logchannelname;
     channelname = "orderdata{{$client_code}}"+$(this).val();
@@ -514,7 +514,7 @@ $('.submitoptimizeForm').click(function(){
                 success: function(response) {
                     if(response!="Try again later")
                     {
-                        loadTeams(1);
+                        loadTeams(1, 1);
                         spinnerJS.hideSpinner();
                     }else{
                         alert(response);
@@ -536,10 +536,13 @@ function cancleForm()
 }
 
 // autoload dashbard
-function loadTeams(is_load_html)
+function loadTeams(is_load_html, is_show_loader)
 {
-    closeAllAccordian();
     if(is_load_html == 1)
+    {
+        closeAllAccordian();
+    }
+    if(is_show_loader == 1)
     {
         spinnerJS.showSpinner();
     }
@@ -554,11 +557,16 @@ function loadTeams(is_load_html)
         success: function(result) {
             olddata = allagent = defaultmaplocation = [];
             //if Html is required to load or not, for agent's log it is not required
+            
             if(is_load_html == 1)
             {
                 $("#teams_container").empty();
                 $("#teams_container").html(result);
-                spinnerJS.hideSpinner();
+                
+                if(is_show_loader == 1)
+                {
+                    spinnerJS.hideSpinner();
+                }
                 initializeSortable();
 
                 if($("#newmarker_map_data").val()!=''){
@@ -775,7 +783,7 @@ function ListenDataChannel()
 
         if(heading!='')
         {
-            loadTeams(0);
+            loadTeams(1, 0);
             $.toast({ 
                 heading:heading,
                 text : message, 
@@ -798,7 +806,7 @@ function ListenAgentLogChannel()
     //listen agent log updation event
     Echo.channel(logchannelname)
     .listen('agentLogFetch', (e) => {
-        loadTeams(0);
+        loadTeams(0, 0);
     });
 }
 
