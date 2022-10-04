@@ -208,7 +208,6 @@ class ActivityController extends BaseController
         $utc_end   = Carbon::parse($end . $client_code->timezone ?? 'UTC')->tz('UTC');
 
         $tasks   = [];
-        $agent = AgentLog::where('agent_id', Auth::user()->id)->first();
 
         $data =  [
             'agent_id'          => Auth::user()->id,
@@ -219,7 +218,7 @@ class ActivityController extends BaseController
             'app_version'       => $request->app_version,
             'current_speed'     => $request->current_speed,
             'on_route'          => $request->on_route,
-            'device_type'       => $request->device_type,
+            'device_type'       => ucwords($request->device_type),
             'heading_angle'     => $request->heading_angle ?? 0,
         ];
 
@@ -295,6 +294,7 @@ class ActivityController extends BaseController
                 }
             }else{
                 AgentLog::create($data);
+                event(new \App\Events\agentLogFetch());
             }
         }
 

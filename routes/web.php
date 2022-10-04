@@ -16,8 +16,12 @@ use Illuminate\Http\Request;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
 //switch language route
+Route::get('hitevent', function (Request $request) {
+	event(new \App\Events\agentLogFetch());
+	dd("Event successfull");
+});
+
 Route::get('/switch/language', function (Request $request) {
 	if ($request->lang) {
 		session()->put("applocale", $request->lang);
@@ -168,8 +172,7 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 			Route::get('analytics', 'AccountingController@index')->name('accounting');
 			Route::get('profileImg', 'ProfileController@displayImage');
 			Route::get('', 'DashBoardController@index')->name('index');
-            Route::get('dashboard/data/{userstatus}', 'DashBoardController@dashboardData')->name('dashboard.data');
-			Route::get('dashboard/teamsdata/{userstatus}', 'DashBoardController@dashboardTeamData')->name('dashboard.teamsdata');
+			Route::post('dashboard/teamsdata', 'DashBoardController@dashboardTeamData')->name('dashboard.teamsdata');
 			Route::get('customize', 'ClientController@ShowPreference')->name('preference.show');
 			Route::post('save/cms/{id}', 'ClientController@cmsSave')->name('cms.save');
 			Route::post('client_preference/{id}', 'ClientController@storePreference')->name('preference');
