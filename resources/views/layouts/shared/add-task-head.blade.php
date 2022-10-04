@@ -1083,11 +1083,10 @@
         var mapLlng = document.getElementById('lng_map_header').value;
         var mapFor = document.getElementById('map_for_header').value;
         var address = document.getElementById('addredd_map_header').value;
-        //console.log(mapLat+'-'+mapLlng+'-'+mapFor);
+        
         document.getElementById(mapFor + '-latitude').value = mapLat;
         document.getElementById(mapFor + '-longitude').value = mapLlng;
         document.getElementById(mapFor + '-input').value = address;
-
 
         $('#show-map-Header').modal('hide');
     });
@@ -1101,12 +1100,6 @@
         $(this).closest('.alTaskType').addClass("active");
         $(this).closest('.alTaskType').find(".alsavedaddress").show();
     });
-
-    /* $(window).resize(function () {
-        
-        var width = $(window).width();
-        
-    }); */
 
     if(theme['theme'] == 'dark'){
 

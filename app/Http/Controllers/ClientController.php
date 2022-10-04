@@ -273,6 +273,7 @@ class ClientController extends Controller
             $request->request->add(['verify_phone_for_driver_registration' => ($request->has('verify_phone_for_driver_registration') && $request->verify_phone_for_driver_registration == 'on') ? 1 : 0]);
             $request->request->add(['is_edit_order_driver' => ($request->has('is_edit_order_driver') && $request->is_edit_order_driver == 'on') ? 1 : 0]);
             $request->request->add(['is_cancel_order_driver' => ($request->has('is_cancel_order_driver') && $request->is_cancel_order_driver == 'on') ? 1 : 0]);
+            $request->request->add(['is_driver_slot' => ($request->has('is_driver_slot') && $request->is_driver_slot == 'on') ? 1 : 0]);
         }
 
         if($request->has('refer_and_earn')){

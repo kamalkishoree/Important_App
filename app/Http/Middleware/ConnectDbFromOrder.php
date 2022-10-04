@@ -7,6 +7,7 @@ use App\Model\Client;
 use Illuminate\Support\Facades\Cache;
 use Request;
 use Config;
+use Log;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\URL;
 class ConnectDbFromOrder
