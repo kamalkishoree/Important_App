@@ -40,10 +40,12 @@ use Excel;
 use GuzzleHttp\Client as Gclient;
 use App\Http\Controllers\Api\BaseController;
 use App\Traits\ApiResponser;
+use App\Traits\TollFee;
 
 class TaskController extends BaseController
 {
     use ApiResponser;
+    use TollFee;
     /**
      * Display a listing of the resource.
      *
@@ -51,6 +53,9 @@ class TaskController extends BaseController
      */
     public function index(Request $request)
     {
+
+        $toll_fee = $this->toll_fee();
+        pr($toll_fee);
         $user = Auth::user();
         $timezone = $user->timezone ?? 251;
         $tz = new Timezone();

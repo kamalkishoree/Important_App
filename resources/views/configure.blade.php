@@ -1023,7 +1023,51 @@ $sms_crendential = json_decode($preference->sms_credentials);
         </div>
 
 
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <!-- Custom Mods start -->
+                <form method="POST" class="h-100" action="{{ route('preference', Auth::user()->code) }}">
+                    @csrf          
+                    <input type="hidden" name="toll_fee_enable" value="1">
+                    <div class="card-box h-100">
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                            <h4 class="header-title text-uppercase mb-0">{{__("Toll Fee")}}</h4>
+                            <button class="btn btn-outline-info d-block" type="submit"> Save </button>
+                        </div>
+                        <div class="row align-items-start">
+                            <div class="col-md-12"> 
+                                <div class="form-group d-flex justify-content-between mb-3">
+                                <label for="" class="mr-2 mb-0">{{__("Enable Toll Api Key")}} </label>
+                                <div class="d-flex align-items-center justify-content-between mb-2">
+                                    <div class="custom-control custom-switch">
+                                            <input type="checkbox" class="custom-control-input " id="toll_fee" name="toll_fee" {{ (!empty($preference->toll_fee) && $preference->toll_fee > 0) ? 'checked' :'' }}>
+                                            <label class="custom-control-label" for="toll_fee"></label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
+                        <div class="row align-items-start toll_fee" style="display:{{ (!empty($preference->toll_fee) && $preference->toll_fee > 0) ? '':'none'}}" >
+                            <div class="col-12">
+                                <div class="form-group mb-2">
+                                    <label for="sms_key">{{ __('API KEY') }}</label>
+                                    <input type="text" name="toll_key" id="toll_key" placeholder="" class="form-control"
+                                        value="{{ old('toll_key', $preference->toll_key ?? '') }}">
+                                    @if ($errors->has('toll_key'))
+                                        <span class="text-danger" role="alert">
+                                            <strong>{{ $errors->first('toll_key') }}</strong>
+                                        </span>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </form>
+                <!-- Custom Mods start -->
+            </div>
+        </div>
 
         <!-- end page title -->
         {{-- <div class="row">
@@ -1326,6 +1370,14 @@ $sms_crendential = json_decode($preference->sms_credentials);
                 $('.batch-allocation').show();
             }else{
                 $('.batch-allocation').hide();
+            }
+        });
+
+        $('#toll_fee').on('change',function(){
+            if ($(this).is(":checked")) {
+                $('.toll_fee').show();
+            }else{
+                $('.toll_fee').hide();
             }
         });
     </script>
