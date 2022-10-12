@@ -253,10 +253,17 @@ class DriverRegistrationController extends BaseController
     public function sendDocuments()
     {
         try {
-           
+            $show_vehicle_type_icon = [];
+            $type = ClientPreference::OrderBy('id','desc')->value('custom_mode');
+            $types = json_decode($type);
+
+            if(isset($types->show_vehicle_type_icon))
+            $show_vehicle_type_icon = explode(',',$types->show_vehicle_type_icon);
+
             $data['documents'] = DriverRegistrationDocument::orderBy('file_type', 'DESC')->get();
             $data['all_teams'] = Team::OrderBy('id','desc')->get();
             $data['agent_tags'] = TagsForAgent::OrderBy('id','desc')->get();
+            $data['vehicle_types'] = ((count($show_vehicle_type_icon)>0)?json_encode($show_vehicle_type_icon):json_encode(['1','2','3','4','5']));
             return response()->json([
                 'status' => 200,
                 'message' => 'Success!',

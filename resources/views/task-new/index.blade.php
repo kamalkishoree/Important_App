@@ -243,7 +243,7 @@
                                     <th>Order Id</th>
                                     <th>Customer</th>
                                     {{-- <th>Order Id</th> --}}
-                                    <th>Driver</th>
+                                    <th>{{getAgentNomenclature()}}</th>
                                     <th>Create Time</th>
                                     <th>Pricing Rule</th>
                                     <th style="width: 85px;">Action</th>
@@ -389,7 +389,6 @@
 <script src="{{asset('assets/libs/dropify/dropify.min.js')}}"></script>
 <!-- Page js-->
 <script src="{{asset('assets/js/pages/form-fileuploads.init.js')}}"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/8.4.7/js/intlTelInput.js"></script>
 <script src="{{asset('assets/libs/datatables/datatables.min.js')}}"></script>
 <script src="{{asset('assets/libs/sweetalert2/sweetalert2.min.js')}}"></script>
 

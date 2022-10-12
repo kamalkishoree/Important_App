@@ -3,7 +3,7 @@
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-header border-0">
-                <h4 class="modal-title">Update Agent</h4>
+                <h4 class="modal-title">Update {{getAgentNomenclature()}}</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
             </div>
             <form id="StoreClient" method="post" action="{{url('client', $data->id ?? '')}}"

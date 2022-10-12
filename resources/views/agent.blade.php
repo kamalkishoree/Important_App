@@ -1,4 +1,4 @@
-@extends('layouts.vertical', ['title' => 'Agents'])
+@extends('layouts.vertical', ['title' => getAgentNomenclature().'s'])
 
 @section('css')
     <link href="{{ asset('assets/libs/select2/select2.min.css') }}" rel="stylesheet" type="text/css" />
@@ -63,7 +63,7 @@
         <div class="row">
             <div class="col-12">
                 <div class="page-title-box">
-                    <h4 class="page-title">{{ Session::get('agent_name') }}</h4>
+                    <h4 class="page-title">{{ getAgentNomenclature() }}</h4>
                 </div>
             </div>
         </div>
@@ -84,7 +84,7 @@
                             </div>
                             <div class="col-sm-4 text-right">
                                 <button type="button" class="btn btn-blue waves-effect waves-light openModal" data-toggle="modal"
-                                    data-target="" data-backdrop="static" data-keyboard="false"><i class="mdi mdi-plus-circle mr-1"></i> Add {{ Session::get('agent_name') }}</button>
+                                    data-target="" data-backdrop="static" data-keyboard="false"><i class="mdi mdi-plus-circle mr-1"></i> Add {{ getAgentNomenclature() }}</button>
                             </div>
 
                         </div>
@@ -97,7 +97,7 @@
                                         <th>Phone</th>
                                         <th>Type</th>
                                         <th>Team</th>
-                                        <th>Transport Type</th>
+                                        <th>Transport Icon</th>
                                         <th>Order Earning</th>
                                         <th>Cash Collected</th>
                                         <th>Final Balance</th>
@@ -189,7 +189,7 @@
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-header border-0">
-                <h4 class="modal-title">{{__('Add')}} {{ Session::get('agent_name') }}</h4>
+                <h4 class="modal-title">{{__('Add')}} {{ getAgentNomenclature() }}</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
             </div>
             <form id="submitAgent" enctype="multipart/form-data" action="{{ route('agent.store') }}">
@@ -261,7 +261,7 @@
                     <div class="row ">
                         <div class="col-md-12">
                             <div class="form-group" id="vehicle_type_idInput">
-                                <p class="text-muted mt-3 mb-2">TRANSPORT TYPE</p>
+                                <p class="text-muted mt-3 mb-2">TRANSPORT ICON</p>
                                 <div class="radio radio-blue form-check-inline click cursors">
                                     <input type="radio" id="onfoot" value="onfoot" name="vehicle_type_id" checked>
                                     <img id="foot" src="{{asset('assets/icons/walk.png')}}"> 

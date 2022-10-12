@@ -50,7 +50,7 @@
                                         <select class="form-control" name="type" id="type">
                                             <option value="default">Default</option>
                                             <option value="team">For Team</option>
-                                            <option value="agent">For Agents</option>
+                                            <option value="agent">For {{getAgentNomenclature()}}s</option>
                                         </select>
                                         @if($errors->has('type'))
                                         <span class="text-danger" role="alert">
