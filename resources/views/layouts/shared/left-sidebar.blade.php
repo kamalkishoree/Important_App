@@ -2,7 +2,7 @@
 
 @php
     $preferences = \App\Model\ClientPreference::first();
-    $hide_subscription_module = json_decode($preferences->custom_mode)->hide_subscription_module;
+    $hide_subscription_module = isset(json_decode($preferences->custom_mode)->hide_subscription_module)?json_decode($preferences->custom_mode)->hide_subscription_module : 0;
 @endphp
 
 <div class="left-side-menu">
