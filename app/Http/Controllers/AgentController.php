@@ -615,7 +615,15 @@ class AgentController extends Controller
     public function destroy($domain = '', $id)
     {
         DriverGeo::where('driver_id', $id)->delete();  // i have to fix it latter
-        Agent::where('id', $id)->delete();
+        $agent = Agent::where('id', $id)->first();
+        Agent::where('id', $agent->id)->update([
+            'phone_number' => $agent->phone_number.'_'.$agent->id."_D",  
+            'device_token' =>'',  
+            'device_type' =>'',  
+            'access_token' => ''
+            ]);
+        $agent->delete();
+        Otp::where('phone', $agent->phone_number)->where('is_verified', 1)->delete();
         return redirect()->back()->with('success',__(getAgentNomenclature().' deleted successfully!'));
     }
 
