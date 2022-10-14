@@ -3,9 +3,9 @@
 {{-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script> --}}
 @include('modal.modalPopup')
 
-<div class="nb-spinner-main">
+<!-- <div class="nb-spinner-main">
     <div class="nb-spinner"></div>
-</div>
+</div> -->
 
 <script type="text/javascript" src="{{asset('assets/js/axios.min.js')}}"></script>
 

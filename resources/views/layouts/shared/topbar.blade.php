@@ -97,7 +97,9 @@ $clientData = \App\Model\Client::select('id', 'logo','custom_domain','code')->wi
                             array_push($allowed,'99999');
                         }
                         ?>
-
+        <li>
+            <div class="spinner-border text-blue header_spinner mr-2" role="status"></div>
+        </li>
         <li class="alToggleSwitch">
             <label class="altoggle">
                 <input type="checkbox" class="admin_panel_theme" {{$clientData->getPreference->theme == "dark" ? 'checked' : ''}}>
