@@ -79,6 +79,9 @@ class ClientController extends Controller
 
         if($request->has('custom_mode')){
             $customMode['is_hide_customer_notification'] = (!empty($request->custom_mode['is_hide_customer_notification']) && $request->custom_mode['is_hide_customer_notification'] == 'on')? 1 : 0;
+
+            $customMode['hide_subscription_module'] = (!empty($request->custom_mode['hide_subscription_module']) && $request->custom_mode['hide_subscription_module'] == 'on')? 1 : 0;
+
             $data = ['custom_mode'=>json_encode($customMode)];
             ClientPreference::where('client_id', $id)->update($data);
         
