@@ -76,7 +76,19 @@
                 </li>
                 @endif
 
+                <li>
+                    <a href="{{route('warehouse.index')}}">
+                        <i class="fe-package"></i>
+                        <span> {{__('Warehouse')}} </span>
+                    </a>
+                </li>
 
+                <li>
+                    <a href="{{route('category.index')}}">
+                        <i class="fe-package"></i>
+                        <span> {{__('Categories')}} </span>
+                    </a>
+                </li>
 
 
                 <li class="menu-title mt-2">{{__('Settings')}}</li>

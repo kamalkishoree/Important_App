@@ -152,3 +152,16 @@ function getAgentNomenclature()
     $reference = ClientPreference::first();
     return (empty($reference->agent_name))?'Agent':$reference->agent_name;
 }
+
+/**
+ * function for created date into particular format
+ * @return 06/07/2022
+ */
+if( !function_exists('formattedDate') ) {
+    function formattedDate($date) {
+        if(!empty($date)) {
+            return date("d/m/Y", strtotime($date));
+        }
+        return ;
+    }
+}

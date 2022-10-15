@@ -66,10 +66,9 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 		print_r("</pre>");
 	});
 	
-	
-	
 	Route::group(['prefix' => '/godpanel', 'middleware' => 'CheckGodPanel'], function () {
 		Route::get('/', function () {
+			dd('werewr');
 			return view('godpanel/login');
 		});
 		Route::get('/login', function () {
@@ -102,7 +101,6 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 	});
 	
 	Route::domain('{domain}')->middleware(['subdomain'])->group(function () {
-
 		
 		Route::group(['middleware' => ['domain', 'database']], function () {
 			
@@ -146,14 +144,9 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 		
 		Route::group(['middleware' => ['auth:client'], 'prefix' => '/'], function () {
 
-			
 			Route::get('vnpay/test',   'VnpayController@order');
 			Route::any('vnpay_respont', 'VnpayController@vnpay_respont')->name('vnpay_respont');
 		
-
-		
-			
-
             Route::get('notifi', 'AgentController@test_notification');
 			Route::get('vnpay/test',   'VnpayController@order');
 			Route::get('agent/filter', 'AgentController@agentFilter');
@@ -246,6 +239,11 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 			Route::post('/feedback/save', 'TrackingController@SaveFeedback')->name('feedbackSave');
 			Route::resource('subadmins', 'SubAdminController');
 
+			Route::resource('warehouse', 'WarehouseController');
+
+			Route::resource('amenities', 'AmenitiesController');
+
+			Route::resource('category', 'CategoryController');
 
 			Route::get('/order/feedback/{clientcode}/{order_id}', 'TrackingController@OrderFeedback')->name('order.feedback');
 
@@ -283,8 +281,6 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 		});
 	});
 
-
-
 	//feedback & tracking
 
 	Route::group(['middleware' => 'auth', 'prefix' => '/'], function () {
@@ -298,6 +294,4 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 	Route::post('driverregistrationdocument/update', 'ClientController@update')->name('driver.registration.document.update');
 	Route::post('driver/registration/document/delete', 'ClientController@destroy')->name('driver.registration.document.delete');
 	
-	
-
 });
