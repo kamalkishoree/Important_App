@@ -123,7 +123,7 @@ trait ChatTrait{
             ['form_params' => ($postdata)]
         );
         $response = json_decode($res->getBody(), true);
-        return response()->json([ 'notiFY'=>$response , 'status' => 200, 'message' => __('sent22!!!')]);
+        return response()->json([ 'notiFY'=>$response , 'status' => 200, 'message' => __('sent!!!')]);
     }
 
     
