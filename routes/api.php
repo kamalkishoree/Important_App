@@ -34,6 +34,10 @@ Route::get('get-agent-tags', 'Api\TaskController@getAgentTags')->middleware('Con
 Route::get('get-all-teams', 'Api\TaskController@getAllTeams')->middleware('ConnectDbFromOrder');
 Route::post('update-create-vendor-order', 'Api\AuthController@updateCreateVendorOrder')->middleware('ConnectDbFromOrder');
 
+
+Route::post('chat/sendNotificationToAgent',      'Api\ChatControllerOrderNotification@sendNotificationToAgent')->middleware('ConnectDbFromOrder');
+
+
 Route::post('update-order-feedback','Api\TaskController@SaveFeedbackOnOrder')->name('SaveFeedbackOnOrder')->middleware('ConnectDbFromOrder');
 
 Route::post('upload-image-for-task','Api\TaskController@uploadImageForTask')->name('uploadImageForTask')->middleware('ConnectDbFromOrder');
@@ -98,6 +102,7 @@ Route::group(['middleware' => ['dbCheck', 'AppAuth','apiLocalization']], functio
     Route::post('agent/payout/request/create/{id}', 'Api\AgentPayoutController@agentPayoutRequestCreate'); // api for creating agent payout request
     Route::post('chat/startChat',      'Api\ChatController@startChat');
     Route::post('chat/userAgentChatRoom',      'Api\ChatController@userAgentChatRoom');
+    Route::post('chat/sendNotification',      'Api\ChatController@sendNotificationToUser');
     //Route::post('chat/userAgentChatRoom',      'Api\ChatController@startChat');
     
     // Order routes
