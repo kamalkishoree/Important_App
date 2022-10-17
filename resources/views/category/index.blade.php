@@ -1,11 +1,14 @@
-@extends('layouts.vertical', ['title' =>  'Warehouse' ])
+@extends('layouts.vertical', ['title' =>  'Category' ])
+<style>
+    .table th, .table td {font-size: 0.875rem;}
+</style>
 @section('content')
     <div class="container-fluid">
         <!-- start page title -->
         <div class="row">
             <div class="col-12">
                 <div class="page-title-box">
-                    <h4 class="page-title">{{__("Warehouse")}}</h4>
+                    <h4 class="page-title">{{__("Category")}}</h4>
                 </div>
             </div>
         </div>
@@ -15,11 +18,10 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="row mb-2">
-                            <div class="col-sm-8">
-                                
-                            </div>
+                            <div class="col-sm-8"></div>
                             <div class="col-sm-4 text-right btn-auto">
-                                <a class="btn btn-blue waves-effect waves-light text-sm-right" href="{{route('warehouse.create')}}"><i class="mdi mdi-plus-circle mr-1"></i> {{__("Add Warehouse")}}</a>
+                                <button type="button" class="btn btn-blue waves-effect waves-light openCategoryModal" data-toggle="modal" data-target="" data-backdrop="static" data-keyboard="false"><i class="mdi mdi-plus-circle mr-1"></i> {{__("Add Category")}}</button>
+                                <button type="button" class="btn btn-blue waves-effect waves-light"><i class="mdi mdi-plus-circle mr-1"></i> {{__("Import Order Side Category")}}</button>
                             </div>
                             <div class="col-sm-12">
                                 <div class="text-sm-left">
@@ -37,35 +39,30 @@
                                     <tr>
                                         <th>{{__("#")}}</th>
                                         <th>{{__("Name")}}</th>
-                                        <th>{{__('Code')}}</th>
-                                        <th>{{__("Address")}}</th>
-                                        <th>{{__("Amenities")}}</th>
-                                        <th>{{__("Category")}}</th>
+                                        <th>{{__('Status')}}</th>
                                         <th>{{__("Created Date")}}</th>
                                         <th>{{__("Action")}}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @if(!empty($warehouses) && $warehouses->count() > 0)
-                                        @foreach ($warehouses as $warehouse)
+                                    @if(!empty($category) && $category->count() > 0)
+                                        @foreach ($category as $cat)
                                             <tr>
                                                 <td>{{$loop->iteration}}</td> 
-                                                <td>{{ $warehouse->name }}</td>
-                                                <td>{{ $warehouse->code }}</td>
-                                                <td>{{ $warehouse->address }}</td>
+                                                <td>{{ $cat->name }}</td>
                                                 <td>
-                                                    @php
-                                                        $amenity = implode(',', $warehouse->amenity->pluck('name')->toArray());
-                                                    @endphp
-                                                    {{ $amenity }}
+                                                    @if($cat->status == 1)
+                                                        <span class="badge badge-success">Active</span>
+                                                    @else
+                                                        <span class="badge badge-danger">InActive</span>
+                                                    @endif
                                                 </td>
-                                                <td>{{ $warehouse->category->name }}</td>                                    
-                                                <td>{{ formattedDate($warehouse->created_at) }}</td>                                    
+                                                <td>{{ formattedDate($cat->created_at) }}</td>                                    
                                                 <td>
                                                     <div class="form-ul" style="width: 60px;">
-                                                        <div class="inner-div"> <a href1="#" href="{{route('warehouse.edit', $warehouse->id)}}"  class="action-icon editIconBtn"> <i class="mdi mdi-square-edit-outline"></i></a></div>
+                                                        <div class="inner-div"> <a href="JavaScript:void(0);"  class="action-icon editIconBtn openEditCategoryModal" data-toggle="modal" data-target="" data-backdrop="static" data-keyboard="false" data-name="{{ $cat->name }}" data-id="{{ $cat->id }}" data-status="{{ $cat->status }}" style="margin-top: 5px;"> <i class="mdi mdi-square-edit-outline"></i></a></div>
                                                         <div class="inner-div">
-                                                            <form method="POST" action="{{route('warehouse.destroy', $warehouse->id)}}">
+                                                            <form method="POST" action="{{route('category.destroy', $cat->id)}}">
                                                                 @csrf
                                                                 @method('DELETE')
                                                                 <div class="form-group">
@@ -86,11 +83,15 @@
                             </table>
                         </div>
                         <div class="pagination pagination-rounded justify-content-end mb-0">
-                            {{ $warehouses->links() }}
+                            {{ $category->links() }}
                         </div>
                     </div> <!-- end card-body-->
                 </div> <!-- end card-->
             </div> <!-- end col -->
         </div>
     </div>
+@endsection
+@include('category.category-modal')
+@section('script')
+    @include('category.category-script')
 @endsection

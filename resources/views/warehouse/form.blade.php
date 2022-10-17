@@ -96,8 +96,9 @@
                                     <label for="category" class="control-label">{{__("Category")}}</label>
                                     <select name="category" class="form-control">
                                         <option value="">Select Category</option>
-                                        <option value="1" @if(!empty($warehouse->category_id) && $warehouse->category_id == 1) selected @endif>Category 1</option>
-                                        <option value="2"  @if(!empty($warehouse->category_id) && $warehouse->category_id == 2) selected @endif>Category 2</option>
+                                        @foreach ($category as $cat)
+                                            <option value="{{$cat->id}}" @if(!empty($warehouse->category_id) && $warehouse->category_id == $cat->id) selected @endif>{{$cat->name}}</option>
+                                        @endforeach
                                     </select>
                                     @if($errors->has('category'))
                                         <span class="text-danger" role="alert">

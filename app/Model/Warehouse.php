@@ -13,4 +13,12 @@ class Warehouse extends Model
     public function amenity(){
         return $this->belongsToMany('App\Model\Amenities', 'warehouse_amenities')->withTimestamps();
     }
+
+    public function category(){
+        return $this->belongsTo('App\Model\Category');
+    }
+
+    public function manager(){
+        return $this->belongsToMany('App\Model\WarehouseManager', 'warehouse_manager_relation');
+    }
 }

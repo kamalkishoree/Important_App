@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Model\{Warehouse, Amenities};
+use App\Model\{Warehouse, Amenities, Category};
 use App\Http\Requests\{AddWarehouseRequest};
 
 class WarehouseController extends Controller
@@ -15,7 +15,7 @@ class WarehouseController extends Controller
      */
     public function index()
     {
-        $warehouses = Warehouse::with(['amenity'])->orderBy('id', 'DESC')->paginate(10);
+        $warehouses = Warehouse::with(['amenity', 'category'])->orderBy('id', 'DESC')->paginate(10);
         return view('warehouse.index')->with(['warehouses' => $warehouses]);
     }
 
@@ -27,7 +27,8 @@ class WarehouseController extends Controller
     public function create()
     {
         $amenities = Amenities::all();
-        return view('warehouse.form')->with(['amenities'=>$amenities]);
+        $category = Category::where('status', 1)->get();
+        return view('warehouse.form')->with(['amenities' => $amenities, 'category' => $category]);
     }
 
     /**
@@ -58,7 +59,8 @@ class WarehouseController extends Controller
     public function edit($port, Warehouse $warehouse)
     {
         $amenities = Amenities::all();
-        return view('warehouse.form')->with(['amenities' => $amenities, 'warehouse' => $warehouse]);
+        $category = Category::where('status', 1)->get();
+        return view('warehouse.form')->with(['amenities' => $amenities, 'warehouse' => $warehouse, 'category' => $category]);
     }
 
     /**

@@ -90,6 +90,13 @@
                     </a>
                 </li>
 
+                <li>
+                    <a href="{{route('warehouse-manager.index')}}">
+                        <i class="fe-package"></i>
+                        <span> {{__('Warehouse Manager')}} </span>
+                    </a>
+                </li>
+
 
                 <li class="menu-title mt-2">{{__('Settings')}}</li>
 

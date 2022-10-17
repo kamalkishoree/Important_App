@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Category;
 use Illuminate\Http\Request;
+use App\Model\Category;
 
 class CategoryController extends Controller
 {
@@ -14,17 +14,8 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+        $category = Category::orderBy('id', 'DESC')->paginate(10);
+        return view('category.index')->with(['category' => $category]);
     }
 
     /**
@@ -35,41 +26,17 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Category  $category
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Category $category)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Category  $category
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Category $category)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Category  $category
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Category $category)
-    {
-        //
+        Category::updateOrCreate(
+			['id'=> $request->cat_id], 
+			[
+				'name' => $request->input('name'),
+				'status' => $request->input('status')
+            ]
+        );
+        if($request->cat_id != ''){
+            return redirect()->back()->with('success','Category Updated Successfully');
+        }
+        return redirect()->back()->with('success','Category Added Successfully');
     }
 
     /**
@@ -78,8 +45,9 @@ class CategoryController extends Controller
      * @param  \App\Category  $category
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Category $category)
+    public function destroy($port, Category $category)
     {
-        //
+        $category->delete();
+        return redirect()->back()->with('success','Category Deleted Successfully');
     }
 }

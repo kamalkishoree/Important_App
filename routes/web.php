@@ -245,6 +245,8 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 
 			Route::resource('category', 'CategoryController');
 
+			Route::resource('warehouse-manager', 'WarehouseManagersController');
+
 			Route::get('/order/feedback/{clientcode}/{order_id}', 'TrackingController@OrderFeedback')->name('order.feedback');
 
 			Route::post('/feedback/save', 'TrackingController@SaveFeedback')->name('feedbackSave');
