@@ -409,9 +409,11 @@ class ActivityController extends BaseController
             ->get(['id','order_id','dependent_task_id','task_type_id','location_id','appointment_duration','task_status','allocation_type','created_at','barcode']);
 
             $totalCashCollected = 0;
+            $previousorder = 0;
             foreach($tasks as $task){
-                if(!empty($task->order->cash_to_be_collected) && ($task->task_type_id == 2)){
-                    $totalCashCollected += $task->order->cash_to_be_collected;
+                if(!empty($task->order->driver_cost) && ($previousorder != $task->order_id)){
+                    $totalCashCollected += $task->order->driver_cost;
+                    $previousorder = $task->order_id;
                 }
             }
         } else {
