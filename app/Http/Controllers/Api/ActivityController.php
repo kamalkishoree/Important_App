@@ -408,11 +408,11 @@ class ActivityController extends BaseController
             ->orderBy('order_id', 'DESC')
             ->get(['id','order_id','dependent_task_id','task_type_id','location_id','appointment_duration','task_status','allocation_type','created_at','barcode']);
 
-            $totalCashCollected = 0;
+            $driverearning = 0;
             $previousorder = 0;
             foreach($tasks as $task){
-                if(!empty($task->order->driver_cost) && ($previousorder != $task->order_id)){
-                    $totalCashCollected += $task->order->driver_cost;
+                if(!empty($task->order->driver_cost) && ($previousorder != $task->order_id) && $task->order->status !='cancelled'){
+                    $driverearning += $task->order->driver_cost;
                     $previousorder = $task->order_id;
                 }
             }
@@ -421,7 +421,7 @@ class ActivityController extends BaseController
         }
 
         return response()->json([
-            'data' => array('tasks' =>$tasks, 'totalCashCollected'=>$totalCashCollected),
+            'data' => array('tasks' =>$tasks, 'totalCashCollected'=>$driverearning),
             'status' => 200,
             'message' => __('success')
         ], 200);

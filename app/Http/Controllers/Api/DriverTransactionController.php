@@ -71,7 +71,7 @@ class DriverTransactionController extends BaseController
                 ->union($wallet_transactions)
                 ->union($agent_payouts)
                 ->orderBy('created_at', 'DESC')
-                ->groupBy('order_id')
+                ->orderBy('order_id', 'DESC')
                 ->paginate($limit, $page);
     
                 $totalCashCollected = 0;
