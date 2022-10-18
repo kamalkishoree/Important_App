@@ -1,6 +1,7 @@
 <?php
 use Carbon\Carbon;
 use App\Model\ClientPreference;
+use App\Model\OrderPanelDetail;
 use App\Model\Client as ClientData;
 use App\Model\Countries;
 use App\Model\PaymentOption;
@@ -164,4 +165,25 @@ if( !function_exists('formattedDate') ) {
         }
         return ;
     }
+}
+
+function connect_with_order_panel() {
+    $order_panel_details = OrderPanelDetail::first();
+    
+    $default = [
+        'prefix' => '',
+        'engine' => null,
+        'strict' => false,
+        'charset' => 'utf8mb4',
+        'host' => $order_panel_details->db_host,
+        'port' => $order_panel_details->db_port,
+        'prefix_indexes' => true,
+        'database' => $order_panel_details->db_name,
+        'username' => $order_panel_details->db_username,
+        'password' => $order_panel_details->db_password,
+        'collation' => 'utf8mb4_unicode_ci',
+        'driver' => env('DB_CONNECTION', 'mysql'),
+    ];
+    Config::set("database.connections.$order_panel_details->db_name", $default);
+    return \DB::connection($order_panel_details->db_name);    
 }

@@ -16,11 +16,11 @@ class CreateWarehouseManagerRelationTable extends Migration
         Schema::create('warehouse_manager_relation', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('warehouse_id');
-            $table->unsignedBigInteger('manager_id');
+            $table->unsignedBigInteger('client_id');
             $table->timestamps();
 
             $table->foreign('warehouse_id')->references('id')->on('warehouses')->onUpdate('cascade')->onDelete('cascade');
-            $table->foreign('manager_id')->references('id')->on('warehouse_managers')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreign('client_id')->references('id')->on('clients')->onUpdate('cascade')->onDelete('cascade');
         });
     }
 

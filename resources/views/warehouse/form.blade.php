@@ -97,7 +97,7 @@
                                     <select name="category" class="form-control">
                                         <option value="">Select Category</option>
                                         @foreach ($category as $cat)
-                                            <option value="{{$cat->id}}" @if(!empty($warehouse->category_id) && $warehouse->category_id == $cat->id) selected @endif>{{$cat->name}}</option>
+                                            <option value="{{$cat->id}}" @if(!empty($warehouse->category_id) && $warehouse->category_id == $cat->id) selected @endif>{{$cat->slug}}</option>
                                         @endforeach
                                     </select>
                                     @if($errors->has('category'))

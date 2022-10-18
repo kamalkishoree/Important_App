@@ -9,6 +9,7 @@
         .select2-container--default .select2-selection--multiple .select2-selection__choice { line-height: initial; }
         .select2-container--default .select2-selection--multiple .select2-selection__choice__remove { color: #fff !important;border: unset !important;}
         .select2-container--default .select2-selection--multiple .select2-selection__choice__display { padding-left: 10px !important;padding-right: 0px !important; }
+        .select2-container--default.select2-container--focus .select2-selection--multiple.select2-selection--clearable { display: flex !important;flex-wrap: nowrap !important; }
     </style>
 @endsection
 

@@ -21,6 +21,7 @@ use App\Model\SubClient;
 use App\Model\TaskProof;
 use App\Model\TaskType;
 use App\Model\DriverRegistrationDocument;
+use App\Model\OrderPanelDetail;
 use App\Model\{SmtpDetail, SmsProvider};
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Redis;
@@ -383,7 +384,8 @@ class ClientController extends Controller
         $user        = Auth::user();
         $client      = Client::where('code', $user->code)->first();
         $subClients  = SubClient::all();
-        return view('customize')->with(['clientContact'=>$client, 'preference' => $preference, 'currencies' => $currencies,'cms'=>$cms,'task_proofs' => $task_proofs,'task_list' => $task_list]);
+        $order_panel_detail = OrderPanelDetail::first();
+        return view('customize')->with(['clientContact'=>$client, 'preference' => $preference, 'currencies' => $currencies,'cms'=>$cms,'task_proofs' => $task_proofs,'task_list' => $task_list,'order_panel_detail'=>$order_panel_detail]);
     }
 
     public function updateContactUs(Request $request){
@@ -622,5 +624,18 @@ class ClientController extends Controller
         }
     }
 
-
+    public function orderPanelDbDetail(Request $request){
+        $order_panel_details = OrderPanelDetail::first();
+        $id = isset($order_panel_details->id) ? $order_panel_details->id : '';
+        OrderPanelDetail::updateOrCreate([
+            'id'   => $id,
+        ],[
+            'db_host'     => $request->input('db_host'),
+            'db_port'     => $request->input('db_port'),
+            'db_name'     => $request->input('db_name'),
+            'db_username'     => $request->input('db_username'),
+            'db_password'     => $request->input('db_password')
+        ]);
+        return redirect()->route('preference.show')->with('success', 'DB updated successfully!');
+    }
 }

@@ -1,6 +1,13 @@
 @extends('layouts.vertical', ['title' =>  'Category' ])
 <style>
     .table th, .table td {font-size: 0.875rem;}
+    .btn-auto .btn.btn-blue.waves-effect {
+        height: 35px;
+        margin-right: 10px;
+    }
+    #wrapper {
+        height: unset !important;
+    }
 </style>
 @section('content')
     <div class="container-fluid">
@@ -19,9 +26,12 @@
                     <div class="card-body">
                         <div class="row mb-2">
                             <div class="col-sm-8"></div>
-                            <div class="col-sm-4 text-right btn-auto">
+                            <div class="col-sm-4 text-right btn-auto d-flex">
                                 <button type="button" class="btn btn-blue waves-effect waves-light openCategoryModal" data-toggle="modal" data-target="" data-backdrop="static" data-keyboard="false"><i class="mdi mdi-plus-circle mr-1"></i> {{__("Add Category")}}</button>
-                                <button type="button" class="btn btn-blue waves-effect waves-light"><i class="mdi mdi-plus-circle mr-1"></i> {{__("Import Order Side Category")}}</button>
+                                <form action="{{route('category.importOrderSideCategory')}}" method="post">
+                                @csrf
+                                    <button type="submit" class="btn btn-blue waves-effect waves-light"><i class="mdi mdi-plus-circle mr-1"></i> {{__("Import Order Side Category")}}</button>
+                                </form>
                             </div>
                             <div class="col-sm-12">
                                 <div class="text-sm-left">
@@ -49,7 +59,7 @@
                                         @foreach ($category as $cat)
                                             <tr>
                                                 <td>{{$loop->iteration}}</td> 
-                                                <td>{{ $cat->name }}</td>
+                                                <td>{{ $cat->slug }}</td>
                                                 <td>
                                                     @if($cat->status == 1)
                                                         <span class="badge badge-success">Active</span>
@@ -60,7 +70,7 @@
                                                 <td>{{ formattedDate($cat->created_at) }}</td>                                    
                                                 <td>
                                                     <div class="form-ul" style="width: 60px;">
-                                                        <div class="inner-div"> <a href="JavaScript:void(0);"  class="action-icon editIconBtn openEditCategoryModal" data-toggle="modal" data-target="" data-backdrop="static" data-keyboard="false" data-name="{{ $cat->name }}" data-id="{{ $cat->id }}" data-status="{{ $cat->status }}" style="margin-top: 5px;"> <i class="mdi mdi-square-edit-outline"></i></a></div>
+                                                        <div class="inner-div"> <a href="JavaScript:void(0);"  class="action-icon editIconBtn openEditCategoryModal" data-toggle="modal" data-target="" data-backdrop="static" data-keyboard="false" data-name="{{ $cat->slug }}" data-id="{{ $cat->id }}" data-status="{{ $cat->status }}" style="margin-top: 5px;"> <i class="mdi mdi-square-edit-outline"></i></a></div>
                                                         <div class="inner-div">
                                                             <form method="POST" action="{{route('category.destroy', $cat->id)}}">
                                                                 @csrf

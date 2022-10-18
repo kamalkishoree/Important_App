@@ -161,6 +161,7 @@ Route::group(['middleware' => 'switchLanguage'], function () {
             Route::get('dashboard/data/{userstatus}', 'DashBoardController@dashboardData')->name('dashboard.data');
 			Route::get('dashboard/teamsdata/{userstatus}', 'DashBoardController@dashboardTeamData')->name('dashboard.teamsdata');
 			Route::get('customize', 'ClientController@ShowPreference')->name('preference.show');
+			Route::post('update-order-panel-db-detail', 'ClientController@orderPanelDbDetail')->name('update.orderPanelDbDetail');
 			Route::post('save/cms/{id}', 'ClientController@cmsSave')->name('cms.save');
 			Route::post('client_preference/{id}', 'ClientController@storePreference')->name('preference');
 			Route::post('route-create-configure/{id}', 'ClientController@routeCreateConfigure')->name('route.create.configure');
@@ -245,7 +246,7 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 
 			Route::resource('category', 'CategoryController');
 
-			Route::resource('warehouse-manager', 'WarehouseManagersController');
+			Route::post('/import-order-side-category', 'CategoryController@importOrderSideCategory')->name('category.importOrderSideCategory');
 
 			Route::get('/order/feedback/{clientcode}/{order_id}', 'TrackingController@OrderFeedback')->name('order.feedback');
 

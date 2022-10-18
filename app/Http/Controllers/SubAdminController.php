@@ -10,6 +10,7 @@ use App\Model\Permissions;
 use App\Model\Team;
 use App\Model\SubAdminPermissions;
 use App\Model\SubAdminTeamPermissions;
+use App\Model\Warehouse;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 use Crypt;
@@ -44,7 +45,8 @@ class SubAdminController extends Controller
         }
         $permissions = Permissions::all();
         $teams = Team::all();
-        return view('subadmin/form')->with(['permissions'=>$permissions,'teams'=>$teams, 'selectedCountryCode' => $countryCode]);
+        $warehouses = Warehouse::all();
+        return view('subadmin/form')->with(['permissions'=>$permissions,'teams'=>$teams, 'selectedCountryCode' => $countryCode, 'warehouses' => $warehouses]);
     }
 
     /**
@@ -69,7 +71,7 @@ class SubAdminController extends Controller
     public function store(Request $request, $domain = '')
     {
         $validator = $this->validator($request->all())->validate();
-
+        $all_team_access = ($request->manager_type == 0) ? $request->all_team_access : '0';
         $data = [
             'name' => $request->name,
             'email' => $request->email,
@@ -77,9 +79,10 @@ class SubAdminController extends Controller
             'confirm_password' => Crypt::encryptString($request->password),
             'phone_number' => $request->phone_number,
             'dial_code' => $request->dialCode??null,
-            'all_team_access'=> $request->all_team_access,
+            'all_team_access'=> $all_team_access,
             'status' => $request->status,
             'is_superadmin' => 0,
+            'manager_type' => $request->manager_type
         ];
 
         $superadmin_data = Client::select('country_id', 'timezone', 'custom_domain', 'is_deleted', 'is_blocked', 'database_path', 'database_name', 'database_username', 'database_password', 'logo', 'company_name', 'company_address', 'code', 'sub_domain')
@@ -91,6 +94,11 @@ class SubAdminController extends Controller
         $finaldata = array_merge($data, $superadmin_data);
                      
         $subdmin = Client::create($finaldata);
+        
+        if($request->manager_type == 1){
+            $warehouses = $request->input('warehouses');
+            $subdmin->warehouse()->sync($warehouses);
+        }
         
         //update client code
         $codedata = [
@@ -141,7 +149,8 @@ class SubAdminController extends Controller
      */
     public function edit($domain = '', $id)
     {
-        $subadmin = Client::find($id);
+        $subadmin = Client::with(['warehouse'])->find($id);
+        // dd($subadmin);
         $permissions = Permissions::all();
         $teams = Team::all();
         $user_permissions = SubAdminPermissions::where('sub_admin_id', $id)->get();
@@ -152,10 +161,9 @@ class SubAdminController extends Controller
             $countryCode = $getAdminCurrentCountry->code;
         }else{
             $countryCode = '';
-        }
-        
-        
-        return view('subadmin/form')->with(['subadmin'=> $subadmin,'permissions'=>$permissions, 'selectedCountryCode' => $countryCode, 'user_permissions'=>$user_permissions,'teams'=>$teams,'team_permissions'=>$team_permissions]);
+        }        
+        $warehouses = Warehouse::all();
+        return view('subadmin/form')->with(['subadmin'=> $subadmin,'permissions'=>$permissions, 'selectedCountryCode' => $countryCode, 'user_permissions'=>$user_permissions,'teams'=>$teams,'team_permissions'=>$team_permissions, 'warehouses'=>$warehouses]);
     }
 
     protected function updateValidator(array $data, $id)
@@ -179,23 +187,30 @@ class SubAdminController extends Controller
     public function update(Request $request, $domain = '', $id)
     {
         $validator = $this->updateValidator($request->all(), $id)->validate();
-        
+        $all_team_access = ($request->manager_type == 0) ? $request->all_team_access : '0';
         $data = [
             'name' => $request->name,
             'email' => $request->email,
             'phone_number' => $request->phone_number,
-            'all_team_access'=> $request->all_team_access,
+            'all_team_access'=> $all_team_access,
             'dial_code' => $request->dialCode??null,
             'status' => $request->status,
-            
+            'manager_type' => $request->manager_type
         ];
         if ($request->password!="") {
             $data['password'] = Hash::make($request->password);
             $data['confirm_password'] = Crypt::encryptString($request->password);
         }
                 
-        $client = Client::where('id', $id)->update($data);
-
+        $client = Client::find($id);
+        $client->update($data);
+        if($request->manager_type == 1){
+            $warehouses = $request->input('warehouses');
+            $client->warehouse()->sync($warehouses);
+        }else{
+            $warehouses = [];
+            $client->warehouse()->sync($warehouses);
+        }
         //for updating permissions
         if ($request->permissions) {
             $userpermissions = $request->permissions;

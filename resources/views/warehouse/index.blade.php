@@ -59,7 +59,7 @@
                                                     @endphp
                                                     {{ $amenity }}
                                                 </td>
-                                                <td>{{ $warehouse->category->name }}</td>                                    
+                                                <td>{{ $warehouse->category->slug }}</td>                                    
                                                 <td>{{ formattedDate($warehouse->created_at) }}</td>                                    
                                                 <td>
                                                     <div class="form-ul" style="width: 60px;">

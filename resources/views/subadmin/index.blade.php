@@ -60,6 +60,7 @@
                                     <th>{{__("Name")}}</th>
                                     <th>{{__('Email')}}</th>
                                     <th>{{__("Phone")}}</th>
+                                    <th>{{__("Manager Type")}}</th>
                                     <th>{{__("Status")}}</th> 
                                     <th>{{__("Action")}}</th>
                                 </tr>
@@ -75,6 +76,13 @@
                                     </td>
                                     <td>
                                         @if(!empty($singleuser->dial_code)) +{{ $singleuser->dial_code }} @endif {{ $singleuser->phone_number }}
+                                    </td>
+                                    <td>
+                                        @if($singleuser->manager_type == 1)
+                                            {{ ('Warehouse Manager') }}
+                                        @else
+                                            {{ ('Manager') }}
+                                        @endif
                                     </td>
                                     <td>
                                         {{ ($singleuser->status==1)?__("Active"):__("Inactive") }}

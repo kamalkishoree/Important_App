@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddStatusCategoriesTable extends Migration
+class AddManagerTypeToUsersClients extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,8 @@ class AddStatusCategoriesTable extends Migration
      */
     public function up()
     {
-        Schema::table('categories', function (Blueprint $table) {
-            $table->unsignedBigInteger('status')->comment('1 Active, 2 InActive')->nullable();
+        Schema::table('clients', function (Blueprint $table) {
+            $table->unsignedBigInteger('manager_type')->comment('0 manager, 1 warehouse manager')->default(0);
         });
     }
 
@@ -25,8 +25,8 @@ class AddStatusCategoriesTable extends Migration
      */
     public function down()
     {
-        Schema::table('categories', function (Blueprint $table) {
-            $table->dropColumn('status');
+        Schema::table('clients', function (Blueprint $table) {
+            $table->dropColumn('manager_type');
         });
     }
 }
