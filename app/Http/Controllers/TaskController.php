@@ -21,6 +21,7 @@ use App\Model\Roster;
 use App\Model\TaskProof;
 use App\Model\Geo;
 use App\Model\Order;
+use App\Model\csvOrderImport;
 use App\Model\Timezone;
 use App\Model\AgentLog;
 use App\Model\{BatchAllocation, BatchAllocationDetail, Team,TeamTag, SubscriptionInvoicesDriver};
@@ -41,6 +42,7 @@ use GuzzleHttp\Client as Gclient;
 use App\Http\Controllers\Api\BaseController;
 use App\Traits\ApiResponser;
 use App\Traits\TollFee;
+use App\Imports\OrderImport;
 
 class TaskController extends BaseController
 {
@@ -131,8 +133,8 @@ class TaskController extends BaseController
         $employees      = Customer::orderby('name', 'asc')->where('status','Active')->select('id', 'name')->get();
         $employeesCount = count($employees);
         $agentsCount    = count($agents->where('is_approved', 1));
-
-        return view('tasks/task')->with([ 'status' => $request->status, 'agentsCount'=>$agentsCount, 'employeesCount'=>$employeesCount, 'active_count' => $active, 'panding_count' => $pending, 'history_count' => $history, 'status' => $check,'preference' => $preference,'agents'=>$agents,'failed_count'=>$failed,'client_timezone'=>$client_timezone]);
+        $csvRoutes = csvOrderImport::orderBy('id','DESC')->limit(15)->get();
+        return view('tasks/task')->with([ 'status' => $request->status, 'agentsCount'=>$agentsCount, 'employeesCount'=>$employeesCount, 'active_count' => $active, 'panding_count' => $pending, 'history_count' => $history, 'status' => $check,'preference' => $preference,'agents'=>$agents,'failed_count'=>$failed,'client_timezone'=>$client_timezone, 'csvRoutes'=>$csvRoutes]);
     }
 
 
@@ -248,7 +250,6 @@ class TaskController extends BaseController
         $preference = ClientPreference::where('id', 1)->first(['theme','date_format','time_format']);
 
         return Datatables::of($orders)
-                
                 ->addColumn('customer_id', function ($orders) use ($request) {
                     $customerID = !empty($orders->customer->id)? $orders->customer->id : '';
                     $length = strlen($customerID);
@@ -270,6 +271,9 @@ class TaskController extends BaseController
                     $agentName   = !empty($orders->agent->name)? $orders->agent->name.$checkActive : '';
                     return $agentName;
                 })
+                ->addColumn('order_number', function ($orders) use ($request) {
+                    return '<a href="'.route('tasks.edit', $orders->id).'" title="Edit Route">'.$orders->order_number.'</a>';
+                })
                 ->addColumn('order_time', function ($orders) use ($request, $timezone, $preference) {
                     $tz              = new Timezone();
                     $client_timezone = $tz->timezone_name($timezone);
@@ -279,7 +283,8 @@ class TaskController extends BaseController
                         
                         $order->setTimezone($client_timezone);
                         $preference->date_format = $preference->date_format ?? 'm/d/Y';
-                        return date(''.$preference->date_format.' '.$timeformat.'', strtotime($order));
+                        $convertabledate = date(''.$preference->date_format.' '.$timeformat.'', strtotime($order));
+                        return $convertabledate.'<br/>'.$order->diffForHumans();
                     else:
                         return '';
                     endif;
@@ -313,10 +318,7 @@ class TaskController extends BaseController
                     }
                     return json_encode($routes, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_UNESCAPED_UNICODE);
                 })
-                ->editColumn('track_url', function ($orders) use ($request, $user) {
-                    $trackUrl = url('/order/tracking/'.$user->code.'/'.$orders->unique_id.'');
-                    return $trackUrl;
-                })
+                
                 ->editColumn('updated_at', function ($orders) use ($request, $timezone, $preference) {
                     $tz              = new Timezone();
                     $client_timezone = $tz->timezone_name($timezone);
@@ -332,13 +334,6 @@ class TaskController extends BaseController
                                         <div class="set-size">
                                             <a href1="#" href="'.route('tasks.edit', $orders->id).'" class="action-icon editIconBtn mr-2" title="Edit Route">
                                                 <i class="mdi mdi-square-edit-outline"></i>
-                                            </a>
-                                        </div>
-                                    </div>
-                                    <div class="inner-div">
-                                        <div class="set-size">
-                                            <a href1="#" href="'.route('tasks.show', $orders->id).'" class="action-icon editIconBtn mr-2" title="Route Detail">
-                                                <i class="fe-eye"></i>
                                             </a>
                                         </div>
                                     </div>';
@@ -372,7 +367,7 @@ class TaskController extends BaseController
                         });
                     }
                 }, true)
-                
+                ->rawColumns(['action', 'order_number', 'order_time'])
                 ->make(true);
     }
 
@@ -552,7 +547,6 @@ class TaskController extends BaseController
             $settime = ($request->task_type=="schedule") ? $request->schedule_time : Carbon::now()->toDateTimeString();
             $notification_time = ($request->task_type=="schedule")? Carbon::parse($settime . $auth->timezone ?? 'UTC')->tz('UTC') : Carbon::now()->toDateTimeString();
 
-            
 
             //here order save code is started
 
@@ -626,7 +620,6 @@ class TaskController extends BaseController
                         ['latitude' => $location->latitude, 'longitude' => $location->longitude, 'address' => $location->address,'customer_id'  => $cus_id],
                         $newloc
                     );
-                // $location = Location::create($newloc);
                 }
 
                 $loc_id = $location->id;
@@ -813,6 +806,9 @@ class TaskController extends BaseController
                     $schduledata['allocation']        = $allocation;
                     $schduledata['database']          = $auth;
                     scheduleNotification::dispatch($schduledata)->delay(now()->addMinutes($finaldelay));
+                    DB::commit();
+                    $orderdata = Order::select('id', 'order_time', 'status', 'driver_id')->with('agent')->where('id', $orders->id)->first();
+                    event(new \App\Events\loadDashboardData($orderdata));
                     return response()->json(['status' => "Success", 'message' => 'Route created Successfully']);
                 }
             }
@@ -839,6 +835,8 @@ class TaskController extends BaseController
                 }
             }
             DB::commit();
+            $orderdata = Order::select('id', 'order_time', 'status', 'driver_id')->with('agent')->where('id', $orders->id)->first();
+            event(new \App\Events\loadDashboardData($orderdata));
             return response()->json(['status' => "Success", 'message' => 'Route created Successfully']);
 
         } catch (Exception $e) {
@@ -899,6 +897,8 @@ class TaskController extends BaseController
 
                         $task = Task::where('order_id', $order->id)->update(['task_status'=>1]);
 
+                        $orderdata = Order::select('id', 'order_time', 'status', 'driver_id')->with('agent')->where('id', $order->id)->first();
+                        event(new \App\Events\loadDashboardData($orderdata));
                         $this->MassAndEditNotification($order->id, $agent_id);
                     }
                     Session::put('success', __(getAgentNomenclature().' assigned successfully'));
@@ -2516,6 +2516,8 @@ class TaskController extends BaseController
                 }
 
             }
+            $orderdata = Order::select('id', 'order_time', 'status', 'driver_id')->with('agent')->where('id', $id)->first();
+            event(new \App\Events\loadDashboardData($orderdata));
             DB::commit();
             return response()->json(['status' => "Success", 'message' => 'Task Updated successfully!']);
         } catch (Exception $e) {
@@ -2574,7 +2576,10 @@ class TaskController extends BaseController
      */
     public function destroy($domain = '', $id)
     {
+        $orderdata = Order::select('id', 'order_time', 'status', 'driver_id')->with('agent')->where('id', $id)->first();
         Order::where('id', $id)->delete();
+        $orderdata->status = "Deleted";
+        event(new \App\Events\loadDashboardData($orderdata));
         return redirect()->back()->with('success', 'Task deleted successfully!');
     }
 
@@ -2679,5 +2684,22 @@ class TaskController extends BaseController
         return response()->json($task);
     }
 
+    function importCsv(Request $request)
+    {
+        $fileModel = new csvOrderImport;
+        if($request->file('bulk_upload_file')) {
+            $fileName = time().'_'.$request->file('bulk_upload_file')->getClientOriginalName();
+            $filePath = $request->file('bulk_upload_file')->storeAs('routes', $fileName, 'public');
+            $fileModel->name = $fileName;
+            $fileModel->path = '/storage/' . $filePath;
+            $fileModel->status = 1;
+            $fileModel->save();
+            $data = Excel::import(new OrderImport($fileModel->id), $request->file('bulk_upload_file'));
+            return response()->json([
+                'status' => 'Success',
+                'message' => 'Route Created successfully!'
+            ]);
+        }
+    }
 
 }

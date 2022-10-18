@@ -2,7 +2,14 @@
 @section('css')
 <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/bootstrap.tagsinput/0.8.0/bootstrap-tagsinput.css" rel="stylesheet">
+
+{{-- for ckeditor --}}
+<link rel="stylesheet" href="{{ asset('assets/ck_editor/samples/css/samples.css') }}">
+<link rel="stylesheet" href="{{ asset('assets/ck_editor/samples/toolbarconfigurator/lib/codemirror/neo.css') }}">
 <style>
+    .active{
+        background: #eee;
+    }
     textarea.form-control {
     height: auto !important;
 }
@@ -25,12 +32,12 @@
                         <h4>{{ __("List") }}</h4>
                     </div>
                    <div class="table-responsive pages-list-data">
-                        <table class="table table-striped w-100">
-                            <thead>
-                                <tr>
+                        <table class="table w-100">
+                            {{-- <thead>
+                                <tr  class="table-primary">
                                     <th class="border-bottom-0">{{ __("Name") }}</th>
-                                </tr>
-                            </thead>
+                                </tr>   
+                            </thead> --}}
                             <tbody>
                                 @forelse($templates as $template)
                                     <tr class="page-title active-page template-page-detail" data-template_id="{{$template->id}}" data-show_url="{{route('cms.page.template.show', ['id'=> $template->id])}}">
@@ -73,6 +80,10 @@
         </div>
     </div>
 </div>
+
+<script src="{{ asset('assets/ck_editor/ckeditor.js')}}"></script>
+<script src="{{ asset('assets/ck_editor/samples/js/sample.js')}}"></script>
+
 <script type="text/javascript">
     $(document).ready(function() {
          $.ajaxSetup({
@@ -85,6 +96,10 @@
         }, 500);
         
         $(document).on("click",".template-page-detail",function() {
+            $('.template-page-detail').removeClass('active');
+
+            $(this).addClass('active');
+
             $('#edit_page_content #content').val('');
             let url = $(this).data('show_url');
             $.get(url,function(response) {
@@ -92,7 +107,8 @@
                 if(response.data){
                     $('#edit_page_content #template_id').val(response.data.id);
                     if(response.data){
-                        $('#edit_page_content #content').val(response.data.content);
+                        // $('#edit_page_content #content').val(response.data.content);
+                        CKEDITOR.instances.content.setData(response.data.content);
                     }else{
                       $('textarea').val('');
                     }
@@ -105,7 +121,9 @@
         });
         $(document).on("click","#update_template",function() {
             var update_url = "{{route('cms.page.template.update')}}";
-            let content = $('#edit_page_content #content').val();
+            // let content = $('#edit_page_content #content').val();
+            let content = CKEDITOR.instances.content.getData();
+
             let template_id = $('#edit_page_content #template_id').val();
             var data = {content: content, template_id:template_id};
             $.post(update_url, data, function(response) {
@@ -121,5 +139,8 @@
 </script>
 @endsection
 @section('script')
-
+<script>
+    CKEDITOR.replace('content');
+    CKEDITOR.config.height = 450;
+</script>
 @endsection

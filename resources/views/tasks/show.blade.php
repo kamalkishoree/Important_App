@@ -142,34 +142,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                 </div>
             </div>
 
-            <div class="card-box rejection-box style-4">
-                <h4 class="header-title mb-2">{{__('Rejections')}}</h4>
-                @if(!empty($task->task_rejects) && count($task->task_rejects) > 0)
-                @php
-                $timeformat = $preference->time_format == '24' ? 'H:i:s':'g:i a';
-                $preference->date_format = $preference->date_format ?? 'd-M-Y';
-                @endphp
-
-                @foreach($task->task_rejects as $task_reject)
-                @php
-                $rejection_time = Carbon::createFromFormat('Y-m-d H:i:s', $task_reject->created_at, 'UTC');
-                $rejection_time->setTimezone($client_timezone);
-                @endphp
-                <div class="row align-items-center mb-2">
-                    <div class="col-2 pr-0 pic-left">
-                        <img src="{{ !empty($task_reject->agent->profile_picture) ? $imgproxyurl.Storage::disk('s3')->url($task_reject->agent->profile_picture) : URL::to('/assets/images/user_dummy.jpg') }}" alt="{{__('contact-img')}}" title="{{__('contact-img')}}" class="rounded-circle avatar-sm">
-                    </div>
-                    <div class="col-10 pl-1">
-                        <h5 class="mb-1  mt-0 font-weight-normal">{{ (isset($task_reject->agent->name))?$task_reject->agent->name:'' }}</h5>
-                        <p class="mb-0">{{date(''.$preference->date_format.' '.$timeformat.'', strtotime($rejection_time))}}</p>
-                    </div>
-                </div>
-
-                @endforeach
-                @else
-                {{__('No rejection found')}}
-                @endif
-            </div>
+            
         </div>
 
         <div class="col-xl-7">

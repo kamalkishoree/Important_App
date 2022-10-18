@@ -96,7 +96,8 @@
         "productUrl": "https://www.yohopartner.com/",
         "eventHandler": {
             onSuccess (payload) {
-                startLoader('body','We are processing your transaction...');
+                //startLoader('body','We are processing your transaction...');
+                spinnerJS.showSpinner();
                 console.log(payload,'payload');
                 console.log(ajaxData,'ajaxData');
                 // hit merchant api for initiating verfication
@@ -118,19 +119,23 @@
                     success: function(data)
                     {
                         khaltiPayCompletePayment(data);
+                        spinnerJS.hideSpinner();
                     },
                     error: function(data)
                     {
+                        spinnerJS.hideSpinner();
                         console.log("PAY onSuccess Success error");
                         //redirext to error page
                     }
                 });
             },
             onError (error) {
+                spinnerJS.hideSpinner();
                 console.log('OnError'+error);
                 //redirect as needed
             },
             onClose () {
+                spinnerJS.hideSpinner();
                 console.log('widget is closing');
                 //redirect as needed
             }

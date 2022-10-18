@@ -516,45 +516,6 @@ $sms_crendential = json_decode($preference->sms_credentials);
                 </form>
             </div>
 
-
-            <!-- <div class="col-md-3">
-                <form method="POST" action="{{ route('preference', Auth::user()->code) }}">
-                    @csrf
-                    <div class="card-box same-size">
-                        <h4 class="header-title">{{ __('Sub Domain') }}</h4>
-                        <p class="sub-header">
-                            {{ __('View and update your Sub Domain.') }}
-                        </p>
-                        <div class="col-md-12">
-
-                            <div class="form-group mb-3">
-                                <label for="sub_domain">{{ __('Sub Domain') }}</label>
-                                <div class="domain-outer d-flex align-items-center">
-                                    <div class="domain_name">https://</div>
-                                    <input type="text" name="sub_domain" id="sub_domain" placeholder="Sub Domain"
-                                        class="form-control"
-                                        value="{{ old('sub_domain', Auth::user()->sub_domain ?? '') }}">
-                                    <div class="domain_name">{{ \env('SUBDOMAIN') }}</div>
-                                </div>
-                                @if ($errors->has('sub_domain'))
-                                    <span class="text-danger" role="alert">
-                                        <strong>{{ $errors->first('sub_domain') }}</strong>
-                                    </span>
-                                @endif
-                            </div>
-
-                        </div>
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="form-group mb-0 text-center">
-                                    <button class="btn btn-blue btn-block" type="submit"> {{ __('Update') }} </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </form>
-            </div> -->
-
             <div class="col-md-4 mb-3">
                 <form method="POST" class="h-100" action="{{ route('preference', Auth::user()->code) }}">
                     @csrf
@@ -648,6 +609,21 @@ $sms_crendential = json_decode($preference->sms_credentials);
                                             {{ $preference->is_edit_order_driver == 1 ? 'checked' : '' }}>
                                         <label class="custom-control-label"
                                             for="editOrderCustomSwitch_{{ $preference->is_edit_order_driver }}"></label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="d-flex align-items-center justify-content-between mt-3 mb-2">
+                                    <h5 class="font-weight-normal m-0">{{ __('Manage ') }}{{ Session::get('agent_name') ? Session::get('agent_name') : 'Agent' }} {{ __('Schedule') }} </h5>
+                                    <div class="custom-control custom-switch">
+                                        <input type="checkbox" class="custom-control-input"
+                                            id="editDriverSlotCustomSwitch_{{ $preference->is_driver_slot }}"
+                                            name="is_driver_slot"
+                                            {{ $preference->is_driver_slot == 1 ? 'checked' : '' }}>
+                                        <label class="custom-control-label"
+                                            for="editDriverSlotCustomSwitch_{{ $preference->is_driver_slot }}"></label>
                                     </div>
                                 </div>
                             </div>
@@ -853,7 +829,39 @@ $sms_crendential = json_decode($preference->sms_credentials);
                                         </div>
                                     </div>
                                 </div>
+                               
+                                @php 
+                                    $arr = [];
+                                    if(isset($customMode->show_vehicle_type_icon)){
+                                        $arr = explode(',',$customMode->show_vehicle_type_icon);
+                                    }
+                                @endphp
+                                <div class="form-group d-flex justify-content-between mb-3">
+                                    <label for="pharmacy_check" class="mr-2 mb-0">{{__("Hide Transportation Type Icons")}} <small class="d-block pr-5">Hide Transportation Type from Signup Form.</small></label>
+                                    <div class="col-md custom-control custom-switch">
+                                        <select class="form-control selectpicker" name="custom_mode[show_vehicle_type_icon][]" multiple data-live-search="true" required>
+                                            @foreach($vehicleType as $type)
+                                            <option value="{{$type->id}}" @if(isset($arr) && in_array($type->id,$arr)) {{'selected'}} @endif  >{{ucfirst($type->name)}}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                                
                             </div>
+
+                            <div class="col-md-12">
+                                <div class="form-group d-flex justify-content-between mb-3">
+                                <label for="pharmacy_check" class="mr-2 mb-0">{{__("Hide subscription module")}} <small class="d-block pr-5">It will hide  subscription module from panel.</small></label>
+                                <div class="d-flex align-items-center justify-content-between mt-1 mb-2">
+                                    <div class="custom-control custom-switch">
+                                            <input type="checkbox" class="custom-control-input" id="hide_subscription_module_{{ !empty($customMode->hide_subscription_module)? $customMode->hide_subscription_module : 0 }}" name="custom_mode[hide_subscription_module]" {{ (!empty($customMode->hide_subscription_module) && $customMode->hide_subscription_module == 1) ? 'checked' : '' }}>
+                                            <label class="custom-control-label" for="hide_subscription_module_{{ !empty($customMode->hide_subscription_module)? $customMode->hide_subscription_module : 0 }}"></label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
                         </div>
                     </div>
                 </form>
