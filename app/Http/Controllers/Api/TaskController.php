@@ -1322,7 +1322,8 @@ class TaskController extends BaseController
                     $schduledata['cash_to_be_collected']         = $orders->cash_to_be_collected;
                     //Order::where('id',$orders->id)->update(['order_time'=>$time]);
                     //Task::where('order_id',$orders->id)->update(['assigned_time'=>$time,'created_at' =>$time]);
-
+                    Log::info('scheduleNotifi time');
+                    Log::info($finaldelay);
                     scheduleNotification::dispatch($schduledata)->delay(now()->addMinutes($finaldelay));
                     DB::commit();
 
