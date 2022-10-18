@@ -215,7 +215,7 @@ class TaskController extends BaseController
                    $codeVendor = $this->checkQrcodeStatusDataToOrderPanel($order_details,$request->qr_code,5);
                 }
                 $orderdata = Order::select('id', 'order_time', 'status', 'driver_id')->with('agent')->where('id', $order_details->id)->first();
-                event(new \App\Events\loadDashboardData($orderdata));
+               // event(new \App\Events\loadDashboardData($orderdata));
             }
             //Send Next Dependent task details
             $tasks = Task::where('dependent_task_id', $orderId->id)->where('task_status', '!=', 4)->Where('task_status', '!=', 5)
@@ -787,7 +787,7 @@ class TaskController extends BaseController
                 ]);
                 Task::where('order_id', $batch->order_id)->update(['task_status' => 1]);
                 $orderdata = Order::select('id', 'order_time', 'status', 'driver_id')->with('agent')->where('id', $batch->order_id)->first();
-                event(new \App\Events\loadDashboardData($orderdata));
+               // event(new \App\Events\loadDashboardData($orderdata));
             }
             if ($check && $check->call_back_url) {
                 $call_web_hook = $this->updateStatusDataToOrder($check, 2,1);  # task accepted
@@ -1251,7 +1251,7 @@ class TaskController extends BaseController
 
                     DB::commit();
                     $orderdata = Order::select('id', 'order_time', 'status', 'driver_id')->with('agent')->where('id', $orders->id)->first();
-                    event(new \App\Events\loadDashboardData($orderdata));
+                    //event(new \App\Events\loadDashboardData($orderdata));
                     return response()->json([
                         'message' => __('Task Added Successfully'),
                         'task_id' => $orders->id,
@@ -1289,7 +1289,7 @@ class TaskController extends BaseController
                 if ($to_time >= $from_time) {
                     DB::commit();
                     $orderdata = Order::select('id', 'order_time', 'status', 'driver_id')->with('agent')->where('id', $orders->id)->first();
-                    event(new \App\Events\loadDashboardData($orderdata));
+                   // event(new \App\Events\loadDashboardData($orderdata));
                     return response()->json([
                         'message' => __('Task Added Successfully'),
                         'task_id' => $orders->id,
@@ -1328,7 +1328,7 @@ class TaskController extends BaseController
                     DB::commit();
 
                     $orderdata = Order::select('id', 'order_time', 'status', 'driver_id')->with('agent')->where('id', $orders->id)->first();
-                    event(new \App\Events\loadDashboardData($orderdata));
+                    //event(new \App\Events\loadDashboardData($orderdata));
 
                     return response()->json([
                         'message' => __('Task Added Successfully'),
@@ -1366,7 +1366,7 @@ class TaskController extends BaseController
 
             DB::commit();
             $orderdata = Order::select('id', 'order_time', 'status', 'driver_id')->with('agent')->where('id', $orders->id)->first();
-            event(new \App\Events\loadDashboardData($orderdata));
+            //event(new \App\Events\loadDashboardData($orderdata));
             return response()->json([
                 'message' => __('Task Added Successfully'),
                 'task_id' => $orders->id,
