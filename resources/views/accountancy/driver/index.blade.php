@@ -24,6 +24,30 @@
 .dt-buttons.btn-group.flex-wrap {
     display: none;
 }
+.agents-datatable thead{
+    width: 0;
+}
+.agents-datatable tbody td, .dataTables_scrollHead thead th {
+    padding: 0 !important;
+}
+.table-responsive input#checkAll {
+    width: 24px;
+}
+table.dataTable tbody tr td input {
+    width: 24px;
+}
+
+div#DataTables_Table_0_filter label input {
+    margin-bottom: 30px;
+}
+.col-md-12.main_form .col-md-2.mt-3 button:hover {
+    background-color: #6658dd;
+    border-color: #6658dd;
+    cursor: pointer;
+}
+.table th, .table td {
+    vertical-align: middle !important;
+}
 </style>
 @endsection
 @section('content')
@@ -39,19 +63,24 @@
         <div class="col-md-12 main_form">
             {{-- Filter form --}}
             <div class="row">
-                <div class="col-md-3">
+                <div class="col-md-6">
                     <form action="{{ route('driver-accountancy.index') }}" method="POST">
                         @csrf
                         <div class="row">
-                            <div class="col-md-12">
+                            <div class="col-md-6">
                                 <label for="">From Date</label>
                                 <input type="text" name="date_picker" id="date_picker" class="form-control" placeholder="Select Date Range">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="">Select Driver</label>
+                                <select class="agent-class" name="vendor_id" id="select2_vendor_id">
+                                </select>
                             </div>
                         </div>
                     </form>
                 </div>
 
-                <div class="col-md-5">
+                <div class="col-md-2 d-flex align-items-center mt-3">
                     <form class="mb-0" name="getTask" id="getTask" method="get" action="{{ route('driver-accountancy.index') }}">
                         <div class="login-form">
                             <ul class="list-inline mb-0">
@@ -69,16 +98,25 @@
                         </div>
                     </form>
                 </div>
+                <div class="col-md-2 d-flex align-items-center mt-3">
+                    <div class="text-center">
+                        <p class="h4">Total Commision : <span class="total_commission"></span></p>                        
+                    </div>
+                </div>
+                <div class="col-md-2  mt-3">
+                    <form action="{{ route('pay-to-agent') }}" method="post"> 
+                        @csrf
+                        <input type="hidden" name="agent_payouts_ids" id="agent_payouts_ids" />
+                        <button class="btn btn-info btn-block pay-to-driver d-none" id="pay-to-driver" type="submit">Pay</button>
+                    </form>
+                </div>
             </div>
             
 
             
             {{-- Filter form end --}}
 
-            <div class="text-center">
-                <h2>Total Commision</h2>
-                <h3>{{ $order_sum ?? 0 }}</h3>
-            </div>
+            
         </div>
 
         
@@ -105,14 +143,10 @@
 
     <div class="row">
         {{-- Auto payout --}}
-        <form action="{{ route('pay-to-agent') }}" method="post"> 
-            @csrf
-            <input type="hidden" name="agent_payouts_ids" id="agent_payouts_ids" />
-            <button class="btn btn-info pay-to-driver d-none" id="pay-to-driver" type="submit">Pay</button>
-        </form>
+        
         <input type="hidden" id="routes-listing-status" value="settlement">
         {{-- Table start --}}
-        <div class="table-responsive">
+        <div class="table-responsive mt-4">
             <table class="table table-striped driver-datatable">
                 <thead class="thead-light ">
                     <tr>
@@ -139,7 +173,7 @@
                 <tbody>
                 </tbody>
             </table>
-            {{ $orders->links() }}
+            
         </div>
         {{-- Table End --}}
     </div>
@@ -157,10 +191,19 @@
 <script>
 $(document).ready(function(){
 
-    // 
+    $('.agent-class').on('select2:select', function (e) {
+        initializeAgentListing();
+    });
+
+    // get query parameter
     var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
     hash = hashes[0].split('=');
-    if(hash[0] == 'status'){
+    console.log(hash[1]);
+    
+    if( hash[1] == undefined ) {
+        var status = "{{ $status }}";
+        $('#routes-listing-status').val(status);
+    } else if(hash[0] == 'status'){
         $('#routes-listing-status').val(hash[1]);
     }else{
         $('#routes-listing-status').val('unassigned');
@@ -177,7 +220,8 @@ $(document).ready(function(){
         }
     });
 
-    $("#checkAll").click(function(){
+    $("#checkAll").change(function(){
+        showHidePayBtn();
         $('.agent_payouts_id').not(this).prop('checked', this.checked);
         var checkBox        = $('input[name="agent_payouts_id[]"]:checked');
         if( checkBox.length > 0 ) {
@@ -185,31 +229,31 @@ $(document).ready(function(){
         }
         else {
             $("#agent_payouts_ids").val('');
+            $(".pay-to-driver").addClass('d-none');
         }
     });
     $('.agent-class').select2({
-        // placeholder: 'Keyword...',
-        // ajax: {
-        //     type: 'GET',
-        //     url: "{{route('driver-list')}}",
-        //     processResults: function(data) {
-        //         return {
-        //             results: $.map(data, function(item) {
-        //                 return {
-        //                     text: item.name,
-        //                     id: item.id
-        //                 }
-        //             })
-        //         };
-        //     }
-        // }
+        placeholder: 'Keyword...',
+        ajax: {
+            type: 'GET',
+            url: "{{route('driver-list')}}",
+            processResults: function(data) {
+                return {
+                    results: $.map(data, function(item) {
+                        return {
+                            text: item.name,
+                            id: item.id
+                        }
+                    })
+                };
+            }
+        }
     });
 
     initializeAgentListing();
 });
 
 function initializeAgentListing(){
-    console.log('here coming');
     $('.driver-datatable').DataTable({
         "dom": '<"toolbar">Bfrtip',
         "destroy": true,
@@ -252,6 +296,7 @@ function initializeAgentListing(){
                 d.search = $('input[type="search"]').val();
                 d.routesListingType = $('#routes-listing-status').val();
                 d.date_filter = $('#date_picker').val();
+                d.driver_id = $('#select2_vendor_id').val();
                 d.imgproxyurl = '';
             }
         },
@@ -261,6 +306,10 @@ function initializeAgentListing(){
 function dataTableColumn(){
     return [
         {data: 'id', name: 'id', orderable: false, searchable: false, "mRender": function ( data, type, full ) {
+            var total_commission = $('.total_commission').text();
+            if( full.agent_sum != total_commission ) {
+                $('.total_commission').text(full.agent_sum);
+            }
             return '<input type="checkbox" name="agent_payouts_id[]" class="form-control agent_payouts_id" value="'+full.agent_payouts_id+'">';
                                 
         }},
@@ -302,12 +351,15 @@ function markChecked(checkBox) {
 }
 
 function showHidePayBtn() {
+
     var checkboxLen = $('input[name="agent_payouts_id[]"]:checked').length;
-    if(checkboxLen) {
-        $("#pay-to-driver").removeClass('d-none');
+    // console.log('checkboxLen');
+    // console.log(checkboxLen);
+    if(checkboxLen > 0) {
+        $(".pay-to-driver").removeClass('d-none');
     }
     else {
-        $("#pay-to-driver").addClass('d-none');
+        $(".pay-to-driver").addClass('d-none');
     }
 }
 

@@ -241,9 +241,15 @@
                         <span> {{__('Managers')}} </span>
                     </a>
                 </li>
+                
                 @endif
                 </li>
-
+                <li>
+                    <a href="{{route('driver-accountancy.index')}}">
+                        <i class="fe-users"></i>
+                        <span> {{__('Driver Accountancy')}} </span>
+                    </a>
+                </li>
 
 
               {{-- <li>

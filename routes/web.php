@@ -197,6 +197,13 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 			Route::post('agent/payout/bank/details', 'AgentPayoutController@agentPayoutBankDetails')->name('agent.payout.bank.details');
 			Route::post('agent/change_approval_status', 'AgentController@change_approval_status')->name('agent/change_approval_status');
 			Route::resource('customer', 'CustomerController');
+			// Driver Accountancy
+			Route::group(['prefix' => 'driver-accounting'], function () {
+				Route::any('/', 'Accountancy\DriverAccountingController@index')->name('driver-accountancy.index');
+				Route::get('driver-list', 'Accountancy\DriverAccountingController@driverList')->name('driver-list');
+				Route::get('driver-datatable', 'Accountancy\DriverAccountingController@driverDatatable')->name('driver-datatable');
+				Route::post('pay-to-agent', 'Accountancy\DriverAccountingController@agentPayoutRequestComplete')->name('pay-to-agent');
+			});
 			Route::get('changeStatus', 'CustomerController@changeStatus');
 			Route::resource('tag', 'TagController');
 			Route::get('tag/{id}/{type}/edit', 'TagController@edit')->name('tag.edit');
