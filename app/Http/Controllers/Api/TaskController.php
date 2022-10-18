@@ -51,10 +51,12 @@ use App\Http\Requests\GetDeliveryFee;
 use Twilio\Rest\Client as TwilioClient;
 use App\Http\Requests\CreateTaskRequest;
 use App\Http\Controllers\StripeGatewayController;
+use App\Traits\TollFee;
 
 class TaskController extends BaseController
 {
     use AgentSlotTrait;
+    use TollFee;
     public function smstest(Request $request){
       $res = $this->sendSms2($request->phone_number, $request->sms_body);
      
@@ -2614,10 +2616,17 @@ class TaskController extends BaseController
         $paid_distance = $getdata['distance'] - $pricingRule->base_distance;
         $paid_duration = $paid_duration < 0 ? 0 : $paid_duration;
         $paid_distance = $paid_distance < 0 ? 0 : $paid_distance;
-        $total         = $pricingRule->base_price + ($paid_distance * $pricingRule->distance_fee) + ($paid_duration * $pricingRule->duration_price);
+
+        $toll_fee = '';
+        if($auth->getPreference->toll_fee == 1){
+            $toll_fee = $this->toll_fee($latitude, $longitude);
+        }
+Log::info($this->toll_fee($latitude, $longitude));
+        $total         = $pricingRule->base_price + ($paid_distance * $pricingRule->distance_fee) + ($paid_duration * $pricingRule->duration_price);// + $toll_fee;
 
         $client = ClientPreference::take(1)->with('currency')->first();
         $currency = $client->currency??'';
+        
 
         Log::info($total);
         return response()->json([
@@ -2626,6 +2635,7 @@ class TaskController extends BaseController
             'currency' => $currency,
             'paid_distance' => $paid_distance,
             'paid_duration' => $paid_duration,
+            'toll_fee' => $toll_fee,
             'message' => __('success')
         ], 200);
 
