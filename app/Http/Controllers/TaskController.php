@@ -55,9 +55,6 @@ class TaskController extends BaseController
      */
     public function index(Request $request)
     {
-
-        $toll_fee = $this->toll_fee();
-        pr($toll_fee);
         $user = Auth::user();
         $timezone = $user->timezone ?? 251;
         $tz = new Timezone();

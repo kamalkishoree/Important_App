@@ -2619,23 +2619,21 @@ class TaskController extends BaseController
 
         $toll_fee = '';
         if($auth->getPreference->toll_fee == 1){
-            $toll_fee = $this->toll_fee($latitude, $longitude);
+            $response = $this->toll_fee($latitude, $longitude);
         }
-Log::info($this->toll_fee($latitude, $longitude));
-        $total         = $pricingRule->base_price + ($paid_distance * $pricingRule->distance_fee) + ($paid_duration * $pricingRule->duration_price);// + $toll_fee;
+
+        $total         = $pricingRule->base_price + ($paid_distance * $pricingRule->distance_fee) + ($paid_duration * $pricingRule->duration_price) + $response['toll_amount'];
 
         $client = ClientPreference::take(1)->with('currency')->first();
         $currency = $client->currency??'';
         
-
-        Log::info($total);
         return response()->json([
             'total' => $total,
             'total_duration' => $getdata['duration'],
             'currency' => $currency,
             'paid_distance' => $paid_distance,
             'paid_duration' => $paid_duration,
-            'toll_fee' => $toll_fee,
+            'toll_fee' => $response['toll_amount'],
             'message' => __('success')
         ], 200);
 

@@ -20,7 +20,8 @@ trait TollFee{
     public function toll_fee($latitude = array(), $longitude = array())
     {
         $ClientPreference = ClientPreference::where('id', 1)->first();
-
+ 
+        //Sample Api location input
         $origin = [
             'latitude'=> '19.076090',
             'longitude' => '72.877426'
@@ -29,18 +30,44 @@ trait TollFee{
             'latitude'=> '28.613939',
             'longitude' => '77.209023'
         ];
+        //intermediate destinations
+        $waypoints = [
+            '0' => [
+                'location' => [
+                    'latLng' => [
+                        'latitude'=> '25.611219',
+                        'longitude' => '85.130692'
+                    ]
+                ]
+            ],
+            '1' => [
+                'location' => [
+                    'latLng' => [
+                        'latitude'=> '21.170240',
+                        'longitude' => '72.831062'
+                    ]
+                ]
+            ]
+        ];
         
         for($i = 0;$i < count($latitude); $i++)
         {
-            if($i==0)
+            if($i == 0)
             {
                 $origin['latitude'] = $latitude[$i];
                 $origin['longitude'] = $longitude[$i];
-            }else{
+            }
+            if($i > 0 && (count($latitude)-1) > $i){
+                $waypoints[$i]['location']['latLng']['latitude'] = $latitude[$i];
+                $waypoints[$i]['location']['latLng']['longitude'] = $longitude[$i];
+            }
+            if((count($latitude)-1) == $i)
+            {
                 $destination['latitude'] = $latitude[$i];
                 $destination['longitude'] = $longitude[$i];
             }
         }
+
         $headers = array('X-Goog-Api-Key: '.(!empty($ClientPreference)?$ClientPreference->toll_key:''),
                 'Content-Type: application/json',
                 'X-Goog-FieldMask: routes.duration,routes.distanceMeters,routes.travelAdvisory.tollInfo,routes.legs.travelAdvisory.tollInfo',
@@ -59,9 +86,7 @@ trait TollFee{
                         'latLng' => $destination
                     ]
                 ],
-                'intermediates' => [
-
-                ],
+                'intermediates' => $waypoints,
                 "travelMode" => 'TAXI',
                 "units" =>  "metric",
                 "route_modifiers" => [
@@ -78,18 +103,36 @@ trait TollFee{
             curl_setopt($ch, CURLOPT_POST, 1);
             curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
             curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-            // In real life you should use something like:
-            // curl_setopt($ch, CURLOPT_POSTFIELDS, 
-            //          http_build_query(array('postvar1' => 'value1')));
-            
             // Receive server response ...
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             
-            $server_output = curl_exec($ch);
+            $apiResponse = curl_exec($ch);
             
-            curl_close ($ch);
-            return $server_output;
-            //pr($server_output);
+            curl_close($ch);
+            $apiResponse = json_decode($apiResponse);
+
+            $toll_array = array();
+            $toll_array['distanceMeters'] = 0;
+            $toll_array['duration'] = 0;
+            $toll_array['currency'] = '';
+            $toll_array['toll_amount'] = 0;
+            if(!empty($apiResponse->routes))
+            {
+                foreach($apiResponse->routes as $routes){
+                    $toll_array['distanceMeters'] = $routes->distanceMeters;
+                    $toll_array['duration']       = $routes->distanceMeters;
+                    foreach($routes->travelAdvisory->tollInfo->estimatedPrice as $estimatedPrice){
+                        $toll_array['currency'] = $estimatedPrice->currencyCode;
+                        $toll_array['toll_amount'] = $estimatedPrice->units;
+                    };
+                }
+            }else{
+                $toll_array['distanceMeters'] = 0;
+                $toll_array['duration'] = 0;
+                $toll_array['currency'] = '';
+                $toll_array['toll_amount'] = 0;
+            }
+            return $toll_array;
     }
 
 
