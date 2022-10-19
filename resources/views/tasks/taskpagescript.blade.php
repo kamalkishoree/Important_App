@@ -284,6 +284,7 @@
                 $("#distance_fee").text(data.distance_fee + ' (' + data.distance_type + ')');
                 $("#driver_type").text(data.driver_type);
 
+                $("#toll_fee").text(data.toll_fee);
                 $("#order_cost").text(data.order_cost);
                 $("#driver_cost").text(data.driver_cost ? data.driver_cost : 0.00 );
 
