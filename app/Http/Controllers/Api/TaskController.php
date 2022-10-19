@@ -1168,6 +1168,11 @@ class TaskController extends BaseController
             if(empty($pricingRule))
             $pricingRule = PricingRule::orderBy('is_default', 'desc')->orderBy('is_default', 'asc')->first();
 
+            $tollresponse = array();
+            if($auth->getPreference->toll_fee == 1){
+                $tollresponse = $this->toll_fee($latitude, $longitude);
+            }
+
             $getdata = $this->GoogleDistanceMatrix($latitude, $longitude);
 
             $paid_duration = $getdata['duration'] - $pricingRule->base_duration;
@@ -1202,7 +1207,8 @@ class TaskController extends BaseController
             'freelancer_commission_fixed'     => $pricingRule->freelancer_commission_fixed,
             'actual_time'                     => $getdata['duration'],
             'actual_distance'                 => $getdata['distance'],
-            'order_cost'                      => $total,
+            'order_cost'                      => $total + (isset($tollresponse['toll_amount'])?$tollresponse['toll_amount']:0),
+            'toll_fee'                        => (isset($tollresponse['toll_amount'])?$tollresponse['toll_amount']:0),
             'driver_cost'                     => $percentage,
             ];
 
@@ -2617,12 +2623,12 @@ class TaskController extends BaseController
         $paid_duration = $paid_duration < 0 ? 0 : $paid_duration;
         $paid_distance = $paid_distance < 0 ? 0 : $paid_distance;
 
-        $toll_fee = '';
+        $tollresponse = array();
         if($auth->getPreference->toll_fee == 1){
-            $response = $this->toll_fee($latitude, $longitude);
+            $tollresponse = $this->toll_fee($latitude, $longitude);
         }
 
-        $total         = $pricingRule->base_price + ($paid_distance * $pricingRule->distance_fee) + ($paid_duration * $pricingRule->duration_price) + $response['toll_amount'];
+        $total         = $pricingRule->base_price + ($paid_distance * $pricingRule->distance_fee) + ($paid_duration * $pricingRule->duration_price);
 
         $client = ClientPreference::take(1)->with('currency')->first();
         $currency = $client->currency??'';
@@ -2633,7 +2639,7 @@ class TaskController extends BaseController
             'currency' => $currency,
             'paid_distance' => $paid_distance,
             'paid_duration' => $paid_duration,
-            'toll_fee' => $response['toll_amount'],
+            'toll_fee' => (isset($tollresponse['toll_amount'])?$tollresponse['toll_amount']:0),
             'message' => __('success')
         ], 200);
 

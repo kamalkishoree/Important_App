@@ -32,22 +32,7 @@ trait TollFee{
         ];
         //intermediate destinations
         $waypoints = [
-            '0' => [
-                'location' => [
-                    'latLng' => [
-                        'latitude'=> '25.611219',
-                        'longitude' => '85.130692'
-                    ]
-                ]
-            ],
-            '1' => [
-                'location' => [
-                    'latLng' => [
-                        'latitude'=> '21.170240',
-                        'longitude' => '72.831062'
-                    ]
-                ]
-            ]
+            
         ];
         
         for($i = 0;$i < count($latitude); $i++)
