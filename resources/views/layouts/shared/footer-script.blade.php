@@ -10,8 +10,12 @@
 <script type="text/javascript" src="{{asset('assets/js/axios.min.js')}}"></script>
 
 <script src="{{asset('assets/js/waitMe.min.js')}}"></script>
-
+<script src="{{asset('assets/libs/select2/select2.min.js')}}"></script>
 <script>
+    $(function() {
+        $('.select2-multiple').select2();
+    });
+   //
  $(".remove-modal-open").click(function (e) {
        // alert("hello");
         $('body').addClass('modal-opensag');
