@@ -294,7 +294,7 @@ class ActivityController extends BaseController
                 }
             }else{
                 AgentLog::create($data);
-                event(new \App\Events\agentLogFetch());
+                //event(new \App\Events\agentLogFetch());
             }
         }
 
