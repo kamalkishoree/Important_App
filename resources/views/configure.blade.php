@@ -10,7 +10,7 @@ $sms_crendential = json_decode($preference->sms_credentials);
 @endphp
 @section('content')
     <style>
-
+        .alMultiSelect .btn{border-radius: 7px;}
     </style>
     <!-- Start Content-->
     <div class="container-fluid">
@@ -838,8 +838,9 @@ $sms_crendential = json_decode($preference->sms_credentials);
                                 @endphp
                                 <div class="form-group d-flex justify-content-between mb-3">
                                     <label for="pharmacy_check" class="mr-2 mb-0">{{__("Hide Transportation Type Icons")}} <small class="d-block pr-5">Hide Transportation Type from Signup Form.</small></label>
-                                    <div class="col-md custom-control custom-switch">
-                                        <select class="form-control selectpicker" name="custom_mode[show_vehicle_type_icon][]" multiple data-live-search="true" required>
+                                    <div class="col-md p-0 custom-control alMultiSelect">
+                                        <select class="selectpickera select2-multiple" data-toggle="select2" multiple="multiple"  data-placeholder="Choose ..."  name="custom_mode[show_vehicle_type_icon][]" multiple data-live-search="true" required>
+                                            
                                             @foreach($vehicleType as $type)
                                             <option value="{{$type->id}}" @if(isset($arr) && in_array($type->id,$arr)) {{'selected'}} @endif  >{{ucfirst($type->name)}}</option>
                                             @endforeach
