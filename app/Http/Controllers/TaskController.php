@@ -803,7 +803,7 @@ class TaskController extends BaseController
                     scheduleNotification::dispatch($schduledata)->delay(now()->addMinutes($finaldelay));
                     DB::commit();
                     $orderdata = Order::select('id', 'order_time', 'status', 'driver_id')->with('agent')->where('id', $orders->id)->first();
-                    event(new \App\Events\loadDashboardData($orderdata));
+                    //event(new \App\Events\loadDashboardData($orderdata));
                     return response()->json(['status' => "Success", 'message' => 'Route created Successfully']);
                 }
             }
@@ -831,7 +831,7 @@ class TaskController extends BaseController
             }
             DB::commit();
             $orderdata = Order::select('id', 'order_time', 'status', 'driver_id')->with('agent')->where('id', $orders->id)->first();
-            event(new \App\Events\loadDashboardData($orderdata));
+            //event(new \App\Events\loadDashboardData($orderdata));
             return response()->json(['status' => "Success", 'message' => 'Route created Successfully']);
 
         } catch (Exception $e) {
@@ -893,7 +893,7 @@ class TaskController extends BaseController
                         $task = Task::where('order_id', $order->id)->update(['task_status'=>1]);
 
                         $orderdata = Order::select('id', 'order_time', 'status', 'driver_id')->with('agent')->where('id', $order->id)->first();
-                        event(new \App\Events\loadDashboardData($orderdata));
+                        //event(new \App\Events\loadDashboardData($orderdata));
                         $this->MassAndEditNotification($order->id, $agent_id);
                     }
                     Session::put('success', __(getAgentNomenclature().' assigned successfully'));
@@ -2512,7 +2512,7 @@ class TaskController extends BaseController
 
             }
             $orderdata = Order::select('id', 'order_time', 'status', 'driver_id')->with('agent')->where('id', $id)->first();
-            event(new \App\Events\loadDashboardData($orderdata));
+            //event(new \App\Events\loadDashboardData($orderdata));
             DB::commit();
             return response()->json(['status' => "Success", 'message' => 'Task Updated successfully!']);
         } catch (Exception $e) {
@@ -2574,7 +2574,7 @@ class TaskController extends BaseController
         $orderdata = Order::select('id', 'order_time', 'status', 'driver_id')->with('agent')->where('id', $id)->first();
         Order::where('id', $id)->delete();
         $orderdata->status = "Deleted";
-        event(new \App\Events\loadDashboardData($orderdata));
+        //event(new \App\Events\loadDashboardData($orderdata));
         return redirect()->back()->with('success', 'Task deleted successfully!');
     }
 
