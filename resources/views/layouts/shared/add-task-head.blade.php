@@ -885,10 +885,12 @@
 
         if (this.value == 3){
            $span = $(this).closest(".firstclone1").find(".appoint").show();
+           $(this).closest(".firstclone1").find(".warehouse-field").hide();
            //console.log($span);
         }
         else{
             $(this).closest(".firstclone1").find(".appoint").hide();
+            $(this).closest(".firstclone1").find(".warehouse-field").show();
         }
     });
 

@@ -39,6 +39,8 @@
                                         <th>{{__("Name")}}</th>
                                         <th>{{__('Code')}}</th>
                                         <th>{{__("Address")}}</th>
+                                        <th>{{__("Latitude")}}</th>
+                                        <th>{{__("Longitude")}}</th>
                                         <th>{{__("Amenities")}}</th>
                                         <th>{{__("Category")}}</th>
                                         <th>{{__("Created Date")}}</th>
@@ -53,6 +55,8 @@
                                                 <td>{{ $warehouse->name }}</td>
                                                 <td>{{ $warehouse->code }}</td>
                                                 <td>{{ $warehouse->address }}</td>
+                                                <td>{{ $warehouse->latitude }}</td>
+                                                <td>{{ $warehouse->longitude }}</td>
                                                 <td>
                                                     @php
                                                         $amenity = implode(',', $warehouse->amenity->pluck('name')->toArray());

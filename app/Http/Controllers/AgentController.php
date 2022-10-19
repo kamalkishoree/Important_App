@@ -18,7 +18,7 @@ use Twilio\Rest\Client as TwilioClient;
 use App\Traits\ApiResponser;
 use App\Exports\AgentsExport;
 use Doctrine\DBAL\Driver\DrizzlePDOMySql\Driver;
-use App\Model\{Agent, AgentDocs, AgentPayment, AgentLog, DriverGeo, Order, Otp, Team, TagsForAgent, TagsForTeam, Countries, Client, ClientPreferences, DriverRegistrationDocument, Geo, Timezone, AgentSmsTemplate};
+use App\Model\{Agent, AgentDocs, AgentPayment, AgentLog, DriverGeo, Order, Otp, Team, TagsForAgent, TagsForTeam, Countries, Client, ClientPreferences, DriverRegistrationDocument, Geo, Timezone, AgentSmsTemplate, Warehouse};
 use Kawankoding\Fcm\Fcm;
 use App\Traits\agentEarningManager;
 
@@ -108,7 +108,11 @@ class AgentController extends Controller
         $agentRejected   = count($agents->where('is_approved', 2));
         $driver_registration_documents = DriverRegistrationDocument::get();
 
-        return view('agent.index')->with(['agents' => $agents, 'geos' => $geos, 'driver_registration_documents' => $driver_registration_documents, 'agentIsAvailable' => $agentIsAvailable, 'agentNotAvailable' => $agentNotAvailable, 'agentIsApproved' => $agentIsApproved, 'agentNotApproved' => $agentNotApproved, 'agentsCount' => $agentsCount, 'employeesCount' => $employeesCount, 'agentActive' => $agentActive, 'agentInActive' => $agentInActive, 'freelancerCount' => $freelancerCount, 'teams' => $teams, 'tags' => $tags, 'selectedCountryCode' => $countryCode, 'calenderSelectedDate' => $selectedDate, 'showTag' => implode(',', $tag), 'agentRejected' => $agentRejected]);
+        $warehouses = Warehouse::all();
+
+        $agents = Agent::orderBy('id', 'DESC');
+
+        return view('agent.index')->with(['agents' => $agents, 'geos' => $geos, 'driver_registration_documents' => $driver_registration_documents, 'agentIsAvailable' => $agentIsAvailable, 'agentNotAvailable' => $agentNotAvailable, 'agentIsApproved' => $agentIsApproved, 'agentNotApproved' => $agentNotApproved, 'agentsCount' => $agentsCount, 'employeesCount' => $employeesCount, 'agentActive' => $agentActive, 'agentInActive' => $agentInActive, 'freelancerCount' => $freelancerCount, 'teams' => $teams, 'tags' => $tags, 'selectedCountryCode' => $countryCode, 'calenderSelectedDate' => $selectedDate, 'showTag' => implode(',', $tag), 'agentRejected' => $agentRejected, 'warehouses' => $warehouses]);
     }
 
     public function agentFilter(Request $request)
@@ -159,6 +163,10 @@ class AgentController extends Controller
                 ->editColumn('team', function ($agents) use ($request) {
                     $team = (isset($agents->team->name) ? $agents->team->name : __('Team Not Alloted'));
                     return $team;
+                })
+                ->editColumn('warehouse', function ($agents) use ($request) {
+                    $warehouse = (isset($agents->warehouse->name) ? $agents->warehouse->name : __('-'));
+                    return $warehouse;
                 })
                 ->editColumn('vehicle_type_id', function ($agents) use ($request) {
                     $src = asset('assets/icons/extra/' . $agents->vehicle_type_id . '.png');
@@ -341,6 +349,7 @@ class AgentController extends Controller
         $data = [
             'name' => $request->name,
             'team_id' => $request->team_id == null ? $team_id = null : $request->team_id,
+            'warehouse_id' => $request->warehouse_id == null ? $warehouse_id = null : $request->warehouse_id,
             'type' => $request->type,
             'vehicle_type_id' => $request->vehicle_type_id ?? null,
             'make_model' => $request->make_model,
@@ -482,7 +491,9 @@ class AgentController extends Controller
         $agents_docs = AgentDocs::where('agent_id', $id)->get();
         $driver_registration_documents = DriverRegistrationDocument::get();
 
-        $returnHTML = view('agent.form')->with(['agent' => $agent, 'teams' => $teams, 'tags' => $uptag, 'tagIds' => $tagIds, 'otp' => $send_otp, 'driver_registration_documents' => $driver_registration_documents, 'agent_docs' => $agents_docs])->render();
+        $warehouses = Warehouse::all();
+
+        $returnHTML = view('agent.form')->with(['agent' => $agent, 'teams' => $teams, 'tags' => $uptag, 'tagIds' => $tagIds, 'otp' => $send_otp, 'driver_registration_documents' => $driver_registration_documents, 'agent_docs' => $agents_docs, 'warehouses' => $warehouses])->render();
 
         return response()->json(array('success' => true, 'html' => $returnHTML));
     }
@@ -561,6 +572,7 @@ class AgentController extends Controller
             $agent->{$key} = $value;
         }
         $agent->team_id         = $request->team_id;
+        $agent->warehouse_id         = $request->warehouse_id;
         $agent->profile_picture = $getFileName;
         $agent->save();
 

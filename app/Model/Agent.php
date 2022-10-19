@@ -24,7 +24,7 @@ class Agent extends Authenticatable implements  Wallet, WalletFloat
     use SoftDeletes;
 
     protected $fillable = [
-        'team_id', 'name', 'profile_picture', 'type', 'vehicle_type_id', 'make_model', 'plate_number', 'phone_number', 'color', 'is_activated', 'is_available','cash_at_hand','uid', 'is_approved','customer_type_id'
+        'team_id', 'name', 'profile_picture', 'type', 'vehicle_type_id', 'make_model', 'plate_number', 'phone_number', 'color', 'is_activated', 'is_available','cash_at_hand','uid', 'is_approved','customer_type_id', 'warehouse_id'
     ];
 
     protected $appends = ['image_url', 'agent_cash_at_hand'];
@@ -76,6 +76,10 @@ class Agent extends Authenticatable implements  Wallet, WalletFloat
     public function team(){
        return $this->belongsTo('App\Model\Team')->select("id", "name", "location_accuracy", "location_frequency"); 
     }
+
+    public function warehouse(){
+        return $this->belongsTo('App\Model\Warehouse')->select("id", "name", "code", "address","category_id"); 
+     }
 
     public function logs(){
         return $this->hasOne('App\Model\AgentLog' , 'agent_id','id')->select("id", "agent_id", "lat", "long"); 

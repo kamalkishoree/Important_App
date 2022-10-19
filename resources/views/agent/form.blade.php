@@ -78,6 +78,19 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
             </span>
         </div>
     </div>
+    <div class="col-md-6">
+        <div class="form-group" id="warehouse_idInputEdit">
+            <label for="warehouse_id" class="control-label">{{__("ASSIGN WAREHOUSE")}}</label>
+            <select class="form-control" data-style="btn-light" name="warehouse_id" id="warehouse_id">
+                @foreach ($warehouses as $warehouse)
+                    <option value="{{ $warehouse->id }}" {{$warehouse->id == $agent->warehouse_id ? 'selected':''}}>{{ $warehouse->name }}</option>
+                @endforeach
+            </select>
+            <span class="invalid-feedback" role="alert">
+                <strong></strong>
+            </span>
+        </div>
+    </div>
 </div>
 
 

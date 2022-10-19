@@ -26,7 +26,7 @@
                     <div class="card-body">
                         <div class="row mb-2">
                             <div class="col-sm-8"></div>
-                            <div class="col-sm-4 text-right btn-auto d-flex">
+                            <div class="col-sm-4 text-right btn-auto d-flex" style="left: 115px;">
                                 <button type="button" class="btn btn-blue waves-effect waves-light openCategoryModal" data-toggle="modal" data-target="" data-backdrop="static" data-keyboard="false"><i class="mdi mdi-plus-circle mr-1"></i> {{__("Add Category")}}</button>
                                 <form action="{{route('category.importOrderSideCategory')}}" method="post">
                                 @csrf

@@ -93,6 +93,12 @@
                     orderable: true,
                     searchable: false
                 },
+                {
+                    data: 'warehouse',
+                    name: 'warehouse',
+                    orderable: true,
+                    searchable: false
+                },
                 // {
                 //     data: 'vehicle_type_id',
                 //     name: 'vehicle_type_id',
@@ -414,7 +420,7 @@
         });
 
         function saveTeam(urls, formData, inp = '', modal = '') {
-
+            
             $.ajax({
                 method: 'post',
                 headers: {

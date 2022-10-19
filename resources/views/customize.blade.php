@@ -237,7 +237,7 @@
             <div class="card-box h-100">
                 <form method="POST" class="h-100" action="{{route('update.orderPanelDbDetail')}}">
                     <div class="d-flex align-items-center justify-content-between mb-2">
-                        <h4 class="header-title mb-0">{{__('Oeder Panel Db Detail')}}</h4>
+                        <h4 class="header-title mb-0">{{__('Oeder Panel DB Detail')}}</h4>
                         <button class="btn btn-outline-info d-block" type="submit"> Save </button>
                     </div>
                 
@@ -284,7 +284,8 @@
                             </div>
                             <div class="form-group mt-2 mb-0">
                                 <label for="db_password">DB Password</label>
-                                <input type="password" name="db_password" id="db_password" placeholder="" class="form-control" value="{{ old('db_password', $order_panel_detail->db_password ?? '')}}">
+                                <input type="password" name="db_password" id="db_password" placeholder="" class="form-control" value="">
+                                {{-- {{ old('db_password', $order_panel_detail->db_password ?? '')}} --}}
                                 @if($errors->has('db_password'))
                                 <span class="text-danger" role="alert">
                                     <strong>{{ $errors->first('db_password') }}</strong>

@@ -10,6 +10,7 @@ use App\Model\TagsForAgent;
 use App\Model\TagsForTeam;
 use App\Model\TaskDriverTag;
 use App\Model\TaskTeamTag;
+use App\Model\Warehouse;
 use Illuminate\Http\Request;
 use App\Model\Agent;
 use App\Model\AllocationRule;
@@ -645,6 +646,7 @@ class TaskController extends BaseController
                     'barcode'                    => $request->barcode[$key],
                     'quantity'                   => $request->quantity[$key],
                     'alcoholic_item'             => !empty($request->alcoholic_item[$key])? $request->alcoholic_item[$key] : '',
+                    'warehouse_id'                   => $request->warehouse_id[$key],
                 ];
                 $task = Task::create($data);
                 $dep_id = $task->id;
@@ -1104,8 +1106,10 @@ class TaskController extends BaseController
 
         $preference  = ClientPreference::where('id', 1)->first(['route_flat_input','route_alcoholic_input']);
 
+        $warehouses = Warehouse::all();
+
         $task_proofs = TaskProof::all();
-        $returnHTML = view('modals/add-task-modal')->with(['teamTag' => $teamTag, 'preference'=>$preference, 'agentTag' => $agentTag, 'agents' => $agents, 'pricingRule' => $pricingRule, 'allcation' => $allcation ,'task_proofs' => $task_proofs ])->render();
+        $returnHTML = view('modals/add-task-modal')->with(['teamTag' => $teamTag, 'preference'=>$preference, 'agentTag' => $agentTag, 'agents' => $agents, 'pricingRule' => $pricingRule, 'allcation' => $allcation ,'task_proofs' => $task_proofs, 'warehouses' => $warehouses ])->render();
         return response()->json(array('success' => true, 'html' => $returnHTML));
     }
 

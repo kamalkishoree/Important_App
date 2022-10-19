@@ -68,6 +68,7 @@ class CategoryController extends Controller
     public function importOrderSideCategory(){
         $db_connection = connect_with_order_panel();
         $order_category = $db_connection->table('categories')->select(['categories.*','category_translations.*','category_translations.trans-slug as trans_slug'])->join('category_translations', 'category_translations.category_id', '=','categories.id')->where('category_translations.language_id', 1)->get();
+        
         foreach($order_category as $category){
             $data = [
                 'icon' => $category->icon,

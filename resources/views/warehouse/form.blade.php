@@ -60,7 +60,21 @@
                                     @endif
                                 </div>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-lg-6">
+                                <label for="address" class="control-label">{{__("Address")}}</label>
+                                <div class="form-group input-group" id="addressInput">
+                                    <input type="text" id="address" name="address" class="form-control" placeholder="{{__('Address')}}" value="{{ old('address', $warehouse->address ?? '')}}">
+                                    <div class="input-group-append">
+                                        <button class="btn btn-xs btn-dark waves-effect waves-light showMap" type="button" num="add1"> <i class="mdi mdi-map-marker-radius"></i></button>
+                                    </div>
+                                    <input type="hidden" name="latitude" id="latitude" value="{{ old('latitude', $warehouse->latitude ?? 0)}}" />
+                                    <input type="hidden" name="longitude" id="longitude" value="{{ old('longitude', $warehouse->longitude ?? 0)}}" />
+                                    <span class="invalid-feedback" role="alert" id="address">
+                                        <strong></strong>
+                                    </span>
+                                </div>
+                            </div>
+                            {{-- <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="address" class="control-label">{{__("Address")}}</label>
                                     <input type="tel" name="address" class="form-control" value="{{ old('address', $warehouse->address ?? '')}}"id="address" placeholder="Enter address">
@@ -70,7 +84,7 @@
                                         </span>
                                     @endif
                                 </div>
-                            </div>
+                            </div> --}}
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <div class="check_label">
