@@ -30,7 +30,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                     <input type="radio" id="user_status_all" value="2" name="user_status" class="checkUserStatus" checked>
                     <label for="user_status_all"> {{__("All")}} </label>
                 </div>
-                
+
                 <div class="radio radio-primary form-check-inline">
                     <input type="radio" id="user_status_online" value="1" name="user_status" class="checkUserStatus">
                     <label for="user_status_online"> {{__("Online")}} </label>
@@ -42,7 +42,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                 </div>
             </div>
 
-            <span class="allAccordian"><span class="" onclick="openAllAccordian()">{{__('Open All')}}</span></span>
+            <span class="allAccordian"><span class="" onclick="openAllAccordian()">{{__("Open All")}}</span></span>
         </div>
         <div  id="teams_container">
 
@@ -88,7 +88,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
             }
         }
     }
-    
+
     $defaultmaplocation['lat'] = $defaultCountryLatitude;
     $defaultmaplocation['long'] = $defaultCountryLongitude;
     $agentslocations[] = $defaultmaplocation;
@@ -157,7 +157,7 @@ function initMap(is_refresh) {
             mapTypeId: "roadmap",
             styles: themeType,
         });
-    
+
         // Adds a marker at the center of the map.
         for (let i = 0; i < olddata.length; i++) {
             checkdata = olddata[i];
@@ -190,7 +190,7 @@ function initMap(is_refresh) {
                 lng:  parseFloat(checkdata['longitude'])
             }, send, img,checkdata,type);
         }
-        
+
     }else{
         deleteAgentMarks();
         clearRoutes();
@@ -252,7 +252,7 @@ function deleteAgentMarks() {
 }
 
 // function for displaying route  on map
-function calculateAndDisplayRoute(directionsService, directionsRenderer, map, alltask, agent_location) 
+function calculateAndDisplayRoute(directionsService, directionsRenderer, map, alltask, agent_location)
 {
     const waypts = [];
     const checkboxArray = document.getElementById("waypoints");
@@ -297,12 +297,12 @@ function clearRoutes() {
         $('#directions').hide();
         for (var i = 0;i< directionsArray.length; i ++) {
             if (directionsArray [i] !== -1) {
-                directionsArray [i].setMap(null); 
+                directionsArray [i].setMap(null);
             }
         }
         directionsArray = [];
         return;
-    }   
+    }
 }
 
 // Adds a marker to the map and push to the array.
@@ -557,12 +557,12 @@ function loadTeams(is_load_html, is_show_loader)
         success: function(result) {
             olddata = allagent = defaultmaplocation = [];
             //if Html is required to load or not, for agent's log it is not required
-            
+
             if(is_load_html == 1)
             {
                 $("#teams_container").empty();
                 $("#teams_container").html(result);
-                
+
                 if(is_show_loader == 1)
                 {
                     spinnerJS.hideSpinner();
@@ -597,7 +597,7 @@ function loadTeams(is_load_html, is_show_loader)
                     defaultlong = parseFloat(data1['defaultCountryLongitude']);
                 }
             }
-            
+
             initMap(is_load_html);
         },
         error: function(data) {
@@ -637,7 +637,7 @@ function initializeSortable()
 
                 success: function(response) {
                     var data = $.parseJSON(response);
-                    
+
                     $('.totdis'+agentid).html(data.total_distance);
                     var funperams = '<span class="optimize_btn" onclick="RouteOptimization('+params+')">Optimize</span>';
                     $('.optimizebtn'+agentid).html(funperams);
@@ -653,7 +653,7 @@ function initializeSortable()
                     $('#addressTaskBlock').css('display','none');
                     $('#selectedtasklocations').html('');
                     $('.selecttask').css('display','none');
-                    
+
                     if(data.current_location == 0)
                     {
                         $("input[type=radio][name=driver_start_location][value='current']").remove();
@@ -686,7 +686,7 @@ function closeAllAccordian() {
     $("#accordion").find(`[data-toggle="collapse"]`).addClass('collapsed');
     $("#accordion").find(`[data-toggle="collapse"]`).attr('aria-expanded','false');
     $(".collapse").removeClass('show');
-    $(".allAccordian").html('<span class="" onclick="openAllAccordian()">Open All</span>');
+    $(".allAccordian").html('<span class="" onclick="openAllAccordian()">{{__("Open All")}}</span>');
 }
 
 function NavigatePath(taskids,distancematrix,optimize,agentid,date) {
@@ -740,7 +740,7 @@ function ListenDataChannel()
 {
     //leave/not listen previous channel in case filters have been changed
     Echo.leave(old_channelname);
-    
+
     //listen route add/update/delete/assigned/completed event
     Echo.channel(channelname)
     .listen('loadDashboardData', (e) => {
@@ -784,17 +784,17 @@ function ListenDataChannel()
         if(heading!='')
         {
             loadTeams(1, 0);
-            $.toast({ 
+            $.toast({
                 heading:heading,
-                text : message, 
-                showHideTransition : 'slide', 
-                bgColor : toastcolor,              
-                textColor : '#eee',            
-                allowToastClose : true,      
-                hideAfter : 5000,            
-                stack : 5,                   
-                textAlign : 'left',         
-                position : 'top-right'      
+                text : message,
+                showHideTransition : 'slide',
+                bgColor : toastcolor,
+                textColor : '#eee',
+                allowToastClose : true,
+                hideAfter : 5000,
+                stack : 5,
+                textAlign : 'left',
+                position : 'top-right'
             });
         }
     });
