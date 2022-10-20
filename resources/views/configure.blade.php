@@ -1328,7 +1328,7 @@ $sms_crendential = json_decode($preference->sms_credentials);
             var id = $("#sms_provider").find(':selected').attr('data-id');
             $('.sms_fields').css('display', 'none');
             $('#' + id).css('display', 'flex');
-            console.log(id);
+           
         }
         $('#batch_allocation').on('change',function(){
             if ($(this).is(":checked")) {
