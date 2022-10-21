@@ -76,6 +76,18 @@ $('.showpassword').click(function(){
 
 });
 
+$(document).ready(function(){
+    $(document).on('click', '.choose_warehouse', function(){
+        if ($(this).text() == "Choose Warehouse") { 
+            $(this).text("Choose Location"); 
+        } else { 
+            $(this).text("Choose Warehouse"); 
+        }; 
+        $(this).closest(".firstclone1").find(".location-section").toggle();
+        $(this).closest(".firstclone1").find(".select_warehouse-field").toggle();
+    })
+});
+
 </script>
 @yield('script')
 <!-- App js -->

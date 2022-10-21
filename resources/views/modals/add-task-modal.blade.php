@@ -1,3 +1,6 @@
+<style>
+    a.choose_warehouse { text-decoration: underline; }
+</style>
 <div class="row">
     <div class="col-md-12">
         <div class="card-box pb-0 pt-0 mb-1">            
@@ -218,6 +221,13 @@
                                                     <strong></strong>
                                                 </span>
                                             </div>
+                                            <div class="form-group vehicle_type_select mt-1 mb-1">
+                                                <select class="vehicle_type" id="vehicle_type" name="vehicle_type[]" style="width:100%;">
+                                                    @foreach ($vehicle_type as $vehicle)
+                                                        <option value="{{$vehicle->id}}">{{$vehicle->name}}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
                                         </div>
                                         <div class="col-md-1 text-center pt-2 pr-2" >
                                             <span class="span1 delbtnhead" id="spancheck"><img style="filter: grayscale(.5);" src="{{asset('assets/images/ic_delete.png')}}"  alt=""></span>
@@ -228,10 +238,12 @@
                                                     <div class="col-6 addressDetails border-right">
                                                         <h6>Address Details</h6>
                                                         <div class="row">
-                                                            <div class="form-group col-6 mb-1">
+                                                            <div class="form-group col-12 mb-1">
                                                                 {!! Form::text('short_name[]', null, ['class' => 'form-control address', 'placeholder' => __('Short Name')]) !!}
                                                             </div>
-                                                            <div class="input-group form-group col-6 mb-2">
+                                                        </div>
+                                                        <div class="row location-section">
+                                                            <div class="input-group form-group col-12 mb-2">
                                                                 <input type="text" id="addHeader1-input" name="address[]" class="form-control address cust_add" placeholder='{{__("Location")}}'>
                                                                 <div class="input-group-append">
                                                                     <button class="btn btn-xs btn-dark waves-effect waves-light showMapHeader cust_btn" type="button" num="addHeader1"> <i class="mdi mdi-map-marker-radius"></i></button>
@@ -247,8 +259,7 @@
                                                             </div>
                                                         </div>
                                                         <div class="warehouse-field">
-                                                            <h6>Choose Warehouse</h6>
-                                                            <div class="form-group mb-1">
+                                                            <div class="form-group mb-1 select_warehouse-field" style="display: none;">
                                                                 <select class="form-control" name="warehouse_id[]" id="warehouse">
                                                                     <option value="">Select Warehouse</option>
                                                                     @foreach ($warehouses as $warehouse)
@@ -256,6 +267,7 @@
                                                                     @endforeach
                                                                 </select>
                                                             </div>
+                                                            <h6><a href="javascript:void(0);" class="choose_warehouse">Choose Warehouse</a></h6>
                                                         </div>
                                                     </div>
 

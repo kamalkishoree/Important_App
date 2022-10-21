@@ -119,7 +119,6 @@
 @endsection
 
 @section('script')
-
     <script src="{{ asset('assets/js/jquery-ui.min.js') }}" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="{{ asset('assets/css/jquery-ui.css') }}">
     <script src="{{ asset('assets/js/storeAgent.js') }}"></script>
@@ -129,7 +128,5 @@
     {{-- <script src="{{ asset('assets/libs/datatables/datatables.min.js') }}"></script>  --}}
     <script src="{{ asset('assets/js/jquery.tagsinput-revisited.js') }}"></script>
     <script src="{{ asset('telinput/js/intlTelInput.js') }}"></script>
-    <link rel="stylesheet" href="{{ asset('assets/css/jquery.tagsinput-revisited.css') }}" />>
-
-
+    <link rel="stylesheet" href="{{ asset('assets/css/jquery.tagsinput-revisited.css') }}" />
 @endsection

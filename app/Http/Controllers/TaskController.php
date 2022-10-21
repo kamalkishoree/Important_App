@@ -24,6 +24,7 @@ use App\Model\Geo;
 use App\Model\Order;
 use App\Model\Timezone;
 use App\Model\AgentLog;
+use App\Model\VehicleType;
 use App\Model\{BatchAllocation, BatchAllocationDetail, Team,TeamTag, SubscriptionInvoicesDriver};
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
@@ -1109,7 +1110,10 @@ class TaskController extends BaseController
         $warehouses = Warehouse::all();
 
         $task_proofs = TaskProof::all();
-        $returnHTML = view('modals/add-task-modal')->with(['teamTag' => $teamTag, 'preference'=>$preference, 'agentTag' => $agentTag, 'agents' => $agents, 'pricingRule' => $pricingRule, 'allcation' => $allcation ,'task_proofs' => $task_proofs, 'warehouses' => $warehouses ])->render();
+
+        $vehicle_type = VehicleType::all();
+        
+        $returnHTML = view('modals/add-task-modal')->with(['teamTag' => $teamTag, 'preference'=>$preference, 'agentTag' => $agentTag, 'agents' => $agents, 'pricingRule' => $pricingRule, 'allcation' => $allcation ,'task_proofs' => $task_proofs, 'warehouses' => $warehouses, 'vehicle_type' => $vehicle_type ])->render();
         return response()->json(array('success' => true, 'html' => $returnHTML));
     }
 
