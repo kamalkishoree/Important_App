@@ -10,7 +10,7 @@ $sms_crendential = json_decode($preference->sms_credentials);
 @endphp
 @section('content')
     <style>
-
+        .alMultiSelect .btn{border-radius: 7px;}
     </style>
     <!-- Start Content-->
     <div class="container-fluid">
@@ -613,6 +613,21 @@ $sms_crendential = json_decode($preference->sms_credentials);
                                 </div>
                             </div>
                         </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="d-flex align-items-center justify-content-between mt-3 mb-2">
+                                    <h5 class="font-weight-normal m-0">{{ __('Manage ') }}{{ Session::get('agent_name') ? Session::get('agent_name') : 'Agent' }} {{ __('Schedule') }} </h5>
+                                    <div class="custom-control custom-switch">
+                                        <input type="checkbox" class="custom-control-input"
+                                            id="editDriverSlotCustomSwitch_{{ $preference->is_driver_slot }}"
+                                            name="is_driver_slot"
+                                            {{ $preference->is_driver_slot == 1 ? 'checked' : '' }}>
+                                        <label class="custom-control-label"
+                                            for="editDriverSlotCustomSwitch_{{ $preference->is_driver_slot }}"></label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </form>
                 </div>
             </div>
@@ -814,7 +829,40 @@ $sms_crendential = json_decode($preference->sms_credentials);
                                         </div>
                                     </div>
                                 </div>
+                               
+                                @php 
+                                    $arr = [];
+                                    if(isset($customMode->show_vehicle_type_icon)){
+                                        $arr = explode(',',$customMode->show_vehicle_type_icon);
+                                    }
+                                @endphp
+                                <div class="form-group d-flex justify-content-between mb-3">
+                                    <label for="pharmacy_check" class="mr-2 mb-0">{{__("Hide Transportation Type Icons")}} <small class="d-block pr-5">Hide Transportation Type from Signup Form.</small></label>
+                                    <div class="col-md p-0 custom-control alMultiSelect">
+                                        <select class="selectpickera select2-multiple" data-toggle="select2" multiple="multiple"  data-placeholder="Choose ..."  name="custom_mode[show_vehicle_type_icon][]" multiple data-live-search="true" required>
+                                            
+                                            @foreach($vehicleType as $type)
+                                            <option value="{{$type->id}}" @if(isset($arr) && in_array($type->id,$arr)) {{'selected'}} @endif  >{{ucfirst($type->name)}}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                                
                             </div>
+
+                            <div class="col-md-12">
+                                <div class="form-group d-flex justify-content-between mb-3">
+                                <label for="pharmacy_check" class="mr-2 mb-0">{{__("Hide subscription module")}} <small class="d-block pr-5">It will hide  subscription module from panel.</small></label>
+                                <div class="d-flex align-items-center justify-content-between mt-1 mb-2">
+                                    <div class="custom-control custom-switch">
+                                            <input type="checkbox" class="custom-control-input" id="hide_subscription_module_{{ !empty($customMode->hide_subscription_module)? $customMode->hide_subscription_module : 0 }}" name="custom_mode[hide_subscription_module]" {{ (!empty($customMode->hide_subscription_module) && $customMode->hide_subscription_module == 1) ? 'checked' : '' }}>
+                                            <label class="custom-control-label" for="hide_subscription_module_{{ !empty($customMode->hide_subscription_module)? $customMode->hide_subscription_module : 0 }}"></label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
                         </div>
                     </div>
                 </form>
@@ -984,7 +1032,51 @@ $sms_crendential = json_decode($preference->sms_credentials);
         </div>
 
 
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <!-- Custom Mods start -->
+                <form method="POST" class="h-100" action="{{ route('preference', Auth::user()->code) }}">
+                    @csrf          
+                    <input type="hidden" name="toll_fee_enable" value="1">
+                    <div class="card-box h-100">
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                            <h4 class="header-title text-uppercase mb-0">{{__("Toll Fee")}}</h4>
+                            <button class="btn btn-outline-info d-block" type="submit"> Save </button>
+                        </div>
+                        <div class="row align-items-start">
+                            <div class="col-md-12"> 
+                                <div class="form-group d-flex justify-content-between mb-3">
+                                <label for="" class="mr-2 mb-0">{{__("Enable Toll Api Key")}} </label>
+                                <div class="d-flex align-items-center justify-content-between mb-2">
+                                    <div class="custom-control custom-switch">
+                                            <input type="checkbox" class="custom-control-input " id="toll_fee" name="toll_fee" {{ (!empty($preference->toll_fee) && $preference->toll_fee > 0) ? 'checked' :'' }}>
+                                            <label class="custom-control-label" for="toll_fee"></label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
+                        <div class="row align-items-start toll_fee" style="display:{{ (!empty($preference->toll_fee) && $preference->toll_fee > 0) ? '':'none'}}" >
+                            <div class="col-12">
+                                <div class="form-group mb-2">
+                                    <label for="sms_key">{{ __('API KEY') }}</label>
+                                    <input type="text" name="toll_key" id="toll_key" placeholder="" class="form-control"
+                                        value="{{ old('toll_key', $preference->toll_key ?? '') }}">
+                                    @if ($errors->has('toll_key'))
+                                        <span class="text-danger" role="alert">
+                                            <strong>{{ $errors->first('toll_key') }}</strong>
+                                        </span>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </form>
+                <!-- Custom Mods start -->
+            </div>
+        </div>
 
         <!-- end page title -->
         {{-- <div class="row">
@@ -1287,6 +1379,14 @@ $sms_crendential = json_decode($preference->sms_credentials);
                 $('.batch-allocation').show();
             }else{
                 $('.batch-allocation').hide();
+            }
+        });
+
+        $('#toll_fee').on('change',function(){
+            if ($(this).is(":checked")) {
+                $('.toll_fee').show();
+            }else{
+                $('.toll_fee').hide();
             }
         });
     </script>

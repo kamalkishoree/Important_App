@@ -41,11 +41,13 @@ use Excel;
 use GuzzleHttp\Client as Gclient;
 use App\Http\Controllers\Api\BaseController;
 use App\Traits\ApiResponser;
+use App\Traits\TollFee;
 use App\Imports\OrderImport;
 
 class TaskController extends BaseController
 {
     use ApiResponser;
+    use TollFee;
     /**
      * Display a listing of the resource.
      *
@@ -722,6 +724,11 @@ class TaskController extends BaseController
                     $percentage = $driver_subscription->driver_commission_fixed + (($total / 100) * $driver_subscription->driver_commission_percentage);
                 }
             }
+
+            $tollresponse = array();
+            if($auth->getPreference->toll_fee == 1){
+                $tollresponse = $this->toll_fee($latitude, $longitude);
+            }
             //update order with order cost details
             $updateorder = [
                 'actual_time'                     => $getdata['duration'],
@@ -738,7 +745,8 @@ class TaskController extends BaseController
                 'agent_commission_fixed'          => $agent_commission_fixed,
                 'freelancer_commission_percentage'=> $freelancer_commission_percentage,
                 'freelancer_commission_fixed'     => $freelancer_commission_fixed,
-                'order_cost'                      => $total,
+                'order_cost'                      => $total + (isset($tollresponse['toll_amount'])?$tollresponse['toll_amount']:0),
+                'toll_fee'                        => (isset($tollresponse['toll_amount'])?$tollresponse['toll_amount']:0),
                 'driver_cost'                     => $percentage,
                 'net_quantity'                    => $net_quantity
 
@@ -802,6 +810,8 @@ class TaskController extends BaseController
                     $schduledata['database']          = $auth;
                     scheduleNotification::dispatch($schduledata)->delay(now()->addMinutes($finaldelay));
                     DB::commit();
+                    $orderdata = Order::select('id', 'order_time', 'status', 'driver_id')->with('agent')->where('id', $orders->id)->first();
+                    //event(new \App\Events\loadDashboardData($orderdata));
                     return response()->json(['status' => "Success", 'message' => 'Route created Successfully']);
                 }
             }
@@ -828,6 +838,8 @@ class TaskController extends BaseController
                 }
             }
             DB::commit();
+            $orderdata = Order::select('id', 'order_time', 'status', 'driver_id')->with('agent')->where('id', $orders->id)->first();
+            //event(new \App\Events\loadDashboardData($orderdata));
             return response()->json(['status' => "Success", 'message' => 'Route created Successfully']);
 
         } catch (Exception $e) {
@@ -888,6 +900,8 @@ class TaskController extends BaseController
 
                         $task = Task::where('order_id', $order->id)->update(['task_status'=>1]);
 
+                        $orderdata = Order::select('id', 'order_time', 'status', 'driver_id')->with('agent')->where('id', $order->id)->first();
+                        //event(new \App\Events\loadDashboardData($orderdata));
                         $this->MassAndEditNotification($order->id, $agent_id);
                     }
                     Session::put('success', __(getAgentNomenclature().' assigned successfully'));
@@ -1274,6 +1288,10 @@ class TaskController extends BaseController
         }
 
         //accounting for task duration distanse
+        $tollresponse = array();
+        if($auth->getPreference->toll_fee == 1){
+            $tollresponse = $this->toll_fee($latitude, $longitude);
+        }
 
         $getdata = $this->GoogleDistanceMatrix($latitude, $longitude);
         $paid_duration = $getdata['duration'] - $pricingRule->base_duration;
@@ -1296,9 +1314,10 @@ class TaskController extends BaseController
         $updateorder = [
             'actual_time'        => $getdata['duration'],
             'actual_distance'    => $getdata['distance'],
-            'order_cost'         => $total,
+            //'order_cost'         => $total,
             'driver_cost'        => $percentage,
-
+            'order_cost'         => $total + (isset($tollresponse['toll_amount'])?$tollresponse['toll_amount']:0),
+            'toll_fee'           => (isset($tollresponse['toll_amount'])?$tollresponse['toll_amount']:0),
          ];
 
         Order::where('id', $orders->id)->update($updateorder);
@@ -2505,6 +2524,8 @@ class TaskController extends BaseController
                 }
 
             }
+            $orderdata = Order::select('id', 'order_time', 'status', 'driver_id')->with('agent')->where('id', $id)->first();
+            //event(new \App\Events\loadDashboardData($orderdata));
             DB::commit();
             return response()->json(['status' => "Success", 'message' => 'Task Updated successfully!']);
         } catch (Exception $e) {
@@ -2563,7 +2584,10 @@ class TaskController extends BaseController
      */
     public function destroy($domain = '', $id)
     {
+        $orderdata = Order::select('id', 'order_time', 'status', 'driver_id')->with('agent')->where('id', $id)->first();
         Order::where('id', $id)->delete();
+        $orderdata->status = "Deleted";
+        //event(new \App\Events\loadDashboardData($orderdata));
         return redirect()->back()->with('success', 'Task deleted successfully!');
     }
 

@@ -21,7 +21,7 @@ use App\Model\SubClient;
 use App\Model\TaskProof;
 use App\Model\TaskType;
 use App\Model\DriverRegistrationDocument;
-use App\Model\{SmtpDetail, SmsProvider};
+use App\Model\{SmtpDetail, SmsProvider, VehicleType};
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Redis;
 use Session;
@@ -69,6 +69,7 @@ class ClientController extends Controller
      */
     public function storePreference(Request $request, $domain = '', $id)
     {
+        //pr($request->all());
         $customerDistenceNotification = '';
         if(!empty($request->customer_notification)){
             $data = ['customer_notification_per_distance'=>json_encode($request->customer_notification)];
@@ -79,14 +80,33 @@ class ClientController extends Controller
 
         if($request->has('custom_mode')){
             $customMode['is_hide_customer_notification'] = (!empty($request->custom_mode['is_hide_customer_notification']) && $request->custom_mode['is_hide_customer_notification'] == 'on')? 1 : 0;
+
+            $customMode['hide_subscription_module'] = (!empty($request->custom_mode['hide_subscription_module']) && $request->custom_mode['hide_subscription_module'] == 'on')? 1 : 0;
+
             $data = ['custom_mode'=>json_encode($customMode)];
             ClientPreference::where('client_id', $id)->update($data);
+        
+            $customMode['show_vehicle_type_icon'] = implode(',',$request->custom_mode['show_vehicle_type_icon']);
+            $data = ['custom_mode'=>json_encode($customMode)];
+            ClientPreference::where('client_id', $id)->update($data);
+            
+
             return redirect()->back()->with('success', 'Preference updated successfully!');
         }
 
         if(!empty($request->fcm_server_key)){
             $data = ['fcm_server_key'=>$request->fcm_server_key];
             ClientPreference::where('client_id', $id)->update($data);
+
+            return redirect()->back()->with('success', 'Preference updated successfully!');
+        }
+        if($request->has('toll_fee_enable')){
+            $toll_fell_enable = $request->toll_fee == 'on' ? 1 : 0;
+            $data = ['toll_key'=>$request->toll_key,'toll_fee'=>$toll_fell_enable];
+            ClientPreference::where('client_id', $id)->update($data);
+        }
+        if(!empty($request->toll_key)){
+           
 
             return redirect()->back()->with('success', 'Preference updated successfully!');
         }
@@ -273,6 +293,7 @@ class ClientController extends Controller
             $request->request->add(['verify_phone_for_driver_registration' => ($request->has('verify_phone_for_driver_registration') && $request->verify_phone_for_driver_registration == 'on') ? 1 : 0]);
             $request->request->add(['is_edit_order_driver' => ($request->has('is_edit_order_driver') && $request->is_edit_order_driver == 'on') ? 1 : 0]);
             $request->request->add(['is_cancel_order_driver' => ($request->has('is_cancel_order_driver') && $request->is_cancel_order_driver == 'on') ? 1 : 0]);
+            $request->request->add(['is_driver_slot' => ($request->has('is_driver_slot') && $request->is_driver_slot == 'on') ? 1 : 0]);
         }
 
         if($request->has('refer_and_earn')){
@@ -282,6 +303,7 @@ class ClientController extends Controller
         if($request->has('address_limit_order_config')){
             $request->request->add(['show_limited_address' => ($request->has('show_limited_address') && $request->show_limited_address == 'on') ? 1 : 0]);
         }
+        
         
         
         //pr($request->all());
@@ -413,9 +435,10 @@ class ClientController extends Controller
         $client      = Auth::user();
         $subClients  = SubClient::all();
         $smtp        = SmtpDetail::where('id', 1)->first();
+        $vehicleType = VehicleType::latest()->get();
         $agent_docs=DriverRegistrationDocument::get();
         $smsTypes = SmsProvider::where('status', '1')->get();
-        return view('configure')->with(['preference' => $preference, 'customMode' => $customMode, 'client' => $client,'subClients'=> $subClients,'smtp_details'=>$smtp, 'agent_docs' => $agent_docs,'smsTypes'=>$smsTypes]);
+        return view('configure')->with(['preference' => $preference, 'customMode' => $customMode, 'client' => $client,'subClients'=> $subClients,'smtp_details'=>$smtp, 'agent_docs' => $agent_docs,'smsTypes'=>$smsTypes,'vehicleType'=>$vehicleType]);
     }
 
 

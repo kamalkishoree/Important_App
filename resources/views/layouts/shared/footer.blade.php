@@ -2,6 +2,12 @@
     $image = App\Model\Client::first();
    // $image->name = 'Royo';
 @endphp
+
+<!-- spinner Start --> 
+{{-- <div class="nb-spinner-main">
+    <div class="nb-spinner"></div>
+</div> --}}
+<!-- spinner Start --> 
 <!-- Footer Start --> 
 <footer class="footer">
     <div class="container-fluid">

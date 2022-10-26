@@ -136,7 +136,8 @@
 <link href="{{ asset('assets/libs/dropify/dropify.min.css') }}" rel="stylesheet" type="text/css" />
 <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
 <link rel="stylesheet" href="{{ asset('assets/libs/jquery-toast-plugin/jquery-toast-plugin.min.css')}}">
-
+<link href="{{ asset('assets/libs/spinner/spinner.css') }}" rel="stylesheet" type="text/css" />
+@yield('customcss')
 @if(session()->has('applocale'))
     @if(session()->get('applocale') == "ar")
         <link href="{{ asset('ar.css') }}" rel="stylesheet">

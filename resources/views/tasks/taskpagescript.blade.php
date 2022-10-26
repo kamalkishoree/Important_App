@@ -27,7 +27,11 @@
                             paginate: { previous: "<i class='mdi mdi-chevron-left'>", next: "<i class='mdi mdi-chevron-right'>" },
                             searchPlaceholder: "{{__('Search Routes')}}",
                             'loadingRecords': '&nbsp;',
-                            'sProcessing': '<div class="spinner" style="top: 90% !important;"></div>'
+                            //'sProcessing': '<div class="spinner" style="top: 90% !important;"></div>'
+                            'sProcessing':function(){
+                                spinnerJS.showSpinner();
+                                spinnerJS.hideSpinner();
+                            }
                 },
                 drawCallback: function () {
                     $(".dataTables_paginate > .pagination").addClass("pagination-rounded");
@@ -280,6 +284,7 @@
                 $("#distance_fee").text(data.distance_fee + ' (' + data.distance_type + ')');
                 $("#driver_type").text(data.driver_type);
 
+                $("#toll_fee").text(data.toll_fee);
                 $("#order_cost").text(data.order_cost);
                 $("#driver_cost").text(data.driver_cost ? data.driver_cost : 0.00 );
 
