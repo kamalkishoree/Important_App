@@ -13,11 +13,11 @@
     <div class="row">
         <div class="col-11">
             <div class="text-sm-left">
-                
+
                 <div class="alert alert-success">
                     <span>{!! \Session::get('success') !!}</span>
                 </div>
-                
+
             </div>
         </div>
     </div>
@@ -32,7 +32,7 @@
     </div>
     <!-- end Section title -->
     <div class="row mb-3">
-        <div class="col-md-4">
+        <div class="col-xl-3 col-md-4">
             <div class="card-box h-100">
                 <div class="row">
                     <div class="col-md-12">
@@ -40,7 +40,7 @@
                             @csrf
                             <div class="d-flex align-items-center justify-content-between mb-2">
                                 <h4 class="header-title mb-0">{{__("Nomenclature")}}</h4>
-                                <button class="btn btn-outline-info d-block" type="submit"> Save </button>
+                                <button class="btn btn-outline-info d-block" type="submit"> {{__('Save')}} </button>
                             </div>
                             <p class="sub-header">{{__("View and update the naming, currency and distance units.")}}</p>
                             <div class="row mb-2">
@@ -74,7 +74,7 @@
                             </div>
                             <div class="row mb-2">
                                 <div class="col-md-12">
-                                    <label>Unit</label>
+                                    <label>{{__('Unit')}}</label>
                                     <div class="col-sm-12">
                                         <div class="radio radio-info form-check-inline">
                                             <input type="radio" id="metric" value="metric" name="distance_unit" {{ ($preference && $preference->distance_unit =="metric")? "checked" : "" }}>
@@ -101,7 +101,7 @@
                         @csrf
                             <div class="d-flex align-items-center justify-content-between mb-2">
                                 <h4 class="header-title mb-0">{{__("Date & Time")}}</h4>
-                                <button class="btn btn-outline-info d-block" type="submit"> Save </button>
+                                <button class="btn btn-outline-info d-block" type="submit"> {{__('Save')}} </button>
                             </div>
                             <p class="sub-header">
                                 {{__("View and update the date & time format.")}}
@@ -149,15 +149,15 @@
                 </div>
             </div>
         </div>
-        
-        <div class="col-md-4">
+
+        <div class="col-xl-3 col-md-4">
             <div class="card-box h-100">
                 <form method="POST" class="h-100" action="{{route('preference', Auth::user()->code)}}">
                     @csrf
                     <input type="hidden" name="address_limit_order_config" value="1">
                     <div class="d-flex align-items-center justify-content-between mb-2">
                         <h4 class="header-title mb-0">{{__("Saved Address selection")}}</h4>
-                        <button class="btn btn-outline-info d-block" type="submit"> Save </button>
+                        <button class="btn btn-outline-info d-block" type="submit"> {{__('Save')}} </button>
                     </div>
                     <p class="sub-header">{{__("Manage how you want to show saved addresses while creating routes.")}}</p>
                     <div class="row mb-2">
@@ -177,29 +177,29 @@
                             @endif
                             <hr>
                             <h4 class="header-title">{{__("Show Limited Address")}}</h4>
-                        
+
                             <div class="custom-control custom-switch">
                                 <input type="checkbox" class="custom-control-input event_type" id="show_limited_address" name="show_limited_address" {{isset($preference) && $preference->show_limited_address == 1 ? 'checked':''}}>
                                 <label class="custom-control-label" for="show_limited_address">{{__("Show only first 5 address")}}</label>
                             </div>
                         </div>
-                    </div>      
+                    </div>
                 </form>
             </div>
         </div>
-        <div class="col-md-4">
+        <div class="col-xl-3 col-md-4">
             <div class="card-box h-100">
                 <form method="POST" class="h-100" action="{{route('update.contact.us', Auth::user()->code)}}">
                     <div class="d-flex align-items-center justify-content-between mb-2">
                         <h4 class="header-title mb-0">{{__('Contact Us')}}</h4>
-                        <button class="btn btn-outline-info d-block" type="submit"> Save </button>
+                        <button class="btn btn-outline-info d-block" type="submit"> {{__('Save')}} </button>
                     </div>
-                
+
                     @csrf
                     <div class="row">
                         <div class="col-md-12">
                             <div class="form-group mb-0">
-                                <label for="contact_address">Address</label>
+                                <label for="contact_address">{{__('Address')}}</label>
                                 <div class="input-group">
                                     <input type="text" name="contact_address" id="contact_address"  class="form-control" value="{{ old('contact_address', $clientContact->contact_address ?? '')}}">
                                 </div>
@@ -210,7 +210,7 @@
                                 @endif
                             </div>
                             <div class="form-group mt-2 mb-0">
-                                <label for="contact_phone_number">Number</label>
+                                <label for="contact_phone_number">{{__('Number')}}</label>
                                 <input type="text" name="contact_phone_number" id="contact_phone_number" placeholder="" class="form-control" value="{{ old('contact_phone_number', $clientContact->contact_phone_number ?? '')}}">
                                 @if($errors->has('contact_phone_number'))
                                 <span class="text-danger" role="alert">
@@ -219,7 +219,7 @@
                                 @endif
                             </div>
                             <div class="form-group mt-2 mb-0">
-                                <label for="contact_email">Email</label>
+                                <label for="contact_email">{{__('Email')}}</label>
                                 <input type="text" name="contact_email" id="contact_email" placeholder="" class="form-control" value="{{ old('contact_email', $clientContact->contact_email ?? '')}}">
                                 @if($errors->has('contact_email'))
                                 <span class="text-danger" role="alert">
@@ -233,15 +233,15 @@
             </div>
         </div>
     </div>
-    
+
         <form method="POST" action="{{route('task.proof')}}">
         @csrf
         <div class="row">
-            <div class="col-xl-12">
+            <div class="col-xl-9 col-md-12">
                 <div class="card-box">
                     <div class="d-flex align-items-center justify-content-between mb-2">
                         <h4 class="header-title mb-0">{{__('Task Completion Proofs')}}</h4>
-                        <button class="btn btn-outline-info d-block" type="submit"> Save </button>
+                        <button class="btn btn-outline-info d-block" type="submit"> {{__('Save')}} </button>
                     </div>
                     <div>
                         {{-- @php

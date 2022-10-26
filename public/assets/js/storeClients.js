@@ -5,7 +5,8 @@
 $("#submitForm").submit(function(e) {
     e.preventDefault();
     let formData = $(this).serializeArray();
-    startLoader('body');
+    //startLoader('body');
+    spinnerJS.showSpinner();
     $.ajax({
         method: "POST",
         headers: {
@@ -14,6 +15,7 @@ $("#submitForm").submit(function(e) {
         url: "/submit_client",
         data: formData,
         success: function(response) {
+            spinnerJS.hideSpinner();
             if (response.status == 'success') {
 
             } else {
@@ -22,6 +24,7 @@ $("#submitForm").submit(function(e) {
             }
         },
         error: function(response) {
+            spinnerJS.hideSpinner();
             if (response.status === 422) {
                 let errors = response.responseJSON.errors;
                 Object.keys(errors).forEach(function(key) {

@@ -208,7 +208,6 @@ class ActivityController extends BaseController
         $utc_end   = Carbon::parse($end . $client_code->timezone ?? 'UTC')->tz('UTC');
 
         $tasks   = [];
-        $agent = AgentLog::where('agent_id', Auth::user()->id)->first();
 
         $data =  [
             'agent_id'          => Auth::user()->id,
@@ -219,7 +218,7 @@ class ActivityController extends BaseController
             'app_version'       => $request->app_version,
             'current_speed'     => $request->current_speed,
             'on_route'          => $request->on_route,
-            'device_type'       => $request->device_type,
+            'device_type'       => ucwords($request->device_type),
             'heading_angle'     => $request->heading_angle ?? 0,
         ];
 
@@ -295,6 +294,7 @@ class ActivityController extends BaseController
                 }
             }else{
                 AgentLog::create($data);
+                //event(new \App\Events\agentLogFetch());
             }
         }
 
@@ -408,10 +408,12 @@ class ActivityController extends BaseController
             ->orderBy('order_id', 'DESC')
             ->get(['id','order_id','dependent_task_id','task_type_id','location_id','appointment_duration','task_status','allocation_type','created_at','barcode']);
 
-            $totalCashCollected = 0;
+            $driverearning = 0;
+            $previousorder = 0;
             foreach($tasks as $task){
-                if(!empty($task->order->cash_to_be_collected) && ($task->task_type_id == 2)){
-                    $totalCashCollected += $task->order->cash_to_be_collected;
+                if(!empty($task->order->driver_cost) && ($previousorder != $task->order_id) && $task->order->status !='cancelled'){
+                    $driverearning += $task->order->driver_cost;
+                    $previousorder = $task->order_id;
                 }
             }
         } else {
@@ -419,7 +421,7 @@ class ActivityController extends BaseController
         }
 
         return response()->json([
-            'data' => array('tasks' =>$tasks, 'totalCashCollected'=>$totalCashCollected),
+            'data' => array('tasks' =>$tasks, 'totalCashCollected'=>$driverearning),
             'status' => 200,
             'message' => __('success')
         ], 200);

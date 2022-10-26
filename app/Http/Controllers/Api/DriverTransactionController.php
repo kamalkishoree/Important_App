@@ -40,7 +40,8 @@ class DriverTransactionController extends BaseController
             $limit = $request->has('limit') ? $request->limit : 30;
             $cash  = $agent->order->where('status', 'completed')->sum('cash_to_be_collected');
             $driver_cost  = $agent->order->where('status', 'completed')->sum('driver_cost');
-            $order_cost = $agent->order->where('status', 'completed')->sum('order_cost');
+            //$order_cost = $agent->order->where('status', 'completed')->sum('order_cost');
+            $order_cost = $driver_cost;
             
             $payout = AgentPayout::where(['agent_id'=>$agent->id, 'status'=> 1])->sum('amount');
             $pendingpayout = AgentPayout::where(['agent_id'=>$agent->id, 'status'=> 0])->sum('amount');
@@ -70,6 +71,7 @@ class DriverTransactionController extends BaseController
                 ->union($wallet_transactions)
                 ->union($agent_payouts)
                 ->orderBy('created_at', 'DESC')
+                ->orderBy('order_id', 'DESC')
                 ->paginate($limit, $page);
     
                 $totalCashCollected = 0;
