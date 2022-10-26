@@ -52,7 +52,7 @@
 @section('content')
     <!-- Start Content-->
     <div class="container-fluid">
-    
+
             <div class="row">
                 <div class="col-12">
                     <div class="page-title-box">
@@ -79,15 +79,15 @@
                         {{-- <h4 class="page-title">Tasks</h4> --}}
                     </div>
                 </div>
-            </div>    
-       
+            </div>
+
 
         <div class="row">
-            
+
             <div class="col-md-12">
                 <h3 class="page-title">{{__("Analytics")}}</h3>
             </div>
-            
+
             <div class="col-md-6 col-xl-3">
                 <div class="widget-rounded-circle card-box">
                     <div class="row">
@@ -102,7 +102,7 @@
                                 <p class="text-muted mb-1 text-truncate">{{__("Platform Earning")}}</p>
                             </div>
                         </div>
-                    </div> 
+                    </div>
                 </div>
             </div>
             <div class="col-md-6 col-xl-3">
@@ -119,14 +119,14 @@
                                 <p class="text-muted mb-1 text-truncate">{{__(getAgentNomenclature()."s's Earning")}}</p>
                             </div>
                         </div>
-                    </div> 
+                    </div>
                 </div>
             </div>
             <div class="col-md-6 col-xl-3">
                 <div class="widget-rounded-circle card-box">
                     <div class="row">
                         <div class="col-6">
-                            
+
                             <div class="avatar-lg rounded-circle bg-soft-info border-info border">
                                 <i class="fe-bar-chart-line- font-22 avatar-title text-info"></i>
                             </div>
@@ -137,7 +137,7 @@
                                 <p class="text-muted mb-1 text-truncate">{{__("Orders")}}</p>
                             </div>
                         </div>
-                    </div> 
+                    </div>
                 </div>
             </div>
 
@@ -145,7 +145,7 @@
                 <div class="widget-rounded-circle card-box">
                     <div class="row">
                         <div class="col-6">
-                            
+
                             <div class="avatar-lg rounded-circle bg-soft-warning border-warning border">
                                 <i class="fe-eye font-22 avatar-title text-warning"></i>
                             </div>
@@ -156,22 +156,22 @@
                                 <p class="text-muted mb-1 text-truncate">{{__(getAgentNomenclature()."s")}}</p>
                             </div>
                         </div>
-                    </div> 
+                    </div>
                 </div>
             </div>
 
-            
+
         </div>
-        
+
 
         <div class="row">
             <div class="col-lg-4">
                 <div class="card-box pb-0 h-100">
                     <div >
                         <div id="map"></div>
-                    </div> 
+                    </div>
                 </div>
-            </div> 
+            </div>
 
             <div class="col-lg-8">
                 <div class="card-box pb-2 h-100">
@@ -194,17 +194,17 @@
                             </form>
                         </div>
                     </div>
-                   
-                   
+
+
 
                     <div dir="ltr">
                         <div id="sales-analytics" class="mt-4" data-colors="#1abc9c,#4a81d4"></div>
                     </div>
-                </div> 
-            </div> 
+                </div>
+            </div>
         </div>
 
-        
+
 
         <br>
 
@@ -216,11 +216,11 @@
                             <i class="mdi mdi-dots-vertical"></i>
                         </a>
                         <div class="dropdown-menu dropdown-menu-right">
-                            
+
                             <a href="javascript:void(0);" class="dropdown-item">Edit Report</a>
-                            
+
                             <a href="javascript:void(0);" class="dropdown-item">Export Report</a>
-                            
+
                             <a href="javascript:void(0);" class="dropdown-item">Action</a>
                         </div>
                     </div> --}}
@@ -233,7 +233,7 @@
                             <thead class="thead-light">
                                 <tr>
                                     <th colspan="2">{{__("Profile")}}</th>
-                                    
+
                                     <th>{{__("Cash at hand")}}</th>
                                     <th>{{__("Phone Number")}}</th>
                                     <th>{{__("Type")}}</th>
@@ -251,7 +251,7 @@
                                         <p class="mb-0 text-muted"><small>{{__("Member Since")}} {{ \Carbon\Carbon::parse($agent->created_at)->format('Y')}}</small></p>
                                     </td>
 
-                                    
+
                                     <td>
                                         {{round($agent->cash_at_hand)}}
                                     </td>
@@ -259,14 +259,14 @@
                                     <td>
                                         {{$agent->phone_number}}
                                     </td>
-                                    
+
                                     <td>
                                         @if ($agent->type == 'Employee')
                                         <span class="badge bg-soft-success text-success">{{__($agent->type)}}</span>
                                         @else
                                         <span class="badge bg-soft-danger text-danger">{{__($agent->type)}}</span>
-                                        @endif                                          
-                                       
+                                        @endif
+
                                     </td>
 
                                 </tr>
@@ -276,11 +276,11 @@
                         </table>
                     </div>
                 </div>
-            </div> 
+            </div>
 
             <div class="col-xl-6">
                 <div class="card-box">
-                    
+
 
                     <h4 class="header-title mb-3">{{__("Customers")}}</h4>
 
@@ -293,7 +293,7 @@
                                     <th>{{__("Total Spent")}}</th>
                                     <th>{{__("Phone Number")}}</th>
                                     <th>{{__("Total Orders")}}</th>
-                                    
+
                                 </tr>
                             </thead>
                             <tbody>
@@ -315,8 +315,8 @@
                                     <td>
                                         {{$customer->orders_count}}
                                     </td>
-                                   
-                                    
+
+
                                   </tr>
                                 @endforeach
 
@@ -327,22 +327,22 @@
             </div>
         </div>
 
-        
-    
+
+
 
     </div> <!-- container -->
-    
+
 @endsection
 
 @section('script')
     <!-- Plugins js-->
-    
+
 
     {{-- <script
       src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB85kLYYOmuAhBUPd7odVmL6gnQsSGWU-4&callback=initMap&libraries=visualization&v=weekly"
       defer
     ></script> --}}
-   
+
     <script src="{{asset('assets/libs/flatpickr/flatpickr.min.js')}}"></script>
     <script src="{{asset('assets/libs/apexcharts/apexcharts.min.js')}}"></script>
     <script src="{{asset('assets/libs/selectize/selectize.min.js')}}"></script>
@@ -352,7 +352,7 @@
     <script>
         $(document).ready(function() {
             initMap();
-        
+
         });
         let map, heatmap;
         var heatLatLog  = {!!json_encode($heatLatLog)!!};
@@ -416,9 +416,9 @@
             var data = [];
             for (let i = 0; i < heatLatLog.length; i++) {
                 checkdata = heatLatLog[i];
-                
-                data.push(new google.maps.LatLng(checkdata['latitude'],checkdata['longitude']));          
-                
+
+                data.push(new google.maps.LatLng(checkdata['latitude'],checkdata['longitude']));
+
             }
             return data;
         }
@@ -548,5 +548,5 @@
     }
 
     </script>
-    
+
 @endsection

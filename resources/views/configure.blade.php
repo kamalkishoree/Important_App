@@ -36,10 +36,10 @@ $sms_crendential = json_decode($preference->sms_credentials);
                     <div class="card-box h-100">
                         <div class="d-flex align-items-center justify-content-between mb-2">
                             <h4 class="header-title mb-0">{{__("Map Configuration")}}</h4>
-                            <button class="btn btn-outline-info d-block" type="submit"> Save </button>
+                            <button class="btn btn-outline-info d-block" type="submit"> {{__('Save')}} </button>
                         </div>
                         <p class="sub-header">{{ __("View and update your Map type and it's API key.") }}</p>
-                        
+
                         <div class="row mb-2">
                             <div class="col-md-12">
                                 <div class="form-group mb-3">
@@ -79,7 +79,7 @@ $sms_crendential = json_decode($preference->sms_credentials);
                     <div class="card-box h-100">
                         <div class="d-flex align-items-center justify-content-between mb-2">
                             <h4 class="header-title mb-0">{{__("SMS")}}</h4>
-                            <button class="btn btn-outline-info d-block" type="submit"> Save </button>
+                            <button class="btn btn-outline-info d-block" type="submit"> {{__('Save')}} </button>
                         </div>
                         <p class="sub-header">{{ __("View and update your SMS Gateway and it's API keys.") }}</p>
                         <div class="row mb-2">
@@ -334,7 +334,7 @@ $sms_crendential = json_decode($preference->sms_credentials);
                     <div class="card-box h-100">
                         <div class="d-flex align-items-center justify-content-between mb-2">
                             <h4 class="header-title mb-0">{{__("Email")}} (SMTP)</h4>
-                            <button class="btn btn-outline-info d-block" type="submit"> Save </button>
+                            <button class="btn btn-outline-info d-block" type="submit"> {{__('Save')}} </button>
                         </div>
                         <p class="sub-header">{{ __('View and update your SMTP credentials.') }}</p>
                         <div class="row mb-2">
@@ -454,7 +454,7 @@ $sms_crendential = json_decode($preference->sms_credentials);
                     <div class="card-box h-100">
                         <div class="d-flex align-items-center justify-content-between mb-2">
                             <h4 class="header-title mb-0">{{__("Personal Access Token")}}</h4>
-                            <button class="btn btn-outline-info d-block" type="submit"> Save </button>
+                            <button class="btn btn-outline-info d-block" type="submit"> {{__('Save')}} </button>
                         </div>
                         <p class="sub-header">
                             {{ __('View and Generate API keys.') }}
@@ -489,7 +489,7 @@ $sms_crendential = json_decode($preference->sms_credentials);
                     <div class="card-box h-100">
                         <div class="d-flex align-items-center justify-content-between mb-2">
                             <h4 class="header-title mb-0">{{__("Custom Domain")}}</h4>
-                            <button class="btn btn-outline-info d-block" type="submit"> Save </button>
+                            <button class="btn btn-outline-info d-block" type="submit"> {{__('Save')}} </button>
                         </div>
                         <p class="sub-header">
                             {{ __('View and update your Domain.') }}
@@ -522,7 +522,7 @@ $sms_crendential = json_decode($preference->sms_credentials);
                     <div class="card-box h-100">
                         <div class="d-flex align-items-center justify-content-between mb-2">
                             <h4 class="header-title mb-0">{{__("FCM Server Key")}}</h4>
-                            <button class="btn btn-outline-info d-block" type="submit"> Save </button>
+                            <button class="btn btn-outline-info d-block" type="submit"> {{__('Save')}} </button>
                         </div>
                         <p class="sub-header">
                             {{ __('View and Update FCM key.') }}
@@ -553,7 +553,7 @@ $sms_crendential = json_decode($preference->sms_credentials);
         <div class="row">
             <div class="col-12">
                 <div class="page-title-box">
-                    <h4 class="page-title">{{ getAgentNomenclature() }}</h4>
+                    <h4 class="page-title">{{ __(getAgentNomenclature()) }}</h4>
                 </div>
             </div>
         </div>
@@ -568,10 +568,10 @@ $sms_crendential = json_decode($preference->sms_credentials);
                             <div class="col-12">
                                 <div class="d-flex align-items-center justify-content-between mb-2">
                                     <h4 class="header-title mb-0"></h4>
-                                    <button class="btn btn-outline-info d-block" type="submit"> Save </button>
+                                    <button class="btn btn-outline-info d-block" type="submit"> {{__('Save')}} </button>
                                 </div>
                                 <div class="d-flex align-items-center justify-content-between mt-3 mb-2">
-                                    <h5 class="font-weight-normal m-0">{{ __('Cancel Order By') }} {{ getAgentNomenclature() }}</h5>
+                                    <h5 class="font-weight-normal m-0">{{ __('Cancel Order By') }} {{ __(getAgentNomenclature()) }}</h5>
                                     <div class="custom-control custom-switch">
                                         <input type="checkbox" class="custom-control-input"
                                             id="cancelOrderCustomSwitch_{{ $preference->is_cancel_order_driver }}"
@@ -586,7 +586,7 @@ $sms_crendential = json_decode($preference->sms_credentials);
                         <div class="row">
                             <div class="col-12">
                                 <div class="d-flex align-items-center justify-content-between mt-3 mb-2">
-                                    <h5 class="font-weight-normal m-0">{{ getAgentNomenclature() }} {{ __('Registration Phone Verification') }}</h5>
+                                    <h5 class="font-weight-normal m-0">{{ __(getAgentNomenclature()) }} {{ __('Registration Phone Verification') }}</h5>
                                     <div class="custom-control custom-switch">
                                         <input type="checkbox" class="custom-control-input event_type"
                                             id="customSwitch_{{ $preference->verify_phone_for_driver_registration }}"
@@ -601,7 +601,7 @@ $sms_crendential = json_decode($preference->sms_credentials);
                         <div class="row">
                             <div class="col-12">
                                 <div class="d-flex align-items-center justify-content-between mt-3 mb-2">
-                                    <h5 class="font-weight-normal m-0">{{ __('Edit Order By') }} {{ getAgentNomenclature() }}</h5>
+                                    <h5 class="font-weight-normal m-0">{{ __('Edit Order By') }} {{ __(getAgentNomenclature()) }}</h5>
                                     <div class="custom-control custom-switch">
                                         <input type="checkbox" class="custom-control-input"
                                             id="editOrderCustomSwitch_{{ $preference->is_edit_order_driver }}"
@@ -631,7 +631,7 @@ $sms_crendential = json_decode($preference->sms_credentials);
                     </form>
                 </div>
             </div>
-            
+
             <div class="col-md-4 mb-3">
                 <div class="card-box h-100">
                     <form method="POST" class="h-100" action="{{ route('preference', Auth::user()->code) }}">
@@ -640,7 +640,7 @@ $sms_crendential = json_decode($preference->sms_credentials);
                         <div class="row">
                             <div class="col-12">
                                 <div class="d-flex align-items-center justify-content-between mb-2">
-                                    <h4 class="header-title text-uppercase mb-0">{{ getAgentNomenclature() }} {{__('Registration Documents')}}</h4>
+                                    <h4 class="header-title text-uppercase mb-0">{{ __(getAgentNomenclature()) }} {{__('Registration Documents')}}</h4>
                                     <button class="btn btn-outline-info d-block" id="add_driver_registration_document_modal_btn" type="button"> {{__('Add')}} </button>
                                 </div>
                                 <div class="table-responsive mt-3 mb-1">
@@ -706,7 +706,7 @@ $sms_crendential = json_decode($preference->sms_credentials);
                             <div class="col-12">
                                 <div class="d-flex align-items-center justify-content-between mb-2">
                                 <h4 class="header-title mb-0">{{ __('Refer And Earn') }}</h4>
-                                    <button class="btn btn-outline-info d-block" type="submit"> Save </button>
+                                    <button class="btn btn-outline-info d-block" type="submit"> {{__('Save')}} </button>
                                 </div>
                                 <div class="row">
                                     <div class="col-xl-12 my-2" id="addCur-160">
@@ -734,7 +734,7 @@ $sms_crendential = json_decode($preference->sms_credentials);
         <div class="row">
             <div class="col-12">
                 <div class="page-title-box">
-                    <h4 class="page-title">Miscellaneous</h4>
+                    <h4 class="page-title">{{__('Miscellaneous')}}</h4>
                 </div>
             </div>
         </div>
@@ -746,7 +746,7 @@ $sms_crendential = json_decode($preference->sms_credentials);
                         @csrf
                         <div class="d-flex align-items-center justify-content-between mb-2">
                             <h4 class="header-title mb-0">{{ __('Customer Support') }}</h4>
-                            <button class="btn btn-outline-info d-block" type="submit"> Save </button>
+                            <button class="btn btn-outline-info d-block" type="submit"> {{__('Save')}} </button>
                         </div>
                         <p class="sub-header">
                             {{ __("View and update your Customer Support, it's API key and Application ID") }}
@@ -806,22 +806,22 @@ $sms_crendential = json_decode($preference->sms_credentials);
                     </form>
                 </div>
             </div>
-            
+
             <div class="col-md-4 mb-3">
                 <!-- Custom Mods start -->
                 <form method="POST" class="h-100" action="{{ route('preference', Auth::user()->code) }}">
-                    @csrf          
+                    @csrf
                     <input type="hidden" name="custom_mode" value="1">
                     <div class="card-box h-100">
                         <div class="d-flex align-items-center justify-content-between mb-3">
                             <h4 class="header-title text-uppercase mb-0">{{__("Custom Mods")}}</h4>
-                            <button class="btn btn-outline-info d-block" type="submit"> Save </button>
+                            <button class="btn btn-outline-info d-block" type="submit"> {{__('Save')}} </button>
                         </div>
 
                         <div class="row align-items-start">
                             <div class="col-md-12">
                                 <div class="form-group d-flex justify-content-between mb-3">
-                                <label for="pharmacy_check" class="mr-2 mb-0">{{__("Customer Notification Per Distance")}} <small class="d-block pr-5">Enable to show customer notification per distance from notifications.</small></label>
+                                <label for="pharmacy_check" class="mr-2 mb-0">{{__("Customer Notification Per Distance")}} <small class="d-block pr-5">{{__('Enable to show customer notification per distance from notifications.')}}</small></label>
                                 <div class="d-flex align-items-center justify-content-between mt-3 mb-2">
                                     <div class="custom-control custom-switch">
                                             <input type="checkbox" class="custom-control-input" id="hide_customer_notification_{{ !empty($customMode->is_hide_customer_notification)? $customMode->is_hide_customer_notification : 0 }}" name="custom_mode[is_hide_customer_notification]" {{ (!empty($customMode->is_hide_customer_notification) && $customMode->is_hide_customer_notification == 1) ? 'checked' : '' }}>
@@ -829,30 +829,30 @@ $sms_crendential = json_decode($preference->sms_credentials);
                                         </div>
                                     </div>
                                 </div>
-                               
-                                @php 
+
+                                @php
                                     $arr = [];
                                     if(isset($customMode->show_vehicle_type_icon)){
                                         $arr = explode(',',$customMode->show_vehicle_type_icon);
                                     }
                                 @endphp
                                 <div class="form-group d-flex justify-content-between mb-3">
-                                    <label for="pharmacy_check" class="mr-2 w-50 mb-0">{{__("Hide Transportation Type Icons")}} <small class="d-block pr-5">Hide Transportation Type from Signup Form.</small></label>
+                                    <label for="pharmacy_check" class="mr-2 w-50 mb-0">{{__("Hide Transportation Type Icons")}} <small class="d-block pr-5">{{__('Hide Transportation Type from Signup Form.')}}</small></label>
                                     <div class="col-md p-0 custom-control alMultiSelect">
                                         <select class="selectpickera select2-multiple" data-toggle="select2" multiple="multiple"  data-placeholder="Choose ..."  name="custom_mode[show_vehicle_type_icon][]" multiple data-live-search="true" required>
-                                            
+
                                             @foreach($vehicleType as $type)
                                             <option value="{{$type->id}}" @if(isset($arr) && in_array($type->id,$arr)) {{'selected'}} @endif  >{{ucfirst($type->name)}}</option>
                                             @endforeach
                                         </select>
                                     </div>
                                 </div>
-                                
+
                             </div>
 
                             <div class="col-md-12">
                                 <div class="form-group d-flex justify-content-between mb-3">
-                                <label for="pharmacy_check" class="mr-2 mb-0">{{__("Hide subscription module")}} <small class="d-block pr-5">It will hide  subscription module from panel.</small></label>
+                                <label for="pharmacy_check" class="mr-2 mb-0">{{__("Hide subscription module")}} <small class="d-block pr-5">{{__('It will hide  subscription module from panel.')}}</small></label>
                                 <div class="d-flex align-items-center justify-content-between mt-1 mb-2">
                                     <div class="custom-control custom-switch">
                                             <input type="checkbox" class="custom-control-input" id="hide_subscription_module_{{ !empty($customMode->hide_subscription_module)? $customMode->hide_subscription_module : 0 }}" name="custom_mode[hide_subscription_module]" {{ (!empty($customMode->hide_subscription_module) && $customMode->hide_subscription_module == 1) ? 'checked' : '' }}>
@@ -868,19 +868,19 @@ $sms_crendential = json_decode($preference->sms_credentials);
                 </form>
                 <!-- Custom Mods start -->
             </div>
-        
+
             <div class="col-md-4 mb-3">
                 <!-- Custom Mods start -->
                 <form method="POST" class="h-100" action="{{ route('preference', Auth::user()->code) }}">
-                    @csrf          
+                    @csrf
                     <input type="hidden" name="mybatch" value="1">
                     <div class="card-box h-100">
                         <div class="d-flex align-items-center justify-content-between mb-3">
                             <h4 class="header-title text-uppercase mb-0">{{__("Batch Allocation")}}</h4>
-                            <button class="btn btn-outline-info d-block" type="submit"> Save </button>
+                            <button class="btn btn-outline-info d-block" type="submit"> {{__('Save')}} </button>
                         </div>
                         <div class="row align-items-start">
-                            <div class="col-md-12"> 
+                            <div class="col-md-12">
                                 <div class="form-group d-flex justify-content-between mb-3">
                                 <label for="" class="mr-2 mb-0">{{__("Enable Batch Allocation")}} </label>
                                 <div class="d-flex align-items-center justify-content-between mb-2">
@@ -894,7 +894,7 @@ $sms_crendential = json_decode($preference->sms_credentials);
                         </div>
 
                         <div class="row align-items-start batch-allocation" style="display:{{ (!empty($preference->create_batch_hours) && $preference->create_batch_hours > 0) ? '':'none'}}" >
-                            <div class="col-md-12"> 
+                            <div class="col-md-12">
                                 <div class="form-group d-flex justify-content-between mb-3">
                                 <label for="" class="mr-2 mb-0">{{__("Enable this to specify Job consist of pickup or delivery.")}} </label>
                                 <div class="d-flex align-items-center justify-content-between mb-2">
@@ -908,7 +908,7 @@ $sms_crendential = json_decode($preference->sms_credentials);
                         </div>
 
                         <div class="row align-items-start batch-allocation" style="display:{{ (!empty($preference->create_batch_hours) && $preference->create_batch_hours > 0) ? '':'none'}}" >
-                            <div class="col-md-12"> 
+                            <div class="col-md-12">
                                 <div class="form-group d-flex justify-content-between mb-3">
                                 <label for="" class="mr-2 mb-0">{{__("Create batch on every")}} </label>
                                 <div class="d-flex align-items-center justify-content-between mb-2">
@@ -927,7 +927,7 @@ $sms_crendential = json_decode($preference->sms_credentials);
                         </div>
 
                         <div class="row align-items-start batch-allocation" style="display:{{ (!empty($preference->create_batch_hours) && $preference->create_batch_hours > 0) ? '':'none'}}" >
-                            <div class="col-md-12"> 
+                            <div class="col-md-12">
                                 <div class="form-group d-flex justify-content-between mb-3">
                                 <label for="" class="mr-2 mb-0">{{__("Maximum Route/Job per Geo Fence")}} </label>
                                 <div class="d-flex align-items-center justify-content-between mb-2">
@@ -1121,7 +1121,7 @@ $sms_crendential = json_decode($preference->sms_credentials);
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header border-bottom">
-                        <h4 class="modal-title" id="standard-modalLabel">Add {{ getAgentNomenclature() }} Registration Document</h4>
+                        <h4 class="modal-title" id="standard-modalLabel">Add {{ __(getAgentNomenclature()) }} Registration Document</h4>
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                     </div>
                     <div class="modal-body">
@@ -1169,7 +1169,7 @@ $sms_crendential = json_decode($preference->sms_credentials);
                         </form>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-primary submitSaveDriverRegistrationDocument">Save</button>
+                        <button type="button" class="btn btn-primary submitSaveDriverRegistrationDocument">{{__('Save')}}</button>
                     </div>
                 </div>
             </div>
@@ -1328,7 +1328,7 @@ $sms_crendential = json_decode($preference->sms_credentials);
             var id = $("#sms_provider").find(':selected').attr('data-id');
             $('.sms_fields').css('display', 'none');
             $('#' + id).css('display', 'flex');
-           
+
         }
         $('#batch_allocation').on('change',function(){
             if ($(this).is(":checked")) {
