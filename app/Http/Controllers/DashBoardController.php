@@ -135,8 +135,8 @@ class DashBoardController extends Controller
                 $append['address']               = isset($task->location->address) ? $task->location->address : '';
                 $append['task_type_id']          = isset($task->task_type_id) ? $task->task_type_id : '';
                 $append['task_status']           = (int)$task->task_status;
-                $append['team_id']               = isset($tasks->driver_id) ? $tasks->agent->team_id : 0;
-                $append['driver_name']           = isset($tasks->driver_id) ? $tasks->agent->name : '';
+                $append['team_id']               = isset($tasks->driver_id) ? @$tasks->agent->team_id : 0;
+                $append['driver_name']           = isset($tasks->driver_id) ? @$tasks->agent->name : '';
                 $append['driver_id']             = isset($tasks->driver_id) ? $tasks->driver_id : '';
                 $append['customer_name']         = isset($tasks->customer->name)?$tasks->customer->name:'';
                 $append['customer_phone_number'] = isset($tasks->customer->phone_number)?$tasks->customer->phone_number:'';
@@ -742,8 +742,8 @@ class DashBoardController extends Controller
                     $append['address']               = $task->location->address;
                     $append['task_type_id']          = $task->task_type_id;
                     $append['task_status']           = (int)$task->task_status;
-                    $append['team_id']               = isset($tasks->driver_id) ? $tasks->agent->team_id : 0;
-                    $append['driver_name']           = isset($tasks->driver_id) ? $tasks->agent->name : '';
+                    $append['team_id']               = isset($tasks->driver_id) ? @$tasks->agent->team_id : 0;
+                    $append['driver_name']           = isset($tasks->driver_id) ? @$tasks->agent->name : '';
                     $append['driver_id']             = isset($tasks->driver_id) ? $tasks->driver_id : '';
                     $append['customer_name']         = isset($tasks->customer->name)? $tasks->customer->name:'';
                     $append['customer_phone_number'] = isset($tasks->customer->phone_number)?$tasks->customer->phone_number:'';
@@ -921,8 +921,8 @@ class DashBoardController extends Controller
                 $append['address']               = $task->location->address;
                 $append['task_type_id']          = $task->task_type_id;
                 $append['task_status']           = (int)$task->task_status;
-                $append['team_id']               = isset($tasks->driver_id) ? $tasks->agent->team_id : 0;
-                $append['driver_name']           = isset($tasks->driver_id) ? $tasks->agent->name : '';
+                $append['team_id']               = isset($tasks->driver_id) ? @$tasks->agent->team_id : 0;
+                $append['driver_name']           = isset($tasks->driver_id) ? @$tasks->agent->name : '';
                 $append['driver_id']             = isset($tasks->driver_id) ? $tasks->driver_id : '';
                 $append['customer_name']         = isset($tasks->customer->name)?$tasks->customer->name:'';
                 $append['customer_phone_number'] = isset($tasks->customer->phone_number)?$tasks->customer->phone_number:'';
@@ -1614,8 +1614,8 @@ class DashBoardController extends Controller
                 $append['address']               = isset($task->location->address) ? $task->location->address : '';
                 $append['task_type_id']          = isset($task->task_type_id) ? $task->task_type_id : '';
                 $append['task_status']           = (int)$task->task_status;
-                $append['team_id']               = isset($tasks->driver_id) ? $tasks->agent->team_id : 0;
-                $append['driver_name']           = isset($tasks->driver_id) ? $tasks->agent->name : '';
+                $append['team_id']               = isset($tasks->driver_id) ? @$tasks->agent->team_id : 0;
+                $append['driver_name']           = isset($tasks->driver_id) ? @$tasks->agent->name : '';
                 $append['driver_id']             = isset($tasks->driver_id) ? $tasks->driver_id : '';
                 $append['customer_name']         = isset($tasks->customer->name)?$tasks->customer->name:'';
                 $append['customer_phone_number'] = isset($tasks->customer->phone_number)?$tasks->customer->phone_number:'';
@@ -1959,8 +1959,8 @@ class DashBoardController extends Controller
                 $append['address']               = isset($task->location->address) ? $task->location->address : '';
                 $append['task_type_id']          = isset($task->task_type_id) ? $task->task_type_id : '';
                 $append['task_status']           = (int)$task->task_status;
-                $append['team_id']               = isset($tasks->driver_id) ? $tasks->agent->team_id : 0;
-                $append['driver_name']           = isset($tasks->driver_id) ? $tasks->agent->name : '';
+                $append['team_id']               = isset($tasks->driver_id) ? @$tasks->agent->team_id : 0;
+                $append['driver_name']           = isset($tasks->driver_id) ? @$tasks->agent->name : '';
                 $append['driver_id']             = isset($tasks->driver_id) ? $tasks->driver_id : '';
                 $append['customer_name']         = isset($tasks->customer->name)?$tasks->customer->name:'';
                 $append['customer_phone_number'] = isset($tasks->customer->phone_number)?$tasks->customer->phone_number:'';
