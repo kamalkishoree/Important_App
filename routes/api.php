@@ -26,12 +26,17 @@ Route::post('check-dispatcher-keys', 'Api\TaskController@checkDispatcherKeys')->
 Route::post('get-delivery-fee', 'Api\TaskController@getDeliveryFee')->middleware('ConnectDbFromOrder');
 Route::post('task/create', 'Api\TaskController@CreateTask')->middleware('ConnectDbFromOrder');
 Route::post('get/agents', 'Api\AgentController@getAgents')->middleware('ConnectDbFromOrder');
+Route::post('agent/check_slot', 'Api\AgentSlotController@getAgentsSlotByTags')->middleware('ConnectDbFromOrder');
 Route::post('task/lims/create', 'Api\TaskController@CreateLimsTask')->middleware('ConnectDbFromOrder');
 Route::post('agent/create', 'Api\DriverRegistrationController@storeAgent')->middleware('ConnectDbFromOrder');
 Route::post('send-documents','Api\DriverRegistrationController@sendDocuments')->middleware('ConnectDbFromOrder');
 Route::get('get-agent-tags', 'Api\TaskController@getAgentTags')->middleware('ConnectDbFromOrder');
 Route::get('get-all-teams', 'Api\TaskController@getAllTeams')->middleware('ConnectDbFromOrder');
 Route::post('update-create-vendor-order', 'Api\AuthController@updateCreateVendorOrder')->middleware('ConnectDbFromOrder');
+
+
+Route::post('chat/sendNotificationToAgent',      'Api\ChatControllerOrderNotification@sendNotificationToAgent')->middleware('ConnectDbFromOrder');
+
 
 Route::post('update-order-feedback','Api\TaskController@SaveFeedbackOnOrder')->name('SaveFeedbackOnOrder')->middleware('ConnectDbFromOrder');
 
@@ -97,6 +102,7 @@ Route::group(['middleware' => ['dbCheck', 'AppAuth','apiLocalization']], functio
     Route::post('agent/payout/request/create/{id}', 'Api\AgentPayoutController@agentPayoutRequestCreate'); // api for creating agent payout request
     Route::post('chat/startChat',      'Api\ChatController@startChat');
     Route::post('chat/userAgentChatRoom',      'Api\ChatController@userAgentChatRoom');
+    Route::post('chat/sendNotification',      'Api\ChatController@sendNotificationToUser');
     //Route::post('chat/userAgentChatRoom',      'Api\ChatController@startChat');
     
     // Order routes
@@ -120,6 +126,7 @@ Route::group(['middleware' => ['dbCheck', 'AppAuth','apiLocalization']], functio
 Route::group(['middleware' => 'dbCheck','prefix' => 'public'], function() {
     Route::post('task/create', 'Api\TaskController@CreateTask');
     Route::get('task/currentstatus', 'Api\TaskController@currentstatus');
+   
 });
 
 

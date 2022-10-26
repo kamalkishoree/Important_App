@@ -1,4 +1,10 @@
 <!-- ========== Left Sidebar Start ========== -->
+
+@php
+    $preferences = \App\Model\ClientPreference::first();
+    $hide_subscription_module = isset(json_decode($preferences->custom_mode)->hide_subscription_module)?json_decode($preferences->custom_mode)->hide_subscription_module : 0;
+@endphp
+
 <div class="left-side-menu">
 
     <div class="h-100" data-simplebar>
@@ -117,7 +123,7 @@
                 </li>
                 @endif
 
-                @if(in_array('Subscription',$allowed) || Auth::user()->is_superadmin == 1)
+                @if($hide_subscription_module != 1 && (in_array('Subscription',$allowed) || Auth::user()->is_superadmin == 1) )
                 <li>
                     <a href="{{route('subscription.plans.driver')}}">
                         <i class="fe-credit-card"></i>

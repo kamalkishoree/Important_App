@@ -1,28 +1,18 @@
 <?php
 
 namespace App\Http\Controllers\Api;
-
-use DB;
-use Log;
-use Mail;
-use Config;
-use Validation;
-use Carbon\Carbon;
-use Kawankoding\Fcm\Fcm;
 use App\Traits\ApiResponser;
 use Illuminate\Http\Request;
-use GuzzleHttp\Client as GClient;
 use Illuminate\Support\Facades\Auth;
-use Twilio\Rest\Client as TwilioClient;
-use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\Api\BaseController;
-use App\Model\{Agent, Client, Customer, Geo, Location, Order, Roster, Task, TaskReject, Timezone, AllocationRule, ClientPreference, DriverGeo, NotificationEvent, NotificationType, SmtpDetail, PricingRule, TagsForAgent, TagsForTeam, Team, TaskProof, OrderCancelReason};
+use App\Model\{Client};
+use App\Traits\ChatTrait;
 use Illuminate\Support\Facades\Http;
 
 class ChatController extends BaseController
 {
     use ApiResponser;
-
+    use ChatTrait;
     public $client_data;
     public function __construct()
     {
@@ -37,7 +27,15 @@ class ChatController extends BaseController
     
             return $next($request);
         });
-    }
+    }    
+    /**
+     * getChatRoom
+     *
+     * @param  mixed $vendor_id
+     * @param  mixed $type
+     * @param  mixed $sub_domain
+     * @return void
+     */
     public function getChatRoom($vendor_id,$type,$sub_domain){
         try {
             //code...
@@ -65,7 +63,15 @@ class ChatController extends BaseController
         
 
     }
-
+    
+    /**
+     * getChatRoomForAgent
+     *
+     * @param  mixed $agent_id
+     * @param  mixed $type
+     * @param  mixed $sub_domain
+     * @return void
+     */
     public function getChatRoomForAgent($agent_id,$type,$sub_domain){
         try {
             //code...
@@ -81,9 +87,6 @@ class ChatController extends BaseController
                 'client_id'=>$clientData->id
             ]);
             
-            // echo "<pre>";
-            // print_r($response['roomData']);
-            // die;
             $statusCode = $response->getStatusCode();
             if($statusCode == 200) {
                 $roomData = $response['roomData'];
@@ -98,7 +101,13 @@ class ChatController extends BaseController
         }
     
 
-    }
+    }    
+    /**
+     * vendorUserChatRoom
+     *
+     * @param  mixed $request
+     * @return void
+     */
     public function vendorUserChatRoom(Request $request){
         try {
             $user = Auth::user();
@@ -199,7 +208,13 @@ class ChatController extends BaseController
         
 
     }
-
+    
+    /**
+     * fetchOrderDetail
+     *
+     * @param  mixed $request
+     * @return void
+     */
     public function fetchOrderDetail(Request $request){
         try {
             $orderData = $this->OrderVendorDetail($request);
@@ -212,7 +227,13 @@ class ChatController extends BaseController
             
     }
 
-
+    
+    /**
+     * userAgentChatRoom
+     *
+     * @param  mixed $request
+     * @return void
+     */
     public function userAgentChatRoom(Request $request){
         try {
             $user = Auth::user();
@@ -228,6 +249,22 @@ class ChatController extends BaseController
             return response()->json([ 'chatrooms'=>$chatroom , 'status' => true, 'message' => __('list fetched!!!')]);
         } catch (\Throwable $th) {
             return response()->json([ 'chatrooms'=>[] , 'status' => true, 'message' => __('list fetched!!!')]);
+        }
+
+    }
+    
+    /**
+     * sendNotificationToUser
+     *
+     * @param  mixed $request
+     * @return void
+     */
+    public function sendNotificationToUser(Request $request){
+        try {
+            $notiFY = $this->sendNotificationToOrder($request);
+            return response()->json([ 'notiFY'=>$notiFY , 'status' => true, 'message' => __('sent!!!')]);
+        } catch (\Throwable $th) {
+            return response()->json(['status' => false, 'notiFY' => [] , 'message' => __('No Data found !!!')]);
         }
 
     }

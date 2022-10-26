@@ -390,7 +390,16 @@
 
                 $('#task-modal-header .edit-icon-float-right').on('click', function() {
                     $('#task-modal-header .meta_data_task_div').toggle();
+                    if($(this).find('i').hasClass('mdi mdi-chevron-down')){
+                        $(this).find('i').removeClass('mdi mdi-chevron-down');
+                        $(this).find('i').addClass('mdi mdi-chevron-up');
+                    }else{
+                        $(this).find('i').removeClass('mdi mdi-chevron-up');
+                        $(this).find('i').addClass('mdi mdi-chevron-down');
+                    }
                 });
+
+                
             },
             error: function (data) {
             }
@@ -1074,28 +1083,23 @@
         var mapLlng = document.getElementById('lng_map_header').value;
         var mapFor = document.getElementById('map_for_header').value;
         var address = document.getElementById('addredd_map_header').value;
-        //console.log(mapLat+'-'+mapLlng+'-'+mapFor);
+        
         document.getElementById(mapFor + '-latitude').value = mapLat;
         document.getElementById(mapFor + '-longitude').value = mapLlng;
         document.getElementById(mapFor + '-input').value = address;
-
 
         $('#show-map-Header').modal('hide');
     });
 
 
     $(document).on('click', '.alFormTaskType', function () {
-
         $(".alTaskType").removeClass("active");
         $(".mainaddress").addClass("alCol-12");
         $(".alsavedaddress").hide();
         $(this).closest('.alTaskType').find(".mainaddress").removeClass("alCol-12");
         $(this).closest('.alTaskType').addClass("active");
         $(this).closest('.alTaskType').find(".alsavedaddress").show();
-
     });
-
-
 
     if(theme['theme'] == 'dark'){
 
