@@ -711,13 +711,18 @@
         }
         var s_name = $("input[name='short_name[]']").val();
         var s_address = $("input[name='address[]']").val();
-        if ((!$("input[name='old_address_id']:checked").val()) && (s_address=="") ) {
-                err = 1;
-                $(".addspan").show();
-                return false;
+        var warehouse_id = $("select[name='warehouse_id[]']").val();
+        console.log(warehouse_id);
+        if(warehouse_id){
+            err = 0;
+            $(".addspan").hide();
         }
-
-
+        else if ((!$("input[name='old_address_id']:checked").val()) && (s_address=="")) {
+            err = 1;
+            $(".addspan").show();
+            return false;
+        }
+        
         $(".selecttype").each(function(){
             var taskselect              = $(this).val();
             var checkPickupBarcode      = $('#check-pickup-barcode').val();
@@ -750,9 +755,13 @@
             var address = $("#task-modal-header input[name='address[]']").val();
             var post_code = $("#task-modal-header input[name='post_code[]']").val();
             var cash_to_be_collected = $("#task-modal-header input[name='cash_to_be_collected']").val();
-            if (short_name != '' && address != '' && post_code != '') {
-
-            } else {  err = 1;
+            if(warehouse_id){
+                err = 0;
+                $(".addspan").hide();
+            }else if (short_name != '' && address != '' && post_code != '') {
+                
+            } else {  
+                err = 1;
                 $(".addspan").show();
                 return false;
             }
@@ -854,11 +863,13 @@
         if (this.value == 3){
            $span = $(this).closest(".firstclone1").find(".appoint").show();
            $(this).closest(".firstclone1").find(".warehouse-field").hide();
+           $(this).closest(".firstclone1").find(".vehicle_type").hide();
            //console.log($span);
         }
         else{
             $(this).closest(".firstclone1").find(".appoint").hide();
             $(this).closest(".firstclone1").find(".warehouse-field").show();
+            $(this).closest(".firstclone1").find(".vehicle_type").show();
         }
     });
 

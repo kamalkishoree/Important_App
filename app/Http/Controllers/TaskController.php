@@ -223,9 +223,9 @@ class TaskController extends BaseController
             $q->where('manager_id', $user->id);
         })->pluck('tag_id');
 
-        $orders = Order::with(['customer', 'location', 'taskFirst', 'agent', 'task.location']);
-
-        if ($user->is_superadmin == 0 && $user->all_team_access == 0) {
+        $orders = Order::with(['customer', 'location', 'taskFirst', 'agent', 'task.location'])->orderBy('id', 'DESC');
+        
+        if ($user->is_superadmin == 0 && $user->all_team_access == 0 && $user->manager_type == 0) {
             $agents = Agent::orderBy('id', 'DESC');
             $agentids = $agents->whereHas('team.permissionToManager', function ($query) use($user) {
                 $query->where('sub_admin_id', $user->id);
@@ -238,8 +238,13 @@ class TaskController extends BaseController
             $orders = $orders->wherehas('allteamtags', function($query) use($team_tags) {
                 $query->whereIn('tag_id', $team_tags);
             });
+        }else if($user->is_superadmin == 0 && $user->all_team_access == 0 && $user->manager_type == 1){
+            $manager_warehouses = Client::with('warehouse')->where('id', $user->id)->first();
+            $mana_warehouseIds = $manager_warehouses->warehouse->pluck('id');
+            $orders = $orders->whereHas('task', function($query) use ($mana_warehouseIds) {
+                $query->whereIn('warehouse_id', $mana_warehouseIds);
+            });
         }
-
         $orders = $orders->where('status', $request->routesListingType)->where('status', '!=', null)->orderBy('updated_at', 'desc');
 
         $preference = ClientPreference::where('id', 1)->first(['theme','date_format','time_format']);
@@ -610,7 +615,7 @@ class TaskController extends BaseController
                 }
 
                 $location = Location::where('id', $loc_id)->first();
-                if ($location->customer_id != $cus_id) {
+                if (!empty($location) && $location->customer_id != $cus_id) {
                     $newloc = [
                     'short_name'   => $location->short_name,
                         'post_code'    =>$location->post_code,
@@ -626,13 +631,14 @@ class TaskController extends BaseController
                 // $location = Location::create($newloc);
                 }
 
-                $loc_id = $location->id;
+                $loc_id = isset($location->id) ? $location->id : '';
                 if ($key == 0) {
                     $finalLocation = $location;
                 }
-
-                array_push($latitude, $location->latitude);
-                array_push($longitude, $location->longitude);
+                if(!empty($location)){
+                    array_push($latitude, $location->latitude);
+                    array_push($longitude, $location->longitude);
+                }
 
                 $task_appointment_duration = empty($request->appointment_date[$key]) ? '0' : $request->appointment_date[$key];
                 $data = [
@@ -1409,9 +1415,13 @@ class TaskController extends BaseController
     public function createRoster($send_loc_id)
     {
         $getletlong = Location::where('id', $send_loc_id)->first();
-        $lat = $getletlong->latitude;
-        $long = $getletlong->longitude;
-        return $check = $this->findLocalityByLatLng($lat, $long);
+        if(!empty($getletlong)){
+            $lat = $getletlong->latitude;
+            $long = $getletlong->longitude;
+            return $check = $this->findLocalityByLatLng($lat, $long);
+        }else{
+            return '';
+        }
     }
 
     public function findLocalityByLatLng($lat, $lng)
@@ -1710,10 +1720,10 @@ class TaskController extends BaseController
         $extraData = [
             'customer_name'            => $customer->name,
             'customer_phone_number'    => $customer->phone_number,
-            'short_name'               => $finalLocation->short_name,
-            'address'                  => $finalLocation->address,
-            'lat'                      => $finalLocation->latitude,
-            'long'                     => $finalLocation->longitude,
+            'short_name'               => $finalLocation->short_name ?? '',
+            'address'                  => $finalLocation->address ?? '',
+            'lat'                      => $finalLocation->latitude ?? '',
+            'long'                     => $finalLocation->longitude ?? '',
             'task_count'               => $taskcount,
             'unique_id'                => $randem,
             'created_at'               => Carbon::now()->toDateTimeString(),
@@ -2295,7 +2305,9 @@ class TaskController extends BaseController
             $agent_location['lng']  = $lastElement->longitude;
         }
         $task->customer->countrycode = getCountryCode($task->customer->dial_code);
-        return view('tasks/update-task')->with(['task' => $task, 'agent_location' => $agent_location, 'task_locations' => $task_locations, 'task_proofs' => $task_proofs, 'preference' => $preference, 'teamTag' => $teamTag, 'agentTag' => $agentTag, 'agents' => $agents, 'images' => $array, 'savedrivertag' => $savedrivertag, 'saveteamtag' => $saveteamtag, 'main' => $lastbaseurl,'alllocations'=>$all_locations,'client_timezone'=>$client_timezone]);
+        $warehouses = Warehouse::all();
+        // dd($task);
+        return view('tasks/update-task')->with(['task' => $task, 'agent_location' => $agent_location, 'task_locations' => $task_locations, 'task_proofs' => $task_proofs, 'preference' => $preference, 'teamTag' => $teamTag, 'agentTag' => $agentTag, 'agents' => $agents, 'images' => $array, 'savedrivertag' => $savedrivertag, 'saveteamtag' => $saveteamtag, 'main' => $lastbaseurl,'alllocations'=>$all_locations,'client_timezone'=>$client_timezone, 'warehouses' => $warehouses]);
     }
 
     /**
@@ -2480,6 +2492,7 @@ class TaskController extends BaseController
                     'quantity'          => $request->quantity[$key],
                     'assigned_time'     => $notification_time,
                     'alcoholic_item'    => !empty($request->alcoholic_item[$key])? $request->alcoholic_item[$key] : '',
+                    'warehouse_id'                   => $request->warehouse_id[$key],
                 ];
                 $task = Task::create($data);
                 $dep_id = $task->id;

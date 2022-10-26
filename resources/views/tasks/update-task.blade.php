@@ -296,133 +296,162 @@ $task_type_array = [__('Pickup'), __('Drop-Off'), __('Appointment')];
                                                 <span class="span1 onedeletex" id="spancheckd" data-taskid="{{ $item->id }}"><img style="filter: grayscale(.5);"
                                                     src="{{ asset('assets/images/ic_delete.png') }}" alt=""></span>
                                                 </div>
-                                            </div>
-                                            <div class="row mb-2">
-                                                <div class="alCol-12 mainaddress col-8" id="add{{ $newcount }}">
-                                                    <div class="row">
-                                                        <div class="col-6 addressDetails border-right">
-                                                            <h6>Address Details</h6>
-                                                            <div class="row">
-                                                                <div class="form-group col-6 mb-1">
-                                                                    {!! Form::text('short_name[]', null, ['class' => 'form-control address', 'placeholder' => __('Short Name')]) !!}
-                                                                </div>
-                                                                <div class="input-group form-group col-6 mb-2">
-                                                                    <input type="text" id="add{{ $newcount }}-input" name="address[]" class="form-control address cust1_add" placeholder='{{__("Location")}}'>
-                                                                    <div class="input-group-append">
-                                                                        <button class="btn btn-xs btn-dark waves-effect waves-light showMapHeader cust1_btn" type="button" num="add{{ $newcount }}"> <i class="mdi mdi-map-marker-radius"></i></button>
+                                                <div class="row mb-2" style="padding: 0px 10px;">
+                                                    <div class="alCol-12 mainaddress col-8" id="add{{ $newcount }}">
+                                                        <div class="row">
+                                                            <div class="col-6 addressDetails border-right">
+                                                                <h6>Address Details</h6>
+                                                                <div class="row">
+                                                                    <div class="form-group col-12 mb-1">
+                                                                        {!! Form::text('short_name[]', null, ['class' => 'form-control address', 'placeholder' => __('Short Name')]) !!}
                                                                     </div>
                                                                 </div>
-                                                                <div class="form-group col-6 mb-1">
-                                                                    {!! Form::text('flat_no[]', null, ['class' => 'form-control address flat_no','placeholder' => __('House/Apartment/Flat no'),'id'=>'add'.$newcount.'-flat_no']) !!}
+                                                                @php
+                                                                    if($item->warehouse_id != ""){
+                                                                        $style = "none";
+                                                                    }else{
+                                                                        $style = "block";
+                                                                    }
+                                                                @endphp
+                                                                <div class="row location-section" style="display: {{$style}}">
+                                                                    <div class="input-group form-group col-6 mb-2">
+                                                                        <input type="text" id="add{{ $newcount }}-input" name="address[]" class="form-control address cust1_add" placeholder='{{__("Location")}}'>
+                                                                        <div class="input-group-append">
+                                                                            <button class="btn btn-xs btn-dark waves-effect waves-light showMapHeader cust1_btn" type="button" num="add{{ $newcount }}"> <i class="mdi mdi-map-marker-radius"></i></button>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="form-group col-6 mb-1">
+                                                                        {!! Form::text('flat_no[]', null, ['class' => 'form-control address flat_no','placeholder' => __('House/Apartment/Flat no'),'id'=>'add'.$newcount.'-flat_no']) !!}
+                                                                    </div>
+                                                                    <div class="form-group col-6 mb-1">
+                                                                    <input type="hidden" name="latitude[]" id="add{{ $newcount }}-latitude" class="cust1_latitude" value="0" />
+                                                                    <input type="hidden" name="longitude[]" id="add{{ $newcount }}-longitude" class="cust1_longitude" value="0" />
+                                                                        {!! Form::text('post_code[]', null, ['class' => 'form-control address postcode','placeholder' => __('Post Code'),'id'=>'add'.$newcount.'-postcode']) !!}
+                                                                    </div>
                                                                 </div>
-                                                                <div class="form-group col-6 mb-1">
-                                                                <input type="hidden" name="latitude[]" id="add{{ $newcount }}-latitude" class="cust1_latitude" value="0" />
-                                                            <input type="hidden" name="longitude[]" id="add{{ $newcount }}-longitude" class="cust1_longitude" value="0" />
-                                                                    {!! Form::text('post_code[]', null, ['class' => 'form-control address postcode','placeholder' => __('Post Code'),'id'=>'add'.$newcount.'-postcode']) !!}
+                                                                @php
+                                                                    if($item->warehouse_id != ""){
+                                                                        $style = "block";
+                                                                        $choose_text = "Choose Location";
+                                                                    }else{
+                                                                        $style = "none";
+                                                                        $choose_text = "Choose Warehouse";
+                                                                    }
+                                                                @endphp
+                                                                <div class="warehouse-field">
+                                                                    <div class="form-group mb-1 select_warehouse-field" style="display: {{$style}};">
+                                                                        <select class="form-control" name="warehouse_id[]" id="warehouse">
+                                                                            <option value="">Select Warehouse</option>
+                                                                            @foreach ($warehouses as $warehouse)
+                                                                                <option value="{{$warehouse->id}}" {{ $item->warehouse_id == $warehouse->id ? 'selected' : '' }}>{{$warehouse->name}}</option>
+                                                                            @endforeach
+                                                                        </select>
+                                                                    </div>
+                                                                    <h6><a href="javascript:void(0);" class="choose_warehouse">{{$choose_text}}</a></h6>
                                                                 </div>
                                                             </div>
-                                                        </div>
 
-                                                        <div class="alContactOther col-6">
-                                                            <div class="row">
-                                                                <div class="col-6 alRightBorder">
-                                                                    <h6>Contact Details</h6>
-                                                                    <div class="row">
-                                                                        <div class="form-group mb-1 col-12">
-                                                                            {!! Form::text('address_email[]', null, ['class' => 'form-control address address_email','placeholder' => __('Email'),'id'=>'add'.$newcount.'-address_email']) !!}
-                                                                        </div>
-                                                                        <div class="form-group mb-1 col-12">
-                                                                            {!! Form::text('address_phone_number[]', null, ['class' => 'form-control address address_phone_number','placeholder' => __('Phone Number'),'id'=>'add'.$newcount.'-address_phone_number']) !!}
+                                                            <div class="alContactOther col-6">
+                                                                <div class="row">
+                                                                    <div class="col-6 alRightBorder">
+                                                                        <h6>Contact Details</h6>
+                                                                        <div class="row">
+                                                                            <div class="form-group mb-1 col-12">
+                                                                                {!! Form::text('address_email[]', null, ['class' => 'form-control address address_email','placeholder' => __('Email'),'id'=>'add'.$newcount.'-address_email']) !!}
+                                                                            </div>
+                                                                            <div class="form-group mb-1 col-12">
+                                                                                {!! Form::text('address_phone_number[]', null, ['class' => 'form-control address address_phone_number','placeholder' => __('Phone Number'),'id'=>'add'.$newcount.'-address_phone_number']) !!}
+                                                                            </div>
                                                                         </div>
                                                                     </div>
-                                                                </div>
-                                                                <div class="col-6">
-                                                                    <h6>Other Details</h6>
-                                                                    <div class="row">
-                                                                        <div class="form-group mb-1 col-12">
-                                                                            {!! Form::text('barcode[]', $item->barcode, ['class' => 'form-control barcode','placeholder' => __('Task Barcode')]) !!}
+                                                                    <div class="col-6">
+                                                                        <h6>Other Details</h6>
+                                                                        <div class="row">
+                                                                            <div class="form-group mb-1 col-12">
+                                                                                {!! Form::text('barcode[]', $item->barcode, ['class' => 'form-control barcode','placeholder' => __('Task Barcode')]) !!}
+                                                                            </div>
+                                                                            <div class="form-group mb-1 col-12">
+                                                                                {!! Form::text('quantity[]', $item->quantity, ['class' => 'form-control quantity onlynumber','placeholder' => __('Quantity')]) !!}
+                                                                            </div>
+                                                                            <span class="span1 pickup-barcode-error">{{__("Task Barcode is required for pickup")}}</span>
+                                                                            <span class="span1 drop-barcode-error">{{__("Task Barcode is required for drop")}}</span>
+                                                                            <span class="span1 appointment-barcode-error">{{ __("Task Barcode is required for appointment")}}</span>
                                                                         </div>
-                                                                        <div class="form-group mb-1 col-12">
-                                                                            {!! Form::text('quantity[]', $item->quantity, ['class' => 'form-control quantity onlynumber','placeholder' => __('Quantity')]) !!}
-                                                                        </div>
-                                                                        <span class="span1 pickup-barcode-error">{{__("Task Barcode is required for pickup")}}</span>
-                                                                        <span class="span1 drop-barcode-error">{{__("Task Barcode is required for drop")}}</span>
-                                                                        <span class="span1 appointment-barcode-error">{{ __("Task Barcode is required for appointment")}}</span>
                                                                     </div>
                                                                 </div>
                                                             </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                                <div class="col-4 alsavedaddress" id="alsavedaddress" style="display:none;">
-                                                    <h6>Saved Addresses</h6>
-                                                    <div class="form-group editwithradio" id="typeInputss">
-                                                        <div class="oldhide text-center">
-                                                            <img class="showsimage" src="{{url('assets/images/ic_location_placeholder.png')}}" alt="">
-                                                        </div>
-                                                        @if(isset($task->customer->location))
-                                                            <?php
-                                                            $locationarray1 = [];
-                                                            $locationarray2 = [];
-                                                            foreach ($task->customer->location as $singlelocation) {
-                                                                if($singlelocation->id == $item->location_id)
-                                                                {
-                                                                    $locationarray1[] = $singlelocation;
-                                                                }else{
-                                                                    $locationarray2[] = $singlelocation;
+                                                    <div class="col-4 alsavedaddress" id="alsavedaddress" style="display:none;">
+                                                        <h6>Saved Addresses</h6>
+                                                        <div class="form-group editwithradio" id="typeInputss">
+                                                            <div class="oldhide text-center">
+                                                                <img class="showsimage" src="{{url('assets/images/ic_location_placeholder.png')}}" alt="">
+                                                            </div>
+                                                            @if(isset($task->customer->location))
+                                                                <?php
+                                                                $locationarray1 = [];
+                                                                $locationarray2 = [];
+                                                                foreach ($task->customer->location as $singlelocation) {
+                                                                    if($singlelocation->id == $item->location_id)
+                                                                    {
+                                                                        $locationarray1[] = $singlelocation;
+                                                                    }else{
+                                                                        $locationarray2[] = $singlelocation;
+                                                                    }
                                                                 }
-                                                            }
-                                                            $finallocationarray = array_merge($locationarray1,$locationarray2);
+                                                                $finallocationarray = array_merge($locationarray1,$locationarray2);
 
-                                                            ?>
-                                                            @foreach ($finallocationarray as $key => $items)
+                                                                ?>
+                                                                @foreach ($finallocationarray as $key => $items)
 
-                                                                <div class="append">
-                                                                    <div class="custom-control custom-radio"><input type="radio"
-                                                                            id="{{ $keys }}{{ $items->id }}{{ 12 }}"
-                                                                            name="old_address_id{{ $keys != 0 ? $keys : '' }}"
-                                                                            value="{{ $items->id }}"
-                                                                            data-srtadd="{{ $items->short_name }}" 
-                                                                            data-adr="{{ $items->address }}" 
-                                                                            data-lat="{{ $items->latitude }}" 
-                                                                            data-long="{{ $items->longitude }}" 
-                                                                            data-pstcd="{{ $items->post_code }}" 
-                                                                            data-flat_no="{{ $items->flat_no }}" 
-                                                                            data-emil="{{ $items->email }}" 
-                                                                            data-ph="{{ $items->phone_number }}"
-                                                                            {{ $item->location_id == $items->id ? 'checked' : '' }}
-                                                                            class="custom-control-input redio old-select-address">
-                                                                            <label
-                                                                            class="custom-control-label"
-                                                                            for="{{ $keys }}{{ $items->id }}{{ 12 }}"><span
-                                                                                class="spanbold">{{ $items->short_name }}</span>-{{ $items->address }}</label>
-                                                                    </div>
-                                                                </div>
-
-                                                            @endforeach
-                                                            @endif
-                                                            {{-- alllocations --}}
-                                                            <?php
-                                                            if(count($alllocations)>0)
-                                                            {
-                                                                foreach($alllocations as $key => $items)
-                                                                {?>
                                                                     <div class="append">
                                                                         <div class="custom-control custom-radio"><input type="radio"
                                                                                 id="{{ $keys }}{{ $items->id }}{{ 12 }}"
                                                                                 name="old_address_id{{ $keys != 0 ? $keys : '' }}"
                                                                                 value="{{ $items->id }}"
+                                                                                data-srtadd="{{ $items->short_name }}" 
+                                                                                data-adr="{{ $items->address }}" 
+                                                                                data-lat="{{ $items->latitude }}" 
+                                                                                data-long="{{ $items->longitude }}" 
+                                                                                data-pstcd="{{ $items->post_code }}" 
+                                                                                data-flat_no="{{ $items->flat_no }}" 
+                                                                                data-emil="{{ $items->email }}" 
+                                                                                data-ph="{{ $items->phone_number }}"
                                                                                 {{ $item->location_id == $items->id ? 'checked' : '' }}
-                                                                                class="custom-control-input redio"><label
+                                                                                class="custom-control-input redio old-select-address">
+                                                                                <label
                                                                                 class="custom-control-label"
                                                                                 for="{{ $keys }}{{ $items->id }}{{ 12 }}"><span
                                                                                     class="spanbold">{{ $items->short_name }}</span>-{{ $items->address }}</label>
                                                                         </div>
                                                                     </div>
-                                                                <?php }
-                                                            } ?>
-                                                                
-                                                        @php $maincount++; @endphp
+
+                                                                @endforeach
+                                                                @endif
+                                                                {{-- alllocations --}}
+                                                                <?php
+                                                                if(count($alllocations)>0)
+                                                                {
+                                                                    foreach($alllocations as $key => $items)
+                                                                    {?>
+                                                                        <div class="append">
+                                                                            <div class="custom-control custom-radio"><input type="radio"
+                                                                                    id="{{ $keys }}{{ $items->id }}{{ 12 }}"
+                                                                                    name="old_address_id{{ $keys != 0 ? $keys : '' }}"
+                                                                                    value="{{ $items->id }}"
+                                                                                    {{ $item->location_id == $items->id ? 'checked' : '' }}
+                                                                                    class="custom-control-input redio"><label
+                                                                                    class="custom-control-label"
+                                                                                    for="{{ $keys }}{{ $items->id }}{{ 12 }}"><span
+                                                                                        class="spanbold">{{ $items->short_name }}</span>-{{ $items->address }}</label>
+                                                                            </div>
+                                                                        </div>
+                                                                    <?php }
+                                                                } ?>
+                                                                    
+                                                            @php $maincount++; @endphp
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
