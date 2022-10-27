@@ -305,8 +305,7 @@ class ClientController extends Controller
         }
         
         
-        
-        //pr($request->all());
+        $request->request->add(['toll_fee' => ($request->has('toll_fee') && $request->toll_fee == 'on') ? 1 : 0]);
         $updatePreference = ClientPreference::updateOrCreate([
             'client_id' => $id
         ], $request->all());

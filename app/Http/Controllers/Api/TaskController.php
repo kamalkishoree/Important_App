@@ -1170,7 +1170,7 @@ class TaskController extends BaseController
 
             $tollresponse = array();
             if($auth->getPreference->toll_fee == 1){
-                $tollresponse = $this->toll_fee($latitude, $longitude);
+                $tollresponse = $this->toll_fee($latitude, $longitude, (isset($request->toll_passes)?$request->toll_passes:''), (isset($request->VehicleEmissionType)?$request->VehicleEmissionType:''), (isset($request->travelMode)?$request->travelMode:''));
             }
 
             $getdata = $this->GoogleDistanceMatrix($latitude, $longitude);
@@ -2626,7 +2626,7 @@ class TaskController extends BaseController
 
         $tollresponse = array();
         if($auth->getPreference->toll_fee == 1){
-            $tollresponse = $this->toll_fee($latitude, $longitude);
+            $tollresponse = $this->toll_fee($latitude, $longitude, (isset($request->toll_passes)?$request->toll_passes:''), (isset($request->VehicleEmissionType)?$request->VehicleEmissionType:''), (isset($request->travelMode)?$request->travelMode:''));
         }
 
         $total         = $pricingRule->base_price + ($paid_distance * $pricingRule->distance_fee) + ($paid_duration * $pricingRule->duration_price);
