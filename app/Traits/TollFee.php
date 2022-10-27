@@ -17,7 +17,7 @@ trait TollFee{
      *
      * @return void
      */
-    public function toll_fee($latitude = array(), $longitude = array())
+    public function toll_fee($latitude = array(), $longitude = array(), $toll_passes = 'IN_FASTAG', $VehicleEmissionType = 'GASOLINE', $travelMode = 'TAXI')
     {
         $ClientPreference = ClientPreference::where('id', 1)->first();
  
@@ -72,13 +72,13 @@ trait TollFee{
                     ]
                 ],
                 'intermediates' => $waypoints,
-                "travelMode" => 'TAXI',
+                "travelMode" => $travelMode,
                 "units" =>  "metric",
                 "route_modifiers" => [
                     "vehicle_info" => [
-                        "emission_type" => "GASOLINE"
+                        "emission_type" => $VehicleEmissionType
                     ],
-                    "toll_passes" => "IN_FASTAG"
+                    "toll_passes" => [$toll_passes]
                 ]
             ];
         
