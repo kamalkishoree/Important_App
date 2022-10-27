@@ -184,6 +184,9 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                                 </select>
                                             </li>
                                             @endif
+                                            <li class="d-inline-block mr-1">
+                                                <a href="{{route('tasks.index')}}" type="button" class="btn btn-info btn-sm">Clear</a>
+                                            </li>
                                         </ul>
                                     </div>
                                 </form>
