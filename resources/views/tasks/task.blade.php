@@ -174,6 +174,16 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                                     @endforeach
                                                 </select>
                                             </li>
+                                            @if(Auth::user()->is_superadmin == 1 && Auth::user()->manager_type == 0)
+                                            <li class="d-inline-block mr-1">
+                                                <select name="warehouse_manager" class="form-control" onclick="handleClick(this);" id="warehouse_manager">
+                                                    <option value="">Select Warehouse Manager</option>
+                                                    @foreach ($warehouse_manager as $manager)
+                                                        <option value="{{$manager->id}}" @if (app('request')->input('warehouse_manager') == $manager->id) {{'selected="selected"'}} @endif>{{$manager->name}}</option>                                                            
+                                                    @endforeach
+                                                </select>
+                                            </li>
+                                            @endif
                                         </ul>
                                     </div>
                                 </form>

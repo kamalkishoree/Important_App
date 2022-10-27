@@ -48,6 +48,7 @@
                         d.search = $('input[type="search"]').val();
                         d.routesListingType = $('#routes-listing-status').val();
                         d.warehouseListingType = $('#search_warehouse').val();
+                        d.warehouseManagerId = $('#warehouse_manager').val();
                         d.imgproxyurl = '{{$imgproxyurl}}';
                     }
                 },

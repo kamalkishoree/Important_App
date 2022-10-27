@@ -19,6 +19,6 @@ class Warehouse extends Model
     }
 
     public function manager(){
-        return $this->belongsToMany('App\Model\WarehouseManager', 'warehouse_manager_relation');
+        return $this->belongsToMany('App\Model\Client', 'warehouse_manager_relation');
     }
 }

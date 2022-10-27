@@ -99,4 +99,12 @@ class Task extends Model
 
         return $status_data;
     }
+
+    public function manager(){
+        return $this->belongsToMany('App\Model\Warehouse', 'warehouse_manager_relation');
+    }
+
+    public function warehouse(){
+        return $this->belongsTo('App\Model\Warehouse');
+    }
 }

@@ -130,6 +130,9 @@ class TaskController extends BaseController
         $allcation   = AllocationRule::where('id', 1)->first();
 
         $warehouses = Warehouse::all();
+        // Get Warehouse Manager
+        $warehouse_manager = Client::where('manager_type', 1)->where('status', 1)->get();
+        
         if($user->is_superadmin == 0 && $user->all_team_access == 0 && $user->manager_type == 1){
             $manager_warehouses = Client::with('warehouse')->where('id', $user->id)->first();
             $mana_warehouseIds = $manager_warehouses->warehouse->pluck('id');
@@ -140,7 +143,7 @@ class TaskController extends BaseController
         $employeesCount = count($employees);
         $agentsCount    = count($agents->where('is_approved', 1));
 
-        return view('tasks/task')->with([ 'status' => $request->status, 'agentsCount'=>$agentsCount, 'employeesCount'=>$employeesCount, 'active_count' => $active, 'panding_count' => $pending, 'history_count' => $history, 'status' => $check,'preference' => $preference,'agents'=>$agents,'failed_count'=>$failed,'client_timezone'=>$client_timezone, 'warehouses'=>$warehouses]);
+        return view('tasks/task')->with([ 'status' => $request->status, 'agentsCount'=>$agentsCount, 'employeesCount'=>$employeesCount, 'active_count' => $active, 'panding_count' => $pending, 'history_count' => $history, 'status' => $check,'preference' => $preference,'agents'=>$agents,'failed_count'=>$failed,'client_timezone'=>$client_timezone, 'warehouses'=>$warehouses, 'warehouse_manager'=>$warehouse_manager]);
     }
 
 
@@ -227,6 +230,7 @@ class TaskController extends BaseController
 
     public function taskFilter(Request $request)
     {
+        $warehouseManagerId = $request->warehouseManagerId;
         $searchWarehouse_id = $request->warehouseListingType;
         $user = Auth::user();
         $timezone = $user->timezone ?? 251;
@@ -235,8 +239,12 @@ class TaskController extends BaseController
             $q->where('manager_id', $user->id);
         })->pluck('tag_id');
 
-        $orders = Order::with(['customer', 'location', 'taskFirst', 'agent', 'task.location'])->orderBy('id', 'DESC');
-        
+        $orders = Order::with(['customer', 'location', 'taskFirst', 'agent', 'task.location'])->orderBy('id', 'DESC'); //, 'task.manager'
+        if (@$request->warehouseManagerId && !empty($request->warehouseManagerId)) {
+            $orders->whereHas('task.warehouse.manager', function($q) use($request){
+                $q->where('clients.id', $request->warehouseManagerId);
+            });
+        }
         if ($user->is_superadmin == 0 && $user->all_team_access == 0 && $user->manager_type == 0) {
             $agents = Agent::orderBy('id', 'DESC');
             $agentids = $agents->whereHas('team.permissionToManager', function ($query) use($user) {
