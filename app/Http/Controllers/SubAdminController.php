@@ -24,9 +24,14 @@ class SubAdminController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(REQUEST $request)
     {
-        $subadmins = Client::where('is_superadmin', 0)->where('id', '!=', Auth::user()->id)->orderBy('id', 'DESC')->paginate(10);
+        $manager_type = $request->manager_type;
+        $subadmins = Client::where('is_superadmin', 0)->where('id', '!=', Auth::user()->id);
+        if($manager_type != "all" && $manager_type != null){
+            $subadmins = Client::where('is_superadmin', 0)->where('id', '!=', Auth::user()->id)->where('manager_type', $manager_type);
+        }
+        $subadmins = $subadmins->orderBy('id', 'DESC')->paginate(10);
         return view('subadmin.index')->with(['subadmins' => $subadmins]);
     }
 

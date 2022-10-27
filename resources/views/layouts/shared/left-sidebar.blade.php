@@ -75,22 +75,22 @@
                     </a>
                 </li>
                 @endif
-
+                @if(in_array('Warehouse',$allowed) || Auth::user()->is_superadmin == 1)
                 <li>
                     <a href="{{route('warehouse.index')}}">
                         <i class="fe-package"></i>
                         <span> {{__('Warehouse')}} </span>
                     </a>
                 </li>
-
+                @endif
+                @if(in_array('Categories',$allowed) || Auth::user()->is_superadmin == 1)
                 <li>
                     <a href="{{route('category.index')}}">
                         <i class="fe-package"></i>
                         <span> {{__('Categories')}} </span>
                     </a>
                 </li>
-
-
+                @endif
                 <li class="menu-title mt-2">{{__('Settings')}}</li>
 
                 @if(in_array('Profile',$allowed) || Auth::user()->is_superadmin == 1)

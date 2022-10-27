@@ -57,7 +57,6 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
 @section('content')
     <!-- Start Content-->
     <div class="container-fluid">
-
         <!-- start page title -->
         <div class="row">
             <div class="col-12">
@@ -66,7 +65,6 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                 </div>
             </div>
         </div>
-
         <div class="row">
             <div class="col-12">
                 <div class="card widget-inline">
@@ -113,8 +111,6 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                 </div>
             </div>
         </div>
-    
-        
         <!-- end page title -->
         <div class="row">
             <div class="col-12">
@@ -142,38 +138,42 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                 </div>
                             </div>
                             @csrf
-                            <div class="col-sm-5">
+                            <div class="col-sm-8">
                                 <form class="mb-0" name="getTask" id="getTask" method="get" action="{{ route('tasks.index') }}">
                                     <div class="login-form">
                                         <ul class="list-inline mb-0">
-                                            <li class="d-inline-block mr-2">
+                                            <li class="d-inline-block mr-1">
                                                 <input type="radio" id="teacher" name="status" onclick="handleClick(this);"
                                                     value="unassigned" {{ $status == 'unassigned' ? 'checked' : '' }}>
                                                 <label for="teacher">{{__("Pending Assignment")}}<span
                                                         class="showspan">{{ ' (' . $panding_count . ')' }}</span></label>
                                             </li>
-                                            <li class="d-inline-block mr-2">
+                                            <li class="d-inline-block mr-1">
                                                 <input type="radio" id="student" onclick="handleClick(this);" name="status"
                                                     value="assigned" {{ $status == 'assigned' ? 'checked' : '' }}>
                                                 <label for="student">{{__("Active")}}<span
                                                         class="showspan">{{ ' (' . $active_count . ')' }}</span></label>
                                             </li>
-
-
-                                            <li class="d-inline-block mr-2">
+                                            <li class="d-inline-block mr-1">
                                                 <input type="radio" id="parent" name="status" onclick="handleClick(this);"
                                                     value="completed" {{ $status == 'completed' ? 'checked' : '' }}>
                                                 <label for="parent">{{__("History")}}<span
                                                         class="showspan">{{ ' (' . $history_count . ')' }}</span></label>
                                             </li>
-
-                                            <li class="d-inline-block mr-2">
+                                            <li class="d-inline-block mr-1">
                                                 <input type="radio" id="failed" name="status" onclick="handleClick(this);"
                                                     value="failed" {{ $status == 'failed' ? 'checked' : '' }}>
                                                 <label for="failed">{{__("Failed")}}<span
                                                         class="showspan">{{ ' (' . $failed_count . ')' }}</span></label>
                                             </li>
-
+                                            <li class="d-inline-block mr-1">
+                                                <select name="search_warehouse" class="form-control" onclick="handleClick(this);" id="search_warehouse">
+                                                    <option value="">All</option>
+                                                    @foreach ($warehouses as $warehouse)
+                                                        <option value="{{$warehouse->id}}" @if (app('request')->input('search_warehouse') == $warehouse->id) {{'selected="selected"'}} @endif>{{$warehouse->name}}</option>                                                            
+                                                    @endforeach
+                                                </select>
+                                            </li>
                                         </ul>
                                     </div>
                                 </form>
@@ -186,9 +186,6 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                 <button type="button" class="btn btn-info assign_agent" data-toggle="modal" data-target="#add-assgin-agent-model" data-backdrop="static" data-keyboard="false">{{__("Assign")}}</button> 
                                 <button type="button" class="btn btn-info assign_date" data-toggle="modal" data-target="#add-assgin-date-model" data-backdrop="static" data-keyboard="false">{{__("Change Date")}}/{{__("Time")}}</button> 
                             </div>
-                          
-
-                           
                         </div>
                         <input type="hidden" id="routes-listing-status" value="unassigned">
                         <div class="table-responsive mn-4">
@@ -222,8 +219,6 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                 </div> <!-- end card-->
             </div> <!-- end col -->
         </div>
-
-
     </div>
 
     @include('modals.task-list')

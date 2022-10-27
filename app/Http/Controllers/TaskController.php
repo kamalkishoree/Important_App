@@ -80,13 +80,19 @@ class TaskController extends BaseController
 
         $all =  Order::where('status', '!=', null);
 
-        if($user->is_superadmin == 0 && $user->all_team_access == 0){
+        if($user->is_superadmin == 0 && $user->all_team_access == 0 && $user->manager_type == 0){
             $all = $all->where(function($q) use($agentids) {
                 $q->whereIn('driver_id', $agentids)->orWhereNull('driver_id');
             });
 
             $all = $all->wherehas('allteamtags', function($query) use($team_tags) {
                 $query->whereIn('tag_id', $team_tags);
+            });
+        }else if($user->is_superadmin == 0 && $user->all_team_access == 0 && $user->manager_type == 1){
+            $manager_warehouses = Client::with('warehouse')->where('id', $user->id)->first();
+            $mana_warehouseIds = $manager_warehouses->warehouse->pluck('id');
+            $all = $all->whereHas('task', function($query) use ($mana_warehouseIds) {
+                $query->whereIn('warehouse_id', $mana_warehouseIds);
             });
         }
         $all = $all->get();
@@ -123,13 +129,18 @@ class TaskController extends BaseController
 
         $allcation   = AllocationRule::where('id', 1)->first();
 
-
+        $warehouses = Warehouse::all();
+        if($user->is_superadmin == 0 && $user->all_team_access == 0 && $user->manager_type == 1){
+            $manager_warehouses = Client::with('warehouse')->where('id', $user->id)->first();
+            $mana_warehouseIds = $manager_warehouses->warehouse->pluck('id');
+            $warehouses = Warehouse::whereIn('id', $mana_warehouseIds)->get();
+        }
 
         $employees      = Customer::orderby('name', 'asc')->where('status','Active')->select('id', 'name')->get();
         $employeesCount = count($employees);
         $agentsCount    = count($agents->where('is_approved', 1));
 
-        return view('tasks/task')->with([ 'status' => $request->status, 'agentsCount'=>$agentsCount, 'employeesCount'=>$employeesCount, 'active_count' => $active, 'panding_count' => $pending, 'history_count' => $history, 'status' => $check,'preference' => $preference,'agents'=>$agents,'failed_count'=>$failed,'client_timezone'=>$client_timezone]);
+        return view('tasks/task')->with([ 'status' => $request->status, 'agentsCount'=>$agentsCount, 'employeesCount'=>$employeesCount, 'active_count' => $active, 'panding_count' => $pending, 'history_count' => $history, 'status' => $check,'preference' => $preference,'agents'=>$agents,'failed_count'=>$failed,'client_timezone'=>$client_timezone, 'warehouses'=>$warehouses]);
     }
 
 
@@ -216,6 +227,7 @@ class TaskController extends BaseController
 
     public function taskFilter(Request $request)
     {
+        $searchWarehouse_id = $request->warehouseListingType;
         $user = Auth::user();
         $timezone = $user->timezone ?? 251;
 
@@ -245,8 +257,13 @@ class TaskController extends BaseController
                 $query->whereIn('warehouse_id', $mana_warehouseIds);
             });
         }
+        if($searchWarehouse_id != null && $searchWarehouse_id != ''){
+            $orders = $orders->whereHas('task', function($query) use ($searchWarehouse_id) {
+                $query->where('warehouse_id', $searchWarehouse_id);
+            });
+        }
         $orders = $orders->where('status', $request->routesListingType)->where('status', '!=', null)->orderBy('updated_at', 'desc');
-
+        
         $preference = ClientPreference::where('id', 1)->first(['theme','date_format','time_format']);
 
         return Datatables::of($orders)
@@ -2269,13 +2286,15 @@ class TaskController extends BaseController
 
 
        $agents = Agent::orderBy('name', 'asc');
-        if (Auth::user()->is_superadmin == 0 && Auth::user()->all_team_access == 0) {
+        if (Auth::user()->is_superadmin == 0 && Auth::user()->all_team_access == 0 && Auth::user()->manager_type == 0) {
             $agents = $agents->whereHas('team.permissionToManager', function ($query) {
                 $query->where('sub_admin_id', Auth::user()->id);
+                $query->whereNull('warehouse_id');
             });
+        }else if(Auth::user()->is_superadmin == 0 && Auth::user()->all_team_access == 0 && Auth::user()->manager_type == 1){
+            $agents = $agents->whereNotNull('warehouse_id');
         }
         $agents = $agents->where('is_approved', 1)->get();
-
 
         if (isset($task->images_array)) {
             $array = explode(",", $task->images_array);
@@ -2306,8 +2325,8 @@ class TaskController extends BaseController
         }
         $task->customer->countrycode = getCountryCode($task->customer->dial_code);
         $warehouses = Warehouse::all();
-        // dd($task);
-        return view('tasks/update-task')->with(['task' => $task, 'agent_location' => $agent_location, 'task_locations' => $task_locations, 'task_proofs' => $task_proofs, 'preference' => $preference, 'teamTag' => $teamTag, 'agentTag' => $agentTag, 'agents' => $agents, 'images' => $array, 'savedrivertag' => $savedrivertag, 'saveteamtag' => $saveteamtag, 'main' => $lastbaseurl,'alllocations'=>$all_locations,'client_timezone'=>$client_timezone, 'warehouses' => $warehouses]);
+        $vehicle_type = VehicleType::all();
+        return view('tasks/update-task')->with(['task' => $task, 'agent_location' => $agent_location, 'task_locations' => $task_locations, 'task_proofs' => $task_proofs, 'preference' => $preference, 'teamTag' => $teamTag, 'agentTag' => $agentTag, 'agents' => $agents, 'images' => $array, 'savedrivertag' => $savedrivertag, 'saveteamtag' => $saveteamtag, 'main' => $lastbaseurl,'alllocations'=>$all_locations,'client_timezone'=>$client_timezone, 'warehouses' => $warehouses, 'vehicle_type' => $vehicle_type]);
     }
 
     /**

@@ -291,6 +291,13 @@ $task_type_array = [__('Pickup'), __('Drop-Off'), __('Appointment')];
                                                             <strong></strong>
                                                         </span>
                                                     </div>
+                                                    <div class="form-group vehicle_type_select mt-1 mb-1">
+                                                        <select class="vehicle_type" id="vehicle_type" name="vehicle_type[]" style="width:100%;">
+                                                            @foreach ($vehicle_type as $vehicle)
+                                                                <option value="{{$vehicle->id}}">{{$vehicle->name}}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
                                                 </div>
                                                 <div class="col-md-1 text-center pt-2 pr-2" >
                                                 <span class="span1 onedeletex" id="spancheckd" data-taskid="{{ $item->id }}"><img style="filter: grayscale(.5);"
