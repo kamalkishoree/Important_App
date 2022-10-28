@@ -1,4 +1,13 @@
 @extends('layouts.vertical', ['title' =>  'Warehouse' ])
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<style>
+    span.select2-selection.select2-selection--multiple { line-height: 21px;height: 38px; }
+    .select2-container--default .select2-selection--multiple .select2-selection__choice { line-height: initial; }
+    .select2-container--default .select2-selection--multiple .select2-selection__choice__remove { color: #fff !important;border: unset !important;}
+    .select2-container--default .select2-selection--multiple .select2-selection__choice__display { padding-left: 10px !important;padding-right: 0px !important; }
+    .select2-container--default.select2-container--focus .select2-selection--multiple.select2-selection--clearable { display: flex !important;flex-wrap: nowrap !important; }
+    .select2-container .select2-search--inline .select2-search__field { margin-top: 8px !important; }
+</style>
 @section('content')
     <!-- Start Content-->
     <div class="container-fluid">
@@ -108,10 +117,15 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="category" class="control-label">{{__("Category")}}</label>
-                                    <select name="category" class="form-control">
-                                        <option value="">Select Category</option>
+                                    @php
+                                        $categoryIds = [];
+                                        if(!empty($warehouse->category)){
+                                            $categoryIds = $warehouse->category->pluck('id')->toArray();
+                                        }
+                                    @endphp
+                                    <select name="category[]" class="form-control" multiple="multiple" id="category">
                                         @foreach ($category as $cat)
-                                            <option value="{{$cat->id}}" @if(!empty($warehouse->category_id) && $warehouse->category_id == $cat->id) selected @endif>{{$cat->slug}}</option>
+                                            <option value="{{$cat->id}}"  @if(in_array($cat->id, $categoryIds)) selected @endif>{{$cat->slug}}</option>
                                         @endforeach
                                     </select>
                                     @if($errors->has('category'))
@@ -138,5 +152,6 @@
 @endsection
 @include('warehouse.warehouse-modal')
 @section('script')
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     @include('warehouse.warehouse-script')
 @endsection

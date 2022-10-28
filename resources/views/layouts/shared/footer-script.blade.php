@@ -80,12 +80,33 @@ $(document).ready(function(){
     $(document).on('click', '.choose_warehouse', function(){
         if ($(this).text() == "Choose Warehouse") { 
             $(this).text("Choose Location"); 
+            $(this).closest(".firstclone1").find(".select_category-field").show();
         } else { 
-            $(this).text("Choose Warehouse"); 
+            $(this).text("Choose Warehouse");
+            $(this).closest(".firstclone1").find(".select_category-field").hide(); 
         }; 
         $(this).closest(".firstclone1").find(".location-section").toggle();
-        $(this).closest(".firstclone1").find(".select_warehouse-field").toggle();
-    })
+        $(this).closest(".firstclone1").find(".warehouse-fields").toggle();
+    });
+
+    $(document).on('change', '.category_id', function(){
+        var cat_id = $(this).val();
+        $.ajax({
+            url: "{{route('tasks.getCategoryWarehouse')}}",
+            type: "get",
+            datatype: "html",
+            data:{cat_id:cat_id},
+            success: (data) => {
+                $(this).closest(".firstclone1").find(".warehouse").empty().html(data);
+            },
+            error: () => {
+                $(this).closest(".firstclone1").find(".warehouse").empty().html('Something went wrong');
+            },
+            complete: function (data) {
+                // hideLoader(); 
+            }
+        });
+    });
 });
 
 </script>

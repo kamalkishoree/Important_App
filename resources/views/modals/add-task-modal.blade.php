@@ -205,7 +205,7 @@
                             <div class="alFormTaskType row m-0">
                                 <div class="col-md-12">
                                     <div class="row firstclone1">
-                                        <div class="col-md-6">
+                                        <div class="col-md-4">
                                             <div class="form-group mb-1">
                                                 <select class="selecttype mt-1" id="task_type"  name="task_type_id[]" style="width:100%;" required>
                                                     <option value="1">{{__("Pickup Task")}}</option>
@@ -214,7 +214,7 @@
                                                 </select>
                                             </div>
                                         </div>
-                                        <div class="col-md-5">
+                                        <div class="col-md-4">
                                             <div class="form-group appoint mt-1 mb-1">
                                                 {!! Form::text('appointment_date[]', null, ['class' => 'form-control appointment_date', 'placeholder' => __('Duration (In Min)')]) !!}
                                                 <span class="invalid-feedback" role="alert">
@@ -229,6 +229,16 @@
                                                 </select>
                                             </div>
                                         </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group select_category-field mt-1 mb-1" style="display: none;">
+                                                <select class="form-control category_id" name="category_id" id="category_id">
+                                                    <option value="">Select Category</option>
+                                                    @foreach ($category as $cat)
+                                                        <option value="{{$cat->id}}">{{$cat->slug}}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                        </div>
                                         <div class="col-md-1 text-center pt-2 pr-2" >
                                             <span class="span1 delbtnhead" id="spancheck"><img style="filter: grayscale(.5);" src="{{asset('assets/images/ic_delete.png')}}"  alt=""></span>
                                         </div>
@@ -237,12 +247,12 @@
                                                 <div class="row">
                                                     <div class="col-6 addressDetails border-right">
                                                         <h6>Address Details</h6>
-                                                        <div class="row">
-                                                            <div class="form-group col-12 mb-1">
-                                                                {!! Form::text('short_name[]', null, ['class' => 'form-control address', 'placeholder' => __('Short Name')]) !!}
-                                                            </div>
-                                                        </div>
                                                         <div class="row location-section">
+                                                            <div class="row" style="padding: 0px 10px;">
+                                                                <div class="form-group col-12 mb-1">
+                                                                    {!! Form::text('short_name[]', null, ['class' => 'form-control address', 'placeholder' => __('Short Name')]) !!}
+                                                                </div>
+                                                            </div>
                                                             <div class="input-group form-group col-12 mb-2">
                                                                 <input type="text" id="addHeader1-input" name="address[]" class="form-control address cust_add" placeholder='{{__("Location")}}'>
                                                                 <div class="input-group-append">
@@ -258,17 +268,18 @@
                                                                 {!! Form::text('post_code[]', null, ['class' => 'form-control address postcode','placeholder' => __('Post Code'),'id'=>'addHeader1-postcode']) !!}
                                                             </div>
                                                         </div>
-                                                        <div class="warehouse-field">
-                                                            <div class="form-group mb-1 select_warehouse-field" style="display: none;">
-                                                                <select class="form-control" name="warehouse_id[]" id="warehouse">
+                                                        <div class="warehouse-fields" style="display: none;">
+                                                            <div class="form-group mb-1 select_warehouse-field">
+                                                                <select class="form-control warehouse" name="warehouse_id[]" id="warehouse">
                                                                     <option value="">Select Warehouse</option>
                                                                     @foreach ($warehouses as $warehouse)
                                                                         <option value="{{$warehouse->id}}">{{$warehouse->name}}</option>
                                                                     @endforeach
                                                                 </select>
                                                             </div>
-                                                            <h6><a href="javascript:void(0);" class="choose_warehouse">Choose Warehouse</a></h6>
                                                         </div>
+                                                        <h6 class="or-text text-center">OR</h6>
+                                                        <h6 class="choose_warehouse text-center text-primary" style="text-decoration: underline;cursor: pointer;">Choose Warehouse</h6>
                                                     </div>
 
                                                     <div class="alContactOther col-6">

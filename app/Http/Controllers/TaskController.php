@@ -22,6 +22,7 @@ use App\Model\Roster;
 use App\Model\TaskProof;
 use App\Model\Geo;
 use App\Model\Order;
+use App\Model\Category;
 use App\Model\Timezone;
 use App\Model\AgentLog;
 use App\Model\VehicleType;
@@ -1050,10 +1051,10 @@ class TaskController extends BaseController
             $extraData = [
                 'customer_name'            => $order_details->customer->name,
                 'customer_phone_number'    => $order_details->customer->phone_number,
-                'short_name'               => $value->location->short_name,
-                'address'                  => $value->location->address,
-                'lat'                      => $value->location->latitude,
-                'long'                     => $value->location->longitude,
+                'short_name'               => $value->location->short_name ?? '',
+                'address'                  => $value->location->address ?? '',
+                'lat'                      => $value->location->latitude ?? '',
+                'long'                     => $value->location->longitude ?? '',
                 'task_count'               => $taskcount,
                 'unique_id'                => $randem,
                 'created_at'               => Carbon::now()->toDateTimeString(),
@@ -1143,8 +1144,10 @@ class TaskController extends BaseController
         $task_proofs = TaskProof::all();
 
         $vehicle_type = VehicleType::all();
+
+        $category = Category::where('status', 1)->get();
         
-        $returnHTML = view('modals/add-task-modal')->with(['teamTag' => $teamTag, 'preference'=>$preference, 'agentTag' => $agentTag, 'agents' => $agents, 'pricingRule' => $pricingRule, 'allcation' => $allcation ,'task_proofs' => $task_proofs, 'warehouses' => $warehouses, 'vehicle_type' => $vehicle_type ])->render();
+        $returnHTML = view('modals/add-task-modal')->with(['teamTag' => $teamTag, 'preference'=>$preference, 'agentTag' => $agentTag, 'agents' => $agents, 'pricingRule' => $pricingRule, 'allcation' => $allcation ,'task_proofs' => $task_proofs, 'warehouses' => $warehouses, 'vehicle_type' => $vehicle_type, 'category' => $category])->render();
         return response()->json(array('success' => true, 'html' => $returnHTML));
     }
 
@@ -2334,7 +2337,8 @@ class TaskController extends BaseController
         $task->customer->countrycode = getCountryCode($task->customer->dial_code);
         $warehouses = Warehouse::all();
         $vehicle_type = VehicleType::all();
-        return view('tasks/update-task')->with(['task' => $task, 'agent_location' => $agent_location, 'task_locations' => $task_locations, 'task_proofs' => $task_proofs, 'preference' => $preference, 'teamTag' => $teamTag, 'agentTag' => $agentTag, 'agents' => $agents, 'images' => $array, 'savedrivertag' => $savedrivertag, 'saveteamtag' => $saveteamtag, 'main' => $lastbaseurl,'alllocations'=>$all_locations,'client_timezone'=>$client_timezone, 'warehouses' => $warehouses, 'vehicle_type' => $vehicle_type]);
+        $category = Category::where('status', 1)->get();
+        return view('tasks/update-task')->with(['task' => $task, 'agent_location' => $agent_location, 'task_locations' => $task_locations, 'task_proofs' => $task_proofs, 'preference' => $preference, 'teamTag' => $teamTag, 'agentTag' => $agentTag, 'agents' => $agents, 'images' => $array, 'savedrivertag' => $savedrivertag, 'saveteamtag' => $saveteamtag, 'main' => $lastbaseurl,'alllocations'=>$all_locations,'client_timezone'=>$client_timezone, 'warehouses' => $warehouses, 'vehicle_type' => $vehicle_type, 'category' => $category]);
     }
 
     /**
@@ -2487,11 +2491,15 @@ class TaskController extends BaseController
                     if ($key == 0) {
                         $loc_id = $request->old_address_id;
                     } else {
-                        $loc_id = $request->input($old_address_ids[$key]);
+                        if(!empty($old_address_ids)){
+                            $loc_id = $request->input($old_address_ids[$key]);
+                        }else{
+                            $loc_id = '';
+                        }
                     }
 
                     $location = Location::where('id', $loc_id)->first();
-                    if ($location->customer_id != $cus_id) {
+                    if (!empty($location) && $location->customer_id != $cus_id) {
                         $newloc = [
                             'short_name'     => $location->short_name,
                             'post_code'      => $location->post_code,
@@ -2505,7 +2513,9 @@ class TaskController extends BaseController
                             $newloc
                         );
                     }
-                    $loc_id = $location->id;
+                    if(!empty($loc_id)){
+                        $loc_id = $location->id;
+                    }
                 }
 
                 $data = [
@@ -2722,5 +2732,12 @@ class TaskController extends BaseController
         return response()->json($task);
     }
 
-
+    public function getCategoryWarehouse(Request $request){
+        if ($request->ajax()) {
+            $category_id = $request->cat_id;
+            $category = Category::with('warehouses')->where('id', $category_id)->first();
+            $options = view("modals.category-warehouse-ajax",compact('category'))->render();
+            return $options;
+        }
+    }
 }

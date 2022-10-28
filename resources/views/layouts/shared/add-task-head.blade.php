@@ -712,7 +712,6 @@
         var s_name = $("input[name='short_name[]']").val();
         var s_address = $("input[name='address[]']").val();
         var warehouse_id = $("select[name='warehouse_id[]']").val();
-        console.log(warehouse_id);
         if(warehouse_id){
             err = 0;
             $(".addspan").hide();

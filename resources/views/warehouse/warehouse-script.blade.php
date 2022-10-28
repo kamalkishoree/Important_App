@@ -80,8 +80,6 @@
     var longitude = [];
 
     function loadMap(autocompletesWraps) {
-
-        //console.log(autocompletesWraps);
         $.each(autocompletesWraps, function(index, name) {
             const geocoder = new google.maps.Geocoder;
 
@@ -119,7 +117,12 @@
                 });
             });
         });
-
     }
-
+    $(document).ready(function(){
+        $("#category").select2({
+            allowClear: true,
+            width: "resolve",
+            placeholder: "Select Category"
+        });
+    });
 </script>

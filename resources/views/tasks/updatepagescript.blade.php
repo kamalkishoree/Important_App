@@ -274,16 +274,21 @@ $(document).ready(function(){
         $(document).on("click", ".submitUpdateTaskHeader", function(e) {
             e.preventDefault();
             var err = 0;
-            
-            $("input[name='address[]']").each(function(){
-                var address = $(this).val();
-                if(address == ''){
-                    err = 1;
-                    $(this).closest('.check-validation').find('.addspan').show();
-                    return false;
-                }
-            });
 
+            var warehouse_id = $("select[name='warehouse_id[]']").val();
+            if(warehouse_id){
+                err = 0;
+                $(".addspan").hide();
+            }else{
+                $("input[name='address[]']").each(function(){
+                    var address = $(this).val();
+                    if(address == ''){
+                        err = 1;
+                        $(this).closest('.check-validation').find('.addspan').show();
+                        return false;
+                    }
+                });
+            }
             if(err == 1){
                 return false;
             }else if(err == 0){

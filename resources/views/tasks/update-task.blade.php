@@ -274,7 +274,7 @@ $task_type_array = [__('Pickup'), __('Drop-Off'), __('Appointment')];
                                     <div class="alFormTaskType row m-0 pt-1 pb-1">
                                         <div class="col-md-12">
                                             <div class="row firstclone1">
-                                                <div class="col-md-6">
+                                                <div class="col-md-4">
                                                     <div class="form-group mb-1">
                                                         <select class=" selecttype mt-1" id="task_type"  name="task_type_id[]" style="width:100%;" required>
                                                             <option value="1" {{ $item->task_type_id == 1 ? 'selected' : '' }}>
@@ -284,7 +284,7 @@ $task_type_array = [__('Pickup'), __('Drop-Off'), __('Appointment')];
                                                         </select>
                                                     </div>
                                                 </div>
-                                                <div class="col-md-5">
+                                                <div class="col-md-4">
                                                     <div class="form-group mt-1 mb-1 {{ $item->task_type_id == 3 ? 'newclass' : 'appoint' }}" style="display: none;">
                                                         {!! Form::text('appointment_date[]', $item->appointment_duration, ['class' => 'form-control appointment_date', 'placeholder' => __('Duration (In Min)')]) !!}
                                                         <span class="invalid-feedback" role="alert">
@@ -299,6 +299,19 @@ $task_type_array = [__('Pickup'), __('Drop-Off'), __('Appointment')];
                                                         </select>
                                                     </div>
                                                 </div>
+                                                @php
+                                                    if($item->warehouse_id != ""){ $style = "block"; }else{ $style = "none"; }
+                                                @endphp
+                                                <div class="col-md-3">
+                                                    <div class="form-group select_category-field mt-1 mb-1" style="display: {{$style}};">
+                                                        <select class="form-control category_id" name="category_id" id="category_id">
+                                                            <option value="">Select Category</option>
+                                                            @foreach ($category as $cat)
+                                                                <option value="{{$cat->id}}">{{$cat->slug}}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                </div>
                                                 <div class="col-md-1 text-center pt-2 pr-2" >
                                                 <span class="span1 onedeletex" id="spancheckd" data-taskid="{{ $item->id }}"><img style="filter: grayscale(.5);"
                                                     src="{{ asset('assets/images/ic_delete.png') }}" alt=""></span>
@@ -308,11 +321,6 @@ $task_type_array = [__('Pickup'), __('Drop-Off'), __('Appointment')];
                                                         <div class="row">
                                                             <div class="col-6 addressDetails border-right">
                                                                 <h6>Address Details</h6>
-                                                                <div class="row">
-                                                                    <div class="form-group col-12 mb-1">
-                                                                        {!! Form::text('short_name[]', null, ['class' => 'form-control address', 'placeholder' => __('Short Name')]) !!}
-                                                                    </div>
-                                                                </div>
                                                                 @php
                                                                     if($item->warehouse_id != ""){
                                                                         $style = "none";
@@ -321,6 +329,11 @@ $task_type_array = [__('Pickup'), __('Drop-Off'), __('Appointment')];
                                                                     }
                                                                 @endphp
                                                                 <div class="row location-section" style="display: {{$style}}">
+                                                                    <div class="row">
+                                                                        <div class="form-group col-12 mb-1">
+                                                                            {!! Form::text('short_name[]', null, ['class' => 'form-control address', 'placeholder' => __('Short Name')]) !!}
+                                                                        </div>
+                                                                    </div>
                                                                     <div class="input-group form-group col-6 mb-2">
                                                                         <input type="text" id="add{{ $newcount }}-input" name="address[]" class="form-control address cust1_add" placeholder='{{__("Location")}}'>
                                                                         <div class="input-group-append">
@@ -345,17 +358,18 @@ $task_type_array = [__('Pickup'), __('Drop-Off'), __('Appointment')];
                                                                         $choose_text = "Choose Warehouse";
                                                                     }
                                                                 @endphp
-                                                                <div class="warehouse-field">
-                                                                    <div class="form-group mb-1 select_warehouse-field" style="display: {{$style}};">
-                                                                        <select class="form-control" name="warehouse_id[]" id="warehouse">
+                                                                <div class="warehouse-fields" style="display: {{$style}};">
+                                                                    <div class="form-group mb-1 select_warehouse-field">
+                                                                        <select class="form-control warehouse" name="warehouse_id[]" id="warehouse">
                                                                             <option value="">Select Warehouse</option>
                                                                             @foreach ($warehouses as $warehouse)
                                                                                 <option value="{{$warehouse->id}}" {{ $item->warehouse_id == $warehouse->id ? 'selected' : '' }}>{{$warehouse->name}}</option>
                                                                             @endforeach
                                                                         </select>
                                                                     </div>
-                                                                    <h6><a href="javascript:void(0);" class="choose_warehouse">{{$choose_text}}</a></h6>
                                                                 </div>
+                                                                <h6 class="or-text text-center">OR</h6>
+                                                                <h6 class="choose_warehouse text-center text-primary" style="text-decoration: underline;cursor: pointer;">{{$choose_text}}</h6>
                                                             </div>
 
                                                             <div class="alContactOther col-6">

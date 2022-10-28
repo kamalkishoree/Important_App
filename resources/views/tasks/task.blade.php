@@ -246,7 +246,4 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
     <script src="{{asset('assets/libs/bootstrap-select/bootstrap-select.min.js')}}"></script>
     <script src="{{ asset('assets/libs/datatables/datatables.min.js') }}"></script>
     @include('tasks.taskpagescript')
-
-
-    
 @endsection

@@ -43,13 +43,14 @@ class WarehouseController extends Controller
         $warehouse->name = $request->input('name');
         $warehouse->code = $request->input('code');
         $warehouse->address = $request->input('address');
-        $warehouse->category_id = $request->input('category');
         $warehouse->latitude = $request->input('latitude');
         $warehouse->longitude = $request->input('longitude');
         $warehouse->save();
         $amenities = $request->input('amenities');
         $warehouse->amenity()->sync($amenities);
-        return redirect()->back()->with('success','Warehouse Added Successfully');
+        $category = $request->input('category');
+        $warehouse->category()->sync($category);
+        return redirect()->route('warehouse.index')->with('success','Warehouse Added Successfully');
     }
 
     /**
@@ -78,14 +79,15 @@ class WarehouseController extends Controller
             'name' => $request->input('name'),
             'code' => $request->input('code'),
             'address' => $request->input('address'),
-            'category_id' => $request->input('category'),
             'latitude' => $request->input('latitude'),
             'longitude' => $request->input('longitude')
         ];
         $warehouse->update($data);
         $amenities = $request->input('amenities');
         $warehouse->amenity()->sync($amenities);
-        return redirect()->back()->with('success','Warehouse Updated Successfully');
+        $category = $request->input('category');
+        $warehouse->category()->sync($category);
+        return redirect()->route('warehouse.index')->with('success','Warehouse Updated Successfully');
     }
 
     /**

@@ -18,7 +18,6 @@ class CreateWarehousesTable extends Migration
             $table->string('name');
             $table->string('code')->unique();
             $table->string('address')->nullable();
-            $table->string('category_id')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

@@ -63,7 +63,12 @@
                                                     @endphp
                                                     {{ $amenity }}
                                                 </td>
-                                                <td>{{ $warehouse->category->slug }}</td>                                    
+                                                <td>
+                                                    @php
+                                                        $category = implode(',', $warehouse->category->pluck('slug')->toArray());
+                                                    @endphp
+                                                    {{ $category }}
+                                                </td>                                    
                                                 <td>{{ formattedDate($warehouse->created_at) }}</td>                                    
                                                 <td>
                                                     <div class="form-ul" style="width: 60px;">
