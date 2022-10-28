@@ -83,7 +83,8 @@ $(document).ready(function(){
             $(this).closest(".firstclone1").find(".select_category-field").show();
         } else { 
             $(this).text("Choose Warehouse");
-            $(this).closest(".firstclone1").find(".select_category-field").hide(); 
+            $(this).closest(".firstclone1").find(".select_category-field").hide();
+            $(this).closest(".firstclone1").find(".warehouse").val(''); 
         }; 
         $(this).closest(".firstclone1").find(".location-section").toggle();
         $(this).closest(".firstclone1").find(".warehouse-fields").toggle();
