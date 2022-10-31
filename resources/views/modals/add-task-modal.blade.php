@@ -5,7 +5,7 @@
     <div class="col-md-12">
         <div class="card-box pb-0 pt-0 mb-1">            
             <div class="row d-flex">
-                <div class="col-md-4" style="border-right: 1px solid #ccc;">
+                <div class="col-sm-12 col-xl-4 col-md-12" style="border-right: 1px solid #ccc;">
                     @csrf
                     <div class="row mb-2" id="dateredio">
                         <div class="col-md-12">
@@ -88,7 +88,7 @@
                         <input type="hidden" id="check-appointment-barcode" value="{{ (!empty($task_proofs[2]->barcode_requried) ? $task_proofs[2]->barcode_requried : 0)}}">
                     </div>
 
-                    <h4 class="header-title mb-2">{{__("Meta Data")}} <a href="#edit_desc" class="edit-icon-float-right"> <i class="mdi mdi-square-edit-outline"></i></a></h4>
+                    <h4 class="header-title mb-2">{{__("Meta Data")}} <a href="javascript:void(0)" class="edit-icon-float-right"> <i class="mdi mdi-chevron-down"></i></a></h4>
                     <div class="meta_data_task_div" style="display:none;">
                         <div class="row mb-2">
                             <div class="col-md-12" id="make_modelInput">
@@ -197,7 +197,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-8">
+                <div class="col-sm-12 col-xl-8 col-md-12">
                     <h4 class="header-title mb-2">{{__("Tasks")}}</h4>
                     <span class="span1 addspan">{{__("Please select a address or create new")}}</span>
                     <div class="cust_add_div" id="addHeader1">

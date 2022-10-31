@@ -57,12 +57,12 @@
                             <div class="row">
                                 <div class="col-12 mb-2">
                                     <label for="title" class="control-label ">{{ __("Subject") }}</label>
-                                    <input class="form-control al_box_height" id="subject" placeholder="Subject" name="subject" type="text">
+                                    <input class="form-control al_box_height" id="subject" placeholder="{{ __("Meta Keyword") }}" name="subject" type="text">
                                     <span class="text-danger error-text updatetitleError"></span>
                                 </div>
                                 <div class="col-md-10 mb-3">
                                     <label for="title" class="control-label mb-0">{{ __("Content") }}</label>
-                                    <textarea style="visibility: hidden;" class="form-control" id="editor" placeholder="Meta Keyword" rows="6" name="meta_keyword" cols="10"></textarea>
+                                    <textarea style="visibility: hidden;" class="form-control" id="editor" placeholder="{{ __("Meta Keyword") }}" rows="6" name="meta_keyword" cols="10"></textarea>
                                 </div>
                                 <div class="col-md-2">
                                     <label for="title" class="control-label">{{ __("Tags") }}:-<div id="tags" disabled=""></div></label>

@@ -18,12 +18,13 @@ use App\Model\TaskProof;
 use App\Model\DriverGeo;
 use App\Model\TaskReject;
 use App\Model\SmtpDetail;
+use App\Traits\AgentSlotTrait;
 use App\Model\BatchAllocation;
-use App\Model\BatchAllocationDetail;
 use App\Model\AllocationRule;
 use App\Model\ClientPreference;
 use App\Model\NotificationType;
 use App\Traits\agentEarningManager;
+use App\Model\BatchAllocationDetail;
 use App\Model\{PricingRule, TagsForAgent, AgentPayout, TagsForTeam, Team, PaymentOption, PayoutOption, AgentConnectedAccount, CustomerVerificationResource, SubscriptionInvoicesDriver};
 
 use Illuminate\Http\Request;
@@ -53,9 +54,10 @@ use App\Http\Controllers\StripeGatewayController;
 
 class TaskController extends BaseController
 {
+    use AgentSlotTrait;
     public function smstest(Request $request){
       $res = $this->sendSms2($request->phone_number, $request->sms_body);
-     // pr($res);
+     
     }
     public function updateTaskStatus(Request $request)
     {
@@ -79,10 +81,6 @@ class TaskController extends BaseController
 
         //set dynamic smtp for email send
         $this->setMailDetail($client_details);
-
-        // $cheking = NotificationEvent::is_checked_sms();
-
-
 
         $orderId        = Task::where('id', $request->task_id)->with(['tasktype'])->first();
         $user           = Auth::user();
@@ -113,7 +111,7 @@ class TaskController extends BaseController
 
         $allCount       = Count($orderAll);
         $inProgress     = $orderAll->where('task_status', 2);
-        $lasttask       = count($orderAll->where('task_status', 4));
+        $lasttask       = count($orderAll->where('task_status', 4)->where('id', '!=', $request->task_id));
         $check          = $allCount - $lasttask;
         $lastfailedtask       = count($orderAll->where('task_status', 5));
         $checkfailed          = $allCount - $lastfailedtask;
@@ -142,7 +140,6 @@ class TaskController extends BaseController
             case 2:
                  $task_type        = 'assigned';
                  $sms_final_status =  $sms_settings['notification_events'][0];
-                // $sms_body         = 'Driver '.$order_details->agent->name.' in our '.$order_details->agent->make_model.' with license plate '.$order_details->agent->plate_number.' is heading to your location. You can track them here.'.url('/order/tracking/'.$client_details->code.'/'.$order_details->unique_id.'');
                  $sms_body         = $sms_settings['notification_events'][0]['message'];
                  $link             =  $client_url.'/order/tracking/'.$client_details->code.'/'.$order_details->unique_id;
 
@@ -150,7 +147,6 @@ class TaskController extends BaseController
             case 3:
                  $task_type        = 'assigned';
                  $sms_final_status =   $sms_settings['notification_events'][1];
-                // $sms_body         = 'Driver '.$order_details->agent->name.' in our '.$order_details->agent->make_model.' with license plate '.$order_details->agent->plate_number.' has arrived at your location. ';
                  $sms_body         = $sms_settings['notification_events'][1]['message'];
                  $link             =  '';
 
@@ -158,7 +154,6 @@ class TaskController extends BaseController
             case 4:
                 $task_type         = 'completed';
                 $sms_final_status  =   $sms_settings['notification_events'][2];
-               // $sms_body          = 'Thank you, your order has been delivered successfully by driver '.$order_details->agent->name.'. You can rate them here .'.url('/order/feedback/'.$client_details->code.'/'.$order_details->unique_id.'');
                 $sms_body          = $sms_settings['notification_events'][2]['message'];
                 $link              =  $client_url.'/order/feedback/'.$client_details->code.'/'.$order_details->unique_id;
 
@@ -197,7 +192,6 @@ class TaskController extends BaseController
             case 5:
                 $task_type         = 'failed';
                 $sms_final_status  =   $sms_settings['notification_events'][3];
-                //$sms_body          = 'Sorry, our driver '.$order_details->agent->name.' is not able to complete your order delivery';
                 $sms_body          = $sms_settings['notification_events'][3]['message'];
                 $link              =  '';
             break;
@@ -214,13 +208,14 @@ class TaskController extends BaseController
         if ($request->task_status == 4) {
             if ($check == 1) {
                 $Order  = Order::where('id', $orderId->order_id)->update(['status' => $task_type]);
-
                 if($order_details && $order_details->call_back_url){
                     $call_web_hook = $this->updateStatusDataToOrder($order_details,5,$orderId->task_type_id);  # call web hook when order completed
                 }
                 if(isset($request->qr_code)){
                    $codeVendor = $this->checkQrcodeStatusDataToOrderPanel($order_details,$request->qr_code,5);
                 }
+                $orderdata = Order::select('id', 'order_time', 'status', 'driver_id')->with('agent')->where('id', $order_details->id)->first();
+               // event(new \App\Events\loadDashboardData($orderdata));
             }
             //Send Next Dependent task details
             $tasks = Task::where('dependent_task_id', $orderId->id)->where('task_status', '!=', 4)->Where('task_status', '!=', 5)
@@ -342,10 +337,7 @@ class TaskController extends BaseController
                 Log::info($e->getMessage());
             }
         }
-        // if($request->task_status == 2 && isset($order_details->type) && $order_details->type == 1 && strlen($order_details->friend_phone_number) > 8){
-        //     $friend_sms_body = $order_details->recipient_phone.' have booked a ride for you. Driver '.$order_details->agent->name.' in our '.$order_details->agent->make_model.' with license plate '.$order_details->agent->plate_number.' has arrived at your location. ';
-        //     $this->sendSms2($order_details->customer->phone_number, $friend_sms_body);
-        // }
+        
         if($send_email_status == 1){
             $sendto        = isset($order_details->customer->email)?$order_details->customer->email:'';
             $client_logo   = Storage::disk('s3')->url($client_details->logo);
@@ -707,10 +699,7 @@ class TaskController extends BaseController
                 $proof_face = $path;
             }
         }
-        // if(!empty($proof_face)){
-        //     Task::where('order_id', $request->order_id)->update(['proof_face' => $proof_face]);
-        // }
-
+        
 
         if (isset($check) && $check->driver_id != null) {
             if ($check && $check->call_back_url) {
@@ -797,6 +786,8 @@ class TaskController extends BaseController
                     'freelancer_commission_percentage' => $freelancer_commission_percentage
                 ]);
                 Task::where('order_id', $batch->order_id)->update(['task_status' => 1]);
+                $orderdata = Order::select('id', 'order_time', 'status', 'driver_id')->with('agent')->where('id', $batch->order_id)->first();
+               // event(new \App\Events\loadDashboardData($orderdata));
             }
             if ($check && $check->call_back_url) {
                 $call_web_hook = $this->updateStatusDataToOrder($check, 2,1);  # task accepted
@@ -901,14 +892,16 @@ class TaskController extends BaseController
 
     public function CreateTask(CreateTaskRequest $request)
     {
+    
         try {
+            $auth =  $client =  Client::with(['getAllocation', 'getPreference'])->first();
             $header = $request->header();
             if(isset($header['client'][0]))
             {
 
             }
             else{
-               $client =  Client::with(['getAllocation', 'getPreference'])->first();
+               // $client =  Client::with(['getAllocation', 'getPreference'])->first();
                $header['client'][0] = $client->database_name;
             }
            
@@ -917,9 +910,9 @@ class TaskController extends BaseController
 
             DB::beginTransaction();
 
-            $auth =  Client::with(['getAllocation', 'getPreference'])->first();
+            //$auth =  Client::with(['getAllocation', 'getPreference'])->first();
             $tz = new Timezone();
-
+           
             if(isset($request->order_time_zone) && !empty($request->order_time_zone))
             $auth->timezone = $request->order_time_zone;
             else
@@ -1040,8 +1033,26 @@ class TaskController extends BaseController
                 'dbname'                          => $request->dbname,
                 'sync_order_id'                   => $request->order_id
             ];
-            $orders = Order::create($order);
+           
+            
+           
 
+            $orders = Order::create($order);
+             /**
+             * booking for appointment 
+             * task_type_id =3= appointment type
+             * is_driver_slot check slotting enabled or not
+             */
+            if(($request->has('task_type_id') && $request->task_type_id == 3) && $auth->getPreference->is_driver_slot == 1 ){
+                $data  = $request->all();
+                $data['order_id']=$orders->id;
+                $data['order_number']= $orders->order_number;
+                $data['booking_type'] = 'new_booking';
+                $data['memo'] = __("Booked for Order number:").$orders->order_number;
+                
+                $bookingResponse =  $this->SlotBooking($data);
+                
+            }
             if($request->is_restricted == 1){
                 $add_resource = CustomerVerificationResource::updateOrCreate([
                     'customer_id' => $cus_id
@@ -1197,11 +1208,11 @@ class TaskController extends BaseController
 
             if (isset($request->allocation_type) && $request->allocation_type === 'a') {
                 // if (isset($request->team_tag)) {
-            //     $orders->teamtags()->sync($request->team_tag);
-            // }
-            // if (isset($request->agent_tag)) {
-            //     $orders->drivertags()->sync($request->agent_tag);
-            // }
+                //     $orders->teamtags()->sync($request->team_tag);
+                // }
+                // if (isset($request->agent_tag)) {
+                //     $orders->drivertags()->sync($request->agent_tag);
+                // }
             }
             if (isset($request->order_team_tag)) {
 
@@ -1239,12 +1250,14 @@ class TaskController extends BaseController
                     $dispatch_traking_url = $client_url.'/order/tracking/'.$auth->code.'/'.$orders->unique_id;
 
                     DB::commit();
+                    $orderdata = Order::select('id', 'order_time', 'status', 'driver_id')->with('agent')->where('id', $orders->id)->first();
+                    //event(new \App\Events\loadDashboardData($orderdata));
                     return response()->json([
-                    'message' => __('Task Added Successfully'),
-                    'task_id' => $orders->id,
-                    'status'  => $orders->status,
-                    'dispatch_traking_url'  => $dispatch_traking_url??null
-                ], 200);
+                        'message' => __('Task Added Successfully'),
+                        'task_id' => $orders->id,
+                        'status'  => $orders->status,
+                        'dispatch_traking_url'  => $dispatch_traking_url??null
+                    ], 200);
             }   
 
 
@@ -1253,10 +1266,10 @@ class TaskController extends BaseController
             $allocation = AllocationRule::where('id', 1)->first();
 
             if ($request->task_type != 'now') {
-                if(isset($header['client'][0]))
-                $auth = Client::where('database_name', $header['client'][0])->with(['getAllocation', 'getPreference'])->first();
-                else
-                $auth = Client::with(['getAllocation', 'getPreference'])->first();
+                // if(isset($header['client'][0]))
+                // $auth = Client::where('database_name', $header['client'][0])->with(['getAllocation', 'getPreference'])->first();
+                // else
+                // $auth = Client::with(['getAllocation', 'getPreference'])->first();
                 //setting timezone from id
 
                 $dispatch_traking_url = $client_url.'/order/tracking/'.$auth->code.'/'.$orders->unique_id;
@@ -1275,6 +1288,8 @@ class TaskController extends BaseController
                 $from_time = strtotime($from);
                 if ($to_time >= $from_time) {
                     DB::commit();
+                    $orderdata = Order::select('id', 'order_time', 'status', 'driver_id')->with('agent')->where('id', $orders->id)->first();
+                   // event(new \App\Events\loadDashboardData($orderdata));
                     return response()->json([
                         'message' => __('Task Added Successfully'),
                         'task_id' => $orders->id,
@@ -1291,11 +1306,9 @@ class TaskController extends BaseController
 
                 if ($diff_in_minutes > $beforetime) {
                     $finaldelay = (int)$diff_in_minutes - $beforetime;
-
                     $time = Carbon::parse($sendTime)
                     ->addMinutes($finaldelay)
                     ->format('Y-m-d H:i:s');
-
                     $schduledata['geo']               = $geo;
                     //$schduledata['notification_time'] = $time;
                     $schduledata['notification_time'] = $notification_time;
@@ -1307,13 +1320,15 @@ class TaskController extends BaseController
                     $schduledata['allocation']        = $allocation;
                     $schduledata['database']          = $auth;
                     $schduledata['cash_to_be_collected']         = $orders->cash_to_be_collected;
-
                     //Order::where('id',$orders->id)->update(['order_time'=>$time]);
                     //Task::where('order_id',$orders->id)->update(['assigned_time'=>$time,'created_at' =>$time]);
-
+                    Log::info('scheduleNotifi time');
+                    Log::info($finaldelay);
                     scheduleNotification::dispatch($schduledata)->delay(now()->addMinutes($finaldelay));
                     DB::commit();
 
+                    $orderdata = Order::select('id', 'order_time', 'status', 'driver_id')->with('agent')->where('id', $orders->id)->first();
+                    //event(new \App\Events\loadDashboardData($orderdata));
 
                     return response()->json([
                         'message' => __('Task Added Successfully'),
@@ -1350,12 +1365,14 @@ class TaskController extends BaseController
             $dispatch_traking_url = $client_url.'/order/tracking/'.$auth->code.'/'.$orders->unique_id;
 
             DB::commit();
+            $orderdata = Order::select('id', 'order_time', 'status', 'driver_id')->with('agent')->where('id', $orders->id)->first();
+            //event(new \App\Events\loadDashboardData($orderdata));
             return response()->json([
-            'message' => __('Task Added Successfully'),
-            'task_id' => $orders->id,
-            'status'  => $orders->status,
-            'dispatch_traking_url'  => $dispatch_traking_url??null
-        ], 200);
+                'message' => __('Task Added Successfully'),
+                'task_id' => $orders->id,
+                'status'  => $orders->status,
+                'dispatch_traking_url'  => $dispatch_traking_url??null
+            ], 200);
         } catch (Exception $e) {
             DB::rollback();
             return response()->json([

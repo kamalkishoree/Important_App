@@ -580,9 +580,9 @@ class AuthController extends BaseController
 
     public function deleteAgent(Request $request){
         try {
-            DB::beginTransaction(); //Initiate transaction
-                $agent = Auth::user();
-                if(!$agent){
+                DB::beginTransaction(); //Initiate transaction
+                $agent = Agent::where('id', Auth::user()->id)->first();
+                if(empty($agent)){
                     return response()->json(['massage' => __('User not found!')], 200);
                 }
                 Agent::where('id', $agent->id)->update([
@@ -592,6 +592,7 @@ class AuthController extends BaseController
                     'access_token' => ''
                     ]);
                 $agent->delete();
+                Otp::where('phone', $agent->phone_number)->where('is_verified', 1)->delete();
                 DB::commit(); //Commit transaction after all the operations
                 return response()->json(['massage' => __('Account Deleted Successfully')], 200);
                 //code...

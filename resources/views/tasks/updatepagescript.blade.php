@@ -6,6 +6,19 @@
  editCount = 0;
 $(document).ready(function(){
     
+    $(document).on('click', '.copy_link', function() {
+        var $temp = $("<input>");
+        $("body").append($temp);
+        $temp.val($('#pwd_spn').text()).select();
+        document.execCommand("copy");
+        $temp.remove();
+        $("#show_copy_msg_on_click_copy").show();
+        setTimeout(function() {
+            $("#show_copy_msg_on_click_copy").hide();
+        }, 1000);
+    })
+
+
     $('#selectize-optgroups').selectize();
     $('#selectize-optgroup').selectize();
 
@@ -28,6 +41,13 @@ $(document).ready(function(){
 
     $('#taskFormHeader .edit-icon-float-right').on('click', function() {
         $('#taskFormHeader .meta_data_task_div').toggle();
+        if($(this).find('i').hasClass('mdi mdi-chevron-down')){
+            $(this).find('i').removeClass('mdi mdi-chevron-down');
+            $(this).find('i').addClass('mdi mdi-chevron-up');
+        }else{
+            $(this).find('i').removeClass('mdi mdi-chevron-up');
+            $(this).find('i').addClass('mdi mdi-chevron-down');
+        }
     });
 });
     $(document).ready(function() {
