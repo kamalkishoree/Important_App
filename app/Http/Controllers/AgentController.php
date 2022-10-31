@@ -128,6 +128,7 @@ class AgentController extends Controller
             $client_timezone = $client->getTimezone ? $client->getTimezone->timezone : 251;
             $timezone = $tz->timezone_name($client_timezone);
             $agents = Agent::orderBy('id', 'DESC');
+            
             if (!empty($request->get('date_filter'))) {
                 $dateFilter = explode('to', $request->get('date_filter'));
                 if (count($dateFilter) > 1) {
@@ -155,6 +156,7 @@ class AgentController extends Controller
             }
 
             $agents = $agents->where('is_approved', $request->status)->orderBy('id', 'desc');
+            
             return Datatables::of($agents)
                 ->editColumn('name', function ($agents) use ($request) {
                     $name =$agents->name;

@@ -87,7 +87,7 @@ class Agent extends Authenticatable implements  Wallet, WalletFloat
     }
 
     public function warehouse(){
-        return $this->belongsTo('App\Model\Warehouse')->select("id", "name", "code", "address","category_id"); 
+        return $this->belongsTo('App\Model\Warehouse')->select("id", "name", "code", "address"); 
      }
 
     public function logs(){
