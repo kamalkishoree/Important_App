@@ -179,7 +179,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                                         class="showspan">{{ ' (' . $failed_count . ')' }}</span></label>
                                             </li>
                                             <li class="d-inline-block mr-1">
-                                                <select name="search_warehouse" class="form-control" onclick="handleClick(this);" id="search_warehouse">
+                                                <select name="search_warehouse" class="form-control"  onchange="handleClick(this);" id="search_warehouse">
                                                     <option value="">All</option>
                                                     @foreach ($warehouses as $warehouse)
                                                         <option value="{{$warehouse->id}}" @if (app('request')->input('search_warehouse') == $warehouse->id) {{'selected="selected"'}} @endif>{{$warehouse->name}}</option>                                                            
@@ -188,7 +188,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                             </li>
                                             @if(Auth::user()->is_superadmin == 1 && Auth::user()->manager_type == 0)
                                             <li class="d-inline-block mr-1">
-                                                <select name="warehouse_manager" class="form-control" onclick="handleClick(this);" id="warehouse_manager">
+                                                <select name="warehouse_manager" class="form-control" onchange="handleClick(this);"  id="warehouse_manager">
                                                     <option value="">Select Warehouse Manager</option>
                                                     @foreach ($warehouse_manager as $manager)
                                                         <option value="{{$manager->id}}" @if (app('request')->input('warehouse_manager') == $manager->id) {{'selected="selected"'}} @endif>{{$manager->name}}</option>                                                            

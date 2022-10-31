@@ -69,14 +69,15 @@ class TaskController extends BaseController
         }
         $agentids =[];
         $agents = Agent::orderBy('id', 'DESC');
-        if ($user->is_superadmin == 0 && $user->all_team_access == 0) {
+        if ($user->is_superadmin == 0 && $user->all_team_access == 0 && $user->manager_type == 0) {
             $agents = $agents->whereHas('team.permissionToManager', function ($query) use($user) {
                 $query->where('sub_admin_id', $user->id);
             });
             $agentids = $agents->pluck('id');
+        }else if($user->is_superadmin == 0 && $user->all_team_access == 0 && $user->manager_type == 1){
+            $agentids = $agents->whereNotNull('warehouse_id')->pluck('id');
         }
         $agents = $agents->where('is_approved', 1)->get();
-
         $team_tags = TeamTag::whereHas('team', function($q) use($user){
             $q->where('manager_id', $user->id);
         })->pluck('tag_id');
@@ -276,7 +277,7 @@ class TaskController extends BaseController
         $orders = $orders->where('status', $request->routesListingType)->where('status', '!=', null)->orderBy('updated_at', 'desc');
         
         $preference = ClientPreference::where('id', 1)->first(['theme','date_format','time_format']);
-
+        
         return Datatables::of($orders)
                 ->addColumn('customer_id', function ($orders) use ($request) {
                     $customerID = !empty($orders->customer->id)? $orders->customer->id : '';
