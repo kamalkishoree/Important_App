@@ -62,7 +62,7 @@ class CategoryController extends Controller
      */
     public function destroy($port, Category $category)
     {
-        $category->delete();
+        $category->forceDelete();
         return redirect()->back()->with('success','Category Deleted Successfully');
     }
 
