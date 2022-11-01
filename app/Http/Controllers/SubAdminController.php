@@ -168,6 +168,7 @@ class SubAdminController extends Controller
             $countryCode = '';
         }        
         $warehouses = Warehouse::all();
+        
         return view('subadmin/form')->with(['subadmin'=> $subadmin,'permissions'=>$permissions, 'selectedCountryCode' => $countryCode, 'user_permissions'=>$user_permissions,'teams'=>$teams,'team_permissions'=>$team_permissions, 'warehouses'=>$warehouses]);
     }
 
