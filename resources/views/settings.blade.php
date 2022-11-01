@@ -7,7 +7,7 @@
 @section('content')
     <!-- Start Content-->
     <div class="container-fluid">
-        
+
         <!-- start page title -->
         <div class="row">
             <div class="col-12">
@@ -15,14 +15,14 @@
                     <h4 class="page-title">Settings</h4>
                 </div>
             </div>
-        </div>     
-        <!-- end page title --> 
+        </div>
+        <!-- end page title -->
         <div class="row">
             <div class="col-xl-12">
                 <div class="card-box">
                     <h4 class="header-title">Options</h4>
                     <p class="sub-header">
-                        Select whether you want to allow feedback on tracking URL.         
+                        Select whether you want to allow feedback on tracking URL.
                     </p>
                     <div class="card-box">
                         <div class="row mb-2">
@@ -39,15 +39,15 @@
                             </div>
                         </div>
                     </div>
-                </div> 
-            </div> 
+                </div>
+            </div>
         </div>
         <div class="row">
             <div class="col-xl-12">
                 <div class="card-box">
                     <h4 class="header-title">Notifications</h4>
                     <p class="sub-header">
-                        Send custom SMS's,emails and webhooks based on each trigger and customize the content by clicking on the pencil icon.         
+                        Send custom SMS's,emails and webhooks based on each trigger and customize the content by clicking on the pencil icon.
                     </p>
                     <div class="card-box">
                         <div class="row mb-2">
@@ -61,7 +61,7 @@
                                     <i class="mdi mdi-plus-circle mr-1"></i> Add More
                                 </p>
                             </div>
-                            
+
                         </div>
                         <div class="table-responsive">
                             <table class="table table-borderless table-nowrap table-hover table-centered m-0">
@@ -247,7 +247,7 @@
                     </div>
 
                     <div class="card-box">
-                        
+
                         <div class="row mb-2">
                             <div class="col-sm-8">
                                 <div class="text-sm-left">
@@ -259,7 +259,7 @@
                                     <i class="mdi mdi-plus-circle mr-1"></i> Add More
                                 </p>
                             </div>
-                            
+
                         </div>
                         <div class="table-responsive">
                             <table class="table table-borderless table-nowrap table-hover table-centered m-0">
@@ -441,12 +441,12 @@
 
                                 </tbody>
                             </table>
-                        </div> 
+                        </div>
                     </div>
-                </div> 
-            </div> 
+                </div>
+            </div>
         </div>
-        
+
     </div>
 @endsection
 
