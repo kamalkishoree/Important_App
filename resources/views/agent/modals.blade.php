@@ -76,9 +76,9 @@
                         <div class="col-md-6">
                             <div class="form-group" id="warehouse_idInput">
                                 <label for="warehouse_id" class="control-label">{{__("ASSIGN WAREHOUSE")}}</label>
-                                <select class="selectpicker" data-style="btn-light" name="warehouse_id" id="warehouse_id">
+                                <select name="warehouse_id[]" id="warehouse_id" multiple>
                                     @foreach($warehouses as $warehouse)
-                                    <option value="{{$warehouse->id}}">{{$warehouse->name}}</option>
+                                        <option value="{{$warehouse->id}}">{{$warehouse->name}}</option>
                                     @endforeach
                                 </select>
                                 <span class="invalid-feedback" role="alert">

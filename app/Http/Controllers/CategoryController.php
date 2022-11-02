@@ -27,7 +27,10 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        $check_category = Category::where('slug', $request->name)->first();
+        $check_category = [];
+        if($request->cat_id == ''){
+            $check_category = Category::where('slug', $request->name)->first();
+        }
         if(empty($check_category)){
             Category::updateOrCreate(
                 ['id'=> $request->cat_id], 
@@ -41,7 +44,8 @@ class CategoryController extends Controller
             CategoryTranslation::updateOrCreate(
                 ['category_id'=> $request->cat_id], 
                 [
-                    'name' => $request->input('name')
+                    'name' => $request->input('name'),
+                    'status' => $request->input('status')
                 ]
             );
             if($request->cat_id == ''){

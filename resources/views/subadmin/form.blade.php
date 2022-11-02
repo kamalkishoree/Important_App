@@ -93,7 +93,8 @@
                                         <label for="phone_number" class="control-label">{{__("CONTACT NUMBER")}}</label>
                                         <div class="input-group">
                                             @if(isset($subadmin) && !empty($subadmin))
-                                            <input type="tel" name="phone_number" class="form-control xyz" value="{{old('full_number','+'.$subadmin->dial_code.$subadmin->phone_number)}}"id="phone_number" placeholder="9876543210" maxlength="14">
+                                            <input type="tel" name="phone_number" class="form-control xyz" value="{{'+'.$subadmin->dial_code.$subadmin->phone_number}}"id="phone_number" placeholder="9876543210" maxlength="14">
+                                            {{-- {{old('full_number','+'.$subadmin->dial_code.$subadmin->phone_number)}} --}}
                                             <input type="hidden" id="countryData" name="countryData" value="us">
                                             <input type="hidden" id="dialCode" name="dialCode" value="{{ old('dialCode', $subadmin->dial_code)}}">
                                             @else

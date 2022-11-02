@@ -272,9 +272,12 @@
                 backdrop: 'static',
                 keyboard: false
             });
+            
             makeTag();
 
             phoneInput();
+
+            select2();
         });
 
         jQuery('#onfoot').click();
@@ -322,6 +325,14 @@
                     break;
             }
         });
+
+        function select2(){
+            $("#warehouse_id").select2({
+                allowClear: true,
+                width: "resolve",
+                placeholder: "Select Warehouse"
+            });
+        }
 
         /* Get agent by ajax */
         $(document).on("click", ".editIcon", function(e) {

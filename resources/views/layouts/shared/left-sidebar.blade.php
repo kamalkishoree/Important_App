@@ -126,6 +126,16 @@
                 </li>
                 @endif
 
+                @if(in_array('ACL',$allowed) || Auth::user()->is_superadmin == 1)
+                <li>
+                    <a href="{{route('subadmins.index')}}">
+                        <i class="fe-users"></i>
+                        <span> {{__('Managers')}} </span>
+                    </a>
+                </li>
+                @endif
+                </li>
+
                 @if(in_array('Agents',$allowed) || Auth::user()->is_superadmin == 1)
                 <li>
                     <a href="{{route('agent.index')}}">
@@ -251,17 +261,6 @@
                     </a>
                 </li>
                 @endif
-
-                @if(in_array('ACL',$allowed) || Auth::user()->is_superadmin == 1)
-                <li>
-                    <a href="{{route('subadmins.index')}}">
-                        <i class="fe-users"></i>
-                        <span> {{__('Managers')}} </span>
-                    </a>
-                </li>
-                @endif
-                </li>
-
 
 
               {{-- <li>

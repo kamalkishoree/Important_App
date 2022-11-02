@@ -67,15 +67,22 @@ class TaskController extends BaseController
         } else {
             $check = 'unassigned';
         }
+
+        $managerWarehouses = Client::with('warehouse')->where('id', $user->id)->first();
+        $managerWarehousesIds = $managerWarehouses->warehouse->pluck('id');
+
         $agentids =[];
-        $agents = Agent::orderBy('id', 'DESC');
+        $agents = Agent::with('warehouseAgent')->orderBy('id', 'DESC');
         if ($user->is_superadmin == 0 && $user->all_team_access == 0 && $user->manager_type == 0) {
             $agents = $agents->whereHas('team.permissionToManager', function ($query) use($user) {
                 $query->where('sub_admin_id', $user->id);
             });
             $agentids = $agents->pluck('id');
         }else if($user->is_superadmin == 0 && $user->all_team_access == 0 && $user->manager_type == 1){
-            $agentids = $agents->whereNotNull('warehouse_id')->pluck('id');
+            $agents = $agents->whereHas('warehouseAgent', function ($query) use($managerWarehousesIds) {
+                $query->whereIn('warehouses.id', $managerWarehousesIds);
+            });
+            $agentids = $agents->pluck('id');
         }
         $agents = $agents->where('is_approved', 1)->get();
         $team_tags = TeamTag::whereHas('team', function($q) use($user){
@@ -2295,16 +2302,20 @@ class TaskController extends BaseController
         }
         $agentTag = $agentTag->get();
 
+        $user = Auth::user();
+        $managerWarehouses = Client::with('warehouse')->where('id', $user->id)->first();
+        $managerWarehousesIds = $managerWarehouses->warehouse->pluck('id');
 
-
-       $agents = Agent::orderBy('name', 'asc');
+       $agents = Agent::with('warehouseAgent')->orderBy('name', 'asc');
         if (Auth::user()->is_superadmin == 0 && Auth::user()->all_team_access == 0 && Auth::user()->manager_type == 0) {
             $agents = $agents->whereHas('team.permissionToManager', function ($query) {
                 $query->where('sub_admin_id', Auth::user()->id);
                 $query->whereNull('warehouse_id');
             });
         }else if(Auth::user()->is_superadmin == 0 && Auth::user()->all_team_access == 0 && Auth::user()->manager_type == 1){
-            $agents = $agents->whereNotNull('warehouse_id');
+            $agents = $agents->whereHas('warehouseAgent', function ($query) use($managerWarehousesIds) {
+                $query->whereIn('warehouses.id', $managerWarehousesIds);
+            });
         }
         $agents = $agents->where('is_approved', 1)->get();
 
