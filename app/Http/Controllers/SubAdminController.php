@@ -76,7 +76,7 @@ class SubAdminController extends Controller
     public function store(Request $request, $domain = '')
     {
         $validator = $this->validator($request->all())->validate();
-        $all_team_access = ($request->manager_type == 0) ? $request->all_team_access : '0';
+        $all_team_access = ($request->manager_type == 0) ? $request->all_team_access : '1';
         $data = [
             'name' => $request->name,
             'email' => $request->email,
@@ -193,7 +193,7 @@ class SubAdminController extends Controller
     public function update(Request $request, $domain = '', $id)
     {
         $validator = $this->updateValidator($request->all(), $id)->validate();
-        $all_team_access = ($request->manager_type == 0) ? $request->all_team_access : '0';
+        $all_team_access = ($request->manager_type == 0) ? $request->all_team_access : '1';
         $data = [
             'name' => $request->name,
             'email' => $request->email,

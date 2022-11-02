@@ -78,7 +78,7 @@ class TaskController extends BaseController
                 $query->where('sub_admin_id', $user->id);
             });
             $agentids = $agents->pluck('id');
-        }else if($user->is_superadmin == 0 && $user->all_team_access == 0 && $user->manager_type == 1){
+        }else if($user->is_superadmin == 0 && $user->manager_type == 1){
             $agents = $agents->whereHas('warehouseAgent', function ($query) use($managerWarehousesIds) {
                 $query->whereIn('warehouses.id', $managerWarehousesIds);
             });
@@ -99,7 +99,7 @@ class TaskController extends BaseController
             $all = $all->wherehas('allteamtags', function($query) use($team_tags) {
                 $query->whereIn('tag_id', $team_tags);
             });
-        }else if($user->is_superadmin == 0 && $user->all_team_access == 0 && $user->manager_type == 1){
+        }else if($user->is_superadmin == 0 && $user->manager_type == 1){
             $manager_warehouses = Client::with('warehouse')->where('id', $user->id)->first();
             $mana_warehouseIds = $manager_warehouses->warehouse->pluck('id');
             $all = $all->whereHas('task', function($query) use ($mana_warehouseIds) {
@@ -144,7 +144,7 @@ class TaskController extends BaseController
         // Get Warehouse Manager
         $warehouse_manager = Client::where('manager_type', 1)->where('status', 1)->get();
         
-        if($user->is_superadmin == 0 && $user->all_team_access == 0 && $user->manager_type == 1){
+        if($user->is_superadmin == 0 && $user->manager_type == 1){
             $manager_warehouses = Client::with('warehouse')->where('id', $user->id)->first();
             $mana_warehouseIds = $manager_warehouses->warehouse->pluck('id');
             $warehouses = Warehouse::whereIn('id', $mana_warehouseIds)->get();
@@ -269,7 +269,7 @@ class TaskController extends BaseController
             $orders = $orders->wherehas('allteamtags', function($query) use($team_tags) {
                 $query->whereIn('tag_id', $team_tags);
             });
-        }else if($user->is_superadmin == 0 && $user->all_team_access == 0 && $user->manager_type == 1){
+        }else if($user->is_superadmin == 0 && $user->manager_type == 1){
             $manager_warehouses = Client::with('warehouse')->where('id', $user->id)->first();
             $mana_warehouseIds = $manager_warehouses->warehouse->pluck('id');
             $orders = $orders->whereHas('task', function($query) use ($mana_warehouseIds) {

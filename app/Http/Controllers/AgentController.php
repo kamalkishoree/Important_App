@@ -69,7 +69,7 @@ class AgentController extends Controller
             $agents = $agents->whereHas('team.permissionToManager', function ($query) use($user) {
                 $query->where('sub_admin_id', $user->id);
             });
-        }else if($user->is_superadmin == 0 && $user->all_team_access == 0 && $user->manager_type == 1){
+        }else if($user->is_superadmin == 0 && $user->manager_type == 1){
             $agents = $agents->whereHas('warehouseAgent', function ($query) use($managerWarehousesIds) {
                 $query->whereIn('warehouses.id', $managerWarehousesIds);
             });
@@ -114,7 +114,12 @@ class AgentController extends Controller
         $agentRejected   = count($agents->where('is_approved', 2));
         $driver_registration_documents = DriverRegistrationDocument::get();
 
-        $warehouses = Warehouse::all();
+        $warehouses = Warehouse::get();
+        $managerWarehouses = Client::with('warehouse')->where('id', $user->id)->first();
+        $managerWarehousesIds = $managerWarehouses->warehouse->pluck('id');
+        if($user->is_superadmin == 0 && $user->manager_type == 1){
+            $warehouses = Warehouse::whereIn('id', $managerWarehousesIds)->get();
+        }
 
         $agents = Agent::orderBy('id', 'DESC');
 
@@ -162,7 +167,7 @@ class AgentController extends Controller
                 $agents = $agents->whereHas('team.permissionToManager', function ($query) use($user) {
                     $query->where('sub_admin_id', $user->id);
                 });
-            }else if($user->is_superadmin == 0 && $user->all_team_access == 0 && $user->manager_type == 1){
+            }else if($user->is_superadmin == 0 && $user->manager_type == 1){
                 $agents = $agents->whereHas('warehouseAgent', function ($query) use($managerWarehousesIds) {
                     $query->whereIn('warehouses.id', $managerWarehousesIds);
                 });

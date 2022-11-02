@@ -3,8 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Model\{Warehouse, Amenities, Category};
+use App\Model\{Warehouse, Amenities, Category, Client};
 use App\Http\Requests\{AddWarehouseRequest};
+use Auth;
 
 class WarehouseController extends Controller
 {
@@ -15,7 +16,14 @@ class WarehouseController extends Controller
      */
     public function index()
     {
-        $warehouses = Warehouse::with(['amenity', 'category'])->orderBy('id', 'DESC')->paginate(10);
+        $user = Auth::user();
+        $warehouses = Warehouse::with(['amenity', 'category'])->orderBy('id', 'DESC');
+        $managerWarehouses = Client::with('warehouse')->where('id', $user->id)->first();
+        $managerWarehousesIds = $managerWarehouses->warehouse->pluck('id'); 
+        if($user->is_superadmin == 0 && $user->manager_type == 1){
+            $warehouses = $warehouses->whereIn('id', $managerWarehousesIds);
+        }
+        $warehouses = $warehouses->paginate(10);
         return view('warehouse.index')->with(['warehouses' => $warehouses]);
     }
 
