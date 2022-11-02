@@ -82,6 +82,11 @@ Route::group(['prefix' => 'auth'], function () {
 });
 
 Route::group(['middleware' => ['dbCheck', 'AppAuth','apiLocalization']], function() {
+
+    Route::post('create-razorpay-details', 'Api\RazorpayGatewayController@razorpay_create_contact')->name('razorpay_connect');
+    Route::post('create-razorpay-add-funds', 'Api\RazorpayGatewayController@razorpay_add_funds_accounts')->name('razorpay_add_account');
+
+    
     Route::get('user', 'Api\AuthController@user');
     Route::post('agent/delete', 'Api\AuthController@deleteAgent');
     
@@ -120,6 +125,7 @@ Route::group(['middleware' => ['dbCheck', 'AppAuth','apiLocalization']], functio
 
     // All Payment gateways
     Route::get('payment/{gateway}', 'Api\PaymentOptionController@postPayment');
+
 });
 
 

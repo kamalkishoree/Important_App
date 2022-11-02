@@ -22,7 +22,7 @@ class DatabaseDynamic
      */
     public function handle($request, Closure $next)
     {
-      
+        dd('dssd');
         if(Auth::check()){
          
           $client = Auth::user();
