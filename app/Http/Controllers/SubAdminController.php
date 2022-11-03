@@ -28,8 +28,10 @@ class SubAdminController extends Controller
     {
         $manager_type = $request->manager_type;
         $subadmins = Client::where('is_superadmin', 0)->where('id', '!=', Auth::user()->id);
-        if($manager_type != "all" && $manager_type != null){
-            $subadmins = Client::where('is_superadmin', 0)->where('id', '!=', Auth::user()->id)->where('manager_type', $manager_type);
+        if(checkColumnExists('clients', 'manager_type')){
+            if($manager_type != "all" && $manager_type != null){
+                $subadmins = Client::where('is_superadmin', 0)->where('id', '!=', Auth::user()->id)->where('manager_type', $manager_type);
+            }
         }
         $subadmins = $subadmins->orderBy('id', 'DESC')->paginate(10);
         return view('subadmin.index')->with(['subadmins' => $subadmins]);
@@ -86,9 +88,11 @@ class SubAdminController extends Controller
             'dial_code' => $request->dialCode??null,
             'all_team_access'=> $all_team_access,
             'status' => $request->status,
-            'is_superadmin' => 0,
-            'manager_type' => $request->manager_type
+            'is_superadmin' => 0
         ];
+        if(checkColumnExists('clients', 'manager_type')){
+            $data['manager_type'] = $request->manager_type;
+        }
 
         $superadmin_data = Client::select('country_id', 'timezone', 'custom_domain', 'is_deleted', 'is_blocked', 'database_path', 'database_name', 'database_username', 'database_password', 'logo', 'company_name', 'company_address', 'code', 'sub_domain')
         ->where('is_superadmin', 1)
@@ -101,8 +105,10 @@ class SubAdminController extends Controller
         $subdmin = Client::create($finaldata);
         
         if($request->manager_type == 1){
-            $warehouses = $request->input('warehouses');
-            $subdmin->warehouse()->sync($warehouses);
+            if(checkTableExists('warehouse_manager_relation')){
+                $warehouses = $request->input('warehouses');
+                $subdmin->warehouse()->sync($warehouses);
+            }
         }
         
         //update client code
@@ -200,9 +206,11 @@ class SubAdminController extends Controller
             'phone_number' => $request->phone_number,
             'all_team_access'=> $all_team_access,
             'dial_code' => $request->dialCode??null,
-            'status' => $request->status,
-            'manager_type' => $request->manager_type
+            'status' => $request->status
         ];
+        if(checkColumnExists('clients', 'manager_type')){
+            $data['manager_type'] = $request->manager_type;
+        }
         if ($request->password!="") {
             $data['password'] = Hash::make($request->password);
             $data['confirm_password'] = Crypt::encryptString($request->password);
@@ -211,11 +219,15 @@ class SubAdminController extends Controller
         $client = Client::find($id);
         $client->update($data);
         if($request->manager_type == 1){
-            $warehouses = $request->input('warehouses');
-            $client->warehouse()->sync($warehouses);
+            if(checkTableExists('warehouse_manager_relation')){
+                $warehouses = $request->input('warehouses');
+                $client->warehouse()->sync($warehouses);
+            }
         }else{
-            $warehouses = [];
-            $client->warehouse()->sync($warehouses);
+            if(checkTableExists('warehouse_manager_relation')){
+                $warehouses = [];
+                $client->warehouse()->sync($warehouses);
+            }
         }
         //for updating permissions
         if ($request->permissions) {
