@@ -387,9 +387,11 @@ class AgentController extends Controller
 
         $agent = Agent::create($data);
         $agent->tags()->sync($tag_id);
-        $warehouse_ids = $request->warehouse_id;
-        if(!empty($warehouse_ids)){
-            $agent->warehouseAgent()->sync($warehouse_ids);
+        if(checkTableExists('agent_warehouse')){
+            $warehouse_ids = $request->warehouse_id;
+            if(!empty($warehouse_ids)){
+                $agent->warehouseAgent()->sync($warehouse_ids);
+            }
         }
 
         $driver_registration_documents = DriverRegistrationDocument::get();
@@ -602,9 +604,12 @@ class AgentController extends Controller
         $agent->save();
 
         $agent->tags()->sync($tag_id);
-        $warehouse_ids = $request->warehouse_id;
-        if(!empty($warehouse_ids)){
-            $agent->warehouseAgent()->sync($warehouse_ids);
+
+        if(checkTableExists('agent_warehouse')){
+            $warehouse_ids = $request->warehouse_id;
+            if(!empty($warehouse_ids)){
+                $agent->warehouseAgent()->sync($warehouse_ids);
+            }
         }
 
         $driver_registration_documents = DriverRegistrationDocument::get();
