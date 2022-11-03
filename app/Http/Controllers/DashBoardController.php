@@ -558,15 +558,15 @@ class DashBoardController extends Controller
                     $totaldistance += $checkdistance->distance;
                     $distancearray[] = $checkdistance->distance;
                 } else {
-                    $distance = $this->GoogleDistanceMatrix($prev_latitude, $prev_longitude, $Taskdetail->location->latitude, $Taskdetail->location->longitude);
+                    $distance = $this->GoogleDistanceMatrix($prev_latitude, $prev_longitude, $Taskdetail->location->latitude ?? '', $Taskdetail->location->longitude ?? '');
                     $totaldistance += $distance;
                     $distancearray[] = $distance;
                     $locdata = array('from_loc_id'=>$loc1,'to_loc_id'=>$loc2,'distance'=>$distance);
                     LocationDistance::create($locdata);
                 }
                 $loc1 = $loc2;
-                $prev_latitude  = $Taskdetail->location->latitude;
-                $prev_longitude = $Taskdetail->location->longitude;
+                $prev_latitude  = $Taskdetail->location->latitude ?? '';
+                $prev_longitude = $Taskdetail->location->longitude ?? '';
             }
         }
         
@@ -981,7 +981,7 @@ class DashBoardController extends Controller
             $unassigned_orders = $this->splitOrder($un_order->toarray());
             if (count($unassigned_orders)>1) {
                 $unassigned_distance_mat = array();
-                $unassigned_points = '';
+                $unassigned_points = [];
                 if(!empty($unassigned_orders[0]['task'][0]['location'])){
                     $unassigned_points[] = array(floatval($unassigned_orders[0]['task'][0]['location']['latitude']),floatval($unassigned_orders[0]['task'][0]['location']['longitude']));
                 }
@@ -989,7 +989,8 @@ class DashBoardController extends Controller
                 $un_route = array();
                 foreach ($unassigned_orders as $singleua) {
                     $unassigned_taskids[] = $singleua['task'][0]['id'];
-                    if(!empty($unassigned_orders[0]['task'][0]['location'])){
+                    if(!empty($singleua['task'][0]['location'])){
+                        // dd($singleua['task'][0]['location']['latitude']);
                         $unassigned_points[] = array(floatval($singleua['task'][0]['location']['latitude']),floatval($singleua['task'][0]['location']['longitude']));
                     }
 
