@@ -439,3 +439,85 @@ body.menuitem-active .task-block h6 {
   border: none!important;
   }
 
+/*----------custom css----------*/
+body.dark .card-header.main_card .profile-circle {
+  font-size: 14px!important;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 0 4px;
+}
+body.dark .navbar-custom .topnav-menu .nav-link {
+  color: #fff;
+}
+body.dark .navbar-custom .btn.btn-blue.waves-effect span {
+  color: #fff;
+}
+body.dark .radio-primary input[type=radio]:checked + label::after {
+  background-color: #d5a44c;
+}
+/*------------black dashboard-------*/
+body.dark #teams_container .card-header {
+  padding: 0px !important;
+  border-radius: 10px;
+}
+body.dark #teams_container .card-header .profile-circle {
+  border-radius: 5px;
+}
+body.dark .card-header .col-md-3 {
+  border-right: 1px solid#f2f2f26b;
+}
+body.dark .offline {
+  display: block;
+  background: #d5a44c36;
+  text-align: center;
+  padding: 5px;
+  margin-top: 0;
+  color: #ffbf4d !important;
+  border-radius: 0 0 10px 10px;
+  font-weight: bold;
+}
+body.dark .online {
+  display: block;
+  background: #00800024;
+  text-align: center;
+  padding: 5px;
+  margin-top: 10px;
+  color: #2fcf2f !important;
+  font-weight: bold;
+}
+body.dark .newcheckit {
+  padding: 20px;
+}
+body.dark .agent_status {
+  display: block;
+  background: #00800054;
+  text-align: center;
+  padding: 5px;
+  margin-top: 0;
+  color: #fff !important;
+}
+body.dark .card-header >a:after {
+  right: 15px;
+}
+body.dark .card-header.main_card .newcheckit {
+  padding: 15px;
+}
+body.dark .left-sidebar #accordion .card-header {
+  transition: all 0.5s;
+  margin-left: 0 !important;
+  padding: 0;
+}
+body.dark .left-sidebar p {
+  margin-top: 10px;
+}
+body.dark .left-sidebar #accordion .card-header:hover, .left-sidebar #accordion .card-header:focus, .left-sidebar #accordion .card-header:visited {
+  background: #4a5058 !important;
+}
+body.dark .navbar-custom .topnav-menu .nav-link {
+  color: #fff;
+}
+ .collapse .profile-circle{
+  width:60px;
+  height:60px;
+}

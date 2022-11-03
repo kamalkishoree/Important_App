@@ -42,7 +42,7 @@ box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.15);border-radius: 10px;width: 100%;disp
 
     <!-- start page title -->
     <div class="row">
-        <div class="col-12">
+        <div class="col-8 mx-auto">
             <div class="page-title-box">
                 <h4 class="page-title">{{__("Profile")}}</h4>
             </div>
@@ -148,7 +148,7 @@ box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.15);border-radius: 10px;width: 100%;disp
             <form id="UpdateClient" method="post" action="{{route('profile.update',Auth::user()->code)}}" enctype="multipart/form-data">
                 @method('PUT')
                 @csrf
-                <div class="col-md-8">
+                <div class="col-md-8 mx-auto">
                     <div class="card">
                         <div class="card-body">
                             <h4 class="header-title">{{__("Organization details")}}</h4>
@@ -192,8 +192,8 @@ box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.15);border-radius: 10px;width: 100%;disp
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <label class="control-label col-12">{{__("Short Code")}}</label><br/>
-                                        <h1 class="control-label col-12" style="font-size: 3rem;">{{Auth::user()->code}}</h1>
+                                        <label class="control-label col-6">{{__("Short Code")}}</label>
+                                        <h1 class="control-label col-6" style="font-size: 20px;">{{Auth::user()->code}}</h1>
                                     </div>
                                 </div>
                             </div>
@@ -302,7 +302,7 @@ box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.15);border-radius: 10px;width: 100%;disp
                 </div>
             </form>
 
-            <div class="col-md-8">
+            <div class="col-md-8  mx-auto">
                 <div class="card">
                     <div class="card-body">
                         <form method="post" action="{{route('client.password.update')}}">
