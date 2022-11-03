@@ -30,7 +30,7 @@ width: 100%;
 
     <!-- start page title -->
     <div class="row">
-        <div class="col-12">
+        <div class="col-8 mx-auto">
             <div class="page-title-box">
                 <h4 class="page-title">{{__("Profile")}}</h4>
             </div>
@@ -136,7 +136,7 @@ width: 100%;
             <form id="UpdateClient" method="post" action="{{route('profile.update',Auth::user()->code)}}" enctype="multipart/form-data">
                 @method('PUT')
                 @csrf
-                <div class="col-md-8">
+                <div class="col-md-8 mx-auto">
                     <div class="card">
                         <div class="card-body">
                             <h4 class="header-title">{{__("Organization details")}}</h4>
@@ -166,8 +166,8 @@ width: 100%;
                                         <a class="col-md-6 " href="https://play.google.com/store/apps/details?id=com.codebew.deliveryagent&hl=en_US&gl=US" target="_blank"><img class="w-100" src="{{asset('assets/images/playstore.png')}}" alt="image"  > </a>
                                     </div>
                                     <div class="row">
-                                        <label class="control-label col-12">{{__("Short Code")}}</label><br/>
-                                        <h1 class="control-label col-12" style="font-size: 3rem;">{{Auth::user()->code}}</h1>
+                                        <label class="control-label col-6">{{__("Short Code")}}</label>
+                                        <h1 class="control-label col-6" style="font-size: 20px;">{{Auth::user()->code}}</h1>
                                     </div>
                                 </div>
                             </div>
@@ -276,7 +276,7 @@ width: 100%;
                 </div>
             </form>
 
-            <div class="col-md-8">
+            <div class="col-md-8  mx-auto">
                 <div class="card">
                     <div class="card-body">
                         <form method="post" action="{{route('client.password.update')}}">

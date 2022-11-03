@@ -6,7 +6,7 @@ use Carbon\Carbon;
 @endphp
 
 @foreach ($teamdata as $item)
-    <div class="card-header" id="heading-1">
+    <div class="card-header main_card" id="heading-1">
             <a role="button" data-toggle="collapse" href="#collapse-{{ $item['id'] }}"
                 aria-expanded="false" aria-controls="collapse-{{ $item['id'] }}">
                 <div class="newcheckit">
@@ -83,30 +83,37 @@ use Carbon\Carbon;
                                     data-toggle="collapse" href="#collapse{{ $agent['id'] }}"
                                     aria-expanded="false"
                                     aria-controls="collapse{{ $agent['id'] }}">
-                                    <div class="row">
-                                        <div class="col-md-2 col-2">
+                                    <div class="row p-2">
+                                        <div class="col-md-3 col-3">
                                             <img class="profile-circle"
                                                 src="{{isset($agent['profile_picture']) ? $imgproxyurl.Storage::disk('s3')->url($agent['profile_picture']):'https://dummyimage.com/36x36/ccc/fff'}}">
                                         </div>
-                                        <div class="col-md-10 col-10">
+                                        <div class="col-md-9 col-9">
                                         @php
                                             $checkAgentActive = ($agent['is_available'] == 1)? ' ('.__('Online').')' : ' ('.__('Offline').')';
                                         @endphp
 
                                         <h6 class="mb-0 header-title scnd">
                                             {{ ucfirst($agent['name']) }}
-                                            <span class="tram_agent_online_status_{{ $agent['id'] }}" id="tram_agent_online_status_{{ $agent['id'] }}">
-                                                {{ $checkAgentActive }}
-                                            </span>
                                             <div class="optimizebtn{{ $agent['id'] }}">
                                                 {!! $optimize !!}
                                             </div>
                                             <div class="exportbtn{{ $agent['id'] }}">
                                                 {!! $turnbyturn !!}
-                                            </div></h6>
+                                            </div>
+                                        </h6>
                                         <p class="mb-0">{{count($agent['order'])>0?__('Busy '):__('Free ')}}<span>{{$agent['agent_task_count']}} {{__('Tasks')}}</span> {!!$agent['total_distance']==''?'':' <i class="fas fa-route"></i>'!!}<span class="dist_sec totdis{{ $agent['id'] }}  ml-1">{{ $agent['total_distance'] }}</span></p>
+                                       
                                         </div>
                                     </div>
+                                    <div class="row">
+                                        <div class="col-md-12 p-0">
+                                        <span class="tram_agent_online_status_{{ $agent['id'] }} {{ $agent['is_available'] == 1 ? 'online' : 'offline' }}" id="tram_agent_online_status_{{ $agent['id'] }}">
+                                            {{ $checkAgentActive }}
+                                        </span>
+                                        </div>
+                                    </div>
+                                    
                                 </a>
                         </div>
                         <div id="collapse{{ $agent['id'] }}" class="collapse"

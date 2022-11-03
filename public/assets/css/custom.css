@@ -9,7 +9,181 @@
     font-style: normal;
     font-display: block;
   }
+/*---------------custom dark theam css------------*/
+body.dark .card.widget-inline p {
+    color: #fff !important;
+}
 
+body.dark .navbar-custom .topnav-menu .nav-link {
+    font-weight: 400;
+    color: #fff;
+  }
+body.dark .iti__country-list {
+    z-index: 999;
+    min-width: 300px;
+    width: 317px;
+    overflow-x: hidden;
+}
+body.dark  .btn, .dark .btn-blue:not(:disabled):not(.disabled):active, .dark .btn-blue:not(:disabled):not(.disabled).active, .dark .show > .btn-blue.dropdown-toggle {
+    color: #f2f2f2;
+}
+body.dark .navbar-custom .btn.btn-blue.waves-effect {
+    color: #fff;
+}
+body.dark button.btn.btn-blue.waves-effect.waves-light.openModal {
+    color: #f2f2f2;
+}
+body.dark div#pricing-datatable_wrapper button.btn.btn-secondary.btn-success.waves-effect.waves-light {
+    color: #fff;
+}
+body.dark button.btn.btn-blue.waves-effect.waves-light.openModal {
+    color: #f2f2f2;
+    width: auto;
+    min-width: unset;
+    max-width: unset;
+}
+body.dark .table {
+    color: #dbe9f9;
+}
+body.dark #sidebar-menu > ul > li > a{
+    color: #dbe9f9;
+}
+body.dark #sidebar-menu .menu-title{
+    color: #dbe9f9;
+}
+body.dark .custom-control-label::before {
+    border: #dbe9f9 solid 1px;
+}
+body.dark .custom-switch .custom-control-label::after{background-color:#dbe9f9;}
+body.dark div#edit-customer-modal h4{
+    color: #dbe9f9;
+}
+body.dark div#edit-customer-modal label{
+    color: #dbe9f9;
+}
+body.dark div#edit-customer-modal .form-control{
+    color: #dbe9f9;
+}
+body.dark div#edit-customer-modal .form-control::placeholder{
+    color: #a2b3c5;
+}
+body.dark .iti__country-list {
+    left: 65% !important;
+    height: 200px !important;
+    top: 129px !important;
+    width: 250px !important;
+}
+body.dark a.btn.btn-success.btn-rounded.waves-effect.waves-light.editInput{
+    color: #dbe9f9;
+}
+body.dark .modal-footer button.btn.btn-blue.waves-effect.waves-light.submitEditForm {
+    color: #dbe9f9;
+}
+body.dark .card button.btn.btn-secondary.btn-success.waves-effect.waves-light {
+    color: #dbe9f9;
+}
+body.dark .table thead th {
+    font-size: 14px;
+}
+body.dark .table th, .table td {
+    font-size: 12px;
+}
+body.dark .address_box label {
+    width: 160px;
+}
+body.dark .alTaskType {
+    background-color: #3b4651;
+    border: none;
+    border-radius: 7px;
+}
+body.dark .alTaskType input, .alTaskType textarea, .alTaskType select {
+    border: 1px solid #6e7e8f !important;
+    color: #dbe9f9;
+}
+body.dark a.add-sub-task-btn.waves-effect.waves-light.subTask{color: #dbe9f9;}
+body.dark a.btn.pink_btn{
+    color: #dbe9f9;
+}
+body.dark .site_link a span {
+    color: #dbe9f9;
+}
+body.dark p.al_text_overflow {
+    color: #dbe9f9;
+}
+body.dark .card-box{color: #dbe9f9;}
+body.dark .sub-header{color: #dbe9f9;}
+body.dark .header-title{color: #dbe9f9;}
+body.dark label.control-label.col-6 {
+    font-size: 20px;
+}
+body.dark .content .col-md-8.mx-auto .iti__country-list {
+    left: 5% !important;
+    height: 200px !important;
+    top: 38px !important;
+    width: 239px !important;
+}
+body.dark .content .col-md-8.mx-auto label{color: #dbe9f9;}
+body.dark .content .col-md-8.mx-auto button{color: #dbe9f9;}
+body.dark .content .col-md-8.mx-auto  option {
+    font-size: 12px !important;
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+body.dark table#teams-datatable{
+    background: #36404a;
+    border-radius: 10px;
+}
+body.dark .dt-buttons .btn.btn-secondary, .dt-buttons .btn.btn-secondary:focus, .dt-buttons .btn.btn-secondary:active {
+    background: rgb(247 184 75 / 82%) !important;
+}
+body.dark .btn-label, .btn-label:focus, .btn-label:active {
+    background: rgb(247 184 75 / 82%) !important;
+}
+body.dark div#team_agents_1 .dropdown-item{color: #dbe9f9;}
+body.dark .edit-icon-div a {
+    color: #d4a34a;
+}
+body.dark button.btn.btn-success.waves-effect.waves-light.saveaccounting{color: #dbe9f9;}
+body.dark div#vehicle_type_idInputEdit .radio img {
+    filter: invert(1);
+}
+div#vehicle_type_idInput .radio img {
+    filter: invert(1);
+}
+body.dark div#add-agent-modal .iti__country-list {
+    left: 12% !important;
+    height: 200px !important;
+    top: 40px !important;
+    width: 300px !important;
+}
+body.dark #submitpayreceive .card-box label {
+    margin-bottom: 0px;
+    color: #000;
+}
+body.dark .content.dashboard-boxes button.btn.btn-info.waves-effect.waves-light.text-sm-right {
+    color: #fff;
+}
+body.dark .switchery {
+    height: 22px;
+    width: 42px;
+}
+body.dark .switchery>small {
+    height: 20px;
+    top: 1px;
+    width: 20px;
+}
+body.dark .geo_wrapper.geo_main button{color:#fff;}
+body.dark form#logic_form button{color:#fff;}
+body.dark form#edit_price span.select2-selection.select2-selection--multiple {
+    background-color: transparent !important;
+}
+body.dark form#edit_price .select2-container--default .select2-selection--multiple .select2-selection__choice {
+    background-color: #d4a34a !important;
+    border: 1px solid #d4a34a !important;
+}
+/*---------------custom dark theam css end------------*/
   [class^="icon-"], [class*=" icon-"] {
     /* use !important to prevent issues with browser extensions that change fonts */
     font-family: 'icomoon' !important;
