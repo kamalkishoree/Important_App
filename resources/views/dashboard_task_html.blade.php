@@ -233,7 +233,7 @@ $agentslocations[] = $defaultmaplocation;
 
                                                 <h6 class="mb-0 header-title scnd">
                                                     {{ ucfirst($agent['name']) }}
-                                                    <span class="tram_agent_online_status_{{ $agent['id'] }}" id="tram_agent_online_status_{{ $agent['id'] }}">
+                                                    <span class="tram_agent_online_status_{{ $agent['id'] }} {{ $agent['is_available'] == 1 ? 'online' : 'offline' }}" id="tram_agent_online_status_{{ $agent['id'] }}">
                                                         {{ $checkAgentActive }}
                                                     </span>
                                                     <div class="optimizebtn{{ $agent['id'] }}">

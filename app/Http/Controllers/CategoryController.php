@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Model\{Category,CategoryTranslation,Product,ProductVariant,ProductCategories,ProductTranslation};
+use App\Model\{Category,CategoryTranslation,Product,ProductVariant,ProductCategories,ProductTranslation, ClientPreference, Client};
 use App\Model\Order\{Category as ROCategory};
 
 class CategoryController extends Controller
@@ -16,7 +16,18 @@ class CategoryController extends Controller
     public function index()
     {
         $category = Category::orderBy('id', 'DESC')->paginate(10);
-        return view('category.index')->with(['category' => $category]);
+        $product_category = Category::orderBy('id', 'DESC')->get();
+        $client_preferences = ClientPreference::first();
+     
+        $client = Client::orderBy('id','asc')->first();
+        if(isset($client->custom_domain) && !empty($client->custom_domain) && $client->custom_domain != $client->sub_domain)
+        $sku_url =  ($client->custom_domain);
+        else
+        $sku_url =  ($client->sub_domain.env('SUBMAINDOMAIN'));
+
+        $sku_url = array_reverse(explode('.',$sku_url));
+        $sku_url = implode(".",$sku_url);
+        return view('category.index')->with(['category' => $category, 'product_category' => $product_category, 'sku_url' => $sku_url]);
     }
 
     /**

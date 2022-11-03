@@ -263,6 +263,8 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 
 			Route::resource('category', 'CategoryController');
 
+			Route::resource('product', 'ProductController');
+
 			Route::post('/import-order-side-category', 'CategoryController@importOrderSideCategory')->name('category.importOrderSideCategory');
 
 			Route::get('/order/feedback/{clientcode}/{order_id}', 'TrackingController@OrderFeedback')->name('order.feedback');
