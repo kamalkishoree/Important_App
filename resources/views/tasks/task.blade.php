@@ -150,7 +150,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                 </div>
                             </div>
                             @csrf
-                            <div class="col-sm-8">
+                            <div class="col-sm-12">
                                 <form class="mb-0" name="getTask" id="getTask" method="get" action="{{ route('tasks.index') }}">
                                     <div class="login-form">
                                         <ul class="list-inline mb-0">
@@ -217,7 +217,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                             </div>
                         </div>
                         <input type="hidden" id="routes-listing-status" value="unassigned">
-                        <div class="table-responsive mn-4">
+                        <div class="table-responsive mt-2">
                             <table class="table table-striped dt-responsive nowrap w-100 agents-datatable" id="agents-datatable">
                                 <thead>
                                     <tr>

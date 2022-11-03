@@ -65,10 +65,10 @@ $agentslocations[] = $defaultmaplocation;
                                 $turnbyturn0 = "";
                             }
                             ?>
-                            <a class="profile-block collapsed" role="button" data-toggle="collapse" href="#collapse0" aria-expanded="false" aria-controls="collapse0">
+                            <a class="profile-block collapsed pro-block" role="button" data-toggle="collapse" href="#collapse0" aria-expanded="false" aria-controls="collapse0">
                                 <div class="row">
                                     <div class="col-md-2 col-2">
-                                        <span class="profile-circle">D</span>
+                                        <span class="profile-circle pro-name">D</span>
                                     </div>
                                     <div class="col-md-10 col-10">
                                         <h6 class="mb-0 header-title scnd">{{__("Unassigned Tasks")}}<div  class="optimizebtn0">{!! $optimize0 !!} </div><div class="exportbtn0">{!! $turnbyturn0 !!} </div></h6>

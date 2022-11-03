@@ -89,6 +89,7 @@ body.dark .card button.btn.btn-secondary.btn-success.waves-effect.waves-light {
 }
 body.dark .table thead th {
     font-size: 14px;
+    vertical-align:middle;
 }
 body.dark .table th, .table td {
     font-size: 12px;
@@ -1191,12 +1192,6 @@ body[data-sidebar-size=condensed] .left-side-menu #sidebar-menu>ul>li:hover>a {
     }
 
 
-
-    .dragable_tasks {
-    /* border: 1px solid #c0c2c49c;
-    margin: 0 0 5px; */
-    }
-
     .assigned-block {
     background-color: #FFFFFF;
     }
@@ -2250,3 +2245,68 @@ margin-left: 10px;
         padding: 50px 0 0 0 !important;
     }
 }
+body.dark .col-sm-5.text-right.btn-auto.d-flex {
+    float: left !important;
+    text-align: left !important;
+    left: 0 !important;
+}
+body.dark .col-sm-4.text-right.btn-auto a.btn.btn-blue.waves-effect.waves-light.text-sm-right {
+    color: #fff;
+}
+body.dark div#pending_payouts .card {
+    border-radius: 0 0 16px 16px !important;
+}
+body.dark .content h1, .content h2, .content h3, .content h4, .content h5{color: #acbfd2;}
+body.dark div#edit_page_content button{color:#fff;}
+div#agents-datatable_filter label {
+    float: left !important;
+}
+#agents-datatable_wrapper .dt-buttons.btn-group.flex-wrap {
+    float: left;
+    margin: 5px 10px 10px 0px;
+}
+body.dark .login-form button.btn.btn-info.bulkupload {
+    color: #fff;
+}
+body.dark .login-form a.btn.btn-info.btn-sm {
+    color: #fff;
+}
+body.dark button.btn.btn-blue {
+    color: #fff;
+}
+body.dark button.btn.btn-info.waves-effect.waves-light.submitProduct {
+    color: #fff;
+}
+body.dark button.btn.btn-outline-info.d-block {
+    color: #fff;
+}
+body.dark .bootstrap-select .dropdown-toggle .filter-option-inner-inner {
+    overflow: hidden;
+    color: #fff;
+}
+body.dark button.btn.btn-info.waves-effect.waves-light.submitAddSubscriptionForm {
+    color: #fff;
+}
+body.dark button.btn.btn-info.waves-effect.waves-light.save_btn {
+    color: #fff;
+}
+body.dark .main_form .select2-container--default .select2-selection--single {
+    border: 1px solid #ced4da !important;
+    background-color: transparent !important;
+}
+/*----------laptop view media css--------------*/
+@media(max-width:1440px){
+    body.dark.iti-mobile .col-md-8.mx-auto.col-sm-12.col-lg-8{
+      width: 100%;
+      max-width: 100%;
+      flex: 100%;
+    }
+    body.dark.iti-mobile div#favicon_container {
+        width: auto !important;
+    }
+    
+    body.dark div#pending_payouts .card {
+        border-radius: 0 0 16px 16px !important;
+    }
+  }
+  
