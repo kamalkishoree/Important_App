@@ -106,10 +106,14 @@ trait TollFee{
                 foreach($apiResponse->routes as $routes){
                     $toll_array['distanceMeters'] = $routes->distanceMeters;
                     $toll_array['duration']       = $routes->distanceMeters;
-                    foreach($routes->travelAdvisory->tollInfo->estimatedPrice as $estimatedPrice){
-                        $toll_array['currency'] = $estimatedPrice->currencyCode;
-                        $toll_array['toll_amount'] = $estimatedPrice->units;
-                    };
+                    if(isset($routes->travelAdvisory) && !empty($routes->travelAdvisory)){
+                        if(isset($routes->travelAdvisory->tollInfo) && !empty($routes->travelAdvisory->tollInfo)){
+                            foreach($routes->travelAdvisory->tollInfo->estimatedPrice as $estimatedPrice){
+                                $toll_array['currency'] = $estimatedPrice->currencyCode;
+                                $toll_array['toll_amount'] = $estimatedPrice->units;
+                            }
+                        }
+                    }
                 }
             }else{
                 $toll_array['distanceMeters'] = 0;
