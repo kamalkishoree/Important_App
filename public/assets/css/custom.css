@@ -16,6 +16,25 @@
 }
 
 /*---------------light theme------------*/
+.select2-container--default .select2-selection--multiple .select2-selection__choice {
+    padding: 0 10px 0 20px !important;
+}
+span.select2-selection.select2-selection--multiple {
+    height: auto !important;
+}
+form#StoreWarehouse label.checkbox-inline {
+    margin-right: 10px;
+}
+form#submitAgent .select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
+    left: -10px;
+    position: relative;
+    color:#fff !important;
+}
+#warehouse_idInputEdit .select2-container--default .select2-selection--multiple .select2-selection__choice__remove{
+    left: -10px;
+    position: relative;
+    color:#fff !important;
+}
 body.light div#edit-customer-modal .iti__country-list {
     left: 5% !important;
     height: 200px !important;
