@@ -97,6 +97,14 @@
                     </a>
                 </li>
                 @endif
+
+                <li>
+                    <a href="{{route('driver-accountancy.index')}}">
+                        <i class="fe-users"></i>
+                        <span> {{__('Driver Accountancy')}} </span>
+                    </a>
+                </li>
+                
                 <li class="menu-title mt-2">{{__('Settings')}}</li>
 
                 @if(in_array('Profile',$allowed) || Auth::user()->is_superadmin == 1)
@@ -261,15 +269,6 @@
                     </a>
                 </li>
                 @endif
-
-                <li>
-                    <a href="{{route('driver-accountancy.index')}}">
-                        <i class="fe-users"></i>
-                        <span> {{__('Driver Accountancy')}} </span>
-                    </a>
-                </li>
-
-
 
               {{-- <li>
                     <a href="#">
