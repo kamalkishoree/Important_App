@@ -70,6 +70,7 @@ class ClientController extends Controller
      */
     public function storePreference(Request $request, $domain = '', $id)
     {
+        //pr($request->all());
         $customerDistenceNotification = '';
         if(!empty($request->customer_notification)){
             $data = ['customer_notification_per_distance'=>json_encode($request->customer_notification)];
@@ -97,6 +98,16 @@ class ClientController extends Controller
         if(!empty($request->fcm_server_key)){
             $data = ['fcm_server_key'=>$request->fcm_server_key];
             ClientPreference::where('client_id', $id)->update($data);
+
+            return redirect()->back()->with('success', 'Preference updated successfully!');
+        }
+        if($request->has('toll_fee_enable')){
+            $toll_fell_enable = $request->toll_fee == 'on' ? 1 : 0;
+            $data = ['toll_key'=>$request->toll_key,'toll_fee'=>$toll_fell_enable];
+            ClientPreference::where('client_id', $id)->update($data);
+        }
+        if(!empty($request->toll_key)){
+           
 
             return redirect()->back()->with('success', 'Preference updated successfully!');
         }
@@ -295,7 +306,7 @@ class ClientController extends Controller
         }
         
         
-        //pr($request->all());
+        $request->request->add(['toll_fee' => ($request->has('toll_fee') && $request->toll_fee == 'on') ? 1 : 0]);
         $updatePreference = ClientPreference::updateOrCreate([
             'client_id' => $id
         ], $request->all());

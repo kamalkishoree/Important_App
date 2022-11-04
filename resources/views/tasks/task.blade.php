@@ -62,6 +62,12 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
     padding-right:5px;
     color:#3283f6;
     }
+
+    select#agent_name_id {
+        width: 135px;
+    }
+
+    
     
 </style>
 <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
@@ -264,4 +270,11 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
     <script src="{{ asset('assets/libs/dropify/dropify.min.js') }}"></script>
     <script src="{{ asset('assets/js/pages/form-fileuploads.init.js') }}"></script>
     @include('tasks.taskpagescript')
+
+
+<style>
+.agents-datatable tbody td, .dataTables_scrollHead thead th {
+        padding: 6px 6px 6px 6px !important;
+    }
+</style>
 @endsection

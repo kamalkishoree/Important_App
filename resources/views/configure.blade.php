@@ -69,6 +69,17 @@ $sms_crendential = json_decode($preference->sms_credentials);
                                     @endif
                                 </div>
                             </div>
+                            <div class="col-md-12"> 
+                                <div class="form-group d-flex justify-content-between mb-3">
+                                <label for="" class="mr-2 mb-0">{{__("Toll Api")}} </label>
+                                <div class="d-flex align-items-center justify-content-between mb-2">
+                                    <div class="custom-control custom-switch">
+                                            <input type="checkbox" class="custom-control-input " id="toll_fee" name="toll_fee" {{ (!empty($preference->toll_fee) && $preference->toll_fee > 0) ? 'checked' :'' }}>
+                                            <label class="custom-control-label" for="toll_fee"></label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </form>
@@ -1032,7 +1043,7 @@ $sms_crendential = json_decode($preference->sms_credentials);
         </div>
 
 
-
+        
 
         <!-- end page title -->
         {{-- <div class="row">
@@ -1335,6 +1346,14 @@ $sms_crendential = json_decode($preference->sms_credentials);
                 $('.batch-allocation').show();
             }else{
                 $('.batch-allocation').hide();
+            }
+        });
+
+        $('#toll_fee').on('change',function(){
+            if ($(this).is(":checked")) {
+                $('.toll_fee').show();
+            }else{
+                $('.toll_fee').hide();
             }
         });
     </script>

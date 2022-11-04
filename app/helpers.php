@@ -4,6 +4,7 @@ use App\Model\ClientPreference;
 use App\Model\OrderPanelDetail;
 use App\Model\Client as ClientData;
 use App\Model\Countries;
+use Illuminate\Support\Facades\Auth;
 use App\Model\PaymentOption;
 use Illuminate\Support\Facades\Schema;
 
@@ -124,8 +125,8 @@ function helper_number_formet($number){
 
 function getCountryCode($dial_code=''){
     if($dial_code==''):
-        $clientData = ClientData::select('country_id')->first();
-        $getAdminCurrentCountry = Countries::where('id', '=', $clientData->country_id)->select('id', 'code')->first();
+        $clientData = ClientData::select('country_id')->where('id', Auth::user()->country_id)->first();
+        $getAdminCurrentCountry = Countries::where('id', '=', Auth::user()->country_id)->select('id', 'code')->first();
     else:
         $getAdminCurrentCountry = Countries::where('phonecode', '=', $dial_code)->select('id', 'code')->first();
     endif;
