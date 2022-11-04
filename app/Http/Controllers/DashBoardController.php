@@ -542,7 +542,7 @@ class DashBoardController extends Controller
             if($i==0)
             {
                 if (isset($driverlocation['lat'])) {
-                    $distance = $this->GoogleDistanceMatrix($driverlocation['lat'], $driverlocation['long'], $Taskdetail->location->latitude, $Taskdetail->location->longitude);
+                    $distance = $this->GoogleDistanceMatrix($driverlocation['lat'], $driverlocation['long'], $Taskdetail->location->latitude??'', $Taskdetail->location->longitude??'');
                     $totaldistance += $distance;
                     $distancearray[] = $distance;
                 } else {
