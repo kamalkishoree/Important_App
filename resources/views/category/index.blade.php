@@ -53,6 +53,7 @@
                                         <th>{{__("Name")}}</th>
                                         <th>{{__('Status')}}</th>
                                         <th>{{__("Created Date")}}</th>
+                                        <th>{{__("Total Products")}}</th>
                                         <th>{{__("Action")}}</th>
                                     </tr>
                                 </thead>
@@ -70,9 +71,11 @@
                                                     @endif
                                                 </td>
                                                 <td>{{ formattedDate($cat->created_at) }}</td>                                    
+                                                <td>{{ count($cat->products) }}</td>                                    
                                                 <td>
-                                                    <div class="form-ul" style="width: 60px;">
+                                                    <div class="form-ul" style="width: 60px;display: inline-flex;">
                                                         <div class="inner-div"> <a href="JavaScript:void(0);"  class="action-icon editIconBtn openEditCategoryModal" data-toggle="modal" data-target="" data-backdrop="static" data-keyboard="false" data-name="{{ $cat->slug }}" data-id="{{ $cat->id }}" data-status="{{ $cat->status }}" style="margin-top: 5px;"> <i class="mdi mdi-square-edit-outline"></i></a></div>
+                                                        {{-- <div class="inner-div"> <a href="{{route('showProduct', $cat->id)}}"  class="action-icon viewBtn" style="margin-top: 5px;"> <i class="mdi mdi-eye" title="View Products"></i></a></div> --}}
                                                         <div class="inner-div">
                                                             <form method="POST" action="{{route('category.destroy', $cat->id)}}">
                                                                 @csrf

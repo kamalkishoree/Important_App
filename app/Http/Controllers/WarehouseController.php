@@ -17,13 +17,16 @@ class WarehouseController extends Controller
     public function index()
     {
         $user = Auth::user();
-        $warehouses = Warehouse::with(['amenity', 'category'])->orderBy('id', 'DESC');
-        $managerWarehouses = Client::with('warehouse')->where('id', $user->id)->first();
-        $managerWarehousesIds = $managerWarehouses->warehouse->pluck('id'); 
-        if($user->is_superadmin == 0 && $user->manager_type == 1){
-            $warehouses = $warehouses->whereIn('id', $managerWarehousesIds);
+        $warehouses = [];
+        if(checkTableExists('warehouses')){
+            $warehouses = Warehouse::with(['amenity', 'category'])->orderBy('id', 'DESC');
+            $managerWarehouses = Client::with('warehouse')->where('id', $user->id)->first();
+            $managerWarehousesIds = $managerWarehouses->warehouse->pluck('id'); 
+            if($user->is_superadmin == 0 && $user->manager_type == 1){
+                $warehouses = $warehouses->whereIn('id', $managerWarehousesIds);
+            }
+            $warehouses = $warehouses->paginate(10);
         }
-        $warehouses = $warehouses->paginate(10);
         return view('warehouse.index')->with(['warehouses' => $warehouses]);
     }
 
@@ -34,8 +37,14 @@ class WarehouseController extends Controller
      */
     public function create()
     {
-        $amenities = Amenities::all();
-        $category = Category::where('status', 1)->get();
+        $amenities = [];
+        if(checkTableExists('amenities')){
+            $amenities = Amenities::all();
+        }
+        $category = [];
+        if(checkTableExists('categories')){
+            $category = Category::where('status', 1)->get();
+        }
         return view('warehouse.form')->with(['amenities' => $amenities, 'category' => $category]);
     }
 
@@ -47,17 +56,19 @@ class WarehouseController extends Controller
      */
     public function store(AddWarehouseRequest $request)
     {
-        $warehouse = new Warehouse;
-        $warehouse->name = $request->input('name');
-        $warehouse->code = $request->input('code');
-        $warehouse->address = $request->input('address');
-        $warehouse->latitude = $request->input('latitude');
-        $warehouse->longitude = $request->input('longitude');
-        $warehouse->save();
-        $amenities = $request->input('amenities');
-        $warehouse->amenity()->sync($amenities);
-        $category = $request->input('category');
-        $warehouse->category()->sync($category);
+        if(checkTableExists('warehouses')){
+            $warehouse = new Warehouse;
+            $warehouse->name = $request->input('name');
+            $warehouse->code = $request->input('code');
+            $warehouse->address = $request->input('address');
+            $warehouse->latitude = $request->input('latitude');
+            $warehouse->longitude = $request->input('longitude');
+            $warehouse->save();
+            $amenities = $request->input('amenities');
+            $warehouse->amenity()->sync($amenities);
+            $category = $request->input('category');
+            $warehouse->category()->sync($category);
+        }
         return redirect()->route('warehouse.index')->with('success','Warehouse Added Successfully');
     }
 
@@ -69,8 +80,14 @@ class WarehouseController extends Controller
      */
     public function edit($port, Warehouse $warehouse)
     {
-        $amenities = Amenities::all();
-        $category = Category::where('status', 1)->get();
+        $amenities = [];
+        if(checkTableExists('amenities')){
+            $amenities = Amenities::all();
+        }
+        $category = [];
+        if(checkTableExists('categories')){
+            $category = Category::where('status', 1)->get();
+        }
         return view('warehouse.form')->with(['amenities' => $amenities, 'warehouse' => $warehouse, 'category' => $category]);
     }
 
@@ -83,18 +100,20 @@ class WarehouseController extends Controller
      */
     public function update($port, AddWarehouseRequest $request, Warehouse $warehouse)
     {
-        $data = [
-            'name' => $request->input('name'),
-            'code' => $request->input('code'),
-            'address' => $request->input('address'),
-            'latitude' => $request->input('latitude'),
-            'longitude' => $request->input('longitude')
-        ];
-        $warehouse->update($data);
-        $amenities = $request->input('amenities');
-        $warehouse->amenity()->sync($amenities);
-        $category = $request->input('category');
-        $warehouse->category()->sync($category);
+        if(checkTableExists('warehouses')){
+            $data = [
+                'name' => $request->input('name'),
+                'code' => $request->input('code'),
+                'address' => $request->input('address'),
+                'latitude' => $request->input('latitude'),
+                'longitude' => $request->input('longitude')
+            ];
+            $warehouse->update($data);
+            $amenities = $request->input('amenities');
+            $warehouse->amenity()->sync($amenities);
+            $category = $request->input('category');
+            $warehouse->category()->sync($category);
+        }
         return redirect()->route('warehouse.index')->with('success','Warehouse Updated Successfully');
     }
 
@@ -106,7 +125,9 @@ class WarehouseController extends Controller
      */
     public function destroy($port, Warehouse $warehouse)
     {
-        $warehouse->delete();
+        if(checkTableExists('warehouses')){
+            $warehouse->delete();
+        }
         return redirect()->back()->with('success','Warehouse Deleted Successfully');
     }
 }

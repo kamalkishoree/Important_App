@@ -5,6 +5,7 @@ use App\Model\OrderPanelDetail;
 use App\Model\Client as ClientData;
 use App\Model\Countries;
 use App\Model\PaymentOption;
+use Illuminate\Support\Facades\Schema;
 
 function pr($var) {
   	echo '<pre>';
@@ -186,4 +187,35 @@ function connect_with_order_panel() {
     ];
     Config::set("database.connections.$order_panel_details->db_name", $default);
     return \DB::connection($order_panel_details->db_name);    
+}
+
+// Returns the values of the additional preferences.
+if (!function_exists('checkColumnExists')) {
+    /** check if column exits in table
+       * @param string $tableName
+       * @param string @columnName
+       * @return boolean true or false
+    */
+    function checkColumnExists($tableName, $columnName){
+        if (Schema::hasColumn($tableName, $columnName)){
+            return true;
+        }else{
+            return false;
+        }
+    }
+}
+
+// Returns the values of the additional preferences.
+if (!function_exists('checkTableExists')) {
+    /** check if column exits in table
+    * @param string $tableName
+    * @return boolean true or false
+    */
+    function checkTableExists($tableName){
+        if (Schema::hasTable($tableName)){
+            return true;
+        }else{
+            return false;
+        }
+    }
 }

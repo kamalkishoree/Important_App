@@ -9,26 +9,6 @@ use Illuminate\Support\Facades\Validator;
 class ProductController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -46,15 +26,17 @@ class ProductController extends Controller
         if ($validation->fails()) {
             return redirect()->back()->withInput()->withErrors($validation);
         }
-        $product = new Product();
-        $product->sku = $request->sku;
-        $product->url_slug = empty($request->url_slug) ? $request->sku : $request->url_slug;
-        $product->title = empty($request->product_name) ? $request->sku : $request->product_name;
-        $product->type_id = $request->type_id;
-        $product->category_id = $request->category;
-        $product->vendor_id = $request->vendor_id;
-        $product->save();
-        if ($product->id > 0) {
+        if(checkTableExists('products')){
+            $product = new Product();
+            $product->sku = $request->sku;
+            $product->url_slug = empty($request->url_slug) ? $request->sku : $request->url_slug;
+            $product->title = empty($request->product_name) ? $request->sku : $request->product_name;
+            $product->type_id = $request->type_id;
+            $product->category_id = $request->category;
+            $product->vendor_id = $request->vendor_id;
+            $product->save();
+        }
+        if (isset($product->id) && $product->id > 0) {
             $datatrans[] = [
                 'title' => $request->product_name??null,
                 'body_html' => '',
@@ -75,9 +57,9 @@ class ProductController extends Controller
             $proVariant->barcode = $this->generateBarcodeNumber();
             $proVariant->save();
             ProductTranslation::insert($datatrans);
-            return redirect()->back()->with('success', __('Product added successfully!') );
             // return redirect('client/masterproduct/' . $product->id . '/edit')->with('success', __('Product added successfully!') );
         }
+        return redirect()->back()->with('success', __('Product added successfully!') );
     }
 
     private function generateBarcodeNumber()
@@ -90,40 +72,6 @@ class ProductController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
      * Remove the specified resource from storage.
      *
      * @param  int  $id
@@ -133,4 +81,8 @@ class ProductController extends Controller
     {
         //
     }
+
+    // public function showProduct(Request $request, $id){
+    //     dd($id);
+    // }
 }

@@ -67,12 +67,20 @@ class TaskController extends BaseController
         } else {
             $check = 'unassigned';
         }
-
-        $managerWarehouses = Client::with('warehouse')->where('id', $user->id)->first();
-        $managerWarehousesIds = $managerWarehouses->warehouse->pluck('id');
+        if(checkTableExists('warehouse')){
+            $managerWarehouses = Client::with('warehouse')->where('id', $user->id)->first();
+            $managerWarehousesIds = $managerWarehouses->warehouse->pluck('id');
+        }else{
+            $managerWarehouses = [];
+            $managerWarehousesIds = [];
+        }
 
         $agentids =[];
-        $agents = Agent::with('warehouseAgent')->orderBy('id', 'DESC');
+        if(checkTableExists('agent_warehouse')){
+            $agents = Agent::with('warehouseAgent')->orderBy('id', 'DESC');
+        }else{
+            $agents = [];
+        }
         if ($user->is_superadmin == 0 && $user->all_team_access == 0 && $user->manager_type == 0) {
             $agents = $agents->whereHas('team.permissionToManager', function ($query) use($user) {
                 $query->where('sub_admin_id', $user->id);
@@ -679,9 +687,11 @@ class TaskController extends BaseController
                     'assigned_time'              => $notification_time,
                     'barcode'                    => $request->barcode[$key],
                     'quantity'                   => $request->quantity[$key],
-                    'alcoholic_item'             => !empty($request->alcoholic_item[$key])? $request->alcoholic_item[$key] : '',
-                    'warehouse_id'                   => $request->warehouse_id[$key],
+                    'alcoholic_item'             => !empty($request->alcoholic_item[$key])? $request->alcoholic_item[$key] : ''
                 ];
+                if(checkColumnExists('tasks', 'warehouse_id')){
+                    $data['warehouse_id'] = $request->warehouse_id[$key];
+                }
                 $task = Task::create($data);
                 $dep_id = $task->id;
 
@@ -2540,9 +2550,11 @@ class TaskController extends BaseController
                     'barcode'           => $request->barcode[$key],
                     'quantity'          => $request->quantity[$key],
                     'assigned_time'     => $notification_time,
-                    'alcoholic_item'    => !empty($request->alcoholic_item[$key])? $request->alcoholic_item[$key] : '',
-                    'warehouse_id'                   => $request->warehouse_id[$key],
+                    'alcoholic_item'    => !empty($request->alcoholic_item[$key])? $request->alcoholic_item[$key] : ''
                 ];
+                if(checkColumnExists('tasks', 'warehouse_id')){
+                    $data['warehouse_id'] = $request->warehouse_id[$key];
+                }
                 $task = Task::create($data);
                 $dep_id = $task->id;
             }

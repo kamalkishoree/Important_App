@@ -13,4 +13,9 @@ class Category extends Model
     public function warehouses(){
         return $this->belongsToMany('App\Model\Warehouse', 'warehouse_category');
     }
+
+    public function products()
+    {
+        return $this->hasMany(Product::class, 'category_id', 'id');
+    }
 }

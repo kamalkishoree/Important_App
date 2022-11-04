@@ -15,18 +15,24 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $category = Category::orderBy('id', 'DESC')->paginate(10);
-        $product_category = Category::orderBy('id', 'DESC')->get();
-        $client_preferences = ClientPreference::first();
-     
-        $client = Client::orderBy('id','asc')->first();
-        if(isset($client->custom_domain) && !empty($client->custom_domain) && $client->custom_domain != $client->sub_domain)
-        $sku_url =  ($client->custom_domain);
-        else
-        $sku_url =  ($client->sub_domain.env('SUBMAINDOMAIN'));
+        $category = [];
+        $product_category = [];
+        $sku_url = '';
+        if(checkTableExists('categories')){
+            $category = Category::with('products')->orderBy('id', 'DESC')->paginate(10);
+            // dd($category);
+            $product_category = Category::orderBy('id', 'DESC')->get();
+            $client_preferences = ClientPreference::first();
+        
+            $client = Client::orderBy('id','asc')->first();
+            if(isset($client->custom_domain) && !empty($client->custom_domain) && $client->custom_domain != $client->sub_domain)
+            $sku_url =  ($client->custom_domain);
+            else
+            $sku_url =  ($client->sub_domain.env('SUBMAINDOMAIN'));
 
-        $sku_url = array_reverse(explode('.',$sku_url));
-        $sku_url = implode(".",$sku_url);
+            $sku_url = array_reverse(explode('.',$sku_url));
+            $sku_url = implode(".",$sku_url);
+        }
         return view('category.index')->with(['category' => $category, 'product_category' => $product_category, 'sku_url' => $sku_url]);
     }
 
@@ -43,22 +49,26 @@ class CategoryController extends Controller
             $check_category = Category::where('slug', $request->name)->first();
         }
         if(empty($check_category)){
-            Category::updateOrCreate(
-                ['id'=> $request->cat_id], 
-                [
-                    'slug' => $request->input('name'),
-                    'type_id' => 1,
-                    'is_visible' => 1,
-                    'status' => $request->input('status')
-                ]
-            );
-            CategoryTranslation::updateOrCreate(
-                ['category_id'=> $request->cat_id], 
-                [
-                    'name' => $request->input('name'),
-                    'status' => $request->input('status')
-                ]
-            );
+            if(checkTableExists('categories')){
+                Category::updateOrCreate(
+                    ['id'=> $request->cat_id], 
+                    [
+                        'slug' => $request->input('name'),
+                        'type_id' => 1,
+                        'is_visible' => 1,
+                        'status' => $request->input('status')
+                    ]
+                );
+            }
+            if(checkTableExists('category_translations')){
+                CategoryTranslation::updateOrCreate(
+                    ['category_id'=> $request->cat_id], 
+                    [
+                        'name' => $request->input('name'),
+                        'status' => $request->input('status')
+                    ]
+                );
+            }
             if($request->cat_id == ''){
                 return redirect()->back()->with('success','Category Added Successfully.');
             }else{
@@ -77,7 +87,9 @@ class CategoryController extends Controller
      */
     public function destroy($port, Category $category)
     {
-        $category->forceDelete();
+        if(checkTableExists('categories')){
+            $category->forceDelete();
+        }
         return redirect()->back()->with('success','Category Deleted Successfully');
     }
 
@@ -96,7 +108,7 @@ class CategoryController extends Controller
         return redirect()->back()->with('success', 'Category & Product Import Successfully.');
     }
 
-    public function syncSingleProduct($category_id, $product){
+    public function syncSingleProduct($category_id, $product){ 
         $product_update_create = [
             "sku"                   => $product->sku,
             "title"                 => $product->title,
