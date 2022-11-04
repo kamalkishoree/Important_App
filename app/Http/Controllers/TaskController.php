@@ -651,8 +651,11 @@ class TaskController extends BaseController
                         $loc_id = $request->old_address_id;
                         $send_loc_id = $loc_id;
                     } else {
-                        $loc_id = $request->input($old_address_ids[$key]);
-                        $send_loc_id = $loc_id;
+                        if(!empty($old_address_ids[$key])){
+                            $loc_id = $request->input($old_address_ids[$key]);
+                        }else{
+                            $loc_id = '';
+                        }
                     }
                 }
 
