@@ -88,14 +88,16 @@
                                         @endforeach
                                         @else
                                         <tr>
-                                            <td colspan="8" class="text-center text-danger">no record found..</td>
+                                            <td colspan="10" class="text-center text-danger">no record found..</td>
                                         </tr>
                                     @endif
                                 </tbody>
                             </table>
                         </div>
                         <div class="pagination pagination-rounded justify-content-end mb-0">
-                            {{ $warehouses->links() }}
+                            @if(!empty($warehouses))
+                                {{ $warehouses->links() }}
+                            @endif
                         </div>
                     </div> <!-- end card-body-->
                 </div> <!-- end card-->

@@ -35,9 +35,11 @@ class AmenitiesController extends Controller
      */
     public function store(Request $request)
     {
-        $amenities = new Amenities;
-        $amenities->name = $request->input('name');
-        $amenities->save();
+        if(checkTableExists('amenities')){
+            $amenities = new Amenities;
+            $amenities->name = $request->input('name');
+            $amenities->save();
+        }
         return redirect()->back()->with('success','Amenities Added Successfully');
     }
 

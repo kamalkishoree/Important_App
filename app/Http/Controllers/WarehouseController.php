@@ -68,6 +68,8 @@ class WarehouseController extends Controller
             $warehouse->amenity()->sync($amenities);
             $category = $request->input('category');
             $warehouse->category()->sync($category);
+        }else{
+            return redirect()->route('warehouse.index')->with('error','Something went wrong. please try again.');
         }
         return redirect()->route('warehouse.index')->with('success','Warehouse Added Successfully');
     }

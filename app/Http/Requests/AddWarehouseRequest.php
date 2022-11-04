@@ -22,13 +22,16 @@ class AddWarehouseRequest extends FormRequest
      * @return array
      */
     public function rules(Request $request){
+        if(!checkTableExists('warehouses')){
+            return [];
+        }
         return [
             'name' => 'required',
             'code' => 'required|unique:warehouses,code,'. $request->warehouse_id,
             'address' => 'required',
             'category' => 'required',
         ];
-
+   
     }
      public function messages(){
         return [

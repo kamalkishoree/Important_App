@@ -52,7 +52,10 @@ class SubAdminController extends Controller
         }
         $permissions = Permissions::all();
         $teams = Team::all();
-        $warehouses = Warehouse::all();
+        $warehouses = [];
+        if(checkTableExists('products')){
+            $warehouses = Warehouse::all();
+        }
         return view('subadmin/form')->with(['permissions'=>$permissions,'teams'=>$teams, 'selectedCountryCode' => $countryCode, 'warehouses' => $warehouses]);
     }
 

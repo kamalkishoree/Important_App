@@ -79,7 +79,7 @@ class TaskController extends BaseController
         if(checkTableExists('agent_warehouse')){
             $agents = Agent::with('warehouseAgent')->orderBy('id', 'DESC');
         }else{
-            $agents = [];
+            $agents = Agent::orderBy('id', 'DESC');
         }
         if ($user->is_superadmin == 0 && $user->all_team_access == 0 && $user->manager_type == 0) {
             $agents = $agents->whereHas('team.permissionToManager', function ($query) use($user) {
@@ -147,11 +147,17 @@ class TaskController extends BaseController
         $pricingRule = $pricingRule->get();
 
         $allcation   = AllocationRule::where('id', 1)->first();
-
-        $warehouses = Warehouse::all();
+        if(checkTableExists('warehouses')){
+            $warehouses = Warehouse::all();
+        }else{
+            $warehouses = [];
+        }
         // Get Warehouse Manager
-        $warehouse_manager = Client::where('manager_type', 1)->where('status', 1)->get();
-        
+        $warehouse_manager = [];
+        if(checkColumnExists('clients', 'manager_type')){
+            $warehouse_manager = Client::where('manager_type', 1)->where('status', 1)->get();
+        }
+
         if($user->is_superadmin == 0 && $user->manager_type == 1){
             $manager_warehouses = Client::with('warehouse')->where('id', $user->id)->first();
             $mana_warehouseIds = $manager_warehouses->warehouse->pluck('id');
@@ -1156,15 +1162,17 @@ class TaskController extends BaseController
         $agents = $agents->where('is_approved', 1)->get();
 
         $preference  = ClientPreference::where('id', 1)->first(['route_flat_input','route_alcoholic_input']);
-
-        $warehouses = Warehouse::all();
-
+        $warehouses = [];
+        if(checkTableExists('warehouses')){
+            $warehouses = Warehouse::all();
+        }
         $task_proofs = TaskProof::all();
 
         $vehicle_type = VehicleType::all();
-
-        $category = Category::where('status', 1)->get();
-        
+        $category = [];
+        if(checkTableExists('warehouses')){
+            $category = Category::where('status', 1)->get();
+        }
         $returnHTML = view('modals/add-task-modal')->with(['teamTag' => $teamTag, 'preference'=>$preference, 'agentTag' => $agentTag, 'agents' => $agents, 'pricingRule' => $pricingRule, 'allcation' => $allcation ,'task_proofs' => $task_proofs, 'warehouses' => $warehouses, 'vehicle_type' => $vehicle_type, 'category' => $category])->render();
         return response()->json(array('success' => true, 'html' => $returnHTML));
     }
