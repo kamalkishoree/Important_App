@@ -1171,12 +1171,14 @@ class TaskController extends BaseController
             if(empty($pricingRule))
             $pricingRule = PricingRule::orderBy('is_default', 'desc')->orderBy('is_default', 'asc')->first();
 
-            $tollresponse = array();
             if($auth->getPreference->toll_fee == 1){
-                $tollresponse = $this->toll_fee($latitude, $longitude, (isset($request->toll_passes)?$request->toll_passes:''), (isset($request->VehicleEmissionType)?$request->VehicleEmissionType:''), (isset($request->travelMode)?$request->travelMode:''));
+                $getdata = $this->toll_fee($latitude, $longitude, (isset($request->toll_passes)?$request->toll_passes:''), (isset($request->VehicleEmissionType)?$request->VehicleEmissionType:''), (isset($request->travelMode)?$request->travelMode:''));
+                $toll_amount = (isset($getdata['toll_amount'])?$getdata['toll_amount']:0);
+            }else{
+                $getdata = $this->GoogleDistanceMatrix($latitude, $longitude);
+                $toll_amount = 0;
             }
 
-            $getdata = $this->GoogleDistanceMatrix($latitude, $longitude);
 
             $paid_duration = $getdata['duration'] - $pricingRule->base_duration;
             $paid_distance = $getdata['distance'] - $pricingRule->base_distance;
@@ -1184,6 +1186,10 @@ class TaskController extends BaseController
             $paid_distance = $paid_distance < 0 ? 0 : $paid_distance;
             $total         = $pricingRule->base_price + ($paid_distance * $pricingRule->distance_fee) + ($paid_duration * $pricingRule->duration_price);
 
+            if($orders->is_cab_pooling == 1){
+                $total       = ($total/$orders->available_seats)*$orders->no_seats_for_pooling;
+                $toll_amount = ($toll_amount/$orders->available_seats)*$orders->no_seats_for_pooling;
+            }
             if(isset($agent_id)) {
                 $agent_details = Agent::where('id', $agent_id)->first();
                 if ($agent_details->type == 'Employee') {
@@ -1210,8 +1216,8 @@ class TaskController extends BaseController
             'freelancer_commission_fixed'     => $pricingRule->freelancer_commission_fixed,
             'actual_time'                     => $getdata['duration'],
             'actual_distance'                 => $getdata['distance'],
-            'order_cost'                      => $total + (isset($tollresponse['toll_amount'])?$tollresponse['toll_amount']:0),
-            'toll_fee'                        => (isset($tollresponse['toll_amount'])?$tollresponse['toll_amount']:0),
+            'order_cost'                      => $total + $toll_amount,
+            'toll_fee'                        => $toll_amount,
             'driver_cost'                     => $percentage,
             ];
 
@@ -2621,16 +2627,17 @@ class TaskController extends BaseController
         if(empty($pricingRule))
         $pricingRule = PricingRule::orderBy('is_default', 'desc')->orderBy('is_default', 'asc')->first();
 
-        $getdata = $this->GoogleDistanceMatrix($latitude, $longitude);
+       
+        if($auth->getPreference->toll_fee == 1){
+            $getdata = $this->toll_fee($latitude, $longitude, (isset($request->toll_passes)?$request->toll_passes:''), (isset($request->VehicleEmissionType)?$request->VehicleEmissionType:''), (isset($request->travelMode)?$request->travelMode:''));
+        }else{
+            $getdata = $this->GoogleDistanceMatrix($latitude, $longitude);
+        }
+
         $paid_duration = $getdata['duration'] - $pricingRule->base_duration;
         $paid_distance = $getdata['distance'] - $pricingRule->base_distance;
         $paid_duration = $paid_duration < 0 ? 0 : $paid_duration;
         $paid_distance = $paid_distance < 0 ? 0 : $paid_distance;
-
-        $tollresponse = array();
-        if($auth->getPreference->toll_fee == 1){
-            $tollresponse = $this->toll_fee($latitude, $longitude, (isset($request->toll_passes)?$request->toll_passes:''), (isset($request->VehicleEmissionType)?$request->VehicleEmissionType:''), (isset($request->travelMode)?$request->travelMode:''));
-        }
 
         $total         = $pricingRule->base_price + ($paid_distance * $pricingRule->distance_fee) + ($paid_duration * $pricingRule->duration_price);
 
@@ -2643,7 +2650,7 @@ class TaskController extends BaseController
             'currency' => $currency,
             'paid_distance' => $paid_distance,
             'paid_duration' => $paid_duration,
-            'toll_fee' => (isset($tollresponse['toll_amount'])?$tollresponse['toll_amount']:0),
+            'toll_fee' => (isset($getdata['toll_amount'])?$getdata['toll_amount']:0),
             'message' => __('success')
         ], 200);
 
