@@ -14,6 +14,32 @@
     border-color: transparent; */
     cursor: pointer;
 }
+
+/*---------------light theme------------*/
+body.light div#edit-customer-modal .iti__country-list {
+    left: 5% !important;
+    height: 200px !important;
+    top: 42px !important;
+    width: 250px !important;
+    overflow-x: hidden;
+  }
+
+  body.light form#add_customer .iti__country-list {
+    z-index: 999;
+    width: 300px;
+    overflow-x: hidden;
+}
+body.light .address_box label {
+    width: 160px;
+}
+body.light div#agents-datatable_wrapper .dataTables_scrollHead thead th {
+    cursor: pointer;
+    font-size: 14px;
+}
+body.light .row.location-section .form-group.col-12.mb-1 input.form-control.address {
+    width: 94%;
+    margin: 0 auto 10px;
+}
 /*---------------custom dark theam css------------*/
 body.dark .card.widget-inline p {
     color: #fff !important;
@@ -73,9 +99,9 @@ body.dark div#edit-customer-modal .form-control::placeholder{
     color: #a2b3c5;
 }
 body.dark .iti__country-list {
-    left: 65% !important;
+    
     height: 200px !important;
-    top: 129px !important;
+    
     width: 250px !important;
 }
 body.dark a.btn.btn-success.btn-rounded.waves-effect.waves-light.editInput{
@@ -2294,6 +2320,28 @@ body.dark .main_form .select2-container--default .select2-selection--single {
     border: 1px solid #ced4da !important;
     background-color: transparent !important;
 }
+body.dark div#edit-customer-modal ul#iti-1__country-listbox {
+    left: 5% !important;
+    height: 200px !important;
+    top: 42px !important;
+    width: 250px !important;
+  }
+  body.light form#payment_option_form .switchery {
+    height: 20px;
+    width: 40px;
+}
+body.light form#payment_option_form .switchery>small {
+    height: 20px;
+    width: 20px;
+}
+body.light form#payout_option_form .switchery>small {
+    height: 20px;
+    width: 20px;
+}
+body.light form#payout_option_form .switchery {
+    height: 20px;
+    width: 40px;
+}
 /*----------laptop view media css--------------*/
 @media(max-width:1440px){
     body.dark.iti-mobile .col-md-8.mx-auto.col-sm-12.col-lg-8{
@@ -2304,9 +2352,25 @@ body.dark .main_form .select2-container--default .select2-selection--single {
     body.dark.iti-mobile div#favicon_container {
         width: auto !important;
     }
-    
+    body.light.iti-mobile div#favicon_container {
+        width: auto !important;
+    }
+    body.light .dropify-wrapper.touch-fallback {
+        height: 135px !important;
+    }
     body.dark div#pending_payouts .card {
         border-radius: 0 0 16px 16px !important;
+    }
+    body.light .dropify-wrapper .dropify-message{top:0;}
+    body.light .dropify-wrapper.touch-fallback .dropify-message{padding:0 !important;}
+    body.light div#add-agent-modal .dropify-wrapper .dropify-message {
+        top: 50px;
+    }
+    body.light div#top-tabContent .dataTables_scrollHead thead th {
+        cursor: pointer;
+        width: 120px !important;
+        max-width: 120px;
+        min-width: 120px;
     }
   }
   

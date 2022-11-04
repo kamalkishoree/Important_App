@@ -518,7 +518,7 @@ body.dark .navbar-custom .topnav-menu .nav-link {
   height:60px;
 }
 body.dark a.profile-block.collapsed {
-  padding: 12px;
+  padding: 12px 12px 0;
 }
 body.dark  span.profile-circle.pro-name {
   width: 40px;
@@ -531,5 +531,52 @@ body.dark a.profile-block.pro-block{
 body[data-sidebar-size=condensed] .left-side-menu .simplebar-mask, body[data-sidebar-size=condensed] .left-side-menu .simplebar-content-wrapper {
   overflow: auto !important;
 }
-
-
+/*--------------white theme css ----------*/
+body.light .card-header .col-md-3 {
+    border-right: 1px solid#f2f2f26b;
+}
+body.light #teams_container .card-header .profile-circle {
+  border-radius: 5px;
+}
+body.light .left-sidebar p {
+  margin-top: 10px;
+}
+body.light .online {
+  display: block;
+  background: #00800024;
+  text-align: center;
+  padding: 5px;
+  margin-top: 10px;
+  color: #2fcf2f !important;
+  font-weight: bold;
+}
+body.light .offline {
+  display: block;
+  background: #d5a44c36;
+  text-align: center;
+  padding: 5px;
+  margin-top: 0;
+  color: #ffbf4d !important;
+  border-radius: 0 0 10px 10px;
+  font-weight: bold;
+}
+body.light #teams_container .card-header {
+  border-radius: 10px;
+  padding:0;
+}
+body.light .newcheckit {
+  padding: 12px;
+}
+body.light div#teams_container .card-header >a:after {
+  right: 15px;
+}
+body.light a.profile-block.collapsed.pro-block {
+  padding: 12px;
+}
+body.light .collapse .profile-circle {
+  width: 40px;
+  height: 40px;
+}
+body.light a.profile-block.pro-block {
+  padding: 12px;
+}
