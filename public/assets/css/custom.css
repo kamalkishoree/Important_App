@@ -2342,6 +2342,9 @@ body.light form#payout_option_form .switchery {
     height: 20px;
     width: 40px;
 }
+body.light .alTaskType input, .alTaskType textarea, .alTaskType select {
+    color: #6e7e8f;
+}
 /*----------laptop view media css--------------*/
 @media(max-width:1440px){
     body.dark.iti-mobile .col-md-8.mx-auto.col-sm-12.col-lg-8{
