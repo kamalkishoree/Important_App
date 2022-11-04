@@ -2345,6 +2345,20 @@ body.light form#payout_option_form .switchery {
 body.light .alTaskType input, .alTaskType textarea, .alTaskType select {
     color: #6e7e8f;
 }
+body.light div#newadd .form-group.col-12.mb-1 input.form-control.address {
+    width: 95%;
+    margin: 0 auto 10px;
+}
+body.dark div#newadd .form-group.col-12.mb-1 input.form-control.address {
+    width: 95%;
+    margin: 0 auto 10px;
+}
+body.dark form#taskFormHeader .edit-icon-float-right {
+    color: #fff;
+}
+body.dark span.iti__country-name {
+    color: #000000a8;
+}
 /*----------laptop view media css--------------*/
 @media(max-width:1440px){
     body.dark.iti-mobile .col-md-8.mx-auto.col-sm-12.col-lg-8{
