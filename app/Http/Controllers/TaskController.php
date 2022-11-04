@@ -2321,10 +2321,17 @@ class TaskController extends BaseController
         $agentTag = $agentTag->get();
 
         $user = Auth::user();
-        $managerWarehouses = Client::with('warehouse')->where('id', $user->id)->first();
-        $managerWarehousesIds = $managerWarehouses->warehouse->pluck('id');
-
-       $agents = Agent::with('warehouseAgent')->orderBy('name', 'asc');
+        $managerWarehouses = [];
+        $managerWarehousesIds = [];
+        if(checkTableExists('warehouse')){
+            $managerWarehouses = Client::with('warehouse')->where('id', $user->id)->first();
+            $managerWarehousesIds = $managerWarehouses->warehouse->pluck('id');
+        }
+        if(checkTableExists('agent_warehouse')){
+            $agents = Agent::with('warehouseAgent')->orderBy('name', 'asc');
+        }else{
+            $agents = Agent::orderBy('name', 'asc');
+        }
         if (Auth::user()->is_superadmin == 0 && Auth::user()->all_team_access == 0 && Auth::user()->manager_type == 0) {
             $agents = $agents->whereHas('team.permissionToManager', function ($query) {
                 $query->where('sub_admin_id', Auth::user()->id);
@@ -2365,9 +2372,15 @@ class TaskController extends BaseController
             $agent_location['lng']  = $lastElement->longitude;
         }
         $task->customer->countrycode = getCountryCode($task->customer->dial_code);
-        $warehouses = Warehouse::all();
+        $warehouses = [];
+        if(checkTableExists('warehouse')){
+            $warehouses = Warehouse::all();
+        }
         $vehicle_type = VehicleType::all();
-        $category = Category::where('status', 1)->get();
+        $category = [];
+        if(checkTableExists('categories')){
+            $category = Category::where('status', 1)->get();
+        }
         return view('tasks/update-task')->with(['task' => $task, 'agent_location' => $agent_location, 'task_locations' => $task_locations, 'task_proofs' => $task_proofs, 'preference' => $preference, 'teamTag' => $teamTag, 'agentTag' => $agentTag, 'agents' => $agents, 'images' => $array, 'savedrivertag' => $savedrivertag, 'saveteamtag' => $saveteamtag, 'main' => $lastbaseurl,'alllocations'=>$all_locations,'client_timezone'=>$client_timezone, 'warehouses' => $warehouses, 'vehicle_type' => $vehicle_type, 'category' => $category]);
     }
 

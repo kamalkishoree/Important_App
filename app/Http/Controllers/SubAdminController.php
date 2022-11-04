@@ -163,7 +163,10 @@ class SubAdminController extends Controller
      */
     public function edit($domain = '', $id)
     {
-        $subadmin = Client::with(['warehouse'])->find($id);
+        $subadmin = Client::find($id);
+        if(checkTableExists('warehouses')){
+            $subadmin = Client::with(['warehouse'])->find($id);
+        }
         // dd($subadmin);
         $permissions = Permissions::all();
         $teams = Team::all();
@@ -175,9 +178,11 @@ class SubAdminController extends Controller
             $countryCode = $getAdminCurrentCountry->code;
         }else{
             $countryCode = '';
-        }        
-        $warehouses = Warehouse::all();
-        
+        }
+        $warehouses = [];
+        if(checkTableExists('warehouses')){        
+            $warehouses = Warehouse::all();
+        }
         return view('subadmin/form')->with(['subadmin'=> $subadmin,'permissions'=>$permissions, 'selectedCountryCode' => $countryCode, 'user_permissions'=>$user_permissions,'teams'=>$teams,'team_permissions'=>$team_permissions, 'warehouses'=>$warehouses]);
     }
 
