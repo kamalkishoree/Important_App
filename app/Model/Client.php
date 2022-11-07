@@ -12,7 +12,7 @@ class Client extends Authenticatable
     use Notifiable;
     protected $guard = 'client';
     protected $fillable = [
-        'name', 'email', 'password', 'phone_number','dial_code', 'password', 'database_path', 'database_name', 'database_username', 'database_password', 'logo', 'company_name', 'company_address', 'custom_domain','sub_domain','status','code','confirm_password','is_superadmin','all_team_access','country_id','timezone','public_login_session', 'socket_url', 'dark_logo'
+        'name', 'email', 'password', 'phone_number','dial_code', 'password', 'database_path', 'database_name', 'database_username', 'database_password', 'logo', 'company_name', 'company_address', 'custom_domain','sub_domain','status','code','confirm_password','is_superadmin','all_team_access','country_id','timezone','public_login_session', 'socket_url', 'dark_logo','admin_signin_image'
     ];
 
     /**

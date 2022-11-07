@@ -172,6 +172,12 @@ box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.15);border-radius: 10px;width: 100%;disp
                                                 <p class="text-muted text-center mt-2 mb-0">{{__("Upload favicon")}} </p>
                                             </div>
                                         </div>
+                                        <div class="col-md-4 upload_box">
+                                            <div id="favicon_container">
+                                                <input type="file" class="dropify" data-plugins="dropify" name="admin_signin_image" data-default-file="{{ isset($client->admin_signin_image) ? Storage::disk('s3')->url($client->admin_signin_image) : '' }}" />
+                                                <p class="text-muted text-center mt-2 mb-0">{{__("Upload Admin Signin Image")}} (1920x1080)</p>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="col-md-5">
