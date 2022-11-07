@@ -63,7 +63,14 @@ body.light .row.location-section .form-group.col-12.mb-1 input.form-control.addr
 body.dark .card.widget-inline p {
     color: #fff !important;
 }
-
+body.dark .login-form ul li button {
+    width: 120px;
+}
+body.dark .login-form a.btn.btn-info.btn-sm {
+    color: #fff;
+    width: 120px;
+    padding: 0.45rem 0.9rem;
+}
 body.dark .navbar-custom .topnav-menu .nav-link {
     font-weight: 400;
     color: #fff;
@@ -137,7 +144,20 @@ body.dark .table thead th {
     vertical-align:middle;
 }
 body.dark .table th, .table td {
-    font-size: 12px;
+    font-size: 13px;
+}
+table.table.table-striped.dt-responsive.nowrap.w-100 span.badge.badge-success {
+    font-size: 14px;
+    padding: 10px;
+}
+body.dark #agents-datatable_wrapper table tr td a{
+    color: #d4a34a !important;
+}
+body.dark button.showaccounting.btn.btn-primary-outline.action-icon.setcolor{
+    color: #d4a34a !important;
+}
+body.dark .address_box span.short_name {
+    color: #d3a24a;
 }
 body.dark .address_box label {
     width: 160px;
@@ -1480,12 +1500,41 @@ body.dark .tagsinput{
     background-color: transparent;
     border-color: rgb(247 184 75 / 82%);
 }
-
+body.dark table#teams-datatable tr td a {
+    color: #dbe9f9 !important;
+    font-size: 13px;
+}
+body.dark form#StoreSubadmin label{
+    color: #dbe9f9 !important;
+}
 .dark .login-form label{
-    background-color: transparent;
+    background-color: #00000036;
     color: rgb(247 184 75 / 82%);
 }
-
+.dt-buttons.btn-group.flex-wrap {
+    position: relative;
+    z-index: 9999;
+}
+.dataTables_filter label .form-control {
+    position: relative;
+    z-index: 999;
+}
+body.dark .col-md-12.main_form button#pay-to-driver {
+    color: #fff;
+}
+body.dark .col-md-12.main_form span.total_commission {
+    color: #d5a44c;
+}
+body.dark .datetime_div i {
+    color: #d3a34a;
+}
+.dark ul.dtr-details {
+    display: flex;
+    align-items:center;
+}
+.dark ul.dtr-details li {
+    width: 25%;
+}
 .dark .login-form input[type="radio"]:checked+label {
     border-color: #d5a34c;
 }
@@ -2379,11 +2428,15 @@ body.dark span.iti__country-name {
     color: #000000a8;
 }
 /*----------laptop view media css--------------*/
+
 @media(max-width:1440px){
     body.dark.iti-mobile .col-md-8.mx-auto.col-sm-12.col-lg-8{
       width: 100%;
       max-width: 100%;
       flex: 100%;
+    }
+    body.dark span.select2.select2-container.select2-container--default.select2-container--above.select2-container--focus.select2-container--open{
+        width: auto !important;
     }
     body.dark.iti-mobile div#favicon_container {
         width: auto !important;

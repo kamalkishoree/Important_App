@@ -63,7 +63,7 @@ div#DataTables_Table_0_filter label input {
         <div class="col-md-12 main_form">
             {{-- Filter form --}}
             <div class="row">
-                <div class="col-md-6">
+                <div class="col-md-5">
                     <form action="{{ route('driver-accountancy.index') }}" method="POST">
                         @csrf
                         <div class="row">
@@ -80,7 +80,7 @@ div#DataTables_Table_0_filter label input {
                     </form>
                 </div>
 
-                <div class="col-md-2 d-flex align-items-center mt-3">
+                <div class="col-md-3 d-flex align-items-center mt-3">
                     <form class="mb-0" name="getTask" id="getTask" method="get" action="{{ route('driver-accountancy.index') }}">
                         <div class="login-form">
                             <ul class="list-inline mb-0">

@@ -54,7 +54,7 @@
                                                 <td>{{$loop->iteration}}</td> 
                                                 <td>{{ $warehouse->name }}</td>
                                                 <td>{{ $warehouse->code }}</td>
-                                                <td>{{ $warehouse->address }}</td>
+                                                <td style="width:300px;">{{ $warehouse->address }}</td>
                                                 <td>{{ $warehouse->latitude }}</td>
                                                 <td>{{ $warehouse->longitude }}</td>
                                                 <td>
@@ -63,7 +63,7 @@
                                                     @endphp
                                                     {{ $amenity }}
                                                 </td>
-                                                <td>
+                                                <td style="width:300px;max-width: 300px;">
                                                     @php
                                                         $category = implode(',', $warehouse->category->pluck('slug')->toArray());
                                                     @endphp

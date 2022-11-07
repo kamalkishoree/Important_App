@@ -50,7 +50,7 @@ class DatabaseDynamic
               // DB::purge($database_name);
 
               $clientPreference = ClientPreference::where('client_id',Auth::user()->code)->first();
-
+                dd($clientPreference);
               if(isset($clientPreference)){
                 $agentTitle = empty($clientPreference->agent_name) ? 'Agent' : $clientPreference->agent_name;
                 Session::put('agent_name', $agentTitle);

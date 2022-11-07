@@ -132,7 +132,7 @@
                         var shortName = JSON.parse(full.short_name.replace(/&quot;/g,'"'));
                         var routes = '';
                         $.each(shortName, function(index, elem) {
-                            routes += '<div class="address_box"><span class="'+elem.pickupClass+'">'+elem.taskType+'</span> <span class="short_name">'+elem.shortName+'</span> <label data-toggle="tooltip" data-placement="bottom" title="'+elem.toolTipAddress+'">'+elem.address+'</label></div>';
+                            routes += '<div class="address_box sdsd"><span class="'+elem.pickupClass+'">'+elem.taskType+'</span> <span class="short_name">'+elem.shortName+'</span> <label data-toggle="tooltip" data-placement="bottom" title="'+elem.toolTipAddress+'">'+elem.address+'</label></div>';
                         });
                         return routes;
                     }},
