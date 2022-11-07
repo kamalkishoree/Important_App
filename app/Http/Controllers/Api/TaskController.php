@@ -981,7 +981,7 @@ class TaskController extends BaseController
                             'sync_customer_id' => $request->customer_id,
                             'user_icon' => !empty($request->user_icon['proxy_url'])?$request->user_icon['proxy_url'].'512/512'.$request->user_icon['image_path']:''
                         ];
-                        Log::info(json_encode($customer_phone_number));
+                        //Log::info(json_encode($customer_phone_number));
                         Customer::where('id', $cus_id)->update($customer_phone_number);
                     }
                 } else {
@@ -993,7 +993,7 @@ class TaskController extends BaseController
                         'sync_customer_id' => $request->customer_id,
                         'user_icon' => !empty($request->user_icon['proxy_url'])?$request->user_icon['proxy_url'].'512/512'.$request->user_icon['image_path']:''
                     ];
-                    Log::info(json_encode($cus));
+                    //Log::info(json_encode($cus));
                     $customer = Customer::create($cus);
                     $cus_id = $customer->id;
                 }
@@ -1098,7 +1098,6 @@ class TaskController extends BaseController
                         'phone_number'=> $value['phone_number']??null,
                         ];
 
-                    //  $Loction = Location::create($loc);
                     $Loction = Location::updateOrCreate(
                         $loc,
                         $loc_update
@@ -1263,7 +1262,6 @@ class TaskController extends BaseController
            
             //If batch allocation is on them return from there no job is created 
             if($client->getPreference->create_batch_hours > 0){
-                //\Log::info('Batch Allocation is on');
                     $dispatch_traking_url = $client_url.'/order/tracking/'.$auth->code.'/'.$orders->unique_id;
 
                     DB::commit();
@@ -1364,19 +1362,19 @@ class TaskController extends BaseController
                 switch ($allocation->auto_assign_logic) {
                 case 'one_by_one':
                      //this is called when allocation type is one by one
-                    $this->finalRoster($geo, $notification_time, $agent_id, $orders->id, $customer, $pickup_location, $taskcount, $header, $allocation);
+                    $this->finalRoster($geo, $notification_time, $agent_id, $orders->id, $customer, $pickup_location, $taskcount, $header, $allocation, $orders->is_cab_pooling);
                     break;
                 case 'send_to_all':
                     //this is called when allocation type is send to all
-                    $this->SendToAll($geo, $notification_time, $agent_id, $orders->id, $customer, $pickup_location, $taskcount, $header, $allocation);
+                    $this->SendToAll($geo, $notification_time, $agent_id, $orders->id, $customer, $pickup_location, $taskcount, $header, $allocation, $orders->is_cab_pooling);
                     break;
                 case 'round_robin':
                     //this is called when allocation type is round robin
-                    $this->roundRobin($geo, $notification_time, $agent_id, $orders->id, $customer, $pickup_location, $taskcount, $header, $allocation);
+                    $this->roundRobin($geo, $notification_time, $agent_id, $orders->id, $customer, $pickup_location, $taskcount, $header, $allocation, $orders->is_cab_pooling);
                     break;
                 default:
                    //this is called when allocation type is batch wise
-                    $this->batchWise($geo, $notification_time, $agent_id, $orders->id, $customer, $pickup_location, $taskcount, $header, $allocation);
+                    $this->batchWise($geo, $notification_time, $agent_id, $orders->id, $customer, $pickup_location, $taskcount, $header, $allocation, $orders->is_cab_pooling);
             }
             }
             $dispatch_traking_url = $client_url.'/order/tracking/'.$auth->code.'/'.$orders->unique_id;
@@ -1959,9 +1957,15 @@ class TaskController extends BaseController
             $remening   = [];
 
             $geoagents_ids =  DriverGeo::where('geo_id', $geo)->pluck('driver_id');
+
             $geoagents = Agent::whereIn('id',  $geoagents_ids)->with(['logs','order'=> function ($f) use ($date) {
                 $f->whereDate('order_time', $date)->with('task');
-            }])->orderBy('id', 'DESC')->get()->where("agent_cash_at_hand", '<', $cash_at_hand);
+            }]);
+            //get agent which are available for pooling if order is for cab pooling
+            if($is_cab_pooling == 1){
+                $geoagents->where('is_pooling_available', 1);
+            }
+            $geoagents = $geoagents->orderBy('id', 'DESC')->get()->where("agent_cash_at_hand", '<', $cash_at_hand);
 
             $totalcount = $geoagents->count();
             $orders = order::where('driver_id', '!=', null)->whereDate('created_at', $date)->groupBy('driver_id')->get('driver_id');
@@ -2073,7 +2077,7 @@ class TaskController extends BaseController
         }
     }
 
-    public function SendToAll($geo, $notification_time, $agent_id, $orders_id, $customer, $finalLocation, $taskcount, $header, $allocation)
+    public function SendToAll($geo, $notification_time, $agent_id, $orders_id, $customer, $finalLocation, $taskcount, $header, $allocation, $is_cab_pooling)
     {
         $allcation_type    = 'AR';
         $date              = \Carbon\Carbon::today();
@@ -2131,9 +2135,15 @@ class TaskController extends BaseController
             }
         } else {
             $geoagents_ids =  DriverGeo::where('geo_id', $geo)->pluck('driver_id');
+
             $geoagents = Agent::whereIn('id',  $geoagents_ids)->with(['logs','order'=> function ($f) use ($date) {
                 $f->whereDate('order_time', $date)->with('task');
-            }])->orderBy('id', 'DESC')->get()->where("agent_cash_at_hand", '<', $cash_at_hand);
+            }]);
+            //get agent which are available for pooling if order is for cab pooling
+            if($is_cab_pooling == 1){
+                $geoagents->where('is_pooling_available', 1);
+            }
+            $geoagents = $geoagents->orderBy('id', 'DESC')->get()->where("agent_cash_at_hand", '<', $cash_at_hand);
 
             
             for ($i = 1; $i <= $try; $i++) {
@@ -2234,9 +2244,15 @@ class TaskController extends BaseController
             }
         } else {
             $geoagents_ids =  DriverGeo::where('geo_id', $geo)->pluck('driver_id');
+
             $geoagents = Agent::whereIn('id',  $geoagents_ids)->with(['logs','order'=> function ($f) use ($date) {
                 $f->whereDate('order_time', $date)->with('task');
-            }])->orderBy('id', 'DESC')->get()->where("agent_cash_at_hand", '<', $cash_at_hand)->toArray();
+            }]);
+            //get agent which are available for pooling if order is for cab pooling
+            if($is_cab_pooling == 1){
+                $geoagents->where('is_pooling_available', 1);
+            }
+            $geoagents = $geoagents->orderBy('id', 'DESC')->get()->where("agent_cash_at_hand", '<', $cash_at_hand)->toArray();
 
             //this function is give me nearest drivers list accourding to the the task location.
 
@@ -2350,9 +2366,15 @@ class TaskController extends BaseController
             }
         } else {
             $geoagents_ids =  DriverGeo::where('geo_id', $geo)->pluck('driver_id');
+
             $geoagents = Agent::whereIn('id',  $geoagents_ids)->with(['logs','order'=> function ($f) use ($date) {
                 $f->whereDate('order_time', $date)->with('task');
-            }])->orderBy('id', 'DESC')->get()->where("agent_cash_at_hand", '<', $cash_at_hand)->toArray();
+            }]);
+            //get agent which are available for pooling if order is for cab pooling
+            if($is_cab_pooling == 1){
+                $geoagents->where('is_pooling_available', 1);
+            }
+            $geoagents = $geoagents->orderBy('id', 'DESC')->get()->where("agent_cash_at_hand", '<', $cash_at_hand)->toArray();
 
             //this function give me the driver list accourding to who have liest task for the current date
 

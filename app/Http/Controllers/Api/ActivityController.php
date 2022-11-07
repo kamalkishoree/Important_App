@@ -86,6 +86,47 @@ class ActivityController extends BaseController
         ]);
     }
 
+
+    public function updateDriverCabPoolingStatus(Request $request)
+    {
+        $agent               = Agent::findOrFail(Auth::user()->id);
+        $agent->is_pooling_available = ($agent->is_pooling_available == 1) ? 0 : 1;
+        $agent->device_token = ((!empty($request->device_token) && $agent->is_pooling_available == 1) ? $request->device_token : '');
+        $agent->update();
+
+        /* // if driver is offline so do not send push notification-------------start--code---
+        $schemaName = 'royodelivery_db';
+        $default = [
+            'driver' => env('DB_CONNECTION', 'mysql'),
+            'host' => env('DB_HOST'),
+            'port' => env('DB_PORT'),
+            'database' => $schemaName,
+            'username' => env('DB_USERNAME'),
+            'password' => env('DB_PASSWORD'),
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'strict' => false,
+            'engine' => null
+        ];
+        Config::set("database.connections.$schemaName", $default);
+        config(["database.connections.mysql.database" => $schemaName]);
+        if($agent->is_pooling_available == 1){
+            DB::connection($schemaName)->table('rosters')->where('created_at', '<', date('Y-m-d H:i:s'))->where(['driver_id'=>Auth::user()->id,'device_type'=>Auth::user()->device_type])->delete();
+        }else{
+            DB::connection($schemaName)->table('rosters')->where(['driver_id'=>Auth::user()->id,'device_type'=>Auth::user()->device_type])->delete();
+        }
+        DB::disconnect($schemaName); */
+        // if driver is offline so do not send push notification---------------end--code---
+
+        return response()->json([
+            'message' => __('Cab Pooling Status updated Successfully'),
+            'data' => array('is_pooling_available' => $agent->is_pooling_available),
+            'status' => 200
+        ]);
+    }
+
     /**
      * Login user and create token
      *

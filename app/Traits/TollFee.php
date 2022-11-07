@@ -35,8 +35,6 @@ trait TollFee{
             
         ];
 
-        $waypoints[0]['location']['latLng']['latitude'] = '30.316496';
-        $waypoints[0]['location']['latLng']['longitude'] = '78.032188';
         $j = 0;
         for($i = 0;$i < count($latitude); $i++)
         {
