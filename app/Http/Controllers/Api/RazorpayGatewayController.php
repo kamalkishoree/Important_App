@@ -13,10 +13,6 @@ use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\Api\BaseController;
 use App\Model\{Agent, Payment, PaymentOption, Client, ClientPreference, AgentConnectedAccount, PayoutOption};
 
-// use App\Http\Controllers\Api\v1\OrderController;
-// use App\Model\{User, UserVendor, Cart, CartAddon, CartCoupon, CartProduct, CartProductPrescription, Payment, PaymentOption, Client, ClientPreference, Currency, Order, OrderProduct, OrderProductAddon, OrderProductPrescription, VendorOrderStatus, OrderVendor, OrderTax ,Agent, AgentConnectedAccount};
-// use Illuminate\Support\Facades\Auth as FacadesAuth;
-
 class RazorpayGatewayController extends BaseController
 {
     use ApiResponser;
@@ -44,59 +40,6 @@ class RazorpayGatewayController extends BaseController
         $this->api_url = 'https://api.razorpay.com/v1/';
     
     }
-
-    // public function razorpayPurchase(Request $request)
-    // {
-    //     try {
-    //         $user = Auth::user();
-    //         $cart = Cart::select('id')->where('status', '0')->where('user_id', $user->id)->first();
-    //         $amount = $this->getDollarCompareAmount($request->amount);
-    //         $amount = filter_var($amount, FILTER_SANITIZE_NUMBER_INT);
-    //         $order_number = $request->order_number;
-    //         if (!isset($order_number)) {
-    //             $order_number = 0;
-    //         }
-    //         $api_key = $this->API_KEY;
-    //         return $this->success(url('/payment/razorpay/view?amount=' . $amount . '&order=' . $order_number . '&api_key=' . $api_key));
-    //     } catch (\Exception $ex) {
-    //         return $this->error($ex->getMessage(), 400);
-    //     }
-    // }
-
-    // public function razorpayCompletePurchase(Request $request, $domain, $amount, $order = null)
-    // {
-
-    //     try {
-    //         $user = Auth::user();
-    //         $cart = Cart::select('id')->where('status', '0')->where('user_id', $user->id)->first();
-    //         $amount = $this->getDollarCompareAmount($amount);
-    //         $amount = filter_var($amount, FILTER_SANITIZE_NUMBER_INT);
-
-    //         // $returnUrlParams = '?gateway=razorpay&order=' . $request->order_number;
-
-    //         $returnUrl = route('order.return.success');
-    //         if ($request->payment_form == 'wallet') {
-    //             $returnUrl = route('user.wallet');
-    //         }
-    //         //$notifyUrlParams = '?gateway=paylink&amount=' . $amount . '&order=' . $order_number;
-
-    //         $orderData = [
-    //             'amount'          => $amount / 100,
-    //             'currency'        => 'INR'
-    //         ];
-
-    //         // $razorpayOrder = $this->api->order->create($orderData);
-    //         //dd($razorpayOrder);
-    //         $payment = $this->api->payment->fetch($request->razorpay_payment_id)->capture($orderData);
-    //         if ($payment['status'] == 'captured') {
-    //             return $this->razorpayNotify($payment, $amount, $order, $orderData);
-    //         } else {
-    //             return $this->razorpayNotify_fail($payment, $amount, $order, $orderData);
-    //         }
-    //     } catch (\Exception $ex) {
-    //         return $this->error($ex->getMessage(), 400);
-    //     }
-    // }
 
     public function razorpay_create_contact(Request $request)
     {
