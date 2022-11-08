@@ -149,7 +149,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-xl-3 col-md-4">
+        <div class="col-xl-4 col-md-4">
             <div class="card-box h-100">
                 <form method="POST" class="h-100" action="{{route('preference', Auth::user()->code)}}">
                     @csrf
@@ -186,7 +186,7 @@
                 </form>
             </div>
         </div>
-        <div class="col-xl-3 col-md-4">
+        <div class="col-xl-4 col-md-4">
             <div class="card-box h-100">
                 <form method="POST" class="h-100" action="{{route('update.contact.us', Auth::user()->code)}}">
                     <div class="d-flex align-items-center justify-content-between mb-2">
@@ -232,7 +232,7 @@
             </div>
         </div>
 
-        <div class="col-md-3">
+        {{-- <div class="col-md-3">
             <div class="card-box h-100">
                 <form method="POST" class="h-100" action="{{route('update.orderPanelDbDetail')}}">
                     <div class="d-flex align-items-center justify-content-between mb-2">
@@ -284,7 +284,6 @@
                             <div class="form-group mt-2 mb-0">
                                 <label for="db_password">DB Password</label>
                                 <input type="password" name="db_password" id="db_password" placeholder="" class="form-control" value="">
-                                {{-- {{ old('db_password', $order_panel_detail->db_password ?? '')}} --}}
                                 @if($errors->has('db_password'))
                                 <span class="text-danger" role="alert">
                                     <strong>{{ $errors->first('db_password') }}</strong>
@@ -295,7 +294,7 @@
                     </div>
                 </form>
             </div>
-        </div>
+        </div> --}}
     </div>
 
         <form method="POST" action="{{route('task.proof')}}">

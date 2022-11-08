@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Crypt;
 
 class OrderPanelDetail extends Model
 {
-    protected $fillable = ['db_host', 'db_port', 'db_name', 'db_username', 'db_password', 'is_active'];
+    protected $fillable = ['name', 'url', 'code', 'key', 'status', 'last_sync'];
 
     // Mutator for DB Password column
     // when "db password" will save, it will convert into encrypted

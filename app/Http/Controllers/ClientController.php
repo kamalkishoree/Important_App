@@ -646,18 +646,18 @@ class ClientController extends Controller
         }
     }
 
-    public function orderPanelDbDetail(Request $request){
-        $order_panel_details = OrderPanelDetail::first();
-        $id = isset($order_panel_details->id) ? $order_panel_details->id : '';
-        OrderPanelDetail::updateOrCreate([
-            'id'   => $id,
-        ],[
-            'db_host'     => $request->input('db_host'),
-            'db_port'     => $request->input('db_port'),
-            'db_name'     => $request->input('db_name'),
-            'db_username'     => $request->input('db_username'),
-            'db_password'     => $request->input('db_password')
-        ]);
-        return redirect()->route('preference.show')->with('success', 'DB updated successfully!');
-    }
+    // public function orderPanelDbDetail(Request $request){
+    //     $order_panel_details = OrderPanelDetail::first();
+    //     $id = isset($order_panel_details->id) ? $order_panel_details->id : '';
+    //     OrderPanelDetail::updateOrCreate([
+    //         'id'   => $id,
+    //     ],[
+    //         'db_host'     => $request->input('db_host'),
+    //         'db_port'     => $request->input('db_port'),
+    //         'db_name'     => $request->input('db_name'),
+    //         'db_username'     => $request->input('db_username'),
+    //         'db_password'     => $request->input('db_password')
+    //     ]);
+    //     return redirect()->route('preference.show')->with('success', 'DB updated successfully!');
+    // }
 }

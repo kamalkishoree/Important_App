@@ -167,7 +167,7 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 			Route::get('', 'DashBoardController@index')->name('index');
 			Route::post('dashboard/teamsdata', 'DashBoardController@dashboardTeamData')->name('dashboard.teamsdata');
 			Route::get('customize', 'ClientController@ShowPreference')->name('preference.show');
-			Route::post('update-order-panel-db-detail', 'ClientController@orderPanelDbDetail')->name('update.orderPanelDbDetail');
+			// Route::post('update-order-panel-db-detail', 'ClientController@orderPanelDbDetail')->name('update.orderPanelDbDetail');
 			Route::post('save/cms/{id}', 'ClientController@cmsSave')->name('cms.save');
 			Route::post('client_preference/{id}', 'ClientController@storePreference')->name('preference');
 			Route::post('route-create-configure/{id}', 'ClientController@routeCreateConfigure')->name('route.create.configure');
