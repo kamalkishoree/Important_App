@@ -1599,6 +1599,7 @@ body.dark .input-group-text {
 
 .dark .add-sub-task-btn{
     background-color: rgb(247 184 75 / 82%);
+    color:#fff;
 }
 
 
@@ -2427,9 +2428,32 @@ body.dark form#taskFormHeader .edit-icon-float-right {
 body.dark span.iti__country-name {
     color: #000000a8;
 }
+body.dark div#add-customer-modal a.btn.btn-success.btn-rounded.waves-effect.waves-light.addField {
+    color: #fff;
+}
+body.dark .select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
+    color: #fff;
+    cursor: pointer;
+    display: inline-block;
+    font-weight: bold;
+    margin-right: 10px;
+}
+body.darkbody.dark .select2-container--default .select2-selection--multiple .select2-selection__choice {
+    background-color: rgb(247 184 75 / 82%) !important;
+    border: none !important;
+}
 /*----------laptop view media css--------------*/
 
 @media(max-width:1440px){
+    body.dark div#add-agent-modal body.dark .iti__country-list {
+        position: absolute !important;
+        margin: 0 auto !important;
+        top: 44% !important;
+        left: 51% !important; 
+    }
+    body.dark form#geo_form .card_outer {
+        height: calc(100vh - 150px);
+    }
     body.dark.iti-mobile .col-md-8.mx-auto.col-sm-12.col-lg-8{
       width: 100%;
       max-width: 100%;
