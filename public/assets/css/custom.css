@@ -2467,6 +2467,8 @@ body.dark div#pay-receive-modal label{color: #dbe9f9 !important;}
 body.dark div#edit-agent-modal label{color: #dbe9f9 !important;}
 body.dark form#save_product_form label{color: #dbe9f9 !important;}
 body.dark form#submitCategory label{color: #dbe9f9 !important;}
+body.dark div#add-team-modal label{color: #dbe9f9 !important;}
+body.dark div#add-agent-modal label{color: #dbe9f9 !important;}
 body.dark .card-box.side_table {
     min-height: 650px;
     height: 650px;
@@ -2501,6 +2503,7 @@ body.dark .tagsinput .focus{outline:0 !important;}
         position: absolute;
         top: 76px;
         margin-right: 100px !important;
+        z-index:1;
     }
     body.dark div#agents-datatable_filter label {
         position: absolute !important;
