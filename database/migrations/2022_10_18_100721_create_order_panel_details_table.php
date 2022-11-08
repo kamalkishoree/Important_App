@@ -15,12 +15,12 @@ class CreateOrderPanelDetailsTable extends Migration
     {
         Schema::create('order_panel_details', function (Blueprint $table) {
             $table->id();
-            $table->string('db_host');
-            $table->string('db_port');
-            $table->string('db_name');
-            $table->string('db_username');
-            $table->string('db_password');
-            $table->tinyInteger('is_active')->default(1);
+            $table->string('name');
+            $table->string('url');
+            $table->string('code');
+            $table->string('key');
+            $table->string('status')->default(1)->comment('1 - active, 0 - pending');
+            $table->dateTime('last_sync');
             $table->timestamps();
         });
     }
