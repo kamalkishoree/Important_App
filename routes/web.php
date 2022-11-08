@@ -267,7 +267,7 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 
 			// Route::get('cat-product/{$id}', 'ProductController@showProduct')->name('showProduct');
 
-			Route::post('/import-order-side-category', 'CategoryController@importOrderSideCategory')->name('category.importOrderSideCategory');
+			Route::post('/import-order-side-category', 'CategoryController@getOrderSideData')->name('category.importOrderSideCategory');
 
 			Route::get('/order/feedback/{clientcode}/{order_id}', 'TrackingController@OrderFeedback')->name('order.feedback');
 

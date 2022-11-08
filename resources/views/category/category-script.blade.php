@@ -61,4 +61,8 @@
         var slug = string.toString().trim().toLowerCase().replace(/\s+/g, "-").replace(/[^\w\-]+/g, "").replace(/\-\-+/g, "-").replace(/^-+/, "").replace(/-+$/, "");
         $('#url_slug').val(slug);
     }
+
+    $('#db_name').on('change', function() {
+        $('#db_form').submit(); 
+    });
 </script>
