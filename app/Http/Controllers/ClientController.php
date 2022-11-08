@@ -69,7 +69,6 @@ class ClientController extends Controller
      */
     public function storePreference(Request $request, $domain = '', $id)
     {
-        //pr($request->all());
         $customerDistenceNotification = '';
         if(!empty($request->customer_notification)){
             $data = ['customer_notification_per_distance'=>json_encode($request->customer_notification)];
@@ -294,6 +293,7 @@ class ClientController extends Controller
             $request->request->add(['is_edit_order_driver' => ($request->has('is_edit_order_driver') && $request->is_edit_order_driver == 'on') ? 1 : 0]);
             $request->request->add(['is_cancel_order_driver' => ($request->has('is_cancel_order_driver') && $request->is_cancel_order_driver == 'on') ? 1 : 0]);
             $request->request->add(['is_driver_slot' => ($request->has('is_driver_slot') && $request->is_driver_slot == 'on') ? 1 : 0]);
+            $request->request->add(['is_cab_pooling_toggle' => ($request->has('is_cab_pooling_toggle') && $request->is_cab_pooling_toggle == 'on') ? 1 : 0]);
         }
 
         if($request->has('refer_and_earn')){

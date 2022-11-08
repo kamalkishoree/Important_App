@@ -639,6 +639,22 @@ $sms_crendential = json_decode($preference->sms_credentials);
                                 </div>
                             </div>
                         </div>
+
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="d-flex align-items-center justify-content-between mt-3 mb-2">
+                                    <h5 class="font-weight-normal m-0">{{ __('Show Cab Pooling Toggle ') }}</h5>
+                                    <div class="custom-control custom-switch">
+                                        <input type="checkbox" class="custom-control-input"
+                                            id="editCabPoolingSwitch_{{ $preference->is_cab_pooling_toggle }}"
+                                            name="is_cab_pooling_toggle"
+                                            {{ $preference->is_cab_pooling_toggle == 1 ? 'checked' : '' }}>
+                                        <label class="custom-control-label"
+                                            for="editCabPoolingSwitch_{{ $preference->is_cab_pooling_toggle }}"></label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>       
                     </form>
                 </div>
             </div>

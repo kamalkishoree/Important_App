@@ -38,6 +38,7 @@ use App\Jobs\RosterDelete;
 use Illuminate\Support\Arr;
 use App\Model\NotificationEvent;
 use App\Jobs\scheduleNotification;
+use App\Traits\GlobalFunction;
 
 use App;
 use Log;
@@ -57,6 +58,7 @@ class TaskController extends BaseController
 {
     use AgentSlotTrait;
     use TollFee;
+    use GlobalFunction;
     public function smstest(Request $request){
       $res = $this->sendSms2($request->phone_number, $request->sms_body);
      
@@ -1152,7 +1154,7 @@ class TaskController extends BaseController
             
             if((isset($request->order_agent_tag) && !empty($request->order_agent_tag)) && $geoid!=''):
                 $pricingRule = PricingRule::orderBy('id', 'desc')->whereHas('priceRuleTags.tagsForAgent',function($q)use($request){
-                    $q->where('name',$request->order_agent_tag);
+                    $q->where('name', $request->order_agent_tag);
                 })->whereHas('priceRuleTags.geoFence',function($q)use($geoid){
                     $q->where('id',$geoid);
                 })
@@ -1222,14 +1224,7 @@ class TaskController extends BaseController
 
             Order::where('id', $orders->id)->update($updateorder);
 
-            if (isset($request->allocation_type) && $request->allocation_type === 'a') {
-                // if (isset($request->team_tag)) {
-                //     $orders->teamtags()->sync($request->team_tag);
-                // }
-                // if (isset($request->agent_tag)) {
-                //     $orders->drivertags()->sync($request->agent_tag);
-                // }
-            }
+            
             if (isset($request->order_team_tag)) {
 
                 $value = $request->order_team_tag;
@@ -1249,7 +1244,7 @@ class TaskController extends BaseController
                         $check = TagsForAgent::firstOrCreate(['name' => $value]);
                         array_push($tag_id, $check->id);
                     }
-               $orders->drivertags()->sync($tag_id);
+                $orders->drivertags()->sync($tag_id);
             }
 
             $geo = null;
@@ -1366,7 +1361,7 @@ class TaskController extends BaseController
                     break;
                 case 'send_to_all':
                     //this is called when allocation type is send to all
-                    $this->SendToAll($geo, $notification_time, $agent_id, $orders->id, $customer, $pickup_location, $taskcount, $header, $allocation, $orders->is_cab_pooling);
+                    $this->SendToAll($geo, $notification_time, $agent_id, $orders->id, $customer, $pickup_location, $taskcount, $header, $allocation, $orders->is_cab_pooling, isset($request->order_agent_tag)?$request->order_agent_tag:'');
                     break;
                 case 'round_robin':
                     //this is called when allocation type is round robin
@@ -2077,7 +2072,7 @@ class TaskController extends BaseController
         }
     }
 
-    public function SendToAll($geo, $notification_time, $agent_id, $orders_id, $customer, $finalLocation, $taskcount, $header, $allocation, $is_cab_pooling)
+    public function SendToAll($geo, $notification_time, $agent_id, $orders_id, $customer, $finalLocation, $taskcount, $header, $allocation, $is_cab_pooling, $agent_tag = '')
     {
         $allcation_type    = 'AR';
         $date              = \Carbon\Carbon::today();
@@ -2130,21 +2125,14 @@ class TaskController extends BaseController
                     'device_type'         => $oneagent->device_type,
                     'device_token'        => $oneagent->device_token,
                     'detail_id'           => $randem,
+                    'is_cab_pooling'      => $is_cab_pooling,
                 ];
                 $this->dispatch(new RosterCreate($data, $extraData));
             }
         } else {
-            $geoagents_ids =  DriverGeo::where('geo_id', $geo)->pluck('driver_id');
-
-            $geoagents = Agent::whereIn('id',  $geoagents_ids)->with(['logs','order'=> function ($f) use ($date) {
-                $f->whereDate('order_time', $date)->with('task');
-            }]);
-            //get agent which are available for pooling if order is for cab pooling
-            if($is_cab_pooling == 1){
-                $geoagents->where('is_pooling_available', 1);
-            }
-            $geoagents = $geoagents->orderBy('id', 'DESC')->get()->where("agent_cash_at_hand", '<', $cash_at_hand);
-
+            
+            $geoagents = $this->getGeoBasedAgentsData($geo, $is_cab_pooling, $agent_tag, $date, $cash_at_hand);
+            Log::info($geoagents);
             
             for ($i = 1; $i <= $try; $i++) {
                 foreach ($geoagents as $key =>  $geoitem) {
@@ -2160,7 +2148,7 @@ class TaskController extends BaseController
                             'device_type'         => $geoitem->device_type,
                             'device_token'        => $geoitem->device_token,
                             'detail_id'           => $randem,
-
+                            'is_cab_pooling'      => $is_cab_pooling,
                         ];
                         array_push($data, $datas);
                         if ($allcation_type == 'N' && 'ACK') {
@@ -2178,10 +2166,6 @@ class TaskController extends BaseController
             }
 
             $this->dispatch(new RosterCreate($data, $extraData));
-
-            // print_r($data);
-            //  die;
-            //die('hello');
         }
     }
 
@@ -2935,6 +2919,16 @@ class TaskController extends BaseController
                 'message' => $e->getMessage()
             ]);
         }
+    }
+
+
+    public function poolingTasksSuggessions(Request $request)
+    {
+        $suggessions = array();
+        $orders = Order::with(['customer', 'task'])->where('status', '=', 'unassigned')->where('is_cab_pooling', 1)->get();
+        foreach($orders as $order):
+
+        endforeach;
     }
 
 }
