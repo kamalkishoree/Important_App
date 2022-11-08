@@ -105,7 +105,7 @@
 
         @foreach ($teams as $index => $team)
         <div class="col-xl-4 team-agent-list" id="team_agents_{{ $team->id }}" @if ($index !=0) style="display:none;" @endif>
-            <div class="card-box">
+            <div class="card-box side_table">
                 <div class="dropdown float-right">
                     <a href="#" class="dropdown-toggle arrow-none card-drop" data-toggle="dropdown" aria-expanded="false">
                         <i class="mdi mdi-dots-vertical"></i>
