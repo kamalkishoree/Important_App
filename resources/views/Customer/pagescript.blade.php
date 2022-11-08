@@ -78,7 +78,6 @@
         var mapLat = document.getElementById('lat_map').value;
         var mapLlng = document.getElementById('lng_map').value;
         var mapFor = document.getElementById('map_for').value;
-        //console.log(mapLat+'-'+mapLlng+'-'+mapFor);
         document.getElementById(mapFor + '-latitude').value = mapLat;
         document.getElementById(mapFor + '-longitude').value = mapLlng;
 
@@ -94,13 +93,17 @@
             "processing": true,
             "serverSide": true,
             "responsive": true,
-            "iDisplayLength": 10,
+            "iDisplayLength": 20,
             language: {
                         search: "",
                         paginate: { previous: "<i class='mdi mdi-chevron-left'>", next: "<i class='mdi mdi-chevron-right'>" },
                         searchPlaceholder: "{{__('Search Customers')}}",
                         'loadingRecords': '&nbsp;',
-                        'processing': '<div class="spinner"></div>'
+                       // 'processing': '<div class="spinner"></div>'
+                       'processing':function(){
+                            spinnerJS.showSpinner();
+                            spinnerJS.hideSpinner();
+                        }
             },
             drawCallback: function () {
                 $(".dataTables_paginate > .pagination").addClass("pagination-rounded");

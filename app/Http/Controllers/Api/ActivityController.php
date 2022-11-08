@@ -208,7 +208,6 @@ class ActivityController extends BaseController
         $utc_end   = Carbon::parse($end . $client_code->timezone ?? 'UTC')->tz('UTC');
 
         $tasks   = [];
-        $agent = AgentLog::where('agent_id', Auth::user()->id)->first();
 
         $data =  [
             'agent_id'          => Auth::user()->id,
@@ -219,7 +218,7 @@ class ActivityController extends BaseController
             'app_version'       => $request->app_version,
             'current_speed'     => $request->current_speed,
             'on_route'          => $request->on_route,
-            'device_type'       => $request->device_type,
+            'device_type'       => ucwords($request->device_type),
             'heading_angle'     => $request->heading_angle ?? 0,
         ];
 
@@ -239,23 +238,23 @@ class ActivityController extends BaseController
                     //get agent orders 
                     $orders = Order::where('driver_id', Auth::user()->id)->where('status', 'assigned')->orderBy('order_time')->pluck('id')->toArray();
                     if (count($orders) > 0) {
-                        \Log::info('get order');
+                        //\Log::info('get order');
                         
                         //get agent current task
                         $tasks = Task::whereIn('order_id', $orders)->where('task_status', 2)->with(['location','tasktype','order.customer'])->orderBy('order_id', 'desc')->orderBy('id', 'ASC')->get()->first();
                         if (!empty($tasks)) {
 
-                            \Log::info('get tasks--');
-                            \Log::info($tasks);
-                            \Log::info('get tasks--');
+                            //\Log::info('get tasks--');
+                            //\Log::info($tasks);
+                            //\Log::info('get tasks--');
                             $callBackUrl = str_ireplace('dispatch-pickup-delivery', 'dispatch/customer/distance/notification', $tasks->order->call_back_url);
                             $latitude    = [];
                             $longitude   = [];
 
-                            \Log::info($callBackUrl);
+                            //\Log::info($callBackUrl);
                             // check task location in not empty and task created by custmer from order penel  
                             if(!empty($tasks->location) && !empty($callBackUrl)){
-                                \Log::info('get task location');
+                                //\Log::info('get task location');
                                 $tasksLocationLat  = $tasks->location->latitude;
                                 $tasksLocationLong = $tasks->location->longitude;
             
@@ -271,7 +270,7 @@ class ActivityController extends BaseController
                                 $agentDistanceCovered = AgentLog::where('current_task_id', $tasks->id)->where('distance_covered', 'LIKE', '%'.$getDistance.'%')->count();
                                 
                                 if($agentDistanceCovered == 1 && $getDistance > 0){
-                                    \Log::info('in send notification');
+                                    //\Log::info('in send notification');
                                     $notificationTitle       = $clientPreference->title;
                                     $notificationDiscription = str_ireplace("{distance}", $getDistance.' '.$clientPreference->distance_unit, $clientPreference->description);
                                     $notificationDiscription = str_ireplace("{co2_emission}", $clientPreference->co2_emission * $getDistance, $notificationDiscription);
@@ -284,8 +283,8 @@ class ActivityController extends BaseController
                                         ['form_params' => ($postdata)]
                                     );
                                     $response = json_decode($res->getBody(), true);   
-                                    \Log::info('responce');
-                                    \Log::info($response);
+                                    //\Log::info('responce');
+                                    //\Log::info($response);
 
                                 }
                                 
@@ -295,6 +294,7 @@ class ActivityController extends BaseController
                 }
             }else{
                 AgentLog::create($data);
+                //event(new \App\Events\agentLogFetch());
             }
         }
 
@@ -408,10 +408,12 @@ class ActivityController extends BaseController
             ->orderBy('order_id', 'DESC')
             ->get(['id','order_id','dependent_task_id','task_type_id','location_id','appointment_duration','task_status','allocation_type','created_at','barcode']);
 
-            $totalCashCollected = 0;
+            $driverearning = 0;
+            $previousorder = 0;
             foreach($tasks as $task){
-                if(!empty($task->order->cash_to_be_collected) && ($task->task_type_id == 2)){
-                    $totalCashCollected += $task->order->cash_to_be_collected;
+                if(!empty($task->order->driver_cost) && ($previousorder != $task->order_id) && $task->order->status !='cancelled'){
+                    $driverearning += $task->order->driver_cost;
+                    $previousorder = $task->order_id;
                 }
             }
         } else {
@@ -419,7 +421,7 @@ class ActivityController extends BaseController
         }
 
         return response()->json([
-            'data' => array('tasks' =>$tasks, 'totalCashCollected'=>$totalCashCollected),
+            'data' => array('tasks' =>$tasks, 'totalCashCollected'=>$driverearning),
             'status' => 200,
             'message' => __('success')
         ], 200);

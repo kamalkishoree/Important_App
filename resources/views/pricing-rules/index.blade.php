@@ -240,7 +240,11 @@
                     },
                     searchPlaceholder: "{{__('Search')}}",
                     'loadingRecords': '&nbsp;',
-                    'processing': '<div class="spinner"></div>'
+                    //'processing': '<div class="spinner"></div>'
+                    'processing':function(){
+                        spinnerJS.showSpinner();
+                        spinnerJS.hideSpinner();
+                    }
                 },
             });
     });

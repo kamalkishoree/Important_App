@@ -173,7 +173,7 @@ class AuthController extends BaseController
             return response()->json(['message' => __('Your account has been rejected. Please contact administration')], 422);
         }
 
-        $prefer = ClientPreference::with('currency')->select('theme', 'distance_unit', 'currency_id', 'language_id', 'agent_name', 'date_format', 'time_format', 'map_type', 'map_key_1')->first();
+        $prefer = ClientPreference::with('currency')->select('theme', 'distance_unit', 'currency_id', 'language_id', 'agent_name', 'date_format', 'time_format', 'map_type', 'map_key_1', 'custom_mode')->first();
         $allcation = AllocationRule::first('request_expiry');
         $prefer['alert_dismiss_time'] = (int)$allcation->request_expiry;
         $taskProof = TaskProof::all();       
@@ -580,9 +580,9 @@ class AuthController extends BaseController
 
     public function deleteAgent(Request $request){
         try {
-            DB::beginTransaction(); //Initiate transaction
-                $agent = Auth::user();
-                if(!$agent){
+                DB::beginTransaction(); //Initiate transaction
+                $agent = Agent::where('id', Auth::user()->id)->first();
+                if(empty($agent)){
                     return response()->json(['massage' => __('User not found!')], 200);
                 }
                 Agent::where('id', $agent->id)->update([
@@ -592,6 +592,7 @@ class AuthController extends BaseController
                     'access_token' => ''
                     ]);
                 $agent->delete();
+                Otp::where('phone', $agent->phone_number)->where('is_verified', 1)->delete();
                 DB::commit(); //Commit transaction after all the operations
                 return response()->json(['massage' => __('Account Deleted Successfully')], 200);
                 //code...
