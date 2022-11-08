@@ -194,10 +194,10 @@ body[data-sidebar-size=condensed] .left-side-menu {
   width: 70px !important;
   z-index: 5;
 }
-body[data-sidebar-size=condensed] .left-side-menu .simplebar-mask,
+/* body[data-sidebar-size=condensed] .left-side-menu .simplebar-mask,
 body[data-sidebar-size=condensed] .left-side-menu .simplebar-content-wrapper {
   overflow: visible !important;
-}
+} */
 body[data-sidebar-size=condensed] .left-side-menu .simplebar-scrollbar {
   display: none !important;
 }
