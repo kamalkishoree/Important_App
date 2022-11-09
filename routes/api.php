@@ -35,6 +35,9 @@ Route::get('get-all-teams', 'Api\TaskController@getAllTeams')->middleware('Conne
 Route::post('update-create-vendor-order', 'Api\AuthController@updateCreateVendorOrder')->middleware('ConnectDbFromOrder');
 
 
+Route::post('sync-category-product', 'Api\SyncCategoryProductController@SyncCategoryProduct')->middleware('ConnectDbFromOrder');
+
+
 Route::post('chat/sendNotificationToAgent',      'Api\ChatControllerOrderNotification@sendNotificationToAgent')->middleware('ConnectDbFromOrder');
 
 
@@ -126,7 +129,6 @@ Route::group(['middleware' => ['dbCheck', 'AppAuth','apiLocalization']], functio
 Route::group(['middleware' => 'dbCheck','prefix' => 'public'], function() {
     Route::post('task/create', 'Api\TaskController@CreateTask');
     Route::get('task/currentstatus', 'Api\TaskController@currentstatus');
-   
 });
 
 

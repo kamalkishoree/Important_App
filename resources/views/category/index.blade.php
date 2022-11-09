@@ -25,13 +25,24 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="row mb-2">
-                            <div class="col-sm-7"></div>
-                            <div class="col-sm-5 text-right btn-auto d-flex justify-content-end">
+                            <div class="col-sm-5"></div>
+                            <div class="col-sm-7 text-right btn-auto d-flex justify-content-end">
+                                <form method="get" id="db_form">
+                                    <div class="form-group">
+                                        <select name="db_name" id="db_name" class="form-control" style="width: 200px;margin-right: 10px;">
+                                            <option value="all">All</option>
+                                            @foreach ($order_db_detail as $detail)
+                                                <option value="{{$detail->id}}" @if (app('request')->input('db_name') == $detail->id) {{'selected="selected"'}} @endif>{{$detail->name}}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </form>
                                 <button type="button" class="btn btn-blue waves-effect waves-light openAddProductModal"><i class="mdi mdi-plus-circle mr-1"></i> {{__("Add Product")}}</button>
 
                                 <button type="button" class="btn btn-blue waves-effect waves-light openCategoryModal" data-toggle="modal" data-target="" data-backdrop="static" data-keyboard="false"><i class="mdi mdi-plus-circle mr-1"></i> {{__("Add Category")}}</button>
                                 <form action="{{route('category.importOrderSideCategory')}}" method="post">
                                 @csrf
+                                    <input type="hidden" name="order_panel_id" value="{{app('request')->input('db_name') ?? 'all'}}">
                                     <button type="submit" class="btn btn-blue waves-effect waves-light"><i class="mdi mdi-plus-circle mr-1"></i> {{__("Import Order Side Category")}}</button>
                                 </form>
                             </div>
@@ -40,6 +51,13 @@
                                     @if (\Session::has('success'))
                                         <div class="alert alert-success">
                                             <span>{!! \Session::get('success') !!}</span>
+                                        </div>
+                                    @endif
+                                </div>
+                                <div class="text-sm-left">
+                                    @if (\Session::has('error'))
+                                        <div class="alert alert-danger">
+                                            <span>{!! \Session::get('error') !!}</span>
                                         </div>
                                     @endif
                                 </div>
