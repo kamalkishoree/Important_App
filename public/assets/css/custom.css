@@ -2442,9 +2442,78 @@ body.darkbody.dark .select2-container--default .select2-selection--multiple .sel
     background-color: rgb(247 184 75 / 82%) !important;
     border: none !important;
 }
+body.dark .custom-body-table .dt-buttons.btn-group.flex-wrap {
+    float: right !important;
+    position: absolute;
+    right: 20%;
+    top: 18px;
+}
+body.dark div#agents-datatable_filter label {
+    position: absolute;
+    right: 40px;
+    width: 15%;
+    top: 25px;
+}
+body.dark .modal-title {
+    margin-top: 0;
+    color: #dbe9f9 !important;
+}
+body.dark div#edit-price-modal label{color: #dbe9f9 !important;}
+body.dark div#add-pricing-modal label{color: #dbe9f9 !important;}
+body.dark form#user_subscription_form label{color: #dbe9f9 !important;}
+body.dark div#add-subscription-plan label{color: #dbe9f9 !important;}   
+body.dark #submitpayreceive .card-box label{color: #222 !important;}
+body.dark div#pay-receive-modal label{color: #dbe9f9 !important;}
+body.dark div#edit-agent-modal label{color: #dbe9f9 !important;}
+body.dark form#save_product_form label{color: #dbe9f9 !important;}
+body.dark form#submitCategory label{color: #dbe9f9 !important;}
+body.dark div#add-team-modal label{color: #dbe9f9 !important;}
+body.dark div#add-agent-modal label{color: #dbe9f9 !important;}
+body.dark .card-box.side_table {
+    min-height: 650px;
+    height: 650px;
+    overflow-y: scroll;
+}
+body.dark .main-card-header .text-center h3 i {
+    color: #d4a34a !important;
+}
+body.dark form#submitpayreceive .btn[data-toggle="dropdown"] {
+    background: transparent !important;
+    display: block;
+    width: 100%;
+    height: calc(1.5em + 0.9rem + 2px);
+    padding: 0.45rem 0.9rem;
+    font-size: 0.875rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #94a0ad;
+    border: 1px solid #424e5a;
+    border-radius: 0.2rem;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+body.dark div#form-tags-1_tagsinput {
+    border-color: #cccccc59;
+}
+body.dark .tagsinput .focus{outline:0 !important;}
 /*----------laptop view media css--------------*/
 
 @media(max-width:1440px){
+    body.dark .custom-body-table .dt-buttons.btn-group.flex-wrap {
+        float: right !important;
+        position: absolute;
+        top: 76px;
+        margin-right: 100px !important;
+        z-index:1;
+    }
+    body.dark div#agents-datatable_filter label {
+        position: absolute !important;
+        right: 30px;
+        top: 80px;
+        width:25%;
+    }
+    body.dark .custom-body-table .dataTables_scroll {
+        margin-top: 70px;
+    }
     body.dark div#add-agent-modal body.dark .iti__country-list {
         position: absolute !important;
         margin: 0 auto !important;
