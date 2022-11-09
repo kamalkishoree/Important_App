@@ -2364,6 +2364,12 @@ div#agents-datatable_filter label {
 .outter_bx {
     background-color: #f3f7f9;
     padding: 0 10px;
+    border-radius:5px;
+}
+body.dark .outter_bx {
+    background-color: #262c33;
+    padding: 0 10px;
+    border-radius: 5px;
 }
 body.dark .login-form button.btn.btn-info.bulkupload {
     color: #fff;
@@ -2500,6 +2506,14 @@ body.dark div#form-tags-1_tagsinput {
     border-color: #cccccc59;
 }
 body.dark .tagsinput .focus{outline:0 !important;}
+div#DataTables_Table_0_wrapper label {
+    float: left !important;
+    padding-left: 10px;
+    width: 20%;
+}
+div#DataTables_Table_0_wrapper label input {
+    height: 38px;
+}
 /*----------laptop view media css--------------*/
 
 @media(max-width:1440px){
