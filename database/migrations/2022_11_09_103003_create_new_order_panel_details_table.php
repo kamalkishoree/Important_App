@@ -13,6 +13,7 @@ class CreateNewOrderPanelDetailsTable extends Migration
      */
     public function up()
     {
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         Schema::dropIfExists('order_panel_details');
         Schema::create('order_panel_details', function (Blueprint $table) {
             $table->id();
@@ -24,6 +25,7 @@ class CreateNewOrderPanelDetailsTable extends Migration
             $table->dateTime('last_sync');
             $table->timestamps();
         });
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
     }
 
     /**

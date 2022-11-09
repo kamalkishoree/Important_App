@@ -109,9 +109,9 @@
 
                         document.getElementById('latitude').value = lat;
                         document.getElementById('longitude').value = lng;
-                        // const zip_code = results[0].address_components.find(addr => addr.types[0] === "postal_code").short_name;
-                        // document.getElementById(name + '-postcode').value = zip_code;
-                        // document.getElementById(name + '-postcode').value = zip_code;
+                        const zip_code = results[0].address_components.find(addr => addr.types[0] === "postal_code").short_name;
+                        document.getElementById(name + '-postcode').value = zip_code;
+                        document.getElementById(name + '-postcode').value = zip_code;
 
                     }
                 });

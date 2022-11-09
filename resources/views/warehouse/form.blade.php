@@ -78,7 +78,7 @@
                                     </div>
                                     <input type="hidden" name="latitude" id="latitude" value="{{ old('latitude', $warehouse->latitude ?? 0)}}" />
                                     <input type="hidden" name="longitude" id="longitude" value="{{ old('longitude', $warehouse->longitude ?? 0)}}" />
-                                    <span class="invalid-feedback" role="alert" id="address">
+                                    <span class="invalid-feedback" role="alert" >
                                         <strong></strong>
                                     </span>
                                 </div>
