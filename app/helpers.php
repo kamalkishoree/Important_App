@@ -1,10 +1,12 @@
 <?php
 use Carbon\Carbon;
 use App\Model\ClientPreference;
+use App\Model\OrderPanelDetail;
 use App\Model\Client as ClientData;
 use App\Model\Countries;
 use Illuminate\Support\Facades\Auth;
 use App\Model\PaymentOption;
+use Illuminate\Support\Facades\Schema;
 
 if (!function_exists('pr')) {
 function pr($var) {
@@ -174,4 +176,70 @@ function getAgentNomenclature()
     $reference = ClientPreference::first();
     return (empty($reference->agent_name))?'Agent':$reference->agent_name;
 }
+}
+
+/**
+ * function for created date into particular format
+ * @return 06/07/2022
+ */
+if( !function_exists('formattedDate') ) {
+    function formattedDate($date) {
+        if(!empty($date)) {
+            return date("d/m/Y", strtotime($date));
+        }
+        return ;
+    }
+}
+
+function connect_with_order_panel() {
+    $order_panel_details = OrderPanelDetail::first();
+    
+    $default = [
+        'prefix' => '',
+        'engine' => null,
+        'strict' => false,
+        'charset' => 'utf8mb4',
+        'host' => $order_panel_details->db_host,
+        'port' => $order_panel_details->db_port,
+        'prefix_indexes' => true,
+        'database' => $order_panel_details->db_name,
+        'username' => $order_panel_details->db_username,
+        'password' => $order_panel_details->db_password,
+        'collation' => 'utf8mb4_unicode_ci',
+        'driver' => env('DB_CONNECTION', 'mysql'),
+    ];
+    Config::set("database.connections.$order_panel_details->db_name", $default);
+    return \DB::connection($order_panel_details->db_name);    
+}
+
+// Returns the values of the additional preferences.
+if (!function_exists('checkColumnExists')) {
+    /** check if column exits in table
+       * @param string $tableName
+       * @param string @columnName
+       * @return boolean true or false
+    */
+    function checkColumnExists($tableName, $columnName){
+        if (Schema::hasColumn($tableName, $columnName)){
+            return true;
+        }else{
+            return false;
+        }
+    }
+}
+
+// Returns the values of the additional preferences.
+if (!function_exists('checkTableExists')) {
+    /** check if column exits in table
+    * @param string $tableName
+    * @return boolean true or false
+    */
+    function checkTableExists($tableName){
+        if (Schema::hasTable($tableName)){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
 }

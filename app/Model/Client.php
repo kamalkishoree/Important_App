@@ -10,9 +10,9 @@ use Illuminate\Notifications\Notifiable;
 class Client extends Authenticatable
 {
     use Notifiable;
-    protected $guard = 'client';
+    protected $guard = 'clients';
     protected $fillable = [
-        'name', 'email', 'password', 'phone_number','dial_code', 'password', 'database_path', 'database_name', 'database_username', 'database_password', 'logo', 'company_name', 'company_address', 'custom_domain','sub_domain','status','code','confirm_password','is_superadmin','all_team_access','country_id','timezone','public_login_session', 'socket_url', 'dark_logo','admin_signin_image'
+        'name', 'email', 'password', 'phone_number','dial_code', 'password', 'database_path', 'database_name', 'database_username', 'database_password', 'logo', 'company_name', 'company_address', 'custom_domain','sub_domain','status','code','confirm_password','is_superadmin','all_team_access','country_id','timezone','public_login_session', 'socket_url', 'dark_logo','manager_type', 'admin_signin_image'
     ];
 
     /**
@@ -89,5 +89,9 @@ class Client extends Authenticatable
     public function getTimezone()
     {
       return $this->belongsTo('App\Model\Timezone','timezone','id');
+    }
+
+    public function warehouse(){
+      return $this->belongsToMany('App\Model\Warehouse', 'warehouse_manager_relation')->withTimestamps();
     }
 }

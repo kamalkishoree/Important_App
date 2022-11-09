@@ -1075,7 +1075,7 @@ class TaskController extends BaseController
             }
             $dispatch_traking_url = $client_url.'/order/tracking/'.$auth->code.'/'.$orders->unique_id;
 
-
+            
             $dep_id = null;
             $pickup_location = null;
 

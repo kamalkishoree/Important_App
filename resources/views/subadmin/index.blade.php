@@ -35,14 +35,27 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-body">
+                    <div class="text-sm-left">
+                        @if (\Session::has('success'))
+                            <div class="alert alert-success">
+                                <span>{!! \Session::get('success') !!}</span>
+                            </div>
+                        @endif
+                    </div>
                     <div class="row mb-2">
                         <div class="col-sm-8">
-                            <div class="text-sm-left">
-                                @if (\Session::has('success'))
-                                    <div class="alert alert-success">
-                                        <span>{!! \Session::get('success') !!}</span>
+                            <div class="col-sm-3">
+                                <form method="get" id="search_manager" class="form-inline">
+                                    <div class="form-group">
+                                        <label for="manager_type">Manager Type</label>&nbsp;&nbsp;&nbsp;
+                                        {{-- @dd(app('request')->input('manager_type')) --}}
+                                        <select name="manager_type" id="manager_type" class="form-control" onchange="submitForm();">
+                                            <option value="all" @if (app('request')->input('manager_type') == "all") {{'selected="selected"'}} @endif>All</option>
+                                            <option value="0" @if (app('request')->input('manager_type') != "all" && app('request')->input('manager_type') == 0) {{'selected="selected"'}} @endif>Manager</option>
+                                            <option value="1" @if (app('request')->input('manager_type') == 1) {{'selected="selected"'}} @endif>Warehouse Manager</option>
+                                        </select>
                                     </div>
-                                @endif
+                                </form>
                             </div>
                         </div>
                         <div class="col-sm-4 text-right btn-auto">
@@ -60,6 +73,7 @@
                                     <th>{{__("Name")}}</th>
                                     <th>{{__('Email')}}</th>
                                     <th>{{__("Phone")}}</th>
+                                    <th>{{__("Manager Type")}}</th>
                                     <th>{{__("Status")}}</th> 
                                     <th>{{__("Action")}}</th>
                                 </tr>
@@ -75,6 +89,13 @@
                                     </td>
                                     <td>
                                         @if(!empty($singleuser->dial_code)) +{{ $singleuser->dial_code }} @endif {{ $singleuser->phone_number }}
+                                    </td>
+                                    <td>
+                                        @if($singleuser->manager_type == 1)
+                                            {{ ('Warehouse Manager') }}
+                                        @else
+                                            {{ ('Manager') }}
+                                        @endif
                                     </td>
                                     <td>
                                         {{ ($singleuser->status==1)?__("Active"):__("Inactive") }}
@@ -111,7 +132,6 @@
 @endsection
 
 @section('script')
-
     <script src="{{ asset('assets/js/jquery-ui.min.js') }}" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="{{ asset('assets/css/jquery-ui.css') }}">
     <script src="{{ asset('assets/js/storeAgent.js') }}"></script>
@@ -121,7 +141,11 @@
     {{-- <script src="{{ asset('assets/libs/datatables/datatables.min.js') }}"></script>  --}}
     <script src="{{ asset('assets/js/jquery.tagsinput-revisited.js') }}"></script>
     <script src="{{ asset('telinput/js/intlTelInput.js') }}"></script>
-    <link rel="stylesheet" href="{{ asset('assets/css/jquery.tagsinput-revisited.css') }}" />>
-
-
+    <link rel="stylesheet" href="{{ asset('assets/css/jquery.tagsinput-revisited.css') }}" />
+    <script>
+        function submitForm(){
+            // Call submit() method on <form id='myform'>
+            document.getElementById('search_manager').submit(); 
+        }
+    </script>
 @endsection

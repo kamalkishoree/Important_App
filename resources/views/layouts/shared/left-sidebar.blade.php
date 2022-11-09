@@ -81,10 +81,37 @@
                     </a>
                 </li>
                 @endif
+                @if(in_array('Warehouse',$allowed) || Auth::user()->is_superadmin == 1)
+                <li>
+                    <a href="{{route('warehouse.index')}}">
+                        <i class="fe-package"></i>
+                        <span> {{__('Warehouse')}} </span>
+                    </a>
+                </li>
+                @endif
+                @if(in_array('Categories',$allowed) || Auth::user()->is_superadmin == 1)
+                <li>
+                    <a href="{{route('category.index')}}">
+                        <i class="fe-package"></i>
+                        <span> {{__('Categories')}} </span>
+                    </a>
+                </li>
+                @endif
 
+                <li>
+                    <a href="{{route('driver-accountancy.index')}}">
+                        <i class="fe-users"></i>
+                        <span> {{__('Driver Accountancy')}} </span>
+                    </a>
+                </li>
 
-
-
+                <li>
+                    <a href="{{route('order-panel-db.index')}}">
+                        <i class="fe-users"></i>
+                        <span> {{__('Order Panel DB Details')}} </span>
+                    </a>
+                </li>
+                
                 <li class="menu-title mt-2">{{__('Settings')}}</li>
 
                 @if(in_array('Profile',$allowed) || Auth::user()->is_superadmin == 1)
@@ -113,6 +140,16 @@
                     </a>
                 </li>
                 @endif
+
+                @if(in_array('ACL',$allowed) || Auth::user()->is_superadmin == 1)
+                <li>
+                    <a href="{{route('subadmins.index')}}">
+                        <i class="fe-users"></i>
+                        <span> {{__('Managers')}} </span>
+                    </a>
+                </li>
+                @endif
+                </li>
 
                 @if(in_array('Agents',$allowed) || Auth::user()->is_superadmin == 1)
                 <li>
@@ -239,18 +276,6 @@
                     </a>
                 </li>
                 @endif
-
-                @if(in_array('ACL',$allowed) || Auth::user()->is_superadmin == 1)
-                <li>
-                    <a href="{{route('subadmins.index')}}">
-                        <i class="fe-users"></i>
-                        <span> {{__('Managers')}} </span>
-                    </a>
-                </li>
-                @endif
-                </li>
-
-
 
               {{-- <li>
                     <a href="#">
