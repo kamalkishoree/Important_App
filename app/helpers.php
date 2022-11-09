@@ -176,6 +176,7 @@ function getAgentNomenclature()
     $reference = ClientPreference::first();
     return (empty($reference->agent_name))?'Agent':$reference->agent_name;
 }
+}
 
 /**
  * function for created date into particular format
@@ -240,4 +241,5 @@ if (!function_exists('checkTableExists')) {
             return false;
         }
     }
+
 }
