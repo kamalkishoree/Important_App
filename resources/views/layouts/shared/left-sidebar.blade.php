@@ -104,6 +104,13 @@
                         <span> {{__('Driver Accountancy')}} </span>
                     </a>
                 </li>
+
+                <li>
+                    <a href="{{route('order-panel-db.index')}}">
+                        <i class="fe-users"></i>
+                        <span> {{__('Order Panel DB Details')}} </span>
+                    </a>
+                </li>
                 
                 <li class="menu-title mt-2">{{__('Settings')}}</li>
 

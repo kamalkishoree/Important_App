@@ -259,6 +259,8 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 
 			Route::resource('warehouse', 'WarehouseController');
 
+			Route::resource('order-panel-db', 'orderPanelController');
+
 			Route::resource('amenities', 'AmenitiesController');
 
 			Route::resource('category', 'CategoryController');
