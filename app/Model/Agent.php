@@ -127,11 +127,10 @@ class Agent extends Authenticatable implements  Wallet, WalletFloat
     public function subscriptionPlan(){
         return $this->hasOne('App\Model\SubscriptionInvoicesDriver' , 'driver_id', 'id')->orderBy('end_date', 'desc');
     }
-<<<<<<< HEAD
+
     public function warehouseAgent(){
         return $this->belongsToMany('App\Model\Warehouse','agent_warehouse')->withTimestamps();
     }
-=======
 
     public function getAgentContactJsonAttribute()
     {
@@ -142,6 +141,4 @@ class Agent extends Authenticatable implements  Wallet, WalletFloat
     {
           return json_decode($this->razorpay_bank_json);
     }
-
->>>>>>> pre_dev
 }
