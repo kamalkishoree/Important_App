@@ -44,15 +44,25 @@
                     </div>
                     <div class="row mb-2">
                         <div class="col-sm-8">
-                            <div class="col-sm-3">
+                            <div class="col-sm-12">
                                 <form method="get" id="search_manager" class="form-inline">
                                     <div class="form-group">
                                         <label for="manager_type">Manager Type</label>&nbsp;&nbsp;&nbsp;
                                         {{-- @dd(app('request')->input('manager_type')) --}}
                                         <select name="manager_type" id="manager_type" class="form-control" onchange="submitForm();">
-                                            <option value="all" @if (app('request')->input('manager_type') == "all") {{'selected="selected"'}} @endif>All</option>
-                                            <option value="0" @if (app('request')->input('manager_type') != "all" && app('request')->input('manager_type') == 0) {{'selected="selected"'}} @endif>Manager</option>
+                                            <option value="" @if (app('request')->input('manager_type') == "") {{'selected="selected"'}} @endif>All</option>
+                                            <option value="0" @if (app('request')->input('manager_type') != null && app('request')->input('manager_type') == 0) {{'selected="selected"'}} @endif>Manager</option>
                                             <option value="1" @if (app('request')->input('manager_type') == 1) {{'selected="selected"'}} @endif>Warehouse Manager</option>
+                                        </select>
+                                    </div>&nbsp;&nbsp;&nbsp;
+                                    <div class="form-group">
+                                        <label for="warehouse">Warehouse</label>&nbsp;&nbsp;&nbsp;
+                                        {{-- @dd(app('request')->input('manager_type')) --}}
+                                        <select name="warehouse" id="warehouse" class="form-control" onchange="submitForm();">
+                                            <option value="" @if (app('request')->input('warehouse') == "") {{'selected="selected"'}} @endif>All</option>
+                                            @foreach ($warehouses as $warehouse)
+                                                <option value="{{$warehouse->id}}" @if (app('request')->input('manager_type') == $warehouse->id) {{'selected="selected"'}} @endif>{{$warehouse->name}}</option>
+                                            @endforeach
                                         </select>
                                     </div>
                                 </form>
@@ -65,7 +75,6 @@
                         </div>
 
                     </div>
-
                     <div class="table-responsive">
                         <table class="table table-striped dt-responsive nowrap w-100" id="">
                             <thead>
@@ -74,6 +83,7 @@
                                     <th>{{__('Email')}}</th>
                                     <th>{{__("Phone")}}</th>
                                     <th>{{__("Manager Type")}}</th>
+                                    <th>{{__("Warehouses")}}</th>
                                     <th>{{__("Status")}}</th> 
                                     <th>{{__("Action")}}</th>
                                 </tr>
@@ -96,6 +106,12 @@
                                         @else
                                             {{ ('Manager') }}
                                         @endif
+                                    </td>
+                                    <td>
+                                        @php
+                                            $warehouses = implode(',', $singleuser->warehouse->pluck('name')->toArray());
+                                        @endphp
+                                        {{ $warehouses ?? '-' }}
                                     </td>
                                     <td>
                                         {{ ($singleuser->status==1)?__("Active"):__("Inactive") }}
