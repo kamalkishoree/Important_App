@@ -580,7 +580,7 @@
     })
 
         function loadMap(autocompletesWraps){
-
+alert('map loaded');
         
             $.each(autocompletesWraps, function(index, name) {
                 const geocoder = new google.maps.Geocoder;
