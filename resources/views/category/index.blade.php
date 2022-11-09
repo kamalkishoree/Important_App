@@ -68,7 +68,7 @@
                                 </div>
                                 @endif
                                 @if(@$order_panel->sync_status && $order_panel->sync_status == 2) <!--processing-->
-                                <div class="alert alert-success">
+                                <div class="alert alert-success" id="syncCompleted">
                                     <span>{{__('Category & Product Import Is Completed.')}}</span>
                                 </div>
                                 @endif
@@ -141,3 +141,20 @@
 @section('script')
     @include('category.category-script')
 @endsection
+
+<script>
+    var sync_status = '{{$order_panel->sync_status ?? 0}}';
+    if(sync_status == 1){
+        setTimeout(function() {
+            location.reload();
+        }, 2000);
+    }
+    if(sync_status == 2){
+        setTimeout(function() {
+            $('#syncCompleted').hide();
+        }, 5000);
+    }
+    
+
+    
+</script>
