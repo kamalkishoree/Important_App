@@ -8,12 +8,15 @@ use Illuminate\Support\Facades\Auth;
 use App\Model\PaymentOption;
 use Illuminate\Support\Facades\Schema;
 
+if (!function_exists('pr')) {
 function pr($var) {
   	echo '<pre>';
 	print_r($var);
   	echo '</pre>';
     exit();
 }
+}
+if (!function_exists('http_check')) {
 function http_check($url) {
     $return = $url;
     if (!preg_match("~^(?:f|ht)tps?://~i", $url)) {
@@ -21,7 +24,8 @@ function http_check($url) {
     }
     return $return;
 }
-
+}
+if (!function_exists('getMonthNumber')) {
 function getMonthNumber($month_name){
     if($month_name == 'January'){
         return 1;
@@ -49,6 +53,8 @@ function getMonthNumber($month_name){
         return 12;
     }
 }
+}
+if (!function_exists('generateOrderNo')) {
 function generateOrderNo($length = 8){
     $number = '';
     do {
@@ -58,25 +64,35 @@ function generateOrderNo($length = 8){
     } while (!empty(\DB::table('orders')->where('order_number', $number)->first(['order_number'])) );
     return $number;
 }
+}
+if (!function_exists('generateUniqueTransactionID')) {
 function generateUniqueTransactionID(){
     $ref = 'txn_'.uniqid(time());
     return $ref;
 }
+}
+if (!function_exists('convertDateTimeInTimeZone')) {
 function convertDateTimeInTimeZone($date, $timezone, $format = 'Y-m-d H:i:s'){
     $date = Carbon::parse($date, 'UTC');
     $date->setTimezone($timezone);
     return $date->format($format);
 }
+}
+if (!function_exists('getClientPreferenceDetail')) {
 function getClientPreferenceDetail()
 {
     $client_preference_detail = ClientPreference::first();
     return $client_preference_detail;
 }
+}
+if (!function_exists('getClientDetail')) {
 function getClientDetail()
 {
     $clientData = ClientData::first();
     return $clientData;
 }
+}
+if (!function_exists('getRazorPayApiKey')) {
 function getRazorPayApiKey()
 {
     $razorpay_creds = PaymentOption::select('credentials', 'test_mode')->where('code', 'razorpay')->where('status', 1)->first();
@@ -88,7 +104,8 @@ function getRazorPayApiKey()
     }
     return $api_key_razorpay;
 }
-
+}
+if (!function_exists('dateTimeInUserTimeZone')) {
 function dateTimeInUserTimeZone($date, $timezone, $showDate=true, $showTime=true, $showSeconds=false){
     $preferences = ClientPreference::select('date_format', 'time_format')->where('id', '>', 0)->first();
     $date_format = (!empty($preferences->date_format)) ? $preferences->date_format : 'YYYY-MM-DD';
@@ -118,11 +135,13 @@ function dateTimeInUserTimeZone($date, $timezone, $showDate=true, $showTime=true
     $format = $dateFormat . $timeFormat;
     return $date->isoFormat($format);
 }
-
+}
+if (!function_exists('helper_number_formet')) {
 function helper_number_formet($number){
     return number_format($number,2);
 }
-
+}
+if (!function_exists('getCountryCode')) {
 function getCountryCode($dial_code=''){
     if($dial_code==''):
         $clientData = ClientData::select('country_id')->where('id', Auth::user()->country_id)->first();
@@ -138,7 +157,8 @@ function getCountryCode($dial_code=''){
     }
     return $countryCode;
 }
-
+}
+if (!function_exists('getCountryPhoneCode')) {
 function getCountryPhoneCode(){
     $clientData = ClientData::select('country_id')->first();
     $getAdminCurrentCountry = Countries::where('id', '=', $clientData->country_id)->select('id', 'phonecode')->first();
@@ -149,7 +169,8 @@ function getCountryPhoneCode(){
     }
     return $countryCode;
 }
-
+}
+if (!function_exists('getAgentNomenclature')) {
 function getAgentNomenclature()
 {
     $reference = ClientPreference::first();
