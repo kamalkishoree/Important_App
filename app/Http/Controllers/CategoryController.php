@@ -20,6 +20,16 @@ class CategoryController extends Controller
         $product_category = [];
         $sku_url = '';
         $db_name = $request->input('db_name');
+        $order_panel = [];
+        if(@$db_name && $db_name!='all'){
+            $order_panel = OrderPanelDetail::find($db_name);
+            if($order_panel->sync_status == 2){
+                $orderpanel = OrderPanelDetail::find($db_name);
+                $orderpanel->sync_status = 0;
+                $orderpanel->save();
+            }
+        }
+        
         if(checkTableExists('categories')){
             $category = Category::with('products')->orderBy('id', 'DESC')->paginate(10);
             if(checkColumnExists('categories', 'order_panel_id')){
@@ -41,7 +51,8 @@ class CategoryController extends Controller
             $sku_url = implode(".",$sku_url);
         }
         $orderDb_detail = OrderPanelDetail::all();
-        return view('category.index')->with(['category' => $category, 'product_category' => $product_category, 'sku_url' => $sku_url, 'order_db_detail' => $orderDb_detail]);
+       
+        return view('category.index')->with(['order_panel' => $order_panel,'category' => $category, 'product_category' => $product_category, 'sku_url' => $sku_url, 'order_db_detail' => $orderDb_detail]);
     }
 
     /**
@@ -129,8 +140,7 @@ class CategoryController extends Controller
     
             // $statusCode = $response->status();
             $checkAuth = json_decode($response->getBody(), true);
-            
-            if( $checkAuth['status'] == 200){
+            if( @$checkAuth['status'] == 200){
                 $apiRequestURL = $url.'/api/v1/category-product-sync-dispatcher';
             
                 // POST Data
@@ -140,10 +150,15 @@ class CategoryController extends Controller
                 $responseBody = json_decode($response->getBody(), true);
                 // dd($responseBody);
                 if( @$responseBody['status'] == 200){
+                    $order_details = OrderPanelDetail::find($order_panel_id);
+                    $order_details->sync_status = 1;
+                    $order_details->save();
                     // dd($responseBody);
                     // $this->importOrderSideCategory($responseBody['data']);
                 }
 
+            }else{
+                return redirect()->back()->with('error', 'Invalid Order Panel Url.');    
             }
             return redirect()->back()->with('success', 'Category & Product Import Is Processing.');
         }else{

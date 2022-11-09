@@ -17,6 +17,9 @@ class SyncCategoryProductController extends Controller
             $this->order_panel_id = $request['order_panel_id'];
             $this->importOrderSideCategory($request['data']);
         }
+        $order_details = OrderPanelDetail::find($request['order_panel_id']);
+        $order_details->sync_status = 2;
+        $order_details->save();
         return true;
     }
     

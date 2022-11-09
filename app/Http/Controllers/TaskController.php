@@ -69,9 +69,10 @@ class TaskController extends BaseController
         } else {
             $check = 'unassigned';
         }
-        if(checkTableExists('warehouse')){
+        if(checkTableExists('warehouses')){
             $managerWarehouses = Client::with('warehouse')->where('id', $user->id)->first();
             $managerWarehousesIds = $managerWarehouses->warehouse->pluck('id');
+            // dd($managerWarehousesIds);
         }else{
             $managerWarehouses = [];
             $managerWarehousesIds = [];
@@ -2339,7 +2340,7 @@ class TaskController extends BaseController
         $user = Auth::user();
         $managerWarehouses = [];
         $managerWarehousesIds = [];
-        if(checkTableExists('warehouse')){
+        if(checkTableExists('warehouses')){
             $managerWarehouses = Client::with('warehouse')->where('id', $user->id)->first();
             $managerWarehousesIds = $managerWarehouses->warehouse->pluck('id');
         }
@@ -2389,7 +2390,7 @@ class TaskController extends BaseController
         }
         $task->customer->countrycode = getCountryCode($task->customer->dial_code);
         $warehouses = [];
-        if(checkTableExists('warehouse')){
+        if(checkTableExists('warehouses')){
             $warehouses = Warehouse::all();
         }
         $vehicle_type = VehicleType::all();
