@@ -99,7 +99,7 @@ div#DataTables_Table_0_filter label input {
                     </form>
                 </div>
                 <div class="col-md-2 d-flex align-items-center mt-3">
-                    <div class="text-center">
+                    <div class="text-center outter_bx">
                         <p class="h4">Total Commision : <span class="total_commission"></span></p>                        
                     </div>
                 </div>

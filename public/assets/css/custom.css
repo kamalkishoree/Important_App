@@ -2359,6 +2359,11 @@ div#agents-datatable_filter label {
 #agents-datatable_wrapper .dt-buttons.btn-group.flex-wrap {
     float: left;
     margin: 5px 10px 10px 0px;
+    z-index:1;
+}
+.outter_bx {
+    background-color: #f3f7f9;
+    padding: 0 10px;
 }
 body.dark .login-form button.btn.btn-info.bulkupload {
     color: #fff;
@@ -2504,6 +2509,9 @@ body.dark .tagsinput .focus{outline:0 !important;}
         top: 76px;
         margin-right: 100px !important;
         z-index:1;
+    }
+    .col-md-12.main_form .col-md-3.d-flex.align-items-center.mt-3 {
+        margin-top: 4px !important;
     }
     body.dark div#agents-datatable_filter label {
         position: absolute !important;
