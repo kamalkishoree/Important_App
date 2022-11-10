@@ -65,4 +65,5 @@
     $('#db_name').on('change', function() {
         $('#db_form').submit(); 
     });
+
 </script>

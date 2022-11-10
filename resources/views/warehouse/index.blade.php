@@ -19,7 +19,9 @@
                                 
                             </div>
                             <div class="col-sm-4 text-right btn-auto">
-                                <a class="btn btn-blue waves-effect waves-light text-sm-right" href="{{route('warehouse.create')}}"><i class="mdi mdi-plus-circle mr-1"></i> {{__("Add Warehouse")}}</a>
+                                @if(Auth::user()->manager_type != 1)
+                                    <a class="btn btn-blue waves-effect waves-light text-sm-right" href="{{route('warehouse.create')}}"><i class="mdi mdi-plus-circle mr-1"></i> {{__("Add Warehouse")}}</a>
+                                @endif
                             </div>
                             <div class="col-sm-12">
                                 <div class="text-sm-left">

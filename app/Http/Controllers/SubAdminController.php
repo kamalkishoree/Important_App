@@ -27,14 +27,24 @@ class SubAdminController extends Controller
     public function index(REQUEST $request)
     {
         $manager_type = $request->manager_type;
-        $subadmins = Client::where('is_superadmin', 0)->where('id', '!=', Auth::user()->id);
+        $warehouseId = $request->warehouse;
+        $subadmins = Client::with('warehouse')->where('is_superadmin', 0)->where('id', '!=', Auth::user()->id);
         if(checkColumnExists('clients', 'manager_type')){
             if($manager_type != "all" && $manager_type != null){
-                $subadmins = Client::where('is_superadmin', 0)->where('id', '!=', Auth::user()->id)->where('manager_type', $manager_type);
+                $subadmins = $subadmins->where('manager_type', $manager_type);
+            }
+            if($warehouseId != '' && $warehouseId != null){
+                $subadmins = $subadmins->whereHas('warehouse', function($q) use ($warehouseId){
+                    $q->where('warehouses.id', '=', $warehouseId);
+                });
             }
         }
+        $warehouses = [];
+        if(checkTableExists('warehouses')){
+            $warehouses = Warehouse::all();
+        }
         $subadmins = $subadmins->orderBy('id', 'DESC')->paginate(10);
-        return view('subadmin.index')->with(['subadmins' => $subadmins]);
+        return view('subadmin.index')-> with(['subadmins' => $subadmins, 'warehouses' => $warehouses]);
     }
 
     /**
@@ -53,7 +63,7 @@ class SubAdminController extends Controller
         $permissions = Permissions::all();
         $teams = Team::all();
         $warehouses = [];
-        if(checkTableExists('products')){
+        if(checkTableExists('warehouses')){
             $warehouses = Warehouse::all();
         }
         return view('subadmin/form')->with(['permissions'=>$permissions,'teams'=>$teams, 'selectedCountryCode' => $countryCode, 'warehouses' => $warehouses]);

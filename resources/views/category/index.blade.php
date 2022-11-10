@@ -48,11 +48,7 @@
                             </div>
                             <div class="col-sm-12">
                                 <div class="text-sm-left">
-                                    @if (\Session::has('success'))
-                                        <div class="alert alert-success">
-                                            <span>{!! \Session::get('success') !!}</span>
-                                        </div>
-                                    @endif
+                                    
                                 </div>
                                 <div class="text-sm-left">
                                     @if (\Session::has('error'))
@@ -61,6 +57,21 @@
                                         </div>
                                     @endif
                                 </div>
+                                @if (\Session::has('success'))
+                                        <div class="alert alert-success">
+                                            <span>{!! \Session::get('success') !!}</span>
+                                        </div>
+                                
+                                @elseif(@$order_panel->sync_status && $order_panel->sync_status == 1) <!--processing-->
+                                <div class="alert alert-success">
+                                    <span>{{__('Category & Product Import Is Processing.')}}</span>
+                                </div>
+                                @endif
+                                @if(@$order_panel->sync_status && $order_panel->sync_status == 2) <!--processing-->
+                                <div class="alert alert-success" id="syncCompleted">
+                                    <span>{{__('Category & Product Import Is Completed.')}}</span>
+                                </div>
+                                @endif
                             </div>
                         </div>
                         <div class="table-responsive">
@@ -130,3 +141,20 @@
 @section('script')
     @include('category.category-script')
 @endsection
+
+<script>
+    var sync_status = '{{$order_panel->sync_status ?? 0}}';
+    if(sync_status == 1){
+        setTimeout(function() {
+            location.reload();
+        }, 2000);
+    }
+    if(sync_status == 2){
+        setTimeout(function() {
+            $('#syncCompleted').hide();
+        }, 5000);
+    }
+    
+
+    
+</script>
