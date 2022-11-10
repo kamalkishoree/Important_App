@@ -61,7 +61,7 @@
                                         <select name="warehouse" id="warehouse" class="form-control" onchange="submitForm();">
                                             <option value="" @if (app('request')->input('warehouse') == "") {{'selected="selected"'}} @endif>All</option>
                                             @foreach ($warehouses as $warehouse)
-                                                <option value="{{$warehouse->id}}" @if (app('request')->input('manager_type') == $warehouse->id) {{'selected="selected"'}} @endif>{{$warehouse->name}}</option>
+                                                <option value="{{$warehouse->id}}" @if (app('request')->input('warehouse') == $warehouse->id) {{'selected="selected"'}} @endif>{{$warehouse->name}}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -89,50 +89,60 @@
                                 </tr>
                             </thead>
                             <tbody>
-                            @foreach ($subadmins as $singleuser)
-                                <tr> 
-                                    <td>
-                                        {{ $singleuser->name }}
-                                    </td>
-                                    <td>
-                                        {{ $singleuser->email }}
-                                    </td>
-                                    <td>
-                                        @if(!empty($singleuser->dial_code)) +{{ $singleuser->dial_code }} @endif {{ $singleuser->phone_number }}
-                                    </td>
-                                    <td>
-                                        @if($singleuser->manager_type == 1)
-                                            {{ ('Warehouse Manager') }}
-                                        @else
-                                            {{ ('Manager') }}
-                                        @endif
-                                    </td>
-                                    <td>
-                                        @php
-                                            $warehouses = implode(',', $singleuser->warehouse->pluck('name')->toArray());
-                                        @endphp
-                                        {{ $warehouses ?? '-' }}
-                                    </td>
-                                    <td>
-                                        {{ ($singleuser->status==1)?__("Active"):__("Inactive") }}
-                                    </td>                                    
-                                    <td>
-                                        <div class="form-ul" style="width: 60px;">
-                                            <div class="inner-div"> <a href1="#" href="{{route('subadmins.edit', $singleuser->id)}}"  class="action-icon editIconBtn"> <i class="mdi mdi-square-edit-outline"></i></a></div>
-                                            {{-- <div class="inner-div">
-                                                <form method="POST" action="{{route('subadmins.destroy', $singleuser->id)}}">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <div class="form-group">
-                                                        <button type="submit" class="btn btn-primary-outline action-icon"> <i class="mdi mdi-delete"></i></button>
+                            @if(!@empty($subadmins) && $subadmins->count() > 0)
+                                @foreach ($subadmins as $singleuser)
+                                    <tr> 
+                                        <td>
+                                            {{ $singleuser->name }}
+                                        </td>
+                                        <td>
+                                            {{ $singleuser->email }}
+                                        </td>
+                                        <td>
+                                            @if(!empty($singleuser->dial_code)) +{{ $singleuser->dial_code }} @endif {{ $singleuser->phone_number }}
+                                        </td>
+                                        <td>
+                                            @if($singleuser->manager_type == 1)
+                                                {{ ('Warehouse Manager') }}
+                                            @else
+                                                {{ ('Manager') }}
+                                            @endif
+                                        </td>
+                                        <td>
+                                            @php
+                                                $warehouses = implode(',', $singleuser->warehouse->pluck('name')->toArray());
+                                            @endphp
+                                            @if(empty($warehouses))
+                                                {{ ('-') }}
+                                            @else
+                                                {{ $warehouses }}
+                                            @endif
+                                        </td>
+                                        <td>
+                                            {{ ($singleuser->status==1)?__("Active"):__("Inactive") }}
+                                        </td>                                    
+                                        <td>
+                                            <div class="form-ul" style="width: 60px;">
+                                                <div class="inner-div"> <a href1="#" href="{{route('subadmins.edit', $singleuser->id)}}"  class="action-icon editIconBtn"> <i class="mdi mdi-square-edit-outline"></i></a></div>
+                                                {{-- <div class="inner-div">
+                                                    <form method="POST" action="{{route('subadmins.destroy', $singleuser->id)}}">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <div class="form-group">
+                                                            <button type="submit" class="btn btn-primary-outline action-icon"> <i class="mdi mdi-delete"></i></button>
 
-                                                    </div>
-                                                </form>
-                                            </div> --}}
-                                        </div>                                        
-                                    </td>
+                                                        </div>
+                                                    </form>
+                                                </div> --}}
+                                            </div>                                        
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            @else
+                                <tr>
+                                    <td class="text-center text-danger" colspan="7">no record found</td>
                                 </tr>
-                            @endforeach
+                            @endif
                             </tbody>
                         </table>
                     </div>
