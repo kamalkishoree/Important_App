@@ -306,7 +306,7 @@ select:focus > option:checked {
 body.dark .table thead th {
     font-size: 14px;
     vertical-align: middle;
-    width: auto !important;
+    /* width: auto !important; */
 }
 select#search_warehouse {
     width: 80px;

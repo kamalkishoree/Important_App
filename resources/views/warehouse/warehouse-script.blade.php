@@ -70,11 +70,26 @@
         var mapLat = document.getElementById('lat_map').value;
         var mapLlng = document.getElementById('lng_map').value;
         var mapFor = document.getElementById('map_for').value;
+        
         //console.log(mapLat+'-'+mapLlng+'-'+mapFor);
         document.getElementById('latitude').value = mapLat;
         document.getElementById('longitude').value = mapLlng;
         $('#show-map-modal').modal('hide');
     });
+
+    // $(document).on('click', '.selectMapOnHeader', function () {
+        
+    //     var mapLat = document.getElementById('lat_map_header').value;
+    //     var mapLlng = document.getElementById('lng_map_header').value;
+    //     var mapFor = document.getElementById('map_for_header').value;
+    //     var address = document.getElementById('addredd_map_header').value;
+        
+    //     document.getElementById(mapFor + '-latitude').value = mapLat;
+    //     document.getElementById(mapFor + '-longitude').value = mapLlng;
+    //     document.getElementById(mapFor + '-input').value = address;
+
+    //     $('#show-map-Header').modal('hide');
+    // });
 
     var latitudes = [];
     var longitude = [];

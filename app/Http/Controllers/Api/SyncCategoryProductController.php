@@ -90,7 +90,7 @@ class SyncCategoryProductController extends Controller
                 //"store_id"              => $vid,
                 'order_panel_id' => $this->order_panel_id
             ];
-            $productSave = Product::updateOrCreate(['sku' => $product['sku']],$product_update_create);
+            $productSave = Product::updateOrCreate(['sku' => $product['sku'], 'order_panel_id' => $this->order_panel_id],$product_update_create);
 
             foreach($product['translation'] as $translation){
 
@@ -172,7 +172,7 @@ class SyncCategoryProductController extends Controller
                 'order_panel_id' => $this->order_panel_id
             ];
             
-            $categorySave = Category::updateOrCreate([ 'slug' => $cat['slug'] ], $data);
+            $categorySave = Category::updateOrCreate([ 'slug' => $cat['slug'], 'order_panel_id' => $this->order_panel_id ], $data);
             $transl_data = [
                 'name' => $cat['translation']['name'] ?? $cat['slug'],
                 'trans-slug' => $cat['translation']['trans_slug'] ?? '',
