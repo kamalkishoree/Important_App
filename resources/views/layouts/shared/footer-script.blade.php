@@ -100,7 +100,7 @@ $(document).ready(function(){
     $(document).on('change', '.category_id', function(){
     var cat_id = $(this).val();
         $.ajax({
-            url: "{{route('task.getCategoryWarehouse')}}",
+            url: "{{route('getCategoryWarehouse')}}",
             type: "get",
             datatype: "html",
             data:{cat_id:cat_id},
