@@ -136,6 +136,7 @@ class CategoryController extends Controller
             // Headers
             $headers = [
                 'shortcode' => $order_details->code,
+                'code' => $order_details->code,
                 'key' => $order_details->key
             ];
             
@@ -143,12 +144,13 @@ class CategoryController extends Controller
     
             // $statusCode = $response->status();
             $checkAuth = json_decode($response->getBody(), true);
+            // dd($checkAuth);
             if( @$checkAuth['status'] == 200){
                 $apiRequestURL = $url.'/api/v1/category-product-sync-dispatcher';
             
                 // POST Data
                 $postInput = ['order_panel_id' => $order_panel_id];
-        
+                $headers['Authorization'] = $checkAuth['token'];
                 $response = Http::withHeaders($headers)->post($apiRequestURL, $postInput);
                 $responseBody = json_decode($response->getBody(), true);
                 // dd($responseBody);
@@ -159,7 +161,8 @@ class CategoryController extends Controller
                     // dd($responseBody);
                     // $this->importOrderSideCategory($responseBody['data']);
                 }
-
+             } elseif( @$checkAuth['status'] == 401){
+                return redirect()->back()->with('error', $checkAuth['message']);
             }else{
                 return redirect()->back()->with('error', 'Invalid Order Panel Url.');    
             }
