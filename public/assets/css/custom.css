@@ -152,6 +152,15 @@ body.dark .table th, .table td {
 table.table.table-striped.dt-responsive.nowrap.w-100 span.badge.badge-success {
     font-size: 14px;
     padding: 10px;
+    width: 72px;
+}
+table.table.table-striped.dt-responsive.nowrap.w-100 span.badge.badge-danger {
+    font-size: 14px;
+    padding: 10px;
+    width: 72px;
+}
+body.dark .select2-container--default .select2-selection--multiple{
+    background:transparent !important;
 }
 body.dark #agents-datatable_wrapper table tr td a{
     color: #d4a34a !important;
@@ -258,6 +267,11 @@ body.dark form#edit_price .select2-container--default .select2-selection--multip
     border: 1px solid #d4a34a !important;
 }
 /*---------------custom dark theam css end------------*/
+body.dark.modal-open .dropdown.bootstrap-select button.btn.dropdown-toggle.btn-light {
+    border-radius: 2px;
+    background: transparent;
+    border-color: #cccccc1f;
+}
 .design-dark-theme
   [class^="icon-"], [class*=" icon-"] {
     /* use !important to prevent issues with browser extensions that change fonts */
@@ -380,7 +394,9 @@ body .navbar-custom .topnav-menu .nav-link {
     border: 1px solid transparent;
     margin-bottom: 0;
 }
-
+.main_form .login-form label{
+    min-width: 140px !important;
+}
 .login-form .blank-label {
     display: none;
 }
@@ -2333,7 +2349,7 @@ body[dir="rtl"] .agent-listing tbody td{ padding: 15px 10px 10px 15px;}
 }
 .alFilterLocation li{
 list-style: none;
-margin-left: 10px;
+margin-right: 10px;
 }
 @media(max-width: 767px){
     /* .alNavTopMinus {
@@ -2364,9 +2380,26 @@ div#agents-datatable_filter label {
     margin: 5px 10px 10px 0px;
     z-index:1;
 }
-.outter_bx {
-    background-color: #f3f7f9;
+body.light .outter_bx {
     padding: 0 10px;
+    border-radius: 5px;
+    background: #00800024;
+}
+body.light .outter_bx p {
+    color: #188118 !important;
+    font-size: 14px;
+}
+body.dark .outter_bx {
+    background-color: #262c33;
+    padding: 0 10px;
+    border-radius: 5px;
+}
+body.dark .outter_bx p {
+    color: #d5a44c;
+    font-size: 14px;
+}
+body.dark .alert-success {
+    margin: 10px;
 }
 body.dark .login-form button.btn.btn-info.bulkupload {
     color: #fff;
@@ -2503,15 +2536,151 @@ body.dark div#form-tags-1_tagsinput {
     border-color: #cccccc59;
 }
 body.dark .tagsinput .focus{outline:0 !important;}
+div#DataTables_Table_0_wrapper label {
+    float: left !important;
+    padding-left: 10px;
+    width: 20%;
+}
+div#DataTables_Table_0_wrapper label input {
+    height: 38px;
+}
+body.dark .tagsinput div input{
+    color:#dbe9f9 !important;
+}
+tbody#subscriptions_list tr td a {
+    color: #d5a44c;
+}
+body.dark .geo_bottom_btns button {
+    color: #fff !important;
+}
+body.dark .logo span.logo-lg img {
+    filter: invert(1);
+}
+body.light .custom-body-table .dt-buttons.btn-group.flex-wrap {
+    float: right !important;
+    position: absolute;
+    right: 20%;
+    top: 18px;
+}
+body.light div#agents-datatable_filter label {
+    position: absolute;
+    right: 40px;
+    width: 15%;
+    top: 25px;
+}
+body.dark .card-body.custom-body-table .alert-success {
+    margin: -3px 0 20px;
+    z-index: 99999;
+}
+body.light .card-body.custom-body-table .alert-success {
+    margin: -3px 0 20px;
+    z-index: 99999;
+}
 /*----------laptop view media css--------------*/
 
+@media (max-width: 1600px){
+    body.dark .custom-body-table .dt-buttons.btn-group.flex-wrap {
+        float: right !important;
+        position: absolute;
+        top: 76px;
+        margin-right: 100px !important;
+        z-index: 1;
+    }
+    .login-form ul li {
+        margin-bottom: 15px;
+    }
+    body.dark .custom-body-table .dataTables_scroll {
+        margin-top: 70px;
+    }
+    body.dark div#agents-datatable_filter label {
+        position: absolute !important;
+        right: 30px;
+        top: 80px;
+        width: 25%;
+    }
+    
+    body.light .custom-body-table .dt-buttons.btn-group.flex-wrap {
+        float: right !important;
+        position: absolute;
+        top: 76px;
+        margin-right: 100px !important;
+        z-index: 1;
+    }
+    body.light .custom-body-table .dataTables_scroll {
+        margin-top: 70px;
+    }
+    body.light div#agents-datatable_filter label {
+        position: absolute !important;
+        right: 30px;
+        top: 80px;
+        width: 25%;
+    }
+}
 @media(max-width:1440px){
     body.dark .custom-body-table .dt-buttons.btn-group.flex-wrap {
         float: right !important;
         position: absolute;
         top: 76px;
         margin-right: 100px !important;
+        z-index: 1;
+    }
+    .login-form ul li {
+        margin-bottom: 15px;
+    }
+    body.dark .custom-body-table .dataTables_scroll {
+        margin-top: 70px;
+    }
+    body.dark div#agents-datatable_filter label {
+        position: absolute !important;
+        right: 30px;
+        top: 80px;
+        width: 25%;
+    }
+    
+    body.light .custom-body-table .dt-buttons.btn-group.flex-wrap {
+        float: right !important;
+        position: absolute;
+        top: 76px;
+        margin-right: 100px !important;
+        z-index: 1;
+    }
+    body.light .custom-body-table .dataTables_scroll {
+        margin-top: 70px;
+    }
+    body.light div#agents-datatable_filter label {
+        position: absolute !important;
+        right: 30px;
+        top: 80px;
+        width: 25%;
+    }
+    body.dark table.table.table-striped.dt-responsive.nowrap.w-100 span.badge.badge-danger {
+        padding: 10px;
+        font-size: 14px;
+    }
+    body.light table.table.table-striped.dt-responsive.nowrap.w-100 span.badge.badge-danger {
+        padding: 10px;
+        font-size: 14px;
+    }
+
+
+
+
+
+
+
+
+    body.dark .custom-body-table .dt-buttons.btn-group.flex-wrap {
+        float: right !important;
+        position: absolute;
+        top: 76px;
+        margin-right: 100px !important;
         z-index:1;
+    }
+    .main_form .login-form label{
+        min-width: 80px !important;
+    }
+    .main_form .col-md-2.d-flex.align-items-center.mt-3 {
+        margin-top: 0.1rem !important;
     }
     .col-md-12.main_form .col-md-3.d-flex.align-items-center.mt-3 {
         margin-top: 4px !important;
