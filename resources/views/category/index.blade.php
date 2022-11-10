@@ -101,7 +101,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                 </div>
                             @endif
                         </div>
-                        <div class="col-sm-7 text-right btn-auto d-flex custom_top_bar">
+                        <div class="col-sm-12 text-right btn-auto d-flex custom_top_bar">
                             <form method="get" id="db_form">
                                 <div class="form-group">
                                     <select name="order_panel_id" id="db_name" class="form-control" style="width: 200px;margin-right: 10px;">

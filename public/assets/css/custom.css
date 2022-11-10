@@ -266,6 +266,20 @@ body.dark form#edit_price .select2-container--default .select2-selection--multip
     background-color: #d4a34a !important;
     border: 1px solid #d4a34a !important;
 }
+body.dark[data-sidebar-size=condensed] .logo-box {
+    width: 70px !important;
+    filter: invert(1);
+}
+.row.coolcheck.no-gutters .radio label {
+    margin-right: 20px;
+}
+body.dark .footer a.black {
+    color: #d4a34a;
+}
+body.dark .tagsinput .focus {
+    outline: 0 !important;
+    box-shadow: none !important;
+}
 /*---------------custom dark theam css end------------*/
 body.dark.modal-open .dropdown.bootstrap-select button.btn.dropdown-toggle.btn-light {
     border-radius: 2px;
@@ -1498,13 +1512,20 @@ body[dir="rtl"] .card_outer{
      background-color: rgb(247 184 75 / 82%);
  }
 
-
+ body.dark input#form-tags-4_tag {
+    outline: 0 !important;
+}
  body.dark  #form-tags-4_tagsinput {
     background: #36404a;
-    border-color: rgb(247 184 75 / 82%);
+    border-color:#666b70;
     border-radius: 4px;
 }
-
+body.dark .main_forms .selectize-control.single .selectize-input:after {
+    transform: rotate(359deg) !important;
+}
+body.dark .main_forms .selectize-control.single .selectize-input.dropdown-active:after{
+    border-color:transparent transparent #fff transparent;
+}
 body.dark .btn.btn-primary-outline.action-icon {
     background: transparent;
     border: 0;
