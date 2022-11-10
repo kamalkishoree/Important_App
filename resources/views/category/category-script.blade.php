@@ -106,4 +106,34 @@
         });
     });
 
+    function ajaxCheckSync(sync_status, order_panel_id){
+        $.ajax({
+            headers: {
+                'X-CSRF-TOKEN': "{{ csrf_token() }}"
+            },
+            url : "{{ url('check-sync-status') }}",
+            data : {'sync_status' : sync_status, 'order_panel_id': order_panel_id},
+            type : 'POST',
+            dataType : 'json',
+            success : function(result){
+                if(result == 2){
+                    $(".syncProcessing").hide();
+                    location.reload();
+                }
+            }
+        });
+    }
+
+    $(document).ready(function(){
+        var sync_status = '{{$order_panel->sync_status ?? 0}}';
+        var order_panel_id = '{{app('request')->input('order_panel_id') ?? ''}}';
+        if(sync_status == 1 && order_panel_id != ''){
+            setTimeout(function() {
+                ajaxCheckSync(sync_status, order_panel_id);
+            }, 2000);
+        }
+        setTimeout(function() {
+            $('#syncCompleted').hide();
+        }, 3000);
+    }); 
 </script>
