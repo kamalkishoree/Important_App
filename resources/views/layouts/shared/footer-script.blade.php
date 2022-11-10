@@ -97,6 +97,24 @@ $(document).ready(function(){
     });
         
     
+    $(document).on('change', '.category_id', function(){
+    var cat_id = $(this).val();
+        $.ajax({
+            url: "{{route('task.getCategoryWarehouse')}}",
+            type: "get",
+            datatype: "html",
+            data:{cat_id:cat_id},
+            success: (data) => {
+                $(this).closest(".firstclone1").find(".warehouse").empty().html(data);
+            },
+            error: () => {
+                $(this).closest(".firstclone1").find(".warehouse").empty().html('Something went wrong');
+            },
+            complete: function (data) {
+            // hideLoader();
+            }
+        });
+    });
 });
 
 </script>
