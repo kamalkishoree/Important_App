@@ -73,7 +73,7 @@
             "processing": true,
             "serverSide": true,
             "responsive": true,
-            "iDisplayLength": 20,
+            "iDisplayLength": 10,
             language: {
                 search: "",
                 paginate: { previous: "<i class='mdi mdi-chevron-left'>", next: "<i class='mdi mdi-chevron-right'>" },
