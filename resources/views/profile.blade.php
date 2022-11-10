@@ -376,12 +376,8 @@
         utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.18/js/utils.js"
     }); */
     $('.intl-tel-input').css('width', '100%');
-
-
     $(function() {
-        $('#phone_number').focus(function() {
-            $('#phone_number').css('color', '#6c757d');
-        });
+        $('#phone_number').focus(function() { $('#phone_number').css('color', '#6c757d');});
     });
 </script>
 @endsection
