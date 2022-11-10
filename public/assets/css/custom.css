@@ -16,6 +16,9 @@
 }
 
 /*---------------light theme------------*/
+.card-body.custom_body_card .dt-buttons.btn-group.flex-wrap {
+    display: none;
+}
 .select2-container--default .select2-selection--multiple .select2-selection__choice {
     padding: 0 10px 0 20px !important;
 }

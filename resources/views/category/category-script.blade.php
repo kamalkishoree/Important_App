@@ -1,5 +1,4 @@
 <script type="text/javascript">
-
     $('.openCategoryModal').click(function(){
         $('#add-category-modal .modal-title').text('Add Category');
         $('#add-category-modal').modal({
@@ -8,7 +7,7 @@
         });
     });
 
-    $('.openEditCategoryModal').click(function(){
+    $(document).on('click','.openEditCategoryModal', function(){
         var cat_name = $(this).data('name');
         var cat_status = $(this).data('status');
         var cat_id = $(this).data('id');
@@ -64,6 +63,47 @@
 
     $('#db_name').on('change', function() {
         $('#db_form').submit(); 
+    });
+
+    $(document).ready(function() {
+        $('#category-datatable').DataTable({
+            "dom": '<"toolbar">Bfrtip',
+            "scrollX": true,
+            "destroy": true,
+            "processing": true,
+            "serverSide": true,
+            "responsive": true,
+            "iDisplayLength": 20,
+            language: {
+                search: "",
+                paginate: { previous: "<i class='mdi mdi-chevron-left'>", next: "<i class='mdi mdi-chevron-right'>" },
+                searchPlaceholder: "{{__('Search Category')}}",
+                'loadingRecords': '&nbsp;',
+                // 'processing': '<div class="spinner"></div>'
+                'processing':function(){
+                    spinnerJS.showSpinner();
+                    spinnerJS.hideSpinner();
+                }
+            },
+            drawCallback: function () {
+                $(".dataTables_paginate > .pagination").addClass("pagination-rounded");
+            },
+            ajax: {
+                url: "{{url('category/filter')}}",
+                data: function (d) {
+                    d.search = $('input[type="search"]').val();
+                    d.imgproxyurl = '{{$imgproxyurl}}';
+                    d.order_panel_id = $('#db_name').val();
+                }
+            },
+            columns: [
+                {data: 'name', name: 'name', orderable: true, searchable: false},
+                {data: 'status', name: 'status', orderable: true, searchable: false},
+                {data: 'created_at', name: 'created_at', orderable: true, searchable: false},
+                {data: 'total_products', name: 'total_products', orderable: true, searchable: false},
+                {data: 'action', name: 'action', orderable: true, searchable: false}
+            ]
+        });
     });
 
 </script>
