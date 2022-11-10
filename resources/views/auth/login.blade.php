@@ -9,7 +9,7 @@
         @include('layouts.shared.head-css')
         <style>
             .authentication-bg-pattern {
-                background-image: url({{ Storage::disk('s3')->url($image->admin_signin_image)  }}) !important;
+                background-image: url({{ !empty($image->admin_signin_image) ? Storage::disk('s3')->url($image->admin_signin_image) : ''  }}) !important;
             }
     </style>
     </head>
