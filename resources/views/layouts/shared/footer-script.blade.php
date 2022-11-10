@@ -95,26 +95,24 @@ $(document).ready(function(){
         $(this).closest(".firstclone1").find(".location-section").toggle();
         $(this).closest(".firstclone1").find(".warehouse-fields").toggle();
     });
-    if($('.category_id').length > 0 ){
-        $(document).on('change', '.category_id', function(){
-            var cat_id = $(this).val();
-            $.ajax({
-                url: "{{route('tasks.getCategoryWarehouse')}}",
-                type: "get",
-                datatype: "html",
-                data:{cat_id:cat_id},
-                success: (data) => {
-                    $(this).closest(".firstclone1").find(".warehouse").empty().html(data);
-                },
-                error: () => {
-                    $(this).closest(".firstclone1").find(".warehouse").empty().html('Something went wrong');
-                },
-                complete: function (data) {
-                    // hideLoader(); 
-                }
-            });
-        });
-    }
+        // $(document).on('change', '.category_id', function(){
+        //     var cat_id = $(this).val();
+        //     $.ajax({
+        //         url: "{{route('tasks.getCategoryWarehouse')}}",
+        //         type: "get",
+        //         datatype: "html",
+        //         data:{cat_id:cat_id},
+        //         success: (data) => {
+        //             $(this).closest(".firstclone1").find(".warehouse").empty().html(data);
+        //         },
+        //         error: () => {
+        //             $(this).closest(".firstclone1").find(".warehouse").empty().html('Something went wrong');
+        //         },
+        //         complete: function (data) {
+        //             // hideLoader(); 
+        //         }
+        //     });
+        // });
     
 });
 
