@@ -61,4 +61,11 @@ class orderPanelController extends Controller
     {
 
     }
+
+    public function checkSyncStatus(Request $request){
+        $sync_status = $request->sync_status;
+        $order_panel_id = $request->order_panel_id;
+        $order_panel_data = OrderPanelDetail::find($order_panel_id);
+        return \Response::json($order_panel_data->sync_status);
+    }
 }

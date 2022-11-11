@@ -67,8 +67,9 @@ body {
   padding: 10px 0;
   position: fixed;
   transition: all 0.1s ease-out;
-  top: 70px;
+  top: 60px;
   box-shadow: 0 0 35px 0 rgba(66, 72, 80, 0.15);
+  height: 100%;
 }
 
 #sidebar-menu > ul {
@@ -4640,7 +4641,7 @@ div.dt-button-info h2 {
 .simplebar-wrapper {
   overflow: hidden;
   width: inherit;
-  height: inherit;
+  height: auto !important;
   max-width: inherit;
   max-height: inherit;
 }
