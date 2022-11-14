@@ -49,7 +49,7 @@ class AuthController extends BaseController
 
 
         $agent = Agent::where('phone_number', $request->phone_number)->first();
-        $sms_services = ClientPreference::first();
+      
         if (!$agent) {
             return response()->json([
                 'message' => 'User not found'
