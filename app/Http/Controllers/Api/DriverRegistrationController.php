@@ -52,7 +52,9 @@ class DriverRegistrationController extends BaseController
                 $otp->save();
 
                 $to = $otp->phone;
-                $body = "Dear customer, OTP for registration is " . $otp->opt;
+                $website_details = Client::first();
+                $domain = $website_details->sub_domain;
+                $body = "Dear customer,Your ".$domain." OTP for registration is " . $otp->opt;
                 
                 $sms_template = AgentSmsTemplate::where('slug', 'sign-up')->first();
                 if($sms_template){

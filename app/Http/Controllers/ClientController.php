@@ -270,6 +270,9 @@ class ClientController extends Controller
                     'sender_id' => $request->arkesel_sender_id,
                 ];
             }
+            //for static otp
+            $sms_credentials['static_otp'] = ($request->has('static_otp') && $request->static_otp == 'on') ? 1 : 0;
+         
             $request->merge(['sms_credentials'=>json_encode($sms_credentials)]);
         }
 
