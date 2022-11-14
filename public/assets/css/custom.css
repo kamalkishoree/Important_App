@@ -16,6 +16,9 @@
 }
 
 /*---------------light theme------------*/
+.card-body.custom_body_card .dt-buttons.btn-group.flex-wrap {
+    display: none;
+}
 .select2-container--default .select2-selection--multiple .select2-selection__choice {
     padding: 0 10px 0 20px !important;
 }
@@ -63,7 +66,14 @@ body.light .row.location-section .form-group.col-12.mb-1 input.form-control.addr
 body.dark .card.widget-inline p {
     color: #fff !important;
 }
-
+body.dark .login-form ul li button {
+    width: 120px;
+}
+body.dark .login-form a.btn.btn-info.btn-sm {
+    color: #fff;
+    width: 120px;
+    padding: 0.45rem 0.9rem;
+}
 body.dark .navbar-custom .topnav-menu .nav-link {
     font-weight: 400;
     color: #fff;
@@ -137,7 +147,29 @@ body.dark .table thead th {
     vertical-align:middle;
 }
 body.dark .table th, .table td {
-    font-size: 12px;
+    font-size: 13px;
+}
+table.table.table-striped.dt-responsive.nowrap.w-100 span.badge.badge-success {
+    font-size: 14px;
+    padding: 10px;
+    width: 72px;
+}
+table.table.table-striped.dt-responsive.nowrap.w-100 span.badge.badge-danger {
+    font-size: 14px;
+    padding: 10px;
+    width: 72px;
+}
+body.dark .select2-container--default .select2-selection--multiple{
+    background:transparent !important;
+}
+body.dark #agents-datatable_wrapper table tr td a{
+    color: #d4a34a !important;
+}
+body.dark button.showaccounting.btn.btn-primary-outline.action-icon.setcolor{
+    color: #d4a34a !important;
+}
+body.dark .address_box span.short_name {
+    color: #d3a24a;
 }
 body.dark .address_box label {
     width: 160px;
@@ -235,6 +267,11 @@ body.dark form#edit_price .select2-container--default .select2-selection--multip
     border: 1px solid #d4a34a !important;
 }
 /*---------------custom dark theam css end------------*/
+body.dark.modal-open .dropdown.bootstrap-select button.btn.dropdown-toggle.btn-light {
+    border-radius: 2px;
+    background: transparent;
+    border-color: #cccccc1f;
+}
 .design-dark-theme
   [class^="icon-"], [class*=" icon-"] {
     /* use !important to prevent issues with browser extensions that change fonts */
@@ -357,7 +394,9 @@ body .navbar-custom .topnav-menu .nav-link {
     border: 1px solid transparent;
     margin-bottom: 0;
 }
-
+.main_form .login-form label{
+    min-width: 140px !important;
+}
 .login-form .blank-label {
     display: none;
 }
@@ -1480,12 +1519,41 @@ body.dark .tagsinput{
     background-color: transparent;
     border-color: rgb(247 184 75 / 82%);
 }
-
+body.dark table#teams-datatable tr td a {
+    color: #dbe9f9 !important;
+    font-size: 13px;
+}
+body.dark form#StoreSubadmin label{
+    color: #dbe9f9 !important;
+}
 .dark .login-form label{
-    background-color: transparent;
+    background-color: #00000036;
     color: rgb(247 184 75 / 82%);
 }
-
+.dt-buttons.btn-group.flex-wrap {
+    position: relative;
+    z-index: 9999;
+}
+.dataTables_filter label .form-control {
+    position: relative;
+    z-index: 999;
+}
+body.dark .col-md-12.main_form button#pay-to-driver {
+    color: #fff;
+}
+body.dark .col-md-12.main_form span.total_commission {
+    color: #d5a44c;
+}
+body.dark .datetime_div i {
+    color: #d3a34a;
+}
+.dark ul.dtr-details {
+    display: flex;
+    align-items:center;
+}
+.dark ul.dtr-details li {
+    width: 25%;
+}
 .dark .login-form input[type="radio"]:checked+label {
     border-color: #d5a34c;
 }
@@ -1550,6 +1618,7 @@ body.dark .input-group-text {
 
 .dark .add-sub-task-btn{
     background-color: rgb(247 184 75 / 82%);
+    color:#fff;
 }
 
 
@@ -2280,7 +2349,7 @@ body[dir="rtl"] .agent-listing tbody td{ padding: 15px 10px 10px 15px;}
 }
 .alFilterLocation li{
 list-style: none;
-margin-left: 10px;
+margin-right: 10px;
 }
 @media(max-width: 767px){
     /* .alNavTopMinus {
@@ -2309,6 +2378,28 @@ div#agents-datatable_filter label {
 #agents-datatable_wrapper .dt-buttons.btn-group.flex-wrap {
     float: left;
     margin: 5px 10px 10px 0px;
+    z-index:1;
+}
+body.light .outter_bx {
+    padding: 0 10px;
+    border-radius: 5px;
+    background: #00800024;
+}
+body.light .outter_bx p {
+    color: #188118 !important;
+    font-size: 14px;
+}
+body.dark .outter_bx {
+    background-color: #262c33;
+    padding: 0 10px;
+    border-radius: 5px;
+}
+body.dark .outter_bx p {
+    color: #d5a44c;
+    font-size: 14px;
+}
+body.dark .alert-success {
+    margin: 10px;
 }
 body.dark .login-form button.btn.btn-info.bulkupload {
     color: #fff;
@@ -2378,12 +2469,247 @@ body.dark form#taskFormHeader .edit-icon-float-right {
 body.dark span.iti__country-name {
     color: #000000a8;
 }
+body.dark div#add-customer-modal a.btn.btn-success.btn-rounded.waves-effect.waves-light.addField {
+    color: #fff;
+}
+body.dark .select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
+    color: #fff;
+    cursor: pointer;
+    display: inline-block;
+    font-weight: bold;
+    margin-right: 10px;
+}
+body.darkbody.dark .select2-container--default .select2-selection--multiple .select2-selection__choice {
+    background-color: rgb(247 184 75 / 82%) !important;
+    border: none !important;
+}
+body.dark .custom-body-table .dt-buttons.btn-group.flex-wrap {
+    float: right !important;
+    position: absolute;
+    right: 20%;
+    top: 18px;
+}
+body.dark div#agents-datatable_filter label {
+    position: absolute;
+    right: 40px;
+    width: 15%;
+    top: 25px;
+}
+body.dark .modal-title {
+    margin-top: 0;
+    color: #dbe9f9 !important;
+}
+body.dark div#edit-price-modal label{color: #dbe9f9 !important;}
+body.dark div#add-pricing-modal label{color: #dbe9f9 !important;}
+body.dark form#user_subscription_form label{color: #dbe9f9 !important;}
+body.dark div#add-subscription-plan label{color: #dbe9f9 !important;}   
+body.dark #submitpayreceive .card-box label{color: #222 !important;}
+body.dark div#pay-receive-modal label{color: #dbe9f9 !important;}
+body.dark div#edit-agent-modal label{color: #dbe9f9 !important;}
+body.dark form#save_product_form label{color: #dbe9f9 !important;}
+body.dark form#submitCategory label{color: #dbe9f9 !important;}
+body.dark div#add-team-modal label{color: #dbe9f9 !important;}
+body.dark div#add-agent-modal label{color: #dbe9f9 !important;}
+body.dark .card-box.side_table {
+    min-height: 650px;
+    height: 650px;
+    overflow-y: scroll;
+}
+body.dark .main-card-header .text-center h3 i {
+    color: #d4a34a !important;
+}
+body.dark form#submitpayreceive .btn[data-toggle="dropdown"] {
+    background: transparent !important;
+    display: block;
+    width: 100%;
+    height: calc(1.5em + 0.9rem + 2px);
+    padding: 0.45rem 0.9rem;
+    font-size: 0.875rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #94a0ad;
+    border: 1px solid #424e5a;
+    border-radius: 0.2rem;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+body.dark div#form-tags-1_tagsinput {
+    border-color: #cccccc59;
+}
+body.dark .tagsinput .focus{outline:0 !important;}
+div#DataTables_Table_0_wrapper label {
+    float: left !important;
+    padding-left: 10px;
+    width: 20%;
+}
+div#DataTables_Table_0_wrapper label input {
+    height: 38px;
+}
+body.dark .tagsinput div input{
+    color:#dbe9f9 !important;
+}
+tbody#subscriptions_list tr td a {
+    color: #d5a44c;
+}
+body.dark .geo_bottom_btns button {
+    color: #fff !important;
+}
+body.dark .logo span.logo-lg img {
+    filter: invert(1);
+}
+body.light .custom-body-table .dt-buttons.btn-group.flex-wrap {
+    float: right !important;
+    position: absolute;
+    right: 20%;
+    top: 18px;
+}
+body.light div#agents-datatable_filter label {
+    position: absolute;
+    right: 40px;
+    width: 15%;
+    top: 25px;
+}
+body.dark .card-body.custom-body-table .alert-success {
+    margin: -3px 0 20px;
+    z-index: 99999;
+}
+body.light .card-body.custom-body-table .alert-success {
+    margin: -3px 0 20px;
+    z-index: 99999;
+}
 /*----------laptop view media css--------------*/
+
+@media (max-width: 1600px){
+    body.dark .custom-body-table .dt-buttons.btn-group.flex-wrap {
+        float: right !important;
+        position: absolute;
+        top: 76px;
+        margin-right: 100px !important;
+        z-index: 1;
+    }
+    .login-form ul li {
+        margin-bottom: 15px;
+    }
+    body.dark .custom-body-table .dataTables_scroll {
+        margin-top: 70px;
+    }
+    body.dark div#agents-datatable_filter label {
+        position: absolute !important;
+        right: 30px;
+        top: 80px;
+        width: 25%;
+    }
+    
+    body.light .custom-body-table .dt-buttons.btn-group.flex-wrap {
+        float: right !important;
+        position: absolute;
+        top: 76px;
+        margin-right: 100px !important;
+        z-index: 1;
+    }
+    body.light .custom-body-table .dataTables_scroll {
+        margin-top: 70px;
+    }
+    body.light div#agents-datatable_filter label {
+        position: absolute !important;
+        right: 30px;
+        top: 80px;
+        width: 25%;
+    }
+}
 @media(max-width:1440px){
+    body.dark .custom-body-table .dt-buttons.btn-group.flex-wrap {
+        float: right !important;
+        position: absolute;
+        top: 76px;
+        margin-right: 100px !important;
+        z-index: 1;
+    }
+    .login-form ul li {
+        margin-bottom: 15px;
+    }
+    body.dark .custom-body-table .dataTables_scroll {
+        margin-top: 70px;
+    }
+    body.dark div#agents-datatable_filter label {
+        position: absolute !important;
+        right: 30px;
+        top: 80px;
+        width: 25%;
+    }
+    
+    body.light .custom-body-table .dt-buttons.btn-group.flex-wrap {
+        float: right !important;
+        position: absolute;
+        top: 76px;
+        margin-right: 100px !important;
+        z-index: 1;
+    }
+    body.light .custom-body-table .dataTables_scroll {
+        margin-top: 70px;
+    }
+    body.light div#agents-datatable_filter label {
+        position: absolute !important;
+        right: 30px;
+        top: 80px;
+        width: 25%;
+    }
+    body.dark table.table.table-striped.dt-responsive.nowrap.w-100 span.badge.badge-danger {
+        padding: 10px;
+        font-size: 14px;
+    }
+    body.light table.table.table-striped.dt-responsive.nowrap.w-100 span.badge.badge-danger {
+        padding: 10px;
+        font-size: 14px;
+    }
+
+
+
+
+
+
+
+
+    body.dark .custom-body-table .dt-buttons.btn-group.flex-wrap {
+        float: right !important;
+        position: absolute;
+        top: 76px;
+        margin-right: 100px !important;
+        z-index:1;
+    }
+    .main_form .login-form label{
+        min-width: 80px !important;
+    }
+    .main_form .col-md-2.d-flex.align-items-center.mt-3 {
+        margin-top: 0.1rem !important;
+    }
+    .col-md-12.main_form .col-md-3.d-flex.align-items-center.mt-3 {
+        margin-top: 4px !important;
+    }
+    body.dark div#agents-datatable_filter label {
+        position: absolute !important;
+        right: 30px;
+        top: 80px;
+        width:25%;
+    }
+    body.dark .custom-body-table .dataTables_scroll {
+        margin-top: 70px;
+    }
+    body.dark div#add-agent-modal body.dark .iti__country-list {
+        position: absolute !important;
+        margin: 0 auto !important;
+        top: 44% !important;
+        left: 51% !important; 
+    }
+    body.dark form#geo_form .card_outer {
+        height: calc(100vh - 150px);
+    }
     body.dark.iti-mobile .col-md-8.mx-auto.col-sm-12.col-lg-8{
       width: 100%;
       max-width: 100%;
       flex: 100%;
+    }
+    body.dark span.select2.select2-container.select2-container--default.select2-container--above.select2-container--focus.select2-container--open{
+        width: auto !important;
     }
     body.dark.iti-mobile div#favicon_container {
         width: auto !important;

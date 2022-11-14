@@ -31,6 +31,9 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
         float: right;
         margin: 5px 0 10px 15px;
     }
+    .agents-datatable tbody td, .dataTables_scrollHead thead th {
+        vertical-align: middle;
+    }
     div#agents-datatable_filter {
         padding-top: 5px;
     }
@@ -85,7 +88,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
         </div>
         <div class="row">
             <div class="col-12">
-                <div class="card widget-inline">
+                <div class="card widget-inline main-card-header">
                     <div class="card-body p-2">
                         <div class="row">
                             <div class="col-sm-6 col-md-3 mb-3 mb-md-0">
@@ -133,7 +136,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
         <div class="row">
             <div class="col-12">
                 <div class="card">
-                    <div class="card-body">
+                    <div class="card-body custom-body-table">
                         <div class="row">
                             <div class="col-sm-12">
                                 <div class="text-sm-left">
@@ -217,7 +220,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                             <a href="{{route('batch.list')}}"><button type="button" class="btn btn-info" >All Batches</button></a>
                             @endif
                             
-                            <div class="col-md-4 assign-toggle assign-show ">
+                            <div class="col-md-4 assign-toggle assign-show mt-3">
                                 <button type="button" class="btn btn-info assign_agent" data-toggle="modal" data-target="#add-assgin-agent-model" data-backdrop="static" data-keyboard="false">{{__("Assign")}}</button> 
                                 <button type="button" class="btn btn-info assign_date" data-toggle="modal" data-target="#add-assgin-date-model" data-backdrop="static" data-keyboard="false">{{__("Change Date")}}/{{__("Time")}}</button> 
                             </div>
@@ -273,8 +276,40 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
 
 
 <style>
+    .col-md-4.assign-toggle button {
+    color: #fff;
+    width: 160px;
+}
 .agents-datatable tbody td, .dataTables_scrollHead thead th {
         padding: 6px 6px 6px 6px !important;
+        vertical-align: middle;
     }
+    select#agent_name_id {
+    width: 135px;
+    color: #dbe9f9;
+}
+    select option:hover {
+      background:#d4a34a !important;
+      color:#fff;
+    }
+    select option:checked,
+    select option:hover {
+        background:#d4a34a !important;
+}
+select:focus > option:checked { 
+    background:#d4a34a !important;
+}
+.address_box span {
+    width: 100px;
+    text-align: center;
+}
+body.dark .table thead th {
+    font-size: 14px;
+    vertical-align: middle;
+    /* width: auto !important; */
+}
+select#search_warehouse {
+    width: 80px;
+}
 </style>
 @endsection

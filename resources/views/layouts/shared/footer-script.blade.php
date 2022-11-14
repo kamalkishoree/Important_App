@@ -95,11 +95,12 @@ $(document).ready(function(){
         $(this).closest(".firstclone1").find(".location-section").toggle();
         $(this).closest(".firstclone1").find(".warehouse-fields").toggle();
     });
-
+        
+    
     $(document).on('change', '.category_id', function(){
-        var cat_id = $(this).val();
+    var cat_id = $(this).val();
         $.ajax({
-            url: "{{route('tasks.getCategoryWarehouse')}}",
+            url: "/get-category-warehouse",
             type: "get",
             datatype: "html",
             data:{cat_id:cat_id},
@@ -110,7 +111,7 @@ $(document).ready(function(){
                 $(this).closest(".firstclone1").find(".warehouse").empty().html('Something went wrong');
             },
             complete: function (data) {
-                // hideLoader(); 
+            // hideLoader();
             }
         });
     });

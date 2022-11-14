@@ -39,7 +39,7 @@
                 <div class="card-body">
                     @if(isset($subadmin))
                     <form id="UpdateSubadmin" method="post" action="{{route('subadmins.update', $subadmin->id)}}"
-                        enctype="multipart/form-data">
+                        enctype="multipart/form-data" autocomplete="off">
                         @method('PUT')
                         @else
                         <form id="StoreSubadmin" method="post" action="{{route('subadmins.store')}}"
@@ -103,9 +103,11 @@
                                             <input type="hidden" id="dialCode" name="dialCode" value="{{ old('dialCode')}}">
                                             @endif
                                          </div>
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong></strong>
-                                        </span>
+                                         @if($errors->has('phone_number'))
+                                            <span class="text-danger" role="alert">
+                                                <strong>{{ $errors->first('phone_number') }}</strong>
+                                            </span>
+                                         @endif
                                     </div>
 
 

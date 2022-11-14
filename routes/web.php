@@ -167,7 +167,7 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 			Route::get('', 'DashBoardController@index')->name('index');
 			Route::post('dashboard/teamsdata', 'DashBoardController@dashboardTeamData')->name('dashboard.teamsdata');
 			Route::get('customize', 'ClientController@ShowPreference')->name('preference.show');
-			Route::post('update-order-panel-db-detail', 'ClientController@orderPanelDbDetail')->name('update.orderPanelDbDetail');
+			// Route::post('update-order-panel-db-detail', 'ClientController@orderPanelDbDetail')->name('update.orderPanelDbDetail');
 			Route::post('save/cms/{id}', 'ClientController@cmsSave')->name('cms.save');
 			Route::post('client_preference/{id}', 'ClientController@storePreference')->name('preference');
 			Route::post('route-create-configure/{id}', 'ClientController@routeCreateConfigure')->name('route.create.configure');
@@ -186,6 +186,9 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 			Route::get('agent/payout/requests', 'AgentPayoutController@agentPayoutRequests')->name('agent.payout.requests');
 			Route::get('agent/payout/requests/export', 'AgentPayoutController@export')->name('agents.payout.requests.export');
 			Route::get('agent/payout/requests/filter', 'AgentPayoutController@agentPayoutRequestsFilter')->name('agent.payout.requests.filter');
+			
+			Route::get('category/filter', 'CategoryController@categoryFilter');
+
         	Route::post('agent/payout/request/complete', 'AgentPayoutController@agentPayoutRequestComplete')->name('agent.payout.request.complete');
 			Route::post('agent/payout/requests/complete/all', 'AgentPayoutController@agentPayoutRequestsCompleteAll')->name('agent.payout.requests.complete.all');
 			Route::post('agent/payout/bank/details', 'AgentPayoutController@agentPayoutBankDetails')->name('agent.payout.bank.details');
@@ -225,7 +228,7 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 			Route::any('updatetasks/tasks/{id}', 'TaskController@update');
 			Route::post('single_taskdelete', 'TaskController@deleteSingleTask')->name('tasks.single.destroy');
 
-			Route::get('get-category-warehouse', 'TaskController@getCategoryWarehouse')->name('tasks.getCategoryWarehouse');
+			Route::get('get-category-warehouse', 'TaskController@getCategoryWarehouse')->name('getCategoryWarehouse');
 
 			Route::post('optimize-route', 'DashBoardController@optimizeRoute');
 			Route::post('arrange-route', 'DashBoardController@arrangeRoute');
@@ -258,16 +261,15 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 			Route::resource('subadmins', 'SubAdminController');
 
 			Route::resource('warehouse', 'WarehouseController');
-
+			Route::resource('order-panel-db', 'orderPanelController');
 			Route::resource('amenities', 'AmenitiesController');
-
 			Route::resource('category', 'CategoryController');
-
 			Route::resource('product', 'ProductController');
+			Route::POST('check-sync-status', 'orderPanelController@checkSyncStatus');
 
 			// Route::get('cat-product/{$id}', 'ProductController@showProduct')->name('showProduct');
 
-			Route::post('/import-order-side-category', 'CategoryController@importOrderSideCategory')->name('category.importOrderSideCategory');
+			Route::post('/import-order-side-category', 'CategoryController@getOrderSideData')->name('category.importOrderSideCategory');
 
 			Route::get('/order/feedback/{clientcode}/{order_id}', 'TrackingController@OrderFeedback')->name('order.feedback');
 

@@ -70,11 +70,26 @@
         var mapLat = document.getElementById('lat_map').value;
         var mapLlng = document.getElementById('lng_map').value;
         var mapFor = document.getElementById('map_for').value;
+        
         //console.log(mapLat+'-'+mapLlng+'-'+mapFor);
         document.getElementById('latitude').value = mapLat;
         document.getElementById('longitude').value = mapLlng;
         $('#show-map-modal').modal('hide');
     });
+
+    // $(document).on('click', '.selectMapOnHeader', function () {
+        
+    //     var mapLat = document.getElementById('lat_map_header').value;
+    //     var mapLlng = document.getElementById('lng_map_header').value;
+    //     var mapFor = document.getElementById('map_for_header').value;
+    //     var address = document.getElementById('addredd_map_header').value;
+        
+    //     document.getElementById(mapFor + '-latitude').value = mapLat;
+    //     document.getElementById(mapFor + '-longitude').value = mapLlng;
+    //     document.getElementById(mapFor + '-input').value = address;
+
+    //     $('#show-map-Header').modal('hide');
+    // });
 
     var latitudes = [];
     var longitude = [];
@@ -109,9 +124,9 @@
 
                         document.getElementById('latitude').value = lat;
                         document.getElementById('longitude').value = lng;
-                        // const zip_code = results[0].address_components.find(addr => addr.types[0] === "postal_code").short_name;
-                        // document.getElementById(name + '-postcode').value = zip_code;
-                        // document.getElementById(name + '-postcode').value = zip_code;
+                        const zip_code = results[0].address_components.find(addr => addr.types[0] === "postal_code").short_name;
+                        document.getElementById(name + '-postcode').value = zip_code;
+                        document.getElementById(name + '-postcode').value = zip_code;
 
                     }
                 });

@@ -1058,7 +1058,7 @@
     });
 
     $(document).on('click', '.selectMapOnHeader', function () {
-
+        
         var mapLat = document.getElementById('lat_map_header').value;
         var mapLlng = document.getElementById('lng_map_header').value;
         var mapFor = document.getElementById('map_for_header').value;

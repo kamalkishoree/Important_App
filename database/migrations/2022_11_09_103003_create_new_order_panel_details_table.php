@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateOrderPanelDetailsTable extends Migration
+class CreateNewOrderPanelDetailsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,6 +13,8 @@ class CreateOrderPanelDetailsTable extends Migration
      */
     public function up()
     {
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        Schema::dropIfExists('order_panel_details');
         Schema::create('order_panel_details', function (Blueprint $table) {
             $table->id();
             $table->string('name');
@@ -23,6 +25,7 @@ class CreateOrderPanelDetailsTable extends Migration
             $table->dateTime('last_sync');
             $table->timestamps();
         });
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
     }
 
     /**

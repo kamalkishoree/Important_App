@@ -279,7 +279,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
     </div>
     <div class="row">
         <div class="col-12">
-            <div class="card widget-inline">
+            <div class="card widget-inline main-card-header">
                 <div class="card-body">
                     <div class="row">
                         <div class="col-sm-6 col-md mb-3 mb-md-0">
@@ -339,7 +339,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
             <div class="card">
                 <div class="card-body">
                     <div class="alFilterLocation">
-                        <ul class="p-0 d-flex justify-content-end">
+                        <ul class="p-0 d-flex justify-content-start">
                                 <li>
                                     <div class="text-sm-left">
                                         @if (\Session::has('success'))
