@@ -1,4 +1,4 @@
-sendNotificationToOrder<?php
+<?php
 namespace App\Traits;
 use App\Model\{ClientPreference,Agent,Order};
 use GuzzleHttp\Client as GCLIENT;
