@@ -1,7 +1,8 @@
-<?php
+sendNotificationToOrder<?php
 namespace App\Traits;
 use App\Model\{ClientPreference,Agent,Order};
 use GuzzleHttp\Client as GCLIENT;
+use Log;
 
 trait ChatTrait{
     
@@ -113,6 +114,8 @@ trait ChatTrait{
         if(is_array($OrderDomain)){
             $order_back_url ='http://'.$OrderDomain['2'].'/sendNotificationToUserByDispatcher';
         }
+        Log::info($order_back_url);
+        Log::info($postdata);
         $client = new GClient([
             'headers' => [
                 'content-type' => 'application/json'
