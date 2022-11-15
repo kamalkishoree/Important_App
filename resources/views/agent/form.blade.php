@@ -78,6 +78,22 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
             </span>
         </div>
     </div>
+    <div class="col-md-6">
+        <div class="form-group" id="warehouse_idInputEdit">
+            <label for="warehouse_id" class="control-label">{{__("ASSIGN WAREHOUSE")}}</label>
+            @php
+                $selectedWarehouseIds = $agent->warehouseAgent->pluck('id')->toArray();
+            @endphp
+            <select class="form-control select2-select" name="warehouse_id[]" id="warehouse_id" multiple>
+                @foreach ($warehouses as $warehouse)
+                    <option value="{{ $warehouse->id }}"  @if(in_array($warehouse->id, $selectedWarehouseIds)) selected @endif>{{ $warehouse->name }}</option>
+                @endforeach
+            </select>
+            <span class="invalid-feedback" role="alert">
+                <strong></strong>
+            </span>
+        </div>
+    </div>
 </div>
 
 
@@ -222,3 +238,9 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
     @endforeach
     @endif
 </div>
+
+<script>
+    $(document).ready(function(){
+        $('.select2-select').select2();
+    });
+</script>

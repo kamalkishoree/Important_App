@@ -35,6 +35,9 @@ Route::get('get-all-teams', 'Api\TaskController@getAllTeams')->middleware('Conne
 Route::post('update-create-vendor-order', 'Api\AuthController@updateCreateVendorOrder')->middleware('ConnectDbFromOrder');
 
 
+Route::post('sync-category-product', 'Api\SyncCategoryProductController@SyncCategoryProduct')->middleware('ConnectDbFromOrder');
+
+
 Route::post('chat/sendNotificationToAgent',      'Api\ChatControllerOrderNotification@sendNotificationToAgent')->middleware('ConnectDbFromOrder');
 
 
@@ -82,6 +85,11 @@ Route::group(['prefix' => 'auth'], function () {
 });
 
 Route::group(['middleware' => ['dbCheck', 'AppAuth','apiLocalization']], function() {
+
+    Route::post('create-razorpay-details', 'Api\RazorpayGatewayController@razorpay_create_contact')->name('razorpay_connect');
+    Route::post('create-razorpay-add-funds', 'Api\RazorpayGatewayController@razorpay_add_funds_accounts')->name('razorpay_add_account');
+
+    
     Route::get('user', 'Api\AuthController@user');
     Route::post('agent/delete', 'Api\AuthController@deleteAgent');
     
@@ -123,13 +131,13 @@ Route::group(['middleware' => ['dbCheck', 'AppAuth','apiLocalization']], functio
 
     // All Payment gateways
     Route::get('payment/{gateway}', 'Api\PaymentOptionController@postPayment');
+
 });
 
 
 Route::group(['middleware' => 'dbCheck','prefix' => 'public'], function() {
     Route::post('task/create', 'Api\TaskController@CreateTask');
     Route::get('task/currentstatus', 'Api\TaskController@currentstatus');
-   
 });
 
 

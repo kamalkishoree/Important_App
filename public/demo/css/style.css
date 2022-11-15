@@ -6,9 +6,7 @@ Author Designation: Web Designer
 Framework Used: Bootstrap
 Organization: Code Brew Labs
 */
-<style>
 @import url('https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
-</style>
 
 * {
     padding: 0px;
@@ -70,9 +68,7 @@ header .navbar-light .navbar-nav .nav-link {
     font-size: 16px;
   letter-spacing: 0;
 }
-.header-setting {
-  /* margin-top: 65px; */
-}
+
 .left-sidebar .card {
   border: none;
   margin-bottom: 0px;
@@ -108,7 +104,7 @@ header .navbar-light .navbar-nav .nav-link {
 }
 .profile-image {
   border-radius: 50%;
-  border: border: 1.96px solid #FFFFFF;
+  border:1.96px solid #FFFFFF;
   box-shadow: 0 2px 4px 0 rgba(0,0,0,0.12);
 }
 .profile-status {
@@ -382,7 +378,7 @@ body.menuitem-active .task-block h6 {
   background-color: hsla(240, 100%, 50%, 0.5)!important;
 }
 .profile-circle.four{
-  background-color: rgba(165, 42, 42, 0.5), 0.527)!important;
+  background-color: rgba(165, 42, 42, 0.5), 0.527 !important;
 }
 .profile-circle.five{
   background-color: hsla(182, 100%, 50%, 0.5)!important;
@@ -439,3 +435,148 @@ body.menuitem-active .task-block h6 {
   border: none!important;
   }
 
+/*----------custom css----------*/
+body.dark .card-header.main_card .profile-circle {
+  font-size: 14px!important;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 0 4px;
+}
+body.dark .navbar-custom .topnav-menu .nav-link {
+  color: #fff;
+}
+body.dark .navbar-custom .btn.btn-blue.waves-effect span {
+  color: #fff;
+}
+body.dark .radio-primary input[type=radio]:checked + label::after {
+  background-color: #d5a44c;
+}
+/*------------black dashboard-------*/
+body.dark #teams_container .card-header {
+  padding: 0px !important;
+  border-radius: 10px;
+}
+body.dark #teams_container .card-header .profile-circle {
+  border-radius: 5px;
+}
+body.dark .card-header .col-md-3 {
+  border-right: 1px solid#f2f2f26b;
+}
+body.dark .offline {
+  display: block;
+  background: #d5a44c36;
+  text-align: center;
+  padding: 5px;
+  margin-top: 0;
+  color: #ffbf4d !important;
+  border-radius: 0 0 10px 10px;
+  font-weight: bold;
+}
+body.dark .online {
+  display: block;
+  background: #00800024;
+  text-align: center;
+  padding: 5px;
+  margin-top: 10px;
+  color: #2fcf2f !important;
+  font-weight: bold;
+}
+body.dark .newcheckit {
+  padding: 20px;
+}
+body.dark .agent_status {
+  display: block;
+  background: #00800054;
+  text-align: center;
+  padding: 5px;
+  margin-top: 0;
+  color: #fff !important;
+}
+body.dark .card-header >a:after {
+  right: 15px;
+}
+body.dark .card-header.main_card .newcheckit {
+  padding: 15px;
+}
+body.dark .left-sidebar #accordion .card-header {
+  transition: all 0.5s;
+  margin-left: 0 !important;
+  padding: 0;
+}
+body.dark .left-sidebar p {
+  margin-top: 10px;
+}
+body.dark .left-sidebar #accordion .card-header:hover, .left-sidebar #accordion .card-header:focus, .left-sidebar #accordion .card-header:visited {
+  background: #4a5058 !important;
+}
+body.dark .navbar-custom .topnav-menu .nav-link {
+  color: #fff;
+}
+ .collapse .profile-circle{
+  width:60px;
+  height:60px;
+}
+body.dark a.profile-block.collapsed {
+  padding: 12px 12px 0;
+}
+body.dark  span.profile-circle.pro-name {
+  width: 40px;
+  height: 40px;
+  line-height: 40px;
+}
+body.dark a.profile-block.pro-block{
+  padding: 12px;
+}
+body[data-sidebar-size=condensed] .left-side-menu .simplebar-mask, body[data-sidebar-size=condensed] .left-side-menu .simplebar-content-wrapper {
+  overflow: auto !important;
+}
+/*--------------white theme css ----------*/
+body.light .card-header .col-md-3 {
+    border-right: 1px solid#f2f2f26b;
+}
+body.light #teams_container .card-header .profile-circle {
+  border-radius: 5px;
+}
+body.light .left-sidebar p {
+  margin-top: 10px;
+}
+body.light .online {
+  display: block;
+  background: #00800024;
+  text-align: center;
+  padding: 5px;
+  margin-top: 10px;
+  color:#188118 !important;
+  font-weight: bold;
+}
+body.light .offline {
+  display: block;
+  background: #d5a44c36;
+  text-align: center;
+  padding: 5px;
+  margin-top: 0;
+  color: #ffbf4d !important;
+  border-radius: 0 0 10px 10px;
+  font-weight: bold;
+}
+body.light #teams_container .card-header {
+  border-radius: 10px;
+  padding:0;
+}
+body.light .newcheckit {
+  padding: 12px;
+}
+body.light div#teams_container .card-header >a:after {
+  right: 15px;
+}
+body.light a.profile-block.collapsed.pro-block {
+  padding: 12px;
+}
+body.light .collapse .profile-circle {
+  width: 40px;
+  height: 40px;
+}
+body.light a.profile-block.pro-block {
+  padding: 12px;
+}

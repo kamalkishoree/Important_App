@@ -14,6 +14,7 @@ use App\Jobs\UpdatePassword;
 use Auth;
 use Illuminate\Support\Facades\Storage;
 use DB;
+use Log;
 
 class ProfileController extends Controller
 {
@@ -117,6 +118,13 @@ class ProfileController extends Controller
             $faviconFileName = $path;
         }
 
+        if ($request->hasFile('admin_signin_image')) {
+           $file = $request->file('admin_signin_image');
+           $s3filePath = '/assets/adminSigninImage';
+            $path = Storage::disk('s3')->put($s3filePath, $file, 'public');
+            $adminSigninImageFileName = $path;
+        }
+
         $getDarkLogoFileName = $user->dark_logo;
         if ($request->hasFile('dark_logo')) {
             $file = $request->file('dark_logo');
@@ -135,6 +143,7 @@ class ProfileController extends Controller
             'timezone' => $request->timezone ? $request->timezone : null,
             'logo' => $getFileName,
             'dark_logo' => $getDarkLogoFileName,
+            'admin_signin_image' => $adminSigninImageFileName,
         ];
 
         //echo $request->timezone; die;
