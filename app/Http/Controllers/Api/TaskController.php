@@ -1357,7 +1357,7 @@ class TaskController extends BaseController
                 switch ($allocation->auto_assign_logic) {
                 case 'one_by_one':
                      //this is called when allocation type is one by one
-                    $this->finalRoster($geo, $notification_time, $agent_id, $orders->id, $customer, $pickup_location, $taskcount, $header, $allocation, $orders->is_cab_pooling);
+                    $this->finalRoster($geo, $notification_time, $agent_id, $orders->id, $customer, $pickup_location, $taskcount, $header, $allocation, $orders->is_cab_pooling, isset($request->order_agent_tag)?$request->order_agent_tag:'');
                     break;
                 case 'send_to_all':
                     //this is called when allocation type is send to all
@@ -1365,11 +1365,11 @@ class TaskController extends BaseController
                     break;
                 case 'round_robin':
                     //this is called when allocation type is round robin
-                    $this->roundRobin($geo, $notification_time, $agent_id, $orders->id, $customer, $pickup_location, $taskcount, $header, $allocation, $orders->is_cab_pooling);
+                    $this->roundRobin($geo, $notification_time, $agent_id, $orders->id, $customer, $pickup_location, $taskcount, $header, $allocation, $orders->is_cab_pooling, isset($request->order_agent_tag)?$request->order_agent_tag:'');
                     break;
                 default:
                    //this is called when allocation type is batch wise
-                    $this->batchWise($geo, $notification_time, $agent_id, $orders->id, $customer, $pickup_location, $taskcount, $header, $allocation, $orders->is_cab_pooling);
+                    $this->batchWise($geo, $notification_time, $agent_id, $orders->id, $customer, $pickup_location, $taskcount, $header, $allocation, $orders->is_cab_pooling, isset($request->order_agent_tag)?$request->order_agent_tag:'');
             }
             }
             $dispatch_traking_url = $client_url.'/order/tracking/'.$auth->code.'/'.$orders->unique_id;
@@ -1886,7 +1886,7 @@ class TaskController extends BaseController
         return $c;
     }
 
-    public function finalRoster($geo, $notification_time, $agent_id, $orders_id, $customer, $finalLocation, $taskcount, $header, $allocation)
+    public function finalRoster($geo, $notification_time, $agent_id, $orders_id, $customer, $finalLocation, $taskcount, $header, $allocation, $is_cab_pooling, $agent_tag = '')
     {
         $allcation_type = 'AR';
         $date = \Carbon\Carbon::today();
@@ -1951,16 +1951,7 @@ class TaskController extends BaseController
             $extra      = [];
             $remening   = [];
 
-            $geoagents_ids =  DriverGeo::where('geo_id', $geo)->pluck('driver_id');
-
-            $geoagents = Agent::whereIn('id',  $geoagents_ids)->with(['logs','order'=> function ($f) use ($date) {
-                $f->whereDate('order_time', $date)->with('task');
-            }]);
-            //get agent which are available for pooling if order is for cab pooling
-            if($is_cab_pooling == 1){
-                $geoagents->where('is_pooling_available', 1);
-            }
-            $geoagents = $geoagents->orderBy('id', 'DESC')->get()->where("agent_cash_at_hand", '<', $cash_at_hand);
+            $geoagents = $this->getGeoBasedAgentsData($geo, $is_cab_pooling, $agent_tag, $date, $cash_at_hand);
 
             $totalcount = $geoagents->count();
             $orders = order::where('driver_id', '!=', null)->whereDate('created_at', $date)->groupBy('driver_id')->get('driver_id');
@@ -2132,7 +2123,6 @@ class TaskController extends BaseController
         } else {
             
             $geoagents = $this->getGeoBasedAgentsData($geo, $is_cab_pooling, $agent_tag, $date, $cash_at_hand);
-            Log::info($geoagents);
             
             for ($i = 1; $i <= $try; $i++) {
                 foreach ($geoagents as $key =>  $geoitem) {
@@ -2169,7 +2159,7 @@ class TaskController extends BaseController
         }
     }
 
-    public function batchWise($geo, $notification_time, $agent_id, $orders_id, $customer, $finalLocation, $taskcount, $header, $allocation)
+    public function batchWise($geo, $notification_time, $agent_id, $orders_id, $customer, $finalLocation, $taskcount, $header, $allocation, $is_cab_pooling, $agent_tag = '')
     {
         $allcation_type    = 'AR';
         $date              = \Carbon\Carbon::today();
@@ -2227,17 +2217,9 @@ class TaskController extends BaseController
                 $this->dispatch(new RosterCreate($data, $extraData));
             }
         } else {
-            $geoagents_ids =  DriverGeo::where('geo_id', $geo)->pluck('driver_id');
-
-            $geoagents = Agent::whereIn('id',  $geoagents_ids)->with(['logs','order'=> function ($f) use ($date) {
-                $f->whereDate('order_time', $date)->with('task');
-            }]);
-            //get agent which are available for pooling if order is for cab pooling
-            if($is_cab_pooling == 1){
-                $geoagents->where('is_pooling_available', 1);
-            }
-            $geoagents = $geoagents->orderBy('id', 'DESC')->get()->where("agent_cash_at_hand", '<', $cash_at_hand)->toArray();
-
+            $geoagents = $this->getGeoBasedAgentsData($geo, $is_cab_pooling, $agent_tag, $date, $cash_at_hand);
+            
+            $geoagents = $geoagents->toArray();
             //this function is give me nearest drivers list accourding to the the task location.
 
             $distenseResult = $this->haversineGreatCircleDistance($geoagents, $finalLocation, $unit, $max_redius, $max_task);
@@ -2292,7 +2274,7 @@ class TaskController extends BaseController
 
 
 
-    public function roundRobin($geo, $notification_time, $agent_id, $orders_id, $customer, $finalLocation, $taskcount, $header, $allocation)
+    public function roundRobin($geo, $notification_time, $agent_id, $orders_id, $customer, $finalLocation, $taskcount, $header, $allocation, $is_cab_pooling, $agent_tag = '')
     {
         $allcation_type    = 'AR';
         $date              = \Carbon\Carbon::today();
@@ -2349,16 +2331,9 @@ class TaskController extends BaseController
                 $this->dispatch(new RosterCreate($data, $extraData));
             }
         } else {
-            $geoagents_ids =  DriverGeo::where('geo_id', $geo)->pluck('driver_id');
+            $geoagents = $this->getGeoBasedAgentsData($geo, $is_cab_pooling, $agent_tag, $date, $cash_at_hand);
 
-            $geoagents = Agent::whereIn('id',  $geoagents_ids)->with(['logs','order'=> function ($f) use ($date) {
-                $f->whereDate('order_time', $date)->with('task');
-            }]);
-            //get agent which are available for pooling if order is for cab pooling
-            if($is_cab_pooling == 1){
-                $geoagents->where('is_pooling_available', 1);
-            }
-            $geoagents = $geoagents->orderBy('id', 'DESC')->get()->where("agent_cash_at_hand", '<', $cash_at_hand)->toArray();
+            $geoagents = $geoagents->toArray();
 
             //this function give me the driver list accourding to who have liest task for the current date
 

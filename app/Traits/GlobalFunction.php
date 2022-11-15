@@ -78,8 +78,6 @@ trait GlobalFunction{
             }
 
             $geoagents_ids =  $geoagents_ids->pluck('driver_id');
-            Log::info($agent_tag);
-            Log::info($geoagents_ids);
 
             $geoagents = Agent::whereIn('id',  $geoagents_ids)->with(['logs','order'=> function ($f) use ($date) {
                 $f->whereDate('order_time', $date)->with('task');
