@@ -126,6 +126,7 @@ trait ChatTrait{
             ['form_params' => ($postdata)]
         );
         $response = json_decode($res->getBody(), true);
+        Log::info($response);
         return response()->json([ 'notiFY'=>$response , 'status' => 200, 'message' => __('sent!!!')]);
     }
 
