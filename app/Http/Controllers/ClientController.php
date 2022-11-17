@@ -95,6 +95,18 @@ class ClientController extends Controller
             return redirect()->back()->with('success', 'Preference updated successfully!');
         }
 
+        if($request->has('warehouse_mode')){
+            $warehouseMode['show_warehouse_module'] = (!empty($request->warehouse_mode['show_warehouse_module']) && $request->warehouse_mode['show_warehouse_module'] == 'on')? 1 : 0;
+
+            $warehouseMode['show_category_module'] = (!empty($request->warehouse_mode['show_category_module']) && $request->warehouse_mode['show_category_module'] == 'on')? 1 : 0;
+
+            $data = ['warehouse_mode'=>json_encode($warehouseMode)];
+            ClientPreference::where('client_id', $id)->update($data);
+            
+
+            return redirect()->back()->with('success', 'Preference updated successfully!');
+        }
+
         if(!empty($request->fcm_server_key)){
             $data = ['fcm_server_key'=>$request->fcm_server_key];
             ClientPreference::where('client_id', $id)->update($data);
