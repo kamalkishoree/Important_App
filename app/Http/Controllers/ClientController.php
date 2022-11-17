@@ -99,8 +99,10 @@ class ClientController extends Controller
             $warehouseMode['show_warehouse_module'] = (!empty($request->warehouse_mode['show_warehouse_module']) && $request->warehouse_mode['show_warehouse_module'] == 'on')? 1 : 0;
 
             $warehouseMode['show_category_module'] = (!empty($request->warehouse_mode['show_category_module']) && $request->warehouse_mode['show_category_module'] == 'on')? 1 : 0;
-
-            $data = ['warehouse_mode'=>json_encode($warehouseMode)];
+            $data = [];
+            if(checkColumnExists('client_preferences', 'warehouse_mode')){
+                $data = ['warehouse_mode'=>json_encode($warehouseMode)];
+            }
             ClientPreference::where('client_id', $id)->update($data);
             
 
@@ -448,13 +450,14 @@ class ClientController extends Controller
     {
         $preference  = ClientPreference::where('client_id', Auth::user()->code)->first();
         $customMode  = json_decode($preference->custom_mode);
+        $warehoseMode  = json_decode($preference->warehouse_mode);
         $client      = Auth::user();
         $subClients  = SubClient::all();
         $smtp        = SmtpDetail::where('id', 1)->first();
         $vehicleType = VehicleType::latest()->get();
         $agent_docs=DriverRegistrationDocument::get();
         $smsTypes = SmsProvider::where('status', '1')->get();
-        return view('configure')->with(['preference' => $preference, 'customMode' => $customMode, 'client' => $client,'subClients'=> $subClients,'smtp_details'=>$smtp, 'agent_docs' => $agent_docs,'smsTypes'=>$smsTypes,'vehicleType'=>$vehicleType]);
+        return view('configure')->with(['preference' => $preference, 'customMode' => $customMode, 'client' => $client,'subClients'=> $subClients,'smtp_details'=>$smtp, 'agent_docs' => $agent_docs,'smsTypes'=>$smsTypes,'vehicleType'=>$vehicleType, 'warehoseMode' => $warehoseMode]);
     }
 
 

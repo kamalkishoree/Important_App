@@ -913,8 +913,8 @@ $sms_crendential = json_decode($preference->sms_credentials);
                                 <label for="warehouse_check" class="mr-2 mb-0">{{__("Show warehouse module")}} <small class="d-block pr-5">{{__('It will show  warehouse module from panel.')}}</small></label>
                                 <div class="d-flex align-items-center justify-content-between mt-1 mb-2">
                                     <div class="custom-control custom-switch">
-                                            <input type="checkbox" class="custom-control-input" id="show_warehouse_module_{{ !empty($customMode->show_warehouse_module)? $customMode->show_warehouse_module : 0 }}" name="warehouse_mode[show_warehouse_module]" {{ (!empty($customMode->show_warehouse_module) && $customMode->show_warehouse_module == 1) ? 'checked' : '' }}>
-                                            <label class="custom-control-label" for="show_warehouse_module_{{ !empty($customMode->show_warehouse_module)? $customMode->show_warehouse_module : 0 }}"></label>
+                                            <input type="checkbox" class="custom-control-input" id="show_warehouse_module_{{ !empty($warehoseMode->show_warehouse_module)? $warehoseMode->show_warehouse_module : 0 }}" name="warehouse_mode[show_warehouse_module]" {{ (!empty($warehoseMode->show_warehouse_module) && $warehoseMode->show_warehouse_module == 1) ? 'checked' : '' }}>
+                                            <label class="custom-control-label" for="show_warehouse_module_{{ !empty($warehoseMode->show_warehouse_module)? $warehoseMode->show_warehouse_module : 0 }}"></label>
                                         </div>
                                     </div>
                                 </div>
@@ -925,8 +925,8 @@ $sms_crendential = json_decode($preference->sms_credentials);
                                 <label for="category_check" class="mr-2 mb-0">{{__("Show category module")}} <small class="d-block pr-5">{{__('It will show  category module from panel.')}}</small></label>
                                 <div class="d-flex align-items-center justify-content-between mt-1 mb-2">
                                     <div class="custom-control custom-switch">
-                                            <input type="checkbox" class="custom-control-input" id="show_category_module_{{ !empty($customMode->show_category_module)? $customMode->show_category_module : 0 }}" name="warehouse_mode[show_category_module]" {{ (!empty($customMode->show_category_module) && $customMode->show_category_module == 1) ? 'checked' : '' }}>
-                                            <label class="custom-control-label" for="show_category_module_{{ !empty($customMode->show_category_module)? $customMode->show_category_module : 0 }}"></label>
+                                            <input type="checkbox" class="custom-control-input" id="show_category_module_{{ !empty($warehoseMode->show_category_module)? $warehoseMode->show_category_module : 0 }}" name="warehouse_mode[show_category_module]" {{ (!empty($warehoseMode->show_category_module) && $warehoseMode->show_category_module == 1) ? 'checked' : '' }}>
+                                            <label class="custom-control-label" for="show_category_module_{{ !empty($warehoseMode->show_category_module)? $warehoseMode->show_category_module : 0 }}"></label>
                                         </div>
                                     </div>
                                 </div>
