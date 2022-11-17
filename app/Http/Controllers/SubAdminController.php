@@ -28,7 +28,12 @@ class SubAdminController extends Controller
     {
         $manager_type = $request->manager_type;
         $warehouseId = $request->warehouse;
-        $subadmins = Client::with('warehouse')->where('is_superadmin', 0)->where('id', '!=', Auth::user()->id);
+        $warehouse_mode = checkWarehouseMode();
+        if($warehouse_mode['show_warehouse_module'] == 1){
+            $subadmins = Client::with('warehouse')->where('is_superadmin', 0)->where('id', '!=', Auth::user()->id);
+        }else{
+            $subadmins = Client::where('is_superadmin', 0)->where('id', '!=', Auth::user()->id)->where('manager_type', 0);
+        }
         if(checkColumnExists('clients', 'manager_type')){
             if($manager_type != "all" && $manager_type != null){
                 $subadmins = $subadmins->where('manager_type', $manager_type);
