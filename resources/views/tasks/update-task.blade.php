@@ -368,8 +368,13 @@ $task_type_array = [__('Pickup'), __('Drop-Off'), __('Appointment')];
                                                                         </select>
                                                                     </div>
                                                                 </div>
-                                                                <h6 class="or-text text-center">OR</h6>
-                                                                <h6 class="choose_warehouse text-center text-primary" style="text-decoration: underline;cursor: pointer;">{{$choose_text}}</h6>
+                                                                @php
+                                                                    $warehouse_mode = checkWarehouseMode();
+                                                                @endphp
+                                                                @if($warehouse_mode['show_warehouse_module'] == 1)
+                                                                    <h6 class="or-text text-center">OR</h6>
+                                                                    <h6 class="choose_warehouse text-center text-primary" style="text-decoration: underline;cursor: pointer;">{{$choose_text}}</h6>
+                                                                @endif
                                                             </div>
 
                                                             <div class="alContactOther col-6">

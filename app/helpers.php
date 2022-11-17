@@ -243,3 +243,29 @@ if (!function_exists('checkTableExists')) {
     }
 
 }
+
+if (!function_exists('checkWarehouseMode')) {
+    /** check if column exits in table
+    * @param string $tableName
+    */
+    function checkWarehouseMode(){
+        $preference = checkColumnExists('client_preferences','warehouse_mode') ? ClientPreference::select('id', 'warehouse_mode')->first() :'';
+        $data = [
+            'show_warehouse_module' => 0,
+            'show_category_module' => 0
+        ];
+        if($preference){            
+            $warehouseMode = isset($preference->warehouse_mode) ? json_decode($preference->warehouse_mode) : '';
+        
+            if(!empty($warehouseMode->show_warehouse_module) && $warehouseMode->show_warehouse_module == 1){
+                $data['show_warehouse_module'] = 1; 
+            }
+            if(!empty($warehouseMode->show_category_module) && $warehouseMode->show_category_module == 1){
+                $data['show_category_module'] = 1; 
+            }            
+        }
+        return $data;
+    }
+
+}
+
