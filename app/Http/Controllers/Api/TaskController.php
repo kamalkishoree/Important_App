@@ -1033,7 +1033,10 @@ class TaskController extends BaseController
                 'vendor_id'                       => $request->vendor_id,
                 'order_vendor_id'                 => $request->order_vendor_id,
                 'dbname'                          => $request->dbname,
-                'sync_order_id'                   => $request->order_id
+                'sync_order_id'                   => $request->order_id,
+                'available_seats'                 => isset($request->available_seats)?$request->available_seats:0,
+                'no_seats_for_pooling'            => isset($request->no_seats_for_pooling)?$request->no_seats_for_pooling:0,
+                'is_cab_pooling'                  => isset($request->is_cab_pooling)?$request->is_cab_pooling:0,
             ];
            
             
@@ -1072,7 +1075,7 @@ class TaskController extends BaseController
             }
             $dispatch_traking_url = $client_url.'/order/tracking/'.$auth->code.'/'.$orders->unique_id;
 
-
+            
             $dep_id = null;
             $pickup_location = null;
 

@@ -23,15 +23,15 @@
                 "lengthChange" : true,
                 "searching": true,
                 language: {
-                            search: "",
-                            paginate: { previous: "<i class='mdi mdi-chevron-left'>", next: "<i class='mdi mdi-chevron-right'>" },
-                            searchPlaceholder: "{{__('Search Routes')}}",
-                            'loadingRecords': '&nbsp;',
-                            //'sProcessing': '<div class="spinner" style="top: 90% !important;"></div>'
-                            'sProcessing':function(){
-                                spinnerJS.showSpinner();
-                                spinnerJS.hideSpinner();
-                            }
+                    search: "",
+                    paginate: { previous: "<i class='mdi mdi-chevron-left'>", next: "<i class='mdi mdi-chevron-right'>" },
+                    searchPlaceholder: "{{__('Search Routes')}}",
+                    'loadingRecords': '&nbsp;',
+                    //'sProcessing': '<div class="spinner" style="top: 90% !important;"></div>'
+                    'sProcessing':function(){
+                        spinnerJS.showSpinner();
+                        spinnerJS.hideSpinner();
+                    }
                 },
                 drawCallback: function () {
                     $(".dataTables_paginate > .pagination").addClass("pagination-rounded");
@@ -51,6 +51,8 @@
                     data: function (d) {
                         d.search = $('input[type="search"]').val();
                         d.routesListingType = $('#routes-listing-status').val();
+                        d.warehouseListingType = $('#search_warehouse').val();
+                        d.warehouseManagerId = $('#warehouse_manager').val();
                         d.imgproxyurl = '{{$imgproxyurl}}';
                     }
                 },
@@ -130,7 +132,7 @@
                         var shortName = JSON.parse(full.short_name.replace(/&quot;/g,'"'));
                         var routes = '';
                         $.each(shortName, function(index, elem) {
-                            routes += '<div class="address_box"><span class="'+elem.pickupClass+'">'+elem.taskType+'</span> <span class="short_name">'+elem.shortName+'</span> <label data-toggle="tooltip" data-placement="bottom" title="'+elem.toolTipAddress+'">'+elem.address+'</label></div>';
+                            routes += '<div class="address_box sdsd"><span class="'+elem.pickupClass+'">'+elem.taskType+'</span> <span class="short_name">'+elem.shortName+'</span> <label data-toggle="tooltip" data-placement="bottom" title="'+elem.toolTipAddress+'">'+elem.address+'</label></div>';
                         });
                         return routes;
                     }},
@@ -212,8 +214,6 @@
                 $('.repet').remove();
                 var taskname = '';
                 $.each(data.task, function(index, elem) {
-
-
                     switch (elem.task_type_id) {
                         case 1:
                             taskname = 'Pickup task';
@@ -236,15 +236,11 @@
                         '</h5><div class="wd-10"><img class="vt-top" src="{{ asset('demo/images/ic_location_blue_1.png') }}"></div><div class="wd-90"><h6>' +
                         elem.location.address + '</h6><span>' +short_name+
                         '</span><h5 class="mb-1"><span></span></h5><div class="row"><div class="col-md-6"></div><div class="col-md-6 text-right"><button class="assigned-btn">' +
-                        data.status + '</button></div></div></div></div></div></div>');
-
-
+                        data.status + '</button></div></div></div></div></div></div>'
+                    );
                 });
-
                 $('#task-list-modal').modal('show');
-
             }
-
         });
     });
 
@@ -266,7 +262,6 @@
                 _token: CSRF_TOKEN,
             },
             success: function(data) {
-
                 $("#base_distance").text(round(data.base_distance));
                 $("#actual_distance").text(data.actual_distance);
                 $("#billing_distance").text(Math.max(0, round(data.actual_distance - data.base_distance, 2)));
@@ -296,9 +291,7 @@
                 $("#freelancer_commission_percentage").text(data.freelancer_commission_percentage);
                 $("#freelancer_commission_fixed").text(data.freelancer_commission_fixed);
                 $('#task-accounting-modal').modal('show');
-
             }
-
         });
     });
 
