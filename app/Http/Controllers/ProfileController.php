@@ -117,13 +117,7 @@ class ProfileController extends Controller
             $path = Storage::disk('s3')->put($s3filePath, $file, 'public');
             $faviconFileName = $path;
         }
-
-        if ($request->hasFile('admin_signin_image')) {
-           $file = $request->file('admin_signin_image');
-           $s3filePath = '/assets/adminSigninImage';
-            $path = Storage::disk('s3')->put($s3filePath, $file, 'public');
-            $adminSigninImageFileName = $path;
-        }
+       
 
         $getDarkLogoFileName = $user->dark_logo;
         if ($request->hasFile('dark_logo')) {
@@ -143,9 +137,15 @@ class ProfileController extends Controller
             'timezone' => $request->timezone ? $request->timezone : null,
             'logo' => $getFileName,
             'dark_logo' => $getDarkLogoFileName,
-            'admin_signin_image' => $adminSigninImageFileName,
+          //  'admin_signin_image' => $adminSigninImageFileName,
         ];
-
+       
+        if ($request->hasFile('admin_signin_image')) {
+           $file = $request->file('admin_signin_image');
+           $s3filePath = '/assets/adminSigninImage';
+            $path = Storage::disk('s3')->put($s3filePath, $file, 'public');
+            $alldata['admin_signin_image'] = $path;
+        }
         //echo $request->timezone; die;
         if($user->is_superadmin == 1){
             $client = Client::where('code', $id)->where('id', $user->id)->update($alldata);
