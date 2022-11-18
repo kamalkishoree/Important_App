@@ -411,7 +411,7 @@ class ActivityController extends BaseController
             $driverearning = 0;
             $previousorder = 0;
             foreach($tasks as $task){
-                if(!empty($task->order->driver_cost) && ($previousorder != $task->order_id) && $task->order->status !='cancelled'){
+                if(!empty($task->order->driver_cost) && ($previousorder != $task->order_id) && $task->order->status !='cancelled' && $task->order->status !='failed'){
                     $driverearning += $task->order->driver_cost;
                     $previousorder = $task->order_id;
                 }

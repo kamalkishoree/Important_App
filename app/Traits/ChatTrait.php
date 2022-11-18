@@ -109,9 +109,9 @@ trait ChatTrait{
         if($Order){
             $call_back_url = $Order->call_back_url;   
         }
-        $OrderDomain = explode('/', $call_back_url);
-        if(is_array($OrderDomain)){
-            $order_back_url ='http://'.$OrderDomain['2'].'/sendNotificationToUserByDispatcher';
+        $serverUrl = parse_url($call_back_url);
+        if(is_array($serverUrl)){
+            $order_back_url = $serverUrl['scheme'].'://'.$serverUrl['host'].'/sendNotificationToUserByDispatcher';
         }
         $client = new GClient([
             'headers' => [
