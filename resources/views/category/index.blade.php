@@ -87,11 +87,11 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                 @endif
                             </div>
                             @if (\Session::has('success'))
-                                <div class="alert alert-success">
+                                <div class="alert alert-success @if(@$order_panel->sync_status && $order_panel->sync_status == 1) 'syncProcessing' @endif">
                                     <span>{!! \Session::get('success') !!}</span>
                                 </div>
                             @elseif(@$order_panel->sync_status && $order_panel->sync_status == 1) <!--processing-->
-                                <div class="alert alert-success">
+                                <div class="alert alert-success syncProcessing">
                                     <span>{{__('Category & Product Import Is Processing.')}}</span>
                                 </div>
                             @endif
@@ -150,17 +150,4 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
     <script src="{{asset('assets/js/storeAgent.js')}}"></script>
     <script src="{{ asset('assets/libs/datatables/datatables.min.js') }}"></script>
     @include('category.category-script')  
-    <script>
-        var sync_status = '{{$order_panel->sync_status ?? 0}}';
-        if(sync_status == 1){
-            setTimeout(function() {
-                location.reload();
-            }, 2000);
-        }
-        if(sync_status == 2){
-            setTimeout(function() {
-                $('#syncCompleted').hide();
-            }, 5000);
-        }    
-    </script>
 @endsection

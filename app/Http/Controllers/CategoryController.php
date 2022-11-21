@@ -22,22 +22,22 @@ class CategoryController extends Controller
         $category = [];
         $product_category = [];
         $sku_url = '';
-        $db_name = $request->input('db_name');
+        $order_panel_id = $request->input('order_panel_id');
         $order_panel = [];
-        if(@$db_name && $db_name!='all'){
-            $order_panel = OrderPanelDetail::find($db_name);
+        if(@$order_panel_id && $order_panel_id!='null'){
+            $order_panel = OrderPanelDetail::find($order_panel_id);
             if($order_panel->sync_status == 2){
-                $orderpanel = OrderPanelDetail::find($db_name);
+                $orderpanel = OrderPanelDetail::find($order_panel_id);
                 $orderpanel->sync_status = 0;
                 $orderpanel->save();
             }
         }
-        
+    
         if(checkTableExists('categories')){
             $category = Category::with('products')->orderBy('id', 'DESC')->paginate(10);
             if(checkColumnExists('categories', 'order_panel_id')){
-                if($db_name != "all" && $db_name != null){
-                    $category = Category::with('products')->where('order_panel_id', $db_name)->orderBy('id', 'DESC')->paginate(10);
+                if($order_panel_id != "all" && $order_panel_id != null){
+                    $category = Category::with('products')->where('order_panel_id', $order_panel_id)->orderBy('id', 'DESC')->paginate(10);
                 }
             }
             // dd($category);
@@ -123,6 +123,9 @@ class CategoryController extends Controller
         $order_panel_id =  $request->order_panel_id;
         if($order_panel_id != 'all'){
             $order_details = OrderPanelDetail::find($order_panel_id);
+            $order_details->sync_status = 0;
+            $order_details->save();
+            $order_details = OrderPanelDetail::find($order_panel_id);
             $url = $order_details->url;
 
             // URL
@@ -144,7 +147,7 @@ class CategoryController extends Controller
     
             // $statusCode = $response->status();
             $checkAuth = json_decode($response->getBody(), true);
-            // dd($checkAuth);
+            
             if( @$checkAuth['status'] == 200){
                 $apiRequestURL = $url.'/api/v1/category-product-sync-dispatcher';
             
@@ -160,6 +163,8 @@ class CategoryController extends Controller
                     $order_details->save();
                     // dd($responseBody);
                     // $this->importOrderSideCategory($responseBody['data']);
+                }elseif( @$responseBody['error'] && !empty($responseBody['error'])){
+                    return redirect()->back()->with('error', $responseBody['error']);
                 }
              } elseif( @$checkAuth['status'] == 401){
                 return redirect()->back()->with('error', $checkAuth['message']);
@@ -168,7 +173,7 @@ class CategoryController extends Controller
             }
             return redirect()->back()->with('success', 'Category & Product Import Is Processing.');
         }else{
-            return redirect()->back()->with('error', 'Please select order panel.');
+            return redirect()->back()->with('error', 'Please select order panel DB.');
         } 
     }
 

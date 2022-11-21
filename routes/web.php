@@ -265,6 +265,7 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 			Route::resource('amenities', 'AmenitiesController');
 			Route::resource('category', 'CategoryController');
 			Route::resource('product', 'ProductController');
+			Route::POST('check-sync-status', 'orderPanelController@checkSyncStatus');
 
 			// Route::get('cat-product/{$id}', 'ProductController@showProduct')->name('showProduct');
 
