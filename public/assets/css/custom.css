@@ -3094,4 +3094,11 @@ body.light .card.main-table-card div#pricing-datatable_length label:after {
     .content-page.main_outter_box .col-lg-5 {
         margin-bottom: 20px;
     }
+    div#edit-customer-modal .iti {
+        width: 100%;
+    }
+    .del-add-card {
+        position: absolute;
+        right: -134px;
+    }   
 }
