@@ -30,7 +30,7 @@
         <!-- Start Page Content here -->
         <!-- ============================================================== -->
 
-        <div class="content-page">                                    
+        <div class="content-page main_outter_box">                                    
             <div class="content">
                 @php 
                     $style = "";
