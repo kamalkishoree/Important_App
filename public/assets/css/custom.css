@@ -3101,4 +3101,7 @@ body.light .card.main-table-card div#pricing-datatable_length label:after {
         position: absolute;
         right: -134px;
     }   
+    body.dark.iti-mobile.sidebar-enable ul.list-unstyled.topnav-menu.float-right.mb-0.d-flex.align-items-center {
+        margin: 0;
+    }
 }
