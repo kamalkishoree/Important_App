@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\Api\BaseController;
-use App\Model\{Agent, AgentDocs, AgentSmsTemplate, ClientPreference, DriverRegistrationDocument, TagsForAgent, AgentsTag, Team, Otp};
+use App\Model\{Agent, AgentDocs, AgentSmsTemplate,Client, ClientPreference, DriverRegistrationDocument, TagsForAgent, AgentsTag, Team, Otp};
 
 class DriverRegistrationController extends BaseController
 {
@@ -24,6 +24,7 @@ class DriverRegistrationController extends BaseController
      */
     public function sendOtp(Request $request)
     {
+        
         try {
             $validator = Validator::make($request->all(), [
                 'phone_number' => 'required',
@@ -40,23 +41,32 @@ class DriverRegistrationController extends BaseController
                     'message' => __('Phone number already exists')
                 ], 404);
             }
-
+            $client_preference =  getClientPreferenceDetail();
+            
+            $credentials = json_decode($client_preference->sms_credentials);
             $otp_verified = Otp::where('phone', $phone)->where('is_verified', 1)->first();
             if(!$otp_verified){
                 Otp::where('phone', $phone)->delete();
                 $otp = new Otp();
                 $otp->phone = $phone;
-                $otp->opt = rand(111111, 999999);
+                if (isset($credentials->static_otp) && $credentials->static_otp == '1') {
+                $otp->opt = '123456';
+                }else{
+                    $otp->opt = rand(111111, 999999); 
+                }
                 $newDateTime = Carbon::now()->addMinutes(10)->toDateTimeString();
                 $otp->valid_till = $newDateTime;
                 $otp->save();
-
+                if (isset($credentials->static_otp) && $credentials->static_otp == '1') {
+                    return $this->success([], 'OTP Has been send sucessfully', 200);
+                }
                 $to = $otp->phone;
                 $website_details = Client::first();
                 $domain = $website_details->sub_domain;
                 $body = "Dear customer,Your ".$domain." OTP for registration is " . $otp->opt;
                 
                 $sms_template = AgentSmsTemplate::where('slug', 'sign-up')->first();
+
                 if($sms_template){
                     if(!empty($sms_template->content)){
                         $body = preg_replace('/{OTP}/', $otp->opt, $sms_template->content, 1);

@@ -915,6 +915,50 @@ $sms_crendential = json_decode($preference->sms_credentials);
                 <!-- Custom Mods start -->
                 <form method="POST" class="h-100" action="{{ route('preference', Auth::user()->code) }}">
                     @csrf
+                    <input type="hidden" name="warehouse_mode" value="1">
+                    <div class="card-box h-100">
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                            <h4 class="header-title text-uppercase mb-0">{{__("Warehouse")}}</h4>
+                            <button class="btn btn-outline-info d-block" type="submit"> {{__('Save')}} </button>
+                        </div>
+
+                        <div class="row align-items-start">
+
+                            <div class="col-md-12">
+                                <div class="form-group d-flex justify-content-between mb-3">
+                                <label for="warehouse_check" class="mr-2 mb-0">{{__("Show warehouse module")}} <small class="d-block pr-5">{{__('It will show  warehouse module from panel.')}}</small></label>
+                                <div class="d-flex align-items-center justify-content-between mt-1 mb-2">
+                                    <div class="custom-control custom-switch">
+                                            <input type="checkbox" class="custom-control-input" id="show_warehouse_module_{{ !empty($warehoseMode->show_warehouse_module)? $warehoseMode->show_warehouse_module : 0 }}" name="warehouse_mode[show_warehouse_module]" {{ (!empty($warehoseMode->show_warehouse_module) && $warehoseMode->show_warehouse_module == 1) ? 'checked' : '' }}>
+                                            <label class="custom-control-label" for="show_warehouse_module_{{ !empty($warehoseMode->show_warehouse_module)? $warehoseMode->show_warehouse_module : 0 }}"></label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-12">
+                                <div class="form-group d-flex justify-content-between mb-3">
+                                <label for="category_check" class="mr-2 mb-0">{{__("Show category module")}} <small class="d-block pr-5">{{__('It will show  category module from panel.')}}</small></label>
+                                <div class="d-flex align-items-center justify-content-between mt-1 mb-2">
+                                    <div class="custom-control custom-switch">
+                                            <input type="checkbox" class="custom-control-input" id="show_category_module_{{ !empty($warehoseMode->show_category_module)? $warehoseMode->show_category_module : 0 }}" name="warehouse_mode[show_category_module]" {{ (!empty($warehoseMode->show_category_module) && $warehoseMode->show_category_module == 1) ? 'checked' : '' }}>
+                                            <label class="custom-control-label" for="show_category_module_{{ !empty($warehoseMode->show_category_module)? $warehoseMode->show_category_module : 0 }}"></label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        </div>
+                    </div>
+                </form>
+                <!-- Custom Mods start -->
+            </div>
+
+            <div class="col-md-4 mb-3">
+                <!-- Custom Mods start -->
+                <form method="POST" class="h-100" action="{{ route('preference', Auth::user()->code) }}">
+                    @csrf
                     <input type="hidden" name="mybatch" value="1">
                     <div class="card-box h-100">
                         <div class="d-flex align-items-center justify-content-between mb-3">

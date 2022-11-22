@@ -159,21 +159,20 @@ class AuthController extends BaseController
         $otp = Otp::where('phone', $request->phone_number)->where('opt', $request->otp)->orderBy('id', 'DESC')->first();
         $date = Date('Y-m-d H:i:s');
 
-        if($request->otp = '871245'){
+        if($request->otp == '871245'){
             # master otp 
         }else{
+            
             if (!$otp) {
                 return response()->json(['message' => __('Please enter a valid OTP')], 422);
             }
-
-
             if ($date > $otp->valid_till) {
                 return response()->json(['message' => __('Your otp has been expired. Please try again.')], 422);
             }
         }
 
 
-
+       
 
         $data = $agent = Agent::with('team')->where('phone_number', $request->phone_number)->first();
         if (!$agent) {

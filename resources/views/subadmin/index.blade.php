@@ -42,31 +42,36 @@
                             </div>
                         @endif
                     </div>
+                    @php
+                        $warehouse_mode = checkWarehouseMode();
+                    @endphp
                     <div class="row mb-2">
                         <div class="col-sm-8">
-                            <div class="col-sm-12">
-                                <form method="get" id="search_manager" class="form-inline">
-                                    <div class="form-group">
-                                        <label for="manager_type">Manager Type</label>&nbsp;&nbsp;&nbsp;
-                                        {{-- @dd(app('request')->input('manager_type')) --}}
-                                        <select name="manager_type" id="manager_type" class="form-control" onchange="submitForm();">
-                                            <option value="" @if (app('request')->input('manager_type') == "") {{'selected="selected"'}} @endif>All</option>
-                                            <option value="0" @if (app('request')->input('manager_type') != null && app('request')->input('manager_type') == 0) {{'selected="selected"'}} @endif>Manager</option>
-                                            <option value="1" @if (app('request')->input('manager_type') == 1) {{'selected="selected"'}} @endif>Warehouse Manager</option>
-                                        </select>
-                                    </div>&nbsp;&nbsp;&nbsp;
-                                    <div class="form-group">
-                                        <label for="warehouse">Warehouse</label>&nbsp;&nbsp;&nbsp;
-                                        {{-- @dd(app('request')->input('manager_type')) --}}
-                                        <select name="warehouse" id="warehouse" class="form-control" onchange="submitForm();">
-                                            <option value="" @if (app('request')->input('warehouse') == "") {{'selected="selected"'}} @endif>All</option>
-                                            @foreach ($warehouses as $warehouse)
-                                                <option value="{{$warehouse->id}}" @if (app('request')->input('warehouse') == $warehouse->id) {{'selected="selected"'}} @endif>{{$warehouse->name}}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </form>
-                            </div>
+                            @if($warehouse_mode['show_warehouse_module'] == 1)
+                                <div class="col-sm-12">
+                                    <form method="get" id="search_manager" class="form-inline">
+                                        <div class="form-group">
+                                            <label for="manager_type">Manager Type</label>&nbsp;&nbsp;&nbsp;
+                                            {{-- @dd(app('request')->input('manager_type')) --}}
+                                            <select name="manager_type" id="manager_type" class="form-control" onchange="submitForm();">
+                                                <option value="" @if (app('request')->input('manager_type') == "") {{'selected="selected"'}} @endif>All</option>
+                                                <option value="0" @if (app('request')->input('manager_type') != null && app('request')->input('manager_type') == 0) {{'selected="selected"'}} @endif>Manager</option>
+                                                <option value="1" @if (app('request')->input('manager_type') == 1) {{'selected="selected"'}} @endif>Warehouse Manager</option>
+                                            </select>
+                                        </div>&nbsp;&nbsp;&nbsp;
+                                        <div class="form-group">
+                                            <label for="warehouse">Warehouse</label>&nbsp;&nbsp;&nbsp;
+                                            {{-- @dd(app('request')->input('manager_type')) --}}
+                                            <select name="warehouse" id="warehouse" class="form-control" onchange="submitForm();">
+                                                <option value="" @if (app('request')->input('warehouse') == "") {{'selected="selected"'}} @endif>All</option>
+                                                @foreach ($warehouses as $warehouse)
+                                                    <option value="{{$warehouse->id}}" @if (app('request')->input('warehouse') == $warehouse->id) {{'selected="selected"'}} @endif>{{$warehouse->name}}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </form>
+                                </div>
+                            @endif
                         </div>
                         <div class="col-sm-4 text-right btn-auto">
                             <a class="btn btn-blue waves-effect waves-light text-sm-right"
@@ -82,8 +87,10 @@
                                     <th>{{__("Name")}}</th>
                                     <th>{{__('Email')}}</th>
                                     <th>{{__("Phone")}}</th>
-                                    <th>{{__("Manager Type")}}</th>
-                                    <th>{{__("Warehouses")}}</th>
+                                    @if($warehouse_mode['show_warehouse_module'] == 1)
+                                        <th>{{__("Manager Type")}}</th>
+                                        <th>{{__("Warehouses")}}</th>
+                                    @endif
                                     <th>{{__("Status")}}</th> 
                                     <th>{{__("Action")}}</th>
                                 </tr>
@@ -101,23 +108,25 @@
                                         <td>
                                             @if(!empty($singleuser->dial_code)) +{{ $singleuser->dial_code }} @endif {{ $singleuser->phone_number }}
                                         </td>
-                                        <td>
-                                            @if($singleuser->manager_type == 1)
-                                                {{ ('Warehouse Manager') }}
-                                            @else
-                                                {{ ('Manager') }}
-                                            @endif
-                                        </td>
-                                        <td>
-                                            @php
-                                                $warehouses = implode(',', $singleuser->warehouse->pluck('name')->toArray());
-                                            @endphp
-                                            @if(empty($warehouses))
-                                                {{ ('-') }}
-                                            @else
-                                                {{ $warehouses }}
-                                            @endif
-                                        </td>
+                                        @if($warehouse_mode['show_warehouse_module'] == 1)
+                                            <td>
+                                                @if($singleuser->manager_type == 1)
+                                                    {{ ('Warehouse Manager') }}
+                                                @else
+                                                    {{ ('Manager') }}
+                                                @endif
+                                            </td>
+                                            <td>
+                                                @php
+                                                    $warehouses = implode(',', $singleuser->warehouse->pluck('name')->toArray());
+                                                @endphp
+                                                @if(empty($warehouses))
+                                                    {{ ('-') }}
+                                                @else
+                                                    {{ $warehouses }}
+                                                @endif
+                                            </td>
+                                        @endif
                                         <td>
                                             {{ ($singleuser->status==1)?__("Active"):__("Inactive") }}
                                         </td>                                    

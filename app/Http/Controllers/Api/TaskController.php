@@ -239,9 +239,11 @@ class TaskController extends BaseController
 
 
         } elseif ($request->task_status == 5) {
-            if ($checkfailed == 1) {
+            //cancel complete order if driver cancel pickup task
+            //if ($checkfailed == 1) {
                 $Order  = Order::where('id', $orderId->order_id)->update(['status' => $task_type ]);
-            }
+                $task = Task::where('order_id', $orderId->order_id)->update(['task_status' => $request->task_status,'note' => $note ]);
+            //}
         } else {
             $Order  = Order::where('id', $orderId->order_id)->update(['status' => $task_type, 'note' => $note]);
             if($order_details && $order_details->call_back_url){
