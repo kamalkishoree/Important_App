@@ -17,6 +17,8 @@ trait TollFee{
      *
      * @return void
      */
+
+    // function to get toll fee from given origin and destinations
     public function toll_fee($latitude = array(), $longitude = array(), $toll_passes = 'IN_FASTAG', $VehicleEmissionType = 'GASOLINE', $travelMode = 'TAXI')
     {
         $ClientPreference = ClientPreference::where('id', 1)->first();
@@ -80,10 +82,10 @@ trait TollFee{
                     "vehicle_info" => [
                         "emission_type" => $VehicleEmissionType
                     ],
-                    "toll_passes" => [$toll_passes]
+                    "toll_passes" => $toll_passes
                 ]
             ];
-        
+
             $ch = curl_init();
 
             curl_setopt($ch, CURLOPT_URL, $url);
@@ -95,7 +97,7 @@ trait TollFee{
             
             $apiResponse = curl_exec($ch);
             
-            curl_close($ch);Log::info($apiResponse);
+            curl_close($ch);
             $apiResponse = json_decode($apiResponse);
 
             $toll_array = array();
