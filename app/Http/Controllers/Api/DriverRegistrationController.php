@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\Api\BaseController;
-use App\Model\{Agent, AgentDocs, AgentSmsTemplate, ClientPreference, DriverRegistrationDocument, TagsForAgent, AgentsTag, Team, Otp};
+use App\Model\{Agent, AgentDocs, AgentSmsTemplate, ClientPreference, DriverRegistrationDocument, TagsForAgent, AgentsTag, Team, Otp,client};
 
 class DriverRegistrationController extends BaseController
 {
