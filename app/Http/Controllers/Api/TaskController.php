@@ -2944,26 +2944,26 @@ class TaskController extends BaseController
                     $q->whereDate('created_at', date('Y-m-d'));
                 }, 'task.location'])
                 ->whereDate('created_at', date('Y-m-d'))->where('driver_id', Auth::id())->latest()->first();
-            
+               
             // If Anything is empty then return error message
-            if( ! (!empty($order) && !empty($order->task) && !empty($order->task[0]) && !empty($order->task[0]->location)) ) 
-            {
-                return response()->json([
-                    'message' => 'Location is not available'
-                ], 400);
-            }
+            // if( ! (!empty($order) && !empty($order->task) && !empty($order->task[0]) && !empty($order->task[0]->location)) ) 
+            // {
+            //     return response()->json([
+            //         'message' => 'Location is not available'
+            //     ], 400);
+            // }
 
-            $customer = $order->task[0]->location;
+            // $customer = $order->task[0]->location;
             
             // todo find customer on the basis of email
             // $customer = $this->cutomer->getUserByEmail('7018451175@bharatmove.in');
             
             // set these variables
-            $request->customer_name             = $customer->short_name ?? '';
-            $request->customer_phone_number     = $customer->phone_number ?? '';
-            $request->customer_email            = $customer->email ?? '';
-            $request->recipient_phone           = $customer->phone_number ?? '';
-            $request->recipient_email           = $customer->email ?? '';
+            // $request->customer_name             = $customer->short_name ?? '';
+            // $request->customer_phone_number     = $customer->phone_number ?? '';
+            // $request->customer_email            = $customer->email ?? '';
+            // $request->recipient_phone           = $customer->phone_number ?? '';
+            // $request->recipient_email           = $customer->email ?? '';
             // end
 
             $request->task_description          = "Return to warehouse";
@@ -3090,6 +3090,7 @@ class TaskController extends BaseController
             Log::info('order no royo_order_number'.$request->royo_order_number);
 
             $order = [
+                'order_number'                    => $request->order_number ?? null,
             'customer_id'                     => $cus_id,
             'recipient_phone'                 => $request->recipient_phone,
             'Recipient_email'                 => $request->recipient_email,
