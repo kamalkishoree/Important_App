@@ -898,7 +898,6 @@ class TaskController extends BaseController
 
     public function CreateTask(CreateTaskRequest $request)
     {
-    
         try {
             $auth =  $client =  Client::with(['getAllocation', 'getPreference'])->first();
             $header = $request->header();
@@ -907,7 +906,6 @@ class TaskController extends BaseController
 
             }
             else{
-               // $client =  Client::with(['getAllocation', 'getPreference'])->first();
                $header['client'][0] = $client->database_name;
             }
            
@@ -1322,7 +1320,6 @@ class TaskController extends BaseController
                     ->addMinutes($finaldelay)
                     ->format('Y-m-d H:i:s');
                     $schduledata['geo']               = $geo;
-                    //$schduledata['notification_time'] = $time;
                     $schduledata['notification_time'] = $notification_time;
                     $schduledata['agent_id']          = $agent_id;
                     $schduledata['orders_id']         = $orders->id;
@@ -1356,6 +1353,19 @@ class TaskController extends BaseController
             
             if ($request->allocation_type === 'a' || $request->allocation_type === 'm') {
                 $allocation = AllocationRule::where('id', 1)->first();
+                $inputdata = [
+                    'geo' => $geo,
+                    'notification_time' => $notification_time,
+                    'agent_id' => $agent_id,
+                    'orders_id' => $orders->id,
+                    'customer' => $customer,
+                    'finalLocation' => $pickup_location,
+                    'taskcount' => $taskcount,
+                    'header' => $header,
+                    'allocation' => $allocation,
+                    'is_cab_pooling' => $orders->is_cab_pooling,
+                    'agent_tag' => isset($request->order_agent_tag)?$request->order_agent_tag:'',
+                ];
                 switch ($allocation->auto_assign_logic) {
                 case 'one_by_one':
                      //this is called when allocation type is one by one
@@ -2896,16 +2906,6 @@ class TaskController extends BaseController
                 'message' => $e->getMessage()
             ]);
         }
-    }
-
-
-    public function poolingTasksSuggessions(Request $request)
-    {
-        $suggessions = array();
-        $orders = Order::with(['customer', 'task'])->where('status', '=', 'unassigned')->where('is_cab_pooling', 1)->get();
-        foreach($orders as $order):
-
-        endforeach;
     }
 
 }

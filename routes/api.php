@@ -113,7 +113,7 @@ Route::group(['middleware' => ['dbCheck', 'AppAuth','apiLocalization']], functio
     Route::post('chat/userAgentChatRoom',      'Api\ChatController@userAgentChatRoom');
     Route::post('chat/sendNotification',      'Api\ChatController@sendNotificationToUser');
 
-    Route::get('poolingTaskSuggession', 'Api\TaskController@poolingTasksSuggessions');                    // api for task list
+    Route::get('agent/poolingTaskSuggession', 'Api\ActivityController@poolingTasksSuggessions');                    // api for task list suggession for cab pooling
     //Route::post('chat/userAgentChatRoom',      'Api\ChatController@startChat');
     
     // Order routes

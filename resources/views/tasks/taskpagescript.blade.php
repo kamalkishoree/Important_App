@@ -279,6 +279,13 @@
                 $("#distance_fee").text(data.distance_fee + ' (' + data.distance_type + ')');
                 $("#driver_type").text(data.driver_type);
 
+                if(data.is_cab_pooling == 1){
+                    $("#no_of_seats").text(data.available_seats+"/"+data.no_seats_for_pooling);
+                    $("#seatsspan_acc").show();
+                }else{
+                    $("#seatsspan_acc").hide();
+                }
+                
                 $("#toll_fee").text(data.toll_fee);
                 $("#order_cost").text(data.order_cost);
                 $("#driver_cost").text(data.driver_cost ? data.driver_cost : 0.00 );

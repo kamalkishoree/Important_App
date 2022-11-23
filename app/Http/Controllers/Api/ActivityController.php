@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use App\Model\{Agent, AgentLog, AllocationRule, Client, ClientPreference, Cms, Order, Task, TaskProof, Timezone, User, PaymentOption};
 use Validation;
-use DB;
+use DB, Log;
 use Illuminate\Support\Facades\Storage;
 use App\Model\Roster;
 use Config;
@@ -450,5 +450,67 @@ class ActivityController extends BaseController
             'status' => 200,
             'message' => __('success')
         ], 200);
+    }
+
+    public function poolingTasksSuggessions(Request $request)
+    {
+        try{
+            $TaskController = new TaskController();
+            $suggessions = [];
+            $agentdata = Agent::with(['agentlog'])->where('id', Auth::user()->id)->first();
+            $assignedorder = Order::with(['customer', 'task.location'])->where('status', '=', 'assigned')->where('driver_id', $agentdata->id)->where('is_cab_pooling', 1)->first();
+            $origin_latitude = $origin_longitude = $destination_latitude = $destination_longitude = array();
+            $origin_latitude[0]  = $agentdata->agentlog->lat;
+            $origin_longitude[0] = $agentdata->agentlog->long;
+            if(!empty($assignedorder)):
+                $k = 0;
+                foreach($assignedorder->task as $task):
+                    if($k>0):
+                        $destination_latitude[0]  = $task->location->latitude;
+                        $destination_longitude[0] = $task->location->longitude;
+                    endif;
+                    $k++;
+                endforeach;
+                $orders = Order::with(['customer', 'task.location'])->where('status', '=', 'unassigned')->where('is_cab_pooling', 1)->get();
+                foreach($orders as $order):
+                    $m = 0;
+                    foreach($order->task as $task):
+                        if($m == 0)://dd($task->location);
+                            $origin_latitude[1]  = $task->location->latitude;
+                            $origin_longitude[1] = $task->location->longitude;
+                        else:
+                            $destination_latitude[1]  = $task->location->latitude;
+                            $destination_longitude[1] = $task->location->longitude;
+                        endif;
+                        $m++;
+                    endforeach;
+                    //Log::info($origin_latitude);
+                    //Log::info($origin_longitude);
+                    $pickupdistancedata = $TaskController->GoogleDistanceMatrix($origin_latitude, $origin_longitude);
+                    $dropoffdistancedata = $TaskController->GoogleDistanceMatrix($destination_latitude, $destination_longitude);
+                    if($pickupdistancedata['distance'] < 3 && $dropoffdistancedata['distance'] < 3):
+                        $order->distance_from_driver  = $pickupdistancedata['distance'];
+                        $order->distance_from_dropoff = $dropoffdistancedata['distance'];
+                        $suggessions[] = $order;
+                    endif;
+                endforeach;
+            else:
+                $suggessions = Order::with(['customer', 'task.location'])->where('status', '=', 'unassigned')->where('is_cab_pooling', 1)->get();
+            endif;
+
+            return response()->json([
+                'data' => array('order_suggession' => $suggessions),
+                'status' => 200,
+                'message' => __('success')
+            ], 200);
+        }
+        catch(Exception $e){
+            \Log::info($e->getMessage());
+            return response()->json([
+                'data' => [],
+                'status' => $e->getCode(),
+                'message' => $e->getMessage()
+            ]);
+        }
     }
 }
