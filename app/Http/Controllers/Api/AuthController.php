@@ -85,19 +85,21 @@ class AuthController extends BaseController
 
         $website_details = Client::first();
         $domain = $website_details->sub_domain;
-        $sms_body = __("Your" . $domain . " Dispatcher verification code is") . ": " . $data['otp'] . "." . ((!empty($request->app_hash_key)) ? " " . $request->app_hash_key : '');
+        //$sms_body = __("Your" . $domain . " Dispatcher verification code is") . ": " . $data['otp'] . "." . ((!empty($request->app_hash_key)) ? " " . $request->app_hash_key : '');
 
         $sms_template = AgentSmsTemplate::where('slug', 'sign-in')->first();
-        if ($sms_template) {
-            if (!empty($sms_template->content)) {
-                $sms_body = preg_replace('/{OTP}/', $data['otp'], $sms_template->content, 1);
-                if (isset($request->app_hash_key) && (!empty($request->app_hash_key))) {
-                    $sms_body .= "." . $request->app_hash_key;
-                }
-            }
-        }
+        $keyData = ['{OTP}'=>$data['otp']];
+        $sms_body = sendSmsTemplate('sign-in',$keyData);
+        // if ($sms_template) {
+        //     if (!empty($sms_template->content)) {
+        //         $sms_body = preg_replace('/{OTP}/', $data['otp'], $sms_template->content, 1);
+        //         if (isset($request->app_hash_key) && (!empty($request->app_hash_key))) {
+        //             $sms_body .= "." . $request->app_hash_key;
+        //         }
+        //     }
+        // }
 
-        $send = $this->sendSms2($agent->phone_number, $sms_body)->getData();
+        $send = $this->sendSmsNew($agent->phone_number, $sms_body)->getData();
 
         if ($send->status == 'Success') {
             unset($data['otp']);
