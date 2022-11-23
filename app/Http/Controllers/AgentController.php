@@ -21,10 +21,12 @@ use Doctrine\DBAL\Driver\DrizzlePDOMySql\Driver;
 use App\Model\{Agent, AgentDocs, AgentPayment, AgentLog, DriverGeo, Order, Otp, Team, TagsForAgent, TagsForTeam, Countries, Client, ClientPreferences, DriverRegistrationDocument, Geo, Timezone, AgentSmsTemplate};
 use Kawankoding\Fcm\Fcm;
 use App\Traits\agentEarningManager;
+use App\Traits\smsManager;
 
 class AgentController extends Controller
 {
     use ApiResponser;
+    use smsManager;
     /**
      * Display a listing of the resource.
      *
@@ -726,9 +728,11 @@ class AgentController extends Controller
             AgentLog::where('agent_id',$request->id)->update(['is_active' => $is_active]);
 
             $slug = ($request->status == 1)? 'driver-accepted' : 'driver-rejected';
-            $sms_body = AgentSmsTemplate::where('slug', $slug)->first();
+            // $sms_body = AgentSmsTemplate::where('slug', $slug)->first();
+            $keyData = [];
+            $sms_body = sendSmsTemplate($slug,$keyData);
             if(!empty($sms_body)){
-                $send = $this->sendSms2($agent_approval->phone_number, $sms_body->content)->getData();
+                $send = $this->sendSmsNew($agent_approval->phone_number, $sms_body)->getData();
             }
 
             $agents            = Agent::get();
