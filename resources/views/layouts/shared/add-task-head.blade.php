@@ -791,7 +791,7 @@
             var address = $("#task-modal-header input[name='address[]']").val();
             var post_code = $("#task-modal-header input[name='post_code[]']").val();
             var cash_to_be_collected = $("#task-modal-header input[name='cash_to_be_collected']").val();
-            if (short_name != '' && address != '' && post_code != '') {
+            if (short_name != '' && address != '') {
 
             } else {  err = 1;
                 $(".addspan").show();
