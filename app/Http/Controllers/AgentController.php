@@ -232,6 +232,14 @@ class AgentController extends Controller
                 ->addColumn('subscription_expiry', function ($agents) use ($request, $timezone) {
                     return $agents->subscriptionPlan ? convertDateTimeInTimeZone($agents->subscriptionPlan->end_date, $timezone) : '';
                 })
+                ->addColumn('agent_rating', function ($agents) use ($request, $timezone) {
+                    if( !empty($agents->agentRating()) ) {
+                        return number_format($agents->agentRating()->avg('rating'), 2, '.', '');
+                    }
+                    else {
+                        return 'N/A';
+                    }
+                })
                 ->editColumn('created_at', function ($agents) use ($request, $timezone) {
                     return convertDateTimeInTimeZone($agents->created_at, $timezone);
                 })
