@@ -24,7 +24,14 @@ class Order extends Model
 
     public function task(){
         return $this->hasMany('App\Model\Task', 'order_id', 'id')->orderBy('task_order');
-        
+    }
+
+    public function pickup_task(){
+        return $this->hasMany('App\Model\Task', 'order_id', 'id')->where('task_type_id', 1);
+    }
+
+    public function dropoff_task(){
+        return $this->hasMany('App\Model\Task', 'order_id', 'id')->where('task_type_id', 2)->orderBy('task_order', 'desc');
     }
 
     public function agent(){
