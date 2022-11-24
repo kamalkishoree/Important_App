@@ -65,18 +65,19 @@ class DriverRegistrationController extends BaseController
                 $domain = $website_details->sub_domain;
                 $body = "Dear customer,Your ".$domain." OTP for registration is " . $otp->opt;
                 
-                $sms_template = AgentSmsTemplate::where('slug', 'sign-up')->first();
+                //$sms_template = AgentSmsTemplate::where('slug', 'sign-up')->first();
+                $keyData = ['{OTP}'=>$otp->opt];
+                $body = sendSmsTemplate('sign-up',$keyData);
+                // if($sms_template){
+                //     if(!empty($sms_template->content)){
+                //         $body = preg_replace('/{OTP}/', $otp->opt, $sms_template->content, 1);
+                //         if(isset($request->app_hash_key) && (!empty($request->app_hash_key))){
+                //             $body .= ".".$request->app_hash_key;
+                //         }
+                //     }
+                // }
 
-                if($sms_template){
-                    if(!empty($sms_template->content)){
-                        $body = preg_replace('/{OTP}/', $otp->opt, $sms_template->content, 1);
-                        if(isset($request->app_hash_key) && (!empty($request->app_hash_key))){
-                            $body .= ".".$request->app_hash_key;
-                        }
-                    }
-                }
-
-                $send = $this->sendSms2($to, $body)->getData();
+                $send = $this->sendSmsNew($to, $body)->getData();
                 if ($send->status == 'Success') {
                     return $this->success([], $send->message, 200);
                 } else {
