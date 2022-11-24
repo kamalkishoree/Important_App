@@ -1118,8 +1118,12 @@ class TaskController extends BaseController
         try{
             if(isset($order_details->type) && $order_details->type == 1 && strlen($order_details->friend_phone_number) > 8)
             {
-                $friend_sms_body = 'Hi '.($order_details->friend_name).', '.($order_details->customer->name??'Our customer').' have booked a ride for you. '.getAgentNomenclature().' '.($oneagent->name??'').' in our '.($oneagent->make_model ?? '').' with license plate '.($oneagent->plate_number??'').' has been assgined.';
-                $send = $this->sendSms2($order_details->friend_phone_number , $friend_sms_body);
+                // $friend_sms_body = 'Hi '.($order_details->friend_name).', '.($order_details->customer->name??'Our customer').' have booked a ride for you. '.getAgentNomenclature().' '.($oneagent->name??'').' in our '.($oneagent->make_model ?? '').' with license plate '.($oneagent->plate_number??'').' has been assgined.';
+
+                $keyData = ['{user-name}'=>$order_details->friend_name,'{customer-name}'=>$order_details->customer->name??'Our customer','{agent-name}'=>$oneagent->name??'','{car-model}'=>$oneagent->make_model ?? '','{plate-no}'=>$oneagent->plate_number??''];
+                $friend_sms_body = sendSmsTemplate('friend-sms',$keyData);
+
+                $send = $this->sendSmsNew($order_details->friend_phone_number , $friend_sms_body);
             }
         }catch(\Exception $e){
             Log::info("Error While sending sms to friend");
