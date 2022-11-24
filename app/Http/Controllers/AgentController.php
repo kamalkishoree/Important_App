@@ -237,7 +237,7 @@ class AgentController extends Controller
                         return number_format($agents->agentRating()->avg('rating'), 2, '.', '');
                     }
                     else {
-                        return 'N/A';
+                        return '0.00';
                     }
                 })
                 ->editColumn('created_at', function ($agents) use ($request, $timezone) {
