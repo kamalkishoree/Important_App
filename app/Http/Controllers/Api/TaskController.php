@@ -684,7 +684,23 @@ class TaskController extends BaseController
         $client_details = Client::where('database_name', $header['client'][0])->first();
         $percentage = 0;
         $agent_id =  $request->driver_id  ? $request->driver_id : null;
-
+        $driver   = Agent::where('id', $agent_id)->first();
+        if($driver->is_pooling_available == 1)
+        {
+            $assigned_orders  = Order::where('driver_id', $driver->id)->where('is_cab_pooling', 1)->where('status', 'assigned')->orderBy('id', 'asc')->first();
+            $available_seats  = (!empty($assigned_orders))?$assigned_orders->available_seats:0;
+            if($available_seats > 0){
+                $previous_seats   = Order::where('driver_id', $driver->id)->where('is_cab_pooling', 1)->where('status', 'assigned')->sum('no_seats_for_pooling');
+                $this_order_seats = Order::where('id', $request->order_id)->first()->no_seats_for_pooling;
+                $booked_seats     = $previous_seats + $this_order_seats;
+                if($available_seats < $booked_seats){
+                    return response()->json([
+                        'message' => __('Available Seats are less than no of booked seats.'),
+                    ], 404);
+                }
+            }
+        }
+        
         $assignedorder_data = Order::where('id', $request->order_id)->where('driver_id', '!=', $agent_id)->where('status', 'assigned')->first();
         $unassignedorder_data = Order::where('id', $request->order_id)->where('status', 'unassigned')->first();
         if(empty($unassignedorder_data) && !empty($assignedorder_data)){

@@ -247,6 +247,8 @@ class ActivityController extends BaseController
             'heading_angle'     => $request->heading_angle ?? 0,
         ];
 
+        $agentupdate =  Agent::where('id', Auth::user()->id)->update(['is_pooling_available' => $request->is_pooling_available]);
+
         if ($request->lat=="" || $request->lat==0 || $request->lat== '0.00000000') {
         } else {
 
@@ -456,105 +458,138 @@ class ActivityController extends BaseController
     public function poolingTasksSuggessions(Request $request)
     {
         try{
-            $preferences = ClientPreference::where('id', 1)->first();
-            $radius = $preferences->radius_for_pooling_km;
-            $TaskController = new TaskController();
-            $suggessions = [];
-            $agentdata = Agent::with(['agentlog'])->where('id', Auth::user()->id)->first();
-            $assignedorder = Order::with(['customer', 'task.location'])->where('status', '=', 'assigned')->where('driver_id', $agentdata->id)->where('is_cab_pooling', 1)->first();
-            $origin_latitude = $origin_longitude = $destination_latitude = $destination_longitude = array();
-            $origin_latitude[0]  = $agentdata->agentlog->lat;
-            $origin_longitude[0] = $agentdata->agentlog->long;
-            if(!empty($assignedorder)):
-                $k = 0;
-                foreach($assignedorder->task as $task):
-                    if($k>0):
-                        $destination_latitude[0]  = $task->location->latitude;
-                        $destination_longitude[0] = $task->location->longitude;
-                    endif;
-                    $k++;
+            $preferences     = ClientPreference::where('id', 1)->first();
+            $radius          = $preferences->radius_for_pooling_km;
+            $TaskController  = new TaskController();
+            $date            = date('Y-m-d', time());
+            $suggessions     = [];
+            $agentdata       = Agent::with(['agentlog', 'tags'])->where('id', Auth::user()->id)->first();
+            if($agentdata->is_pooling_available ==1)
+            {
+                $agent_tags      = [];
+                foreach($agentdata->tags as $tags):
+                    $agent_tags[]    = $tags->id;
                 endforeach;
-                /* $orders = Order::with(['customer', 'task.location'])->where('status', '=', 'unassigned')->where('is_cab_pooling', 1)->get();
-                foreach($orders as $order):
-                    $m = 0;
-                    foreach($order->task as $task):
-                        if($m == 0)://dd($task->location);
-                            $origin_latitude[1]  = $task->location->latitude;
-                            $origin_longitude[1] = $task->location->longitude;
-                        else:
-                            $destination_latitude[1]  = $task->location->latitude;
-                            $destination_longitude[1] = $task->location->longitude;
+                
+                $assignedorder   = Order::with(['customer', 'task.location'])->where('status', '=', 'assigned')->where('driver_id', $agentdata->id)->where('is_cab_pooling', 1)->first();
+                $origin_latitude = $origin_longitude = $destination_latitude = $destination_longitude = array();
+                $origin_latitude[0]  = $agentdata->agentlog->lat;
+                $origin_longitude[0] = $agentdata->agentlog->long;
+                if(!empty($assignedorder)):
+                    $k = 0;
+                    foreach($assignedorder->task as $task):
+                        if($k>0):
+                            $destination_latitude[0]  = $task->location->latitude;
+                            $destination_longitude[0] = $task->location->longitude;
                         endif;
-                        $m++;
+                        $k++;
                     endforeach;
-                    $pickupdistancedata = $TaskController->GoogleDistanceMatrix($origin_latitude, $origin_longitude);
-                    $dropoffdistancedata = $TaskController->GoogleDistanceMatrix($destination_latitude, $destination_longitude);
-                    if($pickupdistancedata['distance'] < 3 && $dropoffdistancedata['distance'] < 3):
-                        $order->distance_from_driver  = $pickupdistancedata['distance'];
-                        $order->distance_from_dropoff = $dropoffdistancedata['distance'];
-                        $suggessions[] = $order;
-                    endif;
-                endforeach; */
-                $origin_latitude       = $origin_latitude[0];
-                $origin_longitude      = $origin_longitude[0];
-                $destination_latitude  = $destination_latitude[0];
-                $destination_longitude = $destination_longitude[0];
-                $orders = Order::with(['customer', 'task.location', 'pickup_task.location' => function ($query) use ($origin_latitude, $origin_longitude) {
+                    /* $orders = Order::with(['customer', 'task.location'])->where('status', '=', 'unassigned')->where('is_cab_pooling', 1)->get();
+                    foreach($orders as $order):
+                        $m = 0;
+                        foreach($order->task as $task):
+                            if($m == 0)://dd($task->location);
+                                $origin_latitude[1]  = $task->location->latitude;
+                                $origin_longitude[1] = $task->location->longitude;
+                            else:
+                                $destination_latitude[1]  = $task->location->latitude;
+                                $destination_longitude[1] = $task->location->longitude;
+                            endif;
+                            $m++;
+                        endforeach;
+                        $pickupdistancedata = $TaskController->GoogleDistanceMatrix($origin_latitude, $origin_longitude);
+                        $dropoffdistancedata = $TaskController->GoogleDistanceMatrix($destination_latitude, $destination_longitude);
+                        if($pickupdistancedata['distance'] < 3 && $dropoffdistancedata['distance'] < 3):
+                            $order->distance_from_driver  = $pickupdistancedata['distance'];
+                            $order->distance_from_dropoff = $dropoffdistancedata['distance'];
+                            $suggessions[] = $order;
+                        endif;
+                    endforeach; */
+                    $origin_latitude       = $origin_latitude[0];
+                    $origin_longitude      = $origin_longitude[0];
+                    $destination_latitude  = $destination_latitude[0];
+                    $destination_longitude = $destination_longitude[0];
+                    $orders = Order::with(['customer', 'task.location', 'pickup_task.location' => function ($query) use ($origin_latitude, $origin_longitude) {
+                                    $query->select("id", "address", "latitude", "longitude", DB::raw("6371 * acos(cos(radians(" . $origin_latitude . ")) 
+                                    * cos(radians(latitude)) 
+                                    * cos(radians(longitude) - radians(" . $origin_longitude . ")) 
+                                    + sin(radians(" .$origin_latitude. ")) 
+                                    * sin(radians(latitude))) AS distance_from_pickup"));
+                                }, 'dropoff_task.location' => function ($query) use ($destination_latitude, $destination_longitude) {
+                                    $query->select("id", "address", "latitude", "longitude", DB::raw("6371 * acos(cos(radians(" . $destination_latitude . ")) 
+                                    * cos(radians(latitude)) 
+                                    * cos(radians(longitude) - radians(" . $destination_longitude . ")) 
+                                    + sin(radians(" .$destination_latitude. ")) 
+                                    * sin(radians(latitude))) AS distance_from_dropoff"));
+                                }])
+                                ->where('status', '=', 'unassigned')->where('is_cab_pooling', 1)->whereDate('order_time', $date)
+                                ->whereHas('pickup_task.location', function($q) use ($origin_latitude, $origin_longitude, $radius){
+                                    $q->select("id", "address", "latitude", "longitude", DB::raw("6371 * acos(cos(radians(" . $origin_latitude . ")) 
+                                    * cos(radians(latitude)) 
+                                    * cos(radians(longitude) - radians(" . $origin_longitude . ")) 
+                                    + sin(radians(" .$origin_latitude. ")) 
+                                    * sin(radians(latitude))) AS distance_pickup"))
+                                        ->having("distance_pickup", "<", $radius);
+                                })
+                                ->whereHas('dropoff_task.location', function($q) use ($destination_latitude, $destination_longitude, $radius){
+                                    $q->select("id", "address", "latitude", "longitude", DB::raw("6371 * acos(cos(radians(" . $destination_latitude . ")) 
+                                    * cos(radians(latitude)) 
+                                    * cos(radians(longitude) - radians(" . $destination_longitude . ")) 
+                                    + sin(radians(" .$destination_latitude. ")) 
+                                    * sin(radians(latitude))) AS distance_dropoff"))
+                                        ->having("distance_dropoff", "<", $radius);
+                                })
+                                ->whereHas('drivertag_combination', function($q) use ($agent_tags){
+                                    $q->whereIn("tag_id", $agent_tags);
+                                })->get();
+
+                    $suggessions = $orders;
+                else:
+                    $origin_latitude       = $origin_latitude[0];
+                    $origin_longitude      = $origin_longitude[0];
+                    $suggessions = Order::with(['customer', 'task.location', 'pickup_task.location' => function ($query) use ($origin_latitude, $origin_longitude) {
                                 $query->select("id", "address", "latitude", "longitude", DB::raw("6371 * acos(cos(radians(" . $origin_latitude . ")) 
-                                * cos(radians(latitude)) 
-                                * cos(radians(longitude) - radians(" . $origin_longitude . ")) 
-                                + sin(radians(" .$origin_latitude. ")) 
-                                * sin(radians(latitude))) AS distance_from_pickup"));
-                            }, 'dropoff_task.location' => function ($query) use ($destination_latitude, $destination_longitude) {
-                                $query->select("id", "address", "latitude", "longitude", DB::raw("6371 * acos(cos(radians(" . $destination_latitude . ")) 
-                                * cos(radians(latitude)) 
-                                * cos(radians(longitude) - radians(" . $destination_longitude . ")) 
-                                + sin(radians(" .$destination_latitude. ")) 
-                                * sin(radians(latitude))) AS distance_from_dropoff"));
-                            }])
-                            ->where('status', '=', 'unassigned')->where('is_cab_pooling', 1)
-                            ->whereHas('pickup_task.location', function($q) use ($origin_latitude, $origin_longitude, $radius){
+                                    * cos(radians(latitude)) 
+                                    * cos(radians(longitude) - radians(" . $origin_longitude . ")) 
+                                    + sin(radians(" .$origin_latitude. ")) 
+                                    * sin(radians(latitude))) AS distance_from_pickup"));
+                                }])
+                                ->where('status', '=', 'unassigned')->where('is_cab_pooling', 1)->whereDate('order_time', $date)
+                                ->whereHas('pickup_task.location', function($q) use ($origin_latitude, $origin_longitude, $radius){
                                 $q->select("id", "address", "latitude", "longitude", DB::raw("6371 * acos(cos(radians(" . $origin_latitude . ")) 
-                                * cos(radians(latitude)) 
-                                * cos(radians(longitude) - radians(" . $origin_longitude . ")) 
-                                + sin(radians(" .$origin_latitude. ")) 
-                                * sin(radians(latitude))) AS distance_pickup"))
+                                    * cos(radians(latitude)) 
+                                    * cos(radians(longitude) - radians(" . $origin_longitude . ")) 
+                                    + sin(radians(" .$origin_latitude. ")) 
+                                    * sin(radians(latitude))) AS distance_pickup"))
                                     ->having("distance_pickup", "<", $radius);
-                            })
-                            ->whereHas('dropoff_task.location', function($q) use ($destination_latitude, $destination_longitude, $radius){
-                                $q->select("id", "address", "latitude", "longitude", DB::raw("6371 * acos(cos(radians(" . $destination_latitude . ")) 
-                                * cos(radians(latitude)) 
-                                * cos(radians(longitude) - radians(" . $destination_longitude . ")) 
-                                + sin(radians(" .$destination_latitude. ")) 
-                                * sin(radians(latitude))) AS distance_dropoff"))
-                                    ->having("distance_dropoff", "<", $radius);
-                            })->get();
+                                })
+                                ->whereHas('drivertag_combination', function($q) use ($agent_tags){
+                                    $q->whereIn("tag_id", $agent_tags);
+                                })->get();
+                endif;
 
-                $suggessions = $orders;
-            else:
-                $suggessions = Order::with(['customer', 'task.location', 'pickup_task.location' => function ($query) use ($origin_latitude, $origin_longitude) {
-                            $query->select("id", "address", "latitude", "longitude", DB::raw("6371 * acos(cos(radians(" . $origin_latitude . ")) 
-                            * cos(radians(latitude)) 
-                            * cos(radians(longitude) - radians(" . $origin_longitude . ")) 
-                            + sin(radians(" .$origin_latitude. ")) 
-                            * sin(radians(latitude))) AS distance_from_pickup"));
-                            }])
-                            ->where('status', '=', 'unassigned')->where('is_cab_pooling', 1)
-                            ->whereHas('pickup_task.location', function($q) use ($origin_latitude, $origin_longitude, $radius){
-                            $q->select("id", "address", "latitude", "longitude", DB::raw("6371 * acos(cos(radians(" . $origin_latitude . ")) 
-                            * cos(radians(latitude)) 
-                            * cos(radians(longitude) - radians(" . $origin_longitude . ")) 
-                            + sin(radians(" .$origin_latitude. ")) 
-                            * sin(radians(latitude))) AS distance_pickup"))
-                                ->having("distance_pickup", "<", $radius);
-                        })->get();
-            endif;
+                foreach($suggessions as $suggession):
+                    if(isset($suggession->pickup_task[0]->location)):
+                        $suggession->distance_pickup = isset($suggession->pickup_task[0]->location->distance_from_pickup)?$suggession->pickup_task[0]->location->distance_from_pickup:0;
+                        $suggession->distance_dropoff = isset($suggession->dropoff_task[0]->location->distance_from_dropoff)?$suggession->dropoff_task[0]->location->distance_from_dropoff:0;
+                    else:
+                        $suggession->distance_pickup = 0;
+                        $suggession->distance_dropoff = 0;
+                    endif;
+                endforeach;
 
-            return response()->json([
-                'data' => array('order_suggession' => $suggessions),
-                'status' => 200,
-                'message' => __('success')
-            ], 200);
+                return response()->json([
+                    'data' => array('order_suggession' => $suggessions),
+                    'status' => 200,
+                    'message' => __('success')
+                ], 200);
+            }else{
+                return response()->json([
+                    'data' => array('order_suggession' => []),
+                    'status' => 200,
+                    'message' => __('success')
+                ], 200);
+            }
         }
         catch(Exception $e){
             return response()->json([
