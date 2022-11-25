@@ -300,10 +300,9 @@ class TaskController extends BaseController
             });
         }
 
-        $customer_id = $request->get('customer_id');
-        if(!empty($customer_id) && $customer_id != null){
-            $orders = $orders->whereHas('customer', function($query) use ($customer_id) {
-                $query->where('id', $customer_id);
+        if($request->has('customer_id') && $request->customer_id != ''){
+            $orders = $orders->whereHas('customer', function($query) use ($request) {
+                $query->where('id', $request->customer_id);
             });
         }
 
