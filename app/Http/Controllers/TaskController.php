@@ -268,6 +268,7 @@ class TaskController extends BaseController
         })->pluck('tag_id');
 
         $orders = Order::with(['customer', 'location', 'taskFirst', 'agent', 'task.location'])->orderBy('id', 'DESC'); //, 'task.manager'
+        // dd($orders->get());
         if (@$request->warehouseManagerId && !empty($request->warehouseManagerId)) {
             $orders->whereHas('task.warehouse.manager', function($q) use($request){
                 $q->where('clients.id', $request->warehouseManagerId);
@@ -298,6 +299,14 @@ class TaskController extends BaseController
                 $query->where('warehouse_id', $searchWarehouse_id);
             });
         }
+
+        $customer_id = $request->get('customer_id');
+        if(!empty($customer_id) && $customer_id != null){
+            $orders = $orders->whereHas('customer', function($query) use ($customer_id) {
+                $query->where('id', $customer_id);
+            });
+        }
+
         $orders = $orders->where('status', $request->routesListingType)->where('status', '!=', null)->orderBy('updated_at', 'desc');
         
         $preference = ClientPreference::where('id', 1)->first(['theme','date_format','time_format']);

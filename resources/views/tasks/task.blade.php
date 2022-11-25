@@ -91,6 +91,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                 <div class="card widget-inline main-card-header">
                     <div class="card-body p-2">
                         <div class="row">
+                            <input type="hidden" name="customer_id" id="customer_id" value="{{ app('request')->input('customer_id')??'' }}">
                             <div class="col-sm-6 col-md-3 mb-3 mb-md-0">
                                 <div class="text-center">
                                     <h3>

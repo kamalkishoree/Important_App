@@ -54,6 +54,7 @@
                         d.warehouseListingType = $('#search_warehouse').val();
                         d.warehouseManagerId = $('#warehouse_manager').val();
                         d.imgproxyurl = '{{$imgproxyurl}}';
+                        d.customer_id = $("#customer_id").val();
                     }
                 },
                 columns: dataTableColumn(),
