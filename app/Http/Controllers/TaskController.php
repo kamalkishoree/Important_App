@@ -268,7 +268,7 @@ class TaskController extends BaseController
         })->pluck('tag_id');
 
         $orders = Order::with(['customer', 'location', 'taskFirst', 'agent', 'task.location'])->orderBy('id', 'DESC'); //, 'task.manager'
-        // dd($orders->get());
+        
         if (@$request->warehouseManagerId && !empty($request->warehouseManagerId)) {
             $orders->whereHas('task.warehouse.manager', function($q) use($request){
                 $q->where('clients.id', $request->warehouseManagerId);
