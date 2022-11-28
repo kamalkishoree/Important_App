@@ -189,6 +189,8 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 			
 			Route::get('category/filter', 'CategoryController@categoryFilter');
 
+			Route::get('product-category/filter/{id}', 'CategoryController@productCategoryFilter')->name('category.product.filter');
+
         	Route::post('agent/payout/request/complete', 'AgentPayoutController@agentPayoutRequestComplete')->name('agent.payout.request.complete');
 			Route::post('agent/payout/requests/complete/all', 'AgentPayoutController@agentPayoutRequestsCompleteAll')->name('agent.payout.requests.complete.all');
 			Route::post('agent/payout/bank/details', 'AgentPayoutController@agentPayoutBankDetails')->name('agent.payout.bank.details');
@@ -266,6 +268,8 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 			Route::resource('category', 'CategoryController');
 			Route::resource('product', 'ProductController');
 			Route::POST('check-sync-status', 'orderPanelController@checkSyncStatus');
+
+			Route::get('category/product/{id}', 'CategoryController@categoryProduct')->name('category.product');
 
 			// Route::get('cat-product/{$id}', 'ProductController@showProduct')->name('showProduct');
 

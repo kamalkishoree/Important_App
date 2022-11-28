@@ -203,41 +203,98 @@ class CategoryController extends Controller
         }
         $category = $category->orderBy('id', 'DESC')->get();
         return Datatables::of($category)
-            ->addColumn('name', function ($category) use ($request) {
-                $name = !empty($category->slug) ? $category->slug : '';
-                return $name;
-            })
-            ->addColumn('status', function ($category) use ($request) {
-                if($category->status == 1){
-                    return $status = 'Active';
-                }else{
-                    return $status = 'InActive';
-                }
-            })
-            ->addColumn('created_at', function ($category) use ($request) {
-                $created_at = !empty($category->created_at) ? $category->created_at : '';
-                return formattedDate($created_at);
-            })
-            ->addColumn('total_products', function ($category) use ($request) {
-                $total_products = !empty($category->products) ? count($category->products) : '0';
-                return $total_products;
-            })
-            ->addColumn('action', function ($category) use ($request) {
-                $action = '<div class="inner-div"> <a href="JavaScript:void(0);"  class="action-icon editIconBtn openEditCategoryModal" data-toggle="modal" data-target="" data-backdrop="static" data-keyboard="false" data-name="'.$category->slug.'" data-id="'.$category->id.'" data-status="'.$category->status.'" style="margin-top: 5px;"> <i class="mdi mdi-square-edit-outline"></i></a></div>';
-                    
-                $action.='<div class="inner-div">
-                <form method="POST" action="'.route('category.destroy', $category->id).'">
-                <input type="hidden" name="_token" value="'.csrf_token().'" />
-                <input type="hidden" name="_method" value="DELETE">
-                <div class="form-group">
-                <button type="submit" class="btn btn-primary-outline action-icon"> <i class="mdi mdi-delete"></i></button>
-                </div>
-                </form>
-                </div>';
-                return $action;
-            })
-            ->filter(function ($instance) use ($request) { }, true)
-            ->rawColumns(['action'])
-            ->make(true);
+        ->addColumn('name', function ($category) use ($request) {
+            $name = !empty($category->slug) ? $category->slug : '';
+            return $name;
+        })
+        ->addColumn('status', function ($category) use ($request) {
+            if($category->status == 1){
+                return $status = 'Active';
+            }else{
+                return $status = 'InActive';
+            }
+        })
+        ->addColumn('created_at', function ($category) use ($request) {
+            $created_at = !empty($category->created_at) ? $category->created_at : '';
+            return formattedDate($created_at);
+        })
+        ->addColumn('total_products', function ($category) use ($request) {
+            $total_products = !empty($category->products) ? count($category->products) : '0';
+            return $total_products;
+        })
+        ->addColumn('action', function ($category) use ($request) {
+            $action = '<div class="inner-div"> <a href="'.route('category.product', $category->id).'" class="action-icon viewIconBtn" data-id="'.$category->id.'" style="margin-top: 5px;"> <i class="mdi mdi-eye"></i></a></div>';
+
+            $action.= '<div class="inner-div"> <a href="JavaScript:void(0);"  class="action-icon editIconBtn openEditCategoryModal" data-toggle="modal" data-target="" data-backdrop="static" data-keyboard="false" data-name="'.$category->slug.'" data-id="'.$category->id.'" data-status="'.$category->status.'" style="margin-top: 5px;"> <i class="mdi mdi-square-edit-outline"></i></a></div>';
+                
+            $action.='<div class="inner-div">
+            <form method="POST" action="'.route('category.destroy', $category->id).'">
+            <input type="hidden" name="_token" value="'.csrf_token().'" />
+            <input type="hidden" name="_method" value="DELETE">
+            <div class="form-group">
+            <button type="submit" class="btn btn-primary-outline action-icon"> <i class="mdi mdi-delete"></i></button>
+            </div>
+            </form>
+            </div>';
+            return $action;
+        })
+        ->filter(function ($instance) use ($request) { }, true)
+        ->rawColumns(['action'])
+        ->make(true);
+    }
+
+    public function categoryProduct(Request $request, $domain='', $catId){
+        $products = Product::with(['category.cat', 'primary', 'variant' => function ($v) {
+            $v->select('id', 'product_id', 'quantity', 'price', 'barcode', 'expiry_date')->groupBy('product_id');
+        }])->select('id', 'sku', 'vendor_id', 'is_live', 'is_new', 'is_featured', 'has_inventory', 'has_variant', 'sell_when_out_of_stock', 'Requires_last_mile', 'averageRating', 'brand_id','minimum_order_count','batch_count', 'title')
+        ->where('category_id', $catId)->get()->sortBy('primary.title', SORT_REGULAR, false);
+
+        return view('category.category-product')->with(['products' => $products, 'catId' => $catId]);
+    }
+
+    public function productCategoryFilter(Request $request, $domain='', $catId){
+        $products = Product::with(['category.cat', 'primary', 'variant' => function ($v) {
+            $v->select('id', 'product_id', 'quantity', 'price', 'barcode', 'expiry_date')->groupBy('product_id');
+        }])->select('id', 'sku', 'vendor_id', 'is_live', 'is_new', 'is_featured', 'has_inventory', 'has_variant', 'sell_when_out_of_stock', 'Requires_last_mile', 'averageRating', 'brand_id','minimum_order_count','batch_count', 'title')
+        ->where('category_id', $catId)->get()->sortBy('primary.title', SORT_REGULAR, false);
+
+        return Datatables::of($products)
+        ->addColumn('name', function ($products) use ($request) {
+            return $products->primary->title??'N/A';
+        })
+        ->addColumn('category', function ($products) use ($request) {
+            return $products->category && $products->category->cat && $products->category->cat->name ? $products->category->cat->name : 'N/A';
+        })
+        ->addColumn('quantity', function ($products) use ($request) {
+            return $products->variant->first() ? $products->variant->first()->quantity : 0;
+        })
+        ->addColumn('price', function ($products) use ($request) {
+            return $products->variant->first() ? decimal_format($products->variant->first()->price) : 0;
+        })
+        ->addColumn('bar_code', function ($products) use ($request) {
+            return $products->variant->first() ? $products->variant->first()->barcode : '-';
+        })
+        ->addColumn('status', function ($products) use ($request) {
+            if($products->is_live == 0 ){
+                $status = __('Draft');
+            }elseif($products->is_live == 1 ){
+                $status = __('Published');
+            }else{
+                $status = __('Blocked');
+            }
+            return $status;
+        })
+        ->addColumn('expiry_date', function ($products) use ($request) {
+            return $products->variant->first() ? $products->variant->first()->expiry_date : '-';
+        })
+        ->addColumn('is_new', function ($products) use ($request) {
+            return $products->is_new == 0 ? __('No') : __('Yes');
+        })
+        ->addColumn('is_featured', function ($products) use ($request) {
+            return $products->is_featured == 0 ? __('No')  : __('Yes');
+        })
+        ->filter(function ($instance) use ($request) { }, true)
+        ->rawColumns(['action'])
+        ->make(true);
     }
 }
