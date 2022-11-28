@@ -94,7 +94,6 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                 </tr>
                             </thead>
                             <tbody>
-                                                                  
                             </tbody>
                         </table>
                     </div>
