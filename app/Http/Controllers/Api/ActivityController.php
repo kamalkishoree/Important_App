@@ -247,6 +247,10 @@ class ActivityController extends BaseController
             'heading_angle'     => $request->heading_angle ?? 0,
         ];
 
+        if($preferences->is_cab_pooling_toggle == 0){
+            $request->is_pooling_available = 0;
+        }
+
         $agentupdate =  Agent::where('id', Auth::user()->id)->update(['is_pooling_available' => $request->is_pooling_available]);
 
         if ($request->lat=="" || $request->lat==0 || $request->lat== '0.00000000') {

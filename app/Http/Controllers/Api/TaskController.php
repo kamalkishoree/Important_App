@@ -890,7 +890,7 @@ class TaskController extends BaseController
                 $send = $this->sendSms2($check->friend_phone_number , $friend_sms_body);
             }
             return response()->json([
-                'data' => __('Task Accecpted Successfully'),
+                'message' => __('Task Accecpted Successfully'),
             ], 200);
 
 
@@ -907,7 +907,7 @@ class TaskController extends BaseController
             return response()->json([
                 'data' => __('Task Rejected Successfully'),
                 'status' => 200,
-                'message' => __('success')
+                'message' => __('Task Rejected Successfully')
             ], 200);
         }
     }
