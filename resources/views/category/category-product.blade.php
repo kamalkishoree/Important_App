@@ -67,10 +67,13 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
 <div class="container-fluid">
     <!-- start page title -->
     <div class="row mb-4">
-        <div class="col-12">
+        <div class="col-6">
             <div class="page-title-box">
                 <h4 class="page-title page-title1">{{ __("Products") }}</h4>
             </div>
+        </div>
+        <div class="col-6 text-right">
+            <button type="button" class="btn btn-blue waves-effect waves-light openAddProductModal"><i class="mdi mdi-plus-circle mr-1"></i> {{__("Add Product")}}</button>
         </div>
     </div>
     <!-- end page title -->
@@ -103,6 +106,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
     </div>
 </div>
 @endsection
+@include('category.category-modal')
 @section('script')
     <script src="{{asset('assets/js/storeAgent.js')}}"></script>
     <script src="{{ asset('assets/libs/datatables/datatables.min.js') }}"></script>

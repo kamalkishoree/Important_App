@@ -244,12 +244,24 @@ class CategoryController extends Controller
     }
 
     public function categoryProduct(Request $request, $domain='', $catId){
+        $product_category = [];
+        $product_category = Category::orderBy('id', 'DESC')->get();
+
+        $client = Client::orderBy('id','asc')->first();
+            if(isset($client->custom_domain) && !empty($client->custom_domain) && $client->custom_domain != $client->sub_domain)
+            $sku_url =  ($client->custom_domain);
+            else
+            $sku_url =  ($client->sub_domain.env('SUBMAINDOMAIN'));
+
+            $sku_url = array_reverse(explode('.',$sku_url));
+            $sku_url = implode(".",$sku_url);
+
         $products = Product::with(['category.cat', 'primary', 'variant' => function ($v) {
             $v->select('id', 'product_id', 'quantity', 'price', 'barcode', 'expiry_date')->groupBy('product_id');
         }])->select('id', 'sku', 'vendor_id', 'is_live', 'is_new', 'is_featured', 'has_inventory', 'has_variant', 'sell_when_out_of_stock', 'Requires_last_mile', 'averageRating', 'brand_id','minimum_order_count','batch_count', 'title')
         ->where('category_id', $catId)->get()->sortBy('primary.title', SORT_REGULAR, false);
 
-        return view('category.category-product')->with(['products' => $products, 'catId' => $catId]);
+        return view('category.category-product')->with(['products' => $products, 'catId' => $catId, 'product_category' => $product_category, 'sku_url' => $sku_url]);
     }
 
     public function productCategoryFilter(Request $request, $domain='', $catId){
