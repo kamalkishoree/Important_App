@@ -223,7 +223,7 @@ class CategoryController extends Controller
             return $total_products;
         })
         ->addColumn('action', function ($category) use ($request) {
-            $action = '<div class="inner-div"> <a href="'.route('category.product', $category->id).'" class="action-icon viewIconBtn" data-id="'.$category->id.'" style="margin-top: 5px;"> <i class="mdi mdi-eye"></i></a></div>';
+            $action = '<div class="inner-div"> <a href="'.route('category.product', $category->id).'" class="action-icon viewIconBtn" data-id="'.$category->id.'" style="margin-top: 5px;"> <i class="mdi mdi-eye" title="Products"></i></a></div>';
 
             $action.= '<div class="inner-div"> <a href="JavaScript:void(0);"  class="action-icon editIconBtn openEditCategoryModal" data-toggle="modal" data-target="" data-backdrop="static" data-keyboard="false" data-name="'.$category->slug.'" data-id="'.$category->id.'" data-status="'.$category->status.'" style="margin-top: 5px;"> <i class="mdi mdi-square-edit-outline"></i></a></div>';
                 
@@ -232,7 +232,7 @@ class CategoryController extends Controller
             <input type="hidden" name="_token" value="'.csrf_token().'" />
             <input type="hidden" name="_method" value="DELETE">
             <div class="form-group">
-            <button type="submit" class="btn btn-primary-outline action-icon"> <i class="mdi mdi-delete"></i></button>
+            <button type="submit" class="btn btn-primary-outline action-icon"> <i class="mdi mdi-delete" title="Delete"></i></button>
             </div>
             </form>
             </div>';
@@ -257,6 +257,11 @@ class CategoryController extends Controller
             $v->select('id', 'product_id', 'quantity', 'price', 'barcode', 'expiry_date')->groupBy('product_id');
         }])->select('id', 'sku', 'vendor_id', 'is_live', 'is_new', 'is_featured', 'has_inventory', 'has_variant', 'sell_when_out_of_stock', 'Requires_last_mile', 'averageRating', 'brand_id','minimum_order_count','batch_count', 'title')
         ->where('category_id', $catId)->get()->sortBy('primary.title', SORT_REGULAR, false);
+
+        // if (!empty($request->get('search'))) {
+        //     $search = $request->get('search');
+        //     $products = $products->where('title', 'Like', '%'.$search.'%');
+        // }
 
         return Datatables::of($products)
         ->addColumn('name', function ($products) use ($request) {

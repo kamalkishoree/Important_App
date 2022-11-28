@@ -8,10 +8,11 @@
             "serverSide": true,
             "responsive": true,
             "iDisplayLength": 10,
+            searching: false,
             language: {
                 search: "",
                 paginate: { previous: "<i class='mdi mdi-chevron-left'>", next: "<i class='mdi mdi-chevron-right'>" },
-                searchPlaceholder: "{{__('Search Category')}}",
+                searchPlaceholder: "{{__('Search Product')}}",
                 'loadingRecords': '&nbsp;',
                 // 'processing': '<div class="spinner"></div>'
                 'processing':function(){
