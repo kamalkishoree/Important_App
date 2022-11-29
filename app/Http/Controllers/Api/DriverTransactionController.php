@@ -59,9 +59,9 @@ class DriverTransactionController extends BaseController
             ->where('agent_id', $agent->id)->where('status', 1);
         
             if(!empty($request->from_date) && !empty($request->to_date)){
-                $orders = Order::where('driver_id', $id)->whereBetween('order_time', [$request->from_date." 00:00:00",$request->to_date." 23:59:59"])->pluck('id')->toArray();
+                $orders = Order::where('driver_id', $id)->where('status', 'completed')->whereBetween('order_time', [$request->from_date." 00:00:00",$request->to_date." 23:59:59"])->pluck('id')->toArray();
             }else{
-                $orders = Order::where('driver_id', $id)->pluck('id')->toArray();
+                $orders = Order::where('driver_id', $id)->where('status', 'completed')->pluck('id')->toArray();
             }
             if (isset($orders)) {
                 $tasks = Task::whereIn('order_id', $orders)->whereIn('task_status', [4,5])

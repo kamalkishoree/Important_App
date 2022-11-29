@@ -149,16 +149,20 @@
                                         @endif
                                     </div>
                                 </div>
-
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="password" class="control-label">{{__("Manager Type")}}</label>
-                                        <select name="manager_type" class="form-control manager_type">
-                                            <option value="0" <?=(!empty($subadmin) && $subadmin->manager_type==0)?'selected':'';?>>{{__("Manager")}}</option>
-                                            <option value="1" <?=(!empty($subadmin) && $subadmin->manager_type==1)?'selected':'';?>>{{__("Warehouse Manager")}}</option>
-                                        </select>                                        
+                                @php
+                                    $warehouse_mode = checkWarehouseMode();
+                                @endphp
+                                @if($warehouse_mode['show_warehouse_module'] == 1)
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="password" class="control-label">{{__("Manager Type")}}</label>
+                                            <select name="manager_type" class="form-control manager_type">
+                                                <option value="0" <?=(!empty($subadmin) && $subadmin->manager_type==0)?'selected':'';?>>{{__("Manager")}}</option>
+                                                <option value="1" <?=(!empty($subadmin) && $subadmin->manager_type==1)?'selected':'';?>>{{__("Warehouse Manager")}}</option>
+                                            </select>                                        
+                                        </div>
                                     </div>
-                                </div>
+                                @endif
                                 @if(!empty($subadmin) && $subadmin->manager_type == 1)
                                     @php $style = "block;"; @endphp
                                 @else

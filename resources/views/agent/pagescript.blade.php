@@ -151,6 +151,12 @@
                     searchable: false
                 },
                 {
+                    data: 'agent_rating',
+                    name: 'agent_rating',
+                    orderable: false,
+                    searchable: false
+                },
+                {
                     data: 'created_at',
                     name: 'created_at',
                     orderable: true,

@@ -141,4 +141,8 @@ class Agent extends Authenticatable implements  Wallet, WalletFloat
     {
           return json_decode($this->razorpay_bank_json);
     }
+
+    public function agentRating(){
+        return $this->hasMany('App\Model\DriverRating','driver_id', 'id');
+    }
 }

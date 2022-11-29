@@ -228,7 +228,7 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 			Route::any('updatetasks/tasks/{id}', 'TaskController@update');
 			Route::post('single_taskdelete', 'TaskController@deleteSingleTask')->name('tasks.single.destroy');
 
-			Route::get('get-category-warehouse', 'TaskController@getCategoryWarehouse')->name('tasks.getCategoryWarehouse');
+			Route::get('get-category-warehouse', 'TaskController@getCategoryWarehouse')->name('getCategoryWarehouse');
 
 			Route::post('optimize-route', 'DashBoardController@optimizeRoute');
 			Route::post('arrange-route', 'DashBoardController@arrangeRoute');

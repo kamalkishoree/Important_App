@@ -95,6 +95,20 @@ class ClientController extends Controller
             return redirect()->back()->with('success', 'Preference updated successfully!');
         }
 
+        if($request->has('warehouse_mode')){
+            $warehouseMode['show_warehouse_module'] = (!empty($request->warehouse_mode['show_warehouse_module']) && $request->warehouse_mode['show_warehouse_module'] == 'on')? 1 : 0;
+
+            $warehouseMode['show_category_module'] = (!empty($request->warehouse_mode['show_category_module']) && $request->warehouse_mode['show_category_module'] == 'on')? 1 : 0;
+            $data = [];
+            if(checkColumnExists('client_preferences', 'warehouse_mode')){
+                $data = ['warehouse_mode'=>json_encode($warehouseMode)];
+            }
+            ClientPreference::where('client_id', $id)->update($data);
+            
+
+            return redirect()->back()->with('success', 'Preference updated successfully!');
+        }
+
         if(!empty($request->fcm_server_key)){
             $data = ['fcm_server_key'=>$request->fcm_server_key];
             ClientPreference::where('client_id', $id)->update($data);
@@ -270,6 +284,9 @@ class ClientController extends Controller
                     'sender_id' => $request->arkesel_sender_id,
                 ];
             }
+            //for static otp
+            $sms_credentials['static_otp'] = ($request->has('static_otp') && $request->static_otp == 'on') ? 1 : 0;
+         
             $request->merge(['sms_credentials'=>json_encode($sms_credentials)]);
         }
 
@@ -433,13 +450,14 @@ class ClientController extends Controller
     {
         $preference  = ClientPreference::where('client_id', Auth::user()->code)->first();
         $customMode  = json_decode($preference->custom_mode);
+        $warehoseMode  = json_decode($preference->warehouse_mode);
         $client      = Auth::user();
         $subClients  = SubClient::all();
         $smtp        = SmtpDetail::where('id', 1)->first();
         $vehicleType = VehicleType::latest()->get();
         $agent_docs=DriverRegistrationDocument::get();
         $smsTypes = SmsProvider::where('status', '1')->get();
-        return view('configure')->with(['preference' => $preference, 'customMode' => $customMode, 'client' => $client,'subClients'=> $subClients,'smtp_details'=>$smtp, 'agent_docs' => $agent_docs,'smsTypes'=>$smsTypes,'vehicleType'=>$vehicleType]);
+        return view('configure')->with(['preference' => $preference, 'customMode' => $customMode, 'client' => $client,'subClients'=> $subClients,'smtp_details'=>$smtp, 'agent_docs' => $agent_docs,'smsTypes'=>$smsTypes,'vehicleType'=>$vehicleType, 'warehoseMode' => $warehoseMode]);
     }
 
 
