@@ -69,7 +69,7 @@
                                     <label for="title" class="control-label">{{ __("Content") }}</label>
                                     <textarea class="form-control" id="content" placeholder="Meta Keyword" rows="6" name="meta_keyword" cols="10" maxlength="250"></textarea>
                                 </div>
-                                <div class="col-md-2">
+                                <div class="col-md-12">
                                     <label for="title" class="control-label">{{ __("Tags") }}:-<div id="tags" disabled=""></div></label>
                                 </div>
                             </div>
