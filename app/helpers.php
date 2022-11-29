@@ -269,6 +269,27 @@ if (!function_exists('checkWarehouseMode')) {
 
 }
 
+if (!function_exists('checkDashboardMode')) {
+    /** check if column exits in table
+    * @param string $tableName
+    */
+    function checkDashboardMode(){
+        $preference = checkColumnExists('client_preferences','dashboard_mode') ? ClientPreference::select('id', 'dashboard_mode')->first() :'';
+        $data = [
+            'show_dashboard_by_agent_wise' => 0
+        ];
+        if($preference){            
+            $dashboardMode = isset($preference->dashboard_mode) ? json_decode($preference->dashboard_mode) : '';
+        
+            if(!empty($dashboardMode->show_dashboard_by_agent_wise) && $dashboardMode->show_dashboard_by_agent_wise == 1){
+                $data['show_dashboard_by_agent_wise'] = 1; 
+            }            
+        }
+        return $data;
+    }
+
+}
+
 if (!function_exists('decimal_format')) {
     // Number Format according to Client preferences
     function decimal_format($number, $format = "")

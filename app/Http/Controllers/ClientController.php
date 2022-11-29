@@ -70,7 +70,6 @@ class ClientController extends Controller
      */
     public function storePreference(Request $request, $domain = '', $id)
     {
-        // pr($request->all());
         $customerDistenceNotification = '';
         if(!empty($request->customer_notification)){
             $data = ['customer_notification_per_distance'=>json_encode($request->customer_notification)];
@@ -110,13 +109,14 @@ class ClientController extends Controller
         }
 
         if($request->has('dashboard_mode')){
-            $dashboardMode['show_dashboard_by_agent_wise'] = (!empty($request->dashboard_mode['show_dashboard_by_agent_wise']) && $request->dashboard_mode['show_dashboard_by_agent_wise'] == 'on')? 1 : 0;
+
+            $dashboardMode['show_dashboard_by_agent_wise'] = $request->dashboard_mode['show_dashboard_by_agent_wise'];
 
             $data = [];
             if(checkColumnExists('client_preferences', 'dashboard_mode')){
                 $data = ['dashboard_mode'=>json_encode($dashboardMode)];
             }
-
+            
             ClientPreference::where('client_id', $id)->update($data);
 
             return redirect()->back()->with('success', 'Preference updated successfully!');
