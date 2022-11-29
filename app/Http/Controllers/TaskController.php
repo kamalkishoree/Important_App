@@ -2422,7 +2422,7 @@ class TaskController extends BaseController
             Task::where('order_id', $id)->delete();
             $dep_id = null;
             foreach ($request->task_type_id as $key => $value) {
-                if (isset($request->short_name[$key])) {
+                if (isset($request->address[$key])) {
                     $loc = [
                         'short_name'    => $request->short_name[$key],
                         'post_code'     => $request->post_code[$key],
