@@ -19,6 +19,7 @@ class AccountingController extends Controller
      */
     public function index(Request $request)
     {
+        $complete_order_analytics = '';
         if ($request->has('date')) {
             $date_array =  (explode(" to ", $request->date));
 
@@ -27,6 +28,17 @@ class AccountingController extends Controller
         } else {
             $dateform = \Carbon\Carbon::today()->startOfDay();
             $dateto   = \Carbon\Carbon::today()->endOfDay();
+
+           // Get order complete by agent 
+
+            $yesterday                            =  date("Y-m-d", strtotime( '-1 days' ) );
+            $this_day                             =  Order::where(['status'=>'completed'])->whereDay('created_at', now()->day)->count();
+            $prev_day                             =  Order::where(['status'=>'completed'])->whereDay('created_at', $yesterday)->count();
+            $this_week                            =  Order::where(['status'=>'completed'])->whereDay('created_at',Carbon::now()->startOfWeek())->count();
+            $prev_week                            =  Order::where(['status'=>'completed'])->whereDay('created_at',Carbon::now()->subWeek()->endOfWeek())->count();
+            $this_month                           =  Order::where(['status'=>'completed'])->whereDay('created_at',Carbon::now()->subMonth()->startOfMonth())->count();
+            $prev_month                           =  Order::where(['status'=>'completed'])->whereDay('created_at',Carbon::now()->subMonth()->endOfMonth())->count();
+            $complete_order_analytics             =  ['this_day'=>$this_day,'prev_day'=>$prev_day,'this_week'=>$this_week,'prev_week'=>$prev_week,'this_month'=>$this_month,'prev_month'=>$prev_month];
         }
         
        
@@ -120,7 +132,7 @@ class AccountingController extends Controller
                 }
         }
        
-        return view('accounting', compact('totalearning', 'totalagentearning', 'totalorders', 'totalagents', 'agents', 'customers', 'heatLatLog', 'countOrders', 'sumOrders', 'dates', 'type'));
+        return view('accounting', compact('totalearning', 'totalagentearning', 'totalorders', 'totalagents', 'agents', 'customers', 'heatLatLog', 'countOrders', 'sumOrders', 'dates', 'type','complete_order_analytics'));
     }
 
     /**
@@ -186,5 +198,23 @@ class AccountingController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    /**
+     * get order analytics data by agent
+     */
+    public function getAgentOrderAnalytics(Request $request){
+        
+        $agent_id           = $request->agent_id;
+        $yesterday          =  date("Y-m-d", strtotime( '-1 days' ) );
+        $this_day           =  Order::where(['status'=>'completed','driver_id'=>$agent_id])->whereDay('created_at', now()->day)->count();
+        $prev_day           =  Order::where(['status'=>'completed','driver_id'=>$agent_id])->whereDay('created_at', $yesterday)->count();
+        $this_week          =  Order::where(['status'=>'completed','driver_id'=>$agent_id])->whereDay('created_at',Carbon::now()->startOfWeek())->count();
+        $prev_week          =  Order::where(['status'=>'completed','driver_id'=>$agent_id])->whereDay('created_at',Carbon::now()->subWeek()->endOfWeek())->count();
+        $this_month         =  Order::where(['status'=>'completed','driver_id'=>$agent_id])->whereDay('created_at',Carbon::now()->subMonth()->startOfMonth())->count();
+        $prev_month         =  Order::where(['status'=>'completed','driver_id'=>$agent_id])->whereDay('created_at',Carbon::now()->subMonth()->endOfMonth())->count();
+        $result             =  json_encode(['this_day'=>$this_day,'prev_day'=>$prev_day,'this_week'=>$this_week,'prev_week'=>$prev_week,'this_month'=>$this_month,'prev_month'=>$prev_month]);
+        return $result;
+        
     }
 }

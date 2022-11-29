@@ -6,6 +6,11 @@
     <link href="{{asset('assets/libs/selectize/selectize.min.css')}}" rel="stylesheet" type="text/css" />
 
     <style>
+        td.view_analytics {
+            text-decoration: underline;
+            color: blue;
+            cursor: pointer;
+        }
         #map {
         height: 485px;
         /* The height is 400 pixels */
@@ -81,90 +86,134 @@
                 </div>
             </div>
 
+           
+            <div class="row">
 
-        <div class="row">
+                <div class="col-md-12">
+                    <h3 class="page-title">{{__("Analytics")}}</h3>
+                </div>
 
-            <div class="col-md-12">
-                <h3 class="page-title">{{__("Analytics")}}</h3>
-            </div>
-
-            <div class="col-md-6 col-xl-3">
-                <div class="widget-rounded-circle card-box">
-                    <div class="row">
-                        <div class="col-6">
-                            <div class="avatar-lg rounded-circle bg-soft-primary border-primary border">
-                               <i class="fe-heart font-22 avatar-title text-primary"></i>
+                <div class="col-md-6 col-xl-3">
+                    <div class="widget-rounded-circle card-box">
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="avatar-lg rounded-circle bg-soft-primary border-primary border">
+                                <i class="fe-heart font-22 avatar-title text-primary"></i>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="text-right">
-                                <h3 class="text-dark mt-1"><span data-plugin="counterup">{{$totalearning}}</span></h3>
-                                <p class="text-muted mb-1 text-truncate">{{__("Platform Earning")}}</p>
+                            <div class="col-6">
+                                <div class="text-right">
+                                    <h3 class="text-dark mt-1"><span data-plugin="counterup">{{$totalearning}}</span></h3>
+                                    <p class="text-muted mb-1 text-truncate">{{__("Platform Earning")}}</p>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-md-6 col-xl-3">
-                <div class="widget-rounded-circle card-box">
-                    <div class="row">
-                        <div class="col-6">
-                            <div class="avatar-lg rounded-circle bg-soft-success border-success border">
-                                <i class="fe-shopping-cart font-22 avatar-title text-success"></i>
+                <div class="col-md-6 col-xl-3">
+                    <div class="widget-rounded-circle card-box">
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="avatar-lg rounded-circle bg-soft-success border-success border">
+                                    <i class="fe-shopping-cart font-22 avatar-title text-success"></i>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="text-right">
-                                <h3 class="text-dark mt-1"><span data-plugin="counterup">{{$totalagentearning}}</span></h3>
-                                <p class="text-muted mb-1 text-truncate">{{__(getAgentNomenclature()."s's Earning")}}</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6 col-xl-3">
-                <div class="widget-rounded-circle card-box">
-                    <div class="row">
-                        <div class="col-6">
-
-                            <div class="avatar-lg rounded-circle bg-soft-info border-info border">
-                                <i class="fe-bar-chart-line- font-22 avatar-title text-info"></i>
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="text-right">
-                                <h3 class="text-dark mt-1"><span data-plugin="counterup">{{$totalorders}}</span></h3>
-                                <p class="text-muted mb-1 text-truncate">{{__("Orders")}}</p>
+                            <div class="col-6">
+                                <div class="text-right">
+                                    <h3 class="text-dark mt-1"><span data-plugin="counterup">{{$totalagentearning}}</span></h3>
+                                    <p class="text-muted mb-1 text-truncate">{{__(getAgentNomenclature()."s's Earning")}}</p>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
+                <div class="col-md-6 col-xl-3">
+                    <div class="widget-rounded-circle card-box">
+                        <div class="row">
+                            <div class="col-6">
 
-            <div class="col-md-6 col-xl-3">
-                <div class="widget-rounded-circle card-box">
-                    <div class="row">
-                        <div class="col-6">
-
-                            <div class="avatar-lg rounded-circle bg-soft-warning border-warning border">
-                                <i class="fe-eye font-22 avatar-title text-warning"></i>
+                                <div class="avatar-lg rounded-circle bg-soft-info border-info border">
+                                    <i class="fe-bar-chart-line- font-22 avatar-title text-info"></i>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="text-right">
+                                    <h3 class="text-dark mt-1"><span data-plugin="counterup">{{$totalorders}}</span></h3>
+                                    <p class="text-muted mb-1 text-truncate">{{__("Orders")}}</p>
+                                </div>
                             </div>
                         </div>
-                        <div class="col-6">
-                            <div class="text-right">
-                                <h3 class="text-dark mt-1"><span data-plugin="counterup">{{$totalagents}}</span></h3>
-                                <p class="text-muted mb-1 text-truncate">{{__(getAgentNomenclature()."s")}}</p>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-xl-3">
+                    <div class="widget-rounded-circle card-box">
+                        <div class="row">
+                            <div class="col-6">
+
+                                <div class="avatar-lg rounded-circle bg-soft-warning border-warning border">
+                                    <i class="fe-eye font-22 avatar-title text-warning"></i>
+                                </div>
                             </div>
+                            <div class="col-6">
+                                <div class="text-right">
+                                    <h3 class="text-dark mt-1"><span data-plugin="counterup">{{$totalagents}}</span></h3>
+                                    <p class="text-muted mb-1 text-truncate">{{__(getAgentNomenclature()."s")}}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <h3 class="page-title">{{__("Agent Analytics")}}</h3>
+                </div>
+                <div class="col-12">
+                    <div class="card-box pb-0 h-100">
+                        <div class="Agent_list mb-2">
+                            <label for="agent_name">Select Agent Name</label>
+                            <select name="agent_name" id="agent_name" class="form-control">
+                                <option value="">Select</option>
+                                @foreach ($agents as $agent)
+                                    <option value="{{ $agent->id}}">{{ $agent->name}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-borderless table-hover table-nowrap table-centered m-0">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th class="bg-success text-white">Today Day</th>
+                                    <th class="bg-secondary text-white">Prev Day</th>
+                                    <th class="bg-success text-white">This Week</th>
+                                    <th class="bg-secondary text-white">Prev Week</th>
+                                    <th class="bg-success text-white">This Month</th>
+                                    <th class="bg-secondary text-white">Prev Month</th>
+                                </tr>
+                            </thead>
+                            <tbody id="agent_analytics_records">
+                                @if($complete_order_analytics)
+                                <tr>
+                                    <td @if($complete_order_analytics['this_day'] > 0) class="view_analytics" data-atype="this_day" @endif>{{ $complete_order_analytics['this_day'] }}</td>
+                                    <td @if($complete_order_analytics['prev_day'] > 0) class="view_analytics" data-atype="prev_day" @endif>{{ $complete_order_analytics['prev_day'] }}</td>
+                                    <td @if($complete_order_analytics['this_week'] > 0) class="view_analytics" data-atype="this_week" @endif>{{ $complete_order_analytics['this_week'] }}</td>
+                                    <td @if($complete_order_analytics['prev_week'] > 0) class="view_analytics" data-atype="prev_week" @endif>{{ $complete_order_analytics['prev_week'] }}</td>
+                                    <td @if($complete_order_analytics['this_month'] > 0) class="view_analytics" data-atype="this_month" @endif>{{ $complete_order_analytics['this_month'] }}</td>
+                                    <td @if($complete_order_analytics['prev_month'] > 0) class="view_analytics" data-atype="prev_month" @endif>{{ $complete_order_analytics['prev_month'] }}</td>
+                                </tr>
+                               @endif
+                            </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
             </div>
 
-
-        </div>
-
-
-        <div class="row">
+        <div class="row mt-2">
             <div class="col-lg-4">
                 <div class="card-box pb-0 h-100">
                     <div >
@@ -247,7 +296,7 @@
                                     </td>
 
                                     <td>
-                                        <h5 class="m-0 font-weight-normal">{{$agent->name}}</h5>
+                                        <h5 class="m-0 font-weight-normal ">{{$agent->name}}</h5>
                                         <p class="mb-0 text-muted"><small>{{__("Member Since")}} {{ \Carbon\Carbon::parse($agent->created_at)->format('Y')}}</small></p>
                                     </td>
 
@@ -328,7 +377,7 @@
         </div>
 
 
-
+        <div id="analytics_modal"></div>
 
     </div> <!-- container -->
 
@@ -547,6 +596,88 @@
         $('#chatreset').submit();
     }
 
+
+    /***
+     *  get order analytics data by agent
+    */
+  
+    $( document ).delegate( "#agent_name", "change", function() {
+        var agent_id = $(this).val();
+        $.ajax({
+            url: "{{ route('agent.complete.order') }}",
+            type: "POST",
+            data: {
+                "_token": "{{ csrf_token() }}",
+                agent_id: agent_id,
+            },
+            success: function(response) {
+               
+               $("#agent_analytics_records").empty();
+               var obj = jQuery.parseJSON(response);
+               var this_day,prev_day,prev_week,this_week,this_month,prev_month;
+               var class1,class2,class3,class4,class5,class6;
+               
+               this_day     = obj.this_day;
+               prev_day     = obj.prev_day;
+               this_week    = obj.this_week;
+               prev_week    = obj.prev_week;
+               this_month   = obj.this_month;
+               prev_month   = obj.prev_month;
+               class1 = class2 = class3 = class4 = class5= class6= '';
+               if(this_day > 0){
+                 class1 = 'class="view_analytics" data-atype="this_day"';
+               }
+               if(prev_day > 0){
+                 class2 = 'class="view_analytics" data-atype="prev_day"';
+               }
+               if(this_week > 0){
+                 class3 = 'class="view_analytics" data-atype="this_week"';
+               }
+               if(prev_week > 0){
+                 class4 = 'class="view_analytics" data-atype="prev_week"';
+               }
+               if(this_month > 0){
+                 class5 = 'class="view_analytics" data-atype="this_month"';
+               }
+               if(prev_month > 0){
+                 class6 = 'class="view_analytics" data-atype="prev_month"';
+               }
+
+
+               $("#agent_analytics_records").html('<tr> <td '+class1+'>'+this_day+'</td> <td '+class2+'>'+prev_day+'</td> <td '+class3+'>'+this_week+'</td> <td '+class4+'>'+prev_week+'</td> <td '+class5+'>'+this_month+'</td> <td '+class6+'>'+prev_month+'</td> </tr>');
+            },
+        });
+    });
+
+
+    /** 
+     * Show all agents which has completed order
+    */
+
+    $( document ).delegate( ".view_analytics", "click", function() {
+       
+
+        var data_type   = $(this).attr('data-atype');
+        var agent_id    = $("#agent_name").val();
+        console.log('data_type',data_type,'agent_name',agent_name);
+        $("#analytics_modal").empty();
+        $("#analytics_modal").html('<div class="modal fade" id="agent_analytics_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true"> <div class="modal-dialog modal-lg" role="document"> <div class="modal-content"> <div class="modal-header"> <h5 class="modal-title" id="exampleModalLabel">Agent Analytics</h5> <button type="button" class="close" data-dismiss="modal" aria-label="Close"> <span aria-hidden="true">&times;</span> </button> </div> <div class="modal-body"> ... </div> <!--<div class="modal-footer"> <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> <button type="button" class="btn btn-primary">Save changes</button> </div> </div> </div>--></div>');
+        $("#agent_analytics_modal").modal('show');
+        $.ajax({
+            url: "{{ route('agent.complete.order') }}",
+            type: "POST",
+            data: {
+                "_token": "{{ csrf_token() }}",
+                agent_id: agent_id,
+            },
+            success: function(response) {
+            
+                
+            },
+        });
+
+       
+    });
     </script>
 
 @endsection
