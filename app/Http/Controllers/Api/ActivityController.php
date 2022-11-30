@@ -247,7 +247,8 @@ class ActivityController extends BaseController
             'heading_angle'     => $request->heading_angle ?? 0,
         ];
 
-        if($preferences->is_cab_pooling_toggle == 0){
+        $is_cab_pooling_toggle = isset($preferences->is_cab_pooling_toggle)?$preferences->is_cab_pooling_toggle:0;
+        if($is_cab_pooling_toggle == 0){
             $request->is_pooling_available = 0;
         }
 
