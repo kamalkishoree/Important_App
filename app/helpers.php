@@ -1,4 +1,6 @@
 <?php
+
+use App\Model\AgentSmsTemplate;
 use Carbon\Carbon;
 use App\Model\ClientPreference;
 use App\Model\Client as ClientData;
@@ -153,3 +155,23 @@ function getAgentNomenclature()
     $reference = ClientPreference::first();
     return (empty($reference->agent_name))?'Agent':$reference->agent_name;
 }
+
+ /**
+     * sendSmsTemplate dynamic selection and replace tags
+     */
+    function sendSmsTemplate($slug,$data)
+    {
+        $smsTemp = AgentSmsTemplate::where('slug',$slug)->select('content','tags','template_id')->first();
+        $smsBody = $smsTemp->content;
+        if(isset($smsTemp->tags) && !empty($smsTemp->tags))
+        {
+            $tages = explode(',',$smsTemp->tags);
+            foreach($tages as $tag)
+            {
+                $value = $data[$tag]??'';
+                $smsBody = str_replace($tag,$value,$smsBody);
+            }
+        }
+        $sms = array('body'=>$smsBody,'template_id'=>$smsTemp->template_id??'');
+        return $sms;
+    }

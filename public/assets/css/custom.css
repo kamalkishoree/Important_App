@@ -1172,9 +1172,9 @@ body .tagsinput .tag {
     padding: 10px 20px;
 }
 
-.card_outer {
+/* .card_outer {
     height: calc(100vh - 234px);
-}
+} */
 
 .map-outer {
     min-height: calc(100vh - 284px);
@@ -1526,9 +1526,9 @@ span.copied_txt {
     .add_new_geo #map-canvas {
         height: calc(100vh - 310px) !important;
     }
-    .add_new_geo .card_outer {
+    /* .add_new_geo .card_outer {
         height: calc(100vh - 260px) !important;
-    }
+    } */
     .pic-left {
         flex: 0 0 48px;
         max-width: 48px;

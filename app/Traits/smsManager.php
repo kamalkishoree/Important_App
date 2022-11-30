@@ -5,6 +5,7 @@ use Illuminate\Support\Collection;
 use GuzzleHttp\Client;
 use Log;
 use Unifonic;
+use Twilio\Rest\Client as TwilioClient;
 trait smsManager{
 
   public function __construct()
@@ -13,16 +14,71 @@ trait smsManager{
   }
 
 
-    public function mTalkz_sms($to,$message,$crendentials)
+    function sendSmsNew($to, $body){
+        try{
+            $body = $body['body']??'';
+            $template_id = $body['template_id']??''; //sms Template_id
+            $client_preference =  getClientPreferenceDetail();
+            if($client_preference->sms_provider == 1)
+            {
+                $credentials = json_decode($client_preference->sms_credentials);
+                $sms_key = (isset($credentials->sms_key)) ? $credentials->sms_key : $client_preference->sms_provider_key_1;
+                $sms_secret = (isset($credentials->sms_secret)) ? $credentials->sms_secret : $client_preference->sms_provider_key_2;
+                $sms_from  = (isset($credentials->sms_from)) ? $credentials->sms_from : $client_preference->sms_provider_number;
+
+                $client = new TwilioClient($sms_key, $sms_secret);
+                $client->messages->create($to, ['from' => $sms_from, 'body' => $body]);
+            }elseif($client_preference->sms_provider == 2) //for mtalkz gateway
+            {
+                $credentials = json_decode($client_preference->sms_credentials);
+                $send = $this->mTalkz_sms($to,$body,$credentials,$template_id);
+            }elseif($client_preference->sms_provider == 3) //for mazinhost gateway
+            {
+                $credentials = json_decode($client_preference->sms_credentials);
+                $send = $this->mazinhost_sms($to,$body,$credentials);
+            }elseif($client_preference->sms_provider == 4) //for unifonic gateway
+            {
+                $crendentials = json_decode($client_preference->sms_credentials);
+                $send = $this->unifonic($to,$body,$crendentials);
+            }
+            elseif($client_preference->sms_provider == 5) //for arkesel_sms gateway
+            {
+                $crendentials = json_decode($client_preference->sms_credentials);
+                $send = $this->arkesel_sms($to,$body,$crendentials);
+                if( isset($send->code) && $send->code != 'ok'){
+                    return $this->error($send->message, 404);
+                }
+
+            }else{
+                $credentials = json_decode($client_preference->sms_credentials);
+                $sms_key = (isset($credentials->sms_key)) ? $credentials->sms_key : $client_preference->sms_provider_key_1;
+                $sms_secret = (isset($credentials->sms_secret)) ? $credentials->sms_secret : $client_preference->sms_provider_key_2;
+                $sms_from  = (isset($credentials->sms_from)) ? $credentials->sms_from : $client_preference->sms_provider_number;
+                $client = new TwilioClient($sms_key, $sms_secret);
+                $client->messages->create($to, ['from' => $sms_from, 'body' => $body]);
+            }
+        }
+        catch(\Exception $e){
+            \Log::info($e->getMessage());
+            return $this->error($e->getMessage(), $e->getCode());
+        }
+        return $this->success([], __('An otp has been sent to your phone. Please check.'), 200);
+    }
+
+
+  
+
+
+    public function mTalkz_sms($to,$message,$crendentials,$template_id = '')
     {
         $api_url = "http://msg.mtalkz.com/V2/http-api.php";
         $to_number = substr($to, 1);
-        $endpoint = $api_url.'?apikey='.$crendentials->api_key.'&senderid='.$crendentials->sender_id.'&number='.$to_number.'&message='.$message.'&format=json';
+        $endpoint = $api_url.'?apikey='.$crendentials->api_key.'&senderid='.$crendentials->sender_id.'&number='.$to_number.'&message='.$message.'&format=json&template_id='.$template_id;
         $response=$this->getGuzzle($endpoint);
         return $response;
     }
 
-    public function mazinhost($to,$message,$crendentials)
+    public function mazinhost_sms($to,$message,$crendentials)
     {
         $curl = curl_init();
 

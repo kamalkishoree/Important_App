@@ -78,7 +78,7 @@
                         return full.order_number;
                     }},
                     {data: 'customer_id', name: 'customer_id', orderable: true, searchable: false},
-                    {data: 'customer_name', name: 'customer_name', orderable: true, searchable: false},
+                    {data: 'customer_name', name: 'customer_name', orderable: true, searchable: true},
                     {data: 'phone_number', name: 'phone_number', orderable: true, searchable: false},
                     {data: 'agent_name', name: 'agent_name', orderable: true, searchable: false, "mRender": function ( data, type, full ) {
                         if(full.status=='unassigned')
