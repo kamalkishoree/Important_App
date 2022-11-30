@@ -135,6 +135,14 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                     </div>
                                     <p class="text-muted font-15 mb-0">{{__("Auto Payout")}}</p>
                                     </form>
+
+                                    @if(isset($preferences) && $preferences->auto_payout =="1")
+                                        <form method="POST" action="{{route('preference', Auth::user()->code)}}">
+                                            @csrf
+                                            <input type="number" name="charge_percent_from_agent" id="" class="form-control" value="{{ $preferences->charge_percent_from_agent ?? '' }}">
+                                            <button type="submit">Save</button>
+                                        </form>
+                                    @endif
                                 </div>
                             </div>
                             <div class="col-sm-4 col-md-3 mb-3 mb-md-0">
