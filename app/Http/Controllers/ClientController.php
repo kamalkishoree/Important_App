@@ -313,7 +313,7 @@ class ClientController extends Controller
 
         unset($request['arkesel_api_key']);
         unset($request['arkesel_sender_id']);
-        if( !empty($request['charge_percent_from_agent']) ) {
+        if( isset($request['charge_percent_from_agent']) ) {
             unset($request['charge_percent_from_agent']);
         }
 
