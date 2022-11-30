@@ -81,7 +81,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
 
         <div class="row">
             <div class="col-12">
-                <div class="card widget-inline">
+                <div class="card widget-inline main-card-header">
                     <div class="card-body p-2">
                         <div class="row">
                             <div class="col-sm-6 col-md-3 mb-3 mb-md-0">
@@ -131,7 +131,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
         <div class="row">
             <div class="col-12">
                 <div class="card">
-                    <div class="card-body">
+                    <div class="card-body custom-body-table">
                         <div class="row">
                             <div class="col-sm-12">
                                 <div class="text-sm-left">
@@ -154,7 +154,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                 </div>
                             </div>
                             @csrf
-                            <div class="col-md-5">
+                            <div class="col-md-12">
                                 <form class="mb-0" name="getTask" id="getTask" method="get" action="{{ route('tasks.index') }}">
                                     <div class="login-form">
                                         <ul class="list-inline mb-0">
@@ -206,7 +206,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                            
                         </div>
                         <input type="hidden" id="routes-listing-status" value="unassigned">
-                        <div class="table-responsive mn-4">
+                        <div class="table-responsive mn-2">
                             <table class="table table-striped dt-responsive nowrap w-100 agents-datatable" id="agents-datatable">
                                 <thead>
                                     <tr>

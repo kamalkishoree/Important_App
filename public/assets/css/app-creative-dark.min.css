@@ -194,10 +194,10 @@ body[data-sidebar-size=condensed] .left-side-menu {
   width: 70px !important;
   z-index: 5;
 }
-body[data-sidebar-size=condensed] .left-side-menu .simplebar-mask,
+/* body[data-sidebar-size=condensed] .left-side-menu .simplebar-mask,
 body[data-sidebar-size=condensed] .left-side-menu .simplebar-content-wrapper {
   overflow: visible !important;
-}
+} */
 body[data-sidebar-size=condensed] .left-side-menu .simplebar-scrollbar {
   display: none !important;
 }
@@ -324,9 +324,9 @@ body[data-sidebar-size=condensed] .user-box {
 }
 
 @media (min-width: 768px) {
-  body[data-sidebar-size=condensed]:not([data-layout=compact]) {
+  /* body[data-sidebar-size=condensed]:not([data-layout=compact]) {
     min-height: 1750px;
-  }
+  } */
 }
 @media (max-width: 767.98px) {
   .pro-user-name {

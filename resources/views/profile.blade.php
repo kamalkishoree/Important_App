@@ -148,7 +148,7 @@ box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.15);border-radius: 10px;width: 100%;disp
             <form id="UpdateClient" method="post" action="{{route('profile.update',Auth::user()->code)}}" enctype="multipart/form-data">
                 @method('PUT')
                 @csrf
-                <div class="col-md-8">
+                <div class="col-md-8 mx-auto col-sm-12 col-lg-8">
                     <div class="card">
                         <div class="card-body">
                             <h4 class="header-title">{{__("Organization details")}}</h4>
@@ -197,7 +197,7 @@ box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.15);border-radius: 10px;width: 100%;disp
                                     </div>
                                 </div>
                             </div>
-                            <div class="row">
+                            <div class="row flex">
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label for="name" class="control-label">{{__("NAME")}}</label>
@@ -302,13 +302,13 @@ box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.15);border-radius: 10px;width: 100%;disp
                 </div>
             </form>
 
-            <div class="col-md-8">
+            <div class="col-md-8 mx-auto col-sm-12 col-lg-8">
                 <div class="card">
                     <div class="card-body">
                         <form method="post" action="{{route('client.password.update')}}">
                             @csrf
                             <h4 class="header-title">{{__("Change Password")}}</h4>
-                            <div class="row mb-2">
+                            <div class="row flex mb-2">
                                 <div class="col-md-4">
                                     <div class="form-group mb-3">
                                         <label for="old_password">{{__("Old Password")}}</label>

@@ -148,7 +148,7 @@ $agentslocations[] = $defaultmaplocation;
                         <div class="newcheckit">
                             <div class="row d-flex align-items-center" class="mb-0">
                                 <div class="col-md-3 col-xl-2 col-2">
-                                    <span class="profile-circle {{$color[rand(0,7)]}}">{{ substr(ucfirst($item['name']), 0, 2) }}</span>
+                                    <span class="profile-circle pro-name {{$color[rand(0,7)]}}">{{ substr(ucfirst($item['name']), 0, 2) }}</span>
                                 </div>
                                 <div class="col-md-9 col-xl-10 col-10">
                                     <h6 class="header-title">{{ ucfirst($item['name']) }}</h6>
@@ -217,7 +217,7 @@ $agentslocations[] = $defaultmaplocation;
                             <div class="card no-border-radius">
                                 <div class="card-header ml-2" id="by{{ $agent['id'] }}">
 
-                                        <a class="profile-block collapsed" role="button"
+                                        <a class="profile-block collapsed pro-block" role="button"
                                             data-toggle="collapse" href="#collapse{{ $agent['id'] }}"
                                             aria-expanded="false"
                                             aria-controls="collapse{{ $agent['id'] }}">
