@@ -161,6 +161,13 @@ class ClientController extends Controller
             ClientPreference::where('client_id', $id)->update($data);
             return redirect()->back()->with('success', 'Preference updated successfully!');
         }
+
+        if(checkColumnExists('client_preferences', 'charge_percent_from_agent') && $request->has('charge_percent_from_agent')){
+            
+            $data = ['charge_percent_from_agent'=> trim($request->charge_percent_from_agent)];
+            ClientPreference::where('client_id', $id)->update($data);
+            return redirect()->back()->with('success', 'Preference updated successfully!');
+        }
         
         $client = Client::where('code', $id)->firstOrFail();
         # if submit custom domain by client
@@ -306,6 +313,9 @@ class ClientController extends Controller
 
         unset($request['arkesel_api_key']);
         unset($request['arkesel_sender_id']);
+        if( isset($request['charge_percent_from_agent']) ) {
+            unset($request['charge_percent_from_agent']);
+        }
 
         if($request->has('cancel_verify_edit_order_config')){
             $request->request->add(['verify_phone_for_driver_registration' => ($request->has('verify_phone_for_driver_registration') && $request->verify_phone_for_driver_registration == 'on') ? 1 : 0]);
