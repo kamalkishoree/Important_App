@@ -100,7 +100,7 @@
         </div> --}}
         
         <div class="col-12">
-            <div class="card">
+            <div class="card main-table-card">
                 <div class="card-body">
                     <div class="row mb-2">
                         <div class="col-sm-8">
