@@ -163,7 +163,8 @@ class ClientController extends Controller
         }
 
         if(checkColumnExists('client_preferences', 'charge_percent_from_agent') && $request->has('charge_percent_from_agent')){
-            $data = ['charge_percent_from_agent'=>$request->charge_percent_from_agent];
+            
+            $data = ['charge_percent_from_agent'=> trim($request->charge_percent_from_agent)];
             ClientPreference::where('client_id', $id)->update($data);
             return redirect()->back()->with('success', 'Preference updated successfully!');
         }
@@ -312,7 +313,9 @@ class ClientController extends Controller
 
         unset($request['arkesel_api_key']);
         unset($request['arkesel_sender_id']);
-        unset($request['charge_percent_from_agent']);
+        if( !empty($request['charge_percent_from_agent']) ) {
+            unset($request['charge_percent_from_agent']);
+        }
 
         if($request->has('cancel_verify_edit_order_config')){
             $request->request->add(['verify_phone_for_driver_registration' => ($request->has('verify_phone_for_driver_registration') && $request->verify_phone_for_driver_registration == 'on') ? 1 : 0]);
