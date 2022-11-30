@@ -404,10 +404,16 @@ class TaskController extends BaseController
             Order::where('id', $order_details_new->id)->update(['is_comm_settled' => 1]);
             $payout_option_id = $agent_default_active_payment->payment_option_id;
             
+            $amount_deduction = 0;
+            if(!empty($client_prefrerence->charge_percent_from_agent)) {
+                $commission_deduct_percentage = $client_prefrerence->charge_percent_from_agent;
+                $amount_deduction = $order_details_new->driver_cost * ($commission_deduct_percentage/100);
+            }
+
             $objetoRequest = new \Illuminate\Http\Request();
             $objetoRequest->setMethod('POST');
             $objetoRequest->request->add([
-                'amount' => ($order_details_new->driver_cost != NULL)?$order_details_new->driver_cost:0,
+                'amount' => ($order_details_new->driver_cost != NULL)?($order_details_new->driver_cost - $amount_deduction):0,
                 'agent_id' => $order_details_new->driver_id
             ]);
             
