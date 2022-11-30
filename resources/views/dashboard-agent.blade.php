@@ -569,6 +569,7 @@ $('.submitoptimizeForm').click(function(){
                     if(response!="Try again later")
                     {
                         loadTeams(1, 1);
+                        loadOrders(1, 1);
                         spinnerJS.hideSpinner();
                     }else{
                         alert(response);

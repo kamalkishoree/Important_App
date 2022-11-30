@@ -74,7 +74,7 @@
                             </div>
                             <div class="col-3">
                                 <button class="assigned-btn float-right mb-2 {{$pickup_class}}">{{__($tasktype)}}</button>
-                                <button class="assigned-btn float-right {{$color_class}}">{{__($st)}}</button>
+                                <button class="assigned-btn float-right {{$color_class}}">{{ucfirst($orders['status'])}}</button>
                             </div>
                         </div>
                     </div>
