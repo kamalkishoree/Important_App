@@ -56,6 +56,30 @@ trait GlobalFunction{
         }
     
     }
+
+    public function AgentOrderAnalytics($data,$type){
+        if($data){
+            $order_assigned = $order_unassigned  = $order_completed = $order_amount = 0;
+            $statusArr = [];
+           foreach($data as $order){
+             
+             if($order->status == 'assigned'){
+                $order_assigned += 1; 
+                $order_amount   += $order->order_cost;
+             }else if($order->status == 'unassigned'){
+                $order_unassigned += 1;
+                $order_amount   += $order->order_cost;
+             }
+             else if($order->status == 'completed'){
+                $order_completed += 1;
+                $order_amount   += $order->order_cost;
+             }
+           }
+
+           $statusArr = ['assigned'=>$order_assigned,'unassigned'=>$order_unassigned,'completed'=>$order_completed,'order_amount'=>$order_amount,$type=>$data->count()];
+           return json_encode($statusArr,true);
+        }
+    }
    
    
    

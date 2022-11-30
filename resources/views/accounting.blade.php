@@ -11,6 +11,11 @@
             color: blue;
             cursor: pointer;
         }
+        .agent-list li a.total_amt {
+    color: #000;
+}
+        .agent-list li a{color: #fff;}
+       
         #map {
         height: 485px;
         /* The height is 400 pixels */
@@ -22,12 +27,14 @@
         clear: both;
         display: inline-block;
         }
+        .agent-list li{list-style: none;padding:2px 0px;}
 
         .stv-radio-button {
         position: absolute;
         left: -9999em;
         top: -9999em;
         }
+        .agent-head li {padding: 8px 0px;}
         .stv-radio-button + label {
     float: left;
     padding: 0.3em .8em;
@@ -38,12 +45,15 @@
     background-color: #697480;
     font-size: 12px;
 }
+.agent-list li a {height: 30px;border-radius: 50%;width: 30px;display: flex;align-items: center;justify-content: center;font-size: 12px;cursor: not-allowed !important;}
+.agent-list li a.view_analytics{color: #fff;cursor: pointer !important;}
         .stv-radio-button + label:first-of-type {
         border-radius: 0.7em 0 0 0.7em;
         }
         .stv-radio-button + label:last-of-type {
         border-radius: 0 0.7em 0.7em 0;
         }
+        .ordr-details{font-size: 16px;}
         .stv-radio-button:checked + label {
     background-color: #3c4854;
     border: 1px solid #3c4854;
@@ -187,6 +197,7 @@
                             <table class="table table-borderless table-hover table-nowrap table-centered m-0">
                             <thead class="thead-light">
                                 <tr>
+                                    <th class="bg-info text-white">Order Details</th>
                                     <th class="bg-success text-white">Today Day</th>
                                     <th class="bg-secondary text-white">Prev Day</th>
                                     <th class="bg-success text-white">This Week</th>
@@ -197,13 +208,72 @@
                             </thead>
                             <tbody id="agent_analytics_records">
                                 @if($complete_order_analytics)
+                                @php $order_analytics =  json_decode($complete_order_analytics['this_day']); @endphp
                                 <tr>
-                                    <td @if($complete_order_analytics['this_day'] > 0) class="view_analytics" data-atype="this_day" @endif>{{ $complete_order_analytics['this_day'] }}</td>
-                                    <td @if($complete_order_analytics['prev_day'] > 0) class="view_analytics" data-atype="prev_day" @endif>{{ $complete_order_analytics['prev_day'] }}</td>
-                                    <td @if($complete_order_analytics['this_week'] > 0) class="view_analytics" data-atype="this_week" @endif>{{ $complete_order_analytics['this_week'] }}</td>
-                                    <td @if($complete_order_analytics['prev_week'] > 0) class="view_analytics" data-atype="prev_week" @endif>{{ $complete_order_analytics['prev_week'] }}</td>
-                                    <td @if($complete_order_analytics['this_month'] > 0) class="view_analytics" data-atype="this_month" @endif>{{ $complete_order_analytics['this_month'] }}</td>
-                                    <td @if($complete_order_analytics['prev_month'] > 0) class="view_analytics" data-atype="prev_month" @endif>{{ $complete_order_analytics['prev_month'] }}</td>
+                                    <td>
+                                        <ul class="agent-list agent-head m-0 p-0">
+                                            <li>Completed</li>
+                                            <li>Assigned</li>
+                                            <li>Un Assigned</li>
+                                            <li>Total Amount</li>
+                                        </ul>
+                                    </td>
+                                    <td>
+                                        <ul class="agent-list  m-0 p-0">
+                                            <li><a href="javascript:void(0)" @if($order_analytics->completed > 0) class="view_analytics btn btn-primary" data-status ="completed" data-atype="this_day" @else class="btn btn-secondary" @endif>{{ $order_analytics->completed }}</a></li>
+                                            <li><a href="javascript:void(0)" @if($order_analytics->assigned > 0) class="view_analytics btn btn-primary" data-status ="assigned" data-atype="this_day" @else class="btn btn-secondary" @endif>{{ $order_analytics->assigned }}</a></li>
+                                            <li><a href="javascript:void(0)" @if($order_analytics->unassigned > 0) class="view_analytics btn btn-primary" data-status ="unassigned"  data-atype="this_day" @else class="btn btn-secondary" @endif>{{ $order_analytics->unassigned }}</a></li>
+                                            <li><a href="javascript:void(0)" class="total_amt">{{ $order_analytics->order_amount }}</a></li>
+                                        </ul>
+                                    </td>
+                                    <td>
+                                        @php $order_analytics =  json_decode($complete_order_analytics['prev_day']); @endphp
+                                        <ul class="agent-list  m-0 p-0">
+                                            <li><a href="javascript:void(0)" @if($order_analytics->completed > 0) class="view_analytics btn btn-primary" data-status ="completed" data-atype="prev_day" @else class="btn btn-secondary" @endif>{{ $order_analytics->completed }}</a></li>
+                                            <li><a href="javascript:void(0)" @if($order_analytics->assigned > 0) class="view_analytics btn btn-primary" data-status ="assigned" data-atype="prev_day" @else class="btn btn-secondary" @endif>{{ $order_analytics->assigned }}</a></li>
+                                            <li><a href="javascript:void(0)" @if($order_analytics->unassigned > 0) class="view_analytics btn btn-primary" data-status ="unassigned"  data-atype="prev_day" @else class="btn btn-secondary" @endif>{{ $order_analytics->unassigned }}</a></li>
+                                            <li><a href="javascript:void(0)" class="total_amt">{{ $order_analytics->order_amount }}</a></li>
+                                        </ul>
+                                    </td>
+                                    <td>
+                                        @php $order_analytics =  json_decode($complete_order_analytics['this_week']); @endphp
+                                        <ul class="agent-list  m-0 p-0">
+                                            <li><a href="javascript:void(0)" @if($order_analytics->completed > 0) class="view_analytics btn btn-primary" data-status ="completed" data-atype="prev_day" @else class="btn btn-secondary" @endif>{{ $order_analytics->completed }}</a></li>
+                                            <li><a href="javascript:void(0)" @if($order_analytics->assigned > 0) class="view_analytics btn btn-primary" data-status ="assigned" data-atype="prev_day" @else class="btn btn-secondary" @endif>{{ $order_analytics->assigned }}</a></li>
+                                            <li><a href="javascript:void(0)" @if($order_analytics->unassigned > 0) class="view_analytics btn btn-primary" data-status ="unassigned"  data-atype="prev_day" @else class="btn btn-secondary" @endif>{{ $order_analytics->unassigned }}</a></li>
+                                            <li><a href="javascript:void(0)" class="total_amt">{{ $order_analytics->order_amount }}</a></li>
+                                        </ul>
+                                    </td>
+                                    
+                                    <td>
+                                        @php $order_analytics =  json_decode($complete_order_analytics['prev_week']); @endphp
+                                        <ul class="agent-list  m-0 p-0">
+                                            <li><a href="javascript:void(0)" @if($order_analytics->completed > 0) class="view_analytics btn btn-primary" data-status ="completed" data-atype="prev_day" @else class="btn btn-secondary" @endif>{{ $order_analytics->completed }}</a></li>
+                                            <li><a href="javascript:void(0)" @if($order_analytics->assigned > 0) class="view_analytics btn btn-primary" data-status ="assigned" data-atype="prev_day" @else class="btn btn-secondary" @endif>{{ $order_analytics->assigned }}</a></li>
+                                            <li><a href="javascript:void(0)" @if($order_analytics->unassigned > 0) class="view_analytics btn btn-primary" data-status ="unassigned"  data-atype="prev_day" @else class="btn btn-secondary" @endif>{{ $order_analytics->unassigned }}</a></li>
+                                            <li><a href="javascript:void(0)" class="total_amt">{{ $order_analytics->order_amount }}</a></li>
+                                        </ul>
+                                    </td>
+                                    
+                                    <td>
+                                        @php $order_analytics =  json_decode($complete_order_analytics['this_month']); @endphp
+                                        <ul class="agent-list  m-0 p-0">
+                                            <li><a href="javascript:void(0)" @if($order_analytics->completed > 0) class="view_analytics btn btn-primary" data-status ="completed" data-atype="prev_day" @else class="btn btn-secondary" @endif>{{ $order_analytics->completed }}</a></li>
+                                            <li><a href="javascript:void(0)" @if($order_analytics->assigned > 0) class="view_analytics btn btn-primary" data-status ="assigned" data-atype="prev_day" @else class="btn btn-secondary" @endif>{{ $order_analytics->assigned }}</a></li>
+                                            <li><a href="javascript:void(0)" @if($order_analytics->unassigned > 0) class="view_analytics btn btn-primary" data-status ="unassigned"  data-atype="prev_day" @else class="btn btn-secondary" @endif>{{ $order_analytics->unassigned }}</a></li>
+                                            <li><a href="javascript:void(0)" class="total_amt">{{ $order_analytics->order_amount }}</a></li>
+                                        </ul>
+                                    </td>
+                                     
+                                    <td>
+                                        @php $order_analytics =  json_decode($complete_order_analytics['prev_month']); @endphp
+                                        <ul class="agent-list  m-0 p-0">
+                                            <li><a href="javascript:void(0)" @if($order_analytics->completed > 0) class="view_analytics btn btn-primary" data-status ="completed" data-atype="prev_day" @else class="btn btn-secondary" @endif>{{ $order_analytics->completed }}</a></li>
+                                            <li><a href="javascript:void(0)" @if($order_analytics->assigned > 0) class="view_analytics btn btn-primary" data-status ="assigned" data-atype="prev_day" @else class="btn btn-secondary" @endif>{{ $order_analytics->assigned }}</a></li>
+                                            <li><a href="javascript:void(0)" @if($order_analytics->unassigned > 0) class="view_analytics btn btn-primary" data-status ="unassigned"  data-atype="prev_day" @else class="btn btn-secondary" @endif>{{ $order_analytics->unassigned }}</a></li>
+                                            <li><a href="javascript:void(0)" class="total_amt">{{ $order_analytics->order_amount }}</a></li>
+                                        </ul>
+                                    </td>
                                 </tr>
                                @endif
                             </tbody>
@@ -613,38 +683,52 @@
             success: function(response) {
                
                $("#agent_analytics_records").empty();
-               var obj = jQuery.parseJSON(response);
+               var obj  = jQuery.parseJSON(response);
+               var obj1 = jQuery.parseJSON(obj.this_day);
+               var obj2 = jQuery.parseJSON(obj.prev_day);
+               var obj3 = jQuery.parseJSON(obj.this_week);
+               var obj4 = jQuery.parseJSON(obj.prev_week);
+               var obj5 = jQuery.parseJSON(obj.this_month);
+               var obj6 = jQuery.parseJSON(obj.prev_month);
+
                var this_day,prev_day,prev_week,this_week,this_month,prev_month;
                var class1,class2,class3,class4,class5,class6;
-               
-               this_day     = obj.this_day;
-               prev_day     = obj.prev_day;
-               this_week    = obj.this_week;
-               prev_week    = obj.prev_week;
-               this_month   = obj.this_month;
-               prev_month   = obj.prev_month;
-               class1 = class2 = class3 = class4 = class5= class6= '';
-               if(this_day > 0){
-                 class1 = 'class="view_analytics" data-atype="this_day"';
+               this_day     = obj1.this_day;
+               prev_day     = obj2.prev_day;
+               this_week    = obj3.this_week;
+               prev_week    = obj4.prev_week;
+               this_month   = obj5.this_month;
+               prev_month   = obj6.prev_month;
+               class1       = 'class="btn btn-secondary"';
+               class2       = 'class="btn btn-secondary"';
+               class3       = 'class="btn btn-secondary"';
+               class4       = 'class="btn btn-secondary"';
+               class5       = 'class="btn btn-secondary"';
+               class6       = 'class="btn btn-secondary"';
+                
+           
+               if(this_day > 0 && obj1.completed > 0){
+                 class1 = 'class="view_analytics btn btn-primary" data-atype="this_day"';
                }
                if(prev_day > 0){
-                 class2 = 'class="view_analytics" data-atype="prev_day"';
+                 class2 = 'class="view_analytics btn btn-primary" data-atype="prev_day"';
                }
                if(this_week > 0){
-                 class3 = 'class="view_analytics" data-atype="this_week"';
+                 class3 = 'class="view_analytics btn btn-primary" data-atype="this_week"';
                }
                if(prev_week > 0){
-                 class4 = 'class="view_analytics" data-atype="prev_week"';
+                 class4 = 'class="view_analytics btn btn-primary" data-atype="prev_week"';
                }
                if(this_month > 0){
-                 class5 = 'class="view_analytics" data-atype="this_month"';
+                 class5 = 'class="view_analytics btn btn-primary" data-atype="this_month"';
                }
                if(prev_month > 0){
-                 class6 = 'class="view_analytics" data-atype="prev_month"';
+                 class6 = 'class="view_analytics btn btn-primary" data-atype="prev_month"';
                }
 
+               console.log('class1',class1,'class2',class2,'class3',class3,'class4',class4,'class5',class5,'class6',class6);
 
-               $("#agent_analytics_records").html('<tr> <td '+class1+'>'+this_day+'</td> <td '+class2+'>'+prev_day+'</td> <td '+class3+'>'+this_week+'</td> <td '+class4+'>'+prev_week+'</td> <td '+class5+'>'+this_month+'</td> <td '+class6+'>'+prev_month+'</td> </tr>');
+               $("#agent_analytics_records").html('<tr><td><ul class="agent-list agent-head m-0 p-0"><li>Completed</li><li>Assigned</li><li>Un Assigned</li><li>Total Amount</li></ul></td><td><ul class="agent-list m-0 p-0"><li><a href="javascript:void(0)" '+class1+' data-status="completed">'+obj1.completed+'</a></li><li><a href="javascript:void(0)" '+class1+' data-status="assigned">'+obj1.assigned+'</a></li><li><a href="javascript:void(0)" '+class1+' data-status="unassigned">'+obj1.unassigned+'</a></li><li><a href="javascript:void(0)" class="total_amt">'+obj1.order_amount+'</a></li></ul></td><td><ul class="agent-list m-0 p-0"><li><a href="javascript:void(0)" '+class1+' data-status="completed">'+obj2.completed+'</a></li><li><a href="javascript:void(0)" '+class1+' data-status="assigned">'+obj2.assigned+'</a></li><li><a href="javascript:void(0)" '+class1+' data-status="unassigned">'+obj2.unassigned+'</a></li><li><a href="javascript:void(0)" class="total_amt">'+obj2.order_amount+'</a></li></ul></td><td><ul class="agent-list m-0 p-0"><li><a href="javascript:void(0)" '+class1+' data-status="completed">'+obj3.completed+'</a></li><li><a href="javascript:void(0)" '+class1+' data-status="assigned">'+obj3.assigned+'</a></li><li><a href="javascript:void(0)" '+class1+' data-status="unassigned">'+obj3.unassigned+'</a></li><li><a href="javascript:void(0)" class="total_amt">'+obj3.order_amount+'</a></li></ul></td><td><ul class="agent-list m-0 p-0"><li><a href="javascript:void(0)" '+class1+' data-status="completed">'+obj4.completed+'</a></li><li><a href="javascript:void(0)" '+class1+' data-status="assigned">'+obj4.assigned+'</a></li><li><a href="javascript:void(0)" '+class1+' data-status="unassigned">'+obj4.unassigned+'</a></li><li><a href="javascript:void(0)" class="total_amt">'+obj4.order_amount+'</a></li></ul></td><td><ul class="agent-list m-0 p-0"><li><a href="javascript:void(0)" '+class1+' data-status="completed">'+obj5.completed+'</a></li><li><a href="javascript:void(0)" '+class1+' data-status="assigned">'+obj5.assigned+'</a></li><li><a href="javascript:void(0)" '+class1+' data-status="unassigned">'+obj5.unassigned+'</a></li><li><a href="javascript:void(0)" class="total_amt">'+obj5.order_amount+'</a></li></ul></td> <td><ul class="agent-list m-0 p-0"><li><a href="javascript:void(0)" '+class1+' data-status="completed">'+obj6.completed+'</a></li><li><a href="javascript:void(0)" '+class1+' data-status="assigned">'+obj6.assigned+'</a></li><li><a href="javascript:void(0)" '+class1+' data-status="unassigned">'+obj6.unassigned+'</a></li><li><a href="javascript:void(0)" class="total_amt">'+obj6.order_amount+'</a></li></ul></td></tr>');
             },
         });
     });

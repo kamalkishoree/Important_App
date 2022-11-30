@@ -9,9 +9,13 @@ use App\Model\Order;
 use App\Model\Task;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use App\Traits\GlobalFunction;
+
 
 class AccountingController extends Controller
 {
+    use GlobalFunction;
+
     /**
      * Display a listing of the resource.
      *
@@ -31,14 +35,33 @@ class AccountingController extends Controller
 
            // Get order complete by agent 
 
-            $yesterday                            =  date("Y-m-d", strtotime( '-1 days' ) );
-            $this_day                             =  Order::where(['status'=>'completed'])->whereDay('created_at', now()->day)->count();
-            $prev_day                             =  Order::where(['status'=>'completed'])->whereDay('created_at', $yesterday)->count();
-            $this_week                            =  Order::where(['status'=>'completed'])->whereDay('created_at',Carbon::now()->startOfWeek())->count();
-            $prev_week                            =  Order::where(['status'=>'completed'])->whereDay('created_at',Carbon::now()->subWeek()->endOfWeek())->count();
-            $this_month                           =  Order::where(['status'=>'completed'])->whereDay('created_at',Carbon::now()->subMonth()->startOfMonth())->count();
-            $prev_month                           =  Order::where(['status'=>'completed'])->whereDay('created_at',Carbon::now()->subMonth()->endOfMonth())->count();
-            $complete_order_analytics             =  ['this_day'=>$this_day,'prev_day'=>$prev_day,'this_week'=>$this_week,'prev_week'=>$prev_week,'this_month'=>$this_month,'prev_month'=>$prev_month];
+            $yesterday        =  date("Y-m-d", strtotime( '-1 days' ) );
+            $this_day         =  Order::whereDate('created_at',Carbon::now()->toDateString())->get();
+            $prev_day         =  Order::whereDate('created_at', $yesterday)->get();
+            $this_week        =  Order::whereBetween('created_at', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()])->get();
+            $prev_week        =  Order::whereBetween('created_at', [Carbon::now()->subWeek()->startOfWeek(), Carbon::now()->subWeek()->endOfWeek()])->get();
+            $this_month       =  Order::whereMonth('created_at',Carbon::now()->month)->get();
+            $prev_month       =  Order::whereMonth( 'created_at', '=', Carbon::now()->subMonth()->month)->get();
+
+            if($this_day){
+               $this_day    =  $this->AgentOrderAnalytics($this_day,'this_day');
+            }
+            if($prev_day){
+              $prev_day     =  $this->AgentOrderAnalytics($prev_day,'prev_day');
+            }
+            if($this_week){
+                $this_week  =  $this->AgentOrderAnalytics($this_week,'this_week');
+            }
+            if($prev_week){
+                $prev_week  =  $this->AgentOrderAnalytics($prev_week,'prev_week');
+            }
+            if($this_month){
+                $this_month =  $this->AgentOrderAnalytics($this_month,'this_month');
+            }
+            if($prev_month){
+                $prev_month =  $this->AgentOrderAnalytics($prev_month,'prev_month');
+            }
+            $complete_order_analytics   =  ['this_day'=>$this_day,'prev_day'=>$prev_day,'this_week'=>$this_week,'prev_week'=>$prev_week,'this_month'=>$this_month,'prev_month'=>$prev_month];
         }
         
        
@@ -205,16 +228,36 @@ class AccountingController extends Controller
      */
     public function getAgentOrderAnalytics(Request $request){
         
-        $agent_id           = $request->agent_id;
-        $yesterday          =  date("Y-m-d", strtotime( '-1 days' ) );
-        $this_day           =  Order::where(['status'=>'completed','driver_id'=>$agent_id])->whereDay('created_at', now()->day)->count();
-        $prev_day           =  Order::where(['status'=>'completed','driver_id'=>$agent_id])->whereDay('created_at', $yesterday)->count();
-        $this_week          =  Order::where(['status'=>'completed','driver_id'=>$agent_id])->whereDay('created_at',Carbon::now()->startOfWeek())->count();
-        $prev_week          =  Order::where(['status'=>'completed','driver_id'=>$agent_id])->whereDay('created_at',Carbon::now()->subWeek()->endOfWeek())->count();
-        $this_month         =  Order::where(['status'=>'completed','driver_id'=>$agent_id])->whereDay('created_at',Carbon::now()->subMonth()->startOfMonth())->count();
-        $prev_month         =  Order::where(['status'=>'completed','driver_id'=>$agent_id])->whereDay('created_at',Carbon::now()->subMonth()->endOfMonth())->count();
-        $result             =  json_encode(['this_day'=>$this_day,'prev_day'=>$prev_day,'this_week'=>$this_week,'prev_week'=>$prev_week,'this_month'=>$this_month,'prev_month'=>$prev_month]);
-        return $result;
+        $agent_id         =  $request->agent_id;
+        $yesterday        =  date("Y-m-d", strtotime( '-1 days' ) );
+        $this_day         =  Order::where('driver_id',$agent_id)->whereDate('created_at',Carbon::now()->toDateString())->get();
+        $prev_day         =  Order::where('driver_id',$agent_id)->whereDate('created_at', $yesterday)->get();
+        $this_week        =  Order::where('driver_id',$agent_id)->whereBetween('created_at', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()])->get();
+        $prev_week        =  Order::where('driver_id',$agent_id)->whereBetween('created_at', [Carbon::now()->subWeek()->startOfWeek(), Carbon::now()->subWeek()->endOfWeek()])->get();
+        $this_month       =  Order::where('driver_id',$agent_id)->whereMonth('created_at',Carbon::now()->month)->get();
+        $prev_month       =  Order::where('driver_id',$agent_id)->whereMonth( 'created_at', '=', Carbon::now()->subMonth()->month)->get();
+
+        if($this_day){
+            $this_day    =  $this->AgentOrderAnalytics($this_day,'this_day');
+         }
+         if($prev_day){
+           $prev_day     =  $this->AgentOrderAnalytics($prev_day,'prev_day');
+         }
+         if($this_week){
+             $this_week  =  $this->AgentOrderAnalytics($this_week,'this_week');
+         }
+         if($prev_week){
+             $prev_week  =  $this->AgentOrderAnalytics($prev_week,'prev_week');
+         }
+         if($this_month){
+             $this_month =  $this->AgentOrderAnalytics($this_month,'this_month');
+         }
+         if($prev_month){
+             $prev_month =  $this->AgentOrderAnalytics($prev_month,'prev_month');
+         }
+         $complete_order_analytics   =  ['this_day'=>$this_day,'prev_day'=>$prev_day,'this_week'=>$this_week,'prev_week'=>$prev_week,'this_month'=>$this_month,'prev_month'=>$prev_month];
+
+        return json_encode($complete_order_analytics);
         
     }
 }
