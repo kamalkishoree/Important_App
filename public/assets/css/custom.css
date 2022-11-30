@@ -2026,6 +2026,24 @@ body.dark div#add-pricing-modal .select2-container--default .select2-selection--
 body.dark div#edit-price-modal .select2-container--default .select2-selection--multiple{
     background-color: transparent !important;
 }
+body.dark #sidebar-menu > ul > li > a{
+    color: #dbe9f9;
+}
+body.dark #sidebar-menu .menu-title {
+    color: #dbe9f9;
+}
+body.dark .header-title {
+    color: #dbe9f9;
+}
+body.dark label{
+    color: #dbe9f9;
+}
+body.dark .left-sidebar #accordion .card-header:hover, .left-sidebar #accordion .card-header:focus, .left-sidebar #accordion .card-header:visited {
+    background: #4a5158;
+}
+body.dark .table {
+    color: #dbe9f9;
+}
 /*----------laptop view media css--------------*/
 @media(max-width:1440px){
     body.dark .custom-body-table .dt-buttons.btn-group.flex-wrap {
