@@ -763,6 +763,7 @@
             var address = $("#task-modal-header input[name='address[]']").val();
             var post_code = $("#task-modal-header input[name='post_code[]']").val();
             var cash_to_be_collected = $("#task-modal-header input[name='cash_to_be_collected']").val();
+<<<<<<< HEAD
             if(warehouse_id){
                 err = 0;
                 $(".addspan").hide();
@@ -770,6 +771,11 @@
                 
             } else {  
                 err = 1;
+=======
+            if (address != '') {
+
+            } else {  err = 1;
+>>>>>>> stage
                 $(".addspan").show();
                 return false;
             }
