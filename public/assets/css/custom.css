@@ -2883,3 +2883,31 @@ body.light .card-body.custom-body-table .alert-success {
     height: 5rem !important;
 }
   
+
+.side_head select#team_id {
+    padding: 4px;
+}
+.side_head select#agent_id{
+    padding: 4px; 
+    font-size:11px;
+}
+.left-sidebar p span{
+    font-size:12px;
+    font-weight: 700;
+}
+div#agent_route_container .assigned-btn{width:90px;max-width:120px;}
+.dark .assigned-block{background-color: transparent;}
+.dark #accordion .card-body .assigned-block h5{color:#dbe9f9;}
+.dark #accordion .card-body .assigned-block h5 i{color:#dbe9f9;}
+.dark #accordion .card-body .assigned-block h5 span{color:#dbe9f9;}
+.dark #accordion .card-body .assigned-block h6{color:#dbe9f9;}
+.dark #accordion .card-body .assigned-block h6 span{color:#dbe9f9;}
+.dark #accordion .card-body .assigned-block h6 .vt-top {
+    filter: invert(1);
+}
+.left-side-menu{
+    height: 92% !important;
+}
+div#scrollbar {
+    padding-bottom: 70px !important;
+}

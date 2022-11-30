@@ -28,6 +28,104 @@ class AgentDashBoardController extends Controller
      */
 
     // This function is for sending silent push notification
+
+    public function getTotalDistance($taskids=null, $driverlocation=null)
+    {
+        $points = array();
+        $totaldistance = 0;
+        $distancearray  = [];
+        $loc1 = $loc2 = $prev_latitude = $prev_longitude = 0;
+        for ($i=0;$i<count($taskids);$i++) {
+            $Taskdetail = Task::where('id', $taskids[$i])->with('location')->first();
+            if($i==0)
+            {
+                if (isset($driverlocation['lat'])) {
+                    $distance = $this->GoogleDistanceMatrix($driverlocation['lat'], $driverlocation['long'], $Taskdetail->location->latitude??'', $Taskdetail->location->longitude??'');
+                    $totaldistance += $distance;
+                    $distancearray[] = $distance;
+                } else {
+                    $distancearray[] = 0;
+                }
+                $loc1           = $Taskdetail->location_id;
+                $prev_latitude  = $Taskdetail->location->latitude??'';
+                $prev_longitude = $Taskdetail->location->longitude??'';
+            }else{
+                $loc2 = $Taskdetail->location_id;
+                $checkdistance = LocationDistance::where(['from_loc_id'=>$loc1,'to_loc_id'=>$loc2])->first();
+                if (isset($checkdistance->id)) {
+                    $totaldistance += $checkdistance->distance;
+                    $distancearray[] = $checkdistance->distance;
+                } else {
+                    $distance = $this->GoogleDistanceMatrix($prev_latitude, $prev_longitude, $Taskdetail->location->latitude ?? '', $Taskdetail->location->longitude ?? '');
+                    $totaldistance += $distance;
+                    $distancearray[] = $distance;
+                    $locdata = array('from_loc_id'=>$loc1,'to_loc_id'=>$loc2,'distance'=>$distance);
+                    LocationDistance::create($locdata);
+                }
+                $loc1 = $loc2;
+                $prev_latitude  = $Taskdetail->location->latitude ?? '';
+                $prev_longitude = $Taskdetail->location->longitude ?? '';
+            }
+        }
+        
+        $distance_in_km = number_format($totaldistance/1000, 2);
+        $distance_in_miles = number_format($totaldistance/1609.344, 2);
+        $output['total_distance'] = $totaldistance;
+        $output['distance'] = $distancearray;
+        $output['total_distance_km'] = $distance_in_km . __('km');
+        $output['total_distance_miles'] = $distance_in_miles . __('miles');
+        return $output;
+    }
+
+    // function to get distance between 2 location
+    public function GoogleDistanceMatrix($lat1, $long1, $lat2, $long2)
+    {
+        $client = ClientPreference::where('id', 1)->first();
+        $ch = curl_init();
+        $headers = array('Accept: application/json',
+                   'Content-Type: application/json',
+                   );
+        $url =  'https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&origins='.$lat1.','.$long1.'&destinations='.$lat2.','.$long2.'&key='.$client->map_key_1.'';
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        $response = curl_exec($ch);
+        $result = json_decode($response);
+        curl_close($ch); // Close the connection
+
+        $value =   $result->rows[0]->elements??'';
+        if (isset($value[0]->distance)) {
+            $totalDistance = $value[0]->distance->value;
+        } else {
+            $totalDistance = 0;
+        }
+        return round($totalDistance);
+    }
+
+    public static function splitOrder($orders)
+    {
+        $new_order = [];
+        if (is_array($orders) && count($orders)>0 && !empty($orders)) {
+            $counter = 0;
+            foreach ($orders as $order) {
+                foreach ($order['task'] as $task) {
+                    $new_order[] = $order;
+                    $new_order[$counter]['task_order'] = $task['task_order'];
+                    unset($new_order[$counter]['task']);
+                    $new_order[$counter]['task'][] = $task;
+                    $counter++;
+                }
+            }
+
+            //sort array
+            usort($new_order, function ($a, $b) {
+                return $a['task_order'] <=> $b['task_order'];
+            });
+            return $new_order;
+        } else {
+            return $orders;
+        }
+    }
     public function sendsilentnotification($notification_data)
     {
         $new = [];
@@ -48,7 +146,7 @@ class AgentDashBoardController extends Controller
     public function dashboardTeamData(Request $request)
     {
         $userstatus = isset($request->userstatus)?$request->userstatus:2;
-        $team_id = isset($request->team_id)?$request->team_id:'';
+        $team_ids = isset($request->team_id)?$request->team_id:'';
         $is_load_html = isset($request->is_load_html)?$request->is_load_html:1;
         $auth = Client::where('code', Auth::user()->code)->with(['getAllocation', 'getPreference'])->first();
 
@@ -99,8 +197,8 @@ class AgentDashBoardController extends Controller
             });
         }
 
-        if(!empty($team_id)){
-            $teams = $teams->where('id', $team_id);
+        if(!empty($team_ids)){
+            $teams = $teams->whereIn('id', $team_ids);
         }
 
         $teams = $teams->get();
@@ -380,6 +478,113 @@ class AgentDashBoardController extends Controller
         if($is_load_html == 1)
         {
             return view('agent_dashboard_task_html')->with($data)->render();
+        }else{
+            return json_encode($data);
+        }
+    }
+
+    public function dashboardOrderData(Request $request){
+        $agent_ids = isset($request->agent_id) ? $request->agent_id: '';
+        $checkuserroutes = isset($request->checkuserroutes) ? $request->checkuserroutes: '';
+        $is_load_html = isset($request->is_load_html)?$request->is_load_html:1;
+
+        $auth = Client::where('code', Auth::user()->code)->with(['getAllocation', 'getPreference'])->first();
+
+        $preference  = ClientPreference::where('id', 1)->first(['theme','date_format','time_format']);
+
+        //setting timezone from id
+        $tz = new Timezone();
+        $auth->timezone = $tz->timezone_name(Auth::user()->timezone);
+
+        if(isset($request->routedate)) {
+            $date = Carbon::parse(strtotime($request->routedate))->format('Y-m-d');
+        }else{
+            $date = date('Y-m-d');
+        }
+        $startdate = date("Y-m-d 00:00:00", strtotime($date));
+        $enddate = date("Y-m-d 23:59:59", strtotime($date));
+
+
+        $startdate = Carbon::parse($startdate . @$auth->timezone ?? 'UTC')->tz('UTC');
+        $enddate = Carbon::parse($enddate . @$auth->timezone ?? 'UTC')->tz('UTC');
+
+        //orders
+        $unassigned_orders = array();
+        $un_total_distance = '';
+        $un_order  = Order::where('order_time', '>=', $startdate)->where('order_time', '<=', $enddate)->with(['customer', 'task.location', 'agent'])->get(); 
+
+        if(!empty($checkuserroutes)){
+            $un_order = $un_order->where('status', $checkuserroutes);
+        }
+
+        if(!empty($agent_ids)){
+            $un_order = $un_order->whereIn('driver_id', $agent_ids);
+        }
+
+        if (count($un_order)>=1) {
+            $unassigned_orders = $this->splitOrder($un_order->toarray());
+            if (count($unassigned_orders)>1) {
+                $unassigned_distance_mat = array();
+                $unassigned_points = [];
+                if(!empty($unassigned_orders[0]['task'][0]['location'])){
+                    $unassigned_points[] = array(floatval($unassigned_orders[0]['task'][0]['location']['latitude']),floatval($unassigned_orders[0]['task'][0]['location']['longitude']));
+                }
+                $unassigned_taskids = array();
+                $un_route = array();
+                foreach ($unassigned_orders as $singleua) {
+                    $unassigned_taskids[] = $singleua['task'][0]['id'];
+                    if(!empty($singleua['task'][0]['location'])){
+                        // dd($singleua['task'][0]['location']['latitude']);
+                        $unassigned_points[] = array(floatval($singleua['task'][0]['location']['latitude']),floatval($singleua['task'][0]['location']['longitude']));
+                    }
+
+                    //for drawing route
+                    $s_task = $singleua['task'][0];
+                    if ($s_task['task_type_id'] == 1) {
+                        $nname = 'Pickup';
+                    } elseif ($s_task['task_type_id'] == 2) {
+                        $nname = 'DropOff';
+                    } else {
+                        $nname = 'Appointment';
+                    }
+                    $aappend = array();
+                    $aappend['task_type']             = $nname;
+                    $aappend['task_id']               =  $s_task['id'];
+                    $aappend['latitude']              =  $s_task['location']['latitude'] ?? '';
+                    $aappend['longitude']             = $s_task['location']['longitude'] ?? '';
+                    $aappend['address']               = $s_task['location']['address'] ?? '';
+                    $aappend['task_type_id']          = $s_task['task_type_id'];
+                    $aappend['task_status']           = $s_task['task_status'];
+                    $aappend['team_id']               = 0;
+                    $aappend['driver_name']           = '';
+                    $aappend['driver_id']             = 0;
+                    $aappend['customer_name']         = $singleua['customer']['name'];
+                    $aappend['customer_phone_number'] = $singleua['customer']['phone_number'];
+                    $aappend['task_order']            = $singleua['task_order'];
+                    $un_route[] = $aappend;
+                }
+                $unassigned_distance_mat['tasks'] = implode(',', $unassigned_taskids);
+                $unassigned_distance_mat['distance'] = $unassigned_points;
+                $distancematrix[0] = $unassigned_distance_mat;
+                $first_un_loc = [];
+                if(!empty($unassigned_orders[0]['task'][0]['location'])){
+                    $first_un_loc = array('lat'=>floatval($unassigned_orders[0]['task'][0]['location']['latitude']),'long'=>floatval($unassigned_orders[0]['task'][0]['location']['longitude']));
+                }
+                $final_un_route['driver_detail'] = $first_un_loc;
+                $final_un_route['task_details'] = $un_route;
+                $uniquedrivers[] = $final_un_route;
+
+                $gettotal_un_distance = $this->getTotalDistance($unassigned_taskids);
+
+                $un_total_distance = $gettotal_un_distance['total_distance_miles'];
+            }
+        }
+        
+        $data = array('status' =>"success", 'unassigned_orders' => $unassigned_orders, 'preference' => $preference, 'client_timezone'=>$auth->timezone);
+
+        if($is_load_html == 1)
+        {
+            return view('agent_dashboard_order_html')->with($data)->render();
         }else{
             return json_encode($data);
         }

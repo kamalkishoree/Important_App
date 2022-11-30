@@ -394,6 +394,7 @@ body.menuitem-active .task-block h6 {
 }
 .left-sidebar .card {
   background: transparent !important;
+  box-shadow: none !important;
 }
 .left-sidebar .header-title {
   font-size: .8rem;
@@ -549,6 +550,7 @@ body.light .online {
   margin-top: 10px;
   color:#188118 !important;
   font-weight: bold;
+  border-radius:0 0 10px 10px;
 }
 body.light .offline {
   display: block;

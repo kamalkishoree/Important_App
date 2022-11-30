@@ -75,7 +75,7 @@ $agentslocations[] = $defaultmaplocation;
                                     {!! $turnbyturn !!}
                                 </div>
                             </h6>
-                            <p class="mb-0"><span class="badge badge-primary text-white">{{ $item['name']??'' }}</span></p>
+                            <p class="mb-0"><span class="badge badge-blue text-white">{{ $item['name']??'' }}</span></p>
 
                             <p class="mb-0">{{count($agent['order'])>0?__('Busy '):__('Free ')}}<span>{{$agent['agent_task_count']}} {{__('Tasks')}}</span> {!!$agent['total_distance']==''?'':' <i class="fas fa-route"></i>'!!}<span class="dist_sec totdis{{ $agent['id'] }}  ml-1">{{ $agent['total_distance'] }}</span></p>
                         </div>
