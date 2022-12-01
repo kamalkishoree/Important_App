@@ -78,6 +78,7 @@
                     </div>
                 </div>
             </div>
+            {{-- @dd($unassigned_orders) --}}
             <div id="scrollbar" class="col-md-3 col-xl-3 left-sidebar pt-3">
                 <div class="side_head mb-2 p-2">
                     <div class="d-flex align-items-center justify-content-center mb-2"> 
@@ -118,6 +119,7 @@
     </div>
 @endsection
 @include('modals.optimize-route')
+@include('modals.route-assign-agent')
 <?php   // for setting default location on map
     $agentslocations = array();
     if(!empty($agents)){
@@ -802,6 +804,56 @@ function initializeSortable()
         }
     });
 }
+
+$(document).on('click', 'button.unassigned-badge', function(){
+    $("#route-assign-agent-modal").modal('show');
+    var order_id = $(this).data('id');
+    $('#order_id').val(order_id);
+});
+
+$(document).on('click', '.submitassignAgentForm', function(){
+    var order_id = Array($('#order_id').val());
+    var agent_id = $('#select_agent_id').val();
+    if(agent_id != ''){
+        $.ajax({
+            type: "POST",
+            url: '{{route("assign.agent")}}',
+            data: {_token: CSRF_TOKEN, orders_id: order_id, agent_id: agent_id},
+            success: function( msg ) {
+                $.toast({ 
+                    heading:"Success!",
+                    text : "{{__(getAgentNomenclature()) }} assigned successfully.", 
+                    showHideTransition : 'slide', 
+                    bgColor : 'green',              
+                    textColor : '#eee',            
+                    allowToastClose : true,      
+                    hideAfter : 5000,            
+                    stack : 5,                   
+                    textAlign : 'left',         
+                    position : 'top-right'
+                });
+                $("#route-assign-agent-modal").modal('hide');
+                loadOrders(1, 1);
+            },
+            error: function(errors){
+                $.toast({ 
+                    heading:"Error!",
+                    text : "{{__(getAgentNomenclature()) }} can not be assigned.", 
+                    showHideTransition : 'slide', 
+                    bgColor : 'red',              
+                    textColor : '#eee',            
+                    allowToastClose : true,      
+                    hideAfter : 5000,            
+                    stack : 5,                   
+                    textAlign : 'left',         
+                    position : 'top-right'      
+                });
+                $("#route-assign-agent-modal").modal('hide');
+                loadOrders(1, 1);
+            }
+        });
+    }
+});
 
 function reloadData() {
     location.reload();

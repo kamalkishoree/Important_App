@@ -29,6 +29,11 @@
                     @php
                         $st ="Unassigned";
                         $color_class = "assign_";
+                        if($orders['status'] == "unassigned"){
+                           $class = "unassigned-badge"; 
+                        }else{
+                            $class = "assigned-badge";
+                        }
                         if($tasks['task_type_id']==1)
                         {
                             $tasktype = "Pickup";
@@ -62,19 +67,18 @@
                                 <h6 class="d-inline"><img class="vt-top"
                                     src="{{ asset('demo/images/ic_location_blue_1.png') }}"> {{ isset($tasks['location']['address'])? $tasks['location']['address']:'' }} <span class="d-block">{{ isset($tasks['location']['short_name'])? $tasks['location']['short_name']:'' }}</span>
                                     <p>
-                                        <span class="badge badge-blue text-white">
-                                            @if(!empty($orders['agent']))
-                                                {{ucfirst($orders['agent']['name'])}}
-                                            @else
-                                                {{__('Unassigned')}}
-                                            @endempty
-                                        </span></p>
+                                        @if(!empty($orders['agent']))
+                                            <span class="badge badge-blue text-white">{{ucfirst($orders['agent']['name'])}}</span>
+                                        @else
+                                            <span class="badge badge-danger text-white">{{__('Unassigned')}}</span>
+                                        @endempty
+                                    </p>
                                 </h6>
                                 
                             </div>
                             <div class="col-3">
                                 <button class="assigned-btn float-right mb-2 {{$pickup_class}}">{{__($tasktype)}}</button>
-                                <button class="assigned-btn float-right {{$color_class}}">{{ucfirst($orders['status'])}}</button>
+                                <button class="assigned-btn float-right {{$color_class}} {{$class}}" data-id="{{$orders['id']}}">{{ucfirst($orders['status'])}}</button>
                             </div>
                         </div>
                     </div>
