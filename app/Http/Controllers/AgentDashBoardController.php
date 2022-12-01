@@ -148,6 +148,8 @@ class AgentDashBoardController extends Controller
         $userstatus = isset($request->userstatus)?$request->userstatus:2;
         $team_ids = isset($request->team_id)?$request->team_id:'';
         $is_load_html = isset($request->is_load_html)?$request->is_load_html:1;
+        $search_by_name = isset($request->search_by_name)?$request->search_by_name:'';
+
         $auth = Client::where('code', Auth::user()->code)->with(['getAllocation', 'getPreference'])->first();
 
         //setting timezone from id
@@ -170,7 +172,10 @@ class AgentDashBoardController extends Controller
         if($userstatus!=2):
             $teams  = Team::with(
                 [ 
-                    'agents' => function ($query) use ($userstatus, $startdate, $enddate) {
+                    'agents' => function ($query) use ($userstatus, $startdate, $enddate, $search_by_name) {
+                        if(!empty($search_by_name)){
+                            $query->where('name', '=' ,$search_by_name);
+                        }
                         $query->where('is_available', '=', $userstatus)
                             ->with(['agentlog', 
                                 'order'  => function ($q) use ($startdate, $enddate){
@@ -184,6 +189,11 @@ class AgentDashBoardController extends Controller
         else:
             $teams  = Team::with(
                 [
+                    'agents' => function ($query) use ( $search_by_name) {
+                        if(!empty($search_by_name)){
+                            $query->where('name', '=' ,$search_by_name);
+                        }
+                    },
                     'agents.order' => function ($o) use ($startdate, $enddate) {
                         $o->where('order_time', '>=', $startdate)->where('order_time', '<=', $enddate)->with(['customer', 'task.location']);
                     },
@@ -197,12 +207,18 @@ class AgentDashBoardController extends Controller
             });
         }
 
+        if(!empty($search_by_name)){
+            $teams = $teams->whereHas('agents', function($q) use ($search_by_name){
+                $q->where('name', 'LIKE' ,'%'.$search_by_name.'%');
+            });
+        }
+
         if(!empty($team_ids)){
             $teams = $teams->whereIn('id', $team_ids);
         }
 
         $teams = $teams->get();
-
+        // dd($teams->toArray());
         foreach ($teams as $team) {
             $online  = 0;
             $offline = 0;
@@ -511,7 +527,7 @@ class AgentDashBoardController extends Controller
         //orders
         $unassigned_orders = array();
         $un_total_distance = '';
-        $un_order  = Order::where('order_time', '>=', $startdate)->where('order_time', '<=', $enddate)->with(['customer', 'task.location', 'agent'])->get(); 
+        $un_order  = Order::where('order_time', '>=', $startdate)->where('order_time', '<=', $enddate)->with(['customer', 'task.location', 'agent']);
 
         if(!empty($checkuserroutes)){
             $un_order = $un_order->where('status', $checkuserroutes);
@@ -520,6 +536,8 @@ class AgentDashBoardController extends Controller
         if(!empty($agent_ids)){
             $un_order = $un_order->whereIn('driver_id', $agent_ids);
         }
+        // dd($un_order->get());
+        $un_order  = $un_order->get();
 
         if (count($un_order)>=1) {
             $unassigned_orders = $this->splitOrder($un_order->toarray());
@@ -582,6 +600,8 @@ class AgentDashBoardController extends Controller
         
         $data = array('status' =>"success", 'unassigned_orders' => $unassigned_orders, 'preference' => $preference, 'client_timezone'=>$auth->timezone);
 
+        // dd($unassigned_orders);
+
         if($is_load_html == 1)
         {
             return view('agent_dashboard_order_html')->with($data)->render();
@@ -589,5 +609,4 @@ class AgentDashBoardController extends Controller
             return json_encode($data);
         }
     }
-
 }

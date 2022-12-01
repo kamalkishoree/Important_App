@@ -26,7 +26,6 @@
             </div> --}}
             <div id="scrollbar" class="col-md-3 col-xl-3 left-sidebar pt-3">
                 <div class="side_head mb-2 p-2">
-                    
                     <div class="d-flex align-items-center justify-content-center mb-2"> 
                         <i class="mdi mdi-sync mr-1" onclick="reloadData()" aria-hidden="true"></i>
                         <div class="radio radio-primary form-check-inline ml-3 mr-2">
@@ -44,13 +43,20 @@
                         
                         {{-- <span class="allAccordian ml-2"><span class="" onclick="openAllAccordian()">{{__("Open All")}}</span></span> --}}
                     </div>
-                   <div class="select_bar">
-                        <div class="form-group mb-0 ml-1">
-                            <select name="team_id[]" id="team_id" multiple="multiple" class="form-control">
-                                @foreach ($teams as $team)
-                                    <option value="{{$team->id}}">{{$team->name}}</option>
-                                @endforeach
-                            </select>
+                   <div class="row search_bar">
+                        <div class="col-md-6">
+                            <div class="form-group mb-0 ml-1">
+                                <select name="team_id[]" id="team_id" multiple="multiple" class="form-control">
+                                    @foreach ($teams as $team)
+                                        <option value="{{$team->id}}">{{$team->name}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group mb-0 ml-1">
+                                <input type="text" class="form-control" name="search_by_name" id="search_by_name" value="" placeholder="Search By Name" />
+                            </div>
                         </div>
                    </div>
                 </div>
@@ -180,6 +186,10 @@
 
             $('#agent_id').change(function() {
                 loadOrders(1, 1);
+            });
+
+            $('#search_by_name').keyup(function() {
+                loadTeams(1, 1);
             });
 
             loadTeams(1, 1);
@@ -608,13 +618,14 @@ function loadTeams(is_load_html, is_show_loader)
     }
     var checkuserstatus = $('input[name="user_status"]:checked').val();
     var team_id = $('#team_id').val();
+    var search_by_name = $('#search_by_name').val();
     $.ajax({
         type: 'POST',
         url: "{{ route('dashboard.agent-teamsdata')}}",
         headers: {
             'X-CSRF-Token': '{{ csrf_token() }}',
         },
-        data: {'userstatus':checkuserstatus, 'team_id':team_id, 'is_load_html':is_load_html, 'routedate':$("#basic-datepicker").val()},
+        data: {'userstatus':checkuserstatus, 'team_id':team_id, 'search_by_name':search_by_name, 'is_load_html':is_load_html, 'routedate':$("#basic-datepicker").val()},
         success: function(result) {
             olddata = allagent = defaultmaplocation = [];
             //if Html is required to load or not, for agent's log it is not required
