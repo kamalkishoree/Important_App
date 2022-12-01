@@ -11,7 +11,7 @@
 
     <link href="{{ asset('assets/libs/dropzone/dropzone.min.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('assets/libs/dropify/dropify.min.css') }}" rel="stylesheet" type="text/css" />
-    <link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/8.4.6/css/intlTelInput.css'>
+    {{-- <link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/8.4.6/css/intlTelInput.css'> --}}
     <style>
         // workaround
         .intl-tel-input {
@@ -353,7 +353,7 @@
     <script src="http://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="http://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 
-
+    <script src="https://www.jquery-az.com/jquery/js/intlTelInput/intlTelInput.js"></script>
 
     <script src="{{ asset('assets/libs/flatpickr/flatpickr.min.js') }}"></script>
     <script src="{{ asset('assets/libs/select2/select2.min.js') }}"></script>
@@ -371,7 +371,7 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/8.4.7/js/intlTelInput.js"></script>
+    {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/8.4.7/js/intlTelInput.js"></script> --}}
 
 
     <script src="{{ asset('assets/js/jquery.tagsinput-revisited.js') }}"></script>
@@ -381,14 +381,15 @@
     <script type="text/javascript">
 
         $('.openModal').click(function(){
+                    
                     $('#add-agent-modal').modal({
                         backdrop: 'static',
                         keyboard: false
                     });
-                    aaasa();
+                    tags();
                 });
 
-        function aaasa(){
+        function tags(){
 
             $('.myTag1').tagsInput({
                 'autocomplete': {
