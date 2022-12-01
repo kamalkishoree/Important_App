@@ -18,7 +18,10 @@
                                         <div class="form-group" id="agent_select">
                                             <select class="form-control" name="agent_id" id="select_agent_id">
                                                 @foreach ($agents as $agent)
-                                                    <option value="{{$agent->id}}">{{$agent->name}}</option>
+                                                    @php
+                                                        $checkAgentActive = ($agent->is_available == 1) ? ' ('.__('Online').')' : ' ('.__('Offline').')';
+                                                    @endphp
+                                                    <option value="{{$agent->id}}">{{ ucfirst($agent->name). $checkAgentActive }}</option>
                                                 @endforeach
                                             </select>
                                         </div>
