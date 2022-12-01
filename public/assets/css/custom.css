@@ -2047,6 +2047,9 @@ body.dark .table {
 body.dark .card-body.custom-body-table div#agents-datatable_wrapper select#agent_name_id {
     color: #dbe9f9 !important;
 }
+body.dark .copyin1 {
+    background-color: #f4f3fd00;
+}
 /*----------laptop view media css--------------*/
 @media(max-width:1440px){
     body.dark .custom-body-table .dt-buttons.btn-group.flex-wrap {
