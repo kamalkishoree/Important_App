@@ -260,7 +260,7 @@ h2#swal2-title {
     font-weight: 400;
 }
 </style>
-<link rel="stylesheet" href="https://www.jquery-az.com/jquery/css/intlTelInput/intlTelInput.css">
+<link rel="stylesheet" href="{{ asset('telinput/css/intlTelInput.min.css') }}">
 
 @endsection
 @php
@@ -756,7 +756,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
 <script src="{{ asset('assets/js/pages/form-fileuploads.init.js') }}"></script>
 <script src="{{ asset('assets/libs/datatables/datatables.min.js') }}"></script>
 <script src="{{ asset('assets/js/jquery.tagsinput-revisited.js') }}"></script>
-<script src="https://www.jquery-az.com/jquery/js/intlTelInput/intlTelInput.js"></script>
+<script src="{{ asset('telinput/js/intlTelInput.js') }}"></script>
 <link rel="stylesheet" href="{{ asset('assets/css/jquery.tagsinput-revisited.css') }}" />
 @if(getClientPreferenceDetail()->is_driver_slot == 1)
 <script src="{{ asset('assets/js/AgentSlot/slot.js') }}"></script>

@@ -1,7 +1,6 @@
 @extends('layouts.vertical', ['title' => 'Profile'])
 
 @section('css')
-<link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.18/css/intlTelInput.css'>
 <style>
 .input-group {
 position: relative;
@@ -26,7 +25,7 @@ box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.15);border-radius: 10px;width: 100%;disp
 .choose-btn:hover{text-decoration: none;}
 .g-btn .text strong {color: #000;}
 </style>
-<link rel="stylesheet" href="https://www.jquery-az.com/jquery/css/intlTelInput/intlTelInput.css">
+<link rel="stylesheet" href="{{ asset('telinput/css/intlTelInput.min.css') }}">
 @endsection
 @php
     $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain/';
@@ -428,7 +427,7 @@ box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.15);border-radius: 10px;width: 100%;disp
 
 
 
-<script src="https://www.jquery-az.com/jquery/js/intlTelInput/intlTelInput.js"></script>
+<script src="{{ asset('telinput/js/intlTelInput.js') }}"></script>
 
 <script>
 
@@ -436,7 +435,6 @@ box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.15);border-radius: 10px;width: 100%;disp
         separateDialCode:true,
         preferredCountries:["{{getCountryCode()}}"],
         initialCountry:"{{getCountryCode()}}",
-        utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.18/js/utils.js",
     });
     $('.intl-tel-input').css('width', '100%');
 
