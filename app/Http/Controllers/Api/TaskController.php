@@ -38,6 +38,7 @@ use App\Jobs\RosterDelete;
 use Illuminate\Support\Arr;
 use App\Model\NotificationEvent;
 use App\Jobs\scheduleNotification;
+use App\Traits\GlobalFunction;
 
 use App;
 use Log;
@@ -57,6 +58,7 @@ class TaskController extends BaseController
 {
     use AgentSlotTrait;
     use TollFee;
+    use GlobalFunction;
     public function smstest(Request $request){
       $res = $this->sendSms2($request->phone_number, $request->sms_body);
      
@@ -237,9 +239,11 @@ class TaskController extends BaseController
 
 
         } elseif ($request->task_status == 5) {
-            if ($checkfailed == 1) {
+            //cancel complete order if driver cancel pickup task
+            //if ($checkfailed == 1) {
                 $Order  = Order::where('id', $orderId->order_id)->update(['status' => $task_type ]);
-            }
+                $task = Task::where('order_id', $orderId->order_id)->update(['task_status' => $request->task_status,'note' => $note ]);
+            //}
         } else {
             $Order  = Order::where('id', $orderId->order_id)->update(['status' => $task_type, 'note' => $note]);
             if($order_details && $order_details->call_back_url){
@@ -402,10 +406,16 @@ class TaskController extends BaseController
             Order::where('id', $order_details_new->id)->update(['is_comm_settled' => 1]);
             $payout_option_id = $agent_default_active_payment->payment_option_id;
             
+            $amount_deduction = 0;
+            if(isset($client_prefrerence->charge_percent_from_agent)) {
+                $commission_deduct_percentage = $client_prefrerence->charge_percent_from_agent;
+                $amount_deduction = $order_details_new->driver_cost * ($commission_deduct_percentage/100);
+            }
+
             $objetoRequest = new \Illuminate\Http\Request();
             $objetoRequest->setMethod('POST');
             $objetoRequest->request->add([
-                'amount' => ($order_details_new->driver_cost != NULL)?$order_details_new->driver_cost:0,
+                'amount' => ($order_details_new->driver_cost != NULL)?($order_details_new->driver_cost - $amount_deduction):0,
                 'agent_id' => $order_details_new->driver_id
             ]);
             
@@ -680,10 +690,26 @@ class TaskController extends BaseController
         $client_details = Client::where('database_name', $header['client'][0])->first();
         $percentage = 0;
         $agent_id =  $request->driver_id  ? $request->driver_id : null;
-
+        $driver   = Agent::where('id', $agent_id)->first();
+        if($driver->is_pooling_available == 1)
+        {
+            $assigned_orders  = Order::where('driver_id', $driver->id)->where('is_cab_pooling', 1)->where('status', 'assigned')->orderBy('id', 'asc')->first();
+            $available_seats  = (!empty($assigned_orders))?$assigned_orders->available_seats:0;
+            if($available_seats > 0){
+                $previous_seats   = Order::where('driver_id', $driver->id)->where('is_cab_pooling', 1)->where('status', 'assigned')->sum('no_seats_for_pooling');
+                $this_order_seats = Order::where('id', $request->order_id)->first()->no_seats_for_pooling;
+                $booked_seats     = $previous_seats + $this_order_seats;
+                if($available_seats < $booked_seats){
+                    return response()->json([
+                        'message' => __('Available Seats are less than no of booked seats.'),
+                    ], 404);
+                }
+            }
+        }
+        
         $assignedorder_data = Order::where('id', $request->order_id)->where('driver_id', '!=', $agent_id)->where('status', 'assigned')->first();
         $unassignedorder_data = Order::where('id', $request->order_id)->where('status', 'unassigned')->first();
-        if(empty($unassignedorder_data) && empty($assignedorder_data)){
+        if(empty($unassignedorder_data) && !empty($assignedorder_data)){
             return response()->json([
                 'message' => __('This task has already been accepted.'),
             ], 404);
@@ -870,7 +896,7 @@ class TaskController extends BaseController
                 $send = $this->sendSms2($check->friend_phone_number , $friend_sms_body);
             }
             return response()->json([
-                'data' => __('Task Accecpted Successfully'),
+                'message' => __('Task Accecpted Successfully'),
             ], 200);
 
 
@@ -887,15 +913,13 @@ class TaskController extends BaseController
             return response()->json([
                 'data' => __('Task Rejected Successfully'),
                 'status' => 200,
-                'message' => __('success')
+                'message' => __('Task Rejected Successfully')
             ], 200);
         }
     }
 
     public function CreateTask(CreateTaskRequest $request)
     {
-        \Log::info('here');
-    
         try {
             $auth =  $client =  Client::with(['getAllocation', 'getPreference'])->first();
             $header = $request->header();
@@ -904,7 +928,6 @@ class TaskController extends BaseController
 
             }
             else{
-               // $client =  Client::with(['getAllocation', 'getPreference'])->first();
                $header['client'][0] = $client->database_name;
             }
            
@@ -982,7 +1005,7 @@ class TaskController extends BaseController
                             'sync_customer_id' => $request->customer_id,
                             'user_icon' => !empty($request->user_icon['proxy_url'])?$request->user_icon['proxy_url'].'512/512'.$request->user_icon['image_path']:''
                         ];
-                        Log::info(json_encode($customer_phone_number));
+                        //Log::info(json_encode($customer_phone_number));
                         Customer::where('id', $cus_id)->update($customer_phone_number);
                     }
                 } else {
@@ -994,7 +1017,7 @@ class TaskController extends BaseController
                         'sync_customer_id' => $request->customer_id,
                         'user_icon' => !empty($request->user_icon['proxy_url'])?$request->user_icon['proxy_url'].'512/512'.$request->user_icon['image_path']:''
                     ];
-                    Log::info(json_encode($cus));
+                    //Log::info(json_encode($cus));
                     $customer = Customer::create($cus);
                     $cus_id = $customer->id;
                 }
@@ -1099,7 +1122,6 @@ class TaskController extends BaseController
                         'phone_number'=> $value['phone_number']??null,
                         ];
 
-                    //  $Loction = Location::create($loc);
                     $Loction = Location::updateOrCreate(
                         $loc,
                         $loc_update
@@ -1154,7 +1176,7 @@ class TaskController extends BaseController
             
             if((isset($request->order_agent_tag) && !empty($request->order_agent_tag)) && $geoid!=''):
                 $pricingRule = PricingRule::orderBy('id', 'desc')->whereHas('priceRuleTags.tagsForAgent',function($q)use($request){
-                    $q->where('name',$request->order_agent_tag);
+                    $q->where('name', $request->order_agent_tag);
                 })->whereHas('priceRuleTags.geoFence',function($q)use($geoid){
                     $q->where('id',$geoid);
                 })
@@ -1172,12 +1194,14 @@ class TaskController extends BaseController
             if(empty($pricingRule))
             $pricingRule = PricingRule::orderBy('is_default', 'desc')->orderBy('is_default', 'asc')->first();
 
-            $tollresponse = array();
             if($auth->getPreference->toll_fee == 1){
-                $tollresponse = $this->toll_fee($latitude, $longitude, (isset($request->toll_passes)?$request->toll_passes:''), (isset($request->VehicleEmissionType)?$request->VehicleEmissionType:''), (isset($request->travelMode)?$request->travelMode:''));
+                $getdata = $this->toll_fee($latitude, $longitude, (isset($request->toll_passes)?$request->toll_passes:''), (isset($request->VehicleEmissionType)?$request->VehicleEmissionType:''), (isset($request->travelMode)?$request->travelMode:''));
+                $toll_amount = (isset($getdata['toll_amount'])?$getdata['toll_amount']:0);
+            }else{
+                $getdata = $this->GoogleDistanceMatrix($latitude, $longitude);
+                $toll_amount = 0;
             }
 
-            $getdata = $this->GoogleDistanceMatrix($latitude, $longitude);
 
             $paid_duration = $getdata['duration'] - $pricingRule->base_duration;
             $paid_distance = $getdata['distance'] - $pricingRule->base_distance;
@@ -1185,6 +1209,10 @@ class TaskController extends BaseController
             $paid_distance = $paid_distance < 0 ? 0 : $paid_distance;
             $total         = $pricingRule->base_price + ($paid_distance * $pricingRule->distance_fee) + ($paid_duration * $pricingRule->duration_price);
 
+            if($orders->is_cab_pooling == 1){
+                $total       = ($total/$orders->available_seats)*$orders->no_seats_for_pooling;
+                $toll_amount = ($toll_amount/$orders->available_seats)*$orders->no_seats_for_pooling;
+            }
             if(isset($agent_id)) {
                 $agent_details = Agent::where('id', $agent_id)->first();
                 if ($agent_details->type == 'Employee') {
@@ -1211,21 +1239,14 @@ class TaskController extends BaseController
             'freelancer_commission_fixed'     => $pricingRule->freelancer_commission_fixed,
             'actual_time'                     => $getdata['duration'],
             'actual_distance'                 => $getdata['distance'],
-            'order_cost'                      => $total + (isset($tollresponse['toll_amount'])?$tollresponse['toll_amount']:0),
-            'toll_fee'                        => (isset($tollresponse['toll_amount'])?$tollresponse['toll_amount']:0),
+            'order_cost'                      => $total + $toll_amount,
+            'toll_fee'                        => $toll_amount,
             'driver_cost'                     => $percentage,
             ];
 
             Order::where('id', $orders->id)->update($updateorder);
 
-            if (isset($request->allocation_type) && $request->allocation_type === 'a') {
-                // if (isset($request->team_tag)) {
-                //     $orders->teamtags()->sync($request->team_tag);
-                // }
-                // if (isset($request->agent_tag)) {
-                //     $orders->drivertags()->sync($request->agent_tag);
-                // }
-            }
+            
             if (isset($request->order_team_tag)) {
 
                 $value = $request->order_team_tag;
@@ -1245,7 +1266,7 @@ class TaskController extends BaseController
                         $check = TagsForAgent::firstOrCreate(['name' => $value]);
                         array_push($tag_id, $check->id);
                     }
-               $orders->drivertags()->sync($tag_id);
+                $orders->drivertags()->sync($tag_id);
             }
 
             $geo = null;
@@ -1258,7 +1279,6 @@ class TaskController extends BaseController
            
             //If batch allocation is on them return from there no job is created 
             if($client->getPreference->create_batch_hours > 0){
-                //\Log::info('Batch Allocation is on');
                     $dispatch_traking_url = $client_url.'/order/tracking/'.$auth->code.'/'.$orders->unique_id;
 
                     DB::commit();
@@ -1322,7 +1342,6 @@ class TaskController extends BaseController
                     ->addMinutes($finaldelay)
                     ->format('Y-m-d H:i:s');
                     $schduledata['geo']               = $geo;
-                    //$schduledata['notification_time'] = $time;
                     $schduledata['notification_time'] = $notification_time;
                     $schduledata['agent_id']          = $agent_id;
                     $schduledata['orders_id']         = $orders->id;
@@ -1356,22 +1375,35 @@ class TaskController extends BaseController
             
             if ($request->allocation_type === 'a' || $request->allocation_type === 'm') {
                 $allocation = AllocationRule::where('id', 1)->first();
+                $inputdata = [
+                    'geo' => $geo,
+                    'notification_time' => $notification_time,
+                    'agent_id' => $agent_id,
+                    'orders_id' => $orders->id,
+                    'customer' => $customer,
+                    'finalLocation' => $pickup_location,
+                    'taskcount' => $taskcount,
+                    'header' => $header,
+                    'allocation' => $allocation,
+                    'is_cab_pooling' => $orders->is_cab_pooling,
+                    'agent_tag' => isset($request->order_agent_tag)?$request->order_agent_tag:'',
+                ];
                 switch ($allocation->auto_assign_logic) {
                 case 'one_by_one':
                      //this is called when allocation type is one by one
-                    $this->finalRoster($geo, $notification_time, $agent_id, $orders->id, $customer, $pickup_location, $taskcount, $header, $allocation);
+                    $this->finalRoster($geo, $notification_time, $agent_id, $orders->id, $customer, $pickup_location, $taskcount, $header, $allocation, $orders->is_cab_pooling, isset($request->order_agent_tag)?$request->order_agent_tag:'');
                     break;
                 case 'send_to_all':
                     //this is called when allocation type is send to all
-                    $this->SendToAll($geo, $notification_time, $agent_id, $orders->id, $customer, $pickup_location, $taskcount, $header, $allocation);
+                    $this->SendToAll($geo, $notification_time, $agent_id, $orders->id, $customer, $pickup_location, $taskcount, $header, $allocation, $orders->is_cab_pooling, isset($request->order_agent_tag)?$request->order_agent_tag:'');
                     break;
                 case 'round_robin':
                     //this is called when allocation type is round robin
-                    $this->roundRobin($geo, $notification_time, $agent_id, $orders->id, $customer, $pickup_location, $taskcount, $header, $allocation);
+                    $this->roundRobin($geo, $notification_time, $agent_id, $orders->id, $customer, $pickup_location, $taskcount, $header, $allocation, $orders->is_cab_pooling, isset($request->order_agent_tag)?$request->order_agent_tag:'');
                     break;
                 default:
                    //this is called when allocation type is batch wise
-                    $this->batchWise($geo, $notification_time, $agent_id, $orders->id, $customer, $pickup_location, $taskcount, $header, $allocation);
+                    $this->batchWise($geo, $notification_time, $agent_id, $orders->id, $customer, $pickup_location, $taskcount, $header, $allocation, $orders->is_cab_pooling, isset($request->order_agent_tag)?$request->order_agent_tag:'');
             }
             }
             $dispatch_traking_url = $client_url.'/order/tracking/'.$auth->code.'/'.$orders->unique_id;
@@ -1888,7 +1920,7 @@ class TaskController extends BaseController
         return $c;
     }
 
-    public function finalRoster($geo, $notification_time, $agent_id, $orders_id, $customer, $finalLocation, $taskcount, $header, $allocation)
+    public function finalRoster($geo, $notification_time, $agent_id, $orders_id, $customer, $finalLocation, $taskcount, $header, $allocation, $is_cab_pooling, $agent_tag = '')
     {
         $allcation_type = 'AR';
         $date = \Carbon\Carbon::today();
@@ -1953,10 +1985,7 @@ class TaskController extends BaseController
             $extra      = [];
             $remening   = [];
 
-            $geoagents_ids =  DriverGeo::where('geo_id', $geo)->pluck('driver_id');
-            $geoagents = Agent::whereIn('id',  $geoagents_ids)->with(['logs','order'=> function ($f) use ($date) {
-                $f->whereDate('order_time', $date)->with('task');
-            }])->orderBy('id', 'DESC')->get()->where("agent_cash_at_hand", '<', $cash_at_hand);
+            $geoagents = $this->getGeoBasedAgentsData($geo, $is_cab_pooling, $agent_tag, $date, $cash_at_hand);
 
             $totalcount = $geoagents->count();
             $orders = order::where('driver_id', '!=', null)->whereDate('created_at', $date)->groupBy('driver_id')->get('driver_id');
@@ -2068,7 +2097,7 @@ class TaskController extends BaseController
         }
     }
 
-    public function SendToAll($geo, $notification_time, $agent_id, $orders_id, $customer, $finalLocation, $taskcount, $header, $allocation)
+    public function SendToAll($geo, $notification_time, $agent_id, $orders_id, $customer, $finalLocation, $taskcount, $header, $allocation, $is_cab_pooling, $agent_tag = '')
     {
         $allcation_type    = 'AR';
         $date              = \Carbon\Carbon::today();
@@ -2121,15 +2150,13 @@ class TaskController extends BaseController
                     'device_type'         => $oneagent->device_type,
                     'device_token'        => $oneagent->device_token,
                     'detail_id'           => $randem,
+                    'is_cab_pooling'      => $is_cab_pooling,
                 ];
                 $this->dispatch(new RosterCreate($data, $extraData));
             }
         } else {
-            $geoagents_ids =  DriverGeo::where('geo_id', $geo)->pluck('driver_id');
-            $geoagents = Agent::whereIn('id',  $geoagents_ids)->with(['logs','order'=> function ($f) use ($date) {
-                $f->whereDate('order_time', $date)->with('task');
-            }])->orderBy('id', 'DESC')->get()->where("agent_cash_at_hand", '<', $cash_at_hand);
-
+            
+            $geoagents = $this->getGeoBasedAgentsData($geo, $is_cab_pooling, $agent_tag, $date, $cash_at_hand);
             
             for ($i = 1; $i <= $try; $i++) {
                 foreach ($geoagents as $key =>  $geoitem) {
@@ -2145,7 +2172,7 @@ class TaskController extends BaseController
                             'device_type'         => $geoitem->device_type,
                             'device_token'        => $geoitem->device_token,
                             'detail_id'           => $randem,
-
+                            'is_cab_pooling'      => $is_cab_pooling,
                         ];
                         array_push($data, $datas);
                         if ($allcation_type == 'N' && 'ACK') {
@@ -2163,14 +2190,10 @@ class TaskController extends BaseController
             }
 
             $this->dispatch(new RosterCreate($data, $extraData));
-
-            // print_r($data);
-            //  die;
-            //die('hello');
         }
     }
 
-    public function batchWise($geo, $notification_time, $agent_id, $orders_id, $customer, $finalLocation, $taskcount, $header, $allocation)
+    public function batchWise($geo, $notification_time, $agent_id, $orders_id, $customer, $finalLocation, $taskcount, $header, $allocation, $is_cab_pooling, $agent_tag = '')
     {
         $allcation_type    = 'AR';
         $date              = \Carbon\Carbon::today();
@@ -2228,11 +2251,9 @@ class TaskController extends BaseController
                 $this->dispatch(new RosterCreate($data, $extraData));
             }
         } else {
-            $geoagents_ids =  DriverGeo::where('geo_id', $geo)->pluck('driver_id');
-            $geoagents = Agent::whereIn('id',  $geoagents_ids)->with(['logs','order'=> function ($f) use ($date) {
-                $f->whereDate('order_time', $date)->with('task');
-            }])->orderBy('id', 'DESC')->get()->where("agent_cash_at_hand", '<', $cash_at_hand)->toArray();
-
+            $geoagents = $this->getGeoBasedAgentsData($geo, $is_cab_pooling, $agent_tag, $date, $cash_at_hand);
+            
+            $geoagents = $geoagents->toArray();
             //this function is give me nearest drivers list accourding to the the task location.
 
             $distenseResult = $this->haversineGreatCircleDistance($geoagents, $finalLocation, $unit, $max_redius, $max_task);
@@ -2287,7 +2308,7 @@ class TaskController extends BaseController
 
 
 
-    public function roundRobin($geo, $notification_time, $agent_id, $orders_id, $customer, $finalLocation, $taskcount, $header, $allocation)
+    public function roundRobin($geo, $notification_time, $agent_id, $orders_id, $customer, $finalLocation, $taskcount, $header, $allocation, $is_cab_pooling, $agent_tag = '')
     {
         $allcation_type    = 'AR';
         $date              = \Carbon\Carbon::today();
@@ -2344,10 +2365,9 @@ class TaskController extends BaseController
                 $this->dispatch(new RosterCreate($data, $extraData));
             }
         } else {
-            $geoagents_ids =  DriverGeo::where('geo_id', $geo)->pluck('driver_id');
-            $geoagents = Agent::whereIn('id',  $geoagents_ids)->with(['logs','order'=> function ($f) use ($date) {
-                $f->whereDate('order_time', $date)->with('task');
-            }])->orderBy('id', 'DESC')->get()->where("agent_cash_at_hand", '<', $cash_at_hand)->toArray();
+            $geoagents = $this->getGeoBasedAgentsData($geo, $is_cab_pooling, $agent_tag, $date, $cash_at_hand);
+
+            $geoagents = $geoagents->toArray();
 
             //this function give me the driver list accourding to who have liest task for the current date
 
@@ -2622,16 +2642,17 @@ class TaskController extends BaseController
         if(empty($pricingRule))
         $pricingRule = PricingRule::orderBy('is_default', 'desc')->orderBy('is_default', 'asc')->first();
 
-        $getdata = $this->GoogleDistanceMatrix($latitude, $longitude);
+       
+        if($auth->getPreference->toll_fee == 1){
+            $getdata = $this->toll_fee($latitude, $longitude, (isset($request->toll_passes)?$request->toll_passes:''), (isset($request->VehicleEmissionType)?$request->VehicleEmissionType:''), (isset($request->travelMode)?$request->travelMode:''));
+        }else{
+            $getdata = $this->GoogleDistanceMatrix($latitude, $longitude);
+        }
+
         $paid_duration = $getdata['duration'] - $pricingRule->base_duration;
         $paid_distance = $getdata['distance'] - $pricingRule->base_distance;
         $paid_duration = $paid_duration < 0 ? 0 : $paid_duration;
         $paid_distance = $paid_distance < 0 ? 0 : $paid_distance;
-
-        $tollresponse = array();
-        if($auth->getPreference->toll_fee == 1){
-            $tollresponse = $this->toll_fee($latitude, $longitude, (isset($request->toll_passes)?$request->toll_passes:''), (isset($request->VehicleEmissionType)?$request->VehicleEmissionType:''), (isset($request->travelMode)?$request->travelMode:''));
-        }
 
         $total         = $pricingRule->base_price + ($paid_distance * $pricingRule->distance_fee) + ($paid_duration * $pricingRule->duration_price);
 
@@ -2644,7 +2665,7 @@ class TaskController extends BaseController
             'currency' => $currency,
             'paid_distance' => $paid_distance,
             'paid_duration' => $paid_duration,
-            'toll_fee' => (isset($tollresponse['toll_amount'])?$tollresponse['toll_amount']:0),
+            'toll_fee' => (isset($getdata['toll_amount'])?$getdata['toll_amount']:0),
             'message' => __('success')
         ], 200);
 

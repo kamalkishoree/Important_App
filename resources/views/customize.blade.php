@@ -33,7 +33,7 @@
     <!-- end Section title -->
     <div class="row mb-3">
         <div class="col-xl-3 col-md-4">
-            <div class="card-box h-100">
+            <div class="card-box h-100 customize-outer-card">
                 <div class="row">
                     <div class="col-md-12">
                         <form method="POST" class="h-100" action="{{route('preference', Auth::user()->code)}}">

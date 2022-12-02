@@ -54,6 +54,7 @@
                         d.warehouseListingType = $('#search_warehouse').val();
                         d.warehouseManagerId = $('#warehouse_manager').val();
                         d.imgproxyurl = '{{$imgproxyurl}}';
+                        d.customer_id = $("#customer_id").val();
                     }
                 },
                 columns: dataTableColumn(),
@@ -80,7 +81,7 @@
                         return full.order_number;
                     }},
                     {data: 'customer_id', name: 'customer_id', orderable: true, searchable: false},
-                    {data: 'customer_name', name: 'customer_name', orderable: true, searchable: false},
+                    {data: 'customer_name', name: 'customer_name', orderable: true, searchable: true},
                     {data: 'phone_number', name: 'phone_number', orderable: true, searchable: false},
                     {data: 'type', name: 'type', orderable: true, searchable: false},
                     {data: 'agent_name', name: 'agent_name', orderable: true, searchable: false, "mRender": function ( data, type, full ) {
@@ -280,6 +281,13 @@
                 $("#distance_fee").text(data.distance_fee + ' (' + data.distance_type + ')');
                 $("#driver_type").text(data.driver_type);
 
+                if(data.is_cab_pooling == 1){
+                    $("#no_of_seats").text(data.available_seats+"/"+data.no_seats_for_pooling);
+                    $("#seatsspan_acc").show();
+                }else{
+                    $("#seatsspan_acc").hide();
+                }
+                
                 $("#toll_fee").text(data.toll_fee);
                 $("#order_cost").text(data.order_cost);
                 $("#driver_cost").text(data.driver_cost ? data.driver_cost : 0.00 );

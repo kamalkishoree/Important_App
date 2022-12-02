@@ -96,8 +96,9 @@ Route::group(['middleware' => ['dbCheck', 'AppAuth','apiLocalization']], functio
     
     Route::get('taskList', 'Api\ActivityController@tasks');                    // api for task list
     Route::get('updateStatus', 'Api\ActivityController@updateDriverStatus');   // api for chnage driver status active ,in-active
-    Route::post('updateTaskStatus', 'Api\TaskController@updateTaskStatus');    // api for chnage task status like start,cpmplate,faild
-    Route::post('checkOTPRequried', 'Api\TaskController@checkOTPRequried');    // api for chnage task status like start,cpmplate,faild
+    Route::post('updateCabPoolingStatus', 'Api\ActivityController@updateDriverCabPoolingStatus');  // api for change status of drivers pooling availability
+    Route::post('updateTaskStatus', 'Api\TaskController@updateTaskStatus');    // api for chnage task status like start,cpmplate, faild
+    Route::post('checkOTPRequried', 'Api\TaskController@checkOTPRequried');    // api for chnage task status like start,cpmplate, faild
     Route::post('task/accecpt/reject', 'Api\TaskController@TaskUpdateReject'); // api for accecpt task reject task
     Route::post('agent/logs', 'Api\ActivityController@agentLog');              // api for save agent logs
     Route::get('get/profile','Api\ActivityController@profile');                // api for get agent profile
@@ -112,6 +113,8 @@ Route::group(['middleware' => ['dbCheck', 'AppAuth','apiLocalization']], functio
     Route::post('chat/startChat',      'Api\ChatController@startChat');
     Route::post('chat/userAgentChatRoom',      'Api\ChatController@userAgentChatRoom');
     Route::post('chat/sendNotification',      'Api\ChatController@sendNotificationToUser');
+
+    Route::get('agent/poolingTaskSuggession', 'Api\ActivityController@poolingTasksSuggessions');                    // api for task list suggession for cab pooling
     //Route::post('chat/userAgentChatRoom',      'Api\ChatController@startChat');
     
     // Order routes

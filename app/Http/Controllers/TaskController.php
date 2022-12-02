@@ -268,6 +268,7 @@ class TaskController extends BaseController
         })->pluck('tag_id');
 
         $orders = Order::with(['customer', 'location', 'taskFirst', 'agent', 'task.location'])->orderBy('id', 'DESC'); //, 'task.manager'
+        
         if (@$request->warehouseManagerId && !empty($request->warehouseManagerId)) {
             $orders->whereHas('task.warehouse.manager', function($q) use($request){
                 $q->where('clients.id', $request->warehouseManagerId);
@@ -298,6 +299,13 @@ class TaskController extends BaseController
                 $query->where('warehouse_id', $searchWarehouse_id);
             });
         }
+
+        if($request->has('customer_id') && $request->customer_id != ''){
+            $orders = $orders->whereHas('customer', function($query) use ($request) {
+                $query->where('id', $request->customer_id);
+            });
+        }
+
         $orders = $orders->where('status', $request->routesListingType)->where('status', '!=', null)->orderBy('updated_at', 'desc');
         
         $preference = ClientPreference::where('id', 1)->first(['theme','date_format','time_format']);
@@ -1125,8 +1133,12 @@ class TaskController extends BaseController
         try{
             if(isset($order_details->type) && $order_details->type == 1 && strlen($order_details->friend_phone_number) > 8)
             {
-                $friend_sms_body = 'Hi '.($order_details->friend_name).', '.($order_details->customer->name??'Our customer').' have booked a ride for you. '.getAgentNomenclature().' '.($oneagent->name??'').' in our '.($oneagent->make_model ?? '').' with license plate '.($oneagent->plate_number??'').' has been assgined.';
-                $send = $this->sendSms2($order_details->friend_phone_number , $friend_sms_body);
+                // $friend_sms_body = 'Hi '.($order_details->friend_name).', '.($order_details->customer->name??'Our customer').' have booked a ride for you. '.getAgentNomenclature().' '.($oneagent->name??'').' in our '.($oneagent->make_model ?? '').' with license plate '.($oneagent->plate_number??'').' has been assgined.';
+
+                $keyData = ['{user-name}'=>$order_details->friend_name,'{customer-name}'=>$order_details->customer->name??'Our customer','{agent-name}'=>$oneagent->name??'','{car-model}'=>$oneagent->make_model ?? '','{plate-no}'=>$oneagent->plate_number??''];
+                $friend_sms_body = sendSmsTemplate('friend-sms',$keyData);
+
+                $send = $this->sendSmsNew($order_details->friend_phone_number , $friend_sms_body);
             }
         }catch(\Exception $e){
             Log::info("Error While sending sms to friend");
@@ -2540,7 +2552,7 @@ class TaskController extends BaseController
             Task::where('order_id', $id)->delete();
             $dep_id = null;
             foreach ($request->task_type_id as $key => $value) {
-                if (isset($request->short_name[$key])) {
+                if (isset($request->address[$key])) {
                     $loc = [
                         'short_name'    => $request->short_name[$key],
                         'post_code'     => $request->post_code[$key],

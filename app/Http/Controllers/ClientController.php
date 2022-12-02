@@ -70,7 +70,6 @@ class ClientController extends Controller
      */
     public function storePreference(Request $request, $domain = '', $id)
     {
-        //pr($request->all());
         $customerDistenceNotification = '';
         if(!empty($request->customer_notification)){
             $data = ['customer_notification_per_distance'=>json_encode($request->customer_notification)];
@@ -89,6 +88,20 @@ class ClientController extends Controller
         
             $customMode['show_vehicle_type_icon'] = implode(',',$request->custom_mode['show_vehicle_type_icon']);
             $data = ['custom_mode'=>json_encode($customMode)];
+            ClientPreference::where('client_id', $id)->update($data);
+            
+
+            return redirect()->back()->with('success', 'Preference updated successfully!');
+        }
+
+        if($request->has('warehouse_mode')){
+            $warehouseMode['show_warehouse_module'] = (!empty($request->warehouse_mode['show_warehouse_module']) && $request->warehouse_mode['show_warehouse_module'] == 'on')? 1 : 0;
+
+            $warehouseMode['show_category_module'] = (!empty($request->warehouse_mode['show_category_module']) && $request->warehouse_mode['show_category_module'] == 'on')? 1 : 0;
+            $data = [];
+            if(checkColumnExists('client_preferences', 'warehouse_mode')){
+                $data = ['warehouse_mode'=>json_encode($warehouseMode)];
+            }
             ClientPreference::where('client_id', $id)->update($data);
             
 
@@ -144,6 +157,13 @@ class ClientController extends Controller
         if($request->has('autopay_submit')){//dd($request->auto_payout);
             $auto_payout = !empty($request->auto_payout)?(($request->auto_payout == "on")?1:0):0;
             $data = ['auto_payout'=>$auto_payout];
+            ClientPreference::where('client_id', $id)->update($data);
+            return redirect()->back()->with('success', 'Preference updated successfully!');
+        }
+
+        if(checkColumnExists('client_preferences', 'charge_percent_from_agent') && $request->has('charge_percent_from_agent')){
+            
+            $data = ['charge_percent_from_agent'=> trim($request->charge_percent_from_agent)];
             ClientPreference::where('client_id', $id)->update($data);
             return redirect()->back()->with('success', 'Preference updated successfully!');
         }
@@ -270,6 +290,9 @@ class ClientController extends Controller
                     'sender_id' => $request->arkesel_sender_id,
                 ];
             }
+            //for static otp
+            $sms_credentials['static_otp'] = ($request->has('static_otp') && $request->static_otp == 'on') ? 1 : 0;
+         
             $request->merge(['sms_credentials'=>json_encode($sms_credentials)]);
         }
 
@@ -289,12 +312,18 @@ class ClientController extends Controller
 
         unset($request['arkesel_api_key']);
         unset($request['arkesel_sender_id']);
+        if( isset($request['charge_percent_from_agent']) ) {
+            unset($request['charge_percent_from_agent']);
+        }
 
         if($request->has('cancel_verify_edit_order_config')){
             $request->request->add(['verify_phone_for_driver_registration' => ($request->has('verify_phone_for_driver_registration') && $request->verify_phone_for_driver_registration == 'on') ? 1 : 0]);
             $request->request->add(['is_edit_order_driver' => ($request->has('is_edit_order_driver') && $request->is_edit_order_driver == 'on') ? 1 : 0]);
             $request->request->add(['is_cancel_order_driver' => ($request->has('is_cancel_order_driver') && $request->is_cancel_order_driver == 'on') ? 1 : 0]);
             $request->request->add(['is_driver_slot' => ($request->has('is_driver_slot') && $request->is_driver_slot == 'on') ? 1 : 0]);
+            $request->request->add(['is_cab_pooling_toggle' => ($request->has('is_cab_pooling_toggle') && $request->is_cab_pooling_toggle == 'on') ? 1 : 0]);
+            //$request->request->add(['radius_for_pooling_km' => ($request->has('is_cab_pooling_toggle') && $request->is_cab_pooling_toggle == 'on') ? $request->radius_for_pooling_km : 0]);
+            $request->radius_for_pooling_km = ($request->has('is_cab_pooling_toggle') && $request->is_cab_pooling_toggle == 'on') ? $request->radius_for_pooling_km : 0;
         }
 
         if($request->has('refer_and_earn')){
@@ -433,13 +462,14 @@ class ClientController extends Controller
     {
         $preference  = ClientPreference::where('client_id', Auth::user()->code)->first();
         $customMode  = json_decode($preference->custom_mode);
+        $warehoseMode  = json_decode($preference->warehouse_mode);
         $client      = Auth::user();
         $subClients  = SubClient::all();
         $smtp        = SmtpDetail::where('id', 1)->first();
         $vehicleType = VehicleType::latest()->get();
         $agent_docs=DriverRegistrationDocument::get();
         $smsTypes = SmsProvider::where('status', '1')->get();
-        return view('configure')->with(['preference' => $preference, 'customMode' => $customMode, 'client' => $client,'subClients'=> $subClients,'smtp_details'=>$smtp, 'agent_docs' => $agent_docs,'smsTypes'=>$smsTypes,'vehicleType'=>$vehicleType]);
+        return view('configure')->with(['preference' => $preference, 'customMode' => $customMode, 'client' => $client,'subClients'=> $subClients,'smtp_details'=>$smtp, 'agent_docs' => $agent_docs,'smsTypes'=>$smsTypes,'vehicleType'=>$vehicleType, 'warehoseMode' => $warehoseMode]);
     }
 
 
