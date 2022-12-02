@@ -324,4 +324,3 @@ if (!function_exists('decimal_format')) {
         $sms = array('body'=>$smsBody,'template_id'=>$smsTemp->template_id??'');
         return $sms;
     }
->>>>>>> pre_dev
