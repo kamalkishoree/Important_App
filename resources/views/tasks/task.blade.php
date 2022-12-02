@@ -245,6 +245,9 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                         <th class="sort-icon">{{__("Phone No.")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                         <th class="sort-icon">{{__(getAgentNomenclature()) }} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                         <th class="sort-icon">{{__("Due Time")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
+                                        {{-- @if (!isset($status) || $status == 'completed')
+                                            <th class="sort-icon">{{__("Completed Time")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
+                                        @endif --}}
                                         <th class="routes-head">{{__("Routes")}}</th>
                                         <!-- <th>{{__("Tracking URL")}}</th>
                                          <th>{{__("Route Proofs")}}</th> -->

@@ -119,7 +119,34 @@
                     {data: 'updated_at', name: 'updated_at', orderable: true, searchable: false},
                     {data: 'action', name: 'action', orderable: true, searchable: false}
                 ];
-            }else{
+            }else if(routesListing == 'completed'){
+                return [
+                    {data: 'order_number', name: 'order_number', orderable: true, searchable: false , "mRender": function ( data, type, full ) {
+                        return full.order_number;
+                    }},
+                    {data: 'customer_id', name: 'customer_id', orderable: true, searchable: false},
+                    {data: 'customer_name', name: 'customer_name', orderable: true, searchable: false},
+                    {data: 'phone_number', name: 'phone_number', orderable: true, searchable: false},
+                    {data: 'agent_name', name: 'agent_name', orderable: true, searchable: false},
+                    {data: 'order_time', name: 'order_time', orderable: true, searchable: false},
+                    // {data: 'completed_time', name: 'completed_time', orderable: true, searchable: false},
+                    {data: 'short_name', name: 'short_name', orderable: false, searchable: false, "mRender": function ( data, type, full ) {
+                        var shortName = JSON.parse(full.short_name.replace(/&quot;/g,'"'));
+                        var routes = '';
+                        $.each(shortName, function(index, elem) {
+                            routes += '<div class="address_box sdsd"><span class="'+elem.pickupClass+'">'+elem.taskType+'</span> <span class="short_name">'+elem.shortName+'</span> <label data-toggle="tooltip" data-placement="bottom" title="'+elem.toolTipAddress+'">'+elem.address+'</label></div>';
+                        });
+                        return routes;
+                    }},
+                    
+                    {data: 'order_cost', name: 'order_cost', orderable: false, searchable: false, "mRender": function ( data, type, full ) {
+                        return '<button class="showaccounting btn btn-primary-outline action-icon setcolor" value="'+full.id+'">'+full.order_cost+'</button>';
+                    }},
+                    {data: 'updated_at', name: 'updated_at', orderable: true, searchable: false},
+                    {data: 'action', name: 'action', orderable: true, searchable: false}
+                ];
+            }
+            else{
                 return [
                     {data: 'order_number', name: 'order_number', orderable: true, searchable: false , "mRender": function ( data, type, full ) {
                         return full.order_number;
