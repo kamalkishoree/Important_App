@@ -14,7 +14,7 @@ class DriverGeo extends Model
     }
 
     public function agent(){
-        return $this->belongsTo('App\Model\Agent', 'driver_id', 'id')->select('id','profile_picture','device_type','device_token','is_available');
+        return $this->belongsTo('App\Model\Agent', 'driver_id', 'id')->select('id','profile_picture','device_type','device_token','is_available', 'is_pooling_available');
         
     }
 }

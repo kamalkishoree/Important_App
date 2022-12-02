@@ -174,6 +174,13 @@ class ClientController extends Controller
             ClientPreference::where('client_id', $id)->update($data);
             return redirect()->back()->with('success', 'Preference updated successfully!');
         }
+
+        if(checkColumnExists('client_preferences', 'charge_percent_from_agent') && $request->has('charge_percent_from_agent')){
+            
+            $data = ['charge_percent_from_agent'=> trim($request->charge_percent_from_agent)];
+            ClientPreference::where('client_id', $id)->update($data);
+            return redirect()->back()->with('success', 'Preference updated successfully!');
+        }
         
         $client = Client::where('code', $id)->firstOrFail();
         # if submit custom domain by client
@@ -319,12 +326,18 @@ class ClientController extends Controller
 
         unset($request['arkesel_api_key']);
         unset($request['arkesel_sender_id']);
+        if( isset($request['charge_percent_from_agent']) ) {
+            unset($request['charge_percent_from_agent']);
+        }
 
         if($request->has('cancel_verify_edit_order_config')){
             $request->request->add(['verify_phone_for_driver_registration' => ($request->has('verify_phone_for_driver_registration') && $request->verify_phone_for_driver_registration == 'on') ? 1 : 0]);
             $request->request->add(['is_edit_order_driver' => ($request->has('is_edit_order_driver') && $request->is_edit_order_driver == 'on') ? 1 : 0]);
             $request->request->add(['is_cancel_order_driver' => ($request->has('is_cancel_order_driver') && $request->is_cancel_order_driver == 'on') ? 1 : 0]);
             $request->request->add(['is_driver_slot' => ($request->has('is_driver_slot') && $request->is_driver_slot == 'on') ? 1 : 0]);
+            $request->request->add(['is_cab_pooling_toggle' => ($request->has('is_cab_pooling_toggle') && $request->is_cab_pooling_toggle == 'on') ? 1 : 0]);
+            //$request->request->add(['radius_for_pooling_km' => ($request->has('is_cab_pooling_toggle') && $request->is_cab_pooling_toggle == 'on') ? $request->radius_for_pooling_km : 0]);
+            $request->radius_for_pooling_km = ($request->has('is_cab_pooling_toggle') && $request->is_cab_pooling_toggle == 'on') ? $request->radius_for_pooling_km : 0;
         }
 
         if($request->has('refer_and_earn')){

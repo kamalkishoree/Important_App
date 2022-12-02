@@ -122,7 +122,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                     <div class="card-body">
                         <div class="row">
                             <div class="col-sm-4 col-md-3 mb-3 mb-md-0">
-                                <div class="text-center">
+                                <div class="text-center d-flex">
                                     <form method="POST" id="form_auto_payout" action="{{route('preference', Auth::user()->code)}}">
                                         @csrf
                                         <input type="hidden" name="autopay_submit" id="autopay_submit" value="submit"/>
@@ -135,6 +135,14 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                     </div>
                                     <p class="text-muted font-15 mb-0">{{__("Auto Payout")}}</p>
                                     </form>
+
+                                    @if(isset($preferences) && $preferences->auto_payout =="1")
+                                        <form method="POST" action="{{route('preference', Auth::user()->code)}}" class="d-flex">
+                                            @csrf
+                                            <input type="text" name="charge_percent_from_agent" id="" class="form-control" value="@if((isset($preferences->charge_percent_from_agent))){{$preferences->charge_percent_from_agent}}@endif" placeholder="Commission Percentage">
+                                            <button class="ml-2" type="submit">Save</button>
+                                        </form>
+                                    @endif
                                 </div>
                             </div>
                             <div class="col-sm-4 col-md-3 mb-3 mb-md-0">
