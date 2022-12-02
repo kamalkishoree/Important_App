@@ -73,7 +73,7 @@
                     <div style="width: 100%">
                         <div id="map_canvas" style="width: 100%; height:calc(100vh - 70px);"></div>
                     </div>
-                    <div class="contant">
+                    {{-- <div class="contant">
                         <div class="bottom-content">
                             <input type="text"  id="basic-datepicker" class="datetime" value="{{date('Y-m-d', strtotime($date))}}" data-date-format="Y-m-d">
                             <div style="display:none">
@@ -81,12 +81,19 @@
                                 <input class="taskchecks filtercheck" type="checkbox" name="taskstatus[]" value="5" checked>
                             </div>
                         </div>
-                    </div>
+                    </div> --}}
                 </div>
             </div>
             {{-- @dd($unassigned_orders) --}}
             <div id="scrollbar" class="col-md-3 col-xl-3 left-sidebar pt-3">
                 <div class="side_head mb-2 p-2">
+                    <div class="select_bar_date mb-2 d-flex align-items-center justify-content-center">
+                        <input type="date"  id="basic-datepicker" class="datetime form-control" value="{{date('Y-m-d', strtotime($date))}}" data-date-format="YY-mm-dd" onchange="handler();" style="width: 250px;">
+                        <div style="display:none">
+                            <input class="newchecks filtercheck teamchecks" cla type="checkbox" value="-1" name="teamchecks[]" checked>
+                            <input class="taskchecks filtercheck" type="checkbox" name="taskstatus[]" value="5" checked>
+                        </div>
+                    </div>
                     <div class="d-flex align-items-center justify-content-center mb-2"> 
                         <div class="radio radio-primary form-check-inline ml-3 mr-2">
                             <input type="radio" id="user_all_routes" value="" name="user_routes" class="checkUserRoutes" checked>
@@ -99,8 +106,7 @@
                         <div class="radio radio-info form-check-inline mr-2">
                             <input type="radio" id="user_assigned_routes" value="assigned" name="user_routes" class="checkUserRoutes">
                             <label for="user_assigned_routes"> {{__("Assigned")}} </label>
-                        </div>
-                        
+                        </div>                        
                         {{-- <span class="allAccordian ml-2"><span class="" onclick="openAllAccordian()">{{__("Open All")}}</span></span> --}}
                     </div>
                     <div class="select_bar">
@@ -456,7 +462,21 @@ function deleteMarkers() {
 }
 
 
-$(".datetime").on('change', function(){
+// $(".datetime").on('change', function(){
+//     loadTeams(1, 1);
+//     loadOrders(1, 1);
+//     old_channelname = channelname;
+//     old_logchannelname = logchannelname;
+//     channelname = "orderdata{{$client_code}}"+$(this).val();
+//     logchannelname = "agentlog{{$client_code}}"+$(this).val();
+//     if(old_channelname != channelname)
+//     {
+//         ListenDataChannel();
+//         ListenAgentLogChannel();
+//     }
+// });
+
+function handler(){
     loadTeams(1, 1);
     loadOrders(1, 1);
     old_channelname = channelname;
@@ -468,7 +488,7 @@ $(".datetime").on('change', function(){
         ListenDataChannel();
         ListenAgentLogChannel();
     }
-});
+}
 
 //function fot optimizing route
 function RouteOptimization(taskids, distancematrix, optimize, agentid, date) {
