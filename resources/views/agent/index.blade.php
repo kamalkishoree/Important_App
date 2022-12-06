@@ -339,8 +339,8 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
             <div class="card">
                 <div class="card-body">
                     <div class="alFilterLocation">
-                        <ul class="p-0 d-flex justify-content-start">
-                                <li>
+                        <ul class="p-0 d-flex justify-content-end">
+                                <li class="first_child">
                                     <div class="text-sm-left">
                                         @if (\Session::has('success'))
                                         <div class="alert alert-success">

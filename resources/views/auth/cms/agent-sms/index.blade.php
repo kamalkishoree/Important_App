@@ -56,7 +56,7 @@
                     </div>
                     <div class="row">
                         <input type="hidden" id="template_id" value="">
-                        <div class="col-lg-12">
+                        <div class="col-lg-12 mb-2">
                             <div class="row">
 
                                 <div class="col-12 mb-2">
@@ -65,11 +65,11 @@
                                     <span class="text-danger error-text updatetitleError"></span>
                                 </div>
 
-                                <div class="col-md-10 mb-2">
+                                <div class="col-md-12 mb-2">
                                     <label for="title" class="control-label">{{ __("Content") }}</label>
                                     <textarea class="form-control" id="content" placeholder="Meta Keyword" rows="6" name="meta_keyword" cols="10" maxlength="250"></textarea>
                                 </div>
-                                <div class="col-md-2">
+                                <div class="col-md-12">
                                     <label for="title" class="control-label">{{ __("Tags") }}:-<div id="tags" disabled=""></div></label>
                                 </div>
                             </div>

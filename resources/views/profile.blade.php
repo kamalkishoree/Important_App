@@ -203,7 +203,7 @@ box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.15);border-radius: 10px;width: 100%;disp
                                     </div>
                                 </div>
                             </div>
-                            <div class="row">
+                            <div class="row flex">
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label for="name" class="control-label">{{__("NAME")}}</label>
@@ -314,7 +314,7 @@ box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.15);border-radius: 10px;width: 100%;disp
                         <form method="post" action="{{route('client.password.update')}}">
                             @csrf
                             <h4 class="header-title">{{__("Change Password")}}</h4>
-                            <div class="row mb-2">
+                            <div class="row flex mb-2">
                                 <div class="col-md-4">
                                     <div class="form-group mb-3">
                                         <label for="old_password">{{__("Old Password")}}</label>
