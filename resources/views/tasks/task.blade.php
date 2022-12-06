@@ -160,7 +160,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                 </div>
                             </div>
                             @csrf
-                            <div class="col-sm-12">
+                            <div class="col-md-12">
                                 <form class="mb-0" name="getTask" id="getTask" method="get" action="{{ route('tasks.index') }}">
                                     <div class="login-form">
                                         <ul class="list-inline mb-0">
