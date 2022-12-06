@@ -118,6 +118,9 @@ class TaskController extends BaseController
             });
         }
         $all = $all->get();
+        if($request->has('customer_id') && $request->customer_id != ''){
+            $all = $all->where('customer_id', $request->customer_id);
+        }
         $active   =  count($all->where('status', 'assigned'));
         $pending  =  count($all->where('status', 'unassigned'));
         $history  =  count($all->where('status', 'completed'));
@@ -301,9 +304,10 @@ class TaskController extends BaseController
         }
 
         if($request->has('customer_id') && $request->customer_id != ''){
-            $orders = $orders->whereHas('customer', function($query) use ($request) {
-                $query->where('id', $request->customer_id);
-            });
+            // $orders = $orders->whereHas('customer', function($query) use ($request) {
+            //     $query->where('id', $request->customer_id);
+            // });
+            $orders = $orders->where('customer_id', $request->customer_id);
         }
 
         $orders = $orders->where('status', $request->routesListingType)->where('status', '!=', null)->orderBy('updated_at', 'desc');
@@ -357,15 +361,7 @@ class TaskController extends BaseController
                         return '';
                     endif;
                 })
-                // ->addColumn('completed_time', function ($orders) use ($request, $timezone, $preference) {
-                //     $tz              = new Timezone();
-                //     $client_timezone = $tz->timezone_name($timezone);
-                //     if(!empty($orders->task)):
-                //         return '-';
-                //     else:
-                //         return '-';
-                //     endif;
-                // })
+                
                 ->addColumn('short_name', function ($orders) use ($request) {
                     $routes = array();
                     foreach($orders->task as $task){
@@ -444,7 +440,7 @@ class TaskController extends BaseController
                         });
                     }
                 }, true)
-                ->rawColumns(['action', 'order_number', 'order_time', 'completed_time'])
+                ->rawColumns(['action', 'order_number', 'order_time'])
                 ->make(true);
     }
 
