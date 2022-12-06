@@ -804,12 +804,13 @@ $sms_crendential = json_decode($preference->sms_credentials);
                                 <h4 class="header-title text-uppercase mb-0">{{__("Dashboard Home Page Style")}}</h4>
                                 <button class="btn btn-outline-info d-block" type="submit"> {{__('Save')}} </button>
                             </div>
+                            {{-- @dd($dashboardMode) --}}
                             <div class="row mt-3">
                                 <div class="col-xl-4 col-lg-6 col-md-6 mb-3 alThemeDemoSec">
                                     <div class="card mb-0">
                                         <div class="card-body p-0">
                                             <div class="col-sm-12 custom-control custom-radio radio_new p-0">
-                                                <input type="radio"  value="0" id="show_dashboard_by_agent_wise_{{ !empty($dashboardMode->show_dashboard_by_agent_wise)? $dashboardMode->show_dashboard_by_agent_wise : 0 }}" name="dashboard_mode[show_dashboard_by_agent_wise]" class="custom-control-input" {{ $dashboardMode->show_dashboard_by_agent_wise == 0 ? 'checked' : '' }}>
+                                                <input type="radio"  value="0" id="show_dashboard_by_agent_wise_{{ !empty($dashboardMode)? $dashboardMode->show_dashboard_by_agent_wise : 0 }}" name="dashboard_mode[show_dashboard_by_agent_wise]" class="custom-control-input" {{ !empty($dashboardMode) &&$dashboardMode->show_dashboard_by_agent_wise == 0 ? 'checked' : '' }}>
                                                 <label class="custom-control-label" for="">
                                                     <span class="card-img-top img-fluid" style="background-image: url({{ asset('/assets/images/Dashboard-Smiile-1.png') }})"></span>
                                                 </label>
@@ -822,7 +823,7 @@ $sms_crendential = json_decode($preference->sms_credentials);
                                     <div class="card mb-0">
                                         <div class="card-body p-0">
                                             <div class="col-sm-12 custom-control custom-radio radio_new p-0">
-                                                <input type="radio"  value="1" id="show_dashboard_by_agent_wise_{{ !empty($dashboardMode->show_dashboard_by_agent_wise)? $dashboardMode->show_dashboard_by_agent_wise : 0 }}" name="dashboard_mode[show_dashboard_by_agent_wise]" class="custom-control-input" {{ (!empty($dashboardMode->show_dashboard_by_agent_wise) && $dashboardMode->show_dashboard_by_agent_wise == 1) ? 'checked' : '' }}>
+                                                <input type="radio"  value="1" id="show_dashboard_by_agent_wise_{{ !empty($dashboardMode)? $dashboardMode->show_dashboard_by_agent_wise : 0 }}" name="dashboard_mode[show_dashboard_by_agent_wise]" class="custom-control-input" {{ (!empty($dashboardMode) && $dashboardMode->show_dashboard_by_agent_wise == 1) ? 'checked' : '' }}>
                                                 <label class="custom-control-label" for="">
                                                     <span class="card-img-top img-fluid" style="background-image: url({{ asset('/assets/images/Dashboard-Smiile-2.png') }})"></span>
                                                 </label>
