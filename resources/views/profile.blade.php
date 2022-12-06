@@ -1,7 +1,6 @@
 @extends('layouts.vertical', ['title' => 'Profile'])
 
 @section('css')
-<link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.18/css/intlTelInput.css'>
 <style>
 .input-group {
 position: relative;
@@ -26,6 +25,7 @@ box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.15);border-radius: 10px;width: 100%;disp
 .choose-btn:hover{text-decoration: none;}
 .g-btn .text strong {color: #000;}
 </style>
+<link rel="stylesheet" href="{{ asset('telinput/css/intlTelInput.min.css') }}">
 @endsection
 @php
     $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain/';
@@ -399,7 +399,7 @@ box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.15);border-radius: 10px;width: 100%;disp
 <script src="{{asset('assets/js/pages/form-fileuploads.init.js')}}"></script>
 <script src="{{asset('assets/js/storeClients.js')}}"></script>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.18/js/intlTelInput.min.js"></script>
+{{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.18/js/intlTelInput.min.js"></script>
 
 <script>
     var input = document.querySelector("#phone_number");
@@ -410,6 +410,32 @@ box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.15);border-radius: 10px;width: 100%;disp
         utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.18/js/utils.js",
     });
     
+    $('.intl-tel-input').css('width', '100%');
+
+
+    $(function() {
+        $('#phone_number').focus(function() {
+            $('#phone_number').css('color', '#6c757d');
+        });
+    });
+    $(function() {
+        var height = $('#favicon_container').height();
+        $('#favicon_container').css('width', height+'px');
+    });
+</script> --}}
+
+
+
+
+<script src="{{ asset('telinput/js/intlTelInput.js') }}"></script>
+
+<script>
+
+    $("#phone_number").intlTelInput({
+        separateDialCode:true,
+        preferredCountries:["{{getCountryCode()}}"],
+        initialCountry:"{{getCountryCode()}}",
+    });
     $('.intl-tel-input').css('width', '100%');
 
 
