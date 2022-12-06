@@ -324,6 +324,7 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 	Route::get('driver/registration/document/edit', 'ClientController@show')->name('driver.registration.document.edit');
 	Route::post('driverregistrationdocument/create', 'ClientController@store')->name('driver.registration.document.create');
 	Route::post('driverregistrationdocument/update', 'ClientController@update')->name('driver.registration.document.update');
+	
 	Route::post('driver/registration/document/delete', 'ClientController@destroy')->name('driver.registration.document.delete');
 	
 });

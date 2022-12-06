@@ -327,6 +327,13 @@ class TaskController extends BaseController
                     $phoneNumber = !empty($orders->customer->phone_number)? $orders->customer->phone_number : '';
                     return $phoneNumber;
                 })
+                ->addColumn('type', function ($orders) use ($request) {
+                    $type = 'Normal';
+                    if(@$orders->task[0]->is_return && $orders->task[0]->is_return == 1){
+                        $type = 'Return';
+                    }
+                    return $type;
+                })
                 ->addColumn('agent_name', function ($orders) use ($request) {
                     $checkActive = (!empty($orders->agent->name) && $orders->agent->is_available == 1) ? ' '.__('Active') : ' '. __('InActive');
                     $agentName   = !empty($orders->agent->name)? $orders->agent->name.$checkActive : '';
