@@ -2895,6 +2895,183 @@ body.light .card.main-table-card div#pricing-datatable_length label:after {
         max-width: 120px;
         min-width: 120px;
     }
+  }
+
+.dashboard-custom-temp .custom-control-input {
+    position: absolute;
+    left: 0;
+    z-index:9 !important;
+    width: 1rem;
+    height: 1.15625rem;
+    opacity: 0;
+}
+.dashboard-custom-temp span.alTemplateName.mt-3.w-100 {
+    margin-top: 10px!important;
+    display: block;
+    font-size: 12px;
+    text-align: center;
+}
+.dashboard-custom-temp .al_custom_control .card {
+    overflow: hidden;
+}
+.dashboard-custom-temp .card {
+    border-radius: 12px;
+    box-shadow: 0 4px 25px 0 rgb(138 129 124 / 6%);
+}
+.dashboard-custom-temp .al_custom_control label.custom-control-label {
+    height: 150px;
+    overflow: hidden;
+    width: 100%;
+}
+.dashboard-custom-temp .custom-radio.radio_new .custom-control-label::before, .select-category label:before {
+    -webkit-transition: all .5s;
+    -moz-transition: all .5s;
+    transition: all .5s;
+}
+.dashboard-custom-temp .custom-radio.radio_new .custom-control-label::before, .select-category label:before {
+    border-radius: 0;
+    clip-path: polygon(0 0, 0 35%, 35% 0);
+    width: 140px;
+    height: 120px;
+    left: 0;
+    top: 0;
+    background-color: transparent;
+    opacity:1;
+    content: "\F012C";
+    font-family: "Material Design Icons";
+    color: #fff;
+    font-size: 20px;
+    z-index:9;
+}
+.dashboard-custom-temp .custom-radio.radio_new .custom-control-label::before, .select-category label:before {
+    -webkit-transition: all .5s;
+    -moz-transition: all .5s;
+    transition: all .5s;
+}
+.dashboard-custom-temp .al_custom_control label.custom-control-label .card-img-top {
+    width: 100%;
+    height: 100%;
+    display: block;
+    background-size: 100%;
+    -webkit-transition: all 1s linear;
+    transition: all 1s linear;
+    background-repeat: no-repeat;
+}
+.dashboard-custom-temp .card-img, .card-img-top {
+    border-top-left-radius: 0.25rem;
+    border-top-right-radius: 0.25rem;
+}
+.dashboard-custom-temp .radio_new .custom-control-label::after, .select-category label::after {
+    background: rgb(0 0 0 / 31%);
+    background-image: none !important;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    opacity: 0;
+    content: "";
+    position: absolute;
+}
+.dashboard-custom-temp .radio_new .custom-control-label::after, .select-category label::after {
+    -webkit-transition: all .7s;
+    -moz-transition: all .7s;
+    transition: all .7s;
+}
+.dashboard-custom-temp .custom-radio.radio_new .custom-control-label::before, .select-category label:before {
+    -webkit-transition: all .5s;
+    -moz-transition: all .5s;
+    transition: all .5s;
+}
+.dashboard-custom-temp .custom-radio.radio_new .custom-control-label::before, .select-category label:before {
+    border-radius: 0;
+    clip-path: polygon(0 0, 0 35%, 35% 0);
+    width: 140px;
+    height: 120px;
+    left: 0;
+    top: 0;
+    background-color: transparent;
+    opacity: 0;
+    content: "\F012C";
+    font-family: "Material Design Icons";
+    color: #fff;
+    font-size: 20px;
+    z-index: 1;
+}
+.dashboard-custom-temp input[type=radio], input[type=checkbox] {
+    cursor: pointer!important;
+}
+.dashboard-custom-temp .custom-control-input:checked~.custom-control-label::before, .form-check-input:checked~label:before {
+    background-color: #43bee1 !important;
+    opacity: 1;
+}
+.dashboard-custom-temp .al_custom_control label.custom-control-label:hover .card-img-top {
+    background-position: bottom;
+}
+.dashboard-custom-temp .al_custom_control label.custom-control-label .card-img-top {
+    width: 100%;
+    height: 100%;
+    display: block;
+    background-size: 100%;
+    -webkit-transition: all 1s linear;
+    transition: all 1s linear;
+    background-repeat: no-repeat;
+    position: relative;
+    background-size: cover;
+}
+.dashboard-custom-temp .custom-control-input:checked~.custom-control-label::before, .form-check-input:checked~label:before {
+    background-color: #43bee1 !important;
+    opacity: 1;
+}
+.dashboard-custom-temp .custom-radio.radio_new .custom-control-input:checked~.custom-control-label::after, .form-check-input:checked~label::after {
+    opacity: 1;
+}
+.dashboard-custom-temp .custom-radio.radio_new .custom-control-label::before, .select-category label:before {
+    border-radius: 0;
+    clip-path: polygon(0 0, 0 35%, 35% 0);
+    width: 140px;
+    height: 120px;
+    left: 0;
+    top: 0;
+    background-color: transparent;
+    content: "\F012C";
+    font-family: "Material Design Icons";
+    color: #fff;
+    font-size: 20px;
+    z-index:99;
+}
+.dashboard-custom-temp .custom-control-input {
+    width: 5rem !important;
+    height: 5rem !important;
+}
+  
+
+.side_head select#team_id {
+    padding: 4px;
+}
+.side_head select#agent_id{
+    padding: 4px; 
+    font-size:11px;
+}
+.left-sidebar p span{
+    font-size:12px;
+    font-weight: 700;
+}
+div#agent_route_container .assigned-btn{width:90px;max-width:120px;}
+.dark .assigned-block{background-color: transparent;}
+.dark #accordion .card-body .assigned-block h5{color:#dbe9f9;}
+.dark #accordion .card-body .assigned-block h5 i{color:#dbe9f9;}
+.dark #accordion .card-body .assigned-block h5 span{color:#dbe9f9;}
+.dark #accordion .card-body .assigned-block h6{color:#dbe9f9;}
+.dark #accordion .card-body .assigned-block h6 span{color:#dbe9f9;}
+.dark #accordion .card-body .assigned-block h6 .vt-top {
+    filter: invert(1);
+}
+.left-side-menu{
+    height: 92% !important;
+}
+div#scrollbar {
+    padding-bottom: 70px !important;
+=======
 }
 /*----------Ipad view media css--------------*/
 @media(max-width:991px){
@@ -3104,4 +3281,5 @@ body.light .card.main-table-card div#pricing-datatable_length label:after {
     body.dark.iti-mobile.sidebar-enable ul.list-unstyled.topnav-menu.float-right.mb-0.d-flex.align-items-center {
         margin: 0;
     }
+>>>>>>> pre_dev
 }

@@ -267,7 +267,7 @@ class TaskController extends BaseController
             $q->where('manager_id', $user->id);
         })->pluck('tag_id');
 
-        $orders = Order::with(['customer', 'location', 'taskFirst', 'agent', 'task.location'])->orderBy('id', 'DESC'); //, 'task.manager'
+        $orders = Order::with(['customer', 'task', 'location', 'taskFirst', 'agent', 'task.location'])->orderBy('id', 'DESC'); //, 'task.manager'
         
         if (@$request->warehouseManagerId && !empty($request->warehouseManagerId)) {
             $orders->whereHas('task.warehouse.manager', function($q) use($request){
@@ -357,6 +357,15 @@ class TaskController extends BaseController
                         return '';
                     endif;
                 })
+                // ->addColumn('completed_time', function ($orders) use ($request, $timezone, $preference) {
+                //     $tz              = new Timezone();
+                //     $client_timezone = $tz->timezone_name($timezone);
+                //     if(!empty($orders->task)):
+                //         return '-';
+                //     else:
+                //         return '-';
+                //     endif;
+                // })
                 ->addColumn('short_name', function ($orders) use ($request) {
                     $routes = array();
                     foreach($orders->task as $task){
@@ -435,7 +444,7 @@ class TaskController extends BaseController
                         });
                     }
                 }, true)
-                ->rawColumns(['action', 'order_number', 'order_time'])
+                ->rawColumns(['action', 'order_number', 'order_time', 'completed_time'])
                 ->make(true);
     }
 

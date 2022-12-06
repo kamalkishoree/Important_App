@@ -108,6 +108,20 @@ class ClientController extends Controller
             return redirect()->back()->with('success', 'Preference updated successfully!');
         }
 
+        if($request->has('dashboard_mode')){
+
+            $dashboardMode['show_dashboard_by_agent_wise'] = $request->dashboard_mode['show_dashboard_by_agent_wise'];
+
+            $data = [];
+            if(checkColumnExists('client_preferences', 'dashboard_mode')){
+                $data = ['dashboard_mode'=>json_encode($dashboardMode)];
+            }
+            
+            ClientPreference::where('client_id', $id)->update($data);
+
+            return redirect()->back()->with('success', 'Preference updated successfully!');
+        }
+
         if(!empty($request->fcm_server_key)){
             $data = ['fcm_server_key'=>$request->fcm_server_key];
             ClientPreference::where('client_id', $id)->update($data);
@@ -463,13 +477,14 @@ class ClientController extends Controller
         $preference  = ClientPreference::where('client_id', Auth::user()->code)->first();
         $customMode  = json_decode($preference->custom_mode);
         $warehoseMode  = json_decode($preference->warehouse_mode);
+        $dashboardMode  = json_decode($preference->dashboard_mode);
         $client      = Auth::user();
         $subClients  = SubClient::all();
         $smtp        = SmtpDetail::where('id', 1)->first();
         $vehicleType = VehicleType::latest()->get();
         $agent_docs=DriverRegistrationDocument::get();
         $smsTypes = SmsProvider::where('status', '1')->get();
-        return view('configure')->with(['preference' => $preference, 'customMode' => $customMode, 'client' => $client,'subClients'=> $subClients,'smtp_details'=>$smtp, 'agent_docs' => $agent_docs,'smsTypes'=>$smsTypes,'vehicleType'=>$vehicleType, 'warehoseMode' => $warehoseMode]);
+        return view('configure')->with(['preference' => $preference, 'customMode' => $customMode, 'client' => $client,'subClients'=> $subClients,'smtp_details'=>$smtp, 'agent_docs' => $agent_docs,'smsTypes'=>$smsTypes,'vehicleType'=>$vehicleType, 'warehoseMode' => $warehoseMode, 'dashboardMode' => $dashboardMode]);
     }
 
 
