@@ -306,8 +306,6 @@ body.dark.modal-open .dropdown.bootstrap-select button.btn.dropdown-toggle.btn-l
 }
 .design-dark-theme
   [class^="icon-"], [class*=" icon-"] {
-    /* use !important to prevent issues with browser extensions that change fonts */
-[class^="icon-"], [class*=" icon-"] {
    /* use !important to prevent issues with browser extensions that change fonts */
     font-family: 'icomoon' !important;
     speak: never;
@@ -3414,7 +3412,6 @@ div#agent_route_container .assigned-btn{width:90px;max-width:120px;}
 }
 div#scrollbar {
     padding-bottom: 70px !important;
-=======
 }
 /*----------Ipad view media css--------------*/
 @media(max-width:991px){
@@ -3624,5 +3621,4 @@ div#scrollbar {
     body.dark.iti-mobile.sidebar-enable ul.list-unstyled.topnav-menu.float-right.mb-0.d-flex.align-items-center {
         margin: 0;
     }
->>>>>>> pre_dev
 }
