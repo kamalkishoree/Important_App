@@ -6,6 +6,9 @@
     <style>
         .select2-container--default .select2-selection--multiple .select2-selection__choice__remove{color: #fff !important;}
         .select2-container--default .select2-selection--multiple .select2-selection__choice__remove:hover{background:transparent !important;}
+        .customui_card { background-color: #424e5a; border-bottom: 0 solid #36404a;border-radius: 10px;margin: 0 10px;}
+        #accordion {padding-bottom: 20px !important;}
+        .assigned_agent{margin-bottom: 20px;}
     </style>
 @endsection
 @php
@@ -839,7 +842,7 @@ function initializeSortable()
     });
 }
 
-$(document).on('click', 'button.unassigned-badge', function(){
+$(document).on('click', '.unassigned-badge', function(){
     $("#route-assign-agent-modal").modal('show');
     var order_id = $(this).data('id');
     $('#order_id').val(order_id);
