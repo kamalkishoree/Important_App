@@ -6,7 +6,6 @@ use App\Model\ClientPreference;
 use App\Model\Client as ClientData;
 use App\Model\Countries;
 use App\Model\PaymentOption;
-use Log;
 
 function pr($var) {
   	echo '<pre>';
@@ -126,10 +125,7 @@ function helper_number_formet($number){
 function getCountryCode($dial_code=''){
     if($dial_code==''):
         $clientData = ClientData::select('country_id')->first();
-        Log::info('country_id : '.$clientData->country_id);
         $getAdminCurrentCountry = Countries::where('id', '=', $clientData->country_id)->select('id', 'code')->first();
-        Log::info('country data  : ');
-        Log::info($getAdminCurrentCountry);
     else:
         $getAdminCurrentCountry = Countries::where('phonecode', '=', $dial_code)->select('id', 'code')->first();
     endif;
