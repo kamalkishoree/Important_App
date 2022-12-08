@@ -1,0 +1,97 @@
+@extends('layouts.vertical', ['title' => getAgentNomenclature() ])
+@section('content')
+<div class="container-fluid">
+    @csrf
+    <!-- start page title -->
+    <div class="row">
+        <div class="col-12">
+            <div class="page-title-box">
+                <h4 class="page-title">{{ getAgentNomenclature() }} </h4>
+            </div>
+        </div>
+    </div>
+
+    <!-- end page title -->
+    <div class="row">
+            @if (\Session::has('success'))
+            <div class="col m-2 alert alert-success alert-dismissible fade show" role="alert">
+                    <span>{!! \Session::get('success') !!}</span>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            @endif
+
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="alFilterLocation">
+                        <ul class="p-0 d-flex justify-content-end">
+                                <li class="d-flex">
+                                    <button type="button" class="btn btn-blue waves-effect waves-light openModal mr-1" data-toggle="modal" data-target="" data-backdrop="static" data-keyboard="false"><i class="mdi mdi-plus-circle mr-1"></i> {{__("Add Fleets")}}</button>
+                                </li>
+                            </ul>
+                    </div>
+                    <ul class="nav nav-tabs nav-material alNavTopMinus" id="top-tab" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" id="active-vendor" data-toggle="tab" href="#active_vendor" role="tab" aria-selected="false" data-rel="agent-listing" data-status="1">
+                                <i class="icofont icofont-man-in-glasses"></i>{{ __('All Fleets') }}
+                            </a>
+                            <div class="material-border"></div>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="awaiting-vendor" data-toggle="tab" href="#awaiting_vendor" role="tab" aria-selected="true" data-rel="awaiting_approval_agent_datatable" data-status="0">
+                                <i class="icofont icofont-ui-home"></i>{{ __('Assigned Fleets') }}
+                            </a>
+                            <div class="material-border"></div>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="block-vendor" data-toggle="tab" href="#block_vendor" role="tab" aria-selected="false" data-rel="blocked_agent_datatable" data-status="2">
+                                <i class="icofont icofont-man-in-glasses"></i>{{ __('Free Fleets') }}
+                            </a>
+                            <div class="material-border"></div>
+                        </li>
+                    </ul>
+
+                    <div class="tab-content nav-material pt-0" id="top-tabContent">
+                        <div class="tab-pane fade past-order show active" id="active_vendor" role="tabpanel" aria-labelledby="active-vendor">
+
+                            <div class="table-responsive nagtive-margin">
+                                <table class="table table-striped dt-responsive nowrap w-100 all agent-listing" id="agent-listing">
+                                    <thead>
+                                        <tr>
+                                            <th class="sort-icon">{{__("Name")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
+                                            <th class="sort-icon">{{__("Model")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
+                                            <th class="sort-icon">{{__("Make")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
+                                            <th class="sort-icon">{{__("Registration Name")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
+                                            <th class="sort-icon">{{__("Color")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
+                                            <th class="sort-icon">{{__("Year")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
+                                            <th class="sort-icon">{{__("Driver Name")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
+                                            <th>{{__("Action")}}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                       
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div> <!-- end card-body-->
+                </div> <!-- end card-->
+                
+            </div> <!-- end col -->
+        </div>
+    </div>
+</div>
+
+@include('fleets.modals')
+@endsection
+
+@section('script')
+<script src="{{ asset('assets/js/storeAgent.js') }}"></script>
+<script src="{{ asset('assets/libs/datatables/datatables.min.js') }}"></script>
+<script src="{{ asset('assets/js/jquery.tagsinput-revisited.js') }}"></script>
+<script src="{{ asset('telinput/js/intlTelInput.js') }}"></script>
+<link rel="stylesheet" href="{{ asset('assets/css/jquery.tagsinput-revisited.css') }}" />
+@include('fleets.pagescript')
+@endsection
