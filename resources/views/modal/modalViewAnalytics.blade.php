@@ -12,14 +12,14 @@
       </tr>
   </thead>
     <tbody id="agent_view_analytics_records">
-    
+     
       @if($orders)
           @foreach ($orders as $order)
             <tr>
               <td><a href="{{ url('tasks/'.$order->id.'/edit') }}" target="_blank" title="Edit Route">{{ $order->order_number }}</a></td>  
-              <td>{{ $order->customer->id }}</td>  
-              <td>{{ $order->customer->name }}</td>  
-              <td>{{ $order->agent->name }}</td>  
+              <td>{{ $order->customer->id ?? '' }}</td>  
+              <td>{{ $order->customer->name ?? ''}}</td>  
+              <td>{{ $order->agent->name ?? ''  }}</td>  
               <td>{{ $order->order_cost }}</td>  
               <td>{{ ucfirst($data_status) }}</td>  
             </tr> 

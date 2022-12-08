@@ -210,41 +210,113 @@ class AccountingController extends Controller
         $data_status        = $request->data_status;
         $yesterday          = date("Y-m-d", strtotime( '-1 days' ) );
 
-        if($data_type == 'this_day'){
-            $orders             =  Order::with('customer','agent')->where(['status'=>$data_status])->whereDate('order_time',Carbon::now()->toDateString())->get();
-            if($agent_id){
-                $orders         =  Order::with('customer','agent')->where(['driver_id'=>$agent_id,'status'=>$data_status])->whereDate('order_time',Carbon::now()->toDateString())->get();
+         if($data_type == 'this_day'){
+            if($data_status == 'live'){
+                $orders             =  Order::whereHas('task', function($q){
+                                        $q->whereIn('task_status',[2,3,4]);
+                                    })->with('customer','agent')->where(['status'=>'assigned'])->whereDate('order_time',Carbon::now()->toDateString())->get();
+                if($agent_id){
+                    $orders         =  Order::whereHas('task', function($q){
+                        $q->whereIn('task_status',[2,3,4]);
+                    })->with('customer','agent')->where(['driver_id'=>$agent_id,'status'=>'assigned'])->whereDate('order_time',Carbon::now()->toDateString())->get();
+                }
+            }else{
+                $orders             =  Order::with('customer','agent')->where(['status'=>$data_status])->whereDate('order_time',Carbon::now()->toDateString())->get();
+                if($agent_id){
+                    $orders         =  Order::with('customer','agent')->where(['driver_id'=>$agent_id,'status'=>$data_status])->whereDate('order_time',Carbon::now()->toDateString())->get();
+                }
             }
+            
         }elseif($data_type == 'prev_day'){
-            $orders             =  Order::with('customer','agent')->where(['status'=>$data_status])->whereDate('order_time', $yesterday)->get();
-            if($agent_id){
-                $orders         =  Order::with('customer','agent')->where(['driver_id'=>$agent_id,'status'=>$data_status])->whereDate('order_time', $yesterday)->get();
+            if($data_status == 'live'){
+                $orders             =  Order::whereHas('task', function($q){
+                                            $q->whereIn('task_status',[2,3,4]);
+                                        })->with('customer','agent')->where(['status'=>'assigned'])->whereDate('order_time', $yesterday)->get();
+                if($agent_id){
+                    $orders         =  Order::whereHas('task', function($q){
+                                            $q->whereIn('task_status',[2,3,4]);
+                                        })->with('customer','agent')->where(['driver_id'=>$agent_id,'status'=>'assigned'])->whereDate('order_time', $yesterday)->get();
+                }
+            }else{
+                $orders             =  Order::with('customer','agent')->where(['status'=>$data_status])->whereDate('order_time', $yesterday)->get();
+                if($agent_id){
+                    $orders         =  Order::with('customer','agent')->where(['driver_id'=>$agent_id,'status'=>$data_status])->whereDate('order_time', $yesterday)->get();
+                }
             }
+            
         }
         elseif($data_type == 'this_week'){
-            $orders             =  Order::with('customer','agent')->where(['status'=>$data_status])->whereBetween('order_time', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()])->get();
-            if($agent_id){
-                $orders         =  Order::with('customer','agent')->where(['driver_id'=>$agent_id,'status'=>$data_status])->whereBetween('order_time', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()])->get();
+            if($data_status == 'live'){
+                $orders             =  Order::whereHas('task', function($q){
+                                            $q->whereIn('task_status',[2,3,4]);
+                                        })->with('customer','agent')->where(['status'=>'assigned'])->whereBetween('order_time', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()])->get();
+                if($agent_id){
+                    $orders         =  Order::whereHas('task', function($q){
+                                        $q->whereIn('task_status',[2,3,4]);
+                                        })->with('customer','agent')->where(['driver_id'=>$agent_id,'status'=>'assigned'])->whereBetween('order_time', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()])->get();
+                }
+            }else{
+                $orders             =  Order::with('customer','agent')->where(['status'=>$data_status])->whereBetween('order_time', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()])->get();
+                if($agent_id){
+                    $orders         =  Order::with('customer','agent')->where(['driver_id'=>$agent_id,'status'=>$data_status])->whereBetween('order_time', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()])->get();
+                }
             }
+            
         }
         elseif($data_type == 'prev_week'){
-            $orders             =  Order::with('customer','agent')->where(['status'=>$data_status])->whereBetween('order_time', [Carbon::now()->subWeek()->startOfWeek(), Carbon::now()->subWeek()->endOfWeek()])->get();
-            if($agent_id){
-                $orders         =  Order::with('customer','agent')->where(['driver_id'=>$agent_id,'status'=>$data_status])->whereBetween('order_time', [Carbon::now()->subWeek()->startOfWeek(), Carbon::now()->subWeek()->endOfWeek()])->get();
+            if($data_status == 'live'){
+                $orders             =  Order::whereHas('task', function($q){
+                                        $q->whereIn('task_status',[2,3,4]);
+                                    })->with('customer','agent')->where(['status'=>'assigned'])->whereBetween('order_time', [Carbon::now()->subWeek()->startOfWeek(), Carbon::now()->subWeek()->endOfWeek()])->get();
+                if($agent_id){
+                    $orders         =  Order::whereHas('task', function($q){
+                                        $q->whereIn('task_status',[2,3,4]);
+                                    })->with('customer','agent')->where(['driver_id'=>$agent_id,'status'=>'assigned'])->whereBetween('order_time', [Carbon::now()->subWeek()->startOfWeek(), Carbon::now()->subWeek()->endOfWeek()])->get();
+                }
+            }else{
+                $orders             =  Order::with('customer','agent')->where(['status'=>$data_status])->whereBetween('order_time', [Carbon::now()->subWeek()->startOfWeek(), Carbon::now()->subWeek()->endOfWeek()])->get();
+                if($agent_id){
+                    $orders         =  Order::with('customer','agent')->where(['driver_id'=>$agent_id,'status'=>$data_status])->whereBetween('order_time', [Carbon::now()->subWeek()->startOfWeek(), Carbon::now()->subWeek()->endOfWeek()])->get();
+                }
             }
         }
         elseif($data_type == 'this_month'){
-            $orders             =  Order::with('customer','agent')->where(['status'=>$data_status])->whereMonth('order_time',Carbon::now()->month)->get();
-            if($agent_id){
-                $orders         =  Order::with('customer','agent')->where(['driver_id'=>$agent_id,'status'=>$data_status])->whereMonth('order_time',Carbon::now()->month)->get();
+            if($data_status == 'live'){
+                $orders             =  Order::whereHas('task', function($q){
+                                            $q->whereIn('task_status',[2,3,4]);
+                                        })->with('customer','agent')->where(['status'=>'assigned'])->whereMonth('order_time',Carbon::now()->month)->get();
+                if($agent_id){
+                    $orders         =   Order::whereHas('task', function($q){
+                                            $q->whereIn('task_status',[2,3,4]);
+                                        })->with('customer','agent')->where(['driver_id'=>$agent_id,'status'=>'assigned'])->whereMonth('order_time',Carbon::now()->month)->get();
+                }
+            }else{
+                $orders             =  Order::with('customer','agent')->where(['status'=>$data_status])->whereMonth('order_time',Carbon::now()->month)->get();
+                if($agent_id){
+                    $orders         =  Order::with('customer','agent')->where(['driver_id'=>$agent_id,'status'=>$data_status])->whereMonth('order_time',Carbon::now()->month)->get();
+                }
             }
             
         }
         elseif($data_type == 'prev_month'){
-            $orders             =  Order::with('customer','agent')->where(['status'=>$data_status])->whereMonth( 'order_time', '=', Carbon::now()->subMonth()->month)->get();
-            if($agent_id){
-                $orders         =  Order::with('customer','agent')->where(['driver_id'=>$agent_id,'status'=>$data_status])->whereMonth( 'order_time', '=', Carbon::now()->subMonth()->month)->get();
+
+            if($data_status == 'live'){
+                $orders             =  Order::whereHas('task', function($q){
+                                        $q->whereIn('task_status',[2,3,4]);
+                                    })->with('customer','agent')->where(['status'=>'assigned'])->whereMonth( 'order_time', '=', Carbon::now()->subMonth()->month)->get();
+              
+                if($agent_id){
+                    $orders         =  Order::whereHas('task', function($q){
+                        $q->whereIn('task_status',[2,3,4]);
+                    })->with('customer','agent')->where(['driver_id'=>$agent_id,'status'=>'assigned'])->whereMonth( 'order_time', '=', Carbon::now()->subMonth()->month)->get();
+                }
+            }else{
+                $orders             =  Order::with('customer','agent')->where(['status'=>$data_status])->whereMonth( 'order_time', '=', Carbon::now()->subMonth()->month)->get();
+                if($agent_id){
+                    $orders         =  Order::with('customer','agent')->where(['driver_id'=>$agent_id,'status'=>$data_status])->whereMonth( 'order_time', '=', Carbon::now()->subMonth()->month)->get();
+                }
             }
+            
         }
        
         if($orders){
