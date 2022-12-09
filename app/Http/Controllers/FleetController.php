@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use App\Traits\ApiResponser;
 use DataTables;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 
 class FleetController extends Controller
 {
@@ -20,10 +21,12 @@ class FleetController extends Controller
      */
     public function index()
     {
-        $fleets = Fleet::orderBy('id', 'DESC')->get();
-        $drivers = Agent::get();
-        // dd($fleets);
-        return view('fleets.index',compact('fleets','drivers'));
+        $fleets = AgentFleet::pluck('fleet_id');
+        $agents = Fleet::select('id')->orderBy('id', 'desc');
+        $all = $agents->count();
+        $assigned = $agents->whereIn('id',$fleets)->count();
+        $free = $all - $assigned;
+        return view('fleets.index',compact('all','assigned','free'));
     }
 
     /**
@@ -45,19 +48,32 @@ class FleetController extends Controller
     public function store(Request $request)
     {
         try{
-              $request->validate([
+
+           $validator =  Validator::make($request->all(), [
                 'name' => 'required',
                 'make' => 'required',
                 'model' => 'required',
-                'regname' => 'required',
-                'year' => 'required'
-                ]);
+                'registration_name' => 'required|unique:fleets',
+                'year' => 'required',
+                ],
+                [
+                    'registration_name.unique' => 'Need Unique Registration Name.',
+                ]
+            );
+           
+            if ( $validator->fails() ) 
+            {
+                return [
+                    'success' => 0, 
+                    'message' => $validator->errors()->first()
+                ];
+            }
             
                 $data = [
                     'name' => $request->name,
                     'make' => $request->make,
                     'model' => $request->model,
-                    'registration_name' => $request->regname,
+                    'registration_name' => $request->registration_name,
                     'color' => $request->color,
                     'year' => $request->year,
                     'user_id' => auth()->id()
@@ -78,23 +94,50 @@ class FleetController extends Controller
             ]);
         }
     }
-    public function assignDriver(Request $request, $id)
+    public function assignDriver(Request $request)
     {
-        $fleet = Fleet::where('id', $id)->first();
+        $fleet = Fleet::where('id', $request->id)->select('id','name','registration_name')->first();
         $drivers = Agent::get();
-        
-        return response()->json(array('success' => true, 'fleet' => $fleet,'drivers'=>$drivers));
+        $check = 0;
+        if(isset($fleet) && !empty($fleet->getDriver[0])){
+            $check = $fleet->getDriver[0]->id;
+        }
+
+        $selected = '<select class="form-control" name="agent_id">
+        <option value="">Not Assigned</option>';
+        foreach($drivers as $driver)
+         {
+               $select = (($driver->id == $check)?'Selected':'');
+               $selected .= '<option value="'.$driver->id.'" '.$select.'>'.$driver->name.'</option>';
+        }
+        $selected .= '</select>';
+
+        return response()->json(array('success' => true, 'fleet' => $fleet,'agents'=>$selected));
+    }
+
+    public function updateDriver(Request $request)
+    {
+        AgentFleet::where('fleet_id',$request->fleet_id)->delete();
+        if($request->agent_id){
+            $fleetUpdate = AgentFleet::create(['fleet_id'=>$request->fleet_id,'agent_id'=>$request->agent_id]);
+        }
+       return back()->with('success',"Fleet Updated successfully.");
     }
 
     public function fleetFilter(Request $request)
     {
         try {
             $user = Auth::user();
+            $fleets = AgentFleet::pluck('fleet_id');
             $agents = Fleet::with('getDriver')->orderBy('id', 'desc');
-            if($user->id > 1)
+            if($request->status == '1')
             {
-                $agents->where('user_id',$user->id);
+                $agents->whereIn('id',$fleets);
+            }elseif($request->status == '2')
+            {
+                $agents->whereNotIn('id',$fleets);
             }
+            // dd($agents->first()->created_at);
             return Datatables::of($agents)
                 ->editColumn('name', function ($agents) {
                     $name =$agents->name;
@@ -116,15 +159,15 @@ class FleetController extends Controller
                     return __($agents->color);
                 })
                 ->editColumn('driver', function ($agents){
-                    return $agents->getDriver[0]->name??'Assign Driver';
+                    return $agents->getDriver[0]->name??'N/A';
+                })
+                ->editColumn('created_at', function ($agents){
+                    return date('d M, Y h:i:a',strtotime($agents->created_at));
+                })
+                ->editColumn('updated_at', function ($agents){
+                    return $agents->updated_at??'';
                 })
                 ->editColumn('action', function ($agents){
-                    // $approve_action = '';
-                    // if($agents->status == 'D'){
-                    //     $approve_action .= '<div class="inner-div agent_approval_button" data-agent_id="'.$agents->id.'" data-status="1" title="Approve"><i class="fas fa-user-check" style="color: green; cursor:pointer;"></i></div><div class="inner-div ml-1 agent_approval_button" data-agent_id="'.$agents->id.'" data-status="2" title="Reject"><i class="fa fa-user-times" style="color: red; cursor:pointer;"></i></div>';
-                    // } else if($agents->status == 'A'){
-                    //     $approve_action .= '<div class="inner-div agent_approval_button" data-agent_id="'.$agents->id.'" data-status="1" title="Approve"><i class="fas fa-user-check" style="color: green; cursor:pointer;"></i></div>';
-                    // }
                     $action = '<div class="inner-div">
                                 <form id="agentdelete'.$agents->id.'" method="POST" action="' . route('fleet.destroy', $agents->id) . '">
                                     <input type="hidden" name="_token" value="' . csrf_token() . '" />
@@ -142,6 +185,7 @@ class FleetController extends Controller
                                  $instance->orWhere('name', 'Like', '%'.$search.'%')
                                     ->orWhere('registration_name', 'Like', '%'.$search.'%')
                                     ->orWhere('year', 'Like', '%'.$search.'%')
+                                    ->orWhere('make', 'Like', '%'.$search.'%')
                                     ->orWhere('model', 'Like', '%'.$search.'%');
                     }
                 }, true)
@@ -160,6 +204,19 @@ class FleetController extends Controller
     {
         //
     }
+
+     /**
+     * Display the specified resource.
+     *
+     * @param  \App\Fleet  $fleet
+     * @return \Illuminate\Http\Response
+     */
+    public function fleetDetails(Request $request)
+    {
+        $fleet = Fleet::find(base64_decode($request->id));
+        return view('fleets.details',compact('fleet'));
+    }
+
 
     /**
      * Show the form for editing the specified resource.

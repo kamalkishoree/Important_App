@@ -1,21 +1,35 @@
 <script type="text/javascript">
     $(document).ready(function() {
 
-            let rel = 'agent-listing';
+        $(document).on("click", ".nav-link", function() {
+            let rel = $(this).data('rel');
+            // console.log(rel);
             let status = $(this).data('status');
             initDataTable(rel, status);
+            // setTimeout(function() {
+            //     $('#' + rel).DataTable().ajax.reload();
+            // }, 500);
+        });
+
+        // initDataTable();
+        setTimeout(function() {
+            $('#all-fleets').trigger('click');
+        }, 200);
            
       
 
 
         function initDataTable(table, status) {
-            var edit_agent_route = "{{ route('fleet.edit', ':id') }}";
+            var fleet_details_route = "{{ url('fleet/details') }}";
             var columnsDynamic =   [
                 {
                     data: 'name',
                     name: 'name',
                     orderable: true,
                     searchable: false,
+                    "mRender": function(data, type, full) {
+                        return '<div class="edit-icon-div"><a href="'+fleet_details_route+'/'+btoa(full.id)+'" target="_blank" class="child-name " fleetId="'+full.id+'">'+data+'</a></div>';
+                    }
                 },
                 {
                     data: 'model',
@@ -57,6 +71,18 @@
                     }
                 },
                 {
+                    data: 'created_at',
+                    name: 'action',
+                    orderable: false,
+                    searchable: false
+                },
+                {
+                    data: 'updated_at',
+                    name: 'action',
+                    orderable: false,
+                    searchable: false
+                },
+                {
                     data: 'action',
                     name: 'action',
                     orderable: false,
@@ -75,6 +101,7 @@
                     type : 'GET',
                     data: function(d) {
                         d.search = $('input[type="search"]').val();
+                        d.status = status;
                     }
                 },
                 columns:columnsDynamic
@@ -131,11 +158,12 @@
                 data: '',
                 dataType: 'json',
                 success: function(data) {
-                    $('#assign-driver-modal #editCardBox').html(data.html);
                     $('#assign-driver-modal').modal({
                         backdrop: 'static',
                         keyboard: false
                     });
+                    $('#fleet_id').val(data.fleet.id);
+                    $('#selectBox').html(data.agents);
                 },
                 error: function(data) {
                     // console.log('data2');
@@ -335,10 +363,19 @@
 
     $(document).on('click', '.mdi-delete', function(e) {
       e.preventDefault();
-            var r = confirm("Are you sure?");
+            var r = confirm("Are you sure. Want to delete?");
             if (r == true) {
                var agentid = $(this).attr('agentid');
                $('form#agentdelete'+agentid).submit();
             }
     });
+
+    $(document).on("click", ".fleetDetails", function(e) {
+            $('#fleet-detail-modal').modal({
+                backdrop: 'static',
+                keyboard: false
+            });
+        });
+
+
 </script>

@@ -1,4 +1,4 @@
-@extends('layouts.vertical', ['title' => 'Fleets' ])
+@extends('layouts.vertical', ['title' => 'Fleets Details' ])
 @section('content')
 <div class="container-fluid">
     @csrf
@@ -6,7 +6,7 @@
     <div class="row">
         <div class="col-12">
             <div class="page-title-box">
-                <h4 class="page-title">{{ __('Fleets') }} </h4>
+                <h4 class="page-title">{{ __('Fleets Details') }} </h4>
             </div>
         </div>
     </div>
@@ -32,28 +32,7 @@
                                 </li>
                             </ul>
                     </div>
-                    <ul class="nav nav-tabs nav-material alNavTopMinus" id="top-tab" role="tablist">
-                        <li class="nav-item">
-                            <a class="nav-link active" id="all-fleets" data-toggle="tab" href="#all_fleets" role="tab" aria-selected="false" data-rel="agent-listing" data-status="0">
-                                <i class="icofont icofont-man-in-glasses"></i>{{ __('All Fleets') }}
-                                <sup class="total-items">({{$all}})</sup>
-                            </a>
-                            <div class="material-border"></div>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" id="assigned-fleets" data-toggle="tab" href="#assigned_fleets" role="tab" aria-selected="true" data-rel="agent-listing"  data-status="1">
-                                <i class="icofont icofont-ui-home"></i>{{ __('Assigned Fleets')}}
-                                <sup class="total-items">({{$assigned}})</sup></a>
-                            <div class="material-border"></div>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" id="open-fleets" data-toggle="tab" href="#open_fleets" role="tab" aria-selected="false" data-rel="agent-listing" data-status="2">
-                                <i class="icofont icofont-man-in-glasses"></i>{{ __('Open Fleets') }}
-                                <sup class="total-items">({{$free}})</sup> </a>
-                            <div class="material-border"></div>
-                        </li>
-                    </ul>
-
+                  
                     <div class="tab-content nav-material pt-0" id="top-tabContent">
                         <div class="tab-pane fade past-order show active" id="active_vendor" role="tabpanel" aria-labelledby="active-vendor">
 

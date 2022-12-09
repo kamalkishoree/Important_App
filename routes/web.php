@@ -186,6 +186,8 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 			Route::resource('agent', 'AgentController');
 			Route::get('fleet/filter', 'FleetController@fleetFilter');
 			Route::get('fleet/{id}/driver', 'FleetController@assignDriver');
+			Route::get('fleet/details/{id}', 'FleetController@fleetDetails');
+			Route::POST('fleet/updateDriver', 'FleetController@updateDriver');
 			Route::resource('fleet', 'FleetController');
 
 			Route::get('agent/{id}/show', 'AgentController@show')->name('agent.show');

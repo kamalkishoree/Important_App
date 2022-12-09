@@ -14,7 +14,7 @@
                         <div class="col-md-6">
                             <div class="form-group" id="nameInput">
                                 <label for="name" class="control-label">{{__("NAME")}}</label>
-                                <input type="text" class="form-control" id="name" placeholder="John Doe" name="name">
+                                <input type="text" class="form-control" id="name" placeholder="Fleet Name" name="name">
                                 <span class="invalid-feedback" role="alert">
                                     <strong></strong>
                                 </span>
@@ -47,7 +47,7 @@
                         <div class="col-md-6">
                             <div class="form-group" id="regnameInput">
                                 <label for="regname" class="control-label">{{__("Registration Name")}}</label>
-                                <input type="text" class="form-control" id="regname" placeholder="Registration Name" name="regname">
+                                <input type="text" class="form-control" id="registration_name" placeholder="Registration Name" name="registration_name">
                                 <span class="invalid-feedback" role="alert">
                                     <strong></strong>
                                 </span>
@@ -99,23 +99,18 @@
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-header border-0">
-                <h4 class="modal-title">{{__("Addign")}} {{ getAgentNomenclature() }}</h4>
+                <h4 class="modal-title">{{__("Assign")}} {{ getAgentNomenclature() }}</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
             </div>
-            <form method="post" action="{{url('fleet')}}">
+            <form method="POST" action="{{url('fleet/updateDriver')}}">
                 @csrf
-                @method('PUT')
-                <div class="modal-body px-3" id="editCardBox">
+                <input type="hidden" name="fleet_id" id="fleet_id"/>
+                <div class="modal-body px-3" id="">
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group" id="nameInput">
                                 <label for="name" class="control-label">{{__("Select "). getAgentNomenclature()}}</label>
-                                <select class="form-control">
-                                    <option value="">Not Assigned</option>
-                                    @foreach($drivers as $driver)
-                                        <option value="{{$driver->id}}">{{$driver->name}}</option>
-                                    @endforeach
-                                </select>
+                                <span id="selectBox"></span>
                             </div>
                         </div>
                     </div>
@@ -131,11 +126,11 @@
 </div>
 </form>
 
-<div id="view-agent-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display:none;">
+<div id="fleet-detail-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display:none;">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-header border-0">
-                <h4 class="modal-title">{{__('View')}} {{ getAgentNomenclature() }}</h4>
+                <h4 class="modal-title">{{__('Fleet Details')}}</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
             </div>
          
