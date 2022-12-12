@@ -247,6 +247,13 @@
     <!-- End agent analytics section -->
         <div class="row mt-2">
             <div class="col-lg-4">
+
+
+        </div>
+
+
+        <div class="row">
+            <div class="col-lg-4 mb-3">
                 <div class="card-box pb-0 h-100">
                     <div >
                         <div id="map"></div>

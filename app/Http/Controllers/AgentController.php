@@ -339,7 +339,7 @@ class AgentController extends Controller
             'team_id' => ['required'],
             //'make_model' => ['required'],
             //'plate_number' => ['required'],
-            'phone_number' =>  ['required', 'min:9', 'max:15', Rule::unique('agents')->where(function ($query) use ($full_number) {
+            'phone_number' =>  ['required', 'min:6', 'max:15', Rule::unique('agents')->where(function ($query) use ($full_number) {
                 return $query->where('phone_number', $full_number);
             })],
             //'color' => ['required'],
@@ -551,7 +551,7 @@ class AgentController extends Controller
             'team_id' => ['required'],
             //'make_model' => ['required'],
             //'plate_number' => ['required'],
-            'phone_number' => ['required', 'min:9', 'max:15', Rule::unique('agents')->where(function ($query) use ($full_number, $id) {
+            'phone_number' => ['required', 'min:6', 'max:15', Rule::unique('agents')->where(function ($query) use ($full_number, $id) {
                 return $query->where('phone_number', $full_number)->where('id', '!=', $id);
             })],
             //'color' => ['required'],

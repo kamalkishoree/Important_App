@@ -7,8 +7,6 @@
 
 <link href="{{ asset('assets/libs/dropzone/dropzone.min.css') }}" rel="stylesheet" type="text/css" />
 <link href="{{ asset('assets/libs/dropify/dropify.min.css') }}" rel="stylesheet" />
-<link rel="stylesheet" href="{{ asset('telinput/css/intlTelInput.css') }}" type="text/css">
-<link rel="stylesheet" href="{{ asset('telinput/css/demo.css') }}" type="text/css">
 <style>
     .cursors {
         cursor: move;
@@ -262,6 +260,8 @@ h2#swal2-title {
     font-weight: 400;
 }
 </style>
+<link rel="stylesheet" href="{{ asset('telinput/css/intlTelInput.min.css') }}">
+
 @endsection
 @php
 $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain/';
@@ -339,8 +339,8 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
             <div class="card">
                 <div class="card-body">
                     <div class="alFilterLocation">
-                        <ul class="p-0 d-flex justify-content-start">
-                                <li>
+                        <ul class="p-0 d-flex justify-content-end">
+                                <li class="first_child">
                                     <div class="text-sm-left">
                                         @if (\Session::has('success'))
                                         <div class="alert alert-success">

@@ -37,7 +37,7 @@
              directionsService = new google.maps.DirectionsService();
              directionsRenderer = new google.maps.DirectionsRenderer({suppressMarkers: true});
              map = new google.maps.Map(document.getElementById("map_canvas"), {
-                zoom: 6,
+                zoom: 10,
                 center: {
                     lat: maplat,
                     lng: maplong
