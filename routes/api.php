@@ -106,9 +106,11 @@ Route::group(['middleware' => ['dbCheck', 'AppAuth','apiLocalization']], functio
     Route::get('task/history','Api\ActivityController@taskHistory');            // api for get task history
     Route::post('agentWallet/credit', 'Api\WalletController@creditAgentWallet');      // api for credit money into agent wallet
     Route::get('payment/options/{page}','Api\PaymentOptionController@getPaymentOptions'); // api for payment options
+    Route::post('agent/logs', 'Api\ActivityController@agentLog');              // api for save agent logs
     Route::get('agent/transaction/details/{id}', 'Api\DriverTransactionController@transactionDetails');   // api for agent transactions
     Route::get('agent/bank/details', 'Api\AgentPayoutController@agentBankDetails'); // api for getting agent bank details
     Route::get('agent/payout/details', 'Api\AgentPayoutController@agentPayoutDetails'); // api for agent payout details
+
     Route::post('agent/payout/request/create/{id}', 'Api\AgentPayoutController@agentPayoutRequestCreate'); // api for creating agent payout request
     Route::post('chat/startChat',      'Api\ChatController@startChat');
     Route::post('chat/userAgentChatRoom',      'Api\ChatController@userAgentChatRoom');
@@ -121,7 +123,8 @@ Route::group(['middleware' => ['dbCheck', 'AppAuth','apiLocalization']], functio
     Route::post('order/cancel/request/create/{id}', 'Api\OrderController@createOrderCancelRequest'); // api for creating order cancel request by driver
     Route::get('order/cancel/reasons', 'Api\OrderController@getOrderCancelReasons'); // api for creating order cancel request by driver
 
-
+    //Roadside Pickup
+    Route::post('task/road-side-pickup', 'Api\TaskController@roadsidePickup');
 
     // Driver subscription
     Route::group(['prefix' => 'driver/subscription'], function () {
@@ -142,11 +145,6 @@ Route::group(['middleware' => 'dbCheck','prefix' => 'public'], function() {
 
     Route::post('task/create', 'Api\TaskController@CreateTask');
     Route::get('task/currentstatus', 'Api\TaskController@currentstatus');
-
-     //Roadside Pickup
-     Route::post('task/road-side-pickup', 'Api\TaskController@roadsidePickup');
-
-     Route::post('agent/logs', 'Api\ActivityController@agentLog');              // api for save agent logs
 });
 
 
