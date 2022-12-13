@@ -121,6 +121,7 @@ class CategoryController extends Controller
 
     public function getOrderSideData(Request $request){
         $order_panel_id =  $request->order_panel_id;
+        
         if($order_panel_id != 'all'){
             $order_details = OrderPanelDetail::find($order_panel_id);
             $order_details->sync_status = 0;
@@ -144,38 +145,40 @@ class CategoryController extends Controller
             ];
             
             $response = Http::withHeaders($headers)->post($apiAuthCheckURL, $postInput);
-    
+             
             // $statusCode = $response->status();
             $checkAuth = json_decode($response->getBody(), true);
             
             if( @$checkAuth['status'] == 200){
                 $apiRequestURL = $url.'/api/v1/category-product-sync-dispatcher';
-            
+           
                 // POST Data
                 $postInput = ['order_panel_id' => $order_panel_id];
-                $headers['Authorization'] = $checkAuth['token'];
+                // $headers['Authorization'] = $checkAuth['token'];
                 $response = Http::withHeaders($headers)->post($apiRequestURL, $postInput);
                 $responseBody = json_decode($response->getBody(), true);
-                // dd($responseBody);
+               
                 if( @$responseBody['status'] == 200){
                     $order_details = OrderPanelDetail::find($order_panel_id);
                     $order_details->sync_status = 1;
                     $order_details->save();
                     // dd($responseBody);
-                    // $this->importOrderSideCategory($responseBody['data']);
+                $this->syncSingleCategory1($responseBody['data'],$order_panel_id);
                 }elseif( @$responseBody['error'] && !empty($responseBody['error'])){
                     return redirect()->back()->with('error', $responseBody['error']);
                 }
              } elseif( @$checkAuth['status'] == 401){
                 return redirect()->back()->with('error', $checkAuth['message']);
             }else{
-                return redirect()->back()->with('error', 'Invalid Order Panel Url.');    
+                return redirect()->back()->with('error', 'Invalid Order Panel Url.');  
             }
             return redirect()->back()->with('success', 'Category & Product Import Is Processing.');
         }else{
             return redirect()->back()->with('error', 'Please select order panel DB.');
         } 
     }
+
+    
 
     /**
      * Display the specified resource.
@@ -239,5 +242,51 @@ class CategoryController extends Controller
             ->filter(function ($instance) use ($request) { }, true)
             ->rawColumns(['action'])
             ->make(true);
+    }
+
+    public function syncSingleCategory1($category,$order_panel_id){
+        
+        if(checkTableExists('categories')){
+       foreach($category as $cat){
+            $data = [
+                'icon' => $cat['icon']['icon'],
+                'slug' => $cat['slug'],
+                'type_id' => $cat['type_id'],
+                'image' => $cat['image']['image'],
+                'is_visible' => $cat['is_visible'],
+                'status' => $cat['status'],
+                'position' => $cat['position'],
+                'is_core' => $cat['is_core'],
+                'can_add_products' => $cat['can_add_products'],
+                'parent_id' => $cat['parent_id'],
+                'vendor_id' => $cat['vendor_id'],
+                'client_code' => $cat['client_code'],
+                'display_mode' => $cat['display_mode'],
+                'show_wishlist' => $cat['show_wishlist'],
+                'sub_cat_banners' => $cat['sub_cat_banners']['sub_cat_banners'] ?? null,
+                'royo_order_category_id' => $cat['id'],
+                'order_panel_id' => $order_panel_id
+            ];
+           $slug=$cat['slug'];
+         
+           
+            $categorySave = Category::updateOrCreate([ 'slug' => $slug, 'order_panel_id' => $order_panel_id ], $data);
+          
+            $transl_data = [
+                'name' => $cat['translation']['name'] ?? $cat['slug'],
+                'trans-slug' => $cat['translation']['trans_slug'] ?? '',
+                'meta_title' => $cat['translation']['meta_title'] ?? '',
+                'meta_description' => $cat['translation']['meta_description'] ?? '',
+                'meta_keywords' => $cat['translation']['meta_keywords'] ?? '',
+                'category_id' => $categorySave->id ?? '',
+                'language_id' => 1
+            ];
+            $categoryTransSave = CategoryTranslation::updateOrCreate([ 'category_id' => $categorySave->id ], $transl_data);
+        }
+            return $categorySave->id;
+        
+        }else{
+            return '';
+        }
     }
 }
