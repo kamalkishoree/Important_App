@@ -28,7 +28,7 @@
                     <div class="alFilterLocation">
                         <ul class="p-0 d-flex justify-content-end">
                                 <li class="d-flex">
-                                    <button type="button" class="btn btn-blue waves-effect waves-light openModal mr-1" data-toggle="modal" data-target="" data-backdrop="static" data-keyboard="false"><i class="mdi mdi-plus-circle mr-1"></i> {{__("Add Fleets")}}</button>
+                                    <a href="{{route('fleet.index')}}" type="button" class="btn btn-blue waves-effect waves-light mr-1">{{__("Manage Fleets")}}</a>
                                 </li>
                             </ul>
                     </div>
@@ -40,20 +40,29 @@
                                 <table class="table table-striped dt-responsive nowrap w-100 all agent-listing" id="agent-listing">
                                     <thead>
                                         <tr>
-                                            <th class="sort-icon">{{__("Name")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
+                                            <th class="sort-icon">{{__("Order No.")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
+                                            <th class="sort-icon">{{__("Created At")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
+                                            <th class="sort-icon">{{__("Driver Name")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
+                                            <th class="sort-icon">{{__("Registration Name")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                             <th class="sort-icon">{{__("Model")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                             <th class="sort-icon">{{__("Make")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
-                                            <th class="sort-icon">{{__("Registration Name")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
-                                            <th class="sort-icon">{{__("Color")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
-                                            <th class="sort-icon">{{__("Year")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
-                                            <th class="sort-icon">{{__("Driver Name")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
-                                            <th class="sort-icon">{{__("Created At")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
-                                            <th class="sort-icon">{{__("Updated At")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
-                                            <th>{{__("Action")}}</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                       
+                                       @forelse($orders as $order)
+                                            <tr>
+                                                <td>{{$order->order_number}}</td>
+                                                <td>{{$order->created_at}}</td>
+                                                <td>{{$order->agent->name}}</td>
+                                                <td>{{$order->fleet->registration_name}}</td>
+                                                <td>{{$order->fleet->model}}</td>
+                                                <td>{{$order->fleet->make}}</td>
+                                            </tr>
+                                            @empty
+                                            <tr>
+                                                <td colspan="10"><p class="text-center">No record Found</p></td>
+                                            </tr>
+                                       @endforelse
                                     </tbody>
                                 </table>
                             </div>

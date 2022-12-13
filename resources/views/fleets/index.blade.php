@@ -40,6 +40,7 @@
                             </a>
                             <div class="material-border"></div>
                         </li>
+                        
                         <li class="nav-item">
                             <a class="nav-link" id="assigned-fleets" data-toggle="tab" href="#assigned_fleets" role="tab" aria-selected="true" data-rel="agent-listing"  data-status="1">
                                 <i class="icofont icofont-ui-home"></i>{{ __('Assigned Fleets')}}
@@ -58,6 +59,25 @@
                         <div class="tab-pane fade past-order show active" id="active_vendor" role="tabpanel" aria-labelledby="active-vendor">
 
                             <div class="table-responsive nagtive-margin">
+
+                                <div class="mt-3 mb-2 row w-100 justify-content-end">
+                                    <div class="float-right col-md-2">
+                                        <span id="date-label-from" class="date-label">From: </span><input class="date_range_filter form-control" type="date" id="datepicker_from" />
+                                        </div>
+                                    <div class="float-right col-md-2">
+                                            <span id="date-label-to" class="date-label">To:<input class="date_range_filter form-control" type="date" id="datepicker_to" />
+                                    </div>
+                                    <div class="float-right col-md-2">
+                                        <span id="date-label-to" class="date-label">Driver
+                                            <select class="form-control" id="driver-id" name="driver">
+                                                <option value="">Select Driver</option>
+                                                @forEach($drivers as $driver)
+                                                <option value="{{$driver->id}}">{{$driver->name}}</option>
+                                                @endForeach
+                                            </select>
+                                </div>
+                                </div>
+
                                 <table class="table table-striped dt-responsive nowrap w-100 all agent-listing" id="agent-listing">
                                     <thead>
                                         <tr>

@@ -1,25 +1,40 @@
 <script type="text/javascript">
     $(document).ready(function() {
 
-        $(document).on("click", ".nav-link", function() {
-            let rel = $(this).data('rel');
-            // console.log(rel);
-            let status = $(this).data('status');
-            initDataTable(rel, status);
-            // setTimeout(function() {
-            //     $('#' + rel).DataTable().ajax.reload();
-            // }, 500);
-        });
+        function intializeTable()
+        {
+                let status = $(this).data('status');
+                var fdate = $('#datepicker_from').val();
+                var tdate = $('#datepicker_to').val();
+                var driver = $('#driver-id').val();
+                initDataTable('agent-listing', status, fdate , tdate,driver);
+        }
+
+         $(document).on("click", ".nav-link", function() {
+                let status = $(this).data('status');
+                var fdate = $('#datepicker_from').val();
+                var tdate = $('#datepicker_to').val();
+                var driver = $('#driver-id').val();
+                initDataTable('agent-listing', status, fdate , tdate,driver);
+            });
+
+       
 
         // initDataTable();
         setTimeout(function() {
             $('#all-fleets').trigger('click');
         }, 200);
-           
-      
+
+        $(document).on("change", ".date_range_filter", function() {
+            intializeTable();
+        });
+        $(document).on("change", "#driver-id", function() {
+            intializeTable();
+        });
 
 
-        function initDataTable(table, status) {
+        function initDataTable(table, status, fdate, tdate,driver) {
+            // alert(fdate);
             var fleet_details_route = "{{ url('fleet/details') }}";
             var columnsDynamic =   [
                 {
@@ -95,13 +110,16 @@
                 "serverSide": true,
                 "responsive": true,
                 "processing": true,
-                "iDisplayLength": 20,
+                "iDisplayLength": 10,
                 ajax: {
                     url: "{{url('fleet/filter')}}",
                     type : 'GET',
                     data: function(d) {
                         d.search = $('input[type="search"]').val();
                         d.status = status;
+                        d.fdate = fdate;
+                        d.tdate = tdate;
+                        d.driver = driver;
                     }
                 },
                 columns:columnsDynamic

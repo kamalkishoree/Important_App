@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Model\Agent;
 use App\Model\AgentFleet;
 use App\Model\Fleet;
+use App\Model\Order;
 use Illuminate\Http\Request;
 use App\Traits\ApiResponser;
+use Carbon\Carbon;
 use DataTables;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -26,7 +28,8 @@ class FleetController extends Controller
         $all = $agents->count();
         $assigned = $agents->whereIn('id',$fleets)->count();
         $free = $all - $assigned;
-        return view('fleets.index',compact('all','assigned','free'));
+        $drivers = Agent::select('id','name')->get();
+        return view('fleets.index',compact('all','assigned','free','drivers'));
     }
 
     /**
@@ -127,9 +130,9 @@ class FleetController extends Controller
     public function fleetFilter(Request $request)
     {
         try {
-            $user = Auth::user();
+            // $user = Auth::user();
             $fleets = AgentFleet::pluck('fleet_id');
-            $agents = Fleet::with('getDriver')->orderBy('id', 'desc');
+            $agents = Fleet::orderBy('id', 'desc');
             if($request->status == '1')
             {
                 $agents->whereIn('id',$fleets);
@@ -137,7 +140,23 @@ class FleetController extends Controller
             {
                 $agents->whereNotIn('id',$fleets);
             }
-            // dd($agents->first()->created_at);
+
+            if(!empty($request->fdate) && !empty($request->tdate))
+            {
+                $startDate = Carbon::createFromFormat('Y-m-d', $request->fdate)->startOfDay();
+                $endDate = Carbon::createFromFormat('Y-m-d',$request->tdate)->endOfDay();
+                $agents->whereBetween('created_at',[$startDate,$endDate]);
+            }
+
+            if(!empty($request->driver))
+            {
+                $agents->whereHas('getDriver', function ($q)use ($request)
+                    {
+                            return $q->where('agent_id',$request->driver);
+                    }
+                );
+            }
+
             return Datatables::of($agents)
                 ->editColumn('name', function ($agents) {
                     $name =$agents->name;
@@ -213,8 +232,8 @@ class FleetController extends Controller
      */
     public function fleetDetails(Request $request)
     {
-        $fleet = Fleet::find(base64_decode($request->id));
-        return view('fleets.details',compact('fleet'));
+        $orders = Order::where('fleet_id',base64_decode($request->id))->get();
+        return view('fleets.details',compact('orders'));
     }
 
 
