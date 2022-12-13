@@ -312,7 +312,7 @@ $task_type_array = [__('Pickup'), __('Drop-Off'), __('Appointment')];
                                                         </select>
                                                     </div>
                                                 </div>
-                                                <div class="col-md-1 text-center pt-2 pr-2 del-add-card">
+                                                <div class="col-md-1 text-center pt-2 pr-2 del-add-card" >
                                                 <span class="span1 onedeletex" id="spancheckd" data-taskid="{{ $item->id }}"><img style="filter: grayscale(.5);"
                                                     src="{{ asset('assets/images/ic_delete.png') }}" alt=""></span>
                                                 </div>

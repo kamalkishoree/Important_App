@@ -2,6 +2,14 @@
 @section('css')
     <!-- Plugins css -->
     <link href="{{ asset('demo/css/style.css') }}" rel="stylesheet" type="text/css" />
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <style>
+        .select2-container--default .select2-selection--multiple .select2-selection__choice__remove{color: #fff !important;}
+        .select2-container--default .select2-selection--multiple .select2-selection__choice__remove:hover{background:transparent !important;}
+        .customui_card { background-color: #424e5a; border-bottom: 0 solid #36404a;border-radius: 10px;margin: 0 10px;}
+        #accordion {padding-bottom: 20px !important;}
+        .assigned_agent{margin-bottom: 20px;}
+    </style>
 @endsection
 @php
     use Carbon\Carbon;
@@ -19,10 +27,10 @@
                     <div class="spinner-border avatar-lg text-primary m-2" role="status"></div>
                 </div>
             </div> --}}
-            <div id="scrollbar" class="col-md-4 col-xl-4 left-sidebar pt-3">
-                <div class="side_head d-flex justify-content-between align-items-center mb-2">
-                    <i class="mdi mdi-sync mr-1" onclick="reloadData()" aria-hidden="true"></i>
-                    <div>
+            <div id="scrollbar" class="col-md-3 col-xl-3 left-sidebar pt-3">
+                <div class="side_head mb-2 p-2">
+                    <div class="d-flex align-items-center justify-content-center mb-2"> 
+                        <i class="mdi mdi-sync mr-1" onclick="reloadData()" aria-hidden="true"></i>
                         <div class="radio radio-primary form-check-inline ml-3 mr-2">
                             <input type="radio" id="user_status_all" value="2" name="user_status" class="checkUserStatus" checked>
                             <label for="user_status_all"> {{__("All")}} </label>
@@ -35,8 +43,25 @@
                             <input type="radio" id="user_status_offline" value="0" name="user_status" class="checkUserStatus">
                             <label for="user_status_offline"> {{__("Offline")}} </label>
                         </div>
+                        
+                        {{-- <span class="allAccordian ml-2"><span class="" onclick="openAllAccordian()">{{__("Open All")}}</span></span> --}}
                     </div>
-                    <span class="allAccordian"><span class="" onclick="openAllAccordian()">{{__("Open All")}}</span></span>
+                   <div class="row search_bar">
+                        <div class="col-md-6">
+                            <div class="form-group mb-0 ml-1">
+                                <select name="team_id[]" id="team_id" multiple="multiple" class="form-control">
+                                    @foreach ($teams as $team)
+                                        <option value="{{$team->id}}">{{$team->name}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group mb-0 ml-1">
+                                <input type="text" class="form-control" name="search_by_name" id="search_by_name" value="" placeholder="Search By Name" />
+                            </div>
+                        </div>
+                   </div>
                 </div>
                 <div  id="teams_container">
                     
@@ -46,12 +71,12 @@
                     <input id="pdfvalue" type="hidden" name="pdfdata">
                 </form>
             </div>
-            <div class="col-md-8 col-xl-8">
+            <div class="col-md-6 col-xl-6">
                 <div class="map-wrapper">
                     <div style="width: 100%">
                         <div id="map_canvas" style="width: 100%; height:calc(100vh - 70px);"></div>
                     </div>
-                    <div class="contant">
+                    {{-- <div class="contant">
                         <div class="bottom-content">
                             <input type="text"  id="basic-datepicker" class="datetime" value="{{date('Y-m-d', strtotime($date))}}" data-date-format="Y-m-d">
                             <div style="display:none">
@@ -59,13 +84,60 @@
                                 <input class="taskchecks filtercheck" type="checkbox" name="taskstatus[]" value="5" checked>
                             </div>
                         </div>
+                    </div> --}}
+                </div>
+            </div>
+            {{-- @dd($unassigned_orders) --}}
+            <div id="scrollbar" class="col-md-3 col-xl-3 left-sidebar pt-3">
+                <div class="side_head mb-2 p-2">
+                    <div class="select_bar_date mb-2 d-flex align-items-center justify-content-center">
+                        <input type="date"  id="basic-datepicker" class="datetime form-control" value="{{date('Y-m-d', strtotime($date))}}" data-date-format="YY-mm-dd" onchange="handler();" style="width: 250px;">
+                        <div style="display:none">
+                            <input class="newchecks filtercheck teamchecks" cla type="checkbox" value="-1" name="teamchecks[]" checked>
+                            <input class="taskchecks filtercheck" type="checkbox" name="taskstatus[]" value="5" checked>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center justify-content-center mb-2"> 
+                        <div class="radio radio-primary form-check-inline ml-3 mr-2">
+                            <input type="radio" id="user_all_routes" value="" name="user_routes" class="checkUserRoutes" checked>
+                            <label for="user_all_routes"> {{__("All")}} </label>
+                        </div>
+                        <div class="radio radio-primary form-check-inline">
+                            <input type="radio" id="user_unassigned_routes" value="unassigned" name="user_routes" class="checkUserRoutes">
+                            <label for="user_unassigned_routes"> {{__("Unassigned")}} </label>
+                        </div>
+                        <div class="radio radio-info form-check-inline mr-2">
+                            <input type="radio" id="user_assigned_routes" value="assigned" name="user_routes" class="checkUserRoutes">
+                            <label for="user_assigned_routes"> {{__("Assigned")}} </label>
+                        </div>                        
+                        {{-- <span class="allAccordian ml-2"><span class="" onclick="openAllAccordian()">{{__("Open All")}}</span></span> --}}
+                    </div>
+                    <div class="select_bar">
+                        <div class="form-group mb-0 ml-1">
+                            <select name="agent_id[]" id="agent_id" multiple="multiple" class="form-control">
+                                @foreach ($agents as $agent)
+                                @php
+                                    $checkAgentActive = ($agent->is_available == 1) ? ' ('.__('Online').')' : ' ('.__('Offline').')';
+                                @endphp
+                                    <option value="{{$agent->id}}">{{ ucfirst($agent->name). $checkAgentActive }}</option>
+                                @endforeach
+                            </select>
+                        </div>
                     </div>
                 </div>
+                <div id="agent_route_container">
+                    
+                </div>
+                <form id="pdfgenerate" method="post" enctype="multipart/form-data" action="{{ route('download.pdf') }}">
+                    @csrf
+                    <input id="pdfvalue" type="hidden" name="pdfdata">
+                </form>
             </div>
         </div>
     </div>
 @endsection
 @include('modals.optimize-route')
+@include('modals.route-assign-agent')
 <?php   // for setting default location on map
     $agentslocations = array();
     if(!empty($agents)){
@@ -82,6 +154,7 @@
 ?>
 @section('script')
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-timeago/1.6.3/jquery.timeago.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script>
         // var marker;
         var show = [0];
@@ -111,9 +184,43 @@
             $('.checkUserStatus').click(function() {
                 loadTeams(1, 1);
             });
+
+            $('.checkUserRoutes').click(function() {
+                loadOrders(1, 1);
+            });
+
+            $('#team_id').change(function() {
+                loadTeams(1, 1);
+            });
+
+            $('#agent_id').change(function() {
+                loadOrders(1, 1);
+            });
+
+            $('#search_by_name').keyup(function() {
+                loadTeams(1, 1);
+            });
+
             loadTeams(1, 1);
             ListenDataChannel();
             ListenAgentLogChannel();
+            loadOrders(1, 1);
+        });
+
+        $(document).ready(function(){
+            $("#team_id").select2({
+                allowClear: true,
+                width: "resolve",
+                placeholder: "Select Team"
+            });
+        });
+
+        $(document).ready(function(){
+            $("#agent_id").select2({
+                allowClear: true,
+                width: "resolve",
+                placeholder: "Select Agent"
+            });
         });
 
         function gm_authFailure() {
@@ -358,8 +465,23 @@ function deleteMarkers() {
 }
 
 
-$(".datetime").on('change', function(){
+// $(".datetime").on('change', function(){
+//     loadTeams(1, 1);
+//     loadOrders(1, 1);
+//     old_channelname = channelname;
+//     old_logchannelname = logchannelname;
+//     channelname = "orderdata{{$client_code}}"+$(this).val();
+//     logchannelname = "agentlog{{$client_code}}"+$(this).val();
+//     if(old_channelname != channelname)
+//     {
+//         ListenDataChannel();
+//         ListenAgentLogChannel();
+//     }
+// });
+
+function handler(){
     loadTeams(1, 1);
+    loadOrders(1, 1);
     old_channelname = channelname;
     old_logchannelname = logchannelname;
     channelname = "orderdata{{$client_code}}"+$(this).val();
@@ -369,7 +491,7 @@ $(".datetime").on('change', function(){
         ListenDataChannel();
         ListenAgentLogChannel();
     }
-});
+}
 
 //function fot optimizing route
 function RouteOptimization(taskids, distancematrix, optimize, agentid, date) {
@@ -485,6 +607,7 @@ $('.submitoptimizeForm').click(function(){
                     if(response!="Try again later")
                     {
                         loadTeams(1, 1);
+                        loadOrders(1, 1);
                         spinnerJS.hideSpinner();
                     }else{
                         alert(response);
@@ -517,13 +640,15 @@ function loadTeams(is_load_html, is_show_loader)
         spinnerJS.showSpinner();
     }
     var checkuserstatus = $('input[name="user_status"]:checked').val();
+    var team_id = $('#team_id').val();
+    var search_by_name = $('#search_by_name').val();
     $.ajax({
         type: 'POST',
-        url: "{{ route('dashboard.teamsdata')}}",
+        url: "{{ route('dashboard.agent-teamsdata')}}",
         headers: {
             'X-CSRF-Token': '{{ csrf_token() }}',
         },
-        data: {'userstatus':checkuserstatus, 'is_load_html':is_load_html, 'routedate':$("#basic-datepicker").val()},
+        data: {'userstatus':checkuserstatus, 'team_id':team_id, 'search_by_name':search_by_name, 'is_load_html':is_load_html, 'routedate':$("#basic-datepicker").val()},
         success: function(result) {
             olddata = allagent = defaultmaplocation = [];
             //if Html is required to load or not, for agent's log it is not required
@@ -532,6 +657,82 @@ function loadTeams(is_load_html, is_show_loader)
             {
                 $("#teams_container").empty();
                 $("#teams_container").html(result);
+
+                if(is_show_loader == 1)
+                {
+                    spinnerJS.hideSpinner();
+                }
+                initializeSortable();
+
+                if($("#newmarker_map_data").val()!=''){
+                    olddata  = JSON.parse($("#newmarker_map_data").val());
+                }
+
+                if($("#agents_map_data").val()!=''){
+                    allagent  = JSON.parse($("#agents_map_data").val());
+                }
+
+                if($("#uniquedrivers_map_data").val()!=''){
+                    allroutes  = JSON.parse($("#uniquedrivers_map_data").val());
+                }
+
+                if($("#agentslocations_map_data").val()!=''){
+                    defaultmaplocation = JSON.parse($("#agentslocations_map_data").val());
+                    defaultlat = parseFloat(defaultmaplocation[0].lat);
+                    defaultlong = parseFloat(defaultmaplocation[0].long);
+                }
+            }else{
+                var data1 = JSON.parse(result);
+                if(data1['status'] == "success")
+                {// setting up required variables to refreshing the google map route
+                    olddata = data1['newmarker'];
+                    allagent = data1['agents'];
+                    allroutes = data1['routedata'];
+                    defaultlat = parseFloat(data1['defaultCountryLatitude']);
+                    defaultlong = parseFloat(data1['defaultCountryLongitude']);
+                }
+            }
+
+            initMap(is_load_html);
+        },
+        error: function(data) {
+            alert('There is some issue. Try again later');
+            if(is_load_html == 1)
+            {
+                spinnerJS.hideSpinner();
+            }
+        }
+    });
+}
+
+// autoload dashbard
+function loadOrders(is_load_html, is_show_loader)
+{
+    if(is_load_html == 1)
+    {
+        closeAllAccordian();
+    }
+    if(is_show_loader == 1)
+    {
+        spinnerJS.showSpinner();
+    }
+    var checkuserroutes = $('input[name="user_routes"]:checked').val();
+    var agent_id = $('#agent_id').val();
+    $.ajax({
+        type: 'POST',
+        url: "{{ route('dashboard.agent-orderdata')}}",
+        headers: {
+            'X-CSRF-Token': '{{ csrf_token() }}',
+        },
+        data: {'agent_id':agent_id, 'checkuserroutes':checkuserroutes, 'is_load_html':is_load_html, 'routedate':$("#basic-datepicker").val()},
+        success: function(result) {
+            olddata = allagent = defaultmaplocation = [];
+            //if Html is required to load or not, for agent's log it is not required
+
+            if(is_load_html == 1)
+            {
+                $("#agent_route_container").empty();
+                $("#agent_route_container").html(result);
 
                 if(is_show_loader == 1)
                 {
@@ -640,6 +841,56 @@ function initializeSortable()
         }
     });
 }
+
+$(document).on('click', '.unassigned-badge', function(){
+    $("#route-assign-agent-modal").modal('show');
+    var order_id = $(this).data('id');
+    $('#order_id').val(order_id);
+});
+
+$(document).on('click', '.submitassignAgentForm', function(){
+    var order_id = Array($('#order_id').val());
+    var agent_id = $('#select_agent_id').val();
+    if(agent_id != ''){
+        $.ajax({
+            type: "POST",
+            url: '{{route("assign.agent")}}',
+            data: {_token: CSRF_TOKEN, orders_id: order_id, agent_id: agent_id},
+            success: function( msg ) {
+                $.toast({ 
+                    heading:"Success!",
+                    text : "{{__(getAgentNomenclature()) }} assigned successfully.", 
+                    showHideTransition : 'slide', 
+                    bgColor : 'green',              
+                    textColor : '#eee',            
+                    allowToastClose : true,      
+                    hideAfter : 5000,            
+                    stack : 5,                   
+                    textAlign : 'left',         
+                    position : 'top-right'
+                });
+                $("#route-assign-agent-modal").modal('hide');
+                loadOrders(1, 1);
+            },
+            error: function(errors){
+                $.toast({ 
+                    heading:"Error!",
+                    text : "{{__(getAgentNomenclature()) }} can not be assigned.", 
+                    showHideTransition : 'slide', 
+                    bgColor : 'red',              
+                    textColor : '#eee',            
+                    allowToastClose : true,      
+                    hideAfter : 5000,            
+                    stack : 5,                   
+                    textAlign : 'left',         
+                    position : 'top-right'      
+                });
+                $("#route-assign-agent-modal").modal('hide');
+                loadOrders(1, 1);
+            }
+        });
+    }
+});
 
 function reloadData() {
     location.reload();

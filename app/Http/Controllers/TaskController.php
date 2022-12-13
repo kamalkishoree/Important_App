@@ -118,6 +118,9 @@ class TaskController extends BaseController
             });
         }
         $all = $all->get();
+        if($request->has('customer_id') && $request->customer_id != ''){
+            $all = $all->where('customer_id', $request->customer_id);
+        }
         $active   =  count($all->where('status', 'assigned'));
         $pending  =  count($all->where('status', 'unassigned'));
         $history  =  count($all->where('status', 'completed'));
@@ -267,7 +270,7 @@ class TaskController extends BaseController
             $q->where('manager_id', $user->id);
         })->pluck('tag_id');
 
-        $orders = Order::with(['customer', 'location', 'taskFirst', 'agent', 'task.location'])->orderBy('id', 'DESC'); //, 'task.manager'
+        $orders = Order::with(['customer', 'task', 'location', 'taskFirst', 'agent', 'task.location'])->orderBy('id', 'DESC'); //, 'task.manager'
         
         if (@$request->warehouseManagerId && !empty($request->warehouseManagerId)) {
             $orders->whereHas('task.warehouse.manager', function($q) use($request){
@@ -301,9 +304,10 @@ class TaskController extends BaseController
         }
 
         if($request->has('customer_id') && $request->customer_id != ''){
-            $orders = $orders->whereHas('customer', function($query) use ($request) {
-                $query->where('id', $request->customer_id);
-            });
+            // $orders = $orders->whereHas('customer', function($query) use ($request) {
+            //     $query->where('id', $request->customer_id);
+            // });
+            $orders = $orders->where('customer_id', $request->customer_id);
         }
 
         $orders = $orders->where('status', $request->routesListingType)->where('status', '!=', null)->orderBy('updated_at', 'desc');
@@ -326,6 +330,13 @@ class TaskController extends BaseController
                 ->addColumn('phone_number', function ($orders) use ($request) {
                     $phoneNumber = !empty($orders->customer->phone_number)? $orders->customer->phone_number : '';
                     return $phoneNumber;
+                })
+                ->addColumn('type', function ($orders) use ($request) {
+                    $type = 'Normal';
+                    if(@$orders->task[0]->is_return && $orders->task[0]->is_return == 1){
+                        $type = 'Return';
+                    }
+                    return $type;
                 })
                 ->addColumn('agent_name', function ($orders) use ($request) {
                     $checkActive = (!empty($orders->agent->name) && $orders->agent->is_available == 1) ? ' '.__('Active') : ' '. __('InActive');
@@ -350,6 +361,7 @@ class TaskController extends BaseController
                         return '';
                     endif;
                 })
+                
                 ->addColumn('short_name', function ($orders) use ($request) {
                     $routes = array();
                     foreach($orders->task as $task){

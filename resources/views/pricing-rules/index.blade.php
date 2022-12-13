@@ -11,7 +11,7 @@
 
     <link href="{{ asset('assets/libs/dropzone/dropzone.min.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('assets/libs/dropify/dropify.min.css') }}" rel="stylesheet" type="text/css" />
-    <link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/8.4.6/css/intlTelInput.css'>
+    <link rel="stylesheet" href="{{ asset('telinput/css/intlTelInput.css') }}" type="text/css">
     <link href="{{ asset('assets/libs/nestable2/nestable2.min.css') }}" rel="stylesheet" type="text/css" />
     <style>
         // workaround
@@ -211,7 +211,7 @@
 <script src="{{ asset('assets/libs/dropify/dropify.min.js') }}"></script>
 <script src="{{ asset('assets/js/pages/form-fileuploads.init.js') }}"></script>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/9.0.10/js/intlTelInput.js"></script>
+<script src="{{ asset('telinput/js/intlTelInput.js') }}"></script>
 
 <script src="{{asset('assets/libs/mohithg-switchery/mohithg-switchery.min.js')}}"></script>
 <script src="{{ asset('assets/libs/datatables/datatables.min.js') }}"></script>
