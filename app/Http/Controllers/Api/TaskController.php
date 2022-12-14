@@ -1064,9 +1064,17 @@ class TaskController extends BaseController
             ];
 
 
-
-
-            $orders = Order::create($order);
+            $orderexist = Order::where('call_back_url', '=', $request->call_back_url)->first();
+            if(!empty($orderexist))
+            {
+                $order['unique_id'] = ($orderexist->unique_id) ? $orderexist->unique_id : $unique_order_id;
+                $order['status'] = ($orderexist->status) ? $orderexist->status : (($agent_id != null) ? 'assigned' : 'unassigned');
+                $updateorder = Order::where('id', $orderexist->id)->update($order);
+                Task::where('order_id', $orderexist->id)->delete();
+                $orders = Order::find($orderexist->id);
+            }else{
+                $orders = Order::create($order);
+            }
              /**
              * booking for appointment
              * task_type_id =3= appointment type
