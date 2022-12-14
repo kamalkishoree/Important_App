@@ -3,7 +3,7 @@ namespace App\Traits;
 use DB;
 use Illuminate\Support\Collection;
 use Log;
-use App\Model\{ChatSocket, Client, Agent, DriverGeo};
+use App\Model\{ChatSocket, Client, Agent, DriverGeo,Order};
 use Illuminate\Support\Facades\Config;
 
 

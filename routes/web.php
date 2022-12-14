@@ -332,5 +332,13 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 	Route::post('driverregistrationdocument/update', 'ClientController@update')->name('driver.registration.document.update');
 	
 	Route::post('driver/registration/document/delete', 'ClientController@destroy')->name('driver.registration.document.delete');
+
+	Route::post('agent/order/analytics', 'AccountingController@getAgentOrderAnalytics')->name('agent.complete.order');
+	Route::post('agent/view/analytics', 'AccountingController@viewAgentOrderAnalytics')->name('agent.view.analytics');
+	// ajax token refresh
+
+	
+
+	
 	
 });
