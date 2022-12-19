@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use App\Model\{Agent, AgentLog, AllocationRule, Client, ClientPreference, Cms, Order, Task, TaskProof, Timezone, User, DriverGeo, Geo, TagsForAgent};
+use App\Model\Order\Category;
 use Validator;
 use DB;
 use Illuminate\Support\Facades\Storage;
@@ -189,5 +190,23 @@ class AgentController extends BaseController
             }
         }
         return $c;
+    }
+    public function On_demand_services_list(Request $request){
+     
+        try {
+           $category_list= Category::with('products')->where('type_id','8')->get();
+           
+           if(!empty($category_list[0]->slug)){
+            return response()->json([
+                'data' => $category_list,
+            ]);
+           }else{
+            return response()->json(['error' => 'No record found.'], 404);
+           }
+             
+        } catch (Exception $e) {
+            return $this->errorResponse($e->getMessage(), $e->getCode());
+        }
+
     }
 }

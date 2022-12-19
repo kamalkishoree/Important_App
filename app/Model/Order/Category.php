@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Category extends Model
 {
     use SoftDeletes;
-    protected $connection = 'royoorder';
+    // protected $connection = 'royoorder';
 
     public function translation(){
         return $this->hasOne('App\Model\Order\CategoryTranslation')->where('category_translations.language_id', 1);
