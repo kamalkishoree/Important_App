@@ -155,6 +155,9 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 			Route::any('vnpay_respont', 'VnpayController@vnpay_respont')->name('vnpay_respont');
 		
             Route::get('notifi', 'AgentController@test_notification');
+			Route::get('agent/threshold','AgentThresholdController@index')->name('threshold.agent.list');
+			Route::get('agent/threshold/filter', 'AgentThresholdController@ThresholdAgentFilter');
+			Route::get('agent/threshold/export', 'AgentThresholdController@export')->name('agents.threshold.export');
 			Route::get('vnpay/test',   'VnpayController@order');
 			Route::get('agent/filter', 'AgentController@agentFilter');
 			Route::get('agent/export', 'AgentController@export')->name('agents.export');
@@ -310,6 +313,7 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 			Route::post('agent/update_slot', 'AgentSlotController@update')->name('agent.slot.update');
 			Route::get('agent/slot/create/{id}', 'AgentSlotController@create')->name('agent.slot.create');
 			Route::post('agent/slot/delete', 'AgentSlotController@destroy')->name('agent.slot.destroy');
+
 		});
 	});
 
@@ -330,8 +334,10 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 	Route::post('agent/view/analytics', 'AccountingController@viewAgentOrderAnalytics')->name('agent.view.analytics');
 	// ajax token refresh
 
+	// threshold debit amount agent list
 	
 
 	
 	
 });
+

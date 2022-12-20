@@ -36,6 +36,10 @@ class Agent extends Authenticatable implements  Wallet, WalletFloat
     public function days(){
         return $this->hasOne('App\Models\SlotDay', 'slot_id', 'id'); 
     }
+    public function connectedAccount(){
+        
+        return $this->hasOne('App\Model\AgentConnectedAccount', 'agent_id', 'id'); 
+    }
     public function getImageUrlAttribute()
     {
         $secret = '';

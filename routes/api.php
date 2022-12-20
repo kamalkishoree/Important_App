@@ -117,6 +117,13 @@ Route::group(['middleware' => ['dbCheck', 'AppAuth','apiLocalization']], functio
     Route::post('order/cancel/request/create/{id}', 'Api\OrderController@createOrderCancelRequest'); // api for creating order cancel request by driver
     Route::get('order/cancel/reasons', 'Api\OrderController@getOrderCancelReasons'); // api for creating order cancel request by driver
 
+
+    //Agent Out of plateform upload pop
+
+    Route::post('agent/outofplatform/upload-pop', 'AgentPayoutController@AgentUploadPop')->name('agent.outofplateform.upload');
+
+
+
     // Driver subscription
     Route::group(['prefix' => 'driver/subscription'], function () {
         Route::get('plans', 'Api\DriverSubscriptionController@getSubscriptionPlans');

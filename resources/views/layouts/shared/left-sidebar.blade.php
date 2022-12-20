@@ -46,6 +46,8 @@
                         }else{
                             array_push($allowed,'99999');
                         }
+
+                      
                         ?>
 
         <!--- Sidemenu -->
@@ -155,12 +157,21 @@
                 </li>
 
                 @if(in_array('Agents',$allowed) || Auth::user()->is_superadmin == 1)
-                <li>
-                    <a href="{{route('agent.index')}}">
-                        <i class="fe-user-check"></i>
-                        <span> {{ __(getAgentNomenclature()) }}</span>
-                    </a>
-                </li>
+                    <li>
+                        <a href="{{route('agent.index')}}">
+                            <i class="fe-user-check"></i>
+                            <span> {{ __(getAgentNomenclature()) }}</span>
+                        </a>
+                    </li>
+                @endif
+
+                @if(in_array('Agent Threshold',$allowed) || Auth::user()->is_superadmin == 1)
+                    <li>
+                        <a href="{{route('threshold.agent.list')}}">
+                            <i class="fe-user-check"></i>
+                            <span> {{ __('Agent Threshold') }}</span>
+                        </a>
+                    </li>
                 @endif
 
                 @if($hide_subscription_module != 1 && (in_array('Subscription',$allowed) || Auth::user()->is_superadmin == 1) )

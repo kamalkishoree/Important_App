@@ -22,7 +22,7 @@ use App\Model\TaskProof;
 use App\Model\TaskType;
 use App\Model\DriverRegistrationDocument;
 use App\Model\OrderPanelDetail;
-use App\Model\{SmtpDetail, SmsProvider, VehicleType};
+use App\Model\{SmtpDetail, SmsProvider, VehicleType,Agent};
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Redis;
 use Session;
@@ -154,6 +154,20 @@ class ClientController extends Controller
                 return redirect()->back()->with('success', 'Preference updated successfully!');
             }
         }
+
+         //Threshold Code
+         if($request->has('threshold')){
+             $recursive_type    = $request->recursive_type;
+             $threshold_amount  = $request->threshold_amount;
+             $stripe_connect_id = $request->stripe_connect_id;
+             $threshold_data    = json_encode(['recursive_type'=>$recursive_type,'threshold_amount'=>$threshold_amount,'stripe_connect_id'=>$stripe_connect_id]);
+             $data = [
+                'is_threshold'=>($request->has('is_threshold') && $request->is_threshold == 'on') ? 1 : 0,
+                'threshold_data'=>$threshold_data,
+              
+            ];
+            ClientPreference::where('client_id', $id)->update($data);
+         }
 
         if($request->has('autopay_submit')){//dd($request->auto_payout);
             $auto_payout = !empty($request->auto_payout)?(($request->auto_payout == "on")?1:0):0;
@@ -466,8 +480,9 @@ class ClientController extends Controller
         $smtp        = SmtpDetail::where('id', 1)->first();
         $vehicleType = VehicleType::latest()->get();
         $agent_docs=DriverRegistrationDocument::get();
+        $agents    = Agent::where('is_activated','1')->get();
         $smsTypes = SmsProvider::where('status', '1')->get();
-        return view('configure')->with(['preference' => $preference, 'customMode' => $customMode, 'client' => $client,'subClients'=> $subClients,'smtp_details'=>$smtp, 'agent_docs' => $agent_docs,'smsTypes'=>$smsTypes,'vehicleType'=>$vehicleType, 'warehoseMode' => $warehoseMode]);
+        return view('configure')->with(['preference' => $preference, 'customMode' => $customMode, 'client' => $client,'subClients'=> $subClients,'smtp_details'=>$smtp, 'agent_docs' => $agent_docs,'smsTypes'=>$smsTypes,'vehicleType'=>$vehicleType, 'warehoseMode' => $warehoseMode,'agents'=>$agents]);
     }
 
 

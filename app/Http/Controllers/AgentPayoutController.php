@@ -10,14 +10,15 @@ use Carbon\Carbon;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Traits\ApiResponser;
+use Illuminate\Support\Facades\Storage;
 // use App\Http\Traits\ToasterResponser;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\AgentPayoutRequestListExport;
 use App\Http\Controllers\{BaseController, StripeGatewayController};
 use App\Http\Controllers\Api\RazorpayGatewayController;
 use App\Traits\agentEarningManager;
-use App\Model\{Client, ClientPreference, User, Agent, Order, PaymentOption, PayoutOption, AgentPayout, AgentBankDetail};
-
+use App\Model\{Client, ClientPreference, User, Agent, Order, PaymentOption, PayoutOption, AgentPayout, AgentBankDetail,AgentCashCollectPop};
+use Illuminate\Support\Facades\Validator;
 class AgentPayoutController extends BaseController{
     use ApiResponser;
     // use ToasterResponser;
@@ -342,4 +343,57 @@ class AgentPayoutController extends BaseController{
             return $this->error($ex->getMessage(), $ex->getCode());
         }
     }*/
+
+    public function AgentUploadPop(Request $request){
+       
+        $user           = Agent::where('id', Auth::user()->id)->first();
+        $header         = $request->header();
+        $client         = Client::where('database_name', $header['client'][0])->first('code');
+        $code           = $client->code;
+        $rules          = array(
+                                'amount' => [ "required", "regex:/^(\d+|\d+(\.\d{1,2})?|(\.\d{1,2}))$/" ],
+                                'date' => 'required',
+                                'file' => 'required|string',
+                                'type' => 'required'
+                            );
+        
+            $validation  = Validator::make($request->all(), $rules);
+            if ($validation->fails()) {
+                return response()->json(['message' => $validation->errors()->first()], 422);
+            }
+            $img                    = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $request->file));
+			$imgType                = ($request->has('type')) ? $request->type : 'jpg';
+			$code                   = Client::orderBy('id','asc')->value('code');
+			$imageName              = $code.'/agent-ofp-pop/'.$user->id.substr(md5(microtime()), 0, 15).'.'.$imgType;
+            $path                   = Storage::disk('s3')->put($imageName, $img, 'public');
+            $url                    = Storage::disk('s3')->url($imageName);
+
+            $threshold              = ClientPreference::with('currency')->where('id', 1)->first();
+               
+            if($threshold->is_threshold == 1 && !empty($threshold->threshold_data)){
+                $threshold_data     = json_decode($threshold->threshold_data,true);
+                $threshold_type     = $threshold_data['recursive_type'];
+
+                $agent                  = new AgentCashCollectPop();
+                $agent->agent_id        = $user->id;
+                $agent->amount          = $request->amount;
+                $agent->date            = $request->date;
+                $agent->payment_type    = 0;
+                $agent->threshold_type  = $threshold_type;
+                $agent->file            = $url;
+                
+                if ($agent->save()) {
+                    return response()->json([
+                        'message' => __('Upload pop successfully!'),
+                    ], 200);
+                } else {
+                    return response()->json([
+                        'message' => __('Sorry Something Went Wrong'),
+                    ], 404);
+                }
+            }
+
+           
+       
+    }
 }
