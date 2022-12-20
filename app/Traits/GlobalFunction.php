@@ -3,7 +3,7 @@ namespace App\Traits;
 use DB;
 use Illuminate\Support\Collection;
 use Log;
-use App\Model\{ChatSocket,Client,Order};
+use App\Model\{ChatSocket, Client, Agent, DriverGeo,Order};
 use Illuminate\Support\Facades\Config;
 
 
@@ -57,4 +57,39 @@ trait GlobalFunction{
     
     }
    
+   
+    public function getGeoBasedAgentsData($geo, $is_cab_pooling, $agent_tag = '', $date, $cash_at_hand)
+    {
+        try {
+
+            $geoagents_ids =  DriverGeo::where('geo_id', $geo);
+
+            if($is_cab_pooling == 1){
+                $geoagents_ids = $geoagents_ids->whereHas('agent', function($q) use ($geo){
+                    $q->where('is_pooling_available', 1);
+                });
+            }
+
+            if($agent_tag !='')
+            {
+                $geoagents_ids = $geoagents_ids->whereHas('agent.tags', function($q) use ($agent_tag){
+                    $q->where('name', '=', $agent_tag);
+                });
+            }
+
+            $geoagents_ids =  $geoagents_ids->pluck('driver_id');
+
+            $geoagents = Agent::whereIn('id',  $geoagents_ids)->with(['logs','order'=> function ($f) use ($date) {
+                $f->whereDate('order_time', $date)->with('task');
+            }])->orderBy('id', 'DESC')->get()->where("agent_cash_at_hand", '<', $cash_at_hand);
+
+
+            return $geoagents;
+
+        } catch (\Throwable $th) {
+            return [];
+        }
+    
+    }
+
 }

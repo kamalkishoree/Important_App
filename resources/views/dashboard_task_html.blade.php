@@ -100,7 +100,6 @@ $agentslocations[] = $defaultmaplocation;
                                                         $pickup_class = "assign_";
                                                         }
                                                 @endphp
-
                                                 <div>
                                                     <div class="row no-gutters align-items-center">
                                                         <div class="col-9 d-flex">
