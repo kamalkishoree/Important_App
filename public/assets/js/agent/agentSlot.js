@@ -5,6 +5,7 @@ $(function(){
     var product_id = vendor_id = title = block = appoin=agent_id = calendar='' ;
     var calendarEl = document.getElementById('calendar');
     $(document).on('click', '.agent_slot_button', function() {
+        
         agent_id = $(this).data('agent_id');
         spinnerJS.showSpinner();
         $('#agentTablePopup').modal('show'); 

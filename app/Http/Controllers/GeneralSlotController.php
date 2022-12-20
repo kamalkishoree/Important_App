@@ -21,7 +21,7 @@ use Doctrine\DBAL\Driver\DrizzlePDOMySql\Driver;
 use App\Model\{Agent, AgentSlot, AgentSlotRoster, SlotDay};
 
 
-class AgentSlotController extends Controller
+class GeneralSlotController extends Controller
 {
     use ApiResponser;
     public $Blockedslots = 'rgb(119 142 72)';
@@ -34,23 +34,21 @@ class AgentSlotController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function index()
     {
        
-        try {
-          
+        return view('general_slots.generalSlotTableRows');
+    }
+    public function store(Request $request)
+    {
 
-            if (isset($request->agent_id)) {
-                $agent = Agent::where('id', $request->agent_id)->firstOrFail();
-                if (!$agent) {
-                    $this->error('Agent not fount!', 405);
-                } else {
-                    $agent_id = $agent->id;
-                }
-            } else {
-                $agent_id = 1001;
+        try {
+            DB::beginTransaction();
+            $agent = Agent::where('id', $request->agent_id)->firstOrFail();
+            if (!$agent) {
+                $this->error('Agent not fount!', 405);
             }
-             
+
             $dateNow = Carbon::now()->format('Y-m-d');
             $slotData = array();
 
@@ -60,8 +58,9 @@ class AgentSlotController extends Controller
 
             $period   = CarbonPeriod::create($start_date, $end_date);
             $weekdays = $request->recurring == 1 ? $request->week_day  : [1, 2, 3, 4, 5, 6, 7];
+
             $slot = new AgentSlot();
-            $slot->agent_id     = $agent_id;
+            $slot->agent_id     = $agent->id;
             $slot->start_time   = $request->start_time;
             $slot->end_time     = $request->end_time;
             $slot->start_date   = $start_date;
@@ -81,7 +80,7 @@ class AgentSlotController extends Controller
                     $dayNumber = $date->dayOfWeek + 1; // get day number 
                     if (in_array($dayNumber, $weekdays)) {
                         $AgentSlotData[$key]['slot_id']        = $slot->id;
-                        $AgentSlotData[$key]['agent_id']       = $agent_id;
+                        $AgentSlotData[$key]['agent_id']       = $request->agent_id;
                         $AgentSlotData[$key]['start_time']     = $request->start_time;
                         $AgentSlotData[$key]['end_time']       = $request->end_time;
                         $AgentSlotData[$key]['schedule_date']  = $date->format('Y-m-d H:i:s');
@@ -245,7 +244,7 @@ class AgentSlotController extends Controller
         // }
     }
 
-    public function returnJson(Request $request, $domain = '', $id='')
+    public function returnJson(Request $request, $domain = '', $id)
     {
 
         $Agent = Agent::findOrFail($id);

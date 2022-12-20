@@ -186,7 +186,7 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 			Route::get('agent/payout/requests', 'AgentPayoutController@agentPayoutRequests')->name('agent.payout.requests');
 			Route::get('agent/payout/requests/export', 'AgentPayoutController@export')->name('agents.payout.requests.export');
 			Route::get('agent/payout/requests/filter', 'AgentPayoutController@agentPayoutRequestsFilter')->name('agent.payout.requests.filter');
-			
+			Route::get('general_slots','GeneralSlotController@index');
 			Route::get('category/filter', 'CategoryController@categoryFilter');
 
         	Route::post('agent/payout/request/complete', 'AgentPayoutController@agentPayoutRequestComplete')->name('agent.payout.request.complete');

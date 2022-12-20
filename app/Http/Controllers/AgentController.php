@@ -128,6 +128,7 @@ class AgentController extends Controller
 
     public function agentFilter(Request $request)
     {
+      
         try {
             $tz = new Timezone();
             $user = Auth::user();
