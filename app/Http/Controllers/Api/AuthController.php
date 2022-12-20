@@ -22,7 +22,7 @@ use Illuminate\Support\Facades\Hash;
 use Twilio\Rest\Client as TwilioClient;
 use Faker\Generator as Faker;
 use Illuminate\Support\Facades\Storage;
-use App\Model\{User, Agent, AgentDocs, AllocationRule, AgentSmsTemplate, Client, EmailTemplate, SmtpDetail, ClientPreference, BlockedToken, Otp, TaskProof, TagsForTeam, SubAdminTeamPermissions, SubAdminPermissions, TagsForAgent, Team};
+use App\Model\{User, Agent, AgentDocs, AgentFleet, AllocationRule, AgentSmsTemplate, Client, EmailTemplate, SmtpDetail, ClientPreference, BlockedToken, Fleet, Otp, TaskProof, TagsForTeam, SubAdminTeamPermissions, SubAdminPermissions, TagsForAgent, Team};
 
 
 class AuthController extends BaseController
@@ -502,6 +502,21 @@ class AuthController extends BaseController
         ];
 
         $agent = Agent::create($data);
+        $dataFleet = [
+            'name' => $request->vehicle_name??'Test',
+            'make' => $request->make,
+            'model' => $request->model??'Top',
+            'registration_name' => $request->plate_number,
+            'color' => $request->color,
+            'year' => $request->year??date('Y'),
+            'user_id' => $agent->id
+        ];
+        $agentFleet = Fleet::create($dataFleet);
+        if($agentFleet)
+        {
+            AgentFleet::create(['fleet_id'=>$agentFleet->fleet_id,'agent_id'=>$agent->id]);
+        }
+
         $agent->tags()->sync($tag_id);
         $files = [];
         if ($request->hasFile('uploaded_file')) {

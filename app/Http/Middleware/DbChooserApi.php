@@ -40,11 +40,11 @@ class DbChooserApi
         if (isset($database_name)) {
             $default = [
                 'driver' => env('DB_CONNECTION', 'mysql'),
-                'host' => env('DB_HOST'),
-                'port' => env('DB_PORT'),
+                'host' => env('DB_HOST')??'localhost',
+                'port' => env('DB_PORT')??'3306',
                 'database' => $database_name,
-                'username' => env('DB_USERNAME'),
-                'password' => env('DB_PASSWORD'),
+                'username' => env('DB_USERNAME')??'root',
+                'password' => env('DB_PASSWORD')??'codebrew',
                 'charset' => 'utf8mb4',
                 'collation' => 'utf8mb4_unicode_ci',
                 'prefix' => '',
