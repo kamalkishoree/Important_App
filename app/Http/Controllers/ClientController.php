@@ -286,6 +286,7 @@ class ClientController extends Controller
             $request->request->add(['is_edit_order_driver' => ($request->has('is_edit_order_driver') && $request->is_edit_order_driver == 'on') ? 1 : 0]);
             $request->request->add(['is_cancel_order_driver' => ($request->has('is_cancel_order_driver') && $request->is_cancel_order_driver == 'on') ? 1 : 0]);
             $request->request->add(['is_driver_slot' => ($request->has('is_driver_slot') && $request->is_driver_slot == 'on') ? 1 : 0]);
+            $request->request->add(['manage_fleet' => ($request->has('manage_fleet') && $request->manage_fleet == 'on') ? 1 : 0]);
         }
 
         if($request->has('refer_and_earn')){
