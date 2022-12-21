@@ -645,9 +645,6 @@ class AgentDashBoardController extends Controller
                         if(!empty($search_by_name)){
                             $query->where('name', '=' ,$search_by_name);
                         }
-                        if(!empty($agent_ids)){
-                            $query->whereIn('id', $agent_ids);
-                        }
                         $query->where('is_available', '=', $userstatus)
                             ->with(['agentlog', 
                                 'order'  => function ($q) use ($startdate, $enddate){
@@ -664,9 +661,6 @@ class AgentDashBoardController extends Controller
                     'agents' => function ($query) use ( $search_by_name) {
                         if(!empty($search_by_name)){
                             $query->where('name', '=' ,$search_by_name);
-                        }
-                        if(!empty($agent_ids)){
-                            $query->whereIn('id', $agent_ids);
                         }
                     },
                     'agents.order' => function ($o) use ($startdate, $enddate) {
@@ -688,18 +682,12 @@ class AgentDashBoardController extends Controller
             });
         }
 
-        if(!empty($agent_ids)){
-            $teams = $teams->whereHas('agents', function($q) use ($agent_ids){
-                $q->whereIn('id', $agent_ids);
-            });
-        }
-
         if(!empty($team_ids)){
             $teams = $teams->whereIn('id', $team_ids);
         }
 
         $teams = $teams->get();
-        // dd($teams->toArray());
+        
         foreach ($teams as $team) {
             $online  = 0;
             $offline = 0;
