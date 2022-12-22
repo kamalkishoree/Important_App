@@ -257,73 +257,68 @@ class ActivityController extends BaseController
         if ($request->lat=="" || $request->lat==0 || $request->lat== '0.00000000') {
         } else {
 
-            if(!empty($preferences->customer_notification_per_distance) && !empty($preferences->custom_mode)){
-                
-                //get details of customer notification per distance 
-                $clientPreference = json_decode($preferences->customer_notification_per_distance);
-
-                $configCustomerNotification = json_decode($preferences->custom_mode)->is_hide_customer_notification;
-
-                //check is_send_customer_notification is on/not
-                if(!empty($clientPreference->is_send_customer_notification) && ($clientPreference->is_send_customer_notification == 'on') && ($configCustomerNotification == 1)){
-                    \Log::info('permission sucess');
-                    //get agent orders 
-                    $orders = Order::where('driver_id', Auth::user()->id)->where('status', 'assigned')->orderBy('order_time')->pluck('id')->toArray();
-                    if (count($orders) > 0) {
-                        //\Log::info('get order');
-                        
-                        //get agent current task
-                        $tasks = Task::whereIn('order_id', $orders)->where('task_status', 2)->with(['location','tasktype','order.customer'])->orderBy('order_id', 'desc')->orderBy('id', 'ASC')->get()->first();
-                        if (!empty($tasks)) {
-
-                            //\Log::info('get tasks--');
-                            //\Log::info($tasks);
-                            //\Log::info('get tasks--');
-                            $callBackUrl = str_ireplace('dispatch-pickup-delivery', 'dispatch/customer/distance/notification', $tasks->order->call_back_url);
-                            $latitude    = [];
-                            $longitude   = [];
-
-                            //\Log::info($callBackUrl);
-                            // check task location in not empty and task created by custmer from order penel  
-                            if(!empty($tasks->location) && !empty($callBackUrl)){
-                                //\Log::info('get task location');
-                                $tasksLocationLat  = $tasks->location->latitude;
-                                $tasksLocationLong = $tasks->location->longitude;
+            $custom_mode = !empty($preferences->custom_mode) ? json_decode($preferences->custom_mode) : [];
+            $clientPreference = !empty($preferences->customer_notification_per_distance) ? json_decode($preferences->customer_notification_per_distance) : [];
             
-                                //get distance using lat-long
-                                $getDistance = $this->getLatLongDistance($tasksLocationLat, $tasksLocationLong, $request->lat, $request->long, $clientPreference->distance_unit);
-            
-                                // insert agent coverd distance
-                                $data['distance_covered'] = $getDistance;
-                                $data['current_task_id'] = $tasks->id;
-                                AgentLog::create($data);
+            if(!empty($custom_mode->is_hide_customer_notification) && ($custom_mode->is_hide_customer_notification == 1) && !empty($clientPreference->is_send_customer_notification) && ($clientPreference->is_send_customer_notification == 'on')){
 
-                                // check notification send to customer pr km/miles
-                                $agentDistanceCovered = AgentLog::where('current_task_id', $tasks->id)->where('distance_covered', 'LIKE', '%'.$getDistance.'%')->count();
+                \Log::info('permission success');
+                //get agent orders 
+                $orders = Order::where('driver_id', Auth::user()->id)->where('status', 'assigned')->orderBy('order_time')->pluck('id')->toArray();
+                if (count($orders) > 0) {
+                    //\Log::info('get order');
+                    
+                    //get agent current task
+                    $tasks = Task::whereIn('order_id', $orders)->where('task_status', 2)->with(['location','tasktype','order.customer'])->orderBy('order_id', 'desc')->orderBy('id', 'ASC')->get()->first();
+                    if (!empty($tasks)) {
+
+                        //\Log::info('get tasks--');
+                        //\Log::info($tasks);
+                        //\Log::info('get tasks--');
+                        $callBackUrl = str_ireplace('dispatch-pickup-delivery', 'dispatch/customer/distance/notification', $tasks->order->call_back_url);
+                        $latitude    = [];
+                        $longitude   = [];
+
+                        //\Log::info($callBackUrl);
+                        // check task location in not empty and task created by custmer from order penel  
+                        if(!empty($tasks->location) && !empty($callBackUrl)){
+                            //\Log::info('get task location');
+                            $tasksLocationLat  = $tasks->location->latitude;
+                            $tasksLocationLong = $tasks->location->longitude;
+        
+                            //get distance using lat-long
+                            $getDistance = $this->getLatLongDistance($tasksLocationLat, $tasksLocationLong, $request->lat, $request->long, $clientPreference->distance_unit);
+        
+                            // insert agent coverd distance
+                            $data['distance_covered'] = $getDistance;
+                            $data['current_task_id'] = $tasks->id;
+                            AgentLog::create($data);
+
+                            // check notification send to customer pr km/miles
+                            $agentDistanceCovered = AgentLog::where('current_task_id', $tasks->id)->where('distance_covered', 'LIKE', '%'.$getDistance.'%')->count();
+                            
+                            if($agentDistanceCovered == 1 && $getDistance > 0){
+                                //\Log::info('in send notification');
+                                $notificationTitle       = $clientPreference->title;
+                                $notificationDiscription = str_ireplace("{distance}", $getDistance.' '.$clientPreference->distance_unit, $clientPreference->description);
+                                $notificationDiscription = str_ireplace("{co2_emission}", $clientPreference->co2_emission * $getDistance, $notificationDiscription);
                                 
-                                if($agentDistanceCovered == 1 && $getDistance > 0){
-                                    //\Log::info('in send notification');
-                                    $notificationTitle       = $clientPreference->title;
-                                    $notificationDiscription = str_ireplace("{distance}", $getDistance.' '.$clientPreference->distance_unit, $clientPreference->description);
-                                    $notificationDiscription = str_ireplace("{co2_emission}", $clientPreference->co2_emission * $getDistance, $notificationDiscription);
-                                    
-                                    $postdata =  ['notificationTitle' => $notificationTitle, 'notificationDiscription' => $notificationDiscription];
-            
-                                    $client = new GClient(['content-type' => 'application/json']);
-                                    
-                                    $res = $client->post($callBackUrl,
-                                        ['form_params' => ($postdata)]
-                                    );
-                                    $response = json_decode($res->getBody(), true);   
-                                    //\Log::info('responce');
-                                    //\Log::info($response);
-
-                                }
+                                $postdata =  ['notificationTitle' => $notificationTitle, 'notificationDiscription' => $notificationDiscription];
+        
+                                $client = new GClient(['content-type' => 'application/json']);
                                 
+                                $res = $client->post($callBackUrl,
+                                    ['form_params' => ($postdata)]
+                                );
+                                $response = json_decode($res->getBody(), true);   
+                                //\Log::info('responce');
+                                //\Log::info($response);
+
                             }
+                            
                         }
-                    }                                           
-                }
+                    }
+                }                                           
             }else{
                 AgentLog::create($data);
                 //event(new \App\Events\agentLogFetch());

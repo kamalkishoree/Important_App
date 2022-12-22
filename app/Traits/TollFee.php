@@ -98,6 +98,7 @@ trait TollFee{
 
             $toll_array = array();
             $toll_array['duration'] = 0;
+            $toll_array['distance'] = 0;
             $toll_array['currency'] = '';
             $toll_array['toll_amount'] = 0;
             if(!empty($apiResponse->routes))
