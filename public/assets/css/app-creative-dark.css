@@ -4518,7 +4518,7 @@ div.dt-button-info h2 {
 }
 
 .select2-container {
-  width: 100% !important;
+  width: auto !important;
 }
 .select2-container .select2-selection--single {
   border: 1px solid #424e5a;

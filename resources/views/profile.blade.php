@@ -1,7 +1,6 @@
 @extends('layouts.vertical', ['title' => 'Profile'])
 
 @section('css')
-<link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.18/css/intlTelInput.css'>
 <style>
 .input-group {
 position: relative;
@@ -26,6 +25,7 @@ box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.15);border-radius: 10px;width: 100%;disp
 .choose-btn:hover{text-decoration: none;}
 .g-btn .text strong {color: #000;}
 </style>
+<link rel="stylesheet" href="{{ asset('telinput/css/intlTelInput.min.css') }}">
 @endsection
 @php
     $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain/';
@@ -42,7 +42,7 @@ box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.15);border-radius: 10px;width: 100%;disp
 
     <!-- start page title -->
     <div class="row">
-        <div class="col-12">
+        <div class="col-8 mx-auto">
             <div class="page-title-box">
                 <h4 class="page-title">{{__("Profile")}}</h4>
             </div>
@@ -172,6 +172,12 @@ box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.15);border-radius: 10px;width: 100%;disp
                                                 <p class="text-muted text-center mt-2 mb-0">{{__("Upload favicon")}} </p>
                                             </div>
                                         </div>
+                                        <div class="col-md-4 upload_box">
+                                            <div id="favicon_container">
+                                                <input type="file" class="dropify" data-plugins="dropify" name="admin_signin_image" data-default-file="{{ isset($client->admin_signin_image) ? Storage::disk('s3')->url($client->admin_signin_image) : '' }}" />
+                                                <p class="text-muted text-center mt-2 mb-0">{{__("Upload Admin Signin Image")}} (1920x1080)</p>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="col-md-5">
@@ -192,8 +198,8 @@ box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.15);border-radius: 10px;width: 100%;disp
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <label class="control-label col-12">{{__("Short Code")}}</label><br/>
-                                        <h1 class="control-label col-12" style="font-size: 3rem;">{{Auth::user()->code}}</h1>
+                                        <label class="control-label col-6">{{__("Short Code")}}</label>
+                                        <h1 class="control-label col-6" style="font-size: 20px;">{{Auth::user()->code}}</h1>
                                     </div>
                                 </div>
                             </div>
@@ -393,7 +399,7 @@ box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.15);border-radius: 10px;width: 100%;disp
 <script src="{{asset('assets/js/pages/form-fileuploads.init.js')}}"></script>
 <script src="{{asset('assets/js/storeClients.js')}}"></script>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.18/js/intlTelInput.min.js"></script>
+{{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.18/js/intlTelInput.min.js"></script>
 
 <script>
     var input = document.querySelector("#phone_number");
@@ -404,6 +410,32 @@ box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.15);border-radius: 10px;width: 100%;disp
         utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.18/js/utils.js",
     });
     
+    $('.intl-tel-input').css('width', '100%');
+
+
+    $(function() {
+        $('#phone_number').focus(function() {
+            $('#phone_number').css('color', '#6c757d');
+        });
+    });
+    $(function() {
+        var height = $('#favicon_container').height();
+        $('#favicon_container').css('width', height+'px');
+    });
+</script> --}}
+
+
+
+
+<script src="{{ asset('telinput/js/intlTelInput.js') }}"></script>
+
+<script>
+
+    $("#phone_number").intlTelInput({
+        separateDialCode:true,
+        preferredCountries:["{{getCountryCode()}}"],
+        initialCountry:"{{getCountryCode()}}",
+    });
     $('.intl-tel-input').css('width', '100%');
 
 

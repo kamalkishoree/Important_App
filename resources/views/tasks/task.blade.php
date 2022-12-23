@@ -31,6 +31,9 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
         float: right;
         margin: 5px 0 10px 15px;
     }
+    .agents-datatable tbody td, .dataTables_scrollHead thead th {
+        vertical-align: middle;
+    }
     div#agents-datatable_filter {
         padding-top: 5px;
     }
@@ -62,6 +65,12 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
     padding-right:5px;
     color:#3283f6;
     }
+
+    select#agent_name_id {
+        width: 135px;
+    }
+
+    
     
 </style>
 <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
@@ -69,7 +78,6 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
 @section('content')
     <!-- Start Content-->
     <div class="container-fluid">
-
         <!-- start page title -->
         <div class="row">
             <div class="col-12">
@@ -78,12 +86,12 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                 </div>
             </div>
         </div>
-
         <div class="row">
             <div class="col-12">
                 <div class="card widget-inline main-card-header">
                     <div class="card-body p-2">
                         <div class="row">
+                            <input type="hidden" name="customer_id" id="customer_id" value="{{ app('request')->input('customer_id')??'' }}">
                             <div class="col-sm-6 col-md-3 mb-3 mb-md-0">
                                 <div class="text-center">
                                     <h3>
@@ -125,8 +133,6 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                 </div>
             </div>
         </div>
-    
-        
         <!-- end page title -->
         <div class="row">
             <div class="col-12">
@@ -158,33 +164,57 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                 <form class="mb-0" name="getTask" id="getTask" method="get" action="{{ route('tasks.index') }}">
                                     <div class="login-form">
                                         <ul class="list-inline mb-0">
-                                            <li class="d-inline-block mr-2">
+                                            <li class="d-inline-block mr-1">
                                                 <input type="radio" id="teacher" name="status" onclick="handleClick(this);"
                                                     value="unassigned" {{ $status == 'unassigned' ? 'checked' : '' }}>
                                                 <label for="teacher">{{__("Pending Assignment")}}<span
                                                         class="showspan">{{ ' (' . $panding_count . ')' }}</span></label>
                                             </li>
-                                            <li class="d-inline-block mr-2">
+                                            <li class="d-inline-block mr-1">
                                                 <input type="radio" id="student" onclick="handleClick(this);" name="status"
                                                     value="assigned" {{ $status == 'assigned' ? 'checked' : '' }}>
                                                 <label for="student">{{__("Active")}}<span
                                                         class="showspan">{{ ' (' . $active_count . ')' }}</span></label>
                                             </li>
-
-
-                                            <li class="d-inline-block mr-2">
+                                            <li class="d-inline-block mr-1">
                                                 <input type="radio" id="parent" name="status" onclick="handleClick(this);"
                                                     value="completed" {{ $status == 'completed' ? 'checked' : '' }}>
                                                 <label for="parent">{{__("History")}}<span
                                                         class="showspan">{{ ' (' . $history_count . ')' }}</span></label>
                                             </li>
-
-                                            <li class="d-inline-block mr-2">
+                                            <li class="d-inline-block mr-1">
                                                 <input type="radio" id="failed" name="status" onclick="handleClick(this);"
                                                     value="failed" {{ $status == 'failed' ? 'checked' : '' }}>
                                                 <label for="failed">{{__("Failed")}}<span
                                                         class="showspan">{{ ' (' . $failed_count . ')' }}</span></label>
                                             </li>
+                                            <input type="hidden" name="customer_id" id="customer_id" value="{{ app('request')->input('customer_id')??'' }}">
+                                            @php
+                                                $warehouse_mode = checkWarehouseMode();
+                                            @endphp
+                                            @if($warehouse_mode['show_warehouse_module'] == 1)
+                                                <li class="d-inline-block mr-1">
+                                                    <select name="search_warehouse" class="form-control"  onchange="handleClick(this);" id="search_warehouse">
+                                                        <option value="">All</option>
+                                                        @foreach ($warehouses as $warehouse)
+                                                            <option value="{{$warehouse->id}}" @if (app('request')->input('search_warehouse') == $warehouse->id) {{'selected="selected"'}} @endif>{{$warehouse->name}}</option>                                                            
+                                                        @endforeach
+                                                    </select>
+                                                </li>
+                                                @if(Auth::user()->is_superadmin == 1 && Auth::user()->manager_type == 0)
+                                                <li class="d-inline-block mr-1">
+                                                    <select name="warehouse_manager" class="form-control" onchange="handleClick(this);"  id="warehouse_manager">
+                                                        <option value="">Select Warehouse Manager</option>
+                                                        @foreach ($warehouse_manager as $manager)
+                                                            <option value="{{$manager->id}}" @if (app('request')->input('warehouse_manager') == $manager->id) {{'selected="selected"'}} @endif>{{$manager->name}}</option>                                                            
+                                                        @endforeach
+                                                    </select>
+                                                </li>
+                                                @endif
+                                            @endif
+                                            <li class="d-inline-block mr-1">
+                                                <a href="{{route('tasks.index')}}" type="button" class="btn btn-info btn-sm">Clear</a>
+
                                             <li class="d-inline-block mr-2">
                                                 <button type="button" class="btn btn-info bulkupload" data-toggle="modal" data-target="#upload-bulk-tasks" data-backdrop="static" data-keyboard="false"><i class="mdi mdi-cloud-upload mr-1"></i> {{__("Upload")}}</button> 
                                             </li>
@@ -197,16 +227,13 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                             <a href="{{route('batch.list')}}"><button type="button" class="btn btn-info" >All Batches</button></a>
                             @endif
                             
-                            <div class="col-md-4 assign-toggle assign-show ">
+                            <div class="col-md-4 assign-toggle assign-show mt-3">
                                 <button type="button" class="btn btn-info assign_agent" data-toggle="modal" data-target="#add-assgin-agent-model" data-backdrop="static" data-keyboard="false">{{__("Assign")}}</button> 
                                 <button type="button" class="btn btn-info assign_date" data-toggle="modal" data-target="#add-assgin-date-model" data-backdrop="static" data-keyboard="false">{{__("Change Date")}}/{{__("Time")}}</button> 
                             </div>
-                          
-
-                           
                         </div>
                         <input type="hidden" id="routes-listing-status" value="unassigned">
-                        <div class="table-responsive mn-2">
+                        <div class="table-responsive mt-2">
                             <table class="table table-striped dt-responsive nowrap w-100 agents-datatable" id="agents-datatable">
                                 <thead>
                                     <tr>
@@ -216,7 +243,8 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                         <th class="sort-icon">{{__("Order Number")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                         <th class="sort-icon">{{__("Customer ID")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                         <th class="sort-icon">{{__("Customer")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
-                                        <th class="sort-icon">{{__("Phone.No")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
+                                        <th class="sort-icon">{{__("Phone No.")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
+                                        <th class="sort-icon">{{__("Type")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                         <th class="sort-icon">{{__(getAgentNomenclature()) }} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                         <th class="sort-icon">{{__("Due Time")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                         <th class="routes-head">{{__("Routes")}}</th>
@@ -236,8 +264,6 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                 </div> <!-- end card-->
             </div> <!-- end col -->
         </div>
-
-
     </div>
 
     @include('modals.task-list')
@@ -257,5 +283,41 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
     @include('tasks.taskpagescript')
 
 
-    
+<style>
+    .col-md-4.assign-toggle button {
+    color: #fff;
+    width: 160px;
+}
+.agents-datatable tbody td, .dataTables_scrollHead thead th {
+        padding: 6px 6px 6px 6px !important;
+        vertical-align: middle;
+    }
+    select#agent_name_id {
+    width: 135px;
+    color: #dbe9f9;
+}
+    select option:hover {
+      background:#d4a34a !important;
+      color:#fff;
+    }
+    select option:checked,
+    select option:hover {
+        background:#d4a34a !important;
+}
+select:focus > option:checked { 
+    background:#d4a34a !important;
+}
+.address_box span {
+    width: 100px;
+    text-align: center;
+}
+body.dark .table thead th {
+    font-size: 14px;
+    vertical-align: middle;
+    /* width: auto !important; */
+}
+select#search_warehouse {
+    width: 80px;
+}
+</style>
 @endsection

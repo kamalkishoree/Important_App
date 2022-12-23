@@ -186,7 +186,7 @@ class AuthController extends BaseController
             return response()->json(['message' => __('Your account has been rejected. Please contact administration')], 422);
         }
 
-        $prefer = ClientPreference::with('currency')->select('theme', 'distance_unit', 'currency_id', 'language_id', 'agent_name', 'date_format', 'time_format', 'map_type', 'map_key_1')->first();
+        $prefer = ClientPreference::with('currency')->select('theme', 'distance_unit', 'currency_id', 'language_id', 'agent_name', 'date_format', 'time_format', 'map_type', 'map_key_1', 'custom_mode', 'is_cab_pooling_toggle')->first();
         $allcation = AllocationRule::first('request_expiry');
         $prefer['alert_dismiss_time'] = (int)$allcation->request_expiry;
         $taskProof = TaskProof::all();
@@ -424,7 +424,7 @@ class AuthController extends BaseController
 
         $validator = Validator::make($request->all(), [
             'name' => 'required',
-            'phone_number' => 'required|min:9',
+            'phone_number' => 'required|min:6',
             'type' => 'required',
             'otp' => 'required'
             // 'vehicle_type_id' => 'required'

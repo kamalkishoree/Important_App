@@ -24,7 +24,7 @@ class Agent extends Authenticatable implements  Wallet, WalletFloat
     use SoftDeletes;
 
     protected $fillable = [
-        'team_id', 'name', 'profile_picture', 'type', 'vehicle_type_id', 'make_model', 'plate_number', 'phone_number', 'color', 'is_activated', 'is_available','cash_at_hand','uid', 'is_approved','customer_type_id'
+        'team_id', 'name', 'profile_picture', 'type', 'vehicle_type_id', 'make_model', 'plate_number', 'phone_number', 'color', 'is_activated', 'is_available','cash_at_hand','uid', 'is_approved','customer_type_id','razorpay_contact_json','razorpay_bank_json','warehouse_id', 'is_pooling_available'
     ];
 
     protected $appends = ['image_url', 'agent_cash_at_hand'];
@@ -86,6 +86,10 @@ class Agent extends Authenticatable implements  Wallet, WalletFloat
        return $this->belongsTo('App\Model\Team')->select("id", "name", "location_accuracy", "location_frequency"); 
     }
 
+    public function warehouse(){
+        return $this->belongsTo('App\Model\Warehouse')->select("id", "name", "code", "address"); 
+     }
+
     public function logs(){
         return $this->hasOne('App\Model\AgentLog' , 'agent_id','id')->select("id", "agent_id", "lat", "long"); 
     }
@@ -124,4 +128,21 @@ class Agent extends Authenticatable implements  Wallet, WalletFloat
         return $this->hasOne('App\Model\SubscriptionInvoicesDriver' , 'driver_id', 'id')->orderBy('end_date', 'desc');
     }
 
+    public function warehouseAgent(){
+        return $this->belongsToMany('App\Model\Warehouse','agent_warehouse')->withTimestamps();
+    }
+
+    public function getAgentContactJsonAttribute()
+    {
+          return json_decode($this->razorpay_contact_json)->id;
+    }
+
+    public function getAgentBankJsonAttribute()
+    {
+          return json_decode($this->razorpay_bank_json);
+    }
+
+    public function agentRating(){
+        return $this->hasMany('App\Model\DriverRating','driver_id', 'id');
+    }
 }
