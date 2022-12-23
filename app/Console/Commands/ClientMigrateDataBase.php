@@ -57,8 +57,8 @@ class ClientMigrateDataBase extends Command
                     'port' => env('DB_PORT'),
                     'prefix_indexes' => true,
                     'database' => $database_name,
-                    'username' => env('DB_USERNAME')??'root',
-                    'password' => env('DB_PASSWORD')??'codebrew',
+                    'username' => env('DB_USERNAME'),
+                    'password' => env('DB_PASSWORD'),
                     'collation' => 'utf8mb4_unicode_ci',
                     'driver' => env('DB_CONNECTION', 'mysql'),
                 ];
