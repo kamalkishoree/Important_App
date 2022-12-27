@@ -13,7 +13,6 @@ trait sendCustomNotification{
         $new = [];
 
         array_push($new, $data['device_token']);
-        Log::info($data);
         if(isset($new)){
             $fcm_server_key = !empty($client_preferences->fcm_server_key)? $client_preferences->fcm_server_key : 'null';
 
@@ -31,6 +30,7 @@ trait sendCustomNotification{
                                 'show_in_foreground' => true,
                             ])
                             ->send();
+            
             
         }
     }
