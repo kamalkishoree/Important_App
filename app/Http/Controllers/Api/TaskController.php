@@ -25,7 +25,7 @@ use App\Model\ClientPreference;
 use App\Model\NotificationType;
 use App\Traits\agentEarningManager;
 use App\Model\BatchAllocationDetail;
-use App\Model\{PricingRule, TagsForAgent, AgentPayout, TagsForTeam, Team, PaymentOption, PayoutOption, AgentConnectedAccount, CustomerVerificationResource, SubscriptionInvoicesDriver, TaskType, AgentLogSlab};
+use App\Model\{PricingRule, TagsForAgent, AgentPayout, TagsForTeam, Team, PaymentOption, PayoutOption, AgentConnectedAccount, CustomerVerificationResource, SubscriptionInvoicesDriver, TaskType, AgentLogSlab, AgentFleet};
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -805,10 +805,11 @@ class TaskController extends BaseController
                         $percentage = $driver_subscription->driver_commission_fixed + (($task_id->order_cost / 100) * $driver_subscription->driver_commission_percentage);
                     }
                 }
-
+                $agent_fleet = AgentFleet::where('agent_id', $agent_id)->value('fleet_id');
                 Order::where('id', $batch->order_id)->update([
                     'driver_id' => $agent_id,
                     'status' => 'assigned',
+                    'fleet_id'=> $agent_fleet,
                     'driver_cost'=> $percentage,
                     'agent_commission_fixed' => $agent_commission_fixed,
                     'agent_commission_percentage' => $agent_commission_percentage,
@@ -873,10 +874,12 @@ class TaskController extends BaseController
                         $percentage = $driver_subscription->driver_commission_fixed + (($task_id->order_cost / 100) * $driver_subscription->driver_commission_percentage);
                     }
                 }
+                $agent_fleet = AgentFleet::where('agent_id', $agent_id)->value('fleet_id');
 
                 Order::where('id', $request->order_id)->update([
                     'driver_id' => $agent_id,
                     'status' => 'assigned',
+                    'fleet_id'=> $agent_fleet,
                     'driver_cost'=> $percentage,
                     'agent_commission_fixed' => $agent_commission_fixed,
                     'agent_commission_percentage' => $agent_commission_percentage,
@@ -888,7 +891,6 @@ class TaskController extends BaseController
                     $call_web_hook = $this->updateStatusDataToOrder($check, 2,1);  # task accepted
                 }
             }
-
 
 
             //Send SMS in case of friend's booking

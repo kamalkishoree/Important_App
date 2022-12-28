@@ -335,6 +335,7 @@ class ClientController extends Controller
             $request->request->add(['is_edit_order_driver' => ($request->has('is_edit_order_driver') && $request->is_edit_order_driver == 'on') ? 1 : 0]);
             $request->request->add(['is_cancel_order_driver' => ($request->has('is_cancel_order_driver') && $request->is_cancel_order_driver == 'on') ? 1 : 0]);
             $request->request->add(['is_driver_slot' => ($request->has('is_driver_slot') && $request->is_driver_slot == 'on') ? 1 : 0]);
+            $request->request->add(['manage_fleet' => ($request->has('manage_fleet') && $request->manage_fleet == 'on') ? 1 : 0]);
             $request->request->add(['is_cab_pooling_toggle' => ($request->has('is_cab_pooling_toggle') && $request->is_cab_pooling_toggle == 'on') ? 1 : 0]);
             //$request->request->add(['radius_for_pooling_km' => ($request->has('is_cab_pooling_toggle') && $request->is_cab_pooling_toggle == 'on') ? $request->radius_for_pooling_km : 0]);
             $request->radius_for_pooling_km = ($request->has('is_cab_pooling_toggle') && $request->is_cab_pooling_toggle == 'on') ? $request->radius_for_pooling_km : 0;

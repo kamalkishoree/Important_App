@@ -350,6 +350,9 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                     </div>
                                 </li>
                                 <li>
+                                    <a href="{{url('fleet')}}" type="button" target="_blank" class="btn btn-success waves-effect waves-light" >{{__("Add New Fleets")}}</a>
+                                </li>
+                                <li>
                                     <select name="geo_filter" id="geo_filter" class="form-control">
                                         <option value="">{{__('Filter by location')}}</option>
                                         @foreach($geos as $geo)

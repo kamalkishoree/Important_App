@@ -95,6 +95,10 @@ class Order extends Model
         
         return $imgarray;
     }
+
+    public function fleet(){
+        return $this->belongsTo('App\Model\Fleet')->select('id','name','registration_name','color','make','model','year');
+    }
     
     public function getAgentPayout() {
         return $this->hasOne('App\Model\AgentPayout', 'order_id', 'id');
