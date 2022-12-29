@@ -3497,11 +3497,11 @@ class TaskController extends BaseController
             }
 
             //here order save code is started
-            $settime =  Carbon::now()->toDateTimeString();
-            $agent_id          = auth::user()->id;
+            $settime   =  Carbon::now()->toDateTimeString();
+            $agent_id  = auth::user()->id;
 
             $order = [
-                'order_number'                    => $request->order_number ?? null,
+                'order_number'                    => generateOrderNo(),
                 'customer_id'                     => $cus_id,
                 'driver_id'                       => $agent_id,
                 'auto_alloction'                  => $request->allocation_type,
@@ -3704,7 +3704,7 @@ class TaskController extends BaseController
     }
 
 
-
+    // update dropoff task function
     public function updateTask(Request $request)
     {
         try {
