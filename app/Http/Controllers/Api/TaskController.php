@@ -2166,7 +2166,7 @@ class TaskController extends BaseController
                     'device_type'         => $oneagent->device_type,
                     'device_token'        => $oneagent->device_token,
                     'detail_id'           => $randem,
-                    'is_cab_pooling'      => $is_cab_pooling,
+                    
                 ];
                 $this->dispatch(new RosterCreate($data, $extraData));
             }
@@ -2188,7 +2188,7 @@ class TaskController extends BaseController
                             'device_type'         => $geoitem->device_type,
                             'device_token'        => $geoitem->device_token,
                             'detail_id'           => $randem,
-                            'is_cab_pooling'      => $is_cab_pooling,
+                            
                         ];
                         array_push($data, $datas);
                         if ($allcation_type == 'N' && 'ACK') {
@@ -2796,7 +2796,7 @@ class TaskController extends BaseController
                 $order->order_cost = $order->cash_to_be_collected ?? $order->order_cost;
                  $tasks = DB::table('tasks')->where('order_id', $order->id)->leftJoin('locations', 'tasks.location_id', '=', 'locations.id')
                      ->select('tasks.*', 'locations.latitude', 'locations.longitude', 'locations.short_name', 'locations.address')->orderBy('task_order')->get();
-                $db_name = client::select('database_name')->where('id', 1)->first()->database_name;
+                $db_name = client::select('database_name')->orderBy('id', 'asc')->first()->database_name;
                  return response()->json([
                      'message' => 'Successfully',
                      'tasks' => $tasks,
@@ -3497,11 +3497,11 @@ class TaskController extends BaseController
             }
 
             //here order save code is started
-            $settime =  Carbon::now()->toDateTimeString();
-            $agent_id          = auth::user()->id;
+            $settime   =  Carbon::now()->toDateTimeString();
+            $agent_id  = auth::user()->id;
 
             $order = [
-                'order_number'                    => $request->order_number ?? null,
+                'order_number'                    => generateOrderNo(),
                 'customer_id'                     => $cus_id,
                 'driver_id'                       => $agent_id,
                 'auto_alloction'                  => $request->allocation_type,
@@ -3704,7 +3704,7 @@ class TaskController extends BaseController
     }
 
 
-
+    // update dropoff task function
     public function updateTask(Request $request)
     {
         try {
