@@ -109,7 +109,8 @@ class SubAdminController extends Controller
             'is_superadmin' => 0
         ];
         if(checkColumnExists('clients', 'manager_type')){
-            $data['manager_type'] = $request->manager_type;
+            $manager_type = $request->manager_type ?? 0;
+            $data['manager_type'] = $manager_type;
         }
 
         $superadmin_data = Client::select('country_id', 'timezone', 'custom_domain', 'is_deleted', 'is_blocked', 'database_path', 'database_name', 'database_username', 'database_password', 'logo', 'company_name', 'company_address', 'code', 'sub_domain')
