@@ -57,8 +57,8 @@ class ShortcodeController extends BaseController
             $database_password = !empty($client->database_password) ? $client->database_password : env('DB_PASSWORD','');
             $default = [
                 'driver' => env('DB_CONNECTION', 'mysql'),
-                'host' => env('DB_HOST'),
-                'port' => env('DB_PORT'),
+                'host' => $database_host,
+                'port' => $database_port,
                 'database' => $database_name,
                 'username' => env('DB_USERNAME'),
                 'password' => env('DB_PASSWORD'),

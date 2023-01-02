@@ -7,11 +7,7 @@ use App\Model\ClientPreference;
 use Log;
 use Unifonic;
 trait TollFee{
-
-    public function __construct()
-    {
-        //
-    }    
+ 
     /**
      * toll_fee
      *
@@ -101,8 +97,8 @@ trait TollFee{
             $apiResponse = json_decode($apiResponse);
 
             $toll_array = array();
-            $toll_array['distanceMeters'] = 0;
             $toll_array['duration'] = 0;
+            $toll_array['distance'] = 0;
             $toll_array['currency'] = '';
             $toll_array['toll_amount'] = 0;
             if(!empty($apiResponse->routes))

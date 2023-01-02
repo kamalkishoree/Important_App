@@ -34,7 +34,7 @@ Route::post('send-documents','Api\DriverRegistrationController@sendDocuments')->
 Route::get('get-agent-tags', 'Api\TaskController@getAgentTags')->middleware('ConnectDbFromOrder');
 Route::get('get-all-teams', 'Api\TaskController@getAllTeams')->middleware('ConnectDbFromOrder');
 Route::post('update-create-vendor-order', 'Api\AuthController@updateCreateVendorOrder')->middleware('ConnectDbFromOrder');
-
+Route::post('task/update', 'Api\TaskController@UpdateTask')->middleware('ConnectDbFromOrder');
 
 Route::post('sync-category-product', 'Api\SyncCategoryProductController@SyncCategoryProduct')->middleware('ConnectDbFromOrder');
 
@@ -76,7 +76,7 @@ Route::group(['prefix' => 'auth'], function () {
     Route::group(['middleware' => ['dbCheck','apiLocalization']], function() {
         Route::post('new-send-documents','Api\DriverRegistrationController@sendDocuments');
     	Route::post('sendOtp', 'Api\AuthController@sendOtp');
-        Route::post('login', 'Api\AuthController@login');        
+        Route::post('login', 'Api\AuthController@login');
         Route::post('signup', 'Api\AuthController@signup');
         Route::post('signup/sendOtp', 'Api\DriverRegistrationController@sendOtp');
         Route::post('signup/verifyOtp', 'Api\DriverRegistrationController@verifyOtp');
@@ -90,25 +90,27 @@ Route::group(['middleware' => ['dbCheck', 'AppAuth','apiLocalization']], functio
     Route::post('create-razorpay-details', 'Api\RazorpayGatewayController@razorpay_create_contact')->name('razorpay_connect');
     Route::post('create-razorpay-add-funds', 'Api\RazorpayGatewayController@razorpay_add_funds_accounts')->name('razorpay_add_account');
 
-    
+
     Route::get('user', 'Api\AuthController@user');
     Route::post('agent/delete', 'Api\AuthController@deleteAgent');
-    
+
     Route::get('taskList', 'Api\ActivityController@tasks');                    // api for task list
     Route::get('updateStatus', 'Api\ActivityController@updateDriverStatus');   // api for chnage driver status active ,in-active
     Route::post('updateCabPoolingStatus', 'Api\ActivityController@updateDriverCabPoolingStatus');  // api for change status of drivers pooling availability
     Route::post('updateTaskStatus', 'Api\TaskController@updateTaskStatus');    // api for chnage task status like start,cpmplate, faild
     Route::post('checkOTPRequried', 'Api\TaskController@checkOTPRequried');    // api for chnage task status like start,cpmplate, faild
     Route::post('task/accecpt/reject', 'Api\TaskController@TaskUpdateReject'); // api for accecpt task reject task
-    Route::post('agent/logs', 'Api\ActivityController@agentLog');              // api for save agent logs
+
     Route::get('get/profile','Api\ActivityController@profile');                // api for get agent profile
     Route::post('update/profile','Api\ActivityController@updateProfile');       // api for updateprofile
     Route::get('task/history','Api\ActivityController@taskHistory');            // api for get task history
     Route::post('agentWallet/credit', 'Api\WalletController@creditAgentWallet');      // api for credit money into agent wallet
     Route::get('payment/options/{page}','Api\PaymentOptionController@getPaymentOptions'); // api for payment options
+    Route::post('agent/logs', 'Api\ActivityController@agentLog');              // api for save agent logs
     Route::get('agent/transaction/details/{id}', 'Api\DriverTransactionController@transactionDetails');   // api for agent transactions
     Route::get('agent/bank/details', 'Api\AgentPayoutController@agentBankDetails'); // api for getting agent bank details
     Route::get('agent/payout/details', 'Api\AgentPayoutController@agentPayoutDetails'); // api for agent payout details
+
     Route::post('agent/payout/request/create/{id}', 'Api\AgentPayoutController@agentPayoutRequestCreate'); // api for creating agent payout request
     Route::post('chat/startChat',      'Api\ChatController@startChat');
     Route::post('chat/userAgentChatRoom',      'Api\ChatController@userAgentChatRoom');
@@ -116,10 +118,13 @@ Route::group(['middleware' => ['dbCheck', 'AppAuth','apiLocalization']], functio
 
     Route::get('agent/poolingTaskSuggession', 'Api\ActivityController@poolingTasksSuggessions');                    // api for task list suggession for cab pooling
     //Route::post('chat/userAgentChatRoom',      'Api\ChatController@startChat');
-    
+
     // Order routes
     Route::post('order/cancel/request/create/{id}', 'Api\OrderController@createOrderCancelRequest'); // api for creating order cancel request by driver
     Route::get('order/cancel/reasons', 'Api\OrderController@getOrderCancelReasons'); // api for creating order cancel request by driver
+
+    //Roadside Pickup
+    Route::post('task/road-side-pickup', 'Api\TaskController@roadsidePickup');
 
     // Driver subscription
     Route::group(['prefix' => 'driver/subscription'], function () {
@@ -137,7 +142,7 @@ Route::group(['middleware' => ['dbCheck', 'AppAuth','apiLocalization']], functio
 
 
 Route::group(['middleware' => 'dbCheck','prefix' => 'public'], function() {
-    
+
     Route::post('task/create', 'Api\TaskController@CreateTask');
     Route::get('task/currentstatus', 'Api\TaskController@currentstatus');
 });
