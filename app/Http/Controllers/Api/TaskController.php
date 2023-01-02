@@ -3376,7 +3376,7 @@ class TaskController extends BaseController
                     break;
                 case 'send_to_all':
                     //this is called when allocation type is send to all
-                    $this->SendToAll($geo, $notification_time, $agent_id, $orders->id, $customer, $finalLocation, $taskcount, $header, $allocation);
+                    $this->SendToAll($geo, $notification_time, $agent_id, $orders->id, $customer, $finalLocation, $taskcount, $header, $allocation, 0);
                     break;
                 case 'round_robin':
                     //this is called when allocation type is round robin
