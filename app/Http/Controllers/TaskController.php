@@ -608,7 +608,7 @@ class TaskController extends BaseController
                 }
             } else {
                 $cus = [
-                    'email' => $request->email,
+                    //'email' => $request->email,
                     'phone_number' => $request->phone_number,
                     'dial_code' => $request->dialCode,
                 ];
@@ -685,8 +685,8 @@ class TaskController extends BaseController
                 $location = Location::where('id', $loc_id)->first();
                 if (!empty($location) && $location->customer_id != $cus_id) {
                     $newloc = [
-                    'short_name'   => $location->short_name,
-                        'post_code'    =>$location->post_code,
+                        'short_name'   => $location->short_name,
+                        'post_code'    => $location->post_code,
                         'flat_no'      => $location->flat_no,
                         'email'        => $location->address_email,
                         'phone_number' => $location->address_phone_number,
