@@ -3413,6 +3413,10 @@ div#agent_route_container .assigned-btn{width:90px;max-width:120px;}
 div#scrollbar {
     padding-bottom: 70px !important;
 }
+
+.agent_icon div#vehicle_type_idInput .radio img {
+    filter: inherit;
+}
 /*----------Ipad view media css--------------*/
 @media(max-width:991px){
 
