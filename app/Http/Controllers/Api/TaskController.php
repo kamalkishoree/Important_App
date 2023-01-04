@@ -3387,22 +3387,24 @@ class TaskController extends BaseController
 
             if ($request->allocation_type === 'a' || $request->allocation_type === 'm') {
                 $allocation = AllocationRule::where('id', 1)->first();
+                $is_cab_pooling  =  $is_order_updated = 0;
+                $agent_tag = '';
                 switch ($allocation->auto_assign_logic) {
                 case 'one_by_one':
                      //this is called when allocation type is one by one
-                    $this->finalRoster($geo, $notification_time, $agent_id, $orders->id, $customer, $finalLocation, $taskcount, $header, $allocation);
+                    $this->finalRoster($geo, $notification_time, $agent_id, $orders->id, $customer, $finalLocation, $taskcount, $header, $allocation, $is_cab_pooling, $agent_tag, $is_order_updated);
                     break;
                 case 'send_to_all':
                     //this is called when allocation type is send to all
-                    $this->SendToAll($geo, $notification_time, $agent_id, $orders->id, $customer, $finalLocation, $taskcount, $header, $allocation);
+                    $this->SendToAll($geo, $notification_time, $agent_id, $orders->id, $customer, $finalLocation, $taskcount, $header, $allocation, $is_cab_pooling, $agent_tag, $is_order_updated);
                     break;
                 case 'round_robin':
                     //this is called when allocation type is round robin
-                    $this->roundRobin($geo, $notification_time, $agent_id, $orders->id, $customer, $finalLocation, $taskcount, $header, $allocation);
+                    $this->roundRobin($geo, $notification_time, $agent_id, $orders->id, $customer, $finalLocation, $taskcount, $header, $allocation, $is_cab_pooling, $agent_tag, $is_order_updated);
                     break;
                 default:
                    //this is called when allocation type is batch wise
-                    $this->batchWise($geo, $notification_time, $agent_id, $orders->id, $customer, $finalLocation, $taskcount, $header, $allocation);
+                    $this->batchWise($geo, $notification_time, $agent_id, $orders->id, $customer, $finalLocation, $taskcount, $header, $allocation, $is_cab_pooling, $agent_tag, $is_order_updated);
             }
             }
             $dispatch_traking_url = $client_url.'/order/tracking/'.$auth->code.'/'.$orders->unique_id;
