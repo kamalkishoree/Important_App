@@ -177,7 +177,8 @@
                                                 $warehouseIds = $subadmin->warehouse->pluck('id')->toArray();
                                             }
                                         @endphp
-                                        <select name="warehouses[]" class="form-control" id="warehouses" multiple="multiple">
+                                        <select name="warehouses[]" class="form-control select2" id="warehouses" multiple="multiple">
+
                                             @foreach ($warehouses as $warehouse)
                                                 <option value="{{$warehouse->id}}" @if(in_array($warehouse->id, $warehouseIds)) selected @endif>{{$warehouse->name}}</option>
                                             @endforeach
@@ -326,6 +327,9 @@
     <link rel="stylesheet" href="{{ asset('assets/css/jquery.tagsinput-revisited.css') }}" />>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
+    $(function() { 
+        warehousesSelecter ();
+    });
 // var code = ;
 //for handling team access permission
 $('#team_access').on('change', function() {
@@ -347,6 +351,7 @@ $('#team_access').on('change', function() {
     });
 
     $('.manager_type').on('change', function() {
+        warehousesSelecter()
         var manager_type = $(this).val();
         var team_access = $('#team_access').val();
         if(manager_type == 1){
@@ -386,10 +391,14 @@ $('#team_access').on('change', function() {
         var dial_code = $(this).attr('data-dial-code');
         $('#dialCode').val(dial_code);
     });
-    $("#warehouses").select2({
-        allowClear: true,
-        width: "resolve",
-        placeholder: "Select Warehouse"
-    });
+    function warehousesSelecter (){
+        $("#warehouses").select2({
+            allowClear: true,
+            width: "resolve",
+            placeholder: "Select Warehouse"
+        });
+    }
+
+    
 </script>
 @endsection
