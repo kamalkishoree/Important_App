@@ -3440,7 +3440,7 @@ class TaskController extends BaseController
             if ($request->task_type == 'later')
                 $request->task_type = 'schedule';
 
-            // DB::beginTransaction();
+            DB::beginTransaction();
 
             //$auth =  Client::with(['getAllocation', 'getPreference'])->first();
             $tz = new Timezone();
@@ -3688,7 +3688,7 @@ class TaskController extends BaseController
             ];
             
             Order::where('id', $orders->id)->update($updateorder);
-
+            DB::commit();
             return response()->json([
                 'message' => __('Task Added Successfully'),
                 'task_id' => $orders->id,
@@ -3696,6 +3696,7 @@ class TaskController extends BaseController
                 'dispatch_traking_url'  => $dispatch_traking_url ?? null
             ], 200);
         } catch (Exception $e) {
+            DB::rollback();
             return response()->json([
                 'message' => $e->getMessage()
             ], 400);
