@@ -58,17 +58,21 @@ trait GlobalFunction{
     }
    
    
-    public function getGeoBasedAgentsData($geo, $is_cab_pooling, $agent_tag = '', $date, $cash_at_hand)
+    public function getGeoBasedAgentsData($geo, $is_cab_pooling = 0, $agent_tag = '', $date, $cash_at_hand)
     {
         try {
 
             $geoagents_ids =  DriverGeo::where('geo_id', $geo);
 
-            if($is_cab_pooling == 1){
+            /* if($is_cab_pooling == 1){
                 $geoagents_ids = $geoagents_ids->whereHas('agent', function($q) use ($geo){
                     $q->where('is_pooling_available', 1);
                 });
-            }
+            } */
+
+            $geoagents_ids = $geoagents_ids->whereHas('agent', function($q) use ($geo){
+                $q->where('is_pooling_available', $is_cab_pooling);
+            });
 
             if($agent_tag !='')
             {
