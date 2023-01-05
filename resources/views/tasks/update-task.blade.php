@@ -312,7 +312,7 @@ $task_type_array = [__('Pickup'), __('Drop-Off'), __('Appointment')];
                                                         </select>
                                                     </div>
                                                 </div>
-                                                <div class="col-md-1 text-center pt-2 pr-2" >
+                                                <div class="col-md-1 text-center pt-2 pr-2 del-add-card" >
                                                 <span class="span1 onedeletex" id="spancheckd" data-taskid="{{ $item->id }}"><img style="filter: grayscale(.5);"
                                                     src="{{ asset('assets/images/ic_delete.png') }}" alt=""></span>
                                                 </div>
@@ -368,8 +368,13 @@ $task_type_array = [__('Pickup'), __('Drop-Off'), __('Appointment')];
                                                                         </select>
                                                                     </div>
                                                                 </div>
-                                                                <h6 class="or-text text-center">OR</h6>
-                                                                <h6 class="choose_warehouse text-center text-primary" style="text-decoration: underline;cursor: pointer;">{{$choose_text}}</h6>
+                                                                @php
+                                                                    $warehouse_mode = checkWarehouseMode();
+                                                                @endphp
+                                                                @if($warehouse_mode['show_warehouse_module'] == 1)
+                                                                    <h6 class="or-text text-center">OR</h6>
+                                                                    <h6 class="choose_warehouse text-center text-primary" style="text-decoration: underline;cursor: pointer;">{{$choose_text}}</h6>
+                                                                @endif
                                                             </div>
 
                                                             <div class="alContactOther col-6">
@@ -533,7 +538,7 @@ $task_type_array = [__('Pickup'), __('Drop-Off'), __('Appointment')];
                                                     <img src="{{ 'https://imgproxy.royodispatch.com/insecure/fit/300/100/sm/0/plain/' . Storage::disk('s3')->url($order->profile_picture ?? 'assets/client_00000051/agents605b6deb82d1b.png/XY5GF0B3rXvZlucZMiRQjGBQaWSFhcaIpIM5Jzlv.jpg') }}"
                                                         alt="" />
                                                 </div>
-                                                <h5>{{ isset($task->name) ? $order->name :__(getAgentNomenclature().' not assigned yet') }}</h5>
+                                                <h5>{{ isset($task->agent) ? $task->agent->name .' assigned' :__(getAgentNomenclature().' not assigned yet') }}</h5>
                                                 <p>{{ $task->phone_number }}</p>
                                             </div>
                                             <span class="col-lg-12 attrbute_classes">

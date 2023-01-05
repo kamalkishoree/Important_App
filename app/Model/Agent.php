@@ -24,7 +24,7 @@ class Agent extends Authenticatable implements  Wallet, WalletFloat
     use SoftDeletes;
 
     protected $fillable = [
-        'team_id', 'name', 'profile_picture', 'type', 'vehicle_type_id', 'make_model', 'plate_number', 'phone_number', 'color', 'is_activated', 'is_available','cash_at_hand','uid', 'is_approved','customer_type_id','razorpay_contact_json','razorpay_bank_json','warehouse_id'
+        'team_id', 'name', 'profile_picture', 'type', 'vehicle_type_id', 'make_model', 'plate_number', 'phone_number', 'color', 'is_activated', 'is_available','cash_at_hand','uid', 'is_approved','customer_type_id','razorpay_contact_json','razorpay_bank_json','warehouse_id', 'is_pooling_available'
     ];
 
     protected $appends = ['image_url', 'agent_cash_at_hand'];
@@ -140,5 +140,9 @@ class Agent extends Authenticatable implements  Wallet, WalletFloat
     public function getAgentBankJsonAttribute()
     {
           return json_decode($this->razorpay_bank_json);
+    }
+
+    public function agentRating(){
+        return $this->hasMany('App\Model\DriverRating','driver_id', 'id');
     }
 }

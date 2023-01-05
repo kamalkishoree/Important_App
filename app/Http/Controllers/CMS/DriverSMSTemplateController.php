@@ -28,6 +28,7 @@ class DriverSMSTemplateController extends BaseController
         $validation  = Validator::make($request->all(), $rules)->validate();
         $template = AgentSmsTemplate::where('id', $request->template_id)->firstOrFail();
         // $template->subject = $request->subject;
+        $template->template_id = $request->sms_template_id;
         $template->content = $request->content;
         $template->save();
         return $this->success($template, 'SMS Template Updated Successfully.');

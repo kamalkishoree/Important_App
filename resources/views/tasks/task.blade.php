@@ -91,6 +91,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                 <div class="card widget-inline main-card-header">
                     <div class="card-body p-2">
                         <div class="row">
+                            <input type="hidden" name="customer_id" id="customer_id" value="{{ app('request')->input('customer_id')??'' }}">
                             <div class="col-sm-6 col-md-3 mb-3 mb-md-0">
                                 <div class="text-center">
                                     <h3>
@@ -159,7 +160,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                 </div>
                             </div>
                             @csrf
-                            <div class="col-sm-12">
+                            <div class="col-md-12">
                                 <form class="mb-0" name="getTask" id="getTask" method="get" action="{{ route('tasks.index') }}">
                                     <div class="login-form">
                                         <ul class="list-inline mb-0">
@@ -187,23 +188,29 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                                 <label for="failed">{{__("Failed")}}<span
                                                         class="showspan">{{ ' (' . $failed_count . ')' }}</span></label>
                                             </li>
-                                            <li class="d-inline-block mr-1">
-                                                <select name="search_warehouse" class="form-control"  onchange="handleClick(this);" id="search_warehouse">
-                                                    <option value="">All</option>
-                                                    @foreach ($warehouses as $warehouse)
-                                                        <option value="{{$warehouse->id}}" @if (app('request')->input('search_warehouse') == $warehouse->id) {{'selected="selected"'}} @endif>{{$warehouse->name}}</option>                                                            
-                                                    @endforeach
-                                                </select>
-                                            </li>
-                                            @if(Auth::user()->is_superadmin == 1 && Auth::user()->manager_type == 0)
-                                            <li class="d-inline-block mr-1">
-                                                <select name="warehouse_manager" class="form-control" onchange="handleClick(this);"  id="warehouse_manager">
-                                                    <option value="">Select Warehouse Manager</option>
-                                                    @foreach ($warehouse_manager as $manager)
-                                                        <option value="{{$manager->id}}" @if (app('request')->input('warehouse_manager') == $manager->id) {{'selected="selected"'}} @endif>{{$manager->name}}</option>                                                            
-                                                    @endforeach
-                                                </select>
-                                            </li>
+                                            <input type="hidden" name="customer_id" id="customer_id" value="{{ app('request')->input('customer_id')??'' }}">
+                                            @php
+                                                $warehouse_mode = checkWarehouseMode();
+                                            @endphp
+                                            @if($warehouse_mode['show_warehouse_module'] == 1)
+                                                <li class="d-inline-block mr-1">
+                                                    <select name="search_warehouse" class="form-control"  onchange="handleClick(this);" id="search_warehouse">
+                                                        <option value="">All</option>
+                                                        @foreach ($warehouses as $warehouse)
+                                                            <option value="{{$warehouse->id}}" @if (app('request')->input('search_warehouse') == $warehouse->id) {{'selected="selected"'}} @endif>{{$warehouse->name}}</option>                                                            
+                                                        @endforeach
+                                                    </select>
+                                                </li>
+                                                @if(Auth::user()->is_superadmin == 1 && Auth::user()->manager_type == 0)
+                                                <li class="d-inline-block mr-1">
+                                                    <select name="warehouse_manager" class="form-control" onchange="handleClick(this);"  id="warehouse_manager">
+                                                        <option value="">Select Warehouse Manager</option>
+                                                        @foreach ($warehouse_manager as $manager)
+                                                            <option value="{{$manager->id}}" @if (app('request')->input('warehouse_manager') == $manager->id) {{'selected="selected"'}} @endif>{{$manager->name}}</option>                                                            
+                                                        @endforeach
+                                                    </select>
+                                                </li>
+                                                @endif
                                             @endif
                                             <li class="d-inline-block mr-1">
                                                 <a href="{{route('tasks.index')}}" type="button" class="btn btn-info btn-sm">Clear</a>
@@ -237,6 +244,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                         <th class="sort-icon">{{__("Customer ID")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                         <th class="sort-icon">{{__("Customer")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                         <th class="sort-icon">{{__("Phone No.")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
+                                        <th class="sort-icon">{{__("Type")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                         <th class="sort-icon">{{__(getAgentNomenclature()) }} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                         <th class="sort-icon">{{__("Due Time")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                         <th class="routes-head">{{__("Routes")}}</th>

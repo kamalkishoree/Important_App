@@ -81,7 +81,10 @@
                     </a>
                 </li>
                 @endif
-                @if(in_array('Warehouse',$allowed) || Auth::user()->is_superadmin == 1)
+                @php
+                    $warehouse_mode = checkWarehouseMode();
+                @endphp
+                @if($warehouse_mode['show_warehouse_module'] == 1)
                 <li>
                     <a href="{{route('warehouse.index')}}">
                         <i class="fe-package"></i>
@@ -89,7 +92,7 @@
                     </a>
                 </li>
                 @endif
-                @if(in_array('Categories',$allowed) || Auth::user()->is_superadmin == 1)
+                @if($warehouse_mode['show_category_module'] == 1)
                 <li>
                     <a href="{{route('category.index')}}">
                         <i class="fe-package"></i>
@@ -105,12 +108,12 @@
                     </a>
                 </li>
 
-                <li>
+                {{-- <li>
                     <a href="{{route('order-panel-db.index')}}">
                         <i class="fe-users"></i>
                         <span> {{__('Order Panel DB Details')}} </span>
                     </a>
-                </li>
+                </li> --}}
                 
                 <li class="menu-title mt-2">{{__('Settings')}}</li>
 

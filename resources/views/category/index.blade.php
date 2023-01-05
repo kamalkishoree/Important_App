@@ -54,6 +54,9 @@
     vertical-align: bottom !important;
     margin-right: 10px;
 }
+.table td {
+    padding: 10px 5px !important;
+}
 </style>
 @endsection
 @php

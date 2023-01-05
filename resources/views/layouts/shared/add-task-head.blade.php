@@ -766,7 +766,7 @@
             if(warehouse_id){
                 err = 0;
                 $(".addspan").hide();
-            }else if (short_name != '' && address != '' && post_code != '') {
+            }else if (short_name != '' && address != '') {
                 
             } else {  
                 err = 1;

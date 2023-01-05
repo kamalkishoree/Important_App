@@ -27,7 +27,7 @@ use App\Model\csvOrderImport;
 use App\Model\Timezone;
 use App\Model\AgentLog;
 use App\Model\VehicleType;
-use App\Model\{BatchAllocation, BatchAllocationDetail, Team,TeamTag, SubscriptionInvoicesDriver};
+use App\Model\{BatchAllocation, BatchAllocationDetail, Team,TeamTag, SubscriptionInvoicesDriver, AgentFleet};
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
@@ -118,6 +118,9 @@ class TaskController extends BaseController
             });
         }
         $all = $all->get();
+        if($request->has('customer_id') && $request->customer_id != ''){
+            $all = $all->where('customer_id', $request->customer_id);
+        }
         $active   =  count($all->where('status', 'assigned'));
         $pending  =  count($all->where('status', 'unassigned'));
         $history  =  count($all->where('status', 'completed'));
@@ -267,7 +270,8 @@ class TaskController extends BaseController
             $q->where('manager_id', $user->id);
         })->pluck('tag_id');
 
-        $orders = Order::with(['customer', 'location', 'taskFirst', 'agent', 'task.location'])->orderBy('id', 'DESC'); //, 'task.manager'
+        $orders = Order::with(['customer', 'task', 'location', 'taskFirst', 'agent', 'task.location'])->orderBy('id', 'DESC'); //, 'task.manager'
+        
         if (@$request->warehouseManagerId && !empty($request->warehouseManagerId)) {
             $orders->whereHas('task.warehouse.manager', function($q) use($request){
                 $q->where('clients.id', $request->warehouseManagerId);
@@ -298,6 +302,14 @@ class TaskController extends BaseController
                 $query->where('warehouse_id', $searchWarehouse_id);
             });
         }
+
+        if($request->has('customer_id') && $request->customer_id != ''){
+            // $orders = $orders->whereHas('customer', function($query) use ($request) {
+            //     $query->where('id', $request->customer_id);
+            // });
+            $orders = $orders->where('customer_id', $request->customer_id);
+        }
+
         $orders = $orders->where('status', $request->routesListingType)->where('status', '!=', null)->orderBy('updated_at', 'desc');
         
         $preference = ClientPreference::where('id', 1)->first(['theme','date_format','time_format']);
@@ -318,6 +330,13 @@ class TaskController extends BaseController
                 ->addColumn('phone_number', function ($orders) use ($request) {
                     $phoneNumber = !empty($orders->customer->phone_number)? $orders->customer->phone_number : '';
                     return $phoneNumber;
+                })
+                ->addColumn('type', function ($orders) use ($request) {
+                    $type = 'Normal';
+                    if(@$orders->task[0]->is_return && $orders->task[0]->is_return == 1){
+                        $type = 'Return';
+                    }
+                    return $type;
                 })
                 ->addColumn('agent_name', function ($orders) use ($request) {
                     $checkActive = (!empty($orders->agent->name) && $orders->agent->is_available == 1) ? ' '.__('Active') : ' '. __('InActive');
@@ -342,6 +361,7 @@ class TaskController extends BaseController
                         return '';
                     endif;
                 })
+                
                 ->addColumn('short_name', function ($orders) use ($request) {
                     $routes = array();
                     foreach($orders->task as $task){
@@ -588,7 +608,7 @@ class TaskController extends BaseController
                 }
             } else {
                 $cus = [
-                    'email' => $request->email,
+                    //'email' => $request->email,
                     'phone_number' => $request->phone_number,
                     'dial_code' => $request->dialCode,
                 ];
@@ -665,8 +685,8 @@ class TaskController extends BaseController
                 $location = Location::where('id', $loc_id)->first();
                 if (!empty($location) && $location->customer_id != $cus_id) {
                     $newloc = [
-                    'short_name'   => $location->short_name,
-                        'post_code'    =>$location->post_code,
+                        'short_name'   => $location->short_name,
+                        'post_code'    => $location->post_code,
                         'flat_no'      => $location->flat_no,
                         'email'        => $location->address_email,
                         'phone_number' => $location->address_phone_number,
@@ -918,6 +938,7 @@ class TaskController extends BaseController
             if($request->type != 'B'){
                 $agent_id = $request->has('agent_id') ? $request->agent_id : null;
                 $agent_details = Agent::where('id', $agent_id)->where('is_approved', 1)->first();
+                $agent_fleet = AgentFleet::where('agent_id', $agent_id)->value('fleet_id');
                 if(!empty($agent_details)){
                     $orders = Order::find($request->orders_id);
                     foreach($orders as $order){
@@ -953,6 +974,7 @@ class TaskController extends BaseController
                         $order_update = Order::where('id', $order->id)->update([
                             'driver_id' => $agent_id, 
                             'driver_cost' => $percentage, 
+                            'fleet_id'    => $agent_fleet??null,
                             'status' => 'assigned', 
                             'auto_alloction' => 'm',
                             'agent_commission_fixed' => $agent_commission_fixed,
@@ -1118,8 +1140,12 @@ class TaskController extends BaseController
         try{
             if(isset($order_details->type) && $order_details->type == 1 && strlen($order_details->friend_phone_number) > 8)
             {
-                $friend_sms_body = 'Hi '.($order_details->friend_name).', '.($order_details->customer->name??'Our customer').' have booked a ride for you. '.getAgentNomenclature().' '.($oneagent->name??'').' in our '.($oneagent->make_model ?? '').' with license plate '.($oneagent->plate_number??'').' has been assgined.';
-                $send = $this->sendSms2($order_details->friend_phone_number , $friend_sms_body);
+                // $friend_sms_body = 'Hi '.($order_details->friend_name).', '.($order_details->customer->name??'Our customer').' have booked a ride for you. '.getAgentNomenclature().' '.($oneagent->name??'').' in our '.($oneagent->make_model ?? '').' with license plate '.($oneagent->plate_number??'').' has been assgined.';
+
+                $keyData = ['{user-name}'=>$order_details->friend_name,'{customer-name}'=>$order_details->customer->name??'Our customer','{agent-name}'=>$oneagent->name??'','{car-model}'=>$oneagent->make_model ?? '','{plate-no}'=>$oneagent->plate_number??''];
+                $friend_sms_body = sendSmsTemplate('friend-sms',$keyData);
+
+                $send = $this->sendSmsNew($order_details->friend_phone_number , $friend_sms_body);
             }
         }catch(\Exception $e){
             Log::info("Error While sending sms to friend");
@@ -2508,7 +2534,7 @@ class TaskController extends BaseController
             if ($task_id->driver_cost != 0.00) {
                 $percentage = $task_id->driver_cost;
             }
-
+            $agent_fleet = AgentFleet::where('agent_id', $agent_id)->value('fleet_id');
             $settime = ($request->task_type=="schedule") ? $request->schedule_time : Carbon::now()->toDateTimeString();
             $notification_time = ($request->task_type=="schedule")? Carbon::parse($settime .' '. $auth->timezone ?? 'UTC')->tz('UTC') : Carbon::now()->toDateTimeString();
             $order = [
@@ -2517,6 +2543,7 @@ class TaskController extends BaseController
                 'Recipient_email'            => $request->Recipient_email,
                 'task_description'           => $request->task_description,
                 'driver_id'                  => $agent_id,
+                'fleet_id'                   => $agent_fleet,
                 'order_type'                 => $request->task_type,
                 'order_time'                 => $notification_time,
                 'auto_alloction'             => $request->allocation_type,
@@ -2533,7 +2560,7 @@ class TaskController extends BaseController
             Task::where('order_id', $id)->delete();
             $dep_id = null;
             foreach ($request->task_type_id as $key => $value) {
-                if (isset($request->short_name[$key])) {
+                if (isset($request->address[$key])) {
                     $loc = [
                         'short_name'    => $request->short_name[$key],
                         'post_code'     => $request->post_code[$key],

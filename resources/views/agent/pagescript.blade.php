@@ -151,6 +151,12 @@
                     searchable: false
                 },
                 {
+                    data: 'agent_rating',
+                    name: 'agent_rating',
+                    orderable: false,
+                    searchable: false
+                },
+                {
                     data: 'created_at',
                     name: 'created_at',
                     orderable: true,
@@ -250,19 +256,18 @@
         var mobile_number = '';
 
         $(document).on("change", "#add-agent-modal .xyz", function(e) {
-            var phonevalue = $('.xyz').val();
+           var phonevalue = $('.xyz').val();
             $("#countryCode").val(mobile_number.getSelectedCountryData().dialCode);
         });
 
         function phoneInput() {
             var input = document.querySelector(".xyz");
 
-            var mobile_number_input = document.querySelector(".xyz");
-            mobile_number = window.intlTelInput(mobile_number_input, {
-                separateDialCode: true,
-                hiddenInput: "full_number",
-                initialCountry: '{{$selectedCountryCode}}',
-                utilsScript: "{{ asset('telinput/js/utils.js') }}",
+            $("#phone_number").intlTelInput({
+                separateDialCode:true,
+                preferredCountries:["{{getCountryCode()}}"],
+                initialCountry:"{{getCountryCode()}}",
+                utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.18/js/utils.js",
             });
 
         }
@@ -278,6 +283,10 @@
             phoneInput();
 
             select2();
+            var instance = $("[name=phone_number]");
+            instance.intlTelInput();
+            $("#countryCode").val(instance.intlTelInput('getSelectedCountryData').dialCode);
+            
         });
 
         jQuery('#onfoot').click();

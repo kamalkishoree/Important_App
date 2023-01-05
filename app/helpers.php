@@ -1,4 +1,6 @@
 <?php
+
+use App\Model\AgentSmsTemplate;
 use Carbon\Carbon;
 use App\Model\ClientPreference;
 use App\Model\OrderPanelDetail;
@@ -244,3 +246,82 @@ if (!function_exists('checkTableExists')) {
     }
 
 }
+
+if (!function_exists('checkWarehouseMode')) {
+    /** check if column exits in table
+    * @param string $tableName
+    */
+    function checkWarehouseMode(){
+        $preference = checkColumnExists('client_preferences','warehouse_mode') ? ClientPreference::select('id', 'warehouse_mode')->first() :'';
+        $data = [
+            'show_warehouse_module' => 0,
+            'show_category_module' => 0
+        ];
+        if($preference){            
+            $warehouseMode = isset($preference->warehouse_mode) ? json_decode($preference->warehouse_mode) : '';
+        
+            if(!empty($warehouseMode->show_warehouse_module) && $warehouseMode->show_warehouse_module == 1){
+                $data['show_warehouse_module'] = 1; 
+            }
+            if(!empty($warehouseMode->show_category_module) && $warehouseMode->show_category_module == 1){
+                $data['show_category_module'] = 1; 
+            }            
+        }
+        return $data;
+    }
+
+}
+
+
+if (!function_exists('checkDashboardMode')) {
+    /** check if column exits in table
+    * @param string $tableName
+    */
+    function checkDashboardMode(){
+        $preference = checkColumnExists('client_preferences','dashboard_mode') ? ClientPreference::select('id', 'dashboard_mode')->first() :'';
+        $data = [
+            'show_dashboard_by_agent_wise' => 0
+        ];
+        if($preference){            
+            $dashboardMode = isset($preference->dashboard_mode) ? json_decode($preference->dashboard_mode) : '';
+        
+            if(!empty($dashboardMode->show_dashboard_by_agent_wise) && $dashboardMode->show_dashboard_by_agent_wise == 1){
+                $data['show_dashboard_by_agent_wise'] = 1; 
+            }            
+        }
+        return $data;
+    }
+
+}
+
+if (!function_exists('decimal_format')) {
+    // Number Format according to Client preferences
+    function decimal_format($number, $format = "")
+    {
+        $preference = session()->get('preferences');
+        $digits = $preference['digit_after_decimal'] ?? 2;
+        return number_format($number, $digits, '.', $format);
+    }
+}
+
+
+
+ /**
+     * sendSmsTemplate dynamic selection and replace tags
+     */
+    function sendSmsTemplate($slug,$data)
+    {
+        $smsTemp = AgentSmsTemplate::where('slug',$slug)->select('content','tags','template_id')->first();
+        $smsBody = $smsTemp->content;
+        if(isset($smsTemp->tags) && !empty($smsTemp->tags))
+        {
+            $tages = explode(',',$smsTemp->tags);
+            foreach($tages as $tag)
+            {
+                $value = $data[$tag]??'';
+                $smsBody = str_replace($tag,$value,$smsBody);
+            }
+        }
+        $sms = array('body'=>$smsBody,'template_id'=>$smsTemp->template_id??'');
+        return $sms;
+    }

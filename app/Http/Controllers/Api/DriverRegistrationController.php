@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\Api\BaseController;
-use App\Model\{Agent, AgentDocs, AgentSmsTemplate, ClientPreference, DriverRegistrationDocument, TagsForAgent, AgentsTag, Team, Otp};
+use App\Model\{Agent, AgentDocs, AgentSmsTemplate, ClientPreference, DriverRegistrationDocument, TagsForAgent, AgentsTag, Team, Otp,client};
 
 class DriverRegistrationController extends BaseController
 {
@@ -24,6 +24,7 @@ class DriverRegistrationController extends BaseController
      */
     public function sendOtp(Request $request)
     {
+        
         try {
             $validator = Validator::make($request->all(), [
                 'phone_number' => 'required',
@@ -40,31 +41,43 @@ class DriverRegistrationController extends BaseController
                     'message' => __('Phone number already exists')
                 ], 404);
             }
-
+            $client_preference =  getClientPreferenceDetail();
+            
+            $credentials = json_decode($client_preference->sms_credentials);
             $otp_verified = Otp::where('phone', $phone)->where('is_verified', 1)->first();
             if(!$otp_verified){
                 Otp::where('phone', $phone)->delete();
                 $otp = new Otp();
                 $otp->phone = $phone;
-                $otp->opt = rand(111111, 999999);
+                if (isset($credentials->static_otp) && $credentials->static_otp == '1') {
+                $otp->opt = '123456';
+                }else{
+                    $otp->opt = rand(111111, 999999); 
+                }
                 $newDateTime = Carbon::now()->addMinutes(10)->toDateTimeString();
                 $otp->valid_till = $newDateTime;
                 $otp->save();
-
-                $to = $otp->phone;
-                $body = "Dear customer, OTP for registration is " . $otp->opt;
-                
-                $sms_template = AgentSmsTemplate::where('slug', 'sign-up')->first();
-                if($sms_template){
-                    if(!empty($sms_template->content)){
-                        $body = preg_replace('/{OTP}/', $otp->opt, $sms_template->content, 1);
-                        if(isset($request->app_hash_key) && (!empty($request->app_hash_key))){
-                            $body .= ".".$request->app_hash_key;
-                        }
-                    }
+                if (isset($credentials->static_otp) && $credentials->static_otp == '1') {
+                    return $this->success([], 'OTP Has been send sucessfully', 200);
                 }
+                $to = $otp->phone;
+                $website_details = Client::first();
+                $domain = $website_details->sub_domain;
+                $body = "Dear customer,Your ".$domain." OTP for registration is " . $otp->opt;
+                
+                //$sms_template = AgentSmsTemplate::where('slug', 'sign-up')->first();
+                $keyData = ['{OTP}'=>$otp->opt];
+                $body = sendSmsTemplate('sign-up',$keyData);
+                // if($sms_template){
+                //     if(!empty($sms_template->content)){
+                //         $body = preg_replace('/{OTP}/', $otp->opt, $sms_template->content, 1);
+                //         if(isset($request->app_hash_key) && (!empty($request->app_hash_key))){
+                //             $body .= ".".$request->app_hash_key;
+                //         }
+                //     }
+                // }
 
-                $send = $this->sendSms2($to, $body)->getData();
+                $send = $this->sendSmsNew($to, $body)->getData();
                 if ($send->status == 'Success') {
                     return $this->success([], $send->message, 200);
                 } else {
@@ -137,7 +150,7 @@ class DriverRegistrationController extends BaseController
            // 'vehicle_type_id' => ['required'],
             //'make_model' => ['required'],
             //'plate_number' => ['required'],
-            'phone_number' =>  ['required', 'min:9', 'max:15', Rule::unique('agents')->where(function ($query) use ($full_number) {
+            'phone_number' =>  ['required', 'min:6', 'max:15', Rule::unique('agents')->where(function ($query) use ($full_number) {
                 return $query->where('phone_number', $full_number);
             })],
             //'color' => ['required'],
@@ -256,11 +269,25 @@ class DriverRegistrationController extends BaseController
             $show_vehicle_type_icon = [];
             $type = ClientPreference::OrderBy('id','desc')->value('custom_mode');
             $types = json_decode($type);
+            $manage_fleet = ClientPreference::OrderBy('id','desc')->value('manage_fleet')??0;
 
             if(isset($types->show_vehicle_type_icon))
             $show_vehicle_type_icon = explode(',',$types->show_vehicle_type_icon);
+            $p = 0;
+            $documents = DriverRegistrationDocument::orderBy('file_type', 'DESC')->select('name','file_type')->get()->toArray();
+            if((isset($documents) && count($documents)>0) && $manage_fleet)
+            {
+             $p = sizeof($documents) - 1;
+              $aa2 = $this->fleetArray($p);
+                $data['documents']  = array_merge($documents,$aa2);
+            }elseif(count($documents)<=0 && $manage_fleet){
+                $aa2 = $this->fleetArray($p);
+                $data['documents'] = $aa2;
+            }else{
+                $data['documents'] = $documents;
+            }
+        
 
-            $data['documents'] = DriverRegistrationDocument::orderBy('file_type', 'DESC')->get();
             $data['all_teams'] = Team::OrderBy('id','desc')->get();
             $data['agent_tags'] = TagsForAgent::OrderBy('id','desc')->get();
             $data['vehicle_types'] = ((count($show_vehicle_type_icon)>0)?json_encode($show_vehicle_type_icon):json_encode(['1','2','3','4','5']));
@@ -276,4 +303,43 @@ class DriverRegistrationController extends BaseController
             ]);
         }
     }
+
+    public function fleetArray($p)
+    {
+        $aFleet = array(
+            $p => 
+              array (
+                'name' => 'vehicle_name',
+                'file_type' => 'Text',
+              ),
+             $p+1 => 
+              array (
+                'name' => 'make',
+                'file_type' => 'Text',
+              ),
+              $p+2 => 
+              array (
+                'name' => 'model',
+                'file_type' => 'Text',
+              ),
+              $p+3 => 
+              array (
+                'name' => 'plate_number',
+                'file_type' => 'Text',
+              ),
+              $p+4 => 
+              array (
+                'name' => 'year',
+                'file_type' => 'Text',
+              ),
+              $p+5 => 
+              array (
+                'name' => 'color',
+                'file_type' => 'Text',
+              )
+          );
+
+          return $aFleet;
+    }
+
 }
