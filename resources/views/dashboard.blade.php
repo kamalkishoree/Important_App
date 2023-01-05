@@ -703,13 +703,13 @@ $('input[type=radio][name=driver_start_location]').change(function() {
     }
 });
 </script>
-<script src="{{ asset('js/app.js') }}"></script>
+<!-- <script src="{{ asset('js/app.js') }}"></script> -->
 <script>
 //function to listen different channels of event of different dates and different agent status
 function ListenDataChannel()
 {
     //leave/not listen previous channel in case filters have been changed
-    Echo.leave(old_channelname);
+    /* Echo.leave(old_channelname);
 
     //listen route add/update/delete/assigned/completed event
     Echo.channel(channelname)
@@ -767,17 +767,17 @@ function ListenDataChannel()
                 position : 'top-right'
             });
         }
-    });
+    }); */
 }
 
 function ListenAgentLogChannel()
 {
-    Echo.leave(old_logchannelname);
+    /* Echo.leave(old_logchannelname);
     //listen agent log updation event
     Echo.channel(logchannelname)
     .listen('agentLogFetch', (e) => {
         loadTeams(0, 0);
-    });
+    }); */
 }
 
 </script>

@@ -64,11 +64,9 @@ trait GlobalFunction{
 
             $geoagents_ids =  DriverGeo::where('geo_id', $geo);
 
-            if($is_cab_pooling == 1){
-                $geoagents_ids = $geoagents_ids->whereHas('agent', function($q) use ($geo){
-                    $q->where('is_pooling_available', 1);
-                });
-            }
+            $geoagents_ids = $geoagents_ids->whereHas('agent', function($q) use ($geo, $is_cab_pooling){
+                $q->where('is_pooling_available', $is_cab_pooling);
+            });
 
             if($agent_tag !='')
             {
