@@ -76,12 +76,12 @@ trait GlobalFunction{
             }
 
             $geoagents_ids =  $geoagents_ids->pluck('driver_id');
-
+            Log::info("geoagents_ids:".json_encode($geoagents_ids));
             $geoagents = Agent::whereIn('id',  $geoagents_ids)->with(['logs','order'=> function ($f) use ($date) {
                 $f->whereDate('order_time', $date)->with('task');
             }])->orderBy('id', 'DESC')->get()->where("agent_cash_at_hand", '<', $cash_at_hand);
 
-
+            Log::info("geoagents:".json_encode($geoagents));
             return $geoagents;
 
         } catch (\Throwable $th) {
