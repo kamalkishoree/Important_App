@@ -1967,7 +1967,6 @@ class TaskController extends BaseController
             'unique_id'                => $randem,
             'created_at'               => Carbon::now()->toDateTimeString(),
             'updated_at'               => Carbon::now()->toDateTimeString(),
-            'is_updated'               => $is_order_updated,
         ];
 
         if (!isset($geo)) {
@@ -2149,7 +2148,6 @@ class TaskController extends BaseController
             'unique_id'                => $randem,
             'created_at'               => Carbon::now()->toDateTimeString(),
             'updated_at'               => Carbon::now()->toDateTimeString(),
-            'is_updated'               => $is_order_updated,
         ];
 
         if (!isset($geo)) {
@@ -2247,7 +2245,6 @@ class TaskController extends BaseController
             'unique_id'                => $randem,
             'created_at'               => Carbon::now()->toDateTimeString(),
             'updated_at'               => Carbon::now()->toDateTimeString(),
-            'is_updated'               => $is_order_updated,
         ];
 
         if (!isset($geo)) {
@@ -2362,7 +2359,6 @@ class TaskController extends BaseController
             'unique_id'                => $randem,
             'created_at'               => Carbon::now()->toDateTimeString(),
             'updated_at'               => Carbon::now()->toDateTimeString(),
-            'is_updated'               => $is_order_updated,
         ];
 
         if (!isset($geo)) {
