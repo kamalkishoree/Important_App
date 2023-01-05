@@ -22,7 +22,7 @@ class ChatControllerOrderNotification extends BaseController
      
         try {
             $notiFY = $this->sendNotification_to_agent($request);
-            return response()->json([ 'notiFY'=>$notiFY , 'status' => 200, 'message' => __('sent22!!!')]);
+            return response()->json([ 'notiFY'=>$notiFY , 'status' => 200, 'message' => __('sent!!!')]);
         } catch (\Throwable $th) {
             return response()->json(['status' => false, 'notiFY' => [] , 'message' => __('No Data found !!!')]);
         }
