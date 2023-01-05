@@ -188,7 +188,7 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 			Route::get('agent/payout/requests/filter', 'AgentPayoutController@agentPayoutRequestsFilter')->name('agent.payout.requests.filter');
 			Route::get('general_slots','GeneralSlotController@index');
 			Route::get('category/filter', 'CategoryController@categoryFilter');
-
+            Route::get('services/filter', 'ServicesController@servicesFilter');
         	Route::post('agent/payout/request/complete', 'AgentPayoutController@agentPayoutRequestComplete')->name('agent.payout.request.complete');
 			Route::post('agent/payout/requests/complete/all', 'AgentPayoutController@agentPayoutRequestsCompleteAll')->name('agent.payout.requests.complete.all');
 			Route::post('agent/payout/bank/details', 'AgentPayoutController@agentPayoutBankDetails')->name('agent.payout.bank.details');
@@ -264,6 +264,7 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 			Route::resource('order-panel-db', 'orderPanelController');
 			Route::resource('amenities', 'AmenitiesController');
 			Route::resource('category', 'CategoryController');
+			Route::resource('services', 'ServicesController');
 			Route::resource('product', 'ProductController');
 			Route::POST('check-sync-status', 'orderPanelController@checkSyncStatus');
 
@@ -307,6 +308,7 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 			// agent slot
 			Route::get('calender/data/{id}', 'AgentSlotController@returnJson')->name('agent.calender.data');
 			Route::post('agent/add_slot', 'AgentSlotController@store')->name('agent.saveSlot');
+			Route::post('general/add_slot', 'GeneralSlotController@store')->name('services.saveSlot');
 			Route::post('agent/update_slot', 'AgentSlotController@update')->name('agent.slot.update');
 			Route::get('agent/slot/create/{id}', 'AgentSlotController@create')->name('agent.slot.create');
 			Route::post('agent/slot/delete', 'AgentSlotController@destroy')->name('agent.slot.destroy');

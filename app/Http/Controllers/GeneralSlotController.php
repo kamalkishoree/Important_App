@@ -44,10 +44,7 @@ class GeneralSlotController extends Controller
 
         try {
             DB::beginTransaction();
-            $agent = Agent::where('id', $request->agent_id)->firstOrFail();
-            if (!$agent) {
-                $this->error('Agent not fount!', 405);
-            }
+           $agent_id=0;
 
             $dateNow = Carbon::now()->format('Y-m-d');
             $slotData = array();
@@ -60,37 +57,38 @@ class GeneralSlotController extends Controller
             $weekdays = $request->recurring == 1 ? $request->week_day  : [1, 2, 3, 4, 5, 6, 7];
 
             $slot = new AgentSlot();
-            $slot->agent_id     = $agent->id;
+            $slot->agent_id     = $agent_id;
             $slot->start_time   = $request->start_time;
             $slot->end_time     = $request->end_time;
             $slot->start_date   = $start_date;
             $slot->end_date     = $end_date;
             $slot->recurring    = $request->recurring;
+            $slot->general_slots=1;
             $slot->save();
 
-            if (isset($slot->id)) {
-                foreach ($weekdays as $k => $day) {
-                    $slotData['slot_id']    = $slot->id;
-                    $slotData['day']        = $day;
-                    SlotDay::insert($slotData);
-                }
-                $AgentSlotData = [];
-                // Iterate over the period
-                foreach ($period as $key => $date) {
-                    $dayNumber = $date->dayOfWeek + 1; // get day number 
-                    if (in_array($dayNumber, $weekdays)) {
-                        $AgentSlotData[$key]['slot_id']        = $slot->id;
-                        $AgentSlotData[$key]['agent_id']       = $request->agent_id;
-                        $AgentSlotData[$key]['start_time']     = $request->start_time;
-                        $AgentSlotData[$key]['end_time']       = $request->end_time;
-                        $AgentSlotData[$key]['schedule_date']  = $date->format('Y-m-d H:i:s');
-                        $AgentSlotData[$key]['booking_type']   = $request->booking_type ?? 'working_hours';
-                        $AgentSlotData[$key]['memo']           = $request->memo ?? __('Working Hours');
-                    }
-                }
-            }
-            AgentSlotRoster::insert($AgentSlotData);
-            DB::commit(); //Commit transaction after all the operations
+            // if (isset($slot->id)) {
+            //     foreach ($weekdays as $k => $day) {
+            //         $slotData['slot_id']    = $slot->id;
+            //         $slotData['day']        = $day;
+            //         SlotDay::insert($slotData);
+            //     }
+            //     $AgentSlotData = [];
+            //     // Iterate over the period
+            //     foreach ($period as $key => $date) {
+            //         $dayNumber = $date->dayOfWeek + 1; // get day number 
+            //         if (in_array($dayNumber, $weekdays)) {
+            //             $AgentSlotData[$key]['slot_id']        = $slot->id;
+            //             $AgentSlotData[$key]['agent_id']       = $agent_id;
+            //             $AgentSlotData[$key]['start_time']     = $request->start_time;
+            //             $AgentSlotData[$key]['end_time']       = $request->end_time;
+            //             $AgentSlotData[$key]['schedule_date']  = $date->format('Y-m-d H:i:s');
+            //             $AgentSlotData[$key]['booking_type']   = $request->booking_type ?? 'working_hours';
+            //             $AgentSlotData[$key]['memo']           = $request->memo ?? __('Working Hours');
+            //         }
+            //     }
+            // }
+            // AgentSlotRoster::insert($AgentSlotData);
+             DB::commit(); //Commit transaction after all the operations
 
             return $this->success('', __('Slot saved successfully!'));
         } catch (Exception $e) {
@@ -278,7 +276,7 @@ class GeneralSlotController extends Controller
         $lst = count($date) - 1;
         // $slot = AgentSlot::select('agent_slots.*', 'slot_days.id as slot_day_id', 'slot_days.slot_id', 'slot_days.day')->join('slot_days', 'slot_days.slot_id', 'agent_slots.id')->where('agent_id', $id)->orderBy('slot_days.day', 'asc')->get();
 
-        $AgentRoster = AgentSlotRoster::with('agentSlot', 'days')->where('agent_id', $Agent->id)->whereBetween('schedule_date', [$startDate, $endDate])->orderBy('schedule_date', 'asc')->where('booking_type', $booking_type)->get();
+        $AgentRoster = AgentSlot::where('agent_id', 0)->get();
 
         $showData = array();
         $count = 0;

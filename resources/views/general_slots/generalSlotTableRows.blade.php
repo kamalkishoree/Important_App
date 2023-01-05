@@ -117,7 +117,9 @@
                                     </div>
                                     </div>
                                 </div>
-
+                                <div class="row forDate" style="display: none;">
+                                <input type="hidden" class="custom-control-input methods" value="services">
+                                </div>
                                 <div class="row memo">
                                     <div class="col-md-12">
                                         <div class="form-group">
@@ -232,7 +234,9 @@
                                     </div>
                                     </div>
                                 </div>
-
+                                <div class="row forDate" style="display: none;">
+                                <input type="hidden" class="custom-control-input" id="method"  value="services">
+                                </div>
                                 <div class="row memo">
                                     <div class="col-md-12">
                                         <div class="form-group">

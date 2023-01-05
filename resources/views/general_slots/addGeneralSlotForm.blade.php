@@ -1,4 +1,4 @@
-<form class="needs-validation" name="slot-form" id="slot-event" action="{{ route('agent.saveSlot', $agent->id) }}" method="post">
+<form class="needs-validation" name="slot-form" id="slot-event" action="{{ route('general/add_slot') }}" method="post">
     @csrf
     <div class="row mb-2">
         <div class="col-md-12">

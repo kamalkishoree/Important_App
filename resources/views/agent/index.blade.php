@@ -530,8 +530,10 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                             <input class="form-control" placeholder="End Time" type="time" name="end_time" id="end_time" required />
                                         </div>
                                     </div>
-                                
-                            
+                                    
+                                    <div class="row forDate" style="display: none;">
+                                <input type="hidden" class="custom-control-input methods" value="agents">
+                                </div>
                                 </div>
                                 <div class="row memo">
                                     <div class="col-md-6 slot_type">
@@ -656,6 +658,9 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                                 <option value="blocked">Block</option>
                                             </select>
                                     </div>
+                                    <div class="row forDate" style="display: none;">
+                                <input type="hidden" class="custom-control-input methods" value="agents">
+                                </div>
                                     <div class="col-md-6 slotForDiv">
                                         {!! Form::label('title', 'Recurring',['class' => 'control-label']) !!}
                                     <div class="form-group">

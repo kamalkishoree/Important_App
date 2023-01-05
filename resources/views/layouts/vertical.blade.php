@@ -46,7 +46,7 @@
                             @if(session('preferences.twilio_status') == 'invalid_key')
                             <span><i class="mdi mdi-block-helper mr-2"></i> <strong>Twilio</strong> key is not valid</span> <br/>
                             @endif
-                        </div>
+                        </div>  
                     </div>
 
 
