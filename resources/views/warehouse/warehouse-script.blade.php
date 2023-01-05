@@ -16,6 +16,7 @@
         var no = $(this).attr('num');
         var lats = document.getElementById('latitude').value;
         var lngs = document.getElementById('longitude').value;
+        var address = document.getElementById('address').value;
 
         document.getElementById('map_for').value = no;
 
@@ -42,23 +43,44 @@
         });
         document.getElementById('lat_map').value = lats;
         document.getElementById('lng_map').value = lngs;
+        document.getElementById('address_map').value = address;
+        var infowindow = new google.maps.InfoWindow();
+        var geocoder = new google.maps.Geocoder();
         // marker drag event
-        google.maps.event.addListener(marker, 'drag', function(event) {
-            document.getElementById('lat_map').value = event.latLng.lat();
-            document.getElementById('lng_map').value = event.latLng.lng();
-        });
+        // google.maps.event.addListener(marker, 'drag', function(event) {
+        //     document.getElementById('lat_map').value = event.latLng.lat();
+        //     document.getElementById('lng_map').value = event.latLng.lng();
+        // });
 
+        google.maps.event.addListener(marker, 'dragend', function() {
+            geocoder.geocode({
+            'latLng': marker.getPosition()
+            }, function(results, status) {
+
+            if (status == google.maps.GeocoderStatus.OK) {
+                if (results[0]) {
+                        document.getElementById('lat_map').value = marker.getPosition().lat();
+                        document.getElementById('lng_map').value = marker.getPosition().lng();
+                        document.getElementById('address').value= results[0].formatted_address;
+
+                    infowindow.setContent(results[0].formatted_address);
+
+                    infowindow.open(map, marker);
+                }
+            }
+            });
+        });
         //marker drag event end
-        google.maps.event.addListener(marker, 'dragend', function(event) {
-            var zx = JSON.stringify(event);
-            // console.log(zx);
+        // google.maps.event.addListener(marker, 'dragend', function(event) {
+        //     var zx = JSON.stringify(event);
+        //     // console.log(zx);
 
 
-            document.getElementById('lat_map').value = event.latLng.lat();
-            document.getElementById('lng_map').value = event.latLng.lng();
-            //alert("lat=>"+event.latLng.lat());
-            //alert("long=>"+event.latLng.lng());
-        });
+        //     document.getElementById('lat_map').value = event.latLng.lat();
+        //     document.getElementById('lng_map').value = event.latLng.lng();
+        //     //alert("lat=>"+event.latLng.lat());
+        //     //alert("long=>"+event.latLng.lng());
+        // });
         $('#add-customer-modal').addClass('fadeIn');
         $('#show-map-modal').modal({
             //backdrop: 'static',
