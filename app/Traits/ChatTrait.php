@@ -37,13 +37,8 @@ trait ChatTrait{
             $ag ='user_ids';
         }
         $result = array_values(array_column($request->all()[$ag], 'auth_user_id'));
-        //return $result;
         $client_preferences = ClientPreference::select('fcm_server_key','favicon')->first();
         $devices = Agent::whereNotNull('device_token')->whereIn('id',$result)->pluck('device_token');
-       
-        if (!empty($devices) && !empty($client_preferences->fcm_server_key)) {
-        
-            $SERVER_API_KEY = $client_preferences->fcm_server_key;
             $data = [
                 "registration_ids" => $devices,
                 "notification" => [
@@ -51,7 +46,7 @@ trait ChatTrait{
                     "body"  => $request->text_message,
                     'sound' => "default",
                     //"icon"  => (!empty($client_preferences->favicon)) ? $client_preferences->favicon['proxy_url'] . '200/200' . $client_preferences->favicon['image_path'] : '',
-                    "android_channel_id" => "sound-channel-id"
+                    "android_channel_id" => "default-channel-id"
                 ],
                 "data" => [
                     "title" => $request->username,
@@ -59,27 +54,33 @@ trait ChatTrait{
                     "room_id_text"=>$request->roomIdText,
                     "body"  => $request->text_message,
                     'data'  => 'chat_text',
-                    'type'  => ""
+                    'type'  => "",
                 ],
                 "priority" => "high"
             ];
-            $dataString = json_encode($data);
-            $headers = [
-                'Authorization: key=' . $SERVER_API_KEY,
-                'Content-Type: application/json',
-            ];
-            $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL, 'https://fcm.googleapis.com/fcm/send');
-            curl_setopt($ch, CURLOPT_POST, true);
-            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $dataString);
-            $response = curl_exec($ch);
-            curl_close($ch);
-            $result = json_decode($response); 
-            return $result;
-        }
+                      
+            //$response = sendFcmCurlRequest($data);
+            $fcm_server_key = ($client_preferences->fcm_server_key !='') ? $client_preferences->fcm_server_key :  env('FCM_SERVER_KEY');
+            if (!empty($fcm_server_key )) {
+                $headers = [
+                    'Authorization: key='.$fcm_server_key ,
+                    'Content-Type: application/json',
+                ];
+                $ch = curl_init();
+                curl_setopt($ch, CURLOPT_URL, 'https://fcm.googleapis.com/fcm/send');
+                curl_setopt($ch, CURLOPT_POST, true);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+                curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+                $result = curl_exec($ch);
+                // if ($result === FALSE) {
+                //     die('Oops! FCM Send Error: ' . curl_error($ch));
+                // }
+                curl_close($ch);
+                $result = json_decode($response); 
+                return $result;
+            }
     }
     
     /**
