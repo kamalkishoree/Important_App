@@ -2,7 +2,8 @@ $(function () {
 
     dispatcherStorage.removeStorageAll();
     dispatcherStorage.setStorageSingle('eventType', 'working_hours');
-    var product_id = vendor_id = title = block = appoin = agent_id = calendar = '';
+    var product_id = vendor_id = title = block = appoin = agent_id = calendar = Is_gerenal='';
+    var CSRF_TOKEN = $("input[name=_token]").val();
     var calendarEl = document.getElementById('calendar');
     $(document).on('click', '.agent_slot_button', function () {
         agent_id = $(this).data('agent_id');

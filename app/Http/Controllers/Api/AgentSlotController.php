@@ -13,12 +13,14 @@ use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Controllers\Api\BaseController;
+use App\Traits\AgentSlotTrait;
 use App\Model\{Agent, AgentSlot,AgentSlotRoster,AgentLog, AllocationRule, Client, ClientPreference, Cms, Order, Task, TaskProof, Timezone, User, DriverGeo, Geo, TagsForAgent};
 
 use App\Http\Controllers\Api\AgentController;
 
 class AgentSlotController extends BaseController
 {
+    use AgentSlotTrait;
     public function successResponse($data, $message = null, $code = 200)
 	{
 		return response()->json([
@@ -250,9 +252,9 @@ class AgentSlotController extends BaseController
     }
 
       /**   get agent according to lat long  */
-   function checkAgentsSlotavailablty(Request $request){
+    function checkAgentsSlotavailablty(Request $request){
        
-    //pr($request->all());
+    
         try {
 
             $validator = Validator::make(request()->all(), [
@@ -305,6 +307,33 @@ class AgentSlotController extends BaseController
                 'message' => $e->getMessage()
             ], 400);
         }
+
+    }
+    function saveAgentSlot(Request $request){
+       
+    
+        //try {
+
+            $validator = Validator::make(request()->all(), [
+                'agent_id'   => 'required',
+                'start_date' => 'required',
+                'end_date'   => 'required',
+            ]);
+
+            $this->saveAgentSlots($request);
+            
+        
+            return response()->json([
+               // 'data' => $AgentSlotRoster,
+                'status' => 200,
+                'message' => __('success'),
+            ], 200);
+
+        // }catch (Exception $e) {
+        //     return response()->json([
+        //         'message' => $e->getMessage()
+        //     ], 400);
+        // }
 
     }
 }

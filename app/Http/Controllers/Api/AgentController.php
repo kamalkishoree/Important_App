@@ -205,19 +205,5 @@ class AgentController extends BaseController
             return $this->errorResponse($e->getMessage(), $e->getCode());
         }
     }
-    public function global_slots()
-    {
-        try {
-            $global_slots = AgentSlot::get();
-            if ($global_slots[0]->agent_id) {
-                return response()->json([
-                    'data' => $global_slots,
-                ]);
-            } else {
-                return response()->json(['error' => 'No record found.'], 404);
-            }
-        } catch (Exception $e) {
-            return $this->errorResponse($e->getMessage(), $e->getCode());
-        }
-    }
+   
 }

@@ -27,8 +27,6 @@ Route::post('get-delivery-fee', 'Api\TaskController@getDeliveryFee')->middleware
 Route::post('task/create', 'Api\TaskController@CreateTask')->middleware('ConnectDbFromOrder');
 Route::post('return-to-warehouse-task', 'Api\TaskController@returnToWarehouseTask')->middleware('ConnectDbFromOrder');
 Route::post('get/agents', 'Api\AgentController@getAgents')->middleware('ConnectDbFromOrder');
-Route::get('get/on_demand_services', 'Api\AgentController@On_demand_services_list')->middleware('ConnectDbFromOrder');
-Route::get('get/generalslot', 'Api\AgentController@global_slots')->middleware('ConnectDbFromOrder');
 Route::post('agent/check_slot', 'Api\AgentSlotController@getAgentsSlotByTags')->middleware('ConnectDbFromOrder');
 Route::post('task/lims/create', 'Api\TaskController@CreateLimsTask')->middleware('ConnectDbFromOrder');
 Route::post('agent/create', 'Api\DriverRegistrationController@storeAgent')->middleware('ConnectDbFromOrder');
@@ -83,6 +81,15 @@ Route::group(['prefix' => 'auth'], function () {
         Route::post('signup/sendOtp', 'Api\DriverRegistrationController@sendOtp');
         Route::post('signup/verifyOtp', 'Api\DriverRegistrationController@verifyOtp');
         //Route::get('cmscontent','Api\ActivityController@cmsData');
+
+        // driver with product pricing  agent/category_with_product
+        Route::group(['prefix' => 'agent'], function () {
+            Route::get('category_with_product', 'Api\SalerController@CategoryWithProduct');
+            Route::post('save_product_variant_price', 'Api\SalerController@saveProductVariantPrice');
+            Route::get('general_slot', 'Api\SalerController@getGerenalSlot');
+            Route::post('agent/saveSlot', 'Api\AgentSlotController@saveAgentSlot');
+        });
+    
     });
 
 });
@@ -140,7 +147,14 @@ Route::group(['middleware' => ['dbCheck', 'AppAuth','apiLocalization']], functio
     // All Payment gateways
     Route::get('payment/{gateway}', 'Api\PaymentOptionController@postPayment');
 
+
+    // driver with product pricing  agent/category_with_product
+    Route::group(['prefix' => 'agent'], function () {
+        Route::get('category_with_product_with_price', 'Api\SalerController@CategoryWithProductWithPrice');
+    });
+
 });
+
 
 
 Route::group(['middleware' => 'dbCheck','prefix' => 'public'], function() {

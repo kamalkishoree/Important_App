@@ -162,7 +162,7 @@ class CategoryController extends Controller
                     $order_details->sync_status = 1;
                     $order_details->save();
                     // dd($responseBody);
-                 $this->importOrderSideCategory($responseBody['data'],$order_panel_id);
+                 //$this->importOrderSideCategory($responseBody['data'],$order_panel_id);
                 }elseif( @$responseBody['error'] && !empty($responseBody['error'])){
                     return redirect()->back()->with('error', $responseBody['error']);
                 }
