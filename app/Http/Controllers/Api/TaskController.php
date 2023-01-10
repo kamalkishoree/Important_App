@@ -648,7 +648,6 @@ class TaskController extends BaseController
             if($response['status']=='0'){
                 return 0;
             }
-           // \Log::info($response['data']['vendor_detail']);
                 return $response['data']['vendor_detail']??1;
 
         }
@@ -1009,7 +1008,7 @@ class TaskController extends BaseController
                             'sync_customer_id' => $request->customer_id,
                             'user_icon' => !empty($request->user_icon['proxy_url'])?$request->user_icon['proxy_url'].'512/512'.$request->user_icon['image_path']:''
                         ];
-                        //Log::info(json_encode($customer_phone_number));
+                        
                         Customer::where('id', $cus_id)->update($customer_phone_number);
                     }
                 } else {
@@ -1021,7 +1020,7 @@ class TaskController extends BaseController
                         'sync_customer_id' => $request->customer_id,
                         'user_icon' => !empty($request->user_icon['proxy_url'])?$request->user_icon['proxy_url'].'512/512'.$request->user_icon['image_path']:''
                     ];
-                    //Log::info(json_encode($cus));
+                    
                     $customer = Customer::create($cus);
                     $cus_id = $customer->id;
                 }
@@ -2531,10 +2530,11 @@ class TaskController extends BaseController
         $client = ClientPreference::where('id', 1)->first();
         $lengths = count($latitude) - 1;
         $value = [];
-
+        $count  = 0;
+        $count1 = 1;
+        $totalDistance = 0;
+        $totalDuration = 0;
         for ($i = 1; $i<=$lengths; $i++) {
-            $count  = 0;
-            $count1 = 1;
             $ch = curl_init();
             $headers = array('Accept: application/json',
                     'Content-Type: application/json',
@@ -2548,19 +2548,19 @@ class TaskController extends BaseController
             curl_close($ch); // Close the connection
             $new =   $result;
             if(count($result->rows) > 0){
-                array_push($value, $result->rows[0]->elements);
+                //array_push($value, $result->rows[0]->elements);
+                $value[] = $result->rows[0]->elements;
             }
             $count++;
             $count1++;
+            
         }
-
+        
         if (isset($value)) {
-            $totalDistance = 0;
-            $totalDuration = 0;
-            foreach ($value as $i => $item) {
-                //dd($item);
-                $totalDistance = $totalDistance + (isset($item[$i]->distance) ? $item[$i]->distance->value : 0);
-                $totalDuration = $totalDuration + (isset($item[$i]->duration) ? $item[$i]->duration->value : 0);
+            
+            foreach ($value as $item) {
+                $totalDistance += (isset($item[0]->distance) ? $item[0]->distance->value : 0);
+                $totalDuration += (isset($item[0]->duration) ? $item[0]->duration->value : 0);
             }
 
 
@@ -2580,6 +2580,7 @@ class TaskController extends BaseController
                 $send['duration'] = $whole;
             }
         }
+        
         return $send;
     }
 
@@ -3009,23 +3010,7 @@ class TaskController extends BaseController
             $request->barcode                   = "";
             $request->order_team_tag            = "NULL";
 
-            // $request->task = [];
-
-            // todo set these customer variables
-\Log::info('before', $request->task);
-            // array_push($request->task,  [
-            //     "task_type_id"      => TaskType::TASK_TYPE_NAME_ID['Pickup'],
-            //     "latitude"          => $customer->latitude ?? '',
-            //     "longitude"         => $customer->longitude ?? '',
-            //     "short_name"        => $customer->short_name ?? '',
-            //     "address"           => $customer->address ?? '',
-            //     "post_code"         => $customer->post_code ?? '',
-            //     "barcode"           => '',
-            //     "flat_no"           => $customer->flat_no ?? '',
-            //     "email"             => $customer->email ?? '',
-            //     "phone_number"      => $customer->phone_number ?? ''
-            // ]);
-            \Log::info('afetr', $request->task);
+            
             $request->agent = Auth::id();
 
             if($request->task_type == 'later')
@@ -3119,7 +3104,7 @@ class TaskController extends BaseController
             //here order save code is started
             $settime = ($request->task_type=="schedule") ? $request->schedule_time : Carbon::now()->toDateTimeString();
             $notification_time = ($request->task_type=="schedule")? Carbon::parse($settime . $auth->timezone ?? 'UTC')->tz('UTC') : Carbon::now()->toDateTimeString();
-         //   $notification_time = isset($request->schedule_time) ? $request->schedule_time : Carbon::now()->toDateTimeString();
+        
 
             $agent_id          = $request->allocation_type === 'm' ? $request->agent : null;
             Log::info('order no royo_order_number'.$request->royo_order_number);
@@ -3168,7 +3153,6 @@ class TaskController extends BaseController
             $dep_id = null;
 
             foreach ($request->task as $key => $value) {
-                \Log::info("request->task", $request->task);
                 $taskcount++;
                 if (isset($value)) {
                     $post_code = isset($value['post_code']) ? $value['post_code'] : '';
@@ -3246,8 +3230,7 @@ class TaskController extends BaseController
                     $percentage = $pricingRule->freelancer_commission_percentage + (($total / 100) * $pricingRule->freelancer_commission_fixed);
                 }
             }
-            Log::info( $getdata['duration']);
-            Log::info( $getdata['distance']);
+
 
             //update order with order cost details
 
@@ -3485,8 +3468,7 @@ class TaskController extends BaseController
                         'phone_number' => $request->customer_phone_number,
                         'dial_code' => $dialCode,
                     ];
-                    // dd($cus);
-                    Log::info(json_encode($cus));
+                    
                     $customer = Customer::create($cus);
                     // dd($customer);
                     $cus_id = $customer->id;
