@@ -2531,10 +2531,9 @@ class TaskController extends BaseController
         $client = ClientPreference::where('id', 1)->first();
         $lengths = count($latitude) - 1;
         $value = [];
-
+        $count  = 0;
+        $count1 = 1;
         for ($i = 1; $i<=$lengths; $i++) {
-            $count  = 0;
-            $count1 = 1;
             $ch = curl_init();
             $headers = array('Accept: application/json',
                     'Content-Type: application/json',
@@ -2558,7 +2557,6 @@ class TaskController extends BaseController
             $totalDistance = 0;
             $totalDuration = 0;
             foreach ($value as $i => $item) {
-                //dd($item);
                 $totalDistance = $totalDistance + (isset($item[$i]->distance) ? $item[$i]->distance->value : 0);
                 $totalDuration = $totalDuration + (isset($item[$i]->duration) ? $item[$i]->duration->value : 0);
             }
@@ -2672,7 +2670,7 @@ class TaskController extends BaseController
 
         $client = ClientPreference::take(1)->with('currency')->first();
         $currency = $client->currency??'';
-
+Log::info($getdata);
         return response()->json([
             'total' => $total,
             'total_duration' => $getdata['duration'],
