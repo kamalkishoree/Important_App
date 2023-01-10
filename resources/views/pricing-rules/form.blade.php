@@ -146,7 +146,7 @@
         </div>
          
         <hr>
-        <h5 class="text-uppercase bg-light-yellopink p-2 mt-0 mb-3">Pricing Values</h5>
+        <h5 class="text-uppercase bg-light-yellopink p-2 mt-0 mb-3">Pricing Values @if(checkColumnExists('client_preferences', 'is_bid_ride_toggle')) @if($client_pre->is_bid_ride_toggle == 1) (Recommendation) @endif @endif</h5>
         <div class="row">
             <div class="col-md-12">
                 <div class="form-group" id="">
@@ -207,6 +207,130 @@
                 </div>
             </div>
         </div>
+
+        @if(checkColumnExists('client_preferences', 'is_bid_ride_toggle')) @if($client_pre->is_bid_ride_toggle == 1)
+        <hr>
+        <h5 class="text-uppercase bg-light-yellopink p-2 mt-0 mb-3">Pricing Values (Minimum)</h5>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group" id="">
+                    {!! Form::label('title', __('Base Price'),['class' => 'control-label']) !!}
+                    {!! Form::text('base_price_minimum', $pricing->base_price_minimum, ['class' => 'form-control','required' => 'required']) !!}
+                    <span class="invalid-feedback" role="alert">
+                        <strong></strong>
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group" id="">
+                    {!! Form::label('title', __('Base Duration'),['class' => 'control-label']) !!}
+                    {!! Form::text('base_duration_minimum', $pricing->base_duration_minimum, ['class' => 'form-control','required' => 'required']) !!}
+                    <span class="invalid-feedback" role="alert">
+                        <strong></strong>
+                    </span>
+
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group" id="">
+                    {!! Form::label('title', __('Base Distance'),['class' => 'control-label']) !!}
+                    {!! Form::text('base_distance_minimum', $pricing->base_distance_minimum, ['class' => 'form-control','required' => 'required']) !!}
+                    <span class="invalid-feedback" role="alert">
+                        <strong></strong>
+                    </span>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group" id="">
+                    {!! Form::label('title', __('Duration Price(per minute)'),['class' => 'control-label']) !!}
+                    {!! Form::text('duration_price_minimum', $pricing->duration_price_minimum, ['class' => 'form-control','required' => 'required']) !!}
+                    <span class="invalid-feedback" role="alert">
+                        <strong></strong>
+                    </span>
+
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group" id="">
+                    {!! Form::label('title', __('Distance Fee'),['class' => 'control-label']) !!}
+                    {!! Form::text('distance_fee_minimum', $pricing->distance_fee_minimum, ['class' => 'form-control','required' => 'required']) !!}
+                    <span class="invalid-feedback" role="alert">
+                        <strong></strong>
+                    </span>
+
+                </div>
+            </div>
+        </div>
+
+        <hr>
+        <h5 class="text-uppercase bg-light-yellopink p-2 mt-0 mb-3">Pricing Values (Maximum)</h5>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group" id="">
+                    {!! Form::label('title', __('Base Price'),['class' => 'control-label']) !!}
+                    {!! Form::text('base_price_maximum', $pricing->base_price_maximum, ['class' => 'form-control','required' => 'required']) !!}
+                    <span class="invalid-feedback" role="alert">
+                        <strong></strong>
+                    </span>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group" id="">
+                    {!! Form::label('title', __('Base Duration'),['class' => 'control-label']) !!}
+                    {!! Form::text('base_duration_maximum', $pricing->base_duration_maximum, ['class' => 'form-control','required' => 'required']) !!}
+                    <span class="invalid-feedback" role="alert">
+                        <strong></strong>
+                    </span>
+
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group" id="">
+                    {!! Form::label('title', __('Base Distance'),['class' => 'control-label']) !!}
+                    {!! Form::text('base_distance_maximum', $pricing->base_distance_maximum, ['class' => 'form-control','required' => 'required']) !!}
+                    <span class="invalid-feedback" role="alert">
+                        <strong></strong>
+                    </span>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group" id="">
+                    {!! Form::label('title', __('Duration Price(per minute)'),['class' => 'control-label']) !!}
+                    {!! Form::text('duration_price_maximum', $pricing->duration_price_maximum, ['class' => 'form-control','required' => 'required']) !!}
+                    <span class="invalid-feedback" role="alert">
+                        <strong></strong>
+                    </span>
+
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group" id="">
+                    {!! Form::label('title', __('Distance Fee'),['class' => 'control-label']) !!}
+                    {!! Form::text('distance_fee_maximum', $pricing->distance_fee_maximum, ['class' => 'form-control','required' => 'required']) !!}
+                    <span class="invalid-feedback" role="alert">
+                        <strong></strong>
+                    </span>
+
+                </div>
+            </div>
+        </div>
+        <hr>
+        @endif @endif
         
         <div class="row">
             <div class="col-md-6">
