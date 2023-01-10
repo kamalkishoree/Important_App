@@ -265,11 +265,17 @@ exit;
         var markers = new Array();
         var drawingManager;
         var no_parking_geofences_json = '{!!  json_encode($all_coordinates) !!}';
-        var newlocation = '<?php echo json_encode($coninates); ?>';
-        var first_location = JSON.parse(newlocation);
-        var lat = parseFloat(first_location.lat);
-        var lng = parseFloat(first_location.lng);
-
+        //var newlocation = '<?php echo json_encode($coninates); ?>';
+        //var first_location = JSON.parse(newlocation);
+        //var lat = parseFloat(first_location.lat);
+        //var lng = parseFloat(first_location.lng);
+        @if(isset($coninates['lat']) && isset($coninates['lng']))
+        var lat = {{$coninates['lat']}};
+        var lng = {{$coninates['lng']}};
+        @else
+        var lat = 33.5362475;
+        var lng = -111.9267386;
+        @endif
 
         // function gm_authFailure() {
                 
