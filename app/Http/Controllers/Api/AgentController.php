@@ -62,9 +62,9 @@ class AgentController extends BaseController
             // $clientPreference = json_decode($preferences->customer_notification_per_distance);
 
             $finalAgents = [];
-            foreach ($geoagents as $geoagent) {
-                $agentLat = $geoagent->agentlog->lat;
-                $agentLong = $geoagent->agentlog->long;
+            foreach($geoagents as $geoagent){
+                $agentLat = !empty($geoagent->agentlog) ? $geoagent->agentlog->lat : 0.00000;
+                $agentLong = !empty($geoagent->agentlog) ? $geoagent->agentlog->long : 0.00000;
 
                 $getDistance = $this->getLatLongDistance($agentLat, $agentLong, $request->latitude, $request->longitude, 'km');
 

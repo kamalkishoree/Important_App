@@ -1967,7 +1967,6 @@ class TaskController extends BaseController
             'unique_id'                => $randem,
             'created_at'               => Carbon::now()->toDateTimeString(),
             'updated_at'               => Carbon::now()->toDateTimeString(),
-            'is_updated'               => $is_order_updated,
         ];
 
         if (!isset($geo)) {
@@ -2149,7 +2148,6 @@ class TaskController extends BaseController
             'unique_id'                => $randem,
             'created_at'               => Carbon::now()->toDateTimeString(),
             'updated_at'               => Carbon::now()->toDateTimeString(),
-            'is_updated'               => $is_order_updated,
         ];
 
         if (!isset($geo)) {
@@ -2247,7 +2245,6 @@ class TaskController extends BaseController
             'unique_id'                => $randem,
             'created_at'               => Carbon::now()->toDateTimeString(),
             'updated_at'               => Carbon::now()->toDateTimeString(),
-            'is_updated'               => $is_order_updated,
         ];
 
         if (!isset($geo)) {
@@ -2362,7 +2359,6 @@ class TaskController extends BaseController
             'unique_id'                => $randem,
             'created_at'               => Carbon::now()->toDateTimeString(),
             'updated_at'               => Carbon::now()->toDateTimeString(),
-            'is_updated'               => $is_order_updated,
         ];
 
         if (!isset($geo)) {
@@ -3440,7 +3436,7 @@ class TaskController extends BaseController
             if ($request->task_type == 'later')
                 $request->task_type = 'schedule';
 
-            // DB::beginTransaction();
+            DB::beginTransaction();
 
             //$auth =  Client::with(['getAllocation', 'getPreference'])->first();
             $tz = new Timezone();
@@ -3576,7 +3572,6 @@ class TaskController extends BaseController
                         'email'       => $value['email'] ?? null,
                         'phone_number' => $value['phone_number'] ?? null,
                     ];
-                    //  $Loction = Location::create($loc);
 
                     $Loction = Location::updateOrCreate(
                         $loc,
@@ -3687,10 +3682,9 @@ class TaskController extends BaseController
                 'driver_cost'                     => $percentage,
                 'cash_to_be_collected'            => $total,
             ];
-            // dd($updateorder);
+            
             Order::where('id', $orders->id)->update($updateorder);
-
-            // DB::commit();
+            DB::commit();
             return response()->json([
                 'message' => __('Task Added Successfully'),
                 'task_id' => $orders->id,
@@ -3698,7 +3692,7 @@ class TaskController extends BaseController
                 'dispatch_traking_url'  => $dispatch_traking_url ?? null
             ], 200);
         } catch (Exception $e) {
-            // DB::rollback();
+            DB::rollback();
             return response()->json([
                 'message' => $e->getMessage()
             ], 400);
