@@ -18,7 +18,7 @@ use Illuminate\Support\Str;
 use App\Traits\ApiResponser;
 
 use Doctrine\DBAL\Driver\DrizzlePDOMySql\Driver;
-use App\Model\{Agent, AgentSlot, AgentSlotRoster, SlotDay};
+use App\Model\{Agent, AgentSlot, AgentSlotRoster, SlotDay,GeneralSlot};
 
 
 class AgentSlotController extends Controller
@@ -319,4 +319,76 @@ class AgentSlotController extends Controller
 
         echo $json  = json_encode($showData);
     }
+    
+    /**
+     * saveGeneralSlot
+     *
+     * @param  mixed $request
+     * @return void
+     */
+    public function saveGeneralSlot(Request $request)
+    {
+         try {
+
+            $this->validate($request, 
+                [
+                'start_time' =>'required',
+                'end_time' =>'required',
+                ]
+            );
+            $start_time = date("Y-m-d H:i:s",strtotime($request->start_time));
+            $end_time = date("Y-m-d H:i:s",strtotime($request->end_time));
+          //  pr($request->all());
+          $checkSlot =GeneralSlot::where(function ($query) use ($start_time , $end_time ){
+              $query->where('start_time', '<=', $start_time)
+              ->where('end_time', '>=', $end_time);
+            })->first();
+            if($checkSlot){
+                return response()->json(array('success' => false, 'message'=>'This slot is already Exist, Please try other.'));
+            }
+            DB::beginTransaction();
+            // pr($checkSlot);
+            $GeneralSlot = new GeneralSlot();
+            $GeneralSlot->start_time =$start_time; 
+            $GeneralSlot->end_time = $end_time ;
+            $GeneralSlot->status = 1 ;
+            $GeneralSlot->save();
+          
+
+            DB::commit();
+            return $this->success($GeneralSlot, 'Slot Added Successfully.');
+        } catch (Exception $e) {
+            DB::rollback();
+            return $this->error([], $e->getMessage());
+        }
+    }
+    public function getGeneralSlot(Request $request)
+    {
+        $generalSlot = GeneralSlot::query();
+        
+        return Datatables::of($generalSlot)
+        ->addIndexColumn()
+        ->editColumn('start_time', function ($generalSlot) {
+           
+            return date("h:i: a",strtotime($generalSlot->start_time));
+        })
+        ->editColumn('end_time', function ($generalSlot)  {
+            return date("h:i: a",strtotime($generalSlot->end_time));
+        })
+        ->addColumn('edit_action', function ($generalSlot)  {
+            return '';
+        })
+        ->make(true);
+    }
+    public function destroyGeneralSlot($domain = '',$id)
+    {
+        try {
+            GeneralSlot::where('id',$id)->delete();
+            return response()->json(array('success' => true,'message'=>'Deleted successfully.'));
+        } catch (Exception $e) {
+            return response()->json(array('success' => false,'message'=>$e->getMessage()));
+        }
+       
+    }
+
 }

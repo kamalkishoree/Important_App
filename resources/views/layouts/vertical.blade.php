@@ -13,7 +13,8 @@
 @php $theme = \App\Model\ClientPreference::where(['id' => 1])->first('theme');@endphp
 <?php $body = ((isset($theme) && $theme->theme == 'dark'))? "dark":"light";?>
 
-
+@include('layouts.shared.language')
+@yield('headerJs')
 
     <body @yield('body-extra') class="{{$body}}" @if( session()->get('applocale')=="ar") dir="rtl" @endif>
         <!-- Begin page -->

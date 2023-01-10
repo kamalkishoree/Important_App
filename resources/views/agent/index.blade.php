@@ -265,6 +265,7 @@ h2#swal2-title {
 @endsection
 @php
 $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain/';
+$is_driver_slot = getClientPreferenceDetail()->is_driver_slot;
 @endphp
 @section('content')
 <div class="container-fluid">
@@ -371,7 +372,9 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                 <li class="d-flex">
                                     <button type="button" class="btn btn-blue waves-effect waves-light openModal mr-1" data-toggle="modal" data-target="" data-backdrop="static" data-keyboard="false"><i class="mdi mdi-plus-circle mr-1"></i> {{__("Add")}} {{ getAgentNomenclature() }}</button>
                                     <button type="button" class="btn btn-success waves-effect waves-light saveaccounting mr-1" data-toggle="modal" data-target="#pay-receive-modal" data-backdrop="static" data-keyboard="false">{{__("Pay")}} / {{__("Receive")}}</button>
-                                    <button type="button" class="btn btn-success waves-effect waves-light agent_slot_button"  data-agent_id='' data-is_general="general">{{__("General Sloat")}}</button>
+                                    @if($is_driver_slot == 1)
+                                        <button type="button" class="btn btn-success waves-effect waves-light " id="gerenal_slot" >{{__("Gerenal Slot")}}</button>
+                                    @endif                                    
                                 </li>
                             </ul>
                     </div>
@@ -507,8 +510,9 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
 
 @include('agent.modals')
 @include('modals.pay-receive')
-@if(getClientPreferenceDetail()->is_driver_slot == 1)
+@if($is_driver_slot == 1)
     @include('agent.modal-popup.agentSlotTableRows')
+    @include('agent.modal-popup.gerenaSlotModel')
     {{-- @include('agent.modal-popup.slotPopup') --}}
 <script>
     var AddSlotHtml = `<form class="needs-validation" name="slot-form" id="slot-event" action="" method="post">
@@ -767,8 +771,9 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
 <script src="{{ asset('assets/js/jquery.tagsinput-revisited.js') }}"></script>
 <script src="{{ asset('telinput/js/intlTelInput.js') }}"></script>
 <link rel="stylesheet" href="{{ asset('assets/css/jquery.tagsinput-revisited.css') }}" />
-@if(getClientPreferenceDetail()->is_driver_slot == 1)
+@if($is_driver_slot == 1)
 <script src="{{ asset('assets/js/AgentSlot/slot.js') }}"></script>
+<script src="{{ asset('assets/js/agent/generalSlot.js')}}"></script>
 @endif
 
 <script>

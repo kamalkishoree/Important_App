@@ -13,6 +13,7 @@ $(function () {
         fullCalendarInt(agent_id);
     });
 
+   
     $(document).on('change', '.slotTypeEdit', function () {
         var val = $(this).val();
         dispatcherStorage.setStorageSingle('SlotType', val);
@@ -543,3 +544,7 @@ $(function () {
     }
 
 })
+
+$(document).on('click', '#gerenal_slot', function () {
+   $('#general_slot').modal('show');
+});

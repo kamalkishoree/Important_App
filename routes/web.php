@@ -325,6 +325,10 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 			Route::post('agent/update_slot', 'AgentSlotController@update')->name('agent.slot.update');
 			Route::get('agent/slot/create/{id}', 'AgentSlotController@create')->name('agent.slot.create');
 			Route::post('agent/slot/delete', 'AgentSlotController@destroy')->name('agent.slot.destroy');
+			Route::get('general/slot/get', 'AgentSlotController@getGeneralSlot')->name('general.slot.list');
+			Route::post('general/slot/save', 'AgentSlotController@saveGeneralSlot')->name('general.slot.save');
+			Route::get('general/slot/destroy/{id}', 'AgentSlotController@destroyGeneralSlot')->name('vendor_city.destroy');
+
 		});
 	});
 
