@@ -72,13 +72,13 @@ class AgentThresholdController extends Controller
                 }
             })
             ->editColumn('status', function ($agents) use ($request) {
-                if($agents->threshold_type ==1){
+                if($agents->status ==1){
                     return 'Approval';
                 }
-                elseif($agents->threshold_type ==0){
+                elseif($agents->status ==0){
                     return 'Pending';
                 }
-                elseif($agents->threshold_type ==2){
+                elseif($agents->status ==2){
                     return 'Rejected';
                 }
             })

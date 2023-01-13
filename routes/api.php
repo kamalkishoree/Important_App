@@ -126,7 +126,8 @@ Route::group(['middleware' => ['dbCheck', 'AppAuth','apiLocalization']], functio
 
     //Agent Out of plateform upload pop
 
-    Route::post('agent/outofplatform/upload-pop', 'AgentPayoutController@AgentUploadPop')->name('agent.outofplateform.upload');
+    Route::post('agent/outofplatform/upload-pop', 'Api\AgentPayoutController@AgentUploadPop')->name('agent.outofplateform.upload');
+    Route::get('agent/threshold-payments', 'Api\AgentPayoutController@AgentThresholdPayments')->name('agent.threshold.payments');
 
 
     //Roadside Pickup

@@ -88,7 +88,7 @@ class AgentPayoutController extends BaseController{
 
 
     public function agentPayoutRequests(Request $request)
-    {        
+    {
         $user = Auth::user();
         $total_order_value = Order::orderBy('id','desc');
         if ($user->is_superadmin == 0 && $user->all_team_access == 0) {
@@ -159,21 +159,21 @@ class AgentPayoutController extends BaseController{
             $user = Auth::user();
             $id = $request->payout_id;
             $payout_option_id = $request->payout_option_id;
-          
+
             $payout = AgentPayout::with(['payoutBankDetails'=> function($q){
                 $q->where('status', 1);
             }])->where('id', $id)->first();
-          
+
             $request->request->add(['agent_id' => $payout->agent_id]);
-            
+
             $agent = Agent::where('id', $payout->agent_id)->where('is_approved', 1)->first();
             if(!$agent){
                 return Redirect()->back()->with('error', __('This '.getAgentNomenclature().' is not approved!'));
             }
-            
+
             $agent_account = $payout->payoutBankDetails->first() ? $payout->payoutBankDetails->first()->beneficiary_account_number : '';
             $agent_id = $agent->id;
-            
+
 
             // $available_funds = agentEarningManager::getAgentEarning($payout->agent_id, 1);
 
@@ -195,7 +195,7 @@ class AgentPayoutController extends BaseController{
                 }
                 $request->request->add(['transaction_id' => $response->data]);
             }elseif($payout_option_id == 3){
-                //Razorpay 
+                //Razorpay
                 $razorpayController = new RazorpayGatewayController();
                 $request->request->add(['aid' => $agent_id]);
                 $response = $razorpayController->razorpay_complete_funds_request($request)->getData();
@@ -231,7 +231,7 @@ class AgentPayoutController extends BaseController{
                     $wallet->forceWithdrawFloat($debit_amount, $meta);
                 }
             }
-            
+
             return Redirect()->back()->with('success', __('Payout has been completed successfully'));
         }
         catch(Exception $ex){
@@ -266,7 +266,7 @@ class AgentPayoutController extends BaseController{
                 $payout = AgentPayout::with(['payoutBankDetails'=> function($q){
                     $q->where('status', 1);
                 }])->where('id', $pay_id)->first();
-                
+
                 $agent = Agent::where('id', $payout->agent_id)->where('is_approved', 1)->first();
                 $credit = $agent->agentPayment->sum('cr');
                 $debit = $agent->agentPayment->sum('dr');
@@ -300,7 +300,7 @@ class AgentPayoutController extends BaseController{
                     $wallet->forceWithdrawFloat($debit_amount, [$custom_meta]);
                 }
             }
-            
+
             DB::commit();
             return $this->success('', __('Payout has been completed successfully'), 201);
         }
@@ -344,56 +344,5 @@ class AgentPayoutController extends BaseController{
         }
     }*/
 
-    public function AgentUploadPop(Request $request){
-       
-        $user           = Agent::where('id', Auth::user()->id)->first();
-        $header         = $request->header();
-        $client         = Client::where('database_name', $header['client'][0])->first('code');
-        $code           = $client->code;
-        $rules          = array(
-                                'amount' => [ "required", "regex:/^(\d+|\d+(\.\d{1,2})?|(\.\d{1,2}))$/" ],
-                                'date' => 'required',
-                                'file' => 'required|string',
-                                'type' => 'required'
-                            );
-        
-            $validation  = Validator::make($request->all(), $rules);
-            if ($validation->fails()) {
-                return response()->json(['message' => $validation->errors()->first()], 422);
-            }
-            $img                    = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $request->file));
-			$imgType                = ($request->has('type')) ? $request->type : 'jpg';
-			$code                   = Client::orderBy('id','asc')->value('code');
-			$imageName              = $code.'/agent-ofp-pop/'.$user->id.substr(md5(microtime()), 0, 15).'.'.$imgType;
-            $path                   = Storage::disk('s3')->put($imageName, $img, 'public');
-            $url                    = Storage::disk('s3')->url($imageName);
 
-            $threshold              = ClientPreference::with('currency')->where('id', 1)->first();
-               
-            if($threshold->is_threshold == 1 && !empty($threshold->threshold_data)){
-                $threshold_data     = json_decode($threshold->threshold_data,true);
-                $threshold_type     = $threshold_data['recursive_type'];
-
-                $agent                  = new AgentCashCollectPop();
-                $agent->agent_id        = $user->id;
-                $agent->amount          = $request->amount;
-                $agent->date            = $request->date;
-                $agent->payment_type    = 0;
-                $agent->threshold_type  = $threshold_type;
-                $agent->file            = $url;
-                
-                if ($agent->save()) {
-                    return response()->json([
-                        'message' => __('Upload pop successfully!'),
-                    ], 200);
-                } else {
-                    return response()->json([
-                        'message' => __('Sorry Something Went Wrong'),
-                    ], 404);
-                }
-            }
-
-           
-       
-    }
 }

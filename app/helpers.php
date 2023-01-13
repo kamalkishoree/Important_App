@@ -193,9 +193,10 @@ if( !function_exists('formattedDate') ) {
     }
 }
 
+if( !function_exists('connect_with_order_panel') ) {
 function connect_with_order_panel() {
     $order_panel_details = OrderPanelDetail::first();
-    
+
     $default = [
         'prefix' => '',
         'engine' => null,
@@ -211,7 +212,8 @@ function connect_with_order_panel() {
         'driver' => env('DB_CONNECTION', 'mysql'),
     ];
     Config::set("database.connections.$order_panel_details->db_name", $default);
-    return \DB::connection($order_panel_details->db_name);    
+    return \DB::connection($order_panel_details->db_name);
+}
 }
 
 // Returns the values of the additional preferences.
@@ -256,15 +258,15 @@ if (!function_exists('checkWarehouseMode')) {
             'show_warehouse_module' => 0,
             'show_category_module' => 0
         ];
-        if($preference){            
+        if($preference){
             $warehouseMode = isset($preference->warehouse_mode) ? json_decode($preference->warehouse_mode) : '';
-        
+
             if(!empty($warehouseMode->show_warehouse_module) && $warehouseMode->show_warehouse_module == 1){
-                $data['show_warehouse_module'] = 1; 
+                $data['show_warehouse_module'] = 1;
             }
             if(!empty($warehouseMode->show_category_module) && $warehouseMode->show_category_module == 1){
-                $data['show_category_module'] = 1; 
-            }            
+                $data['show_category_module'] = 1;
+            }
         }
         return $data;
     }
@@ -281,12 +283,12 @@ if (!function_exists('checkDashboardMode')) {
         $data = [
             'show_dashboard_by_agent_wise' => 0
         ];
-        if($preference){            
+        if($preference){
             $dashboardMode = isset($preference->dashboard_mode) ? json_decode($preference->dashboard_mode) : '';
-        
+
             if(!empty($dashboardMode->show_dashboard_by_agent_wise) && $dashboardMode->show_dashboard_by_agent_wise == 1){
-                $data['show_dashboard_by_agent_wise'] = 1; 
-            }            
+                $data['show_dashboard_by_agent_wise'] = 1;
+            }
         }
         return $data;
     }
