@@ -370,10 +370,10 @@ class AgentSlotController extends Controller
         ->addIndexColumn()
         ->editColumn('start_time', function ($generalSlot) {
            
-            return date("h:i: a",strtotime($generalSlot->start_time));
+            return date("h:i a",strtotime($generalSlot->start_time));
         })
         ->editColumn('end_time', function ($generalSlot)  {
-            return date("h:i: a",strtotime($generalSlot->end_time));
+            return date("h:i a",strtotime($generalSlot->end_time));
         })
         ->addColumn('edit_action', function ($generalSlot)  {
             return '';

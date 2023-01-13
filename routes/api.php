@@ -36,6 +36,9 @@ Route::get('get-all-teams', 'Api\TaskController@getAllTeams')->middleware('Conne
 Route::post('update-create-vendor-order', 'Api\AuthController@updateCreateVendorOrder')->middleware('ConnectDbFromOrder');
 Route::post('task/update', 'Api\TaskController@UpdateTask')->middleware('ConnectDbFromOrder');
 
+// 
+Route::post('getProductPrice', 'Api\OrderPanelController@getProductPrice')->middleware('ConnectDbFromOrder');
+
 Route::post('sync-category-product', 'Api\SyncCategoryProductController@SyncCategoryProduct')->middleware('ConnectDbFromOrder');
 
 
@@ -87,7 +90,7 @@ Route::group(['prefix' => 'auth'], function () {
             Route::get('category_with_product', 'Api\SalerController@CategoryWithProduct');
             Route::post('save_product_variant_price', 'Api\SalerController@saveProductVariantPrice');
             Route::get('general_slot', 'Api\SalerController@getGerenalSlot');
-            Route::post('agent/saveSlot', 'Api\AgentSlotController@saveAgentSlot');
+            Route::post('saveSlot', 'Api\AgentSlotController@saveAgentSlot');
         });
     
     });
@@ -151,6 +154,7 @@ Route::group(['middleware' => ['dbCheck', 'AppAuth','apiLocalization']], functio
     // driver with product pricing  agent/category_with_product
     Route::group(['prefix' => 'agent'], function () {
         Route::get('category_with_product_with_price', 'Api\SalerController@CategoryWithProductWithPrice');
+        Route::get('getslot', 'Api\AgentSlotController@getAgentSlot');
     });
 
 });

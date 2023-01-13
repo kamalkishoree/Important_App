@@ -27,7 +27,7 @@ class Agent extends Authenticatable implements  Wallet, WalletFloat
         'team_id', 'name', 'profile_picture', 'type', 'vehicle_type_id', 'make_model', 'plate_number', 'phone_number', 'color', 'is_activated', 'is_available','cash_at_hand','uid', 'is_approved','customer_type_id','razorpay_contact_json','razorpay_bank_json','warehouse_id', 'is_pooling_available'
     ];
 
-    protected $appends = ['image_url', 'agent_cash_at_hand'];
+    protected $appends = ['image_url', 'agent_cash_at_hand','rating'];
 
     public function day(){
         $mytime = Carbon::now();
@@ -45,9 +45,19 @@ class Agent extends Authenticatable implements  Wallet, WalletFloat
         ///return $new; 
 
     }
+    public function getratingAttribute()
+    {
+        if( !empty($this->agentRating()) ) {
+            return number_format($this->agentRating()->avg('rating'), 2, '.', '');
+        }
+        else {
+            return '0.00';
+        }
+
+    }
     public function slots(){
         return $this->hasMany('App\Model\AgentSlotRoster', 'agent_id', 'id');
-      }
+    }
 
     // public function build()
     // {
@@ -144,5 +154,8 @@ class Agent extends Authenticatable implements  Wallet, WalletFloat
 
     public function agentRating(){
         return $this->hasMany('App\Model\DriverRating','driver_id', 'id');
+    }
+    public function ProductPrices(){
+        return $this->hasMany('App\Model\AgentProductPrices', 'agent_id', 'id');
     }
 }
