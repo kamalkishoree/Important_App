@@ -22,7 +22,6 @@ class DbChooserApi
 
     public function handle($request, Closure $next)
     {
-
         config(['auth.guards.api.provider' => 'agents']);
 
         $database_name = $database = 'royodelivery_db';
