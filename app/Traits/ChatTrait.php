@@ -33,6 +33,7 @@ trait ChatTrait{
     public function sendNotification_to_agent($request)
     {
         $ag ='all_agentids';
+
         if(@$request->all()['web']=="true"){
             $ag ='user_ids';
         }
