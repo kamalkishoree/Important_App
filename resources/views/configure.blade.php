@@ -648,11 +648,27 @@ $sms_crendential = json_decode($preference->sms_credentials);
                                     <h5 class="font-weight-normal m-0">{{ __('Manage ') }}{{ Session::get('agent_name') ? Session::get('agent_name') : 'Agent' }} {{ __('Schedule') }} </h5>
                                     <div class="custom-control custom-switch">
                                         <input type="checkbox" class="custom-control-input"
-                                            id="editDriverSlotCustomSwitch_{{ $preference->is_driver_slot }}"
+                                            id="editFleetCustomSwitch_{{ $preference->is_driver_slot }}"
                                             name="is_driver_slot"
                                             {{ $preference->is_driver_slot == 1 ? 'checked' : '' }}>
                                         <label class="custom-control-label"
-                                            for="editDriverSlotCustomSwitch_{{ $preference->is_driver_slot }}"></label>
+                                            for="editFleetCustomSwitch_{{ $preference->is_driver_slot }}"></label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="d-flex align-items-center justify-content-between mt-3 mb-2">
+                                    <h5 class="font-weight-normal m-0">{{ __('Fleet Managements ') }}</h5>
+                                    <div class="custom-control custom-switch">
+                                        <input type="checkbox" class="custom-control-input"
+                                            id="editDriverSlotCustomSwitch_{{ $preference->manage_fleet }}"
+                                            name="manage_fleet"
+                                            {{ $preference->manage_fleet == 1 ? 'checked' : '' }}>
+                                        <label class="custom-control-label"
+                                            for="editDriverSlotCustomSwitch_{{ $preference->manage_fleet }}"></label>
                                     </div>
                                 </div>
                             </div>

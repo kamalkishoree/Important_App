@@ -93,7 +93,7 @@
                         @endif
                     </div>
 
-                    <div class="row ">
+                    <div class="row agent_icon">
                         <div class="col-md-12">
                             <div class="form-group" id="vehicle_type_idInput">
                                 <p class="text-muted mt-3 mb-2">{{__("TRANSPORT ICON")}}</p>

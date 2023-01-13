@@ -27,7 +27,7 @@ use App\Model\csvOrderImport;
 use App\Model\Timezone;
 use App\Model\AgentLog;
 use App\Model\VehicleType;
-use App\Model\{BatchAllocation, BatchAllocationDetail, Team,TeamTag, SubscriptionInvoicesDriver};
+use App\Model\{BatchAllocation, BatchAllocationDetail, Team,TeamTag, SubscriptionInvoicesDriver, AgentFleet};
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
@@ -610,7 +610,7 @@ class TaskController extends BaseController
                 }
             } else {
                 $cus = [
-                    'email' => $request->email,
+                    //'email' => $request->email,
                     'phone_number' => $request->phone_number,
                     'dial_code' => $request->dialCode,
                 ];
@@ -687,8 +687,8 @@ class TaskController extends BaseController
                 $location = Location::where('id', $loc_id)->first();
                 if (!empty($location) && $location->customer_id != $cus_id) {
                     $newloc = [
-                    'short_name'   => $location->short_name,
-                        'post_code'    =>$location->post_code,
+                        'short_name'   => $location->short_name,
+                        'post_code'    => $location->post_code,
                         'flat_no'      => $location->flat_no,
                         'email'        => $location->address_email,
                         'phone_number' => $location->address_phone_number,
@@ -940,6 +940,7 @@ class TaskController extends BaseController
             if($request->type != 'B'){
                 $agent_id = $request->has('agent_id') ? $request->agent_id : null;
                 $agent_details = Agent::where('id', $agent_id)->where('is_approved', 1)->first();
+                $agent_fleet = AgentFleet::where('agent_id', $agent_id)->value('fleet_id');
                 if(!empty($agent_details)){
                     $orders = Order::find($request->orders_id);
                     foreach($orders as $order){
@@ -975,6 +976,7 @@ class TaskController extends BaseController
                         $order_update = Order::where('id', $order->id)->update([
                             'driver_id' => $agent_id, 
                             'driver_cost' => $percentage, 
+                            'fleet_id'    => $agent_fleet??null,
                             'status' => 'assigned', 
                             'auto_alloction' => 'm',
                             'agent_commission_fixed' => $agent_commission_fixed,
@@ -2534,7 +2536,7 @@ class TaskController extends BaseController
             if ($task_id->driver_cost != 0.00) {
                 $percentage = $task_id->driver_cost;
             }
-
+            $agent_fleet = AgentFleet::where('agent_id', $agent_id)->value('fleet_id');
             $settime = ($request->task_type=="schedule") ? $request->schedule_time : Carbon::now()->toDateTimeString();
             $notification_time = ($request->task_type=="schedule")? Carbon::parse($settime .' '. $auth->timezone ?? 'UTC')->tz('UTC') : Carbon::now()->toDateTimeString();
             $order = [
@@ -2543,6 +2545,7 @@ class TaskController extends BaseController
                 'Recipient_email'            => $request->Recipient_email,
                 'task_description'           => $request->task_description,
                 'driver_id'                  => $agent_id,
+                'fleet_id'                   => $agent_fleet,
                 'order_type'                 => $request->task_type,
                 'order_time'                 => $notification_time,
                 'auto_alloction'             => $request->allocation_type,

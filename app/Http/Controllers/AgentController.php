@@ -802,22 +802,23 @@ class AgentController extends Controller
 
     public function search(Request $request, $domain = '')
     {
+        //->limit(10)
         $search = $request->search;
         $vehicle_type = $request->vehicle_type;
         if (isset($search)) {
             if ($search == '') {
-                $drivers = Agent::orderby('name', 'asc')->select('id', 'name', 'phone_number')->where('is_approved', 1)->limit(10)->get();
+                $drivers = Agent::orderby('name', 'asc')->select('id', 'name', 'phone_number')->where('is_approved', 1)->get();
             }elseif($vehicle_type != ''){
                 $drivers = Agent::orderby('name', 'asc')->select('id', 'name', 'phone_number')
                 ->where('is_approved', 1)
                 ->where('name', 'like', '%' . $search . '%')
                 ->whereIn('vehicle_type_id', $vehicle_type)
-                ->limit(10)->get();
+                ->get();
             } else {
                 $drivers = Agent::orderby('name', 'asc')->select('id', 'name', 'phone_number')
                 ->where('is_approved', 1)
                 ->where('name', 'like', '%' . $search . '%')
-                ->limit(10)->get();
+                ->get();
             }
             $response = array();
             foreach ($drivers as $driver) {

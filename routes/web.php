@@ -183,6 +183,12 @@ Route::group(['middleware' => 'switchLanguage'], function () {
             Route::post('fivcon/save', 'ClientController@faviconUoload')->name('favicon');
 			Route::get('options', 'ClientController@ShowOptions')->name('options');
 			Route::resource('agent', 'AgentController');
+			Route::get('fleet/filter', 'FleetController@fleetFilter');
+			Route::get('fleet/{id}/driver', 'FleetController@assignDriver');
+			Route::get('fleet/details/{id}', 'FleetController@fleetDetails');
+			Route::POST('fleet/updateDriver', 'FleetController@updateDriver');
+			Route::resource('fleet', 'FleetController');
+
 			Route::get('agent/{id}/show', 'AgentController@show')->name('agent.show');
 			Route::post('agent/search', 'AgentController@search')->name('agent.search');
 			Route::post('pay/receive', 'AgentController@payreceive')->name('pay.receive');
