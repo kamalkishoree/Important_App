@@ -22,7 +22,8 @@ class DriverAccountingController extends BaseController
         } else {
             $status = 'settlement';
         }
-        return view('accountancy.driver.index')->with(['status' => $status]);
+        $agentList = Agent::pluck('name', 'id')->toArray();
+        return view('accountancy.driver.index')->with(['status' => $status, 'agentList' => $agentList]);
     }
 
     /**
@@ -46,15 +47,13 @@ class DriverAccountingController extends BaseController
         $data = $request->all();
         
         $type = $request->routesListingType;
-        $orders = Order::with(['agent', 'getAgentPayout'])
-        ->whereHas('getAgentPayout' , function($query) use($type) {
-            if( $type == 'settlement' ) {
-                $query->where('status', 0);
-            } else {
+        $orders = Order::with(['agent', 'getAgentPayout']);
+        if($type == 'statement') {
+            $orders = $orders->whereHas('getAgentPayout' , function($query) use($type) {
                 $query->where('status', 1);
-            }
-        })
-        ->where('status', 'unassigned');
+            });
+        }
+        $orders = $orders->where('status', 'completed');
 
         
         if (!empty($request->date_filter)) {
@@ -66,7 +65,7 @@ class DriverAccountingController extends BaseController
                 $from_date =  trim($date_explode[0]);
                 $end_date = trim($date_explode[1]);
                 
-                $orders->whereBetween('created_at', [$from_date, $end_date]);
+                $orders->whereBetween('order_time', [$from_date, $end_date]);
             }
         }
 
