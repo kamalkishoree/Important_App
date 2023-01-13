@@ -350,9 +350,6 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                     </div>
                                 </li>
                                 <li>
-                                    <a href="{{url('fleet')}}" type="button" target="_blank" class="btn btn-success waves-effect waves-light" >{{__("Add New Fleets")}}</a>
-                                </li>
-                                <li>
                                     <select name="geo_filter" id="geo_filter" class="form-control">
                                         <option value="">{{__('Filter by location')}}</option>
                                         @foreach($geos as $geo)
@@ -368,6 +365,11 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                         @endforeach
                                     </select>
                                 </li>
+                                @if(getClientPreferenceDetail()->manage_fleet == 1)
+                                    <li>
+                                        <a href="{{url('fleet')}}" type="button" target="_blank" class="btn btn-success waves-effect waves-light" >{{__("Add New Fleets")}}</a>
+                                    </li>
+                                @endif
                                 <li class="d-flex">
                                     <button type="button" class="btn btn-blue waves-effect waves-light openModal mr-1" data-toggle="modal" data-target="" data-backdrop="static" data-keyboard="false"><i class="mdi mdi-plus-circle mr-1"></i> {{__("Add")}} {{ getAgentNomenclature() }}</button>
                                     <button type="button" class="btn btn-success waves-effect waves-light saveaccounting" data-toggle="modal" data-target="#pay-receive-modal" data-backdrop="static" data-keyboard="false">{{__("Pay")}} / {{__("Receive")}}</button>
