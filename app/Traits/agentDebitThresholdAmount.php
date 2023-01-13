@@ -7,7 +7,7 @@ use Carbon\Carbon;
 use App\Model\{Client, ClientPreference, User, Agent, Order,AgentCashCollectPop,PaymentOption,AgentConnectedAccount};
 trait agentDebitThresholdAmount{
 
-    //------------------------------Function created by surendra singh--------------------------//
+
     public function AgentDebitThresholdAmount($threshold, $type)
     {
 
