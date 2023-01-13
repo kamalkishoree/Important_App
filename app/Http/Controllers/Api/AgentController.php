@@ -62,8 +62,8 @@ class AgentController extends BaseController
             
             $finalAgents = [];
             foreach($geoagents as $geoagent){
-                $agentLat = $geoagent->agentlog->lat;
-                $agentLong = $geoagent->agentlog->long;
+                $agentLat = !empty($geoagent->agentlog) ? $geoagent->agentlog->lat : 0.00000;
+                $agentLong = !empty($geoagent->agentlog) ? $geoagent->agentlog->long : 0.00000;
 
                 $getDistance = $this->getLatLongDistance($agentLat, $agentLong, $request->latitude, $request->longitude, 'km');
                 

@@ -24,19 +24,31 @@ class Order extends Model
 
     public function task(){
         return $this->hasMany('App\Model\Task', 'order_id', 'id')->orderBy('task_order');
-        
+    }
+
+    public function pickup_task(){
+        return $this->hasMany('App\Model\Task', 'order_id', 'id')->where('task_type_id', 1);
+    }
+
+    public function dropoff_task(){
+        return $this->hasMany('App\Model\Task', 'order_id', 'id')->where('task_type_id', 2)->orderBy('task_order', 'desc');
     }
 
     public function agent(){
-        return $this->belongsTo('App\Model\Agent', 'driver_id', 'id')->select('id', 'team_id', 'name', 'type', 'phone_number','make_model', 'plate_number', 'profile_picture', 'vehicle_type_id','color');
+        return $this->belongsTo('App\Model\Agent', 'driver_id', 'id')->select('id', 'team_id', 'name', 'type', 'phone_number','make_model', 'plate_number', 'profile_picture', 'vehicle_type_id','color', 'is_pooling_available');
         
     }
 
     public function teamtags(){
         return $this->belongsToMany('App\Model\TaskTeamTag', 'task_team_tags','task_id','tag_id');
     }
+
     public function drivertags(){
         return $this->belongsToMany('App\Model\TaskDriverTag', 'task_driver_tags','task_id','tag_id');
+    }
+
+    public function drivertag_combination(){
+        return $this->hasMany('App\Model\TaskDriverTag', 'task_id', 'id');
     }
 
     public function customerdata()
@@ -82,6 +94,10 @@ class Order extends Model
         }
         
         return $imgarray;
+    }
+
+    public function fleet(){
+        return $this->belongsTo('App\Model\Fleet')->select('id','name','registration_name','color','make','model','year');
     }
     
     public function getAgentPayout() {

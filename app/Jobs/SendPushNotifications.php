@@ -110,7 +110,6 @@ class SendPushNotifications implements ShouldQueue
     public function sendnotification($recipients)
     {
 
-        //Log::info($recipients);
         if(isset($recipients)){
             fcm()
             ->to($this->recipients) // $recipients must an array
@@ -126,8 +125,6 @@ class SendPushNotifications implements ShouldQueue
             ])
             ->send();
         }
-
-        //Log::info('sendinglog');
 
     }
 

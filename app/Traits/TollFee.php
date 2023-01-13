@@ -7,16 +7,14 @@ use App\Model\ClientPreference;
 use Log;
 use Unifonic;
 trait TollFee{
-
-    public function __construct()
-    {
-        //
-    }    
+ 
     /**
      * toll_fee
      *
      * @return void
      */
+
+    // function to get toll fee from given origin and destinations
     public function toll_fee($latitude = array(), $longitude = array(), $toll_passes = 'IN_FASTAG', $VehicleEmissionType = 'GASOLINE', $travelMode = 'TAXI')
     {
         $ClientPreference = ClientPreference::where('id', 1)->first();
@@ -34,7 +32,8 @@ trait TollFee{
         $waypoints = [
             
         ];
-        
+
+        $j = 0;
         for($i = 0;$i < count($latitude); $i++)
         {
             if($i == 0)
@@ -43,8 +42,9 @@ trait TollFee{
                 $origin['longitude'] = $longitude[$i];
             }
             if($i > 0 && (count($latitude)-1) > $i){
-                $waypoints[$i]['location']['latLng']['latitude'] = $latitude[$i];
-                $waypoints[$i]['location']['latLng']['longitude'] = $longitude[$i];
+                $waypoints[$j]['location']['latLng']['latitude'] = $latitude[$i];
+                $waypoints[$j]['location']['latLng']['longitude'] = $longitude[$i];
+                $j++;
             }
             if((count($latitude)-1) == $i)
             {
@@ -53,9 +53,9 @@ trait TollFee{
             }
         }
 
-        $headers = array('X-Goog-Api-Key: '.(!empty($ClientPreference)?$ClientPreference->toll_key:''),
+        $headers = array('X-Goog-Api-Key: '.(!empty($ClientPreference)?$ClientPreference->map_key_1:''),
                 'Content-Type: application/json',
-                'X-Goog-FieldMask: routes.duration,routes.distanceMeters,routes.travelAdvisory.tollInfo,routes.legs.travelAdvisory.tollInfo',
+                'X-Goog-FieldMask: routes.duration,routes.distanceMeters,routes.travelAdvisory.tollInfo,routes.legs.travelAdvisory.tollInfo,routes.legs.duration,routes.legs.distanceMeters',
                 );
                 
         $url = "https://routes.googleapis.com/directions/v2:computeRoutes";
@@ -78,10 +78,10 @@ trait TollFee{
                     "vehicle_info" => [
                         "emission_type" => $VehicleEmissionType
                     ],
-                    "toll_passes" => [$toll_passes]
+                    "toll_passes" => $toll_passes
                 ]
             ];
-        
+
             $ch = curl_init();
 
             curl_setopt($ch, CURLOPT_URL, $url);
@@ -97,15 +97,20 @@ trait TollFee{
             $apiResponse = json_decode($apiResponse);
 
             $toll_array = array();
-            $toll_array['distanceMeters'] = 0;
             $toll_array['duration'] = 0;
+            $toll_array['distance'] = 0;
             $toll_array['currency'] = '';
             $toll_array['toll_amount'] = 0;
             if(!empty($apiResponse->routes))
             {
                 foreach($apiResponse->routes as $routes){
-                    $toll_array['distanceMeters'] = $routes->distanceMeters;
-                    $toll_array['duration']       = $routes->distanceMeters;
+                    if ($ClientPreference->distance_unit == 'metric') {
+                        $toll_array['distance'] = round((isset($routes->distanceMeters)?$routes->distanceMeters:0.00)/1000, 2);      //km
+                    } else {
+                        $toll_array['distance'] = round((isset($routes->distanceMeters)?$routes->distanceMeters:0.00)/1609.34, 2);  //mile
+                    }
+                    $durationInSec              = isset($routes->duration)?str_replace('s', '', $routes->duration):0;
+                    $toll_array['duration']     = round($durationInSec/60);
                     if(isset($routes->travelAdvisory) && !empty($routes->travelAdvisory)){
                         if(isset($routes->travelAdvisory->tollInfo) && !empty($routes->travelAdvisory->tollInfo)){
                             foreach($routes->travelAdvisory->tollInfo->estimatedPrice as $estimatedPrice){
@@ -116,7 +121,7 @@ trait TollFee{
                     }
                 }
             }else{
-                $toll_array['distanceMeters'] = 0;
+                $toll_array['distance'] = 0;
                 $toll_array['duration'] = 0;
                 $toll_array['currency'] = '';
                 $toll_array['toll_amount'] = 0;

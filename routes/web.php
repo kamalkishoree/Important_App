@@ -167,6 +167,8 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 			Route::get('', 'DashBoardController@index')->name('index');
 			Route::post('dashboard/teamsdata', 'DashBoardController@dashboardTeamData')->name('dashboard.teamsdata');
 			Route::get('customize', 'ClientController@ShowPreference')->name('preference.show');
+			Route::post('dashboard/agentTeamsdata', 'AgentDashBoardController@dashboardTeamData')->name('dashboard.agent-teamsdata');
+			Route::post('dashboard/agentOrdersdata', 'AgentDashBoardController@dashboardOrderData')->name('dashboard.agent-orderdata');
 			// Route::post('update-order-panel-db-detail', 'ClientController@orderPanelDbDetail')->name('update.orderPanelDbDetail');
 			Route::post('save/cms/{id}', 'ClientController@cmsSave')->name('cms.save');
 			Route::post('client_preference/{id}', 'ClientController@storePreference')->name('preference');
@@ -178,6 +180,12 @@ Route::group(['middleware' => 'switchLanguage'], function () {
             Route::post('fivcon/save', 'ClientController@faviconUoload')->name('favicon');
 			Route::get('options', 'ClientController@ShowOptions')->name('options');
 			Route::resource('agent', 'AgentController');
+			Route::get('fleet/filter', 'FleetController@fleetFilter');
+			Route::get('fleet/{id}/driver', 'FleetController@assignDriver');
+			Route::get('fleet/details/{id}', 'FleetController@fleetDetails');
+			Route::POST('fleet/updateDriver', 'FleetController@updateDriver');
+			Route::resource('fleet', 'FleetController');
+
 			Route::get('agent/{id}/show', 'AgentController@show')->name('agent.show');
 			Route::post('agent/search', 'AgentController@search')->name('agent.search');
 			Route::post('pay/receive', 'AgentController@payreceive')->name('pay.receive');
@@ -188,6 +196,8 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 			Route::get('agent/payout/requests/filter', 'AgentPayoutController@agentPayoutRequestsFilter')->name('agent.payout.requests.filter');
 			
 			Route::get('category/filter', 'CategoryController@categoryFilter');
+
+			Route::get('product-category/filter/{id}', 'CategoryController@productCategoryFilter')->name('category.product.filter');
 
         	Route::post('agent/payout/request/complete', 'AgentPayoutController@agentPayoutRequestComplete')->name('agent.payout.request.complete');
 			Route::post('agent/payout/requests/complete/all', 'AgentPayoutController@agentPayoutRequestsCompleteAll')->name('agent.payout.requests.complete.all');
@@ -267,6 +277,8 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 			Route::resource('product', 'ProductController');
 			Route::POST('check-sync-status', 'orderPanelController@checkSyncStatus');
 
+			Route::get('category/product/{id}', 'CategoryController@categoryProduct')->name('category.product');
+
 			// Route::get('cat-product/{$id}', 'ProductController@showProduct')->name('showProduct');
 
 			Route::post('/import-order-side-category', 'CategoryController@getOrderSideData')->name('category.importOrderSideCategory');
@@ -324,6 +336,15 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 	Route::get('driver/registration/document/edit', 'ClientController@show')->name('driver.registration.document.edit');
 	Route::post('driverregistrationdocument/create', 'ClientController@store')->name('driver.registration.document.create');
 	Route::post('driverregistrationdocument/update', 'ClientController@update')->name('driver.registration.document.update');
+	
 	Route::post('driver/registration/document/delete', 'ClientController@destroy')->name('driver.registration.document.delete');
+
+	Route::post('agent/order/analytics', 'AccountingController@getAgentOrderAnalytics')->name('agent.complete.order');
+	Route::post('agent/view/analytics', 'AccountingController@viewAgentOrderAnalytics')->name('agent.view.analytics');
+	// ajax token refresh
+
+	
+
+	
 	
 });

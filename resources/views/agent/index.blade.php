@@ -339,7 +339,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
             <div class="card">
                 <div class="card-body">
                     <div class="alFilterLocation">
-                        <ul class="p-0 d-flex justify-content-end">
+                        <ul class="p-0 d-flex justify-content-start">
                                 <li class="first_child">
                                     <div class="text-sm-left">
                                         @if (\Session::has('success'))
@@ -348,6 +348,9 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                         </div>
                                         @endif
                                     </div>
+                                </li>
+                                <li>
+                                    <a href="{{url('fleet')}}" type="button" target="_blank" class="btn btn-success waves-effect waves-light" >{{__("Add New Fleets")}}</a>
                                 </li>
                                 <li>
                                     <select name="geo_filter" id="geo_filter" class="form-control">
