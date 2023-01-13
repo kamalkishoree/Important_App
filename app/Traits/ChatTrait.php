@@ -32,11 +32,13 @@ trait ChatTrait{
      */
     public function sendNotification_to_agent($request)
     {
-        $ag ='user_ids';
+        $ag ='all_agentids';
         if($request->all()['web']=="true"){
             $ag ='user_ids';
         }
         $result = array_values(array_column($request->all()[$ag], 'auth_user_id'));
+        Log::info('dddddjijij');
+        Log::info($request->all());
         //return $result;
         $client_preferences = ClientPreference::select('fcm_server_key','favicon')->first();
         $devices = Agent::whereNotNull('device_token')->whereIn('id',$result)->pluck('device_token');
