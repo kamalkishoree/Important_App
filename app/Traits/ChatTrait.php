@@ -14,7 +14,7 @@ trait ChatTrait{
      */
     public function sendNotificationToOrder($request)
     {
-
+       
         /**dispacth noti */
         $data = $request->all();
         $this->getOrderUrl($request->order_vendor_id,$request->order_number,$request->vendor_id,$data);
@@ -32,8 +32,8 @@ trait ChatTrait{
      */
     public function sendNotification_to_agent($request)
     {
-        $ag ='user_ids';
-        if($request->all()['web']=="true"){
+        $ag ='all_agentids';
+        if(@$request->all()['web']=="true"){
             $ag ='user_ids';
         }
         $result = array_values(array_column($request->all()[$ag], 'auth_user_id'));
@@ -107,18 +107,19 @@ trait ChatTrait{
      */
     public function getOrderUrl($order_vendor_id,$order_id,$vendor_id,$postdata)
     {
-        
+       
         $Order = Order::where(['order_number' => $order_id])->first();   
         $call_back_url = $order_back_url  = '';   
         if($Order){
             $call_back_url = $Order->call_back_url;   
         }
         $serverUrl = parse_url($call_back_url);
+        
         if(is_array($serverUrl)){
             $order_back_url = $serverUrl['scheme'].'://'.$serverUrl['host'].'/sendNotificationToUserByDispatcher';
         }
-        Log::info($order_back_url);
-        Log::info($postdata);
+        // Log::info($order_back_url);
+        // Log::info($postdata);
         $client = new GClient([
             'headers' => [
                 'content-type' => 'application/json'
@@ -129,7 +130,6 @@ trait ChatTrait{
             ['form_params' => ($postdata)]
         );
         $response = json_decode($res->getBody(), true);
-        Log::info($response);
         return response()->json([ 'notiFY'=>$response , 'status' => 200, 'message' => __('sent!!!')]);
     }
 
