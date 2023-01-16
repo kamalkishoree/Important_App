@@ -79,7 +79,7 @@ trait ChatTrait{
                 //     die('Oops! FCM Send Error: ' . curl_error($ch));
                 // }
                 curl_close($ch);
-                $result = json_decode($response); 
+                $result = json_decode($result); 
                 return $result;
             }
     }
