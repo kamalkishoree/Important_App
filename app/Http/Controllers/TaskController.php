@@ -313,7 +313,7 @@ class TaskController extends BaseController
         $orders = $orders->where('status', $request->routesListingType)->where('status', '!=', null)->orderBy('updated_at', 'desc');
         
         $preference = ClientPreference::where('id', 1)->first(['theme','date_format','time_format']);
-        
+        $getAdditionalPreference = getAdditionalPreference(['pickup_type', 'drop_type']); 
         return Datatables::of($orders)
                 ->addColumn('customer_id', function ($orders) use ($request) {
                     $customerID = !empty($orders->customer->id)? $orders->customer->id : '';
@@ -362,14 +362,14 @@ class TaskController extends BaseController
                     endif;
                 })
                 
-                ->addColumn('short_name', function ($orders) use ($request) {
+                ->addColumn('short_name', function ($orders) use ($request, $getAdditionalPreference) {
                     $routes = array();
                     foreach($orders->task as $task){
                         if($task->task_type_id == 1){
-                            $taskType    = "Pickup";
+                            $taskType    = $getAdditionalPreference['pickup_type'] ?? "Pickup";
                             $pickupClass = "yellow_";
                         }else if($task->task_type_id == 2){
-                            $taskType    = "Dropoff";
+                            $taskType    = $getAdditionalPreference['drop_type'] ?? "Dropoff";
                             $pickupClass = "green_";
                         }else{
                             $taskType    = "Appointment";
@@ -474,6 +474,7 @@ class TaskController extends BaseController
         $data = array();
         $orders = Order::orderBy('created_at', 'DESC')->with(['customer', 'location', 'taskFirst', 'agent', 'task.location']);
         $orders = $orders->where('status', '!=', null)->get();
+        $getAdditionalPreference = getAdditionalPreference(['pickup_type', 'drop_type']); 
         if(!empty($orders)){
             $tz              = new Timezone();
             $client_timezone = $tz->timezone_name(Auth::user()->timezone);
@@ -497,11 +498,11 @@ class TaskController extends BaseController
                     foreach ($value->task as $singletask) {
                         if($singletask->task_type_id==1)
                         {
-                            $tasktype = "Pickup";
+                            $tasktype = $getAdditionalPreference['pickup_type'] ?? "Pickup";
                             $pickup_class = "yellow_";
                         }elseif($singletask->task_type_id==2)
                         {
-                            $tasktype = "Dropoff";
+                            $tasktype = $getAdditionalPreference['drop_type'] ?? "Dropoff";
                             $pickup_class = "green_";
                         }else{
                             $tasktype = "Appointment";

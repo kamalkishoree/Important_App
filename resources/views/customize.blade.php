@@ -2,6 +2,9 @@
 
 @section('css')
 @endsection
+@php
+$getAdditionalPreference = getAdditionalPreference(['pickup_type', 'drop_type']); 
+@endphp
 @section('content')
 @include('modals.tandc')
 @include('modals.privacyandpolicy')
@@ -67,6 +70,30 @@
                                         @if($errors->has('currency_id'))
                                         <span class="text-danger" role="alert">
                                             <strong>{{ $errors->first('currency_id') }}</strong>
+                                        </span>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label for="pickup_type">{{__("PICKUP NAME")}}</label>
+                                        <input type="text" name="pickup_type" id="pickup_type" placeholder="e.g {{ __('PICKUP NAME')}}" class="form-control" value="{{ old('pickup_type', $getAdditionalPreference['pickup_type'] ?? '')}}">
+                                        @if($errors->has('pickup_type'))
+                                        <span class="text-danger" role="alert">
+                                            <strong>{{ $errors->first('pickup_type') }}</strong>
+                                        </span>
+                                        @endif
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label for="drop_type">{{__("DROP OFF")}}</label>
+                                        <input type="text" name="drop_type" id="drop_type" placeholder="e.g {{ __('DROP OFF')}}" class="form-control" value="{{ old('drop_type', $getAdditionalPreference['drop_type'] ?? '')}}">
+                                        @if($errors->has('drop_type'))
+                                        <span class="text-danger" role="alert">
+                                            <strong>{{ $errors->first('drop_type') }}</strong>
                                         </span>
                                         @endif
                                     </div>
