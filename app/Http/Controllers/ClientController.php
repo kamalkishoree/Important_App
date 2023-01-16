@@ -22,7 +22,7 @@ use App\Model\TaskProof;
 use App\Model\TaskType;
 use App\Model\DriverRegistrationDocument;
 use App\Model\OrderPanelDetail;
-use App\Model\{SmtpDetail, SmsProvider, VehicleType};
+use App\Model\{SmtpDetail, SmsProvider, VehicleType, ClientPreferenceAdditional};
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Redis;
 use Session;
@@ -33,6 +33,7 @@ use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 class ClientController extends Controller
 {
+    use \App\Traits\ClientPreferenceManager;
     protected function successResponse($data, $message = null, $code = 200)
 	{
 		return response()->json([
@@ -70,6 +71,17 @@ class ClientController extends Controller
      */
     public function storePreference(Request $request, $domain = '', $id)
     {
+  
+        try {
+            $this->updatePreferenceAdditional($request);
+            // return redirect()->back()->with('success', 'Client settings updated successfully!');
+            unset($request['pickup_type']);
+            unset($request['drop_type']);
+        } catch (\Throwable $th) {
+            return redirect()->back()->with('error', 'Something went wrong!!');
+        }
+    
+
         $customerDistenceNotification = '';
         if(!empty($request->customer_notification)){
             $data = ['customer_notification_per_distance'=>json_encode($request->customer_notification)];
