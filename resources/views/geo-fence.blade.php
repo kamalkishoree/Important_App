@@ -265,10 +265,11 @@ exit;
         var markers = new Array();
         var drawingManager;
         var no_parking_geofences_json = '{!!  json_encode($all_coordinates) !!}';
-        //var newlocation = '<?php echo json_encode($coninates); ?>';
-        //var first_location = JSON.parse(newlocation);
+        var newlocation = '<?php echo json_encode($coninates); ?>';
+        var first_location = JSON.parse(newlocation);
         //var lat = parseFloat(first_location.lat);
         //var lng = parseFloat(first_location.lng);
+
         @if(isset($coninates['lat']) && isset($coninates['lng']))
         var lat = {{$coninates['lat']}};
         var lng = {{$coninates['lng']}};

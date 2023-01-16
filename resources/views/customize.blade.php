@@ -2,6 +2,9 @@
 
 @section('css')
 @endsection
+@php
+$getAdditionalPreference = getAdditionalPreference(['pickup_type', 'drop_type']); 
+@endphp
 @section('content')
 @include('modals.tandc')
 @include('modals.privacyandpolicy')
@@ -32,8 +35,8 @@
     </div>
     <!-- end Section title -->
     <div class="row mb-3">
-        <div class="col-xl-3 col-md-4">
-            <div class="card-box h-100 customize-outer-card">
+        <div class="col-md-5 col-xl-4">
+            <div class="card-box h-100">
                 <div class="row">
                     <div class="col-md-12">
                         <form method="POST" class="h-100" action="{{route('preference', Auth::user()->code)}}">
@@ -67,6 +70,30 @@
                                         @if($errors->has('currency_id'))
                                         <span class="text-danger" role="alert">
                                             <strong>{{ $errors->first('currency_id') }}</strong>
+                                        </span>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label for="pickup_type">{{__("PICKUP NAME")}}</label>
+                                        <input type="text" name="pickup_type" id="pickup_type" placeholder="e.g {{ __('PICKUP NAME')}}" class="form-control" value="{{ old('pickup_type', $getAdditionalPreference['pickup_type'] ?? '')}}">
+                                        @if($errors->has('pickup_type'))
+                                        <span class="text-danger" role="alert">
+                                            <strong>{{ $errors->first('pickup_type') }}</strong>
+                                        </span>
+                                        @endif
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label for="drop_type">{{__("DROP OFF")}}</label>
+                                        <input type="text" name="drop_type" id="drop_type" placeholder="e.g {{ __('DROP OFF')}}" class="form-control" value="{{ old('drop_type', $getAdditionalPreference['drop_type'] ?? '')}}">
+                                        @if($errors->has('drop_type'))
+                                        <span class="text-danger" role="alert">
+                                            <strong>{{ $errors->first('drop_type') }}</strong>
                                         </span>
                                         @endif
                                     </div>
@@ -149,7 +176,8 @@
                 </div>
             </div>
         </div>
-        <div class="col-xl-4 col-md-4">
+
+        <div class="col-md-4 col-xl-4">
             <div class="card-box h-100">
                 <form method="POST" class="h-100" action="{{route('preference', Auth::user()->code)}}">
                     @csrf
@@ -186,7 +214,7 @@
                 </form>
             </div>
         </div>
-        <div class="col-xl-4 col-md-4">
+        <div class="col-md-3 col-xl-4">
             <div class="card-box h-100">
                 <form method="POST" class="h-100" action="{{route('update.contact.us', Auth::user()->code)}}">
                     <div class="d-flex align-items-center justify-content-between mb-2">
@@ -239,7 +267,7 @@
                         <h4 class="header-title mb-0">{{__('Oeder Panel DB Detail')}}</h4>
                         <button class="btn btn-outline-info d-block" type="submit"> Save </button>
                     </div>
-                
+
                     @csrf
                     <div class="row">
                         <div class="col-md-12">
