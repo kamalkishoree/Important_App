@@ -9,6 +9,58 @@ use App\Model\Countries;
 use Illuminate\Support\Facades\Auth;
 use App\Model\PaymentOption;
 use Illuminate\Support\Facades\Schema;
+use App\Model\ClientPreferenceAdditional;
+
+if (!function_exists('setUserCode')) {
+    function setUserCode(){
+        $userCode = session()->has('userCode');
+        if(!$userCode){
+            $user = ClientData::first();
+            session()->put('userCode', $user->code);
+        }
+    }
+}
+
+// Returns the values of the additional preferences.
+if (!function_exists('checkColumnExists')) {
+    /** check if column exits in table
+       * @param string $tableName
+       * @param string @columnName
+       * @return boolean true or false
+       */
+      function checkColumnExists($tableName, $columnName){
+          if (Schema::hasColumn($tableName, $columnName)){
+              return true;
+          }else{
+              return false;
+          }
+      }
+  }
+
+if (!function_exists('getAdditionalPreference')) {
+    /**
+     * getAdditionalPreference
+     *
+     * @param  mixed $key
+     * @return void
+     */
+    function getAdditionalPreference($key=array()){
+        setUserCode();
+        $return = [];
+        $dbreturn= [];
+        if(sizeof($key)){
+            $result = (checkColumnExists('client_preference_additional','key_name')) ? ClientPreferenceAdditional::select('key_name','key_value')->whereIn('key_name',$key)->where(['client_code' => session()->get('userCode')])->get() : [];
+            $return = array_column($result->toArray(), 'key_value', 'key_name');
+            if (sizeof($result)) {
+                $dbreturn = array_column($result->toArray(), 'key_value', 'key_name');
+            }
+            $emp = array_diff($key, array_keys($dbreturn));
+            $emptyArr = array_fill_keys($emp, '');
+            $return = array_merge($emptyArr, $dbreturn);
+        }
+        return $return;
+    }
+}
 
 if (!function_exists('pr')) {
 function pr($var) {

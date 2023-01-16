@@ -1,7 +1,7 @@
 @extends('layouts.vertical', ['title' => 'Dashboard','demo'=>'creative'])
 @section('css')
-    <!-- Plugins css -->
-    <link href="{{ asset('demo/css/style.css') }}" rel="stylesheet" type="text/css" />
+    {{-- <!-- Plugins css -->
+    <link href="{{ asset('demo/css/style.css') }}" rel="stylesheet" type="text/css" /> --}}
 @endsection
 @php
     use Carbon\Carbon;
@@ -64,8 +64,9 @@
             </div>
         </div>
     </div>
-@endsection
-@include('modals.optimize-route')
+    @include('modals.optimize-route')
+ @endsection
+
 <?php   // for setting default location on map
     $agentslocations = array();
     if(!empty($agents)){
