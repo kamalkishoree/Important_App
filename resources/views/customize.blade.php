@@ -13,11 +13,11 @@
     <div class="row">
         <div class="col-11">
             <div class="text-sm-left">
-                
+
                 <div class="alert alert-success">
                     <span>{!! \Session::get('success') !!}</span>
                 </div>
-                
+
             </div>
         </div>
     </div>
@@ -32,7 +32,7 @@
     </div>
     <!-- end Section title -->
     <div class="row mb-3">
-        <div class="col-md-4">
+        <div class="col-md-5 col-xl-4">
             <div class="card-box h-100">
                 <div class="row">
                     <div class="col-md-12">
@@ -149,8 +149,8 @@
                 </div>
             </div>
         </div>
-        
-        <div class="col-md-4">
+
+        <div class="col-md-4 col-xl-4">
             <div class="card-box h-100">
                 <form method="POST" class="h-100" action="{{route('preference', Auth::user()->code)}}">
                     @csrf
@@ -177,24 +177,24 @@
                             @endif
                             <hr>
                             <h4 class="header-title">{{__("Show Limited Address")}}</h4>
-                        
+
                             <div class="custom-control custom-switch">
                                 <input type="checkbox" class="custom-control-input event_type" id="show_limited_address" name="show_limited_address" {{isset($preference) && $preference->show_limited_address == 1 ? 'checked':''}}>
                                 <label class="custom-control-label" for="show_limited_address">{{__("Show only first 5 address")}}</label>
                             </div>
                         </div>
-                    </div>      
+                    </div>
                 </form>
             </div>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-3 col-xl-4">
             <div class="card-box h-100">
                 <form method="POST" class="h-100" action="{{route('update.contact.us', Auth::user()->code)}}">
                     <div class="d-flex align-items-center justify-content-between mb-2">
                         <h4 class="header-title mb-0">{{__('Contact Us')}}</h4>
                         <button class="btn btn-outline-info d-block" type="submit"> Save </button>
                     </div>
-                
+
                     @csrf
                     <div class="row">
                         <div class="col-md-12">
@@ -233,7 +233,7 @@
             </div>
         </div>
     </div>
-    
+
         <form method="POST" action="{{route('task.proof')}}">
         @csrf
         <div class="row">

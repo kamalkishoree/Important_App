@@ -76,19 +76,19 @@ header .navbar-light .navbar-nav .nav-link {
 .left-sidebar .card {
   border: none;
   margin-bottom: 0px;
-}   
+}
 .left-sidebar #accordion .card-header {
   position: relative;
   cursor: pointer;
   background-color: rgb(203 203 203 / 0.17);
   margin-bottom: 5px;
   border: 1px solid rgb(129 129 129 / .17);
-  padding: .5rem 1rem; 
+  padding: .5rem 1rem;
 }
 
 .left-sidebar #accordion .card-header.collapsed:after {
     /* symbol for "collapsed" panels */
-    content: "\f107"; 
+    content: "\f107";
 }
 
 .left-sidebar p{
@@ -154,7 +154,7 @@ header .navbar-light .navbar-nav .nav-link {
   line-height: 15px;
   margin-bottom: 0px;
   margin-top: 4px;
-} 
+}
 .assigned-block span {
   color: #797979;
   font-size: 13px;
@@ -253,7 +253,7 @@ header .navbar-light .navbar-nav .nav-link {
   color: #797979;
   font-size: 13px;
   letter-spacing: 0;
-  border: none; 
+  border: none;
   display: inline-block;
   outline: none;
 }
@@ -277,7 +277,7 @@ header .navbar-light .navbar-nav .nav-link {
   min-width: 250px;
 }
 .bottom-content label {
-  margin-bottom:0px; 
+  margin-bottom:0px;
 }
 
 .task-block input {
@@ -295,7 +295,7 @@ header .navbar-light .navbar-nav .nav-link {
 }
 .circle.lia-castro {
   background-color: #00C99B;
-} 
+}
 /* .map-wrapper {
   height: 100vh;
   overflow: hidden;
@@ -415,7 +415,7 @@ body.menuitem-active .task-block h6 {
   display: block;
   position: relative;
   }
-  
+
   .mb-0>a:after {
   content: "\f078";
   /* fa-chevron-down */
@@ -430,12 +430,62 @@ body.menuitem-active .task-block h6 {
   content: "\f077";
   /* fa-chevron-up */
   }
-  
+
   .card-header {
   padding: .5rem 1rem;
   }
-  
+
   body.menuitem-active .profile-status {
   border: none!important;
   }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* ============= hotfixp2p dispatcher 13 jan 2023  ===================== */
+body .profile-circle {font-size: 16px!important;overflow: hidden;padding: 0 10px;}
+body.dark[data-sidebar-size=condensed] .left-side-menu #sidebar-menu>ul>li:hover>a {background-color: rgb(247 184 75 / 100%);}
+body.dark .left-sidebar #accordion .card-header:hover,
+body.dark .left-sidebar #accordion .card-header:focus,
+body.dark .left-sidebar #accordion .card-header:visited{background-color: #465362;}
+body.dark[data-sidebar-size=condensed] .left-side-menu #sidebar-menu > ul ul {background-color: #303841;}
+body.dark .navbar-custom .topnav-menu .nav-link {color: #acbfd2;}
+body.dark .map-wrapper  .contant .bottom-content {background-color: #333c44;}
+body.dark .bottom-content .datetime {color: #acbfd2;background-color: transparent;}
+body.dark  .brdr-1 {border-right: 1px solid #acbfd2 !important;}
+body.dark .task-block h6,
+body.dark .g-btn .text,
+body.dark .bottom-content button{color: #acbfd2;}
+body.dark .alTaskType {background-color: #465362;}
+body.dark .selectize-input,
+body.dark .alTaskType input, body.dark  .alTaskType textarea, body.dark .alTaskType select{color: #acbfd2;border: 1px solid #677685;}
+body.dark .dropify-wrapper {background-color: #465362;border: 2px solid #677685;}
+body.dark .dropify-wrapper .dropify-message p{color: #acbfd2;}
+body.dark .dropify-wrapper:hover{opacity: .1;}
+body.dark[data-sidebar-size=condensed] .logo span.logo-sm img,
+body[data-sidebar-size=condensed] .logo span.logo-sm img {  width: 100%;  height: auto;}
+body .bg-pattern button[type="submit"]:hover {  background-color: #4938d7;    border-color: #3f2ed4;}
+
+.alert-success {
+  text-transform: capitalize;
+}
+/* ============= hotfixp2p dispatcher 13 jan 2023  ===================== */

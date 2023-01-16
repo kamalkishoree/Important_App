@@ -138,7 +138,7 @@
             <form id="UpdateClient" method="post" action="{{route('profile.update',Auth::user()->code)}}" enctype="multipart/form-data">
                 @method('PUT')
                 @csrf
-                <div class="col-md-12 col-xl-7 col-lg-10">
+                <div class="col-md-12 col-lg-11 col-xl-8">
                     <div class="card">
                         <div class="card-body">
                             <h4 class="header-title">{{__("Organization details")}}</h4>

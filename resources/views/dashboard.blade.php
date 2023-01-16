@@ -1,8 +1,6 @@
 @extends('layouts.vertical', ['title' => 'Dashboard','demo'=>'creative'])
 
 @section('css')
-<!-- Plugins css -->
-<link href="{{ asset('demo/css/style.css') }}" rel="stylesheet" type="text/css" />
 @endsection
 @php
 
@@ -30,7 +28,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                     <input type="radio" id="user_status_all" value="2" name="user_status" class="checkUserStatus" checked>
                     <label for="user_status_all"> {{__("All")}} </label>
                 </div>
-                
+
                 <div class="radio radio-primary form-check-inline">
                     <input type="radio" id="user_status_online" value="1" name="user_status" class="checkUserStatus">
                     <label for="user_status_online"> {{__("Online")}} </label>
@@ -163,7 +161,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
             <div class="card no-border-radius" id="teams_container">
 
 
-                
+
             </div>
         </div>
 
@@ -247,9 +245,9 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
     </div>
 </div>
 </div>
-
-@endsection
 @include('modals.optimize-route')
+@endsection
+
 
 <?php   // for setting default location on map
     $agentslocations = array();
@@ -349,7 +347,7 @@ setMapOnAll(null);
 for (let i = 0; i < olddata.length; i++) {
     checkdata = olddata[i];
     var info = []
-    
+
     if ($.inArray(checkdata['team_id'], val) != -1 || $.inArray(-1, val) != -1) {
 
         var urlnewcreate = '';
@@ -493,7 +491,7 @@ $('.agentdisplay_old').click(function() {
 
     for (let i = 0; i < allagent.length; i++) {
         checkdata = allagent[i];
-        
+
         if ($.inArray(checkdata['is_available'], agentval) != -1 || $.inArray(2, agentval) != -1) {
             if (checkdata['is_available'] == 1) {
                 images = url+'/demo/images/location.png';
@@ -740,7 +738,7 @@ function deleteMarkers() {
 
 
 $(".datetime").on('change', function postinput(){
-    var matchvalue = $(this).val(); 
+    var matchvalue = $(this).val();
     newabc =  url+'?date='+matchvalue;
     window.location.href = newabc;
 });
@@ -1020,7 +1018,7 @@ function autoloadmap(){
 
             if (displayagent.agentlog != null && displayagent.agentlog['lat'] != "0.00000000" && displayagent.agentlog[
                     'long'] != "0.00000000") {
-                
+
                 if (displayagent['is_available'] == 1) {
                     images = url + '/demo/images/location.png';
                 } else {
@@ -1047,7 +1045,7 @@ function autoloadmap(){
             autoloadmap();
         }, 5000);
     });
-    
+
 }
 // delete agent marks
 function deleteAgentMarks() {
@@ -1202,7 +1200,7 @@ $(".dragable_tasks").sortable({
                 $('#addressTaskBlock').css('display','none');
                 $('#selectedtasklocations').html('');
                 $('.selecttask').css('display','none');
-                
+
                 if(data.current_location == 0)
                 {
                     $("input[type=radio][name=driver_start_location][value='current']").remove();
