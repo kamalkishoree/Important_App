@@ -1,5 +1,7 @@
 @extends('layouts.vertical', ['title' => 'Dashboard','demo'=>'creative'])
 @section('css')
+    {{-- <!-- Plugins css -->
+    <link href="{{ asset('demo/css/style.css') }}" rel="stylesheet" type="text/css" /> --}}
 @endsection
 @php
     use Carbon\Carbon;
@@ -7,34 +9,14 @@
     $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain/';
 @endphp
 @section('content')
-
-<!-- Bannar Section -->
-{{-- <section class="bannar header-setting"> --}}
-<div class="container-fluid p-0">
-<div class="row coolcheck no-gutters">
-    <div class="pageloader" style="display: none;">
-        <div class="box">
-            <h4 class="routetext"></h4>
-            <div class="spinner-border avatar-lg text-primary m-2" role="status"></div>
-        </div>
-    </div>
-    <div id="scrollbar" class="col-md-4 col-xl-3 left-sidebar pt-3">
-        <div class="side_head d-flex justify-content-between align-items-center mb-2">
-            <i class="mdi mdi-sync mr-1" onclick="reloadData()" aria-hidden="true"></i>
-            <div>
-                <div class="radio radio-primary form-check-inline ml-3 mr-2">
-                    <input type="radio" id="user_status_all" value="2" name="user_status" class="checkUserStatus" checked>
-                    <label for="user_status_all"> {{__("All")}} </label>
-                </div>
-
-                <div class="radio radio-primary form-check-inline">
-                    <input type="radio" id="user_status_online" value="1" name="user_status" class="checkUserStatus">
-                    <label for="user_status_online"> {{__("Online")}} </label>
-                </div>
-
-                <div class="radio radio-info form-check-inline mr-2">
-                    <input type="radio" id="user_status_offline" value="0" name="user_status" class="checkUserStatus">
-                    <label for="user_status_offline"> {{__("Offline")}} </label>
+    <!-- Bannar Section -->
+    {{-- <section class="bannar header-setting"> --}}
+    <div class="container-fluid p-0">
+        <div class="row coolcheck no-gutters">
+            {{-- <div class="pageloader" style="display: none;">
+                <div class="box">
+                    <h4 class="routetext"></h4>
+                    <div class="spinner-border avatar-lg text-primary m-2" role="status"></div>
                 </div>
             </div> --}}
             <div id="scrollbar" class="col-md-4 col-xl-4 left-sidebar pt-3">
@@ -56,36 +38,13 @@
                     </div>
                     <span class="allAccordian"><span class="" onclick="openAllAccordian()">{{__("Open All")}}</span></span>
                 </div>
-<<<<<<< HEAD
-
-            </div>
-            <div class="card no-border-radius" id="teams_container">
-
-
-
-            </div>
-        </div>
-
-        <form id="pdfgenerate" method="post" enctype="multipart/form-data" action="{{ route('download.pdf') }}">
-            @csrf
-            <input id="pdfvalue" type="hidden" name="pdfdata">
-        </form>
-
-    </div>
-
-    <div class="col-md-8 col-xl-9">
-        <div class="map-wrapper">
-            <div style="width: 100%">
-                <div id="map_canvas" style="width: 100%; height:calc(100vh - 70px);"></div>
-=======
                 <div  id="teams_container">
-
+                    
                 </div>
                 <form id="pdfgenerate" method="post" enctype="multipart/form-data" action="{{ route('download.pdf') }}">
                     @csrf
                     <input id="pdfvalue" type="hidden" name="pdfdata">
                 </form>
->>>>>>> pre_dev
             </div>
             <div class="col-md-8 col-xl-8">
                 <div class="map-wrapper">
@@ -105,17 +64,9 @@
             </div>
         </div>
     </div>
-<<<<<<< HEAD
-</div>
-</div>
-@include('modals.optimize-route')
-@endsection
+    @include('modals.optimize-route')
+ @endsection
 
-
-=======
-@endsection
-@include('modals.optimize-route')
->>>>>>> pre_dev
 <?php   // for setting default location on map
     $agentslocations = array();
     if(!empty($agents)){
@@ -131,122 +82,6 @@
     $agentslocations[] = $defaultmaplocation;
 ?>
 @section('script')
-<<<<<<< HEAD
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-timeago/1.6.3/jquery.timeago.js"></script>
-<script>
-
-$('.teamchecks').on('change', function() {
-    $('.teamchecks').not(this).prop('checked', false);
-});
-
-$('.taskchecks').on('change', function() {
-    $('.taskchecks').not(this).prop('checked', false);
-});
-
-$('.agentcheck').on('change', function() {
-    $('.agentcheck').not(this).prop('checked', false);
-});
-
-$(document).ready(function() {
-
-    $('#wrapper').addClass('dshboard');
-
-    initMap();
-
-    $('#shortclick').trigger('click');
-    $(".timeago").timeago();
-
-    $('.checkUserStatus').click(function() {
-        loadTeams();
-    });
-    loadTeams();
-});
-
-function gm_authFailure() {
-
-    $('.excetion_keys').append('<span><i class="mdi mdi-block-helper mr-2"></i> <strong>Google Map</strong> key is not valid</span><br/>');
-    $('.displaySettingsError').show();
-};
-
-// var marker;
-var show = [0];
-let map;
-let markers = [];
-let driverMarkers = [];
-let privesRoute = [];
-
-var url = window.location.origin;
-var olddata  = {!!json_encode($newmarker)!!};
-var allagent = {!!json_encode($agents)!!};
-
-// for getting default map location
-var defaultmaplocation = {!!json_encode($agentslocations)!!};
-var defaultlat = parseFloat(defaultmaplocation[0].lat);
-var defaultlong = parseFloat(defaultmaplocation[0].long);
-
-var imgproxyurl         = {!!json_encode($imgproxyurl)!!};
-
-
-$('.filtercheck').click(function() {
-    $('.agentcheck').not(this).prop('checked', false);
-// for teams
-var val = [];
-$('.newchecks:checkbox:checked').each(function(i) {
-    val[i] = parseInt($(this).val());
-});
-
-//for tasks
-var taskval = [];
-$('.taskchecks:checkbox:checked').each(function(i) {
-    taskval[i] = parseInt($(this).val());
-});
-
-//for drivers
-var agentval = [];
-$('.agentdisplay:checkbox:checked').each(function(i) {
-    agentval[i] = parseInt($(this).val());
-});
-setMapOnAll(null);
-//main task markers
-for (let i = 0; i < olddata.length; i++) {
-    checkdata = olddata[i];
-    var info = []
-
-    if ($.inArray(checkdata['team_id'], val) != -1 || $.inArray(-1, val) != -1) {
-
-        var urlnewcreate = '';
-            if(checkdata['task_status'] == 0){
-                urlnewcreate = 'unassigned';
-            }else if(checkdata['task_status'] == 1 || checkdata['task_status'] == 2){
-                urlnewcreate = 'assigned';
-            }else if(checkdata['task_status'] == 3){
-                urlnewcreate = 'complete';
-            }else{
-                urlnewcreate = 'faild';
-            }
-
-            if(checkdata['task_type_id'] == 1){
-                    urlnewcreate += '_P.png';
-            }else if(checkdata['task_type_id'] == 2){
-                    urlnewcreate +='_D.png';
-            }else{
-                    urlnewcreate +='_A.png';
-            }
-
-        image = '{{ asset('assets/newicons/') }}'+'/'+urlnewcreate;
-
-        send = null;
-        type = 1;
-
-        addMarker({
-            lat:  parseFloat(checkdata['latitude']),
-            lng:  parseFloat(checkdata['longitude'])
-        }, send, image,checkdata,type);
-    }
-
-    // for tasks
-        if($.inArray(checkdata['task_status'], taskval) !== -1 || $.inArray(5, taskval) != -1) {
-=======
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-timeago/1.6.3/jquery.timeago.js"></script>
     <script>
         // var marker;
@@ -281,7 +116,6 @@ for (let i = 0; i < olddata.length; i++) {
             ListenDataChannel();
             ListenAgentLogChannel();
         });
->>>>>>> pre_dev
 
         function gm_authFailure() {
             $('.excetion_keys').append('<span><i class="mdi mdi-block-helper mr-2"></i> <strong>Google Map</strong> key is not valid</span><br/>');
@@ -303,7 +137,7 @@ for (let i = 0; i < olddata.length; i++) {
                     mapTypeId: "roadmap",
                     styles: themeType,
                 });
-
+        
                 // Adds a marker at the center of the map.
                 for (let i = 0; i < olddata.length; i++) {
                     checkdata = olddata[i];
@@ -317,7 +151,7 @@ for (let i = 0; i < olddata.length; i++) {
                     }else{
                         urlnewcreate = 'faild';
                     }
-
+            
                     if(checkdata['task_type_id'] == 1){
                         urlnewcreate += '_P.png';
                     }else if(checkdata['task_type_id'] == 2){
@@ -325,9 +159,9 @@ for (let i = 0; i < olddata.length; i++) {
                     }else{
                         urlnewcreate +='_A.png';
                     }
-
+            
                     img = '{{ asset('assets/newicons/') }}'+'/'+urlnewcreate;
-
+            
                     send = null;
                     type = 1;
                     addMarker({
@@ -339,7 +173,7 @@ for (let i = 0; i < olddata.length; i++) {
                 deleteAgentMarks();
                 clearRoutes();
             }
-
+    
             $.each(allroutes, function(i, item) {
                 const directionsService = new google.maps.DirectionsService();
                 const directionsRenderer = new google.maps.DirectionsRenderer({suppressMarkers: true});
@@ -349,202 +183,6 @@ for (let i = 0; i < olddata.length; i++) {
                 }else{
                     var routecolor = "pink";
                 }
-<<<<<<< HEAD
-
-                image = '{{ asset('assets/newicons/') }}'+'/'+urlnewcreate;
-
-                send = null;
-                type = 1;
-            addMarker({lat:parseFloat(checkdata['latitude']),lng:parseFloat(checkdata['longitude'])}, send,image,checkdata,type);
-        }
-}
-
-    //for agents
-    for (let i = 0; i < allagent.length; i++) {
-        checkdata = allagent[i];
-        //for agents
-        if ($.inArray(checkdata['is_available'], agentval) != -1 || $.inArray(2, agentval) != -1) {
-
-            if (checkdata['is_available'] == 1) {
-                images = url+'/demo/images/location.png';
-            }else {
-                images = url+'/demo/images/location_grey.png';
-            }
-            var image = {
-             url: images, // url
-             scaledSize: new google.maps.Size(50, 50), // scaled size
-             origin: new google.maps.Point(0,0), // origin
-             anchor: new google.maps.Point(22,22) // anchor
-            };
-            send = null;
-            type = 2;
-           addMarker({lat: parseFloat(checkdata.agentlog['lat']),lng:  parseFloat(checkdata.agentlog['long'])}, send, image,checkdata,type);
-        }
-    }
-
-});
-
-
-$('.taskchecks_old').click(function() {
-var taskval = [];
-$('.taskchecks:checkbox:checked').each(function(i) {
-    taskval[i] = parseInt($(this).val());
-});
-
-setMapOnAll(null);
-$(".newchecks").prop('checked', false);
-$(".agentdisplay").prop('checked', false);
-
-for (let i = 0; i < olddata.length; i++) {
-    checkdata = olddata[i];
-
-    if($.inArray(checkdata['task_status'], taskval) !== -1 || $.inArray(5, taskval) != -1) {
-
-        var urlnewcreate = '';
-        if(checkdata['task_status'] == 0){
-            urlnewcreate = 'unassigned';
-        }else if(checkdata['task_status'] == 1 || checkdata['task_status'] == 2){
-            urlnewcreate = 'assigned';
-        }else if(checkdata['task_status'] == 3){
-            urlnewcreate = 'complete';
-        }else{
-            urlnewcreate = 'faild';
-        }
-
-        if(checkdata['task_type_id'] == 1){
-            urlnewcreate += '_P.png';
-        }else if(checkdata['task_type_id'] == 2){
-            urlnewcreate +='_D.png';
-        }else{
-            urlnewcreate +='_A.png';
-        }
-
-        image = '{{ asset('assets/newicons/') }}'+'/'+urlnewcreate;
-
-        send = null;
-        type = 1;
-        addMarker({lat:parseFloat(checkdata['latitude']),lng:parseFloat(checkdata['longitude'])}, send,image,checkdata,type);
-    }
-}
-
-});
-
-$('.agentdisplay_old').click(function() {
-    var agentval = [];
-    $('.agentdisplay:checkbox:checked').each(function(i) {
-        agentval[i] = parseInt($(this).val());
-    });
-    setMapOnAll(null);
-    $(".taskchecks").prop('checked', false);
-    $(".newchecks").prop('checked', false);
-
-    for (let i = 0; i < allagent.length; i++) {
-        checkdata = allagent[i];
-
-        if ($.inArray(checkdata['is_available'], agentval) != -1 || $.inArray(2, agentval) != -1) {
-            if (checkdata['is_available'] == 1) {
-                images = url+'/demo/images/location.png';
-            }else {
-                images = url+'/demo/images/location_grey.png';
-            }
-            var image = {
-            url: images, // url
-            scaledSize: new google.maps.Size(50, 50), // scaled size
-            origin: new google.maps.Point(0,0), // origin
-            anchor: new google.maps.Point(22,22) // anchor
-            };
-            send = null;
-            type = 2;
-        addMarker({lat: parseFloat(checkdata.agentlog['lat']),lng:  parseFloat(checkdata.agentlog['long'])}, send, image,checkdata,type);
-        }
-    }
-});
-
-function initMap() {
-    const haightAshbury = {
-        lat: allagent.length != 0 && allagent[0].agentlog && allagent[0].agentlog['lat']  != "0.00000000" ? parseFloat(allagent[0].agentlog['lat']): defaultlat,
-        lng: allagent.length != 0 && allagent[0].agentlog && allagent[0].agentlog['long'] != "0.00000000" ? parseFloat(allagent[0].agentlog['long']):defaultlong
-    };
-
-    map = new google.maps.Map(document.getElementById("map_canvas"), {
-        zoom: 12,
-        center: haightAshbury,
-        mapTypeId: "roadmap",
-        styles: themeType,
-    });
-
-    //new code for route
-    var color = [
-        "blue",
-        "green",
-        "red",
-        "purple",
-        "skyblue",
-        "yellow",
-        "orange",
-        ];
-
-    var allroutes = {!! json_encode($routedata) !!};
-    $.each(allroutes, function(i, item) {
-        const directionsService = new google.maps.DirectionsService();
-        const directionsRenderer = new google.maps.DirectionsRenderer({suppressMarkers: true});
-        if(i < color.length)
-        {
-            var routecolor = color[i];
-        }else{
-            var routecolor = "pink";
-        }
-        directionsRenderer.setOptions({
-            polylineOptions: {
-                strokeColor: routecolor
-            }
-        });
-        directionsRenderer.setMap(map);
-        var al_task = allroutes[i].task_details;
-        var agent_locatn = allroutes[i].driver_detail;
-        calculateAndDisplayRoute(directionsService, directionsRenderer,map,al_task,agent_locatn);
-    });
-
-    // Adds a marker at the center of the map.
-    for (let i = 0; i < olddata.length; i++) {
-        checkdata = olddata[i];
-
-        var urlnewcreate = '';
-        if(checkdata['task_status'] == 0){
-            urlnewcreate = 'unassigned';
-        }else if(checkdata['task_status'] == 1 || checkdata['task_status'] == 2){
-            urlnewcreate = 'assigned';
-        }else if(checkdata['task_status'] == 3){
-            urlnewcreate = 'complete';
-        }else{
-            urlnewcreate = 'faild';
-        }
-
-        if(checkdata['task_type_id'] == 1){
-                urlnewcreate += '_P.png';
-        }else if(checkdata['task_type_id'] == 2){
-                urlnewcreate +='_D.png';
-        }else{
-                urlnewcreate +='_A.png';
-        }
-
-        img = '{{ asset('assets/newicons/') }}'+'/'+urlnewcreate;
-
-        send = null;
-            type = 1;
-        addMarker({
-            lat: parseFloat(checkdata['latitude']),
-            lng:  parseFloat(checkdata['longitude'])
-        }, send, img,checkdata,type);
-    }
-
-    //agents markers
-    for (let i = 0; i < allagent.length; i++) {
-            displayagent = allagent[i];
-
-            if(displayagent.agentlog != null && displayagent.agentlog['lat'] != "0.00000000" && displayagent.agentlog['long'] != "0.00000000" ){
-
-=======
                 directionsRenderer.setOptions({
                     polylineOptions: {
                         strokeColor: routecolor
@@ -555,12 +193,11 @@ function initMap() {
                 var agent_locatn = allroutes[i].driver_detail;
                 calculateAndDisplayRoute(directionsService, directionsRenderer, map, al_task, agent_locatn);
             });
-
+    
             //agents markers
             for (let i = 0; i < allagent.length; i++) {
                 displayagent = allagent[i];
                 if(displayagent.agentlog != null && displayagent.agentlog['lat'] != "0.00000000" && displayagent.agentlog['long'] != "0.00000000" ){
->>>>>>> pre_dev
                     if (displayagent['is_available'] == 1) {
                         images = url+'/demo/images/location.png';
                     }else {
@@ -574,13 +211,13 @@ function initMap() {
                     };
                     send = null;
                     type = 2;
-
+            
                     addMarker({lat: parseFloat(displayagent.agentlog['lat']),
                     lng:  parseFloat(displayagent.agentlog['long'])
                 }, send, image,displayagent, type);
             }
         }
-
+    
         map.setCenter(haightAshbury);
     }
 
@@ -595,7 +232,7 @@ function initMap() {
     {
         const waypts = [];
         const checkboxArray = document.getElementById("waypoints");
-
+        
         for (let i = 0; i < alltask.length; i++) {
         if (i != alltask.length - 1 && alltask[i].task_status != 4 && alltask[i].task_status != 5 ) {
             waypts.push({
@@ -686,7 +323,7 @@ function addMarker(location, lables, images, data, type) {
         map: map,
         //animation: google.maps.Animation.DROP,
     });
-
+    
     if (type == 2) {
         driverMarkers.push(marker)
     }
@@ -722,12 +359,6 @@ function deleteMarkers() {
 }
 
 
-<<<<<<< HEAD
-$(".datetime").on('change', function postinput(){
-    var matchvalue = $(this).val();
-    newabc =  url+'?date='+matchvalue;
-    window.location.href = newabc;
-=======
 $(".datetime").on('change', function(){
     loadTeams(1, 1);
     old_channelname = channelname;
@@ -739,7 +370,6 @@ $(".datetime").on('change', function(){
         ListenDataChannel();
         ListenAgentLogChannel();
     }
->>>>>>> pre_dev
 });
 
 //function fot optimizing route
@@ -776,7 +406,7 @@ function RouteOptimization(taskids, distancematrix, optimize, agentid, date) {
                     $("#radio-current-location-span").remove();
                     $("input[type=radio][name=driver_start_location][value='select']").click();
                 }
-
+                
                 if(tasktypeid==1)
                 {
                     tasktype = "Pickup";
@@ -786,7 +416,7 @@ function RouteOptimization(taskids, distancematrix, optimize, agentid, date) {
                 }else{
                     tasktype = "Appointment";
                 }
-
+                
                 var location_address =  object['location']['address'];
                 var shortname =  object['location']['short_name'];
 
@@ -795,7 +425,7 @@ function RouteOptimization(taskids, distancematrix, optimize, agentid, date) {
             }
         },
         error: function(response) {
-
+            
         }
     });
     $('#optimize-route-modal').modal('show');
@@ -918,18 +548,8 @@ function loadTeams(is_load_html, is_show_loader)
                     allagent  = JSON.parse($("#agents_map_data").val());
                 }
 
-<<<<<<< HEAD
-            if (displayagent.agentlog != null && displayagent.agentlog['lat'] != "0.00000000" && displayagent.agentlog[
-                    'long'] != "0.00000000") {
-
-                if (displayagent['is_available'] == 1) {
-                    images = url + '/demo/images/location.png';
-                } else {
-                    images = url + '/demo/images/location_grey.png';
-=======
                 if($("#uniquedrivers_map_data").val()!=''){
                     allroutes  = JSON.parse($("#uniquedrivers_map_data").val());
->>>>>>> pre_dev
                 }
 
                 if($("#agentslocations_map_data").val()!=''){
@@ -959,10 +579,6 @@ function loadTeams(is_load_html, is_show_loader)
             }
         }
     });
-<<<<<<< HEAD
-
-=======
->>>>>>> pre_dev
 }
 
 
@@ -1026,68 +642,6 @@ function initializeSortable()
     });
 }
 
-<<<<<<< HEAD
-//for drag drop functionality
-$(".dragable_tasks").sortable({
-    update : function(event, ui) {
-        $('.routetext').text('Arranging Route');
-        $('.pageloader').css('display','block');
-        var divid = $(this).attr('id');
-        var params = $(this).attr('params');
-        var agentid = $(this).attr('agentid');
-        var date = $(this).attr('date');
-
-        var taskorder = "";
-        jQuery("#"+divid+" .card-body.ui-sortable-handle").each(function (index, element) {
-            taskorder = taskorder + $(this).attr('task_id') + ",";
-        });
-        $('input[type=radio][name=driver_start_location]').prop('checked', false);
-        $.ajax({
-            type: 'POST',
-            url: '{{url("/arrange-route")}}',
-            headers: {
-                'X-CSRF-Token': '{{ csrf_token() }}',
-            },
-            data: {'taskids':taskorder,'agentid':agentid,'date':date},
-
-            success: function(response) {
-                var data = $.parseJSON(response);
-                reInitMap(data.allroutedata);
-                $('.totdis'+agentid).html(data.total_distance);
-                var funperams = '<span class="optimize_btn" onclick="RouteOptimization('+params+')">Optimize</span>';
-                $('.optimizebtn'+agentid).html(funperams);
-                $('.pageloader').css('display','none');
-
-                $('#routeTaskIds').val(taskorder);
-                $('#routeMatrix').val('');
-                $('#routeOptimize').val('');
-                $('#routeAgentid').val(agentid);
-                $('#routeDate').val(date);
-                $('#optimizeType').val('dragdrop');
-                $("input[name='driver_start_location'][value='current']").prop("checked",true);
-                $('#addressBlock').css('display','none');
-                $('#addressTaskBlock').css('display','none');
-                $('#selectedtasklocations').html('');
-                $('.selecttask').css('display','none');
-
-                if(data.current_location == 0)
-                {
-                    $("input[type=radio][name=driver_start_location][value='current']").remove();
-                    $("#radio-current-location-span").remove();
-                    $("input[type=radio][name=driver_start_location][value='select']").click();
-                }
-                $('#optimize-route-modal').modal('show');
-            },
-            error: function(response) {
-                alert('There is some issue. Try again later');
-                $('.pageloader').css('display','none');
-            }
-        });
-    }
-});
-
-=======
->>>>>>> pre_dev
 function reloadData() {
     location.reload();
 }
