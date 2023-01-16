@@ -81,7 +81,7 @@ trait GlobalFunction{
                 $f->whereDate('order_time', $date)->with('task');
             }])->orderBy('id', 'DESC');
             
-            if(@$preference){
+            if(@$preference->manage_fleet){
                 $geoagents = $geoagents->whereHas('agentFleet');
             }
             $geoagents = $geoagents->get()->where("agent_cash_at_hand", '<', $cash_at_hand);
