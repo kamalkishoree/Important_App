@@ -205,6 +205,8 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 			Route::post('agent/payout/bank/details', 'AgentPayoutController@agentPayoutBankDetails')->name('agent.payout.bank.details');
 			Route::post('agent/change_approval_status', 'AgentController@change_approval_status')->name('agent/change_approval_status');
 			Route::resource('customer', 'CustomerController');
+
+			Route::get('agent/driver-list', 'Accountancy\DriverAccountingController@driverList')->name('driver-list');
 			// Driver Accountancy
 			Route::group(['prefix' => 'driver-accounting'], function () {
 				Route::any('/', 'Accountancy\DriverAccountingController@index')->name('driver-accountancy.index');

@@ -801,6 +801,16 @@ class AgentController extends Controller
         }
     }
 
+    public function driverList(Request $request) {
+        
+        $agents = Agent::select('id', 'name');
+        if( (strlen($request->term) > 0)) {
+            $agents = $agents->where('name', 'like', '%' .$request->term.'%')->select('id', 'name');
+        } 
+        $agents = $agents->get();
+        return response()->json($agents);
+    }
+
     public function search(Request $request, $domain = '')
     {
         //->limit(10)
