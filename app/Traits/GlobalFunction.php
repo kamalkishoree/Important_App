@@ -3,7 +3,7 @@ namespace App\Traits;
 use DB;
 use Illuminate\Support\Collection;
 use Log;
-use App\Model\{ChatSocket, Client, Agent, DriverGeo,Order};
+use App\Model\{ChatSocket, Client, Agent, ClientPreference, DriverGeo,Order};
 use Illuminate\Support\Facades\Config;
 
 
@@ -61,7 +61,7 @@ trait GlobalFunction{
     public function getGeoBasedAgentsData($geo, $is_cab_pooling, $agent_tag = '', $date, $cash_at_hand)
     {
         try {
-
+            $preference = ClientPreference::select('manage_fleet')->first();
             $geoagents_ids =  DriverGeo::where('geo_id', $geo);
 
             $geoagents_ids = $geoagents_ids->whereHas('agent', function($q) use ($geo, $is_cab_pooling){
@@ -79,7 +79,12 @@ trait GlobalFunction{
 
             $geoagents = Agent::where('is_threshold',0)->whereIn('id',  $geoagents_ids)->with(['logs','order'=> function ($f) use ($date) {
                 $f->whereDate('order_time', $date)->with('task');
-            }])->orderBy('id', 'DESC')->get()->where("agent_cash_at_hand", '<', $cash_at_hand);
+            }])->orderBy('id', 'DESC');
+            
+            if(@$preference){
+                $geoagents = $geoagents->whereHas('agentFleet');
+            }
+            $geoagents = $geoagents->get()->where("agent_cash_at_hand", '<', $cash_at_hand);
 
             return $geoagents;
 

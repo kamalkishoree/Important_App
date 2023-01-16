@@ -58,6 +58,8 @@ class TaskController extends BaseController
      */
     public function index(Request $request)
     {
+        $preference  = ClientPreference::where('id', 1)->first(['theme','date_format','time_format', 'create_batch_hours','manage_fleet']);
+        
         $user = Auth::user();
         $timezone = $user->timezone ?? 251;
         $tz = new Timezone();
@@ -84,6 +86,11 @@ class TaskController extends BaseController
         }else{
             $agents = Agent::orderBy('id', 'DESC');
         }
+        if(@$preference->manage_fleet)
+        {
+            $agents = $agents->whereHas('agentFleet');
+        }
+
         if ($user->is_superadmin == 0 && $user->all_team_access == 0 && $user->manager_type == 0) {
             $agents = $agents->whereHas('team.permissionToManager', function ($query) use($user) {
                 $query->where('sub_admin_id', $user->id);
@@ -125,7 +132,6 @@ class TaskController extends BaseController
         $pending  =  count($all->where('status', 'unassigned'));
         $history  =  count($all->where('status', 'completed'));
         $failed   =  count($all->where('status', 'failed'));
-        $preference  = ClientPreference::where('id', 1)->first(['theme','date_format','time_format', 'create_batch_hours']);
 
         $teamTag   = TagsForTeam::OrderBy('id','asc');
         if ($user->is_superadmin == 0 && $user->all_team_access == 0) {
