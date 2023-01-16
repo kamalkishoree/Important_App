@@ -130,14 +130,14 @@
                 {data: 'payment_type', name: 'payment_type', orderable: true, searchable: false},
                 {data: 'threshold_type', name: 'threshold_type', orderable: true, searchable: false},
                 {data: 'status', name: 'status', orderable: true, searchable: false},
-                
+                {data: 'action', name: 'action', orderable: true, searchable: false},
             ]
             });
-      
-       
+
+
 
     });
-    
+
 
     //change status on a customer
     $(function() {
@@ -277,8 +277,8 @@
                     hiddenInput: "full_number",
                     utilsScript: "//cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.3/js/utils.js"
                 });
-                
-                
+
+
                 document.querySelector("#edit-customer-modal .phone_number").addEventListener("countrychange", function() {
                     $("#edit-customer-modal #dialCode").val(phone_number.getSelectedCountryData().dialCode);
                 });
@@ -386,11 +386,11 @@
     }
 
     function deleteAddress(id,rowid)
-    { 
+    {
         let text = "Are you sure?";
         if (confirm(text) == true) {
-          
-            
+
+
             if(id!="")
             {
                 $.ajax({
@@ -421,12 +421,98 @@
 
     }
 
-    $(document).on('click', '.form-ul .mdi-delete', function(e) {  
-            var r = confirm("Are you sure?");
-            if (r == true) {
-               var customerid = $(this).attr('customerid');
-               $('form#customerdelete'+customerid).submit();
+    $(document).on('click', '.form-ul .mdi-delete', function(e) {
+        var r = confirm("Are you sure?");
+        if (r == true) {
+            var customerid = $(this).attr('customerid');
+            $('form#customerdelete'+customerid).submit();
+        }
+    });
+
+    $(document).on('click', '.payment_check', function(e) {
+        var id = $(this).attr('data-id');
+        var status  = $(this).attr('data-status');
+        if(id!="")
+            {
+                $.ajax({
+                    type: 'get',
+                    url: '{{url("/agent/threshold/paymentstatus")}}',
+                    headers: {
+                        'X-CSRF-Token': '{{ csrf_token() }}',
+                    },
+                    data: {'id':id},
+
+                    success: function(response) {
+                        $('#payment_status').modal({
+                            backdrop: 'static',
+                            keyboard: false
+                        })
+                        $("#payment_status").find('.modal-body').empty();
+                        $("#payment_status").find('.modal-body').html(response);
+                        $("#payment_status").find('.modal-footer .btn-submit').attr('data-id',id);
+                        if(status == 1 || status == 2){
+                            $("#payment_status").find('.modal-footer .btn-submit').hide();
+                        }
+                    },
+                    error: function(response) {
+                        alert('There is some issue. Try again later');
+                        // $('.pageloader').css('display','none');
+                    }
+                });
             }
-        });
+    });
+
+
+    $(document).on('click', '.btn-submit', function(e) {
+        e.preventDefault();
+        var payment_action  = $("#payment_action").val();
+        var admin_reason    = $("#admin_reason").val();
+        var id              = $(this).attr('data-id');
+        var flag            = false;
+
+        if(payment_action == ''){
+            $("#frm-error").empty();
+            $("#frm-error").html('<p>Please select payment action</p>');
+            flag = false;
+            return false;
+        }else{
+            flag = true;
+        }
+        if(payment_action == 2){
+            if(admin_reason == ''){
+                $("#frm-error").empty();
+                $("#frm-error").html('<p>Please Enter Reason</p>');
+                flag = false;
+                return false;
+            }else{
+                flag = true;
+            }
+        }
+
+        if(flag == true){
+            $.ajax({
+                type: 'POST',
+                url: '{{url("/agent/threshold/paymentaction")}}',
+                headers: {
+                    'X-CSRF-Token': '{{ csrf_token() }}',
+                },
+                data: {'payment_action':payment_action,'admin_reason':admin_reason,'id':id},
+
+                success: function(response) {
+                    if(response == 1){
+                        $("#payment_status").modal('hide');
+                        location.reload();
+                    }else{
+                        alert('There is some issue. Try again later');
+                    }
+                },
+                error: function(response) {
+                    alert('There is some issue. Try again later');
+                    // $('.pageloader').css('display','none');
+                }
+            });
+        }
+    });
+
 
 </script>

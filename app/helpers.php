@@ -310,19 +310,22 @@ if (!function_exists('decimal_format')) {
  /**
      * sendSmsTemplate dynamic selection and replace tags
      */
-    function sendSmsTemplate($slug,$data)
-    {
-        $smsTemp = AgentSmsTemplate::where('slug',$slug)->select('content','tags','template_id')->first();
-        $smsBody = $smsTemp->content;
-        if(isset($smsTemp->tags) && !empty($smsTemp->tags))
+
+     if (!function_exists('sendSmsTemplate')) {
+        function sendSmsTemplate($slug,$data)
         {
-            $tages = explode(',',$smsTemp->tags);
-            foreach($tages as $tag)
+            $smsTemp = AgentSmsTemplate::where('slug',$slug)->select('content','tags','template_id')->first();
+            $smsBody = $smsTemp->content;
+            if(isset($smsTemp->tags) && !empty($smsTemp->tags))
             {
-                $value = $data[$tag]??'';
-                $smsBody = str_replace($tag,$value,$smsBody);
+                $tages = explode(',',$smsTemp->tags);
+                foreach($tages as $tag)
+                {
+                    $value = $data[$tag]??'';
+                    $smsBody = str_replace($tag,$value,$smsBody);
+                }
             }
+            $sms = array('body'=>$smsBody,'template_id'=>$smsTemp->template_id??'');
+            return $sms;
         }
-        $sms = array('body'=>$smsBody,'template_id'=>$smsTemp->template_id??'');
-        return $sms;
     }

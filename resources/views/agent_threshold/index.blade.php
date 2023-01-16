@@ -2,6 +2,13 @@
 
 @section('css')
 <style>
+    div#frm-error {
+        padding-left: 10px;
+    }
+    div#frm-error p {
+        color: red;
+        font-size: 15px;
+    }
     .table th,.table td, .table td {
         display: table-cell !important;
     }
@@ -67,7 +74,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
             </div>
         </div>
     </div>
-  
+
     <div class="row">
         <div class="col-12">
             <div class="card widget-inline main-card-header">
@@ -148,7 +155,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                 @endif
                             </div>
                         </div>
-                       
+
                     </div>
 
                     <div class="table-responsive nagtive-margin">
@@ -162,14 +169,15 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                     <th>{{__("Payment Type")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                     <th>{{__("Threshold Type")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                     <th>{{__("Status")}}</th>
+                                    <th>{{__("Action")}}</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                
+
                             </tbody>
                         </table>
                     </div>
-                    
+
                 </div> <!-- end card-body-->
             </div> <!-- end card-->
         </div> <!-- end col -->
@@ -177,11 +185,47 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
 
 </div>
 
+<div class="modal"  id="payment_status" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Threshold Payment</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-primary btn-submit" disabled>Submit</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
 @endsection
 
 @section('script')
-    <script src="{{asset('assets/js/storeAgent.js')}}"></script>
-    <script src="{{ asset('assets/libs/datatables/datatables.min.js') }}"></script>
-@include('agent_threshold.pagescript')  
+<script src="{{asset('assets/js/storeAgent.js')}}"></script>
+<script src="{{ asset('assets/libs/datatables/datatables.min.js') }}"></script>
+@include('agent_threshold.pagescript')
+<script>
+    $( document ).delegate( "#payment_action", "change", function() {
+       var id       = $(this).val();
 
+       if (id == 2){
+            $("#rejected").empty();
+            $("#rejected").html("<td>Reason</td><td><textarea class='form-control' name='admin_reason' id='admin_reason' placeholder='Enter reason' rows='5'></textarea></td>");
+            $("#payment_status").find('.btn-submit').prop('disabled',false);
+
+       }else  if (id == 1){
+            $("#rejected").empty();
+            $("#payment_status").find('.btn-submit').prop('disabled',false);
+       }else{
+            $("#payment_status").find('.btn-submit').prop('disabled',true);
+       }
+    });
+</script>
 @endsection

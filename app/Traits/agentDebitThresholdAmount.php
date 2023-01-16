@@ -95,7 +95,7 @@ trait agentDebitThresholdAmount{
                             $data                               = ['agent_id' => $agent->id,'threshold_amount' => $threshold_amount, 'transaction_id' => $transaction_id, 'date' => $date, 'payment_type' => $payment_type, 'threshold_type' => $threshold_type, 'status' => $status,'reason'=>$reason];
                             $this->SaveCollectAmount($data);
                         } else {
-                            Agent::where('id', $order->driver_id)->update(['is_threshold' => 1]);
+                            Agent::where('id', $order->driver_id)->update(['is_threshold' => 0]);
                             $reason                             = 'Your balance is not sufficient your stripe connect account';
                             $date                               = Carbon::now()->toDateTimeString();
                             $payment_type                       = 1;
@@ -138,7 +138,7 @@ trait agentDebitThresholdAmount{
                             $data                               = ['agent_id' => $agent->id,'threshold_amount' => $threshold_amount, 'transaction_id' => $transaction_id, 'date' => $date, 'payment_type' => $payment_type, 'threshold_type' => $threshold_type, 'status' => $status,'reason'=>$reason];
                             $this->SaveCollectAmount($data);
                         } else {
-                            Agent::where('id', $order->driver_id)->update(['is_threshold' => 1]);
+                            Agent::where('id', $order->driver_id)->update(['is_threshold' => 0]);
                             $reason                             = 'Your balance is not sufficient your stripe connect account';
                             $date                               = Carbon::now()->toDateTimeString();
                             $payment_type                       = 1;
@@ -181,7 +181,7 @@ trait agentDebitThresholdAmount{
                             $data                               = ['agent_id' => $agent->id,'threshold_amount' => $threshold_amount, 'transaction_id' => $transaction_id, 'date' => $date, 'payment_type' => $payment_type, 'threshold_type' => $threshold_type, 'status' => $status,'reason'=>$reason];
                             $this->SaveCollectAmount($data);
                         } else {
-                            Agent::where('id', $order->driver_id)->update(['is_threshold' => 1]);
+                            Agent::where('id', $order->driver_id)->update(['is_threshold' => 0]);
                             $reason                             = 'Your balance is not sufficient your stripe connect account';
                             $date                               = Carbon::now()->toDateTimeString();
                             $payment_type                       = 1;

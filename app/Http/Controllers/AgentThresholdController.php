@@ -13,7 +13,7 @@ use App\Model\AgentCashCollectPop;
 
 class AgentThresholdController extends Controller
 {
-   
+
     /**
      * Display a listing of the resource.
      *
@@ -82,11 +82,19 @@ class AgentThresholdController extends Controller
                     return 'Rejected';
                 }
             })
-          
-          
+            ->editColumn('action', function ($agents) use ($request) {
+                if($agents->status ==0){
+                    return '<a class="btn btn-blue waves-effect waves-light text-white payment_check" data-id="'.$agents->id.'">Payment Status</a>';
+                }if($agents->status ==1 || $agents->status ==2){
+                    return '<a class="btn btn-blue waves-effect waves-light text-white payment_check" data-status ="'.$agents->status.'" data-id="'.$agents->id.'">View</a>';
+                }
+            })
+
+
+
             ->filter(function ($instance) use ($request) {
                 if (!empty($request->get('search'))) {
-                   
+
                     // $search = $request->get('search');
                     // $instance->where('uid', 'Like', '%'.$search.'%')
                     //     ->orWhere('name', 'Like', '%'.$search.'%')
@@ -105,5 +113,29 @@ class AgentThresholdController extends Controller
 
    public function export(){
      return '';
+   }
+
+   public function CheckPaymentStatus(Request $request){
+      $id   = $request->id;
+      $data = AgentCashCollectPop::with('agent')->find($id);
+      return view('agent_threshold.modal.paymentstatus')->with(['data'=>$data]);
+   }
+
+   public function UpdatePaymentStatus(Request $request){
+      $id               = $request->id;
+      $payment_action   = $request->payment_action;
+      $admin_reason     = '';
+      if($request->payment_action == 2){
+        $admin_reason = $request->admin_reason;
+      }
+      $data = AgentCashCollectPop::find($id);
+      if($data){
+        $data->status = $payment_action;
+        $data->reason = $admin_reason;
+        $data->save();
+        return 1;
+      }else{
+        return 0;
+      }
    }
 }
