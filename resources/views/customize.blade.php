@@ -32,8 +32,8 @@
     </div>
     <!-- end Section title -->
     <div class="row mb-3">
-        <div class="col-xl-3 col-md-4">
-            <div class="card-box h-100 customize-outer-card">
+        <div class="col-md-5 col-xl-4">
+            <div class="card-box h-100">
                 <div class="row">
                     <div class="col-md-12">
                         <form method="POST" class="h-100" action="{{route('preference', Auth::user()->code)}}">
@@ -149,7 +149,8 @@
                 </div>
             </div>
         </div>
-        <div class="col-xl-4 col-md-4">
+
+        <div class="col-md-4 col-xl-4">
             <div class="card-box h-100">
                 <form method="POST" class="h-100" action="{{route('preference', Auth::user()->code)}}">
                     @csrf
@@ -186,7 +187,7 @@
                 </form>
             </div>
         </div>
-        <div class="col-xl-4 col-md-4">
+        <div class="col-md-3 col-xl-4">
             <div class="card-box h-100">
                 <form method="POST" class="h-100" action="{{route('update.contact.us', Auth::user()->code)}}">
                     <div class="d-flex align-items-center justify-content-between mb-2">
@@ -239,7 +240,7 @@
                         <h4 class="header-title mb-0">{{__('Oeder Panel DB Detail')}}</h4>
                         <button class="btn btn-outline-info d-block" type="submit"> Save </button>
                     </div>
-                
+
                     @csrf
                     <div class="row">
                         <div class="col-md-12">
