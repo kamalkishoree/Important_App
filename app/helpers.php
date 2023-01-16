@@ -244,7 +244,7 @@ if( !function_exists('formattedDate') ) {
         return ;
     }
 }
-
+if (!function_exists('connect_with_order_panel')) {
 function connect_with_order_panel() {
     $order_panel_details = OrderPanelDetail::first();
     
@@ -264,6 +264,7 @@ function connect_with_order_panel() {
     ];
     Config::set("database.connections.$order_panel_details->db_name", $default);
     return \DB::connection($order_panel_details->db_name);    
+}
 }
 
 // Returns the values of the additional preferences.
