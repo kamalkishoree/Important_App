@@ -16,7 +16,7 @@ class Product extends Model
         return $this->hasOne('App\Model\ProductCategory')->select('product_id', 'category_id');
     }
 
-    public function primary(){
-        return $this->hasOne('App\Model\ProductTranslation');
+    public function translation(){
+        return $this->hasOne('App\Model\ProductTranslation','product_id','id');
     }
 }

@@ -13,12 +13,14 @@ use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Controllers\Api\BaseController;
+use App\Traits\{AgentSlotTrait,CategoryTrait};
 use App\Model\{Agent, AgentSlot,AgentSlotRoster,AgentLog, AllocationRule, Client, ClientPreference, Cms, Order, Task, TaskProof, Timezone, User, DriverGeo, Geo, TagsForAgent};
 
 use App\Http\Controllers\Api\AgentController;
 
 class AgentSlotController extends BaseController
 {
+    use AgentSlotTrait,CategoryTrait;
     public function successResponse($data, $message = null, $code = 200)
 	{
 		return response()->json([
@@ -155,7 +157,7 @@ class AgentSlotController extends BaseController
                 $agent->slotCount = count( $viewSlot);
                 $agent->slotings = $viewSlot;
                
-            if(count( $viewSlot) >0){
+                if(count( $viewSlot) >0){
                     $agents[] = $agent;
                 }
                 
@@ -250,9 +252,9 @@ class AgentSlotController extends BaseController
     }
 
       /**   get agent according to lat long  */
-   function checkAgentsSlotavailablty(Request $request){
+    function checkAgentsSlotavailablty(Request $request){
        
-    //pr($request->all());
+    
         try {
 
             $validator = Validator::make(request()->all(), [
@@ -307,4 +309,60 @@ class AgentSlotController extends BaseController
         }
 
     }
+    function saveAgentSlot(Request $request){
+       
+    
+        //try {
+
+            $validator = Validator::make(request()->all(), [
+                'agent_id'   => 'required',
+                'start_date' => 'required',
+                'end_date'   => 'required',
+            ]);
+
+            $this->saveAgentSlots($request);
+            
+        
+            return response()->json([
+               // 'data' => $AgentSlotRoster,
+                'status' => 200,
+                'message' => __('success'),
+            ], 200);
+
+        // }catch (Exception $e) {
+        //     return response()->json([
+        //         'message' => $e->getMessage()
+        //     ], 400);
+        // }
+
+    }
+    public function getAgentSlot(Request $request){
+   
+        //   try {
+           $user = Auth::user();
+            $request->merge(['agent_id'=> $user->id]);
+            $categorys = $this->getCategoryWithProductByType('8',$request);
+            $date = date('Y-m-d');
+            //pr(  $date);
+               $AgentSlotRoster = AgentSlot::where('agent_id',$user->id)->with('SlotRoster','SlotDay')
+                                            ->whereHas('SlotRoster',function ($query) use ($date ){
+                                                $query->whereDate('schedule_date', '>=', $date);
+                                            } )->get();
+             //  pr($AgentSlotRoster->toArray());
+             $response =  ['categories' => $categorys,
+                            'agent_slots'=> $AgentSlotRoster
+                                        ];
+               return response()->json([
+                   'data' => $response,
+                   'status' => 200,
+                   'message' => __('success'),
+               ], 200);
+   
+           // }catch (Exception $e) {
+           //     return response()->json([
+           //         'message' => $e->getMessage()
+           //     ], 400);
+           // }
+   
+       }
 }

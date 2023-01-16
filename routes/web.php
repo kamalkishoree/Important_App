@@ -199,8 +199,9 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 			Route::get('agent/payout/requests', 'AgentPayoutController@agentPayoutRequests')->name('agent.payout.requests');
 			Route::get('agent/payout/requests/export', 'AgentPayoutController@export')->name('agents.payout.requests.export');
 			Route::get('agent/payout/requests/filter', 'AgentPayoutController@agentPayoutRequestsFilter')->name('agent.payout.requests.filter');
-
+			Route::get('general_slots','GeneralSlotController@index');
 			Route::get('category/filter', 'CategoryController@categoryFilter');
+            Route::get('services/filter', 'ServicesController@servicesFilter');
 
 			Route::get('product-category/filter/{id}', 'CategoryController@productCategoryFilter')->name('category.product.filter');
 
@@ -281,6 +282,7 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 			Route::resource('order-panel-db', 'orderPanelController');
 			Route::resource('amenities', 'AmenitiesController');
 			Route::resource('category', 'CategoryController');
+			Route::resource('services', 'ServicesController');
 			Route::resource('product', 'ProductController');
 			Route::POST('check-sync-status', 'orderPanelController@checkSyncStatus');
 
@@ -326,9 +328,13 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 			// agent slot
 			Route::get('calender/data/{id}', 'AgentSlotController@returnJson')->name('agent.calender.data');
 			Route::post('agent/add_slot', 'AgentSlotController@store')->name('agent.saveSlot');
+			Route::post('general/add_slot', 'GeneralSlotController@store')->name('services.saveSlot');
 			Route::post('agent/update_slot', 'AgentSlotController@update')->name('agent.slot.update');
 			Route::get('agent/slot/create/{id}', 'AgentSlotController@create')->name('agent.slot.create');
 			Route::post('agent/slot/delete', 'AgentSlotController@destroy')->name('agent.slot.destroy');
+			Route::get('general/slot/get', 'AgentSlotController@getGeneralSlot')->name('general.slot.list');
+			Route::post('general/slot/save', 'AgentSlotController@saveGeneralSlot')->name('general.slot.save');
+			Route::get('general/slot/destroy/{id}', 'AgentSlotController@destroyGeneralSlot')->name('vendor_city.destroy');
 
 		});
 	});

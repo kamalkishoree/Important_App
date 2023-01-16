@@ -1,4 +1,4 @@
-@extends('layouts.vertical', ['title' => 'Categories'])
+@extends('layouts.vertical', ['title' => 'Services'])
 
 @section('css')
 <style>
@@ -54,9 +54,6 @@
     vertical-align: bottom !important;
     margin-right: 10px;
 }
-.table td {
-    padding: 10px 5px !important;
-}
 </style>
 @endsection
 @php
@@ -70,7 +67,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
     <div class="row">
         <div class="col-12">
             <div class="page-title-box">
-                <h4 class="page-title page-title1">{{ __("Categories") }}</h4>
+                <h4 class="page-title page-title1">{{ __("Services") }}</h4>
             </div>
         </div>
     </div>
@@ -95,12 +92,12 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                 </div>
                             @elseif(@$order_panel->sync_status && $order_panel->sync_status == 1) <!--processing-->
                                 <div class="alert alert-success syncProcessing">
-                                    <span>{{__('Category & Product Import Is Processing.')}}</span>
+                                    <span>{{__('Services & Product Import Is Processing.')}}</span>
                                 </div>
                             @endif
                             @if(@$order_panel->sync_status && $order_panel->sync_status == 2) <!--processing-->
                                 <div class="alert alert-success" id="syncCompleted">
-                                    <span>{{__('Category & Product Import Is Completed.')}}</span>
+                                    <span>{{__('Services & Product Import Is Completed.')}}</span>
                                 </div>
                             @endif
                         </div>
@@ -116,9 +113,9 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                     </select>
                                 </div>
                             </form>
-                            <button type="button" class="btn btn-blue waves-effect waves-light openAddProductModal"><i class="mdi mdi-plus-circle mr-1"></i> {{__("Add Product")}}</button>
+                            {{-- <button type="button" class="btn btn-blue waves-effect waves-light openAddProductModal"><i class="mdi mdi-plus-circle mr-1"></i> {{__("Add Product")}}</button>
 
-                            <button type="button" class="btn btn-blue waves-effect waves-light openCategoryModal" data-toggle="modal" data-target="" data-backdrop="static" data-keyboard="false"><i class="mdi mdi-plus-circle mr-1"></i> {{__("Add Category")}}</button>
+                            <button type="button" class="btn btn-blue waves-effect waves-light openCategoryModal" data-toggle="modal" data-target="" data-backdrop="static" data-keyboard="false"><i class="mdi mdi-plus-circle mr-1"></i> {{__("Add Category")}}</button> --}}
                             <form action="{{route('category.importOrderSideCategory')}}" method="post">
                             @csrf
                                 <input type="hidden" name="order_panel_id" value="{{app('request')->input('order_panel_id') ?? 'all'}}">
@@ -148,10 +145,10 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
         </div> <!-- end col -->
     </div>
 </div>
-@include('category.category-modal')
+
 @endsection
 @section('script')
     <script src="{{asset('assets/js/storeAgent.js')}}"></script>
     <script src="{{ asset('assets/libs/datatables/datatables.min.js') }}"></script>
-    @include('category.category-script')  
+    @include('services.services-script')  
 @endsection

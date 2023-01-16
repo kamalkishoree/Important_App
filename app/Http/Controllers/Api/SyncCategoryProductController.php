@@ -9,38 +9,40 @@ use App\Model\{Category,CategoryTranslation,Product,ProductVariant,ProductCatego
 class SyncCategoryProductController extends Controller
 {
     protected $order_panel_id;
-    
+    protected $order_DB_Name;
 
     public function SyncCategoryProduct(Request $request){
         // dd($request['data']);
-        if(@$request['data'] && count($request['data']) > 0){
-            $this->order_panel_id = $request['order_panel_id'];
-            $this->importOrderSideCategory($request['data']);
-        }
+   
         $order_details = OrderPanelDetail::find($request['order_panel_id']);
+        if( ($order_details) && @$request['data'] && count($request['data']) > 0){
+            $this->order_panel_id = $request['order_panel_id'];
+            $dataBaseName = $request['databaseName'];
+            $this->importOrderSideCategory($request['data'],  $dataBaseName);
+        }
         $order_details->sync_status = 2;
-        $order_details->save();
+        //$order_details->save();
         return true;
     }
     
-    public function importOrderSideCategory($categories){
+    public function importOrderSideCategory($categories,$dataBaseName=''){
         // $categories = ROCategory::with(['translation','products','products.variant','products.translation'])->get();
         foreach($categories as $cat){
-            $category_id = $this->syncSingleCategory($cat);
+            $category_id = $this->syncSingleCategory($cat,$dataBaseName);
             if(!empty($cat['products']) && count($cat['products']) > 0){
                 foreach($cat['products'] as $product){
-                    $product_id = $this->syncSingleProduct($category_id, $product);
-                    $variantId = $this->syncProductVariant($product_id, $product);
+                    $product_id = $this->syncSingleProduct($category_id, $product,  $dataBaseName);
+                    $variantId = $this->syncProductVariant($product_id, $product,  $dataBaseName);
                 }
             }
         }
     }
 
-    public function syncSingleProduct($category_id, $product){
+    public function syncSingleProduct($category_id, $product,  $dataBaseName){
         // dd($product['translation']);
         if(checkTableExists('products')){ 
             $product_update_create = [
-                "sku"                   => $product['sku'],
+                "sku"                   => $dataBaseName."_".$product['sku'],
                 "title"                 => $product['title'],
                 "url_slug"              => $product['url_slug'],
                 "description"           => $product['description'],
@@ -118,13 +120,13 @@ class SyncCategoryProductController extends Controller
         }
     }
 
-    public function syncProductVariant($product_id, $product){
+    public function syncProductVariant($product_id, $product ,  $dataBaseName){
         if(checkTableExists('product_variants')){ 
             $variants = $product['variant'];
             // # Add product variant
             foreach($variants as $variant) {     # import product variant
                 $product_variant = [
-                    "sku"           => $variant['sku'],
+                    "sku"           => $dataBaseName."_".$variant['sku'],
                     "title"         => $variant['title'],
                     "quantity"      => $variant['quantity'],
                     "price"         => $variant['price'],
@@ -150,11 +152,11 @@ class SyncCategoryProductController extends Controller
         }
     }
 
-    public function syncSingleCategory($cat){
+    public function syncSingleCategory($cat,  $dataBaseName){
         if(checkTableExists('categories')){
             $data = [
                 'icon' => $cat['icon']['icon'],
-                'slug' => $cat['slug'],
+                'slug' => $dataBaseName."_".$cat['slug'],
                 'type_id' => $cat['type_id'],
                 'image' => $cat['image']['image'],
                 'is_visible' => $cat['is_visible'],
