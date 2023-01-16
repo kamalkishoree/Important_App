@@ -1,4 +1,10 @@
 <!-- ========== Left Sidebar Start ========== -->
+
+@php
+    $preferences = \App\Model\ClientPreference::first();
+    $hide_subscription_module = isset(json_decode($preferences->custom_mode)->hide_subscription_module)?json_decode($preferences->custom_mode)->hide_subscription_module : 0;
+@endphp
+
 <div class="left-side-menu">
 
     <div class="h-100" data-simplebar>
@@ -75,10 +81,40 @@
                     </a>
                 </li>
                 @endif
+                @php
+                    $warehouse_mode = checkWarehouseMode();
+                @endphp
+                @if($warehouse_mode['show_warehouse_module'] == 1)
+                <li>
+                    <a href="{{route('warehouse.index')}}">
+                        <i class="fe-package"></i>
+                        <span> {{__('Warehouse')}} </span>
+                    </a>
+                </li>
+                @endif
+                @if($warehouse_mode['show_category_module'] == 1)
+                <li>
+                    <a href="{{route('category.index')}}">
+                        <i class="fe-package"></i>
+                        <span> {{__('Categories')}} </span>
+                    </a>
+                </li>
+                @endif
 
+                <li>
+                    <a href="{{route('driver-accountancy.index')}}">
+                        <i class="fe-users"></i>
+                        <span> {{__('Driver Accountancy')}} </span>
+                    </a>
+                </li>
 
-
-
+                {{-- <li>
+                    <a href="{{route('order-panel-db.index')}}">
+                        <i class="fe-users"></i>
+                        <span> {{__('Order Panel DB Details')}} </span>
+                    </a>
+                </li> --}}
+                
                 <li class="menu-title mt-2">{{__('Settings')}}</li>
 
                 @if(in_array('Profile',$allowed) || Auth::user()->is_superadmin == 1)
@@ -108,6 +144,16 @@
                 </li>
                 @endif
 
+                @if(in_array('ACL',$allowed) || Auth::user()->is_superadmin == 1)
+                <li>
+                    <a href="{{route('subadmins.index')}}">
+                        <i class="fe-users"></i>
+                        <span> {{__('Managers')}} </span>
+                    </a>
+                </li>
+                @endif
+                </li>
+
                 @if(in_array('Agents',$allowed) || Auth::user()->is_superadmin == 1)
                 <li>
                     <a href="{{route('agent.index')}}">
@@ -117,7 +163,7 @@
                 </li>
                 @endif
 
-                @if(in_array('Subscription',$allowed) || Auth::user()->is_superadmin == 1)
+                @if($hide_subscription_module != 1 && (in_array('Subscription',$allowed) || Auth::user()->is_superadmin == 1) )
                 <li>
                     <a href="{{route('subscription.plans.driver')}}">
                         <i class="fe-credit-card"></i>
@@ -233,18 +279,6 @@
                     </a>
                 </li>
                 @endif
-
-                @if(in_array('ACL',$allowed) || Auth::user()->is_superadmin == 1)
-                <li>
-                    <a href="{{route('subadmins.index')}}">
-                        <i class="fe-users"></i>
-                        <span> {{__('Managers')}} </span>
-                    </a>
-                </li>
-                @endif
-                </li>
-
-
 
               {{-- <li>
                     <a href="#">

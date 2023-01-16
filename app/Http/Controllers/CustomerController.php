@@ -32,19 +32,13 @@ class CustomerController extends Controller
     {
         $customers = Customer::orderBy('created_at', 'DESC')->get();
         return Datatables::of($customers)
+                ->addColumn('name', function ($customers) {
+                    $name = '<a href="'.route("tasks.index").'?customer_id='.$customers->id.'">'.$customers->name.'</a>';
+                    return $name;
+                })
                 ->editColumn('action', function ($customers) use ($request) {
                     $action = '<div class="form-ul" style="width: 60px;">
                                 <div class="inner-div"> <a href="javascript:void(0)" userId="'.$customers->id.'" class="action-icon editIcon"> <i class="mdi mdi-square-edit-outline"></i></a></div>';
-                                // <div class="inner-div">
-                                //     <form id="customerdelete'.$customers->id.'" method="POST" action="'.route('customer.destroy', $customers->id).'">
-                                //         <input type="hidden" name="_token" value="'.csrf_token().'" />
-                                //         <input type="hidden" name="_method" value="DELETE">
-                                //         <div class="form-group">
-                                //             <button type="button" class="btn btn-primary-outline action-icon"> <i class="mdi mdi-delete" customerid="'.$customers->id.'"></i></button>
-
-                                //         </div>
-                                //     </form>
-                                // </div>
                     $action .='</div>';
                     return $action;
                 })
@@ -64,6 +58,7 @@ class CustomerController extends Controller
                         });
                     }
                 })
+                ->rawColumns(['action', 'name'])
                 ->make(true);
     }
 

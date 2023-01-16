@@ -22,7 +22,7 @@ use Illuminate\Support\Facades\Hash;
 use Twilio\Rest\Client as TwilioClient;
 use Faker\Generator as Faker;
 use Illuminate\Support\Facades\Storage;
-use App\Model\{User, Agent, AgentDocs, AllocationRule, AgentSmsTemplate, Client, EmailTemplate, SmtpDetail, ClientPreference, BlockedToken, Otp, TaskProof, TagsForTeam, SubAdminTeamPermissions, SubAdminPermissions, TagsForAgent, Team};
+use App\Model\{User, Agent, AgentDocs, AgentFleet, AllocationRule, AgentSmsTemplate, Client, EmailTemplate, SmtpDetail, ClientPreference, BlockedToken, Fleet, Otp, TaskProof, TagsForTeam, SubAdminTeamPermissions, SubAdminPermissions, TagsForAgent, Team};
 
 
 class AuthController extends BaseController
@@ -48,8 +48,8 @@ class AuthController extends BaseController
         ]);
 
 
-        $agent = Agent::where('phone_number', $request->phone_number)->first();      
-
+        $agent = Agent::where('phone_number', $request->phone_number)->first();
+      
         if (!$agent) {
             return response()->json([
                 'message' => 'User not found'
@@ -57,42 +57,56 @@ class AuthController extends BaseController
         }
         if ($agent->is_approved == 0) {
             return response()->json(['message' => __('Your account not approved yet. Please contact administration')], 422);
-        }elseif ($agent->is_approved == 2) {
+        } elseif ($agent->is_approved == 2) {
             return response()->json(['message' => __('Your account has been rejected. Please contact administration')], 422);
         }
         Otp::where('phone', $request->phone_number)->delete();
         $otp = new Otp();
         $otp->phone = $data['phone_number'] = $agent->phone_number;
-        
+
         //$otp->opt = $data['otp'] = 871245;
+        $client_preference =  getClientPreferenceDetail();
+        $credentials = json_decode($client_preference->sms_credentials);
+        if (isset($credentials->static_otp) && $credentials->static_otp == '1') {
+           
+                $otp->opt = $data['otp'] = '123456';
+
+                $otp->valid_till = $data['valid_till'] = Date('Y-m-d H:i:s', strtotime("+10 minutes"));
+                $otp->save();
+                return $this->success($data, 'OTP Has been send sucessfully', 200);
+            
+        }
         $otp->opt = $data['otp'] = rand(100000, 999999);
-        
+
         $otp->valid_till = $data['valid_till'] = Date('Y-m-d H:i:s', strtotime("+10 minutes"));
         $otp->save();
 
-        $client_prefrerence = ClientPreference::where('id', 1)->first();
-        
-        $sms_body = __("Your Dispatcher verification code is") . ": " . $data['otp'].".".((!empty($request->app_hash_key))?" ".$request->app_hash_key:'');
+        //$client_prefrerence = ClientPreference::where('id', 1)->first();
+
+        $website_details = Client::first();
+        $domain = $website_details->sub_domain;
+        //$sms_body = __("Your" . $domain . " Dispatcher verification code is") . ": " . $data['otp'] . "." . ((!empty($request->app_hash_key)) ? " " . $request->app_hash_key : '');
 
         $sms_template = AgentSmsTemplate::where('slug', 'sign-in')->first();
-        if($sms_template){
-            if(!empty($sms_template->content)){
-                $sms_body = preg_replace('/{OTP}/', $data['otp'], $sms_template->content, 1);
-                if(isset($request->app_hash_key) && (!empty($request->app_hash_key))){
-                    $sms_body .= ".".$request->app_hash_key;
-                }
-            }
-        }
-        
-        $send = $this->sendSms2($agent->phone_number, $sms_body)->getData();
-        
+        $keyData = ['{OTP}'=>$data['otp']];
+        $sms_body = sendSmsTemplate('sign-in',$keyData);
+        // if ($sms_template) {
+        //     if (!empty($sms_template->content)) {
+        //         $sms_body = preg_replace('/{OTP}/', $data['otp'], $sms_template->content, 1);
+        //         if (isset($request->app_hash_key) && (!empty($request->app_hash_key))) {
+        //             $sms_body .= "." . $request->app_hash_key;
+        //         }
+        //     }
+        // }
+
+        $send = $this->sendSmsNew($agent->phone_number, $sms_body)->getData();
+
         if ($send->status == 'Success') {
             unset($data['otp']);
             unset($data['valid_till']);
-            $data['app_hash_key'] = (!empty($request->app_hash_key))?$request->app_hash_key:'';
+            $data['app_hash_key'] = (!empty($request->app_hash_key)) ? $request->app_hash_key : '';
             return $this->success($data, $send->message, 200);
-        }
-        else {
+        } else {
             return $this->error($send->message, 422);
         }
         //twilio opt code
@@ -113,24 +127,24 @@ class AuthController extends BaseController
         //         );
         // } catch (\Exception $e) {
         // }
-    //     $apiData = json_decode(json_encode($dataApi),true);
-    //    unset($data['otp']);
-    //    unset($data['valid_till']);
-    //    if($apiData["original"]["status"] == "Success"){
-    //         return response()->json([
-    //             'data' => $data,
-    //             'status' => 200,
-    //             'message' => __('success')
-    //         ]);
-    //     }else{
-    //         return response()->json([
-    //             'data' => $data,
-    //             'status' => 400,
-    //             'message' => __('Failure')
-    //         ]);
+        //     $apiData = json_decode(json_encode($dataApi),true);
+        //    unset($data['otp']);
+        //    unset($data['valid_till']);
+        //    if($apiData["original"]["status"] == "Success"){
+        //         return response()->json([
+        //             'data' => $data,
+        //             'status' => 200,
+        //             'message' => __('success')
+        //         ]);
+        //     }else{
+        //         return response()->json([
+        //             'data' => $data,
+        //             'status' => 400,
+        //             'message' => __('Failure')
+        //         ]);
 
-    //     }
-        
+        //     }
+
     }
 
     /**
@@ -147,23 +161,22 @@ class AuthController extends BaseController
         $otp = Otp::where('phone', $request->phone_number)->where('opt', $request->otp)->orderBy('id', 'DESC')->first();
         $date = Date('Y-m-d H:i:s');
 
-        if($request->otp = '871245'){
+        if($request->otp == '871245'){
             # master otp 
         }else{
+            
             if (!$otp) {
                 return response()->json(['message' => __('Please enter a valid OTP')], 422);
             }
-    
-    
             if ($date > $otp->valid_till) {
                 return response()->json(['message' => __('Your otp has been expired. Please try again.')], 422);
             }
         }
 
-        
 
+       
 
-        $data = $agent = Agent::with('team')->where('phone_number', $request->phone_number)->first();        
+        $data = $agent = Agent::with('team')->where('phone_number', $request->phone_number)->first();
         if (!$agent) {
             return response()->json(['message' => __('User not found')], 404);
         }
@@ -173,10 +186,10 @@ class AuthController extends BaseController
             return response()->json(['message' => __('Your account has been rejected. Please contact administration')], 422);
         }
 
-        $prefer = ClientPreference::with('currency')->select('theme', 'distance_unit', 'currency_id', 'language_id', 'agent_name', 'date_format', 'time_format', 'map_type', 'map_key_1')->first();
+        $prefer = ClientPreference::with('currency')->select('theme', 'distance_unit', 'currency_id', 'language_id', 'agent_name', 'date_format', 'time_format', 'map_type', 'map_key_1', 'custom_mode', 'is_cab_pooling_toggle')->first();
         $allcation = AllocationRule::first('request_expiry');
         $prefer['alert_dismiss_time'] = (int)$allcation->request_expiry;
-        $taskProof = TaskProof::all();       
+        $taskProof = TaskProof::all();
         Auth::login($agent);
 
 
@@ -235,7 +248,7 @@ class AuthController extends BaseController
             'status' => 200,
             'message' => __('success')
         ]);
-    }  
+    }
     /**
      * Logout user (Revoke the token)
      *
@@ -359,18 +372,17 @@ class AuthController extends BaseController
             $url = url('get-order-session');
             DB::commit();
             return response()->json([
-                        'status' => 200,
-                        'url' => $url,
-                        'message' => __('success')
-                    ], 200);
+                'status' => 200,
+                'url' => $url,
+                'message' => __('success')
+            ], 200);
         }
         catch(\Exception $e){
-        DB::rollback();
-        return response()->json([
-            'status' => 400,
-            'message' => $e->getMessage()
-        ]);
-       
+            DB::rollback();
+            return response()->json([
+                'status' => 400,
+                'message' => $e->getMessage()
+            ]);
         }
     }
 
@@ -378,7 +390,7 @@ class AuthController extends BaseController
     public function createTeamFromManager($request, $clientcode, $manager_id)
     {
         $value = $request->team_tag;
-        
+
         $data = [
             'manager_id'    => $manager_id,
             'name'          => $request->name . " Team",
@@ -388,7 +400,7 @@ class AuthController extends BaseController
         ];
 
         $team = Team::updateOrCreate($data);
-        
+
         $tag_id = [];
         $default_tag_exists = TagsForTeam::where('name', $value)->first();
         if (!$default_tag_exists && !empty($value)) {
@@ -412,7 +424,7 @@ class AuthController extends BaseController
 
         $validator = Validator::make($request->all(), [
             'name' => 'required',
-            'phone_number' => 'required|min:9',
+            'phone_number' => 'required|min:6',
             'type' => 'required',
             'otp' => 'required'
             // 'vehicle_type_id' => 'required'
@@ -490,6 +502,25 @@ class AuthController extends BaseController
         ];
 
         $agent = Agent::create($data);
+        $fleetChk = ClientPreference::value('manage_fleet');
+        if($fleetChk)
+        {
+                $dataFleet = [
+                    'name' => $request->vehicle_name??'Test',
+                    'make' => $request->make,
+                    'model' => $request->model??'Top',
+                    'registration_name' => $request->plate_number,
+                    'color' => $request->color,
+                    'year' => $request->year??date('Y'),
+                    'user_id' => $agent->id
+                ];
+                $agentFleet = Fleet::create($dataFleet);
+                if($agentFleet)
+                {
+                    AgentFleet::create(['fleet_id'=>$agentFleet->id,'agent_id'=>$agent->id]);
+                }
+        }
+
         $agent->tags()->sync($tag_id);
         $files = [];
         if ($request->hasFile('uploaded_file')) {
@@ -581,24 +612,25 @@ class AuthController extends BaseController
     public function deleteAgent(Request $request){
         try {
             DB::beginTransaction(); //Initiate transaction
-                $agent = Auth::user();
-                if(!$agent){
-                    return response()->json(['massage' => __('User not found!')], 200);
-                }
-                Agent::where('id', $agent->id)->update([
+            $agent = Agent::where('id', Auth::user()->id)->first();
+                if(empty($agent)){
+                return response()->json(['massage' => __('User not found!')], 200);
+            }
+            Agent::where('id', $agent->id)->update([
                     'phone_number' => $agent->phone_number.'_'.$agent->id."_D",  
                     'device_token' =>'',  
                     'device_type' =>'',  
-                    'access_token' => ''
-                    ]);
-                $agent->delete();
-                DB::commit(); //Commit transaction after all the operations
-                return response()->json(['massage' => __('Account Deleted Successfully')], 200);
-                //code...
-            } catch (Exception $e) {
-                DB::rollBack();
-                return response()->json(['massage' => __('Something went wrong!')], 400);
+                'access_token' => ''
+            ]);
+            $agent->delete();
+            Otp::where('phone', $agent->phone_number)->where('is_verified', 1)->delete();
+            DB::commit(); //Commit transaction after all the operations
+            return response()->json(['massage' => __('Account Deleted Successfully')], 200);
+            //code...
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json(['massage' => __('Something went wrong!')], 400);
                
-            }
+        }
     }
 }

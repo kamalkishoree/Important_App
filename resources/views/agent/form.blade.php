@@ -11,7 +11,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
         </div>
         <p class="text-muted text-center mt-2 mb-0">{{__("Profile Pic")}}</p>
     </div>
-    <div class="offset-md-2 col_md-6">
+    <div class="col-md-8">
         <span>{{__('Live OTP')}}</span>
         <h4>{{isset($otp)?$otp: __('View OTP after Logging in the '.getAgentNomenclature().' App')}}</h4>
     </div>
@@ -78,11 +78,27 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
             </span>
         </div>
     </div>
+    <div class="col-md-6">
+        <div class="form-group" id="warehouse_idInputEdit">
+            <label for="warehouse_id" class="control-label">{{__("ASSIGN WAREHOUSE")}}</label>
+            @php
+                $selectedWarehouseIds = $agent->warehouseAgent->pluck('id')->toArray();
+            @endphp
+            <select class="form-control select2-select" name="warehouse_id[]" id="warehouse_id" multiple>
+                @foreach ($warehouses as $warehouse)
+                    <option value="{{ $warehouse->id }}"  @if(in_array($warehouse->id, $selectedWarehouseIds)) selected @endif>{{ $warehouse->name }}</option>
+                @endforeach
+            </select>
+            <span class="invalid-feedback" role="alert">
+                <strong></strong>
+            </span>
+        </div>
+    </div>
 </div>
 
 
 
-<div class="row">
+<div class="row agent_icon">
     <div class="col-md-12">
         <div class="form-group" id="vehicle_type_idInputEdit">
             <p class="text-muted mt-3 mb-2">{{__("TRANSPORT ICON")}}</p>
@@ -222,3 +238,9 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
     @endforeach
     @endif
 </div>
+
+<script>
+    $(document).ready(function(){
+        $('.select2-select').select2();
+    });
+</script>

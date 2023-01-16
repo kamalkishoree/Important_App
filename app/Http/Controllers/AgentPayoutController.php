@@ -14,6 +14,7 @@ use App\Traits\ApiResponser;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\AgentPayoutRequestListExport;
 use App\Http\Controllers\{BaseController, StripeGatewayController};
+use App\Http\Controllers\Api\RazorpayGatewayController;
 use App\Traits\agentEarningManager;
 use App\Model\{Client, ClientPreference, User, Agent, Order, PaymentOption, PayoutOption, AgentPayout, AgentBankDetail};
 
@@ -135,7 +136,7 @@ class AgentPayoutController extends BaseController{
             $payout->agentName = $payout->agent ? $payout->agent->name : '';
             // $payout->requestedBy = ucfirst($payout->user->name);
             $payout->amount = $payout->amount;
-            $payout->type = __($payout->payoutOption->title);
+            $payout->type = __(optional($payout->payoutOption)->title);
             $payout->bank_account = $payout->agent_bank_detail_id ?? '';
         }
         return Datatables::of($vendor_payouts)
@@ -173,11 +174,11 @@ class AgentPayoutController extends BaseController{
             $agent_id = $agent->id;
             
 
-            $available_funds = agentEarningManager::getAgentEarning($payout->agent_id, 1);
+            // $available_funds = agentEarningManager::getAgentEarning($payout->agent_id, 1);
 
-            if($request->amount > $available_funds){
-                return Redirect()->back()->with('error', __('Payout amount is greater than '.getAgentNomenclature().' available funds'));
-            }
+            // if($request->amount > $available_funds){
+            //     return Redirect()->back()->with('error', __('Payout amount is greater than '.getAgentNomenclature().' available funds'));
+            // }
 
             $payout_option = '';
             if($payout_option_id > 0){
@@ -192,6 +193,15 @@ class AgentPayoutController extends BaseController{
                     return Redirect()->back()->with('error', __($response->message));
                 }
                 $request->request->add(['transaction_id' => $response->data]);
+            }elseif($payout_option_id == 3){
+                //Razorpay 
+                $razorpayController = new RazorpayGatewayController();
+                $request->request->add(['aid' => $agent_id]);
+                $response = $razorpayController->razorpay_complete_funds_request($request)->getData();
+                if($response->status != '200'){
+                    return Redirect()->back()->with('error', $response->message);
+                }
+                $request->request->add(['transaction_id' => $response->data->id]);
             }
 
             // update payout request

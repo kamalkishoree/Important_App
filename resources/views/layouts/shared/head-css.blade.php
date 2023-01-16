@@ -64,7 +64,6 @@
 
 @else
 <!-- App css -->
-<link href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.3/css/intlTelInput.min.css" rel="stylesheet"/>
 @if(isset($demo) && $demo == 'creative')
 @if(isset($theme) && $theme->theme == 'dark')
 <link href="{{asset('assets/css/bootstrap-creative-dark.min.css')}} " rel="stylesheet" type="text/css" id="bs-default-stylesheet" />

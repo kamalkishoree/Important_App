@@ -22,7 +22,6 @@ class DatabaseDynamic
      */
     public function handle($request, Closure $next)
     {
-      
         if(Auth::check()){
          
           $client = Auth::user();
@@ -50,7 +49,6 @@ class DatabaseDynamic
               // DB::purge($database_name);
 
               $clientPreference = ClientPreference::where('client_id',Auth::user()->code)->first();
-
               if(isset($clientPreference)){
                 $agentTitle = empty($clientPreference->agent_name) ? 'Agent' : $clientPreference->agent_name;
                 Session::put('agent_name', $agentTitle);

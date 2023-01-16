@@ -93,6 +93,12 @@
                     orderable: true,
                     searchable: false
                 },
+                {
+                    data: 'warehouse',
+                    name: 'warehouse',
+                    orderable: true,
+                    searchable: false
+                },
                 // {
                 //     data: 'vehicle_type_id',
                 //     name: 'vehicle_type_id',
@@ -145,6 +151,12 @@
                     searchable: false
                 },
                 {
+                    data: 'agent_rating',
+                    name: 'agent_rating',
+                    orderable: false,
+                    searchable: false
+                },
+                {
                     data: 'created_at',
                     name: 'created_at',
                     orderable: true,
@@ -193,7 +205,7 @@
                 "serverSide": true,
                 "responsive": true,
                 "processing": true,
-                "iDisplayLength": 10,
+                "iDisplayLength": 20,
                 language: {
                     search: "",
                     paginate: {
@@ -202,7 +214,11 @@
                     },
                     searchPlaceholder: "{{__('Search '.getAgentNomenclature())}}",
                     'loadingRecords': '&nbsp;',
-                    'processing': '<div class="spinner"></div>'
+                    //'processing': '<div class="spinner"></div>'
+                    'processing':function(){
+                        spinnerJS.showSpinner();
+                        spinnerJS.hideSpinner();
+                    }
                 },
                 drawCallback: function() {
                     $(".dataTables_paginate > .pagination").addClass("pagination-rounded");
@@ -239,22 +255,19 @@
         }
         var mobile_number = '';
 
-        // $('#add-agent-modal .xyz').val(mobile_number.getSelectedCountryData().dialCode);
         $(document).on("change", "#add-agent-modal .xyz", function(e) {
-            var phonevalue = $('.xyz').val();
+           var phonevalue = $('.xyz').val();
             $("#countryCode").val(mobile_number.getSelectedCountryData().dialCode);
         });
 
         function phoneInput() {
-            // console.log('phone working');
             var input = document.querySelector(".xyz");
 
-            var mobile_number_input = document.querySelector(".xyz");
-            mobile_number = window.intlTelInput(mobile_number_input, {
-                separateDialCode: true,
-                hiddenInput: "full_number",
-                initialCountry: '{{$selectedCountryCode}}',
-                utilsScript: "{{ asset('telinput/js/utils.js') }}",
+            $("#phone_number").intlTelInput({
+                separateDialCode:true,
+                preferredCountries:["{{getCountryCode()}}"],
+                initialCountry:"{{getCountryCode()}}",
+                utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.18/js/utils.js",
             });
 
         }
@@ -264,14 +277,21 @@
                 backdrop: 'static',
                 keyboard: false
             });
+            
             makeTag();
 
             phoneInput();
+
+            select2();
+            var instance = $("[name=phone_number]");
+            instance.intlTelInput();
+            $("#countryCode").val(instance.intlTelInput('getSelectedCountryData').dialCode);
+            
         });
 
         jQuery('#onfoot').click();
 
-        $(document).on('click', '.click', function() { //alert('a');
+        $(document).on('click', '.click', function() {
             var radi = $(this).find('input[type="radio"]');
             radi.prop('checked', true);
             var check = radi.val();
@@ -314,6 +334,14 @@
                     break;
             }
         });
+
+        function select2(){
+            $("#warehouse_id").select2({
+                allowClear: true,
+                width: "resolve",
+                placeholder: "Select Warehouse"
+            });
+        }
 
         /* Get agent by ajax */
         $(document).on("click", ".editIcon", function(e) {
@@ -416,7 +444,7 @@
         });
 
         function saveTeam(urls, formData, inp = '', modal = '') {
-
+            
             $.ajax({
                 method: 'post',
                 headers: {

@@ -40,7 +40,7 @@
                             @csrf
                             <div class="d-flex align-items-center justify-content-between mb-2">
                                 <h4 class="header-title mb-0">{{__("Nomenclature")}}</h4>
-                                <button class="btn btn-outline-info d-block" type="submit"> Save </button>
+                                <button class="btn btn-outline-info d-block" type="submit"> {{__('Save')}} </button>
                             </div>
                             <p class="sub-header">{{__("View and update the naming, currency and distance units.")}}</p>
                             <div class="row mb-2">
@@ -74,7 +74,7 @@
                             </div>
                             <div class="row mb-2">
                                 <div class="col-md-12">
-                                    <label>Unit</label>
+                                    <label>{{__('Unit')}}</label>
                                     <div class="col-sm-12">
                                         <div class="radio radio-info form-check-inline">
                                             <input type="radio" id="metric" value="metric" name="distance_unit" {{ ($preference && $preference->distance_unit =="metric")? "checked" : "" }}>
@@ -101,7 +101,7 @@
                         @csrf
                             <div class="d-flex align-items-center justify-content-between mb-2">
                                 <h4 class="header-title mb-0">{{__("Date & Time")}}</h4>
-                                <button class="btn btn-outline-info d-block" type="submit"> Save </button>
+                                <button class="btn btn-outline-info d-block" type="submit"> {{__('Save')}} </button>
                             </div>
                             <p class="sub-header">
                                 {{__("View and update the date & time format.")}}
@@ -157,7 +157,7 @@
                     <input type="hidden" name="address_limit_order_config" value="1">
                     <div class="d-flex align-items-center justify-content-between mb-2">
                         <h4 class="header-title mb-0">{{__("Saved Address selection")}}</h4>
-                        <button class="btn btn-outline-info d-block" type="submit"> Save </button>
+                        <button class="btn btn-outline-info d-block" type="submit"> {{__('Save')}} </button>
                     </div>
                     <p class="sub-header">{{__("Manage how you want to show saved addresses while creating routes.")}}</p>
                     <div class="row mb-2">
@@ -192,14 +192,14 @@
                 <form method="POST" class="h-100" action="{{route('update.contact.us', Auth::user()->code)}}">
                     <div class="d-flex align-items-center justify-content-between mb-2">
                         <h4 class="header-title mb-0">{{__('Contact Us')}}</h4>
-                        <button class="btn btn-outline-info d-block" type="submit"> Save </button>
+                        <button class="btn btn-outline-info d-block" type="submit"> {{__('Save')}} </button>
                     </div>
 
                     @csrf
                     <div class="row">
                         <div class="col-md-12">
                             <div class="form-group mb-0">
-                                <label for="contact_address">Address</label>
+                                <label for="contact_address">{{__('Address')}}</label>
                                 <div class="input-group">
                                     <input type="text" name="contact_address" id="contact_address"  class="form-control" value="{{ old('contact_address', $clientContact->contact_address ?? '')}}">
                                 </div>
@@ -210,7 +210,7 @@
                                 @endif
                             </div>
                             <div class="form-group mt-2 mb-0">
-                                <label for="contact_phone_number">Number</label>
+                                <label for="contact_phone_number">{{__('Number')}}</label>
                                 <input type="text" name="contact_phone_number" id="contact_phone_number" placeholder="" class="form-control" value="{{ old('contact_phone_number', $clientContact->contact_phone_number ?? '')}}">
                                 @if($errors->has('contact_phone_number'))
                                 <span class="text-danger" role="alert">
@@ -219,7 +219,7 @@
                                 @endif
                             </div>
                             <div class="form-group mt-2 mb-0">
-                                <label for="contact_email">Email</label>
+                                <label for="contact_email">{{__('Email')}}</label>
                                 <input type="text" name="contact_email" id="contact_email" placeholder="" class="form-control" value="{{ old('contact_email', $clientContact->contact_email ?? '')}}">
                                 @if($errors->has('contact_email'))
                                 <span class="text-danger" role="alert">
@@ -232,16 +232,80 @@
                 </form>
             </div>
         </div>
+
+        {{-- <div class="col-md-3">
+            <div class="card-box h-100">
+                <form method="POST" class="h-100" action="{{route('update.orderPanelDbDetail')}}">
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                        <h4 class="header-title mb-0">{{__('Oeder Panel DB Detail')}}</h4>
+                        <button class="btn btn-outline-info d-block" type="submit"> Save </button>
+                    </div>
+
+                    @csrf
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group mb-0">
+                                <label for="db_host">DB Host</label>
+                                <div class="input-group">
+                                    <input type="text" name="db_host" id="db_host"  class="form-control" value="{{ old('db_host', $order_panel_detail->db_host ?? '')}}">
+                                </div>
+                                @if($errors->has('db_host'))
+                                <span class="text-danger" role="alert">
+                                    <strong>{{ $errors->first('db_host') }}</strong>
+                                </span>
+                                @endif
+                            </div>
+                            <div class="form-group mt-2 mb-0">
+                                <label for="db_port">DB Port</label>
+                                <input type="text" name="db_port" id="db_port" placeholder="" class="form-control" value="{{ old('db_port', $order_panel_detail->db_port ?? '')}}">
+                                @if($errors->has('db_port'))
+                                <span class="text-danger" role="alert">
+                                    <strong>{{ $errors->first('db_port') }}</strong>
+                                </span>
+                                @endif
+                            </div>
+                            <div class="form-group mt-2 mb-0">
+                                <label for="db_name">DB Name</label>
+                                <input type="text" name="db_name" id="db_name" placeholder="" class="form-control" value="{{ old('db_name', $order_panel_detail->db_name ?? '')}}">
+                                @if($errors->has('db_name'))
+                                <span class="text-danger" role="alert">
+                                    <strong>{{ $errors->first('db_name') }}</strong>
+                                </span>
+                                @endif
+                            </div>
+                            <div class="form-group mt-2 mb-0">
+                                <label for="db_username">DB Username</label>
+                                <input type="text" name="db_username" id="db_username" placeholder="" class="form-control" value="{{ old('db_username', $order_panel_detail->db_username ?? '')}}">
+                                @if($errors->has('db_username'))
+                                <span class="text-danger" role="alert">
+                                    <strong>{{ $errors->first('db_username') }}</strong>
+                                </span>
+                                @endif
+                            </div>
+                            <div class="form-group mt-2 mb-0">
+                                <label for="db_password">DB Password</label>
+                                <input type="password" name="db_password" id="db_password" placeholder="" class="form-control" value="">
+                                @if($errors->has('db_password'))
+                                <span class="text-danger" role="alert">
+                                    <strong>{{ $errors->first('db_password') }}</strong>
+                                </span>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div> --}}
     </div>
 
         <form method="POST" action="{{route('task.proof')}}">
         @csrf
         <div class="row">
-            <div class="col-xl-12">
+            <div class="col-xl-9 col-md-12">
                 <div class="card-box">
                     <div class="d-flex align-items-center justify-content-between mb-2">
                         <h4 class="header-title mb-0">{{__('Task Completion Proofs')}}</h4>
-                        <button class="btn btn-outline-info d-block" type="submit"> Save </button>
+                        <button class="btn btn-outline-info d-block" type="submit"> {{__('Save')}} </button>
                     </div>
                     <div>
                         {{-- @php

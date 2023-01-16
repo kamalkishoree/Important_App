@@ -1,7 +1,6 @@
 @extends('layouts.vertical', ['title' => 'Profile'])
 
 @section('css')
-<link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.18/css/intlTelInput.css'>
 <style>
 .input-group {position: relative;display: block;flex-wrap: nowrap;align-items: end;width: 100%;}.iti {width: 100%;}
 .choose-btn {display:block;}
@@ -16,6 +15,7 @@
 .g-btn .text strong {color: #000;}
 .alDriveProfilePageAppBtns li{list-style:none;}
 </style>
+<link rel="stylesheet" href="{{ asset('telinput/css/intlTelInput.min.css') }}">
 @endsection
 @php
     $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain/';
@@ -32,7 +32,7 @@
 
     <!-- start page title -->
     <div class="row">
-        <div class="col-12">
+        <div class="col-8 mx-auto">
             <div class="page-title-box">
                 <h4 class="page-title">{{__("Profile")}}</h4>
             </div>
@@ -157,8 +157,16 @@
                                             <p class="text-muted text-center mt-2 mb-0">{{__("Upload Dark Logo")}} </p>
                                         </div>
                                         <div class="col-md-4 upload_box">
-                                            <input type="file" class="dropify" data-plugins="dropify" name="favicon" data-default-file="{{ isset($preference->favicon) ? Storage::disk('s3')->url($preference->favicon) : '' }}" />
-                                            <p class="text-muted text-center mt-2 mb-0">{{__("Upload favicon")}} </p>
+                                            <div id="favicon_container">
+                                                <input type="file" class="dropify" data-plugins="dropify" name="favicon" data-default-file="{{ isset($preference->favicon) ? Storage::disk('s3')->url($preference->favicon) : '' }}" />
+                                                <p class="text-muted text-center mt-2 mb-0">{{__("Upload favicon")}} </p>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 upload_box">
+                                            <div id="favicon_container">
+                                                <input type="file" class="dropify" data-plugins="dropify" name="admin_signin_image" data-default-file="{{ isset($client->admin_signin_image) ? Storage::disk('s3')->url($client->admin_signin_image) : '' }}" />
+                                                <p class="text-muted text-center mt-2 mb-0">{{__("Upload Admin Signin Image")}} (1920x1080)</p>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -180,12 +188,12 @@
                                         </li>
                                     </ul>
                                     <div class="row">
-                                        <label class="control-label col-12">{{__("Short Code")}}</label><br/>
-                                        <h1 class="control-label col-12" style="font-size: 3rem;">{{Auth::user()->code}}</h1>
+                                        <label class="control-label col-6">{{__("Short Code")}}</label>
+                                        <h1 class="control-label col-6" style="font-size: 20px;">{{Auth::user()->code}}</h1>
                                     </div>
                                 </div>
                             </div>
-                            <div class="row">
+                            <div class="row flex">
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label for="name" class="control-label">{{__("NAME")}}</label>
@@ -261,6 +269,25 @@
                                         </span>
                                     </div>
                                 </div>
+                                <div class="col-md-4">
+                                    <div class="form-group mb-3" id="timezoneInput">
+                                        <label for="timezone">{{__("TIMEZONE")}}</label>
+                                        @if($errors->has('timezone'))
+                                        <span class="text-danger" role="alert">
+                                            <strong>{{ $errors->first('timezone') }}</strong>
+                                        </span>
+                                        @endif
+                                        <select class="form-control" id="timezone" name="timezone" value="{{ old('timezone', $client->timezone ?? '')}}" placeholder="{{__("Timezone")}}">
+                                            @foreach($tzlist as $tz)
+                                            {{-- <option value="{{ $tz }}" @if(Auth::user()->timezone == $tz) selected @endif>{{ $tz }}</option> --}}
+                                            <option value="{{ $tz->id }}" @if(Auth::user()->timezone == $tz->id) selected @endif  {{ $is_disabled }}>{{ $tz->timezone.' ('.$tz->diff_from_gtm.')' }}</option>
+                                            @endforeach
+                                        </select>
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong></strong>
+                                        </span>
+                                    </div>
+                                </div>
                                 <div class="col-md-12">
                                     <button type="submit" class="btn btn-blue waves-effect waves-light">{{__("Update")}}</button>
                                 </div>
@@ -277,7 +304,7 @@
                         <form method="post" action="{{route('client.password.update')}}">
                             @csrf
                             <h4 class="header-title">{{__("Change Password")}}</h4>
-                            <div class="row mb-2">
+                            <div class="row flex mb-2">
                                 <div class="col-md-4">
                                     <div class="form-group mb-3">
                                         <label for="old_password">{{__("Old Password")}}</label>
@@ -362,22 +389,50 @@
 <script src="{{asset('assets/js/pages/form-fileuploads.init.js')}}"></script>
 <script src="{{asset('assets/js/storeClients.js')}}"></script>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.18/js/intlTelInput.min.js"></script>
+{{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.18/js/intlTelInput.min.js"></script>
 
 <script>
     var input = document.querySelector("#phone_number");
     var iti = window.intlTelInput(input, {
         separateDialCode:true,
+        preferredCountries:["{{getCountryCode()}}"],
+        initialCountry:"{{getCountryCode()}}",
         utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.18/js/utils.js",
     });
-    /* $("#phone_number").intlTelInput({
-        nationalMode: false,
-        formatOnDisplay: true,
-        utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.18/js/utils.js"
-    }); */
+
     $('.intl-tel-input').css('width', '100%');
     $(function() {
         $('#phone_number').focus(function() { $('#phone_number').css('color', '#6c757d');});
+    });
+    $(function() {
+        var height = $('#favicon_container').height();
+        $('#favicon_container').css('width', height+'px');
+    });
+</script> --}}
+
+
+
+
+<script src="{{ asset('telinput/js/intlTelInput.js') }}"></script>
+
+<script>
+
+    $("#phone_number").intlTelInput({
+        separateDialCode:true,
+        preferredCountries:["{{getCountryCode()}}"],
+        initialCountry:"{{getCountryCode()}}",
+    });
+    $('.intl-tel-input').css('width', '100%');
+
+
+    $(function() {
+        $('#phone_number').focus(function() {
+            $('#phone_number').css('color', '#6c757d');
+        });
+    });
+    $(function() {
+        var height = $('#favicon_container').height();
+        $('#favicon_container').css('width', height+'px');
     });
 </script>
 @endsection

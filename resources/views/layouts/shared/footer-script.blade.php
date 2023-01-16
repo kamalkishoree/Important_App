@@ -1,19 +1,25 @@
 <!-- bundle -->
 <!-- Vendor js -->
 {{-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script> --}}
+@include('modal.modalPopup')
+
+<!-- <div class="nb-spinner-main">
+    <div class="nb-spinner"></div>
+</div> -->
+
+<script type="text/javascript" src="{{asset('assets/js/axios.min.js')}}"></script>
 
 <script src="{{asset('assets/js/waitMe.min.js')}}"></script>
-
-
-
-
-<script src="{{asset('assets/js/waitMe.min.js')}}"></script>
-
+<script src="{{asset('assets/libs/select2/select2.min.js')}}"></script>
 <script>
+    $(function() {
+        $('.select2-multiple').select2();
+    });
+   //
  $(".remove-modal-open").click(function (e) {
        // alert("hello");
         $('body').addClass('modal-opensag');
-    });
+});
 
 
 
@@ -76,6 +82,41 @@ $('.showpassword').click(function(){
 
 });
 
+$(document).ready(function(){
+    $(document).on('click', '.choose_warehouse', function(){
+        if ($(this).text() == "Choose Warehouse") { 
+            $(this).text("Choose Location"); 
+            $(this).closest(".firstclone1").find(".select_category-field").show();
+        } else { 
+            $(this).text("Choose Warehouse");
+            $(this).closest(".firstclone1").find(".select_category-field").hide();
+            $(this).closest(".firstclone1").find(".warehouse").val(''); 
+        }; 
+        $(this).closest(".firstclone1").find(".location-section").toggle();
+        $(this).closest(".firstclone1").find(".warehouse-fields").toggle();
+    });
+        
+    
+    $(document).on('change', '.category_id', function(){
+    var cat_id = $(this).val();
+        $.ajax({
+            url: "/get-category-warehouse",
+            type: "get",
+            datatype: "html",
+            data:{cat_id:cat_id},
+            success: (data) => {
+                $(this).closest(".firstclone1").find(".warehouse").empty().html(data);
+            },
+            error: () => {
+                $(this).closest(".firstclone1").find(".warehouse").empty().html('Something went wrong');
+            },
+            complete: function (data) {
+            // hideLoader();
+            }
+        });
+    });
+});
+
 </script>
 @yield('script')
 <!-- App js -->
@@ -83,5 +124,5 @@ $('.showpassword').click(function(){
 <script src="{{asset('assets/js/app.min.js')}}"></script>
 <script src="{{asset('assets/libs/jquery-toast-plugin/jquery-toast-plugin.min.js')}}"></script>
 <script src="{{asset('assets/js/pages/toastr.init.js')}}"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
 @yield('script-bottom')
+@yield('popup-js')

@@ -6,6 +6,19 @@
  editCount = 0;
 $(document).ready(function(){
     
+    $(document).on('click', '.copy_link', function() {
+        var $temp = $("<input>");
+        $("body").append($temp);
+        $temp.val($('#pwd_spn').text()).select();
+        document.execCommand("copy");
+        $temp.remove();
+        $("#show_copy_msg_on_click_copy").show();
+        setTimeout(function() {
+            $("#show_copy_msg_on_click_copy").hide();
+        }, 1000);
+    })
+
+
     $('#selectize-optgroups').selectize();
     $('#selectize-optgroup').selectize();
 
@@ -27,7 +40,14 @@ $(document).ready(function(){
     });
 
     $('#taskFormHeader .edit-icon-float-right').on('click', function() {
-        $('#taskFormHeader .task_desc_div').toggle();
+        $('#taskFormHeader .meta_data_task_div').toggle();
+        if($(this).find('i').hasClass('mdi mdi-chevron-down')){
+            $(this).find('i').removeClass('mdi mdi-chevron-down');
+            $(this).find('i').addClass('mdi mdi-chevron-up');
+        }else{
+            $(this).find('i').removeClass('mdi mdi-chevron-up');
+            $(this).find('i').addClass('mdi mdi-chevron-down');
+        }
     });
 });
     $(document).ready(function() {
@@ -274,16 +294,21 @@ $(document).ready(function(){
         $(document).on("click", ".submitUpdateTaskHeader", function(e) {
             e.preventDefault();
             var err = 0;
-            
-            $("input[name='address[]']").each(function(){
-                var address = $(this).val();
-                if(address == ''){
-                    err = 1;
-                    $(this).closest('.check-validation').find('.addspan').show();
-                    return false;
-                }
-            });
 
+            var warehouse_id = $("select[name='warehouse_id[]']").val();
+            if(warehouse_id){
+                err = 0;
+                $(".addspan").hide();
+            }else{
+                $("input[name='address[]']").each(function(){
+                    var address = $(this).val();
+                    if(address == ''){
+                        err = 1;
+                        $(this).closest('.check-validation').find('.addspan').show();
+                        return false;
+                    }
+                });
+            }
             if(err == 1){
                 return false;
             }else if(err == 0){

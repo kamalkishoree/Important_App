@@ -1,8 +1,11 @@
+<style>
+    a.choose_warehouse { text-decoration: underline; }
+</style>
 <div class="row">
     <div class="col-md-12">
         <div class="card-box pb-0 pt-0 mb-1">            
             <div class="row d-flex">
-                <div class="col-md-4" style="border-right: 1px solid #ccc;">
+                <div class="col-sm-12 col-xl-4 col-md-12" style="border-right: 1px solid #ccc;">
                     @csrf
                     <div class="row mb-2" id="dateredio">
                         <div class="col-md-12">
@@ -85,31 +88,33 @@
                         <input type="hidden" id="check-appointment-barcode" value="{{ (!empty($task_proofs[2]->barcode_requried) ? $task_proofs[2]->barcode_requried : 0)}}">
                     </div>
 
-                    <h4 class="header-title mb-2">{{__("Meta Data")}} <a href="#edit_desc" class="edit-icon-float-right"> <i class="mdi mdi-square-edit-outline"></i></a></h4>
-                    <div class="row mb-2 task_desc_div" style="display:none;">
-                        <div class="col-md-12" id="make_modelInput">
-                            {!! Form::hidden('recipient_phone', null, ['class' => 'form-control rec', 'placeholder' =>
-                            __('Recipient Phone'), 'required' => 'required']) !!}
-                            {!! Form::hidden('recipient_email', null, ['class' => 'form-control rec', 'placeholder'
-                            => __('Recipient Email'), 'required' => 'required']) !!}
-                            {!! Form::textarea('task_description', null, ['class' => 'form-control',
-                            'placeholder' => __('Please enter task description'), 'rows' => 3, 'cols' => 40]) !!}
-                            <span class="invalid-feedback" role="alert">
-                                <strong></strong>
-                            </span>
+                    <h4 class="header-title mb-2">{{__("Meta Data")}} <a href="javascript:void(0)" class="edit-icon-float-right"> <i class="mdi mdi-chevron-down"></i></a></h4>
+                    <div class="meta_data_task_div" style="display:none;">
+                        <div class="row mb-2">
+                            <div class="col-md-12" id="make_modelInput">
+                                {!! Form::hidden('recipient_phone', null, ['class' => 'form-control rec', 'placeholder' =>
+                                __('Recipient Phone'), 'required' => 'required']) !!}
+                                {!! Form::hidden('recipient_email', null, ['class' => 'form-control rec', 'placeholder'
+                                => __('Recipient Email'), 'required' => 'required']) !!}
+                                {!! Form::textarea('task_description', null, ['class' => 'form-control',
+                                'placeholder' => __('Please enter task description'), 'rows' => 3, 'cols' => 40]) !!}
+                                <span class="invalid-feedback" role="alert">
+                                    <strong></strong>
+                                </span>
 
-                            <span class="invalid-feedback" role="alert">
-                                <strong></strong>
-                            </span>
+                                <span class="invalid-feedback" role="alert">
+                                    <strong></strong>
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-2">
+                            <div class="col-md-12">
+                                <input type="file" data-plugins="dropify" class="dropify" name="file[]" data-height="300" multiple accept="image/*"/>
+                            </div>
                         </div>
                     </div>
                     
-                    <div class="row mb-2">
-                        <div class="col-md-12">
-                            <input type="file" data-plugins="dropify" class="dropify" name="file[]" data-height="300" multiple accept="image/*"/>
-                        </div>
-                    </div>
-
                     <div class="row mb-2">
                         <div class="col-md-12"  id="make_modelInput">
                             {!! Form::text('call_back_url', null, ['class' => 'form-control rec', 'placeholder' => __('Call Back URL')]) !!}
@@ -192,7 +197,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-8">
+                <div class="col-sm-12 col-xl-8 col-md-12">
                     <h4 class="header-title mb-2">{{__("Tasks")}}</h4>
                     <span class="span1 addspan">{{__("Please select a address or create new")}}</span>
                     <div class="cust_add_div" id="addHeader1">
@@ -200,7 +205,7 @@
                             <div class="alFormTaskType row m-0">
                                 <div class="col-md-12">
                                     <div class="row firstclone1">
-                                        <div class="col-md-6">
+                                        <div class="col-md-4">
                                             <div class="form-group mb-1">
                                                 <select class="selecttype mt-1" id="task_type"  name="task_type_id[]" style="width:100%;" required>
                                                     <option value="1">{{__("Pickup Task")}}</option>
@@ -209,80 +214,116 @@
                                                 </select>
                                             </div>
                                         </div>
-                                        <div class="col-md-5">
+                                        <div class="col-md-4">
                                             <div class="form-group appoint mt-1 mb-1">
                                                 {!! Form::text('appointment_date[]', null, ['class' => 'form-control appointment_date', 'placeholder' => __('Duration (In Min)')]) !!}
                                                 <span class="invalid-feedback" role="alert">
                                                     <strong></strong>
                                                 </span>
                                             </div>
+                                            <div class="form-group vehicle_type_select mt-1 mb-1">
+                                                <select class="vehicle_type" id="vehicle_type" name="vehicle_type[]" style="width:100%;">
+                                                    @foreach ($vehicle_type as $vehicle)
+                                                        <option value="{{$vehicle->id}}">{{$vehicle->name}}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group select_category-field mt-1 mb-1" style="display: none;">
+                                                <select class="form-control category_id" name="category_id" id="category_id">
+                                                    <option value="">Select Category</option>
+                                                    @foreach ($category as $cat)
+                                                        <option value="{{$cat->id}}">{{$cat->slug}}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
                                         </div>
                                         <div class="col-md-1 text-center pt-2 pr-2" >
                                             <span class="span1 delbtnhead" id="spancheck"><img style="filter: grayscale(.5);" src="{{asset('assets/images/ic_delete.png')}}"  alt=""></span>
                                         </div>
-                                    </div>
-                                    <div class="row mb-2">
-                                        <div class="alCol-12 mainaddress col-8">
-                                            <div class="row">
-                                                <div class="col-6 addressDetails border-right">
-                                                    <h6>Address Details</h6>
-                                                    <div class="row">
-                                                        <div class="form-group col-6 mb-1">
-                                                            {!! Form::text('short_name[]', null, ['class' => 'form-control address', 'placeholder' => __('Short Name')]) !!}
-                                                        </div>
-                                                        <div class="input-group form-group col-6 mb-2">
-                                                            <input type="text" id="addHeader1-input" name="address[]" class="form-control address cust_add" placeholder='{{__("Location")}}'>
-                                                            <div class="input-group-append">
-                                                                <button class="btn btn-xs btn-dark waves-effect waves-light showMapHeader cust_btn" type="button" num="addHeader1"> <i class="mdi mdi-map-marker-radius"></i></button>
+                                        <div class="row mb-2" style="padding: 0px 10px;">
+                                            <div class="alCol-12 mainaddress col-8">
+                                                <div class="row">
+                                                    <div class="col-6 addressDetails border-right">
+                                                        <h6>Address Details</h6>
+                                                        <div class="row location-section">
+                                                            <div class="row" style="padding: 0px 10px;">
+                                                                <div class="form-group col-12 mb-1">
+                                                                    {!! Form::text('short_name[]', null, ['class' => 'form-control address', 'placeholder' => __('Short Name')]) !!}
+                                                                </div>
+                                                            </div>
+                                                            <div class="input-group form-group col-12 mb-2">
+                                                                <input type="text" id="addHeader1-input" name="address[]" class="form-control address cust_add" placeholder='{{__("Location")}}'>
+                                                                <div class="input-group-append">
+                                                                    <button class="btn btn-xs btn-dark waves-effect waves-light showMapHeader cust_btn" type="button" num="addHeader1"> <i class="mdi mdi-map-marker-radius"></i></button>
+                                                                </div>
+                                                            </div>
+                                                            <div class="form-group col-6 mb-1">
+                                                                {!! Form::text('flat_no[]', null, ['class' => 'form-control address flat_no','placeholder' => __('House/Apartment/Flat no'),'id'=>'addHeader1-flat_no']) !!}
+                                                            </div>
+                                                            <div class="form-group col-6 mb-1">
+                                                                <input type="hidden" name="latitude[]" id="addHeader1-latitude" value="0" class="cust_latitude" />
+                                                                <input type="hidden" name="longitude[]" id="addHeader1-longitude" value="0" class="cust_longitude" />
+                                                                {!! Form::text('post_code[]', null, ['class' => 'form-control address postcode','placeholder' => __('Post Code'),'id'=>'addHeader1-postcode']) !!}
                                                             </div>
                                                         </div>
-                                                        <div class="form-group col-6 mb-1">
-                                                            {!! Form::text('flat_no[]', null, ['class' => 'form-control address flat_no','placeholder' => __('House/Apartment/Flat no'),'id'=>'addHeader1-flat_no']) !!}
+                                                        <div class="warehouse-fields" style="display: none;">
+                                                            <div class="form-group mb-1 select_warehouse-field">
+                                                                <select class="form-control warehouse" name="warehouse_id[]" id="warehouse">
+                                                                    <option value="">Select Warehouse</option>
+                                                                    @foreach ($warehouses as $warehouse)
+                                                                        <option value="{{$warehouse->id}}">{{$warehouse->name}}</option>
+                                                                    @endforeach
+                                                                </select>
+                                                            </div>
                                                         </div>
-                                                        <div class="form-group col-6 mb-1">
-                                                            <input type="hidden" name="latitude[]" id="addHeader1-latitude" value="0" class="cust_latitude" />
-                                                            <input type="hidden" name="longitude[]" id="addHeader1-longitude" value="0" class="cust_longitude" />
-                                                            {!! Form::text('post_code[]', null, ['class' => 'form-control address postcode','placeholder' => __('Post Code'),'id'=>'addHeader1-postcode']) !!}
-                                                        </div>
+                                                        @php
+                                                            $warehouse_mode = checkWarehouseMode();
+                                                        @endphp
+                                                        @if($warehouse_mode['show_warehouse_module'] == 1)
+                                                            <h6 class="or-text text-center">OR</h6>
+                                                            <h6 class="choose_warehouse text-center text-primary" style="text-decoration: underline;cursor: pointer;">Choose Warehouse</h6>
+                                                        @endif
                                                     </div>
-                                                </div>
 
-                                                <div class="alContactOther col-6">
-                                                    <div class="row">
-                                                        <div class="col-6 alRightBorder">
-                                                            <h6>Contact Details</h6>
-                                                            <div class="row">
-                                                                <div class="form-group mb-1 col-12">
-                                                                    {!! Form::text('address_email[]', null, ['class' => 'form-control address address_email','placeholder' => __('Email'),'id'=>'addHeader1-address_email']) !!}
-                                                                </div>
-                                                                <div class="form-group mb-1 col-12">
-                                                                    {!! Form::text('address_phone_number[]', null, ['class' => 'form-control address address_phone_number','placeholder' => __('Phone Number'),'id'=>'addHeader1-address_phone_number']) !!}
+                                                    <div class="alContactOther col-6">
+                                                        <div class="row">
+                                                            <div class="col-6 alRightBorder">
+                                                                <h6>Contact Details</h6>
+                                                                <div class="row">
+                                                                    <div class="form-group mb-1 col-12">
+                                                                        {!! Form::text('address_email[]', null, ['class' => 'form-control address address_email','placeholder' => __('Email'),'id'=>'addHeader1-address_email']) !!}
+                                                                    </div>
+                                                                    <div class="form-group mb-1 col-12">
+                                                                        {!! Form::text('address_phone_number[]', null, ['class' => 'form-control address address_phone_number','placeholder' => __('Phone Number'),'id'=>'addHeader1-address_phone_number']) !!}
+                                                                    </div>
                                                                 </div>
                                                             </div>
-                                                        </div>
-                                                        <div class="col-6">
-                                                            <h6>Other Details</h6>
-                                                            <div class="row">
-                                                                <div class="form-group mb-1 col-12">
-                                                                    {!! Form::text('barcode[]', null, ['class' => 'form-control barcode','placeholder' => __('Task Barcode')]) !!}
+                                                            <div class="col-6">
+                                                                <h6>Other Details</h6>
+                                                                <div class="row">
+                                                                    <div class="form-group mb-1 col-12">
+                                                                        {!! Form::text('barcode[]', null, ['class' => 'form-control barcode','placeholder' => __('Task Barcode')]) !!}
+                                                                    </div>
+                                                                    <div class="form-group mb-1 col-12">
+                                                                        {!! Form::text('quantity[]', null, ['class' => 'form-control quantity onlynumber','placeholder' => __('Quantity')]) !!}
+                                                                    </div>
+                                                                    <span class="span1 pickup-barcode-error">{{__("Task Barcode is required for pickup")}}</span>
+                                                                    <span class="span1 drop-barcode-error">{{__("Task Barcode is required for drop")}}</span>
+                                                                    <span class="span1 appointment-barcode-error">{{ __("Task Barcode is required for appointment")}}</span>
                                                                 </div>
-                                                                <div class="form-group mb-1 col-12">
-                                                                    {!! Form::text('quantity[]', null, ['class' => 'form-control quantity onlynumber','placeholder' => __('Quantity')]) !!}
-                                                                </div>
-                                                                <span class="span1 pickup-barcode-error">{{__("Task Barcode is required for pickup")}}</span>
-                                                                <span class="span1 drop-barcode-error">{{__("Task Barcode is required for drop")}}</span>
-                                                                <span class="span1 appointment-barcode-error">{{ __("Task Barcode is required for appointment")}}</span>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div class="col-4 alsavedaddress" id="alsavedaddress" style="display:none;">
-                                            <h6>Saved Addresses</h6>
-                                            <div class="form-group withradio" id="typeInputss">
-                                                <div class="oldhide text-center">
-                                                    <img class="showsimage" src="{{url('assets/images/ic_location_placeholder.png')}}" alt="">
+                                            <div class="col-4 alsavedaddress" id="alsavedaddress" style="display:none;">
+                                                <h6>Saved Addresses</h6>
+                                                <div class="form-group withradio" id="typeInputss">
+                                                    <div class="oldhide text-center">
+                                                        <img class="showsimage" src="{{url('assets/images/ic_location_placeholder.png')}}" alt="">
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>

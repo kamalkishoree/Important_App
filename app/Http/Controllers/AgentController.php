@@ -18,13 +18,15 @@ use Twilio\Rest\Client as TwilioClient;
 use App\Traits\ApiResponser;
 use App\Exports\AgentsExport;
 use Doctrine\DBAL\Driver\DrizzlePDOMySql\Driver;
-use App\Model\{Agent, AgentDocs, AgentPayment, AgentLog, DriverGeo, Order, Otp, Team, TagsForAgent, TagsForTeam, Countries, Client, ClientPreferences, DriverRegistrationDocument, Geo, Timezone, AgentSmsTemplate};
+use App\Model\{Agent, AgentDocs, AgentPayment, AgentLog, DriverGeo, Order, Otp, Team, TagsForAgent, TagsForTeam, Countries, Client, ClientPreferences, DriverRegistrationDocument, Geo, Timezone, AgentSmsTemplate, Warehouse};
 use Kawankoding\Fcm\Fcm;
 use App\Traits\agentEarningManager;
+use App\Traits\smsManager;
 
 class AgentController extends Controller
 {
     use ApiResponser;
+    use smsManager;
     /**
      * Display a listing of the resource.
      *
@@ -55,21 +57,27 @@ class AgentController extends Controller
     }
     public function index(Request $request)
     {
-        $agents = Agent::orderBy('id', 'DESC');
+        $user = Auth::user();
+        $managerWarehouses = Client::with('warehouse')->where('id', $user->id)->first();
+        $managerWarehousesIds = $managerWarehouses->warehouse->pluck('id');
+        $agents = Agent::with('warehouseAgent')->orderBy('id', 'DESC');
         // if (!empty($request->date)) {
         //     $agents->whereBetween('created_at', [$request->date . " 00:00:00", $request->date . " 23:59:59"]);
         // }
 
-        $user = Auth::user();
+        
 
-        if ($user->is_superadmin == 0 && $user->all_team_access == 0) {
+        if ($user->is_superadmin == 0 && $user->all_team_access == 0 && $user->manager_type == 0) {
             $agents = $agents->whereHas('team.permissionToManager', function ($query) use($user) {
                 $query->where('sub_admin_id', $user->id);
             });
+        }else if($user->is_superadmin == 0 && $user->manager_type == 1){
+            $agents = $agents->whereHas('warehouseAgent', function ($query) use($managerWarehousesIds) {
+                $query->whereIn('warehouses.id', $managerWarehousesIds);
+            });
         }
         $agents = $agents->get();
-
-
+        
         $tags  = TagsForAgent::all();
         $tag   = [];
         foreach ($tags as $key => $value) {
@@ -108,7 +116,16 @@ class AgentController extends Controller
         $agentRejected   = count($agents->where('is_approved', 2));
         $driver_registration_documents = DriverRegistrationDocument::get();
 
-        return view('agent.index')->with(['agents' => $agents, 'geos' => $geos, 'driver_registration_documents' => $driver_registration_documents, 'agentIsAvailable' => $agentIsAvailable, 'agentNotAvailable' => $agentNotAvailable, 'agentIsApproved' => $agentIsApproved, 'agentNotApproved' => $agentNotApproved, 'agentsCount' => $agentsCount, 'employeesCount' => $employeesCount, 'agentActive' => $agentActive, 'agentInActive' => $agentInActive, 'freelancerCount' => $freelancerCount, 'teams' => $teams, 'tags' => $tags, 'selectedCountryCode' => $countryCode, 'calenderSelectedDate' => $selectedDate, 'showTag' => implode(',', $tag), 'agentRejected' => $agentRejected]);
+        $warehouses = Warehouse::get();
+        $managerWarehouses = Client::with('warehouse')->where('id', $user->id)->first();
+        $managerWarehousesIds = $managerWarehouses->warehouse->pluck('id');
+        if($user->is_superadmin == 0 && $user->manager_type == 1){
+            $warehouses = Warehouse::whereIn('id', $managerWarehousesIds)->get();
+        }
+
+        $agents = Agent::orderBy('id', 'DESC');
+
+        return view('agent.index')->with(['agents' => $agents, 'geos' => $geos, 'driver_registration_documents' => $driver_registration_documents, 'agentIsAvailable' => $agentIsAvailable, 'agentNotAvailable' => $agentNotAvailable, 'agentIsApproved' => $agentIsApproved, 'agentNotApproved' => $agentNotApproved, 'agentsCount' => $agentsCount, 'employeesCount' => $employeesCount, 'agentActive' => $agentActive, 'agentInActive' => $agentInActive, 'freelancerCount' => $freelancerCount, 'teams' => $teams, 'tags' => $tags, 'selectedCountryCode' => $countryCode, 'calenderSelectedDate' => $selectedDate, 'showTag' => implode(',', $tag), 'agentRejected' => $agentRejected, 'warehouses' => $warehouses]);
     }
 
     public function agentFilter(Request $request)
@@ -116,10 +133,18 @@ class AgentController extends Controller
         try {
             $tz = new Timezone();
             $user = Auth::user();
-            $client = Client::where('code', $user->code)->with(['getTimezone', 'getPreference'])->first();
+            $client = Client::where('code', $user->code)->with(['getTimezone', 'getPreference', 'warehouse'])->first();
+
+            $managerWarehouses = Client::with('warehouse')->where('id', $user->id)->first();
+            $managerWarehousesIds = $managerWarehouses->warehouse->pluck('id');
+            
+            $isDriverSlotActive =  $client->getPreference ? $client->getPreference->is_driver_slot : 0;
+            $request->merge(['is_driver_slot'=>$isDriverSlotActive]);
+         
             $client_timezone = $client->getTimezone ? $client->getTimezone->timezone : 251;
             $timezone = $tz->timezone_name($client_timezone);
-            $agents = Agent::orderBy('id', 'DESC');
+            $agents = Agent::with('warehouseAgent')->orderBy('id', 'DESC');
+            
             if (!empty($request->get('date_filter'))) {
                 $dateFilter = explode('to', $request->get('date_filter'));
                 if (count($dateFilter) > 1) {
@@ -140,13 +165,18 @@ class AgentController extends Controller
                     $q->where('tag_id', $tag_id);
                 });
             }
-            if ($user->is_superadmin == 0 && $user->all_team_access == 0) {
+            if ($user->is_superadmin == 0 && $user->all_team_access == 0 && $user->manager_type == 0) {
                 $agents = $agents->whereHas('team.permissionToManager', function ($query) use($user) {
                     $query->where('sub_admin_id', $user->id);
+                });
+            }else if($user->is_superadmin == 0 && $user->manager_type == 1){
+                $agents = $agents->whereHas('warehouseAgent', function ($query) use($managerWarehousesIds) {
+                    $query->whereIn('warehouses.id', $managerWarehousesIds);
                 });
             }
 
             $agents = $agents->where('is_approved', $request->status)->orderBy('id', 'desc');
+            
             return Datatables::of($agents)
                 ->editColumn('name', function ($agents) use ($request) {
                     $name =$agents->name;
@@ -159,6 +189,10 @@ class AgentController extends Controller
                 ->editColumn('team', function ($agents) use ($request) {
                     $team = (isset($agents->team->name) ? $agents->team->name : __('Team Not Alloted'));
                     return $team;
+                })
+                ->editColumn('warehouse', function ($agents) use ($request) {
+                    $warehouse = (isset($agents->warehouse->name) ? $agents->warehouse->name : __('-'));
+                    return $warehouse;
                 })
                 ->editColumn('vehicle_type_id', function ($agents) use ($request) {
                     $src = asset('assets/icons/extra/' . $agents->vehicle_type_id . '.png');
@@ -198,6 +232,14 @@ class AgentController extends Controller
                 ->addColumn('subscription_expiry', function ($agents) use ($request, $timezone) {
                     return $agents->subscriptionPlan ? convertDateTimeInTimeZone($agents->subscriptionPlan->end_date, $timezone) : '';
                 })
+                ->addColumn('agent_rating', function ($agents) use ($request, $timezone) {
+                    if( !empty($agents->agentRating()) ) {
+                        return number_format($agents->agentRating()->avg('rating'), 2, '.', '');
+                    }
+                    else {
+                        return '0.00';
+                    }
+                })
                 ->editColumn('created_at', function ($agents) use ($request, $timezone) {
                     return convertDateTimeInTimeZone($agents->created_at, $timezone);
                 })
@@ -205,16 +247,20 @@ class AgentController extends Controller
                     return convertDateTimeInTimeZone($agents->updated_at, $timezone);
                 })
                 ->editColumn('action', function ($agents) use ($request) {
+                    $approve_action = '';
+                    if($request->is_driver_slot == 1){
+                        $approve_action .= '<div class="inner-div agent_slot_button" data-agent_id="'.$agents->id.'" data-status="2" title="Working Hours"><i class="dripicons-calendar mr-1" style="color: green; cursor:pointer;"></i></div>';
+                    }
                     if($request->status == 1){
-                        $approve_action = '<div class="inner-div agent_approval_button" data-agent_id="'.$agents->id.'" data-status="2" title="Reject"><i class="fa fa-user-times" style="color: red; cursor:pointer;"></i></div>';
+                        $approve_action .= '<div class="inner-div agent_approval_button" data-agent_id="'.$agents->id.'" data-status="2" title="Reject"><i class="fa fa-user-times" style="color: red; cursor:pointer;"></i></div>';
                     } else if($request->status == 0){
-                        $approve_action = '<div class="inner-div agent_approval_button" data-agent_id="'.$agents->id.'" data-status="1" title="Approve"><i class="fas fa-user-check" style="color: green; cursor:pointer;"></i></div><div class="inner-div ml-1 agent_approval_button" data-agent_id="'.$agents->id.'" data-status="2" title="Reject"><i class="fa fa-user-times" style="color: red; cursor:pointer;"></i></div>';
+                        $approve_action .= '<div class="inner-div agent_approval_button" data-agent_id="'.$agents->id.'" data-status="1" title="Approve"><i class="fas fa-user-check" style="color: green; cursor:pointer;"></i></div><div class="inner-div ml-1 agent_approval_button" data-agent_id="'.$agents->id.'" data-status="2" title="Reject"><i class="fa fa-user-times" style="color: red; cursor:pointer;"></i></div>';
                     } else if($request->status == 2){
-                        $approve_action = '<div class="inner-div agent_approval_button" data-agent_id="'.$agents->id.'" data-status="1" title="Approve"><i class="fas fa-user-check" style="color: green; cursor:pointer;"></i></div>';
+                        $approve_action .= '<div class="inner-div agent_approval_button" data-agent_id="'.$agents->id.'" data-status="1" title="Approve"><i class="fas fa-user-check" style="color: green; cursor:pointer;"></i></div>';
                     }
                     $action = ''.$approve_action.'
                                <!-- <div class="inner-div"> <a href="' . route('agent.edit', $agents->id) . '" class="action-icon editIcon" agentId="' . $agents->id . '"> <i class="mdi mdi-square-edit-outline"></i></a></div>-->
-                                    <div class="inner-div ml-1">
+                                    <div class="inner-div">
                                         <form id="agentdelete'.$agents->id.'" method="POST" action="' . route('agent.destroy', $agents->id) . '">
                                             <input type="hidden" name="_token" value="' . csrf_token() . '" />
                                             <input type="hidden" name="_method" value="DELETE">
@@ -293,7 +339,7 @@ class AgentController extends Controller
             'team_id' => ['required'],
             //'make_model' => ['required'],
             //'plate_number' => ['required'],
-            'phone_number' =>  ['required', 'min:9', 'max:15', Rule::unique('agents')->where(function ($query) use ($full_number) {
+            'phone_number' =>  ['required', 'min:6', 'max:15', Rule::unique('agents')->where(function ($query) use ($full_number) {
                 return $query->where('phone_number', $full_number);
             })],
             //'color' => ['required'],
@@ -312,9 +358,7 @@ class AgentController extends Controller
     {
         $validator = $this->validator($request->all())->validate();
         $getFileName = null;
-
-
-
+        
         $newtag = explode(",", $request->tags);
         $tag_id = [];
         foreach ($newtag as $key => $value) {
@@ -334,10 +378,7 @@ class AgentController extends Controller
             $path = Storage::disk('s3')->put($s3filePath, $file, 'public');
             $getFileName = $path;
         }
-
-
-
-
+        
         $data = [
             'name' => $request->name,
             'team_id' => $request->team_id == null ? $team_id = null : $request->team_id,
@@ -356,6 +397,12 @@ class AgentController extends Controller
 
         $agent = Agent::create($data);
         $agent->tags()->sync($tag_id);
+        if(checkTableExists('agent_warehouse')){
+            $warehouse_ids = $request->warehouse_id;
+            if(!empty($warehouse_ids)){
+                $agent->warehouseAgent()->sync($warehouse_ids);
+            }
+        }
 
         $driver_registration_documents = DriverRegistrationDocument::get();
         foreach ($driver_registration_documents as $driver_registration_document) {
@@ -451,7 +498,7 @@ class AgentController extends Controller
 
     public function edit($domain = '', $id)
     {
-        $agent = Agent::with(['tags'])->where('id', $id)->first();
+        $agent = Agent::with(['tags','warehouseAgent'])->where('id', $id)->first();
         $teams = Team::where('client_id', auth()->user()->code);
         if (Auth::user()->is_superadmin == 0 && Auth::user()->all_team_access == 0) {
             $teams = $teams->whereHas('permissionToManager', function ($query) {
@@ -482,7 +529,9 @@ class AgentController extends Controller
         $agents_docs = AgentDocs::where('agent_id', $id)->get();
         $driver_registration_documents = DriverRegistrationDocument::get();
 
-        $returnHTML = view('agent.form')->with(['agent' => $agent, 'teams' => $teams, 'tags' => $uptag, 'tagIds' => $tagIds, 'otp' => $send_otp, 'driver_registration_documents' => $driver_registration_documents, 'agent_docs' => $agents_docs])->render();
+        $warehouses = Warehouse::all();
+
+        $returnHTML = view('agent.form')->with(['agent' => $agent, 'teams' => $teams, 'tags' => $uptag, 'tagIds' => $tagIds, 'otp' => $send_otp, 'driver_registration_documents' => $driver_registration_documents, 'agent_docs' => $agents_docs, 'warehouses' => $warehouses])->render();
 
         return response()->json(array('success' => true, 'html' => $returnHTML));
     }
@@ -502,7 +551,7 @@ class AgentController extends Controller
             'team_id' => ['required'],
             //'make_model' => ['required'],
             //'plate_number' => ['required'],
-            'phone_number' => ['required', 'min:9', 'max:15', Rule::unique('agents')->where(function ($query) use ($full_number, $id) {
+            'phone_number' => ['required', 'min:6', 'max:15', Rule::unique('agents')->where(function ($query) use ($full_number, $id) {
                 return $query->where('phone_number', $full_number)->where('id', '!=', $id);
             })],
             //'color' => ['required'],
@@ -566,6 +615,13 @@ class AgentController extends Controller
 
         $agent->tags()->sync($tag_id);
 
+        if(checkTableExists('agent_warehouse')){
+            $warehouse_ids = $request->warehouse_id;
+            if(!empty($warehouse_ids)){
+                $agent->warehouseAgent()->sync($warehouse_ids);
+            }
+        }
+
         $driver_registration_documents = DriverRegistrationDocument::get();
         foreach ($driver_registration_documents as $driver_registration_document) {
             $name = str_replace(" ", "_", $driver_registration_document->name);
@@ -607,7 +663,15 @@ class AgentController extends Controller
     public function destroy($domain = '', $id)
     {
         DriverGeo::where('driver_id', $id)->delete();  // i have to fix it latter
-        Agent::where('id', $id)->delete();
+        $agent = Agent::where('id', $id)->first();
+        Agent::where('id', $agent->id)->update([
+            'phone_number' => $agent->phone_number.'_'.$agent->id."_D",  
+            'device_token' =>'',  
+            'device_type' =>'',  
+            'access_token' => ''
+            ]);
+        $agent->delete();
+        Otp::where('phone', $agent->phone_number)->where('is_verified', 1)->delete();
         return redirect()->back()->with('success',__(getAgentNomenclature().' deleted successfully!'));
     }
 
@@ -710,9 +774,11 @@ class AgentController extends Controller
             AgentLog::where('agent_id',$request->id)->update(['is_active' => $is_active]);
 
             $slug = ($request->status == 1)? 'driver-accepted' : 'driver-rejected';
-            $sms_body = AgentSmsTemplate::where('slug', $slug)->first();
+            // $sms_body = AgentSmsTemplate::where('slug', $slug)->first();
+            $keyData = [];
+            $sms_body = sendSmsTemplate($slug,$keyData);
             if(!empty($sms_body)){
-                $send = $this->sendSms2($agent_approval->phone_number, $sms_body->content)->getData();
+                $send = $this->sendSmsNew($agent_approval->phone_number, $sms_body)->getData();
             }
 
             $agents            = Agent::get();
@@ -734,17 +800,35 @@ class AgentController extends Controller
         }
     }
 
+    public function driverList(Request $request) {
+        
+        $agents = Agent::select('id', 'name');
+        if( (strlen($request->term) > 0)) {
+            $agents = $agents->where('name', 'like', '%' .$request->term.'%')->select('id', 'name');
+        } 
+        $agents = $agents->get();
+        return response()->json($agents);
+    }
+
     public function search(Request $request, $domain = '')
     {
+        //->limit(10)
         $search = $request->search;
+        $vehicle_type = $request->vehicle_type;
         if (isset($search)) {
             if ($search == '') {
-                $drivers = Agent::orderby('name', 'asc')->select('id', 'name', 'phone_number')->where('is_approved', 1)->limit(10)->get();
+                $drivers = Agent::orderby('name', 'asc')->select('id', 'name', 'phone_number')->where('is_approved', 1)->get();
+            }elseif($vehicle_type != ''){
+                $drivers = Agent::orderby('name', 'asc')->select('id', 'name', 'phone_number')
+                ->where('is_approved', 1)
+                ->where('name', 'like', '%' . $search . '%')
+                ->whereIn('vehicle_type_id', $vehicle_type)
+                ->get();
             } else {
                 $drivers = Agent::orderby('name', 'asc')->select('id', 'name', 'phone_number')
-                                    ->where('is_approved', 1)
-                                    ->where('name', 'like', '%' . $search . '%')
-                                    ->limit(10)->get();
+                ->where('is_approved', 1)
+                ->where('name', 'like', '%' . $search . '%')
+                ->get();
             }
             $response = array();
             foreach ($drivers as $driver) {

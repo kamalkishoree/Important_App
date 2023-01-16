@@ -1,146 +1,114 @@
 <style>
-        #adds {
-            margin-bottom: 14px;
-        }
-
-        .shows {
-            display: none;
-        }
-
-        .rec {
-            margin-bottom: 7px;
-        }
-
-        .needsclick {
-
-            margin-left: 27%;
-        }
-
-        .padd {
-            padding-left: 9% !important;
-        }
-
-        .newchnage {
-            margin-left: 27% !important;
-        }
-
-        .address {
-            margin-bottom: 6px
-        }
-
-        .tags {
-
-        }
-
-        #typeInputss {
-            overflow-y: auto;
-            overflow-x: hidden;
-            height: 200px;
-            /* display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column; */
-        }
-
-        .upload {
-            margin-bottom: 20px;
-            margin-top: 10px;
-
-        }
-
-        .span1 {
-            color: #ff0000;
-        }
-
-        .check {
-
-        }
-
-        .newcheck {
-            margin-left: -54px;
-        }
-
-        .upside {
-            margin-top: -10px;
-        }
-
-        .newgap {
-            margin-top: 11px !important;
-        }
-
-
-
-        .append {
-            margin-bottom: 15px;
-        }
-
-        .spanbold {
-            font-weight: bolder;
-        }
-
-        .copyin {
-            background-color: rgb(148 148 148 / 11%);
-            margin-top: 10px;
-
-
-        }
-
-        hr.new3 {
-         border-top: 1px dashed white;
-         margin: 0 0 .5rem 0;
-       }
-       #spancheck{
-           display: none;
-       }
-       .imagepri{
+    #adds {
+        margin-bottom: 14px;
+    }
+    .shows {
+        display: none;
+    }
+    .rec {
+        margin-bottom: 7px;
+    }
+    .needsclick {
+        margin-left: 27%;
+    }
+    .padd {
+        padding-left: 9% !important;
+    }
+    .newchnage {
+        margin-left: 27% !important;
+    }
+    .address {
+        margin-bottom: 6px;
+    }
+    .tags {}
+    #typeInputss {
+        overflow-y: auto;
+        overflow-x: hidden;
+        height: 200px;
+        /* display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column; */
+    }
+    .upload {
+        margin-bottom: 20px;
+        margin-top: 10px;
+    }
+    .span1 {
+        color: #ff0000;
+    }
+    .check {}
+    .newcheck {
+        margin-left: -54px;
+    }
+    .upside {
+        margin-top: -10px;
+    }
+    .newgap {
+        margin-top: 11px !important;
+    }
+    .append {
+        margin-bottom: 15px;
+    }
+    .spanbold {
+        font-weight: bolder;
+    }
+    .copyin {
+        background-color: rgb(148 148 148 / 11%);
+        margin-top: 10px;
+    }
+    hr.new3 {
+        border-top: 1px dashed white;
+        margin: 0 0 .5rem 0;
+    }
+    #spancheck{
+        display: none;
+    }
+    .imagepri{
         min-width: 50px;
-           height: 50px;
-           width: 50px;
-           border-style: groove;
-           margin-left: 5px;
-           margin-top: 5px;
-       }
-       .withradio{
-
-
-       }
-       .showsimage{
+        height: 50px;
+        width: 50px;
+        border-style: groove;
+        margin-left: 5px;
+        margin-top: 5px;
+    }
+    .withradio{}
+    .showsimage{
         margin-top: 31px;
-       }
-       .showshadding{
+    }
+    .showshadding{
         margin-left: 98px;
-       }
-       .newchnageimage{
-       }
-       .showsimagegall{
+    }
+    .newchnageimage{}
+    .showsimagegall{
         margin-top: 20px;
-       }
-       .imagepri_wrap {
-            position: relative;
-        }
-        button.close.imagepri_close {
-            position: absolute;
-            top: -7px;
-            right: 1px;
-            background-color: red;
-            border-radius: 50%;
-            padding: 0px 3px;
-            font-size: 14px;
-            color: white;
-        }
-       .allset{
-           margin-left: 9px !important;
-           margin-right: 9px !important;
-           padding-top: 10px;
-       }
-       .inactiveLink {
-            pointer-events: none;
-            cursor: default;
-        }
-       .hidealloction{
-           display: none;
-       }
-       .ui-menu.ui-autocomplete { z-index: 9000 !important; }
+    }
+    .imagepri_wrap {
+        position: relative;
+    }
+    button.close.imagepri_close {
+        position: absolute;
+        top: -7px;
+        right: 1px;
+        background-color: red;
+        border-radius: 50%;
+        padding: 0px 3px;
+        font-size: 14px;
+        color: white;
+    }
+    .allset{
+        margin-left: 9px !important;
+        margin-right: 9px !important;
+        padding-top: 10px;
+    }
+    .inactiveLink {
+        pointer-events: none;
+        cursor: default;
+    }
+    .hidealloction{
+        display: none;
+    }
+    .ui-menu.ui-autocomplete { z-index: 9000 !important; }
 
     .pac-container, .pac-container .pac-item { z-index: 9999 !important; }
 
@@ -232,24 +200,21 @@
         </div>
     </div>
 </div>
-            @php
-                $style = "";
-                if(session('preferences.twilio_status') != 'invalid_key'){
-                        $style = "display:none;";
-                }
-            @endphp
-            {{-- <div class="row displaySettingsError" style="{{$style}}">
-                <div class="col-12">
-                    <div class="alert alert-danger excetion_keys" role="alert">
-                        @if(session('preferences.twilio_status') == 'invalid_key')
-                        <span><i class="mdi mdi-block-helper mr-2"></i> <strong>Twilio</strong> key is not valid</span> <br/>
-                        @endif
-                    </div>
-                </div>
-
-
-            </div> --}}
-
+@php
+    $style = "";
+    if(session('preferences.twilio_status') != 'invalid_key'){
+        $style = "display:none;";
+    }
+@endphp
+{{-- <div class="row displaySettingsError" style="{{$style}}">
+    <div class="col-12">
+        <div class="alert alert-danger excetion_keys" role="alert">
+            @if(session('preferences.twilio_status') == 'invalid_key')
+            <span><i class="mdi mdi-block-helper mr-2"></i> <strong>Twilio</strong> key is not valid</span> <br/>
+            @endif
+        </div>
+    </div>
+</div> --}}
 <div class="row address" id="addHeader0" style="display: none;">
     <input type="text" id="addHeader0-input" name="address" class="autocomplete form-control addHeader0-input" placeholder={{__("Address")}}>
     <input type="hidden" name="latitude[]" id="addHeader0-latitude" value="0" class="cust_latitude" />
@@ -258,8 +223,6 @@
 @php
     $key    = session('preferences.map_key_1') != null ? session('preferences.map_key_1'):'kdsjhfkjsdhfsf';
     $theme  = \App\Model\ClientPreference::where(['id' => 1])->first('theme');
-
-
 @endphp
 <link href="{{ asset('assets/libs/selectize/selectize.min.css') }}" rel="stylesheet" type="text/css" />
 
@@ -389,8 +352,17 @@
                 runPicker();
 
                 $('#task-modal-header .edit-icon-float-right').on('click', function() {
-                    $('#task-modal-header .task_desc_div').toggle();
+                    $('#task-modal-header .meta_data_task_div').toggle();
+                    if($(this).find('i').hasClass('mdi mdi-chevron-down')){
+                        $(this).find('i').removeClass('mdi mdi-chevron-down');
+                        $(this).find('i').addClass('mdi mdi-chevron-up');
+                    }else{
+                        $(this).find('i').removeClass('mdi mdi-chevron-up');
+                        $(this).find('i').addClass('mdi mdi-chevron-down');
+                    }
                 });
+
+                
             },
             error: function (data) {
             }
@@ -444,6 +416,10 @@
 
         $("#task-modal-header #searchDriver").autocomplete({
             source: function(request, response) {
+                var vehicle_type = [];
+                $('.vehicle_type :selected').each(function(){
+                    vehicle_type.push($(this).val());
+                });
                 // Fetch data
                 $.ajax({
                     url: "{{ route('agent.search') }}",
@@ -451,7 +427,8 @@
                     dataType: "json",
                     data: {
                         _token: CSRF_TOKEN,
-                        search: request.term
+                        search: request.term,
+                        vehicle_type: vehicle_type
                     },
                     success: function(data) {
                         response(data);
@@ -743,13 +720,17 @@
         }
         var s_name = $("input[name='short_name[]']").val();
         var s_address = $("input[name='address[]']").val();
-        if ((!$("input[name='old_address_id']:checked").val()) && (s_address=="") ) {
-                err = 1;
-                $(".addspan").show();
-                return false;
+        var warehouse_id = $("select[name='warehouse_id[]']").val();
+        if(warehouse_id){
+            err = 0;
+            $(".addspan").hide();
         }
-
-
+        else if ((!$("input[name='old_address_id']:checked").val()) && (s_address=="")) {
+            err = 1;
+            $(".addspan").show();
+            return false;
+        }
+        
         $(".selecttype").each(function(){
             var taskselect              = $(this).val();
             var checkPickupBarcode      = $('#check-pickup-barcode').val();
@@ -782,9 +763,13 @@
             var address = $("#task-modal-header input[name='address[]']").val();
             var post_code = $("#task-modal-header input[name='post_code[]']").val();
             var cash_to_be_collected = $("#task-modal-header input[name='cash_to_be_collected']").val();
-            if (short_name != '' && address != '' && post_code != '') {
-
-            } else {  err = 1;
+            if(warehouse_id){
+                err = 0;
+                $(".addspan").hide();
+            }else if (short_name != '' && address != '') {
+                
+            } else {  
+                err = 1;
                 $(".addspan").show();
                 return false;
             }
@@ -885,10 +870,14 @@
 
         if (this.value == 3){
            $span = $(this).closest(".firstclone1").find(".appoint").show();
+           $(this).closest(".firstclone1").find(".warehouse-field").hide();
+           $(this).closest(".firstclone1").find(".vehicle_type").hide();
            //console.log($span);
         }
         else{
             $(this).closest(".firstclone1").find(".appoint").hide();
+            $(this).closest(".firstclone1").find(".warehouse-field").show();
+            $(this).closest(".firstclone1").find(".vehicle_type").show();
         }
     });
 
@@ -1069,33 +1058,28 @@
     });
 
     $(document).on('click', '.selectMapOnHeader', function () {
-
+        
         var mapLat = document.getElementById('lat_map_header').value;
         var mapLlng = document.getElementById('lng_map_header').value;
         var mapFor = document.getElementById('map_for_header').value;
         var address = document.getElementById('addredd_map_header').value;
-        //console.log(mapLat+'-'+mapLlng+'-'+mapFor);
+        
         document.getElementById(mapFor + '-latitude').value = mapLat;
         document.getElementById(mapFor + '-longitude').value = mapLlng;
         document.getElementById(mapFor + '-input').value = address;
-
 
         $('#show-map-Header').modal('hide');
     });
 
 
     $(document).on('click', '.alFormTaskType', function () {
-
         $(".alTaskType").removeClass("active");
         $(".mainaddress").addClass("alCol-12");
         $(".alsavedaddress").hide();
         $(this).closest('.alTaskType').find(".mainaddress").removeClass("alCol-12");
         $(this).closest('.alTaskType').addClass("active");
         $(this).closest('.alTaskType').find(".alsavedaddress").show();
-
     });
-
-
 
     if(theme['theme'] == 'dark'){
 

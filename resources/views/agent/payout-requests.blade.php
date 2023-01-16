@@ -118,11 +118,11 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
         </div>
         <div class="row">
             <div class="col-12">
-                <div class="card widget-inline">
+                <div class="card widget-inline main-card-header">
                     <div class="card-body">
                         <div class="row">
                             <div class="col-sm-4 col-md-3 mb-3 mb-md-0">
-                                <div class="text-center">
+                                <div class="text-center d-flex">
                                     <form method="POST" id="form_auto_payout" action="{{route('preference', Auth::user()->code)}}">
                                         @csrf
                                         <input type="hidden" name="autopay_submit" id="autopay_submit" value="submit"/>
@@ -135,6 +135,14 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                     </div>
                                     <p class="text-muted font-15 mb-0">{{__("Auto Payout")}}</p>
                                     </form>
+
+                                    @if(isset($preferences) && $preferences->auto_payout =="1")
+                                        <form method="POST" action="{{route('preference', Auth::user()->code)}}" class="d-flex">
+                                            @csrf
+                                            <input type="text" name="charge_percent_from_agent" id="" class="form-control" value="@if((isset($preferences->charge_percent_from_agent))){{$preferences->charge_percent_from_agent}}@endif" placeholder="Commission Percentage">
+                                            <button class="ml-2" type="submit">Save</button>
+                                        </form>
+                                    @endif
                                 </div>
                             </div>
                             <div class="col-sm-4 col-md-3 mb-3 mb-md-0">
@@ -191,21 +199,21 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                         <div class="material-border"></div>
                     </li>
                 </ul>
-                
+
                 {{-- <div class="col-sm-4 payout-toggle">
-                    <button type="button" class="btn btn-info payout_all_agents" data-toggle="modal" data-target="#payout-all-agents-model" data-backdrop="static" data-keyboard="false">{{__("Payout")}}</button> 
+                    <button type="button" class="btn btn-info payout_all_agents" data-toggle="modal" data-target="#payout-all-agents-model" data-backdrop="static" data-keyboard="false">{{__("Payout")}}</button>
                 </div> --}}
-                
+
                 <div class="tab-content nav-material pt-0" id="top-tabContent">
                     <div class="tab-pane fade past-order show active" id="pending_payouts" role="tabpanel" aria-labelledby="pending-payouts">
                         <div class="row">
                             <div class="col-12">
-                               
+
                                 <div class="card">
                                     <div class="card-body">
                                         <div class="table-responsive">
                                             {{-- <form name="saveOrder" id="saveOrder"> @csrf</form> --}}
-                                           
+
                                             <table class="table table-centered table-nowrap table-striped" id="pending_payouts_datatable" width="100%">
                                                 <thead>
                                                     <tr>
@@ -296,7 +304,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                 </div>
                 <div class="modal-body px-3">
                     <div class="row">
-                        <h4 class="modal-title">{{__('Are you sure you want to payout')}} 
+                        <h4 class="modal-title">{{__('Are you sure you want to payout')}}
                             <span id="payout-agent"></span> for
                             <span id="payout-amount-final"></span>?
                         </h4>
@@ -384,7 +392,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
 <link rel="stylesheet" href="{{ asset('assets/css/jquery.tagsinput-revisited.css') }}" />
 <script src="{{asset('assets/libs/mohithg-switchery/mohithg-switchery.min.js')}}"></script>
 <script>
-    
+
     $(document).ready(function() {
         var elems = Array.prototype.slice.call(document.querySelectorAll('.switchery'));
             elems.forEach(function(html) {

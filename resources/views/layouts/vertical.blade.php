@@ -1,11 +1,13 @@
 <!DOCTYPE html>
     <html lang="en">
-
+        <meta name="csrf-token" content="{{ csrf_token() }}">
     <head>
         @include('layouts.shared/title-meta', ['title' => $title])
         @include('layouts.shared/head-css', ["demo" => "creative"])
 
         <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+        <script src="{{asset('assets/libs/spinner/spinner.js')}}"></script>
+        <script src="{{ asset('assets/js/storage/dispatcherStorage.js')}}"></script>
         <script src="{{asset('assets/js/vendor.min.js')}}"></script>
 </head>
 @php $theme = \App\Model\ClientPreference::where(['id' => 1])->first('theme');@endphp
@@ -28,7 +30,7 @@
         <!-- Start Page Content here -->
         <!-- ============================================================== -->
 
-        <div class="content-page">                                    
+        <div class="content-page main_outter_box">                                    
             <div class="content">
                 @php 
                     $style = "";

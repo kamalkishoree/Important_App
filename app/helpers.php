@@ -1,16 +1,24 @@
 <?php
+
+use App\Model\AgentSmsTemplate;
 use Carbon\Carbon;
 use App\Model\ClientPreference;
+use App\Model\OrderPanelDetail;
 use App\Model\Client as ClientData;
 use App\Model\Countries;
+use Illuminate\Support\Facades\Auth;
 use App\Model\PaymentOption;
+use Illuminate\Support\Facades\Schema;
 
+if (!function_exists('pr')) {
 function pr($var) {
   	echo '<pre>';
 	print_r($var);
   	echo '</pre>';
     exit();
 }
+}
+if (!function_exists('http_check')) {
 function http_check($url) {
     $return = $url;
     if (!preg_match("~^(?:f|ht)tps?://~i", $url)) {
@@ -18,7 +26,8 @@ function http_check($url) {
     }
     return $return;
 }
-
+}
+if (!function_exists('getMonthNumber')) {
 function getMonthNumber($month_name){
     if($month_name == 'January'){
         return 1;
@@ -46,6 +55,8 @@ function getMonthNumber($month_name){
         return 12;
     }
 }
+}
+if (!function_exists('generateOrderNo')) {
 function generateOrderNo($length = 8){
     $number = '';
     do {
@@ -55,25 +66,35 @@ function generateOrderNo($length = 8){
     } while (!empty(\DB::table('orders')->where('order_number', $number)->first(['order_number'])) );
     return $number;
 }
+}
+if (!function_exists('generateUniqueTransactionID')) {
 function generateUniqueTransactionID(){
     $ref = 'txn_'.uniqid(time());
     return $ref;
 }
+}
+if (!function_exists('convertDateTimeInTimeZone')) {
 function convertDateTimeInTimeZone($date, $timezone, $format = 'Y-m-d H:i:s'){
     $date = Carbon::parse($date, 'UTC');
     $date->setTimezone($timezone);
     return $date->format($format);
 }
+}
+if (!function_exists('getClientPreferenceDetail')) {
 function getClientPreferenceDetail()
 {
     $client_preference_detail = ClientPreference::first();
     return $client_preference_detail;
 }
+}
+if (!function_exists('getClientDetail')) {
 function getClientDetail()
 {
     $clientData = ClientData::first();
     return $clientData;
 }
+}
+if (!function_exists('getRazorPayApiKey')) {
 function getRazorPayApiKey()
 {
     $razorpay_creds = PaymentOption::select('credentials', 'test_mode')->where('code', 'razorpay')->where('status', 1)->first();
@@ -85,7 +106,8 @@ function getRazorPayApiKey()
     }
     return $api_key_razorpay;
 }
-
+}
+if (!function_exists('dateTimeInUserTimeZone')) {
 function dateTimeInUserTimeZone($date, $timezone, $showDate=true, $showTime=true, $showSeconds=false){
     $preferences = ClientPreference::select('date_format', 'time_format')->where('id', '>', 0)->first();
     $date_format = (!empty($preferences->date_format)) ? $preferences->date_format : 'YYYY-MM-DD';
@@ -115,15 +137,17 @@ function dateTimeInUserTimeZone($date, $timezone, $showDate=true, $showTime=true
     $format = $dateFormat . $timeFormat;
     return $date->isoFormat($format);
 }
-
+}
+if (!function_exists('helper_number_formet')) {
 function helper_number_formet($number){
     return number_format($number,2);
 }
-
+}
+if (!function_exists('getCountryCode')) {
 function getCountryCode($dial_code=''){
     if($dial_code==''):
-        $clientData = ClientData::select('country_id')->first();
-        $getAdminCurrentCountry = Countries::where('id', '=', $clientData->country_id)->select('id', 'code')->first();
+        $clientData = ClientData::select('country_id')->where('id', Auth::user()->country_id)->first();
+        $getAdminCurrentCountry = Countries::where('id', '=', Auth::user()->country_id)->select('id', 'code')->first();
     else:
         $getAdminCurrentCountry = Countries::where('phonecode', '=', $dial_code)->select('id', 'code')->first();
     endif;
@@ -135,7 +159,8 @@ function getCountryCode($dial_code=''){
     }
     return $countryCode;
 }
-
+}
+if (!function_exists('getCountryPhoneCode')) {
 function getCountryPhoneCode(){
     $clientData = ClientData::select('country_id')->first();
     $getAdminCurrentCountry = Countries::where('id', '=', $clientData->country_id)->select('id', 'phonecode')->first();
@@ -146,9 +171,156 @@ function getCountryPhoneCode(){
     }
     return $countryCode;
 }
-
+}
+if (!function_exists('getAgentNomenclature')) {
 function getAgentNomenclature()
 {
     $reference = ClientPreference::first();
-    return (empty($reference))?'Agent':$reference->agent_name;
+    return (empty($reference->agent_name))?'Agent':$reference->agent_name;
 }
+}
+
+/**
+ * function for created date into particular format
+ * @return 06/07/2022
+ */
+if( !function_exists('formattedDate') ) {
+    function formattedDate($date) {
+        if(!empty($date)) {
+            return date("d/m/Y", strtotime($date));
+        }
+        return ;
+    }
+}
+
+function connect_with_order_panel() {
+    $order_panel_details = OrderPanelDetail::first();
+    
+    $default = [
+        'prefix' => '',
+        'engine' => null,
+        'strict' => false,
+        'charset' => 'utf8mb4',
+        'host' => $order_panel_details->db_host,
+        'port' => $order_panel_details->db_port,
+        'prefix_indexes' => true,
+        'database' => $order_panel_details->db_name,
+        'username' => $order_panel_details->db_username,
+        'password' => $order_panel_details->db_password,
+        'collation' => 'utf8mb4_unicode_ci',
+        'driver' => env('DB_CONNECTION', 'mysql'),
+    ];
+    Config::set("database.connections.$order_panel_details->db_name", $default);
+    return \DB::connection($order_panel_details->db_name);    
+}
+
+// Returns the values of the additional preferences.
+if (!function_exists('checkColumnExists')) {
+    /** check if column exits in table
+       * @param string $tableName
+       * @param string @columnName
+       * @return boolean true or false
+    */
+    function checkColumnExists($tableName, $columnName){
+        if (Schema::hasColumn($tableName, $columnName)){
+            return true;
+        }else{
+            return false;
+        }
+    }
+}
+
+// Returns the values of the additional preferences.
+if (!function_exists('checkTableExists')) {
+    /** check if column exits in table
+    * @param string $tableName
+    * @return boolean true or false
+    */
+    function checkTableExists($tableName){
+        if (Schema::hasTable($tableName)){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+}
+
+if (!function_exists('checkWarehouseMode')) {
+    /** check if column exits in table
+    * @param string $tableName
+    */
+    function checkWarehouseMode(){
+        $preference = checkColumnExists('client_preferences','warehouse_mode') ? ClientPreference::select('id', 'warehouse_mode')->first() :'';
+        $data = [
+            'show_warehouse_module' => 0,
+            'show_category_module' => 0
+        ];
+        if($preference){            
+            $warehouseMode = isset($preference->warehouse_mode) ? json_decode($preference->warehouse_mode) : '';
+        
+            if(!empty($warehouseMode->show_warehouse_module) && $warehouseMode->show_warehouse_module == 1){
+                $data['show_warehouse_module'] = 1; 
+            }
+            if(!empty($warehouseMode->show_category_module) && $warehouseMode->show_category_module == 1){
+                $data['show_category_module'] = 1; 
+            }            
+        }
+        return $data;
+    }
+
+}
+
+
+if (!function_exists('checkDashboardMode')) {
+    /** check if column exits in table
+    * @param string $tableName
+    */
+    function checkDashboardMode(){
+        $preference = checkColumnExists('client_preferences','dashboard_mode') ? ClientPreference::select('id', 'dashboard_mode')->first() :'';
+        $data = [
+            'show_dashboard_by_agent_wise' => 0
+        ];
+        if($preference){            
+            $dashboardMode = isset($preference->dashboard_mode) ? json_decode($preference->dashboard_mode) : '';
+        
+            if(!empty($dashboardMode->show_dashboard_by_agent_wise) && $dashboardMode->show_dashboard_by_agent_wise == 1){
+                $data['show_dashboard_by_agent_wise'] = 1; 
+            }            
+        }
+        return $data;
+    }
+
+}
+
+if (!function_exists('decimal_format')) {
+    // Number Format according to Client preferences
+    function decimal_format($number, $format = "")
+    {
+        $preference = session()->get('preferences');
+        $digits = $preference['digit_after_decimal'] ?? 2;
+        return number_format($number, $digits, '.', $format);
+    }
+}
+
+
+
+ /**
+     * sendSmsTemplate dynamic selection and replace tags
+     */
+    function sendSmsTemplate($slug,$data)
+    {
+        $smsTemp = AgentSmsTemplate::where('slug',$slug)->select('content','tags','template_id')->first();
+        $smsBody = $smsTemp->content;
+        if(isset($smsTemp->tags) && !empty($smsTemp->tags))
+        {
+            $tages = explode(',',$smsTemp->tags);
+            foreach($tages as $tag)
+            {
+                $value = $data[$tag]??'';
+                $smsBody = str_replace($tag,$value,$smsBody);
+            }
+        }
+        $sms = array('body'=>$smsBody,'template_id'=>$smsTemp->template_id??'');
+        return $sms;
+    }
