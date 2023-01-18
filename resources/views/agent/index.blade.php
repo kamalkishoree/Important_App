@@ -265,6 +265,7 @@ h2#swal2-title {
 @endsection
 @php
 $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain/';
+$is_driver_slot = getClientPreferenceDetail()->is_driver_slot;
 @endphp
 @section('content')
 <div class="container-fluid">
@@ -350,9 +351,6 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                     </div>
                                 </li>
                                 <li>
-                                    <a href="{{url('fleet')}}" type="button" target="_blank" class="btn btn-success waves-effect waves-light" >{{__("Add New Fleets")}}</a>
-                                </li>
-                                <li>
                                     <select name="geo_filter" id="geo_filter" class="form-control">
                                         <option value="">{{__('Filter by location')}}</option>
                                         @foreach($geos as $geo)
@@ -368,9 +366,17 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                         @endforeach
                                     </select>
                                 </li>
+                                @if(getClientPreferenceDetail()->manage_fleet == 1)
+                                    <li>
+                                        <a href="{{url('fleet')}}" type="button" target="_blank" class="btn btn-success waves-effect waves-light" >{{__("Add New Fleets")}}</a>
+                                    </li>
+                                @endif
                                 <li class="d-flex">
                                     <button type="button" class="btn btn-blue waves-effect waves-light openModal mr-1" data-toggle="modal" data-target="" data-backdrop="static" data-keyboard="false"><i class="mdi mdi-plus-circle mr-1"></i> {{__("Add")}} {{ getAgentNomenclature() }}</button>
-                                    <button type="button" class="btn btn-success waves-effect waves-light saveaccounting" data-toggle="modal" data-target="#pay-receive-modal" data-backdrop="static" data-keyboard="false">{{__("Pay")}} / {{__("Receive")}}</button>
+                                    <button type="button" class="btn btn-success waves-effect waves-light saveaccounting mr-1" data-toggle="modal" data-target="#pay-receive-modal" data-backdrop="static" data-keyboard="false">{{__("Pay")}} / {{__("Receive")}}</button>
+                                    @if($is_driver_slot == 1)
+                                        <button type="button" class="btn btn-success waves-effect waves-light " id="gerenal_slot" >{{__("Gerenal Slot")}}</button>
+                                    @endif                                    
                                 </li>
                             </ul>
                     </div>
@@ -506,8 +512,9 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
 
 @include('agent.modals')
 @include('modals.pay-receive')
-@if(getClientPreferenceDetail()->is_driver_slot == 1)
+@if($is_driver_slot == 1)
     @include('agent.modal-popup.agentSlotTableRows')
+    @include('agent.modal-popup.gerenaSlotModel')
     {{-- @include('agent.modal-popup.slotPopup') --}}
 <script>
     var AddSlotHtml = `<form class="needs-validation" name="slot-form" id="slot-event" action="" method="post">
@@ -536,8 +543,10 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                             <input class="form-control" placeholder="End Time" type="time" name="end_time" id="end_time" required />
                                         </div>
                                     </div>
-                                
-                            
+                                    
+                                    <div class="row forDate" style="display: none;">
+                                <input type="hidden" class="custom-control-input methods" value="agents">
+                                </div>
                                 </div>
                                 <div class="row memo">
                                     <div class="col-md-6 slot_type">
@@ -662,6 +671,9 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                                 <option value="blocked">Block</option>
                                             </select>
                                     </div>
+                                    <div class="row forDate" style="display: none;">
+                                <input type="hidden" class="custom-control-input methods" value="agents">
+                                </div>
                                     <div class="col-md-6 slotForDiv">
                                         {!! Form::label('title', 'Recurring',['class' => 'control-label']) !!}
                                     <div class="form-group">
@@ -761,8 +773,9 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
 <script src="{{ asset('assets/js/jquery.tagsinput-revisited.js') }}"></script>
 <script src="{{ asset('telinput/js/intlTelInput.js') }}"></script>
 <link rel="stylesheet" href="{{ asset('assets/css/jquery.tagsinput-revisited.css') }}" />
-@if(getClientPreferenceDetail()->is_driver_slot == 1)
+@if($is_driver_slot == 1)
 <script src="{{ asset('assets/js/AgentSlot/slot.js') }}"></script>
+<script src="{{ asset('assets/js/agent/generalSlot.js')}}"></script>
 @endif
 
 <script>

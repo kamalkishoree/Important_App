@@ -73,8 +73,8 @@ div#DataTables_Table_0_filter label input {
                             </div>
                             <div class="col-md-6">
                                 <label for="">Select Driver</label>
-                                <select class="agent-class" name="vendor_id" id="select2_vendor_id">
-                                </select>
+                                {{Form::select('agent_id', array_merge(['' => 'Please Select '.__(getAgentNomenclature())], $agentList), '', array('class' => 'form-control', 'id' => 'agent_id' ))}}
+                                
                             </div>
                         </div>
                     </form>
@@ -157,7 +157,7 @@ div#DataTables_Table_0_filter label input {
                         <th>Delivery Boy ID</th>
                         <th>Delivery Boy Name</th>
                         <th>Delivery Boy Phone</th>
-                        <th>Vendor Name</th>
+                        <th>{{__(getAgentNomenclature())}} Name</th>
                         <th>Distance</th>
                         <th>Duration</th>
                         <th>Cash</th>
@@ -296,7 +296,7 @@ function initializeAgentListing(){
                 d.search = $('input[type="search"]').val();
                 d.routesListingType = $('#routes-listing-status').val();
                 d.date_filter = $('#date_picker').val();
-                d.driver_id = $('#select2_vendor_id').val();
+                d.driver_id = $('#agent_id').val();
                 d.imgproxyurl = '';
             }
         },

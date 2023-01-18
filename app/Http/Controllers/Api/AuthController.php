@@ -502,19 +502,23 @@ class AuthController extends BaseController
         ];
 
         $agent = Agent::create($data);
-        $dataFleet = [
-            'name' => $request->vehicle_name??'Test',
-            'make' => $request->make,
-            'model' => $request->model??'Top',
-            'registration_name' => $request->plate_number,
-            'color' => $request->color,
-            'year' => $request->year??date('Y'),
-            'user_id' => $agent->id
-        ];
-        $agentFleet = Fleet::create($dataFleet);
-        if($agentFleet)
+        $fleetChk = ClientPreference::value('manage_fleet');
+        if($fleetChk)
         {
-            AgentFleet::create(['fleet_id'=>$agentFleet->fleet_id,'agent_id'=>$agent->id]);
+                $dataFleet = [
+                    'name' => $request->vehicle_name??'Test',
+                    'make' => $request->make,
+                    'model' => $request->model??'Top',
+                    'registration_name' => $request->plate_number,
+                    'color' => $request->color,
+                    'year' => $request->year??date('Y'),
+                    'user_id' => $agent->id
+                ];
+                $agentFleet = Fleet::create($dataFleet);
+                if($agentFleet)
+                {
+                    AgentFleet::create(['fleet_id'=>$agentFleet->id,'agent_id'=>$agent->id]);
+                }
         }
 
         $agent->tags()->sync($tag_id);
@@ -595,7 +599,10 @@ class AuthController extends BaseController
         }
 
         if ($agent->wasRecentlyCreated ) {
-            return response()->json(['status' => 200, 'message' => 'Your account created successfully. Please login'], 200);
+            return response()->json([   'status' => 200, 
+                                        'message' => 'Your account created successfully. Please login',
+                                        'data' =>  $agent 
+                                    ], 200);
         } else {
             return response()->json([
                 'status' => 400,

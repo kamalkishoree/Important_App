@@ -130,6 +130,7 @@ class AgentController extends Controller
 
     public function agentFilter(Request $request)
     {
+      
         try {
             $tz = new Timezone();
             $user = Auth::user();
@@ -798,6 +799,16 @@ class AgentController extends Controller
         } catch (Exception $e) {
             return response()->json(['status' => 0, 'message' => $e->getMessage()]);
         }
+    }
+
+    public function driverList(Request $request) {
+        
+        $agents = Agent::select('id', 'name');
+        if( (strlen($request->term) > 0)) {
+            $agents = $agents->where('name', 'like', '%' .$request->term.'%')->select('id', 'name');
+        } 
+        $agents = $agents->get();
+        return response()->json($agents);
     }
 
     public function search(Request $request, $domain = '')

@@ -23,6 +23,7 @@ class FleetController extends Controller
      */
     public function index()
     {
+        $agents = Fleet::with('getDriver')->orderBy('id', 'desc')->get();
         $fleets = AgentFleet::pluck('fleet_id');
         $agents = Fleet::select('id')->orderBy('id', 'desc');
         $all = $agents->count();
@@ -120,9 +121,20 @@ class FleetController extends Controller
 
     public function updateDriver(Request $request)
     {
-        AgentFleet::where('fleet_id',$request->fleet_id)->delete();
-        if($request->agent_id){
+        $agentFleet = AgentFleet::where('agent_id',$request->agent_id)->first();
+        // dd($agentFleet);
+        if($agentFleet){
+            // dd('ddd-ex'.$agentFleet->agent_id);
+
+            AgentFleet::where('agent_id',$agentFleet->agent_id)->delete();
+            // dd('ddd-ex'.$agentFleet->agent_id);
+
             $fleetUpdate = AgentFleet::create(['fleet_id'=>$request->fleet_id,'agent_id'=>$request->agent_id]);
+        }else{
+            AgentFleet::where('fleet_id',$request->fleet_id)->delete();
+            if(@$request->agent_id){
+                $fleetUpdate = AgentFleet::create(['fleet_id'=>$request->fleet_id,'agent_id'=>$request->agent_id]);
+            }
         }
        return back()->with('success',"Fleet Updated successfully.");
     }

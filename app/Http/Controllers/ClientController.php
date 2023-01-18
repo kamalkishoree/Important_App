@@ -22,7 +22,7 @@ use App\Model\TaskProof;
 use App\Model\TaskType;
 use App\Model\DriverRegistrationDocument;
 use App\Model\OrderPanelDetail;
-use App\Model\{SmtpDetail, SmsProvider, VehicleType};
+use App\Model\{SmtpDetail, SmsProvider, VehicleType, ClientPreferenceAdditional};
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Redis;
 use Session;
@@ -33,6 +33,7 @@ use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 class ClientController extends Controller
 {
+    use \App\Traits\ClientPreferenceManager;
     protected function successResponse($data, $message = null, $code = 200)
 	{
 		return response()->json([
@@ -70,6 +71,17 @@ class ClientController extends Controller
      */
     public function storePreference(Request $request, $domain = '', $id)
     {
+  
+        try {
+            $this->updatePreferenceAdditional($request);
+            // return redirect()->back()->with('success', 'Client settings updated successfully!');
+            unset($request['pickup_type']);
+            unset($request['drop_type']);
+        } catch (\Throwable $th) {
+            return redirect()->back()->with('error', 'Something went wrong!!');
+        }
+    
+
         $customerDistenceNotification = '';
         if(!empty($request->customer_notification)){
             $data = ['customer_notification_per_distance'=>json_encode($request->customer_notification)];
@@ -331,14 +343,17 @@ class ClientController extends Controller
         }
 
         if($request->has('cancel_verify_edit_order_config')){
+            
             $request->request->add(['verify_phone_for_driver_registration' => ($request->has('verify_phone_for_driver_registration') && $request->verify_phone_for_driver_registration == 'on') ? 1 : 0]);
             $request->request->add(['is_edit_order_driver' => ($request->has('is_edit_order_driver') && $request->is_edit_order_driver == 'on') ? 1 : 0]);
             $request->request->add(['is_cancel_order_driver' => ($request->has('is_cancel_order_driver') && $request->is_cancel_order_driver == 'on') ? 1 : 0]);
             $request->request->add(['is_driver_slot' => ($request->has('is_driver_slot') && $request->is_driver_slot == 'on') ? 1 : 0]);
+            $request->request->add(['is_freelancer' => ($request->has('is_freelancer') && $request->is_freelancer == 'on') ? 1 : 0]);
             $request->request->add(['manage_fleet' => ($request->has('manage_fleet') && $request->manage_fleet == 'on') ? 1 : 0]);
             $request->request->add(['is_cab_pooling_toggle' => ($request->has('is_cab_pooling_toggle') && $request->is_cab_pooling_toggle == 'on') ? 1 : 0]);
             $request->radius_for_pooling_km = ($request->has('is_cab_pooling_toggle') && $request->is_cab_pooling_toggle == 'on') ? $request->radius_for_pooling_km : 0;
             $request->request->add(['is_bid_ride_toggle' => ($request->has('is_bid_ride_toggle') && $request->is_bid_ride_toggle == 'on') ? 1 : 0]);
+            //pr($request->all());
         }
 
         if($request->has('refer_and_earn')){
