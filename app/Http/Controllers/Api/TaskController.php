@@ -692,13 +692,15 @@ class TaskController extends BaseController
         $percentage = 0;
         $agent_id =  $request->driver_id  ? $request->driver_id : null;
         $driver   = Agent::where('id', $agent_id)->first();
+
+        $orderdata = Order::where('id', $request->order_id)->first();
         if($driver->is_pooling_available == 1)
         {
             $assigned_orders  = Order::where('driver_id', $driver->id)->where('is_cab_pooling', 1)->where('status', 'assigned')->orderBy('id', 'asc')->first();
             $available_seats  = (!empty($assigned_orders))?$assigned_orders->available_seats:0;
             if($available_seats > 0){
                 $previous_seats   = Order::where('driver_id', $driver->id)->where('is_cab_pooling', 1)->where('status', 'assigned')->sum('no_seats_for_pooling');
-                $this_order_seats = Order::where('id', $request->order_id)->first()->no_seats_for_pooling;
+                $this_order_seats = $orderdata->no_seats_for_pooling;
                 $booked_seats     = $previous_seats + $this_order_seats;
                 if($available_seats < $booked_seats){
                     return response()->json([
@@ -1064,8 +1066,11 @@ class TaskController extends BaseController
                 'available_seats'                 => isset($request->available_seats)?$request->available_seats:0,
                 'no_seats_for_pooling'            => isset($request->no_seats_for_pooling)?$request->no_seats_for_pooling:0,
                 'is_cab_pooling'                  => isset($request->is_cab_pooling)?$request->is_cab_pooling:0,
-                'is_one_push_booking'             => isset($request->is_one_push_booking)?$request->is_one_push_booking:0,
             ];
+
+            if(checkColumnExists('orders', 'is_one_push_booking')){
+                $order['is_one_push_booking'] = isset($request->is_one_push_booking)?$request->is_one_push_booking:0;
+            }
 
             $is_order_updated = 0;
             $orderexist = Order::where('call_back_url', '=', $request->call_back_url)->first();
@@ -1389,35 +1394,23 @@ class TaskController extends BaseController
 
             if ($request->allocation_type === 'a' || $request->allocation_type === 'm') {
                 $allocation = AllocationRule::where('id', 1)->first();
-                $inputdata = [
-                    'geo' => $geo,
-                    'notification_time' => $notification_time,
-                    'agent_id' => $agent_id,
-                    'orders_id' => $orders->id,
-                    'customer' => $customer,
-                    'finalLocation' => $pickup_location,
-                    'taskcount' => $taskcount,
-                    'header' => $header,
-                    'allocation' => $allocation,
-                    'is_cab_pooling' => $orders->is_cab_pooling,
-                    'agent_tag' => isset($request->order_agent_tag)?$request->order_agent_tag:'',
-                ];
+                $is_one_push_booking = isset($orders->is_one_push_booking) ? $orders->is_one_push_booking : 0;
                 switch ($allocation->auto_assign_logic) {
                 case 'one_by_one':
                      //this is called when allocation type is one by one
-                    $this->finalRoster($geo, $notification_time, $agent_id, $orders->id, $customer, $pickup_location, $taskcount, $header, $allocation, $orders->is_cab_pooling, isset($request->order_agent_tag)?$request->order_agent_tag:'', $is_order_updated);
+                    $this->finalRoster($geo, $notification_time, $agent_id, $orders->id, $customer, $pickup_location, $taskcount, $header, $allocation, $orders->is_cab_pooling, isset($request->order_agent_tag)?$request->order_agent_tag:'', $is_order_updated, $is_one_push_booking);
                     break;
                 case 'send_to_all':
                     //this is called when allocation type is send to all
-                    $this->SendToAll($geo, $notification_time, $agent_id, $orders->id, $customer, $pickup_location, $taskcount, $header, $allocation, $orders->is_cab_pooling, isset($request->order_agent_tag)?$request->order_agent_tag:'', $is_order_updated);
+                    $this->SendToAll($geo, $notification_time, $agent_id, $orders->id, $customer, $pickup_location, $taskcount, $header, $allocation, $orders->is_cab_pooling, isset($request->order_agent_tag)?$request->order_agent_tag:'', $is_order_updated, $is_one_push_booking);
                     break;
                 case 'round_robin':
                     //this is called when allocation type is round robin
-                    $this->roundRobin($geo, $notification_time, $agent_id, $orders->id, $customer, $pickup_location, $taskcount, $header, $allocation, $orders->is_cab_pooling, isset($request->order_agent_tag)?$request->order_agent_tag:'', $is_order_updated);
+                    $this->roundRobin($geo, $notification_time, $agent_id, $orders->id, $customer, $pickup_location, $taskcount, $header, $allocation, $orders->is_cab_pooling, isset($request->order_agent_tag)?$request->order_agent_tag:'', $is_order_updated, $is_one_push_booking);
                     break;
                 default:
                    //this is called when allocation type is batch wise
-                    $this->batchWise($geo, $notification_time, $agent_id, $orders->id, $customer, $pickup_location, $taskcount, $header, $allocation, $orders->is_cab_pooling, isset($request->order_agent_tag)?$request->order_agent_tag:'', $is_order_updated);
+                    $this->batchWise($geo, $notification_time, $agent_id, $orders->id, $customer, $pickup_location, $taskcount, $header, $allocation, $orders->is_cab_pooling, isset($request->order_agent_tag)?$request->order_agent_tag:'', $is_order_updated, $is_one_push_booking);
             }
             }
             $dispatch_traking_url = $client_url.'/order/tracking/'.$auth->code.'/'.$orders->unique_id;
@@ -1934,7 +1927,7 @@ class TaskController extends BaseController
         return $c;
     }
 
-    public function finalRoster($geo, $notification_time, $agent_id, $orders_id, $customer, $finalLocation, $taskcount, $header, $allocation, $is_cab_pooling, $agent_tag = '', $is_order_updated=0)
+    public function finalRoster($geo, $notification_time, $agent_id, $orders_id, $customer, $finalLocation, $taskcount, $header, $allocation, $is_cab_pooling, $agent_tag = '', $is_order_updated=0, $is_one_push_booking=0)
     {
         $allcation_type = 'AR';
         $date = \Carbon\Carbon::today();
@@ -2111,7 +2104,7 @@ class TaskController extends BaseController
         }
     }
 
-    public function SendToAll($geo, $notification_time, $agent_id, $orders_id, $customer, $finalLocation, $taskcount, $header, $allocation, $is_cab_pooling, $agent_tag = '', $is_order_updated)
+    public function SendToAll($geo, $notification_time, $agent_id, $orders_id, $customer, $finalLocation, $taskcount, $header, $allocation, $is_cab_pooling, $agent_tag = '', $is_order_updated, $is_one_push_booking=0)
     {
         $allcation_type    = 'AR';
         $date              = \Carbon\Carbon::today();
@@ -2135,6 +2128,10 @@ class TaskController extends BaseController
             $allcation_type = 'ACK';
         } else {
             $allcation_type = 'N';
+        }
+
+        if($is_one_push_booking == 1){
+            $allcation_type = "Instant_Booking";
         }
 
         $extraData = [
@@ -2207,7 +2204,7 @@ class TaskController extends BaseController
         }
     }
 
-    public function batchWise($geo, $notification_time, $agent_id, $orders_id, $customer, $finalLocation, $taskcount, $header, $allocation, $is_cab_pooling, $agent_tag = '', $is_order_updated=0)
+    public function batchWise($geo, $notification_time, $agent_id, $orders_id, $customer, $finalLocation, $taskcount, $header, $allocation, $is_cab_pooling, $agent_tag = '', $is_order_updated=0, $is_one_push_booking=0)
     {
         $allcation_type    = 'AR';
         $date              = \Carbon\Carbon::today();
@@ -2322,7 +2319,7 @@ class TaskController extends BaseController
 
 
 
-    public function roundRobin($geo, $notification_time, $agent_id, $orders_id, $customer, $finalLocation, $taskcount, $header, $allocation, $is_cab_pooling, $agent_tag = '', $is_order_updated=0)
+    public function roundRobin($geo, $notification_time, $agent_id, $orders_id, $customer, $finalLocation, $taskcount, $header, $allocation, $is_cab_pooling, $agent_tag = '', $is_order_updated=0, $is_one_push_booking=0)
     {
         $allcation_type    = 'AR';
         $date              = \Carbon\Carbon::today();
@@ -2791,6 +2788,7 @@ class TaskController extends BaseController
      {
           $order = DB::table('orders')->where('id',$id)->first();
               if (isset($order->id)) {
+                $customer = DB::table('customers')->where('id', $order->customer_id)->first();
                 $order->order_cost = $order->cash_to_be_collected ?? $order->order_cost;
                  $tasks = DB::table('tasks')->where('order_id', $order->id)->leftJoin('locations', 'tasks.location_id', '=', 'locations.id')
                      ->select('tasks.*', 'locations.latitude', 'locations.longitude', 'locations.short_name', 'locations.address')->orderBy('task_order')->get();
@@ -2799,6 +2797,7 @@ class TaskController extends BaseController
                      'message' => 'Successfully',
                      'tasks' => $tasks,
                      'order'  => $order,
+                     'customer'  => $customer,
                      'agent_dbname'  =>$db_name
                  ], 200);
 
@@ -3369,22 +3368,23 @@ class TaskController extends BaseController
                 $allocation = AllocationRule::where('id', 1)->first();
                 $is_cab_pooling  =  $is_order_updated = 0;
                 $agent_tag = '';
+                $is_one_push_booking = 0;
                 switch ($allocation->auto_assign_logic) {
                 case 'one_by_one':
                      //this is called when allocation type is one by one
-                    $this->finalRoster($geo, $notification_time, $agent_id, $orders->id, $customer, $finalLocation, $taskcount, $header, $allocation, $is_cab_pooling, $agent_tag, $is_order_updated);
+                    $this->finalRoster($geo, $notification_time, $agent_id, $orders->id, $customer, $finalLocation, $taskcount, $header, $allocation, $is_cab_pooling, $agent_tag, $is_order_updated, $is_one_push_booking);
                     break;
                 case 'send_to_all':
                     //this is called when allocation type is send to all
-                    $this->SendToAll($geo, $notification_time, $agent_id, $orders->id, $customer, $finalLocation, $taskcount, $header, $allocation, $is_cab_pooling, $agent_tag, $is_order_updated);
+                    $this->SendToAll($geo, $notification_time, $agent_id, $orders->id, $customer, $finalLocation, $taskcount, $header, $allocation, $is_cab_pooling, $agent_tag, $is_order_updated, $is_one_push_booking);
                     break;
                 case 'round_robin':
                     //this is called when allocation type is round robin
-                    $this->roundRobin($geo, $notification_time, $agent_id, $orders->id, $customer, $finalLocation, $taskcount, $header, $allocation, $is_cab_pooling, $agent_tag, $is_order_updated);
+                    $this->roundRobin($geo, $notification_time, $agent_id, $orders->id, $customer, $finalLocation, $taskcount, $header, $allocation, $is_cab_pooling, $agent_tag, $is_order_updated, $is_one_push_booking);
                     break;
                 default:
                    //this is called when allocation type is batch wise
-                    $this->batchWise($geo, $notification_time, $agent_id, $orders->id, $customer, $finalLocation, $taskcount, $header, $allocation, $is_cab_pooling, $agent_tag, $is_order_updated);
+                    $this->batchWise($geo, $notification_time, $agent_id, $orders->id, $customer, $finalLocation, $taskcount, $header, $allocation, $is_cab_pooling, $agent_tag, $is_order_updated, $is_one_push_booking);
             }
             }
             $dispatch_traking_url = $client_url.'/order/tracking/'.$auth->code.'/'.$orders->unique_id;
