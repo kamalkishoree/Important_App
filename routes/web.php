@@ -331,6 +331,16 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 			Route::post('general/slot/save', 'AgentSlotController@saveGeneralSlot')->name('general.slot.save');
 			Route::get('general/slot/destroy/{id}', 'AgentSlotController@destroyGeneralSlot')->name('vendor_city.destroy');
 
+			Route::prefix('attribute')->group(function () {
+                Route::name('attribute.')->group(function () {
+                    Route::get('create', 'FormAttributeController@create')->name('create');
+                    Route::get('edit/{id}', 'FormAttributeController@edit')->name('edit');
+                    Route::post('store', 'FormAttributeController@store')->name('store');
+                    Route::put('update/{id}', 'FormAttributeController@update')->name('update');
+                    Route::delete('delete/{id}', 'FormAttributeController@delete')->name('delete');
+                });
+            });
+
 		});
 	});
 

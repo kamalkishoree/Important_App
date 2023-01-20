@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+
 use Illuminate\Http\Request;
 
 use App\Model\ClientPreference;
@@ -22,7 +23,7 @@ use App\Model\TaskProof;
 use App\Model\TaskType;
 use App\Model\DriverRegistrationDocument;
 use App\Model\OrderPanelDetail;
-use App\Model\{SmtpDetail, SmsProvider, VehicleType, ClientPreferenceAdditional};
+use App\Model\{SmtpDetail, SmsProvider, VehicleType, ClientPreferenceAdditional, FormAttribute, FormAttributeOption};
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Redis;
 use Session;
@@ -456,6 +457,9 @@ class ClientController extends Controller
      */
     public function ShowPreference()
     {
+        $attributes = FormAttribute::with('option','translation_one')->where('status', '!=', 2)->orderBy('position', 'asc');
+        $attributes = $attributes->get();
+            // dd($attributes);
         $preference  = ClientPreference::where('client_id', Auth::user()->code)->first();
         $currencies  = Currency::orderBy('iso_code')->get();
         $cms         = Cms::all('content');
@@ -465,7 +469,7 @@ class ClientController extends Controller
         $client      = Client::where('code', $user->code)->first();
         $subClients  = SubClient::all();
         $order_panel_detail = OrderPanelDetail::first();
-        return view('customize')->with(['clientContact'=>$client, 'preference' => $preference, 'currencies' => $currencies,'cms'=>$cms,'task_proofs' => $task_proofs,'task_list' => $task_list,'order_panel_detail'=>$order_panel_detail]);
+        return view('customize')->with(['clientContact'=>$client,'attributes'=> $attributes, 'preference' => $preference, 'currencies' => $currencies,'cms'=>$cms,'task_proofs' => $task_proofs,'task_list' => $task_list,'order_panel_detail'=>$order_panel_detail]);
     }
 
     public function updateContactUs(Request $request){

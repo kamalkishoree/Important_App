@@ -14,10 +14,11 @@ use App\Model\Roster;
 use Config;
 use Illuminate\Support\Facades\URL;
 use GuzzleHttp\Client as GClient;
+use App\Traits\FormAttributeTrait;
 
 class ActivityController extends BaseController
 {
-
+    use FormAttributeTrait;
     /**
      * Store/Update Client Preferences
      */
@@ -371,6 +372,8 @@ class ActivityController extends BaseController
         }
 
         $allcation = AllocationRule::first('request_expiry');
+
+        $datas['attribute_form'] = $this->getAttributeForm($request);
 
         $preferences['alert_dismiss_time'] = (int)$allcation->request_expiry;
         $agents['client_preference']  = $preferences;
