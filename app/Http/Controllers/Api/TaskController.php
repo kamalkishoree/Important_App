@@ -3912,4 +3912,147 @@ class TaskController extends BaseController
         }
     }
 
+
+    // update bid & ride / Instant Booking order function
+    public function updateBidRideOrder(Request $request)
+    {
+        try {
+            $auth =  $client =  Client::with(['getAllocation', 'getPreference'])->first();
+            $header = $request->header();
+            if(isset($header['client'][0]))
+            {
+
+            }
+            else{
+               $header['client'][0] = $client->database_name;
+            }
+
+            DB::beginTransaction();
+            $loc_id = $cus_id = $send_loc_id = $newlat = $newlong = 0;
+            $last = '';
+            $customer = [];
+            $finalLocation = [];
+            $taskcount = 0;
+            $latitude  = [];
+            $longitude = [];
+            $percentage = 0;
+            $pricingRule = '';
+            $agent_id = $request->agent_id ?? null;
+            $allocation_type = '';
+            $notification_time = Carbon::now()->toDateTimeString();
+            
+            $orders = Order::where('call_back_url', '=', $request->call_back_url)->first();
+            Log::info($orders);
+            if(!empty($orders))
+            {
+                Task::where('order_id', $orders->id)->delete();
+                $is_order_updated    = 1;
+            }else{
+                return response()->json([
+                    'message' => "Something went wrong. Please try again later"
+                ], 400);
+            }
+            
+            $dep_id = null;
+            $pickup_location = null;
+            $taskcount = 0;
+            foreach ($request->task as $key => $value) {
+                $taskcount++;
+                $loc_id = null;
+                if (isset($value)) {
+                    $post_code = isset($value['post_code']) ? $value['post_code'] : '';
+                    $loc = [
+                    'latitude'    => $value['latitude']??0.00,
+                    'longitude'   => $value['longitude']??0.00,
+                    'address'     => $value['address']??null,
+                    'customer_id' => $orders->customer_id,
+                      ];
+                    $loc_update = [
+                        'short_name'  => $value['short_name']??null,
+                        'post_code'   => $post_code,
+                        'flat_no'     => $value['flat_no']??null,
+                        'email'       => $value['email']??null,
+                        'phone_number'=> $value['phone_number']??null,
+                        ];
+
+                    $Loction = Location::updateOrCreate(
+                        $loc,
+                        $loc_update
+                    );
+                    $loc_id = $Loction->id;
+                }
+                
+                $data = [
+                    'order_id'                   => $orders->id,
+                    'task_type_id'               => $value['task_type_id'],
+                    'location_id'                => $loc_id,
+                    'dependent_task_id'          => $dep_id,
+                    'task_status'                => ($agent_id != null) ? 1 : 0,
+                    'allocation_type'            => $request->allocation_type,
+                    'assigned_time'              => $notification_time
+                ];
+
+                $task = Task::create($data);
+                $dep_id = $task->id;
+            }
+
+            $total         = $request->cash_to_be_collected;
+
+            $percentage = 0;
+            if(isset($agent_id)) {
+                $agent_details = Agent::where('id', $agent_id)->first();
+                if ($agent_details->type == 'Employee') {
+                    $percentage = $orders->agent_commission_fixed + (($total / 100) * $orders->agent_commission_percentage);
+                } else {
+                    $percentage = $orders->freelancer_commission_fixed + (($total / 100) * $orders->freelancer_commission_percentage);
+                }
+            }
+
+            //update order with order cost details
+            $updateorder = [
+            'order_cost'                      => $total,
+            'toll_fee'                        => 0,
+            'driver_cost'                     => $percentage,
+            'cash_to_be_collected'            => $total,
+            'driver_id'                       => $agent_id,
+            'status'                          => ($agent_id != null) ? 'assigned' : 'unassigned',
+            ];
+
+            Order::where('id', $orders->id)->update($updateorder);
+
+            /* if($agent_id != null){
+                $client_prefrerence = ClientPreference::where('id', 1)->first();
+                $oneagent = Agent::where('id', $agent_id)->first();
+                $notificationdata = [
+                    'order_id'            => $orders->id,
+                    'batch_no'            => '',
+                    'driver_id'           => $agent_id,
+                    'notification_time'   => Carbon::now()->addSeconds(2)->format('Y-m-d H:i:s'),
+                    'notificationType'    => 'UPDATED',
+                    'created_at'          => Carbon::now()->toDateTimeString(),
+                    'updated_at'          => Carbon::now()->toDateTimeString(),
+                    'device_type'         => $oneagent->device_type,
+                    'device_token'        => $oneagent->device_token,
+                    'detail_id'           => rand(11111111, 99999999),
+                    'title'               => 'Drop Off Location Updated By Customer',
+                    'body'                => 'Check All Details For This Request In App',
+                ];
+                $this->sendnotification($notificationdata, $client_prefrerence);
+            } */
+           
+
+            DB::commit();
+            return response()->json([
+                'message' => __('Bid & Ride/Instant Booking Task updated Successfully'),
+                'task_id' => $orders->id,
+                'status'  => $orders->status,
+            ], 200);
+        } catch (Exception $e) {
+            DB::rollback();
+            return response()->json([
+                'message' => $e->getMessage()
+            ], 400);
+        }
+    }
+
 }
