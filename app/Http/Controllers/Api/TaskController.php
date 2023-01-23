@@ -3942,7 +3942,6 @@ class TaskController extends BaseController
             $notification_time = Carbon::now()->toDateTimeString();
             
             $orders = Order::where('call_back_url', '=', $request->call_back_url)->first();
-            Log::info($orders);
             if(!empty($orders))
             {
                 Task::where('order_id', $orders->id)->delete();
