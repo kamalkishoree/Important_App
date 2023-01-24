@@ -934,11 +934,11 @@ hr.new3 {
     padding: 4px 5px;
     border-radius: 5px;
     color: #fff;
-    font-size: 12px;
+    font-size: 11px;
     transition: all 0.5s;
     font-weight: 700;
     margin: 0 0 10px;
-    height: 25px;
+    height: 22px;
 }
 .address_box span.short_name {
     color: #6658dd;

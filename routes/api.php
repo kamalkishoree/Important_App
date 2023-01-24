@@ -36,6 +36,7 @@ Route::get('get-all-teams', 'Api\TaskController@getAllTeams')->middleware('Conne
 Route::post('update-create-vendor-order', 'Api\AuthController@updateCreateVendorOrder')->middleware('ConnectDbFromOrder');
 Route::post('task/update', 'Api\TaskController@UpdateTask')->middleware('ConnectDbFromOrder');
 
+Route::post('task/updateBidRide', 'Api\TaskController@updateBidRideOrder')->middleware('ConnectDbFromOrder');
 // 
 Route::post('getProductPrice', 'Api\OrderPanelController@getProductPrice')->middleware('ConnectDbFromOrder');
 
