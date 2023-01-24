@@ -4019,25 +4019,27 @@ class TaskController extends BaseController
 
             Order::where('id', $orders->id)->update($updateorder);
 
-            /* if($agent_id != null){
-                $client_prefrerence = ClientPreference::where('id', 1)->first();
-                $oneagent = Agent::where('id', $agent_id)->first();
-                $notificationdata = [
-                    'order_id'            => $orders->id,
-                    'batch_no'            => '',
-                    'driver_id'           => $agent_id,
-                    'notification_time'   => Carbon::now()->addSeconds(2)->format('Y-m-d H:i:s'),
-                    'notificationType'    => 'UPDATED',
-                    'created_at'          => Carbon::now()->toDateTimeString(),
-                    'updated_at'          => Carbon::now()->toDateTimeString(),
-                    'device_type'         => $oneagent->device_type,
-                    'device_token'        => $oneagent->device_token,
-                    'detail_id'           => rand(11111111, 99999999),
-                    'title'               => 'Drop Off Location Updated By Customer',
-                    'body'                => 'Check All Details For This Request In App',
-                ];
-                $this->sendnotification($notificationdata, $client_prefrerence);
-            } */
+            if($request->task_type == 'Instant_Booking'){
+                if($agent_id != null){
+                    $client_prefrerence = ClientPreference::where('id', 1)->first();
+                    $oneagent = Agent::where('id', $agent_id)->first();
+                    $notificationdata = [
+                        'order_id'            => $orders->id,
+                        'batch_no'            => '',
+                        'driver_id'           => $agent_id,
+                        'notification_time'   => Carbon::now()->addSeconds(2)->format('Y-m-d H:i:s'),
+                        'notificationType'    => 'ACK',
+                        'created_at'          => Carbon::now()->toDateTimeString(),
+                        'updated_at'          => Carbon::now()->toDateTimeString(),
+                        'device_type'         => $oneagent->device_type,
+                        'device_token'        => $oneagent->device_token,
+                        'detail_id'           => rand(11111111, 99999999),
+                        'title'               => 'Request accepted by customer and order assigned to you',
+                        'body'                => 'Check All Details For This Request In App',
+                    ];
+                    $this->sendnotification($notificationdata, $client_prefrerence);
+                }
+            }
            
 
             DB::commit();
