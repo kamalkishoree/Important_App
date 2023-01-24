@@ -31,10 +31,13 @@ trait FormAttributeTrait
 
     public function saveOrderFormAttribute($request, $orderId)
     {
-        // $attribute = json_decode($request->attribute_data, true);
-        $attribute = $request->attribute_data;
+        $attribute = json_decode($request->attribute_data, true);
+        // $attribute = $request->attribute_data;
         \Log::info('attribute');
         \Log::info($attribute);
+
+        \Log::info('attribute_data_images');
+        \Log::info($request->attribute_data_images);
         $insert_arr = [];
         $insert_count = 0;
         foreach ($attribute as $key => $value) {
@@ -69,12 +72,17 @@ trait FormAttributeTrait
                             $insert_arr[$insert_count]['is_active'] = 1;
                         }elseif(!empty($value['type']) && $value['type'] == 6) {
                             $image = '';
-
-                            if (isset($request->file) && count($request->file) > 0) {
+                            
+                            $attribute_id = $value['id'];
+                            if (isset($request['attribute_data_images_'.$attribute_id][0])) {
+                               
                                 $folder = str_pad(Auth::user()->id, 8, '0', STR_PAD_LEFT);
                                 $folder = 'client_' . $folder;
-                                $value = $value['value'];
-                                    $file = $value;
+                                // $file = $request->file('profile_picture');
+                                $file = $request['attribute_data_images_'.$attribute_id][0];
+
+                            
+                                    // $file = $value;
                                     $file_name = uniqid() . '.' .  $file->getClientOriginalExtension();
                                     $s3filePath = '/assets/' . $folder . '/' . $file_name;
                                     $image = Storage::disk('s3')->put($s3filePath, $file, 'public');

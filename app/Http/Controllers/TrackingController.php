@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Config;
 use Storage;
 use Carbon\Carbon;
-use App\Model\{Client, Order,DriverRegistrationDocument};
+use App\Model\{Client, Order,DriverRegistrationDocument, OrderFormAttribute};
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -297,6 +297,28 @@ class TrackingController extends Controller
         }
     }
 
+    public function OrderFormAttribute($domain = '', $user, $id)
+    {
+        $respnse = $this->connection($user);
 
+        if ($respnse['status'] == 'connected') {
+            $order   = DB::connection($respnse['database'])->table('orders')->where('unique_id', $id)->leftJoin('agents', 'orders.driver_id', '=', 'agents.id')
+                ->select('orders.*', 'agents.name', 'agents.profile_picture', 'agents.phone_number')->first();
+            if (isset($order->id)) {
+                $tasks = DB::connection($respnse['database'])->table('tasks')->where('order_id', $order->id)->leftJoin('locations', 'tasks.location_id', '=', 'locations.id')
+                    ->select('tasks.*', 'locations.latitude', 'locations.longitude', 'locations.short_name', 'locations.address')->orderBy('task_order')->get();
+                $orderc = DB::connection($respnse['database'])->table('orders')->where('id', $order->id)->where('status','completed')->count();
+                
+                $formData = OrderFormAttribute::with(['attributeOption', 'attribute'])->where('order_id', $order->id)->get();
+            //    dd($formData);
+
+                return view('tracking/form-attribute', compact('tasks', 'order', 'formData'));
+            } else {
+                return view('tracking/order_not_found');
+            }
+        } else {
+            return view('tracking/order_not_found');
+        }
+    }
    
 }
