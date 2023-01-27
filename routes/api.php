@@ -158,6 +158,8 @@ Route::group(['middleware' => ['dbCheck', 'AppAuth','apiLocalization']], functio
         Route::get('getslot', 'Api\AgentSlotController@getAgentSlot');
     });
 
+    Route::get('FilterTaskList', 'Api\AgentController@getTaskListWithDate');
+
 });
 
 

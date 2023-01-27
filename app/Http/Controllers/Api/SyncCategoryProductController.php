@@ -13,7 +13,7 @@ class SyncCategoryProductController extends Controller
 
     public function SyncCategoryProduct(Request $request){
         // dd($request['data']);
-   
+   \Log::info("harbans");
         $order_details = OrderPanelDetail::find($request['order_panel_id']);
         if( ($order_details) && @$request['data'] && count($request['data']) > 0){
             $this->order_panel_id = $request['order_panel_id'];
@@ -21,7 +21,7 @@ class SyncCategoryProductController extends Controller
             $this->importOrderSideCategory($request['data'],  $dataBaseName);
         }
         $order_details->sync_status = 2;
-        //$order_details->save();
+        $order_details->save();
         return true;
     }
     
