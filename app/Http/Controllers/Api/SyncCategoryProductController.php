@@ -92,7 +92,7 @@ class SyncCategoryProductController extends Controller
                 //"store_id"              => $vid,
                 'order_panel_id' => $this->order_panel_id
             ];
-            $productSave = Product::updateOrCreate(['sku' => $product['sku'], 'order_panel_id' => $this->order_panel_id],$product_update_create);
+            $productSave = Product::updateOrCreate(['sku' => $dataBaseName."_".$product['sku'], 'order_panel_id' => $this->order_panel_id],$product_update_create);
 
             foreach($product['translation'] as $translation){
 
@@ -144,7 +144,7 @@ class SyncCategoryProductController extends Controller
                     "container_charges" => $variant['container_charges'] ?? '0.0000',
                     "product_id"    => $product_id,
                 ];
-                $product_variant_import = ProductVariant::updateOrInsert(['sku' => $variant['sku']],$product_variant);
+                $product_variant_import = ProductVariant::updateOrInsert(['sku' => $dataBaseName."_".$variant['sku']],$product_variant);
             }
             return true;
         }else{
@@ -174,7 +174,7 @@ class SyncCategoryProductController extends Controller
                 'order_panel_id' => $this->order_panel_id
             ];
             
-            $categorySave = Category::updateOrCreate([ 'slug' => $cat['slug'], 'order_panel_id' => $this->order_panel_id ], $data);
+            $categorySave = Category::updateOrCreate([ 'slug' => $dataBaseName."_".$cat['slug'], 'order_panel_id' => $this->order_panel_id ], $data);
             $transl_data = [
                 'name' => $cat['translation']['name'] ?? $cat['slug'],
                 'trans-slug' => $cat['translation']['trans_slug'] ?? '',
