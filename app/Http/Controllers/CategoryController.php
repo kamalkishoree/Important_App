@@ -151,9 +151,19 @@ class CategoryController extends Controller
             
             if( @$checkAuth['status'] == 200){
                 $apiRequestURL = $url.'/api/v1/category-product-sync-dispatcher';
-           
+                \Log::info($apiRequestURL);
                 // POST Data
-                $postInput = ['order_panel_id' => $order_panel_id];
+                $Dispatcher_url = $_SERVER['HTTP_ORIGIN']; // $_SERVER['REQUEST_SCHEME'].'://'.$_SERVER['HTTP_HOST'];
+                \Log::info($Dispatcher_url);
+                $clients = Client::where('is_superadmin', 1)->select('id','code')->first();
+
+                // POST Data
+                $postInput = [
+                'order_panel_id' => $order_panel_id,
+                'dispatcher_url' => $Dispatcher_url,
+                'dispatcher_code'=> $clients->code
+                ];
+          
                 // $headers['Authorization'] = $checkAuth['token'];
                 $response = Http::withHeaders($headers)->post($apiRequestURL, $postInput);
                 $responseBody = json_decode($response->getBody(), true);

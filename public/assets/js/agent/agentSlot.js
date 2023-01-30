@@ -137,7 +137,7 @@ $(function () {
 
             calendar = new FullCalendar.Calendar(calendarEl, {
                 initialView: 'timeGridWeek',
-                disableDragging: true,
+                //disableDragging: true,
                 headerToolbar: {
                     left: 'prev,next',
                     center: 'title',
