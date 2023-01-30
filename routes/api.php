@@ -99,6 +99,7 @@ Route::group(['prefix' => 'auth'], function () {
 });
 
 Route::group(['middleware' => ['dbCheck', 'AppAuth','apiLocalization']], function() {
+    Route::get('filter_task_list', 'Api\AgentController@getTaskListWithDate');
 
     Route::post('create-razorpay-details', 'Api\RazorpayGatewayController@razorpay_create_contact')->name('razorpay_connect');
     Route::post('create-razorpay-add-funds', 'Api\RazorpayGatewayController@razorpay_add_funds_accounts')->name('razorpay_add_account');
@@ -158,7 +159,7 @@ Route::group(['middleware' => ['dbCheck', 'AppAuth','apiLocalization']], functio
         Route::get('getslot', 'Api\AgentSlotController@getAgentSlot');
     });
 
-    Route::get('FilterTaskList', 'Api\AgentController@getTaskListWithDate');
+
 
 });
 

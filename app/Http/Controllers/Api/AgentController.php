@@ -212,26 +212,28 @@ class AgentController extends BaseController
         $orderStatus = 'assigned';
         $client_code->timezone = $tz->timezone_name($client_code->timezone);
 
-        $from_date   = $request->has('from_date') ? $request->from_date : '';
-        $to_date     = $request->has('to_date') ? $request->to_date : '';
+        $from_date   = $request->has('from_date') ? $request->from_date : Carbon::now();
+        $to_date     = $request->has('to_date') ? $request->to_date : Carbon::now();
 
-        $start     = ($from_date) ? Carbon::parse($from_date) :  Carbon::now($client_code->timezone ?? 'UTC')->startOfDay();
+        $utc_start     = Carbon::parse($from_date)->format("Y-m-d");
+        $utc_start     =   $utc_start." 00:00:00";
+
+        $utc_end       =  Carbon::parse($to_date)->format("Y-m-d");
+        $utc_end       = $utc_end ." 23:59:59"   ;
+       
      
-        $end       = ($from_date) ? Carbon::parse($to_date) : Carbon::now($client_code->timezone ?? 'UTC')->endOfDay();
-        $utc_start = Carbon::parse($start . $client_code->timezone ?? 'UTC')->tz('UTC')->format('Y-m-d') ." 00:00:00";
-        $utc_end   = Carbon::parse($end . $client_code->timezone ?? 'UTC')->tz('UTC')->format('Y-m-d') ." 23:59:59";
-        
+       // pr($utc_end );
         $id     = Auth::user()->id;
 
         $all     = $request->all;
         $tasks   = [];
         $orders = Order::where('driver_id', $id);//->where('status',  $orderStatus);
-        if ($all != 1) { //geting today task
-            $orders = $orders->whereBetween('order_time', [$utc_start,$utc_end]);
-        } 
+        //if ($all != 1) { //geting today task
+           $orders = $orders->whereBetween('order_time', [$utc_start,$utc_end]);
+           // } 
+       
         $orders = $orders->orderBy("order_time","ASC")->orderBy("id","ASC")->pluck('id')->toArray();
      
-
         if (count($orders) > 0) {
             
             $tasks = Task::whereIn('order_id', $orders)
