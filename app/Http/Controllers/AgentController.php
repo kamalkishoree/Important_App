@@ -123,7 +123,7 @@ class AgentController extends Controller
             $warehouses = Warehouse::whereIn('id', $managerWarehousesIds)->get();
         }
 
-        $agents = Agent::orderBy('id', 'DESC');
+        // $agents = Agent::orderBy('id', 'DESC');
 
         return view('agent.index')->with(['agents' => $agents, 'geos' => $geos, 'driver_registration_documents' => $driver_registration_documents, 'agentIsAvailable' => $agentIsAvailable, 'agentNotAvailable' => $agentNotAvailable, 'agentIsApproved' => $agentIsApproved, 'agentNotApproved' => $agentNotApproved, 'agentsCount' => $agentsCount, 'employeesCount' => $employeesCount, 'agentActive' => $agentActive, 'agentInActive' => $agentInActive, 'freelancerCount' => $freelancerCount, 'teams' => $teams, 'tags' => $tags, 'selectedCountryCode' => $countryCode, 'calenderSelectedDate' => $selectedDate, 'showTag' => implode(',', $tag), 'agentRejected' => $agentRejected, 'warehouses' => $warehouses]);
     }
