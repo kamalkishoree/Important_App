@@ -115,5 +115,22 @@ trait AgentSlotTrait{
         
     
     }
-
+    public function getAgentSlotByType($request){
+        $date = date('Y-m-d');
+        $AgentSlotRoster = AgentSlot::where('agent_id',$request->agent_id)->with('SlotRoster','SlotDay');
+              
+        if($request->booking_type !=''){
+            
+            $AgentSlotRoster = $AgentSlotRoster->whereHas('SlotRoster',function ($query) use ($date,$request ){
+                $query->whereDate('schedule_date', '>=', $date)
+                ->where('booking_type',$request->booking_type);
+            } );
+        }else{
+            $AgentSlotRoster = $AgentSlotRoster->whereHas('SlotRoster',function ($query) use ($date ){
+                $query->whereDate('schedule_date', '>=', $date);
+            } );
+        }
+        $AgentSlotRoster = $AgentSlotRoster->get();
+        return $AgentSlotRoster;
+    }
 }

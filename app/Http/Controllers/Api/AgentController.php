@@ -15,9 +15,11 @@ use App\Model\Roster;
 use Config;
 use Illuminate\Support\Facades\URL;
 use GuzzleHttp\Client as GClient;
+use App\Traits\{AgentSlotTrait};
 
 class AgentController extends BaseController
 {
+    use AgentSlotTrait;
     /**   get agent according to lat long  */
     function getAgents(Request $request)
     {
@@ -213,17 +215,7 @@ class AgentController extends BaseController
         $client_code->timezone = $tz->timezone_name($client_code->timezone);
         $selectedDatesArray   = $request->has('selectedDatesArray') ? $request->selectedDatesArray : [];
         \Log::info($selectedDatesArray);
-        // $from_date   = $request->has('from_date') ? $request->from_date : Carbon::now();
-        // $to_date     = $request->has('to_date') ? $request->to_date : Carbon::now();
-
-        // $utc_start     = Carbon::parse($from_date)->format("Y-m-d");
-        // $utc_start     =   $utc_start." 00:00:00";
-
-        // $utc_end       =  Carbon::parse($to_date)->format("Y-m-d");
-        // $utc_end       = $utc_end ." 23:59:59"   ;
-       
-     
-       // pr($utc_end );
+      
         $id     = Auth::user()->id;
 
         $all     = $request->all;
@@ -252,9 +244,14 @@ class AgentController extends BaseController
                 }
             }
         }
-
+        $request->merge(['agent_id'=> $id]);
+        $AgentSlotRoster = $this->getAgentSlotByType($request);
+        $response =  [
+                        'tasks' => $tasks,
+                        'agent_slots'=> $AgentSlotRoster
+                    ];
         return response()->json([
-            'data' => $tasks,
+            'data' => $response,
             'status' => 200,
             'message' => __('success')
         ], 200);

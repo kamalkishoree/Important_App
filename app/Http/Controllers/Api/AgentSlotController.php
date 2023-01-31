@@ -344,10 +344,8 @@ class AgentSlotController extends BaseController
             $categorys = $this->getCategoryWithProductByType('8',$request);
             $date = date('Y-m-d');
             //pr(  $date);
-               $AgentSlotRoster = AgentSlot::where('agent_id',$user->id)->with('SlotRoster','SlotDay')
-                                            ->whereHas('SlotRoster',function ($query) use ($date ){
-                                                $query->whereDate('schedule_date', '>=', $date);
-                                            } )->get();
+               $AgentSlotRoster = $this->getAgentSlotByType($request);
+           
              //  pr($AgentSlotRoster->toArray());
              $response =  ['categories' => $categorys,
                             'agent_slots'=> $AgentSlotRoster
