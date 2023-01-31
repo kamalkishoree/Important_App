@@ -161,7 +161,19 @@
                         <span> {{ __(getAgentNomenclature()) }}</span>
                     </a>
                 </li>
+
+                @if(getClientPreferenceDetail()->manage_fleet == 1)
+                    <li>
+                        <a href="{{route('fleet.index')}}">
+                            <i class="fe-user-check"></i>
+                            <span> {{ __('Agent Fleets') }}</span>
+                        </a>
+                    </li>
                 @endif
+
+                @endif
+
+               
 
                 @if($hide_subscription_module != 1 && (in_array('Subscription',$allowed) || Auth::user()->is_superadmin == 1) )
                 <li>
