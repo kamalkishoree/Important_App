@@ -126,7 +126,7 @@
 </div>
 </form>
 
-<div id="fleet-detail-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display:none;">
+<div id="fleet-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display:none;">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-header border-0">
@@ -134,11 +134,26 @@
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
             </div>
          
-                <div class="modal-body px-3" id="viewCardBox">
+                <div class="modal-body px-3" id="fleetViewCardBox">
 
                 </div>
 
-             
+        </div>
+    </div>
+</div>
+
+
+<div id="order-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display:none;">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header border-0">
+                <h4 class="modal-title">{{__('Order Details')}}</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            </div>
+         
+                <div class="modal-body px-3" id="orderViewCardBox">
+
+                </div>
 
         </div>
     </div>
