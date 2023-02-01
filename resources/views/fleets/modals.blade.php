@@ -12,13 +12,13 @@
                     <span class="show_all_error invalid-feedback"></span>
                     <div class="row">
                         <div class="col-md-6">
+                             <input type="hidden" class="form-control" id="editId" name="editId">
                             <div class="form-group" id="nameInput">
                                 <label for="name" class="control-label">{{__("NAME")}}</label>
                                 <input type="text" class="form-control" id="name" placeholder="Fleet Name" name="name">
                                 <span class="invalid-feedback" role="alert">
                                     <strong></strong>
                                 </span>
-
                             </div>
                         </div>
                         <div class="col-md-6">

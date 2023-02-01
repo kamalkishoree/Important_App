@@ -85,7 +85,10 @@ class FleetController extends Controller
     public function carDetail(Request $request)
     {
         $fleet = Fleet::findOrFail($request->fleetId);
-
+        if(isset($request->action) && $request->action =='edit')
+        {
+            return response($fleet);   
+        }
         $table ='';
         $table .='<table class="table table-striped dt-responsive nowrap w-100 agents-datatable">'; 
             $table .='<tr>'; 
@@ -124,12 +127,11 @@ class FleetController extends Controller
     public function store(Request $request)
     {
         try{
-
            $validator =  Validator::make($request->all(), [
                 'name' => 'required',
                 'make' => 'required',
                 'model' => 'required',
-                'registration_name' => 'required|unique:fleets',
+                 'registration_name' => 'required|unique:fleets,registration_name,'.$request->editId,
                 'year' => 'required',
                 ],
                 [
@@ -154,7 +156,14 @@ class FleetController extends Controller
                     'year' => $request->year,
                     'user_id' => auth()->id()
                 ];
-                $agent = Fleet::create($data);
+                
+                if(!empty($request->editId) && isset($request->editId)){
+                    $agent = Fleet::find($request->editId);
+                    $agent->update($data);
+                }else{
+                    $agent = Fleet::create($data);
+                }
+
                 if ($agent){
                     $request->session()->flash('success','Thanks for Adding new Fleet.');
                     return response()->json([
@@ -279,7 +288,7 @@ class FleetController extends Controller
                                         <button type="submit" class="btn btn-primary-outline"> <i class="mdi mdi-delete" agentid="'.$agents->id.'"></i></button>
                                     </div>
                                 </form>
-                                <button type="button" class="btn btn-primary-outline"> <i class="mdi mdi-square-edit-outline" data-fleet-id="'.$agents->id.'"></i></button>
+                                <button type="button" class="btn btn-primary-outline editFleet" data-fleet-id="'.$agents->id.'"> <i class="mdi mdi-square-edit-outline" ></i></button>
                             </div>';
                     return $action;
                 })
