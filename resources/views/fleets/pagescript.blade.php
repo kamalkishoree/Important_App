@@ -151,9 +151,6 @@
                 backdrop: 'static',
                 keyboard: false
             });
-            makeTag();
-
-            phoneInput();
         });
 
         jQuery('#onfoot').click();
@@ -394,6 +391,73 @@
                 keyboard: false
             });
         });
+
+
+    $(document).on("click", ".editFleet", function(e) { 
+        $.ajax({
+            type: "post",
+            url: "{{ url('fleet/get-car-detail')}}",
+            data: {
+                "_token": "{{ csrf_token() }}",
+                "fleetId": $(this).attr('data-fleet-id'),
+                "action":"edit"
+            },
+            success: function(resp) {
+                $('#add-agent-modal').modal({
+                    backdrop: 'static',
+                    keyboard: false
+                });
+                $('#fleetViewCardBox').html(resp);    
+                $('#name').val(resp.name);    
+                $('#make').val(resp.make);    
+                $('#model').val(resp.model);    
+                $('#registration_name').val(resp.registration_name);    
+                $('#year').val(resp.year);    
+                $('#color').val(resp.color);    
+                $('#editId').val(resp.id);    
+
+            }
+        });
+    });
+
+
+    $(document).on("click", ".fleetDetail", function(e) { 
+        $.ajax({
+            type: "post",
+            url: "{{ url('fleet/get-car-detail')}}",
+            data: {
+                "_token": "{{ csrf_token() }}",
+                "fleetId": $(this).attr('data-id')
+            },
+            success: function(resp) {
+                $('#fleet-modal').modal({
+                    backdrop: 'static',
+                    keyboard: false
+                });
+                    $('#fleetViewCardBox').html(resp);      
+            }
+        });
+    });
+
+
+    $(document).on("click", ".orderDetail", function(e) {
+        
+        $.ajax({
+            type: "post",
+            url: "{{ url('fleet/get-order-detail')}}",
+            data: {
+                "_token": "{{ csrf_token() }}",
+                "orderId": $(this).attr('data-id')
+            },
+            success: function(resp) {
+                $('#order-modal').modal({
+                    backdrop: 'static',
+                    keyboard: false
+                });
+                    $('#orderViewCardBox').html(resp);      
+            }
+        });
+    });
 
 
 </script>

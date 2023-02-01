@@ -180,6 +180,8 @@ Route::group(['middleware' => 'switchLanguage'], function () {
             Route::post('fivcon/save', 'ClientController@faviconUoload')->name('favicon');
 			Route::get('options', 'ClientController@ShowOptions')->name('options');
 			Route::resource('agent', 'AgentController');
+			Route::post('fleet/get-order-detail', 'FleetController@orderFleetDetail');
+			Route::post('fleet/get-car-detail', 'FleetController@carDetail');
 			Route::get('fleet/filter', 'FleetController@fleetFilter');
 			Route::get('fleet/{id}/driver', 'FleetController@assignDriver');
 			Route::get('fleet/details/{id}', 'FleetController@fleetDetails');
