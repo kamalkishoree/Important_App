@@ -310,10 +310,7 @@ class AgentSlotController extends BaseController
 
     }
     function saveAgentSlot(Request $request){
-       
-    
-        //try {
-
+        try {
             $validator = Validator::make(request()->all(), [
                 'agent_id'   => 'required',
                 'start_date' => 'required',
@@ -322,45 +319,60 @@ class AgentSlotController extends BaseController
 
             $this->saveAgentSlots($request);
             
-        
             return response()->json([
-               // 'data' => $AgentSlotRoster,
                 'status' => 200,
                 'message' => __('success'),
             ], 200);
 
-        // }catch (Exception $e) {
-        //     return response()->json([
-        //         'message' => $e->getMessage()
-        //     ], 400);
-        // }
-
+        }catch (Exception $e) {
+            return response()->json([
+                'message' => $e->getMessage()
+            ], 400);
+        }
     }
     public function getAgentSlot(Request $request){
-   
-        //   try {
-           $user = Auth::user();
+        try {
+            $user = Auth::user();
             $request->merge(['agent_id'=> $user->id]);
             $categorys = $this->getCategoryWithProductByType('8',$request);
             $date = date('Y-m-d');
-            //pr(  $date);
-               $AgentSlotRoster = $this->getAgentSlotByType($request);
+            $AgentSlotRoster = $this->getAgentSlotByType($request);
            
-             //  pr($AgentSlotRoster->toArray());
-             $response =  ['categories' => $categorys,
-                            'agent_slots'=> $AgentSlotRoster
-                                        ];
-               return response()->json([
-                   'data' => $response,
-                   'status' => 200,
-                   'message' => __('success'),
-               ], 200);
+            $response = [ 'categories' => $categorys,
+                          'agent_slots'=> $AgentSlotRoster
+                        ];
+            return response()->json([
+                'data' => $response,
+                'status' => 200,
+                'message' => __('success'),
+            ], 200);
    
-           // }catch (Exception $e) {
-           //     return response()->json([
-           //         'message' => $e->getMessage()
-           //     ], 400);
-           // }
+        }catch (Exception $e) {
+            return response()->json([
+                'message' => $e->getMessage()
+            ], 400);
+        }
+    }
+
+    public function deleteSlot(Request $request){
+        try {
+            $dateNow = Carbon::now()->format('Y-m-d');
+            $slot_date    = $request->has('slot_date') ? $request->slot_date :  Carbon::now();;
+            $seleted_date = Carbon::parse($slot_date)->format('Y-m-d');
+            if ($seleted_date < $dateNow) {
+                return response()->json(array('success' => false, 'message' => __("You can't delete past date.")));
+            }
+            AgentSlotRoster::where(['slot_id' => $request->slot_id, 'agent_id' => auth()->user()->id])->whereDate('schedule_date', $seleted_date)->delete();
+            
+            return response()->json([
+                'status' => 200,
+                'message' => __('Slot deleted successfully!'),
+            ], 200);
    
-       }
+        }catch (Exception $e) {
+            return response()->json([
+                'message' => $e->getMessage()
+            ], 400);
+        }
+    }
 }

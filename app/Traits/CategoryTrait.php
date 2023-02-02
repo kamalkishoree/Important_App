@@ -9,24 +9,30 @@ trait CategoryTrait{
     use ApiResponser;
 
     public function getCategoryWithProductByType($type_id='8',$request = ''){
-        $category = Category::with(['translation','products' => function($q){
-            $q->where('is_live',1);
-        },
-        'products.translation','products.variant']);
-      
-        if( ($request) && $request->has('agent_id') && ($request->agent_id)){
-            $category = $category->whereHas('products.variant.agentPrice', function($q) use ($request){
-                                    $q->where('agent_id',$request->agent_id);
-                                })->with(['products.variant.agentPrice' => function($q) use ($request){
-                                    if($request->has('agent_id') && ($request->agent_id)){
+        try {
+            $category = Category::with(['translation','products' => function($q){
+                $q->where('is_live',1);
+            },
+            'products.translation','products.variant']);
+        
+            if( ($request) && $request->has('agent_id') && ($request->agent_id)){
+                $category = $category->whereHas('products.variant.agentPrice', function($q) use ($request){
                                         $q->where('agent_id',$request->agent_id);
-                                    }
-                                }]);
-        }else{
-            $category->with(['products.variant.agentPrice']  );
+                                    })->with(['products.variant.agentPrice' => function($q) use ($request){
+                                        if($request->has('agent_id') && ($request->agent_id)){
+                                            $q->where('agent_id',$request->agent_id);
+                                        }
+                                    }]);
+            }else{
+                $category->with(['products.variant.agentPrice']  );
+            }
+            $category =  $category->where('type_id',$type_id)->get();
+            return $category ;
+        }catch (Exception $e) {
+            \Log::info('getFreeLincerFromDispatcher error');
+            \Log::info($e->getMessage());
+            return [];
         }
-        $category =  $category->where('type_id',$type_id)->get();
-        return $category ;
        
     }
 

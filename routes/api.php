@@ -92,6 +92,7 @@ Route::group(['prefix' => 'auth'], function () {
             Route::post('save_product_variant_price', 'Api\SalerController@saveProductVariantPrice');
             Route::get('general_slot', 'Api\SalerController@getGerenalSlot');
             Route::post('saveSlot', 'Api\AgentSlotController@saveAgentSlot');
+           
         });
     
     });
@@ -156,6 +157,7 @@ Route::group(['middleware' => ['dbCheck', 'AppAuth','apiLocalization']], functio
     Route::group(['prefix' => 'agent'], function () {
         Route::get('category_with_product_with_price', 'Api\SalerController@CategoryWithProductWithPrice');
         Route::get('getslot', 'Api\AgentSlotController@getAgentSlot');
+        Route::post('delete_slot', 'Api\AgentSlotController@deleteSlot');
     });
 
 
