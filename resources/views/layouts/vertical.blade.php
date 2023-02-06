@@ -1,6 +1,6 @@
 <!DOCTYPE html>
     <html lang="en">
-
+        <meta name="csrf-token" content="{{ csrf_token() }}">
     <head>
         @include('layouts.shared/title-meta', ['title' => $title])
         @include('layouts.shared/head-css', ["demo" => "creative"])
@@ -30,7 +30,7 @@
         <!-- Start Page Content here -->
         <!-- ============================================================== -->
 
-        <div class="content-page">                                    
+        <div class="content-page main_outter_box">                                    
             <div class="content">
                 @php 
                     $style = "";

@@ -209,8 +209,9 @@
 
     function loadMap(autocompletesWraps) {
 
-        //console.log(autocompletesWraps);
+        // console.log(autocompletesWraps);
         $.each(autocompletesWraps, function(index, name) {
+            console.log('name >>>>>> ' +name);
             const geocoder = new google.maps.Geocoder;
 
             if ($('#' + name).length == 0) {
