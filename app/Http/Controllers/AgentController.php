@@ -65,7 +65,7 @@ class AgentController extends Controller
         //     $agents->whereBetween('created_at', [$request->date . " 00:00:00", $request->date . " 23:59:59"]);
         // }
 
-        
+        $deletedAgents = Agent::onlyTrashed()->get();
 
         if ($user->is_superadmin == 0 && $user->all_team_access == 0 && $user->manager_type == 0) {
             $agents = $agents->whereHas('team.permissionToManager', function ($query) use($user) {
@@ -114,6 +114,7 @@ class AgentController extends Controller
         $agentIsApproved   = count($agents->where('is_approved', 1));
         $agentNotApproved  = count($agents->where('is_approved', 0));
         $agentRejected   = count($agents->where('is_approved', 2));
+        $agentRejected +=count($deletedAgents);
         $driver_registration_documents = DriverRegistrationDocument::get();
 
         $warehouses = Warehouse::get();
@@ -174,9 +175,11 @@ class AgentController extends Controller
                     $query->whereIn('warehouses.id', $managerWarehousesIds);
                 });
             }
-
-            $agents = $agents->where('is_approved', $request->status)->orderBy('id', 'desc');
-            
+            if($request->status == 2){
+                $agents = $agents->withTrashed()->where('is_approved', $request->status)->orderBy('id', 'desc');
+            }else{
+                $agents = $agents->where('is_approved', $request->status)->orderBy('id', 'desc');
+            }      
             return Datatables::of($agents)
                 ->editColumn('name', function ($agents) use ($request) {
                     $name =$agents->name;
@@ -231,6 +234,14 @@ class AgentController extends Controller
                 })
                 ->addColumn('subscription_expiry', function ($agents) use ($request, $timezone) {
                     return $agents->subscriptionPlan ? convertDateTimeInTimeZone($agents->subscriptionPlan->end_date, $timezone) : '';
+                })
+                ->addColumn('state', function ($agents) use ($request, $timezone) {
+                    if( !empty($agents->deleted_at) ) {
+                        return 3;
+                    }
+                    else if($agents->is_approved){
+                        return $agents->is_approved;
+                    }
                 })
                 ->addColumn('agent_rating', function ($agents) use ($request, $timezone) {
                     if( !empty($agents->agentRating()) ) {
@@ -765,7 +776,8 @@ class AgentController extends Controller
     public function change_approval_status(Request $request) 
     {
         try {
-            $agent_approval = Agent::find($request->id);
+            $agent_approval = Agent::withTrashed()->find($request->id);
+            $agent_approval->deleted_at = NULL;
             $agent_approval->is_approved = $request->status;
             $agent_approval->save();
 
