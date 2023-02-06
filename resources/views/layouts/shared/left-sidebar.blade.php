@@ -94,11 +94,18 @@
                 @endif
                 @if($warehouse_mode['show_category_module'] == 1)
                 <li>
+                    <a href="{{route('order-panel-db.index')}}">
+                        <i class="fe-users"></i>
+                        <span> {{__('Order Panel DB Details')}} </span>
+                    </a>
+                </li> 
+                <li>
                     <a href="{{route('category.index')}}">
                         <i class="fe-package"></i>
                         <span> {{__('Categories')}} </span>
                     </a>
                 </li>
+              
                 @endif
 
                 <li>
@@ -108,12 +115,7 @@
                     </a>
                 </li>
 
-                {{-- <li>
-                    <a href="{{route('order-panel-db.index')}}">
-                        <i class="fe-users"></i>
-                        <span> {{__('Order Panel DB Details')}} </span>
-                    </a>
-                </li> --}}
+               
                 
                 <li class="menu-title mt-2">{{__('Settings')}}</li>
 
