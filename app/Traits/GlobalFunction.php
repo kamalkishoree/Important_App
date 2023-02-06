@@ -8,9 +8,9 @@ use Illuminate\Support\Facades\Config;
 
 
 trait GlobalFunction{
-    
 
-   
+
+
     public static function socketDropDown()
     {
         $chatSocket= ChatSocket::where('status', 1)->get();
@@ -21,7 +21,7 @@ trait GlobalFunction{
     {
         try {
             $client = Client::find($id);
-        
+
             $schemaName = 'db_' . $client->database_name;
             $database_host = !empty($client->database_host) ? $client->database_host : env('DB_HOST', '127.0.0.1');
             $database_port = !empty($client->database_port) ? $client->database_port : env('DB_PORT', '3306');
@@ -42,7 +42,7 @@ trait GlobalFunction{
             'strict' => false,
             'engine' => null
         ];
-    
+
             Config::set("database.connections.$schemaName", $default);
             config(["database.connections.mysql.database" => $schemaName]);
             $return['schemaName'] =  $schemaName;
@@ -54,10 +54,10 @@ trait GlobalFunction{
             $return['clientData'] =  [];
             return $return;
         }
-    
+
     }
-   
-   
+
+
     public function getGeoBasedAgentsData($geo, $is_cab_pooling, $agent_tag = '', $date, $cash_at_hand)
     {
         try {
@@ -76,11 +76,11 @@ trait GlobalFunction{
             }
 
             $geoagents_ids =  $geoagents_ids->pluck('driver_id');
-            
-            $geoagents = Agent::whereIn('id',  $geoagents_ids)->with(['logs','order'=> function ($f) use ($date) {
+
+            $geoagents = Agent::where('is_threshold',1)->whereIn('id',  $geoagents_ids)->with(['logs','order'=> function ($f) use ($date) {
                 $f->whereDate('order_time', $date)->with('task');
             }])->orderBy('id', 'DESC');
-            
+
             if(@$preference->manage_fleet){
                 $geoagents = $geoagents->whereHas('agentFleet');
             }
@@ -91,7 +91,7 @@ trait GlobalFunction{
         } catch (\Throwable $th) {
             return [];
         }
-    
+
     }
 
 }
