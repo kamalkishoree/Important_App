@@ -876,12 +876,12 @@ class DashBoardController extends Controller
         $unassigned->toArray();
         $teams->toArray();
 
-        $agents = Agent::with('agentlog');
+        $agents = Agent::with('agentlog','getDriver');
         if($userstatus!=2):
             $agents->where('is_available', $userstatus);
         endif;
         $agents = $agents->get()->toArray();
-
+        // \Log::info($agents);
         $preference  = ClientPreference::where('id', 1)->first(['theme','date_format','time_format']);
 
         $uniquedrivers = array();

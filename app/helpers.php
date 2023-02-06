@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Model\PaymentOption;
 use Illuminate\Support\Facades\Schema;
 use App\Model\ClientPreferenceAdditional;
+use App\Model\Order;
 
 if (!function_exists('setUserCode')) {
     function setUserCode(){
@@ -379,5 +380,15 @@ if (!function_exists('decimal_format')) {
             }
             $sms = array('body'=>$smsBody,'template_id'=>$smsTemp->template_id??'');
             return $sms;
+        }
+    }
+
+
+    if (!function_exists('totalKmTravel')) {
+        // Number Format according to Client preferences
+        function totalKmTravel($id)
+        {
+            $km = Order::where('fleet_id',$id)->sum('actual_distance');
+            return $km;
         }
     }

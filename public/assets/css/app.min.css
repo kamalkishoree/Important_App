@@ -4642,7 +4642,7 @@ div.dt-button-info h2 {
 .simplebar-wrapper {
   overflow: hidden;
   width: inherit;
-  height: inherit;
+  height: auto;
   max-width: inherit;
   max-height: inherit;
 }
