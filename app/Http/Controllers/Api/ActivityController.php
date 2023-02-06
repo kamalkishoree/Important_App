@@ -92,7 +92,7 @@ class ActivityController extends BaseController
     {
         try{
             $agent               = Agent::findOrFail(Auth::user()->id);
-            $agent->is_pooling_available = ($agent->is_pooling_available == 1) ? 0 : 1;
+            $agent->is_pooling_available = ($request->is_pooling_available == 1) ? 1 : 0;
             $agent->update();
 
             return response()->json([
