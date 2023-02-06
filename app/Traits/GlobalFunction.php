@@ -3,7 +3,7 @@ namespace App\Traits;
 use DB;
 use Illuminate\Support\Collection;
 use Log;
-use App\Model\{ChatSocket,Client};
+use App\Model\{ChatSocket, Client, Agent, ClientPreference, DriverGeo,Order};
 use Illuminate\Support\Facades\Config;
 
 
@@ -58,6 +58,40 @@ trait GlobalFunction{
     }
    
    
-   
+    public function getGeoBasedAgentsData($geo, $is_cab_pooling, $agent_tag = '', $date, $cash_at_hand)
+    {
+        try {
+            $preference = ClientPreference::select('manage_fleet')->first();
+            $geoagents_ids =  DriverGeo::where('geo_id', $geo);
+
+            $geoagents_ids = $geoagents_ids->whereHas('agent', function($q) use ($geo, $is_cab_pooling){
+                $q->where('is_pooling_available', $is_cab_pooling);
+            });
+
+            if($agent_tag !='')
+            {
+                $geoagents_ids = $geoagents_ids->whereHas('agent.tags', function($q) use ($agent_tag){
+                    $q->where('name', '=', $agent_tag);
+                });
+            }
+
+            $geoagents_ids =  $geoagents_ids->pluck('driver_id');
+            
+            $geoagents = Agent::whereIn('id',  $geoagents_ids)->with(['logs','order'=> function ($f) use ($date) {
+                $f->whereDate('order_time', $date)->with('task');
+            }])->orderBy('id', 'DESC');
+            
+            if(@$preference->manage_fleet){
+                $geoagents = $geoagents->whereHas('agentFleet');
+            }
+            $geoagents = $geoagents->get()->where("agent_cash_at_hand", '<', $cash_at_hand);
+
+            return $geoagents;
+
+        } catch (\Throwable $th) {
+            return [];
+        }
+    
+    }
 
 }

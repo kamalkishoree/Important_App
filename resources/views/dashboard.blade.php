@@ -1,82 +1,71 @@
 @extends('layouts.vertical', ['title' => 'Dashboard','demo'=>'creative'])
-
 @section('css')
-<!-- Plugins css -->
-<link href="{{ asset('demo/css/style.css') }}" rel="stylesheet" type="text/css" />
+    {{-- <!-- Plugins css -->
+    <link href="{{ asset('demo/css/style.css') }}" rel="stylesheet" type="text/css" /> --}}
 @endsection
 @php
-
-use Carbon\Carbon;
-$color = ['one','two','three','four','five','six','seven','eight'];
-$imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain/';
+    use Carbon\Carbon;
+    $color = ['one','two','three','four','five','six','seven','eight'];
+    $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain/';
 @endphp
 @section('content')
-
-<!-- Bannar Section -->
-{{-- <section class="bannar header-setting"> --}}
-<div class="container-fluid p-0">
-<div class="row coolcheck no-gutters">
-    {{-- <div class="pageloader" style="display: none;">
-        <div class="box">
-            <h4 class="routetext"></h4>
-            <div class="spinner-border avatar-lg text-primary m-2" role="status"></div>
-        </div>
-    </div> --}}
-    <div id="scrollbar" class="col-md-4 col-xl-4 left-sidebar pt-3">
-        <div class="side_head d-flex justify-content-between align-items-center mb-2">
-            <i class="mdi mdi-sync mr-1" onclick="reloadData()" aria-hidden="true"></i>
-            <div>
-                <div class="radio radio-primary form-check-inline ml-3 mr-2">
-                    <input type="radio" id="user_status_all" value="2" name="user_status" class="checkUserStatus" checked>
-                    <label for="user_status_all"> {{__("All")}} </label>
+    <!-- Bannar Section -->
+    {{-- <section class="bannar header-setting"> --}}
+    <div class="container-fluid p-0">
+        <div class="row coolcheck no-gutters">
+            {{-- <div class="pageloader" style="display: none;">
+                <div class="box">
+                    <h4 class="routetext"></h4>
+                    <div class="spinner-border avatar-lg text-primary m-2" role="status"></div>
                 </div>
-
-                <div class="radio radio-primary form-check-inline">
-                    <input type="radio" id="user_status_online" value="1" name="user_status" class="checkUserStatus">
-                    <label for="user_status_online"> {{__("Online")}} </label>
+            </div> --}}
+            <div id="scrollbar" class="col-md-4 col-xl-4 left-sidebar pt-3">
+                <div class="side_head d-flex justify-content-between align-items-center mb-2">
+                    <i class="mdi mdi-sync mr-1" onclick="reloadData()" aria-hidden="true"></i>
+                    <div>
+                        <div class="radio radio-primary form-check-inline ml-3 mr-2">
+                            <input type="radio" id="user_status_all" value="2" name="user_status" class="checkUserStatus" checked>
+                            <label for="user_status_all"> {{__("All")}} </label>
+                        </div>
+                        <div class="radio radio-primary form-check-inline">
+                            <input type="radio" id="user_status_online" value="1" name="user_status" class="checkUserStatus">
+                            <label for="user_status_online"> {{__("Online")}} </label>
+                        </div>
+                        <div class="radio radio-info form-check-inline mr-2">
+                            <input type="radio" id="user_status_offline" value="0" name="user_status" class="checkUserStatus">
+                            <label for="user_status_offline"> {{__("Offline")}} </label>
+                        </div>
+                    </div>
+                    <span class="allAccordian"><span class="" onclick="openAllAccordian()">{{__("Open All")}}</span></span>
                 </div>
-
-                <div class="radio radio-info form-check-inline mr-2">
-                    <input type="radio" id="user_status_offline" value="0" name="user_status" class="checkUserStatus">
-                    <label for="user_status_offline"> {{__("Offline")}} </label>
+                <div  id="teams_container">
+                    
                 </div>
+                <form id="pdfgenerate" method="post" enctype="multipart/form-data" action="{{ route('download.pdf') }}">
+                    @csrf
+                    <input id="pdfvalue" type="hidden" name="pdfdata">
+                </form>
             </div>
-
-            <span class="allAccordian"><span class="" onclick="openAllAccordian()">{{__("Open All")}}</span></span>
-        </div>
-        <div  id="teams_container">
-
-        </div>
-
-        <form id="pdfgenerate" method="post" enctype="multipart/form-data" action="{{ route('download.pdf') }}">
-            @csrf
-            <input id="pdfvalue" type="hidden" name="pdfdata">
-        </form>
-
-    </div>
-
-    <div class="col-md-8 col-xl-8">
-        <div class="map-wrapper">
-            <div style="width: 100%">
-                <div id="map_canvas" style="width: 100%; height:calc(100vh - 70px);"></div>
-            </div>
-            <div class="contant">
-                <div class="bottom-content">
-                    <input type="text"  id="basic-datepicker" class="datetime" value="{{date('Y-m-d', strtotime($date))}}" data-date-format="Y-m-d">
-
-                    <div style="display:none">
-                        <input class="newchecks filtercheck teamchecks" cla type="checkbox" value="-1" name="teamchecks[]" checked>
-                        <input class="taskchecks filtercheck" type="checkbox" name="taskstatus[]" value="5" checked>
+            <div class="col-md-8 col-xl-8">
+                <div class="map-wrapper">
+                    <div style="width: 100%">
+                        <div id="map_canvas" style="width: 100%; height:calc(100vh - 70px);"></div>
+                    </div>
+                    <div class="contant">
+                        <div class="bottom-content">
+                            <input type="text"  id="basic-datepicker" class="datetime" value="{{date('Y-m-d', strtotime($date))}}" data-date-format="Y-m-d">
+                            <div style="display:none">
+                                <input class="newchecks filtercheck teamchecks" cla type="checkbox" value="-1" name="teamchecks[]" checked>
+                                <input class="taskchecks filtercheck" type="checkbox" name="taskstatus[]" value="5" checked>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
-</div>
-
-@endsection
-@include('modals.optimize-route')
+    @include('modals.optimize-route')
+ @endsection
 
 <?php   // for setting default location on map
     $agentslocations = array();
@@ -88,183 +77,169 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
             }
         }
     }
-
     $defaultmaplocation['lat'] = $defaultCountryLatitude;
     $defaultmaplocation['long'] = $defaultCountryLongitude;
     $agentslocations[] = $defaultmaplocation;
 ?>
-
 @section('script')
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-timeago/1.6.3/jquery.timeago.js"></script>
-<script>
-// var marker;
-var show = [0];
-let map;
-let markers = [];
-let driverMarkers = [];
-let privesRoute = [];
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-timeago/1.6.3/jquery.timeago.js"></script>
+    <script>
+        // var marker;
+        var show = [0];
+        let map;
+        let markers = [];
+        let driverMarkers = [];
+        let privesRoute = [];
+        let url = window.location.origin;
+        let olddata  = [];
+        let allagent = [];
 
-let url = window.location.origin;
-let olddata  = [];
-let allagent = [];
+        // for getting default map location
+        let defaultmaplocation = [];
+        let defaultlat  = 0.000;
+        let defaultlong = 0.000;
+        let allroutes = [];
+        let old_channelname = old_logchannelname = '';
+        let channelname = "orderdata{{$client_code}}{{date('Y-m-d', time())}}";
+        let logchannelname = "agentlog{{$client_code}}{{date('Y-m-d', time())}}";
+        let imgproxyurl = {!!json_encode($imgproxyurl)!!};
+        let directionsArray = [];
 
-// for getting default map location
-let defaultmaplocation = [];
-let defaultlat  = 0.000;
-let defaultlong = 0.000;
-let allroutes = [];
-let old_channelname = old_logchannelname = '';
-let channelname = "orderdata{{$client_code}}{{date('Y-m-d', time())}}";
-let logchannelname = "agentlog{{$client_code}}{{date('Y-m-d', time())}}";
-let imgproxyurl = {!!json_encode($imgproxyurl)!!};
-let directionsArray = [];
+        $(document).ready(function() {
+            $('#wrapper').addClass('dshboard');
+            $('#shortclick').trigger('click');
+            $(".timeago").timeago();
+            $('.checkUserStatus').click(function() {
+                loadTeams(1, 1);
+            });
+            loadTeams(1, 1);
+            ListenDataChannel();
+            ListenAgentLogChannel();
+        });
 
-$(document).ready(function() {
-
-    $('#wrapper').addClass('dshboard');
-
-    $('#shortclick').trigger('click');
-    $(".timeago").timeago();
-
-    $('.checkUserStatus').click(function() {
-        loadTeams(1, 1);
-    });
-    loadTeams(1, 1);
-    ListenDataChannel();
-    ListenAgentLogChannel();
-});
-
-function gm_authFailure() {
-
-    $('.excetion_keys').append('<span><i class="mdi mdi-block-helper mr-2"></i> <strong>Google Map</strong> key is not valid</span><br/>');
-    $('.displaySettingsError').show();
-};
-
-
-function initMap(is_refresh) {
-
-    //new code for route
-    var color = ["blue", "green", "red", "purple", "skyblue", "yellow", "orange"];
-    const haightAshbury = {
-            lat: allagent.length != 0 && allagent[0].agentlog && allagent[0].agentlog['lat']  != "0.00000000" ? parseFloat(allagent[0].agentlog['lat']):defaultlat,
-            lng: allagent.length != 0 && allagent[0].agentlog && allagent[0].agentlog['long'] != "0.00000000" ? parseFloat(allagent[0].agentlog['long']):defaultlong
+        function gm_authFailure() {
+            $('.excetion_keys').append('<span><i class="mdi mdi-block-helper mr-2"></i> <strong>Google Map</strong> key is not valid</span><br/>');
+            $('.displaySettingsError').show();
         };
-    if(is_refresh==1)
-    {
-        map = new google.maps.Map(document.getElementById("map_canvas"), {
-            zoom: 12,
-            center: haightAshbury,
-            mapTypeId: "roadmap",
-            styles: themeType,
-        });
 
-        // Adds a marker at the center of the map.
-        for (let i = 0; i < olddata.length; i++) {
-            checkdata = olddata[i];
-
-            var urlnewcreate = '';
-            if(checkdata['task_status'] == 0){
-                urlnewcreate = 'unassigned';
-            }else if(checkdata['task_status'] == 1 || checkdata['task_status'] == 2){
-                urlnewcreate = 'assigned';
-            }else if(checkdata['task_status'] == 3){
-                urlnewcreate = 'complete';
-            }else{
-                urlnewcreate = 'faild';
-            }
-
-            if(checkdata['task_type_id'] == 1){
-                    urlnewcreate += '_P.png';
-            }else if(checkdata['task_type_id'] == 2){
-                    urlnewcreate +='_D.png';
-            }else{
-                    urlnewcreate +='_A.png';
-            }
-
-            img = '{{ asset('assets/newicons/') }}'+'/'+urlnewcreate;
-
-            send = null;
-                type = 1;
-            addMarker({
-                lat: parseFloat(checkdata['latitude']),
-                lng:  parseFloat(checkdata['longitude'])
-            }, send, img,checkdata,type);
-        }
-
-    }else{
-        deleteAgentMarks();
-        clearRoutes();
-    }
-
-    $.each(allroutes, function(i, item) {
-        const directionsService = new google.maps.DirectionsService();
-        const directionsRenderer = new google.maps.DirectionsRenderer({suppressMarkers: true});
-        if(i < color.length)
-        {
-            var routecolor = color[i];
-        }else{
-            var routecolor = "pink";
-        }
-        directionsRenderer.setOptions({
-            polylineOptions: {
-                strokeColor: routecolor
-            }
-        });
-        directionsRenderer.setMap(map);
-        var al_task = allroutes[i].task_details;
-        var agent_locatn = allroutes[i].driver_detail;
-        calculateAndDisplayRoute(directionsService, directionsRenderer, map, al_task, agent_locatn);
-    });
-
-    //agents markers
-    for (let i = 0; i < allagent.length; i++) {
-        displayagent = allagent[i];
-
-        if(displayagent.agentlog != null && displayagent.agentlog['lat'] != "0.00000000" && displayagent.agentlog['long'] != "0.00000000" ){
-
-            if (displayagent['is_available'] == 1) {
-                images = url+'/demo/images/location.png';
-            }else {
-                images = url+'/demo/images/location_grey.png';
-            }
-            var image = {
-                url: images, // url
-                scaledSize: new google.maps.Size(50, 50), // scaled size
-                origin: new google.maps.Point(0,0), // origin
-                anchor: new google.maps.Point(22,22) // anchor
+        function initMap(is_refresh) {
+            //new code for route
+            var color = ["blue", "green", "red", "purple", "skyblue", "yellow", "orange"];
+            const haightAshbury = {
+                lat: allagent.length != 0 && allagent[0].agentlog && allagent[0].agentlog['lat']  != "0.00000000" ? parseFloat(allagent[0].agentlog['lat']):defaultlat,
+                lng: allagent.length != 0 && allagent[0].agentlog && allagent[0].agentlog['long'] != "0.00000000" ? parseFloat(allagent[0].agentlog['long']):defaultlong
             };
-            send = null;
-            type = 2;
+            if(is_refresh==1)
+            {
+                map = new google.maps.Map(document.getElementById("map_canvas"), {
+                    zoom: 12,
+                    center: haightAshbury,
+                    mapTypeId: "roadmap",
+                    styles: themeType,
+                });
+        
+                // Adds a marker at the center of the map.
+                for (let i = 0; i < olddata.length; i++) {
+                    checkdata = olddata[i];
+                    var urlnewcreate = '';
+                    if(checkdata['task_status'] == 0){
+                        urlnewcreate = 'unassigned';
+                    }else if(checkdata['task_status'] == 1 || checkdata['task_status'] == 2){
+                        urlnewcreate = 'assigned';
+                    }else if(checkdata['task_status'] == 3){
+                        urlnewcreate = 'complete';
+                    }else{
+                        urlnewcreate = 'faild';
+                    }
+            
+                    if(checkdata['task_type_id'] == 1){
+                        urlnewcreate += '_P.png';
+                    }else if(checkdata['task_type_id'] == 2){
+                        urlnewcreate +='_D.png';
+                    }else{
+                        urlnewcreate +='_A.png';
+                    }
+            
+                    img = '{{ asset('assets/newicons/') }}'+'/'+urlnewcreate;
+            
+                    send = null;
+                    type = 1;
+                    addMarker({
+                        lat: parseFloat(checkdata['latitude']),
+                        lng:  parseFloat(checkdata['longitude'])
+                    }, send, img,checkdata,type);
+                }
+            }else{
+                deleteAgentMarks();
+                clearRoutes();
+            }
+    
+            $.each(allroutes, function(i, item) {
+                const directionsService = new google.maps.DirectionsService();
+                const directionsRenderer = new google.maps.DirectionsRenderer({suppressMarkers: true});
+                if(i < color.length)
+                {
+                    var routecolor = color[i];
+                }else{
+                    var routecolor = "pink";
+                }
+                directionsRenderer.setOptions({
+                    polylineOptions: {
+                        strokeColor: routecolor
+                    }
+                });
+                directionsRenderer.setMap(map);
+                var al_task = allroutes[i].task_details;
+                var agent_locatn = allroutes[i].driver_detail;
+                calculateAndDisplayRoute(directionsService, directionsRenderer, map, al_task, agent_locatn);
+            });
+    
+            //agents markers
+            for (let i = 0; i < allagent.length; i++) {
+                displayagent = allagent[i];
+                if(displayagent.agentlog != null && displayagent.agentlog['lat'] != "0.00000000" && displayagent.agentlog['long'] != "0.00000000" ){
+                    if (displayagent['is_available'] == 1) {
+                        images = url+'/demo/images/location.png';
+                    }else {
+                        images = url+'/demo/images/location_grey.png';
+                    }
+                    var image = {
+                        url: images, // url
+                        scaledSize: new google.maps.Size(50, 50), // scaled size
+                        origin: new google.maps.Point(0,0), // origin
+                        anchor: new google.maps.Point(22,22) // anchor
+                    };
+                    send = null;
+                    type = 2;
+            
+                    addMarker({lat: parseFloat(displayagent.agentlog['lat']),
+                    lng:  parseFloat(displayagent.agentlog['long'])
+                }, send, image,displayagent, type);
+            }
+        }
+    
+        map.setCenter(haightAshbury);
+    }
 
-            addMarker({lat: parseFloat(displayagent.agentlog['lat']),
-            lng:  parseFloat(displayagent.agentlog['long'])
-            }, send, image,displayagent, type);
+    function deleteAgentMarks() {
+        for (let i = 0; i < driverMarkers.length; i++) {
+            driverMarkers[i].setMap(null);
         }
     }
 
-    map.setCenter(haightAshbury);
-}
-
-function deleteAgentMarks() {
-    for (let i = 0; i < driverMarkers.length; i++) {
-        driverMarkers[i].setMap(null);
-    }
-}
-
-// function for displaying route  on map
-function calculateAndDisplayRoute(directionsService, directionsRenderer, map, alltask, agent_location)
-{
-    const waypts = [];
-    const checkboxArray = document.getElementById("waypoints");
-
-    for (let i = 0; i < alltask.length; i++) {
+    // function for displaying route  on map
+    function calculateAndDisplayRoute(directionsService, directionsRenderer, map, alltask, agent_location)
+    {
+        const waypts = [];
+        const checkboxArray = document.getElementById("waypoints");
+        
+        for (let i = 0; i < alltask.length; i++) {
         if (i != alltask.length - 1 && alltask[i].task_status != 4 && alltask[i].task_status != 5 ) {
             waypts.push({
                 location: new google.maps.LatLng(parseFloat(alltask[i].latitude), parseFloat(alltask[i]
                     .longitude)),
                 stopover: true,
             });
-
         }
         var image = url+'/assets/newicons/'+alltask[i].task_type_id+'.png';
     }
@@ -328,9 +303,13 @@ function addMarker(location, lables, images, data, type) {
             '<div class="col-sm-4">'+
                 '<div class="img_box mb-sm-0 mb-2"> <img src="https://imgproxy.royodispatch.com/insecure/fit/200/200/sm/0/plain/'+data["image_url"]+'"/></div> </div>'+
             '<div class="col-sm-8 pl-2 user_info">'+
-                '<div class="user_name mb-2"><label class="d-block m-0">'+data["name"]+'</label><span> <i class="fas fa-phone-alt"></i>'+data["phone_number"]+'</span></div>'+
+                '<div class="user_name mb-2 11"><label class="d-block m-0">'+data["name"]+'</label><span> <i class="fas fa-phone-alt"></i>'+data["phone_number"]+'</span></div>'+
                 '<div><b class="d-block mb-2"><i class="far fa-clock"></i> <span> '+jQuery.timeago(new Date(data['agentlog']['created_at']))+
-                ' </span></b> <b><i class="fas fa-mobile-alt"></i> '+data['agentlog']['device_type']+'</b> <b class="ml-2"> <i class="fas fa-battery-half"></i>  '+data['agentlog']['battery_level']+'%</b> </div>'
+                ' </span></b> <b><i class="fas fa-mobile-alt"></i> '+data['agentlog']['device_type']+'</b> <b class="ml-2"> <i class="fas fa-battery-half"></i>  '+data['agentlog']['battery_level']+'%</b>';
+               if(data['get_driver'][0]){
+                    contentString +='<a target="_blank" href="fleet/details/'+btoa(data['get_driver'][0]['id'])+'"><b class="d-block mt-2"><i class="fa fa-car"></i><span>'+data['get_driver'][0]['name']+' </span></b></a>';
+                }
+                contentString +='</div>';
             '</div>'+
         '</div>';
     }
@@ -342,17 +321,18 @@ function addMarker(location, lables, images, data, type) {
     });
 
     const marker = new google.maps.Marker({
-                    position: location,
-                    label: lables,
-                    icon: images,
-                    map: map,
-                    //animation: google.maps.Animation.DROP,
-                });
+        position: location,
+        label: lables,
+        icon: images,
+        map: map,
+        //animation: google.maps.Animation.DROP,
+    });
+    
     if (type == 2) {
         driverMarkers.push(marker)
     }
 
-     markers.push(marker);
+    markers.push(marker);
 
     marker.addListener("click", () => {
     infowindow.open(map, marker);
@@ -361,7 +341,6 @@ function addMarker(location, lables, images, data, type) {
 
 // Sets the map on all markers in the array.
 function setMapOnAll(map) {
-
     for (let i = 0; i < markers.length; i++) {
         markers[i].setMap(null);
     }
@@ -411,53 +390,49 @@ function RouteOptimization(taskids, distancematrix, optimize, agentid, date) {
     $('#selectedtasklocations').html('');
     $('.selecttask').css('display','');
     $.ajax({
-            type: 'POST',
-            url: '{{url("/get-tasks")}}',
-            headers: {
-                'X-CSRF-Token': '{{ csrf_token() }}',
-            },
-            data: {'taskids':taskids},
-
-            success: function(response) {
-
-                var data = $.parseJSON(response);
-
-                for (var i = 0; i < data.length; i++) {
-                    var object = data[i];
-                    var task_id =  object['id'];
-                    var tasktypeid = object['task_type_id'];
-                    var current_location = object['current_location'];
-                    if(current_location == 0)
-                    {
-                        $('input[type=radio][name=driver_start_location]').prop('checked', false);
-                        $("input[type=radio][name=driver_start_location][value='current']").remove();
-                        $("#radio-current-location-span").remove();
-                        $("input[type=radio][name=driver_start_location][value='select']").click();
-                    }
-
-                    if(tasktypeid==1)
-                    {
-                        tasktype = "Pickup";
-                    }else if(tasktypeid==2)
-                    {
-                        tasktype = "Dropoff";
-                    }else{
-                        tasktype = "Appointment";
-                    }
-
-                    var location_address =  object['location']['address'];
-                    var shortname =  object['location']['short_name'];
-
-
-                    var option   = '<option value="'+task_id+'">'+tasktype+' - '+shortname+' - '+location_address+'</option>';
-                    $('#selectedtasklocations').append(option);
+        type: 'POST',
+        url: '{{url("/get-tasks")}}',
+        headers: {
+            'X-CSRF-Token': '{{ csrf_token() }}',
+        },
+        data: {'taskids':taskids},
+        success: function(response) {
+            var data = $.parseJSON(response);
+            for (var i = 0; i < data.length; i++) {
+                var object = data[i];
+                var task_id =  object['id'];
+                var tasktypeid = object['task_type_id'];
+                var current_location = object['current_location'];
+                if(current_location == 0)
+                {
+                    $('input[type=radio][name=driver_start_location]').prop('checked', false);
+                    $("input[type=radio][name=driver_start_location][value='current']").remove();
+                    $("#radio-current-location-span").remove();
+                    $("input[type=radio][name=driver_start_location][value='select']").click();
                 }
-            },
-            error: function(response) {
-            }
-        });
+                
+                if(tasktypeid==1)
+                {
+                    tasktype = "Pickup";
+                }else if(tasktypeid==2)
+                {
+                    tasktype = "Dropoff";
+                }else{
+                    tasktype = "Appointment";
+                }
+                
+                var location_address =  object['location']['address'];
+                var shortname =  object['location']['short_name'];
 
-        $('#optimize-route-modal').modal('show');
+                var option   = '<option value="'+task_id+'">'+tasktype+' - '+shortname+' - '+location_address+'</option>';
+                $('#selectedtasklocations').append(option);
+            }
+        },
+        error: function(response) {
+            
+        }
+    });
+    $('#optimize-route-modal').modal('show');
 }
 
 
@@ -733,13 +708,13 @@ $('input[type=radio][name=driver_start_location]').change(function() {
     }
 });
 </script>
-<script src="{{ asset('js/app.js') }}"></script>
+<!-- <script src="{{ asset('js/app.js') }}"></script> -->
 <script>
 //function to listen different channels of event of different dates and different agent status
 function ListenDataChannel()
 {
     //leave/not listen previous channel in case filters have been changed
-    Echo.leave(old_channelname);
+    /* Echo.leave(old_channelname);
 
     //listen route add/update/delete/assigned/completed event
     Echo.channel(channelname)
@@ -797,23 +772,23 @@ function ListenDataChannel()
                 position : 'top-right'
             });
         }
-    });
+    }); */
 }
 
 function ListenAgentLogChannel()
 {
-    Echo.leave(old_logchannelname);
+    /* Echo.leave(old_logchannelname);
     //listen agent log updation event
     Echo.channel(logchannelname)
     .listen('agentLogFetch', (e) => {
         loadTeams(0, 0);
-    });
+    }); */
 }
 
 </script>
 
 <style>
-    .gm-style-iw.gm-style-iw-c {
+.gm-style-iw.gm-style-iw-c {
     width: 300px !important;
 }
 .img_box {

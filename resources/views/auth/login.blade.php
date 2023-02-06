@@ -7,6 +7,11 @@
         @include('layouts.shared.title-meta', ['title' => "Log In"])
 
         @include('layouts.shared.head-css')
+        <style>
+            .authentication-bg-pattern {
+                background-image: url({{ !empty($image->admin_signin_image) ? Storage::disk('s3')->url($image->admin_signin_image) : ''  }}) !important;
+            }
+    </style>
     </head>
 
     <body class="authentication-bg authentication-bg-pattern">        
