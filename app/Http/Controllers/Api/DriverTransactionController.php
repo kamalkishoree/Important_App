@@ -40,7 +40,8 @@ class DriverTransactionController extends BaseController
             $limit = $request->has('limit') ? $request->limit : 30;
             $cash  = $agent->order->where('status', 'completed')->sum('cash_to_be_collected');
             $driver_cost  = $agent->order->where('status', 'completed')->sum('driver_cost');
-            $order_cost = $agent->order->where('status', 'completed')->sum('order_cost');
+            //$order_cost = $agent->order->where('status', 'completed')->sum('order_cost');
+            $order_cost = $driver_cost;
             
             $payout = AgentPayout::where(['agent_id'=>$agent->id, 'status'=> 1])->sum('amount');
             $pendingpayout = AgentPayout::where(['agent_id'=>$agent->id, 'status'=> 0])->sum('amount');
@@ -58,9 +59,9 @@ class DriverTransactionController extends BaseController
             ->where('agent_id', $agent->id)->where('status', 1);
         
             if(!empty($request->from_date) && !empty($request->to_date)){
-                $orders = Order::where('driver_id', $id)->whereBetween('order_time', [$request->from_date." 00:00:00",$request->to_date." 23:59:59"])->pluck('id')->toArray();
+                $orders = Order::where('driver_id', $id)->where('status', 'completed')->whereBetween('order_time', [$request->from_date." 00:00:00",$request->to_date." 23:59:59"])->pluck('id')->toArray();
             }else{
-                $orders = Order::where('driver_id', $id)->pluck('id')->toArray();
+                $orders = Order::where('driver_id', $id)->where('status', 'completed')->pluck('id')->toArray();
             }
             if (isset($orders)) {
                 $tasks = Task::whereIn('order_id', $orders)->whereIn('task_status', [4,5])
@@ -70,6 +71,7 @@ class DriverTransactionController extends BaseController
                 ->union($wallet_transactions)
                 ->union($agent_payouts)
                 ->orderBy('created_at', 'DESC')
+                ->orderBy('order_id', 'DESC')
                 ->paginate($limit, $page);
     
                 $totalCashCollected = 0;

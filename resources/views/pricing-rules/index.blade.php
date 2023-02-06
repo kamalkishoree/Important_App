@@ -100,7 +100,7 @@
         </div> --}}
         
         <div class="col-12">
-            <div class="card">
+            <div class="card main-table-card">
                 <div class="card-body">
                     <div class="row mb-2">
                         <div class="col-sm-8">
@@ -240,7 +240,11 @@
                     },
                     searchPlaceholder: "{{__('Search')}}",
                     'loadingRecords': '&nbsp;',
-                    'processing': '<div class="spinner"></div>'
+                    //'processing': '<div class="spinner"></div>'
+                    'processing':function(){
+                        spinnerJS.showSpinner();
+                        spinnerJS.hideSpinner();
+                    }
                 },
             });
     });

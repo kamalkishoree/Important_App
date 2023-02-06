@@ -21,10 +21,12 @@ use Doctrine\DBAL\Driver\DrizzlePDOMySql\Driver;
 use App\Model\{Agent, AgentDocs, AgentPayment, AgentLog, DriverGeo, Order, Otp, Team, TagsForAgent, TagsForTeam, Countries, Client, ClientPreferences, DriverRegistrationDocument, Geo, Timezone, AgentSmsTemplate};
 use Kawankoding\Fcm\Fcm;
 use App\Traits\agentEarningManager;
+use App\Traits\smsManager;
 
 class AgentController extends Controller
 {
     use ApiResponser;
+    use smsManager;
     /**
      * Display a listing of the resource.
      *
@@ -117,6 +119,10 @@ class AgentController extends Controller
             $tz = new Timezone();
             $user = Auth::user();
             $client = Client::where('code', $user->code)->with(['getTimezone', 'getPreference'])->first();
+         
+            $isDriverSlotActive =  $client->getPreference ? $client->getPreference->is_driver_slot : 0;
+            $request->merge(['is_driver_slot'=>$isDriverSlotActive]);
+         
             $client_timezone = $client->getTimezone ? $client->getTimezone->timezone : 251;
             $timezone = $tz->timezone_name($client_timezone);
             $agents = Agent::orderBy('id', 'DESC');
@@ -205,16 +211,20 @@ class AgentController extends Controller
                     return convertDateTimeInTimeZone($agents->updated_at, $timezone);
                 })
                 ->editColumn('action', function ($agents) use ($request) {
+                    $approve_action = '';
+                    if($request->is_driver_slot == 1){
+                        $approve_action .= '<div class="inner-div agent_slot_button" data-agent_id="'.$agents->id.'" data-status="2" title="Working Hours"><i class="dripicons-calendar mr-1" style="color: green; cursor:pointer;"></i></div>';
+                    }
                     if($request->status == 1){
-                        $approve_action = '<div class="inner-div agent_approval_button" data-agent_id="'.$agents->id.'" data-status="2" title="Reject"><i class="fa fa-user-times" style="color: red; cursor:pointer;"></i></div>';
+                        $approve_action .= '<div class="inner-div agent_approval_button" data-agent_id="'.$agents->id.'" data-status="2" title="Reject"><i class="fa fa-user-times" style="color: red; cursor:pointer;"></i></div>';
                     } else if($request->status == 0){
-                        $approve_action = '<div class="inner-div agent_approval_button" data-agent_id="'.$agents->id.'" data-status="1" title="Approve"><i class="fas fa-user-check" style="color: green; cursor:pointer;"></i></div><div class="inner-div ml-1 agent_approval_button" data-agent_id="'.$agents->id.'" data-status="2" title="Reject"><i class="fa fa-user-times" style="color: red; cursor:pointer;"></i></div>';
+                        $approve_action .= '<div class="inner-div agent_approval_button" data-agent_id="'.$agents->id.'" data-status="1" title="Approve"><i class="fas fa-user-check" style="color: green; cursor:pointer;"></i></div><div class="inner-div ml-1 agent_approval_button" data-agent_id="'.$agents->id.'" data-status="2" title="Reject"><i class="fa fa-user-times" style="color: red; cursor:pointer;"></i></div>';
                     } else if($request->status == 2){
-                        $approve_action = '<div class="inner-div agent_approval_button" data-agent_id="'.$agents->id.'" data-status="1" title="Approve"><i class="fas fa-user-check" style="color: green; cursor:pointer;"></i></div>';
+                        $approve_action .= '<div class="inner-div agent_approval_button" data-agent_id="'.$agents->id.'" data-status="1" title="Approve"><i class="fas fa-user-check" style="color: green; cursor:pointer;"></i></div>';
                     }
                     $action = ''.$approve_action.'
                                <!-- <div class="inner-div"> <a href="' . route('agent.edit', $agents->id) . '" class="action-icon editIcon" agentId="' . $agents->id . '"> <i class="mdi mdi-square-edit-outline"></i></a></div>-->
-                                    <div class="inner-div ml-1">
+                                    <div class="inner-div">
                                         <form id="agentdelete'.$agents->id.'" method="POST" action="' . route('agent.destroy', $agents->id) . '">
                                             <input type="hidden" name="_token" value="' . csrf_token() . '" />
                                             <input type="hidden" name="_method" value="DELETE">
@@ -607,7 +617,15 @@ class AgentController extends Controller
     public function destroy($domain = '', $id)
     {
         DriverGeo::where('driver_id', $id)->delete();  // i have to fix it latter
-        Agent::where('id', $id)->delete();
+        $agent = Agent::where('id', $id)->first();
+        Agent::where('id', $agent->id)->update([
+            'phone_number' => $agent->phone_number.'_'.$agent->id."_D",  
+            'device_token' =>'',  
+            'device_type' =>'',  
+            'access_token' => ''
+            ]);
+        $agent->delete();
+        Otp::where('phone', $agent->phone_number)->where('is_verified', 1)->delete();
         return redirect()->back()->with('success',__(getAgentNomenclature().' deleted successfully!'));
     }
 
@@ -710,9 +728,11 @@ class AgentController extends Controller
             AgentLog::where('agent_id',$request->id)->update(['is_active' => $is_active]);
 
             $slug = ($request->status == 1)? 'driver-accepted' : 'driver-rejected';
-            $sms_body = AgentSmsTemplate::where('slug', $slug)->first();
+            // $sms_body = AgentSmsTemplate::where('slug', $slug)->first();
+            $keyData = [];
+            $sms_body = sendSmsTemplate($slug,$keyData);
             if(!empty($sms_body)){
-                $send = $this->sendSms2($agent_approval->phone_number, $sms_body->content)->getData();
+                $send = $this->sendSmsNew($agent_approval->phone_number, $sms_body)->getData();
             }
 
             $agents            = Agent::get();

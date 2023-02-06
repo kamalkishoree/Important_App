@@ -1,7 +1,7 @@
 /*
 Project Name: Field work
 CSS Author: Navneet
-Contact No : +919814097975;
+Contact No : 919814097975;
 Author Designation: Web Designer
 Framework Used: Bootstrap
 Organization: Code Brew Labs
@@ -108,7 +108,7 @@ header .navbar-light .navbar-nav .nav-link {
 }
 .profile-image {
   border-radius: 50%;
-  border: border: 1.96px solid #FFFFFF;
+  border: 1.96px solid #FFFFFF;
   box-shadow: 0 2px 4px 0 rgba(0,0,0,0.12);
 }
 .profile-status {
@@ -382,7 +382,7 @@ body.menuitem-active .task-block h6 {
   background-color: hsla(240, 100%, 50%, 0.5)!important;
 }
 .profile-circle.four{
-  background-color: rgba(165, 42, 42, 0.5), 0.527)!important;
+  background-color: rgba(165, 42, 42, 0.5), 0.527;
 }
 .profile-circle.five{
   background-color: hsla(182, 100%, 50%, 0.5)!important;
@@ -439,3 +439,17 @@ body.menuitem-active .task-block h6 {
   border: none!important;
   }
 
+  body.dark a.profile-block.collapsed {
+      padding: 12px;
+    }
+    body.dark  span.profile-circle.pro-name {
+      width: 40px;
+      height: 40px;
+      line-height: 40px;
+    }
+    body.dark a.profile-block.pro-block{
+      padding: 12px;
+    }
+    body[data-sidebar-size=condensed] .left-side-menu .simplebar-mask, body[data-sidebar-size=condensed] .left-side-menu .simplebar-content-wrapper {
+      overflow: auto !important;
+    }

@@ -5,7 +5,7 @@ Website: https://coderthemes.com/
 Contact: support@coderthemes.com
 File: Main Js File
 */
-
+require('./bootstrap');
 
 !function ($) {
     "use strict";

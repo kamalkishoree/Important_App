@@ -16,8 +16,12 @@ use Illuminate\Http\Request;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
 //switch language route
+Route::get('hitevent', function (Request $request) {
+	event(new \App\Events\agentLogFetch());
+	dd("Event successfull");
+});
+
 Route::get('/switch/language', function (Request $request) {
 	if ($request->lang) {
 		session()->put("applocale", $request->lang);
@@ -115,6 +119,9 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 		Route::get('/demo/page', function () {
 			return view('demo');
 		});
+
+		Route::get('file-download/{filename}', 'DownloadFileController@index')->name('file.download.index');
+		Route::get('file-uploaded-download/{filename}', 'DownloadFileController@downloadUploadedFile')->name('uploadeddownload');
 		
 		Route::post('/login/client', 'LoginController@clientLogin')->name('client.login');
 		Route::get('/wrong/url', 'LoginController@wrongurl')->name('wrong.client');
@@ -165,8 +172,7 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 			Route::get('analytics', 'AccountingController@index')->name('accounting');
 			Route::get('profileImg', 'ProfileController@displayImage');
 			Route::get('', 'DashBoardController@index')->name('index');
-            Route::get('dashboard/data/{userstatus}', 'DashBoardController@dashboardData')->name('dashboard.data');
-			Route::get('dashboard/teamsdata/{userstatus}', 'DashBoardController@dashboardTeamData')->name('dashboard.teamsdata');
+			Route::post('dashboard/teamsdata', 'DashBoardController@dashboardTeamData')->name('dashboard.teamsdata');
 			Route::get('customize', 'ClientController@ShowPreference')->name('preference.show');
 			Route::post('save/cms/{id}', 'ClientController@cmsSave')->name('cms.save');
 			Route::post('client_preference/{id}', 'ClientController@storePreference')->name('preference');
@@ -229,6 +235,8 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 			Route::post('remove-location', 'CustomerController@changeLocation');
 			Route::post('get-tasks', 'DashBoardController@getTaskDetails');
 
+			Route::post('task/importCSV', 'TaskController@importCsv')->name('tasks.importCSV');
+
 			/* Store Client Information */
 			Route::post('submit_client', 'UserProfile@SaveRecord')->name('store_client');
 			Route::any('/logout', 'LoginController@logout')->name('client.logout');
@@ -279,7 +287,13 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 			Route::get('subscription/plan/delete/driver/{slug}', 'SubscriptionPlansDriverController@deleteSubscriptionPlan')->name('subscription.plan.delete.driver');
 			Route::post('subscription/plan/updateStatus/driver/{slug}', 'SubscriptionPlansDriverController@updateSubscriptionPlanStatus')->name('subscription.plan.updateStatus.driver');
 			Route::post('show/subscription/plan/driver', 'SubscriptionPlansDriverController@showSubscriptionPlanDriver')->name('show.subscription.plan.driver');
-			
+		
+			// agent slot
+			Route::get('calender/data/{id}', 'AgentSlotController@returnJson')->name('agent.calender.data');
+			Route::post('agent/add_slot', 'AgentSlotController@store')->name('agent.saveSlot');
+			Route::post('agent/update_slot', 'AgentSlotController@update')->name('agent.slot.update');
+			Route::get('agent/slot/create/{id}', 'AgentSlotController@create')->name('agent.slot.create');
+			Route::post('agent/slot/delete', 'AgentSlotController@destroy')->name('agent.slot.destroy');
 		});
 	});
 

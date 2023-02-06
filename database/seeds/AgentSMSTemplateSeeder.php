@@ -41,9 +41,14 @@ class AgentSMSTemplateSeeder extends Seeder
               'tags' => '',
               'label' => getAgentNomenclature().' Rejected',
               'content' => '',
+            ],
+            [
+              'slug' => 'friend-sms',
+              'tags' => '{user-name},{customer-name},{agent-name},{car-model},{plate-no}',
+              'label' => 'Friend-sms',
+              'content' => 'Hi {user-name}, {customer-name} have booked a ride for you. {agent-name} in our {car-model} with license plate {plate-no} has been assgined',
             ]
         );
-        
         if($option_count == 0)
       {
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
