@@ -57,28 +57,23 @@ class RosterCreate implements ShouldQueue
                 'engine' => null
             ];
 
-            // config(["database.connections.mysql.database" => null]);
-
 
             Config::set("database.connections.$schemaName", $default);
-        //    Log::info('mesooooo2');
+        
             config(["database.connections.mysql.database" => $schemaName]);
-         //   Log::info($schemaName);
+        
             DB::connection($schemaName)->table('rosters')->insert($this->data);
              Log::info('RosterCreate insert');
             DB::connection($schemaName)->table('roster_details')->insert($this->extraData);
-        //    Log::info('mesooooo5');
+       
             DB::disconnect($schemaName);
-            //Roster::insert($this->data);
-        //    Log::info($this->data);
-        //    Log::info($this->extraData);
+           
             Roster::create([
                 'type'  => 'extra',
                 'status'=> 10
             ]);
             $date   =  Carbon::now()->toDateTimeString();
-          //  Log::info('create roster --12 RosterCreate');
-            //Log::info($date);
+         
         } catch (Exception $ex) {
             Log::info($exception->getMessage());
            return $ex->getMessage();
@@ -89,7 +84,6 @@ class RosterCreate implements ShouldQueue
     public function failed(\Throwable $exception)
     {
         // Log failure
-        Log::info('error roster');
-        Log::info($exception->getMessage());
+        Log::info('error roster :'.$exception->getMessage());
     }
 }

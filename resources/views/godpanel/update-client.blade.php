@@ -274,6 +274,7 @@
                          <!-- Migrate Client  -->
                             <div class="row">
                                 <div class="col-12">    
+
                                         <h3>{{__('Migrate Client')}}</h3>
                                         <form  method="post" action="{{route('client.exportdb',$client->database_name)}}"
                                             enctype="multipart/form-data" autocomplete="off">

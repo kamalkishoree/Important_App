@@ -70,10 +70,9 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 		print_r("</pre>");
 	});
 	
-	
-	
 	Route::group(['prefix' => '/godpanel', 'middleware' => 'CheckGodPanel'], function () {
 		Route::get('/', function () {
+			dd('werewr');
 			return view('godpanel/login');
 		});
 		Route::get('/login', function () {
@@ -106,7 +105,6 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 	});
 	
 	Route::domain('{domain}')->middleware(['subdomain'])->group(function () {
-
 		
 		Route::group(['middleware' => ['domain', 'database']], function () {
 			
@@ -153,14 +151,9 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 		
 		Route::group(['middleware' => ['auth:client'], 'prefix' => '/'], function () {
 
-			
 			Route::get('vnpay/test',   'VnpayController@order');
 			Route::any('vnpay_respont', 'VnpayController@vnpay_respont')->name('vnpay_respont');
 		
-
-		
-			
-
             Route::get('notifi', 'AgentController@test_notification');
 			Route::get('vnpay/test',   'VnpayController@order');
 			Route::get('agent/filter', 'AgentController@agentFilter');
@@ -174,6 +167,9 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 			Route::get('', 'DashBoardController@index')->name('index');
 			Route::post('dashboard/teamsdata', 'DashBoardController@dashboardTeamData')->name('dashboard.teamsdata');
 			Route::get('customize', 'ClientController@ShowPreference')->name('preference.show');
+			Route::post('dashboard/agentTeamsdata', 'AgentDashBoardController@dashboardTeamData')->name('dashboard.agent-teamsdata');
+			Route::post('dashboard/agentOrdersdata', 'AgentDashBoardController@dashboardOrderData')->name('dashboard.agent-orderdata');
+			// Route::post('update-order-panel-db-detail', 'ClientController@orderPanelDbDetail')->name('update.orderPanelDbDetail');
 			Route::post('save/cms/{id}', 'ClientController@cmsSave')->name('cms.save');
 			Route::post('client_preference/{id}', 'ClientController@storePreference')->name('preference');
 			Route::post('route-create-configure/{id}', 'ClientController@routeCreateConfigure')->name('route.create.configure');
@@ -184,6 +180,14 @@ Route::group(['middleware' => 'switchLanguage'], function () {
             Route::post('fivcon/save', 'ClientController@faviconUoload')->name('favicon');
 			Route::get('options', 'ClientController@ShowOptions')->name('options');
 			Route::resource('agent', 'AgentController');
+			Route::post('fleet/get-order-detail', 'FleetController@orderFleetDetail');
+			Route::post('fleet/get-car-detail', 'FleetController@carDetail');
+			Route::get('fleet/filter', 'FleetController@fleetFilter');
+			Route::get('fleet/{id}/driver', 'FleetController@assignDriver');
+			Route::get('fleet/details/{id}', 'FleetController@fleetDetails');
+			Route::POST('fleet/updateDriver', 'FleetController@updateDriver');
+			Route::resource('fleet', 'FleetController');
+
 			Route::get('agent/{id}/show', 'AgentController@show')->name('agent.show');
 			Route::post('agent/search', 'AgentController@search')->name('agent.search');
 			Route::post('pay/receive', 'AgentController@payreceive')->name('pay.receive');
@@ -192,11 +196,25 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 			Route::get('agent/payout/requests', 'AgentPayoutController@agentPayoutRequests')->name('agent.payout.requests');
 			Route::get('agent/payout/requests/export', 'AgentPayoutController@export')->name('agents.payout.requests.export');
 			Route::get('agent/payout/requests/filter', 'AgentPayoutController@agentPayoutRequestsFilter')->name('agent.payout.requests.filter');
+			
+			Route::get('category/filter', 'CategoryController@categoryFilter');
+
+			Route::get('product-category/filter/{id}', 'CategoryController@productCategoryFilter')->name('category.product.filter');
+
         	Route::post('agent/payout/request/complete', 'AgentPayoutController@agentPayoutRequestComplete')->name('agent.payout.request.complete');
 			Route::post('agent/payout/requests/complete/all', 'AgentPayoutController@agentPayoutRequestsCompleteAll')->name('agent.payout.requests.complete.all');
 			Route::post('agent/payout/bank/details', 'AgentPayoutController@agentPayoutBankDetails')->name('agent.payout.bank.details');
 			Route::post('agent/change_approval_status', 'AgentController@change_approval_status')->name('agent/change_approval_status');
 			Route::resource('customer', 'CustomerController');
+
+			Route::get('agent/driver-list', 'Accountancy\DriverAccountingController@driverList')->name('driver-list');
+			// Driver Accountancy
+			Route::group(['prefix' => 'driver-accounting'], function () {
+				Route::any('/', 'Accountancy\DriverAccountingController@index')->name('driver-accountancy.index');
+				Route::get('driver-list', 'Accountancy\DriverAccountingController@driverList')->name('driver-list');
+				Route::get('driver-datatable', 'Accountancy\DriverAccountingController@driverDatatable')->name('driver-datatable');
+				Route::post('pay-to-agent', 'Accountancy\DriverAccountingController@agentPayoutRequestComplete')->name('pay-to-agent');
+			});
 			Route::get('changeStatus', 'CustomerController@changeStatus');
 			Route::resource('tag', 'TagController');
 			Route::get('tag/{id}/{type}/edit', 'TagController@edit')->name('tag.edit');
@@ -223,6 +241,8 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 			Route::post('newtasks', 'TaskController@newtasks');
 			Route::any('updatetasks/tasks/{id}', 'TaskController@update');
 			Route::post('single_taskdelete', 'TaskController@deleteSingleTask')->name('tasks.single.destroy');
+
+			Route::get('get-category-warehouse', 'TaskController@getCategoryWarehouse')->name('getCategoryWarehouse');
 
 			Route::post('optimize-route', 'DashBoardController@optimizeRoute');
 			Route::post('arrange-route', 'DashBoardController@arrangeRoute');
@@ -254,6 +274,18 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 			Route::post('/feedback/save', 'TrackingController@SaveFeedback')->name('feedbackSave');
 			Route::resource('subadmins', 'SubAdminController');
 
+			Route::resource('warehouse', 'WarehouseController');
+			Route::resource('order-panel-db', 'orderPanelController');
+			Route::resource('amenities', 'AmenitiesController');
+			Route::resource('category', 'CategoryController');
+			Route::resource('product', 'ProductController');
+			Route::POST('check-sync-status', 'orderPanelController@checkSyncStatus');
+
+			Route::get('category/product/{id}', 'CategoryController@categoryProduct')->name('category.product');
+
+			// Route::get('cat-product/{$id}', 'ProductController@showProduct')->name('showProduct');
+
+			Route::post('/import-order-side-category', 'CategoryController@getOrderSideData')->name('category.importOrderSideCategory');
 
 			Route::get('/order/feedback/{clientcode}/{order_id}', 'TrackingController@OrderFeedback')->name('order.feedback');
 
@@ -297,8 +329,6 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 		});
 	});
 
-
-
 	//feedback & tracking
 
 	Route::group(['middleware' => 'auth', 'prefix' => '/'], function () {
@@ -310,8 +340,15 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 	Route::get('driver/registration/document/edit', 'ClientController@show')->name('driver.registration.document.edit');
 	Route::post('driverregistrationdocument/create', 'ClientController@store')->name('driver.registration.document.create');
 	Route::post('driverregistrationdocument/update', 'ClientController@update')->name('driver.registration.document.update');
-	Route::post('driver/registration/document/delete', 'ClientController@destroy')->name('driver.registration.document.delete');
 	
+	Route::post('driver/registration/document/delete', 'ClientController@destroy')->name('driver.registration.document.delete');
+
+	Route::post('agent/order/analytics', 'AccountingController@getAgentOrderAnalytics')->name('agent.complete.order');
+	Route::post('agent/view/analytics', 'AccountingController@viewAgentOrderAnalytics')->name('agent.view.analytics');
+	// ajax token refresh
+
 	
 
+	
+	
 });

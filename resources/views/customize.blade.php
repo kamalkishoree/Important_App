@@ -2,6 +2,9 @@
 
 @section('css')
 @endsection
+@php
+$getAdditionalPreference = getAdditionalPreference(['pickup_type', 'drop_type']); 
+@endphp
 @section('content')
 @include('modals.tandc')
 @include('modals.privacyandpolicy')
@@ -32,7 +35,7 @@
     </div>
     <!-- end Section title -->
     <div class="row mb-3">
-        <div class="col-xl-3 col-md-4">
+        <div class="col-md-5 col-xl-4">
             <div class="card-box h-100">
                 <div class="row">
                     <div class="col-md-12">
@@ -67,6 +70,30 @@
                                         @if($errors->has('currency_id'))
                                         <span class="text-danger" role="alert">
                                             <strong>{{ $errors->first('currency_id') }}</strong>
+                                        </span>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label for="pickup_type">{{__("PICKUP NAME")}}</label>
+                                        <input type="text" name="pickup_type" id="pickup_type" placeholder="e.g {{ __('PICKUP NAME')}}" class="form-control" value="{{ old('pickup_type', $getAdditionalPreference['pickup_type'] ?? '')}}">
+                                        @if($errors->has('pickup_type'))
+                                        <span class="text-danger" role="alert">
+                                            <strong>{{ $errors->first('pickup_type') }}</strong>
+                                        </span>
+                                        @endif
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label for="drop_type">{{__("DROP OFF")}}</label>
+                                        <input type="text" name="drop_type" id="drop_type" placeholder="e.g {{ __('DROP OFF')}}" class="form-control" value="{{ old('drop_type', $getAdditionalPreference['drop_type'] ?? '')}}">
+                                        @if($errors->has('drop_type'))
+                                        <span class="text-danger" role="alert">
+                                            <strong>{{ $errors->first('drop_type') }}</strong>
                                         </span>
                                         @endif
                                     </div>
@@ -150,7 +177,7 @@
             </div>
         </div>
 
-        <div class="col-xl-3 col-md-4">
+        <div class="col-md-4 col-xl-4">
             <div class="card-box h-100">
                 <form method="POST" class="h-100" action="{{route('preference', Auth::user()->code)}}">
                     @csrf
@@ -187,7 +214,7 @@
                 </form>
             </div>
         </div>
-        <div class="col-xl-3 col-md-4">
+        <div class="col-md-3 col-xl-4">
             <div class="card-box h-100">
                 <form method="POST" class="h-100" action="{{route('update.contact.us', Auth::user()->code)}}">
                     <div class="d-flex align-items-center justify-content-between mb-2">
@@ -232,6 +259,70 @@
                 </form>
             </div>
         </div>
+
+        {{-- <div class="col-md-3">
+            <div class="card-box h-100">
+                <form method="POST" class="h-100" action="{{route('update.orderPanelDbDetail')}}">
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                        <h4 class="header-title mb-0">{{__('Oeder Panel DB Detail')}}</h4>
+                        <button class="btn btn-outline-info d-block" type="submit"> Save </button>
+                    </div>
+
+                    @csrf
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group mb-0">
+                                <label for="db_host">DB Host</label>
+                                <div class="input-group">
+                                    <input type="text" name="db_host" id="db_host"  class="form-control" value="{{ old('db_host', $order_panel_detail->db_host ?? '')}}">
+                                </div>
+                                @if($errors->has('db_host'))
+                                <span class="text-danger" role="alert">
+                                    <strong>{{ $errors->first('db_host') }}</strong>
+                                </span>
+                                @endif
+                            </div>
+                            <div class="form-group mt-2 mb-0">
+                                <label for="db_port">DB Port</label>
+                                <input type="text" name="db_port" id="db_port" placeholder="" class="form-control" value="{{ old('db_port', $order_panel_detail->db_port ?? '')}}">
+                                @if($errors->has('db_port'))
+                                <span class="text-danger" role="alert">
+                                    <strong>{{ $errors->first('db_port') }}</strong>
+                                </span>
+                                @endif
+                            </div>
+                            <div class="form-group mt-2 mb-0">
+                                <label for="db_name">DB Name</label>
+                                <input type="text" name="db_name" id="db_name" placeholder="" class="form-control" value="{{ old('db_name', $order_panel_detail->db_name ?? '')}}">
+                                @if($errors->has('db_name'))
+                                <span class="text-danger" role="alert">
+                                    <strong>{{ $errors->first('db_name') }}</strong>
+                                </span>
+                                @endif
+                            </div>
+                            <div class="form-group mt-2 mb-0">
+                                <label for="db_username">DB Username</label>
+                                <input type="text" name="db_username" id="db_username" placeholder="" class="form-control" value="{{ old('db_username', $order_panel_detail->db_username ?? '')}}">
+                                @if($errors->has('db_username'))
+                                <span class="text-danger" role="alert">
+                                    <strong>{{ $errors->first('db_username') }}</strong>
+                                </span>
+                                @endif
+                            </div>
+                            <div class="form-group mt-2 mb-0">
+                                <label for="db_password">DB Password</label>
+                                <input type="password" name="db_password" id="db_password" placeholder="" class="form-control" value="">
+                                @if($errors->has('db_password'))
+                                <span class="text-danger" role="alert">
+                                    <strong>{{ $errors->first('db_password') }}</strong>
+                                </span>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div> --}}
     </div>
 
         <form method="POST" action="{{route('task.proof')}}">

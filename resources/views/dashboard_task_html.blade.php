@@ -65,10 +65,10 @@ $agentslocations[] = $defaultmaplocation;
                                 $turnbyturn0 = "";
                             }
                             ?>
-                            <a class="profile-block collapsed" role="button" data-toggle="collapse" href="#collapse0" aria-expanded="false" aria-controls="collapse0">
+                            <a class="profile-block collapsed pro-block" role="button" data-toggle="collapse" href="#collapse0" aria-expanded="false" aria-controls="collapse0">
                                 <div class="row">
                                     <div class="col-md-2 col-2">
-                                        <span class="profile-circle">D</span>
+                                        <span class="profile-circle pro-name">D</span>
                                     </div>
                                     <div class="col-md-10 col-10">
                                         <h6 class="mb-0 header-title scnd">{{__("Unassigned Tasks")}}<div  class="optimizebtn0">{!! $optimize0 !!} </div><div class="exportbtn0">{!! $turnbyturn0 !!} </div></h6>
@@ -100,7 +100,6 @@ $agentslocations[] = $defaultmaplocation;
                                                         $pickup_class = "assign_";
                                                         }
                                                 @endphp
-
                                                 <div>
                                                     <div class="row no-gutters align-items-center">
                                                         <div class="col-9 d-flex">
@@ -142,27 +141,25 @@ $agentslocations[] = $defaultmaplocation;
     <div class="card no-border-radius">
 
         @foreach ($teams as $item)
-            <div class="card-header" id="heading-1">
+            <div class="card-header main_card" id="heading-1">
                     <a role="button" data-toggle="collapse" href="#collapse-{{ $item['id'] }}"
                         aria-expanded="false" aria-controls="collapse-{{ $item['id'] }}">
                         <div class="newcheckit">
                             <div class="row d-flex align-items-center" class="mb-0">
                                 <div class="col-md-3 col-xl-2 col-2">
-                                    <span class="profile-circle {{$color[rand(0,7)]}}">{{ substr(ucfirst($item['name']), 0, 2) }}</span>
+                                    <span class="profile-circle pro-name {{$color[rand(0,7)]}}">{{ substr(ucfirst($item['name']), 0, 2) }}</span>
                                 </div>
                                 <div class="col-md-9 col-xl-10 col-10">
                                     <h6 class="header-title">{{ ucfirst($item['name']) }}</h6>
                                     <p class="mb-0">
                                         <span class="team_agent_{{ $item['id'] }}" id="team_agent_{{ $item['id'] }}">{{ count($item['agents']) }}</span>
                                             {{ __(getAgentNomenclature()) }}
-                                        @if($userstatus == 2)
-                                            : <span>
-                                                <span class="team_online_agent_{{ $item['id'] }}" id="team_online_agent_{{ $item['id'] }}">{{ $item['online_agents'] }}</span>
-                                                    {{ __('Online') }} ・
-                                                <span class="team_offline_agent_{{ $item['id'] }}" id="team_offline_agent_{{ $item['id'] }}">{{ $item['offline_agents'] }}</span>
-                                                {{ __('Offline') }}
-                                            </span>
-                                        @endif
+                                        : <span>
+                                            <span class="team_online_agent_{{ $item['id'] }}" id="team_online_agent_{{ $item['id'] }}"">{{ $item['online_agents'] }}</span>
+                                                {{ __('Online') }} ・
+                                        <span class="team_offline_agent_{{ $item['id'] }}" id="team_offline_agent_{{ $item['id'] }}">{{ $item['offline_agents'] }}</span>
+                                            {{ __('Offline') }}
+                                        </span>
                                     </p>
                                 </div>
                             </div>
@@ -216,36 +213,44 @@ $agentslocations[] = $defaultmaplocation;
                         <div id="accordion-{{ $agent['id'] }}">
                             <div class="card no-border-radius">
                                 <div class="card-header ml-2" id="by{{ $agent['id'] }}">
-
-                                        <a class="profile-block collapsed" role="button"
-                                            data-toggle="collapse" href="#collapse{{ $agent['id'] }}"
-                                            aria-expanded="false"
-                                            aria-controls="collapse{{ $agent['id'] }}">
-                                            <div class="row">
-                                                <div class="col-md-2 col-2">
-                                                    <img class="profile-circle"
-                                                        src="{{isset($agent['profile_picture']) ? $imgproxyurl.Storage::disk('s3')->url($agent['profile_picture']):'https://dummyimage.com/36x36/ccc/fff'}}">
-                                                </div>
-                                                <div class="col-md-10 col-10">
-                                                @php
-                                                    $checkAgentActive = ($agent['is_available'] == 1)? ' ('.__('Online').')' : ' ('.__('Offline').')';
-                                                @endphp
-
-                                                <h6 class="mb-0 header-title scnd">
-                                                    {{ ucfirst($agent['name']) }}
-                                                    <span class="tram_agent_online_status_{{ $agent['id'] }}" id="tram_agent_online_status_{{ $agent['id'] }}">
-                                                        {{ $checkAgentActive }}
-                                                    </span>
-                                                    <div class="optimizebtn{{ $agent['id'] }}">
-                                                        {!! $optimize !!}
-                                                    </div>
-                                                    <div class="exportbtn{{ $agent['id'] }}">
-                                                        {!! $turnbyturn !!}
-                                                    </div></h6>
-                                                <p class="mb-0">{{count($agent['order'])>0?__('Busy '):__('Free ')}}<span>{{$agent['agent_task_count']}} {{__('Tasks')}}</span> {!!$agent['total_distance']==''?'':' <i class="fas fa-route"></i>'!!}<span class="dist_sec totdis{{ $agent['id'] }}  ml-1">{{ $agent['total_distance'] }}</span></p>
-                                                </div>
+                                    <a class="profile-block collapsed pro-block" role="button"
+                                        data-toggle="collapse" href="#collapse{{ $agent['id'] }}"
+                                        aria-expanded="false"
+                                        aria-controls="collapse{{ $agent['id'] }}">
+                                        <div class="row">
+                                            <div class="col-md-2 col-2">
+                                                <img class="profile-circle"
+                                                    src="{{isset($agent['profile_picture']) ? $imgproxyurl.Storage::disk('s3')->url($agent['profile_picture']):'https://dummyimage.com/36x36/ccc/fff'}}">
                                             </div>
-                                        </a>
+                                            <div class="col-md-10 col-10">
+                                            @php
+                                                $checkAgentActive = ($agent['is_available'] == 1)? ' ('.__('Online').')' : ' ('.__('Offline').')';
+                                            @endphp
+
+                                            <h6 class="mb-0 header-title scnd">
+                                                {{ ucfirst($agent['name']) }}
+                                                <span class="tram_agent_online_status_{{ $agent['id'] }}" id="tram_agent_online_status_{{ $agent['id'] }}">
+                                                    {{ $checkAgentActive }}
+                                                </span>
+                                                <div class="optimizebtn{{ $agent['id'] }}">
+                                                    {!! $optimize !!}
+                                                </div>
+                                                <div class="exportbtn{{ $agent['id'] }}">
+                                                    {!! $turnbyturn !!}
+                                                </div>
+                                            </h6>
+                                            <p class="mb-0">{{count($agent['order'])>0?__('Busy '):__('Free ')}}<span>{{$agent['agent_task_count']}} {{__('Tasks')}}</span> {!!$agent['total_distance']==''?'':' <i class="fas fa-route"></i>'!!}<span class="dist_sec totdis{{ $agent['id'] }}  ml-1">{{ $agent['total_distance'] }}</span></p>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-12 p-0">
+                                            <span class="tram_agent_online_status_{{ $agent['id'] }} {{ $agent['is_available'] == 1 ? 'online' : 'offline' }}" id="tram_agent_online_status_{{ $agent['id'] }}">
+                                                {{ $checkAgentActive }}
+                                            </span>
+                                            </div>
+                                        </div>
+                                        
+                                    </a>
                                 </div>
                                 <div id="collapse{{ $agent['id'] }}" class="collapse"
                                     data-parent="#accordion-{{ $agent['id'] }}"
@@ -343,4 +348,3 @@ $agentslocations[] = $defaultmaplocation;
         
     </div>
 </div>
-

@@ -1,7 +1,9 @@
 @extends('layouts.vertical', ['title' => 'Configure'])
 
 @section('css')
+<style>
 
+</style>
 @endsection
 @php
 
@@ -645,15 +647,57 @@ $sms_crendential = json_decode($preference->sms_credentials);
                                     <h5 class="font-weight-normal m-0">{{ __('Manage ') }}{{ Session::get('agent_name') ? Session::get('agent_name') : 'Agent' }} {{ __('Schedule') }} </h5>
                                     <div class="custom-control custom-switch">
                                         <input type="checkbox" class="custom-control-input"
-                                            id="editDriverSlotCustomSwitch_{{ $preference->is_driver_slot }}"
+                                            id="editFleetCustomSwitch_{{ $preference->is_driver_slot }}"
                                             name="is_driver_slot"
                                             {{ $preference->is_driver_slot == 1 ? 'checked' : '' }}>
                                         <label class="custom-control-label"
-                                            for="editDriverSlotCustomSwitch_{{ $preference->is_driver_slot }}"></label>
+                                            for="editFleetCustomSwitch_{{ $preference->is_driver_slot }}"></label>
                                     </div>
                                 </div>
                             </div>
                         </div>
+
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="d-flex align-items-center justify-content-between mt-3 mb-2">
+                                    <h5 class="font-weight-normal m-0">{{ __('Fleet Managements ') }}</h5>
+                                    <div class="custom-control custom-switch">
+                                        <input type="checkbox" class="custom-control-input"
+                                            id="editDriverSlotCustomSwitch_{{ $preference->manage_fleet }}"
+                                            name="manage_fleet"
+                                            {{ $preference->manage_fleet == 1 ? 'checked' : '' }}>
+                                        <label class="custom-control-label"
+                                            for="editDriverSlotCustomSwitch_{{ $preference->manage_fleet }}"></label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="d-flex align-items-center justify-content-between mt-3 mb-2">
+                                    <h5 class="font-weight-normal m-0">{{ __('Show Cab Pooling Toggle ') }}</h5>
+                                    <div class="custom-control custom-switch">
+                                        <input type="checkbox" class="custom-control-input"
+                                            id="editCabPoolingSwitch"
+                                            name="is_cab_pooling_toggle"
+                                            {{ $preference->is_cab_pooling_toggle == 1 ? 'checked' : '' }}>
+                                        <label class="custom-control-label"
+                                            for="editCabPoolingSwitch"></label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>  
+                        <div class="row" id="radius_for_pooling_div" style="display:{{ $preference->is_cab_pooling_toggle == 1 ? '' : 'none' }}">
+                            <div class="col-9">
+                                <div class=" align-items-center justify-content-between mt-3 mb-2">
+                                    <h5 class="font-weight-normal m-0">{{ __('Radius To Show Pooling Suggessions (KM)') }}</h5>
+                                </div>
+                            </div>
+                            <div class="col-3 pt-2">
+                                <input class="form-control" type="number" id="radius_for_pooling_km" name="radius_for_pooling_km" value="{{ old('radius_for_pooling_km', $preference->radius_for_pooling_km ?? '0') }}" min="0">
+                            </div>
+                        </div>       
                     </form>
                 </div>
             </div>
@@ -766,6 +810,51 @@ $sms_crendential = json_decode($preference->sms_credentials);
         </div>
 
         <div class="row">
+            <div class="col-md-4 mb-3 dashboard-custom-temp">
+                <div class="card">
+                    <form method="POST" class="h-100" action="{{ route('preference', Auth::user()->code) }}">
+                        @csrf
+                        <input type="hidden" name="dashboard_mode" value="1">
+                        <div class="card-body al_custom_control p-2">
+                            <div class="d-flex align-items-center justify-content-between mb-3">
+                                <h4 class="header-title text-uppercase mb-0">{{__("Dashboard Home Page Style")}}</h4>
+                                <button class="btn btn-outline-info d-block" type="submit"> {{__('Save')}} </button>
+                            </div>
+                            {{-- @dd($dashboardMode) --}}
+                            <div class="row mt-3">
+                                <div class="col-xl-4 col-lg-6 col-md-6 mb-3 alThemeDemoSec">
+                                    <div class="card mb-0">
+                                        <div class="card-body p-0">
+                                            <div class="col-sm-12 custom-control custom-radio radio_new p-0">
+                                                <input type="radio"  value="0" id="show_dashboard_by_agent_wise_{{ !empty($dashboardMode)? $dashboardMode->show_dashboard_by_agent_wise : 0 }}" name="dashboard_mode[show_dashboard_by_agent_wise]" class="custom-control-input" {{ !empty($dashboardMode) &&$dashboardMode->show_dashboard_by_agent_wise == 0 ? 'checked' : '' }}>
+                                                <label class="custom-control-label" for="">
+                                                    <span class="card-img-top img-fluid" style="background-image: url({{ asset('/assets/images/Dashboard-Smiile-1.png') }})"></span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <span class="alTemplateName mt-3 w-100 text-center">Default</span>
+                                </div>
+                                <div class="col-xl-4 col-lg-6 col-md-6 mb-3 alThemeDemoSec">
+                                    <div class="card mb-0">
+                                        <div class="card-body p-0">
+                                            <div class="col-sm-12 custom-control custom-radio radio_new p-0">
+                                                <input type="radio"  value="1" id="show_dashboard_by_agent_wise_{{ !empty($dashboardMode)? $dashboardMode->show_dashboard_by_agent_wise : 0 }}" name="dashboard_mode[show_dashboard_by_agent_wise]" class="custom-control-input" {{ (!empty($dashboardMode) && $dashboardMode->show_dashboard_by_agent_wise == 1) ? 'checked' : '' }}>
+                                                <label class="custom-control-label" for="">
+                                                    <span class="card-img-top img-fluid" style="background-image: url({{ asset('/assets/images/Dashboard-Smiile-2.png') }})"></span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <span class="alTemplateName mt-3 w-100 text-center">Agent Dashboard</span>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+
             <div class="col-md-4 mb-3">
                 <div class="card-box h-100">
                     <form method="POST" class="h-100" action="{{ route('preference', Auth::user()->code) }}">
@@ -894,6 +983,81 @@ $sms_crendential = json_decode($preference->sms_credentials);
                 </form>
                 <!-- Custom Mods start -->
             </div>
+
+            <div class="col-md-4 mb-3">
+                <!-- Custom Mods start -->
+                <form method="POST" class="h-100" action="{{ route('preference', Auth::user()->code) }}">
+                    @csrf
+                    <input type="hidden" name="warehouse_mode" value="1">
+                    <div class="card-box h-100">
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                            <h4 class="header-title text-uppercase mb-0">{{__("Warehouse")}}</h4>
+                            <button class="btn btn-outline-info d-block" type="submit"> {{__('Save')}} </button>
+                        </div>
+
+                        <div class="row align-items-start">
+
+                            <div class="col-md-12">
+                                <div class="form-group d-flex justify-content-between mb-3">
+                                <label for="warehouse_check" class="mr-2 mb-0">{{__("Show warehouse module")}} <small class="d-block pr-5">{{__('It will show  warehouse module from panel.')}}</small></label>
+                                <div class="d-flex align-items-center justify-content-between mt-1 mb-2">
+                                    <div class="custom-control custom-switch">
+                                            <input type="checkbox" class="custom-control-input" id="show_warehouse_module_{{ !empty($warehoseMode->show_warehouse_module)? $warehoseMode->show_warehouse_module : 0 }}" name="warehouse_mode[show_warehouse_module]" {{ (!empty($warehoseMode->show_warehouse_module) && $warehoseMode->show_warehouse_module == 1) ? 'checked' : '' }}>
+                                            <label class="custom-control-label" for="show_warehouse_module_{{ !empty($warehoseMode->show_warehouse_module)? $warehoseMode->show_warehouse_module : 0 }}"></label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-12">
+                                <div class="form-group d-flex justify-content-between mb-3">
+                                <label for="category_check" class="mr-2 mb-0">{{__("Show category module")}} <small class="d-block pr-5">{{__('It will show  category module from panel.')}}</small></label>
+                                <div class="d-flex align-items-center justify-content-between mt-1 mb-2">
+                                    <div class="custom-control custom-switch">
+                                            <input type="checkbox" class="custom-control-input" id="show_category_module_{{ !empty($warehoseMode->show_category_module)? $warehoseMode->show_category_module : 0 }}" name="warehouse_mode[show_category_module]" {{ (!empty($warehoseMode->show_category_module) && $warehoseMode->show_category_module == 1) ? 'checked' : '' }}>
+                                            <label class="custom-control-label" for="show_category_module_{{ !empty($warehoseMode->show_category_module)? $warehoseMode->show_category_module : 0 }}"></label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        </div>
+                    </div>
+                </form>
+                <!-- Custom Mods start -->
+            </div>
+
+            {{-- <div class="col-md-4 mb-3">
+                <!-- Custom Mods start -->
+                <form method="POST" class="h-100" action="{{ route('preference', Auth::user()->code) }}">
+                    @csrf
+                    <input type="hidden" name="dashboard_mode" value="1">
+                    <div class="card-box h-100">
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                            <h4 class="header-title text-uppercase mb-0">{{__("Dashboard Settings")}}</h4>
+                            <button class="btn btn-outline-info d-block" type="submit"> {{__('Save')}} </button>
+                        </div>
+
+                        <div class="row align-items-start">
+
+                            <div class="col-md-12">
+                                <div class="form-group d-flex justify-content-between mb-3">
+                                <label for="dashboard_check" class="mr-2 mb-0">{{__("Show dashboard by agent wise")}} <small class="d-block pr-5">{{__('It will show  dashboard by agent wise.')}}</small></label>
+                                <div class="d-flex align-items-center justify-content-between mt-1 mb-2">
+                                    <div class="custom-control custom-switch">
+                                            <input type="checkbox" class="custom-control-input" id="show_dashboard_by_agent_wise_{{ !empty($dashboardMode->show_dashboard_by_agent_wise)? $dashboardMode->show_dashboard_by_agent_wise : 0 }}" name="dashboard_mode[show_dashboard_by_agent_wise]" {{ (!empty($dashboardMode->show_dashboard_by_agent_wise) && $dashboardMode->show_dashboard_by_agent_wise == 1) ? 'checked' : '' }}>
+                                            <label class="custom-control-label" for="show_dashboard_by_agent_wise_{{ !empty($dashboardMode->show_dashboard_by_agent_wise)? $dashboardMode->show_dashboard_by_agent_wise : 0 }}"></label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <!-- Custom Mods start -->
+            </div> --}}
+            
 
             <div class="col-md-4 mb-3">
                 <!-- Custom Mods start -->
@@ -1369,6 +1533,14 @@ $sms_crendential = json_decode($preference->sms_credentials);
                 $('.toll_fee').show();
             }else{
                 $('.toll_fee').hide();
+            }
+        });
+
+        $('#editCabPoolingSwitch').on('change',function(){
+            if ($(this).is(":checked")) {
+                $('#radius_for_pooling_div').show();
+            }else{
+                $('#radius_for_pooling_div').hide();
             }
         });
     </script>

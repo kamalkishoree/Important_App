@@ -7,8 +7,6 @@
 
 <link href="{{ asset('assets/libs/dropzone/dropzone.min.css') }}" rel="stylesheet" type="text/css" />
 <link href="{{ asset('assets/libs/dropify/dropify.min.css') }}" rel="stylesheet" />
-<link rel="stylesheet" href="{{ asset('telinput/css/intlTelInput.css') }}" type="text/css">
-<link rel="stylesheet" href="{{ asset('telinput/css/demo.css') }}" type="text/css">
 <style>
     .cursors {
         cursor: move;
@@ -262,6 +260,8 @@ h2#swal2-title {
     font-weight: 400;
 }
 </style>
+<link rel="stylesheet" href="{{ asset('telinput/css/intlTelInput.min.css') }}">
+
 @endsection
 @php
 $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain/';
@@ -279,7 +279,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
     </div>
     <div class="row">
         <div class="col-12">
-            <div class="card widget-inline">
+            <div class="card widget-inline main-card-header">
                 <div class="card-body">
                     <div class="row">
                         <div class="col-sm-6 col-md mb-3 mb-md-0">
@@ -339,8 +339,8 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
             <div class="card">
                 <div class="card-body">
                     <div class="alFilterLocation">
-                        <ul class="p-0 d-flex justify-content-end">
-                                <li>
+                        <ul class="p-0 d-flex justify-content-start">
+                                <li class="first_child">
                                     <div class="text-sm-left">
                                         @if (\Session::has('success'))
                                         <div class="alert alert-success">
@@ -365,6 +365,11 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                         @endforeach
                                     </select>
                                 </li>
+                                @if(getClientPreferenceDetail()->manage_fleet == 1)
+                                    <li>
+                                        <a href="{{url('fleet')}}" type="button" target="_blank" class="btn btn-success waves-effect waves-light" >{{__("Add New Fleets")}}</a>
+                                    </li>
+                                @endif
                                 <li class="d-flex">
                                     <button type="button" class="btn btn-blue waves-effect waves-light openModal mr-1" data-toggle="modal" data-target="" data-backdrop="static" data-keyboard="false"><i class="mdi mdi-plus-circle mr-1"></i> {{__("Add")}} {{ getAgentNomenclature() }}</button>
                                     <button type="button" class="btn btn-success waves-effect waves-light saveaccounting" data-toggle="modal" data-target="#pay-receive-modal" data-backdrop="static" data-keyboard="false">{{__("Pay")}} / {{__("Receive")}}</button>
@@ -405,6 +410,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                             <th class="sort-icon">{{__("Phone")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                             <th class="sort-icon">{{__("Type")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                             <th class="sort-icon">{{__("Team")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
+                                            <th class="sort-icon">{{__("Warehouse")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                             <th class="sort-icon">{{__("Cash Collected")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                             <th class="sort-icon">{{__("Order Earning")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                             <th class="sort-icon">{{__("Total Paid to ".getAgentNomenclature())}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
@@ -412,6 +418,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                             <th class="sort-icon">{{__("Final Balance")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                             <th class="sort-icon">{{__("Subscription Plan")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                             <th class="sort-icon">{{__("Subscription Expiry")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
+                                            <th class="sort-icon">{{__("Agent Rating")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                             <th class="sort-icon">{{__("Requested At")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                             <th class="sort-icon">{{__("Approved At")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                             <th>{{__("Action")}}</th>
@@ -437,6 +444,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                             <th class="sort-icon">{{__("Phone")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                             <th class="sort-icon">{{__("Type")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                             <th class="sort-icon">{{__("Team")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
+                                            <th class="sort-icon">{{__("Warehouse")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                             {{-- <th class="sort-icon">{{__("Vehicle")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th> --}}
                                             <th class="sort-icon">{{__("Cash Collected")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                             <th class="sort-icon">{{__("Order Earning")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
@@ -445,6 +453,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                             <th class="sort-icon">{{__("Final Balance")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                             <th class="sort-icon">{{__("Subscription Plan")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                             <th class="sort-icon">{{__("Subscription Expiry")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
+                                            <th class="sort-icon">{{__("Agent Rating")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                             <th class="sort-icon">{{__("Reuested At")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                             <th class="sort-icon">{{__("Approved At")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                             <th>{{__("Action")}}</th>
@@ -470,6 +479,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                             <th class="sort-icon">{{__("Phone")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                             <th class="sort-icon">{{__("Type")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                             <th class="sort-icon">{{__("Team")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
+                                            <th class="sort-icon">{{__("Warehouse")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                             {{-- <th class="sort-icon">{{__("Vehicle")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th> --}}
                                             <th class="sort-icon">{{__("Cash Collected")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                             <th class="sort-icon">{{__("Order Earning")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
@@ -478,6 +488,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                             <th class="sort-icon">{{__("Final Balance")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                             <th class="sort-icon">{{__("Subscription Plan")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                             <th class="sort-icon">{{__("Subscription Expiry")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
+                                            <th class="sort-icon">{{__("Agent Rating")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                             <th class="sort-icon">{{__("Requested At")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                             <th class="sort-icon">{{__("Rejected At")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                             <th>{{__("Action")}}</th>
