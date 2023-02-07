@@ -54,7 +54,7 @@
                                             <tr>
                                                 <td><a href="javascript:;" class="orderDetail" data-id="{{$order->id}}">#{{$order->order_number}}</a></td>
                                                 <td>{{$order->created_at}}</td>
-                                                <td>{{$order->agent->name}}</td>
+                                                <td>{{@$order->agent->name}}</td>
                                                 <td><a href="javascript:;" class="fleetDetail" data-id="{{$order->fleet->id}}">{{$order->fleet->registration_name}}</a></td>
                                                 <td>{{$order->actual_distance}}</td>
                                                 <td>{{$order->fleet->model}}</td>
