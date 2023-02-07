@@ -679,7 +679,8 @@ class AgentController extends Controller
             'phone_number' => $agent->phone_number.'_'.$agent->id."_D",  
             'device_token' =>'',  
             'device_type' =>'',  
-            'access_token' => ''
+            'access_token' => '',
+            'is_approved' => 2
             ]);
         $agent->delete();
         Otp::where('phone', $agent->phone_number)->where('is_verified', 1)->delete();
