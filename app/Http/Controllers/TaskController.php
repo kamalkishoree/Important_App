@@ -374,17 +374,10 @@ class TaskController extends BaseController
                     $routes = array();
                     foreach($orders->task as $task){
                         if($task->task_type_id == 1){
-<<<<<<< HEAD
-                            $taskType    = (!empty($getAdditionalPreference['pickup_type'])) ? $getAdditionalPreference['pickup_type'] : "Pickup";
-                            $pickupClass = "yellow_";
-                        }else if($task->task_type_id == 2){
-                            $taskType    = (!empty($getAdditionalPreference['drop_type'])) ? $getAdditionalPreference['drop_type'] : "Dropoff";
-=======
                             $taskType    = (($getAdditionalPreference['pickup_type'])?$getAdditionalPreference['pickup_type']: "Pickup");
                             $pickupClass = "yellow_";
                         }else if($task->task_type_id == 2){
                             $taskType    =  (($getAdditionalPreference['drop_type'])?$getAdditionalPreference['drop_type']: "Dropoff");
->>>>>>> development
                             $pickupClass = "green_";
                         }else{
                             $taskType    = "Appointment";
