@@ -274,7 +274,7 @@ class DriverRegistrationController extends BaseController
             if(isset($types->show_vehicle_type_icon))
             $show_vehicle_type_icon = explode(',',$types->show_vehicle_type_icon);
             $p = 0;
-            $documents = DriverRegistrationDocument::orderBy('file_type', 'DESC')->select('name','file_type')->get()->toArray();
+            $documents = DriverRegistrationDocument::orderBy('file_type', 'DESC')->select('name','file_type','id','is_required')->get()->toArray();
             if((isset($documents) && count($documents)>0) && $manage_fleet)
             {
              $p = sizeof($documents) - 1;
