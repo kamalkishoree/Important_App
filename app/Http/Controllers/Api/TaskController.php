@@ -63,7 +63,6 @@ class TaskController extends BaseController
     use sendCustomNotification;
     public function smstest(Request $request){
       $res = $this->sendSms2($request->phone_number, $request->sms_body);
-
     }
     public function updateTaskStatus(Request $request)
     {
@@ -245,6 +244,14 @@ class TaskController extends BaseController
             //if ($checkfailed == 1) {
                 $Order  = Order::where('id', $orderId->order_id)->update(['status' => $task_type ]);
                 $task = Task::where('order_id', $orderId->order_id)->update(['task_status' => $request->task_status,'note' => $note ]);
+                ////
+                if(checkColumnExists('orders','rejectable_order')){
+                    if($order_details && isset( $order_details->rejectable_order) && $  $order_details->rejectable_order ==1){
+                        if ($order_details &&  $order_details->call_back_url) {
+                            $call_web_hook = $this->updateStatusDataToOrder($order_details, 6,2);  # task rejected
+                        }
+                    }
+                }
             //}
         } else {
             $Order  = Order::where('id', $orderId->order_id)->update(['status' => $task_type, 'note' => $note]);
@@ -817,6 +824,7 @@ class TaskController extends BaseController
                     'freelancer_commission_fixed' => $freelancer_commission_fixed,
                     'freelancer_commission_percentage' => $freelancer_commission_percentage
                 ]);
+
                 Task::where('order_id', $batch->order_id)->update(['task_status' => 1]);
                 $orderdata = Order::select('id', 'order_time', 'status', 'driver_id')->with('agent')->where('id', $batch->order_id)->first();
                // event(new \App\Events\loadDashboardData($orderdata));
@@ -887,6 +895,23 @@ class TaskController extends BaseController
                     'freelancer_commission_fixed' => $freelancer_commission_fixed,
                     'freelancer_commission_percentage' => $freelancer_commission_percentage
                 ]);
+
+                if(checkColumnExists('orders','rejectable_order')){
+                 
+                    if(  $orderdata  && $orderdata->rejectable_order == 1){
+                       
+                        $data['schedule_time']= $orderdata->scheduled_date_time!=''? $orderdata->scheduled_date_time : Carbon::now()->toDateTimeString();
+                        $data['service_time'] = '60';
+                        $data['order_id'] = $orderdata->id;
+                        $data['order_number'] = $orderdata->order_number;
+                        $data['booking_type'] = 'new_booking';
+                        $data['memo']  = __("Booked for Order number:").$orderdata->order_number;
+                        $data['agent'] = $agent_id;
+        
+                        $bookingResponse =  $this->SlotBooking($data);
+        
+                    }
+                }
                 Task::where('order_id', $request->order_id)->update(['task_status' => 1]);
                 if ($check && $check->call_back_url) {
                     $call_web_hook = $this->updateStatusDataToOrder($check, 2,1);  # task accepted
@@ -906,14 +931,27 @@ class TaskController extends BaseController
 
 
         } else {
-            $data = [
-                'order_id'          => $request->order_id,
-                'driver_id'         => $request->driver_id,
-                'status'            => $request->status,
-                'created_at'        => Carbon::now()->toDateTimeString(),
-                'updated_at'        => Carbon::now()->toDateTimeString(),
-            ];
-            TaskReject::create($data);
+            if(checkColumnExists('orders','rejectable_order') && ( (isset($orderdata)  && $orderdata->rejectable_order == 1)) ){
+                $task_type         = 'failed';
+                $Order  = Order::where('id', $orderdata->order_id)->update(['status' => $task_type ]);
+                $task = Task::where('order_id', $orderdata->order_id)->update(['task_status' =>'5','note' => $note ]);
+               
+                if ($orderdata &&  $orderdata->call_back_url) {
+                    $call_web_hook = $this->updateStatusDataToOrder($orderdata, 6,2);  # task rejected
+                }
+             
+            }else{
+
+                $data = [
+                    'order_id'          => $request->order_id,
+                    'driver_id'         => $request->driver_id,
+                    'status'            => $request->status,
+                    'created_at'        => Carbon::now()->toDateTimeString(),
+                    'updated_at'        => Carbon::now()->toDateTimeString(),
+                ];
+                TaskReject::create($data);
+            }
+            
 
             return response()->json([
                 'data' => __('Task Rejected Successfully'),
@@ -1037,7 +1075,14 @@ class TaskController extends BaseController
          //   $notification_time = isset($request->schedule_time) ? $request->schedule_time : Carbon::now()->toDateTimeString();
 
             $agent_id          = $request->allocation_type === 'm' ? $request->agent : null;
-
+            $rejectable_order   = isset($request->rejectable_order)?$request->rejectable_order:0;
+            $refer_driver_id = null;
+            if($rejectable_order ==1 && checkColumnExists('orders', 'rejectable_order')){
+                $agent_id         = null;
+                $refer_driver_id  =$request->agent ??null;
+                $request->allocation_type = 'u';
+            }
+            \Log::info($request->allocation_type);
             $order = [
                 'order_number'                    => $request->order_number ?? null,
                 'customer_id'                     => $cus_id,
@@ -1065,9 +1110,13 @@ class TaskController extends BaseController
                 'sync_order_id'                   => $request->order_id,
                 'available_seats'                 => isset($request->available_seats)?$request->available_seats:0,
                 'no_seats_for_pooling'            => isset($request->no_seats_for_pooling)?$request->no_seats_for_pooling:0,
-                'is_cab_pooling'                  => isset($request->is_cab_pooling)?$request->is_cab_pooling:0,
+                'is_cab_pooling'                  => isset($request->is_cab_pooling)?$request->is_cab_pooling:0
             ];
 
+            if(checkColumnExists('orders', 'rejectable_order')){
+                $order['rejectable_order'] = isset($request->rejectable_order)?$request->rejectable_order:0;
+                $order['refer_driver_id']  = $refer_driver_id ;
+            }
             if(checkColumnExists('orders', 'is_one_push_booking')){
                 $order['is_one_push_booking'] = isset($request->is_one_push_booking)?$request->is_one_push_booking:0;
             }
@@ -1086,6 +1135,7 @@ class TaskController extends BaseController
             }else{
                 $orders              = Order::create($order);
             }
+            $agent_id =  $request->agent ?? null;
              /**
              * booking for appointment
              * task_type_id =3= appointment type
@@ -1101,6 +1151,7 @@ class TaskController extends BaseController
                 $bookingResponse =  $this->SlotBooking($data);
 
             }
+            
             if($request->is_restricted == 1){
                 $add_resource = CustomerVerificationResource::updateOrCreate([
                     'customer_id' => $cus_id
@@ -1264,7 +1315,7 @@ class TaskController extends BaseController
             ];
 
             Order::where('id', $orders->id)->update($updateorder);
-
+           
 
             if (isset($request->order_team_tag)) {
 
@@ -1316,7 +1367,7 @@ class TaskController extends BaseController
 
             $allocation = AllocationRule::where('id', 1)->first();
 
-            if ($request->task_type != 'now') {
+            if ($request->task_type != 'now') { 
                 // if(isset($header['client'][0]))
                 // $auth = Client::where('database_name', $header['client'][0])->with(['getAllocation', 'getPreference'])->first();
                 // else
@@ -1356,6 +1407,7 @@ class TaskController extends BaseController
                 $schduledata = [];
 
                 if ($diff_in_minutes > $beforetime) {
+                   
                     $finaldelay = (int)$diff_in_minutes - $beforetime;
                     $time = Carbon::parse($sendTime)
                     ->addMinutes($finaldelay)
@@ -1372,8 +1424,11 @@ class TaskController extends BaseController
                     $schduledata['cash_to_be_collected']         = $orders->cash_to_be_collected;
                     //Order::where('id',$orders->id)->update(['order_time'=>$time]);
                     //Task::where('order_id',$orders->id)->update(['assigned_time'=>$time,'created_at' =>$time]);
-                    Log::info('scheduleNotifi time');
-                    Log::info($finaldelay);
+                    // Log::info('scheduleNotifi time');
+                    // Log::info($schduledata);
+                    if($rejectable_order ==1){
+                        scheduleNotification::dispatch($schduledata)->delay(now());
+                    }
                     scheduleNotification::dispatch($schduledata)->delay(now()->addMinutes($finaldelay));
                     DB::commit();
 

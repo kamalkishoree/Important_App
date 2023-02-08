@@ -155,6 +155,9 @@ class TrackingController extends Controller
                     $avgrating = DB::connection($respnse['database'])->table('order_ratings')->whereIn('order_id',$total_orders)->sum('rating');
                     if($avgrating != 0)
                     $avgrating = $avgrating/$avgrating;
+
+                    $agent_ratings = DB::connection($respnse['database'])->table('order_ratings')->whereIn('order_id',$total_orders)->get();
+                   
                     
                     $driver_document = DB::connection($respnse['database'])->table('driver_registration_documents')
                                             ->join('agent_docs','driver_registration_documents.name','=', 'agent_docs.label_name')
@@ -175,6 +178,7 @@ class TrackingController extends Controller
                     'agent_location'  => $agent_location,
                     'total_order_by_agent'  => $total_order_by_agent,
                     'avgrating'  => $avgrating,
+                    'agent_ratings'  => $agent_ratings,
                     'base_url' => $base_url,
                     'agent_dbname'  => $db_name
                 ], 200);

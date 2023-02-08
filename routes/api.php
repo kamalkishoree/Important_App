@@ -114,6 +114,8 @@ Route::group(['middleware' => ['dbCheck', 'AppAuth','apiLocalization']], functio
     Route::post('updateTaskStatus', 'Api\TaskController@updateTaskStatus');    // api for chnage task status like start,cpmplate, faild
     Route::post('checkOTPRequried', 'Api\TaskController@checkOTPRequried');    // api for chnage task status like start,cpmplate, faild
     Route::post('task/accecpt/reject', 'Api\TaskController@TaskUpdateReject'); // api for accecpt task reject task
+    Route::get('refer_task', 'Api\ActivityController@getReferOrder');                    // api for task list
+
 
     Route::get('get/profile','Api\ActivityController@profile');                // api for get agent profile
     Route::post('update/profile','Api\ActivityController@updateProfile');       // api for updateprofile

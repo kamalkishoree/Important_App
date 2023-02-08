@@ -426,11 +426,16 @@ class ActivityController extends BaseController
         }else{
             $orders = Order::where('driver_id', $id)->pluck('id')->toArray();
         }
+        $hisoryStatus = [4,5];
+
+        if($request->has('task_status') && $request->task_status !=''){
+            $hisoryStatus[] = $request->task_status;
+        }
         if (isset($orders)) {
             $tasks = Task::with(['location','tasktype','order.customer','order.task.location'])
             ->whereIn('order_id', $orders)
-            ->where(function($q){
-                $q->whereIn('task_status', [4,5])
+            ->where(function($q) use ($hisoryStatus){
+                $q->whereIn('task_status', $hisoryStatus)
                 ->orWhereHas('order', function($q1){
                     $q1->where('status', 'cancelled');
                 });
@@ -602,4 +607,42 @@ class ActivityController extends BaseController
             ]);
         }
     }
+
+    public function getReferOrder(Request $request)
+    {
+ 
+
+        $id     = Auth::user()->id;
+
+    
+        $tasks   = [];
+
+      
+            $orders = Order::where('refer_driver_id', $id)->where('status', 'assigned')->orderBy("order_time","ASC")->orderBy("id","ASC")->pluck('id')->toArray();
+        
+
+
+        if (count($orders) > 0) {
+            $tasks = Task::whereIn('order_id', $orders)->where('task_status', '!=', 4)->Where('task_status', '!=', 5)
+            ->with(['location','tasktype','order.customer','order.customer.resources','order.task.location'])->orderBy("order_id", "DESC")
+            ->orderBy("id","ASC")
+            ->get();
+            if (count($tasks) > 0) {
+                //sort according to task_order
+                $tasks = $tasks->toArray();
+                if ($tasks[0]['task_order'] !=0) {
+                    usort($tasks, function ($a, $b) {
+                        return $a['task_order'] <=> $b['task_order'];
+                    });
+                }
+            }
+        }
+
+        return response()->json([
+            'data' => $tasks,
+            'status' => 200,
+            'message' => __('success')
+        ], 200);
+    }
+
 }
