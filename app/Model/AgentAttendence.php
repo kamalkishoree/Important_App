@@ -28,7 +28,6 @@ class AgentAttendence extends Model
 
     public function getTotalAttribute()
     {
-        $totalminutes = 0;
         $startTime = Carbon::parse($this->start_time);
         $endTime = Carbon::parse($this->end_time);
         $duration = $endTime->diffInMinutes($startTime);
