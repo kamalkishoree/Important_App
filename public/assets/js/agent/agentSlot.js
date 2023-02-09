@@ -2,6 +2,7 @@ $(function () {
 
     dispatcherStorage.removeStorageAll();
     dispatcherStorage.setStorageSingle('eventType', 'working_hours');
+    		 $("#duration").css('display',"none");
     var product_id = vendor_id = title = block = appoin = agent_id = calendar = Is_gerenal='';
     var CSRF_TOKEN = $("input[name=_token]").val();
     var calendarEl = document.getElementById('calendar');
@@ -114,6 +115,7 @@ $(function () {
     })
 
     $(document).on('click', '.get_event', function () {
+		 $("#duration").css('display',"none");
         var event = $(this).attr('data-eventType');
         dispatcherStorage.setStorageSingle('eventType', event);
         spinnerJS.showSpinner();

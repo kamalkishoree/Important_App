@@ -290,7 +290,9 @@ eventContent: function(arg) {
                             var days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
                             var slotDayList = [];
                             var events = [];
-                            $.each(response, function (index, data) {
+                            $("#duration").css("display","block");
+                            $("#duration").html("Total Hours: "+response.duration);
+                            $.each(response.data, function (index, data) {
                                 var slotDay = parseInt(moment(data.start).format('d')) + 1;
                                 var slotStartTime = moment(data.start).format('h:mm A');
                                  var slotEndTime = moment(data.end).format('h:mm A');

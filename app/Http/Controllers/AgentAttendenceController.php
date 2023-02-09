@@ -70,6 +70,8 @@ class AgentAttendenceController extends Controller
 
         $showData = array();
         $count = 0;
+        $total = '00:00';
+        $totalDuration = '0';
         if ($AgentAttendences) {
             foreach ($AgentAttendences as $k => $v) {
                 $a_date = date('Y-m-d', strtotime($v->start_date));
@@ -85,6 +87,7 @@ class AgentAttendenceController extends Controller
                     $title .= "<br/>Out Time: N/A";
                     $title .= "<br/>Duration: N/A";
                 }
+                $totalDuration = $v->getDuration($total);
                 $showData[$count]['title'] = $title;
                 $showData[$count]['start'] = $a_date . 'T' . $v->start_time;
                 $showData[$count]['end'] = $a_date . 'T' . $v->end_time;
@@ -103,10 +106,13 @@ class AgentAttendenceController extends Controller
                 $showData[$count]['agent_id'] = $v->agent_id;
                 $showData[$count]['days'] = $days;
                 $showData[$count]['order_url'] = '#';
+                $total = $v->total;
                 $count ++;
             }
         }
-        echo $json = json_encode($showData);
+        $data['data'] = $showData;
+        $data['duration'] = $totalDuration;
+        echo $json = json_encode($data);
     }
 
     /**

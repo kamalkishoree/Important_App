@@ -33,4 +33,25 @@ class AgentAttendence extends Model
         $duration = $endTime->diffInMinutes($startTime);
         return date('H:i', mktime(0, $duration));
     }
+
+    public function getDuration($hours)
+    {
+        $sum_minutes = 0;
+        $array = [
+            $this->total,
+            $hours
+        ];
+        foreach ($array as $time) {
+            $explodedTime = array_map('intval', explode(':', $time));
+            $sum_minutes += $explodedTime[0] * 60 + $explodedTime[1];
+        }
+        $sumTime = floor($sum_minutes / 60) . ':' . floor($sum_minutes % 60);
+        if (strpos($sumTime, ':') !== false) {
+            $decimals = explode(':', $sumTime)[1];
+            if (strlen($decimals) == 1) {
+                $sumTime .= '0';
+            }
+        }
+        return $sumTime;
+    }
 }
