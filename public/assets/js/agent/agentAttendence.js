@@ -294,9 +294,10 @@ eventContent: function(arg) {
                             $.each(response, function (index, data) {
                                 var slotDay = parseInt(moment(data.start).format('d')) + 1;
                                 var slotStartTime = moment(data.start).format('h:mm A');
-                                var slotEndTime = moment(data.end).format('h:mm A');
-
-
+                                 var slotEndTime = moment(data.end).format('h:mm A');
+                                if(data.end_time == ''){
+									 var slotEndTime = 'N/A';
+								}
                                 $.each(days, function (key, value) {
                                     if (slotDay == key + 1) {
                                         if (slotDayList.includes(slotDay)) {
@@ -308,7 +309,6 @@ eventContent: function(arg) {
                                     }
                                 });
                                 slotDayList.push(slotDay);
-
                                 events.push({
                                     title: data.title,
                                     start: data.start,

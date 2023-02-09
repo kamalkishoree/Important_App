@@ -76,12 +76,12 @@ class AgentAttendenceController extends Controller
                 $a_date = date('Y-m-d', strtotime($v->start_date));
                 $title = '';
                 if (! empty($v->start_date) && ! empty($v->end_date)) {
-                    $title .= '<span class="badge badge-pill badge-success pill-state">Present</span>';
+                    $title .= '<span class="badge badge-pill badge-primary pill-state">Present</span>';
                     $title .= "<br/>In Time: " . date('h:i A', strtotime($v->start_time));
                     $title .= "<br/>Out Time: " . date('h:i A', strtotime($v->end_time));
                     $title .= "<br/>Duration: " . $v->total;
                 } else {
-                    $title .= '<span class="badge badge-pill badge-danger pill-state">Absent</span>';
+                    $title .= '<span class="badge badge-pill badge-success pill-state">Online</span>';
                     $title .= "<br/>In Time: " . date('h:i A', strtotime($v->start_time));
                     $title .= "<br/>Out Time: N/A";
                     $title .= "<br/>Duration: N/A";
@@ -91,7 +91,7 @@ class AgentAttendenceController extends Controller
                 $showData[$count]['start'] = $a_date . 'T' . $v->start_time;
                 $showData[$count]['end'] = $a_date . 'T' . $v->end_time;
                 $showData[$count]['start_time'] = $v->start_time;
-                $showData[$count]['end_time'] = $v->end_time;
+                $showData[$count]['end_time'] = $v->end_time ?? '';
                 $showData[$count]['color'] = 'blue';
                 $showData[$count]['type'] = 'date';
                 $showData[$count]['roster_id'] = $v->id;

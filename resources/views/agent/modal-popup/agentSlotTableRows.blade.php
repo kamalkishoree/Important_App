@@ -42,10 +42,10 @@ getAdditionalPreference(['pickup_type',
                 </li>
                  @endif
             </ul>
-            {{-- <div class="tab-content" id="myTabContent">
-                <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">1 11111...</div>
+          <div class="tab-content" id="myTabContent">
+                <div class="tab-pane fade" id="home" role="tabpanel" aria-labelledby="home-tab">1 11111...</div>
                 <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">2 22222...</div>
-            </div> --}}
+            </div>
         </div>
 
         <div class="col-md-12">
