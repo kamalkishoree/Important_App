@@ -329,6 +329,7 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 
 			// agent slot
 			Route::get('calender/data/{id}', 'AgentSlotController@returnJson')->name('agent.calender.data');
+			Route::get('attendence-calender/data/{id}', 'AgentAttendenceController@returnJson')->name('agent.attendence.calender.data');
 			Route::post('agent/add_slot', 'AgentSlotController@store')->name('agent.saveSlot');
 			Route::post('general/add_slot', 'GeneralSlotController@store')->name('services.saveSlot');
 			Route::post('agent/update_slot', 'AgentSlotController@update')->name('agent.slot.update');

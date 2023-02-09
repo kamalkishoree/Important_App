@@ -2,9 +2,14 @@
 namespace App\Model;
 
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 
 class AgentAttendence extends Model
 {
+
+    public $appends = [
+        'total'
+    ];
 
     protected $table = 'agent_attendence';
 
@@ -19,5 +24,14 @@ class AgentAttendence extends Model
     public function agent()
     {
         return $this->hasOne('App\Model\Agent', 'id', 'agent_id');
+    }
+
+    public function getTotalAttribute()
+    {
+        $totalminutes = 0;
+        $startTime = Carbon::parse($this->start_time);
+        $endTime = Carbon::parse($this->end_time);
+        $duration = $endTime->diffInMinutes($startTime);
+        return date('H:i', mktime(0, $duration));
     }
 }
