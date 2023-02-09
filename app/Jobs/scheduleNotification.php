@@ -177,6 +177,8 @@ class scheduleNotification implements ShouldQueue
                 'detail_id'           => $randem,
                 'cash_to_be_collected'=> $dataget['cash_to_be_collected']??''
             ];
+            Log::info('scheduleNotification fire');
+            Log::info($data);
             DB::disconnect('db_'.$dataget['database']['code']);
             RosterCreate::dispatch($data, $extraData);
 

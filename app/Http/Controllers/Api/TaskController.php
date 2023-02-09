@@ -474,7 +474,8 @@ class TaskController extends BaseController
         $order_details  = Order::where('id', $orderId->order_id)->with(['agent','customer'])->first();
         $otpCreate      = '';//substr(str_shuffle("0123456789abcdefghijklmnopqrstvwxyz"), 0, 5);
         $taskProof      = TaskProof::all();
-        if(!empty($orderId->tasktype->name) && $orderId->tasktype->name == 'Pickup' && $taskProof[0]->otp == 1){
+       
+        if(!empty($orderId->tasktype->name) && $orderId->tasktype->name == 'Pickup' &&  $taskProof[0]->otp == 1){
             $otpCreate = rand ( 10000 , 99999 );
             Order::where('id', $orderId->order_id)->update(['completion_otp' => $otpCreate]);
             $otpEnabled = 1;
@@ -933,8 +934,9 @@ class TaskController extends BaseController
         } else {
             if(checkColumnExists('orders','rejectable_order') && ( (isset($orderdata)  && $orderdata->rejectable_order == 1)) ){
                 $task_type         = 'failed';
-                $Order  = Order::where('id', $orderdata->order_id)->update(['status' => $task_type ]);
-                $task = Task::where('order_id', $orderdata->order_id)->update(['task_status' =>'5','note' => $note ]);
+               
+                $Order  = Order::where('id', $orderdata->id)->update(['status' => $task_type,'driver_id'=>$agent_id ]);
+                $task  = Task::where('order_id', $orderdata->id)->update(['task_status' =>'5','note' => '' ]);
                
                 if ($orderdata &&  $orderdata->call_back_url) {
                     $call_web_hook = $this->updateStatusDataToOrder($orderdata, 6,2);  # task rejected
@@ -1427,8 +1429,11 @@ class TaskController extends BaseController
                     // Log::info('scheduleNotifi time');
                     // Log::info($schduledata);
                     if($rejectable_order ==1){
+                      //  Log::info('scheduleNotifi fire');
+                      $schduledata['notification_time'] = Carbon::now()->format('Y-m-d H:i:s');
                         scheduleNotification::dispatch($schduledata)->delay(now());
                     }
+                    $schduledata['notification_time'] = $notification_time;
                     scheduleNotification::dispatch($schduledata)->delay(now()->addMinutes($finaldelay));
                     DB::commit();
 

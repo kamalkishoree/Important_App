@@ -429,7 +429,7 @@ class ActivityController extends BaseController
         $hisoryStatus = [4,5];
 
         if($request->has('task_status') && $request->task_status !=''){
-            $hisoryStatus[] = $request->task_status;
+            $hisoryStatus = [$request->task_status];
         }
         if (isset($orders)) {
             $tasks = Task::with(['location','tasktype','order.customer','order.task.location'])
@@ -610,15 +610,11 @@ class ActivityController extends BaseController
 
     public function getReferOrder(Request $request)
     {
- 
-
         $id     = Auth::user()->id;
-
-    
+ 
         $tasks   = [];
-
       
-            $orders = Order::where('refer_driver_id', $id)->where('status', 'assigned')->orderBy("order_time","ASC")->orderBy("id","ASC")->pluck('id')->toArray();
+        $orders = Order::where('refer_driver_id', $id)->whereNull('driver_id')->where('status', 'unassigned')->orderBy("order_time","ASC")->orderBy("id","ASC")->pluck('id')->toArray();
         
 
 
