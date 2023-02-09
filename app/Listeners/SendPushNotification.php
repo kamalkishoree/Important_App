@@ -161,9 +161,8 @@ class SendPushNotification
                                             'show_in_foreground' => true,
                                         ])
                                         ->send();
-
-                                           // Log::info('Fcm Response in');
-                                            //Log::info($fcm_store);
+                                        Log::info('Fcm Response in');
+                                        Log::info($fcm_store);
                     }
                     catch(Exception $e){
                         Log::info($e->getMessage());
@@ -196,10 +195,13 @@ class SendPushNotification
                                 ->orWhere('notification_befor_time', '<=', $date);
                         })
                     ->get();
+                    Log::info('extraTime check');      
+                    Log::info($check);
          Log::info(DB::connection($schemaName)->table('rosters')
          ->get()->pluck('id'));
         if(count($check) > 0){
             sleep(15);
+            Log::info('extraTime getData');
             $this->getData();
         }else{
             return;

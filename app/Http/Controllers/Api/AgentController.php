@@ -214,7 +214,7 @@ class AgentController extends BaseController
         $orderStatus = 'assigned';
         $client_code->timezone = $tz->timezone_name($client_code->timezone);
         $selectedDatesArray   = $request->has('selectedDatesArray') ? $request->selectedDatesArray : [];
-        \Log::info($selectedDatesArray);
+     
       
         $id     = Auth::user()->id;
 
@@ -246,9 +246,11 @@ class AgentController extends BaseController
         }
         $request->merge(['agent_id'=> $id]);
         $AgentSlotRoster = $this->getAgentSlotByType($request);
+        $AgentBlockRoster = $this->getAgentSlotBlocked($request);
         $response =  [
                         'tasks' => $tasks,
-                        'agent_slots'=> $AgentSlotRoster
+                        'agent_slots'=> $AgentSlotRoster,
+                        'agent_blocked_dates'=> $AgentBlockRoster
                     ];
         return response()->json([
             'data' => $response,
