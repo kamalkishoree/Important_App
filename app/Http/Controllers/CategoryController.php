@@ -152,7 +152,7 @@ class CategoryController extends Controller
             // if( @$checkAuth['status'] == 200){
                 $apiRequestURL = $url.'/api/v1/category-product-sync-dispatcher';
               
-                \Log::info($apiRequestURL);
+                \Log::info('category-product-sync-dispatcher');
                 // POST Data
                 $Dispatcher_url = $_SERVER['HTTP_ORIGIN']; // $_SERVER['REQUEST_SCHEME'].'://'.$_SERVER['HTTP_HOST'];
                 \Log::info($Dispatcher_url);
@@ -168,7 +168,7 @@ class CategoryController extends Controller
                 // $headers['Authorization'] = $checkAuth['token'];
                 $response = Http::withHeaders($headers)->post($apiRequestURL, $postInput);
                 $responseBody = json_decode($response->getBody(), true);
-              
+                \Log::info($responseBody);
                 if( @$responseBody['status'] == 200){
                     $order_details = OrderPanelDetail::find($order_panel_id);
                     $order_details->sync_status = 1;
