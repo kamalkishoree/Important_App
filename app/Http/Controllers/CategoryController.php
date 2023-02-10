@@ -166,7 +166,7 @@ class CategoryController extends Controller
                 ];
                 
                 // $headers['Authorization'] = $checkAuth['token'];
-                $response = Http::withHeaders($headers)->post($apiRequestURL, $postInput);
+                $response = Http::withHeaders($headers)->get($apiRequestURL, $postInput);
                 $responseBody = json_decode($response->getBody(), true);
                 \Log::info($responseBody);
                 if( @$responseBody['status'] == 200){
