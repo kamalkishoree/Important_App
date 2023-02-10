@@ -93,7 +93,7 @@ class SyncCategoryProductController extends Controller
             ];
             $productSave = Product::updateOrCreate(['sku' => $dataBaseName."_".$product['sku'], 'order_panel_id' => $this->order_panel_id],$product_update_create);
 
-            foreach($product['translation'] as $translation){
+            foreach(@$product['translation'] as $translation){
 
                 $product_trans = [
                     'title'         => $translation['title'],
@@ -121,7 +121,7 @@ class SyncCategoryProductController extends Controller
 
     public function syncProductVariant($product_id, $product ,  $dataBaseName){
         if(checkTableExists('product_variants')){ 
-            $variants = $product['variant'];
+            $variants = @$product['variant'];
             // # Add product variant
             foreach($variants as $variant) {     # import product variant
                 $product_variant = [

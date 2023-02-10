@@ -128,29 +128,30 @@ class CategoryController extends Controller
             $order_details->save();
             $order_details = OrderPanelDetail::find($order_panel_id);
             $url = $order_details->url;
-
-            // URL
-            $apiAuthCheckURL = $url.'/api/v1/dispatcher/check-order-keys';
             
-            // POST Data
-            $postInput = [
+            // URL
+            // $apiAuthCheckURL = $url.'/api/v1/dispatcher/check-order-keys';
+            
+            // // POST Data
+            // $postInput = [
                 
-            ];
+            // ];
     
-            // Headers
+            // // Headers
             $headers = [
                 'shortcode' => $order_details->code,
                 'code' => $order_details->code,
                 'key' => $order_details->key
             ];
-            
-            $response = Http::withHeaders($headers)->post($apiAuthCheckURL, $postInput);
+          
+            // $response = Http::withHeaders($headers)->post($apiAuthCheckURL, $postInput);
              
-            // $statusCode = $response->status();
-            $checkAuth = json_decode($response->getBody(), true);
+            // // $statusCode = $response->status();
+            // $checkAuth = json_decode($response->getBody(), true);
             
-            if( @$checkAuth['status'] == 200){
+            // if( @$checkAuth['status'] == 200){
                 $apiRequestURL = $url.'/api/v1/category-product-sync-dispatcher';
+              
                 \Log::info($apiRequestURL);
                 // POST Data
                 $Dispatcher_url = $_SERVER['HTTP_ORIGIN']; // $_SERVER['REQUEST_SCHEME'].'://'.$_SERVER['HTTP_HOST'];
@@ -163,10 +164,11 @@ class CategoryController extends Controller
                 'dispatcher_url' => $Dispatcher_url,
                 'dispatcher_code'=> $clients->code
                 ];
-          
+                
                 // $headers['Authorization'] = $checkAuth['token'];
                 $response = Http::withHeaders($headers)->post($apiRequestURL, $postInput);
                 $responseBody = json_decode($response->getBody(), true);
+              
                 if( @$responseBody['status'] == 200){
                     $order_details = OrderPanelDetail::find($order_panel_id);
                     $order_details->sync_status = 1;
@@ -176,11 +178,11 @@ class CategoryController extends Controller
                 }elseif( @$responseBody['error'] && !empty($responseBody['error'])){
                     return redirect()->back()->with('error', $responseBody['error']);
                 }
-             } elseif( @$checkAuth['status'] == 401){
-                return redirect()->back()->with('error', $checkAuth['message']);
-            }else{
-                return redirect()->back()->with('error', 'Invalid Order Panel Url.');  
-            }
+            //  } elseif( @$checkAuth['status'] == 401){
+            //     return redirect()->back()->with('error', $checkAuth['message']);
+            // }else{
+            //     return redirect()->back()->with('error', 'Invalid Order Panel Url.');  
+            // }
             return redirect()->back()->with('success', 'Category & Product Import Is Processing.');
         }else{
             return redirect()->back()->with('error', 'Please select order panel DB.');
