@@ -13,8 +13,7 @@ use Carbon\Carbon;
 use App\Http\Controllers\Api\BaseController;
 use Illuminate\Support\Facades\Log;
 use App\Http\Requests\UserLogin;
-use App\Traits\ApiResponser;
-use App\Traits\smsManager;
+use App\Traits\{ApiResponser,GlobalFunction,smsManager};
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
@@ -27,8 +26,8 @@ use App\Model\{User, Agent, AgentDocs, AgentFleet, AllocationRule, AgentSmsTempl
 
 class AuthController extends BaseController
 {
-    use ApiResponser;
-    use smsManager;
+    use ApiResponser,smsManager;
+    use GlobalFunction;
 
 
     /**
@@ -220,7 +219,7 @@ class AuthController extends BaseController
         $agent['task_proof']       = $taskProof;
         //$data['token_type'] = 'Bearer';
         $agent['access_token'] = $token;
-        $agent['avaregeTaskComplete'] =  $this->getDriverTaskDonePercentage(Auth::user()->id);
+        $agent['avaregeTaskComplete'] =  $this->getDriverTaskDonePercentage($agent->id);
 
 
         $schemaName = 'royodelivery_db';
