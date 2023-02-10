@@ -26,7 +26,8 @@ use App\Model\{User, Agent, AgentDocs, AgentFleet, AllocationRule, AgentSmsTempl
 
 class AuthController extends BaseController
 {
-    use ApiResponser,smsManager;
+    use ApiResponser;
+    use smsManager;
     use GlobalFunction;
 
 
