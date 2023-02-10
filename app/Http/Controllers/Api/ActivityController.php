@@ -234,7 +234,6 @@ class ActivityController extends BaseController
         $utc_end   = Carbon::parse($end . $client_code->timezone ?? 'UTC')->tz('UTC');
 
         $tasks   = [];
-        $avaregeTaskComplete   = $this->getDriverTaskDonePercentage( Auth::user()->id);
         $data =  [
             'agent_id'          => Auth::user()->id,
             'lat'               => $request->lat,
@@ -245,8 +244,8 @@ class ActivityController extends BaseController
             'current_speed'     => $request->current_speed,
             'on_route'          => $request->on_route,
             'device_type'       => ucwords($request->device_type),
-            'heading_angle'     => $request->heading_angle ?? 0,
-            'avaregeTaskComplete' => $avaregeTaskComplete,
+            'heading_angle'     => $request->heading_angle ?? 0
+           
         ];
 
         $is_cab_pooling_toggle = isset($preferences->is_cab_pooling_toggle)?$preferences->is_cab_pooling_toggle:0;
@@ -374,12 +373,12 @@ class ActivityController extends BaseController
         }
 
         $allcation = AllocationRule::first('request_expiry');
-
+        $averageTaskComplete   = $this->getDriverTaskDonePercentage( $agents->id);
         $preferences['alert_dismiss_time'] = (int)$allcation->request_expiry;
         $agents['client_preference']  = $preferences;
         $agents['task_proof']         = $taskProof;
+        $agents['averageTaskComplete']         = $averageTaskComplete;
         $datas['user']                = $agents;
-        $datas['tasks']               = $tasks;
         $datas['tasks']               = $tasks;
 
         return response()->json([

@@ -220,7 +220,7 @@ class AuthController extends BaseController
         $agent['task_proof']       = $taskProof;
         //$data['token_type'] = 'Bearer';
         $agent['access_token'] = $token;
-        $agent['avaregeTaskComplete'] =  $this->getDriverTaskDonePercentage($agent->id);
+        $agent['averageTaskComplete'] =  $this->getDriverTaskDonePercentage($agent->id);
 
 
         $schemaName = 'royodelivery_db';
