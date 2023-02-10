@@ -3,7 +3,7 @@ namespace App\Traits;
 use DB;
 use Illuminate\Support\Collection;
 use Log;
-use App\Model\{ChatSocket, Client, Agent, ClientPreference, DriverGeo,Order};
+use App\Model\{ChatSocket, Client, Agent, ClientPreference, DriverGeo,Order,Task};
 use Illuminate\Support\Facades\Config;
 
 
@@ -92,6 +92,26 @@ trait GlobalFunction{
             return [];
         }
 
+    }
+    public function getDriverTaskDonePercentage($agent_id)
+    {
+        $orders = Order::where('driver_id', $agent_id)->pluck('id')->toArray();
+        $CompletedTasks = Task::whereIn('order_id', $orders)
+                                ->where(function($q) {
+                                    $q->where('task_status',4 );
+                                })->count();
+        $totalTask = Task::whereIn('order_id', $orders)
+                                ->where(function($q) {
+                                    $q->whereIn('task_status',[5,4] ) 
+                                    ->orWhereHas('order', function($q1){
+                                        $q1->where('status', 'cancelled');
+                                    });
+                                })->count();
+        $average =0;
+        if( $CompletedTasks > 0){
+            $average  = (  $CompletedTasks * 100) /$totalTask;        
+        }                 
+        return  number_format($average,2);
     }
 
 }

@@ -14,10 +14,12 @@ use App\Model\Roster;
 use Config;
 use Illuminate\Support\Facades\URL;
 use GuzzleHttp\Client as GClient;
+use App\Traits\{GlobalFunction};
 
 class ActivityController extends BaseController
 {
 
+    use GlobalFunction;
     /**
      * Store/Update Client Preferences
      */
@@ -232,7 +234,7 @@ class ActivityController extends BaseController
         $utc_end   = Carbon::parse($end . $client_code->timezone ?? 'UTC')->tz('UTC');
 
         $tasks   = [];
-
+        $avaregeTaskComplete   = $this->getDriverTaskDonePercentage( Auth::user()->id);
         $data =  [
             'agent_id'          => Auth::user()->id,
             'lat'               => $request->lat,
@@ -244,6 +246,7 @@ class ActivityController extends BaseController
             'on_route'          => $request->on_route,
             'device_type'       => ucwords($request->device_type),
             'heading_angle'     => $request->heading_angle ?? 0,
+            'avaregeTaskComplete' => $avaregeTaskComplete,
         ];
 
         $is_cab_pooling_toggle = isset($preferences->is_cab_pooling_toggle)?$preferences->is_cab_pooling_toggle:0;
@@ -376,6 +379,7 @@ class ActivityController extends BaseController
         $agents['client_preference']  = $preferences;
         $agents['task_proof']         = $taskProof;
         $datas['user']                = $agents;
+        $datas['tasks']               = $tasks;
         $datas['tasks']               = $tasks;
 
         return response()->json([

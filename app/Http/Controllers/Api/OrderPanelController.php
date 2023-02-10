@@ -12,9 +12,12 @@ use App\Model\{Geo,AgentProductPrices,Agent,DriverGeo};
 use Illuminate\Http\Request;
 use App\Http\Controllers\Api\BaseController;
 use App\Http\Controllers\Api\AgentController;
+use App\Traits\{GlobalFunction};
 
 class OrderPanelController extends BaseController
 {
+    use GlobalFunction;
+
     public function getProductPrice(Request $request){
         $validator = Validator::make(request()->all(), [
             'product_variant_sku'  => 'required',
@@ -49,6 +52,7 @@ class OrderPanelController extends BaseController
         $agents=[];
         $commonSlot=[];
         foreach( $agent as $productPrice){
+            $productPrice->avaregeTaskComplete =  $this->getDriverTaskDonePercentage($productPrice->id);
           //  unset($productPrice->complete_order);
             if($productPrice->agent){
                 $productPrice->agent->image_url =  isset($productPrice->agent->profile_picture) ? $imgproxyurl.Storage::disk('s3')->url($productPrice->agent->profile_picture) : Phumbor::url(URL::to('/asset/images/no-image.png'));

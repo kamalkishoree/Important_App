@@ -24,9 +24,9 @@ trait CategoryTrait{
                                         }
                                     }]);
             }else{
-                $category->with(['products.variant.agentPrice']  );
+                $category->with(['products.variant.agentPrice']);
             }
-            $category =  $category->where('type_id',$type_id)->get();
+            $category =  $category->whereHas('products.variant')->where('type_id',$type_id)->get();
             return $category ;
         }catch (Exception $e) {
             \Log::info('getFreeLincerFromDispatcher error');
@@ -45,7 +45,7 @@ trait CategoryTrait{
                     $checkVariant  =   ProductVariant::where(['product_id'=>$product->product_id,'id'=>$product->variant_id])->first();
                     if(  $checkVariant){
                         $AgentProductPrices = AgentProductPrices::updateOrCreate(
-                            ['product_id'=>$product->product_id,'agent_id'=>$request->agent_id,'product_variant_id'=>$product->variant_id,'product_variant_sku'=>$checkVariant->sku ],
+                            ['product_id'=>$product->product_id,'agent_id'=>$request->agent_id,'product_variant_id'=>$product->variant_id],
                             ['product_id'=>$product->product_id,'agent_id'=>$request->agent_id,'product_variant_id'=>$product->variant_id,'price'=>$product->price,'product_variant_sku'=>$checkVariant->sku ],
                         
                         );
