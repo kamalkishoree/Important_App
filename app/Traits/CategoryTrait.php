@@ -16,13 +16,14 @@ trait CategoryTrait{
             'products.translation','products.variant']);
         
             if( ($request) && $request->has('agent_id') && ($request->agent_id)){
-                $category = $category->whereHas('products.variant.agentPrice', function($q) use ($request){
-                                        $q->where('agent_id',$request->agent_id);
-                                    })->with(['products.variant.agentPrice' => function($q) use ($request){
+                $category = $category->with(['products.variant.agentPrice' => function($q) use ($request){
                                         if($request->has('agent_id') && ($request->agent_id)){
                                             $q->where('agent_id',$request->agent_id);
                                         }
                                     }]);
+                                    //->whereHas('products.variant.agentPrice', function($q) use ($request){
+                                    //     $q->where('agent_id',$request->agent_id);
+                                    // })
             }else{
                 $category->with(['products.variant.agentPrice']);
             }
