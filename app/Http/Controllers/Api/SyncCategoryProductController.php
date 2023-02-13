@@ -95,7 +95,7 @@ class SyncCategoryProductController extends Controller
             ];
             $productSave = Product::updateOrCreate(['sku' => $Product_sku, 'order_panel_id' => $this->order_panel_id],$product_update_create);
 
-            foreach(@$product['translation'] as $translation){
+            foreach(@$product['primary'] as $translation){
 
                 $product_trans = [
                     'title'         => $translation['title'],
@@ -181,13 +181,13 @@ class SyncCategoryProductController extends Controller
             
             $categorySave = Category::updateOrCreate([ 'slug' =>  $slug], $data);
             \Log::info( 'categorySave transl_data');
-            \Log::info(  $cat['translation']);
+            \Log::info(  $cat['primary']);
             $transl_data = [
-                'name' => $cat['translation']['name'] ?? $categorySave->slug,
-                'trans-slug' => $cat['translation']['trans_slug'] ?? '',
-                'meta_title' => $cat['translation']['meta_title'] ?? '',
-                'meta_description' => $cat['translation']['meta_description'] ?? '',
-                'meta_keywords' => $cat['translation']['meta_keywords'] ?? '',
+                'name' => $cat['primary']['name'] ?? $categorySave->slug,
+                'trans-slug' => $cat['primary']['trans_slug'] ?? '',
+                'meta_title' => $cat['primary']['meta_title'] ?? '',
+                'meta_description' => $cat['primary']['meta_description'] ?? '',
+                'meta_keywords' => $cat['primary']['meta_keywords'] ?? '',
                 'category_id' => $categorySave->id ?? '',
                 'language_id' => 1
             ];
