@@ -42,7 +42,7 @@ class SyncCategoryProductController extends Controller
     public function syncSingleProduct($category_id, $product,  $dataBaseName){
         // dd($product['translation']);
         if(checkTableExists('products')){ 
-            $Product_sku = str_replace(" ",",",$dataBaseName."_".$product['sku']);
+            $Product_sku = str_replace(" ","_",$dataBaseName."_".$product['sku']);
             $product_update_create = [
                 "sku"                   => $Product_sku,
                 "title"                 => $product['title'],
@@ -129,7 +129,7 @@ class SyncCategoryProductController extends Controller
           
             // # Add product variant
             foreach($variants as $variant) {     # import product variant
-                $Product_v_sku = str_replace(" ",",",$dataBaseName."_".$variant['sku']);
+                $Product_v_sku = str_replace(" ","_",$dataBaseName."_".$variant['sku']);
                 $product_variant = [
                     "sku"           => $Product_v_sku,
                     "title"         => $variant['title'],
@@ -159,7 +159,7 @@ class SyncCategoryProductController extends Controller
 
     public function syncSingleCategory($cat,  $dataBaseName){
         if(checkTableExists('categories')){
-            $slug = str_replace(" ",",",$dataBaseName."_".$cat['slug']);
+            $slug = str_replace(" ","_",$dataBaseName."_".$cat['slug']);
             $data = [
                 'icon' => $cat['icon']['icon'],
                 'slug' =>  $slug,
