@@ -180,6 +180,8 @@ class SyncCategoryProductController extends Controller
             ];
             
             $categorySave = Category::updateOrCreate([ 'slug' =>  $slug], $data);
+            \Log::info( 'categorySave transl_data');
+            \Log::info(  $cat['translation']);
             $transl_data = [
                 'name' => $cat['translation']['name'] ?? $categorySave->slug,
                 'trans-slug' => $cat['translation']['trans_slug'] ?? '',
@@ -189,8 +191,7 @@ class SyncCategoryProductController extends Controller
                 'category_id' => $categorySave->id ?? '',
                 'language_id' => 1
             ];
-            \Log::info( 'categorySave transl_data');
-            \Log::info( $transl_data);
+          
           
             $categoryTransSave = CategoryTranslation::updateOrCreate([ 'category_id' => $categorySave->id ], $transl_data);
             return $categorySave->id;
