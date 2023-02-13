@@ -145,8 +145,15 @@ class TrackingController extends Controller
                 $tasks = DB::connection($respnse['database'])->table('tasks')->where('order_id', $order->id)->leftJoin('locations', 'tasks.location_id', '=', 'locations.id')
                     ->select('tasks.*', 'locations.latitude', 'locations.longitude', 'locations.short_name', 'locations.address')->orderBy('task_order')->get();
                 $orderc = DB::connection($respnse['database'])->table('orders')->where('id', $order->id)->where('status','completed')->count();
-                if($orderc == 0)
-                $agent_location = DB::connection($respnse['database'])->table('agent_logs')->where('agent_id', $order->driver_id)->latest()->first();
+                if($orderc == 0){
+                    if( checkColumnExists('orders', 'refer_driver_id') && $order->driver_id == null &&  $order->refer_driver_id > 0){
+                        $agent_location = DB::connection($respnse['database'])->table('agent_logs')->where('agent_id', $order->refer_driver_id)->latest()->first();
+                    }
+                    else{
+
+                        $agent_location = DB::connection($respnse['database'])->table('agent_logs')->where('agent_id', $order->driver_id)->latest()->first();
+                    }
+                }
                 else{
                     $agent_location = [];
                     $lastElement = $tasks->last();
