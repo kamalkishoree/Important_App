@@ -27,6 +27,8 @@ class SyncCategoryProductController extends Controller
     public function importOrderSideCategory($categories,$dataBaseName=''){
         // $categories = ROCategory::with(['translation','products','products.variant','products.translation'])->get();
         foreach($categories as $cat){
+            \Log::info( 'categorySave transl_data');
+            \Log::info( $cat);
             $category_id = $this->syncSingleCategory($cat,$dataBaseName);
             if(!empty($cat['products']) && count($cat['products']) > 0){
                 foreach($cat['products'] as $product){
@@ -183,6 +185,7 @@ class SyncCategoryProductController extends Controller
                 'category_id' => $categorySave->id ?? '',
                 'language_id' => 1
             ];
+          
             $categoryTransSave = CategoryTranslation::updateOrCreate([ 'category_id' => $categorySave->id ], $transl_data);
             return $categorySave->id;
         }else{
