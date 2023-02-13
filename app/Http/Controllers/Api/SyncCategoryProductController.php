@@ -126,9 +126,10 @@ class SyncCategoryProductController extends Controller
         if(checkTableExists('product_variants')){ 
             $variants = @$product['variant'];
 
-            $Product_v_sku = str_replace(" ",",",$dataBaseName."_".$variant['sku']);
+          
             // # Add product variant
             foreach($variants as $variant) {     # import product variant
+                $Product_v_sku = str_replace(" ",",",$dataBaseName."_".$variant['sku']);
                 $product_variant = [
                     "sku"           => $Product_v_sku,
                     "title"         => $variant['title'],
