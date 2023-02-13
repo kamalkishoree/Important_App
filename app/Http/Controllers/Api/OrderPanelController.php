@@ -19,6 +19,8 @@ class OrderPanelController extends BaseController
     use GlobalFunction;
 
     public function getProductPrice(Request $request){
+        \Log::info('getProductPrice logs');
+        \Log::info( $request->all());
         $validator = Validator::make(request()->all(), [
             'product_variant_sku'  => 'required',
             'schedule_date' => 'required',
@@ -32,9 +34,11 @@ class OrderPanelController extends BaseController
 
         $agentController = new AgentController();
         $geoid           = $agentController->findLocalityByLatLng($latitude, $longitude);
-      
+        \Log::info('getProductPrice geoid');
+        \Log::info( $geoid );
         $geoagents_ids    = DriverGeo::where('geo_id', $geoid)->pluck('driver_id');
-        
+        \Log::info('getProductPrice geoagents_ids');
+        \Log::info($geoagents_ids);
         $agent = Agent::where(['type'=>'Freelancer','is_approved'=>1])
                         ->with(['slots' => function($q) use($myDate,$start_time,$end_time){
                             $q->whereDate('schedule_date', $myDate)->where('start_time', '<=', $start_time)->where('end_time', '>=', $end_time);
