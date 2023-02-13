@@ -28,7 +28,7 @@ class TrackingController extends Controller
                  $total_orders_ids = DB::connection($respnse['database'])->table('orders')->where('driver_id',$order->driver_id)->pluck('id');
                 $orderc = DB::connection($respnse['database'])->table('orders')->where('id', $order->id)->where('status','completed')->count();
                 $agent_ratings = DB::connection($respnse['database'])->table('order_ratings')->whereIn('order_id', $total_orders_ids)->get();
-                
+
                 if($orderc == 0)
                 $agent_location = DB::connection($respnse['database'])->table('agent_logs')->where('agent_id', $order->driver_id)->latest()->first();
                 else{
@@ -137,6 +137,7 @@ class TrackingController extends Controller
         $total_order_by_agent = 0;
         $avgrating = 0;
         $agent_ratings = [];
+        $agent = [];
         if ($respnse['status'] == 'connected') {
             $order = DB::connection($respnse['database'])->table('orders')->where('unique_id', $id)->leftJoin('agents', 'orders.driver_id', '=', 'agents.id')
                 ->select('orders.*', 'agents.name','agents.name','agents.color','agents.plate_number', 'agents.profile_picture', 'agents.phone_number')->first();
@@ -152,8 +153,28 @@ class TrackingController extends Controller
                     $agent_location['lat']  = $lastElement->latitude;
                     $agent_location['lng']  = $lastElement->longitude;
                 }
+               
+                if( checkColumnExists('orders', 'refer_driver_id') && $order->driver_id == null &&  $order->refer_driver_id > 0){
+                    $total_orders = DB::connection($respnse['database'])->table('orders')->where('driver_id',$order->refer_driver_id)->pluck('id');
+                    $total_order_by_agent = count($total_orders);
+                   
+                    $avgrating = DB::connection($respnse['database'])->table('order_ratings')->whereIn('order_id',$total_orders)->sum('rating');
+                    if($avgrating != 0)
+                    $avgrating = $avgrating/$avgrating;
 
-                if($order->driver_id > 0){
+                    $agent_ratings = DB::connection($respnse['database'])->table('order_ratings')->whereIn('order_id',$total_orders)->get();
+
+                    $agent = DB::connection($respnse['database'])->table('agents')->where('id',$order->refer_driver_id)->first();
+                   
+                    
+                    $driver_document = DB::connection($respnse['database'])->table('driver_registration_documents')
+                                            ->join('agent_docs','driver_registration_documents.name','=', 'agent_docs.label_name')
+                                            ->select('agent_docs.*','driver_registration_documents.file_type','driver_registration_documents.name')
+                                            ->where('agent_docs.agent_id',$order->refer_driver_id)->get();
+                    $order->driver_document =$driver_document;        
+                }else if($order->driver_id > 0){
+
+               // if($order->driver_id > 0){
                     $total_orders = DB::connection($respnse['database'])->table('orders')->where('driver_id',$order->driver_id)->pluck('id');
                     $total_order_by_agent = count($total_orders);
                    
@@ -162,6 +183,8 @@ class TrackingController extends Controller
                     $avgrating = $avgrating/$avgrating;
 
                     $agent_ratings = DB::connection($respnse['database'])->table('order_ratings')->whereIn('order_id',$total_orders)->get();
+
+                    $agent = DB::connection($respnse['database'])->table('agents')->where('id',$order->driver_id)->first();
                    
                     
                     $driver_document = DB::connection($respnse['database'])->table('driver_registration_documents')
@@ -183,6 +206,7 @@ class TrackingController extends Controller
                     'agent_location'  => $agent_location,
                     'total_order_by_agent'  => $total_order_by_agent,
                     'avgrating'  => $avgrating,
+                    'agent'  => $agent,
                     'agent_ratings'  => $agent_ratings,
                     'base_url' => $base_url,
                     'agent_dbname'  => $db_name
