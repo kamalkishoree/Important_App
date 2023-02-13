@@ -25,7 +25,10 @@ class TrackingController extends Controller
             if (isset($order->id)) {
                 $tasks = DB::connection($respnse['database'])->table('tasks')->where('order_id', $order->id)->leftJoin('locations', 'tasks.location_id', '=', 'locations.id')
                     ->select('tasks.*', 'locations.latitude', 'locations.longitude', 'locations.short_name', 'locations.address')->orderBy('task_order')->get();
+                 $total_orders_ids = DB::connection($respnse['database'])->table('orders')->where('driver_id',$order->driver_id)->pluck('id');
                 $orderc = DB::connection($respnse['database'])->table('orders')->where('id', $order->id)->where('status','completed')->count();
+                $agent_ratings = DB::connection($respnse['database'])->table('order_ratings')->whereIn('order_id', $total_orders_ids)->get();
+                
                 if($orderc == 0)
                 $agent_location = DB::connection($respnse['database'])->table('agent_logs')->where('agent_id', $order->driver_id)->latest()->first();
                 else{
@@ -133,6 +136,7 @@ class TrackingController extends Controller
         $respnse = $this->connection($user);
         $total_order_by_agent = 0;
         $avgrating = 0;
+        $agent_ratings = [];
         if ($respnse['status'] == 'connected') {
             $order = DB::connection($respnse['database'])->table('orders')->where('unique_id', $id)->leftJoin('agents', 'orders.driver_id', '=', 'agents.id')
                 ->select('orders.*', 'agents.name','agents.name','agents.color','agents.plate_number', 'agents.profile_picture', 'agents.phone_number')->first();
@@ -152,6 +156,7 @@ class TrackingController extends Controller
                 if($order->driver_id > 0){
                     $total_orders = DB::connection($respnse['database'])->table('orders')->where('driver_id',$order->driver_id)->pluck('id');
                     $total_order_by_agent = count($total_orders);
+                   
                     $avgrating = DB::connection($respnse['database'])->table('order_ratings')->whereIn('order_id',$total_orders)->sum('rating');
                     if($avgrating != 0)
                     $avgrating = $avgrating/$avgrating;
