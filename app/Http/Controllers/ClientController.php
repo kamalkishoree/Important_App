@@ -505,7 +505,6 @@ class ClientController extends Controller
     public function ShowConfiguration()
     {
         $preference  = ClientPreference::where('client_id', Auth::user()->code)->first();
-        $preferenceAdditional  = ClientPreferenceAdditional::where('client_code', Auth::user()->code)->first();
         $customMode  = json_decode($preference->custom_mode);
         $warehoseMode  = json_decode($preference->warehouse_mode);
         $dashboardMode  = json_decode($preference->dashboard_mode);
@@ -516,7 +515,7 @@ class ClientController extends Controller
         $agent_docs=DriverRegistrationDocument::get();
         $agents    = Agent::where('is_activated','1')->get();
         $smsTypes = SmsProvider::where('status', '1')->get();
-        return view('configure')->with(['preferenceAdditional' => $preferenceAdditional,'preference' => $preference, 'customMode' => $customMode, 'client' => $client,'subClients'=> $subClients,'smtp_details'=>$smtp, 'agent_docs' => $agent_docs,'smsTypes'=>$smsTypes,'vehicleType'=>$vehicleType, 'warehoseMode' => $warehoseMode, 'dashboardMode' => $dashboardMode,'agents'=>$agents]);
+        return view('configure')->with(['preference' => $preference, 'customMode' => $customMode, 'client' => $client,'subClients'=> $subClients,'smtp_details'=>$smtp, 'agent_docs' => $agent_docs,'smsTypes'=>$smsTypes,'vehicleType'=>$vehicleType, 'warehoseMode' => $warehoseMode, 'dashboardMode' => $dashboardMode,'agents'=>$agents]);
     }
 
 
