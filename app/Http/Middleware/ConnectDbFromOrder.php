@@ -21,7 +21,6 @@ class ConnectDbFromOrder
      */
     public function handle($request, Closure $next)
     {
-       \Log::info('ConnectDbFromOrder');
         config(['auth.guards.api.provider' => 'agents']);
         $database_name = $database = 'royodelivery_db';
         $header = $request->header();        
