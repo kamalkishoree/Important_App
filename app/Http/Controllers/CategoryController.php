@@ -216,7 +216,7 @@ class CategoryController extends Controller
 
     public function categoryFilter(Request $request)
     {
-        $category = Category::with('products');
+        $category = Category::withCount('products')->with(['translation']);
         if(checkColumnExists('categories', 'order_panel_id')){
             $order_panel_id = $request->order_panel_id;
             if($order_panel_id != "" && $order_panel_id != null){
@@ -230,7 +230,7 @@ class CategoryController extends Controller
         $category = $category->orderBy('id', 'DESC')->get();
         return Datatables::of($category)
         ->addColumn('name', function ($category) use ($request) {
-            $name = !empty($category->slug) ? $category->slug : '';
+            $name = isset($category->translation) && isset($category->translation->name) ? $category->translation->name : $category->slug;
             return $name;
         })
         ->addColumn('status', function ($category) use ($request) {
@@ -245,7 +245,7 @@ class CategoryController extends Controller
             return formattedDate($created_at);
         })
         ->addColumn('total_products', function ($category) use ($request) {
-            $total_products = !empty($category->products) ? count($category->products) : '0';
+            $total_products = $category->products_count;// !empty($category->products) ? count($category->products) : '0';
             return $total_products;
         })
         ->addColumn('action', function ($category) use ($request) {
