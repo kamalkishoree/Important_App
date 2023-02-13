@@ -110,8 +110,11 @@ trait GlobalFunction{
         $average =0;
         if( $CompletedTasks > 0){
             $average  = (  $CompletedTasks * 100) /$totalTask;        
-        }                 
-        return  number_format($average,2);
+        }         
+        $data['averageRating'] = number_format($average,2);
+        $data['CompletedTasks'] = $CompletedTasks;
+        $data['totalTask'] =  $totalTask;
+        return  $data;
     }
 
 }

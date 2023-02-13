@@ -56,7 +56,9 @@ class OrderPanelController extends BaseController
         $agents=[];
         $commonSlot=[];
         foreach( $agent as $productPrice){
-            $productPrice->averageTaskComplete =  $this->getDriverTaskDonePercentage($productPrice->id);
+            $averageTaskComplete   = $this->getDriverTaskDonePercentage( $productPrice->id);
+        
+            $productPrice->averageTaskComplete = $averageTaskComplete['averageRating'];
           //  unset($productPrice->complete_order);
             if($productPrice->agent){
                 $productPrice->agent->image_url =  isset($productPrice->agent->profile_picture) ? $imgproxyurl.Storage::disk('s3')->url($productPrice->agent->profile_picture) : Phumbor::url(URL::to('/asset/images/no-image.png'));

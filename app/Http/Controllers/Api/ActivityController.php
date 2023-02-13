@@ -377,7 +377,8 @@ class ActivityController extends BaseController
         $preferences['alert_dismiss_time'] = (int)$allcation->request_expiry;
         $agents['client_preference']  = $preferences;
         $agents['task_proof']         = $taskProof;
-        $agents['averageTaskComplete']         = $averageTaskComplete;
+        $agents['averageTaskComplete']= $averageTaskComplete['averageRating'];
+        $agents['CompletedTasks']= $averageTaskComplete['CompletedTasks'];
         $datas['user']                = $agents;
         $datas['tasks']               = $tasks;
 
