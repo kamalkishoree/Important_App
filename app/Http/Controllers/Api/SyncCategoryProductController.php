@@ -94,8 +94,8 @@ class SyncCategoryProductController extends Controller
                 'order_panel_id' => $this->order_panel_id
             ];
             $productSave = Product::updateOrCreate(['sku' => $Product_sku, 'order_panel_id' => $this->order_panel_id],$product_update_create);
-
-            foreach(@$product['primary'] as $translation){
+            $translation = @$product['primary'];
+           // foreach(@$product['primary'] as $translation){
 
                 $product_trans = [
                     'title'         => $translation['title'],
@@ -109,7 +109,7 @@ class SyncCategoryProductController extends Controller
 
                 ProductTranslation::updateOrCreate(['product_id' => $productSave->id],$product_trans);
 
-            }
+           // }
 
             // Sync Product Categories
             $data = ['product_id' => $productSave->id, 'category_id' => $category_id ];
