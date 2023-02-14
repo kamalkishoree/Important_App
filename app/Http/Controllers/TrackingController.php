@@ -145,14 +145,16 @@ class TrackingController extends Controller
                 $tasks = DB::connection($respnse['database'])->table('tasks')->where('order_id', $order->id)->leftJoin('locations', 'tasks.location_id', '=', 'locations.id')
                     ->select('tasks.*', 'locations.latitude', 'locations.longitude', 'locations.short_name', 'locations.address')->orderBy('task_order')->get();
                 $orderc = DB::connection($respnse['database'])->table('orders')->where('id', $order->id)->where('status','completed')->count();
-                if($orderc == 0){
-                    if( checkColumnExists('orders', 'refer_driver_id') && $order->driver_id == null &&  $order->refer_driver_id > 0){
-                        $agent_location = DB::connection($respnse['database'])->table('agent_logs')->where('agent_id', $order->refer_driver_id)->latest()->first();
-                    }
-                    else{
+                
+                $driver_id = '';
+                if( checkColumnExists('orders', 'refer_driver_id') && $order->driver_id == null &&  $order->refer_driver_id > 0){
+                $driver_id = $order->refer_driver_id ;
+                }else if($order->driver_id > 0){
+                $driver_id = $order->driver_id ;
+                }
 
-                        $agent_location = DB::connection($respnse['database'])->table('agent_logs')->where('agent_id', $order->driver_id)->latest()->first();
-                    }
+                if($orderc == 0){
+                    $agent_location = DB::connection($respnse['database'])->table('agent_logs')->where('agent_id', $driver_id)->latest()->first();
                 }
                 else{
                     $agent_location = [];
@@ -161,8 +163,10 @@ class TrackingController extends Controller
                     $agent_location['lng']  = $lastElement->longitude;
                 }
                
-                if( checkColumnExists('orders', 'refer_driver_id') && $order->driver_id == null &&  $order->refer_driver_id > 0){
-                    $total_orders = DB::connection($respnse['database'])->table('orders')->where('driver_id',$order->refer_driver_id)->pluck('id');
+                
+
+                if($driver_id > 0){
+                    $total_orders = DB::connection($respnse['database'])->table('orders')->where('driver_id',$driver_id)->pluck('id');
                     $total_order_by_agent = count($total_orders);
                    
                     $avgrating = DB::connection($respnse['database'])->table('order_ratings')->whereIn('order_id',$total_orders)->sum('rating');
@@ -171,33 +175,13 @@ class TrackingController extends Controller
 
                     $agent_ratings = DB::connection($respnse['database'])->table('order_ratings')->whereIn('order_id',$total_orders)->get();
 
-                    $agent = DB::connection($respnse['database'])->table('agents')->where('id',$order->refer_driver_id)->first();
+                    $agent = DB::connection($respnse['database'])->table('agents')->where('id',$driver_id)->first();
                    
                     
                     $driver_document = DB::connection($respnse['database'])->table('driver_registration_documents')
                                             ->join('agent_docs','driver_registration_documents.name','=', 'agent_docs.label_name')
                                             ->select('agent_docs.*','driver_registration_documents.file_type','driver_registration_documents.name')
-                                            ->where('agent_docs.agent_id',$order->refer_driver_id)->get();
-                    $order->driver_document =$driver_document;        
-                }else if($order->driver_id > 0){
-
-               // if($order->driver_id > 0){
-                    $total_orders = DB::connection($respnse['database'])->table('orders')->where('driver_id',$order->driver_id)->pluck('id');
-                    $total_order_by_agent = count($total_orders);
-                   
-                    $avgrating = DB::connection($respnse['database'])->table('order_ratings')->whereIn('order_id',$total_orders)->sum('rating');
-                    if($avgrating != 0)
-                    $avgrating = $avgrating/$avgrating;
-
-                    $agent_ratings = DB::connection($respnse['database'])->table('order_ratings')->whereIn('order_id',$total_orders)->get();
-
-                    $agent = DB::connection($respnse['database'])->table('agents')->where('id',$order->driver_id)->first();
-                   
-                    
-                    $driver_document = DB::connection($respnse['database'])->table('driver_registration_documents')
-                                            ->join('agent_docs','driver_registration_documents.name','=', 'agent_docs.label_name')
-                                            ->select('agent_docs.*','driver_registration_documents.file_type','driver_registration_documents.name')
-                                            ->where('agent_docs.agent_id',$order->driver_id)->get();
+                                            ->where('agent_docs.agent_id',$driver_id)->get();
                     $order->driver_document =$driver_document;        
                 }
 
