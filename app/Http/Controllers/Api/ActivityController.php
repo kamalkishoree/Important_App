@@ -141,7 +141,7 @@ class ActivityController extends BaseController
 
         if (count($orders) > 0) {
             $tasks = Task::whereIn('order_id', $orders)->where('task_status', '!=', 4)->Where('task_status', '!=', 5)
-            ->with(['location','tasktype','order.customer','order.customer.resources','order.task.location'])->orderBy("order_id", "DESC")
+            ->with(['location','tasktype','order.customer','order.customer.resources','order.task.location','order.additionData'])->orderBy("order_id", "DESC")
             ->orderBy("id","ASC")
             ->get();
             if (count($tasks) > 0) {
@@ -274,7 +274,7 @@ class ActivityController extends BaseController
                     //\Log::info('get order');
                     
                     //get agent current task
-                    $tasks = Task::whereIn('order_id', $orders)->where('task_status', 2)->with(['location','tasktype','order.customer'])->orderBy('order_id', 'desc')->orderBy('id', 'ASC')->get()->first();
+                    $tasks = Task::whereIn('order_id', $orders)->where('task_status', 2)->with(['location','tasktype','order.customer','order.additionData'])->orderBy('order_id', 'desc')->orderBy('id', 'ASC')->get()->first();
                     if (!empty($tasks)) {
 
                         //\Log::info('get tasks--');
@@ -346,7 +346,7 @@ class ActivityController extends BaseController
 
 
         if (count($orders) > 0) {
-            $tasks = Task::whereIn('order_id', $orders)->where('task_status', '!=', 4)->Where('task_status', '!=', 5)->with(['location','tasktype','order.customer'])->orderBy('order_id', 'desc')->orderBy('id', 'ASC')->get();
+            $tasks = Task::whereIn('order_id', $orders)->where('task_status', '!=', 4)->Where('task_status', '!=', 5)->with(['location','tasktype','order.customer','order.additionData'])->orderBy('order_id', 'desc')->orderBy('id', 'ASC')->get();
             if (count($tasks) > 0) {
                 //sort according to task_order
                 $tasks = $tasks->toArray();
@@ -436,7 +436,7 @@ class ActivityController extends BaseController
             $hisoryStatus = [$request->task_status];
         }
         if (isset($orders)) {
-            $tasks = Task::with(['location','tasktype','order.customer','order.task.location'])
+            $tasks = Task::with(['location','tasktype','order.customer','order.task.location','order.additionData'])
             ->whereIn('order_id', $orders)
             ->where(function($q) use ($hisoryStatus){
                 $q->whereIn('task_status', $hisoryStatus)
@@ -624,7 +624,7 @@ class ActivityController extends BaseController
 
         if (count($orders) > 0) {
             $tasks = Task::whereIn('order_id', $orders)->where('task_status', '!=', 4)->Where('task_status', '!=', 5)
-            ->with(['location','tasktype','order.customer','order.customer.resources','order.task.location'])->orderBy("order_id", "DESC")
+            ->with(['location','tasktype','order.customer','order.customer.resources','order.task.location','order.additionData'])->orderBy("order_id", "DESC")
             ->orderBy("id","ASC")
             ->get();
             if (count($tasks) > 0) {

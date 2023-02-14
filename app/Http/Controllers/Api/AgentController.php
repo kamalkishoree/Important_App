@@ -231,7 +231,7 @@ class AgentController extends BaseController
         if (count($orders) > 0) {
             
             $tasks = Task::whereIn('order_id', $orders)
-            ->with(['location','tasktype','order.customer','order.customer.resources','order.task.location'])->orderBy("order_id", "DESC")
+            ->with(['location','tasktype','order.customer','order.customer.resources','order.task.location','order.additionData'])->orderBy("order_id", "DESC")
             ->orderBy("id","ASC")
             ->get();
             if (count($tasks) > 0) {

@@ -25,7 +25,7 @@ use App\Model\ClientPreference;
 use App\Model\NotificationType;
 use App\Traits\agentEarningManager;
 use App\Model\BatchAllocationDetail;
-use App\Model\{PricingRule, TagsForAgent, AgentPayout, TagsForTeam, Team, PaymentOption, PayoutOption, AgentConnectedAccount, CustomerVerificationResource, SubscriptionInvoicesDriver, TaskType, AgentLogSlab, AgentFleet};
+use App\Model\{PricingRule, TagsForAgent, AgentPayout, TagsForTeam, Team, PaymentOption, PayoutOption, AgentConnectedAccount, CustomerVerificationResource, SubscriptionInvoicesDriver, TaskType, AgentLogSlab, AgentFleet,OrderAdditionData};
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -224,7 +224,7 @@ class TaskController extends BaseController
             }
             //Send Next Dependent task details
             $tasks = Task::where('dependent_task_id', $orderId->id)->where('task_status', '!=', 4)->Where('task_status', '!=', 5)
-            ->with(['location','tasktype','order.customer','order.customer.resources','order.task.location'])->orderBy("order_id", "DESC")
+            ->with(['location','tasktype','order.customer','order.customer.resources','order.task.location','order.additionData'])->orderBy("order_id", "DESC")
             ->orderBy("id","ASC")
             ->get();
             if (count($tasks) > 0) {
@@ -326,7 +326,7 @@ class TaskController extends BaseController
         }
        // dd($request->toArray());
 
-        $newDetails = Task::where('id', $request->task_id)->with(['location','tasktype','pricing','order.customer'])->first();
+        $newDetails = Task::where('id', $request->task_id)->with(['location','tasktype','pricing','order.customer','order.additionData'])->first();
 
         $sms_body = str_replace('"order_number"', $order_details->unique_id, $sms_body);
         $sms_body = str_replace('"driver_name"', $order_details->agent->name, $sms_body);
@@ -965,6 +965,7 @@ class TaskController extends BaseController
 
     public function CreateTask(CreateTaskRequest $request)
     {
+       
         try {
             $auth =  $client =  Client::with(['getAllocation', 'getPreference'])->first();
             $header = $request->header();
@@ -1085,6 +1086,7 @@ class TaskController extends BaseController
                 $request->allocation_type = 'u';
             }
             \Log::info($request->allocation_type);
+          
             $order = [
                 'order_number'                    => $request->order_number ?? null,
                 'customer_id'                     => $cus_id,
@@ -1137,6 +1139,9 @@ class TaskController extends BaseController
             }else{
                 $orders              = Order::create($order);
             }
+            if(checkColumnExists('order_addition_data', 'id')){
+               $this->updateOrderAdditional( $request,$orders->id);
+            }
             $agent_id =  $request->agent ?? null;
              /**
              * booking for appointment
@@ -1174,6 +1179,7 @@ class TaskController extends BaseController
 
             $dep_id = null;
             $pickup_location = null;
+           
 
             foreach ($request->task as $key => $value) {
                 $taskcount++;
@@ -1416,6 +1422,7 @@ class TaskController extends BaseController
                     ->format('Y-m-d H:i:s');
                     $schduledata['geo']               = $geo;
                     $schduledata['notification_time'] = $notification_time;
+                    $schduledata['notification_befor_time'] = $notification_time;
                     $schduledata['agent_id']          = $agent_id;
                     $schduledata['orders_id']         = $orders->id;
                     $schduledata['customer']          = $customer;
@@ -2847,7 +2854,7 @@ class TaskController extends BaseController
      # notification data
      public function notificationTrackingDetail(Request $request,$id)
      {
-          $order = DB::table('orders')->where('id',$id)->first();
+          $order = Order::with('additionData')->where('id',$id)->first();
               if (isset($order->id)) {
                 $customer = DB::table('customers')->where('id', $order->customer_id)->first();
                 $order->order_cost = $order->cash_to_be_collected ?? $order->order_cost;

@@ -128,8 +128,8 @@ class SendPushNotification
                 $item['title']     = 'Pickup Request';
                 $item['body']      = 'Check All Details For This Request In App';
                 $new = [];
-               // Log::info($item);
-               // Log::info('token=');
+               Log::info('sendnotification lister');
+               Log::info( $item);
 
                $item['notificationType'] = $item['type'];
                unset($item['type']); // done by Preet due to notification title is displaying like AR in iOS 
@@ -140,6 +140,9 @@ class SendPushNotification
                 $clientRecord = Client::where('code', $item['client_code'])->first();
                 $this->seperate_connection('db_'.$clientRecord->database_name);
                 $client_preferences = DB::connection('db_'.$clientRecord->database_name)->table('client_preferences')->where('client_id', $item['client_code'])->first();
+                
+                $client_preferences = DB::connection('db_'.$clientRecord->database_name)->table('client_preferences')->where('client_id', $item['client_code'])->first();
+
                    // Log::info('Fcm Response');
 
                 if(isset($new)){

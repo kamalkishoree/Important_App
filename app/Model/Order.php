@@ -103,4 +103,8 @@ class Order extends Model
     public function getAgentPayout() {
         return $this->hasOne('App\Model\AgentPayout', 'order_id', 'id');
     }
+    public function additionData() {
+        return $this->hasMany('App\Model\OrderAdditionData', 'order_id', 'id');
+      
+    }
 }
