@@ -259,4 +259,21 @@ class AgentController extends BaseController
         ], 200);
     }
 
+     /**   get agent data api */
+     function getAgentDetails(Request $request,$driver_id)
+     {
+         try {
+            $agent = Agent::with(['agentlog','agentRating'])->where('id',$driver_id)->first();
+            return response()->json([
+                'data' => $agent,
+                'status' => 200,
+                'message' => __('success')
+            ], 200);
+         } catch (Exception $e) {
+             return response()->json([
+                 'message' => $e->getMessage()
+             ], 400);
+         }
+     }
+
 }
