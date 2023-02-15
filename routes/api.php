@@ -114,6 +114,8 @@ Route::group(['middleware' => ['dbCheck', 'AppAuth','apiLocalization']], functio
     Route::post('updateTaskStatus', 'Api\TaskController@updateTaskStatus');    // api for chnage task status like start,cpmplate, faild
     Route::post('checkOTPRequried', 'Api\TaskController@checkOTPRequried');    // api for chnage task status like start,cpmplate, faild
     Route::post('task/accecpt/reject', 'Api\TaskController@TaskUpdateReject'); // api for accecpt task reject task
+    Route::get('refer_task', 'Api\ActivityController@getReferOrder');                    // api for task list
+
 
     Route::get('get/profile','Api\ActivityController@profile');                // api for get agent profile
     Route::post('update/profile','Api\ActivityController@updateProfile');       // api for updateprofile
@@ -136,6 +138,13 @@ Route::group(['middleware' => ['dbCheck', 'AppAuth','apiLocalization']], functio
     // Order routes
     Route::post('order/cancel/request/create/{id}', 'Api\OrderController@createOrderCancelRequest'); // api for creating order cancel request by driver
     Route::get('order/cancel/reasons', 'Api\OrderController@getOrderCancelReasons'); // api for creating order cancel request by driver
+
+
+    //Agent Out of plateform upload pop
+
+    Route::post('agent/outofplatform/upload-pop', 'Api\AgentPayoutController@AgentUploadPop')->name('agent.outofplateform.upload');
+    Route::get('agent/threshold-payments', 'Api\AgentPayoutController@AgentThresholdPayments')->name('agent.threshold.payments');
+
 
     //Roadside Pickup
     Route::post('task/road-side-pickup', 'Api\TaskController@roadsidePickup');

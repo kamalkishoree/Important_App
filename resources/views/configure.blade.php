@@ -13,6 +13,7 @@ $sms_crendential = json_decode($preference->sms_credentials);
 @section('content')
     <style>
         .alMultiSelect .btn{border-radius: 7px;}
+        .threshold-section{display: none;}
     </style>
     <!-- Start Content-->
     <div class="container-fluid">
@@ -1175,6 +1176,66 @@ $sms_crendential = json_decode($preference->sms_credentials);
                 </form>
                 <!-- Custom Mods start -->
             </div>
+
+            <div class="col-md-4 mb-3">
+                <form method="POST" class="h-100" action="{{ route('preference', Auth::user()->code) }}">
+                @csrf
+                    <input type="hidden" name="threshold" value="1">
+                    <div class="card-box h-100">
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                            <h4 class="header-title text-uppercase mb-0">{{__("Threshold")}}</h4>
+                            <button class="btn btn-outline-info d-block" type="submit"> {{__('Save')}} </button>
+                        </div>
+                        <div class="row align-items-start">
+                            <div class="col-md-12">
+                                <div class="form-group d-flex justify-content-between mb-3">
+                                    <label for="enabled-threshold" class="mr-2 mb-0">{{__("Enable Threshold")}} </label>
+                                    <div class="d-flex align-items-center justify-content-between mb-2">
+                                        <div class="custom-control custom-switch">
+                                            <input type="checkbox" class="custom-control-input " id="is_threshold" name="is_threshold" {{ (!empty($preference->is_threshold) && $preference->is_threshold > 0) ? 'checked' :'' }}>
+                                            <label class="custom-control-label" for="is_threshold"></label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row threshold-section  {{ (!empty($preference->is_threshold) && $preference->is_threshold > 0) ? 'd-block' :'d-none' }}">
+
+                            <div class="col-md-12">
+                                <div class="form-group d-block justify-content-between mb-3">
+                                    <label for="agent_ids" class="mr-2 mb-0">{{__("Recursive")}} </label>
+                                    @if(!empty($preference->threshold_data))
+                                        @php 
+                                            $threshold_data      =   json_decode($preference->threshold_data,true);
+                                            $recursive_type      =   isset($threshold_data['recursive_type']) ? $threshold_data['recursive_type'] : '';
+                                            $threshold_amount    =   isset($threshold_data['threshold_amount']) ? $threshold_data['threshold_amount'] : '';
+                                            $stripe_connect_id   =   isset($threshold_data['stripe_connect_id']) ? $threshold_data['stripe_connect_id']: '';
+                                        @endphp
+                                        @else
+                                        @php $recursive_type = $threshold_amount = $stripe_connect_id = '' @endphp
+                                    @endif
+                                    <div class="row mt-2 mb-2">
+                                        <div class="col-md-12">
+                                            <select name="recursive_type" id="recursive_type" class="form-control" required>
+                                                <option value="">{{__("Select Option")}}</option>
+                                                <option value="1" {{ (!empty($recursive_type) && $recursive_type == 1) ? 'selected' :'' }}>{{__("Day")}}</option>
+                                                <option value="2" {{ (!empty($recursive_type) && $recursive_type == 2) ? 'selected' :'' }}>{{__("Week")}}</option>
+                                                <option value="3" {{ (!empty($recursive_type) && $recursive_type == 3) ? 'selected' :'' }}>{{__("Month")}}</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-12 {{ (!empty($preference->is_threshold) && $preference->is_threshold > 0) ? 'd-block' :'d-none' }} threshold_amount mt-2">
+                                            <input name="threshold_amount" type="text"  data-mini="true"  value="{{ $threshold_amount }}" onKeyPress="return isNumber(event)" class ="form-control" placeholder="{{__("Amount")}}" id="threshold_amount" required />
+                                        </div>
+                                        <div class="col-md-12 {{ (!empty($preference->is_threshold) && $preference->is_threshold > 0) ? 'd-block' :'d-none' }} threshold_amount mt-2">
+                                            <input name="stripe_connect_id" type="text"  data-mini="true"  value="{{ $stripe_connect_id }}" onKeyPress="return isNumber(event)" class ="form-control" placeholder="{{__("Stripe Connect ID")}}" id="stripe_connect_id" required />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
         </div>
 
 
@@ -1559,6 +1620,21 @@ $sms_crendential = json_decode($preference->sms_credentials);
             }
         });
 
+        $('#is_threshold').on('change',function(){
+            if ($(this).is(":checked")) {
+                $('.threshold-section').removeClass('d-none').addClass('d-block');
+            }else{
+                $('.threshold-section').removeClass('d-block').addClass('d-none');
+            }
+        });
+
+        $('#recursive_type').on('change',function(){
+            $(document).find('.threshold_amount').removeClass('d-none').addClass('d-block');
+        });
+
+        
+
+
         $('#toll_fee').on('change',function(){
             if ($(this).is(":checked")) {
                 $('.toll_fee').show();
@@ -1567,6 +1643,15 @@ $sms_crendential = json_decode($preference->sms_credentials);
             }
         });
 
+
+        function isNumber(evt) {
+            evt = (evt) ? evt : window.event;
+            var charCode = (evt.which) ? evt.which : evt.keyCode;
+            if (charCode > 31 && (charCode < 46 || charCode > 57)) {
+                return false;
+            }
+            return true;
+        }
         $('#editCabPoolingSwitch').on('change',function(){
             if ($(this).is(":checked")) {
                 $('#radius_for_pooling_div').show();

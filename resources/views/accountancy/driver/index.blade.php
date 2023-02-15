@@ -73,7 +73,7 @@ div#DataTables_Table_0_filter label input {
                             </div>
                             <div class="col-md-6">
                                 <label for="">Select Driver</label>
-                                {{Form::select('agent_id', array_merge(['' => 'Please Select '.__(getAgentNomenclature())], $agentList), '', array('class' => 'form-control', 'id' => 'agent_id' ))}}
+                                {{Form::select('agent_id', ['' => 'Please Select '.__(getAgentNomenclature())] + $agentList, '', array('class' => 'form-control', 'id' => 'agent_id' ))}}
                                 
                             </div>
                         </div>
@@ -232,6 +232,10 @@ $(document).ready(function(){
             $(".pay-to-driver").addClass('d-none');
         }
     });
+
+    $("#agent_id").change(function(){
+        initializeAgentListing();
+    });
     $('.agent-class').select2({
         placeholder: 'Keyword...',
         ajax: {
@@ -296,7 +300,7 @@ function initializeAgentListing(){
                 d.search = $('input[type="search"]').val();
                 d.routesListingType = $('#routes-listing-status').val();
                 d.date_filter = $('#date_picker').val();
-                d.driver_id = $('#agent_id').val();
+                d.driver_id = $("#agent_id").val();
                 d.imgproxyurl = '';
             }
         },

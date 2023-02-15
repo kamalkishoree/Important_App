@@ -44,6 +44,7 @@
                                             <th class="sort-icon">{{__("Created At")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                             <th class="sort-icon">{{__("Driver Name")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                             <th class="sort-icon">{{__("Registration Name")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
+                                            <th class="sort-icon">{{__("Total km/miles")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                             <th class="sort-icon">{{__("Model")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                             <th class="sort-icon">{{__("Make")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
                                         </tr>
@@ -51,10 +52,11 @@
                                     <tbody>
                                        @forelse($orders as $order)
                                             <tr>
-                                                <td>{{$order->order_number}}</td>
+                                                <td><a href="javascript:;" class="orderDetail" data-id="{{$order->id}}">#{{$order->order_number}}</a></td>
                                                 <td>{{$order->created_at}}</td>
-                                                <td>{{$order->agent->name}}</td>
-                                                <td>{{$order->fleet->registration_name}}</td>
+                                                <td>{{@$order->agent->name}}</td>
+                                                <td><a href="javascript:;" class="fleetDetail" data-id="{{$order->fleet->id}}">{{$order->fleet->registration_name}}</a></td>
+                                                <td>{{$order->actual_distance}}</td>
                                                 <td>{{$order->fleet->model}}</td>
                                                 <td>{{$order->fleet->make}}</td>
                                             </tr>
@@ -76,13 +78,5 @@
 </div>
 
 @include('fleets.modals')
-@endsection
-
-@section('script')
-<script src="{{ asset('assets/js/storeAgent.js') }}"></script>
-<script src="{{ asset('assets/libs/datatables/datatables.min.js') }}"></script>
-<script src="{{ asset('assets/js/jquery.tagsinput-revisited.js') }}"></script>
-<script src="{{ asset('telinput/js/intlTelInput.js') }}"></script>
-<link rel="stylesheet" href="{{ asset('assets/css/jquery.tagsinput-revisited.css') }}" />
 @include('fleets.pagescript')
 @endsection

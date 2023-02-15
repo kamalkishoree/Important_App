@@ -137,6 +137,7 @@ class scheduleNotification implements ShouldQueue
         $type       = $dataget['database']['getPreference']['acknowledgement_type'];
         $try        = $dataget['database']['getAllocation']['number_of_retries'];
         $time       = $dataget['notification_time'];
+        $notification_befor_time       = @$dataget['notification_befor_time'];
         $randem     = rand(11111111, 99999999);
 
         if ($type == 'acceptreject') {
@@ -168,6 +169,7 @@ class scheduleNotification implements ShouldQueue
                 'order_id'            => $dataget['orders_id'],
                 'driver_id'           => $dataget['agent_id'],
                 'notification_time'   => $time,
+                'notification_befor_time'   => $notification_befor_time,
                 'type'                => $allcation_type,
                 'client_code'         => $dataget['database']['code'],
                 'created_at'          => Carbon::now()->toDateTimeString(),
@@ -177,6 +179,8 @@ class scheduleNotification implements ShouldQueue
                 'detail_id'           => $randem,
                 'cash_to_be_collected'=> $dataget['cash_to_be_collected']??''
             ];
+            Log::info('scheduleNotification fire');
+            Log::info($data);
             DB::disconnect('db_'.$dataget['database']['code']);
             RosterCreate::dispatch($data, $extraData);
 
@@ -250,6 +254,7 @@ class scheduleNotification implements ShouldQueue
                             'order_id'            => $dataget['orders_id'],
                             'driver_id'           => $geoitem->driId,
                             'notification_time'   => $time,
+                            'notification_befor_time'   => $notification_befor_time,
                             'type'                => $allcation_type,
                             'client_code'         => $dataget['database']['code'],
                             'created_at'          => Carbon::now()->toDateTimeString(),
@@ -284,6 +289,7 @@ class scheduleNotification implements ShouldQueue
                         'order_id'            => $dataget['orders_id'],
                         'driver_id'           => $rem['id'],
                         'notification_time'   => $time,
+                        'notification_befor_time'   => $notification_befor_time,
                         'type'                => $allcation_type,
                         'client_code'         => $dataget['database']['code'],
                         'created_at'          => Carbon::now()->toDateTimeString(),
@@ -345,6 +351,7 @@ class scheduleNotification implements ShouldQueue
         $max_redius        = $dataget['database']['getAllocation']['maximum_radius'];
         $max_task          = $dataget['database']['getAllocation']['maximum_task_per_person'];
         $time              = $dataget['notification_time'];
+        $notification_befor_time       = @$dataget['notification_befor_time'];
         $randem            = rand(11111111, 99999999);
         $data = [];
 
@@ -379,6 +386,7 @@ class scheduleNotification implements ShouldQueue
                 'order_id'            => $dataget['orders_id'],
                 'driver_id'           => $dataget['agent_id'],
                 'notification_time'   => $time,
+                'notification_befor_time'   => $notification_befor_time,
                 'type'                => $allcation_type,
                 'client_code'         => $dataget['database']['code'],
                 'created_at'          => Carbon::now()->toDateTimeString(),
@@ -415,6 +423,7 @@ class scheduleNotification implements ShouldQueue
                         'order_id'            => $dataget['orders_id'],
                         'driver_id'           => $geoitem->driId,
                         'notification_time'   => $time,
+                        'notification_befor_time'   => $notification_befor_time,
                         'type'                => $allcation_type,
                         'client_code'         => $dataget['database']['code'],
                         'created_at'          => Carbon::now()->toDateTimeString(),
@@ -469,6 +478,7 @@ class scheduleNotification implements ShouldQueue
         $max_redius        = $dataget['database']['getAllocation']['maximum_radius'];
         $max_task          = $dataget['database']['getAllocation']['maximum_task_per_person'];
         $time              = $dataget['notification_time'];
+        $notification_befor_time       = @$dataget['notification_befor_time'];
         $randem            = rand(11111111, 99999999);
         $data = [];
 
@@ -499,6 +509,7 @@ class scheduleNotification implements ShouldQueue
                 'order_id'            => $dataget['orders_id'],
                 'driver_id'           => $dataget['agent_id'],
                 'notification_time'   => $time,
+                'notification_befor_time'   => $notification_befor_time,
                 'type'                => $allcation_type,
                 'client_code'         => $dataget['database']['code'],
                 'created_at'          => Carbon::now()->toDateTimeString(),
@@ -535,6 +546,7 @@ class scheduleNotification implements ShouldQueue
                         'order_id'            => $dataget['orders_id'],
                         'driver_id'           => $geoitem->driId,
                         'notification_time'   => $time,
+                        'notification_befor_time'   => $notification_befor_time,
                         'type'                => $allcation_type,
                         'client_code'         => $dataget['database']['code'],
                         'created_at'          => Carbon::now()->toDateTimeString(),
@@ -628,6 +640,7 @@ class scheduleNotification implements ShouldQueue
         $max_redius        = $dataget['database']['getAllocation']['maximum_radius'];
         $max_task          = $dataget['database']['getAllocation']['maximum_task_per_person'];
         $time              = $dataget['notification_time'];
+        $notification_befor_time       = @$dataget['notification_befor_time'];
         $randem            = rand(11111111, 99999999);
         $data = [];
 
@@ -660,6 +673,7 @@ class scheduleNotification implements ShouldQueue
                 'order_id'            => $dataget['orders_id'],
                 'driver_id'           => $dataget['agent_id'],
                 'notification_time'   => $time,
+                'notification_befor_time'   => $notification_befor_time,
                 'type'                => $allcation_type,
                 'client_code'         => $dataget['database']['code'],
                 'created_at'          => Carbon::now()->toDateTimeString(),
@@ -699,6 +713,7 @@ class scheduleNotification implements ShouldQueue
                         'order_id'            => $dataget['orders_id'],
                         'driver_id'           => $geoitem['driver_id'],
                         'notification_time'   => $time,
+                        'notification_befor_time'   => $notification_befor_time,
                         'type'                => $allcation_type,
                         'client_code'         => $dataget['database']['code'],
                         'created_at'          => Carbon::now()->toDateTimeString(),

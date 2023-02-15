@@ -69,7 +69,7 @@ class DriverAccountingController extends BaseController
             }
         }
 
-        if( isset($request->driver_id) ) {
+        if(isset($request->driver_id) ) {
             Log::info('driver id if');
             Log::info($request->driver_id);
             $orders->where('driver_id', $request->driver_id);
@@ -77,7 +77,7 @@ class DriverAccountingController extends BaseController
 
         // Create Datatable
         $orders = $orders->orderBy('id', 'desc');
-
+        Log::info("orders".json_encode($orders));
         $order_clone = clone $orders;
         $driver_cost = $order_clone->get()->sum('driver_cost');
         // Log::info($driver_cost);
