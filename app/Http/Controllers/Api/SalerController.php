@@ -44,9 +44,13 @@ class SalerController extends BaseController
         }
     }
     public function saveProductVariantPrice(Request $request)
-    {
-       // pr($request->all());
+    {  
          try {
+            if(Auth::check()){
+                $request->merge(['agent_id'=>Auth::id()]);
+            }
+          
+      
             $validator = Validator::make($request->all(), [
                 'agent_id' => 'required|exists:agents,id',
                 'product_prices.*.product_id' => 'required|exists:products,id',

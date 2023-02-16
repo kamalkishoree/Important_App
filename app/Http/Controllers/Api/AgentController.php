@@ -214,7 +214,7 @@ class AgentController extends BaseController
         $orderStatus = 'assigned';
         $client_code->timezone = $tz->timezone_name($client_code->timezone);
         $selectedDatesArray   = $request->has('selectedDatesArray') ? $request->selectedDatesArray : [];
-        \Log::info($selectedDatesArray);
+     
       
         $id     = Auth::user()->id;
 
@@ -231,7 +231,7 @@ class AgentController extends BaseController
         if (count($orders) > 0) {
             
             $tasks = Task::whereIn('order_id', $orders)
-            ->with(['location','tasktype','order.customer','order.customer.resources','order.task.location'])->orderBy("order_id", "DESC")
+            ->with(['location','tasktype','order.customer','order.customer.resources','order.task.location','order.additionData'])->orderBy("order_id", "DESC")
             ->orderBy("id","ASC")
             ->get();
             if (count($tasks) > 0) {
@@ -246,9 +246,11 @@ class AgentController extends BaseController
         }
         $request->merge(['agent_id'=> $id]);
         $AgentSlotRoster = $this->getAgentSlotByType($request);
+        $AgentBlockRoster = $this->getAgentSlotBlocked($request);
         $response =  [
                         'tasks' => $tasks,
-                        'agent_slots'=> $AgentSlotRoster
+                        'agent_slots'=> $AgentSlotRoster,
+                        'agent_blocked_dates'=> $AgentBlockRoster
                     ];
         return response()->json([
             'data' => $response,
@@ -256,5 +258,22 @@ class AgentController extends BaseController
             'message' => __('success')
         ], 200);
     }
+
+     /**   get agent data api */
+     function getAgentDetails(Request $request,$driver_id)
+     {
+         try {
+            $agent = Agent::with(['agentlog','agentRating'])->where('id',$driver_id)->first();
+            return response()->json([
+                'data' => $agent,
+                'status' => 200,
+                'message' => __('success')
+            ], 200);
+         } catch (Exception $e) {
+             return response()->json([
+                 'message' => $e->getMessage()
+             ], 400);
+         }
+     }
 
 }

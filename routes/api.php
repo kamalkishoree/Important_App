@@ -27,6 +27,7 @@ Route::post('get-delivery-fee', 'Api\TaskController@getDeliveryFee')->middleware
 Route::post('task/create', 'Api\TaskController@CreateTask')->middleware('ConnectDbFromOrder');
 Route::post('return-to-warehouse-task', 'Api\TaskController@returnToWarehouseTask')->middleware('ConnectDbFromOrder');
 Route::post('get/agents', 'Api\AgentController@getAgents')->middleware('ConnectDbFromOrder');
+Route::get('get/agent_detail/{id?}', 'Api\AgentController@getAgentDetails')->middleware('ConnectDbFromOrder');
 Route::post('agent/check_slot', 'Api\AgentSlotController@getAgentsSlotByTags')->middleware('ConnectDbFromOrder');
 Route::post('task/lims/create', 'Api\TaskController@CreateLimsTask')->middleware('ConnectDbFromOrder');
 Route::post('agent/create', 'Api\DriverRegistrationController@storeAgent')->middleware('ConnectDbFromOrder');
@@ -114,6 +115,8 @@ Route::group(['middleware' => ['dbCheck', 'AppAuth','apiLocalization']], functio
     Route::post('updateTaskStatus', 'Api\TaskController@updateTaskStatus');    // api for chnage task status like start,cpmplate, faild
     Route::post('checkOTPRequried', 'Api\TaskController@checkOTPRequried');    // api for chnage task status like start,cpmplate, faild
     Route::post('task/accecpt/reject', 'Api\TaskController@TaskUpdateReject'); // api for accecpt task reject task
+    Route::get('refer_task', 'Api\ActivityController@getReferOrder');                    // api for task list
+
 
     Route::get('get/profile','Api\ActivityController@profile');                // api for get agent profile
     Route::post('update/profile','Api\ActivityController@updateProfile');       // api for updateprofile

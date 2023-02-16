@@ -3,7 +3,7 @@ namespace App\Traits;
 use DB;
 use Illuminate\Support\Collection;
 use Log;
-use App\Model\{ChatSocket, Client, Agent, ClientPreference, DriverGeo,Order};
+use App\Model\{ChatSocket, Client, Agent, ClientPreference, DriverGeo,Order,Task,OrderAdditionData};
 use Illuminate\Support\Facades\Config;
 
 
@@ -92,6 +92,45 @@ trait GlobalFunction{
             return [];
         }
 
+    }
+    public function getDriverTaskDonePercentage($agent_id)
+    {
+        $orders = Order::where('driver_id', $agent_id)->pluck('id')->toArray();
+        $CompletedTasks = Task::whereIn('order_id', $orders)
+                                ->where(function($q) {
+                                    $q->where('task_status',4 );
+                                })->count();
+        $totalTask = Task::whereIn('order_id', $orders)
+                                ->where(function($q) {
+                                    $q->whereIn('task_status',[5,4] ) 
+                                    ->orWhereHas('order', function($q1){
+                                        $q1->where('status', 'cancelled');
+                                    });
+                                })->count();
+        $average =0;
+        if( $CompletedTasks > 0){
+            $average  = (  $CompletedTasks * 100) /$totalTask;        
+        }         
+        $data['averageRating'] = number_format($average,2);
+        $data['CompletedTasks'] = $CompletedTasks;
+        $data['totalTask'] =  $totalTask;
+        return  $data;
+    }
+
+    public function updateOrderAdditional($request=[],$order_id)
+    {
+        $requestOnly = ['category_name'];
+        $validated_keys = $request->only($requestOnly);
+       
+        $order_id = @$order_id;
+    
+        foreach($validated_keys as $key => $value){
+          OrderAdditionData::updateOrCreate(
+                ['key_name' => $key, 'order_id' => $order_id],
+                ['key_name' => $key, 'key_value' => $value,'order_id' => $order_id]);
+        }
+        return 1;
+        
     }
 
 }
