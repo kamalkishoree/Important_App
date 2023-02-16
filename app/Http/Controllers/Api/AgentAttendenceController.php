@@ -27,6 +27,35 @@ class AgentAttendenceController extends BaseController
         //
     }
 
+    public function getTodayAttendance(Request $request)
+    {
+        $user = Auth::user();
+        try {
+            $attendanceData = AgentAttendence::where('agent_id', $user->id)->where('start_date', $request->date)->first();
+
+            if (! empty($attendanceData)) {
+                $attendanceData['in_status'] = 1;
+                if (empty($attendanceData->end_date)) {}
+                return response()->json([
+                    'data' => $attendanceData
+                ]);
+            } else {
+                $attendanceData['agent_id'] = $user->id;
+                $attendanceData['start_date'] = '';
+                $attendanceData['start_time'] = '';
+                $attendanceData['end_date'] = '';
+                $attendanceData['end_time'] = '';
+                $attendanceData['in_status'] = 0;
+                $attendanceData['total'] = "00:00";
+                return response()->json([
+                    'data' => $attendanceData
+                ]);
+            }
+        } catch (\Exception $e) {
+            return $this->errorResponse($e->getMessage(), $e->getCode());
+        }
+    }
+
     /**
      * Show the form for creating a new resource.
      *
