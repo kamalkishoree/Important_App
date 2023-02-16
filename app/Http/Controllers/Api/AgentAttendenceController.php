@@ -189,6 +189,9 @@ class AgentAttendenceController extends BaseController
             if (empty($agentAttendence)) {
                 return $this->error(__('Attendence data not found'), 400);
             }
+            if (!empty($agentAttendence->end_date)) {
+                return $this->error(__('Agent is already out for the day'), 400);
+            }
             $data = [
                 'end_time' => $request->end_time,
                 'end_date' => $request->end_date
