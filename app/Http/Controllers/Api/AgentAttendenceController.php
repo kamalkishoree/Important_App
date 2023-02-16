@@ -182,9 +182,9 @@ class AgentAttendenceController extends BaseController
                 return $this->error($validator->errors()
                     ->first(), 422);
             }
-
             $agentAttendence = AgentAttendence::where([
-                'id' => $request->id
+                'agent_id' => $request->id,
+                'start_date' => $request->end_date
             ])->first();
             if (empty($agentAttendence)) {
                 return $this->error(__('Attendence data not found'), 400);
