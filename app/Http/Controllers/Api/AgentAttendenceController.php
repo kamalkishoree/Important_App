@@ -96,7 +96,11 @@ class AgentAttendenceController extends BaseController
                 'start_date' => $request->start_date
             ])->first();
             if ($agent) {
-                return $this->error(__('Agent is already in for the day'), 400);
+                if (! empty($agent->end_date)) {
+                    return $this->error(__('Shift for today is completed'), 400);
+                } else {
+                    return $this->error(__('Agent is already in for the day'), 400);
+                }
             }
 
             $data = [
@@ -189,7 +193,7 @@ class AgentAttendenceController extends BaseController
             if (empty($agentAttendence)) {
                 return $this->error(__('Attendence data not found'), 400);
             }
-            if (!empty($agentAttendence->end_date)) {
+            if (! empty($agentAttendence->end_date)) {
                 return $this->error(__('Agent is already out for the day'), 400);
             }
             $data = [
