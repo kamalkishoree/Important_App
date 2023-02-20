@@ -61,12 +61,14 @@ trait GlobalFunction{
     public function getGeoBasedAgentsData($geo, $is_cab_pooling, $agent_tag = '', $date, $cash_at_hand)
     {
         try {
-            $preference = ClientPreference::select('manage_fleet')->first();
+            $preference = ClientPreference::select('manage_fleet', 'is_cab_pooling_toggle')->first();
             $geoagents_ids =  DriverGeo::where('geo_id', $geo);
 
-            $geoagents_ids = $geoagents_ids->whereHas('agent', function($q) use ($geo, $is_cab_pooling){
-                $q->where('is_pooling_available', $is_cab_pooling);
-            });
+            if($preference->is_cab_pooling_toggle == 1){
+                $geoagents_ids = $geoagents_ids->whereHas('agent', function($q) use ($geo, $is_cab_pooling){
+                    $q->where('is_pooling_available', $is_cab_pooling);
+                });
+            }
 
             if($agent_tag !='')
             {
