@@ -1078,6 +1078,7 @@ class TaskController extends BaseController
          //   $notification_time = isset($request->schedule_time) ? $request->schedule_time : Carbon::now()->toDateTimeString();
 
             $agent_id          = $request->allocation_type === 'm' ? $request->agent : null;
+            Log::info("agent_id".$request->agent);
             $rejectable_order   = isset($request->rejectable_order)?$request->rejectable_order:0;
             $refer_driver_id = null;
             if($rejectable_order ==1 && checkColumnExists('orders', 'rejectable_order')){
@@ -2032,6 +2033,7 @@ class TaskController extends BaseController
         if (!isset($geo)) {
             $oneagent = Agent::where('id', $agent_id)->first();
             if(!empty($oneagent->device_token) && $oneagent->is_available == 1){
+                $allcation_type = 'ACK';
                 $data = [
                     'order_id'            => $orders_id,
                     'driver_id'           => $agent_id,
@@ -2217,6 +2219,7 @@ class TaskController extends BaseController
         if (!isset($geo)) {
             $oneagent = Agent::where('id', $agent_id)->first();
             if(!empty($oneagent->device_token) && $oneagent->is_available == 1){
+                $allcation_type = 'ACK';
                 $data = [
                     'order_id'            => $orders_id,
                     'driver_id'           => $agent_id,
@@ -2314,6 +2317,7 @@ class TaskController extends BaseController
         if (!isset($geo)) {
             $oneagent = Agent::where('id', $agent_id)->first();
             if(!empty($oneagent->device_token) && $oneagent->is_available == 1){
+                $allcation_type = 'ACK';
                 $data = [
                     'order_id'            => $orders_id,
                     'driver_id'           => $agent_id,
@@ -2428,6 +2432,7 @@ class TaskController extends BaseController
         if (!isset($geo)) {
             $oneagent = Agent::where('id', $agent_id)->first();
             if(!empty($oneagent->device_token) && $oneagent->is_available == 1){
+                $allcation_type = 'ACK';
                 $data = [
                     'order_id'            => $orders_id,
                     'driver_id'           => $agent_id,
@@ -2736,6 +2741,15 @@ class TaskController extends BaseController
 
         $total         = $pricingRule->base_price + ($paid_distance * $pricingRule->distance_fee) + ($paid_duration * $pricingRule->duration_price);
 
+        //-------------------for bid and ride---------------------
+        if(isset($pricingRule->base_price_minimum)){
+            $total_minimum = $pricingRule->base_price_minimum + ($paid_distance * $pricingRule->distance_fee_minimum) + ($paid_duration * $pricingRule->duration_price_minimum);
+            $total_maximum = $pricingRule->base_price_maximum + ($paid_distance * $pricingRule->distance_fee_maximum) + ($paid_duration * $pricingRule->duration_price_maximum);
+        }else{
+            $total_minimum = 0;
+            $total_maximum = 0;
+        }
+
         $client = ClientPreference::take(1)->with('currency')->first();
         $currency = $client->currency??'';
 
@@ -2746,6 +2760,8 @@ class TaskController extends BaseController
             'currency' => $currency,
             'paid_distance' => $paid_distance,
             'paid_duration' => $paid_duration,
+            'total_minimum' => $total_minimum,
+            'total_maximum' => $total_maximum,
             'toll_fee' => (isset($getdata['toll_amount'])?$getdata['toll_amount']:0),
             'message' => __('success')
         ], 200);
@@ -4124,6 +4140,7 @@ class TaskController extends BaseController
         }
     }
 
+    //-------Bid and ride notification to drivers
     public function bidRideRequestNotification(Request $request)
     {
         try {
@@ -4185,7 +4202,7 @@ class TaskController extends BaseController
 
             $cash_at_hand      = $auth->getAllocation->maximum_cash_at_hand_per_person??0;
 
-            $geoagents = $this->getGeoBasedAgentsData($geoid, $agent_tag, $date, $cash_at_hand);
+            $geoagents = $this->getGeoBasedAgentsData($geoid, 0, $agent_tag, $date, $cash_at_hand);
             foreach ($geoagents as $key =>  $geoitem) {
                 $notificationdata = [
                     'driver_id'           => $geoitem->id,
