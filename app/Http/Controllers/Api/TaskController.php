@@ -25,7 +25,7 @@ use App\Model\ClientPreference;
 use App\Model\NotificationType;
 use App\Traits\agentEarningManager;
 use App\Model\BatchAllocationDetail;
-use App\Model\{PricingRule, TagsForAgent, AgentPayout, TagsForTeam, Team, PaymentOption, PayoutOption, AgentConnectedAccount, CustomerVerificationResource, SubscriptionInvoicesDriver, TaskType, AgentLogSlab, AgentFleet,OrderAdditionData};
+use App\Model\{PricingRule, TagsForAgent, AgentPayout, TagsForTeam, Team, PaymentOption, PayoutOption, AgentConnectedAccount, CustomerVerificationResource, SubscriptionInvoicesDriver, TaskType, AgentLogSlab, AgentFleet,OrderAdditionData, UserBidRideRequest};
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -4115,6 +4115,98 @@ class TaskController extends BaseController
                 'message' => __('Bid & Ride/Instant Booking Task updated Successfully'),
                 'task_id' => $orders->id,
                 'status'  => $orders->status,
+            ], 200);
+        } catch (Exception $e) {
+            DB::rollback();
+            return response()->json([
+                'message' => $e->getMessage()
+            ], 400);
+        }
+    }
+
+    public function bidRideRequestNotification(Request $request)
+    {
+        try {
+            $auth =  $client =  Client::with(['getAllocation', 'getPreference'])->first();
+            $header = $request->header();
+            if(isset($header['client'][0]))
+            {
+
+            }
+            else{
+               $header['client'][0] = $client->database_name;
+            }
+
+            $latitude  = array();
+            $longitude = array();
+            $pickup_location = array('latitude' => '0.0000', 'longitude' => '0.00000');
+            $key       = 0;
+
+            foreach ($request->tasks as $key => $value) {
+                
+                if($value['latitude']!='' && $value['longitude']){
+                    array_push($latitude, $value['latitude']);
+                    array_push($longitude, $value['longitude']);
+
+                    if($key == 0) {
+                        $pickup_location = $value;
+                    }
+                }
+                $key++;
+            }
+
+            //geoid based on first pickup geolocation
+            $geoid = '';
+            if(($pickup_location['latitude']!='' || $pickup_location['latitude']!='0.0000') && ($pickup_location['longitude'] !='' || $pickup_location['longitude']!='0.0000')):
+                $geoid = $this->findLocalityByLatLng($pickup_location['latitude'], $pickup_location['longitude']);
+            endif;
+            
+            $agent_tag = isset($request->agent_tag)?$request->agent_tag:'';
+
+            $UserBidRideRequest                          = new UserBidRideRequest();
+            $UserBidRideRequest->geo_id                  = ($geoid) ? $geoid : 0;
+            $UserBidRideRequest->bid_id                  = $request->bid_id;
+            $UserBidRideRequest->db_name                 = $request->db_name;
+            $UserBidRideRequest->client_code             = $request->client_code;
+            $UserBidRideRequest->agent_tag               = $request->agent_tag;
+            $UserBidRideRequest->tasks                   = json_encode($request->tasks);
+            $UserBidRideRequest->requested_price         = $request->requested_price;
+            $UserBidRideRequest->call_back_url           = $request->call_back_url;
+            $UserBidRideRequest->expired_at              = $request->expired_at;
+            $UserBidRideRequest->customer_name           = $request->customer_name;
+            $UserBidRideRequest->customer_image          = $request->customer_image;
+            $UserBidRideRequest->minimum_requested_price = $request->minimum_requested_price;
+            $UserBidRideRequest->maximum_requested_price = $request->maximum_requested_price;
+            $UserBidRideRequest->expire_seconds          = $request->expire_seconds;
+            $UserBidRideRequest->save();
+
+            
+            $date = \Carbon\Carbon::today();
+
+            $cash_at_hand      = $auth->getAllocation->maximum_cash_at_hand_per_person??0;
+
+            $geoagents = $this->getGeoBasedAgentsData($geoid, $agent_tag, $date, $cash_at_hand);
+            foreach ($geoagents as $key =>  $geoitem) {
+                $notificationdata = [
+                    'driver_id'           => $geoitem->id,
+                    'notification_time'   => Carbon::now()->addSeconds(2)->format('Y-m-d H:i:s'),
+                    'notificationType'    => 'bid_ride_request',
+                    'created_at'          => Carbon::now()->toDateTimeString(),
+                    'updated_at'          => Carbon::now()->toDateTimeString(),
+                    'device_type'         => $geoitem->device_type,
+                    'device_token'        => $geoitem->device_token,
+                    'detail_id'           => rand(11111111, 99999999),
+                    'title'               => 'Bid & Ride Request',
+                    'body'                => 'Check All Details For This Request In App',
+                    'task_type'           => 'bid_ride_request'
+                ];
+                $this->sendnotification($notificationdata, $auth->getPreference);
+            }
+            
+            DB::commit();
+            return response()->json([
+                'message' => __('Bid Request Created Successfully.'),
+                'status'  => "success",
             ], 200);
         } catch (Exception $e) {
             DB::rollback();
