@@ -75,12 +75,18 @@ class ShortcodeController extends BaseController
             DB::purge($database_name);
            
             $client_db_data = Client::where('is_deleted', 0)->where('code',$request->shortCode)->select('id', 'code')->with('getPreference')->first();
-          
+            $getAdditionalPreference = getAdditionalPreference([
+                'pickup_type',
+                'drop_type',
+                'is_attendence',
+                'idle_time'
+            ]);
             if(!empty($client_db_data)){
                 $client->client_db_id = $client_db_data->id;
                 $client->client_db_code = $client_db_data->code;
                 $client->is_driver_slot = !empty($client_db_data->getPreference) && isset($client_db_data->getPreference->is_driver_slot) ? $client_db_data->getPreference->is_driver_slot : 0;
                 $client->is_freelancer = !empty($client_db_data->getPreference) && isset($client_db_data->getPreference->is_freelancer) ? $client_db_data->getPreference->is_freelancer : 0;
+                $client['isAttendence'] = ($getAdditionalPreference['is_attendence'] == 1) ? $getAdditionalPreference['is_attendence'] : 0;
                 
             }
         }

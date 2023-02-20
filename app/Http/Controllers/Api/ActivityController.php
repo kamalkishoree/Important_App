@@ -371,7 +371,14 @@ class ActivityController extends BaseController
                 }
             }
         }
-
+        
+        $getAdditionalPreference = getAdditionalPreference([
+            'pickup_type',
+            'drop_type',
+            'is_attendence',
+            'idle_time'
+        ]);
+        $preferences['isAttendence'] = ($getAdditionalPreference['is_attendence'] == 1) ? $getAdditionalPreference['is_attendence'] : 0;
         $allcation = AllocationRule::first('request_expiry');
         $averageTaskComplete   = $this->getDriverTaskDonePercentage( $agents->id);
         $preferences['alert_dismiss_time'] = (int)$allcation->request_expiry;

@@ -1,8 +1,7 @@
 $(function () {
 
     dispatcherStorage.removeStorageAll();
-    dispatcherStorage.setStorageSingle('eventType', 'working_hours');
-    		 $("#duration").css('display',"none");
+    dispatcherStorage.setStorageSingle('eventType', 'attendence');
     var product_id = vendor_id = title = block = appoin = agent_id = calendar = Is_gerenal='';
     var CSRF_TOKEN = $("input[name=_token]").val();
     var calendarEl = document.getElementById('calendar');
@@ -114,18 +113,21 @@ $(function () {
         return false;
     })
 
-    $(document).on('click', '.get_event', function () {
-		 $("#duration").css('display',"none");
+    $(document).on('click', '.get_attendence', function () {
         var event = $(this).attr('data-eventType');
         dispatcherStorage.setStorageSingle('eventType', event);
         spinnerJS.showSpinner();
+        if ($('#calendar').length > 0) {
+            if (calendar) {
+                calendar.destroy();
+            }}
         fullCalendarInt(agent_id, event);
     });
 
-    async function fullCalendarInt(agent_id, eventType = 'working_hours') {
+    async function fullCalendarInt(agent_id, eventType = 'attendence') {
 
         var eventEnabled = true;
-        if (eventType == 'working_hours') {
+        if (eventType == 'attendence') {
             eventEnabled = true;
         } else if (eventType == 'new_booking') {
             eventEnabled = true;
@@ -138,12 +140,12 @@ $(function () {
             }
 
             calendar = new FullCalendar.Calendar(calendarEl, {
-                initialView: 'timeGridWeek',
+                initialView: 'dayGridMonth',
                 //disableDragging: true,
                 headerToolbar: {
                     left: 'prev,next',
                     center: 'title',
-                    right: 'timeGridWeek,timeGridDay'
+                  //  right: 'timeGridWeek,timeGridDay'
                 },
                 slotLabelFormat: [
                     {
@@ -164,6 +166,9 @@ $(function () {
                 height: 'auto',
                 editable: false,
                 nowIndicator: true,
+                 eventRender: function(info) {
+      info.el.querySelector('.fc-event-title').innerHTML = "<i>" + info.event.title + "</i>";
+    },
                 //eventMaxStack: 1,
                 select: function (arg) {
 
@@ -262,9 +267,16 @@ $(function () {
                     }
                 },
 
+eventContent: function(arg) {
+  let italicEl = document.createElement('p')
+  italicEl.className = "p-align";
 
+    italicEl.innerHTML = arg.event.title
+  let arrayOfDomNodes = [ italicEl ]
+  return { domNodes: arrayOfDomNodes }
+},
                 events: function (info, successCallback, failureCallback) {
-                    var calender_data_url = Agent_calender_url.replace(":id", agent_id)
+                    var calender_data_url = AgentAttendence_calender_url.replace(":id", agent_id)
                     $.ajax({
                         url: calender_data_url,
                         type: "GET",
@@ -278,13 +290,15 @@ $(function () {
                             var days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
                             var slotDayList = [];
                             var events = [];
-                            console.log(response);
-                            $.each(response, function (index, data) {
+                            $("#duration").css("display","block");
+                            $("#duration").html("Total Hours: "+response.duration);
+                            $.each(response.data, function (index, data) {
                                 var slotDay = parseInt(moment(data.start).format('d')) + 1;
                                 var slotStartTime = moment(data.start).format('h:mm A');
-                                var slotEndTime = moment(data.end).format('h:mm A');
-
-
+                                 var slotEndTime = moment(data.end).format('h:mm A');
+                                if(data.end_time == ''){
+									 var slotEndTime = 'N/A';
+								}
                                 $.each(days, function (key, value) {
                                     if (slotDay == key + 1) {
                                         if (slotDayList.includes(slotDay)) {
@@ -296,11 +310,13 @@ $(function () {
                                     }
                                 });
                                 slotDayList.push(slotDay);
-
                                 events.push({
                                     title: data.title,
                                     start: data.start,
                                     end: data.end,
+                                    duration:data.duration,
+                                     in_time:data.in_time,
+                                      out_time:data.out_time,
                                     type: data.type,
                                     color: data.color,
                                     type_id: data.type_id,
@@ -326,125 +342,6 @@ $(function () {
                     });
                 },
                 eventResize: function (arg) {
-                },
-                eventClick: function (ev) {
-                    if (!eventEnabled) {
-                        return;
-                    }
-                    if (ev.event.extendedProps.slot_id == '' && ev.event.extendedProps.slot_id == undefined) {
-                        return;
-                    }
-                    let title = ev.event.extendedProps.booking_type == 'new_booking' ? 'View Booking' : 'Edit working hours';
-                    Swal.fire({
-                        title: title,
-                        html: EditSlotHtml,
-                        confirmButtonText: 'Submit',
-                        focusConfirm: false,
-                        customClass: "edit-slot-agent",
-                        preConfirm: () => {
-                            const start_time = Swal.getPopup().querySelector('#edit_start_time').value
-                            const end_time = Swal.getPopup().querySelector('#edit_end_time').value
-                            const edit_slot_date = Swal.getPopup().querySelector('#edit_slot_date').value
-                            const edit_slot_id = Swal.getPopup().querySelector('#edit_slot_id').value
-                            const blocktime = Swal.getPopup().querySelector('#blocktime').value
-                            const recurring = dispatcherStorage.getStorage('recurring_val')
-                            const memo = Swal.getPopup().querySelector('#edit_memo').value;
-                            const booking_type = Swal.getPopup().querySelector('#edit_booking_type').value
-                            var week_day = [];
-
-                            //const slotType = dispatcherStorage.getStorage('SlotType')
-
-                            $.each($("input:checkbox[name='week_day[]']:checked"), function () {
-                                week_day.push($(this).val());
-                            });
-
-                            if (start_time == '' && end_time == '' && blocktime == '' && memo == '' && booking_type == '') {
-                                Swal.showValidationMessage(`All feilds are required!!`)
-                                return false;
-                            }
-                            if (recurring == 'true') {
-                                console.log(week_day);
-                                if (!week_day.length > 0) {
-                                    Swal.showValidationMessage(`Please select days to recurring!!`)
-                                    return false;
-                                }
-
-                            }
-
-                            return { start_time: start_time, end_time: end_time, week_day: week_day, blocktime: blocktime, recurring: recurring, booking_type: booking_type, memo: memo, edit_slot_id: edit_slot_id, edit_slot_date: edit_slot_date }
-                        }, onOpen: function () {
-
-                        }
-                    }).then(async (result) => {
-                        if (result.dismiss == undefined) {
-                            var formData = {
-                                week_day: result.value.week_day,
-                                blocktime: result.value.blocktime,
-                                recurring: result.value.recurring,
-                                booking_type: result.value.booking_type,
-                                memo: result.value.memo,
-                                start_time: result.value.start_time,
-                                end_time: result.value.end_time,
-                                slot_id: result.value.edit_slot_id,
-                                edit_slot_date: result.value.edit_slot_date,
-                                agent_id: agent_id
-
-
-                            }
-
-                            await add_slot_time(formData, 'edit')
-                        }
-
-                    })
-
-                    if (ev.event.extendedProps.booking_type == 'new_booking') {
-                        $('.view_booking').hide();
-                        $('.view_orderDetails').show();
-                        document.getElementById("viewOrder").href = ev.event.extendedProps.order_url;
-                        $('.swal2-actions').hide();
-                    }
-                    // Delete Slot Form
-                    /**storage */
-                    // console.log(ev.event);
-                    console.log(ev.event.extendedProps);
-                    dispatcherStorage.setStorageSingle('slot_id', ev.event.extendedProps.type_id)
-                    dispatcherStorage.setStorageSingle('edit_slot_id', ev.event.extendedProps.slot_id);
-                    dispatcherStorage.setStorageSingle('edit_booking_type', ev.event.extendedProps.booking_type);
-                    //dispatcherStorage.setStorageSingle('edit_slot_date',ev.event.extendedProps.type);
-                    dispatcherStorage.setStorageSingle('edit_blocktime', ev.event.extendedProps.blocktime);
-                    dispatcherStorage.setStorageSingle('edit_recurring', ev.event.extendedProps.recurring);
-                    dispatcherStorage.setStorageSingle('edit_type_id', ev.event.extendedProps.type_id);
-                    dispatcherStorage.setStorageSingle('edit_slot_type_old', ev.event.extendedProps.type);
-                    if (ev.event.extendedProps.recurring == 1) {
-                        dispatcherStorage.setStorageSingle('recurring_val', 1)
-                        document.getElementById("recurring").checked = true;
-                        $(".weekDays").fadeIn(1000);
-                        $.each(ev.event.extendedProps.days, function (key, val) {
-                            document.getElementById("day_" + val).checked = true;
-                        });
-                        document.getElementById("blocktime").disabled = false;
-                    } else {
-                        dispatcherStorage.setStorageSingle('recurring_val', 0)
-                        document.getElementById("blocktime").disabled = true;
-                        $(".forDate").fadeIn(1000);
-                    }
-                    initDatetimeRangePicker(ev.event.extendedProps.start_date, ev.event.extendedProps.end_date);
-                    $('#edit_slot_date').flatpickr({
-                        minDate: new Date(ev.event.startStr),
-                        defaultDate: new Date(ev.event.startStr)
-                    });
-
-                    /**storage */
-                    // document.getElementById('slot_day_id').value = ev.event.extendedProps.type_id;
-                    document.getElementById('edit_slot_id').value = ev.event.extendedProps.slot_id;
-                    // document.getElementById('SlotType').value = ev.event.extendedProps.type;
-                    // document.getElementById('SlotTypeOld').value = ev.event.extendedProps.type;
-
-                    document.getElementById('edit_start_time').value = ev.event.extendedProps.start_time;
-                    document.getElementById('edit_end_time').value = ev.event.extendedProps.end_time;
-                    document.getElementById('edit_memo').value = ev.event.extendedProps.memo;
-
-
                 }
             });
             setTimeout(async () => {
