@@ -1078,7 +1078,7 @@ class TaskController extends BaseController
          //   $notification_time = isset($request->schedule_time) ? $request->schedule_time : Carbon::now()->toDateTimeString();
 
             $agent_id          = $request->allocation_type === 'm' ? $request->agent : null;
-            Log::info("agent_id".$request->agent);
+            
             $rejectable_order   = isset($request->rejectable_order)?$request->rejectable_order:0;
             $refer_driver_id = null;
             if($rejectable_order ==1 && checkColumnExists('orders', 'rejectable_order')){
@@ -1086,7 +1086,7 @@ class TaskController extends BaseController
                 $refer_driver_id  =$request->agent ??null;
                 $request->allocation_type = 'u';
             }
-            \Log::info($request->allocation_type);
+            
           
             $order = [
                 'order_number'                    => $request->order_number ?? null,
@@ -3191,7 +3191,7 @@ class TaskController extends BaseController
         
 
             $agent_id          = $request->allocation_type === 'm' ? $request->agent : null;
-            Log::info('order no royo_order_number'.$request->royo_order_number);
+           
 
             $order = [
                 'order_number'                    => $request->order_number ?? null,
