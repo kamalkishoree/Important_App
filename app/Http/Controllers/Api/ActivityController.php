@@ -6,7 +6,7 @@ use App\Http\Controllers\Api\BaseController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
-use App\Model\{Agent, AgentLog, AllocationRule, Client, ClientPreference, Cms, Order, Task, TaskProof, Timezone, User, PaymentOption};
+use App\Model\{Agent, AgentLog, AllocationRule, Client, ClientPreference, Cms, Order, Task, TaskProof, Timezone, User, PaymentOption, UserBidRideRequest, DeclineBidRequest, DriverGeo};
 use Validation;
 use DB, Log;
 use Illuminate\Support\Facades\Storage;
@@ -650,6 +650,66 @@ class ActivityController extends BaseController
             'status' => 200,
             'message' => __('success')
         ], 200);
+    }
+
+
+    //--------------------get bid request based on agent tag and geoid--------------
+    public function getBidRideRequests(Request $request)
+    {
+        $id        = Auth::user()->id;
+        $geo_ids   =  DriverGeo::where('driver_id', $id)->pluck('geo_id');
+        $agenttags =  Agent::with('tags')->where('id', $id)->first();
+        $tags = array();
+        foreach($agenttags->tags as $agenttags)
+        {
+            $tags[] = $agenttags->name;
+        }
+
+        if(count($tags) > 0 && count($geo_ids) > 0){
+            $currenttime = Carbon::now()->format('Y-m-d H:i:s');
+            $requestdata = UserBidRideRequest::whereIn('geo_id', $geo_ids)->whereIn('agent_tag', $tags)->where('expired_at', '>', $currenttime)
+                           ->whereDoesntHave('declinedbyAgent', function($q) use ($id){
+                            $q->where('agent_id', $id);
+                        })->get();
+        }else{
+            $requestdata = [];
+        }
+
+        return response()->json([
+            'data' => array('requestdata' =>$requestdata),
+            'status' => 200,
+            'message' => __('success')
+        ], 200);
+    }
+
+    public function getAcceptDeclinedBidRideRequests(Request $request)
+    {
+        $id        = Auth::user()->id;
+        $biddata =  UserBidRideRequest::where('id', $request->id)->first();
+        if(!empty($biddata)){
+            $inseted = DeclineBidRequest::insert(['bid_id' => $request->id, 'agent_id' => $id, 'status' => $request->status]);
+
+            if($request->status == 1){
+                return response()->json([
+                    'data' =>[],
+                    'status' => 200,
+                    'message' => __('Request accepted')
+                ], 200);
+            }else{
+                return response()->json([
+                    'data' =>[],
+                    'status' => 200,
+                    'message' => __('Request Declined')
+                ], 200);
+            }
+            
+        }else{
+            return response()->json([
+                'data' =>[],
+                'status' => 404,
+                'message' => __('!Error, Something went wrong.')
+            ], 200);
+        }
     }
 
 }
