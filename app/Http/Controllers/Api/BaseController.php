@@ -71,6 +71,10 @@ class BaseController extends Controller
                     return $this->error($send->message, 404);
                 }
 
+            }elseif($client_preference->sms_provider == 6) //for Vonage (nexmo)
+            {
+                $crendentials = json_decode($client_preference->sms_credentials);
+                $send = $this->vonage_sms($to,$body,$crendentials);
             }else{
                 $credentials = json_decode($client_preference->sms_credentials);
                 $sms_key = (isset($credentials->sms_key)) ? $credentials->sms_key : $client_preference->sms_provider_key_1;

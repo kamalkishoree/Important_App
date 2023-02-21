@@ -330,6 +330,13 @@ class ClientController extends Controller
                     'sender_id' => $request->arkesel_sender_id,
                 ];
             }
+            elseif($request->sms_provider == 6) // for Vonage (nexmo)
+            {
+                $sms_credentials = [
+                    'api_key' => $request->vonage_api_key,
+                    'secret_key' => $request->vonage_secret_key,
+                ];
+            }
             //for static otp
             $sms_credentials['static_otp'] = ($request->has('static_otp') && $request->static_otp == 'on') ? 1 : 0;
 
@@ -345,6 +352,9 @@ class ClientController extends Controller
 
         unset($request['mazinhost_api_key']);
         unset($request['mazinhost_sender_id']);
+
+        unset($request['vonage_api_key']);
+        unset($request['vonage_secret_key']);
 
         unset($request['unifonic_app_id']);
         unset($request['unifonic_account_email']);
