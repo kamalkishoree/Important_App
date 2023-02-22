@@ -51,6 +51,12 @@ class SmsProviderSeeder extends Seeder
                 'keyword' => 'vonage',
                 'status' => '1'
             ),
+            array(
+                'id' => 7,
+                'provider' => 'SMS Partner France',
+                'keyword' => 'sms_partner',
+                'status' => '1'
+            ),
         );
         if($sms_count == 0)
         {
