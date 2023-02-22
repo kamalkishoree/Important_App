@@ -81,10 +81,19 @@ class AgentAttendenceController extends Controller
                 } else {
                     $etime = date('H:i:s', strtotime('23:59:00'));
                 }
-                $title .= '<span class="badge badge-pill badge-primary pill-state">Present</span>';
-                $title .= "<br/>In Time: " . date('h:i A', strtotime($v->start_time));
-                $title .= "<br/>Out Time: " . date('h:i A', strtotime($etime));
-                $title .= "<br/>Duration: " . $v->total;
+                
+                if ($a_date == date('Y-m-d') && empty($v->end_time)) {
+                    $title .= '<span class="badge badge-pill badge-success pill-state">Online</span>';
+                    $title .= "<br/>In Time: " . date('h:i A', strtotime($v->start_time));
+                    $title .= "<br/>Out Time: N/A";
+                    $title .= "<br/>Duration: N/A";
+                } else {
+                    $title .= '<span class="badge badge-pill badge-primary pill-state">Present</span>';
+                    $title .= "<br/>In Time: " . date('h:i A', strtotime($v->start_time));
+                    $title .= "<br/>Out Time: " . date('h:i A', strtotime($v->end_time));
+                    $title .= "<br/>Duration: " . $v->total;
+                }
+                
                 $totalDuration = $v->getDuration($total);
                 $showData[$count]['title'] = $title;
                 $showData[$count]['start'] = $a_date . 'T' . $v->start_time;
