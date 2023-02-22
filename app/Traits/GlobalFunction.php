@@ -61,12 +61,14 @@ trait GlobalFunction{
     public function getGeoBasedAgentsData($geo, $is_cab_pooling, $agent_tag = '', $date, $cash_at_hand)
     {
         try {
-            $preference = ClientPreference::select('manage_fleet')->first();
+            $preference = ClientPreference::select('manage_fleet', 'is_cab_pooling_toggle')->first();
             $geoagents_ids =  DriverGeo::where('geo_id', $geo);
 
-            $geoagents_ids = $geoagents_ids->whereHas('agent', function($q) use ($geo, $is_cab_pooling){
-                $q->where('is_pooling_available', $is_cab_pooling);
-            });
+            if(@$preference->is_cab_pooling_toggle == 1){
+                $geoagents_ids = $geoagents_ids->whereHas('agent', function($q) use ($geo, $is_cab_pooling){
+                    $q->where('is_pooling_available', $is_cab_pooling);
+                });
+            }
 
             if($agent_tag !='')
             {
@@ -77,7 +79,7 @@ trait GlobalFunction{
 
             $geoagents_ids =  $geoagents_ids->pluck('driver_id');
 
-            $geoagents = Agent::where('is_threshold',1)->whereIn('id',  $geoagents_ids)->with(['logs','order'=> function ($f) use ($date) {
+            $geoagents = Agent::where('is_threshold', 1)->whereIn('id',  $geoagents_ids)->with(['logs','order'=> function ($f) use ($date) {
                 $f->whereDate('order_time', $date)->with('task');
             }])->orderBy('id', 'DESC');
 
@@ -85,7 +87,7 @@ trait GlobalFunction{
                 $geoagents = $geoagents->whereHas('agentFleet');
             }
             $geoagents = $geoagents->get()->where("agent_cash_at_hand", '<', $cash_at_hand);
-
+            
             return $geoagents;
 
         } catch (\Throwable $th) {
