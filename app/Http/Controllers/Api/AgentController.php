@@ -15,9 +15,11 @@ use App\Model\Roster;
 use Config;
 use Illuminate\Support\Facades\URL;
 use GuzzleHttp\Client as GClient;
+use App\Traits\{AgentSlotTrait};
 
 class AgentController extends BaseController
 {
+    use AgentSlotTrait;
     /**   get agent according to lat long  */
     function getAgents(Request $request)
     {
@@ -205,5 +207,73 @@ class AgentController extends BaseController
             return $this->errorResponse($e->getMessage(), $e->getCode());
         }
     }
-   
+    public function getTaskListWithDate(Request $request){
+        $header = $request->header();
+        $client_code = Client::where('database_name', $header['client'][0])->first();
+        $tz = new Timezone();
+        $orderStatus = 'assigned';
+        $client_code->timezone = $tz->timezone_name($client_code->timezone);
+        $selectedDatesArray   = $request->has('selectedDatesArray') ? $request->selectedDatesArray : [];
+     
+      
+        $id     = Auth::user()->id;
+
+        $all     = $request->all;
+        $tasks   = [];
+        $orders = Order::where('driver_id', $id);//->where('status',  $orderStatus);
+        //if ($all != 1) { //geting today task
+            $orders = $orders->whereIn(DB::raw('DATE(order_time)'), $selectedDatesArray );
+            //$orders = $orders->whereBetween('order_time', [$utc_start,$utc_end]);
+           // } 
+       
+        $orders = $orders->orderBy("order_time","ASC")->orderBy("id","ASC")->pluck('id')->toArray();
+     
+        if (count($orders) > 0) {
+            
+            $tasks = Task::whereIn('order_id', $orders)
+            ->with(['location','tasktype','order.customer','order.customer.resources','order.task.location','order.additionData'])->orderBy("order_id", "DESC")
+            ->orderBy("id","ASC")
+            ->get();
+            if (count($tasks) > 0) {
+                //sort according to task_order
+                $tasks = $tasks->toArray();
+                if ($tasks[0]['task_order'] !=0) {
+                    usort($tasks, function ($a, $b) {
+                        return $a['task_order'] <=> $b['task_order'];
+                    });
+                }
+            }
+        }
+        $request->merge(['agent_id'=> $id]);
+        $AgentSlotRoster = $this->getAgentSlotByType($request);
+        $AgentBlockRoster = $this->getAgentSlotBlocked($request);
+        $response =  [
+                        'tasks' => $tasks,
+                        'agent_slots'=> $AgentSlotRoster,
+                        'agent_blocked_dates'=> $AgentBlockRoster
+                    ];
+        return response()->json([
+            'data' => $response,
+            'status' => 200,
+            'message' => __('success')
+        ], 200);
+    }
+
+     /**   get agent data api */
+     function getAgentDetails(Request $request,$driver_id)
+     {
+         try {
+            $agent = Agent::with(['agentlog','agentRating'])->where('id',$driver_id)->first();
+            return response()->json([
+                'data' => $agent,
+                'status' => 200,
+                'message' => __('success')
+            ], 200);
+         } catch (Exception $e) {
+             return response()->json([
+                 'message' => $e->getMessage()
+             ], 400);
+         }
+     }
+
 }

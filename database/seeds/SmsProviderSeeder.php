@@ -45,6 +45,12 @@ class SmsProviderSeeder extends Seeder
                 'keyword' => 'arkesel',
                 'status' => '1'
             ),
+            array(
+                'id' => 6,
+                'provider' => 'Vonage (nexmo)',
+                'keyword' => 'vonage',
+                'status' => '1'
+            ),
         );
         if($sms_count == 0)
         {

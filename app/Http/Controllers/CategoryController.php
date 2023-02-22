@@ -128,35 +128,47 @@ class CategoryController extends Controller
             $order_details->save();
             $order_details = OrderPanelDetail::find($order_panel_id);
             $url = $order_details->url;
-
-            // URL
-            $apiAuthCheckURL = $url.'/api/v1/dispatcher/check-order-keys';
             
-            // POST Data
-            $postInput = [
+            // URL
+            // $apiAuthCheckURL = $url.'/api/v1/dispatcher/check-order-keys';
+            
+            // // POST Data
+            // $postInput = [
                 
-            ];
+            // ];
     
-            // Headers
+            // // Headers
             $headers = [
                 'shortcode' => $order_details->code,
                 'code' => $order_details->code,
                 'key' => $order_details->key
             ];
-            
-            $response = Http::withHeaders($headers)->post($apiAuthCheckURL, $postInput);
+          
+            // $response = Http::withHeaders($headers)->post($apiAuthCheckURL, $postInput);
              
-            // $statusCode = $response->status();
-            $checkAuth = json_decode($response->getBody(), true);
+            // // $statusCode = $response->status();
+            // $checkAuth = json_decode($response->getBody(), true);
             
-            if( @$checkAuth['status'] == 200){
+            // if( @$checkAuth['status'] == 200){
                 $apiRequestURL = $url.'/api/v1/category-product-sync-dispatcher';
-           
+              
+                \Log::info('category-product-sync-dispatcher');
                 // POST Data
-                $postInput = ['order_panel_id' => $order_panel_id];
+                $Dispatcher_url = $_SERVER['HTTP_ORIGIN']; // $_SERVER['REQUEST_SCHEME'].'://'.$_SERVER['HTTP_HOST'];
+                \Log::info($Dispatcher_url);
+                $clients = Client::where('is_superadmin', 1)->select('id','code')->first();
+
+                // POST Data
+                $postInput = [
+                'order_panel_id' => $order_panel_id,
+                'dispatcher_url' => $Dispatcher_url,
+                'dispatcher_code'=> $clients->code
+                ];
+                
                 // $headers['Authorization'] = $checkAuth['token'];
-                $response = Http::withHeaders($headers)->post($apiRequestURL, $postInput);
+                $response = Http::withHeaders($headers)->get($apiRequestURL, $postInput);
                 $responseBody = json_decode($response->getBody(), true);
+                \Log::info($responseBody);
                 if( @$responseBody['status'] == 200){
                     $order_details = OrderPanelDetail::find($order_panel_id);
                     $order_details->sync_status = 1;
@@ -166,11 +178,11 @@ class CategoryController extends Controller
                 }elseif( @$responseBody['error'] && !empty($responseBody['error'])){
                     return redirect()->back()->with('error', $responseBody['error']);
                 }
-             } elseif( @$checkAuth['status'] == 401){
-                return redirect()->back()->with('error', $checkAuth['message']);
-            }else{
-                return redirect()->back()->with('error', 'Invalid Order Panel Url.');  
-            }
+            //  } elseif( @$checkAuth['status'] == 401){
+            //     return redirect()->back()->with('error', $checkAuth['message']);
+            // }else{
+            //     return redirect()->back()->with('error', 'Invalid Order Panel Url.');  
+            // }
             return redirect()->back()->with('success', 'Category & Product Import Is Processing.');
         }else{
             return redirect()->back()->with('error', 'Please select order panel DB.');
@@ -204,7 +216,7 @@ class CategoryController extends Controller
 
     public function categoryFilter(Request $request)
     {
-        $category = Category::with('products');
+        $category = Category::withCount('products')->with(['translation']);
         if(checkColumnExists('categories', 'order_panel_id')){
             $order_panel_id = $request->order_panel_id;
             if($order_panel_id != "" && $order_panel_id != null){
@@ -218,7 +230,7 @@ class CategoryController extends Controller
         $category = $category->orderBy('id', 'DESC')->get();
         return Datatables::of($category)
         ->addColumn('name', function ($category) use ($request) {
-            $name = !empty($category->slug) ? $category->slug : '';
+            $name = isset($category->translation) && isset($category->translation->name) ? $category->translation->name : $category->slug;
             return $name;
         })
         ->addColumn('status', function ($category) use ($request) {
@@ -233,7 +245,7 @@ class CategoryController extends Controller
             return formattedDate($created_at);
         })
         ->addColumn('total_products', function ($category) use ($request) {
-            $total_products = !empty($category->products) ? count($category->products) : '0';
+            $total_products = $category->products_count;// !empty($category->products) ? count($category->products) : '0';
             return $total_products;
         })
         ->addColumn('action', function ($category) use ($request) {

@@ -49,7 +49,12 @@ trait smsManager{
                     return $this->error($send->message, 404);
                 }
 
-            }else{
+            }elseif($client_preference->sms_provider == 6) //for Vonage (nexmo)
+            {
+                $crendentials = json_decode($client_preference->sms_credentials);
+                $send = $this->vonage_sms($to,$body,$crendentials);
+            }
+            else{
                 $credentials = json_decode($client_preference->sms_credentials);
                 $sms_key = (isset($credentials->sms_key)) ? $credentials->sms_key : $client_preference->sms_provider_key_1;
                 $sms_secret = (isset($credentials->sms_secret)) ? $credentials->sms_secret : $client_preference->sms_provider_key_2;
@@ -198,6 +203,28 @@ trait smsManager{
             return $res->getStatusCode(); // 200
         }catch(Exception $e) {
             dd($e);
+        }
+    }
+
+    public function vonage_sms($to, $message, $crendentials)
+    {
+        try{
+            $basic  = new \Vonage\Client\Credentials\Basic($crendentials->api_key, $crendentials->secret_key);
+            $client = new \Vonage\Client($basic);
+            $response = $client->sms()->send(
+                new \Vonage\SMS\Message\SMS($to, BRAND_NAME, $message)
+            );
+            
+            $resmessage = $response->current();
+            
+            if ($resmessage->getStatus() == 0) {
+                Log::info("Vonage The message was sent successfully");
+                return "The message was sent successfully\n";
+            } else {
+                return "The message failed with status: " . $resmessage->getStatus() . "\n";
+            }
+        }catch(\Exception $e) {
+            return response()->json(['data' => $e->getMessage()]);
         }
     }
 

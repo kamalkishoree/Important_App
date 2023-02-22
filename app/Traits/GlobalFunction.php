@@ -3,14 +3,14 @@ namespace App\Traits;
 use DB;
 use Illuminate\Support\Collection;
 use Log;
-use App\Model\{ChatSocket, Client, Agent, ClientPreference, DriverGeo,Order};
+use App\Model\{ChatSocket, Client, Agent, ClientPreference, DriverGeo,Order,Task,OrderAdditionData};
 use Illuminate\Support\Facades\Config;
 
 
 trait GlobalFunction{
-    
 
-   
+
+
     public static function socketDropDown()
     {
         $chatSocket= ChatSocket::where('status', 1)->get();
@@ -21,7 +21,7 @@ trait GlobalFunction{
     {
         try {
             $client = Client::find($id);
-        
+
             $schemaName = 'db_' . $client->database_name;
             $database_host = !empty($client->database_host) ? $client->database_host : env('DB_HOST', '127.0.0.1');
             $database_port = !empty($client->database_port) ? $client->database_port : env('DB_PORT', '3306');
@@ -42,7 +42,7 @@ trait GlobalFunction{
             'strict' => false,
             'engine' => null
         ];
-    
+
             Config::set("database.connections.$schemaName", $default);
             config(["database.connections.mysql.database" => $schemaName]);
             $return['schemaName'] =  $schemaName;
@@ -54,19 +54,21 @@ trait GlobalFunction{
             $return['clientData'] =  [];
             return $return;
         }
-    
+
     }
-   
-   
+
+
     public function getGeoBasedAgentsData($geo, $is_cab_pooling, $agent_tag = '', $date, $cash_at_hand)
     {
         try {
-            $preference = ClientPreference::select('manage_fleet')->first();
+            $preference = ClientPreference::select('manage_fleet', 'is_cab_pooling_toggle')->first();
             $geoagents_ids =  DriverGeo::where('geo_id', $geo);
 
-            $geoagents_ids = $geoagents_ids->whereHas('agent', function($q) use ($geo, $is_cab_pooling){
-                $q->where('is_pooling_available', $is_cab_pooling);
-            });
+            if(@$preference->is_cab_pooling_toggle == 1){
+                $geoagents_ids = $geoagents_ids->whereHas('agent', function($q) use ($geo, $is_cab_pooling){
+                    $q->where('is_pooling_available', $is_cab_pooling);
+                });
+            }
 
             if($agent_tag !='')
             {
@@ -76,22 +78,61 @@ trait GlobalFunction{
             }
 
             $geoagents_ids =  $geoagents_ids->pluck('driver_id');
-            
-            $geoagents = Agent::whereIn('id',  $geoagents_ids)->with(['logs','order'=> function ($f) use ($date) {
+
+            $geoagents = Agent::where('is_threshold', 1)->whereIn('id',  $geoagents_ids)->with(['logs','order'=> function ($f) use ($date) {
                 $f->whereDate('order_time', $date)->with('task');
             }])->orderBy('id', 'DESC');
-            
+
             if(@$preference->manage_fleet){
                 $geoagents = $geoagents->whereHas('agentFleet');
             }
             $geoagents = $geoagents->get()->where("agent_cash_at_hand", '<', $cash_at_hand);
-
+            
             return $geoagents;
 
         } catch (\Throwable $th) {
             return [];
         }
+
+    }
+    public function getDriverTaskDonePercentage($agent_id)
+    {
+        $orders = Order::where('driver_id', $agent_id)->pluck('id')->toArray();
+        $CompletedTasks = Task::whereIn('order_id', $orders)
+                                ->where(function($q) {
+                                    $q->where('task_status',4 );
+                                })->count();
+        $totalTask = Task::whereIn('order_id', $orders)
+                                ->where(function($q) {
+                                    $q->whereIn('task_status',[5,4] ) 
+                                    ->orWhereHas('order', function($q1){
+                                        $q1->where('status', 'cancelled');
+                                    });
+                                })->count();
+        $average =0;
+        if( $CompletedTasks > 0){
+            $average  = (  $CompletedTasks * 100) /$totalTask;        
+        }         
+        $data['averageRating'] = number_format($average,2);
+        $data['CompletedTasks'] = $CompletedTasks;
+        $data['totalTask'] =  $totalTask;
+        return  $data;
+    }
+
+    public function updateOrderAdditional($request=[],$order_id)
+    {
+        $requestOnly = ['category_name'];
+        $validated_keys = $request->only($requestOnly);
+       
+        $order_id = @$order_id;
     
+        foreach($validated_keys as $key => $value){
+          OrderAdditionData::updateOrCreate(
+                ['key_name' => $key, 'order_id' => $order_id],
+                ['key_name' => $key, 'key_value' => $value,'order_id' => $order_id]);
+        }
+        return 1;
+        
     }
 
 }

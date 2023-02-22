@@ -9,6 +9,7 @@
         <script src="{{asset('assets/libs/spinner/spinner.js')}}"></script>
         <script src="{{ asset('assets/js/storage/dispatcherStorage.js')}}"></script>
         <script src="{{asset('assets/js/vendor.min.js')}}"></script>
+        @yield('customcss')
 </head>
 @php $theme = \App\Model\ClientPreference::where(['id' => 1])->first('theme');@endphp
 <?php $body = ((isset($theme) && $theme->theme == 'dark'))? "dark":"light";?>

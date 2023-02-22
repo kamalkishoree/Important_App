@@ -23,6 +23,7 @@ class FleetController extends Controller
      */
     public function index()
     {
+
         $agents = Fleet::with('getDriver')->orderBy('id', 'desc')->get();
         $fleets = AgentFleet::pluck('fleet_id');
         $agents = Fleet::select('id')->orderBy('id', 'desc');
@@ -38,9 +39,83 @@ class FleetController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function orderFleetDetail(Request $request)
     {
-        //
+        $order = Order::findOrFail($request->orderId);
+
+        $table ='';
+        $table .='<table class="table table-striped dt-responsive nowrap w-100 agents-datatable">'; 
+            $table .='<tr>'; 
+            $table .='<td>Order Number</td>'; 
+            $table .='<td>'.$order->order_number.'</td>'; 
+            $table .='<tr>'; 
+
+            $table .='<tr>'; 
+            $table .='<td>Customer Name</td>'; 
+            $table .='<td>'.$order->customer->name.'</td>'; 
+            $table .='<tr>'; 
+
+            $table .='<tr>'; 
+            $table .='<td>Customer Number</td>'; 
+            $table .='<td>'.$order->customer->phone_number.'</td>'; 
+            $table .='<tr>'; 
+
+            $table .='<tr>'; 
+            $table .='<td>Task Pickup</td>'; 
+            $table .='<td>'.$order->pickup_task[0]->location->address.'</td>'; 
+            $table .='<tr>'; 
+
+            $table .='<tr>'; 
+            $table .='<td>Task Dropoff</td>'; 
+            $table .='<td>'.$order->dropoff_task[0]->location->address.'</td>'; 
+            $table .='<tr>'; 
+
+
+            $table .='</tr>'; 
+            $table .='<td>Tracking url</td>'; 
+            $table .='<td> <a href="'.url('/order/tracking/'.Auth::user()->code.'/'.$order->unique_id.'').'" target="_blank"><span id="pwd_spn" class="password-span">'.url('/order/tracking/'.Auth::user()->code.'/'.$order->unique_id.'').'</span></a></td>'; 
+            $table .='</tr>'; 
+        $table .='</table>'; 
+
+        return $table;
+
+    }
+
+
+    public function carDetail(Request $request)
+    {
+        $fleet = Fleet::findOrFail($request->fleetId);
+        if(isset($request->action) && $request->action =='edit')
+        {
+            return response($fleet);   
+        }
+        $table ='';
+        $table .='<table class="table table-striped dt-responsive nowrap w-100 agents-datatable">'; 
+            $table .='<tr>'; 
+            $table .='<td>Fleet Registration No</td>'; 
+            $table .='<td>'.$fleet->registration_name.'</td>'; 
+            $table .='<tr>'; 
+
+            $table .='<tr>'; 
+            $table .='<td>Fleet Name</td>'; 
+            $table .='<td>'.$fleet->name.'</td>'; 
+            $table .='<tr>'; 
+
+            $table .='<tr>'; 
+            $table .='<td>Fleet Model(Year)</td>'; 
+            $table .='<td>'.$fleet->model.' ('.$fleet->year.')</td>'; 
+            $table .='<tr>'; 
+
+            $table .='<tr>'; 
+            $table .='<td>Total km/miles traveled by fleet</td>'; 
+            $table .='<td>'.totalKmTravel($fleet->id).'</td>'; 
+            $table .='<tr>'; 
+
+
+        $table .='</table>'; 
+
+        return $table;
+
     }
 
     /**
@@ -52,12 +127,11 @@ class FleetController extends Controller
     public function store(Request $request)
     {
         try{
-
            $validator =  Validator::make($request->all(), [
                 'name' => 'required',
                 'make' => 'required',
                 'model' => 'required',
-                'registration_name' => 'required|unique:fleets',
+                 'registration_name' => 'required|unique:fleets,registration_name,'.$request->editId,
                 'year' => 'required',
                 ],
                 [
@@ -82,7 +156,14 @@ class FleetController extends Controller
                     'year' => $request->year,
                     'user_id' => auth()->id()
                 ];
-                $agent = Fleet::create($data);
+                
+                if(!empty($request->editId) && isset($request->editId)){
+                    $agent = Fleet::find($request->editId);
+                    $agent->update($data);
+                }else{
+                    $agent = Fleet::create($data);
+                }
+
                 if ($agent){
                     $request->session()->flash('success','Thanks for Adding new Fleet.');
                     return response()->json([
@@ -204,9 +285,10 @@ class FleetController extends Controller
                                     <input type="hidden" name="_token" value="' . csrf_token() . '" />
                                     <input type="hidden" name="_method" value="DELETE">
                                     <div class="form-group">
-                                        <button type="submit" class="btn btn-primary-outline action-icon"> <i class="mdi mdi-delete" agentid="'.$agents->id.'"></i></button>
+                                        <button type="submit" class="btn btn-primary-outline"> <i class="mdi mdi-delete" agentid="'.$agents->id.'"></i></button>
                                     </div>
                                 </form>
+                                <button type="button" class="btn btn-primary-outline editFleet" data-fleet-id="'.$agents->id.'"> <i class="mdi mdi-square-edit-outline" ></i></button>
                             </div>';
                     return $action;
                 })

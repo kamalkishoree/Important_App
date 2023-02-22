@@ -13,7 +13,7 @@ use Carbon\Carbon;
 use App\Http\Controllers\Api\BaseController;
 use Illuminate\Support\Facades\Log;
 use App\Http\Requests\UserLogin;
-use App\Traits\ApiResponser;
+use App\Traits\{ApiResponser,GlobalFunction,smsManager};
 use App\Traits\{smsManager, FormAttributeTrait};
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -29,6 +29,7 @@ class AuthController extends BaseController
 {
     use ApiResponser;
     use smsManager, FormAttributeTrait;
+    use GlobalFunction;
 
 
     /**
@@ -223,6 +224,9 @@ class AuthController extends BaseController
 
         $agent['attribute_form'] = $this->getAttributeForm($request);
 
+        $averageTaskComplete   = $this->getDriverTaskDonePercentage( $agent->id);
+        $agent['averageTaskComplete'] =  $averageTaskComplete['averageRating'];
+        $agent['CompletedTasks'] =  $averageTaskComplete['CompletedTasks'];
 
         $schemaName = 'royodelivery_db';
         $default = [
