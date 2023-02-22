@@ -146,9 +146,9 @@ getAdditionalPreference(['pickup_type',
 									</div>
 								<div class="col-md-6">
 									<div class="form-group mb-3">
-										<label for="drop_type">{{__("Idle Time")}}</label> <input
-											type="time" name="idle_time" id="idle_time"
-											placeholder="e.g {{ __('Idle Time')}}" class="form-control"
+										<label for="drop_type">{{__("Idle Time (in Hours)")}}</label> <input
+											type="number" name="idle_time" id="idle_time"
+											placeholder="e.g {{ __('Idle Time')}}" class="form-control" min="1" max="20"
 											value="{{ old('idle_time', $getAdditionalPreference['idle_time'] ?? '')}}">
 										@if($errors->has('idle_time')) <span class="text-danger"
 											role="alert"> <strong>{{ $errors->first('idle_time') }}</strong>

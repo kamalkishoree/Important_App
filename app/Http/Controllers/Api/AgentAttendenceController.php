@@ -32,9 +32,14 @@ class AgentAttendenceController extends BaseController
         $user = Auth::user();
         try {
             $attendanceData = AgentAttendence::where('agent_id', $user->id)->where('start_date', $request->date)->first();
-
+            $getAdditionalPreference = getAdditionalPreference([
+                'is_attendence',
+                'idle_time'
+            ]);
+            $idleTime = isset($getAdditionalPreference['idle_time']) ?$getAdditionalPreference['idle_time']: '';
             if (! empty($attendanceData)) {
                 $attendanceData['in_status'] = 1;
+                $attendanceData['idle_time'] = $idleTime;
                 return response()->json([
                     'data' => $attendanceData
                 ]);
@@ -46,6 +51,7 @@ class AgentAttendenceController extends BaseController
                 $attendanceData['end_time'] = '';
                 $attendanceData['in_status'] = 0;
                 $attendanceData['total'] = "00:00";
+                $attendanceData['idle_time'] = $idleTime;
                 return response()->json([
                     'data' => $attendanceData
                 ]);
