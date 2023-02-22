@@ -128,7 +128,7 @@ $(function () {
 
         var eventEnabled = true;
         if (eventType == 'attendence') {
-            eventEnabled = true;
+            eventEnabled = false;
         } else if (eventType == 'new_booking') {
             eventEnabled = true;
         } else {

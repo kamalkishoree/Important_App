@@ -29,7 +29,11 @@ class AgentAttendence extends Model
     public function getTotalAttribute()
     {
         $startTime = Carbon::parse($this->start_time);
-        $endTime = Carbon::parse($this->end_time);
+        $etime = $this->end_time;
+        if (empty($this->end_time)) {
+            $etime = date("H:i:s", strtotime('23:59:00'));
+        }
+        $endTime = Carbon::parse($etime);
         $duration = $endTime->diffInMinutes($startTime);
         return date('H:i', mktime(0, $duration));
     }
@@ -37,6 +41,9 @@ class AgentAttendence extends Model
     public function getDuration($hours)
     {
         $sum_minutes = 0;
+        if(empty($hours)){
+            return $this->total;
+        }
         $array = [
             $this->total,
             $hours
@@ -46,12 +53,14 @@ class AgentAttendence extends Model
             $sum_minutes += $explodedTime[0] * 60 + $explodedTime[1];
         }
         $sumTime = floor($sum_minutes / 60) . ':' . floor($sum_minutes % 60);
-        if (strpos($sumTime, ':') !== false) {
-            $decimals = explode(':', $sumTime)[1];
-            if (strlen($decimals) == 1) {
-                $sumTime .= '0';
+        $decimals = explode(':', $sumTime);
+            if (strlen($decimals[0]) == 1) {
+                $sumTime = '0'.$sumTime;
             }
-        }
+            if (strlen($decimals[1]) == 1) {
+                $sumTime = $sumTime.'0';
+            }
+        
         return $sumTime;
     }
 }
