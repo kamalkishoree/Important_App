@@ -35,7 +35,6 @@ class AgentAttendenceController extends BaseController
 
             if (! empty($attendanceData)) {
                 $attendanceData['in_status'] = 1;
-                if (empty($attendanceData->end_date)) {}
                 return response()->json([
                     'data' => $attendanceData
                 ]);
@@ -52,7 +51,37 @@ class AgentAttendenceController extends BaseController
                 ]);
             }
         } catch (\Exception $e) {
-            return $this->errorResponse($e->getMessage(), $e->getCode());
+            return response()->json([
+                'error' => 'No record found.'
+            ], 404);
+        }
+    }
+
+    public function getAttendanceHistory(Request $request)
+    {
+        $user = Auth::user();
+        try {
+            $limit = $request->has('limit') ? $request->limit : 12;
+            $page = $request->has('page') ? $request->page : 1;
+            $attendanceData = AgentAttendence::select('*')->where('agent_id', $user->id)
+                ->orderBy('id', 'DESC')
+                ->paginate($limit, $page);
+
+            if (! empty($attendanceData)) {
+                return $this->success(
+                    $attendanceData,
+                    'Data found successfully'
+                    );
+            } else {
+                return response()->json([
+                    'message' => __('Data not found!'),
+                    'data' => []
+                ]);
+            }
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'No record found.'
+            ], 404);
         }
     }
 
