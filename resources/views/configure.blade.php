@@ -356,7 +356,7 @@ $sms_crendential = json_decode($preference->sms_credentials);
                         </div>
 
                         <!-- For Vonage (nexmo) -->
-                        <div class="row sms_fields mx-0" id="vonage_fields" style="display : {{$preference->sms_provider == 5 ? 'flex' : 'none'}};">
+                        <div class="row sms_fields mx-0" id="vonage_fields" style="display : {{$preference->sms_provider == 6 ? 'flex' : 'none'}};">
                             <div class="col-12">
                                 <div class="form-group mb-2">
                                 <label for="vonage_api_key">{{ __("API Key") }}</label>
@@ -380,6 +380,37 @@ $sms_crendential = json_decode($preference->sms_credentials);
                                 </div>
                             </div>
                         </div>
+
+                        <!-- For SMS Partner France -->
+                        <div class="row sms_fields mx-0" id="sms_partner_fields" style="display : {{ $preference->sms_provider == 7 ? 'flex' : 'none' }};">
+                            <div class="col-12">
+                                <div class="form-group mb-2">
+                                    <label for="sms_partner_api_key">{{ __('API Key') }}</label>
+                                    <input type="password" name="sms_partner_api_key" id="sms_partner_api_key" placeholder=""
+                                        class="form-control"
+                                        value="{{ old('sms_partner_api_key', $sms_crendential->api_key ?? '') }}">
+                                    @if ($errors->has('sms_partner_api_key'))
+                                        <span class="text-danger" role="alert">
+                                            <strong>{{ $errors->first('sms_partner_api_key') }}</strong>
+                                        </span>
+                                    @endif
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group mb-2">
+                                    <label for="sms_partner_sender_id">{{ __('Sender Id') }}</label>
+                                    <input type="text" name="sms_partner_sender_id" id="sms_partner_sender_id"
+                                        placeholder="" class="form-control"
+                                        value="{{ old('sms_partner_sender_id', $sms_crendential->sender_id ?? '') }}">
+                                    @if ($errors->has('sms_partner_sender_id'))
+                                        <span class="text-danger" role="alert">
+                                            <strong>{{ $errors->first('sms_partner_sender_id') }}</strong>
+                                        </span>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
                 </form>
             </div>

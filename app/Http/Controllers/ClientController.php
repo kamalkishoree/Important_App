@@ -338,6 +338,13 @@ class ClientController extends Controller
                     'secret_key' => $request->vonage_secret_key,
                 ];
             }
+            elseif($request->sms_provider == 7) // for SMS Partner France
+            {
+                $sms_credentials = [
+                    'api_key' => $request->sms_partner_api_key,
+                    'sender_id' => $request->sms_partner_sender_id,
+                ];
+            }
             //for static otp
             $sms_credentials['static_otp'] = ($request->has('static_otp') && $request->static_otp == 'on') ? 1 : 0;
 
@@ -363,6 +370,10 @@ class ClientController extends Controller
 
         unset($request['arkesel_api_key']);
         unset($request['arkesel_sender_id']);
+
+        unset($request['sms_partner_api_key']);
+        unset($request['sms_partner_sender_id']);
+
         if( isset($request['charge_percent_from_agent']) ) {
             unset($request['charge_percent_from_agent']);
         }
