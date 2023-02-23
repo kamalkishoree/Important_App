@@ -25,7 +25,7 @@ use App\Model\ClientPreference;
 use App\Model\NotificationType;
 use App\Traits\agentEarningManager;
 use App\Model\BatchAllocationDetail;
-use App\Model\{PricingRule, TagsForAgent, AgentPayout, TagsForTeam, Team, PaymentOption, PayoutOption, AgentConnectedAccount, CustomerVerificationResource, SubscriptionInvoicesDriver, TaskType, AgentLogSlab, AgentFleet,OrderAdditionData};
+use App\Model\{PricingRule, TagsForAgent, AgentPayout, TagsForTeam, Team, PaymentOption, PayoutOption, AgentConnectedAccount, CustomerVerificationResource, SubscriptionInvoicesDriver, TaskType, AgentLogSlab, AgentFleet,OrderAdditionData, UserBidRideRequest, OrderFormAttribute};
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -41,6 +41,7 @@ use App\Jobs\scheduleNotification;
 use App\Traits\GlobalFunction;
 use App\Traits\sendCustomNotification;
 
+use App\Traits\FormAttributeTrait;
 use App;
 use Log;
 use Mail;
@@ -59,13 +60,14 @@ class TaskController extends BaseController
 {
     use AgentSlotTrait;
     use TollFee;
-    use GlobalFunction;
+    use GlobalFunction, FormAttributeTrait;
     use sendCustomNotification;
     public function smstest(Request $request){
       $res = $this->sendSms2($request->phone_number, $request->sms_body);
     }
     public function updateTaskStatus(Request $request)
     {
+        \Log::info($request->all());
         $header = $request->header();
         $tasks = null;
         $client_details = Client::where('database_name', $header['client'][0])->first();
@@ -236,7 +238,9 @@ class TaskController extends BaseController
                     });
                 }
             }
-
+            if(@$request->attribute_data){
+                $this->saveOrderFormAttribute($request, $orderId);
+            }
 
 
         } elseif ($request->task_status == 5) {
@@ -1078,6 +1082,7 @@ class TaskController extends BaseController
          //   $notification_time = isset($request->schedule_time) ? $request->schedule_time : Carbon::now()->toDateTimeString();
 
             $agent_id          = $request->allocation_type === 'm' ? $request->agent : null;
+            
             $rejectable_order   = isset($request->rejectable_order)?$request->rejectable_order:0;
             $refer_driver_id = null;
             if($rejectable_order ==1 && checkColumnExists('orders', 'rejectable_order')){
@@ -1085,7 +1090,7 @@ class TaskController extends BaseController
                 $refer_driver_id  =$request->agent ??null;
                 $request->allocation_type = 'u';
             }
-            \Log::info($request->allocation_type);
+            
           
             $order = [
                 'order_number'                    => $request->order_number ?? null,
@@ -2032,6 +2037,7 @@ class TaskController extends BaseController
         if (!isset($geo)) {
             $oneagent = Agent::where('id', $agent_id)->first();
             if(!empty($oneagent->device_token) && $oneagent->is_available == 1){
+                $allcation_type = 'ACK';
                 $data = [
                     'order_id'            => $orders_id,
                     'driver_id'           => $agent_id,
@@ -2217,6 +2223,7 @@ class TaskController extends BaseController
         if (!isset($geo)) {
             $oneagent = Agent::where('id', $agent_id)->first();
             if(!empty($oneagent->device_token) && $oneagent->is_available == 1){
+                $allcation_type = 'ACK';
                 $data = [
                     'order_id'            => $orders_id,
                     'driver_id'           => $agent_id,
@@ -2314,6 +2321,7 @@ class TaskController extends BaseController
         if (!isset($geo)) {
             $oneagent = Agent::where('id', $agent_id)->first();
             if(!empty($oneagent->device_token) && $oneagent->is_available == 1){
+                $allcation_type = 'ACK';
                 $data = [
                     'order_id'            => $orders_id,
                     'driver_id'           => $agent_id,
@@ -2428,6 +2436,7 @@ class TaskController extends BaseController
         if (!isset($geo)) {
             $oneagent = Agent::where('id', $agent_id)->first();
             if(!empty($oneagent->device_token) && $oneagent->is_available == 1){
+                $allcation_type = 'ACK';
                 $data = [
                     'order_id'            => $orders_id,
                     'driver_id'           => $agent_id,
@@ -2736,6 +2745,15 @@ class TaskController extends BaseController
 
         $total         = $pricingRule->base_price + ($paid_distance * $pricingRule->distance_fee) + ($paid_duration * $pricingRule->duration_price);
 
+        //-------------------for bid and ride---------------------
+        if(isset($pricingRule->base_price_minimum)){
+            $total_minimum = $pricingRule->base_price_minimum + ($paid_distance * $pricingRule->distance_fee_minimum) + ($paid_duration * $pricingRule->duration_price_minimum);
+            $total_maximum = $pricingRule->base_price_maximum + ($paid_distance * $pricingRule->distance_fee_maximum) + ($paid_duration * $pricingRule->duration_price_maximum);
+        }else{
+            $total_minimum = 0;
+            $total_maximum = 0;
+        }
+
         $client = ClientPreference::take(1)->with('currency')->first();
         $currency = $client->currency??'';
 
@@ -2746,6 +2764,8 @@ class TaskController extends BaseController
             'currency' => $currency,
             'paid_distance' => $paid_distance,
             'paid_duration' => $paid_duration,
+            'total_minimum' => $total_minimum,
+            'total_maximum' => $total_maximum,
             'toll_fee' => (isset($getdata['toll_amount'])?$getdata['toll_amount']:0),
             'message' => __('success')
         ], 200);
@@ -3175,7 +3195,7 @@ class TaskController extends BaseController
         
 
             $agent_id          = $request->allocation_type === 'm' ? $request->agent : null;
-            Log::info('order no royo_order_number'.$request->royo_order_number);
+           
 
             $order = [
                 'order_number'                    => $request->order_number ?? null,
@@ -4115,6 +4135,99 @@ class TaskController extends BaseController
                 'message' => __('Bid & Ride/Instant Booking Task updated Successfully'),
                 'task_id' => $orders->id,
                 'status'  => $orders->status,
+            ], 200);
+        } catch (Exception $e) {
+            DB::rollback();
+            return response()->json([
+                'message' => $e->getMessage()
+            ], 400);
+        }
+    }
+
+    //-------Bid and ride notification to drivers
+    public function bidRideRequestNotification(Request $request)
+    {
+        try {
+            $auth =  $client =  Client::with(['getAllocation', 'getPreference'])->first();
+            $header = $request->header();
+            if(isset($header['client'][0]))
+            {
+
+            }
+            else{
+               $header['client'][0] = $client->database_name;
+            }
+
+            $latitude  = array();
+            $longitude = array();
+            $pickup_location = array('latitude' => '0.0000', 'longitude' => '0.00000');
+            $key       = 0;
+
+            foreach ($request->tasks as $key => $value) {
+                
+                if($value['latitude']!='' && $value['longitude']){
+                    array_push($latitude, $value['latitude']);
+                    array_push($longitude, $value['longitude']);
+
+                    if($key == 0) {
+                        $pickup_location = $value;
+                    }
+                }
+                $key++;
+            }
+
+            //geoid based on first pickup geolocation
+            $geoid = '';
+            if(($pickup_location['latitude']!='' || $pickup_location['latitude']!='0.0000') && ($pickup_location['longitude'] !='' || $pickup_location['longitude']!='0.0000')):
+                $geoid = $this->findLocalityByLatLng($pickup_location['latitude'], $pickup_location['longitude']);
+            endif;
+            
+            $agent_tag = isset($request->agent_tag)?$request->agent_tag:'';
+
+            $UserBidRideRequest                          = new UserBidRideRequest();
+            $UserBidRideRequest->geo_id                  = ($geoid) ? $geoid : 0;
+            $UserBidRideRequest->bid_id                  = $request->bid_id;
+            $UserBidRideRequest->db_name                 = $request->db_name;
+            $UserBidRideRequest->client_code             = $request->client_code;
+            $UserBidRideRequest->agent_tag               = $request->agent_tag;
+            $UserBidRideRequest->tasks                   = json_encode($request->tasks);
+            $UserBidRideRequest->requested_price         = $request->requested_price;
+            $UserBidRideRequest->call_back_url           = $request->call_back_url;
+            $UserBidRideRequest->expired_at              = $request->expired_at;
+            $UserBidRideRequest->customer_name           = $request->customer_name;
+            $UserBidRideRequest->customer_image          = $request->customer_image;
+            $UserBidRideRequest->minimum_requested_price = $request->minimum_requested_price;
+            $UserBidRideRequest->maximum_requested_price = $request->maximum_requested_price;
+            $UserBidRideRequest->expire_seconds          = $request->expire_seconds;
+            $UserBidRideRequest->save();
+
+            
+            $date = \Carbon\Carbon::today();
+
+            $cash_at_hand      = $auth->getAllocation->maximum_cash_at_hand_per_person??0;
+
+            $geoagents = $this->getGeoBasedAgentsData($geoid, 0, $agent_tag, $date, $cash_at_hand);
+            foreach ($geoagents as $key =>  $geoitem) {
+                $notificationdata = [
+                    'driver_id'           => $geoitem->id,
+                    'notification_time'   => Carbon::now()->addSeconds(2)->format('Y-m-d H:i:s'),
+                    'notificationType'    => 'bid_ride_request',
+                    'created_at'          => Carbon::now()->toDateTimeString(),
+                    'updated_at'          => Carbon::now()->toDateTimeString(),
+                    'device_type'         => $geoitem->device_type,
+                    'device_token'        => $geoitem->device_token,
+                    'detail_id'           => rand(11111111, 99999999),
+                    'title'               => 'Bid & Ride Request',
+                    'body'                => 'Check All Details For This Request In App',
+                    'task_type'           => 'bid_ride_request'
+                ];
+                $this->sendnotification($notificationdata, $auth->getPreference);
+            }
+            
+            DB::commit();
+            return response()->json([
+                'message' => __('Bid Request Created Successfully.'),
+                'status'  => "success",
             ], 200);
         } catch (Exception $e) {
             DB::rollback();

@@ -272,6 +272,13 @@ h2#swal2-title {
 
 @endsection
 @php
+ $getAdditionalPreference = getAdditionalPreference([
+                'pickup_type',
+                'drop_type',
+                'is_attendence',
+                'idle_time'
+            ]);
+            $isAttendence = ($getAdditionalPreference['is_attendence'] == 1) ? $getAdditionalPreference['is_attendence'] : 0;
 $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain/';
 $is_driver_slot = getClientPreferenceDetail()->is_driver_slot;
 @endphp
@@ -524,8 +531,8 @@ $is_driver_slot = getClientPreferenceDetail()->is_driver_slot;
 
 @include('agent.modals')
 @include('modals.pay-receive')
-@if($is_driver_slot == 1)
-    @include('agent.modal-popup.agentSlotTableRows')
+@if($is_driver_slot == 1 || $isAttendence == 1)
+    @include('agent.modal-popup.agentSlotTableRows',["is_driver_slot"=>$is_driver_slot,"isAttendence"=>$isAttendence])
     @include('agent.modal-popup.gerenaSlotModel')
     {{-- @include('agent.modal-popup.slotPopup') --}}
 <script>

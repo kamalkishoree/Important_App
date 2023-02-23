@@ -79,7 +79,7 @@ trait GlobalFunction{
 
             $geoagents_ids =  $geoagents_ids->pluck('driver_id');
 
-            $geoagents = Agent::where('is_threshold',1)->whereIn('id',  $geoagents_ids)->with(['logs','order'=> function ($f) use ($date) {
+            $geoagents = Agent::where('is_threshold', 1)->whereIn('id',  $geoagents_ids)->with(['logs','order'=> function ($f) use ($date) {
                 $f->whereDate('order_time', $date)->with('task');
             }])->orderBy('id', 'DESC');
 
@@ -87,7 +87,7 @@ trait GlobalFunction{
                 $geoagents = $geoagents->whereHas('agentFleet');
             }
             $geoagents = $geoagents->get()->where("agent_cash_at_hand", '<', $cash_at_hand);
-
+            
             return $geoagents;
 
         } catch (\Throwable $th) {

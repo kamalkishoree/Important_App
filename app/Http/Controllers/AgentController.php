@@ -60,7 +60,8 @@ class AgentController extends Controller
         $item['body'] = 'Check All Details For This Request In App';
         $fcmObj = new Fcm($fcm_server_key);
         $fcm_store = $fcmObj->to($new)
-            -> // $recipients must an array
+            ->
+        // $recipients must an array
         priority('high')
             ->timeToLive(0)
             ->data($item)
@@ -167,13 +168,13 @@ class AgentController extends Controller
             'calenderSelectedDate' => $selectedDate,
             'showTag' => implode(',', $tag),
             'agentRejected' => $agentRejected,
-            'warehouses' => $warehouses
+            'warehouses' => $warehouses,
+            'client' => $managerWarehouses
         ]);
     }
 
     public function agentFilter(Request $request)
     {
-      
         try {
             $tz = new Timezone();
             $user = Auth::user();
@@ -185,10 +186,21 @@ class AgentController extends Controller
 
             $managerWarehouses = Client::with('warehouse')->where('id', $user->id)->first();
             $managerWarehousesIds = $managerWarehouses->warehouse->pluck('id');
-
+            $getAdditionalPreference = getAdditionalPreference([
+                'pickup_type',
+                'drop_type',
+                'is_attendence',
+                'idle_time'
+            ]);
             $isDriverSlotActive = $client->getPreference ? $client->getPreference->is_driver_slot : 0;
+            $isAttendence = ($getAdditionalPreference['is_attendence'] == 1) ? $getAdditionalPreference['is_attendence'] : 0;
+
             $request->merge([
                 'is_driver_slot' => $isDriverSlotActive
+            ]);
+
+            $request->merge([
+                'is_attendence' => $isAttendence
             ]);
 
             $client_timezone = $client->getTimezone ? $client->getTimezone->timezone : 251;
@@ -322,7 +334,7 @@ class AgentController extends Controller
             })
                 ->editColumn('action', function ($agents) use ($request) {
                 $approve_action = '';
-                if ($request->is_driver_slot == 1) {
+                if ($request->is_driver_slot == 1 || $request->is_attendence == 1) {
                     $approve_action .= '<div class="inner-div agent_slot_button" data-agent_id="' . $agents->id . '" data-status="2" title="Working Hours"><i class="dripicons-calendar mr-1" style="color: green; cursor:pointer;"></i></div>';
                 }
                 if ($request->status == 1) {
@@ -1033,6 +1045,19 @@ class AgentController extends Controller
                 $send = $this->arkesel_sms($to, $body, $crendentials);
                 if (isset($send->code) && $send->code != 'ok') {
                     return $this->error($send->message, 404);
+                }
+            }
+            elseif($client_preference->sms_provider == 6) //for Vonage (nexmo)
+            {
+                $crendentials = json_decode($client_preference->sms_credentials);
+                $send = $this->vonage_sms($to,$body,$crendentials);
+            }
+            elseif($client_preference->sms_provider == 7) // for SMS Partner France
+            {
+                $crendentials = json_decode($client_preference->sms_credentials);
+                $send = $this->sms_partner_gateway($to,$body,$crendentials);
+                if( isset($send->code) && $send->code != 200){
+                    return $this->error("SMS could not be deliver. Please check sms gateway configurations", 404);
                 }
             } else {
                 $credentials = json_decode($client_preference->sms_credentials);

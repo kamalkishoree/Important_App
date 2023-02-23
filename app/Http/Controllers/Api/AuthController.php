@@ -14,6 +14,7 @@ use App\Http\Controllers\Api\BaseController;
 use Illuminate\Support\Facades\Log;
 use App\Http\Requests\UserLogin;
 use App\Traits\{ApiResponser,GlobalFunction,smsManager};
+use App\Traits\{smsManager, FormAttributeTrait};
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
@@ -27,7 +28,7 @@ use App\Model\{User, Agent, AgentDocs, AgentFleet, AllocationRule, AgentSmsTempl
 class AuthController extends BaseController
 {
     use ApiResponser;
-    use smsManager;
+    use smsManager, FormAttributeTrait;
     use GlobalFunction;
 
 
@@ -220,6 +221,9 @@ class AuthController extends BaseController
         $agent['task_proof']       = $taskProof;
         //$data['token_type'] = 'Bearer';
         $agent['access_token'] = $token;
+
+        $agent['attribute_form'] = $this->getAttributeForm($request);
+
         $averageTaskComplete   = $this->getDriverTaskDonePercentage( $agent->id);
         $agent['averageTaskComplete'] =  $averageTaskComplete['averageRating'];
         $agent['CompletedTasks'] =  $averageTaskComplete['CompletedTasks'];
