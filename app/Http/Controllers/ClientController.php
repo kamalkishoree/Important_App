@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+
 use Illuminate\Http\Request;
 
 use App\Model\ClientPreference;
@@ -22,7 +23,7 @@ use App\Model\TaskProof;
 use App\Model\TaskType;
 use App\Model\DriverRegistrationDocument;
 use App\Model\OrderPanelDetail;
-use App\Model\{SmtpDetail, SmsProvider, VehicleType, Agent, ClientPreferenceAdditional};
+use App\Model\{SmtpDetail, SmsProvider, VehicleType,Agent, ClientPreferenceAdditional, FormAttribute, FormAttributeOption};
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Redis;
 use Session;
@@ -330,6 +331,20 @@ class ClientController extends Controller
                     'sender_id' => $request->arkesel_sender_id,
                 ];
             }
+            elseif($request->sms_provider == 6) // for Vonage (nexmo)
+            {
+                $sms_credentials = [
+                    'api_key' => $request->vonage_api_key,
+                    'secret_key' => $request->vonage_secret_key,
+                ];
+            }
+            elseif($request->sms_provider == 7) // for SMS Partner France
+            {
+                $sms_credentials = [
+                    'api_key' => $request->sms_partner_api_key,
+                    'sender_id' => $request->sms_partner_sender_id,
+                ];
+            }
             //for static otp
             $sms_credentials['static_otp'] = ($request->has('static_otp') && $request->static_otp == 'on') ? 1 : 0;
 
@@ -346,12 +361,19 @@ class ClientController extends Controller
         unset($request['mazinhost_api_key']);
         unset($request['mazinhost_sender_id']);
 
+        unset($request['vonage_api_key']);
+        unset($request['vonage_secret_key']);
+
         unset($request['unifonic_app_id']);
         unset($request['unifonic_account_email']);
         unset($request['unifonic_account_password']);
 
         unset($request['arkesel_api_key']);
         unset($request['arkesel_sender_id']);
+
+        unset($request['sms_partner_api_key']);
+        unset($request['sms_partner_sender_id']);
+
         if( isset($request['charge_percent_from_agent']) ) {
             unset($request['charge_percent_from_agent']);
         }
@@ -470,6 +492,9 @@ class ClientController extends Controller
      */
     public function ShowPreference()
     {
+        $attributes = FormAttribute::with('option','translation_one')->where('status', '!=', 2)->orderBy('position', 'asc');
+        $attributes = $attributes->get();
+            // dd($attributes);
         $preference  = ClientPreference::where('client_id', Auth::user()->code)->first();
         $currencies  = Currency::orderBy('iso_code')->get();
         $cms         = Cms::all('content');
@@ -479,7 +504,7 @@ class ClientController extends Controller
         $client      = Client::where('code', $user->code)->first();
         $subClients  = SubClient::all();
         $order_panel_detail = OrderPanelDetail::first();
-        return view('customize')->with(['clientContact'=>$client, 'preference' => $preference, 'currencies' => $currencies,'cms'=>$cms,'task_proofs' => $task_proofs,'task_list' => $task_list,'order_panel_detail'=>$order_panel_detail]);
+        return view('customize')->with(['clientContact'=>$client,'attributes'=> $attributes, 'preference' => $preference, 'currencies' => $currencies,'cms'=>$cms,'task_proofs' => $task_proofs,'task_list' => $task_list,'order_panel_detail'=>$order_panel_detail]);
     }
 
     public function updateContactUs(Request $request){

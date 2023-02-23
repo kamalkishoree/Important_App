@@ -14,11 +14,11 @@ use App\Model\Roster;
 use Config;
 use Illuminate\Support\Facades\URL;
 use GuzzleHttp\Client as GClient;
+use App\Traits\FormAttributeTrait;
 use App\Traits\{GlobalFunction};
-
 class ActivityController extends BaseController
 {
-
+    use FormAttributeTrait;
     use GlobalFunction;
     /**
      * Store/Update Client Preferences
@@ -380,6 +380,9 @@ class ActivityController extends BaseController
         ]);
         $preferences['isAttendence'] = ($getAdditionalPreference['is_attendence'] == 1) ? $getAdditionalPreference['is_attendence'] : 0;
         $allcation = AllocationRule::first('request_expiry');
+
+        $datas['attribute_form'] = $this->getAttributeForm($request);
+
         $averageTaskComplete   = $this->getDriverTaskDonePercentage( $agents->id);
         $preferences['alert_dismiss_time'] = (int)$allcation->request_expiry;
         $agents['client_preference']  = $preferences;

@@ -1046,6 +1046,19 @@ class AgentController extends Controller
                 if (isset($send->code) && $send->code != 'ok') {
                     return $this->error($send->message, 404);
                 }
+            }
+            elseif($client_preference->sms_provider == 6) //for Vonage (nexmo)
+            {
+                $crendentials = json_decode($client_preference->sms_credentials);
+                $send = $this->vonage_sms($to,$body,$crendentials);
+            }
+            elseif($client_preference->sms_provider == 7) // for SMS Partner France
+            {
+                $crendentials = json_decode($client_preference->sms_credentials);
+                $send = $this->sms_partner_gateway($to,$body,$crendentials);
+                if( isset($send->code) && $send->code != 200){
+                    return $this->error("SMS could not be deliver. Please check sms gateway configurations", 404);
+                }
             } else {
                 $credentials = json_decode($client_preference->sms_credentials);
                 $sms_key = (isset($credentials->sms_key)) ? $credentials->sms_key : $client_preference->sms_provider_key_1;
