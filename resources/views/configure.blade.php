@@ -1,6 +1,7 @@
 @extends('layouts.vertical', ['title' => 'Configure'])
 
 @section('css')
+<link href="{{ asset('assets/libs/sweetalert2/sweetalert2.min.css') }}" rel="stylesheet" type="text/css" />
 <style>
 
 </style>
@@ -831,6 +832,7 @@ $sms_crendential = json_decode($preference->sms_credentials);
                     </form>
                 </div>
             </div>
+            @include('rating.rating')
         </div>
 
         <div class="row">
@@ -1458,7 +1460,7 @@ $sms_crendential = json_decode($preference->sms_credentials);
         </div>
 
 
-
+        @include('rating.ratingModel')
 
 
 
@@ -1470,6 +1472,8 @@ $sms_crendential = json_decode($preference->sms_credentials);
     <script src="{{ asset('assets/libs/dropzone/dropzone.min.js') }}"></script>
     <script src="{{ asset('assets/libs/dropify/dropify.min.js') }}"></script>
     <script src="{{ asset('assets/js/pages/form-fileuploads.init.js') }}"></script>
+    <script src="{{ asset('assets/libs/datatables/datatables.min.js') }}"></script>
+    <script src="{{ asset('assets/libs/sweetalert2/sweetalert2.min.js') }}"></script>
     <script type="text/javascript">
         function toggleDisplayCustomDomain() {
             $("#custom_domain_name").toggle('fast', function() {
@@ -1660,5 +1664,5 @@ $sms_crendential = json_decode($preference->sms_credentials);
             }
         });
     </script>
-
+<script src="{{ asset('assets/js/rating/rating.js')}}"></script>
 @endsection
