@@ -128,8 +128,9 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 			Route::get('/order-details/tracking/{clientcode}/{order_id}', 'TrackingController@OrderTrackingDetail')->name('order.tracking.detail');
 			Route::get('/order-cancel/tracking/{clientcode}/{order_id}', 'TrackingController@orderCancelFromOrder')->name('order.cancel.from_order');
 			Route::get('/order/driver-rating/{clientcode}/{order_id}', 'TrackingController@DriverRating')->name('order.driver.rating');
-
-
+			Route::get('/order/form-attribute/{clientcode}/{order_id}', 'TrackingController@OrderFormAttribute')->name('order.tracking');
+			
+			
 			// Create agent connected account stripe
 			Route::get('client/verify/oauth/token/stripe', 'StripeGatewayController@verifyOAuthToken')->name('verify.oauth.token.stripe');
 
@@ -338,6 +339,16 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 			Route::get('general/slot/get', 'AgentSlotController@getGeneralSlot')->name('general.slot.list');
 			Route::post('general/slot/save', 'AgentSlotController@saveGeneralSlot')->name('general.slot.save');
 			Route::get('general/slot/destroy/{id}', 'AgentSlotController@destroyGeneralSlot')->name('vendor_city.destroy');
+
+			Route::prefix('attribute')->group(function () {
+                Route::name('attribute.')->group(function () {
+                    Route::get('create', 'FormAttributeController@create')->name('create');
+                    Route::get('edit/{id}', 'FormAttributeController@edit')->name('edit');
+                    Route::post('store', 'FormAttributeController@store')->name('store');
+                    Route::put('update/{id}', 'FormAttributeController@update')->name('update');
+                    Route::delete('delete/{id}', 'FormAttributeController@delete')->name('delete');
+                });
+            });
 
 		});
 	});

@@ -25,7 +25,7 @@ use App\Model\ClientPreference;
 use App\Model\NotificationType;
 use App\Traits\agentEarningManager;
 use App\Model\BatchAllocationDetail;
-use App\Model\{PricingRule, TagsForAgent, AgentPayout, TagsForTeam, Team, PaymentOption, PayoutOption, AgentConnectedAccount, CustomerVerificationResource, SubscriptionInvoicesDriver, TaskType, AgentLogSlab, AgentFleet,OrderAdditionData, UserBidRideRequest};
+use App\Model\{PricingRule, TagsForAgent, AgentPayout, TagsForTeam, Team, PaymentOption, PayoutOption, AgentConnectedAccount, CustomerVerificationResource, SubscriptionInvoicesDriver, TaskType, AgentLogSlab, AgentFleet,OrderAdditionData, UserBidRideRequest, OrderFormAttribute};
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -41,6 +41,7 @@ use App\Jobs\scheduleNotification;
 use App\Traits\GlobalFunction;
 use App\Traits\sendCustomNotification;
 
+use App\Traits\FormAttributeTrait;
 use App;
 use Log;
 use Mail;
@@ -59,13 +60,14 @@ class TaskController extends BaseController
 {
     use AgentSlotTrait;
     use TollFee;
-    use GlobalFunction;
+    use GlobalFunction, FormAttributeTrait;
     use sendCustomNotification;
     public function smstest(Request $request){
       $res = $this->sendSms2($request->phone_number, $request->sms_body);
     }
     public function updateTaskStatus(Request $request)
     {
+        \Log::info($request->all());
         $header = $request->header();
         $tasks = null;
         $client_details = Client::where('database_name', $header['client'][0])->first();
@@ -236,7 +238,9 @@ class TaskController extends BaseController
                     });
                 }
             }
-
+            if(@$request->attribute_data){
+                $this->saveOrderFormAttribute($request, $orderId);
+            }
 
 
         } elseif ($request->task_status == 5) {
