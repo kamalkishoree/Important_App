@@ -137,6 +137,7 @@ class TrackingController extends Controller
         $total_order_by_agent = 0;
         $avgrating = 0;
         $agent_ratings = [];
+        $noofCopassengers = 0;
         $agent = [];
         if ($respnse['status'] == 'connected') {
             $order = DB::connection($respnse['database'])->table('orders')->where('unique_id', $id)->leftJoin('agents', 'orders.driver_id', '=', 'agents.id')
@@ -168,7 +169,9 @@ class TrackingController extends Controller
                 if($driver_id > 0){
                     $total_orders = DB::connection($respnse['database'])->table('orders')->where('driver_id',$driver_id)->pluck('id');
                     $total_order_by_agent = count($total_orders);
-                   
+
+                    $total_other_pending_orders = DB::connection($respnse['database'])->table('orders')->select(DB::raw("SUM(no_seats_for_pooling) as total_booked_seats"))->where('driver_id', $driver_id)->where('status', '=', 'unassigned')->where('id', '!=', $order->id)->where('is_cab_pooling', 1)->first();
+                    $noofCopassengers = !empty($total_other_pending_orders) ? $total_other_pending_orders->total_booked_seats : 0;
                     $avgrating = DB::connection($respnse['database'])->table('order_ratings')->whereIn('order_id',$total_orders)->sum('rating');
                     if($avgrating != 0)
                     $avgrating = $avgrating/$avgrating;
@@ -200,6 +203,7 @@ class TrackingController extends Controller
                     'agent'  => $agent,
                     'agent_ratings'  => $agent_ratings,
                     'base_url' => $base_url,
+                    'noofCopassengers' => $noofCopassengers,
                     'agent_dbname'  => $db_name
                 ], 200);
 
