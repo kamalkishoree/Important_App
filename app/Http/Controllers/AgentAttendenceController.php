@@ -70,29 +70,36 @@ class AgentAttendenceController extends Controller
 
         $showData = array();
         $count = 0;
-        $total = '00:00';
+        $total = '';
         $totalDuration = '0';
         if ($AgentAttendences) {
             foreach ($AgentAttendences as $k => $v) {
-                $a_date = date('Y-m-d', strtotime($v->start_date));
                 $title = '';
-                if (! empty($v->start_date) && ! empty($v->end_date)) {
-                    $title .= '<span class="badge badge-pill badge-primary pill-state">Present</span>';
-                    $title .= "<br/>In Time: " . date('h:i A', strtotime($v->start_time));
-                    $title .= "<br/>Out Time: " . date('h:i A', strtotime($v->end_time));
-                    $title .= "<br/>Duration: " . $v->total;
+                $a_date = date('Y-m-d', strtotime($v->start_date));
+                if (! empty($v->end_time)) {
+                    $etime = $v->end_time;
                 } else {
+                    $etime = date('H:i:s', strtotime('23:59:00'));
+                }
+                
+                if ($a_date == date('Y-m-d') && empty($v->end_time)) {
                     $title .= '<span class="badge badge-pill badge-success pill-state">Online</span>';
                     $title .= "<br/>In Time: " . date('h:i A', strtotime($v->start_time));
                     $title .= "<br/>Out Time: N/A";
                     $title .= "<br/>Duration: N/A";
+                } else {
+                    $title .= '<span class="badge badge-pill badge-primary pill-state">Present</span>';
+                    $title .= "<br/>In Time: " . date('h:i A', strtotime($v->start_time));
+                    $title .= "<br/>Out Time: " . date('h:i A', strtotime($v->end_time));
+                    $title .= "<br/>Duration: " . $v->total;
                 }
+                
                 $totalDuration = $v->getDuration($total);
                 $showData[$count]['title'] = $title;
                 $showData[$count]['start'] = $a_date . 'T' . $v->start_time;
-                $showData[$count]['end'] = $a_date . 'T' . $v->end_time;
+                $showData[$count]['end'] = $a_date . 'T' . $etime;
                 $showData[$count]['start_time'] = $v->start_time;
-                $showData[$count]['end_time'] = $v->end_time ?? '';
+                $showData[$count]['end_time'] = $etime;
                 $showData[$count]['color'] = 'blue';
                 $showData[$count]['type'] = 'date';
                 $showData[$count]['roster_id'] = $v->id;
@@ -106,8 +113,9 @@ class AgentAttendenceController extends Controller
                 $showData[$count]['agent_id'] = $v->agent_id;
                 $showData[$count]['days'] = $days;
                 $showData[$count]['order_url'] = '#';
-                $total = $v->total;
+                $total = $totalDuration;
                 $count ++;
+                // echo "<br>";
             }
         }
         $data['data'] = $showData;
