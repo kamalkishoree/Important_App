@@ -5,6 +5,14 @@
 <link href="{{asset('assets/libs/dropzone/dropzone.min.css')}}" rel="stylesheet" type="text/css" />
 <link href="{{asset('assets/libs/dropify/dropify.min.css')}}" rel="stylesheet" type="text/css" />
 <link rel="stylesheet" href="{{ asset('telinput/css/intlTelInput.css') }}" type="text/css">
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<style>
+    span.select2-selection.select2-selection--multiple { line-height: 10px;height: 38px; }
+    .select2-container--default .select2-selection--multiple .select2-selection__choice { line-height: initial; }
+    .select2-container--default .select2-selection--multiple .select2-selection__choice__remove { color: #fff !important;border: unset !important;}
+    .select2-container--default .select2-selection--multiple .select2-selection__choice__display { padding-left: 10px !important;padding-right: 0px !important; }
+    .select2-container--default.select2-container--focus .select2-selection--multiple.select2-selection--clearable { display: flex !important;flex-wrap: nowrap !important; }
+</style>
 @endsection
 
 @section('content')
@@ -31,7 +39,7 @@
                 <div class="card-body">
                     @if(isset($subadmin))
                     <form id="UpdateSubadmin" method="post" action="{{route('subadmins.update', $subadmin->id)}}"
-                        enctype="multipart/form-data">
+                        enctype="multipart/form-data" autocomplete="off">
                         @method('PUT')
                         @else
                         <form id="StoreSubadmin" method="post" action="{{route('subadmins.store')}}"
@@ -85,7 +93,8 @@
                                         <label for="phone_number" class="control-label">{{__("CONTACT NUMBER")}}</label>
                                         <div class="input-group">
                                             @if(isset($subadmin) && !empty($subadmin))
-                                            <input type="tel" name="phone_number" class="form-control xyz" value="{{old('full_number','+'.$subadmin->dial_code.$subadmin->phone_number)}}"id="phone_number" placeholder="9876543210" maxlength="14">
+                                            <input type="tel" name="phone_number" class="form-control xyz" value="{{'+'.$subadmin->dial_code.$subadmin->phone_number}}"id="phone_number" placeholder="9876543210" maxlength="14">
+                                            {{-- {{old('full_number','+'.$subadmin->dial_code.$subadmin->phone_number)}} --}}
                                             <input type="hidden" id="countryData" name="countryData" value="us">
                                             <input type="hidden" id="dialCode" name="dialCode" value="{{ old('dialCode', $subadmin->dial_code)}}">
                                             @else
@@ -94,9 +103,11 @@
                                             <input type="hidden" id="dialCode" name="dialCode" value="{{ old('dialCode')}}">
                                             @endif
                                          </div>
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong></strong>
-                                        </span>
+                                         @if($errors->has('phone_number'))
+                                            <span class="text-danger" role="alert">
+                                                <strong>{{ $errors->first('phone_number') }}</strong>
+                                            </span>
+                                         @endif
                                     </div>
 
 
@@ -122,7 +133,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="password" class="control-label">{{__("PASSWORD")}}</label>
+                                        <label for="password" class="control-label">{{__("Password")}}</label>
                                         @if(isset($subadmin))
                                         {{-- <input type="text" class="form-control" id="password" name="password"
                                             value="{{ old('password', isset($subadmin->confirm_password)?Crypt::decryptString($subadmin->confirm_password) :'********')}}"
@@ -138,8 +149,53 @@
                                         @endif
                                     </div>
                                 </div>
+                                @php
+                                    $warehouse_mode = checkWarehouseMode();
+                                @endphp
+                                @if($warehouse_mode['show_warehouse_module'] == 1)
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="password" class="control-label">{{__("Manager Type")}}</label>
+                                            <select name="manager_type" class="form-control manager_type">
+                                                <option value="0" <?=(!empty($subadmin) && $subadmin->manager_type==0)?'selected':'';?>>{{__("Manager")}}</option>
+                                                <option value="1" <?=(!empty($subadmin) && $subadmin->manager_type==1)?'selected':'';?>>{{__("Warehouse Manager")}}</option>
+                                            </select>                                        
+                                        </div>
+                                    </div>
+                                @endif
+                                @if(!empty($subadmin) && $subadmin->manager_type == 1)
+                                    @php $style = "block;"; @endphp
+                                @else
+                                    @php $style = "none;"; @endphp
+                                @endif
+                                <div class="col-md-6" id="show_warehose_manager" style="display:{{$style}}">
+                                    <div class="form-group">
+                                        <label for="team_access" class="control-label">{{__("Warehouses")}}</label>
+                                        @php
+                                            $warehouseIds = [];
+                                            if(!empty($subadmin->warehouse)){
+                                                $warehouseIds = $subadmin->warehouse->pluck('id')->toArray();
+                                            }
+                                        @endphp
+                                        <select name="warehouses[]" class="form-control select2" id="warehouses" multiple="multiple">
 
-                                <div class="col-md-6">
+                                            @foreach ($warehouses as $warehouse)
+                                                <option value="{{$warehouse->id}}" @if(in_array($warehouse->id, $warehouseIds)) selected @endif>{{$warehouse->name}}</option>
+                                            @endforeach
+                                        </select>
+                                        @if($errors->has('warehouses'))
+                                        <span class="text-danger" role="alert">
+                                            <strong>{{ $errors->first('warehouses') }}</strong>
+                                        </span>
+                                        @endif
+                                    </div>
+                                </div>
+                                @if(!empty($subadmin) && $subadmin->manager_type == 1)
+                                    @php $style = "none;"; @endphp
+                                @else
+                                    @php $style = "block;"; @endphp
+                                @endif
+                                <div class="col-md-6" id="show_normal_manager" style="display: {{$style}}">
                                     <div class="form-group">
                                         <label for="team_access" class="control-label">{{__("Team Access")}}</label>
                                         <?php $teamaccess =  (isset($subadmin))?$subadmin->all_team_access:'';?>
@@ -202,7 +258,7 @@
                                         </tbody>
                                     </table>
                                 </div>
-                                <?php $style = (isset($subadmin) && ($subadmin->all_team_access==1))?"none":""; ?>
+                                <?php $style = (isset($subadmin) && ($subadmin->all_team_access==1 || $subadmin->manager_type == 1))?"none":""; ?>
                                 
                                 <div class="col-lg-6 team_perm_section table-responsive" style="display:{{$style}}">
                                     @php
@@ -243,10 +299,6 @@
                                     </table>
                                 </div>
                             </div>
-                                                    
-                            
-                          
-
                             <div class="row mb-2 mt-4">
                                 <div class="col-12">
                                     <div class="form-group mb-0 text-center">
@@ -262,9 +314,7 @@
 
 </div>
 @endsection
-
 @section('script')
-
     <script src="{{ asset('assets/js/jquery-ui.min.js') }}" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="{{ asset('assets/css/jquery-ui.css') }}">
     <script src="{{ asset('assets/js/storeAgent.js') }}"></script>
@@ -275,9 +325,11 @@
     <script src="{{ asset('assets/js/jquery.tagsinput-revisited.js') }}"></script>
     <script src="{{ asset('telinput/js/intlTelInput.js') }}"></script>
     <link rel="stylesheet" href="{{ asset('assets/css/jquery.tagsinput-revisited.css') }}" />>
-
-
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
+    $(function() { 
+        warehousesSelecter ();
+    });
 // var code = ;
 //for handling team access permission
 $('#team_access').on('change', function() {
@@ -296,6 +348,29 @@ $('#team_access').on('change', function() {
     $('.xyz').change(function() {
         var phonevalue = $('.xyz').val();
         $("#countryCode").val(mobile_number.getSelectedCountryData().dialCode);
+    });
+
+    $('.manager_type').on('change', function() {
+        warehousesSelecter()
+        var manager_type = $(this).val();
+        var team_access = $('#team_access').val();
+        if(manager_type == 1){
+            $('#show_warehose_manager').css('display','block');
+            $('#show_normal_manager').css('display','none');
+            $('.team_perm_section').css('display','none');
+            if(team_access == 0){
+                $('.team_perm_section').css('display','none');
+            }
+            $('.team_permission_check').prop('checked', false);
+        }else{
+            $('#show_warehose_manager').css('display','none');
+            $('#show_normal_manager').css('display','block');
+            if(team_access == 0){
+                $('.team_perm_section').css('display','block');
+            }else{
+                $('.team_perm_section').css('display','none');
+            }
+        }
     });
     
     phoneInput();
@@ -316,6 +391,14 @@ $('#team_access').on('change', function() {
         var dial_code = $(this).attr('data-dial-code');
         $('#dialCode').val(dial_code);
     });
+    function warehousesSelecter (){
+        $("#warehouses").select2({
+            allowClear: true,
+            width: "resolve",
+            placeholder: "Select Warehouse"
+        });
+    }
+
     
 </script>
 @endsection

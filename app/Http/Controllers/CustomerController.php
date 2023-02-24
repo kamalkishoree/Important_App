@@ -32,6 +32,10 @@ class CustomerController extends Controller
     {
         $customers = Customer::orderBy('created_at', 'DESC')->get();
         return Datatables::of($customers)
+                ->addColumn('name', function ($customers) {
+                    $name = '<a href="'.route("tasks.index").'?customer_id='.$customers->id.'">'.$customers->name.'</a>';
+                    return $name;
+                })
                 ->editColumn('action', function ($customers) use ($request) {
                     $action = '<div class="form-ul" style="width: 60px;">
                                 <div class="inner-div"> <a href="javascript:void(0)" userId="'.$customers->id.'" class="action-icon editIcon"> <i class="mdi mdi-square-edit-outline"></i></a></div>';
@@ -54,6 +58,7 @@ class CustomerController extends Controller
                         });
                     }
                 })
+                ->rawColumns(['action', 'name'])
                 ->make(true);
     }
 

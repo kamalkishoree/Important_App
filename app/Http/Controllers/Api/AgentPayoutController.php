@@ -68,6 +68,7 @@ class AgentPayoutController extends BaseController{
 
             $pay_option = $request->payout_option_id ?? 1;
             if($pay_option == 4){
+                //bank_account_m_india
 
                 $validator = Validator::make($request->all(), [
                     'beneficiary_name' => 'required',
@@ -142,6 +143,7 @@ class AgentPayoutController extends BaseController{
     /**   show agent payout tab details   */
     public function agentPayoutDetails(Request $request)
     {
+
         $page     = $request->has('page') ? $request->page : 1;
         $limit    = $request->has('limit') ? $request->limit : 30;
         $user     = Auth::user();
@@ -228,7 +230,7 @@ class AgentPayoutController extends BaseController{
         }
 
         //stripe connected account details
-        $codes = ['cash', 'stripe', 'pagarme', 'bank_account_m_india'];
+        $codes = ['cash', 'stripe', 'pagarme', 'bank_account_m_india','razorpay'];
         $payout_creds = PayoutOption::whereIn('code', $codes)->where('status', 1)->get();
         if ($payout_creds) {
             foreach ($payout_creds as $creds) {

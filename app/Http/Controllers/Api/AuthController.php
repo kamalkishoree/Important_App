@@ -22,7 +22,7 @@ use Illuminate\Support\Facades\Hash;
 use Twilio\Rest\Client as TwilioClient;
 use Faker\Generator as Faker;
 use Illuminate\Support\Facades\Storage;
-use App\Model\{User, Agent, AgentDocs, AllocationRule, AgentSmsTemplate, Client, EmailTemplate, SmtpDetail, ClientPreference, BlockedToken, Otp, TaskProof, TagsForTeam, SubAdminTeamPermissions, SubAdminPermissions, TagsForAgent, Team};
+use App\Model\{User, Agent, AgentDocs, AgentFleet, AllocationRule, AgentSmsTemplate, Client, EmailTemplate, SmtpDetail, ClientPreference, BlockedToken, Fleet, Otp, TaskProof, TagsForTeam, SubAdminTeamPermissions, SubAdminPermissions, TagsForAgent, Team};
 
 
 class AuthController extends BaseController
@@ -186,7 +186,7 @@ class AuthController extends BaseController
             return response()->json(['message' => __('Your account has been rejected. Please contact administration')], 422);
         }
 
-        $prefer = ClientPreference::with('currency')->select('theme', 'distance_unit', 'currency_id', 'language_id', 'agent_name', 'date_format', 'time_format', 'map_type', 'map_key_1')->first();
+        $prefer = ClientPreference::with('currency')->select('theme', 'distance_unit', 'currency_id', 'language_id', 'agent_name', 'date_format', 'time_format', 'map_type', 'map_key_1', 'custom_mode', 'is_cab_pooling_toggle')->first();
         $allcation = AllocationRule::first('request_expiry');
         $prefer['alert_dismiss_time'] = (int)$allcation->request_expiry;
         $taskProof = TaskProof::all();
@@ -424,7 +424,7 @@ class AuthController extends BaseController
 
         $validator = Validator::make($request->all(), [
             'name' => 'required',
-            'phone_number' => 'required|min:9',
+            'phone_number' => 'required|min:6',
             'type' => 'required',
             'otp' => 'required'
             // 'vehicle_type_id' => 'required'
@@ -502,6 +502,25 @@ class AuthController extends BaseController
         ];
 
         $agent = Agent::create($data);
+        $fleetChk = ClientPreference::value('manage_fleet');
+        if($fleetChk)
+        {
+                $dataFleet = [
+                    'name' => $request->vehicle_name??'Test',
+                    'make' => $request->make,
+                    'model' => $request->model??'Top',
+                    'registration_name' => $request->plate_number,
+                    'color' => $request->color,
+                    'year' => $request->year??date('Y'),
+                    'user_id' => $agent->id
+                ];
+                $agentFleet = Fleet::create($dataFleet);
+                if($agentFleet)
+                {
+                    AgentFleet::create(['fleet_id'=>$agentFleet->id,'agent_id'=>$agent->id]);
+                }
+        }
+
         $agent->tags()->sync($tag_id);
         $files = [];
         if ($request->hasFile('uploaded_file')) {
