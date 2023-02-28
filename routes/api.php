@@ -151,6 +151,8 @@ Route::group(['middleware' => ['dbCheck', 'AppAuth','apiLocalization']], functio
     Route::post('agent/inAttendence', 'Api\AgentAttendenceController@create');// api for in attendence agent
     Route::post('agent/outAttendence', 'Api\AgentAttendenceController@update'); // api for out attendence agent
     Route::post('agent/getAttendence', 'Api\AgentAttendenceController@getTodayAttendance'); // api for out attendence agent
+    Route::get('agent/getAttendenceHistory', 'Api\AgentAttendenceController@getAttendanceHistory'); // api for creating order cancel request by driver
+    
     //Agent Out of plateform upload pop
 
     Route::post('agent/outofplatform/upload-pop', 'Api\AgentPayoutController@AgentUploadPop')->name('agent.outofplateform.upload');
