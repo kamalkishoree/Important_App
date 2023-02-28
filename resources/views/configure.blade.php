@@ -890,6 +890,7 @@ $sms_crendential = json_decode($preference->sms_credentials);
                 </div>
             </div>
             @include('rating.rating')
+            @include('rating.ratingAttribute')
         </div>
 
         <div class="row">
@@ -1516,10 +1517,10 @@ $sms_crendential = json_decode($preference->sms_credentials);
             </div>
         </div>
 
-
+        
         @include('rating.ratingModel')
 
-
+        @include('rating.ratingAttributeModel')
 
     </div> <!-- container -->
     @include('modals.add-sub-client')

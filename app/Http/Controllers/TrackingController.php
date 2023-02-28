@@ -9,16 +9,15 @@ use App\Model\{Client, Order,DriverRegistrationDocument, OrderFormAttribute};
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use App\Traits\sendCustomNotification;
+use App\Traits\{sendCustomNotification,FormAttributeTrait,RatingTrait};
 
 class TrackingController extends Controller
 {
-    use sendCustomNotification;
+    use sendCustomNotification,FormAttributeTrait,RatingTrait;
 
     public function OrderTracking($domain = '', $user, $id)
     {
         $respnse = $this->connection($user);
-
         if ($respnse['status'] == 'connected') {
             $order   = DB::connection($respnse['database'])->table('orders')->where('unique_id', $id)->leftJoin('agents', 'orders.driver_id', '=', 'agents.id')
                 ->select('orders.*', 'agents.name', 'agents.profile_picture', 'agents.phone_number')->first();
@@ -219,7 +218,7 @@ class TrackingController extends Controller
 
     public function DriverRating($domain = '', $user, $id, Request $request)
     {
-        //dd('sdfsdf');
+       // dd('sdfsdf');
         // $domain = '', $user, $id
         $respnse = $this->connection($user);
         if ($respnse['status'] == 'connected') {
@@ -231,7 +230,7 @@ class TrackingController extends Controller
                 $data = [
                     'order_id'    => $order->id,
                     'driver_id'   => $order->driver_id,
-                    'rating'      => $request->rating,
+                    'rating'      => $request->rating ?? 0,
                     'review'      => $request->review,
                 ];
                 if (isset($check_alredy->id)) {
@@ -342,6 +341,105 @@ class TrackingController extends Controller
             }
         } else {
             return view('tracking/order_not_found');
+        }
+    }
+
+    public function OrderRatingform(Request $request,$domain = '', $user, $id)
+    {
+        $respnse = $this->connection($user);
+        $data['attribute'] = [];
+        $data['ratingType'] = [];
+        if ($respnse['status'] == 'connected') {
+            $order   = DB::connection($respnse['database'])->table('orders')->where('unique_id', $id)->leftJoin('agents', 'orders.driver_id', '=', 'agents.id')
+                ->select('orders.*', 'agents.name', 'agents.profile_picture', 'agents.phone_number')->first();
+            if (isset($order->id)) {
+                
+                    $attribute = $this->getRatingAttributeForm($request,'',$order->id);
+                  
+                    $ratingType = $this->getRatingType($request, $order->id);
+                   
+                    $data['attribute'] =  $attribute;
+                    $data['ratingType'] =  $ratingType;
+            } 
+        } 
+        return response()->json(['status' => 'success','data'=> json_encode($data)]);
+    }
+    public function OrderRatingSubmit(Request $request,$domain = '', $user, $id)
+    {
+        $respnse = $this->connection($user);
+     
+        if ($respnse['status'] == 'connected') {
+            $order = DB::connection($respnse['database'])->table('orders')->where('unique_id', $id)->first();            
+
+            if (isset($order->id)) {
+                if(isset($request->Rating_types)){
+
+                    foreach($request->Rating_types as $Rating_type) {
+                       
+                        $check_alredy  = DB::connection($respnse['database'])->table('driver_ratings')->where('order_id', $order->id)->where('rating_type_id',$Rating_type['rating_type_id'])->first();
+                     
+                        $data = [
+                            'order_id'    => $order->id,
+                            'driver_id'   => $order->driver_id,
+                            'rating'      => $Rating_type['rating'] ?? 0,
+                            'review'      => $request->review,
+                            'rating_type_id' => $Rating_type['rating_type_id'],
+                        ];
+                        if (isset($check_alredy->id)) {
+                            $data['updated_at'] = date('Y-m-d H:i:s');
+                            DB::connection($respnse['database'])->table('driver_ratings')->where('id',$check_alredy->id)->update($data);
+                        } else {
+                            $data['created_at'] = date('Y-m-d H:i:s');
+                            DB::connection($respnse['database'])->table('driver_ratings')->insert($data);
+                           
+                        }
+                    }
+                }
+                if($request->Rating && isset($request->Rating['review']) && !empty($request->Rating['review']) ){
+                    $check_alredy  = DB::connection($respnse['database'])->table('driver_ratings')->where('order_id', $order->id)->whereNull('rating_type_id')->first();
+               
+                    $data = [
+                        'order_id'    => $order->id,
+                        'driver_id'   => $order->driver_id,
+                        'rating'      => 0,
+                        'review'      => $request->Rating['review'],
+                      
+                    ];
+                    if (isset($check_alredy->id)) {
+                        $data['updated_at'] = date('Y-m-d H:i:s');
+                        DB::connection($respnse['database'])->table('driver_ratings')->where('id',$check_alredy->id)->update($data);
+                    } else {
+                        $data['created_at'] = date('Y-m-d H:i:s');
+                        DB::connection($respnse['database'])->table('driver_ratings')->insert($data);
+                    }
+                }
+                if(isset($request->attribute) && !empty($request->attribute)){
+                    foreach($request->attribute as $attribute) {
+                     
+                        $check_questions  = DB::connection($respnse['database'])->table('order_rating_questions')->where('order_id', $order->id)->where('question_id',$attribute['question_id'])->first();
+                        $data = [
+                            'order_id'    => $order->id,
+                            'question_id' => $attribute['question_id'],
+                            'option_id'   => $attribute['option_id']
+                        ];
+                        if (isset($check_questions->id)) {
+                            $data['updated_at'] = date('Y-m-d H:i:s');
+                            DB::connection($respnse['database'])->table('order_rating_questions')->where('id',$check_questions->id)->update($data);
+                        } else {
+                            $data['created_at'] = date('Y-m-d H:i:s');
+                            DB::connection($respnse['database'])->table('order_rating_questions')->insert($data);
+                        }
+                    }
+                }
+              
+                return response()->json(['status' => true, 'message' => __('Your rating is submitted')]);
+            } else {
+                return response()->json(['status' => true, 'message' => __('Order Not Found')]);
+            }
+        } else {
+            return response()->json([
+                'message' => 'Error'], 400);
+            
         }
     }
    

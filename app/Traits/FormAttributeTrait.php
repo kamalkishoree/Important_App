@@ -3,7 +3,7 @@
 namespace App\Traits;
 
 use App\Model\FormAttribute;
-use App\Model\OrderFormAttribute;
+use App\Model\{OrderFormAttribute,OrderRatingQuestions};
 use DB;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
@@ -13,8 +13,16 @@ use Illuminate\Support\Facades\Storage;
 trait FormAttributeTrait
 {
 
-
-    function getAttributeForm($request, $id = 0)
+    
+    /**
+     * getAttributeForm
+     *
+     * @param  mixed $request
+     * @param  mixed $id
+     * @param  mixed $attribute_for 1 order attribute , 2 for order dirver rating attribute
+     * @return void
+     */
+    function getAttributeForm($request, $id = 0,$attribute_for =1)
     {
 
         $formAttributes = [];
@@ -22,9 +30,14 @@ trait FormAttributeTrait
             // , 'varcategory.cate.primary'
             $formAttributes = FormAttribute::with('option')
                 ->select('form_attributes.*')
-
                 ->where('form_attributes.status', '!=', 2)
-                ->orderBy('position', 'asc')->get();
+               
+                ->orderBy('position', 'asc');
+            if($id!=0){
+                $formAttributes =  $formAttributes->where('id',$id)->first();
+            }else{
+                $formAttributes =  $formAttributes->where('form_attributes.attribute_for', $attribute_for)->get();
+            }
         }
         return $formAttributes;
     }
@@ -116,4 +129,27 @@ trait FormAttributeTrait
         }
         return true;
     }
+
+    function getRatingAttributeForm($request, $id = 0,$orderID)
+    {
+      
+        $formAttributes = [];
+        if (checkTableExists('form_attributes')) {
+            // , 'varcategory.cate.primary'
+            $formAttributes = FormAttribute::with(['option','orderQuetions'=>function ($q) use($orderID){
+                $q->where('order_id',$orderID);
+            }])
+                ->select('form_attributes.*')
+                ->where('form_attributes.status', '!=', 2)
+               
+                ->orderBy('position', 'asc');
+            if($id!=0){
+                $formAttributes =  $formAttributes->where('id',$id)->first();
+            }else{
+                $formAttributes =  $formAttributes->where('form_attributes.attribute_for', 2)->get();
+            }
+        }
+        return $formAttributes;
+    }
+
 }

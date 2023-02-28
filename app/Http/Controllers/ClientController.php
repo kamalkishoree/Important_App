@@ -492,9 +492,9 @@ class ClientController extends Controller
      */
     public function ShowPreference()
     {
-        $attributes = FormAttribute::with('option','translation_one')->where('status', '!=', 2)->orderBy('position', 'asc');
-        $attributes = $attributes->get();
-            // dd($attributes);
+      
+        $attributes = FormAttribute::getFormAttribute(1);
+        
         $preference  = ClientPreference::where('client_id', Auth::user()->code)->first();
         $currencies  = Currency::orderBy('iso_code')->get();
         $cms         = Cms::all('content');
@@ -538,9 +538,11 @@ class ClientController extends Controller
         $smtp        = SmtpDetail::where('id', 1)->first();
         $vehicleType = VehicleType::latest()->get();
         $agent_docs = DriverRegistrationDocument::get();
+        $driverRatingQuestion = FormAttribute::getFormAttribute(2); // 2 for driverRatingQuestion 1 for defoult FormAttribute
+      
         $agents    = Agent::where('is_activated','1')->get();
         $smsTypes = SmsProvider::where('status', '1')->get();
-        return view('configure')->with(['preference' => $preference, 'customMode' => $customMode, 'client' => $client,'subClients'=> $subClients,'smtp_details'=>$smtp, 'agent_docs' => $agent_docs,'smsTypes'=>$smsTypes,'vehicleType'=>$vehicleType, 'warehoseMode' => $warehoseMode, 'dashboardMode' => $dashboardMode,'agents'=>$agents]);
+        return view('configure')->with(['preference' => $preference, 'customMode' => $customMode, 'client' => $client,'subClients'=> $subClients,'smtp_details'=>$smtp, 'agent_docs' => $agent_docs,'smsTypes'=>$smsTypes,'vehicleType'=>$vehicleType, 'warehoseMode' => $warehoseMode, 'dashboardMode' => $dashboardMode,'agents'=>$agents,'driverRatingQuestion'=>$driverRatingQuestion]);
     }
 
 

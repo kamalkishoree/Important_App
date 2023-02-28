@@ -162,3 +162,62 @@ function deleteRatingType(id){
         //sweetAlert.error();
     })    
 }
+ // Attribute script
+
+$(document).on('click', '.add_driver_rating_quiestionbtn', function(e) {
+    console.log('click function called');
+    e.preventDefault();
+    getDriverRatingQ();
+
+});
+function getDriverRatingQ(ratingQuesId = 0){
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
+        }
+    });
+   
+    $.ajax({
+        type: "get",
+        url: `/attribute/create?for=2&&attribute_id=${ratingQuesId}`,
+        data: '',
+        dataType: 'json',
+        success: function(data) {
+            console.log(data);
+            var title = _language.getLanString('Add Driver Reviwe Question');
+            if(ratingQuesId !=0){
+                var title = _language.getLanString('Edit Driver Reviwe Question');
+            }
+            $('#adddriverRatingeTitle').html(title);
+            
+            $('#adddriverRatingemodal').modal({
+                backdrop: 'static',
+                keyboard: false
+            });
+            $('#addDriverRatingeForm #addDriverRatingbox').html(data.html);
+        },
+        error: function(data) {
+            console.log('data2');
+        }
+    });
+}
+$(document).on('click', '.editDriverratingQBtn', function(e) {
+    var rating_id =$(this).attr('data-id');
+    getDriverRatingQ(rating_id);
+
+});
+$(document).on('click', '.addOptionRow-attribute-edit', function(e) {
+    var d = new Date();
+    var n = d.getTime();
+    var $tr = $('.optionTableEditAttribute tbody>tr:first').next('tr');
+    var $clone = $tr.clone();
+    $clone.find(':text').val('');
+    $clone.find(':hidden').val('');
+    $clone.find('.hexa-colorpicker').attr("id", "hexa-colorpicker-" + n);
+    $clone.find('.lasttd').html('<a href="javascript:void(0);" class="action-icon deleteCurRow"> <i class="mdi mdi-delete"></i></a>');
+    $('.optionTableEditAttribute').append($clone);
+
+});
+$("#addDriverRatingeForm").on('click', '.deleteCurRow', function() {
+    $(this).closest('tr').remove();
+});
