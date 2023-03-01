@@ -49,7 +49,7 @@ class FormAttributeController extends Controller
             FormAttributeOption::where('attribute_id',$variant->id)->whereNotIn('id',$option_ids)->delete();
 
             foreach ($request->hexacode as $key => $value) {
-                $opt_id = ($request->opt_id && isset($request->opt_id[0])) ? @$request->opt_id[0][$key] : '';
+                $opt_id = ($request->opt_id && isset($request->opt_id[0]) && isset($request->opt_id[0][$key] ) ) ? @$request->opt_id[0][$key] : '';
 
                 $varOpt = FormAttributeOption::where(['attribute_id'=> $variant->id,'id'=>$opt_id  ])->first() ??  new FormAttributeOption();
                 $varOpt->title = $request->opt_color[0][$key];
