@@ -30,7 +30,7 @@ class FormAttributeController extends Controller
     {
     
       
-        $variant = FormAttribute::where('id',\@$request->attribute_id)->first() ?? new FormAttribute();
+        $variant = FormAttribute::where('id',@$request->attribute_id)->first() ?? new FormAttribute();
         $variant->title = (!empty($request->title[0])) ? $request->title[0] : '';
         $variant->type = $request->type;
         $variant->attribute_for = $request->attribute_for ?? 1;
