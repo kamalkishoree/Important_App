@@ -24,4 +24,8 @@ class FormAttribute extends Model
         $langset = 1;
         return $this->hasOne('App\Model\FormAttributeTranslation', 'attribute_id', 'id')->select('attribute_id', 'title')->where('language_id', $langset);
     }
+    public  function orderQuetions()
+    {
+        return $this->hasOne('App\Model\OrderRatingQuestions', 'question_id', 'id'); 
+    }
 }

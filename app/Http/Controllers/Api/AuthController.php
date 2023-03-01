@@ -14,7 +14,7 @@ use App\Http\Controllers\Api\BaseController;
 use Illuminate\Support\Facades\Log;
 use App\Http\Requests\UserLogin;
 use App\Traits\{ApiResponser,GlobalFunction,smsManager};
-use App\Traits\{smsManager, FormAttributeTrait};
+use App\Traits\{ FormAttributeTrait};
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;

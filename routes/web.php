@@ -129,8 +129,8 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 			Route::get('/order-cancel/tracking/{clientcode}/{order_id}', 'TrackingController@orderCancelFromOrder')->name('order.cancel.from_order');
 			Route::get('/order/driver-rating/{clientcode}/{order_id}', 'TrackingController@DriverRating')->name('order.driver.rating');
 			Route::get('/order/form-attribute/{clientcode}/{order_id}', 'TrackingController@OrderFormAttribute')->name('order.tracking');
-			
-			
+			Route::get('/order/driver_additional_rating/{clientcode}/{order_id}', 'TrackingController@OrderRatingform')->name('order.driverAdditional.rating');
+			Route::post('/order/submit_driver_additional_rating/{clientcode}/{order_id}', 'TrackingController@OrderRatingSubmit')->name('submit.driverAdditional.rating');
 			// Create agent connected account stripe
 			Route::get('client/verify/oauth/token/stripe', 'StripeGatewayController@verifyOAuthToken')->name('verify.oauth.token.stripe');
 
@@ -152,6 +152,10 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 
 		Route::group(['middleware' => ['auth:client'], 'prefix' => '/'], function () {
 
+			Route::post('rating_type/create', 'Rating\RatingTypeController@store')->name('rating_type.create');
+			Route::get('rating_type/list', 'Rating\RatingTypeController@index')->name('rating_type.index');
+			Route::get('rating_type/show/{id}', 'Rating\RatingTypeController@edit')->name('rating_type.show');
+			Route::get('rating_type/delete/{id}', 'Rating\RatingTypeController@destroy')->name('rating_type.delete');
 			Route::get('vnpay/test',   'VnpayController@order');
 			Route::any('vnpay_respont', 'VnpayController@vnpay_respont')->name('vnpay_respont');
 
@@ -375,6 +379,7 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 
 
 
+	
 
 });
 

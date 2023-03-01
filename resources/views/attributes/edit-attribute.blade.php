@@ -25,7 +25,7 @@
                 </div>
             </div>
         </div>
-
+      <input type="hidden" name="attribute_id" value="{{  $attribute->id }}">
         <div class="row rowYK ">
             <div class="col-md-12">
                 <h5>{{ __('Attribute') ." Title" }}</h5>
@@ -37,7 +37,8 @@
                     <tr>
                                 <td >
                                     {!! Form::hidden('language_id[]', 1) !!}
-                                    {!! Form::text('title[]', null, ['class' => 'form-control']) !!}
+                                    {!! Form::text('title[]', $attribute->title, ['class' => 'form-control']) !!}
+                                
                                 </td>
                 </table>
             </div>
@@ -55,16 +56,27 @@
                         <th></th>
                         <th></th>
                     </tr>
+                    @foreach ($attribute->option as $key=>$option)
                     <tr>
+                        <input type="hidden" name="option_ids[]" value="{{ $option->id }}" >
                         <td style="min-width: 200px; display:none;" class="hexacodeClass-add col-md-6">
                             <input type="text" name="hexacode[]" class="form-control hexa-colorpicker" value="cccccc" id="add-hexa-colorpicker-1">
                         </td>
                       
                         <td>
-                            <input type="text" name="opt_color[0][]" class="form-control attr-text-box" required>
+                           
+                            <input type="hidden" name="opt_id[0][]" value="{{ $option->id }}" >
+                            <input type="text" name="opt_color[0][]" class="form-control attr-text-box" value="{{ $option->title }}" required>
+                               
+                          
                         </td>
                        
-                        <td class="lasttd"></td>
+                        <td class="lasttd">
+                            @if($key!=0)
+                            <a href="javascript:void(0);" class="action-icon deleteCurRow"> <i class="mdi mdi-delete"></i></a>
+                            @endif
+                        </td>
+                        @endforeach
                     </tr>
                 </table>
             </div>
