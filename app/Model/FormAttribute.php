@@ -28,4 +28,14 @@ class FormAttribute extends Model
     {
         return $this->hasOne('App\Model\OrderRatingQuestions', 'question_id', 'id'); 
     }
+    public static function getFormAttribute($attribute_for)
+    {
+       
+        return  FormAttribute::with(['option','translation_one'])
+                        ->where('status', '!=', 2)
+                        ->where('attribute_for', $attribute_for)
+                        ->orderBy('position', 'asc')->get();
+                
+               
+    }
 }
