@@ -221,3 +221,8 @@ $(document).on('click', '.addOptionRow-attribute-edit', function(e) {
 $("#addDriverRatingeForm").on('click', '.deleteCurRow', function() {
     $(this).closest('tr').remove();
 });
+$(document).on('click', '.deleteAttributebtn', function(e) {
+    var rating_id =$(this).attr('data-id');
+   // getDriverRatingQ(rating_id);
+
+});
