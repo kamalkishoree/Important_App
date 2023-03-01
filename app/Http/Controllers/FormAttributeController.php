@@ -51,10 +51,11 @@ class FormAttributeController extends Controller
             foreach ($request->hexacode as $key => $value) {
                 $opt_id = ($request->opt_id && isset($request->opt_id[0]) && isset($request->opt_id[0][$key] ) ) ? @$request->opt_id[0][$key] : '';
 
+               
                 $varOpt = FormAttributeOption::where(['attribute_id'=> $variant->id,'id'=>$opt_id  ])->first() ??  new FormAttributeOption();
-                $varOpt->title = $request->opt_color[0][$key];
+                $varOpt->title = @$request->opt_color[0][$key];
                 $varOpt->attribute_id = $variant->id;
-                $varOpt->hexacode = ($value == '') ? '' : $value;
+                $varOpt->hexacode = (@$value == '') ? '' : @$value;
                 $varOpt->save();
 
                 foreach($request->language_id as $k => $v) {
