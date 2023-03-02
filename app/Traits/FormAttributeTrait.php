@@ -138,7 +138,7 @@ trait FormAttributeTrait
             // , 'varcategory.cate.primary'
             $formAttributes = FormAttribute::with(['option','orderQuetions'=>function ($q) use($orderID){
                 $q->where('order_id',$orderID);
-            }])
+            }])->whereHas('option')
                 ->select('form_attributes.*')
                 ->where('form_attributes.status', '!=', 2)
                
