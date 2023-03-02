@@ -763,11 +763,11 @@ $sms_crendential = json_decode($preference->sms_credentials);
                                     <h5 class="font-weight-normal m-0">{{ Session::get('agent_name') ? Session::get('agent_name') : 'Agent' }} {{ __('Freelancing mode') }} </h5>
                                     <div class="custom-control custom-switch">
                                         <input type="checkbox" class="custom-control-input"
-                                            id="editFleetCustomSwitch_{{ $preference->is_freelancer }}"
+                                            id="is_freelancer_{{ $preference->is_freelancer }}"
                                             name="is_freelancer"
                                             {{ $preference->is_freelancer == 1 ? 'checked' : '' }}>
                                         <label class="custom-control-label"
-                                            for="editFleetCustomSwitch_{{ $preference->is_freelancer }}"></label>
+                                            for="is_freelancer_{{ $preference->is_freelancer }}"></label>
                                     </div>
                                 </div>
                             </div>
