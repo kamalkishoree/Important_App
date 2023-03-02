@@ -52,7 +52,7 @@
                                                             <i class="mdi mdi-square-edit-outline"></i>
                                                         </a>
                                                         @if( auth()->user()->is_superadmin )
-                                                        <a class="action-icon deleteAttribute" dataid="{{$variant->id}}" href="javascript:void(0);">
+                                                        <a class="action-icon deleteAttributebtn" data-id="{{$variant->id}}" href="javascript:void(0);">
                                                             <i class="mdi mdi-delete"></i>
                                                         </a>
                                                         <form action="{{route('attribute.delete', $variant->id)}}" method="POST" style="display: none;" id="attrDeleteForm{{$variant->id}}">

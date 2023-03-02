@@ -350,7 +350,7 @@ Route::group(['middleware' => 'switchLanguage'], function () {
                     Route::get('edit/{id}', 'FormAttributeController@edit')->name('edit');
                     Route::post('store', 'FormAttributeController@store')->name('store');
                     Route::put('update/{id}', 'FormAttributeController@update')->name('update');
-                    Route::delete('delete/{id}', 'FormAttributeController@delete')->name('delete');
+                    Route::get('delete/{id}', 'FormAttributeController@delete')->name('delete');
                 });
             });
 

@@ -222,7 +222,50 @@ $("#addDriverRatingeForm").on('click', '.deleteCurRow', function() {
     $(this).closest('tr').remove();
 });
 $(document).on('click', '.deleteAttributebtn', function(e) {
-    var rating_id =$(this).attr('data-id');
+    var attribute_id =$(this).attr('data-id');
+   
+    Swal.fire({
+        title: 'Warning!',
+        text: 'Are you sure?',
+        icon: 'warning',
+      }).then(({value}) => {
+        console.log(value);
+            if (value === true) {
+                deleteRatingQuestion(attribute_id);
+            } 
+      });
    // getDriverRatingQ(rating_id);
 
 });
+function deleteRatingQuestion(attribute_id){
+    axios.get(`/attribute/delete/${attribute_id}`)
+    .then(async response => {
+   console.log(response);
+        if(response.data.status){
+            Swal.fire({
+                icon: 'success',
+                title: 'Success',
+                text: response.data.message,
+            })
+        } else{
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: response.data.message,
+              
+            })
+        }
+        setTimeout(() => {
+            RatingTypedatatable.ajax.reload();
+        },1000);
+    })
+    .catch(e => {
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: "oppes.....",
+          
+        })
+        //sweetAlert.error();
+    })    
+}

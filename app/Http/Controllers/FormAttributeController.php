@@ -75,4 +75,22 @@ class FormAttributeController extends Controller
         return redirect()->back()->with('success',$msg);
         
     }
+
+    public function delete($domain = '', $id){
+        try{
+            FormAttribute::where('id', $id)->update(['status'=>2]);
+            return response()->json([
+                'status'=>'success',
+                'message' => __('Deleted successfully!'),
+                'data' => []
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                'status'=>'error',
+                'message' => $e->getCode(),
+                'data' => []
+            ]);
+        }
+        
+    }
 }
