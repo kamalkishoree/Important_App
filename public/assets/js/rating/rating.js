@@ -256,7 +256,7 @@ function deleteRatingQuestion(attribute_id){
             })
         }
         setTimeout(() => {
-            RatingTypedatatable.ajax.reload();
+            location.reload();
         },1000);
     })
     .catch(e => {
