@@ -1245,18 +1245,27 @@ class TaskController extends BaseController
             }
 
             //accounting for task duration distanse
-
+           
             $geoid = '';
             if(($pickup_location->latitude!='' || $pickup_location->latitude!='0.0000') && ($pickup_location->longitude !='' || $pickup_location->longitude!='0.0000')):
                 $geoid = $this->findLocalityByLatLng($pickup_location->latitude, $pickup_location->longitude);
             endif;
+             
+            // get duration and distance
+            if($auth->getPreference->toll_fee == 1){
+                $getdata = $this->toll_fee($latitude, $longitude, (isset($request->toll_passes)?$request->toll_passes:''), (isset($request->VehicleEmissionType)?$request->VehicleEmissionType:''), (isset($request->travelMode)?$request->travelMode:''));
+                $toll_amount = (isset($getdata['toll_amount'])?$getdata['toll_amount']:0);
+            }else{
+                $getdata = $this->GoogleDistanceMatrix($latitude, $longitude);
+                $toll_amount = 0;
+            }
 
-            //get pricing rule  for save with every order based on geo fence and agent tags
-
+            //get freelencer cost from order side
+             //get pricing rule  for save with every order based on geo fence and agent tags
             $dayname = Carbon::parse($notification_time)->format('l');
             $time    = Carbon::parse($notification_time)->format('H:i');
 
-
+            // PricingRule get order delivery price and driver cost with priceing rule
             if((isset($request->order_agent_tag) && !empty($request->order_agent_tag)) && $geoid!=''):
                 $pricingRule = PricingRule::orderBy('id', 'desc')->whereHas('priceRuleTags.tagsForAgent',function($q)use($request){
                     $q->where('name', $request->order_agent_tag);
@@ -1267,9 +1276,9 @@ class TaskController extends BaseController
                     $q->where('apply_timetable', '!=', 1)
                     ->orWhereHas('priceRuleTimeframe', function($query) use ($dayname, $time){
                         $query->where('is_applicable', 1)
-                              ->Where('day_name', '=', $dayname)
-                              ->whereTime('start_time', '<=', $time)
-                              ->whereTime('end_time', '>=', $time);
+                            ->Where('day_name', '=', $dayname)
+                            ->whereTime('start_time', '<=', $time)
+                            ->whereTime('end_time', '>=', $time);
                     });
                 })->first();
             endif;
@@ -1277,13 +1286,7 @@ class TaskController extends BaseController
             if(empty($pricingRule))
             $pricingRule = PricingRule::orderBy('is_default', 'desc')->orderBy('is_default', 'asc')->first();
 
-            if($auth->getPreference->toll_fee == 1){
-                $getdata = $this->toll_fee($latitude, $longitude, (isset($request->toll_passes)?$request->toll_passes:''), (isset($request->VehicleEmissionType)?$request->VehicleEmissionType:''), (isset($request->travelMode)?$request->travelMode:''));
-                $toll_amount = (isset($getdata['toll_amount'])?$getdata['toll_amount']:0);
-            }else{
-                $getdata = $this->GoogleDistanceMatrix($latitude, $longitude);
-                $toll_amount = 0;
-            }
+            
 
 
             $paid_duration = $getdata['duration'] - $pricingRule->base_duration;
@@ -1304,6 +1307,7 @@ class TaskController extends BaseController
                     $percentage = $pricingRule->freelancer_commission_fixed + (($total / 100) * $pricingRule->freelancer_commission_percentage);
                 }
             }
+            
 
             //update order with order cost details
 
@@ -1326,6 +1330,32 @@ class TaskController extends BaseController
             'toll_fee'                        => $toll_amount,
             'driver_cost'                     => $percentage,
             ];
+            
+            if($request->has('driverCost') && ($request->driverCost >0) ){
+                $driver_cost =$request->driverCost;
+                // need to commision 
+                $updateorder = [
+                    'base_price'                      => 0,
+                    'base_duration'                   => 0,
+                    'base_distance'                   => 0,
+                    'base_waiting'                    => 0,
+                    'duration_price'                  => 0,
+                    'waiting_price'                   => 0,
+                    'distance_fee'                    => 0,
+                    'cancel_fee'                      => 0,
+                    'agent_commission_percentage'     => 0,
+                    'agent_commission_fixed'          => 0,
+                    'freelancer_commission_percentage'=> 0,
+                    'freelancer_commission_fixed'     => 0,
+                    'actual_time'                     => $getdata['duration'],
+                    'actual_distance'                 => $getdata['distance'],
+                    'toll_fee'                        => $toll_amount,
+                    'order_cost'                      => 0,  
+                    'driver_cost'                     => $driver_cost,   // freelencer  cost
+                ];
+
+            } 
+    
 
             Order::where('id', $orders->id)->update($updateorder);
            

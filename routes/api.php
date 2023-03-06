@@ -73,6 +73,7 @@ Route::post('cancel-order-request-status/driver/notify', 'Api\TaskController@can
 Route::group(['middleware' => ['dbCheck', 'apiLocalization']], function() {
     Route::get('client/preferences', 'Api\ActivityController@clientPreferences');
     Route::get('cmscontent','Api\ActivityController@cmsData');
+    
 });
 
 
@@ -99,7 +100,7 @@ Route::group(['prefix' => 'auth'], function () {
             Route::post('saveSlot', 'Api\AgentSlotController@saveAgentSlot');
            
         });
-    
+      
     });
 
 });
@@ -120,7 +121,7 @@ Route::group(['middleware' => ['dbCheck', 'AppAuth','apiLocalization']], functio
     Route::post('checkOTPRequried', 'Api\TaskController@checkOTPRequried');    // api for chnage task status like start,cpmplate, faild
     Route::post('task/accecpt/reject', 'Api\TaskController@TaskUpdateReject'); // api for accecpt task reject task
     Route::get('refer_task', 'Api\ActivityController@getReferOrder');                    // api for task list
-
+   
 
     Route::get('get/profile','Api\ActivityController@profile');                // api for get agent profile
     Route::post('update/profile','Api\ActivityController@updateProfile');       // api for updateprofile
@@ -183,7 +184,7 @@ Route::group(['middleware' => ['dbCheck', 'AppAuth','apiLocalization']], functio
         Route::post('delete_slot', 'Api\AgentSlotController@deleteSlot');
     });
 
-
+    Route::post('userRating', 'Api\ActivityController@userRating');  
 
 });
 

@@ -6,7 +6,7 @@ use App\Http\Controllers\Api\BaseController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
-use App\Model\{Agent, AgentLog, AllocationRule, Client, ClientPreference, Cms, Order, Task, TaskProof, Timezone, User, PaymentOption, UserBidRideRequest, DeclineBidRequest, DriverGeo};
+use App\Model\{Agent, AgentLog, AllocationRule, Client, ClientPreference, Cms, Order, Task, TaskProof, Timezone, User, PaymentOption, UserBidRideRequest, DeclineBidRequest, DriverGeo,UserRating};
 use Validation;
 use DB, Log;
 use Illuminate\Support\Facades\Storage;
@@ -713,6 +713,27 @@ class ActivityController extends BaseController
                 'message' => __('!Error, Something went wrong.')
             ], 200);
         }
+    }
+    public function userRating(Request $request)
+    {
+       
+        $UserRating = UserRating::where('order_id',$request->order_id)->first() ?? new UserRating();
+        $UserRating->driver_id = Auth::user() ? Auth::user()->id :  $request->driver_id;
+        $UserRating->user_id = $request->user_id;
+        $UserRating->order_id = $request->order_id;
+        $UserRating->rating = $request->rating;
+        $UserRating->review = $request->review;
+        $UserRating->order_webhook = $request->order_webhook;
+        $UserRating->save() ;
+        $client = new GClient(['content-type' => 'application/json']);
+        $url = $request->order_webhook;
+        $res = $client->get($url);
+        $response = json_decode($res->getBody(), true);
+        return response()->json([
+            'data' => $UserRating ,
+            'status' => 200,
+            'message' => __('Rating Submited!')
+        ], 200);
     }
 
 }
