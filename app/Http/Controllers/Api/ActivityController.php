@@ -446,7 +446,7 @@ class ActivityController extends BaseController
             $hisoryStatus = [$request->task_status];
         }
         if (isset($orders)) {
-            $tasks = Task::with(['location','tasktype','order.customer','order.task.location','order.additionData'])
+            $tasks = Task::with(['location','tasktype','order.customer','order.task.location','order.additionData','order.userRating'])
             ->whereIn('order_id', $orders)
             ->where(function($q) use ($hisoryStatus){
                 $q->whereIn('task_status', $hisoryStatus)

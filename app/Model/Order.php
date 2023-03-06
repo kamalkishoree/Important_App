@@ -107,4 +107,8 @@ class Order extends Model
         return $this->hasMany('App\Model\OrderAdditionData', 'order_id', 'id');
       
     }
+    public function userRating(){
+        return $this->hasOne('App\Model\UserRating', 'order_id', 'id');
+        
+    }
 }
