@@ -113,7 +113,7 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 			})->name('client-login');
 			Route::get('get-order-session', 'LoginController@getOrderSession')->name('setorders');
 		});
-
+	
 		Route::get('/demo/page', function () {
 			return view('demo');
 		});
@@ -133,7 +133,7 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 			Route::post('/order/submit_driver_additional_rating/{clientcode}/{order_id}', 'TrackingController@OrderRatingSubmit')->name('submit.driverAdditional.rating');
 			// Create agent connected account stripe
 			Route::get('client/verify/oauth/token/stripe', 'StripeGatewayController@verifyOAuthToken')->name('verify.oauth.token.stripe');
-
+			Route::get('order/invoice/{id?}', 'TrackingController@OrderInvoice')->name('oderInvoice');
 			//Route::get('payment/gateway/connect/response', 'BaseController@getGatewayConnectResponse')->name('payment.gateway.connect.response');
 
 			// Payment Gateway Routes

@@ -231,6 +231,9 @@ class AgentPayoutController extends BaseController{
                     $wallet->forceWithdrawFloat($debit_amount, $meta);
                 }
             }
+            if($payout->order_id !=''){
+                Order::where('id',$payout->order_id)->update(['is_comm_settled'=>2]);
+            }
 
             return Redirect()->back()->with('success', __('Payout has been completed successfully'));
         }

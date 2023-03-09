@@ -59,6 +59,9 @@ class AgentPayoutController extends BaseController{
             //-----------------Code modified by Surendra Singh--------------------------//
             $pending_payout_value  = AgentPayout::where('agent_id', $agent_id)->whereIn('status', [0])->sum('amount');
             $available_funds = agentEarningManager::getAgentEarning($agent_id, 1) - $pending_payout_value;
+         
+            \Log::info('available_funds '.$available_funds);
+            \Log::info('amount '.$request->amount);
             //-------------------------------------------------------------------------//
             if($request->amount > $available_funds){
                 return $this->error(__('Payout amount is greater than available funds'), 402);
@@ -117,7 +120,10 @@ class AgentPayoutController extends BaseController{
                     $agent_bank_account->save();
                 }
             }
-
+            $order_id = $request->has('order_id') ? $request->order_id : '';
+           
+            
+            
             $payout = new AgentPayout();
             $payout->agent_id = $id;
             $payout->payout_option_id = $pay_option;
@@ -125,6 +131,10 @@ class AgentPayoutController extends BaseController{
             $payout->amount = $request->amount;
             $payout->currency = $preferences->currency_id;
             $payout->requested_by = $agent->id;
+            if($order_id){
+                $payout->order_id = $order_id;
+                Order::where('id',$order_id)->update(['is_comm_settled'=>1]);
+            }
             $payout->status = 0;
             if($pay_option == 4){
                 $payout->agent_bank_detail_id = $agent_bank_account->id;

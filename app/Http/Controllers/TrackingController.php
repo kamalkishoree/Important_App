@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Config;
-use Storage;
+use Storage,PDF;
 use Carbon\Carbon;
 use App\Model\{Client, Order,DriverRegistrationDocument, OrderFormAttribute};
 use Illuminate\Support\Facades\Cache;
@@ -445,6 +445,35 @@ class TrackingController extends Controller
                 'message' => 'Error'], 400);
             
         }
+    }
+    public function OrderInvoice(Request $request,$domain = '', $order_id)
+    {
+     
+        // $short_code = $request->short_code ?? '24id662f266bcd09c8';
+        $order = Order::with('additionData','agent','task')->where('id', $order_id)->first();
+      
+        if(!$order){
+            return 0; 
+        }
+        $Client = Client::where('is_superadmin', 1)->first();
+   
+        $date =  Carbon::parse($order->created_at)->format('m-d-Y');
+        if(isset($Client->logo)){
+            $urlImg = Storage::disk('s3')->url($Client->logo);
+        }
+        $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fit/300/100/sm/0/plain/';
+        $logoimage = $imgproxyurl.$urlImg;
+      // pr( $logoimage );
+      $sheredArray = ['order' => $order,'client'=>$Client ,'NowDate'=> $date,'logoimage'=>$logoimage];
+       // if($request->html == 1){
+        //return view('Invoice.orderInvoicePdf')->with($sheredArray);
+         //   return view('Invoice.orderInvoicePdf')->with(['payment' => $paymentLink,'NowDate'=> $date]);
+        //}
+         view()->share( $sheredArray);  
+         $pdf = PDF::loadView('Invoice.orderInvoicePdf');
+         $pdfName = ($order->order_number ??$order->id)."_invoice.pdf";
+        return $pdf->download($pdfName);
+
     }
    
 }
