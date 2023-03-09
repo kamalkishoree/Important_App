@@ -127,7 +127,7 @@ trait GlobalFunction{
 
     public function updateOrderAdditional($request=[],$order_id)
     {
-        $requestOnly = ['category_name'];
+        $requestOnly = ['category_name','specific_instruction'];
         $validated_keys = $request->only($requestOnly);
        
         $order_id = @$order_id;
