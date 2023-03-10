@@ -1,11 +1,11 @@
 <?php
-
 namespace App\Http;
 
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel
 {
+
     /**
      * The application's global HTTP middleware stack.
      *
@@ -19,7 +19,7 @@ class Kernel extends HttpKernel
         \App\Http\Middleware\CheckForMaintenanceMode::class,
         \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
         \App\Http\Middleware\TrimStrings::class,
-        \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
+        \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class
     ];
 
     /**
@@ -35,16 +35,14 @@ class Kernel extends HttpKernel
             // \Illuminate\Session\Middleware\AuthenticateSession::class,
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
             \App\Http\Middleware\VerifyCsrfToken::class,
-            \Illuminate\Routing\Middleware\SubstituteBindings::class,
-            //\App\Http\Middleware\RouteDynamic::class,
-
+            \Illuminate\Routing\Middleware\SubstituteBindings::class
+            // \App\Http\Middleware\RouteDynamic::class,
         ],
 
         'api' => [
             'throttle:500,1',
-            \Illuminate\Routing\Middleware\SubstituteBindings::class,
-            
-        ],
+            \Illuminate\Routing\Middleware\SubstituteBindings::class
+        ]
     ];
 
     /**
@@ -66,16 +64,16 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'database' => \App\Http\Middleware\DatabaseDynamic::class,
-        'check'    =>  \App\Http\Middleware\CheckClient::class,
-        'dbCheck'    => \App\Http\Middleware\DbChooserApi::class,
-        'AppAuth'    =>\App\Http\Middleware\AppAuth::class,
-        'domain'     =>\App\Http\Middleware\CustomDomain::class,
-        'subdomain'  => \App\Http\Middleware\SubdomainMiddleware::class,
-        'CheckGodPanel'  => \App\Http\Middleware\CheckGodPanel::class,
+        'check' => \App\Http\Middleware\CheckClient::class,
+        'dbCheck' => \App\Http\Middleware\DbChooserApi::class,
+        'AppAuth' => \App\Http\Middleware\AppAuth::class,
+        'domain' => \App\Http\Middleware\CustomDomain::class,
+        'subdomain' => \App\Http\Middleware\SubdomainMiddleware::class,
+        'CheckGodPanel' => \App\Http\Middleware\CheckGodPanel::class,
         'CheckManagerPermission' => \App\Http\Middleware\CheckManagerPermission::class,
         'ConnectDbFromOrder' => \App\Http\Middleware\ConnectDbFromOrder::class,
-        'switchLanguage'  => \App\Http\Middleware\CheckLocale::class,
-        'apiLocalization'  => \App\Http\Middleware\ApiLocalization::class,
-        
+        'switchLanguage' => \App\Http\Middleware\CheckLocale::class,
+        'apiLocalization' => \App\Http\Middleware\ApiLocalization::class,
+        'ConnectDbForDispatch' => \App\Http\Middleware\ConnectDbForDispatch::class
     ];
 }
