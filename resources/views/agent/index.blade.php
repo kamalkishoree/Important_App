@@ -397,7 +397,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                         </li>
                     </ul>
 
-                    <div class="tab-content nav-material pt-0" id="top-tabContent">
+                    <div class="agent_tabel_block tab-content nav-material pt-0" id="top-tabContent">
                         <div class="tab-pane fade past-order show active" id="active_vendor" role="tabpanel" aria-labelledby="active-vendor">
 
                             <div class="table-responsive nagtive-margin">
