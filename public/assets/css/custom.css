@@ -3016,6 +3016,24 @@ body.light .card.main-table-card div#pricing-datatable_length label:after {
     flex: 100%;
     min-width: 100%;
 }
+
+
+.agent_tabel_block table.table.table-striped {
+    table-layout: fixed;
+}
+
+.agent_tabel_block table.table.table-striped td, .main_outter_box th {
+    width: 160px !important;
+    overflow: hidden;    
+    /* white-space: nowrap;
+    -moz-text-overflow: ellipsis;        
+       -ms-text-overflow: ellipsis;
+        -o-text-overflow: ellipsis;
+           text-overflow: ellipsis */
+
+}
+
+
 /*----------laptop view media css--------------*/
 
 @media (max-width: 1600px){
