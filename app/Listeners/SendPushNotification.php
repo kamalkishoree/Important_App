@@ -137,7 +137,7 @@ class SendPushNotification
                 array_push($new,$item['device_token']);
                // Log::info($new);
 
-                $clientRecord = Client::where('code', $item['client_code'])->first();
+                $clientRecord = Client::where('code', '=', $item['client_code'])->first();
                 $this->seperate_connection('db_'.$clientRecord->database_name);
                 $client_preferences = DB::connection('db_'.$clientRecord->database_name)->table('client_preferences')->where('client_id', $item['client_code'])->first();
                    // Log::info('Fcm Response');
