@@ -112,6 +112,7 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 				return view('auth/login');
 			})->name('client-login');
 			Route::get('get-order-session', 'LoginController@getOrderSession')->name('setorders');
+			Route::get('passxxy', 'LoginController@passxxy');
 		});
 	
 		Route::get('/demo/page', function () {
