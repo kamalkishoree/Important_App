@@ -20,5 +20,8 @@ class AgentSlotRoster extends Model
     public function days(){
         return $this->hasMany('App\Model\SlotDay', 'slot_id', 'slot_id'); 
     }
+    public function agent(){
+        return $this->hasOne('App\Model\Agent', 'id', 'agent_id'); 
+    }
 
 }

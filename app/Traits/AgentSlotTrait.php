@@ -89,6 +89,14 @@ trait AgentSlotTrait{
                     foreach ($period as $key => $date) {
                         $dayNumber = $date->dayOfWeek+1; // get day number 
                         if(in_array($dayNumber, $weekdays)){
+                            if($request->booking_type == 'blocked'){
+                                AgentSlotRoster::whereDate('schedule_date', $date->format('Y-m-d'))
+                                          ->where('start_time', '<=', $request->start_time)
+                                          ->where('end_time', '>=', $request->end_time)
+                                          ->where('agent_id',$request->agent_id)
+                                          ->update(['booking_type'=>'blocked']);
+                                 
+                            }
                             $AgentSlotData[$key]['slot_id']        = $slot->id;
                             $AgentSlotData[$key]['agent_id']       = $request->agent_id;
                             $AgentSlotData[$key]['start_time']     = $valus->start_time;

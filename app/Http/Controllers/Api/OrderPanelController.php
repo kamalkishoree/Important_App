@@ -7,7 +7,7 @@ use Validator;
 use Validation;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
-use App\Model\{Geo,AgentProductPrices,Agent,DriverGeo};
+use App\Model\{Geo,AgentProductPrices,Agent,DriverGeo,AgentSlotRoster};
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Api\BaseController;
@@ -37,21 +37,42 @@ class OrderPanelController extends BaseController
       
         
         $geoagents_ids    = DriverGeo::where('geo_id', $geoid)->pluck('driver_id');
-      
-        
-        $agent = Agent::where(['type'=>'Freelancer','is_approved'=>1])
-                        ->with(['slots' => function($q) use($myDate,$start_time,$end_time){
-                            $q->whereDate('schedule_date', $myDate)->where('start_time', '<=', $start_time)->where('end_time', '>=', $end_time);
-                            $q->where('booking_type', 'working_hours');
-                        },'ProductPrices'=>function ($q) use ($request){
+   
+    // $raw_query = "SELECT `agents`.*, 
+    //                     (SELECT COUNT(*) FROM `orders` WHERE `agents`.`id` = `orders`.`driver_id` AND `orders`.`status` = 'complete') AS `complete_order_count`
+    //                 FROM `agents`
+    //                 WHERE EXISTS (
+    //                     SELECT * FROM `agent_slot_rosters` as slots
+    //                     WHERE `agents`.`id` = `slots`.`agent_id` 
+    //                         AND `slots`.`schedule_date` = '$myDate'
+    //                        AND `slots`.`booking_type` != 'blocked'
+    //                     ORDER BY `id` DESC
+    //                     LIMIT 1
+    //                 ) 
+    //                     AND `type` = 'Freelancer' 
+    //                     AND `is_approved` = 1 
+    //                     AND EXISTS (
+    //                         SELECT * FROM `agent_product_prices` as `product_prices`
+    //                         WHERE `agents`.`id` = `product_prices`.`agent_id`
+    //                             AND `product_variant_sku` = '$request->product_variant_sku'
+    //                     )
+    //                 ";
+                  
+    //     $slots = DB::select(DB::raw($raw_query));
+    //    pr($slots);
+        $agent = Agent::whereHas('slots',function($q) use($myDate,$start_time,$end_time){
+            $q->whereDate('schedule_date', $myDate)
+            ->where('start_time', '<=', $start_time)
+            ->where('end_time', '>=', $end_time);
+            return $q->where('booking_type','!=', 'blocked')->latest();
+        })->where(['type'=>'Freelancer','is_approved'=>1])
+                        ->with(['ProductPrices'=>function ($q) use ($request){
                             $q->where('product_variant_sku',$request->product_variant_sku);
                         }])->whereHas('ProductPrices',function ($q) use ($request){
                             $q->where('product_variant_sku',$request->product_variant_sku);
-                        } )->whereHas('slots',function($q) use($myDate,$start_time,$end_time){
-                            $q->whereDate('schedule_date', $myDate)->where('start_time', '<=', $start_time)->where('end_time', '>=', $end_time);
-                            $q->where('booking_type', 'working_hours');
-                        })->withCount('completeOrder')
+                        } )->withCount('completeOrder')
                         ->get();
+            // dd(\DB::getQueryLog());
         $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain/';
         $agents=[];
         $commonSlot=[];
