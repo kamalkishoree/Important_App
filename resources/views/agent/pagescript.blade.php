@@ -93,6 +93,12 @@
                     orderable: true,
                     searchable: false
                 },
+                {
+                    data: 'warehouse',
+                    name: 'warehouse',
+                    orderable: true,
+                    searchable: false
+                },
                 // {
                 //     data: 'vehicle_type_id',
                 //     name: 'vehicle_type_id',
@@ -142,6 +148,12 @@
                     data: 'subscription_expiry',
                     name: 'subscription_expiry',
                     orderable: true,
+                    searchable: false
+                },
+                {
+                    data: 'agent_rating',
+                    name: 'agent_rating',
+                    orderable: false,
                     searchable: false
                 },
                 {
@@ -244,19 +256,18 @@
         var mobile_number = '';
 
         $(document).on("change", "#add-agent-modal .xyz", function(e) {
-            var phonevalue = $('.xyz').val();
+           var phonevalue = $('.xyz').val();
             $("#countryCode").val(mobile_number.getSelectedCountryData().dialCode);
         });
 
         function phoneInput() {
             var input = document.querySelector(".xyz");
 
-            var mobile_number_input = document.querySelector(".xyz");
-            mobile_number = window.intlTelInput(mobile_number_input, {
-                separateDialCode: true,
-                hiddenInput: "full_number",
-                initialCountry: '{{$selectedCountryCode}}',
-                utilsScript: "{{ asset('telinput/js/utils.js') }}",
+            $("#phone_number").intlTelInput({
+                separateDialCode:true,
+                preferredCountries:["{{getCountryCode()}}"],
+                initialCountry:"{{getCountryCode()}}",
+                utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.18/js/utils.js",
             });
 
         }
@@ -266,9 +277,16 @@
                 backdrop: 'static',
                 keyboard: false
             });
+            
             makeTag();
 
             phoneInput();
+
+            select2();
+            var instance = $("[name=phone_number]");
+            instance.intlTelInput();
+            $("#countryCode").val(instance.intlTelInput('getSelectedCountryData').dialCode);
+            
         });
 
         jQuery('#onfoot').click();
@@ -316,6 +334,14 @@
                     break;
             }
         });
+
+        function select2(){
+            $("#warehouse_id").select2({
+                allowClear: true,
+                width: "resolve",
+                placeholder: "Select Warehouse"
+            });
+        }
 
         /* Get agent by ajax */
         $(document).on("click", ".editIcon", function(e) {
@@ -418,7 +444,7 @@
         });
 
         function saveTeam(urls, formData, inp = '', modal = '') {
-
+            
             $.ajax({
                 method: 'post',
                 headers: {

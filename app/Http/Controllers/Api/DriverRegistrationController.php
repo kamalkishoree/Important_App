@@ -150,7 +150,7 @@ class DriverRegistrationController extends BaseController
            // 'vehicle_type_id' => ['required'],
             //'make_model' => ['required'],
             //'plate_number' => ['required'],
-            'phone_number' =>  ['required', 'min:9', 'max:15', Rule::unique('agents')->where(function ($query) use ($full_number) {
+            'phone_number' =>  ['required', 'min:6', 'max:15', Rule::unique('agents')->where(function ($query) use ($full_number) {
                 return $query->where('phone_number', $full_number);
             })],
             //'color' => ['required'],
@@ -269,11 +269,25 @@ class DriverRegistrationController extends BaseController
             $show_vehicle_type_icon = [];
             $type = ClientPreference::OrderBy('id','desc')->value('custom_mode');
             $types = json_decode($type);
+            $manage_fleet = ClientPreference::OrderBy('id','desc')->value('manage_fleet')??0;
 
             if(isset($types->show_vehicle_type_icon))
             $show_vehicle_type_icon = explode(',',$types->show_vehicle_type_icon);
+            $p = 0;
+            $documents = DriverRegistrationDocument::orderBy('file_type', 'DESC')->select('name','file_type','id','is_required')->get()->toArray();
+            if((isset($documents) && count($documents)>0) && $manage_fleet)
+            {
+             $p = sizeof($documents) - 1;
+              $aa2 = $this->fleetArray($p);
+                $data['documents']  = array_merge($documents,$aa2);
+            }elseif(count($documents)<=0 && $manage_fleet){
+                $aa2 = $this->fleetArray($p);
+                $data['documents'] = $aa2;
+            }else{
+                $data['documents'] = $documents;
+            }
+        
 
-            $data['documents'] = DriverRegistrationDocument::orderBy('file_type', 'DESC')->get();
             $data['all_teams'] = Team::OrderBy('id','desc')->get();
             $data['agent_tags'] = TagsForAgent::OrderBy('id','desc')->get();
             $data['vehicle_types'] = ((count($show_vehicle_type_icon)>0)?json_encode($show_vehicle_type_icon):json_encode(['1','2','3','4','5']));
@@ -289,4 +303,43 @@ class DriverRegistrationController extends BaseController
             ]);
         }
     }
+
+    public function fleetArray($p)
+    {
+        $aFleet = array(
+            $p => 
+              array (
+                'name' => 'vehicle_name',
+                'file_type' => 'Text',
+              ),
+             $p+1 => 
+              array (
+                'name' => 'make',
+                'file_type' => 'Text',
+              ),
+              $p+2 => 
+              array (
+                'name' => 'model',
+                'file_type' => 'Text',
+              ),
+              $p+3 => 
+              array (
+                'name' => 'plate_number',
+                'file_type' => 'Text',
+              ),
+              $p+4 => 
+              array (
+                'name' => 'year',
+                'file_type' => 'Text',
+              ),
+              $p+5 => 
+              array (
+                'name' => 'color',
+                'file_type' => 'Text',
+              )
+          );
+
+          return $aFleet;
+    }
+
 }

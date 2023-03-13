@@ -111,13 +111,25 @@
                                 
 
                                 <div class="row">
-                                    <div class="col-md-6">
+                                    <div class="col-md-3">
+                                        <div class="form-group pay-detail-box copyin1" id="seatsspan_acc">
+                                            {!! Form::label('title', __('Available Seats/Booked Seats'),['class' => 'control-label']) !!}
+                                            <h5 id="no_of_seats"></h5>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group pay-detail-box copyin1" id="">
+                                            {!! Form::label('title', __('Toll Fee'),['class' => 'control-label']) !!}
+                                            <h5 id="toll_fee"></h5>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
                                         <div class="form-group pay-detail-box copyin1" id="">
                                             {!! Form::label('title', __('Order Cost'),['class' => 'control-label']) !!}
                                             <h5 id="order_cost"></h5>
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="col-md-3">
                                         <div class="form-group pay-detail-box copyin1" id="">
                                             {!! Form::label('title', __(getAgentNomenclature().' Cost'),['class' => 'control-label']) !!}
                                             <h5 id="driver_cost"></h5>

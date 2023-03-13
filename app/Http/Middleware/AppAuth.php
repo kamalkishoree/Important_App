@@ -24,6 +24,10 @@ class AppAuth
     {
         $header = $request->header();
         $token = $header['authorization'][0];
+
+        // $agent = Agent::where('access_token', $token)->first();
+        // dd($agent);
+
         if (!Token::check($token, 'codebrewInd'))
         {
             return response()->json(['error' => 'Invalid Token', 'message' => 'Session Expired'], 401);

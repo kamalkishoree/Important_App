@@ -35,17 +35,27 @@ class DashBoardController extends Controller
         $auth->timezone = $tz->timezone_name(Auth::user()->timezone);
         $date = date('Y-m-d', time());
 
-        $client = ClientPreference::where('id', 1)->first();
+        $client = ClientPreference::select('id','map_key_1','dashboard_mode')->first();
 
         $googleapikey = $client->map_key_1??'';
-
-        $getAdminCurrentCountry = Countries::where('id', '=', Auth::user()->country_id)->get()->first();
+        $dashboardMode = isset($client->dashboard_mode) ? json_decode($client->dashboard_mode) :'';
+        $show_dashboard_by_agent_wise = 0;
+        if(!empty($dashboardMode->show_dashboard_by_agent_wise) && $dashboardMode->show_dashboard_by_agent_wise == 1){
+            $show_dashboard_by_agent_wise = 1; 
+        }   
+        $getAdminCurrentCountry = Countries::where('id', '=', Auth::user()->country_id)->first();
         if(!empty($getAdminCurrentCountry)){
             $defaultCountryLatitude  = $getAdminCurrentCountry->latitude;
             $defaultCountryLongitude  = $getAdminCurrentCountry->longitude;
         }else{
             $defaultCountryLatitude  = '';
             $defaultCountryLongitude  = '';
+        }
+    
+        if($show_dashboard_by_agent_wise == 1){
+            $teams  = Team::get();
+            $agents  = Agent::with('agentlog')->where('is_approved',1)->get();
+            return view('dashboard-agent')->with(['client_code' => Auth::user()->code, 'date' => $date, 'defaultCountryLongitude' => $defaultCountryLongitude, 'defaultCountryLatitude' => $defaultCountryLatitude,'map_key'=>$googleapikey,'client_timezone'=>$auth->timezone, 'teams' => $teams, 'agents' => $agents]);    
         }
         return view('dashboard')->with(['client_code' => Auth::user()->code, 'date' => $date, 'defaultCountryLongitude' => $defaultCountryLongitude, 'defaultCountryLatitude' => $defaultCountryLatitude,'map_key'=>$googleapikey,'client_timezone'=>$auth->timezone]);
     }
@@ -542,15 +552,15 @@ class DashBoardController extends Controller
             if($i==0)
             {
                 if (isset($driverlocation['lat'])) {
-                    $distance = $this->GoogleDistanceMatrix($driverlocation['lat'], $driverlocation['long'], $Taskdetail->location->latitude, $Taskdetail->location->longitude);
+                    $distance = $this->GoogleDistanceMatrix($driverlocation['lat'], $driverlocation['long'], $Taskdetail->location->latitude??'', $Taskdetail->location->longitude??'');
                     $totaldistance += $distance;
                     $distancearray[] = $distance;
                 } else {
                     $distancearray[] = 0;
                 }
                 $loc1           = $Taskdetail->location_id;
-                $prev_latitude  = $Taskdetail->location->latitude;
-                $prev_longitude = $Taskdetail->location->longitude;
+                $prev_latitude  = $Taskdetail->location->latitude??'';
+                $prev_longitude = $Taskdetail->location->longitude??'';
             }else{
                 $loc2 = $Taskdetail->location_id;
                 $checkdistance = LocationDistance::where(['from_loc_id'=>$loc1,'to_loc_id'=>$loc2])->first();
@@ -558,15 +568,15 @@ class DashBoardController extends Controller
                     $totaldistance += $checkdistance->distance;
                     $distancearray[] = $checkdistance->distance;
                 } else {
-                    $distance = $this->GoogleDistanceMatrix($prev_latitude, $prev_longitude, $Taskdetail->location->latitude, $Taskdetail->location->longitude);
+                    $distance = $this->GoogleDistanceMatrix($prev_latitude, $prev_longitude, $Taskdetail->location->latitude ?? '', $Taskdetail->location->longitude ?? '');
                     $totaldistance += $distance;
                     $distancearray[] = $distance;
                     $locdata = array('from_loc_id'=>$loc1,'to_loc_id'=>$loc2,'distance'=>$distance);
                     LocationDistance::create($locdata);
                 }
                 $loc1 = $loc2;
-                $prev_latitude  = $Taskdetail->location->latitude;
-                $prev_longitude = $Taskdetail->location->longitude;
+                $prev_latitude  = $Taskdetail->location->latitude ?? '';
+                $prev_longitude = $Taskdetail->location->longitude ?? '';
             }
         }
         
@@ -869,12 +879,12 @@ class DashBoardController extends Controller
         $unassigned->toArray();
         $teams->toArray();
 
-        $agents = Agent::with('agentlog');
+        $agents = Agent::with('agentlog','getDriver');
         if($userstatus!=2):
             $agents->where('is_available', $userstatus);
         endif;
         $agents = $agents->get()->toArray();
-
+        // \Log::info($agents);
         $preference  = ClientPreference::where('id', 1)->first(['theme','date_format','time_format']);
 
         $uniquedrivers = array();
@@ -981,12 +991,18 @@ class DashBoardController extends Controller
             $unassigned_orders = $this->splitOrder($un_order->toarray());
             if (count($unassigned_orders)>1) {
                 $unassigned_distance_mat = array();
-                $unassigned_points[] = array(floatval($unassigned_orders[0]['task'][0]['location']['latitude']),floatval($unassigned_orders[0]['task'][0]['location']['longitude']));
+                $unassigned_points = [];
+                if(!empty($unassigned_orders[0]['task'][0]['location'])){
+                    $unassigned_points[] = array(floatval($unassigned_orders[0]['task'][0]['location']['latitude']),floatval($unassigned_orders[0]['task'][0]['location']['longitude']));
+                }
                 $unassigned_taskids = array();
                 $un_route = array();
                 foreach ($unassigned_orders as $singleua) {
                     $unassigned_taskids[] = $singleua['task'][0]['id'];
-                    $unassigned_points[] = array(floatval($singleua['task'][0]['location']['latitude']),floatval($singleua['task'][0]['location']['longitude']));
+                    if(!empty($singleua['task'][0]['location'])){
+                        // dd($singleua['task'][0]['location']['latitude']);
+                        $unassigned_points[] = array(floatval($singleua['task'][0]['location']['latitude']),floatval($singleua['task'][0]['location']['longitude']));
+                    }
 
                     //for drawing route
                     $s_task = $singleua['task'][0];
@@ -1000,9 +1016,9 @@ class DashBoardController extends Controller
                     $aappend = array();
                     $aappend['task_type']             = $nname;
                     $aappend['task_id']               =  $s_task['id'];
-                    $aappend['latitude']              =  $s_task['location']['latitude'];
-                    $aappend['longitude']             = $s_task['location']['longitude'];
-                    $aappend['address']               = $s_task['location']['address'];
+                    $aappend['latitude']              =  $s_task['location']['latitude'] ?? '';
+                    $aappend['longitude']             = $s_task['location']['longitude'] ?? '';
+                    $aappend['address']               = $s_task['location']['address'] ?? '';
                     $aappend['task_type_id']          = $s_task['task_type_id'];
                     $aappend['task_status']           = $s_task['task_status'];
                     $aappend['team_id']               = 0;
@@ -1016,8 +1032,10 @@ class DashBoardController extends Controller
                 $unassigned_distance_mat['tasks'] = implode(',', $unassigned_taskids);
                 $unassigned_distance_mat['distance'] = $unassigned_points;
                 $distancematrix[0] = $unassigned_distance_mat;
-
-                $first_un_loc = array('lat'=>floatval($unassigned_orders[0]['task'][0]['location']['latitude']),'long'=>floatval($unassigned_orders[0]['task'][0]['location']['longitude']));
+                $first_un_loc = [];
+                if(!empty($unassigned_orders[0]['task'][0]['location'])){
+                    $first_un_loc = array('lat'=>floatval($unassigned_orders[0]['task'][0]['location']['latitude']),'long'=>floatval($unassigned_orders[0]['task'][0]['location']['longitude']));
+                }
                 $final_un_route['driver_detail'] = $first_un_loc;
                 $final_un_route['task_details'] = $un_route;
                 $uniquedrivers[] = $final_un_route;
@@ -1040,7 +1058,7 @@ class DashBoardController extends Controller
             $defaultCountryLatitude  = '';
             $defaultCountryLongitude  = '';
         }
-
+        
         $data = array('status' =>"success", 'teams' => $teamdata, 'userstatus' => $userstatus, 'client_code' => Auth::user()->code, 'defaultCountryLongitude' => $defaultCountryLongitude, 'defaultCountryLatitude' => $defaultCountryLatitude, 'newmarker' => $newmarker, 'unassigned' => $unassigned, 'agents' => $agents,'date'=> $date,'preference' =>$preference, 'routedata' => $uniquedrivers,'distance_matrix' => $distancematrix, 'unassigned_orders' => $unassigned_orders,'unassigned_distance' => $un_total_distance, 'map_key'=>$googleapikey, 'client_timezone'=>$auth->timezone);
         if($is_load_html == 1)
         {
