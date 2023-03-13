@@ -994,6 +994,8 @@ class TaskController extends BaseController
             else
             $auth->timezone = $tz->timezone_name($auth->timezone);
 
+            $clienttimezone = $tz->timezone_name($client->timezone);
+
             $loc_id = $cus_id = $send_loc_id = $newlat = $newlong = 0;
             $images = [];
             $last = '';
@@ -1077,9 +1079,7 @@ class TaskController extends BaseController
 
             //here order save code is started
             $settime = ($request->task_type=="schedule") ? $request->schedule_time : Carbon::now()->toDateTimeString();
-        //    $notification_time = ($request->task_type=="schedule") ? Carbon::parse($settime . $auth->timezone ?? 'UTC')->tz('UTC') : Carbon::now()->toDateTimeString();
             $notification_time = ($request->task_type=="schedule") ? $settime : Carbon::now()->toDateTimeString();
-         //   $notification_time = isset($request->schedule_time) ? $request->schedule_time : Carbon::now()->toDateTimeString();
 
             $agent_id          = $request->allocation_type === 'm' ? $request->agent : null;
             
@@ -1260,10 +1260,10 @@ class TaskController extends BaseController
                 $toll_amount = 0;
             }
 
-            //get freelencer cost from order side
-             //get pricing rule  for save with every order based on geo fence and agent tags
-            $dayname = Carbon::parse($notification_time)->format('l');
-            $time    = Carbon::parse($notification_time)->format('H:i');
+            //get pricing rule  for save with every order based on geo fence and agent tags
+
+            $dayname = Carbon::parse($notification_time, $clienttimezone)->format('l');
+            $time    = Carbon::parse($notification_time, $clienttimezone)->format('H:i');
 
             // PricingRule get order delivery price and driver cost with priceing rule
             if((isset($request->order_agent_tag) && !empty($request->order_agent_tag)) && $geoid!=''):
@@ -2211,6 +2211,7 @@ class TaskController extends BaseController
     {
         $allcation_type    = 'AR';
         $date              = \Carbon\Carbon::today();
+        Log::info("header client: ".$header['client'][0]);
         $auth              = Client::where('database_name', $header['client'][0])->with(['getAllocation', 'getPreference'])->first();
         $expriedate        = (int)$auth->getAllocation->request_expiry;
         $beforetime        = (int)$auth->getAllocation->start_before_task_time;
@@ -2303,7 +2304,7 @@ class TaskController extends BaseController
                     break;
                 }
             }
-
+            Log::info($data);
             $this->dispatch(new RosterCreate($data, $extraData));
         }
     }
@@ -2733,13 +2734,13 @@ class TaskController extends BaseController
         //get pricing rule  for save with every order based on geo fence and agent tags
 
         if(!empty($request->schedule_datetime_del)):
-            $order_datetime = Carbon::parse($request->schedule_datetime_del)->toDateTimeString();
+            $order_datetime = Carbon::parse($request->schedule_datetime_del, 'UTC')->setTimezone($timezone)->toDateTimeString();
         else:
             $order_datetime = Carbon::now()->timezone($timezone)->toDateTimeString();
         endif;
+        
         $dayname = Carbon::parse($order_datetime)->format('l');
         $time    = Carbon::parse($order_datetime)->format('H:i');
-
 
         if((isset($request->agent_tag) && !empty($request->agent_tag)) && $geoid!=''):
             $pricingRule = PricingRule::orderBy('id', 'desc')->whereHas('priceRuleTags.tagsForAgent',function($q)use($request){
@@ -2767,6 +2768,8 @@ class TaskController extends BaseController
         }else{
             $getdata = $this->GoogleDistanceMatrix($latitude, $longitude);
         }
+        //Log::info($pricingRule);
+        //Log::info($getdata);
 
         $paid_duration = $getdata['duration'] - $pricingRule->base_duration;
         $paid_distance = $getdata['distance'] - $pricingRule->base_distance;

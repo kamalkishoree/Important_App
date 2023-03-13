@@ -306,7 +306,7 @@ class AgentDashBoardController extends Controller
         $unassigned->toArray();
         $teams->toArray();
 
-        $agents = Agent::with('agentlog');
+        $agents = Agent::with('agentlog','getDriver');
         if($userstatus!=2):
             $agents->where('is_available', $userstatus);
         endif;

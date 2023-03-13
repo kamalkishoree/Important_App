@@ -155,6 +155,15 @@ p.custom-radio-design label {
     width:50px !important
 }
 
+table.table.table-striped {
+table-layout: fixed;;
+}
+
+table.table.table-striped td,th {
+width: 160px !important;
+overflow: hidden;
+}
+
 
 /* 
 .custom-radio-design [type="radio"]:checked,
@@ -416,7 +425,7 @@ $is_driver_slot = getClientPreferenceDetail()->is_driver_slot;
                         </li>
                     </ul>
 
-                    <div class="tab-content nav-material pt-0" id="top-tabContent">
+                    <div class="agent_tabel_block tab-content nav-material pt-0" id="top-tabContent">
                         <div class="tab-pane fade past-order show active" id="active_vendor" role="tabpanel" aria-labelledby="active-vendor">
 
                             <div class="table-responsive nagtive-margin">
