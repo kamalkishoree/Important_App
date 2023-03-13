@@ -155,6 +155,15 @@ p.custom-radio-design label {
     width:50px !important
 }
 
+table.table.table-striped {
+table-layout: fixed;;
+}
+
+table.table.table-striped td,th {
+width: 160px !important;
+overflow: hidden;
+}
+
 
 /* 
 .custom-radio-design [type="radio"]:checked,
