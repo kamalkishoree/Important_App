@@ -2636,7 +2636,6 @@ class TaskController extends BaseController
         
         $dayname = Carbon::parse($order_datetime)->format('l');
         $time    = Carbon::parse($order_datetime)->format('H:i');
-        Log::info($order_datetime);
 
         if((isset($request->agent_tag) && !empty($request->agent_tag)) && $geoid!=''):
             $pricingRule = PricingRule::orderBy('id', 'desc')->whereHas('priceRuleTags.tagsForAgent',function($q)use($request){
