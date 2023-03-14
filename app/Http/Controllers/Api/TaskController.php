@@ -1119,7 +1119,8 @@ class TaskController extends BaseController
                 'sync_order_id'                   => $request->order_id,
                 'available_seats'                 => isset($request->available_seats)?$request->available_seats:0,
                 'no_seats_for_pooling'            => isset($request->no_seats_for_pooling)?$request->no_seats_for_pooling:0,
-                'is_cab_pooling'                  => isset($request->is_cab_pooling)?$request->is_cab_pooling:0
+                'is_cab_pooling'                  => isset($request->is_cab_pooling)?$request->is_cab_pooling:0,
+                'order_pre_time'=>isset($request->order_pre_time)?$request->order_pre_time:0,
             ];
 
             if(checkColumnExists('orders', 'rejectable_order')){
