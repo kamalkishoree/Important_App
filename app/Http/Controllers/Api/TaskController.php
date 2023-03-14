@@ -2094,6 +2094,7 @@ class TaskController extends BaseController
     {
         $allcation_type    = 'AR';
         $date              = \Carbon\Carbon::today();
+        Log::info("header client: ".$header['client'][0]);
         $auth              = Client::where('database_name', $header['client'][0])->with(['getAllocation', 'getPreference'])->first();
         $expriedate        = (int)$auth->getAllocation->request_expiry;
         $beforetime        = (int)$auth->getAllocation->start_before_task_time;
@@ -2181,7 +2182,7 @@ class TaskController extends BaseController
                     break;
                 }
             }
-
+            Log::info($data);
             $this->dispatch(new RosterCreate($data, $extraData));
         }
     }
