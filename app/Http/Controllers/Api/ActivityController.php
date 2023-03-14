@@ -435,11 +435,13 @@ class ActivityController extends BaseController
     public function taskHistory(Request $request)
     {
         $id    = Auth::user()->id;
+        $orders = Order::where('driver_id', $id);
         if(!empty($request->from_date) && !empty($request->to_date)){
-            $orders = Order::where('driver_id', $id)->whereBetween('order_time', [$request->from_date." 00:00:00",$request->to_date." 23:59:59"])->pluck('id')->toArray();
-        }else{
-            $orders = Order::where('driver_id', $id)->pluck('id')->toArray();
+            $orders =  $orders->whereBetween('order_time', [$request->from_date." 00:00:00",$request->to_date." 23:59:59"])->pluck('id')->toArray();
         }
+
+        $orders =  $orders->pluck('id')->toArray();
+        
         $hisoryStatus = [4,5];
 
         if($request->has('task_status') && $request->task_status !=''){
@@ -733,6 +735,26 @@ class ActivityController extends BaseController
             'data' => $UserRating ,
             'status' => 200,
             'message' => __('Rating Submited!')
+        ], 200);
+    }
+
+    public function pendingPaymentOrder(Request $request)
+    {
+        $id    = Auth::user()->id;
+        $orders = Order::where('driver_id', $id)->with(['task','task.location','additionData','userRating','customer']);
+        if(!empty($request->from_date) && !empty($request->to_date)){
+            $orders =  $orders->whereBetween('order_time', [$request->from_date." 00:00:00",$request->to_date." 23:59:59"]);
+        }
+        
+        $orders =  $orders->where('is_comm_settled','0')->where('driver_cost','>=',0)->whereHas('task', function ($query) {
+            $query->where('task_status', 4); // completed task
+        });
+        $orders = $orders->orderBy('id', 'DESC')->paginate(10);
+     
+        return response()->json([
+            'orders' => $orders,
+            'status' => 200,
+            'message' => __('success')
         ], 200);
     }
 
