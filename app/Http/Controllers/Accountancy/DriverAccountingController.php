@@ -53,11 +53,16 @@ class DriverAccountingController extends BaseController
     public function driverDatatable(Request $request) {
         
         $data = $request->all();
-        $userid = Auth::user()->id;
+        $user = Auth::user();
+        $userid = $user->id;
         $type = $request->routesListingType;
-        $orders = Order::with(['agent', 'getAgentPayout'])->whereHas('agent.team.permissionToManager', function($q) use ($userid){
+        if ( $user->is_superadmin == 0 &&  $user->all_team_access == 0) {
+            $orders = Order::with(['agent', 'getAgentPayout'])->whereHas('agent.team.permissionToManager', function($q) use ($userid){
             $q->where('sub_admin_id', $userid);
         });
+        }else{
+            $orders = Order::with(['agent', 'getAgentPayout']);
+        }
         if($type == 'statement') {
             $orders = $orders->whereHas('getAgentPayout' , function($query) use($type) {
                 $query->where('status', 1);
