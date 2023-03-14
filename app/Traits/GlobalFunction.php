@@ -3,7 +3,8 @@ namespace App\Traits;
 use DB;
 use Illuminate\Support\Collection;
 use Log;
-use App\Model\{ChatSocket, Client, Agent, ClientPreference, DriverGeo,Order,Task,OrderAdditionData};
+use App\Model\{ChatSocket, Client, Agent, ClientPreference, DriverGeo,Order,Task,OrderAdditionData, PricingRule};
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Config;
 
 
@@ -125,6 +126,52 @@ trait GlobalFunction{
         return  $data;
     }
 
+    //---------function to get pricing rule based on agent_tag/geo fence/timetable/day/time
+    public function getPricingRuleData($geoid, $agent_tag = '', $order_datetime = '')
+    {
+        try {
+
+            if($geoid!='' && $agent_tag!='' && $order_datetime != '')
+            {
+
+                $dayname = Carbon::parse($order_datetime)->format('l');
+                $time    = Carbon::parse($order_datetime)->format('H:i');
+
+                $pricingRule = PricingRule::orderBy('id', 'desc')->whereHas('priceRuleTags.tagsForAgent',function($q)use($agent_tag){
+                                    $q->where('name', $agent_tag);
+                                })->whereHas('priceRuleTags.geoFence',function($q)use($geoid){
+                                    $q->where('id', $geoid);
+                                })->where('apply_timetable', '=', 1)
+                                ->whereHas('priceRuleTimeframe', function($query) use ($dayname, $time){
+                                    $query->where('is_applicable', 1)
+                                        ->Where('day_name', '=', $dayname)
+                                        ->whereTime('start_time', '<=', $time)
+                                        ->whereTime('end_time', '>=', $time);
+                                })->first();
+
+                if(empty($pricingRule)){
+                    $pricingRule = PricingRule::orderBy('id', 'desc')->whereHas('priceRuleTags.tagsForAgent',function($q)use($agent_tag){
+                        $q->where('name', $agent_tag);
+                    })->whereHas('priceRuleTags.geoFence',function($q)use($geoid){
+                        $q->where('id', $geoid);
+                    })->where('apply_timetable', '!=', 1)->first();
+                }
+                
+            }
+
+            if(empty($pricingRule)){
+                $pricingRule = PricingRule::where('is_default', 1)->first();
+            }
+
+            return $pricingRule;
+
+        } catch (\Throwable $th) {
+            return [];
+        }
+    
+    }
+
+
     public function updateOrderAdditional($request=[],$order_id)
     {
         $requestOnly = ['category_name'];
@@ -140,5 +187,6 @@ trait GlobalFunction{
         return 1;
         
     }
-
 }
+
+
