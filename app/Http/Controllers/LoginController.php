@@ -11,7 +11,9 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Validation\Validator;
-use DB,Session;
+use Illuminate\Support\Facades\Hash;
+
+use DB,Session,Crypt;
 
 class LoginController extends Controller
 {
