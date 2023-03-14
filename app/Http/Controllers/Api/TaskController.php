@@ -1182,7 +1182,7 @@ class TaskController extends BaseController
             endif;
 
             //get pricing rule  for save with every order based on geo fence and agent tags
-
+            $notification_time = Carbon::parse($notification_time, 'UTC')->setTimezone($clienttimezone)->format('Y-m-d H:i:s');
             $agent_tags = (isset($request->order_agent_tag) && !empty($request->order_agent_tag)) ? $request->order_agent_tag : '';
             $pricingRule = $this->getPricingRuleData($geoid, $agent_tags, $notification_time);
 
