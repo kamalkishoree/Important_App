@@ -276,8 +276,8 @@ class TaskController extends BaseController
             $q->where('manager_id', $user->id);
         })->pluck('tag_id');
 
-        $orders = Order::with(['customer', 'task', 'location', 'taskFirst', 'agent', 'task.location'])->orderBy('id', 'DESC'); //, 'task.manager'
-        
+        $orders = Order::with(['customer', 'task', 'location', 'taskFirst', 'agent', 'task.location', 'task.warehouse'])->orderBy('id', 'DESC'); //, 'task.manager'
+       
         if (@$request->warehouseManagerId && !empty($request->warehouseManagerId)) {
             $orders->whereHas('task.warehouse.manager', function($q) use($request){
                 $q->where('clients.id', $request->warehouseManagerId);
@@ -317,7 +317,7 @@ class TaskController extends BaseController
         }
 
         $orders = $orders->where('status', $request->routesListingType)->where('status', '!=', null)->orderBy('updated_at', 'desc');
-        
+        // dd($orders->get());
         $preference = ClientPreference::where('id', 1)->first(['theme','date_format','time_format']);
         $getAdditionalPreference = getAdditionalPreference(['pickup_type', 'drop_type']); 
         return Datatables::of($orders)
@@ -552,6 +552,7 @@ class TaskController extends BaseController
     // function for saving new order
     public function newtasks(Request $request)
     {
+        // dd($request->warehouse_id);
         try {
             DB::beginTransaction();
 
@@ -712,6 +713,15 @@ class TaskController extends BaseController
                 if(!empty($location)){
                     array_push($latitude, $location->latitude);
                     array_push($longitude, $location->longitude);
+                }
+
+                if(@$request->warehouse_id[$key]){
+                    $warehouse_detail = Warehouse::find($request->warehouse_id[$key]);
+                    $Loction = Location::create(
+                        ['latitude' => $warehouse_detail->latitude, 'longitude' => $warehouse_detail->longitude, 'address' => $warehouse_detail->address]
+                    );
+
+                    $loc_id = $Loction->id;
                 }
 
                 $task_appointment_duration = empty($request->appointment_date[$key]) ? '0' : $request->appointment_date[$key];
