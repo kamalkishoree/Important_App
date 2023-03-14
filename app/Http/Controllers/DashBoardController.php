@@ -35,11 +35,15 @@ class DashBoardController extends Controller
         $auth->timezone = $tz->timezone_name(Auth::user()->timezone);
         $date = date('Y-m-d', time());
 
-        $client = ClientPreference::where('id', 1)->first();
+        $client = ClientPreference::select('id','map_key_1','dashboard_mode')->first();
 
         $googleapikey = $client->map_key_1??'';
-
-        $getAdminCurrentCountry = Countries::where('id', '=', Auth::user()->country_id)->get()->first();
+        $dashboardMode = isset($client->dashboard_mode) ? json_decode($client->dashboard_mode) :'';
+        $show_dashboard_by_agent_wise = 0;
+        if(!empty($dashboardMode->show_dashboard_by_agent_wise) && $dashboardMode->show_dashboard_by_agent_wise == 1){
+            $show_dashboard_by_agent_wise = 1; 
+        }   
+        $getAdminCurrentCountry = Countries::where('id', '=', Auth::user()->country_id)->first();
         if(!empty($getAdminCurrentCountry)){
             $defaultCountryLatitude  = $getAdminCurrentCountry->latitude;
             $defaultCountryLongitude  = $getAdminCurrentCountry->longitude;
@@ -47,11 +51,10 @@ class DashBoardController extends Controller
             $defaultCountryLatitude  = '';
             $defaultCountryLongitude  = '';
         }
-        $dashboardMode = checkDashboardMode();
-        
-        if(!empty($dashboardMode) && $dashboardMode['show_dashboard_by_agent_wise'] == 1){
-            $teams  = Team::all();
-            $agents  = Agent::all();
+    
+        if($show_dashboard_by_agent_wise == 1){
+            $teams  = Team::get();
+            $agents  = Agent::with('agentlog')->where('is_approved',1)->get();
             return view('dashboard-agent')->with(['client_code' => Auth::user()->code, 'date' => $date, 'defaultCountryLongitude' => $defaultCountryLongitude, 'defaultCountryLatitude' => $defaultCountryLatitude,'map_key'=>$googleapikey,'client_timezone'=>$auth->timezone, 'teams' => $teams, 'agents' => $agents]);    
         }
         return view('dashboard')->with(['client_code' => Auth::user()->code, 'date' => $date, 'defaultCountryLongitude' => $defaultCountryLongitude, 'defaultCountryLatitude' => $defaultCountryLatitude,'map_key'=>$googleapikey,'client_timezone'=>$auth->timezone]);
