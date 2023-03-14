@@ -720,6 +720,7 @@ class TaskController extends BaseController
                     $Loction = Location::create(
                         ['latitude' => $warehouse_detail->latitude, 'longitude' => $warehouse_detail->longitude, 'address' => $warehouse_detail->address]
                     );
+                    
                     $loc_id = $Loction->id;
                 }
 
