@@ -38,28 +38,8 @@ class OrderPanelController extends BaseController
         
         $geoagents_ids    = DriverGeo::where('geo_id', $geoid)->pluck('driver_id');
    
-    // $raw_query = "SELECT `agents`.*, 
-    //                     (SELECT COUNT(*) FROM `orders` WHERE `agents`.`id` = `orders`.`driver_id` AND `orders`.`status` = 'complete') AS `complete_order_count`
-    //                 FROM `agents`
-    //                 WHERE EXISTS (
-    //                     SELECT * FROM `agent_slot_rosters` as slots
-    //                     WHERE `agents`.`id` = `slots`.`agent_id` 
-    //                         AND `slots`.`schedule_date` = '$myDate'
-    //                        AND `slots`.`booking_type` != 'blocked'
-    //                     ORDER BY `id` DESC
-    //                     LIMIT 1
-    //                 ) 
-    //                     AND `type` = 'Freelancer' 
-    //                     AND `is_approved` = 1 
-    //                     AND EXISTS (
-    //                         SELECT * FROM `agent_product_prices` as `product_prices`
-    //                         WHERE `agents`.`id` = `product_prices`.`agent_id`
-    //                             AND `product_variant_sku` = '$request->product_variant_sku'
-    //                     )
-    //                 ";
-                  
-    //     $slots = DB::select(DB::raw($raw_query));
-    //    pr($slots);
+
+   
         $agent = Agent::whereHas('slots',function($q) use($myDate,$start_time,$end_time){
             $q->whereDate('schedule_date', $myDate)
             ->where('start_time', '<=', $start_time)
@@ -88,6 +68,24 @@ class OrderPanelController extends BaseController
         }
         return response()->json([
             'data' => $agent,
+            'status' => 200,
+            'message' => __('success'),
+        ], 200);
+       // pr($agent->toArray());
+
+    }
+
+    public function getProductPriceByAgent(Request $request){
+      
+        
+        $validator = Validator::make(request()->all(), [
+            'product_variant_sku'  => 'required',
+            'agent_id' => 'required',
+        ]);
+
+        $AgentProductPrices = AgentProductPrices::where(['product_variant_sku'=>$request->product_variant_sku,'agent_id'=>$request->agent_id])->first();
+        return response()->json([
+            'data' => $AgentProductPrices,
             'status' => 200,
             'message' => __('success'),
         ], 200);

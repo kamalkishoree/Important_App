@@ -40,6 +40,7 @@ Route::post('task/update', 'Api\TaskController@UpdateTask')->middleware('Connect
 Route::post('task/updateBidRide', 'Api\TaskController@updateBidRideOrder')->middleware('ConnectDbFromOrder');
 // 
 Route::post('getProductPrice', 'Api\OrderPanelController@getProductPrice')->middleware('ConnectDbFromOrder');
+Route::post('getProductPriceByAgent', 'Api\OrderPanelController@getProductPriceByAgent')->middleware('ConnectDbFromOrder');
 
 Route::post('sync-category-product', 'Api\SyncCategoryProductController@SyncCategoryProduct')->middleware('ConnectDbFromOrder');
 
@@ -185,7 +186,8 @@ Route::group(['middleware' => ['dbCheck', 'AppAuth','apiLocalization']], functio
     });
 
     Route::post('userRating', 'Api\ActivityController@userRating');  
-   Route::get('task/pending_payment_order','Api\ActivityController@pendingPaymentOrder');            // api for get task history
+    Route::get('task/pending_payment_order','Api\ActivityController@pendingPaymentOrder');            // api for get task history
+    Route::post('product_sku/bydb','Api\SalerController@getProductSkeParticulerDB');            // api for get task history
 });
 
 

@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api;
 use Validator,Log;
 use App\User;
 use Carbon\Carbon;
-use App\Model\{Client,GeneralSlot};
+use App\Model\{Client,GeneralSlot,AgentProductPrices};
 use Config,Validation,DB;
 use Illuminate\Http\Request;
 use App\Traits\{ApiResponser,CategoryTrait};
@@ -92,5 +92,19 @@ class SalerController extends BaseController
             Log::info($e->getMessage());
             return $this->error($e->getMessage(), $e->getCode());
          }
+    }
+
+    public function getProductSkeParticulerDB(Request $request)
+    {
+        try {
+            $agent = Auth::user();
+         
+          $productSku =   AgentProductPrices::selectRaw("*, REPLACE(product_variant_sku, '".$request->db."', '') AS sku")->where('agent_id',  $agent->id)->where('product_variant_sku', 'LIKE', '%' . $request->db.'%' )->pluck('sku')->toArray();
+         // pr(implode(',' ,$productSku ));
+          $sku['sku'] = implode(',' ,$productSku );
+            return $this->success($sku, __('Success'), 200);
+        } catch (Exception $e) {
+            return $this->error($e->getMessage(), $e->getCode());
+        }
     }
 }
