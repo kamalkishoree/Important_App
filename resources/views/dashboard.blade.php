@@ -107,7 +107,6 @@
 
         $(document).ready(function() {
             $('#wrapper').addClass('dshboard');
-            $('#shortclick').trigger('click');
             $(".timeago").timeago();
             $('.checkUserStatus').click(function() {
                 loadTeams(1, 1);
