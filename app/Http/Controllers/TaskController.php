@@ -717,8 +717,8 @@ class TaskController extends BaseController
 
                 if(@$request->warehouse_id[$key]){
                     $warehouse_detail = Warehouse::find($request->warehouse_id[$key]);
-                    $Loction = Location::create(
-                        ['latitude' => $warehouse_detail->latitude, 'longitude' => $warehouse_detail->longitude, 'address' => $warehouse_detail->address]
+                    $Loction = Location::updateOrCreate(
+                        ['latitude' => $warehouse_detail->latitude, 'longitude' => $warehouse_detail->longitude, 'address' => $warehouse_detail->address,'warehouse_id'  => $request->warehouse_id[$key]]
                     );
 
                     $loc_id = $Loction->id;
