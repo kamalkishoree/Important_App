@@ -36,8 +36,12 @@
 .select2-container--default .select2-selection--multiple .select2-selection__choice {
     padding: 0 10px 0 20px !important;
 }
-span.select2-selection.select2-selection--multiple {
+/* span.select2-selection.select2-selection--multiple {
     height: auto !important;
+} */
+span.select2-selection.select2-selection--multiple {
+    height: calc(1.5em + 0.9rem + 2px);
+    padding: 0.45rem 0.9rem;
 }
 form#StoreWarehouse label.checkbox-inline {
     margin-right: 10px;
@@ -1249,6 +1253,36 @@ body .tagsinput .tag {
 body[dir="rtl"] .card_outer{
     height: auto !important;
 }
+
+/*==========  15-03-2023 ===========*/
+div#scrollbar .side_head > .d-flex {
+    width: 100%;
+    justify-content: space-between!important;
+}
+.left-sidebar #teams_container .card .card-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+}
+.left-sidebar #teams_container .offline {
+    color: red;
+}
+.left-sidebar #teams_container .online {
+    color: green;
+}
+.content-page .content .card-body button.btn.btn-blue {
+    height: calc(1.5em + 0.9rem + 2px);
+}
+.content-page .content .card-body button.btn.btn-blue:hover{
+    color: #fff;
+    background-color: #6658dd;
+    border-color: #6658dd;
+}
+@media(max-width:1600px) {
+    div#scrollbar .side_head > .d-flex .form-check-inline {
+        margin: 0 auto!important;
+    }
+}
 @media(max-width:1366px) {
     #map-canvas {
         height: calc(100vh - 284px);
@@ -1260,6 +1294,19 @@ body[dir="rtl"] .card_outer{
     body[dir="rtl"] .card_outer{
         height: auto !important;
    }
+   div#scrollbar .side_head > .d-flex{
+    flex-wrap:wrap;
+    justify-content: flex-start!important;
+   }
+   div#scrollbar .side_head > .d-flex .form-check-inline {
+    margin: 0 0 5px !important;
+}
+div#scrollbar .side_head > .d-flex .mdi.mdi-sync {
+    margin-left: -10px;
+}
+div#scrollbar .side_head > .row.search_bar .col-md-6 {
+    padding: 0 5px;
+}
 }
 @media(min-width:1200px){
     .geo_middle {
@@ -1575,6 +1622,12 @@ span.copied_txt {
    }
 }
 @media (max-width:767px) {
+    div#scrollbar .side_head > .d-flex{
+        flex-wrap: unset;
+    }
+    div#scrollbar .side_head > .d-flex .form-check-inline{
+        margin:0 0 0px !important;
+    }
     .btn.btn-blue.btn-block {
         width: 100%;
    }
@@ -3475,7 +3528,7 @@ div#scrollbar {
         margin: 10px !important;
     }
     .left-sidebar .side_head span {
-        margin: 10px 4px;
+        margin: 10px 0;
         display: block;
     }
     form#taskFormHeader .radio.radio-info.form-check-inline {
