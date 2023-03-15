@@ -74,6 +74,9 @@ class Kernel extends HttpKernel
         'ConnectDbFromOrder' => \App\Http\Middleware\ConnectDbFromOrder::class,
         'switchLanguage' => \App\Http\Middleware\CheckLocale::class,
         'apiLocalization' => \App\Http\Middleware\ApiLocalization::class,
-        'ConnectDbForDispatch' => \App\Http\Middleware\ConnectDbForDispatch::class
+        'ConnectDbForDispatch' => \App\Http\Middleware\ConnectDbForDispatch::class,
+        'ConnectDbFromDispatch' => \App\Http\Middleware\ConnectDbFromDispatcher::class,
+        'ConnectDbFromInventory' => \App\Http\Middleware\ConnectInventoryDb::class
+        
     ];
 }

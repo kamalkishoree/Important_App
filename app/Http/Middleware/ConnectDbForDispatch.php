@@ -18,10 +18,11 @@ class ConnectDbForDispatch
      */
     public function handle($request, Closure $next)
     {
-        
+       
         $database_name = $database = 'royodelivery_db';
         $header = $request->header();
         
+       
         if (array_key_exists("shortcode", $header)){
             $shortcode =  $header['shortcode'][0];
         }
@@ -58,8 +59,6 @@ class ConnectDbForDispatch
                 'strict' => false,
                 'engine' => null
             ];
-            
-           
             Config::set("database.connections.$database_name", $default);
             DB::setDefaultConnection($database_name);
             DB::purge($database_name);

@@ -24,10 +24,9 @@ Route::group([
 ], function () {
     Route::post('otp_test', 'Api\TaskController@smstest')->middleware('ConnectDbFromOrder');
     Route::post('check-dispatcher-keys', 'Api\TaskController@checkDispatcherKeys')->middleware('ConnectDbFromOrder');
-    Route::post('get-dispatch-panel-detail', 'Api\TaskController@getDispatchPanelDetail')->middleware('ConnectDbForDispatch');
+    Route::post('get-dispatch-panel-keys', 'Api\TaskController@checkDispatchPanelKeys')->middleware('ConnectDbForDispatch');
+    Route::get('get-dispatch-panel-detail', 'Api\TaskController@getDispatchPanelDetails')->middleware('ConnectDbForDispatch');
     
-    Route::get('check-inventory-keys', 'Api\TaskController@checkDispatchPanelKeys')->middleware('ConnectDbForDispatch');
-
     Route::post('get-delivery-fee', 'Api\TaskController@getDeliveryFee')->middleware('ConnectDbFromOrder');
     Route::post('task/create', 'Api\TaskController@CreateTask')->middleware('ConnectDbFromOrder');
     Route::post('return-to-warehouse-task', 'Api\TaskController@returnToWarehouseTask')->middleware('ConnectDbFromOrder');
@@ -43,6 +42,8 @@ Route::group([
 
     Route::post('sync-category-product', 'Api\SyncCategoryProductController@SyncCategoryProduct')->middleware('ConnectDbFromOrder');
 
+    Route::post('sync-inventory-category-product', 'Api\SyncInventoryCategoryProductController@SyncInventoryCategoryProduct')->middleware('ConnectDbForDispatch');
+    
     Route::post('chat/sendNotificationToAgent', 'Api\ChatControllerOrderNotification@sendNotificationToAgent')->middleware('ConnectDbFromOrder');
 
     Route::post('update-order-feedback', 'Api\TaskController@SaveFeedbackOnOrder')->name('SaveFeedbackOnOrder')->middleware('ConnectDbFromOrder');

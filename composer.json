@@ -14,7 +14,7 @@
         "bavix/laravel-wallet": "^7.3",
         "beyondcode/laravel-websockets": "^1.13",
         "darkaonline/l5-swagger": "^8.0",
-        "doctrine/dbal": "^2.10",
+        "doctrine/dbal": "^2.13",
         "fideloper/proxy": "^4.2",
         "fruitcake/laravel-cors": "^1.0",
         "guzzlehttp/guzzle": "^7.2",
@@ -53,7 +53,10 @@
     "config": {
         "optimize-autoloader": true,
         "preferred-install": "dist",
-        "sort-packages": true
+        "sort-packages": true,
+        "allow-plugins": {
+            "php-http/discovery": true
+        }
     },
     "extra": {
         "laravel": {

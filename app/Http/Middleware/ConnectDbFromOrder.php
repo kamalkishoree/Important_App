@@ -67,6 +67,8 @@ class ConnectDbFromOrder
                 'strict' => false,
                 'engine' => null
             ];
+            
+            
             Config::set("database.connections.$database_name", $default);
             Config::set("client_connected", true);
           //  Config::set("client_data", $client);

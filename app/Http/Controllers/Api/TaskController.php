@@ -66,6 +66,8 @@ use App\Http\Controllers\StripeGatewayController;
 use App\Traits\TollFee;
 use JWT\Token;
 use App\Model\Users;
+use App\Models\OrderPanel;
+use App\Model\OrderPanelDetail;
 
 class TaskController extends BaseController
 {
@@ -2802,10 +2804,8 @@ class TaskController extends BaseController
 
     public function checkDispatchPanelKeys(Request $request)
     {
-        
         $user = Client::first();
- 
-        
+
         if (! empty($user)) {
             $token1 = new Token();
             $token = $token1->make([
@@ -2828,7 +2828,7 @@ class TaskController extends BaseController
             return response()->json([
                 'status' => 200,
                 'token' => $token,
-                'message' => 'Valid Order Panel API keys'
+                'message' => 'Valid Dispatch Panel API keys'
             ]);
         }
         return response()->json([
@@ -2836,45 +2836,72 @@ class TaskController extends BaseController
             'message' => 'Authentication failed'
         ]);
     }
-    
-    public function getDispatchPanelDetail(Request $request)
-    {
-        
 
-        try{
-            if($request->inventory_url){
-                
-              
+    public function getDispatchPanelDetails(Request $request)
+    {
+        try {
+            if ($request->inventory_url) {
+
                 $inventory_url = $request->inventory_url;
                 $inventory_code = $request->inventory_code;
-                
-                
+
                 $client = Client::select('database_name')->where('id', '>', 0)->first();
-                if($client){
+
+                if ($client) {
                     $client_prefrence = ClientPreference::where('id', '>', 0)->first();
-                    $client_prefrence->inventory_service_key_url =  $inventory_url;
-                    $client_prefrence->inventory_service_key_code =  $inventory_code;
+
+                    $client_prefrence->inventory_service_key_url = $inventory_url;
+                    $client_prefrence->inventory_service_key_code = $inventory_code;
                     $client_prefrence->update();
-                    
-                    $data = ['key' => $client->database_name];
+
+                    $dispatch_panel = OrderPanelDetail::where('type', '1')->first();
+
+                    if (@$dispatch_panel) {
+                        $dispatch_panel->name = 'bharat';
+                        $dispatch_panel->url = $inventory_url;
+                        $dispatch_panel->key = $inventory_code;
+                        $dispatch_panel->code = $inventory_code;
+                        $dispatch_panel->type = 1;
+
+                        $dispatch_panel->save();
+                    } else {
+
+                        OrderPanelDetail::create([
+                            'code' => $inventory_code,
+                            'name' => 'bharat',
+                            'url' => $inventory_url,
+                            'key' => $inventory_code,
+                            'type' => 1,
+                            'status' => 1
+                        ]);
+                    }
+                    $data = [
+                        'key' => $client->database_name
+                    ];
+
                     return response()->json([
                         'status' => 200,
                         'data' => $data,
-                        'message' => 'success']);
+                        'message' => 'success'
+                    ]);
                 }
-                
+
                 return response()->json([
                     'status' => 400,
-                    'message' => 'Order Panel Not found']);
+                    'message' => 'Order Panel Not found'
+                ]);
             }
             return response()->json([
                 'status' => 400,
-                'message' => 'Invalid Code']);
-        }catch(\Exception $e){
-            return response()->json(['data' => $e->getMessage()]);
+                'message' => 'Invalid Code'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'data' => $e->getMessage()
+            ]);
         }
-        
     }
+
     /**
      * **************** ---- get all teams ----- *****************
      */

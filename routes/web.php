@@ -278,6 +278,7 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 			Route::resource('order-panel-db', 'orderPanelController');
 			Route::resource('amenities', 'AmenitiesController');
 			Route::resource('category', 'CategoryController');
+			Route::get('inventory-category', 'CategoryController@inventoryCategory')->name('category.inventory');
 			Route::resource('product', 'ProductController');
 			Route::POST('check-sync-status', 'orderPanelController@checkSyncStatus');
 
@@ -286,6 +287,8 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 			// Route::get('cat-product/{$id}', 'ProductController@showProduct')->name('showProduct');
 
 			Route::post('/import-order-side-category', 'CategoryController@getOrderSideData')->name('category.importOrderSideCategory');
+			
+			Route::post('/import-dispatch-side-category', 'CategoryController@getDispatchSideData')->name('category.importDispatchSideCategory');
 
 			Route::get('/order/feedback/{clientcode}/{order_id}', 'TrackingController@OrderFeedback')->name('order.feedback');
 

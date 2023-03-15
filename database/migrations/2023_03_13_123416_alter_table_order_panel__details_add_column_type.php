@@ -1,11 +1,11 @@
 <?php
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AlterClientPreferencesAddColumnInvUrl extends Migration
+class AlterTableOrderPanelDetailsAddColumnType extends Migration
 {
-
     /**
      * Run the migrations.
      *
@@ -13,12 +13,11 @@ class AlterClientPreferencesAddColumnInvUrl extends Migration
      */
     public function up()
     {
-        Schema::table('client_preferences', function (Blueprint $table) {
-            $table->string('inventory_service_key_url', '255')->nullable();
-            $table->string('inventory_service_key_code', '255')->nullable();
+        Schema::table('order_panel_details', function (Blueprint $table) {
+            $table->integer('type')->default(0);
         });
     }
-
+    
     /**
      * Reverse the migrations.
      *
@@ -26,8 +25,8 @@ class AlterClientPreferencesAddColumnInvUrl extends Migration
      */
     public function down()
     {
-        Schema::table('client_preferences', function (Blueprint $table) {
-            //
+        Schema::table('order_panel_details', function (Blueprint $table) {
+            $table->dropColumn('type');
         });
     }
 }
