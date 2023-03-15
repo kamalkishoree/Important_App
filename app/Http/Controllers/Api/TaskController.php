@@ -1119,7 +1119,7 @@ class TaskController extends BaseController
                 'sync_order_id'                   => $request->order_id,
                 'available_seats'                 => isset($request->available_seats)?$request->available_seats:0,
                 'no_seats_for_pooling'            => isset($request->no_seats_for_pooling)?$request->no_seats_for_pooling:0,
-                'is_cab_pooling'                  => isset($request->is_cab_pooling)?$request->is_cab_pooling:0
+                'is_cab_pooling'                  => isset($request->is_cab_pooling)?$request->is_cab_pooling:0,
             ];
 
             if(checkColumnExists('orders', 'rejectable_order')){
@@ -1128,6 +1128,10 @@ class TaskController extends BaseController
             }
             if(checkColumnExists('orders', 'is_one_push_booking')){
                 $order['is_one_push_booking'] = isset($request->is_one_push_booking)?$request->is_one_push_booking:0;
+            }
+            if(checkColumnExists('orders', 'order_pre_time')){
+                $order['order_pre_time']=isset($request->order_pre_time)?$request->order_pre_time:0;
+
             }
 
             $is_order_updated = 0;
