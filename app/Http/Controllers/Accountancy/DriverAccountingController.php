@@ -19,10 +19,10 @@ class DriverAccountingController extends BaseController
         
         $user = Auth::user();
         if ( $user->is_superadmin == 0 &&  $user->all_team_access == 0) {
-                $agents = Team::with('agents')->where('manager_id',  $user->id)->get();
-            foreach($agents as $key => $agent) {
-                $agentList = $agent->agents->pluck('name', 'id')->toArray();
-            }
+            $userid = $user->id;
+            $agentList = Agent::whereHas('team.permissionToManager', function($q) use ($userid){
+                $q->where('sub_admin_id', $userid);
+            })->pluck('name', 'id')->toArray();
         }else{
             $agentList = Agent::pluck('name', 'id')->toArray();
         }
@@ -53,9 +53,15 @@ class DriverAccountingController extends BaseController
     public function driverDatatable(Request $request) {
         
         $data = $request->all();
-        
+        $user = Auth::user();
+        $userid = $user->id;
         $type = $request->routesListingType;
         $orders = Order::with(['agent', 'getAgentPayout']);
+        if ( $user->is_superadmin == 0 &&  $user->all_team_access == 0) {
+            $orders = $orders->whereHas('agent.team.permissionToManager', function($q) use ($userid){
+            $q->where('sub_admin_id', $userid);
+        });}
+        
         if($type == 'statement') {
             $orders = $orders->whereHas('getAgentPayout' , function($query) use($type) {
                 $query->where('status', 1);
