@@ -143,4 +143,11 @@ trait GlobalFunction{
     
     }
 
+
+    public function getConvertUTCToLocalTime($datetime, $localtimezone = 'UTC')
+    {
+        $local_datetime = Carbon::parse($datetime, 'UTC')->setTimezone($localtimezone)->format('Y-m-d H:i:s');
+        return $local_datetime;
+    }
+
 }
