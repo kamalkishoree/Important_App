@@ -1182,9 +1182,8 @@ class TaskController extends BaseController
             endif;
 
             //get pricing rule  for save with every order based on geo fence and agent tags
-            $notification_time = Carbon::parse($notification_time, 'UTC')->setTimezone($clienttimezone)->format('Y-m-d H:i:s');
             $agent_tags = (isset($request->order_agent_tag) && !empty($request->order_agent_tag)) ? $request->order_agent_tag : '';
-            $pricingRule = $this->getPricingRuleData($geoid, $agent_tags, $notification_time);
+            $pricingRule = $this->getPricingRuleData($geoid, $agent_tags, $this->getConvertUTCToLocalTime($notification_time, $clienttimezone));
 
 
             if($auth->getPreference->toll_fee == 1){
@@ -1368,19 +1367,7 @@ class TaskController extends BaseController
 
             if ($request->allocation_type === 'a' || $request->allocation_type === 'm') {
                 $allocation = AllocationRule::where('id', 1)->first();
-                $inputdata = [
-                    'geo' => $geo,
-                    'notification_time' => $notification_time,
-                    'agent_id' => $agent_id,
-                    'orders_id' => $orders->id,
-                    'customer' => $customer,
-                    'finalLocation' => $pickup_location,
-                    'taskcount' => $taskcount,
-                    'header' => $header,
-                    'allocation' => $allocation,
-                    'is_cab_pooling' => $orders->is_cab_pooling,
-                    'agent_tag' => isset($request->order_agent_tag)?$request->order_agent_tag:'',
-                ];
+                
                 switch ($allocation->auto_assign_logic) {
                 case 'one_by_one':
                      //this is called when allocation type is one by one
@@ -3055,11 +3042,11 @@ class TaskController extends BaseController
 
 
             $settime = ($request->task_type=="schedule") ? $request->schedule_time : Carbon::now()->toDateTimeString();
-            $notification_time = ($request->task_type=="schedule")? Carbon::parse($settime . $auth->timezone ?? 'UTC')->tz('UTC') : Carbon::now()->toDateTimeString();
+            $notification_time = ($request->task_type=="schedule")? Carbon::parse($settime)->tz('UTC') : Carbon::now()->toDateTimeString();
 
             //get pricing rule  for save with every order
             $agent_tags = (isset($request->order_agent_tag) && !empty($request->order_agent_tag)) ? $request->order_agent_tag : '';
-            $pricingRule = $this->getPricingRuleData($geoid, $agent_tags, $notification_time);
+            $pricingRule = $this->getPricingRuleData($geoid, $agent_tags, $this->getConvertUTCToLocalTime($notification_time, $auth->timezone));
 
 
 
@@ -3561,7 +3548,7 @@ class TaskController extends BaseController
 
             //get pricing rule  for save with every order based on geo fence and agent tags
             $agent_tags = (isset($request->order_agent_tag) && !empty($request->order_agent_tag)) ? $request->order_agent_tag : '';
-            $pricingRule = $this->getPricingRuleData($geoid, $agent_tags, $settime);
+            $pricingRule = $this->getPricingRuleData($geoid, $agent_tags, $this->getConvertUTCToLocalTime($settime, $auth->timezone));
 
             $getdata = $this->GoogleDistanceMatrix($latitude, $longitude);
 
@@ -3727,7 +3714,7 @@ class TaskController extends BaseController
 
             //get pricing rule  for save with every order based on geo fence and agent tags
             $agent_tags = (isset($request->order_agent_tag) && !empty($request->order_agent_tag)) ? $request->order_agent_tag : '';
-            $pricingRule = $this->getPricingRuleData($geoid, $agent_tags, $notification_time);
+            $pricingRule = $this->getPricingRuleData($geoid, $agent_tags, $this->getConvertUTCToLocalTime($notification_time, $auth->timezone));
 
             
             if($auth->getPreference->toll_fee == 1){
