@@ -19,4 +19,10 @@ class Product extends Model
     public function translation(){
         return $this->hasOne('App\Model\ProductTranslation','product_id','id');
     }
+
+    public function primary(){
+        $langData = $this->hasOne('App\Model\ProductTranslation');
+        return $langData;
+    }
+
 }

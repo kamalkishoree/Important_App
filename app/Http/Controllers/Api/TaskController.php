@@ -1395,7 +1395,7 @@ class TaskController extends BaseController
 
             $allocation = AllocationRule::where('id', 1)->first();
 
-            if ($request->task_type != 'now') { 
+            if (($request->task_type != 'now') || ($rejectable_order ==1)) { 
                 // if(isset($header['client'][0]))
                 // $auth = Client::where('database_name', $header['client'][0])->with(['getAllocation', 'getPreference'])->first();
                 // else
@@ -1418,7 +1418,7 @@ class TaskController extends BaseController
                 $from_time = strtotime($from);
                 if ($to_time >= $from_time) {
                     DB::commit();
-                    $orderdata = Order::select('id', 'order_time', 'status', 'driver_id')->with('agent')->where('id', $orders->id)->first();
+                   // $orderdata = Order::select('id', 'order_time', 'status', 'driver_id')->with('agent')->where('id', $orders->id)->first();
                    // event(new \App\Events\loadDashboardData($orderdata));
                     return response()->json([
                         'message' => __('Task Added Successfully'),
@@ -1503,7 +1503,7 @@ class TaskController extends BaseController
             $dispatch_traking_url = $client_url.'/order/tracking/'.$auth->code.'/'.$orders->unique_id;
 
             DB::commit();
-            $orderdata = Order::select('id', 'order_time', 'status', 'driver_id')->with('agent')->where('id', $orders->id)->first();
+           // $orderdata = Order::select('id', 'order_time', 'status', 'driver_id')->with('agent')->where('id', $orders->id)->first();
             //event(new \App\Events\loadDashboardData($orderdata));
             return response()->json([
                 'message' => __('Task Added Successfully'),
