@@ -14,15 +14,23 @@ use App\Model\ {
     OrderPanelDetail
 };
 use App\Http\Controllers\Controller;
+use App\Model\Warehouse;
+use App\Model\InventoryVendor;
 
 class SyncInventoryCategoryProductController extends Controller
 {
 
     protected $order_panel_id;
 
+    protected $vendor_data;
+
     public function SyncInventoryCategoryProduct(Request $request)
     {
+        if (@$request['vendors'] && count($request['vendors']) > 0) {
+            $this->vendor_data = $request['vendors'];
 
+            $this->importVendorsData($request['vendors']);
+        }
         if (@$request['data'] && count($request['data']) > 0) {
             $this->order_panel_id = $request['order_panel_id'];
 
@@ -38,13 +46,13 @@ class SyncInventoryCategoryProductController extends Controller
 
     public function importOrderSideCategory($categories)
     {
-
         // $categories = ROCategory::with(['translation','products','products.variant','products.translation'])->get();
         foreach ($categories as $cat) {
 
             $category_id = $this->syncSingleCategory($cat);
             if (! empty($cat['products']) && count($cat['products']) > 0) {
                 foreach ($cat['products'] as $product) {
+
                     $product_id = $this->syncSingleProduct($category_id, $product);
                     $variantId = $this->syncProductVariant($product_id, $product);
                 }
@@ -52,17 +60,33 @@ class SyncInventoryCategoryProductController extends Controller
         }
     }
 
+    public function importVendorsData($vendors)
+    {
+
+        // $categories = ROCategory::with(['translation','products','products.variant','products.translation'])->get();
+        foreach ($vendors as $data) {
+            $vendors_data = $this->syncVendorData($data);
+        }
+    }
+
     public function syncSingleProduct($category_id, $product)
     {
         // dd($product['translation']);
         if (checkTableExists('products')) {
+
+            if (! empty($product['vendor_data'])) {
+
+                $vendor = InventoryVendor::where([
+                    'slug' => $product['vendor_data']['slug']
+                ])->first();
+            }
             $product_update_create = [
                 "sku" => $product['sku'],
                 "title" => $product['title'],
                 "url_slug" => $product['url_slug'],
                 "description" => $product['description'],
                 "body_html" => $product['body_html'],
-                "vendor_id" => $product['vendor_id'],
+                "vendor_id" => isset($vendor) ? $vendor->id : '',
                 "type_id" => $product['type_id'],
                 "country_origin_id" => $product['country_origin_id'],
                 "is_new" => $product['is_new'],
@@ -108,39 +132,37 @@ class SyncInventoryCategoryProductController extends Controller
                 'order_panel_id' => $this->order_panel_id
             ];
 
-            if (empty($product_exists)) {
-                $productSave = Product::updateOrCreate([
-                    'sku' => $product['sku']
-                ], $product_update_create);
+            $productSave = Product::updateOrCreate([
+                'sku' => $product['sku']
+            ], $product_update_create);
 
-                foreach ($product['translation'] as $translation) {
+            foreach ($product['translation'] as $translation) {
 
-                    $product_trans = [
-                        'title' => $translation['title'],
-                        'body_html' => $translation['title'],
-                        'meta_title' => $translation['title'],
-                        'meta_keyword' => $translation['title'],
-                        'meta_description' => $translation['title'],
-                        'product_id' => $productSave->id,
-                        'language_id' => $translation['language_id']
-                    ];
-
-                    ProductTranslation::updateOrCreate([
-                        'product_id' => $productSave->id
-                    ], $product_trans);
-                }
-
-                // Sync Product Categories
-                $data = [
+                $product_trans = [
+                    'title' => $translation['title'],
+                    'body_html' => $translation['title'],
+                    'meta_title' => $translation['title'],
+                    'meta_keyword' => $translation['title'],
+                    'meta_description' => $translation['title'],
                     'product_id' => $productSave->id,
-                    'category_id' => $category_id
+                    'language_id' => $translation['language_id']
                 ];
-                ProductCategories::updateOrCreate([
-                    'product_id' => $productSave->id
-                ], $product_update_create);
 
-                return $productSave->id;
+                ProductTranslation::updateOrCreate([
+                    'product_id' => $productSave->id
+                ], $product_trans);
             }
+
+            // Sync Product Categories
+            $data = [
+                'product_id' => $productSave->id,
+                'category_id' => $category_id
+            ];
+            ProductCategories::updateOrCreate([
+                'product_id' => $productSave->id
+            ], $product_update_create);
+
+            return $productSave->id;
         } else {
             return '';
         }
@@ -176,6 +198,70 @@ class SyncInventoryCategoryProductController extends Controller
                     'sku' => $variant['sku']
                 ], $product_variant);
             }
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function syncVendorData($data)
+    {
+        if (checkTableExists('inventory_vendors')) {
+
+            $warehouse_data = [
+                "name" => $data['name'],
+                "slug" => $data['slug'],
+                "desc" => $data['desc'],
+                "address" => $data['address'],
+                "email" => $data['email'],
+                "latitude" => $data['latitude'],
+                "longitude" => $data['longitude'],
+                "website" => $data['website'],
+                "phone_no" => $data['phone_no'],
+                "dial_code" => $data['dial_code'],
+                "order_min_amount" => $data['order_min_amount'],
+                "order_pre_time" => $data['order_pre_time'],
+                "auto_reject_time" => $data['auto_reject_time'],
+                "commission_percent" => $data['commission_percent'],
+                "commission_fixed_per_order" => $data['commission_fixed_per_order'],
+                "commission_monthly" => $data['commission_monthly'],
+                "dine_in" => $data['dine_in'],
+                "takeaway" => $data['delivery'],
+                "delivery" => $data['email'],
+                "status" => $data['status'],
+                "add_category" => $data['add_category'],
+                "setting" => $data['setting'],
+                "is_show_vendor_details" => $data['is_show_vendor_details'],
+                "created_at" => $data['created_at'],
+                "updated_at" => $data['updated_at'],
+                "show_slot" => $data['show_slot'],
+                "auto_accept_order" => $data['auto_accept_order'],
+                "service_fee_percent" => $data['service_fee_percent'],
+                "slot_minutes" => $data['slot_minutes'],
+                "orders_per_slot" => $data['orders_per_slot'],
+                "order_amount_for_delivery_fee" => $data['order_amount_for_delivery_fee'],
+                "delivery_fee_minimum" => $data['delivery_fee_minimum'],
+                "delivery_fee_maximum" => $data['delivery_fee_maximum'],
+                "closed_store_order_scheduled" => $data['closed_store_order_scheduled'],
+                "pincode" => $data['pincode'],
+                "shiprocket_pickup_name" => $data['shiprocket_pickup_name'],
+                "city" => $data['is_show_vendor_details'],
+                "state" => $data['state'],
+                "country" => $data['country'],
+                "return_request" => $data['return_request'],
+                "ahoy_location" => $data['ahoy_location'],
+                "max_safety" => $data['max_safety'],
+                "need_container_charges" => $data['need_container_charges'],
+                "fixed_fee" => $data['fixed_fee'],
+                "fixed_fee_amount" => $data['fixed_fee_amount'],
+                "price_bifurcation" => $data['price_bifurcation'],
+                "need_sync_with_order" => $data['need_sync_with_order']
+            ];
+
+            $warehouse = InventoryVendor::updateOrInsert([
+                'slug' => $data['slug']
+            ], $warehouse_data);
+
             return true;
         } else {
             return false;

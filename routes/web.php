@@ -243,7 +243,11 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 			Route::post('single_taskdelete', 'TaskController@deleteSingleTask')->name('tasks.single.destroy');
 
 			Route::get('get-category-warehouse', 'TaskController@getCategoryWarehouse')->name('getCategoryWarehouse');
+			Route::get('get-inventory-products', 'TaskController@getInventoryProducts')->name('getInventoryProducts');
 
+			Route::get('get-product-name', 'TaskController@getProductName')->name('getProductName');
+			Route::post('get-selected-warehouses', 'TaskController@getSelectedWarehouses')->name('getSelectedWarehouses');
+			
 			Route::post('optimize-route', 'DashBoardController@optimizeRoute');
 			Route::post('arrange-route', 'DashBoardController@arrangeRoute');
 			Route::post('optimize-arrange-route', 'DashBoardController@optimizeArrangeRoute');

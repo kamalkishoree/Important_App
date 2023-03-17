@@ -1,9 +1,14 @@
+<head>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+</head>
 <style>
-    a.choose_warehouse { text-decoration: underline; }
+    a.choose_warehouse {
+        text-decoration: underline;
+    }
 </style>
 <div class="row">
     <div class="col-md-12">
-        <div class="card-box pb-0 pt-0 mb-1">            
+        <div class="card-box pb-0 pt-0 mb-1">
             <div class="row d-flex">
                 <div class="col-sm-12 col-xl-4 col-md-12" style="border-right: 1px solid #ccc;">
                     @csrf
@@ -22,8 +27,7 @@
 
                     <div class="row mb-3 datenow">
                         <div class="col-md-12">
-                            <input type="text"  name="schedule_time"
-                            class="form-control opendatepicker upside datetime-datepicker" placeholder='{{__("Date Time")}}'>
+                            <input type="text" name="schedule_time" class="form-control opendatepicker upside datetime-datepicker" placeholder='{{__("Date Time")}}'>
                             <button type="button" class="cstmbtn check_btn btn btn-info"><i class="fa fa-check" aria-hidden="true"></i></button>
                         </div>
                     </div>
@@ -46,8 +50,8 @@
                     <div class="row mb-1 searchshow">
                         <div class="col-md-12">
                             <div class="form-group" id="nameInputHeader">
-                            {!! Form::text('search', null, ['class' => 'form-control', 'placeholder' => __('Search Customer'), 'id' => 'searchCust']) !!}
-                            <input type="hidden" id='cusid' name="ids" readonly>
+                                {!! Form::text('search', null, ['class' => 'form-control', 'placeholder' => __('Search Customer'), 'id' => 'searchCust']) !!}
+                                <input type="hidden" id='cusid' name="ids" readonly>
                             </div>
                         </div>
                     </div>
@@ -107,16 +111,16 @@
                                 </span>
                             </div>
                         </div>
-                        
+
                         <div class="row mb-2">
                             <div class="col-md-12">
-                                <input type="file" data-plugins="dropify" class="dropify" name="file[]" data-height="300" multiple accept="image/*"/>
+                                <input type="file" data-plugins="dropify" class="dropify" name="file[]" data-height="300" multiple accept="image/*" />
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="row mb-2">
-                        <div class="col-md-12"  id="make_modelInput">
+                        <div class="col-md-12" id="make_modelInput">
                             {!! Form::text('call_back_url', null, ['class' => 'form-control rec', 'placeholder' => __('Call Back URL')]) !!}
                         </div>
                     </div>
@@ -146,7 +150,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <span class="span1 tagspan">{{__("Please select atlest one tag for ".getAgentNomenclature())}}</span>
                     <div class="tags {{ $allcation->manual_allocation == 0 ? 'hidealloction':''}}">
                         <div class="row">
@@ -156,7 +160,7 @@
                                     <select name="team_tag[]" id="selectize-optgroups" class="selectizeInput" multiple placeholder={{__("Select tag...")}}>
                                         <option value="">{{__("Select Tag...")}}</option>
                                         @foreach ($teamTag as $item)
-                                            <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                        <option value="{{ $item->id }}">{{ $item->name }}</option>
                                         @endforeach
 
                                     </select>
@@ -171,7 +175,7 @@
                                     <select name="agent_tag[]" id="selectize-optgroup" class="selectizeInput" multiple placeholder="{{__('Select tag...')}}">
                                         <option value="">{{__("Select Tag...")}}</option>
                                         @foreach ($agentTag as $item)
-                                            <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                        <option value="{{ $item->id }}">{{ $item->name }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -191,7 +195,7 @@
                                             $checkAgentActive = ($item->is_available == 1) ? ' ('.__('Online').')' : ' ('.__('Offline').')';
                                         @endphp
                                         <option value="{{ $item->id }}">{{ ucfirst($item->name) . $checkAgentActive }}</option>
-                                    @endforeach
+                                @endforeach
                                 </select> --}}
                             </div>
                         </div>
@@ -207,7 +211,7 @@
                                     <div class="row firstclone1">
                                         <div class="col-md-4">
                                             <div class="form-group mb-1">
-                                                <select class="selecttype mt-1" id="task_type"  name="task_type_id[]" style="width:100%;" required>
+                                                <select class="selecttype mt-1" id="task_type" name="task_type_id[]" style="width:100%;" required>
                                                     <option value="1">{{__("Pickup Task")}}</option>
                                                     <option value="2">{{__("Drop Off Task")}}</option>
                                                     <option value="3">{{__("Appointment")}}</option>
@@ -224,7 +228,7 @@
                                             <div class="form-group vehicle_type_select mt-1 mb-1">
                                                 <select class="vehicle_type" id="vehicle_type" name="vehicle_type[]" style="width:100%;">
                                                     @foreach ($vehicle_type as $vehicle)
-                                                        <option value="{{$vehicle->id}}">{{$vehicle->name}}</option>
+                                                    <option value="{{$vehicle->id}}">{{$vehicle->name}}</option>
                                                     @endforeach
                                                 </select>
                                             </div>
@@ -234,57 +238,33 @@
                                                 <select class="form-control category_id" name="category_id" id="category_id">
                                                     <option value="">Select Category</option>
                                                     @foreach ($category as $cat)
-                                                        <option value="{{$cat->id}}">{{$cat->slug}}</option>
+                                                    <option value="{{$cat->id}}">{{$cat->slug}}</option>
                                                     @endforeach
                                                 </select>
                                             </div>
                                         </div>
-                                        <div class="col-md-1 text-center pt-2 pr-2" >
-                                            <span class="span1 delbtnhead" id="spancheck"><img style="filter: grayscale(.5);" src="{{asset('assets/images/ic_delete.png')}}"  alt=""></span>
+                                        <div class="col-md-1 text-center pt-2 pr-2">
+                                            <span class="span1 delbtnhead" id="spancheck"><img style="filter: grayscale(.5);" src="{{asset('assets/images/ic_delete.png')}}" alt=""></span>
                                         </div>
                                         <div class="row mb-2" style="padding: 0px 10px;">
                                             <div class="alCol-12 mainaddress col-8">
                                                 <div class="row">
                                                     <div class="col-6 addressDetails border-right">
-                                                        <h6>Address Details</h6>
-                                                        <div class="row location-section">
-                                                            <div class="row" style="padding: 0px 10px;">
-                                                                <div class="form-group col-12 mb-1">
-                                                                    {!! Form::text('short_name[]', null, ['class' => 'form-control address', 'placeholder' => __('Short Name')]) !!}
-                                                                </div>
-                                                            </div>
-                                                            <div class="input-group form-group col-12 mb-2">
-                                                                <input type="text" id="addHeader1-input" name="address[]" class="form-control address cust_add" placeholder='{{__("Location")}}'>
-                                                                <div class="input-group-append">
-                                                                    <button class="btn btn-xs btn-dark waves-effect waves-light showMapHeader cust_btn" type="button" num="addHeader1"> <i class="mdi mdi-map-marker-radius"></i></button>
-                                                                </div>
-                                                            </div>
-                                                            <div class="form-group col-6 mb-1">
-                                                                {!! Form::text('flat_no[]', null, ['class' => 'form-control address flat_no','placeholder' => __('House/Apartment/Flat no'),'id'=>'addHeader1-flat_no']) !!}
-                                                            </div>
-                                                            <div class="form-group col-6 mb-1">
-                                                                <input type="hidden" name="latitude[]" id="addHeader1-latitude" value="0" class="cust_latitude" />
-                                                                <input type="hidden" name="longitude[]" id="addHeader1-longitude" value="0" class="cust_longitude" />
-                                                                {!! Form::text('post_code[]', null, ['class' => 'form-control address postcode','placeholder' => __('Post Code'),'id'=>'addHeader1-postcode']) !!}
-                                                            </div>
+                                                        <h6>Select Category</h6>
+                                                        <select class="form-control inventory_category_id" name="inventory-category_id" id="inventory_category_id">
+                                                            <option value="">Select Category</option>
+                                                            @foreach ($category as $cat)
+                                                            <option value="{{$cat->id}}">{{$cat->slug}}</option>
+                                                            @endforeach
+                                                        </select>
+                                                        <br>
+                                                        <div class="form-group mb-1 select_inventory-field">
+                                                            <select class="form-control inventory-products" name="inventory_products[]" id="inventory_product">
+                                                                <option value="">Select Products</option>
+
+                                                            </select>
+
                                                         </div>
-                                                        <div class="warehouse-fields" style="display: none;">
-                                                            <div class="form-group mb-1 select_warehouse-field">
-                                                                <select class="form-control warehouse" name="warehouse_id[]" id="warehouse">
-                                                                    <option value="">Select Warehouse</option>
-                                                                    @foreach ($warehouses as $warehouse)
-                                                                        <option value="{{$warehouse->id}}">{{$warehouse->name}}</option>
-                                                                    @endforeach
-                                                                </select>
-                                                            </div>
-                                                        </div>
-                                                        @php
-                                                            $warehouse_mode = checkWarehouseMode();
-                                                        @endphp
-                                                        @if($warehouse_mode['show_warehouse_module'] == 1)
-                                                            <h6 class="or-text text-center">OR</h6>
-                                                            <h6 class="choose_warehouse text-center text-primary" style="text-decoration: underline;cursor: pointer;">Choose Warehouse</h6>
-                                                        @endif
                                                     </div>
 
                                                     <div class="alContactOther col-6">
@@ -317,6 +297,8 @@
                                                         </div>
                                                     </div>
                                                 </div>
+
+
                                             </div>
                                             <div class="col-4 alsavedaddress" id="alsavedaddress" style="display:none;">
                                                 <h6>Saved Addresses</h6>
@@ -329,6 +311,27 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div class="col-md-12">
+                                    <div class="warehouse-fields mt-2">
+                                        <div class="form-group mb-1 select_inventory-field">
+                                            <select class="form-control select2-multiple selected-products" multiple="multiple" name="selected_inventory_products[]" id="selected_inventory_products">
+                                                <option value="">Select Products</option>
+
+                                            </select>
+
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="warehouse-fields mt-2 inventory_vendor">
+                                        <div class="form-group mb-1 inventory_warehouse">
+                                           
+
+                                        </div>
+                                    </div>
+                                </div>
+
                             </div>
                         </div>
                         <div id="addSubFields" style="width:100%;height:400px; display: none;">&nbsp;</div>
@@ -339,7 +342,21 @@
                         </div>
                     </div>
                 </div>
+
             </div>
         </div>
     </div>
-</div>
+    <script>
+        $(document).ready(function() {
+            // Select2 Multiple
+            $('.select2-multiple').select2({
+                placeholder: "Select",
+                allowClear: true
+            });
+
+
+
+
+
+        });
+    </script>
