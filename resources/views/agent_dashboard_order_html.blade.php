@@ -99,7 +99,7 @@
         @foreach($unassigned_orders as $orders)
             @foreach($orders['task'] as $tasks)
                 <div class="card-body" task_id ="{{ $tasks['id'] }}">
-                    <div class="p-2 assigned-block">
+                    <div class=" assigned-block">
                         @php
                             $st ="Unassigned";
                             $color_class = "assign_";
@@ -117,8 +117,9 @@
                                 }
                         @endphp
                         <div>
-                            <div class="row no-gutters align-items-center">
-                                <div class="col-9 d-flex">
+                            <div class="pick_drop_item_list">
+                                <div class="col-12 ">
+                                    <i class="fas fa-bars"></i>
                                     @php
                                     if($tasks['assigned_time']=="")
                                     {
@@ -131,21 +132,29 @@
                                         $order->setTimezone($client_timezone);
                                     @endphp
 
-                                    <h5 class="d-inline-flex align-items-center justify-content-between"><i class="fas fa-bars"></i> <span>{{date(''.$timeformat.'', strtotime($order))}}</span></h5>
-                                    <h6 class="d-inline"><img class="vt-top" src="{{ asset('demo/images/ic_location_blue_1.png') }}"> {{ isset($tasks['location']['address'])? $tasks['location']['address']:'' }} <span class="d-block">{{ isset($tasks['location']['short_name'])? $tasks['location']['short_name']:'' }}</span>
-                                        <p>
+                                    <h5 class="w-100 d-flex align-items-center  justify-content-between"> 
+                                        <span>{{date(''.$timeformat.'', strtotime($order))}}</span>
+                                        {{-- <p>
                                             @if(!empty($agent))
-                                                <span class="badge badge-blue text-white">{{ucfirst($agent['name'])}}</span>
+                                                <span class="badge ">{{ucfirst($agent['name'])}}</span>
                                                 @else
                                                 <span class="badge badge-danger text-white unassigned-badge" data-id="{{$orders['id']}}">{{__('Unassigned')}}</span>
                                             @endempty
-                                        </p>
-                                    </h6>
+                                        </p> --}}
+                                        <button class="assigned-btn float-left ml-1 unassigned-badge {{$color_class}}" data-id="{{$orders['id']}}">{{__($st)}}</button>
+                                        
+                                    </h5>
+                                    <div class="second_list_pick w-100 d-flex align-items-center justify-content-between">
+                                         <h6 class="d-inline"><img class="vt-top" src="{{ asset('demo/images/ic_location_blue_1.png') }}"> {{ isset($tasks['location']['address'])? $tasks['location']['address']:'' }} <span class="d-block">{{ isset($tasks['location']['short_name'])? $tasks['location']['short_name']:'' }}</span></h6>
+                                         <button class="assigned-btn float-left  mb-2 {{$pickup_class}}">{{__($tasktype)}}</button>
+                                    </div>
+                                        {{-- <div> --}}
+                                           
+                                            
+                                        {{-- </div> --}}
+                                
                                 </div>
-                                <div class="col-3">
-                                    <button class="assigned-btn float-right mb-2 {{$pickup_class}}">{{__($tasktype)}}</button>
-                                    <button class="assigned-btn float-right unassigned-badge {{$color_class}}" data-id="{{$orders['id']}}">{{__($st)}}</button>
-                                </div>
+                                
                             </div>
                         </div>
                     </div>
@@ -163,7 +172,7 @@
                     @foreach ($agent['order'] as $orders)
                         @foreach ($orders['task'] as $tasks)
                             <div class="card-body" task_id ="{{ $tasks['id'] }}">
-                                <div class="p-2 assigned-block">
+                                <div class=" assigned-block ">
                                     @php
                                         $st ="Unassigned";
                                         $color_class = "assign_";
@@ -186,8 +195,9 @@
                                         }
                                     @endphp
                                     <div>
-                                        <div class="row no-gutters align-items-center">
-                                            <div class="col-9 d-flex">
+                                        <div class="pick_drop_item_list">
+                                            <div class="col-12">
+                                                <i class="fas fa-bars"></i>
                                                 @php
                                                     if($tasks['assigned_time']=="")
                                                     {
@@ -198,21 +208,26 @@
                                                     //$order->setTimezone(isset(Auth::user()->timezone) ? Auth::user()->timezone : 'Asia/Kolkata');
                                                     $order->setTimezone($client_timezone);
                                                 @endphp
-                                                <h5 class="d-inline-flex align-items-center justify-content-between"><i class="fas fa-bars"></i> <span>{{date(''.$timeformat.'', strtotime($order))}}</span></h5>
-                                                <h6 class="d-inline"><img class="vt-top" src="{{ asset('demo/images/ic_location_blue_1.png') }}"> {{ isset($tasks['location']['address'])? $tasks['location']['address']:'' }} <span class="d-block">{{ isset($tasks['location']['short_name'])? $tasks['location']['short_name']:'' }}</span>
-                                                    <p>
+                                                <h5 class="w-100 d-flex align-items-center justify-content-between">
+                                                     <span>{{date(''.$timeformat.'', strtotime($order))}}</span>
+                                                     <p>
                                                         @if(!empty($agent))
-                                                            <span class="badge badge-blue text-white">{{ucfirst($agent['name'])}}</span>
+                                                            <span class="badge">{{ucfirst($agent['name'])}}</span>
                                                             @else
                                                             <span class="badge badge-danger text-white">{{__('Unassigned')}}</span>
                                                         @endempty
                                                     </p>
-                                                </h6>
+                                                    <button class="assigned-btn float-right {{$color_class}} {{$class}}" data-id="{{$orders['id']}}">{{ucfirst($orders['status'])}}</button>
+                                                </h5>
+                                                <div class="second_list_pick w-100 d-flex align-items-center justify-content-between">
+                                                    <h6 class="d-inline"><img class="vt-top" src="{{ asset('demo/images/ic_location_blue_1.png') }}"> {{ isset($tasks['location']['address'])? $tasks['location']['address']:'' }} <span class="d-block">{{ isset($tasks['location']['short_name'])? $tasks['location']['short_name']:'' }}</span>
+                                                        
+                                                    </h6>
+                                                    <button class="assigned-btn float-right mb-2 {{$pickup_class}}">{{__($tasktype)}}</button>
+                                                </div>
+                                               
                                             </div>
-                                            <div class="col-3">
-                                                <button class="assigned-btn float-right mb-2 {{$pickup_class}}">{{__($tasktype)}}</button>
-                                                <button class="assigned-btn float-right {{$color_class}} {{$class}}" data-id="{{$orders['id']}}">{{ucfirst($orders['status'])}}</button>
-                                            </div>
+                                           
                                         </div>
                                     </div>
                                 </div>
